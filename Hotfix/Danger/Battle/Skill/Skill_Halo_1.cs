@@ -34,7 +34,6 @@
                 {
                     unit.GetComponent<BuffManagerComponent>()?.BuffRemoveByUnit(0, SkillConf.BuffID[0]);
                     this.HurtIds.RemoveAt(i);
-                    continue;
                 }
             }
             this.CheckChiXuHurt();
