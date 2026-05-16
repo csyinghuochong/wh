@@ -1,0 +1,186 @@
+﻿using System;
+using UnityEngine;
+
+namespace ET
+{
+
+    [AIHandler]
+    public class AI_Follow : AAIHandler
+    {
+
+        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        {
+            Unit unit = aiComponent.GetParent<Unit>();
+            long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            Unit master = aiComponent.UnitComponent.Get(masterid);
+            if (master == null)
+            {
+                return false;
+            }
+
+            float distance = Vector3.Distance(unit.Position, master.Position);
+            AttackRecordComponent attackRecordComponent = master.GetComponent<AttackRecordComponent>();
+            if (distance > aiComponent.ActRange)    //超出追击距离，返回
+            {
+                aiComponent.TargetID = 0;
+                attackRecordComponent.PetLockId = 0;
+                attackRecordComponent.AttackingId = 0;
+                attackRecordComponent.BeAttackId = 0;
+                aiComponent.IsRetreat = TimeHelper.ServerNow();
+                return true;
+            }
+
+            long mastaerAttackId = attackRecordComponent.PetLockId;
+            Unit enemyUnit = aiComponent.UnitComponent.Get(mastaerAttackId);
+            if (enemyUnit == null || !enemyUnit.IsCanBeAttack())
+            {
+                mastaerAttackId = attackRecordComponent.AttackingId;
+                enemyUnit = aiComponent.UnitComponent.Get(mastaerAttackId);
+            }
+            if (enemyUnit == null || !enemyUnit.IsCanBeAttack())
+            {
+                mastaerAttackId = attackRecordComponent.BeAttackId;
+                enemyUnit = aiComponent.UnitComponent.Get(mastaerAttackId);
+            }
+            if (enemyUnit == null || !enemyUnit.IsCanBeAttack())
+            {
+                enemyUnit = aiComponent.UnitComponent.Get(aiComponent.TargetID);
+            }
+            if (enemyUnit == null || !unit.IsCanAttackUnit(enemyUnit))
+            {
+                aiComponent.TargetID = 0;
+                return true;
+            }
+
+            distance = Vector3.Distance(unit.Position, enemyUnit.Position);
+            ///1
+            aiComponent.TargetID = enemyUnit.Id;
+            ///2
+            //if (distance < aiComponent.ActRange)
+            //{
+            //    aiComponent.TargetID = enemyUnit.Id;
+            //}
+            //else
+            //{
+            //    aiComponent.TargetID = 0;
+            //}
+            return aiComponent.TargetID == 0;
+        }
+
+        public static Vector3 GetFollowPosition(Unit unit, Unit master)
+        {
+            //Vector3 cur = unit.Position;
+            //Vector3 tar = master.Position;
+            //Vector3 dir = (cur - tar).normalized;
+            //tar = tar + (1f * dir);
+            Vector3 dir = unit.Position - master.Position;
+            float ange = Mathf.Rad2Deg(Mathf.Atan2(dir.x, dir.z));
+            float addg = unit.Id % 10 * (unit.Id % 2 == 0 ? 5 : -5);
+            addg += RandomHelper.RandFloat() * 5f;
+            Quaternion rotation = Quaternion.Euler(0, ange + addg, 0);
+            Vector3 tar = master.Position + rotation * Vector3.forward;
+            return tar;
+        }
+
+        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        {
+            Unit unit = aiComponent.GetParent<Unit>();
+            long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            Unit master = aiComponent.UnitComponent.Get(masterid);
+
+            long nowspeed = 60000;
+            long speedadd = 40000;
+            if (master != null && !master.IsDisposed)
+            {
+                nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Speed);
+                unit.GetComponent<NumericComponent>().Set(NumericType.Base_Speed_Base, nowspeed);
+            }
+
+            while (true)
+            {
+                int errorCode = unit.GetComponent<StateComponent>().CanMove();
+                float distacne = Vector3.Distance(unit.Position, master.Position);
+
+                if (distacne > 10f)
+                {
+                    speedadd = 40000;
+                }
+                if (distacne < 2f)
+                {
+                    speedadd = 0;
+                }
+
+                if (aiComponent.IsRetreat > 0 && distacne < 1.5f)
+                {
+                    aiComponent.IsRetreat = 0;
+                }
+
+                if (distacne > 1.5f && errorCode == ErrorCode.ERR_Success)
+                {
+                    Vector3 nextTarget = GetFollowPosition(unit, master);
+                    //unit.GetComponent<NumericComponent>().Set(NumericType.Extra_Buff_Speed_Add, speedadd);
+                    unit.FindPathMoveToAsync(nextTarget, cancellationToken, false, Math.Max(100, (int)((speedadd+nowspeed) * 100f / nowspeed))).Coroutine();
+                }
+                bool result = await TimerComponent.Instance.WaitAsync(200, cancellationToken);
+                if (!result)
+                {
+                    aiComponent.IsRetreat = 0;
+                    break;
+                }
+
+            }
+        }
+
+        public  async ETTask Execute_2(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        {
+            Unit unit = aiComponent.GetParent<Unit>();
+            long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            Unit master = aiComponent.UnitComponent.Get(masterid);
+
+            while (true)
+            {
+                long nowspeed = 60000;
+                if (master != null && !master.IsDisposed)
+                {
+                    nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Speed);
+                }
+                int errorCode = unit.GetComponent<StateComponent>().CanMove();
+                float distacne = Vector3.Distance(unit.Position, master.Position);
+
+                if (aiComponent.IsRetreat > 0 && distacne < 1.5f)
+                {
+                    aiComponent.IsRetreat = 0;
+                }
+
+                if (errorCode == ErrorCode.ERR_Success && distacne > 1.5f)
+                {
+                    nowspeed = (long)(nowspeed * distacne / 2f);
+                }
+                else
+                {
+                    nowspeed = 0;
+                }
+
+                //宠物移动速度限制
+                if (nowspeed >= 100000)
+                {
+                    nowspeed = 100000;
+                }
+
+                if (nowspeed > 0)
+                {
+                    Vector3 nextTarget = GetFollowPosition(unit, master);
+                    unit.GetComponent<NumericComponent>().Set(NumericType.Now_Speed, nowspeed);
+                    unit.FindPathMoveToAsync(nextTarget, cancellationToken, false).Coroutine();
+                }
+                bool result = await TimerComponent.Instance.WaitAsync(200, cancellationToken);
+                if (!result)
+                {
+                    aiComponent.IsRetreat = 0;
+                    break;
+                }
+
+            }
+        }
+    }
+}

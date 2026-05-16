@@ -1,0 +1,518 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace ET
+{
+
+    [ObjectSystem]
+    public class ChengJiuComponentAwakeSystem : AwakeSystem<ChengJiuComponent>
+    {
+        public override void Awake(ChengJiuComponent self)
+        {
+            self.RandomDrop = 0;
+            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv);
+        }
+    }
+
+    public static class ChengJiuComponentSystem
+    {
+
+        public static List<PropertyValue> GetJingLingProLists(this ChengJiuComponent self)
+        {
+            List<PropertyValue> proList = new List<PropertyValue>();
+           
+            for (int i = 0; i < self.JingLingList.Count; i++)
+            {
+                JingLingConfig jinglingCof = JingLingConfigCategory.Instance.Get(self.JingLingList[i]);
+                NumericHelp.GetProList(jinglingCof.AddProperty, proList);
+            }
+
+            if (self.JingLingId == 0)
+            {
+                return proList;
+            }
+            JingLingConfig lifeShieldConfig = JingLingConfigCategory.Instance.Get(self.JingLingId);
+           // NumericHelp.GetProList(lifeShieldConfig.AddProperty, proList);
+            if (lifeShieldConfig.FunctionType == JingLingFunctionType.AddProperty)
+            {
+                NumericHelp.GetProList(lifeShieldConfig.FunctionValue, proList);
+            }
+            
+            return proList;
+        }
+
+        public static void OnLogin(this ChengJiuComponent self)
+        {
+            NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
+            if (self.DomainZone() <= 48 && numericComponent.GetAsLong(NumericType.RechargeNumber) < 400 && self.JingLingList.Contains(10003))
+            {
+                Log.Warning($"充值小于400有精灵龟: {self.Id}");
+                self.JingLingList.Remove(10003);
+                self.JingLingId = 0;
+                self.JingLingUnitId = 0;
+            }
+
+            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv);
+        }
+
+        public static void OnZeroClockUpdate(this ChengJiuComponent self)
+        {
+            self.RandomDrop = 0;
+        }
+
+        //击杀怪物可触发多种类型的成就
+        public static void OnKillUnit(this ChengJiuComponent self, Unit defend)
+        {
+            if (defend == null || defend.IsDisposed)
+                return;
+
+            if (defend.Type == UnitType.Player)
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.KillPlayerNumber_209, 0, 1);
+                LogHelper.KillPlayerInfo(self.GetParent<Unit>(),  defend);
+            }
+            if (defend.Type == UnitType.Monster)
+            {
+                int unitconfigId = defend.ConfigId;
+                MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(unitconfigId);
+                bool isBoss = monsterConfig.MonsterType == (int)MonsterTypeEnum.Boss;
+                MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
+                int fubenDifficulty = (int)FubenDifficulty.None;
+                if (mapComponent.SceneTypeEnum == (int)SceneTypeEnum.CellDungeon)
+                {
+                    fubenDifficulty = (int)self.GetParent<Unit>().DomainScene().GetComponent<CellDungeonComponent>().FubenDifficulty;
+                }
+                if (mapComponent.SceneTypeEnum == (int)SceneTypeEnum.LocalDungeon)
+                {
+                    fubenDifficulty = (int)self.GetParent<Unit>().DomainScene().GetComponent<LocalDungeonComponent>().FubenDifficulty;
+                }
+
+                self.TriggerEvent(ChengJiuTargetEnum.KillIDMonster_1, unitconfigId, 1);
+                self.TriggerEvent(ChengJiuTargetEnum.KillTotalMonster_2, 0, 1);
+
+                if (isBoss)
+                {
+                    self.TriggerEvent(ChengJiuTargetEnum.KillTotalBoss_3, 0, 1);
+                    self.TriggerEvent(ChengJiuTargetEnum.KillNormalBoss_4, unitconfigId, 1);
+                }
+                if (fubenDifficulty >= (int)FubenDifficulty.TiaoZhan && isBoss) //挑战
+                {
+                    self.TriggerEvent(ChengJiuTargetEnum.KillChallengeBoss_5, unitconfigId, 1);
+                }
+                if (fubenDifficulty == (int)FubenDifficulty.DiYu && isBoss) //地狱
+                {
+                    self.TriggerEvent(ChengJiuTargetEnum.KillInfernalBoss_6, unitconfigId, 1);
+                }
+            }
+        }
+
+        public static void OnPassFuben(this ChengJiuComponent self, int difficulty, int chapterid, int star)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.PassNormalFubenID_11, chapterid, 1);
+            if ((int)difficulty >= (int)FubenDifficulty.TiaoZhan)  //挑战
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.PassChallengeFubenID_12, chapterid, 1);
+            }
+            if ((int)difficulty == (int)FubenDifficulty.DiYu)  //地狱
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.PassInfernalFubenID_13, chapterid, 1);
+            }
+            if (star == 3 && (int)difficulty == (int)FubenDifficulty.DiYu)
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.PerfectPassInfernalFubenID_14, chapterid, 1);
+            }
+        }
+
+        public static void OnChouKaTen(this ChengJiuComponent self)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.TotalChouKaTen_202, 0, 1);
+        }
+
+        public static void OnEquipXiLian(this ChengJiuComponent self, int times)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.TotalEquipXiLian_203, 0, times);
+        }
+
+        public static void OnRevive(this ChengJiuComponent self)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.TotalRevive_204, 0, 1);
+        }
+
+        public static void OnUpdateLevel(this ChengJiuComponent self, int lv)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, lv);
+        }
+
+        public static void OnGetGold(this ChengJiuComponent self, int coin)
+        {
+            if (coin < 0)
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.TotalCostGold_219, 0, coin * -1);
+            }
+            else
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.TotalCoinGet_201, 0, coin);
+            }
+        }
+
+        public static void OnGetPet(this ChengJiuComponent self, RolePetInfo rolePetInfo)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.PetIdNumber_301, rolePetInfo.ConfigId, 1);
+            self.TriggerEvent(ChengJiuTargetEnum.TotalPetNumber_302, 0, 1);
+            self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
+        }
+
+        public static void OnPetHeCheng(this ChengJiuComponent self, RolePetInfo rolePetInfo)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.TotalPetHeCheng_303, 0, 1);
+            self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
+        }
+
+        public static void OnPetXiLian(this ChengJiuComponent self, RolePetInfo rolePetInfo)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.TotalPetXiLian_304, 0, 1);
+            self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
+        }
+
+        public static void OnItemHuiShow(this ChengJiuComponent self, int itemNumber)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.TotalEquipHuiShou_206, 0, itemNumber);
+        }
+
+        public static void OnCostDiamond(this ChengJiuComponent self, long costNumber)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.TotalDiamondCost_207, 0, (int)(costNumber * -1));
+        }
+
+        public static void OnSkillShuLianDu(this ChengJiuComponent self, int shuLianDu)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.SkillShuLianDu_208, 0, shuLianDu);
+        }
+
+        public static int ReceivedReward(this ChengJiuComponent self, int rewardId)
+        {
+            if (self.AlreadReceivedId.Contains(rewardId))
+            {
+                return ErrorCode.ERR_Success;
+            }
+
+            ChengJiuRewardConfig chengJiuRewardConfig = ChengJiuRewardConfigCategory.Instance.Get(rewardId);
+            bool success = self.GetParent<Unit>().GetComponent<BagComponent>().OnAddItemData(chengJiuRewardConfig.RewardItems, $"{ItemGetWay.ChengJiuRward}_{TimeHelper.ServerNow()}");
+            if (success)
+            {
+                self.AlreadReceivedId.Add(rewardId);
+                return ErrorCode.ERR_Success;
+            }
+            else
+            {
+                return ErrorCode.ERR_BagIsFull;
+            }
+        }
+
+        public static void OnActiveJingLing(this ChengJiuComponent self, int jid)
+        {
+            if (self.JingLingList.Contains(jid))
+            {
+                return;
+            }
+            self.JingLingList.Add(jid);
+        }
+
+        public static void OnGmGaoJi(this ChengJiuComponent self)
+        {
+            self.ChengJiuProgessList.Clear();
+            self.ChengJiuCompleteList.Clear();
+            Dictionary<int, ChengJiuConfig> allchengjiu = ChengJiuConfigCategory.Instance.GetAll();
+            foreach (var item in allchengjiu)
+            {
+                self.ChengJiuCompleteList.Add( item.Key );
+            }
+
+            self.JingLingList.Clear();  
+            Dictionary<int, JingLingConfig> alljingling = JingLingConfigCategory.Instance.GetAll();
+            foreach (var item in alljingling)
+            {
+                self.OnActiveJingLing(item.Key); 
+            }
+        }
+
+        public static void TriggerEvent(this ChengJiuComponent self, ChengJiuTargetEnum chengJiuTarget, int target_id, int target_value=1)
+        {
+            int chengJiuTargetInt = (int)chengJiuTarget;
+            List<int> chengjiuList = null;
+            ChengJiuHelper.Instance.ChengJiuTargetData.TryGetValue(chengJiuTargetInt, out chengjiuList);
+            if (chengjiuList == null)
+            {
+                return;
+            }
+
+            for (int i = 0;i < chengjiuList.Count;i ++)
+            {
+                bool exist = false;
+                for (int k = 0; k < self.ChengJiuProgessList.Count; k++ )
+                {
+                    if (self.ChengJiuProgessList[k].ChengJiuID == chengjiuList[i])
+                    {
+                        exist = true;
+                    }
+                    if (exist)
+                    {
+                        break;
+                    }
+                }
+                if (exist || self.ChengJiuCompleteList.Contains(chengjiuList[i]))
+                {
+                    continue;
+                }
+
+                self.ChengJiuProgessList.Add(new ChengJiuInfo() { ChengJiuID = chengjiuList[i] });
+            }
+
+            for (int i = self.ChengJiuProgessList.Count - 1; i >= 0; i--)
+            {
+                ChengJiuInfo chengJiuInfo = self.ChengJiuProgessList[i];
+                ChengJiuConfig chengJiuConfig = ChengJiuConfigCategory.Instance.Get(chengJiuInfo.ChengJiuID);
+                if (chengJiuTargetInt != chengJiuConfig.TargetType)
+                {
+                    continue;
+                }
+                
+                switch (chengJiuTarget)
+                {
+                    case ChengJiuTargetEnum.PlayerLevel_205:
+                    case ChengJiuTargetEnum.SkillShuLianDu_208:
+                    case ChengJiuTargetEnum.CombatToValue_211:
+                    case ChengJiuTargetEnum.ZodiacEquipNumber_215:
+                    case ChengJiuTargetEnum.PetNSkill_305:
+                    case ChengJiuTargetEnum.PegScoreToValue_307:
+                    case ChengJiuTargetEnum.PetArrayScoreToValue_308:
+                    case ChengJiuTargetEnum.PetTianTiRank_309:
+                    case ChengJiuTargetEnum.ZiZhiToValue_311:
+                    case ChengJiuTargetEnum.ZiZhiUpValue_312:
+                        if (target_id != chengJiuConfig.TargetID)
+                        {
+                            continue;
+                        }
+                        chengJiuInfo.ChengJiuProgess = target_value;
+                        break;
+                    case ChengJiuTargetEnum.JianDingEqipNumber_212:
+                        if (target_id < chengJiuConfig.TargetID)
+                        {
+                            continue;
+                        }
+                        chengJiuInfo.ChengJiuProgess += target_value;
+                        break;
+                    default:
+                        if (target_id != chengJiuConfig.TargetID)
+                        {
+                            continue;
+                        }
+                        chengJiuInfo.ChengJiuProgess += target_value;
+                        break;
+                }
+
+                int acitiveId = 0;
+                switch (chengJiuTarget)
+                {
+                    case ChengJiuTargetEnum.PetTianTiRank_309:
+                        if (chengJiuInfo.ChengJiuProgess <= chengJiuConfig.TargetValue)
+                        {
+                            acitiveId = chengJiuInfo.ChengJiuID;
+                            self.TotalChengJiuPoint += chengJiuConfig.RewardNum;
+                            self.ChengJiuCompleteList.Add(chengJiuInfo.ChengJiuID);
+                            self.ChengJiuProgessList.RemoveAt(i);
+                        }
+                        break;
+                    case ChengJiuTargetEnum.ZiZhiUpValue_312:
+                        if (chengJiuInfo.ChengJiuProgess > chengJiuConfig.TargetValue)
+                        {
+                            acitiveId = chengJiuInfo.ChengJiuID;
+                            self.TotalChengJiuPoint += chengJiuConfig.RewardNum;
+                            self.ChengJiuCompleteList.Add(chengJiuInfo.ChengJiuID);
+                            self.ChengJiuProgessList.RemoveAt(i);
+                        }
+                        break;
+                    default:
+                        if (chengJiuInfo.ChengJiuProgess >= chengJiuConfig.TargetValue)
+                        {
+                            acitiveId = chengJiuInfo.ChengJiuID;
+                            self.TotalChengJiuPoint += chengJiuConfig.RewardNum;
+                            self.ChengJiuCompleteList.Add(chengJiuInfo.ChengJiuID);
+                            self.ChengJiuProgessList.RemoveAt(i);
+                        }
+                        break;
+                }
+
+                Unit unit = self.GetParent<Unit>();
+                if (unit.GetComponent<UnitGateComponent>() == null)
+                {
+                    return;
+                }
+
+                if (acitiveId > 0 && !unit.IsRobot())
+                {
+                    MessageHelper.SendToClient(unit, new M2C_ChengJiuActiveMessage() { ChengJiuId = acitiveId });
+                }
+            }
+        }
+
+        public static int GetCurrentMagickaSlotIdByPosition(this ChengJiuComponent self, int position)
+        {
+            foreach (var magicinfo in self.MagickaSlotIdList)
+            {
+                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(magicinfo.SlotId);
+                if (magickaSlotConfig.Position == position + 1)
+                {
+                    return magicinfo.SlotId;
+                }
+            }
+            return 0;
+        }
+
+        public static void OnAddMagickaExpByPosition(this ChengJiuComponent self, int position, int addexp)
+        {
+            MagickaSlotInfo magickaSlotInfo = null;
+            foreach (var magicinfo in self.MagickaSlotIdList)
+            {
+                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(magicinfo.SlotId);
+                if (magickaSlotConfig.Position == position + 1)
+                {
+                    magickaSlotInfo = magicinfo;
+                    break;
+                }
+            }
+            if (magickaSlotInfo == null || magickaSlotInfo.SlotId == 0)
+            {
+                return;
+            }
+            magickaSlotInfo.Exp += addexp;
+            int nexid = self.GetNextMagickaSlotIdByPosition(position);
+            int curid = self.GetCurrentMagickaSlotIdByPosition(position);
+            if (nexid <= curid)
+            {
+                return;
+            }
+
+            int needexp = MagickaSlotConfigCategory.Instance.Get(curid).NeedExp;
+            if (magickaSlotInfo.Exp >= needexp)
+            {
+                magickaSlotInfo.Exp -= needexp; 
+                magickaSlotInfo.SlotId = nexid; 
+            }
+        }
+
+        public static int GetCurrentMagickaTotalLevel(this ChengJiuComponent self)
+        {
+            int totallevel = 0;
+            foreach( var magicinfo in self.MagickaSlotIdList )
+            {
+                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(magicinfo.SlotId);
+                totallevel += magickaSlotConfig.MagicLevel;
+            }
+            return totallevel;
+        }
+
+        public static void OnOpenMagicka(this ChengJiuComponent self,int position, int magicid)
+        {
+            for (int i = self.MagickaSlotIdList.Count - 1; i >= 0; i--)
+            {
+                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(self.MagickaSlotIdList[i].SlotId);
+                if (magickaSlotConfig.Position == position + 1)
+                {
+                    self.MagickaSlotIdList.RemoveAt(i);
+                }
+            }
+
+            self.MagickaSlotIdList.Add(new MagickaSlotInfo() { SlotId = magicid, Exp = 0 });
+        }
+
+        public static List<PropertyValue> GetMagickaProLists(this ChengJiuComponent self)
+        {
+            List<PropertyValue> proList = new List<PropertyValue>();
+            for (int i = self.MagickaSlotIdList.Count - 1; i >= 0; i--)
+            {
+                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(self.MagickaSlotIdList[i].SlotId);
+
+                string[] attributeInfoList = magickaSlotConfig.AddProperty.Split('@');
+                for (int a = 0; a < attributeInfoList.Length; a++)
+                {
+                    string[] attributeInfo = attributeInfoList[a].Split(';');
+                    if (attributeInfo.Length != 2)
+                    {
+                        continue;
+                    }
+                    try
+                    {
+                        int numericType = int.Parse(attributeInfo[0]);
+                        if (NumericHelp.GetNumericValueType(numericType) == 2)
+                        {
+                            float fvalue = float.Parse(attributeInfo[1]);
+                            proList.Add(new PropertyValue() { HideID = numericType, HideValue = (long)(fvalue * 10000) });
+                        }
+                        else
+                        {
+                            long lvalue = 0;
+                            try
+                            {
+                                lvalue = long.Parse(attributeInfo[1]);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Debug(ex.ToString() + $"报错MagickaSlotId: {self.MagickaSlotIdList[i].SlotId}");
+                            }
+
+                            proList.Add(new PropertyValue() { HideID = numericType, HideValue = lvalue });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex.ToString());
+                    }
+                }
+            }
+
+            return proList;
+        }
+
+        public static int GetMaxMagickaSlotIdPosition(this ChengJiuComponent self)
+        {
+            int position = 0;
+            foreach (var slotinfo in MagickaSlotConfigCategory.Instance.GetAll())
+            {
+                if (slotinfo.Value.Position > position)
+                {
+                    position = slotinfo.Value.Position;
+                }
+            }
+            return position;
+        }
+
+        public static int GetFirstMagickaSlotIdByPosition(this ChengJiuComponent self, int position)
+        {
+            int id = 0;
+            foreach (var slotinfo in MagickaSlotConfigCategory.Instance.GetAll())
+            {
+                if (slotinfo.Value.Position == position + 1 && id < slotinfo.Key)
+                {
+                    id = slotinfo.Key;
+                    break;
+                }
+            }
+            return id;
+        }
+
+        public static int GetNextMagickaSlotIdByPosition(this ChengJiuComponent self, int position)
+        {
+            int id = self.GetCurrentMagickaSlotIdByPosition(position);
+            foreach (var slotinfo in MagickaSlotConfigCategory.Instance.GetAll())
+            {
+                if (slotinfo.Value.Position == position + 1 && id < slotinfo.Key)
+                {
+                    id = slotinfo.Key;
+                    break;
+                }
+            }
+            return id;
+        }
+    }
+}

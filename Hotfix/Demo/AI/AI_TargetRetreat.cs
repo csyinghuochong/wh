@@ -1,0 +1,35 @@
+﻿using UnityEngine;
+
+namespace ET
+{
+
+    [AIHandler]
+    public class AI_TargetRetreat : AAIHandler
+    {
+        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        {
+            Unit unit = aiComponent.GetParent<Unit>();
+            if (aiComponent.TargetZhuiJi == Vector3.zero)
+            {
+                return false;
+            }
+            float distance = PositionHelper.Distance2D(aiComponent.TargetZhuiJi, unit.Position);
+            return aiComponent.IsRetreat == 0 && distance >= aiComponent.ChaseRange;
+        }
+
+        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        {
+            Unit unit = aiComponent.GetParent<Unit>();
+            if (unit.IsBoss())
+            {
+                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.BossInCombat, 0);
+                unit.GetComponent<HeroDataComponent>().OnKillZhaoHuan(null);
+                unit.GetComponent<AttackRecordComponent>().ClearBeAttack();
+            }
+            aiComponent.TargetID = 0;
+            aiComponent.IsRetreat = TimeHelper.ServerNow();
+            unit.Stop(0);
+            await ETTask.CompletedTask;
+        }
+    }
+}
