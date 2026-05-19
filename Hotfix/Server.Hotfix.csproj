@@ -62,7 +62,6 @@
     <ProjectReference Include="..\Model\Server.Model.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Danger\Handler\Realm\" />
     <Folder Include="Module\Function\" />
   </ItemGroup>
   <ItemGroup>
