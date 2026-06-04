@@ -75,8 +75,8 @@ namespace ET
 
                
                 //通知账号服
-                long accountSceneId = DBHelper.GetAccountServerId(player.DomainZone());
-                var a2G_ExitGame = (A2G_ExitGame)await MessageHelper.CallActor(accountSceneId, new G2A_ExitGame()
+                long accountSceneId = DBHelper.GetRealmCenter();
+                var a2G_ExitGame = (Realm2G_ExitGame)await MessageHelper.CallActor(accountSceneId, new G2Realm_ExitGame()
                 {
                     AccountId = player.AccountId,
                 });

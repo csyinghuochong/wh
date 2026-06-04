@@ -9,7 +9,7 @@
             Log.Warning($"生成序列号: ");
 
             //args.AccountCenterScene.GetComponent<AccountCenterComponent>().CheckSerials();
-            args.AccountCenterScene.GetComponent<AccountCenterComponent>().GenerateSerials(11);
+            args.AccountCenterScene.GetComponent<CenterServerComponent>().GenerateSerials(11);
         }
     }
 }

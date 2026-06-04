@@ -193,15 +193,16 @@ namespace ET
             int zone = self.DomainZone();
             long dbCacheId = DBHelper.GetDbCacheId(zone);
             await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 2000));
-            D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = self.DomainZone(), Component = DBHelper.DBDayActivityInfo });
-            if (d2GGetUnit.Component == null)
+        
+            DBDayActivityInfo dbDayActivityInfo = await DBHelper.GetComponent<DBDayActivityInfo>(self.DomainZone(), self.DomainZone());
+            if (dbDayActivityInfo == null)
             {
                 self.DBDayActivityInfo = new DBDayActivityInfo();
                 self.DBDayActivityInfo.Id = self.DomainZone();
             }
             else
             {
-                self.DBDayActivityInfo = d2GGetUnit.Component as DBDayActivityInfo;
+                self.DBDayActivityInfo = dbDayActivityInfo;
                 self.DBDayActivityInfo.Id = self.DomainZone();
             }
             int openServerDay = DBHelper.GetOpenServerDay(zone);
@@ -458,21 +459,7 @@ namespace ET
                 self.InitPetMineExtend();
                 self.InitFunctionButton();
             }
-           
-            if (hour == 0 && self.DomainZone() == 3) //通知中心服
-            {
-                Console.WriteLine($"通知中心服:  {hour}");
-                long centerid = DBHelper.GetCenterServerId();
-                A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                             (centerid, new A2A_ActivityUpdateRequest() { Hour = hour });
-            }
-            if ((hour == 0 || hour == 21) && self.DomainZone() == 3) //通知账号中心服
-            {
-                Console.WriteLine($"通知账号中心服:  {hour}");
-                long centerid = DBHelper.GetAccountCenter();
-                A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                             (centerid, new A2A_ActivityUpdateRequest() { Hour = hour });
-            }
+            
             if (!ComHelp.IsInnerNet() && self.DomainZone() != 3 && hour == 6)
             {
                 Log.Warning($"刷新机器人: {self.DomainZone()}");

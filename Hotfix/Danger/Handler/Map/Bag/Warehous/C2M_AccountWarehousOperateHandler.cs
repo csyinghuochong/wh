@@ -13,9 +13,11 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
                 long accountId = unit.GetComponent<UserInfoComponent>().UserInfo.AccInfoID;
-                DBAccountInfo dBAccountWarehouse = await DBHelper.GetComponent<DBAccountInfo>(unit.DomainZone(), accountId);
-                if (dBAccountWarehouse == null)
+                DBAccountBagInfo dBAccountBagWarehouse = await DBHelper.GetComponent<DBAccountBagInfo>(unit.DomainZone(), accountId);
+                if (dBAccountBagWarehouse == null)
                 {
+                    Log.Error("dBAccountBagWarehouse == null");
+                    Console.WriteLine("dBAccountBagWarehouse == null");
                     response.Error = ErrorCode.ERR_NetWorkError;
                     reply();
                     return;
@@ -26,7 +28,7 @@ namespace ET
                 {
                     ///1放入仓库  2取出仓库 3整理仓库 
                     case 1:
-                        if (dBAccountWarehouse.BagInfoList.Count >= GlobalValueConfigCategory.Instance.AccountBagMax)
+                        if (dBAccountBagWarehouse.BagInfoList.Count >= GlobalValueConfigCategory.Instance.AccountBagMax)
                         {
                             response.Error = ErrorCode.ERR_WarehouseIsFull;
                             reply();
@@ -53,13 +55,13 @@ namespace ET
                             return;
                         }
 
-                        if (dBAccountWarehouse.HaveItemById(bagInfo.BagInfoID) != -1)
+                        if (dBAccountBagWarehouse.HaveItemById(bagInfo.BagInfoID) != -1)
                         {
                             response.Error = ErrorCode.ERR_AlreadyHave;
                             reply();
                             return;
                         }
-                        dBAccountWarehouse.BagInfoList.Add(bagInfo);
+                        dBAccountBagWarehouse.BagInfoList.Add(bagInfo);
                         bagComponent.OnCostItemData(new List<long>(){ bagInfo.BagInfoID }, ItemLocType.ItemLocBag);
                         break;
                     case 2:
@@ -69,19 +71,19 @@ namespace ET
                             reply();
                             return;
                         }
-                        int index = dBAccountWarehouse.HaveItemById(request.OperateBagID);
+                        int index = dBAccountBagWarehouse.HaveItemById(request.OperateBagID);
                         if (index == -1)
                         {
                             response.Error = ErrorCode.ERR_ItemNotExist;
                             reply();
                             return;
                         }
-                        bagInfo = dBAccountWarehouse.BagInfoList[index];
-                        dBAccountWarehouse.BagInfoList.RemoveAt(index);
+                        bagInfo = dBAccountBagWarehouse.BagInfoList[index];
+                        dBAccountBagWarehouse.BagInfoList.RemoveAt(index);
                         bagComponent.OnAddItemData(bagInfo, bagInfo.GetWay);
                         break;
                     case 3:
-                        ItemHelper.ItemLitSort(dBAccountWarehouse.BagInfoList);
+                        ItemHelper.ItemLitSort(dBAccountBagWarehouse.BagInfoList);
                         break;
                     default:
                         break;
@@ -89,7 +91,7 @@ namespace ET
 
                 DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, bagComponent).Coroutine();
 
-                DBHelper.SaveComponent(unit.DomainZone(), accountId, dBAccountWarehouse).Coroutine();
+                DBHelper.SaveComponent(unit.DomainZone(), accountId, dBAccountBagWarehouse).Coroutine();
                 reply();
             }
             await ETTask.CompletedTask;

@@ -48,9 +48,8 @@ namespace ET
             Log.Warning($"OnSoloBegin: {self.DomainZone()}");
 
             //清除之前的排名坐骑
-            long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
-            D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = self.DomainZone(), Component = DBHelper.DBRankInfo });
-            DBRankInfo dBRankInfo = d2GGetUnit.Component as DBRankInfo;
+    
+            DBRankInfo dBRankInfo = await DBHelper.GetComponent<DBRankInfo>(self.DomainZone(), self.DomainZone());
             if (dBRankInfo !=null && dBRankInfo.rankSoloInfo.Count > 0)
             {
                 self.UpdateSoloRank(dBRankInfo.rankSoloInfo[0].UserId, 0).Coroutine();
@@ -94,14 +93,10 @@ namespace ET
                 long combat = 0;
                 self.PlayerCombatList.TryGetValue(soloPlayerList[i].UnitId, out combat);
 
-                D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = soloPlayerList[i].UnitId, Component = DBHelper.UserInfoComponent });
-                if (d2GGetUnit.Component == null)
-                {
-                    continue;
-                }
+         
                 OccupationConfig occupationConfig = OccupationConfigCategory.Instance.Get(soloPlayerList[i].Occ);
                 string occName = occupationConfig.OccupationName;
-                UserInfoComponent userInfoComponent = d2GGetUnit.Component as UserInfoComponent;
+                UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(self.DomainZone(), soloPlayerList[i].UnitId);
 
                 if (userInfoComponent.UserInfo.OccTwo > 0)
                 {

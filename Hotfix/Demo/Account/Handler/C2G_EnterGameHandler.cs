@@ -34,7 +34,8 @@ namespace ET
 				session.Dispose();
 				return;
 			}
-            if (OuterOpcode.C2Center_QueryAccountRequest != request.Version)
+            
+            if (OuterOpcode.C2R_QueryAccountRequest != request.Version)
             {
 				response.Error = ErrorCode.ERR_VersionNoMatch;
                 reply();
@@ -133,23 +134,14 @@ namespace ET
                         reply();
                         return;
                     }
-
-                    List<DBAccountInfo> accountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(session.DomainZone(), d => d.Id == request.AccountId);
-					if (accountInfoList ==null || accountInfoList.Count == 0)
-					{
-                        response.Error = ErrorCode.ERR_AccountInBlackListError;
-                        reply();
-                        return;
+                    CreateRoleInfo createRoleInfo = centerAccountInfos[0].GetRoleInfo(session.DomainZone(), request.UserID);
+                    if (createRoleInfo == null)
+                    {
+	                    response.Error = ErrorCode.ERR_NotFindAccount;
+	                    return;
                     }
-
-					if (accountInfoList[0].BanUserList.Contains(request.UserID))
-					{
-                        response.Error = ErrorCode.ERR_RoleInBlackListError;
-                        reply();
-                        return;
-                    }
-					
-					Log.Warning($"账号登录(EnterGame):{session.DomainZone()} {accountInfoList[0].Account} {request.UserID} {request.DeviceName} {moniq}");
+                    
+                    
                     if (instanceId != session.InstanceId || player.IsDisposed)
 					{
                         Log.Debug($"LoginTest C2G_EnterGameHandler: instanceId： {instanceId}  session.InstanceId： {session.InstanceId} {player.IsDisposed} ");
@@ -229,8 +221,8 @@ namespace ET
 						GateMapComponent gateMapComponent = player.AddComponent<GateMapComponent>();
 						gateMapComponent.Scene = SceneFactory.Create(gateMapComponent, "GateMap", SceneType.GateMap);
 						
-						Unit unit = UnitFactory.Create(gateMapComponent.Scene, request.UserID, UnitType.Player);
-						await DBHelper.AddDataComponent<UserInfoComponent>(unit, request.UserID, DBHelper.UserInfoComponent);
+						Unit unit = await UnitFactory.LoadUnit(player, gateMapComponent.Scene, createRoleInfo, centerAccountInfos[0].Account, request.AccountId);
+						/*await DBHelper.AddDataComponent<UserInfoComponent>(unit, request.UserID, DBHelper.UserInfoComponent);
 						await DBHelper.AddDataComponent<NumericComponent>(unit, request.UserID, DBHelper.NumericComponent);
 						await DBHelper.AddDataComponent<TaskComponent>(unit, request.UserID, DBHelper.TaskComponent);
 						await DBHelper.AddDataComponent<ShoujiComponent>(unit, request.UserID, DBHelper.ShoujiComponent);
@@ -244,82 +236,8 @@ namespace ET
 						await DBHelper.AddDataComponent<ReddotComponent>(unit, request.UserID, DBHelper.ReddotComponent);
 						await DBHelper.AddDataComponent<TitleComponent>(unit, request.UserID, DBHelper.TitleComponent);
 						await DBHelper.AddDataComponent<JiaYuanComponent>(unit, request.UserID, DBHelper.JiaYuanComponent);
-                        await DBHelper.AddDataComponent<DataCollationComponent>(unit, request.UserID, DBHelper.DataCollationComponent);
-
-
-                        int downloadType = 0;
-						bool havedatacache = false;
-                        List<DBCenterDataCache> centerDataCaches = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterDataCache>(ComHelp.CenterZoneId, d => d.anid == request.OAID);
-						if (centerDataCaches != null && centerDataCaches.Count > 0)
-						{
-							downloadType = centerDataCaches[0].DownloadType;
-							havedatacache = true;
-
-                        }
-
-                        if (centerDataCaches != null && centerDataCaches.Count > 0 && string.IsNullOrEmpty(centerDataCaches[0].FirstEnterMainCityTime))
-                        {
-                            Console.WriteLine($"entermaincity DBCenterDataCache:  {request.OAID}");
-                            DBCenterDataCache dBCenterDataCache = centerDataCaches[0];
-                            dBCenterDataCache.FirstEnterMainCityTime = TimeHelper.DateTimeNow().ToString();
-                            dBCenterDataCache.DeviceName = request.DeviceName;
-
-                            dBCenterDataCache.SetDownloadType(downloadType, request.Platform, request.PlatformTwo, request.DeviceName);
-
-                            await Game.Scene.GetComponent<DBComponent>().Save(ComHelp.CenterZoneId, dBCenterDataCache);
-                        }
-
-                        //有可能有数据 但不是taptap下载的
-                        if ( !havedatacache && !accountInfoList[0].Account.Contains("_"))
-                        {
-                            centerDataCaches = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterDataCache>(ComHelp.CenterZoneId, d => d.AccountName == accountInfoList[0].Account);
-							
-							if (centerDataCaches != null && centerDataCaches.Count > 0)
-							{
-								if (string.IsNullOrEmpty(centerDataCaches[0].DownloadFrom)
-									|| string.IsNullOrEmpty(centerDataCaches[0].Platform))
-								{
-
-                                    Console.WriteLine($"centerDataCaches==null have account:{accountInfoList[0].Account}    {request.OAID}   {request.Platform}     {request.PlatformTwo}");
-
-                                    centerDataCaches[0].SetDownloadType(downloadType, request.Platform, request.PlatformTwo, request.DeviceName);
-
-                                    await Game.Scene.GetComponent<DBComponent>().Save(ComHelp.CenterZoneId, centerDataCaches[0]);
-                                }
-                            }
-							else
-							{
-								//通过oaid和账号都查不到
-								string createtime = string.Empty;
-								long createtimelong = centerAccountInfos[0].CreateTime;
-
-                                if (centerAccountInfos[0].CreateTime > 0)
-								{
-									createtime = TimeInfo.Instance.ToDateTime(centerAccountInfos[0].CreateTime).ToString();
-                                }
-
-                                Console.WriteLine($"centerDataCaches==null no   account:{accountInfoList[0].Account}    {createtime}  {request.OAID}   {request.Platform}     {request.PlatformTwo}");
-                                Log.Debug($"centerDataCaches==null no   account:{accountInfoList[0].Account}    {createtime}  {request.OAID}   {request.Platform}     {request.PlatformTwo}");
-
-
-                                //最近的才创建数据
-                                if (createtimelong > 1773399600000)
-								{
-                                    Console.WriteLine($"centerDataCaches==null create  account:{accountInfoList[0].Account}    {createtime}  {request.OAID}   {request.Platform}     {request.PlatformTwo}");
-                                    Log.Debug($"centerDataCaches==null create   account:{accountInfoList[0].Account}    {createtime}  {request.OAID}   {request.Platform}     {request.PlatformTwo}");
-
-                                    DBCenterDataCache dBCenterDataCache = session.AddChild<DBCenterDataCache>();
-                                    dBCenterDataCache.anid = accountInfoList[0].Account;
-                                    dBCenterDataCache.AccountName = accountInfoList[0].Account;
-                                    dBCenterDataCache.SetDownloadType(downloadType, request.Platform, request.PlatformTwo, request.DeviceName);
-
-                                    await Game.Scene.GetComponent<DBComponent>().Save(ComHelp.CenterZoneId, dBCenterDataCache);
-                                    dBCenterDataCache.Dispose();
-                                    dBCenterDataCache = null;
-                                }
-                            }
-                        }
-	
+                        await DBHelper.AddDataComponent<DataCollationComponent>(unit, request.UserID, DBHelper.DataCollationComponent);*/
+                        
                         unit.AddComponent<UnitGateComponent, long>(player.InstanceId);
                         unit.AddComponent<MailComponent>();
                         unit.AddComponent<StateComponent>();
@@ -331,7 +249,6 @@ namespace ET
 						DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
 						dataCollationComponent.CorrectData();
                         dataCollationComponent.UpdatePlatName(request.Platform, request.PlatformTwo, request.Simulator, request.Root, request.DeviceID, request.UnityVersion, request.BigVersion, request.DeviceName, request.OAID);
-                        dataCollationComponent.UpdateRegionCode(request.CurSystemLanguage, request.CurSystemRegionCode, request.ByIPRegionCode, downloadType);
                         unit.AddComponent<SkillPassiveComponent>().UpdatePassiveSkill();
 						//unit.GetComponent<DBSaveComponent>().LastDBTime = TimeHelper.ServerNow();
                         unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
@@ -363,7 +280,6 @@ namespace ET
 						player.SoloServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Solo)).InstanceId;
 						player.PopularizeServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Popularize)).InstanceId;
 						player.ReChargeServerID = StartSceneConfigCategory.Instance.RechargeConfig.InstanceId;
-						player.CenterServerID = StartSceneConfigCategory.Instance.CenterConfig.InstanceId;
 						response.MyId = unitId;
 						long accountId = unit.GetComponent<UserInfoComponent>().UserInfo.AccInfoID;
 						response.IsPopUp = GMHelp.PopUpPlayer.ContainsKey(accountId) ? 1 : 0;

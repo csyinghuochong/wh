@@ -6,7 +6,7 @@ using System.Web;
 namespace ET
 {
 
-    [HttpHandler(SceneType.AccountCenter, "/get_router")]
+    [HttpHandler(SceneType.Realm, "/get_router")]
     public class HttpGetRouterHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -22,7 +22,7 @@ namespace ET
         }
     }
 
-    [HttpHandler(SceneType.AccountCenter, "/game_start")]
+    [HttpHandler(SceneType.Realm, "/game_start")]
     public class HttpGameStartHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)

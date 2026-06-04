@@ -77,6 +77,10 @@ namespace ET
 
                 long dbCacheId = DBHelper.GetDbCacheId(unit.DomainZone());
                 M2D_SaveUnit message = new M2D_SaveUnit() { UnitId = unit.Id };
+                
+                message.EntityTypes.Add(unit.GetType().FullName);
+                message.EntityBytes.Add(MongoHelper.ToBson(unit));
+                
                 foreach (Type type in self.EntityChangeTypeSet)
                 {
                     Entity entity = unit.GetComponent(type);
@@ -87,10 +91,7 @@ namespace ET
                     message.EntityTypes.Add(type.FullName);
                     message.EntityBytes.Add(MongoHelper.ToBson(entity));
                 }
-                if (unit.Id == DBHelper.DebugUnitId)
-                {
-                    Log.Warning($"{unit.Id}:  {message.EntityTypes.Contains("UserInfoComponent")}  DBHelperSaveBd ");
-                }
+             
                 self.EntityChangeTypeSet.Clear();
                 MessageHelper.CallActor(dbCacheId, message).Coroutine();
             }

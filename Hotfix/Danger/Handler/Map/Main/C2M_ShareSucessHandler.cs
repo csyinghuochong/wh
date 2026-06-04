@@ -45,9 +45,9 @@ namespace ET
                 return;
             }
 
-            long accountZone = DBHelper.GetAccountCenter();
+            long accountZone = DBHelper.GetRealmCenter();
             UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-            Center2M_ShareSucessResponse centerAccount = (Center2M_ShareSucessResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2Center_ShareSucessRequest()
+            R2M_ShareSucessResponse centerAccount = (R2M_ShareSucessResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2R_ShareSucessRequest()
             {
                 AccountId = userInfoComponent.UserInfo.AccInfoID
             });

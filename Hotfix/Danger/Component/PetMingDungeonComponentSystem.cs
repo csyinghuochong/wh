@@ -165,22 +165,22 @@ namespace ET
 
                 //self.EnemyId = enemyId;
 
-                D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = enemyId, Component = DBHelper.PetComponent });
-                if (d2GGetUnit.Component != null)
+                PetComponent petComponent_enemy = await DBHelper.GetComponent<PetComponent>(self.DomainZone(), enemyId);
+                if (petComponent_enemy != null)
                 {
-                    D2G_GetComponent d2GGetUnit_2 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = enemyId, Component = DBHelper.BagComponent });
-                    if (d2GGetUnit_2.Component == null)
+                    BagComponent bagComponent =  await DBHelper.GetComponent<BagComponent>(self.DomainZone(), enemyId);
+                    if (bagComponent == null)
+                    {
+                        return;
+                    }
+                    
+                    NumericComponent numericComponent =  await DBHelper.GetComponent<NumericComponent>(self.DomainZone(), enemyId);
+                    if (numericComponent == null)
                     {
                         return;
                     }
 
-                    D2G_GetComponent d2GGetUnit_3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = enemyId, Component = DBHelper.NumericComponent });
-                    if (d2GGetUnit_3.Component == null)
-                    {
-                        return;
-                    }
-
-                    PetComponent petComponent_enemy = d2GGetUnit.Component as PetComponent;
+                    
                     petComponent_enemy.CheckSkin();
                     List<long> petsenemy = petComponent_enemy.PetMingList;
                     for (int i = 0; i < 5; i++)
@@ -199,7 +199,7 @@ namespace ET
 
                         int position = petComponent_enemy.PetMingPosition.IndexOf(petinfoid);
                         position = position != -1 ? position %= 9 : i;
-                        petComponent_enemy.UpdatePetAttributeWithData( d2GGetUnit_2.Component as BagComponent, d2GGetUnit_3.Component as NumericComponent, rolePetInfo, false);
+                        petComponent_enemy.UpdatePetAttributeWithData(bagComponent, numericComponent, rolePetInfo, false);
                         Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,
                            CampEnum.CampPlayer_2, rolePetInfo, AIHelp.Formation_2[position], 180f,position);
                     }

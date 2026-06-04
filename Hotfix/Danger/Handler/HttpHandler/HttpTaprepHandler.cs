@@ -7,7 +7,7 @@ namespace ET
 
     //http://39.96.194.143:20008/wjtaprepcallback
     //https://weijinggameserver.weijinggame.com:20008/wjtaprepcallback
-    [HttpHandler(SceneType.AccountCenter, "/wjtaprepcallback")]
+    [HttpHandler(SceneType.Realm, "/wjtaprepcallback")]
     public class HttpTaprepCallBackHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -21,7 +21,7 @@ namespace ET
 
     //http://39.96.194.143:20008/wjtaprepjiance?idfa={IDFA}&time={TIME}&ip={IP}&game_id={TAP_PROJECT_ID}&game_name={GAME_NAME}&adset_id={ADSET_ID}&adset_net={ADSET_NAME}&device_brand={DEVICE_BRAND}&device_model={DEVICE_MODEL}&creative_id={CREATIVE_ID}&conversion_type={CONVERSION_TYPE}&device={DEVICE}&OAID={OAID}&callback={DEEP_CALLBACK_URL}&tap_track_id={TAP_TRACK_ID}&tap_project_id={TAP_PROJECT_ID}
     //https://l.taptap.cn/E2d28678?channel=rep-rep_shn4rnatnaw
-    [HttpHandler(SceneType.AccountCenter, "/wjtaprepjiance")]
+    [HttpHandler(SceneType.Realm, "/wjtaprepjiance")]
     public class HttpTaprepJianCeHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -64,7 +64,7 @@ namespace ET
         }
     }
 
-    [HttpHandler(SceneType.AccountCenter, "/wjtapconsole")]
+    [HttpHandler(SceneType.Realm, "/wjtapconsole")]
     public class HttpTapConsoleHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -88,7 +88,7 @@ namespace ET
     //tap_track_id、tap_project_id 两个字段在下载回传服务中默认下发，在深度事件回传中回传该字段，也可以通过{TAP_TRACK_ID}和{TAP_PROJECT_ID}宏进行获取
     //tap_project_id、tap_track_id 默认填充在{DEEP_CALLBACK_URL}中，不需要再次拼接这两个参数， 由于历史问题，使用旧回传宏 {CALLBACK_HTTPS} / {CALLBACK_HTTP} 的客户建议尽快更换为新宏{DEEP_CALLBACK_URL}， 旧宏在下发时默认会添加event_timestamp和event_type， 请不要在后面再次拼接event_timestamp和event_type，造成重复参数，务必用真实事件时间和类型替换掉下发时这两个参数值， 否则会导致事件缺失或时间错误造成报表数据看不到，尤其是回传付费事件时。
 
-    [HttpHandler(SceneType.AccountCenter, "/wjtapadtrack")]
+    [HttpHandler(SceneType.Realm, "/wjtapadtrack")]
     public class HttpTapAdTrackHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)

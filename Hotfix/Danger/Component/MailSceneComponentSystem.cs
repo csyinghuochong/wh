@@ -37,14 +37,10 @@ namespace ET
 
         public static async ETTask InitServerInfo(this MailSceneComponent self)
         {
-            DBServerMailInfo dBServerInfo = null;
+            
             long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
             await TimerComponent.Instance.WaitAsync( RandomHelper.RandomNumber(4000,10000) );
-            D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = self.DomainZone(), Component = DBHelper.DBServerMailInfo });
-            if (d2GGetUnit.Component != null)
-            {
-                dBServerInfo = d2GGetUnit.Component as DBServerMailInfo;
-            }
+            DBServerMailInfo dBServerInfo = await DBHelper.GetComponent<DBServerMailInfo>(self.DomainZone(), self.DomainZone());
             if (dBServerInfo == null)
             {
                 dBServerInfo = new DBServerMailInfo();
@@ -92,8 +88,7 @@ namespace ET
 
         public static async ETTask SaveDB(this MailSceneComponent self)
         {
-            long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
-            await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = self.DomainZone(), EntityByte = MongoHelper.ToBson(self.dBServerMailInfo), ComponentType = DBHelper.DBServerMailInfo });
+            await DBHelper.SaveComponent(self.DomainZone(),self.DomainZone(), self.dBServerMailInfo);
         }
 
     }

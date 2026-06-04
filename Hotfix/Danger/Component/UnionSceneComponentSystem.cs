@@ -65,9 +65,8 @@ namespace ET
 
         public static async ETTask<DBUnionInfo> GetDBUnionInfo(this UnionSceneComponent self, long unionId)
         {
-            long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
-            D2G_GetComponent d2GSave = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unionId, Component = DBHelper.DBUnionInfo });
-            DBUnionInfo unionInfo = d2GSave.Component as DBUnionInfo;
+           
+            DBUnionInfo unionInfo = await DBHelper.GetComponent<DBUnionInfo>(self.DomainZone(), unionId);
             if (unionInfo == null)
             {
                 return null;

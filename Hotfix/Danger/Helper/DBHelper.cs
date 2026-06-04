@@ -23,9 +23,8 @@ namespace ET
         public const string TitleComponent = "TitleComponent";
         public const string JiaYuanComponent = "JiaYuanComponent";
         public const string DataCollationComponent = "DataCollationComponent";
+        
 
-        public const string DBRankInfo = "DBRankInfo";
-        public const string DBUnionInfo = "DBUnionInfo";
         public const string DBMailInfo = "DBMailInfo";
         public const string DBFriendInfo = "DBFriendInfo";
         public const string DBServerInfo = "DBServerInfo";
@@ -58,38 +57,6 @@ namespace ET
             return UnitCacheKeyList;
         }
 
-        public static async ETTask<Entity> AddDataComponent<K>(int zone, long userID, string componentType) where K : Entity, new()
-        {
-            Type type = typeof(K);
-            Entity entity = (Entity)Activator.CreateInstance(type);
-            entity.Id = userID;
-            long dBCacheId = DBHelper.GetDbCacheId(zone);
-            D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dBCacheId, new M2D_SaveComponent()
-            {
-                UnitId = userID,
-                EntityByte = MongoHelper.ToBson(entity),
-                ComponentType = componentType
-            });
-            return entity;
-        }
-
-        public static async ETTask<bool> AddDataComponent<K>(Unit unit, long userID, string componentType) where K : Entity, new()
-        {
-            long dbCacheId = DBHelper.GetDbCacheId(unit.DomainZone());
-            D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = componentType });
-            if (d2GGetUnit.Component != null)
-            {
-                unit.AddComponent(d2GGetUnit.Component);
-                return false;
-            }
-            else
-            {
-                Entity entity =  unit.AddComponent(typeof(K));
-                D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = userID, EntityByte = MongoHelper.ToBson(entity), ComponentType = componentType });
-                return true;
-            }
-        }
-
         public static long GetDbCacheId(int zone)
         {
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.DBCache)).InstanceId;
@@ -110,12 +77,7 @@ namespace ET
         {
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Union)).InstanceId;
         }
-
-        public static long GetAccountServerId(int zone)
-        {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Account)).InstanceId;
-        }
-
+        
         public static long GetChatServerId(int zone)
         {
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, "Chat").InstanceId;
@@ -191,15 +153,11 @@ namespace ET
             long robotSceneId = StartSceneConfigCategory.Instance.GetBySceneName(1001, "Robot01").InstanceId;
             return robotSceneId;
         }
+        
 
-        public static long GetCenterServerId()
+        public static long GetRealmCenter()
         {
-            return StartSceneConfigCategory.Instance.CenterConfig.InstanceId;
-        }
-
-        public static long GetAccountCenter()
-        {
-            return StartSceneConfigCategory.Instance.AccountCenterConfig.InstanceId;
+            return StartSceneConfigCategory.Instance.RealmConfig.InstanceId;
         }
 
         public static long GetRechargeCenter()
@@ -227,23 +185,37 @@ namespace ET
         /// <param name="scene"></param>
         /// <param name="unitId"></param>
         /// <returns></returns>
-        public static async ETTask<Unit> GetUnitCache(Scene scene, Unit unit)
+        public static async ETTask<Unit> GetUnitCache(Scene scene, long unitId)
         {
             long instanceId = DBHelper.GetDbCacheId(scene.DomainZone());
-            G2D_GetUnit message = new G2D_GetUnit() { UnitId = unit.Id };
+            G2D_GetUnit message = new G2D_GetUnit() { UnitId = unitId };
             D2G_GetUnit queryUnit = (D2G_GetUnit)await MessageHelper.CallActor(instanceId, message);
+            if (queryUnit.Error != ErrorCode.ERR_Success )
+            {
+                return null;
+            }
+            
+            Unit unit = null;
+            UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
+            int indexOf = queryUnit.ComponentNameList.IndexOf(typeof(Unit).FullName);
+            if (queryUnit.EntityList.Count > 0 && indexOf >= 0)
+            {
+                unit = (Unit)(queryUnit.EntityList[indexOf]);
+                unitComponent.AddChild(unit);
+            }
+            else
+            {  
+                unit = unitComponent.AddChildWithId<Unit, int>(unitId, 1001);
+            }
            
             for (int i = 0; i < queryUnit.EntityList.Count; i++)
             {
                 Entity entity = queryUnit.EntityList[i];
-                if (entity == null)
+                if (entity == null || entity is Unit)
                 {
-
+                    continue;
                 }
-                else
-                {
-                    unit.AddComponent(entity);
-                }
+                unit.AddComponent(entity);
             }
             return unit;
         }
@@ -317,18 +289,8 @@ namespace ET
                 return;
             }
 
-            long accountZone = DBHelper.GetAccountCenter();
-            Center2M_UpdateDataCacheResponse centerAccount = (Center2M_UpdateDataCacheResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2Center_UpdateDataCacheRequest()
-            {
-                OAID = oaid,
-                Time = lastgametime,
-                AccInfoID = accoutid,
-                RemoteAddress = ip,
-                MaxLevel = level,
-                OnlineTime = onlinetime,
-            });
-
-            
+            await ETTask.CompletedTask;
+            long accountZone = DBHelper.GetRealmCenter();
         }
 
         public static string GetNewStr(string str)

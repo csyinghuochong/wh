@@ -14,7 +14,7 @@ namespace ET
             {
                 switch (scene.SceneType)
                 {
-                    case SceneType.Account:
+                    case SceneType.Gate:
                         if (request.MessageType == NoticeType.Archive)
                         {
                             // MessageValue = $"{acccout} {unitid} {archive}",
@@ -120,7 +120,7 @@ namespace ET
                         }
                         reply();
                         break;
-                    case SceneType.AccountCenter:
+                    case SceneType.Realm:
                         string[] messagevalue = request.MessageValue.Split('_');
                         if (!messagevalue[1].Equals(DllHelper.Admin))
                         {
@@ -131,13 +131,13 @@ namespace ET
                         
                         if (messagevalue[0] == "0")
                         {
-                            scene.GetComponent<FangChenMiComponent>().StopServer = true;
+                            scene.GetComponent<CenterServerComponent>().StopServer = true;
                             LogHelper.OnStopServer();
                             Log.Warning("StopServer = true");
                         }
                         if(messagevalue[0] == "1")
                         {
-                            scene.GetComponent<FangChenMiComponent>().StopServer = false;
+                            scene.GetComponent<CenterServerComponent>().StopServer = false;
                             Log.Warning("StopServer = false");
                         }
                         if (messagevalue[0] == "2")

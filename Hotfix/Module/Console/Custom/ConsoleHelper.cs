@@ -417,7 +417,7 @@ namespace ET
                 }
             }
 
-            long accountServerId = StartSceneConfigCategory.Instance.AccountCenterConfig.InstanceId;
+            long accountServerId = StartSceneConfigCategory.Instance.RealmConfig.InstanceId;
             A2A_ServerMessageRResponse response = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
                 (accountServerId, new A2A_ServerMessageRequest()
                 {
@@ -1144,202 +1144,8 @@ namespace ET
             int curDate = ComHelp.GetDayByTime(serverNow);
            
             Dictionary<string, List<long>> accountNumber = new Dictionary<string, List<long>>();  
-            for (int i = 0; i < zonlist.Count; i++)
-            {
-                int pyzone = StartZoneConfigCategory.Instance.Get(zonlist[i]).PhysicZone;
-
-                long dbCacheId = DBHelper.GetDbCacheId(pyzone);
-
-                string gongzuoshiInfo = $"{pyzone}区疑似工作室在线账号列表2： \n";
-
-
-                long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(pyzone, "Gate1").InstanceId;
-                G2G_UnitListResponse g2M_UpdateUnitResponse = (G2G_UnitListResponse)await ActorMessageSenderComponent.Instance.Call
-                    (gateServerId, new G2G_UnitListRequest() { });
-
-                Console.WriteLine($"{pyzone}区 在线人数:{g2M_UpdateUnitResponse.UnitList.Count}");
-                for (int userinfo = 0; userinfo < g2M_UpdateUnitResponse.UnitList.Count; userinfo++)
-                {
-                    long unitId = g2M_UpdateUnitResponse.UnitList[userinfo];
-
-                    List<UserInfoComponent> userinfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(pyzone, d => d.Id == unitId);
-                    if(userinfoComponentList == null || userinfoComponentList.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    UserInfoComponent userInfoComponent = userinfoComponentList[0];
-                    if (userInfoComponent.UserInfo.RobotId != 0)
-                    {
-                        continue;
-                    }
-
-                    if (GMHelp.GmAccount.Contains(userInfoComponent.Account))
-                    {
-                        continue;
-                    }
-
-                    //击败boss>3返回
-                    int killmonsterNumber = ComHelp.KillBoss_Lv_Number(userInfoComponent.UserInfo.MonsterRevives, userInfoComponent.UserInfo.Lv);
-                    if (killmonsterNumber >= 3)
-                    {
-                        continue;
-                    }
-
-                    //当前体力>50返回
-                    if (userInfoComponent.UserInfo.PiLao > 50)
-                    {
-                        continue;
-                    }
-
-                    //if (curDate != ComHelp.GetDayByTime(userInfoComponent.LastLoginTime))
-                    //{
-                    //    continue;
-                    //}
-
-                    //非手机登录返回
-                    //if (string.IsNullOrEmpty(userInfoComponent.Account) || userInfoComponent.Account[0] != '1')
-                    //{
-                    //    continue;
-                    //}
-
-                    List<DataCollationComponent> dataCollations = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(pyzone, d => d.Id == userInfoComponent.Id);
-                    if (dataCollations == null || dataCollations.Count == 0)
-                    {
-                        continue;
-                    }
-                    dataCollations[0].TodayOnLine = userInfoComponent.TodayOnLine;
-                    //游戏总时长超过180分钟返回
-                    //暂时不写
-
-                    //今日在线时间超过120分钟返回
-                    if (dataCollations[0].TodayOnLine < 120)
-                    {
-                        continue;
-                    }
-                    if (dataCollations[0].TotalOnLine < 200)
-                    {
-                        continue;
-                    }
-
-                    //拍卖行收益总小于100万返回
-                    //if (dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy) < 1000000)
-                    //{
-                    //    continue;
-                    //}
-
-                    List<ChengJiuComponent> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponent>(pyzone, d => d.Id == userInfoComponent.Id);
-                    if (chengJiuComponents == null || chengJiuComponents.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    //游戏内成就点数>50点返回
-                    //if (chengJiuComponents[0].TotalChengJiuPoint > 50)
-                    //{
-                    //    continue;
-                    //}
-                    //3.游戏内成就4個擊殺boss都沒完成 10000002 - 10000005
-                    if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000002)
-                        || chengJiuComponents[0].ChengJiuCompleteList.Contains(10000003)
-                        || chengJiuComponents[0].ChengJiuCompleteList.Contains(10000004)
-                        || chengJiuComponents[0].ChengJiuCompleteList.Contains(10000005))
-                    {
-                        continue;
-                    }
-
-
-                    List<TaskComponent> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponent>(pyzone, d => d.Id == userInfoComponent.Id);
-                    if (taskComponents == null || taskComponents.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    if (taskComponents[0].GetMainTaskNumber() > 10)
-                    {
-                        continue;
-                    }
-
-                    List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == userInfoComponent.Account);
-                    if (accoutResult == null || accoutResult.Count == 0)
-                    {
-                        continue;
-                    }
-                    if (accoutResult[0].AccountType == 2)
-                    {
-                        continue;
-                    }
-
-                    List<DBAccountInfo> accoutResult_2 = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(pyzone, _account => _account.Account == userInfoComponent.Account);
-                    if (accoutResult_2 != null && accoutResult_2.Count > 0 && accoutResult_2[0].BanUserList != null && accoutResult_2[0].BanUserList.Contains(userInfoComponent.Id))
-                    {
-                        continue;
-                    }
-                    string idcard = string.Empty;
-                    if (accoutResult[0].PlayerInfo != null)
-                    {
-                        idcard = accoutResult[0].PlayerInfo.IdCardNo;
-                    }
-
-                    //等级 充值  活跃度 体力 当前金币   成就点数  当前主线任务
-                    gongzuoshiInfo += $"账号: {userInfoComponent.Account}  \t名称：{userInfoComponent.UserInfo.Name}  \t等级:{userInfoComponent.UserInfo.Lv}   \t充值:{dataCollations[0].Recharge}" +
-                        $"\t体力:{userInfoComponent.UserInfo.PiLao}  \t金币:{userInfoComponent.UserInfo.Gold}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
-                        $"\t当前主线:{dataCollations[0].MainTask}  \t角色天数:{userInfoComponent.GetCrateDay()}  \t金币获取:{dataCollations[0].GoldGet}  \t金币消耗:{dataCollations[0].GoldCost} " +
-                        $"\t金币获取总值:{dataCollations[0].GetGoldGetTotal()}  \t金币消耗总值:{dataCollations[0].GetGoldCostTotal()} 今日在线:{dataCollations[0].TodayOnLine}  \t击杀boos:{killmonsterNumber} \t设备:{dataCollations[0].GetDeviceID()}" +
-                        $"\tIP:{userInfoComponent.RemoteAddress}  身份证:{idcard} \n";
-                    
-                    
-                    if (!accountNumber.ContainsKey(userInfoComponent.Account))
-                    {
-                        accountNumber.Add(userInfoComponent.Account, new List<long>());
-                    }
-                    accountNumber[userInfoComponent.Account].Add(userInfoComponent.Id);
-                }
-                LogHelper.GongZuoShi(gongzuoshiInfo);
-            }
-
-
+            
             string fenhaoTip = string.Empty;
-            foreach ((string account, List<long> unitids) in accountNumber)
-            {
-                if (unitids.Count >= 3 && !account.Contains("testcn"))  //三次以上封账号封设备id
-                {
-                    fenhaoTip += ($"封号： {account}");
-                    List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == account);
-                    if (accoutResult != null && accoutResult.Count > 0)
-                    {
-                        accoutResult[0].AccountType = 2;
-                        accoutResult[0].BanTime = serverNow;
-                        Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(202, accoutResult[0]).Coroutine();
-                    }
-                    continue;
-                }
-
-                if (unitids.Count == 0)
-                {
-                    continue;
-                }
-
-                for (int i = 0; i < unitids.Count; i++)
-                {
-                    int unitzone = UnitIdStruct.GetUnitZone(unitids[i]);
-                    int pyzone = StartZoneConfigCategory.Instance.Get(unitzone).PhysicZone;
-                    fenhaoTip += $"封角色:{pyzone}   {account}   {unitids[i]}";
-                    List<DBAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(pyzone, _account => _account.Account == account);
-                    if (accoutResult != null && accoutResult.Count > 0)
-                    {
-                        if (!accoutResult[0].BanUserList.Contains(unitids[i]))
-                        {
-                            accoutResult[0].BanUserList.Add(unitids[i]);
-                            accoutResult[0].BanUserTime[unitids[i]] = serverNow;
-                            
-                            Game.Scene.GetComponent<DBComponent>().Save<DBAccountInfo>(pyzone, accoutResult[0]).Coroutine();
-                        }
-                    }
-                    Console.WriteLine($"踢玩家下线: {account}  {unitids[i]}");
-                    DisconnectHelper.KickPlayer(pyzone, unitids[i]).Coroutine();
-                }
-            }
             LogHelper.GongZuoShi(fenhaoTip);
 #endif
         }
@@ -1380,191 +1186,6 @@ namespace ET
             long serverNow = TimeHelper.ServerNow();
             int curDate = ComHelp.GetDayByTime(serverNow);
             Dictionary<string, List<long>> accountNumber = new Dictionary<string, List<long>>();
-
-            for (int i = 0; i < zonlist.Count; i++)
-            {
-                int pyzone = StartZoneConfigCategory.Instance.Get(zonlist[i]).PhysicZone;
-              
-
-                long dbCacheId = DBHelper.GetDbCacheId(pyzone);
-                long gateServerId = DBHelper.GetGateServerId(pyzone);
-
-                string gongzuoshiInfo = $"{pyzone}区工作室全部玩家列表3： \n";
-                List<UserInfoComponent> userinfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(pyzone, d => d.Id > 0);
-                for (int userinfo = 0; userinfo < userinfoComponentList.Count; userinfo++)
-                {
-                    UserInfoComponent userInfoComponent = userinfoComponentList[userinfo];
-                    if (userInfoComponent.UserInfo.RobotId != 0)
-                    {
-                        continue;
-                    }
-                    if (GMHelp.GmAccount.Contains(userInfoComponent.Account))
-                    {
-                        continue;
-                    }
-
-
-                    //击败boss>3返回
-                    //击败boss>3返回
-                    int killmonsterNumber = ComHelp.KillBoss_Lv_Number(userInfoComponent.UserInfo.MonsterRevives, userInfoComponent.UserInfo.Lv);
-                    if (killmonsterNumber >= 3)
-                    {
-                        continue;
-                    }
-
-                    //当前体力>50返回
-                    if (userInfoComponent.UserInfo.PiLao > 50)
-                    {
-                        continue;
-                    }
-                    //if (curDate != ComHelp.GetDayByTime(userInfoComponent.LastLoginTime))
-                    //{
-                    //    continue;
-                    //}
-                    //非手机登录返回
-                    //if (string.IsNullOrEmpty(userInfoComponent.Account) || userInfoComponent.Account[0] != '1')
-                    //{
-                    //    continue;
-                    //}
-
-                    List<DataCollationComponent> dataCollations = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(pyzone, d => d.Id == userInfoComponent.Id);
-                    if (dataCollations == null || dataCollations.Count == 0)
-                    {
-                        continue;
-                    }
-                    dataCollations[0].TodayOnLine = userInfoComponent.TodayOnLine;
-                    //游戏总时长超过180分钟返回
-                    //暂时不写
-
-                    //今日在线时间超过120分钟返回
-                    if (dataCollations[0].TodayOnLine < 120)
-                    {
-                        continue;
-                    }
-                    if (dataCollations[0].TotalOnLine < 200)
-                    {
-                        continue;
-                    }
-
-                    //拍卖行收益总小于100万返回
-                    //if (dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy) < 1000000)
-                    //{
-                    //    continue;
-                    //}
-
-                    List<ChengJiuComponent> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponent>(pyzone, d => d.Id == userInfoComponent.Id);
-                    if (chengJiuComponents == null || chengJiuComponents.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    ////游戏内成就点数>50点返回
-                    //if (chengJiuComponents[0].TotalChengJiuPoint > 50)
-                    //{
-                    //    continue;
-                    //}
-                    //3.游戏内成就4個擊殺boss都沒完成 10000002 - 10000005
-                    if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000002)
-                        || chengJiuComponents[0].ChengJiuCompleteList.Contains(10000003)
-                        || chengJiuComponents[0].ChengJiuCompleteList.Contains(10000004)
-                        || chengJiuComponents[0].ChengJiuCompleteList.Contains(10000005))
-                    {
-                        continue;
-                    }
-
-                    List<TaskComponent> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponent>(pyzone, d => d.Id == userInfoComponent.Id);
-                    if (taskComponents == null || taskComponents.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    if (taskComponents[0].GetMainTaskNumber() > 10)
-                    {
-                        continue;
-                    }
-
-                    List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == userInfoComponent.Account);
-                    if (accoutResult == null || accoutResult.Count == 0)
-                    {
-                        continue;
-                    }
-                    if (accoutResult[0].AccountType == 2)
-                    {
-                        continue;
-                    }
-
-                    List<DBAccountInfo> accoutResult_2 = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(pyzone, _account => _account.Account == userInfoComponent.Account);
-                    if (accoutResult_2 != null && accoutResult_2.Count > 0 && accoutResult_2[0].BanUserList!=null && accoutResult_2[0].BanUserList.Contains(userInfoComponent.Id))
-                    {
-                        continue;
-                    }
-
-                    string idcard = string.Empty;
-                    if (accoutResult[0].PlayerInfo != null)
-                    {
-                        idcard = accoutResult[0].PlayerInfo.IdCardNo;
-                    }
-
-                    //等级 充值  活跃度 体力 当前金币   成就点数  当前主线任务
-                    gongzuoshiInfo += $"账号: {userInfoComponent.Account}  \t名称：{userInfoComponent.UserInfo.Name}  \t等级:{userInfoComponent.UserInfo.Lv}   \t充值:{dataCollations[0].Recharge}" +
-                            $"\t体力:{userInfoComponent.UserInfo.PiLao}  \t金币:{userInfoComponent.UserInfo.Gold}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
-                            $"\t当前主线:{dataCollations[0].MainTask}  \t角色天数:{userInfoComponent.GetCrateDay()}  \t金币获取:{dataCollations[0].GoldGet}  \t金币消耗:{dataCollations[0].GoldCost} " +
-                            $"\t金币获取总值:{dataCollations[0].GetGoldGetTotal()}  \t金币消耗总值:{dataCollations[0].GetGoldCostTotal()} 今日在线:{dataCollations[0].TodayOnLine}  \t击杀boos:{killmonsterNumber} \t设备:{dataCollations[0].GetDeviceID()}" +
-                            $"\tIP:{userInfoComponent.RemoteAddress}  身份证:{idcard} \n";
-                    
-
-                    if (!accountNumber.ContainsKey(userInfoComponent.Account))
-                    {
-                        accountNumber.Add(userInfoComponent.Account, new List<long>());
-                    }
-                    accountNumber[userInfoComponent.Account].Add(userInfoComponent.Id);
-                }
-
-                LogHelper.GongZuoShi(gongzuoshiInfo);
-            }
-
-            string fenhaoTip = string.Empty;
-            foreach ((string account, List<long> unitids) in accountNumber)
-            {
-                if (unitids.Count >= 3 && !account.Contains("testcn"))  //三次以上封账号封设备id
-                {
-                    fenhaoTip += ($"封号： {account}");
-                    List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == account);
-                    if (accoutResult != null && accoutResult.Count > 0)
-                    {
-                        accoutResult[0].AccountType = 2;
-                        accoutResult[0].BanTime = serverNow;
-                        Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(202, accoutResult[0]).Coroutine();
-                    }
-                    continue;
-                }
-
-                if (unitids.Count == 0)
-                {
-                    continue;
-                }
-
-                for (int i = 0; i < unitids.Count; i++)
-                {
-                    int unitzone = UnitIdStruct.GetUnitZone(unitids[i]);
-                    int pyzone = StartZoneConfigCategory.Instance.Get(unitzone).PhysicZone;
-                    fenhaoTip += $"封角色:{pyzone}   {account}   {unitids[i]}";
-                    List<DBAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(pyzone, _account => _account.Account == account);
-                    if (accoutResult != null && accoutResult.Count > 0)
-                    {
-                        if (!accoutResult[0].BanUserList.Contains(unitids[i]))
-                        {
-                            accoutResult[0].BanUserList.Add(unitids[i]);
-                            accoutResult[0].BanUserTime[unitids[i]] = serverNow;
-                            
-                            Game.Scene.GetComponent<DBComponent>().Save<DBAccountInfo>(pyzone, accoutResult[0]).Coroutine();
-                        }
-                    }
-
-                    DisconnectHelper.KickPlayer(pyzone, unitids[i]).Coroutine();
-                }
-            }
-            LogHelper.GongZuoShi(fenhaoTip);
 #endif
         }
 
@@ -1605,156 +1226,7 @@ namespace ET
 
             string gongzuoshiInfo = string.Empty;
             string allpaimaiInfo = string.Empty;    
-            for ( int i = 0; i < buyselflist.Count; i++ )
-            {
-                // 1 手机登录
-                // 2 角色等级大于10级，低于40级。
-                // 3 成就任务<=2
-                // 4 主线任务完成少于40
-                // 5 充值低于30
-                // 6 游戏总的在线时间大于180分钟
-                long userid = buyselflist[i].KeyId;
-                List<UserInfoComponent> userinfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(zone, d => d.Id  == userid);
-                if (userinfoComponentList == null || userinfoComponentList.Count == 0)
-                {
-                    Console.WriteLine($"查询为空1:{userid}");
-                    allpaimaiInfo += $" {userid}已删除  \n";
-                    continue;
-                }
-
-                UserInfoComponent userInfoComponent = userinfoComponentList[0];
-                if (userInfoComponent.UserInfo.RobotId != 0)
-                {
-                    continue;
-                }
-                if (GMHelp.GmAccount.Contains(userInfoComponent.Account))
-                {
-                    continue;
-                }
-                if(userInfoComponent.UserInfo.Lv > 40)
-                {
-                    Console.WriteLine($"查询为空2:{userid}");
-                    allpaimaiInfo += $"{userInfoComponent.Account}  {userInfoComponent.UserInfo.Name}    等级>40  \n";
-                    continue;
-                }
-                
-                List<DataCollationComponent> dataCollations = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(zone, d => d.Id == userInfoComponent.Id);
-                if (dataCollations == null || dataCollations.Count == 0)
-                {
-                    Console.WriteLine($"查询为空3:{userid}");
-                    continue;
-                }
-                //游戏总时长超过180分钟返回
-                //暂时不写
-                //今日在线时间超过120分钟返回
-               
-                //if (dataCollations[0].TotalOnLine < 180)
-                //{
-                //    Console.WriteLine($"查询为空4:{userid}");
-                //    allpaimaiInfo += $"{userInfoComponent.Account}  {userInfoComponent.UserInfo.Name}    TotalOnLine<180  \n";
-                //    continue;
-                //}
-
-                //拍卖行收益总小于100万返回
-                //if (dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy) < 1000000)
-                //{
-                //    continue;
-                //}
-
-                List<ChengJiuComponent> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponent>(zone, d => d.Id == userInfoComponent.Id);
-                if (chengJiuComponents == null || chengJiuComponents.Count == 0)
-                {
-                    Console.WriteLine($"查询为空5:{userid}");
-                    continue;
-                }
-
-                ////游戏内成就点数>50点返回
-                //if (chengJiuComponents[0].TotalChengJiuPoint > 50)
-                //{
-                //    continue;
-                //}
-                //3.游戏内成就4個擊殺boss都沒完成 10000002 - 10000005
-                int taskNumber = 0;
-                if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000002))
-                {
-                    taskNumber++;
-                }
-                if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000003))
-                {
-                    taskNumber++;
-                }  if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000004))
-                {
-                    taskNumber++;
-                }
-                if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000005))
-                {
-                    taskNumber++;
-                }
-
-                if (taskNumber > 2)
-                {
-                    Console.WriteLine($"查询为空6:{userid}");
-                    allpaimaiInfo += $"{userInfoComponent.Account}  {userInfoComponent.UserInfo.Name}   taskNumber>2  \n";
-                    continue;
-                }
-
-                List<TaskComponent> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponent>(zone, d => d.Id == userInfoComponent.Id);
-                if (taskComponents == null || taskComponents.Count == 0)
-                {
-                    Console.WriteLine($"查询为空7:{userid}");
-                    continue;
-                }
-
-                if (taskComponents[0].GetMainTaskNumber() > 40)
-                {
-                    Console.WriteLine($"查询为空8:{userid}");
-                    allpaimaiInfo += $"{userInfoComponent.Account}  {userInfoComponent.UserInfo.Name}   ainTask>40  \n";
-                    continue;
-                }
-
-                List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == userInfoComponent.Account);
-                if (accoutResult == null || accoutResult.Count == 0)
-                {
-                    Console.WriteLine($"查询为空9:{userid}");
-                    continue;
-                }
-                if (accoutResult[0].Account.Contains("testcn"))
-                {
-                    continue;
-                }
-
-                if (accoutResult[0].AccountType == 2 || accoutResult[0].GetTotalRecharge() > 30)
-                {
-                    Console.WriteLine($"查询为空10:{userid}");
-                    allpaimaiInfo += $"{userInfoComponent.Account}  {userInfoComponent.UserInfo.Name}   已封号  \n";
-                    continue;
-                }
-
-                //if (accoutResult[0].Password != "3" || accoutResult[0].Password != "4")
-                //{
-                //    continue;
-                //}
-
-                List<DBAccountInfo> accoutResult_2 = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(zone, _account => _account.Account == userInfoComponent.Account);
-                if (accoutResult_2 != null && accoutResult_2.Count > 0 && accoutResult_2[0].BanUserList!=null && accoutResult_2[0].BanUserList.Contains(userInfoComponent.Id))
-                {
-                    Console.WriteLine($"查询为空11:{userid}");
-                    continue;
-                }
-
-                gongzuoshiInfo += $"账号: {userInfoComponent.Account}  \t名称：{userInfoComponent.UserInfo.Name}  \t等级:{userInfoComponent.UserInfo.Lv}   \t充值:{dataCollations[0].Recharge}" +
-                        $"\t体力:{userInfoComponent.UserInfo.PiLao}  \t金币:{userInfoComponent.UserInfo.Gold}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
-                        $"\t当前主线:{dataCollations[0].MainTask}  \t角色天数:{userInfoComponent.GetCrateDay()}  \t金币获取:{dataCollations[0].GoldGet}  \t金币消耗:{dataCollations[0].GoldCost} " +
-                        $"\t金币获取总值:{dataCollations[0].GetGoldGetTotal()}  \t金币消耗总值:{dataCollations[0].GetGoldCostTotal()} 今日在线:{dataCollations[0].TodayOnLine}  \t击杀boos:{taskNumber} \t设备:{dataCollations[0].GetDeviceID()}" +
-                        $"\tIP:{userInfoComponent.RemoteAddress}  \n";
-               
-                if (accoutResult != null && accoutResult.Count > 0)
-                {
-                    accoutResult[0].AccountType = 2;
-                    accoutResult[0].BanTime = serverNow;
-                    Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(202, accoutResult[0]).Coroutine();
-                }
-            }
+         
             LogHelper.GongZuoShi($"列表: {allpaimaiInfo}");
             LogHelper.GongZuoShi($"封号: {gongzuoshiInfo}");
 #endif
@@ -1767,64 +1239,7 @@ namespace ET
             await ETTask.CompletedTask;
 #if SERVER
 
-
             string gongzuoshiInfo = string.Empty;
-
-            List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Id > 0);
-            for ( int i = 0; i < accoutResult.Count; i++ )
-            {
-                if (accoutResult[i].AccountType != 2)
-                {
-                    continue;
-                }
-
-                string accout = accoutResult[i].Account;
-
-                int maxLv = 0;
-                int maxZone = 0;
-                string maxName = string.Empty;
-
-
-                List<int> zonlist = ServerMessageHelper.GetAllZone();
-                for ( int zoneindex = 0; zoneindex < zonlist.Count; zoneindex++  )
-                { 
-                    int pyzoneid = zonlist[zoneindex]; 
-
-                    List<DBAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(pyzoneid, _account => _account.Account == accout);
-                    if (dBAccountInfos == null || dBAccountInfos.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    List<long> userlist = dBAccountInfos[0].UserList;
-                   
-                    for ( int userindex = 0; userindex < userlist.Count; userindex++ )
-                    { 
-                        long userid = userlist[userindex];   
-                        List<UserInfoComponent> userInfoComponents  = await  Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(pyzoneid, d => d.Id == userid);
-                        if (userInfoComponents == null || userInfoComponents.Count == 0)
-                        {
-                            continue;
-                        }
-
-                        if (userInfoComponents[0].UserInfo.Lv > maxLv)
-                        {
-                            maxLv = userInfoComponents[0].UserInfo.Lv;
-                            maxName = userInfoComponents[0].UserInfo.Name;
-                            maxZone = pyzoneid;
-                        }
-                    }
-                }
-
-
-                if (string.IsNullOrEmpty(maxName))
-                {
-                    continue;
-                }
-
-                gongzuoshiInfo += $"账号最大等级:{accout} \t区：{maxZone}  \t角色：{maxName}   \t:等级：{maxLv}  \n";
-            }
-
             LogHelper.PaiMaiInfo(gongzuoshiInfo);
 #endif
 
@@ -2680,55 +2095,6 @@ namespace ET
             {
                 return ErrorCode.ERR_NotFindAccount;
             }
-
-            List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Id == accountInfoList[0].UserInfo.AccInfoID);
-            if (accoutResult == null || accoutResult.Count == 0)
-            {
-                return ErrorCode.ERR_NotFindAccount;
-            }
-            if (accoutResult[0].AccountType == 2)
-            {
-                return ErrorCode.ERR_NotFindAccount;
-            }
-            if (accoutResult[0].Account.Contains("testcn"))
-            {
-                return ErrorCode.ERR_NotFindAccount;
-            }
-
-            string accout = accountInfoList[0].Account;
-            List<int> zonlist = ServerMessageHelper.GetAllZone();
-            for (int zoneindex = 0; zoneindex < zonlist.Count; zoneindex++)
-            {
-                int pyzoneid = zonlist[zoneindex];
-
-                List<DBAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(pyzoneid, _account => _account.Account == accout);
-                if (dBAccountInfos == null || dBAccountInfos.Count == 0)
-                {
-                    continue;
-                }
-
-                List<long> userlist = dBAccountInfos[0].UserList;
-
-                for (int userindex = 0; userindex < userlist.Count; userindex++)
-                {
-                    long userid = userlist[userindex];
-                    List<UserInfoComponent> userInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(pyzoneid, d => d.Id == userid);
-                    if (userInfoComponents == null || userInfoComponents.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    if (userInfoComponents[0].UserInfo.Lv > 40)
-                    {
-                       return ErrorCode.ERR_Success;
-                    }
-                }
-            }
-
-
-            accoutResult[0].AccountType = 2;
-            accoutResult[0].BanTime = TimeHelper.ServerNow();
-            Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(202, accoutResult[0]).Coroutine();
 #endif
             return ErrorCode.ERR_Success;
         }
@@ -2753,52 +2119,6 @@ namespace ET
             string accout = chaxunInfo[1];  //者账号
             int lelimit = int.Parse(chaxunInfo[2]);
             
-            List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == accout);
-            if (accoutResult == null || accoutResult.Count == 0)
-            {
-                return ErrorCode.ERR_NotFindAccount;
-            }
-            if (accoutResult[0].AccountType == 2)
-            {
-                return ErrorCode.ERR_NotFindAccount;
-            }
-            if (accoutResult[0].Account.Contains("testcn"))
-            {
-                return ErrorCode.ERR_NotFindAccount;
-            }
-
-            List<int> zonlist = ServerMessageHelper.GetAllZone();
-            for (int zoneindex = 0; zoneindex < zonlist.Count; zoneindex++)
-            {
-                int pyzoneid = zonlist[zoneindex];
-
-                List<DBAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(pyzoneid, _account => _account.Account == accout);
-                if (dBAccountInfos == null || dBAccountInfos.Count == 0)
-                {
-                    continue;
-                }
-
-                List<long> userlist = dBAccountInfos[0].UserList;
-
-                for (int userindex = 0; userindex < userlist.Count; userindex++)
-                {
-                    long userid = userlist[userindex];
-                    List<UserInfoComponent> userInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(pyzoneid, d => d.Id == userid);
-                    if (userInfoComponents == null || userInfoComponents.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    if (userInfoComponents[0].UserInfo.Lv > lelimit)
-                    {
-                        return ErrorCode.ERR_Success;
-                    }
-                }
-            }
-
-            accoutResult[0].AccountType = 2;
-            accoutResult[0].BanTime = TimeHelper.ServerNow();
-            Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(202, accoutResult[0]).Coroutine();
 #endif
             return ErrorCode.ERR_Success;
         }
@@ -3000,24 +2320,22 @@ namespace ET
                 return ErrorCode.ERR_PlayerIsNot;
             }
 
-            List<DBAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(pyzone, d => d.Id.Equals(userInfoComponent.UserInfo.AccInfoID));
+            List<DBCenterAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id.Equals(userInfoComponent.UserInfo.AccInfoID));
             if (dBAccountInfos.Count == 0)
             {
                 return ErrorCode.ERR_PlayerIsNot;
             }
 
-            DBAccountInfo dBAccountInfo = dBAccountInfos[0];
-            if (!dBAccountInfo.DeleteUserList.Contains(userInfoComponent.Id))
+            DBCenterAccountInfo dbCenterAccountInfo = dBAccountInfos[0];
+            for (int i = 0; i < dbCenterAccountInfo.RoleList.Count; i++)
             {
-                return ErrorCode.ERR_PlayerIsNot;
+                if (dbCenterAccountInfo.RoleList[i].UserID == userInfoComponent.Id)
+                {
+                    dbCenterAccountInfo.RoleList[i].State = 0;
+                }
             }
 
-            dBAccountInfo.DeleteUserList.Remove(userInfoComponent.Id);
-            if (!dBAccountInfo.UserList.Contains(userInfoComponent.Id))
-            {
-                dBAccountInfo.UserList.Add(userInfoComponent.Id);
-            }
-            await Game.Scene.GetComponent<DBComponent>().Save( pyzone,dBAccountInfo);
+            await Game.Scene.GetComponent<DBComponent>().Save( ComHelp.CenterZoneId,dbCenterAccountInfo);
 #endif
 
             return ErrorCode.ERR_Success;

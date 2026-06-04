@@ -185,8 +185,8 @@ namespace ET
 
             //移除拍卖行自己的所有装备。。。。。
             long paimaiInstanceid = DBHelper.GetPaiMaiServerId(zone);
-            P2A_DeleteRoleData deleteResponse2 = (P2A_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
-           (paimaiInstanceid, new A2P_DeleteRoleData()
+            Paimai2R_DeleteRoleData deleteResponse2 = (Paimai2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
+           (paimaiInstanceid, new R2Paimai_DeleteRoleData()
            {
                DeleUserID = unitid,
                AccountId = old_userInfoComponent.UserInfo.AccInfoID, //没用到
@@ -211,7 +211,7 @@ namespace ET
                 }
             }
 
-            List<DBAccountInfo> new_dbAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(zone, d => d.Id == old_userInfoComponent.UserInfo.AccInfoID);
+            List<DBAccountBagInfo> new_dbAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountBagInfo>(zone, d => d.Id == old_userInfoComponent.UserInfo.AccInfoID);
             if (new_dbAccountInfos == null || new_dbAccountInfos.Count == 0)
             {
                 Console.WriteLine($"OnArchiveHandler  new_dbAccountInfos==null:   {zone} {unitid}");

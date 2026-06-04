@@ -14,7 +14,7 @@ namespace ET
 
 		public static StartSceneConfig GetRealm(int zone)
 		{
-			StartSceneConfig zoneRealm = StartSceneConfigCategory.Instance.Realms[zone];
+			StartSceneConfig zoneRealm = StartSceneConfigCategory.Instance.RealmConfig;
 			return zoneRealm;
 		}
 	}

@@ -6,29 +6,94 @@ namespace ET
 {
     public static class UnitFactory
     {
-        public static Unit Create(Scene scene, long id, int unitType)
+        
+        public static async ETTask<Unit> LoadUnit(Player player, Scene scene, CreateRoleInfo createRoleInfo,string account,  long accountId)
         {
-            UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
-            switch (unitType)
+            Unit unit = await DBHelper.GetUnitCache(scene, createRoleInfo.UserID);
+
+            bool isNewUnit = unit == null;
+
+            // if (isNewUnit)
+            // {
+            //     unit = await UnitFactory.Create(scene, player.UnitId, UnitType.Player,createRoleInfo,account, accountId);
+            //
+            //     UnitCacheHelper.AddOrUpdateUnitAllCache(unit);
+            // }
+
+            await CreatePlayer(scene, unit, createRoleInfo,account, accountId);
+
+            //UnitCacheHelper.AddOrUpdateUnitAllCache(unit);
+
+            return unit;
+        }
+        
+        
+        public static void AddDataComponent<K>(this Unit self) where K : Entity, IAwake, new()
+        {
+            if (self.GetComponent<K>() == null)
             {
-                case UnitType.Player:
-                {
-                    Unit unit = unitComponent.AddChildWithId<Unit, int>(id, 1001);
-                    unit.AddComponent<MoveComponent>();
-                    unit.Position = new Vector3(-10, 0, -10);
-                    unit.Type = UnitType.Player;
-                    unit.AddComponent<UnitInfoComponent>();
-                    //NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-                    //numericComponent.Set((int)NumericType.Now_Speed, 6f); // 速度是6米每秒
-                    //numericComponent.Set(NumericType.AOI, 15000); // 视野15米
-                    //unitComponent.Add(unit);
-                    //// 加入aoi
-                    //unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
-                    return unit;
-                }
-                default:
-                    throw new Exception($"not such unit type: {unitType}");
+                self.AddComponent<K>();
             }
+        }
+
+        public static async ETTask AddDBComonent<K>(this Unit self, long id) where K : Entity,  new()
+        {
+            Entity dbEntity = await DBHelper.GetComponent<K>(self.DomainZone(), self.Id);
+            if (dbEntity == null)
+            {
+                Type type = typeof (K);
+            
+                Entity component = Activator.CreateInstance(type) as Entity;
+                component.Id = id;
+
+                DBHelper.SaveComponent(self.DomainZone(), id, component).Coroutine();
+            }
+        }
+
+        public static async ETTask CreatePlayer(Scene scene, Unit unit, CreateRoleInfo createRoleInfo,string account,  long accountId)
+        {
+            await ETTask.CompletedTask;
+            unit.AddComponent<MoveComponent>();
+            unit.Type = UnitType.Player;
+            unit.Position = new Vector3(-10, 0, -10);
+            unit.AddComponent<UnitInfoComponent>();
+            
+            if (unit.GetComponent<UserInfoComponent>() == null)
+            {
+                UserInfoComponent userInfoComponentServer = unit.AddComponent<UserInfoComponent>();
+                userInfoComponentServer.OnInit(account, unit.Id, accountId, createRoleInfo);
+            }
+
+            if (unit.GetComponent<NumericComponent>() == null)
+            {
+                NumericComponent numericComponentServer = unit.AddComponent<NumericComponent>();
+                numericComponentServer.ApplyValue(NumericType.Now_Speed, 60000, false); // 速度是6米每秒
+                numericComponentServer.ApplyValue(NumericType.AOI, 15000, false); // 视野15米
+            }
+            
+            unit.AddDataComponent<TaskComponent>();
+            unit.AddDataComponent<ChengJiuComponent>();
+            unit.AddDataComponent<BagComponent>();
+            unit.AddDataComponent<PetComponent>();
+            unit.AddDataComponent<SkillSetComponent>();
+            unit.AddDataComponent<EnergyComponent>();
+            unit.AddDataComponent<ActivityComponent>();
+            unit.AddDataComponent<RechargeComponent>();
+            unit.AddDataComponent<ReddotComponent>();
+            unit.AddDataComponent<TitleComponent>();
+            unit.AddDataComponent<JiaYuanComponent>();
+            unit.AddDataComponent<ShoujiComponent>();
+            unit.AddDataComponent<DataCollationComponent>();
+            
+            await unit.AddDBComonent<DBFriendInfo>(unit.Id);
+            await unit.AddDBComonent<DBMailInfo>(unit.Id);
+            
+            //NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
+            //numericComponent.Set((int)NumericType.Now_Speed, 6f); // 速度是6米每秒
+            //numericComponent.Set(NumericType.AOI, 15000); // 视野15米
+            //unitComponent.Add(unit);
+            //// 加入aoi
+            //unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
         }
 
         //创建一个子弹unit

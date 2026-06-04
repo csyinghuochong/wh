@@ -20,39 +20,30 @@ namespace ET
             scene.AddComponent<MailBoxComponent, MailboxType>(MailboxType.UnOrderMessageDispatcher);
             switch (scene.SceneType)
             {
-                case SceneType.Account:
-                    scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
-                    scene.AddComponent<TokenComponent>();
-                    scene.AddComponent<AccountSessionsComponent>();
-                    scene.AddComponent<ObjectWait>();
-                    scene.AddComponent<PlayerInfoListComponent>();
-                    break;
                 case SceneType.LoginCenter:
                     scene.AddComponent<LoginInfoRecordComponent>();
                     scene.AddComponent<WeChatOACodeComponent>();
 
-                    if (!ServerHelper.IsBanHaoServer(0))
+                    /*if (!ServerHelper.IsBanHaoServer(0))
                     {
                         scene.AddComponent<HttpComponent, string>($"http://*:80/");
-                    }
-                    break;
-                case SceneType.AccountCenter:
-
+                    }*/
                     //HTTP 协议：默认端口是 80
                     //例如 http://api.example.com 等价于 http://api.example.com:80
                     //HTTPS 协议：默认端口是 443
                     //例如 https://api.example.com 等价于 https://api.example.com:443
                     int tapport = ComHelp.IsInnerNet() ? ComHelp.TapHttpIneer : ComHelp.TapHttpOuter;
-
-                    scene.AddComponent<FangChenMiComponent>();
-                    scene.AddComponent<AccountCenterComponent>();
+                    
                     scene.AddComponent<HttpComponent, string>($"http://*:{tapport}/");
                     scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
                     break;
                 case SceneType.Realm:
                     scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
-                    scene.AddComponent<TokenComponent>();
                     scene.AddComponent<PlayerInfoListComponent>();
+                    scene.AddComponent<CenterServerComponent>();
+                    scene.AddComponent<AccountSessionsComponent>();
+                    scene.AddComponent<TokenComponent>();
+                    scene.AddComponent<ObjectWait>();
                     break;
                 case SceneType.Queue:
                     scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
@@ -62,7 +53,6 @@ namespace ET
                     scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
                     scene.AddComponent<PlayerComponent>();
                     scene.AddComponent<GateSessionKeyComponent>();
-                    scene.AddComponent<PlayerInfoListComponent>();
                     break;
                 case SceneType.GateMap:
                     scene.AddComponent<UnitComponent>();
@@ -87,9 +77,6 @@ namespace ET
                     break;
                 case SceneType.PaiMai:
                     scene.AddComponent<PaiMaiSceneComponent>();
-                    break;
-                case SceneType.Center:
-                    scene.AddComponent<CenterServerComponent>();
                     break;
                 case SceneType.Team:
                     scene.AddComponent<TeamSceneComponent>();

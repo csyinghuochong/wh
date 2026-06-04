@@ -49,9 +49,7 @@ namespace ET
                     jiaYuanComponent.JiaYuanFuJinTime_3 = 0;
                 }
 
-                long dbCacheId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.DBCache)).InstanceId;
-                D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unit.Id, Component = DBHelper.DBFriendInfo });
-                DBFriendInfo dBFriendInfo = d2GGetUnit.Component as DBFriendInfo;
+                DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(unit.DomainZone(), unit.Id);
 
                 List<long> friendList = new List<long>();
                 if (dBFriendInfo != null)

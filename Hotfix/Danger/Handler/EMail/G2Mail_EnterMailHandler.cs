@@ -4,7 +4,7 @@ using System.Net;
 namespace ET
 {
 
-    [HttpHandler(SceneType.AccountCenter, "/wjtapconsolen")]
+    [HttpHandler(SceneType.Realm, "/wjtapconsolen")]
     public class HttpTapConsolenHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)

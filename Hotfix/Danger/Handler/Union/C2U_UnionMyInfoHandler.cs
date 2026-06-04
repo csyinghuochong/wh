@@ -23,9 +23,8 @@ namespace ET
             {
                 UnionPlayerInfo unionPlayerInfo = dBUnionInfo.UnionInfo.UnionPlayerList[i];
                 long userId = unionPlayerInfo.UserID;
-
-                D2G_GetComponent  d2GSave = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.UserInfoComponent });
-                UserInfoComponent userInfoComponent = d2GSave.Component as UserInfoComponent;
+                
+                UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(scene.DomainZone(), userId);
                 if (userInfoComponent == null)
                 {
                     dBUnionInfo.UnionInfo.UnionPlayerList.RemoveAt(i);

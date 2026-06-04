@@ -10,9 +10,9 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_BuChangeRequest request, M2C_BuChangeResponse response, Action reply)
         {
             Log.Error($"C2M_BuChangeRequest: {unit.Id}  {request.BuChangId}");
-            long accountZone = DBHelper.GetAccountCenter();
+            long accountZone = DBHelper.GetRealmCenter();
             UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-            Center2M_BuChangeResponse centerAccount = (Center2M_BuChangeResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2Center_BuChangeRequest()
+            R2M_BuChangeResponse centerAccount = (R2M_BuChangeResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2R_BuChangeRequest()
             { 
                 BuChangId = request.BuChangId,
                 UserId = userInfoComponent.Id,

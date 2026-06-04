@@ -98,33 +98,17 @@ namespace ET
             //判断条件
             long dbCacheId = DBHelper.GetDbCacheId(zone);
 
-            UserInfoComponent userInfoComponent = null;
-            NumericComponent numericComponent = null;
-            BagComponent bagComponent = null;
-            D2G_GetComponent d2GGetUnit1 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = DBHelper.UserInfoComponent });
-            if (d2GGetUnit1.Component == null)
+            UserInfoComponent userInfoComponent =await DBHelper.GetComponent<UserInfoComponent>(zone, userID);
+            if (userInfoComponent == null || userInfoComponent.UserInfo.RobotId > 0)
             {
                 return;
             }
-            userInfoComponent = d2GGetUnit1.Component as UserInfoComponent;
-            if (userInfoComponent.UserInfo.RobotId > 0)
+            NumericComponent  numericComponent = await DBHelper.GetComponent<NumericComponent>(zone, userID);
+            BagComponent bagComponent = await DBHelper.GetComponent<BagComponent>(zone, userID);
+            if (numericComponent == null || bagComponent == null)
             {
                 return;
             }
-
-            D2G_GetComponent d2GGetUnit2 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = DBHelper.NumericComponent });
-            if (d2GGetUnit2.Component == null)
-            {
-                return;
-            }
-            numericComponent = d2GGetUnit2.Component as NumericComponent;
-
-            D2G_GetComponent d2GGetUnit3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = DBHelper.BagComponent });
-            if (d2GGetUnit3.Component == null)
-            {
-                return;
-            }
-            bagComponent = d2GGetUnit3.Component as BagComponent;
 
             bool cansendMail = MailHelp.CheckSendMail(serverMailItem.MailType, serverMailItem.ParasmNew, numericComponent, userInfoComponent, bagComponent);
             if (cansendMail == false)
@@ -147,12 +131,11 @@ namespace ET
            
             {
                 long dbCacheId = DBHelper.GetDbCacheId(zone);
-                D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = DBHelper.DBMailInfo });
-                DBMailInfo dBMainInfo = d2GGetUnit.Component as DBMailInfo;
+                DBMailInfo dBMainInfo = await DBHelper.GetComponent<DBMailInfo>(zone, userID);
                 if (dBMainInfo == null)
                 {
                     //有可能玩家自己删除角色了。。还收到邮件。。列如：道具被拍卖。。。。=====
-                    dBMainInfo = (DBMailInfo)await DBHelper.AddDataComponent<DBMailInfo>(zone, userID, DBHelper.DBMailInfo);
+                    //dBMainInfo = (DBMailInfo)await DBHelper.AddDataComponent<DBMailInfo>(zone, userID, DBHelper.DBMailInfo);
                     Console.WriteLine($"AddDataComponent.DBMailInfo  {userID}");
                 }
                 if (dBMainInfo == null)

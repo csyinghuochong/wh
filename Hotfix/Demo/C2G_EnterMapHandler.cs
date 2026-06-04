@@ -11,10 +11,6 @@
 //		{
 //			Player player = session.GetComponent<SessionPlayerComponent>().GetMyPlayer();
 
-//			long dbCacheId = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.DBCache)).InstanceId;
-//			D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { CharacterId = request.AccountId, Component = DBHelper.DBAccountInfo });
-//			DBAccountInfo userAccountInfo = d2GGetUnit.Component as DBAccountInfo;
-
 //			if (userAccountInfo.UserList.Contains(request.UserID) == false)
 //			{
 //				response.Error = ErrorCode.ERR_ConnectGateKeyError;

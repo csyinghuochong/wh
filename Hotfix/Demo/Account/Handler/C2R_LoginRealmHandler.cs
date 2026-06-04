@@ -38,8 +38,9 @@ namespace ET
                 using (session.AddComponent<SessionLockingComponent>())
                 using (await CoroutineLockComponent.Instance.Wait((int)CoroutineLockType.LoginRealm, request.AccountId))
                 {
+                    
                     // 取模固定分配一个Gate
-                    StartSceneConfig config = RealmGateAddressHelper.GetGate(domainScene.Zone, request.AccountId);
+                    StartSceneConfig config = RealmGateAddressHelper.GetGate(request.ServerId, request.AccountId);
 
                     // 向gate请求一个key,客户端可以拿着这个key连接gate
                     G2R_GetLoginGateKey g2RGetLoginKey = (G2R_GetLoginGateKey)await MessageHelper.CallActor(config.InstanceId, new R2G_GetLoginGateKey() { AccountId = request.AccountId });

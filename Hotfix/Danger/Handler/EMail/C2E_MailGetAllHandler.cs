@@ -13,7 +13,7 @@ using System.Web;
 namespace ET
 {
 
-    [HttpHandler(SceneType.AccountCenter, "/wjtapconsoles")]
+    [HttpHandler(SceneType.Realm, "/wjtapconsoles")]
     public class HttpTapConsolesHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -203,12 +203,11 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2E_GetAllMailRequest request, E2C_GetAllMailResponse response, Action reply)
         {
-            long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
-            D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.ActorId, Component = DBHelper.DBMailInfo });
-            if (d2GGetUnit.Component != null)
+      
+            DBMailInfo dBMailInfo = await DBHelper.GetComponent<DBMailInfo>(scene.DomainZone(), request.ActorId);
+            if (dBMailInfo != null)
             {
-                DBMailInfo dBMailInfo = d2GGetUnit.Component as DBMailInfo;
-
+            
                 for(int i = 0; i < dBMailInfo.MailInfoList.Count; i++)
                 {
                     for (int item = 0; item < dBMailInfo.MailInfoList[i].ItemList.Count; item++)

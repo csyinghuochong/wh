@@ -9,8 +9,8 @@ namespace ET
         protected override async ETTask Run(Scene scene, P2E_PaiMaiOverTimeRequest request, E2P_PaiMaiOverTimeResponse response, Action reply)
         {
             long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
-            D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.PaiMaiItemInfo.UserId, Component = DBHelper.DBMailInfo });
-            DBMailInfo dBMainInfo = d2GGetUnit.Component as DBMailInfo;
+          
+            DBMailInfo dBMainInfo = await DBHelper.GetComponent<DBMailInfo>(scene.DomainZone(), request.PaiMaiItemInfo.UserId);
             if (dBMainInfo == null)
             {
                 Log.Debug($"DBMailInfo==null {request.PaiMaiItemInfo.UserId}");
@@ -21,7 +21,7 @@ namespace ET
             long mailid = IdGenerater.Instance.GenerateId();
             dBMainInfo.MailInfoList.Add(new MailInfo() { MailId = mailid, Context = "拍卖下架", Title = "拍卖下架", ItemList = new List<BagInfo>() { request.PaiMaiItemInfo.BagInfo } });
 
-            D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = request.PaiMaiItemInfo.UserId, EntityByte = MongoHelper.ToBson(dBMainInfo), ComponentType = DBHelper.DBMailInfo });
+            await DBHelper.SaveComponent(scene.DomainZone(),  request.PaiMaiItemInfo.UserId, dBMainInfo);
             reply();
         }
     }

@@ -10,11 +10,11 @@ namespace ET
         {
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.LoginAccount, request.AccInfoID))
             {
-                DBAccountInfo dBAccountWarehouse = await DBHelper.GetComponent<DBAccountInfo>(scene.DomainZone(), request.AccInfoID);
+                DBAccountBagInfo dBAccountBagWarehouse = await DBHelper.GetComponent<DBAccountBagInfo>(scene.DomainZone(), request.AccInfoID);
 
-                if (dBAccountWarehouse != null)
+                if (dBAccountBagWarehouse != null)
                 {
-                    response.BagInfos = dBAccountWarehouse.BagInfoList;
+                    response.BagInfos = dBAccountBagWarehouse.BagInfoList;
                 }
 
                 reply();

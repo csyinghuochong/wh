@@ -7,23 +7,18 @@ namespace ET
     public partial class StartSceneConfigCategory
     {
         public MultiMap<int, StartSceneConfig> Gates = new MultiMap<int, StartSceneConfig>();
-
-        public Dictionary<int, StartSceneConfig> Realms = new Dictionary<int, StartSceneConfig>();
-
+        
         public Dictionary<int, StartSceneConfig> Queues = new Dictionary<int, StartSceneConfig>();
 
         public Dictionary<int, StartSceneConfig> YeWai = new Dictionary<int, StartSceneConfig>();
 
         public MultiMap<int, StartSceneConfig> LocalDungeons = new MultiMap<int, StartSceneConfig>();
 
-
         public MultiMap<int, StartSceneConfig> ProcessScenes = new MultiMap<int, StartSceneConfig>();
         
         public Dictionary<long, Dictionary<string, StartSceneConfig>> ZoneScenesByName = new Dictionary<long, Dictionary<string, StartSceneConfig>>();
 
-        public StartSceneConfig CenterConfig;
-
-        public StartSceneConfig AccountCenterConfig;
+        public StartSceneConfig RealmConfig;
 
         public StartSceneConfig LocationConfig;
 
@@ -72,16 +67,10 @@ namespace ET
                         this.Robots.Add(startSceneConfig);
                         break;
                     case SceneType.Realm:
-                        this.Realms.Add(startSceneConfig.Zone, startSceneConfig);
-                        break;
-                    case SceneType.Center:
-                        this.CenterConfig = startSceneConfig;
+                        this.RealmConfig  = startSceneConfig;
                         break;
                     case SceneType.LoginCenter:
                         this.LoginCenterConfig = startSceneConfig;
-                        break;
-                    case SceneType.AccountCenter:
-                        this.AccountCenterConfig = startSceneConfig;
                         break;
                     case SceneType.ReCharge:
                         this.RechargeConfig = startSceneConfig;

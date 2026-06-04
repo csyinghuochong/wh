@@ -95,7 +95,7 @@ namespace ET
 
         public static async ETTask SendToAccountCenter(long accountId, long userId, int rechargeNumber, string ordinfo, int rechargeType)
         {
-            A2Center_RechargeRequest rechargeRequest = new A2Center_RechargeRequest()
+            Other2R_RechargeRequest rechargeRequest = new Other2R_RechargeRequest()
             {
                 AccountId = accountId,
                 RechargeInfo = new RechargeInfo()
@@ -107,8 +107,8 @@ namespace ET
                     RechargeType = rechargeType
                 }
             };
-            long accountZone = DBHelper.GetAccountCenter();
-            Center2A_RechargeResponse saveAccount = (Center2A_RechargeResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, rechargeRequest);
+            long accountZone = DBHelper.GetRealmCenter();
+            R2Other_RechargeResponse saveAccount = (R2Other_RechargeResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, rechargeRequest);
         }
 
         /// <summary>

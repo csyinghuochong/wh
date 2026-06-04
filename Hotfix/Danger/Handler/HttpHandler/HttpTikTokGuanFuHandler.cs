@@ -15,7 +15,7 @@ namespace ET
 {
     //http://39.96.194.143:20008/wjtiktokPhoneNumberLogin
     //手机登录接口
-    [HttpHandler(SceneType.AccountCenter, "/wjtiktokPhoneNumberLogin")]
+    [HttpHandler(SceneType.Realm, "/wjtiktokPhoneNumberLogin")]
     public class HttpTikTokPhoneNumberLoginHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -188,7 +188,7 @@ namespace ET
 
     //http://39.96.194.143:20008/wjtiktokCheckSmsVerifyCode
     //验证码验证接口
-    [HttpHandler(SceneType.AccountCenter, "/wjtiktokCheckSmsVerifyCode")]
+    [HttpHandler(SceneType.Realm, "/wjtiktokCheckSmsVerifyCode")]
     public class HttpTikTokCheckSmsVerifyCodeHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -324,7 +324,7 @@ namespace ET
 
     // http://39.96.194.143:20008/wjtiktokSendSmsVerifyCode
     //验证码获取接口
-    [HttpHandler(SceneType.AccountCenter, "/wjtiktokSendSmsVerifyCode")]
+    [HttpHandler(SceneType.Realm, "/wjtiktokSendSmsVerifyCode")]
     public class HttpTikTokSendSmsVerifyCodeHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -364,7 +364,7 @@ namespace ET
     }
 
    // http://39.96.194.143:20008/wjtiktokGetToken
-    [HttpHandler(SceneType.AccountCenter, "/wjtiktokGetToken")]
+    [HttpHandler(SceneType.Realm, "/wjtiktokGetToken")]
     public class HttpTikTokGetTokenHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -379,7 +379,7 @@ namespace ET
 
     //http://39.96.194.143:20008/wjtiktokRoleQuery
     //角色查询接口
-    [HttpHandler(SceneType.AccountCenter, "/wjtiktokRoleQuery")]
+    [HttpHandler(SceneType.Realm, "/wjtiktokRoleQuery")]
     public class HttpTikTokRoleQueryHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -522,7 +522,7 @@ namespace ET
 
     //http://39.96.194.143:20008/wjtiktokBingdingResult
     //绑定结果接收接口
-    [HttpHandler(SceneType.AccountCenter, "/wjtiktokBingdingResult")]
+    [HttpHandler(SceneType.Realm, "/wjtiktokBingdingResult")]
     public class HttpTikTokBingdingResultHandler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -535,7 +535,7 @@ namespace ET
     }
 
     //备用接口1
-    [HttpHandler(SceneType.AccountCenter, "/wjtiktokBeiYong_1")]
+    [HttpHandler(SceneType.Realm, "/wjtiktokBeiYong_1")]
     public class HttpTikTokBeiYong_1Handler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -548,7 +548,7 @@ namespace ET
     }
 
     //备用接口2
-    [HttpHandler(SceneType.AccountCenter, "/wjtiktokBeiYong_2")]
+    [HttpHandler(SceneType.Realm, "/wjtiktokBeiYong_2")]
     public class HttpTikTokBeiYong_2Handler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)
@@ -561,7 +561,7 @@ namespace ET
     }
 
     //备用接口3
-    [HttpHandler(SceneType.AccountCenter, "/wjtiktokBeiYong_3")]
+    [HttpHandler(SceneType.Realm, "/wjtiktokBeiYong_3")]
     public class HttpTikTokBeiYong_3Handler : IHttpHandler
     {
         public async ETTask Handle(Entity entity, HttpListenerContext context)

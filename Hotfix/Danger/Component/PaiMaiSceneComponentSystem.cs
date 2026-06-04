@@ -317,8 +317,7 @@ namespace ET
             int zone = self.DomainZone();
             long unitid = PaiMaiHelper.Instance.GetPaiMaiId(itemType);
             long dbCacheId = DBHelper.GetDbCacheId(zone);
-
-            //D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unitid, Component = DBHelper.DBPaiMainInfo });
+            
             List<DBPaiMainInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(self.DomainZone(), d => d.Id == unitid);
             if (zone == 66)
             {
@@ -349,7 +348,6 @@ namespace ET
             long unitid = PaiMaiHelper.Instance.GetPaiMaiId(itemType);
             long dbCacheId = DBHelper.GetDbCacheId(zone);
 
-            // D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unitid, Component = DBHelper.DBPaiMainInfo });
             List<DBPaiMainInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(self.DomainZone(), d => d.Id == unitid);
             if (zone == 66)
             {
@@ -458,7 +456,6 @@ namespace ET
             long unitid = PaiMaiHelper.Instance.GetPaiMaiId(itemType);
             long dbCacheId = DBHelper.GetDbCacheId(zone);
 
-            //D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unitid, Component = DBHelper.DBPaiMainInfo });
             List<DBPaiMainInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(self.DomainZone(), d => d.Id == unitid);
             if (zone == 66)
             {
@@ -492,7 +489,6 @@ namespace ET
             List<PaiMaiItemInfo> oldPaiMaiAll = new List<PaiMaiItemInfo>();
             List<PaiMaiItemInfo> oldPaiMaiStall = new List<PaiMaiItemInfo>();
 
-            //D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = zone, Component = DBHelper.DBPaiMainInfo });
             List<DBPaiMainInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(self.DomainZone(), d => d.Id == zone);
 
             if (paimaiList != null && paimaiList.Count > 0)

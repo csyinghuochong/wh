@@ -28,9 +28,9 @@ namespace ET
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
             {
-                long centerid = DBHelper.GetAccountCenter();
-                M2Center_SerialQueryRequest queryRequest = new M2Center_SerialQueryRequest() { SerialNumber = request.SerialNumber };
-                Center2M_SerialQueryResponse queryResponse = (Center2M_SerialQueryResponse)await ActorMessageSenderComponent.Instance.Call
+                long centerid = DBHelper.GetRealmCenter();
+                M2R_SerialQueryRequest queryRequest = new M2R_SerialQueryRequest() { SerialNumber = request.SerialNumber };
+                R2M_SerialQueryResponse queryResponse = (R2M_SerialQueryResponse)await ActorMessageSenderComponent.Instance.Call
                           (centerid, queryRequest);
 
                 if (queryResponse.Error != ErrorCode.ERR_Success)
@@ -62,8 +62,8 @@ namespace ET
                     return;
                 }
 
-                M2Center_SerialReardRequest m2Center_Serial = new M2Center_SerialReardRequest() { SerialNumber = request.SerialNumber };
-                Center2M_SerialReardResponse m2m_TrasferUnitResponse = (Center2M_SerialReardResponse)await ActorMessageSenderComponent.Instance.Call
+                M2R_SerialReardRequest m2Center_Serial = new M2R_SerialReardRequest() { SerialNumber = request.SerialNumber };
+                R2M_SerialReardResponse m2m_TrasferUnitResponse = (R2M_SerialReardResponse)await ActorMessageSenderComponent.Instance.Call
                           (centerid, m2Center_Serial);
 
                 if (m2m_TrasferUnitResponse.Error != ErrorCode.ERR_Success)

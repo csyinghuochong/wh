@@ -291,21 +291,34 @@ namespace ET
                         fubenCenter.OnActivityClose(request.FunctionId);
                     }
                     break;
-                case SceneType.AccountCenter:
+                case SceneType.Realm:
+                    /*if (hour == 0 && self.DomainZone() == 3) //通知中心服
+                    {
+                        Console.WriteLine($"通知中心服:  {hour}");
+                        long centerid = DBHelper.GetRealmCenter();
+                        A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
+                                (centerid, new A2A_ActivityUpdateRequest() { Hour = hour });
+                    }
+                    if ((hour == 0 || hour == 21) && self.DomainZone() == 3) //通知账号中心服
+                    {
+                        Console.WriteLine($"通知账号中心服:  {hour}");
+                        long centerid = DBHelper.GetRealmCenter();
+                        A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
+                                (centerid, new A2A_ActivityUpdateRequest() { Hour = hour });
+                    }*/
+                    
+                    ///可以移动到CenterServerComponent
                     if (hour == 0)
                     {
-                        scene.GetComponent<FangChenMiComponent>().CheckHoliday().Coroutine();
+                        scene.GetComponent<CenterServerComponent>().CheckHoliday().Coroutine();
                     }
                     if (hour == 21)
                     {
                         Console.WriteLine("savedb 0");
                         Game.EventSystem.Publish(new EventType.GMCommonRequest() { Context = "savedb 0" });
                     }
-                    LogHelper.CheckLogSize();
-                    break;
-                case SceneType.Center:
-                    Console.WriteLine($"centerServerComponent.UpdateWeeklyIndex:{ TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow()) }");
-                    if (hour == 0)
+                    
+                    if (hour == 3)
                     {
                         CenterServerComponent centerServerComponent = scene.GetComponent<CenterServerComponent>();
                         centerServerComponent.UpdateWeeklyIndex(TimeHelper.DateTimeNow()).Coroutine();
@@ -316,6 +329,7 @@ namespace ET
                         centerServerComponent.UpdateWeeklyIndex(TimeInfo.Instance.ToDateTime(1767542401000)).Coroutine();
                     }
 
+                    LogHelper.CheckLogSize();
                     break;
                 default:
                     break;

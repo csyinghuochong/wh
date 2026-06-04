@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
+using MongoDB.Bson.Serialization.Options;
 
 namespace ET
 {
@@ -15,10 +16,24 @@ namespace ET
         Delete = 3, //删号
     }
 
+    
+    public enum RoleInfoState
+    {
+        Normal = 0,
+        Freeze = 1,    //冻结
+    }
 
     [BsonIgnoreExtraElements]
     public class DBCenterAccountInfo : Entity, IAwake
     {
+        
+
+        //禁封角色列表
+        public List<long> BanUserList = new List<long>();
+        
+        [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
+        public Dictionary<long, long> BanUserTime = new Dictionary<long, long>();
+
         //用户名
         public string Account { get; set; }
 
@@ -37,13 +52,15 @@ namespace ET
         
         public long BanTime;    //封号时间
 
+        public string TaprepRequest{ get; set; }  
+        
         public string BanAccount;  //关联封禁帐号
 
         public string DeviceID;
 
         public bool addRecharge = false;
         
-        public List<KeyValuePairLong> CreateRoleList = new List<KeyValuePairLong>();
+        public List<CreateRoleInfo> RoleList = new List<CreateRoleInfo>();
 
         public List<int> IsUpperList = new List<int>();
 
@@ -59,6 +76,25 @@ namespace ET
 
             return total;
         }
+        
+        public int TodayCreateRole()
+        {
+            int total = 0;
+           
+            return total;
+        }
+        
+        public CreateRoleInfo GetRoleInfo( int zone, long unitid)
+        {
+            for (int i = 0; i < RoleList.Count; i++)
+            {
+                if (  zone ==RoleList[i].ServerId && RoleList[i].UserID == unitid )
+                {
+                    return RoleList[i];
+                }
+            }
 
+            return null;
+        }
     }
 }

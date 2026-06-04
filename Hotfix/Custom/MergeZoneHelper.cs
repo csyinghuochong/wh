@@ -248,12 +248,6 @@ namespace ET
                 Game.Scene.GetComponent<DBComponent>().InitDatabase(startZoneConfig);
             }
 
-            List<DBAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(81, d => d.Id > 0);
-            for (int i = 0; i < dBAccountInfos.Count; i++)
-            {
-                
-            }
-
 
             List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id > 0);
             foreach (var entity in dBAccountInfos_new)
@@ -329,47 +323,7 @@ namespace ET
 
 
             Dictionary<string, List<long>> accountGold = new Dictionary<string, List<long>>();
-            List<DBAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(zone, d => d.Id > 0);
-
-            for(  int i = 0; i < dBAccountInfos.Count; i++ )
-            {
-                if (dBAccountInfos[i].UserList.Count < 2)
-                {
-                    continue;
-                }
-                accountGold.Add(dBAccountInfos[i].Account, new List<long>());
-
-                string gold = string.Empty;
-                string level = string.Empty;
-                string task = string.Empty;
-                for (int user = 0; user < dBAccountInfos[i].UserList.Count; user++)
-                {
-                    List< UserInfoComponent> userInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(zone, d => d.Id == dBAccountInfos[i].UserList[user]);
-                    if (userInfoComponentlist.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    List<DataCollationComponent> dataCollationComponents = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(zone, d => d.Id == dBAccountInfos[i].UserList[user]);
-                    if (dataCollationComponents.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    accountGold[dBAccountInfos[i].Account].Add(userInfoComponentlist[0].UserInfo.Gold);
-
-                    gold += $"{userInfoComponentlist[0].UserInfo.Gold}_";
-                    level += $"{userInfoComponentlist[0].UserInfo.Lv}_";
-                    task += $"{dataCollationComponents[0].MainTask}_";
-                }
-
-                if (gold == string.Empty || accountGold[dBAccountInfos[i].Account].Count < 2)
-                {
-                    continue;
-                }
-
-                Log.Warning($"区：{zone}  \t账号：{dBAccountInfos[i].Account}       \t等级：{level}   \t金币：{gold}   \t任务:{task}");
-            }
+            await ETTask.CompletedTask;
         }
 
 
@@ -484,14 +438,7 @@ namespace ET
                 Game.Scene.GetComponent<DBComponent>().InitDatabase(startZoneConfig);
             }
 
-            List<DBAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(newzone, d => d.Id > 0);
-            foreach (var entity in dBAccountInfos_new)
-            {
-                if (entity.UserList.Contains(userid))
-                {
-                    Log.Debug(entity.Account);
-                }
-            }
+            await ETTask.CompletedTask;
         }
 
         public static async ETTask MergeZoneUnion(int oldzone, int newzone)
@@ -640,52 +587,32 @@ namespace ET
             Log.Console("ChengJiuComponent Complelte");
             //DBAccountInfo.  问清楚规则 不能全部合并
             dbcount = 0;
-            List<DBAccountInfo> dBAccountInfos_old = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(oldzone, d => d.Id > 0);
-            List<DBAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(newzone, d => d.Id > 0);
+            /*List<DBAccountBagInfo> dBAccountInfos_old = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountBagInfo>(oldzone, d => d.Id > 0);
+            List<DBAccountBagInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountBagInfo>(newzone, d => d.Id > 0);
             foreach (var entity in dBAccountInfos_old)
             {
-                if (entity.Password.Equals(ComHelp.RobotPassWord))
-                {
-                    continue;
-                }
-
-                bool allremove = true;
-                for (int i = 0; i < entity.UserList.Count; i++)
-                {
-                    if (!invalidPlayers.Contains(entity.UserList[i]))
-                    {
-                        allremove = false;
-                        break;
-                    }
-                }
-                if (allremove)
-                {
-                    continue;
-                }
-
+              
                 dbcount++;
                 if (dbcount % onecount == 0)
                 {
                     await TimerComponent.Instance.WaitFrameAsync();
                 }
 
-                List<DBAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountInfo>(newzone, d => d.Id == entity.Id);
+                List<DBAccountBagInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountBagInfo>(newzone, d => d.Id == entity.Id);
                 if (dBAccountInfos.Count > 0)
                 {
-                    if (entity.UserList.Count > 0 && !dBAccountInfos[0].UserList.Contains(entity.UserList[0]))
+                    if (entity.BagInfoList.Count > 0 && dBAccountInfos[0].HaveItemById(entity.BagInfoList[0].BagInfoID) < 0)
                     {
-                        dBAccountInfos[0].UserList.AddRange(entity.UserList);
                         dBAccountInfos[0].BagInfoList.AddRange(entity.BagInfoList);
+                        await Game.Scene.GetComponent<DBComponent>().Save(newzone, dBAccountInfos[0]);
                     }
-
-                    await Game.Scene.GetComponent<DBComponent>().Save(newzone, dBAccountInfos[0]);
                 }
                 else
                 {
                     await Game.Scene.GetComponent<DBComponent>().Save(newzone, entity);
                 }
-            }
-            Log.Console("DBAccountInfo Complelte");
+            }*/
+            Log.Console("DBAccountBagInfo Complelte");
 
             //DBDayActivityInfo  活动相关也要特殊处理
             List<DBDayActivityInfo> dBDayActivityInfos_old = await Game.Scene.GetComponent<DBComponent>().Query<DBDayActivityInfo>(oldzone, d => d.Id > 0);

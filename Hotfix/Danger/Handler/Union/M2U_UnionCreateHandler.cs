@@ -34,8 +34,7 @@ namespace ET
             unionInfo.UnionInfo.UnionName = request.UnionName;
             unionInfo.UnionInfo.UnionPurpose = request.UnionPurpose;
 
-            D2G_GetComponent d2G_GetComponent = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserID, Component = DBHelper.UserInfoComponent });
-            UserInfoComponent userInfoComponent = d2G_GetComponent.Component as UserInfoComponent;
+            UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(scene.DomainZone(), request.UserID);
             unionInfo.UnionInfo.LeaderName = userInfoComponent.UserInfo.Name;
             unionInfo.UnionInfo.UnionPlayerList.Add(new UnionPlayerInfo()
             {

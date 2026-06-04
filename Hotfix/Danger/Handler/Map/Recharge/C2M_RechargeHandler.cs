@@ -10,7 +10,7 @@ namespace ET
         {
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Recharge, unit.Id))
             {
-                long dbCacheId = DBHelper.GetCenterServerId();
+                long dbCacheId = DBHelper.GetRealmCenter();
                 if (ComHelp.IsBanHaoZone(unit.DomainZone()))
                 {
                     LogHelper.LogWarning($"充值[版号服]SendDiamondToUnit: {unit.Id}");

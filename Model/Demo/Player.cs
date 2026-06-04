@@ -39,9 +39,7 @@
 		public long PaiMaiServerID { get; set; }
 
 		public long ActivityServerID { get; set; }
-
-		public long CenterServerID { get; set; }
-
+		
 		public long TeamServerID { get; set; }
 
 		public long FriendServerID { get; set; }

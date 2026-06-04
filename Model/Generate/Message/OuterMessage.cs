@@ -6,41 +6,10 @@ namespace ET
 //IRequest   IResponse   请求返回配合使用   直连网关服的
 //IActorLocationRequest  IActorLocationResponse   切场景请求   请求返回配合使用  需要网关服转换的
 //IActorMessage           服务器主动发送给前端不需要返回值
-	[ResponseType(nameof(A2C_Register))]
-	[Message(OuterOpcode.C2A_Register)]
+	[ResponseType(nameof(R2C_Register))]
+	[Message(OuterOpcode.C2R_Register)]
 	[ProtoContract]
-	public partial class C2A_Register: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string Account { get; set; }
-
-		[ProtoMember(2)]
-		public string Password { get; set; }
-
-	}
-
-	[Message(OuterOpcode.A2C_Register)]
-	[ProtoContract]
-	public partial class A2C_Register: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(Center2C_Register))]
-	[Message(OuterOpcode.C2Center_Register)]
-	[ProtoContract]
-	public partial class C2Center_Register: Object, IRequest
+	public partial class C2R_Register: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -56,9 +25,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.Center2C_Register)]
+	[Message(OuterOpcode.R2C_Register)]
 	[ProtoContract]
-	public partial class Center2C_Register: Object, IResponse
+	public partial class R2C_Register: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -71,10 +40,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_RealNameResponse))]
-	[Message(OuterOpcode.C2A_RealNameRequest)]
+	[ResponseType(nameof(R2C_RealNameResponse))]
+	[Message(OuterOpcode.C2R_RealNameRequest)]
 	[ProtoContract]
-	public partial class C2A_RealNameRequest: Object, IRequest
+	public partial class C2R_RealNameRequest: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -93,9 +62,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.A2C_RealNameResponse)]
+	[Message(OuterOpcode.R2C_RealNameResponse)]
 	[ProtoContract]
-	public partial class A2C_RealNameResponse: Object, IResponse
+	public partial class R2C_RealNameResponse: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -185,10 +154,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_CreateRoleData))]
-	[Message(OuterOpcode.C2A_CreateRoleData)]
+	[ResponseType(nameof(R2C_CreateRoleData))]
+	[Message(OuterOpcode.C2R_CreateRoleData)]
 	[ProtoContract]
-	public partial class C2A_CreateRoleData: Object, IRequest
+	public partial class C2R_CreateRoleData: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -205,11 +174,14 @@ namespace ET
 		[ProtoMember(5)]
 		public string OAID { get; set; }
 
+		[ProtoMember(6)]
+		public int ServerId { get; set; }
+
 	}
 
-	[Message(OuterOpcode.A2C_CreateRoleData)]
+	[Message(OuterOpcode.R2C_CreateRoleData)]
 	[ProtoContract]
-	public partial class A2C_CreateRoleData: Object, IResponse
+	public partial class R2C_CreateRoleData: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -228,10 +200,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_DeleteRoleData))]
-	[Message(OuterOpcode.C2A_DeleteRoleData)]
+	[ResponseType(nameof(R2C_DeleteRoleData))]
+	[Message(OuterOpcode.C2R_DeleteRoleData)]
 	[ProtoContract]
-	public partial class C2A_DeleteRoleData: Object, IRequest
+	public partial class C2R_DeleteRoleData: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -247,9 +219,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.A2C_DeleteRoleData)]
+	[Message(OuterOpcode.R2C_DeleteRoleData)]
 	[ProtoContract]
-	public partial class A2C_DeleteRoleData: Object, IResponse
+	public partial class R2C_DeleteRoleData: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -305,10 +277,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_GetRealmKey))]
-	[Message(OuterOpcode.C2A_GetRealmKey)]
+	[ResponseType(nameof(R2C_GetRealmKey))]
+	[Message(OuterOpcode.C2R_GetRealmKey)]
 	[ProtoContract]
-	public partial class C2A_GetRealmKey: Object, IRequest
+	public partial class C2R_GetRealmKey: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -324,9 +296,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.A2C_GetRealmKey)]
+	[Message(OuterOpcode.R2C_GetRealmKey)]
 	[ProtoContract]
-	public partial class A2C_GetRealmKey: Object, IResponse
+	public partial class R2C_GetRealmKey: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -358,6 +330,9 @@ namespace ET
 
 		[ProtoMember(2)]
 		public string RealmTokenKey { get; set; }
+
+		[ProtoMember(3)]
+		public int ServerId { get; set; }
 
 	}
 
@@ -834,6 +809,18 @@ namespace ET
 		[ProtoMember(10)]
 		public List<int> FashionIds = new List<int>();
 
+		[ProtoMember(11)]
+		public int ServerId { get; set; }
+
+		[ProtoMember(12)]
+		public int State { get; set; }
+
+		[ProtoMember(13)]
+		public long CreateTime { get; set; }
+
+		[ProtoMember(14)]
+		public int RobotId { get; set; }
+
 	}
 
 	[Message(OuterOpcode.UnitInfo)]
@@ -1286,10 +1273,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_LoginAccount))]
-	[Message(OuterOpcode.C2A_LoginAccount)]
+	[ResponseType(nameof(R2C_LoginAccount))]
+	[Message(OuterOpcode.C2R_LoginAccount)]
 	[ProtoContract]
-	public partial class C2A_LoginAccount: Object, IRequest
+	public partial class C2R_LoginAccount: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1304,13 +1291,10 @@ namespace ET
 		public string Token { get; set; }
 
 		[ProtoMember(4)]
-		public string ThirdLogin { get; set; }
+		public int LoginType { get; set; }
 
 		[ProtoMember(5)]
 		public bool Relink { get; set; }
-
-		[ProtoMember(6)]
-		public int age_type { get; set; }
 
 		[ProtoMember(7)]
 		public int Simulator { get; set; }
@@ -1324,11 +1308,14 @@ namespace ET
 		[ProtoMember(13)]
 		public string DeviceName { get; set; }
 
+		[ProtoMember(14)]
+		public int ServerId { get; set; }
+
 	}
 
-	[Message(OuterOpcode.A2C_LoginAccount)]
+	[Message(OuterOpcode.R2C_LoginAccount)]
 	[ProtoContract]
-	public partial class A2C_LoginAccount: Object, IResponse
+	public partial class R2C_LoginAccount: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1585,62 +1572,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_Notice))]
-	[Message(OuterOpcode.C2A_Notice)]
-	[ProtoContract]
-	public partial class C2A_Notice: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.A2C_Notice)]
-	[ProtoContract]
-	public partial class A2C_Notice: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(A2C_Thanks))]
-	[Message(OuterOpcode.C2A_Thanks)]
-	[ProtoContract]
-	public partial class C2A_Thanks: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.A2C_Thanks)]
-	[ProtoContract]
-	public partial class A2C_Thanks: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
 	[Message(OuterOpcode.ServerItem)]
 	[ProtoContract]
 	public partial class ServerItem: Object
@@ -1668,10 +1599,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_ServerList))]
-	[Message(OuterOpcode.C2A_ServerList)]
+	[ResponseType(nameof(R2C_ServerList))]
+	[Message(OuterOpcode.C2R_ServerList)]
 	[ProtoContract]
-	public partial class C2A_ServerList: Object, IRequest
+	public partial class C2R_ServerList: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1687,9 +1618,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.A2C_ServerList)]
+	[Message(OuterOpcode.R2C_ServerList)]
 	[ProtoContract]
-	public partial class A2C_ServerList: Object, IResponse
+	public partial class R2C_ServerList: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1729,10 +1660,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_SendSmsVerifyCode))]
-	[Message(OuterOpcode.C2A_SendSmsVerifyCode)]
+	[ResponseType(nameof(Realm2C_SendSmsVerifyCode))]
+	[Message(OuterOpcode.C2Realm_SendSmsVerifyCode)]
 	[ProtoContract]
-	public partial class C2A_SendSmsVerifyCode: Object, IRequest
+	public partial class C2Realm_SendSmsVerifyCode: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1745,9 +1676,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.A2C_SendSmsVerifyCode)]
+	[Message(OuterOpcode.Realm2C_SendSmsVerifyCode)]
 	[ProtoContract]
-	public partial class A2C_SendSmsVerifyCode: Object, IResponse
+	public partial class Realm2C_SendSmsVerifyCode: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1760,10 +1691,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_CheckSmsVerifyCode))]
-	[Message(OuterOpcode.C2A_CheckSmsVerifyCode)]
+	[ResponseType(nameof(R2C_CheckSmsVerifyCode))]
+	[Message(OuterOpcode.C2R_CheckSmsVerifyCode)]
 	[ProtoContract]
-	public partial class C2A_CheckSmsVerifyCode: Object, IRequest
+	public partial class C2R_CheckSmsVerifyCode: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1779,9 +1710,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.A2C_CheckSmsVerifyCode)]
+	[Message(OuterOpcode.R2C_CheckSmsVerifyCode)]
 	[ProtoContract]
-	public partial class A2C_CheckSmsVerifyCode: Object, IResponse
+	public partial class R2C_CheckSmsVerifyCode: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -6647,10 +6578,10 @@ namespace ET
 	}
 
 //GM数据
-	[ResponseType(nameof(C2C_GMInfoResponse))]
-	[Message(OuterOpcode.C2C_GMInfoRequest)]
+	[ResponseType(nameof(R2C_GMInfoResponse))]
+	[Message(OuterOpcode.C2R_GMInfoRequest)]
 	[ProtoContract]
-	public partial class C2C_GMInfoRequest: Object, ICenterActorRequest
+	public partial class C2R_GMInfoRequest: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -6663,9 +6594,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.C2C_GMInfoResponse)]
+	[Message(OuterOpcode.R2C_GMInfoResponse)]
 	[ProtoContract]
-	public partial class C2C_GMInfoResponse: Object, ICenterActorResponse
+	public partial class R2C_GMInfoResponse: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -6685,10 +6616,10 @@ namespace ET
 	}
 
 //GM后台指令
-	[ResponseType(nameof(C2C_GMCommonResponse))]
-	[Message(OuterOpcode.C2C_GMCommonRequest)]
+	[ResponseType(nameof(R2C_GMCommonResponse))]
+	[Message(OuterOpcode.C2R_GMCommonRequest)]
 	[ProtoContract]
-	public partial class C2C_GMCommonRequest: Object, ICenterActorRequest
+	public partial class C2R_GMCommonRequest: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -6704,9 +6635,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.C2C_GMCommonResponse)]
+	[Message(OuterOpcode.R2C_GMCommonResponse)]
 	[ProtoContract]
-	public partial class C2C_GMCommonResponse: Object, ICenterActorResponse
+	public partial class R2C_GMCommonResponse: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -10705,10 +10636,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Center2C_DeleteAccountResponse))]
-	[Message(OuterOpcode.C2Center_DeleteAccountRequest)]
+	[ResponseType(nameof(R2C_DeleteAccountResponse))]
+	[Message(OuterOpcode.C2R_DeleteAccountRequest)]
 	[ProtoContract]
-	public partial class C2Center_DeleteAccountRequest: Object, IRequest
+	public partial class C2R_DeleteAccountRequest: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -10721,71 +10652,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.Center2C_DeleteAccountResponse)]
+	[Message(OuterOpcode.R2C_DeleteAccountResponse)]
 	[ProtoContract]
-	public partial class Center2C_DeleteAccountResponse: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(Center2C_HotUpdatecompleteResponse))]
-	[Message(OuterOpcode.C2Center_HotUpdatecompleteRequest)]
-	[ProtoContract]
-	public partial class C2Center_HotUpdatecompleteRequest: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string OAID { get; set; }
-
-		[ProtoMember(2)]
-		public long Time { get; set; }
-
-	}
-
-	[Message(OuterOpcode.Center2C_HotUpdatecompleteResponse)]
-	[ProtoContract]
-	public partial class Center2C_HotUpdatecompleteResponse: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(Center2C_BlackAccountResponse))]
-	[Message(OuterOpcode.C2Center_BlackAccountRequest)]
-	[ProtoContract]
-	public partial class C2Center_BlackAccountRequest: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string Account { get; set; }
-
-		[ProtoMember(2)]
-		public string Password { get; set; }
-
-	}
-
-	[Message(OuterOpcode.Center2C_BlackAccountResponse)]
-	[ProtoContract]
-	public partial class Center2C_BlackAccountResponse: Object, IResponse
+	public partial class R2C_DeleteAccountResponse: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -10947,11 +10816,11 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Center2C_PhoneBinging))]
+	[ResponseType(nameof(R2C_PhoneBinging))]
 //手机号绑定
-	[Message(OuterOpcode.C2Center_PhoneBinging)]
+	[Message(OuterOpcode.C2R_PhoneBinging)]
 	[ProtoContract]
-	public partial class C2Center_PhoneBinging: Object, IRequest
+	public partial class C2R_PhoneBinging: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -10970,9 +10839,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.Center2C_PhoneBinging)]
+	[Message(OuterOpcode.R2C_PhoneBinging)]
 	[ProtoContract]
-	public partial class Center2C_PhoneBinging: Object, IResponse
+	public partial class R2C_PhoneBinging: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -12831,37 +12700,6 @@ namespace ET
 
 		[ProtoMember(5)]
 		public List<JiaYuanRecord> JiaYuanRecordList = new List<JiaYuanRecord>();
-
-	}
-
-	[ResponseType(nameof(A2C_TianQiResponse))]
-	[Message(OuterOpcode.C2A_TianQiRequest)]
-	[ProtoContract]
-	public partial class C2A_TianQiRequest: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.A2C_TianQiResponse)]
-	[ProtoContract]
-	public partial class A2C_TianQiResponse: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public int TianQiValue { get; set; }
 
 	}
 
@@ -15224,10 +15062,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_TikTokVerifyUser))]
-	[Message(OuterOpcode.C2A_TikTokVerifyUser)]
+	[ResponseType(nameof(R2C_TikTokVerifyUser))]
+	[Message(OuterOpcode.C2R_TikTokVerifyUser)]
 	[ProtoContract]
-	public partial class C2A_TikTokVerifyUser: Object, IRequest
+	public partial class C2R_TikTokVerifyUser: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -15243,9 +15081,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.A2C_TikTokVerifyUser)]
+	[Message(OuterOpcode.R2C_TikTokVerifyUser)]
 	[ProtoContract]
-	public partial class A2C_TikTokVerifyUser: Object, IResponse
+	public partial class R2C_TikTokVerifyUser: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -15301,10 +15139,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_TapTapAuther))]
-	[Message(OuterOpcode.C2A_TapTapAuther)]
+	[ResponseType(nameof(R2C_TapTapAuther))]
+	[Message(OuterOpcode.C2R_TapTapAuther)]
 	[ProtoContract]
-	public partial class C2A_TapTapAuther: Object, IRequest
+	public partial class C2R_TapTapAuther: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -15323,9 +15161,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.A2C_TapTapAuther)]
+	[Message(OuterOpcode.R2C_TapTapAuther)]
 	[ProtoContract]
-	public partial class A2C_TapTapAuther: Object, IResponse
+	public partial class R2C_TapTapAuther: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -16873,10 +16711,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2C_TikTokGetOpenId))]
-	[Message(OuterOpcode.C2A_TikTokGetOpenId)]
+	[ResponseType(nameof(R2C_TikTokGetOpenId))]
+	[Message(OuterOpcode.C2R_TikTokGetOpenId)]
 	[ProtoContract]
-	public partial class C2A_TikTokGetOpenId: Object, IRequest
+	public partial class C2R_TikTokGetOpenId: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -16895,9 +16733,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.A2C_TikTokGetOpenId)]
+	[Message(OuterOpcode.R2C_TikTokGetOpenId)]
 	[ProtoContract]
-	public partial class A2C_TikTokGetOpenId: Object, IResponse
+	public partial class R2C_TikTokGetOpenId: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -17051,10 +16889,10 @@ namespace ET
 
 ////////////////////////////////////////////////
 //#################一定要放在最后
-	[ResponseType(nameof(Center2C_BlackAccountResponse))]
-	[Message(OuterOpcode.C2Center_QueryAccountRequest)]
+	[ResponseType(nameof(R2C_QueryAccountResponse))]
+	[Message(OuterOpcode.C2R_QueryAccountRequest)]
 	[ProtoContract]
-	public partial class C2Center_QueryAccountRequest: Object, IRequest
+	public partial class C2R_QueryAccountRequest: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -17064,9 +16902,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.Center2C_QueryAccountResponse)]
+	[Message(OuterOpcode.R2C_QueryAccountResponse)]
 	[ProtoContract]
-	public partial class Center2C_QueryAccountResponse: Object, IResponse
+	public partial class R2C_QueryAccountResponse: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

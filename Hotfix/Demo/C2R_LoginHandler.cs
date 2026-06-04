@@ -41,8 +41,7 @@
 //			{
 //				CreateRoleListInfo roleList = new CreateRoleListInfo();
 
-//				D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { CharacterId = acc.UserList[i], Component = DBHelper.UserInfoComponent });
-//				UserInfoComponent userinfo = d2GGetUnit.Component as UserInfoComponent;
+//			
 
 //				roleList = Function_Role.GetInstance().GetRoleListInfo(userinfo.UserInfo, i, acc.UserList[i]);
 //				response.RoleLists.Add(roleList);

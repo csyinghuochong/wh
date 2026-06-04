@@ -84,7 +84,7 @@ namespace ET
                 }
 				if (message.GMMsg == "#nextweek")
 				{
-                    long centerid = DBHelper.GetCenterServerId();
+                    long centerid = DBHelper.GetRealmCenter();
                     A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                                  (centerid, new A2A_ActivityUpdateRequest() { Hour = -1 });
                 }

@@ -167,11 +167,6 @@ namespace ET
                             long activityID = player.ActivityServerID;
 							response = await ActorMessageSenderComponent.Instance.Call(activityID, iActivityRequest);
 						}
-						else if (actorRequest is ICenterActorRequest iGmActorRequest)
-						{
-							long gmServerID = player.CenterServerID;
-							response = await ActorMessageSenderComponent.Instance.Call(gmServerID, iGmActorRequest);
-						}
 						else if (actorRequest is ITeamActorRequest iTeamActorRequest)
 						{
 							long teamServerID = player.TeamServerID;

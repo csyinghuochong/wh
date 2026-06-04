@@ -48,14 +48,8 @@ namespace ET
 
         public static async ETTask InitServerInfo(this RankSceneComponent self)
         {
-            DBServerInfo dBServerInfo = null;
-            long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
             await TimerComponent.Instance.WaitAsync(TimeHelper.Second);
-            D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = self.DomainZone(), Component = DBHelper.DBServerInfo });
-            if (d2GGetUnit.Component != null)
-            {
-                dBServerInfo = d2GGetUnit.Component as DBServerInfo;
-            }
+            DBServerInfo dBServerInfo = await DBHelper.GetComponent<DBServerInfo>(self.DomainZone(), self.DomainZone());
             if (dBServerInfo == null)
             {
                 dBServerInfo = new DBServerInfo();
@@ -221,11 +215,10 @@ namespace ET
 
         public static async ETTask InitDBRankInfo(this RankSceneComponent self)
         {
-            long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
             await TimerComponent.Instance.WaitAsync(TimeHelper.Second);
-            D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = self.DomainZone(), Component = DBHelper.DBRankInfo });
-
-            if (d2GGetUnit.Component == null)
+           
+            DBRankInfo dbRankInfo = await DBHelper.GetComponent<DBRankInfo>(self.DomainZone(), self.DomainZone());
+            if (dbRankInfo== null)
             {
                 DBRankInfo dBRankInfo = new DBRankInfo();
                 dBRankInfo.Id = self.DomainZone();
@@ -233,7 +226,7 @@ namespace ET
             }
             else
             {
-                self.DBRankInfo = d2GGetUnit.Component as DBRankInfo;
+                self.DBRankInfo = dbRankInfo;
             }
             self.DBRankInfo.rankRunRace.Clear();
             self.DBRankInfo.rankingDemon.Clear();
@@ -251,46 +244,15 @@ namespace ET
                 rankingInfoList.Add(self.DBRankInfo.rankingInfos[i]);
             }
 
-            for (int i = rankingInfoList.Count - 1; i >= 0; i--)
-            {
-                RankingInfo rankingInfo = rankingInfoList[i];
-
-                Unit unit = UnitFactory.Create(self.DomainScene(), rankingInfo.UserId, UnitType.Player);
-                await DBHelper.AddDataComponent<UserInfoComponent>(unit, rankingInfo.UserId, DBHelper.UserInfoComponent);
-                await DBHelper.AddDataComponent<NumericComponent>(unit, rankingInfo.UserId, DBHelper.NumericComponent);
-                await DBHelper.AddDataComponent<TaskComponent>(unit, rankingInfo.UserId, DBHelper.TaskComponent);
-                await DBHelper.AddDataComponent<ShoujiComponent>(unit, rankingInfo.UserId, DBHelper.ShoujiComponent);
-                await DBHelper.AddDataComponent<BagComponent>(unit, rankingInfo.UserId, DBHelper.BagComponent);
-                await DBHelper.AddDataComponent<ChengJiuComponent>(unit, rankingInfo.UserId, DBHelper.ChengJiuComponent);
-                await DBHelper.AddDataComponent<PetComponent>(unit, rankingInfo.UserId, DBHelper.PetComponent);
-                await DBHelper.AddDataComponent<SkillSetComponent>(unit, rankingInfo.UserId, DBHelper.SkillSetComponent);
-                await DBHelper.AddDataComponent<EnergyComponent>(unit, rankingInfo.UserId, DBHelper.EnergyComponent);
-                await DBHelper.AddDataComponent<ActivityComponent>(unit, rankingInfo.UserId, DBHelper.ActivityComponent);
-                await DBHelper.AddDataComponent<RechargeComponent>(unit, rankingInfo.UserId, DBHelper.RechargeComponent);
-                await DBHelper.AddDataComponent<ReddotComponent>(unit, rankingInfo.UserId, DBHelper.ReddotComponent);
-                await DBHelper.AddDataComponent<TitleComponent>(unit, rankingInfo.UserId, DBHelper.TitleComponent);
-                await DBHelper.AddDataComponent<JiaYuanComponent>(unit, rankingInfo.UserId, DBHelper.JiaYuanComponent);
-                Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, false, false);
-
-                RankingInfo rankPetInfo = new RankingInfo();
-                UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-                rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
-                rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
-                rankPetInfo.PlayerLv = userInfoComponent.UserInfo.Lv;
-                rankPetInfo.Combat = userInfoComponent.UserInfo.Combat;
-                rankPetInfo.Occ = userInfoComponent.UserInfo.Occ;
-
-                self.OnRecvRankUpdate(unit.GetComponent<NumericComponent>().GetAsInt(NumericType.AcvitiyCamp), rankPetInfo);
-                unit.GetParent<UnitComponent>().Remove(unit.Id);
-            }
+            await ETTask.CompletedTask;
         }
 
         public static async ETTask SaveDB(this RankSceneComponent self)
         {
             long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
            
-            await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = self.DomainZone(), EntityByte = MongoHelper.ToBson(self.DBRankInfo), ComponentType = DBHelper.DBRankInfo });
-            await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = self.DomainZone(), EntityByte = MongoHelper.ToBson(self.DBServerInfo), ComponentType = DBHelper.DBServerInfo });
+            await DBHelper.SaveComponent(self.DomainZone(), self.DBRankInfo.Id, self.DBRankInfo);
+            await DBHelper.SaveComponent(self.DomainZone(),self.DBServerInfo.Id, self.DBServerInfo);
         }
 
         /// <summary>
