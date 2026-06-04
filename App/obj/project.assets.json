@@ -6914,11 +6914,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\GitLDYQReSkin\\Server\\App\\Server.App.csproj",
+      "projectUniqueName": "E:\\GiteeLDYQReSkin\\Server\\App\\Server.App.csproj",
       "projectName": "Server",
-      "projectPath": "E:\\GitLDYQReSkin\\Server\\App\\Server.App.csproj",
+      "projectPath": "E:\\GiteeLDYQReSkin\\Server\\App\\Server.App.csproj",
       "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-      "outputPath": "E:\\GitLDYQReSkin\\Server\\App\\obj\\",
+      "outputPath": "E:\\GiteeLDYQReSkin\\Server\\App\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -6935,8 +6935,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "E:\\GitLDYQReSkin\\Server\\Model\\Server.Model.csproj": {
-              "projectPath": "E:\\GitLDYQReSkin\\Server\\Model\\Server.Model.csproj"
+            "E:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj": {
+              "projectPath": "E:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj"
             }
           }
         }

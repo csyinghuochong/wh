@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EYg0bfYDYsM=",
+  "dgSpecHash": "lxLBcVZFmok=",
   "success": true,
-  "projectFilePath": "E:\\GitLDYQReSkin\\Server\\Hotfix\\Server.Hotfix.csproj",
+  "projectFilePath": "E:\\GiteeLDYQReSkin\\Server\\Hotfix\\Server.Hotfix.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LDYQ\\.nuget\\packages\\alibabacloud.endpointutil\\0.1.1\\alibabacloud.endpointutil.0.1.1.nupkg.sha512",
     "C:\\Users\\LDYQ\\.nuget\\packages\\alibabacloud.gatewayspi\\0.0.3\\alibabacloud.gatewayspi.0.0.3.nupkg.sha512",
