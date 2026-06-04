@@ -13,7 +13,6 @@ namespace ET
             ConfigData.AccountOldLogic = true;
             ConfigData.CleanSkill = true;
             ConfigData.PackageLimit = 500;
-
             Console.WriteLine($"AppStart_Init_Custom.CSkill: {ConfigData.CleanSkill}  {ConfigData.FunctionOpenIds.Count}");
         }
     }
