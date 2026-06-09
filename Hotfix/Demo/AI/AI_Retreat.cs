@@ -73,7 +73,7 @@ namespace ET
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.BossInCombat, 0);
                 unit.GetComponent<HeroDataComponent>().OnKillZhaoHuan(null);
                 unit.GetComponent<AttackRecordComponent>().ClearBeAttack();
-                haveStealth = AIHelp.GetNearestStealth(unit);
+                haveStealth = AIGetTargetHelp.GetNearestStealth(unit);
             }
            
             //boss 检测， 回撤的一瞬间周围有隐身单位， 至少五秒后才回血
@@ -99,7 +99,7 @@ namespace ET
                 if (timeRet && Vector3.Distance(bornVector3, unit.Position) < 0.5f && !unit.IsDisposed && serverNow > aiComponent.IsRetreat)
                 {
                     NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-                    if (aiComponent.SceneTypeEnum != SceneTypeEnum.TeamDungeon && numericComponent.GetAsInt(NumericType.Now_Dead) == 0)
+                    if (aiComponent.SceneTypeEnum != MapTypeEnum.TeamDungeon && numericComponent.GetAsInt(NumericType.Now_Dead) == 0)
                     {
                         long max_hp = numericComponent.GetAsLong(NumericType.Now_MaxHp);
                         numericComponent.ApplyValue(NumericType.Now_Hp, max_hp);

@@ -29,12 +29,14 @@ namespace ET
 
             int sonid = fubenCellInfoNext.sonid;
             unit.DomainScene().GetComponent<MapComponent>().SetSubLevel(sonid);
+            /*
             unit.DomainScene().GetComponent<MapComponent>().NavMeshId = ChapterSonConfigCategory.Instance.Get(sonid).MapID;
 
             unit.GetComponent<PathfindingComponent>().Update(ChapterSonConfigCategory.Instance.Get(sonid).MapID.ToString());
             Game.Scene.GetComponent<RecastPathComponent>().Update(ChapterSonConfigCategory.Instance.Get(sonid).MapID);
 
             ChapterSonConfig chapterSon = ChapterSonConfigCategory.Instance.Get(sonid);
+            
 
             //更新unit出生点坐标
             int[] borpos;
@@ -63,7 +65,7 @@ namespace ET
 
             //自己通知给周围人
             //UnitHelper.BroadcastCreateUnit(unit.DomainScene(), unit);
-
+*/
             reply();
             await ETTask.CompletedTask;
         }

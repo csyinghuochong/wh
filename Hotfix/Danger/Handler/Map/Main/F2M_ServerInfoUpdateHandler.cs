@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, F2M_ServerInfoUpdateRequest request, M2F_ServerInfoUpdateResponse response, Action reply)
         {
-            scene.GetComponent<ServerInfoComponent>().ServerInfo = request.ServerInfo;
+            //scene.GetComponent<ServerInfoComponent>().ServerInfo = request.ServerInfo;
             reply();
             await ETTask.CompletedTask;
         }

@@ -54,7 +54,7 @@ namespace ET
         {
             TimerComponent.Instance.Remove(ref self.Timer);
 
-            self.Timer = TimerComponent.Instance.NewRepeatedTimer(HappyHelper.ItemFreshTime, TimerType.HappyDungeonTimer, self);
+            self.Timer = TimerComponent.Instance.NewRepeatedTimer(HappyFubenConfig.ItemFreshTime, TimerType.HappyDungeonTimer, self);
 
             //先刷新一次
             self.OnTimer();
@@ -64,9 +64,9 @@ namespace ET
         {
             TimerComponent.Instance.Remove(ref self.Timer);
             Scene fubnescene = self.DomainScene();
-            Actor_TransferRequest actor_Transfer = new Actor_TransferRequest()
+            C2M_TransferRequest actor_Transfer = new C2M_TransferRequest()
             {
-                SceneType = SceneTypeEnum.MainCityScene,
+                SceneType = MapTypeEnum.MainCityScene,
             };
 
             await TimerComponent.Instance.WaitAsync(TimeHelper.Minute);
@@ -105,7 +105,7 @@ namespace ET
             int openDay = ServerHelper.GetOpenServerDay(false, self.DomainZone());
             int dropid = self.GetDropId(openDay);
 
-            for (int p = 0; p < HappyHelper.PositionList.Count; p++)
+            for (int p = 0; p < HappyFubenConfig.PositionList.Count; p++)
             {
                 //空格子的概率
                 if (RandomHelper.RandFloat01() < 0.3f)
@@ -137,7 +137,7 @@ namespace ET
                     dropComponent.SetItemInfo(rewardist[i].ItemID, rewardist[i].ItemNum);
                     dropComponent.CellIndex = p + 1;
                     dropitem.ConfigId = rewardist[i].ItemID;
-                    Vector3 vector3 = HappyHelper.PositionList[p];
+                    Vector3 vector3 = HappyFubenConfig.PositionList[p];
                     dropitem.Position = vector3;
                     dropitem.AddComponent<AOIEntity, int, Vector3>(2 * 1000, dropitem.Position);
                     dropComponent.DropType = 0;
@@ -145,7 +145,7 @@ namespace ET
             }
 
             List<Unit> unitlist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
-            self.M2C_HappyInfoResult.NextRefreshTime = TimeHelper.ServerNow() + HappyHelper.ItemFreshTime;
+            self.M2C_HappyInfoResult.NextRefreshTime = TimeHelper.ServerNow() + HappyFubenConfig.ItemFreshTime;
             MessageHelper.SendToClient(unitlist, self.M2C_HappyInfoResult);
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -352,7 +352,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (config.EnterLv <= lv && config.Id < ConfigHelper.GMDungeonId)
+                if (config.EnterLv <= lv && config.Id < CommonConfig.GMDungeonId)
                 {
                     openfubenids.Add(fubenid);
                 }
@@ -431,7 +431,6 @@ namespace ET
         public static int CheckGiveItemTask (this TaskComponent self, int TargetType, int[] Target, int[] TargetValue, long BagInfoID, TaskPro taskPro)
         {
             //收集道具的任务
-            
             if (TargetType == (int)TaskTargetType.ItemID_Number_2)
             {
                 BagComponent bagComponent = self.GetParent<Unit>().GetComponent<BagComponent>();
@@ -510,7 +509,7 @@ namespace ET
                 }
 
                 int dropId = 0;
-                ConfigHelper.WeekTaskDrop.TryGetValue(weekTaskNumber, out dropId);
+                CommonConfig.WeekTaskDrop.TryGetValue(weekTaskNumber, out dropId);
                 if (dropId > 0)
                 {
                     List<RewardItem> droplist = new List<RewardItem>();
@@ -528,7 +527,7 @@ namespace ET
                 }
 
                 int dropId = 0;
-                ConfigHelper.RingTaskDrop.TryGetValue(ringTaskNumber, out dropId);
+                CommonConfig.RingTaskDrop.TryGetValue(ringTaskNumber, out dropId);
                 if (dropId > 0)
                 {
                     List<RewardItem> droplist = new List<RewardItem>();
@@ -597,8 +596,8 @@ namespace ET
             float cofficoin = 1f;
             if (taskConfig.Development == 1)
             {
-                coffiexp = ComHelp.GetTaskExpRewardCof(userInfoComponent.UserInfo.Lv );
-                cofficoin = ComHelp.GetTaskCoinRewardCof(userInfoComponent.UserInfo.Lv);
+                coffiexp = CommonHelper.GetTaskExpRewardCof(userInfoComponent.UserInfo.Lv );
+                cofficoin = CommonHelper.GetTaskCoinRewardCof(userInfoComponent.UserInfo.Lv);
             }
 
             int TaskExp = (int)(taskConfig.TaskExp * coffiexp);
@@ -817,7 +816,7 @@ namespace ET
         {
             self.TriggerTaskCountryEvent(TaskTargetType.OnLineTime_1010, 0, 1);
 
-            if (self.DomainScene().GetComponent<MapComponent>().SceneTypeEnum == SceneTypeEnum.Battle)
+            if (self.DomainScene().GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.Battle)
             {
                 self.TriggerTaskCountryEvent(TaskTargetType.BattleExist_1103, 0, 1);
             }
@@ -905,12 +904,12 @@ namespace ET
             if (bekill == null || bekill.IsDisposed)
                 return;
 
-            if (bekill.Type == UnitType.Player && sceneType == SceneTypeEnum.Battle)
+            if (bekill.Type == UnitType.Player && sceneType == MapTypeEnum.Battle)
             {
                 self.TriggerTaskCountryEvent(TaskTargetType.BattleKillPlayer_1102, 0, 1);
                 bekill.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.BattleDead_1104, 0, 1);
             }
-            if (bekill.Type == UnitType.Player && sceneType == SceneTypeEnum.UnionRace)
+            if (bekill.Type == UnitType.Player && sceneType == MapTypeEnum.UnionRace)
             {
                 self.TriggerTaskCountryEvent(TaskTargetType.UnionRaceKill_1301, 0, 1);
                 self.UpdateUnionRaceRank().Coroutine();
@@ -928,11 +927,11 @@ namespace ET
                 MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
                 int fubenDifficulty = FubenDifficulty.None;
                 Scene DomainScene = self.GetParent<Unit>().DomainScene();
-                if (mapComponent.SceneTypeEnum == (int)SceneTypeEnum.CellDungeon)
+                if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
                 {
                     fubenDifficulty = DomainScene.GetComponent<CellDungeonComponent>().FubenDifficulty;
                 }
-                if (mapComponent.SceneTypeEnum == (int)SceneTypeEnum.LocalDungeon)
+                if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                 {
                     fubenDifficulty = DomainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
                 }
@@ -1161,11 +1160,11 @@ namespace ET
                 self.TriggerTaskCountryEvent(TaskTargetType.GetItemNumber_142, itemId, itemNumber);
             }
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(itemId);
-            if (itemConfig.ItemType == ItemTypeEnum.Equipment && itemConfig.ItemQuality >= 5)
+            Item Item = ItemCategory.Instance.Get(itemId);
+            if (Item.ItemType == ItemTypeEnum.Equipment && Item.Quality >= 5)
             {
-                self.TriggerTaskEvent(TaskTargetType.GetOrangeEquip_139, itemConfig.UseLv, 1);
-                self.TriggerTaskCountryEvent(TaskTargetType.GetOrangeEquip_139, itemConfig.UseLv, 1);
+                self.TriggerTaskEvent(TaskTargetType.GetOrangeEquip_139, Item.UseLv, 1);
+                self.TriggerTaskCountryEvent(TaskTargetType.GetOrangeEquip_139, Item.UseLv, 1);
             }
         }
 
@@ -1242,7 +1241,7 @@ namespace ET
                     self.TriggerTaskEvent(TaskTargetType.MineHaveNumber_401, mineid, 1);
                 }
 
-                bool hexin = ComHelp.IsHexinMine(petMingPlayers[i].MineType, petMingPlayers[i].Postion, extends);
+                bool hexin = CommonHelper.IsHexinMine(petMingPlayers[i].MineType, petMingPlayers[i].Postion, extends);
                 if (hexin)
                 {
                     self.TriggerTaskCountryEvent(TaskTargetType.MineHaveNumber_401, 0, 1);
@@ -1632,7 +1631,7 @@ namespace ET
         public static void UpdateTargetTask(this TaskComponent self, bool notice)
         {
             int createDay = self.GetParent<Unit>().GetComponent<UserInfoComponent>().GetCrateDay();
-            if (createDay == 0 || createDay > ConfigHelper.WelfareTaskList.Count)
+            if (createDay == 0 || createDay > CommonConfig.WelfareTaskList.Count)
             {
                 return;
             }
@@ -1641,7 +1640,7 @@ namespace ET
             List<int> taskids = new List<int>();
             for (int i = 0; i < createDay; i++)
             {
-                taskids.AddRange(ConfigHelper.WelfareTaskList[i]);
+                taskids.AddRange(CommonConfig.WelfareTaskList[i]);
             }
             for (int i = 0; i < taskids.Count; i++)
             {
@@ -1846,7 +1845,7 @@ namespace ET
 
         public static void InitActivityWeekTask(this TaskComponent self, bool notice)
         {
-            if (!ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_WeeklyTask))
+            if (!ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_WeeklyTask))
             {
                 return;
             }
@@ -1922,7 +1921,7 @@ namespace ET
                 }
             }
 
-            if (ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_WeeklyTask))
+            if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_WeeklyTask))
             {
                 taskCountryList = TaskHelper.GetActivityV1Task(unit, 121);
                 for (int i = 0; i < taskCountryList.Count; i++)

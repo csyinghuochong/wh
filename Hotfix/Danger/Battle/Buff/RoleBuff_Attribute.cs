@@ -45,7 +45,7 @@ namespace ET
             if (!this.IsTrigger && this.PassTime >= this.DelayTime)
             {
                 ///移动才触发
-                if (this.mBuffConfig.MoveAction == 1)
+                if (this.MBuff.MoveAction == 1)
                 {
                     MoveComponent moveComponent = this.TheUnitBelongto.GetComponent<MoveComponent>();
                     if (moveComponent != null && !moveComponent.IsArrived())
@@ -77,9 +77,9 @@ namespace ET
             int buffindex = 0;
 
             BuffManagerComponent buffManagerComponent = this.TheUnitBelongto.GetComponent<BuffManagerComponent>();
-            if (this.mBuffConfig.BuffAddSync == 1 &&  this.mBuffConfig.buffParameterType == 3001 )
+            if (this.MBuff.BuffAddSync == 1 &&  this.MBuff.buffParameterType == 3001 )
             {
-                buffNumber = buffManagerComponent.GetBuffSourceNumber(0, this.mBuffConfig.Id);
+                buffNumber = buffManagerComponent.GetBuffSourceNumber(0, this.MBuff.Id);
                 buffindex = buffManagerComponent.GetBuffIndexById(this);
                 if (buffindex > 0)
                 {
@@ -87,21 +87,21 @@ namespace ET
                 }
             }
 
-            switch (this.mBuffConfig.BuffType)
+            switch (this.MBuff.BuffType)
             {
                 //属性类buff
                 case 1:
-                    int  NowBuffParameterType = this.mBuffConfig.buffParameterType;
-                    float NowBuffParameterValue = (float)this.mBuffConfig.buffParameterValue * buffNumber + this.GetTianfuProAdd((int)BuffAttributeEnum.AddParameterValue);
-                    int NowBuffParameterValueType = this.mBuffConfig.buffParameterValueType;
+                    int  NowBuffParameterType = this.MBuff.buffParameterType;
+                    float NowBuffParameterValue = (float)this.MBuff.buffParameterValue * buffNumber + this.GetTianfuProAdd((int)BuffAttributeEnum.AddParameterValue);
+                    int NowBuffParameterValueType = this.MBuff.buffParameterValueType;
                     
-                    int ValueType = this.mBuffConfig.buffParameterValueDef;      //0 表示整数  1表示浮点数
+                    int ValueType = this.MBuff.buffParameterValueDef;      //0 表示整数  1表示浮点数
                     //乘法算法
                     if (NowBuffParameterValueType != 0)
                     {
                         ValueType = NumericHelp.GetNumericValueType(NowBuffParameterValueType);
                         //临时代吗
-                        if (this.mBuffConfig.buffParameterValue < 1 && this.mBuffConfig.buffParameterValueType == 1002)  
+                        if (this.MBuff.buffParameterValue < 1 && this.MBuff.buffParameterValueType == 1002)  
                         {
                             ValueType = 1;
                         }
@@ -138,27 +138,11 @@ namespace ET
                         {
                             nowdamgeType = 0;
                         }
-
-
-                        long attackId = 0;
-                        if ( NowBuffParameterType == NumericType.Now_Hp && this.NowBuffValue > 0 && GMHelp.DebugPlayerList.ContainsKey(this.TheUnitFrom.Id))
-                        {
-                            Log.Warning($"玩家({GMHelp.DebugPlayerList[this.TheUnitFrom.Id]})，   回血:{this.NowBuffValue}. skillid: {this.mSkillConf.SkillName}  buffid：{this.mBuffConfig.BuffName}");
-                        }
-                        if (this.TheUnitFrom.Type == UnitType.Player && this.TheUnitFrom.GetComponent<AttackRecordComponent>() != null)
-                        {
-                            attackId = this.TheUnitFrom.GetComponent<AttackRecordComponent>().AttackingId;
-                        }
-                        if (NowBuffParameterType == NumericType.Now_Hp && this.NowBuffValue > 0 && GMHelp.DebugPlayerList.ContainsKey(attackId))
-                        {
-                            Log.Warning($"玩家({GMHelp.DebugPlayerList[attackId]})对手 回血:{this.NowBuffValue}. skillid: {this.mSkillConf.SkillName}  buffid：{this.mBuffConfig.BuffName}  {this.TheUnitFrom.Id}");
-                        }
-
                         heroCom.ApplyChange(TheUnitFrom, NumericType.Now_Hp, (long)this.NowBuffValue, 0, true, nowdamgeType);
                     }
                     else if (NowBuffParameterType == 3164)
                     {
-                        heroCom.ApplyChange(TheUnitFrom, NumericType.CardTransform, (int)(this.mBuffConfig.buffParameterValue), 0, true, 0);
+                        heroCom.ApplyChange(TheUnitFrom, NumericType.CardTransform, (int)(this.MBuff.buffParameterValue), 0, true, 0);
                     }
                     else if (NowBuffParameterType == 3134)
                     {
@@ -179,20 +163,18 @@ namespace ET
                         }
                     }
                     break;
-
                 //状态类buff
                 case 2:
-                    NowBuffParameterType = this.mBuffConfig.buffParameterType;
+                    NowBuffParameterType = this.MBuff.buffParameterType;
                     long sta = (1 << NowBuffParameterType);
                     this.TheUnitBelongto.GetComponent<StateComponent>().StateTypeAdd(sta);
                     break;
-
                 case 3: //释放技能 
                     //buff來源者再次釋放技能
                     if (!this.TheUnitFrom.IsDisposed)
                     {
                         C2M_SkillCmd cmd = new C2M_SkillCmd();
-                        cmd.SkillID = this.mBuffConfig.buffParameterType;
+                        cmd.SkillID = this.MBuff.buffParameterType;
                         cmd.TargetID = this.TheUnitBelongto.Id;
                         Vector3 direction = this.TheUnitBelongto.Position - this.TheUnitFrom.Position;
                         float ange = Mathf.Rad2Deg(Mathf.Atan2(direction.x, direction.z));
@@ -209,11 +191,11 @@ namespace ET
                     }
                     break;
                 case 4:
-                    this.TheUnitBelongto.GetComponent<SkillPassiveComponent>().AddPassiveSkill(this.mBuffConfig.buffParameterType);
+                    this.TheUnitBelongto.GetComponent<SkillPassiveComponent>().AddPassiveSkill(this.MBuff.buffParameterType);
                     break;
                 case 5:  //驱散
                     //(buffParameterValue2  ) 需要提前解析要移除的buffid。拓展SkillBuffConfig 放在ConfigPartial
-                    List<int> relieveBuffs = SkillBuffConfigCategory.Instance.GetRelieveBuffs(this.mBuffConfig.Id);
+                    List<int> relieveBuffs = SkillBuffCategory.Instance.GetRelieveBuffs(this.MBuff.Id);
                     if (relieveBuffs != null && relieveBuffs.Count > 0)
                     {
                         foreach (int buffId in relieveBuffs)
@@ -226,9 +208,9 @@ namespace ET
                     if (this.TheUnitBelongto.Type == UnitType.Player)
                     {
                         using var list = ListComponent<int>.Create();
-                        if (!ComHelp.IfNull(this.mBuffConfig.buffParameterValue2))
+                        if (!CommonHelper.IfNull(this.MBuff.buffParameterValue2))
                         {
-                            string[] skillinfos = this.mBuffConfig.buffParameterValue2.Split(';');
+                            string[] skillinfos = this.MBuff.buffParameterValue2.Split(';');
                             for (int i = 0; i <skillinfos.Length; i++)
                             {
                                 list.Add(int.Parse(skillinfos[i]) );
@@ -258,11 +240,11 @@ namespace ET
             }
 
             //移除相关属性
-            switch (this.mBuffConfig.BuffType)
+            switch (this.MBuff.BuffType)
             {
                 case 1:
                     //Log.Debug("执行buff移除属性...");
-                    int NowBuffParameterType = this.mBuffConfig.buffParameterType;
+                    int NowBuffParameterType = this.MBuff.buffParameterType;
                     if (NowBuffParameterType == 3001)
                     {
                         //血量不进行移除
@@ -277,7 +259,7 @@ namespace ET
                     }
                     else
                     {
-                        int ValueType = this.mBuffConfig.buffParameterValueDef;      //0 表示整数  1表示浮点数
+                        int ValueType = this.MBuff.buffParameterValueDef;      //0 表示整数  1表示浮点数
 
                         //整数
                         if (ValueType == 0)
@@ -293,11 +275,11 @@ namespace ET
                     }
                     break;
                 case 2:
-                    NowBuffParameterType = this.mBuffConfig.buffParameterType;
+                    NowBuffParameterType = this.MBuff.buffParameterType;
                     this.TheUnitBelongto.GetComponent<StateComponent>().StateTypeRemove(1<<NowBuffParameterType);
                     break;
                 case 4:
-                    this.TheUnitBelongto.GetComponent<SkillPassiveComponent>().RemovePassiveSkill(this.mBuffConfig.buffParameterType);
+                    this.TheUnitBelongto.GetComponent<SkillPassiveComponent>().RemovePassiveSkill(this.MBuff.buffParameterType);
                     break;
                 case 7:
                     break;

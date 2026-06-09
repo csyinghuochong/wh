@@ -193,13 +193,13 @@ namespace ET
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
             int sceneId = mapComponent.SceneId;
 
-            if (mapComponent.SceneTypeEnum == SceneTypeEnum.BaoZang)
+            if (mapComponent.MapTypeEnum == MapTypeEnum.BaoZangZhiDi)
             {
                 self.OnBaoZangMonster(openDay);
             }
 
-            Dictionary<int, FuntionConfig> keyValuePairs = FuntionConfigCategory.Instance.GetAll();
-            foreach (( int functionId, FuntionConfig FuntionConfig ) in keyValuePairs)
+            Dictionary<int, FunctionConfig> keyValuePairs = FunctionConfigCategory.Instance.GetAll();
+            foreach (( int functionId, FunctionConfig FuntionConfig ) in keyValuePairs)
             { 
                 if (sceneId == 0 || sceneId != FuntionConfig.SceneId )
                 {
@@ -284,7 +284,7 @@ namespace ET
         /// <param name="fubenDifficulty"></param>
         public static void CreateMonsterList(this YeWaiRefreshComponent self, string createMonster)
         {
-            if (ComHelp.IfNull(createMonster))
+            if (CommonHelper.IfNull(createMonster))
             {
                 return;
             }
@@ -358,7 +358,7 @@ namespace ET
         /// <param name="fubenDifficulty"></param>
         public static void CreateMonsterList_2(this YeWaiRefreshComponent self, string createMonster)
         {
-            if (ComHelp.IfNull(createMonster))
+            if (CommonHelper.IfNull(createMonster))
             {
                 return;
             }
@@ -472,7 +472,7 @@ namespace ET
             long time = TimeHelper.ServerNow() + self.RandomTime;
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
 
-            if (!self.LogTest && mapComponent.SceneTypeEnum == SceneTypeEnum.BaoZang)
+            if (!self.LogTest && mapComponent.MapTypeEnum == MapTypeEnum.BaoZangZhiDi)
             {
                 self.LogTest = true;
                 //self.BaozangzhiRefresh();
@@ -492,7 +492,7 @@ namespace ET
                 {
                     self.RefreshMonsters.RemoveAt(i);
 
-                    if (mapComponent.SceneTypeEnum == SceneTypeEnum.BaoZang)
+                    if (mapComponent.MapTypeEnum == MapTypeEnum.BaoZangZhiDi)
                     {
                         Log.Debug($" self.RefreshMonsters.RemoveAt : {i}");
                     }
@@ -515,16 +515,16 @@ namespace ET
             Vector3 form = new Vector3(refreshMonster.PositionX, refreshMonster.PositionY, refreshMonster.PositionZ);
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
 
-            if (mapComponent.SceneTypeEnum == SceneTypeEnum.UnionRace)
+            if (mapComponent.MapTypeEnum == MapTypeEnum.UnionRace)
             {
                 Log.Warning($"refreshMonster.UnionRace: {refreshMonster.MonsterId}");
             }
 
-            if (mapComponent.SceneTypeEnum == SceneTypeEnum.MiJing && monsterConfig.MonsterType == MonsterTypeEnum.Boss)
+            if (mapComponent.MapTypeEnum == MapTypeEnum.MiJing && monsterConfig.MonsterType == MonsterTypeEnum.Boss)
             {
                 self.DomainScene().GetComponent<MiJingComponent>().BossId = refreshMonster.MonsterId;
 
-                if (!ComHelp.IsBanHaoZone(self.DomainZone()) && DBHelper.GetOpenServerDay(self.DomainZone()) > 0)
+                if (!CommonHelper.IsBanHaoZone(self.DomainZone()) && DBHelper.GetOpenServerDay(self.DomainZone()) > 0)
                 {
                     long robotSceneId = DBHelper.GetRobotServerId();
                     MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest()
@@ -537,7 +537,7 @@ namespace ET
             }
 
             int monsterNumber = UnitHelper.GetUnitListByCamp(self.GetParent<Scene>(), UnitType.Monster, monsterConfig.MonsterCamp).Count;
-            if (mapComponent.SceneTypeEnum == SceneTypeEnum.Battle)
+            if (mapComponent.MapTypeEnum == MapTypeEnum.Battle)
             {
                 if (monsterConfig.MonsterSonType != 55 && monsterConfig.MonsterSonType != 56
                     && monsterNumber >= GlobalValueConfigCategory.Instance.Get(59).Value2)
@@ -545,9 +545,9 @@ namespace ET
                     return;
                 }
             }
-            else if (mapComponent.SceneTypeEnum == SceneTypeEnum.BaoZang)
+            else if (mapComponent.MapTypeEnum == MapTypeEnum.BaoZangZhiDi)
             {
-                if (!ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_NewYearMonster))
+                if (!ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_NewYearMonster))
                 {
                     if (refreshMonster.MonsterId == 72009001 || refreshMonster.MonsterId == 72009002)
                     {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -41,8 +41,8 @@ namespace ET
                     {
                         continue;  
                     }
-                    ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-                    string huishouItem = itemConfig.HuiShouGetItem;
+                    Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+                    string huishouItem = Item.HuiShouGetItem;
                     if (huishouItem.Length == 0 || string.IsNullOrEmpty(huishouItem))
                     {
                         continue;

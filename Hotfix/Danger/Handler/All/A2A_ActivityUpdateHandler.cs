@@ -79,7 +79,7 @@ namespace ET
                         PrintAllEntity();
                     }
                     
-                    if (ComHelp.IsInnerNet())
+                    if (CommonHelper.IsInnerNet())
                     {
                         //TestSmss(scene).Coroutine();
                         //TestSmssNew(scene).Coroutine();
@@ -142,20 +142,10 @@ namespace ET
                             }
                         }
 
-                        for (int i = 0; i < ConfigHelper.TurtleList.Count; i++)
+                        for (int i = 0; i < CommonConfig.TurtleList.Count; i++)
                         {
-                            UnitFactory.CreateNpc(scene, ConfigHelper.TurtleList[i], Vector3.zero);
+                            UnitFactory.CreateNpc(scene, CommonConfig.TurtleList[i], Vector3.zero);
                         }
-                    }
-                    break;
-                case SceneType.Happy:
-                    if (request.FunctionId == 1055 && request.FunctionType == 1)
-                    {
-                        scene.GetComponent<HappySceneComponent>().OnHappyBegin();
-                    }
-                    if (request.FunctionId == 1055 && request.FunctionType == 2)
-                    {
-                        scene.GetComponent<HappySceneComponent>().OnHappyOver();
                     }
                     break;
                 case SceneType.Rank:
@@ -192,12 +182,20 @@ namespace ET
                         scene.GetComponent<RankSceneComponent>().OnDemonOver().Coroutine();
                     }
                     break;
-                case SceneType.Arena:
+                case SceneType.FubenWork:
                     //Log.Console($"Arena定时刷新: {scene.DomainZone()} {hour}");
                     LogHelper.LogWarning($"Arena定时刷新: {scene.DomainZone()} {hour}", true);
                     if (hour == 0)
                     {
                         scene.GetComponent<ArenaSceneComponent>().OnZeroClockUpdate();
+                    }
+                    if (request.FunctionId == 1055 && request.FunctionType == 1)
+                    {
+                        scene.GetComponent<HappySceneComponent>().OnHappyBegin();
+                    }
+                    if (request.FunctionId == 1055 && request.FunctionType == 2)
+                    {
+                        scene.GetComponent<HappySceneComponent>().OnHappyOver();
                     }
                     break;
                 case SceneType.Union:
@@ -223,24 +221,6 @@ namespace ET
                         //scene.GetComponent<UnionSceneComponent>().OnUnionRaceOver().Coroutine();
                     }
                     break;
-                case SceneType.Battle:
-                    //Log.Console($"Battle定时刷新: {scene.DomainZone()} {hour}");
-                    LogHelper.LogWarning($"Battle定时刷新: {scene.DomainZone()} {hour}", true);
-                    if (hour == 0)
-                    {
-                        scene.GetComponent<BattleSceneComponent>().OnZeroClockUpdate();
-                    }
-                    if (request.FunctionId == 1025 && request.FunctionType == 1)
-                    {
-                        //Log.Console("OnBattleOpen");
-                        scene.GetComponent<BattleSceneComponent>().OnBattleOpen();
-                    }
-                    if (request.FunctionId == 1025 && request.FunctionType == 2)
-                    {
-                        // Log.Console("OnBattleOver");
-                        scene.GetComponent<BattleSceneComponent>().OnBattleOver().Coroutine();
-                    }
-                    break;
                 case SceneType.PaiMai:
                     //更新快捷购买列表价格
                     //Log.Console($"PaiMai定时刷新: {scene.DomainZone()} {hour}");
@@ -255,17 +235,6 @@ namespace ET
                     //{
                     //    scene.GetComponent<DBCacheComponent>().CheckUnitCacheList();
                     //}
-                    break;
-                case SceneType.Solo:
-
-                    if (request.FunctionId == 1045 && request.FunctionType == 1)
-                    {
-                        scene.GetComponent<SoloSceneComponent>().OnSoloBegin().Coroutine();
-                    }
-                    if (request.FunctionId == 1045 && request.FunctionType == 2)
-                    {
-                        scene.GetComponent<SoloSceneComponent>().OnSoloOver().Coroutine();
-                    }
                     break;
                 case SceneType.FubenCenter:
                     if (hour == 0)
@@ -289,6 +258,28 @@ namespace ET
                         //Log.Console($"DisposeFuben.{request.FunctionId}");
                         FubenCenterComponent fubenCenter = scene.GetComponent<FubenCenterComponent>();
                         fubenCenter.OnActivityClose(request.FunctionId);
+                    }
+                    if (hour == 0)
+                    {
+                        scene.GetComponent<BattleSceneComponent>().OnZeroClockUpdate();
+                    }
+                    if (request.FunctionId == 1025 && request.FunctionType == 1)
+                    {
+                        //Log.Console("OnBattleOpen");
+                        scene.GetComponent<BattleSceneComponent>().OnBattleOpen();
+                    }
+                    if (request.FunctionId == 1025 && request.FunctionType == 2)
+                    {
+                        // Log.Console("OnBattleOver");
+                        scene.GetComponent<BattleSceneComponent>().OnBattleOver().Coroutine();
+                    }
+                    if (request.FunctionId == 1045 && request.FunctionType == 1)
+                    {
+                        scene.GetComponent<SoloSceneComponent>().OnSoloBegin().Coroutine();
+                    }
+                    if (request.FunctionId == 1045 && request.FunctionType == 2)
+                    {
+                        scene.GetComponent<SoloSceneComponent>().OnSoloOver().Coroutine();
                     }
                     break;
                 case SceneType.Realm:

@@ -37,7 +37,7 @@ namespace ET
                 float range = 0f;
                 int number = 0;
 
-                monsterId = ConfigHelper.DefeatedBossIds[userInfo.DefeatedBossIds[RandomHelper.RandomNumber(0, userInfo.DefeatedBossIds.Count)]];
+                monsterId = CommonConfig.DefeatedBossIds[userInfo.DefeatedBossIds[RandomHelper.RandomNumber(0, userInfo.DefeatedBossIds.Count)]];
 
                 try
                 {
@@ -63,7 +63,7 @@ namespace ET
                 {
                     long id = unitInfoComponent.ZhaohuanIds[i];
                     Unit unit = unitComponent.Get(id);
-                    if (unit == null || !ConfigHelper.DefeatedBossIds.ContainsValue(unit.ConfigId))
+                    if (unit == null || !CommonConfig.DefeatedBossIds.ContainsValue(unit.ConfigId))
                     {
                         continue;
                     }

@@ -87,7 +87,7 @@ namespace ET
             }
 
             MapComponent mapComponent = attack.DomainScene().GetComponent<MapComponent>();
-            if (!SceneConfigHelper.UseSceneConfig(mapComponent.SceneTypeEnum))
+            if (!SceneConfigHelper.UseSceneConfig(mapComponent.MapTypeEnum))
             {
                 return;
             }
@@ -511,7 +511,7 @@ namespace ET
             }
 
             //等级线
-            ServerInfo serverInfo = unit.DomainScene().GetComponent<ServerInfoComponent>().ServerInfo;
+            ServerInfo serverInfo = ConfigData.ServerInfoList[unit.DomainZone()];
             if (userInfo.UserInfo.Lv > serverInfo.WorldLv) 
             {
                 LogHelper.ZuobiInfo("玩家等级超过服务器等级限制:" + userInfo.UserInfo.Lv + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.UserInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));

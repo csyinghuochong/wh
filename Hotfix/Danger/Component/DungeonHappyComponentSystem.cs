@@ -52,7 +52,7 @@ namespace ET
             int openDay = ServerHelper.GetOpenServerDay(false, self.DomainZone());
             int dropid = self.GetDropId(openDay);
 
-            for (int p = 0; p < HappyHelper.PositionList.Count; p++)
+            for (int p = 0; p < HappyFubenConfig.PositionList.Count; p++)
             {
                 //空格子的概率
                 if (RandomHelper.RandFloat01() < 0.3f)
@@ -84,7 +84,7 @@ namespace ET
                     dropComponent.SetItemInfo(rewardist[i].ItemID, rewardist[i].ItemNum);
                     dropComponent.CellIndex = p + 1;
 
-                    Vector3 vector3 = HappyHelper.PositionList[p];
+                    Vector3 vector3 = HappyFubenConfig.PositionList[p];
                     dropitem.Position = vector3;
                     dropitem.ConfigId = rewardist[i].ItemID;
                     dropitem.AddComponent<AOIEntity, int, Vector3>(2 * 1000, dropitem.Position);

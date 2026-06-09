@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace ET
@@ -23,8 +23,8 @@ namespace ET
                 return;
             }
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
-            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / itemConfig.ItemPileSum);
+            Item Item = ItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
+            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / Item.ItemPileSum);
             if (unit.GetComponent<BagComponent>().GetBagLeftCell() < cell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;

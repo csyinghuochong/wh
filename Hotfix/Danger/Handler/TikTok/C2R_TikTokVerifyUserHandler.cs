@@ -24,7 +24,7 @@ namespace ET
 
                 string result = HttpHelper.OnWebRequestPost_TikTokLogin("https://usdk.dailygn.com/gsdk/usdk/account/verify_user", paramslist);
 
-                if (ComHelp.IsInnerNet())
+                if (CommonHelper.IsInnerNet())
                 {
                     result = "{\"code\":0,\"data\":{\"age_type\":100,\"log_id\":\"20231121162107BEDB3B3662AD2265532E\",\"sdk_open_id\":\"7303474616922905310\"},\"log_id\":\"20231121162107BEDB3B3662AD2265532E\",\"message\":\"success\"}";
                 }

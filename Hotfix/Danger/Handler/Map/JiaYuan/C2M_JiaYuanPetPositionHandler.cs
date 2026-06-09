@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanPetPositionRequest request, M2C_JiaYuanPetPositionResponse response, Action reply)
         {
-            if (unit.DomainScene().GetComponent<MapComponent>().SceneTypeEnum != SceneTypeEnum.JiaYuan)
+            if (unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum != MapTypeEnum.JiaYuan)
             {
                 reply();
                 return;
@@ -37,7 +37,7 @@ namespace ET
                 }
                 if (units[i].Type == UnitType.Monster)
                 {
-                    if (!ConfigHelper.JiaYuanMonster.ContainsKey(  units[i].ConfigId))
+                    if (!CommonConfig.JiaYuanMonster.ContainsKey(  units[i].ConfigId))
                     {
                         continue;
                     }

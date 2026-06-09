@@ -17,17 +17,18 @@ namespace ET
             }
 
             //判断品质
-            ItemConfig itemConfig_0 = ItemConfigCategory.Instance.Get(bagInfo_1.ItemID);
-            ItemConfig itemConfig_1 = ItemConfigCategory.Instance.Get(bagInfo_2.ItemID);
+            Item itemConfig_0 = ItemCategory.Instance.Get(bagInfo_1.ItemID);
+            Item itemConfig_1 = ItemCategory.Instance.Get(bagInfo_2.ItemID);
 
-            if (itemConfig_0.EquipType > 100)
+            int equipType = ItemHelper.GetNewEquipType(bagInfo_1);
+            if (equipType > 100)
             {
                 response.Error = ErrorCode.ERR_ItemUseError;
                 reply();
                 return;
             }
             
-            if (itemConfig_1.EquipType > 100)
+            if (equipType > 100)
             {
                 response.Error = ErrorCode.ERR_ItemUseError;
                 reply();
@@ -46,13 +47,13 @@ namespace ET
 
 
             //绑定装备无法转移(客户端已经给出对应提示)
-            if (bagInfo_1.isBinging == true && bagInfo_2.isBinging == false && itemConfig_1.ItemQuality == 4)
+            if (bagInfo_1.isBinging == true && bagInfo_2.isBinging == false && itemConfig_1.Quality == 4)
             {
                 bagInfo_2.isBinging = true;
             }
 
             //紫色品质以上才可以转移
-            if (itemConfig_0.ItemQuality < 4 || itemConfig_1.ItemQuality < 4)
+            if (itemConfig_0.Quality < 4 || itemConfig_1.Quality < 4)
             {
                 reply();
                 return;

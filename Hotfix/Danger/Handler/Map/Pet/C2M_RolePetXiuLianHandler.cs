@@ -17,7 +17,7 @@ namespace ET
             }
 
             int xiuLianId = request.XiuLianId;
-            PetXiuLianConfig xiulianconf = PetXiuLianConfigCategory.Instance.Get(xiuLianId);
+            /*PetXiuLianConfig xiulianconf = PetXiuLianConfigCategory.Instance.Get(xiuLianId);
             int costGoldNum = xiulianconf.CostMoney;
             string costItemNum = xiulianconf.CostItem;
             string xiulianGaiLv = xiulianconf.SuccessPro;
@@ -29,13 +29,13 @@ namespace ET
                 //string nowlangStr = Game_PublicClassVar.Get_gameSettingLanguge.LoadLocalization("hint_444");
                 //Game_PublicClassVar.Get_function_UI.GameGirdHint_Front(nowlangStr);
                 //错误码。。
-            }
+            }*/
 
             //List<ComponentWithId> resultuserinfo = await dbProxy.Query<UserInfo>(_userInfo => _userInfo.Id == player.UserId);
             UserInfo userinfo = unit.GetComponent<UserInfoComponent>().GetUserInfo();
 
             //判定消耗
-            string[] costItemList = costItemNum.Split(',');
+            /*string[] costItemList = costItemNum.Split(',');
             int itemnumber = 10; // Function_Role.GetInstance().ReturnBagItemNum(costItemList[0])
             if (userinfo.Diamond >= costGoldNum && itemnumber >= int.Parse(costItemList[1]))
             {
@@ -75,7 +75,7 @@ namespace ET
             {
                 writeStr = writeStr + XiuLianLvList[i] + ";";
             }
-            writeStr = writeStr.Substring(0, writeStr.Length - 1);
+            writeStr = writeStr.Substring(0, writeStr.Length - 1);*/
             //写入useinfo
             //Game_PublicClassVar.Get_function_DataSet.DataSet_WriteData("PetXiuLian", writeStr, "ID", Game_PublicClassVar.Get_wwwSet.RoseID, "RoseData");
             //Game_PublicClassVar.Get_function_DataSet.DataSet_SetXml("RoseData");

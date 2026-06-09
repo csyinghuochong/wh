@@ -20,7 +20,7 @@ namespace ET
         //1 正在执行   2完成使命
         public SkillState SkillState;
 
-        public SkillConfig SkillConf;
+        public Skill SkillConf;
 
         public int OriginalSkill;
 

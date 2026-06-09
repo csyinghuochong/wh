@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -21,17 +21,19 @@ namespace ET
                 reply();
                 return;
             }
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo_1.ItemID);
-            if (itemConfig.PetHeXinHeChengID==0)
+            
+            Item Item = ItemCategory.Instance.Get(bagInfo_1.ItemID);
+            /*if (Item.PetHeXinHeChengID==0)
             {
                 reply();
                 return;
             }
+            */
 
             using ListComponent<long> costids = new ListComponent<long>() { bagInfo_1.BagInfoID,bagInfo_2.BagInfoID };
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
             bagComponent.OnCostItemData(costids, ItemLocType.ItemPetHeXinBag);
-            bagComponent.OnAddItemData($"{itemConfig.PetHeXinHeChengID};1", $"{ItemGetWay.PetHeXinHeCheng}_{TimeHelper.ServerNow()}");
+            //bagComponent.OnAddItemData($"{Item.PetHeXinHeChengID};1", $"{ItemGetWay.PetHeXinHeCheng}_{TimeHelper.ServerNow()}");
             reply();
             await ETTask.CompletedTask;
         }

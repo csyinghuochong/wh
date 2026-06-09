@@ -101,7 +101,7 @@ namespace ET
 
                 MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();  
                 if (taskConfig.TaskType == TaskTypeEnum.Treasure && error == ErrorCode.ERR_Success
-                    && mapComponent.SceneTypeEnum == SceneTypeEnum.LocalDungeon && taskPro.FubenId == mapComponent.SceneId)
+                    && mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon && taskPro.FubenId == mapComponent.SceneId)
                 {
                     //Console.WriteLine("副本内接取藏宝图任务！");
                     

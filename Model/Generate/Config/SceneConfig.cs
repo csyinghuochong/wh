@@ -81,9 +81,15 @@ namespace ET
 		/// <summary>章节名称</summary>
 		[ProtoMember(2)]
 		public string Name { get; set; }
+		/// <summary>章节名称</summary>
+		[ProtoMember(3)]
+		public string Name_EN { get; set; }
 		/// <summary>图标显示</summary>
 		[ProtoMember(4)]
 		public string Icon { get; set; }
+		/// <summary>图标显示2</summary>
+		[ProtoMember(5)]
+		public string Icon2 { get; set; }
 		/// <summary>摆摊区域</summary>
 		[ProtoMember(6)]
 		public int[] StallArea { get; set; }
@@ -108,13 +114,13 @@ namespace ET
 		/// <summary>是否可以使用复活</summary>
 		[ProtoMember(13)]
 		public int IfUseRes { get; set; }
-		/// <summary>是否允许PVP</summary>
+		/// <summary>PVP 0-不允许 1-允许</summary>
 		[ProtoMember(14)]
 		public int IfPVP { get; set; }
-		/// <summary>是否允许使用道具</summary>
+		/// <summary>使用道具 0-可以 1-不可以</summary>
 		[ProtoMember(15)]
 		public int IfUseSkillItem { get; set; }
-		/// <summary>返回主城是否在默认点</summary>
+		/// <summary>返回主城是否在默认点 0-默认点 1-上次坐标点</summary>
 		[ProtoMember(16)]
 		public int IfInitPosi { get; set; }
 		/// <summary>音乐</summary>
@@ -150,6 +156,9 @@ namespace ET
 		/// <summary>章节文本描述</summary>
 		[ProtoMember(27)]
 		public string ChapterDes { get; set; }
+		/// <summary>章节文本描述</summary>
+		[ProtoMember(28)]
+		public string ChapterDes_EN { get; set; }
 		/// <summary>奖励展示</summary>
 		[ProtoMember(29)]
 		public string RewardShow { get; set; }

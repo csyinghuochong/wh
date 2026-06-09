@@ -25,7 +25,7 @@ namespace ET
                 return;
             }
 
-            int costNumber = ConfigHelper.JiaYuanFarmOpen[request.CellIndex];
+            int costNumber = CommonConfig.JiaYuanFarmOpen[request.CellIndex];
             if (!unit.GetComponent<BagComponent>().CheckCostItem($"13;{costNumber}"))
             {
                 response.PlanOpenList = PlanOpenList_2;

@@ -29,7 +29,7 @@ namespace ET
             //0 砖石  1周卡
             if (rechargetType == 0)
             {
-                int number = ConfigHelper.GetDiamondNumber(rechargeNumber, unit.DomainZone());
+                int number = CommonConfig.GetDiamondNumber(rechargeNumber, unit.DomainZone());
                 unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, number.ToString(), notice, ItemGetWay.Recharge);
             }
             else
@@ -42,9 +42,9 @@ namespace ET
                     long cardtime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.GoldWeeklyCard);
 
                     //如果是在第七天开启的， 当天不能领取奖励， 则把时间设置到零点
-                    if (serverTime > cardtime && ComHelp.GetDaysDiffByDate(serverTime, cardtime) == 6)
+                    if (serverTime > cardtime && CommonHelper.GetDaysDiffByDate(serverTime, cardtime) == 6)
                     {
-                        cardtime = ComHelp.GetNextDayZeroOneTimestampMilliseconds(serverTime);
+                        cardtime = CommonHelper.GetNextDayZeroOneTimestampMilliseconds(serverTime);
                     }
                     else
                     {
@@ -60,9 +60,9 @@ namespace ET
                     long cardtime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.DiamondWeeklyCard);
 
                     //如果是在第七天开启的， 当天不能领取奖励， 则把时间设置到零点
-                    if (serverTime > cardtime && ComHelp.GetDaysDiffByDate(serverTime, cardtime) == 6)
+                    if (serverTime > cardtime && CommonHelper.GetDaysDiffByDate(serverTime, cardtime) == 6)
                     {
-                        cardtime = ComHelp.GetNextDayZeroOneTimestampMilliseconds(serverTime);
+                        cardtime = CommonHelper.GetNextDayZeroOneTimestampMilliseconds(serverTime);
                     }
                     else
                     {

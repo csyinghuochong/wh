@@ -84,6 +84,9 @@ namespace ET
 		/// <summary>名字</summary>
 		[ProtoMember(3)]
 		public string ShieldName { get; set; }
+		/// <summary>名字2</summary>
+		[ProtoMember(4)]
+		public string ShieldName_EN { get; set; }
 		/// <summary>等级</summary>
 		[ProtoMember(5)]
 		public int ShieldLevel { get; set; }
@@ -93,6 +96,12 @@ namespace ET
 		/// <summary>额外属性</summary>
 		[ProtoMember(7)]
 		public string AddProperty { get; set; }
+		/// <summary>额外描述</summary>
+		[ProtoMember(8)]
+		public string Des { get; set; }
+		/// <summary>额外描述2</summary>
+		[ProtoMember(9)]
+		public string Des_EN { get; set; }
 
 	}
 }

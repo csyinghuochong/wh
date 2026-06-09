@@ -3,9 +3,9 @@
 namespace ET
 {
     [ActorMessageHandler]
-    public class Actor_TransferHandler : AMActorLocationRpcHandler<Unit, Actor_TransferRequest, Actor_TransferResponse>
+    public class C2M_TransferRequestHandler : AMActorLocationRpcHandler<Unit, C2M_TransferRequest, M2C_TransferResponse>
     {
-        protected override async ETTask Run(Unit unit, Actor_TransferRequest request, Actor_TransferResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_TransferRequest request, M2C_TransferResponse response, Action reply)
         {
             //long unitId = unit.Id;
             //// 先在location锁住unit的地址

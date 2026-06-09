@@ -18,7 +18,7 @@ namespace ET
                 return;
             }
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
-            if (mapComponent.SceneTypeEnum != SceneTypeEnum.JiaYuan)
+            if (mapComponent.MapTypeEnum != MapTypeEnum.JiaYuan)
             {
                 response.Error = ErrorCode.ERR_NetWorkError;
                 reply();
@@ -29,7 +29,7 @@ namespace ET
             float jiagerate = 1f;
             if (request.BuyType == 1)
             {
-                jiagerate = ComHelp.JiaYuanPastureBuy();
+                jiagerate = CommonHelper.JiaYuanPastureBuy();
             }
 
             if (!unit.GetComponent<BagComponent>().CheckCostItem($"13;{(int)(jiaYuanPastureConfig.BuyGold * jiagerate)}"))

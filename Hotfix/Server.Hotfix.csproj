@@ -62,6 +62,7 @@
     <ProjectReference Include="..\Model\Server.Model.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Danger\Handler\Battle\" />
     <Folder Include="Module\Function\" />
   </ItemGroup>
   <ItemGroup>

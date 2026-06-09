@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -47,8 +47,9 @@ namespace ET
                             reply();
                             return;
                         }
-                        ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-                        if (itemConfig.ItemType != 3 || itemConfig.EquipType > 100)
+                        Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+                        int equipType = ItemHelper.GetNewEquipType(bagInfo);
+                        if (Item.ItemType != 3 || equipType > 100)
                         {
                             response.Error = ErrorCode.ERR_ItemNotExist;
                             reply();

@@ -90,126 +90,129 @@ namespace ET
 		/// <summary>继承掉落ID</summary>
 		[ProtoMember(5)]
 		public int DropSonID { get; set; }
-		/// <summary>掉落道具1概率</summary>
+		/// <summary>道具1概率</summary>
 		[ProtoMember(6)]
 		public int DropChance1 { get; set; }
-		/// <summary>掉落道具1ID</summary>
+		/// <summary>道具1ID</summary>
 		[ProtoMember(7)]
 		public int DropItemID1 { get; set; }
-		/// <summary>掉落道具1最小数量</summary>
+		/// <summary>道具1最小数量</summary>
 		[ProtoMember(8)]
 		public int DropItemMinNum1 { get; set; }
-		/// <summary>掉落道具1最大数量</summary>
+		/// <summary>道具1最大数量</summary>
 		[ProtoMember(9)]
 		public int DropItemMaxNum1 { get; set; }
-		/// <summary>掉落道具2概率</summary>
+		/// <summary>道具2概率</summary>
 		[ProtoMember(10)]
 		public int DropChance2 { get; set; }
-		/// <summary>掉落道具2ID</summary>
+		/// <summary>道具2ID</summary>
 		[ProtoMember(11)]
 		public int DropItemID2 { get; set; }
-		/// <summary>掉落道具2最小数量</summary>
+		/// <summary>道具2最小数量</summary>
 		[ProtoMember(12)]
 		public int DropItemMinNum2 { get; set; }
-		/// <summary>掉落道具2最大数量</summary>
+		/// <summary>道具2最大数量</summary>
 		[ProtoMember(13)]
 		public int DropItemMaxNum2 { get; set; }
-		/// <summary>掉落道具3概率</summary>
+		/// <summary>道具3概率</summary>
 		[ProtoMember(14)]
 		public int DropChance3 { get; set; }
-		/// <summary>掉落道具3ID</summary>
+		/// <summary>道具3ID</summary>
 		[ProtoMember(15)]
 		public int DropItemID3 { get; set; }
-		/// <summary>掉落道具3最小数量</summary>
+		/// <summary>道具3最小数量</summary>
 		[ProtoMember(16)]
 		public int DropItemMinNum3 { get; set; }
-		/// <summary>掉落道具3最大数量</summary>
+		/// <summary>道具3最大数量</summary>
 		[ProtoMember(17)]
 		public int DropItemMaxNum3 { get; set; }
-		/// <summary>掉落道具4概率</summary>
+		/// <summary>道具4概率</summary>
 		[ProtoMember(18)]
 		public int DropChance4 { get; set; }
-		/// <summary>掉落道4ID</summary>
+		/// <summary>道4ID</summary>
 		[ProtoMember(19)]
 		public int DropItemID4 { get; set; }
-		/// <summary>掉落道具4最小数量</summary>
+		/// <summary>道具4最小数量</summary>
 		[ProtoMember(20)]
 		public int DropItemMinNum4 { get; set; }
-		/// <summary>掉落道具4最大数量</summary>
+		/// <summary>道具4最大数量</summary>
 		[ProtoMember(21)]
 		public int DropItemMaxNum4 { get; set; }
-		/// <summary>掉落道具5概率</summary>
+		/// <summary>道具5概率</summary>
 		[ProtoMember(22)]
 		public int DropChance5 { get; set; }
-		/// <summary>掉落道具5ID</summary>
+		/// <summary>道具5ID</summary>
 		[ProtoMember(23)]
 		public int DropItemID5 { get; set; }
-		/// <summary>掉落道具5最小数量</summary>
+		/// <summary>道具5最小数量</summary>
 		[ProtoMember(24)]
 		public int DropItemMinNum5 { get; set; }
-		/// <summary>掉落道具5最大数量</summary>
+		/// <summary>道具5最大数量</summary>
 		[ProtoMember(25)]
 		public int DropItemMaxNum5 { get; set; }
-		/// <summary>掉落道具6概率</summary>
+		/// <summary>道具6概率</summary>
 		[ProtoMember(26)]
 		public int DropChance6 { get; set; }
-		/// <summary>掉落道具6ID</summary>
+		/// <summary>道具6ID</summary>
 		[ProtoMember(27)]
 		public int DropItemID6 { get; set; }
-		/// <summary>掉落道具6最小数量</summary>
+		/// <summary>道具6最小数量</summary>
 		[ProtoMember(28)]
 		public int DropItemMinNum6 { get; set; }
-		/// <summary>掉落道具6最大数量</summary>
+		/// <summary>道具6最大数量</summary>
 		[ProtoMember(29)]
 		public int DropItemMaxNum6 { get; set; }
-		/// <summary>掉落道具7概率</summary>
+		/// <summary>道具7概率</summary>
 		[ProtoMember(30)]
 		public int DropChance7 { get; set; }
-		/// <summary>掉落道具7ID</summary>
+		/// <summary>道具7ID</summary>
 		[ProtoMember(31)]
 		public int DropItemID7 { get; set; }
-		/// <summary>掉落道具7最小数量</summary>
+		/// <summary>道具7最小数量</summary>
 		[ProtoMember(32)]
 		public int DropItemMinNum7 { get; set; }
-		/// <summary>掉落道具7最大数量</summary>
+		/// <summary>道具7最大数量</summary>
 		[ProtoMember(33)]
 		public int DropItemMaxNum7 { get; set; }
-		/// <summary>掉落道具8概率</summary>
+		/// <summary>道具8概率</summary>
 		[ProtoMember(34)]
 		public int DropChance8 { get; set; }
-		/// <summary>掉落道具8ID</summary>
+		/// <summary>道具8ID</summary>
 		[ProtoMember(35)]
 		public int DropItemID8 { get; set; }
-		/// <summary>掉落道具8最小数量</summary>
+		/// <summary>道具8最小数量</summary>
 		[ProtoMember(36)]
 		public int DropItemMinNum8 { get; set; }
-		/// <summary>掉落道具8最大数量</summary>
+		/// <summary>道具8最大数量</summary>
 		[ProtoMember(37)]
 		public int DropItemMaxNum8 { get; set; }
-		/// <summary>掉落道具9概率</summary>
+		/// <summary>道具9概率</summary>
 		[ProtoMember(38)]
 		public int DropChance9 { get; set; }
-		/// <summary>掉落道具9ID</summary>
+		/// <summary>道具9ID</summary>
 		[ProtoMember(39)]
 		public int DropItemID9 { get; set; }
-		/// <summary>掉落道具9最小数量</summary>
+		/// <summary>道具9最小数量</summary>
 		[ProtoMember(40)]
 		public int DropItemMinNum9 { get; set; }
-		/// <summary>掉落道具9最大数量</summary>
+		/// <summary>道具9最大数量</summary>
 		[ProtoMember(41)]
 		public int DropItemMaxNum9 { get; set; }
-		/// <summary>掉落道具10概率</summary>
+		/// <summary>道具10概率</summary>
 		[ProtoMember(42)]
 		public int DropChance10 { get; set; }
-		/// <summary>掉落道具10ID</summary>
+		/// <summary>道具10ID</summary>
 		[ProtoMember(43)]
 		public int DropItemID10 { get; set; }
-		/// <summary>掉落道具10最小数量</summary>
+		/// <summary>道具10最小数量</summary>
 		[ProtoMember(44)]
 		public int DropItemMinNum10 { get; set; }
-		/// <summary>掉落道具10最大数量</summary>
+		/// <summary>道具10最大数量</summary>
 		[ProtoMember(45)]
 		public int DropItemMaxNum10 { get; set; }
+		/// <summary>描述</summary>
+		[ProtoMember(46)]
+		public string DropDes { get; set; }
 
 	}
 }

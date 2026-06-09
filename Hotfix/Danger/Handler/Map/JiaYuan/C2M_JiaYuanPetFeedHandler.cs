@@ -42,18 +42,18 @@ namespace ET
             int moodvalue = 0;
             for (int i = 0; i < ItemIdList.Count; i++)
             {
-                ItemConfig nowItemCof = ItemConfigCategory.Instance.Get(ItemIdList[i]);
+                Item nowItemCof = ItemCategory.Instance.Get(ItemIdList[i]);
                 if (nowItemCof.ItemType == 2)
                 {
                     moodvalue += RandomHelper.RandomNumber(2,12);
                 }
 
-                if (nowItemCof.ItemType == 1 && nowItemCof.ItemQuality > 1)
+                if (nowItemCof.ItemType == 1 && nowItemCof.Quality > 1)
                 {
                     moodvalue += RandomHelper.RandomNumber(10, 25);
                 }
 
-                if (nowItemCof.ItemType == 1 && nowItemCof.ItemQuality == 1)
+                if (nowItemCof.ItemType == 1 && nowItemCof.Quality == 1)
                 {
                     moodvalue += RandomHelper.RandomNumber(5, 15);
                 }

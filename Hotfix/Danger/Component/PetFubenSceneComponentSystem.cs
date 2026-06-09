@@ -95,7 +95,7 @@ namespace ET
                     continue;
                 }
                 Unit petunit =  UnitFactory.CreateTianTiPet(unit.DomainScene(), unit.Id,
-                    CampEnum.CampPlayer_1,  rolePetInfo, AIHelp.Formation_1[i], 0f, i);
+                    CampEnum.CampPlayer_1,  rolePetInfo, AIGetTargetHelp.Formation_1[i], 0f, i);
                 petunit.GetComponent<AIComponent>().Stop();
             }
 
@@ -115,7 +115,7 @@ namespace ET
         {
 			//70004001;1@70004002;1
 			string[] monsters = cellInfo.Split('@');
-            Vector3 position = AIHelp.Formation_2[index];
+            Vector3 position = AIGetTargetHelp.Formation_2[index];
 
             for (int i = 0; i < monsters.Length; i++)
 			{

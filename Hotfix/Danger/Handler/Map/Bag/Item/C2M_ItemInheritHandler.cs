@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET    
@@ -23,7 +23,7 @@ namespace ET
                 return;
             }
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
+            Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
             string costitem = ItemHelper.GetInheritCost(bagInfo.InheritTimes);
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
             if (!bagComponent.CheckCostItem(costitem))
@@ -34,8 +34,8 @@ namespace ET
             }
             unit.GetComponent<BagComponent>().OnCostItemData(costitem, ItemLocType.ItemLocBag, ItemGetWay.ItemXiLian  );
           
-            int subtype = itemConfig.ItemSubType;
-            int skillid = XiLianHelper.XiLianChuanChengJianDing(itemConfig, unit.GetComponent<UserInfoComponent>().UserInfo.Occ, unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo);
+            int subtype = Item.ItemSubType;
+            int skillid = XiLianHelper.XiLianChuanChengJianDing(Item, unit.GetComponent<UserInfoComponent>().UserInfo.Occ, unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo);
 
             if (skillid == 0) {
                 response.Error = ErrorCode.ERR_EquipChuanChengFail;

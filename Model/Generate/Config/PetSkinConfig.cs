@@ -81,6 +81,9 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public string Name { get; set; }
+		/// <summary>名称</summary>
+		[ProtoMember(3)]
+		public string Name_EN { get; set; }
 		/// <summary>皮肤图标</summary>
 		[ProtoMember(4)]
 		public int IconID { get; set; }
@@ -93,6 +96,9 @@ namespace ET
 		/// <summary>激活属性描述</summary>
 		[ProtoMember(7)]
 		public string PripertyShow { get; set; }
+		/// <summary>激活属性描述</summary>
+		[ProtoMember(8)]
+		public string PripertyShow_EN { get; set; }
 
 	}
 }

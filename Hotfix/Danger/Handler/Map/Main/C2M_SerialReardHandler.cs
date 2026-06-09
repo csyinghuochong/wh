@@ -73,7 +73,7 @@ namespace ET
                     return;
                 }
 
-                string reward = ConfigHelper.SerialReward[serialIndex];
+                string reward = CommonConfig.SerialReward[serialIndex];
                 unit.GetComponent<BagComponent>().OnAddItemData(reward, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}");
                 numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
                 if (serialIndex >= 8 && serialIndex <= 11)

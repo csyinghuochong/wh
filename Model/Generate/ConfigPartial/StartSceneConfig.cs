@@ -12,7 +12,7 @@ namespace ET
 
         public Dictionary<int, StartSceneConfig> YeWai = new Dictionary<int, StartSceneConfig>();
 
-        public MultiMap<int, StartSceneConfig> LocalDungeons = new MultiMap<int, StartSceneConfig>();
+        public MultiMap<int, StartSceneConfig> FuBenWorkScens = new MultiMap<int, StartSceneConfig>();
 
         public MultiMap<int, StartSceneConfig> ProcessScenes = new MultiMap<int, StartSceneConfig>();
         
@@ -37,7 +37,15 @@ namespace ET
         {
             return this.ZoneScenesByName[zone][name];
         }
-        
+
+        public StartSceneConfig GetRandomFubenWork(int zone)
+        {
+            List<StartSceneConfig> zonelocaldungeons = StartSceneConfigCategory.Instance.FuBenWorkScens[zone];
+            int n = RandomHelper.RandomNumber(0, zonelocaldungeons.Count);
+            StartSceneConfig startSceneConfig = zonelocaldungeons[n];
+            return startSceneConfig;
+        }
+
         public override void AfterEndInit()
         {
             foreach (StartSceneConfig startSceneConfig in this.GetAll().Values)
@@ -54,8 +62,8 @@ namespace ET
                     case SceneType.Gate:
                         this.Gates.Add(startSceneConfig.Zone, startSceneConfig);
                         break;
-                    case SceneType.LocalDungeon:
-                        this.LocalDungeons.Add(startSceneConfig.Zone, startSceneConfig);
+                    case SceneType.FubenWork:
+                        this.FuBenWorkScens.Add(startSceneConfig.Zone, startSceneConfig);
                         break;
                     case SceneType.Queue:
                         this.Queues.Add(startSceneConfig.Zone, startSceneConfig);
@@ -78,6 +86,7 @@ namespace ET
                 }
             }
         }
+        
     }
     
     public partial class StartSceneConfig: ISupportInitialize

@@ -19,7 +19,7 @@ namespace ET
             }
 
 			List<SkillPro> SkillList = skillSetComponent.SkillList;
-			SkillConfig skillconf = SkillConfigCategory.Instance.Get(request.SkillID);
+			Skill skillconf = SkillCategory.Instance.Get(request.SkillID);
 			int nextSkillID = skillconf.NextSkillID;
 			if (nextSkillID == 0)
 			{

@@ -55,9 +55,9 @@ namespace ET
             int second = dateTime.Second;
             int time1 = huor * 3600 + minute * 60 + second;
 
-            for (int i = 0; i < ConfigHelper.WorldSayList.Count; i++)
+            for (int i = 0; i < CommonConfig.WorldSayList.Count; i++)
             {
-                WorldSayConfig worldSayConfig = ConfigHelper.WorldSayList[i];
+                WorldSayConfig worldSayConfig = CommonConfig.WorldSayList[i];
 
                 if (!worldSayConfig.OpenDay.Contains((int)dateTime.DayOfWeek) && worldSayConfig.OpenDay[0] != -1)
                 {
@@ -104,7 +104,7 @@ namespace ET
                 WorldSayConfig worldSayConfig = self.WordSayList[0];
                 self.WordSayList.RemoveAt(0);
 
-                if (!ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_NewYearMonster)
+                if (!ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_NewYearMonster)
                     && worldSayConfig.Conent.Contains("年兽")) 
                 {
                     return;

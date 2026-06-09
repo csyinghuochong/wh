@@ -27,8 +27,8 @@ namespace ET
         /// </summary>
         public BuffData BuffData;
 
-        public SkillBuffConfig mBuffConfig;
-        public SkillConfig mSkillConf;
+        public SkillBuff MBuff;
+        public Skill mSkillConf;
         public SkillHandler mSkillHandler;
 
         /// <summary>

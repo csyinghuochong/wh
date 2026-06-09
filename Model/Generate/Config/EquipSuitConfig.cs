@@ -84,10 +84,10 @@ namespace ET
 		/// <summary>需要装备ID</summary>
 		[ProtoMember(4)]
 		public int[] NeedEquipID { get; set; }
-		/// <summary>套装属性</summary>
+		/// <summary>套装属性 件数&套装属性|...</summary>
 		[ProtoMember(5)]
 		public string SuitPropertyID { get; set; }
-		/// <summary>套装类型</summary>
+		/// <summary>套装类型 0：默认 1：时装</summary>
 		[ProtoMember(6)]
 		public int SuitType { get; set; }
 		/// <summary>职业</summary>

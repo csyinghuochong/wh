@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +20,7 @@ namespace ET
                 ItemLocType locType = ItemLocType.ItemLocBag;
                 if (request.OperateType == 2)
                 {
-                    ItemConfig config = ItemConfigCategory.Instance.Get(int.Parse(request.OperatePar.Split('_')[0]));
+                    Item config = ItemCategory.Instance.Get(int.Parse(request.OperatePar.Split('_')[0]));
                     locType = config.ItemType == (int)ItemTypeEnum.PetHeXin ? ItemLocType.ItemPetHeXinBag : locType;
                 }
                 if (request.OperateType == 4)
@@ -33,7 +33,7 @@ namespace ET
                 }
 
                 int weizhi = -1;
-                ItemConfig itemConfig = null;
+                Item Item = null;
                 BagInfo useBagInfo = unit.GetComponent<BagComponent>().GetItemByLoc(locType, bagInfoID);
                 if (useBagInfo == null && request.OperateType != 8)
                 {
@@ -42,27 +42,27 @@ namespace ET
                 }
                 if (useBagInfo != null)
                 {
-                    itemConfig = ItemConfigCategory.Instance.Get(useBagInfo.ItemID);
-                    weizhi = itemConfig.ItemSubType;
+                    Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
+                    weizhi = Item.ItemSubType;
                 }
 
                 //通知客户端背包刷新
                 M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
                 //使用道具
-                if (request.OperateType == 1 && itemConfig != null)
+                if (request.OperateType == 1 && Item != null)
                 {
-                    if (itemConfig.Id == 10000156)
+                    if (Item.Id == 10000156)
                     {
                         reply();
                         return;
                     }
-                    if (itemConfig.DayUseNum > 0 && userInfoComponent.GetDayItemUse(itemConfig.Id) >= itemConfig.DayUseNum)
+                    if (Item.DayUseNum > 0 && userInfoComponent.GetDayItemUse(Item.Id) >= Item.DayUseNum)
                     {
                         response.Error = ErrorCode.ERR_ItemNoUseTime;
                         reply();
                         return;
                     }
-                    if (itemConfig.SumUseNum > 0 && userInfoComponent.GetTotalUseTimes(itemConfig.Id) >= itemConfig.SumUseNum)
+                    if (Item.SumUseNum > 0 && userInfoComponent.GetTotalUseTimes(Item.Id) >= Item.SumUseNum)
                     {
                         response.Error = ErrorCode.ERR_ItemNoUseTime;
                         reply();
@@ -73,27 +73,27 @@ namespace ET
                     int costNumber = 1;
                     bool bagIsFull = false;
                     List<RewardItem> droplist = new List<RewardItem>();
-                    if (itemConfig.ItemSubType == 8)   //碎片兑换
+                    if (Item.ItemSubType == 8)   //碎片兑换
                     {
-                        string[] duihuanparams = itemConfig.ItemUsePar.Split(';');
+                        string[] duihuanparams = Item.ItemUsePar.Split(';');
                         int neednum = int.Parse(duihuanparams[0]);
-                        if (unit.GetComponent<BagComponent>().GetItemNumber(itemConfig.Id) < neednum)
+                        if (unit.GetComponent<BagComponent>().GetItemNumber(Item.Id) < neednum)
                         {
                             response.Error = ErrorCode.ERR_ItemNotEnoughError;
                             reply();
                             return;
                         }
                     }
-                    if (itemConfig.ItemSubType == 9)   //充值达到一定额度开启宝箱获得道具
+                    if (Item.ItemSubType == 9)   //充值达到一定额度开启宝箱获得道具
                     {
-                        string[] itemPar = itemConfig.ItemUsePar.Split(';');
+                        string[] itemPar = Item.ItemUsePar.Split(';');
                         if (unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber) < long.Parse(itemPar[0]))
                         {
                             response.Error = ErrorCode.ERR_NoPayValueError;
                             reply();
                             return;
                         }
-                        string[] rewardInfos = itemConfig.ItemUsePar.Split(';');
+                        string[] rewardInfos = Item.ItemUsePar.Split(';');
                         DropHelper.DropIDToDropItem(int.Parse(rewardInfos[1]), droplist);
 
                         if (unit.GetComponent<BagComponent>().GetBagLeftCell() < ItemHelper.GetNeedCell(droplist))
@@ -101,16 +101,16 @@ namespace ET
                             bagIsFull = true;
                         }
                     }
-                    if (itemConfig.ItemSubType == 102 || (itemConfig.ItemSubType == 103))  //宠物蛋(点击使用直接获得1个宠物)
+                    if (Item.ItemSubType == 102 || (Item.ItemSubType == 103))  //宠物蛋(点击使用直接获得1个宠物)
                     {
                         if (unit.GetComponent<BagComponent>().GetBagLeftCell() < 1)
                         {
                             bagIsFull = true;
                         }
                     }
-                    if (itemConfig.ItemSubType == 104)  //随机道具盒子
+                    if (Item.ItemSubType == 104)  //随机道具盒子
                     {
-                        int dropid = int.Parse(itemConfig.ItemUsePar);
+                        int dropid = int.Parse(Item.ItemUsePar);
                         droplist = new List<RewardItem>();
                         DropHelper.DropIDToDropItem(dropid, droplist);
                         if (unit.GetComponent<BagComponent>().GetBagLeftCell() < droplist.Count)
@@ -119,25 +119,25 @@ namespace ET
                         }
                     }
 
-                    if (itemConfig.ItemSubType == 110 && unit.DomainScene().GetComponent<MapComponent>().SceneId != 2000001) // 领主怪物召唤
+                    if (Item.ItemSubType == 110 && unit.DomainScene().GetComponent<MapComponent>().SceneId != 2000001) // 领主怪物召唤
                     {
                         response.Error = ErrorCode.ERR_ItemOnlyUseMiJing;
                         reply();
                         return;
                     }
 
-                    if ((itemConfig.ItemSubType == 111 || itemConfig.ItemSubType == 112)
-                        && ConfigHelper.BatchUseItemList.Contains(itemConfig.Id))
+                    if ((Item.ItemSubType == 111 || Item.ItemSubType == 112)
+                        && CommonConfig.BatchUseItemList.Contains(Item.Id))
                     {
                         //目前只有111类型支持批量使用
                         if (!string.IsNullOrEmpty(request.OperatePar))
                         {
-                            if (itemConfig.ItemSubType == 112)
+                            if (Item.ItemSubType == 112)
                             {
                                 // 经验盒子特殊处理，有免费开启和钻石开启
                                 costNumber = int.Parse(request.OperatePar.Split(';')[1]);
 
-                                string[] expInfos = itemConfig.ItemUsePar.Split('@');
+                                string[] expInfos = Item.ItemUsePar.Split('@');
                                 string[] operatePar = request.OperatePar.Split(';'); //使用类型;数量
                                 int needZuanshi = operatePar[0] == "1" ? int.Parse(expInfos[0]) * costNumber : 0;
                                 string[] paramInfo = expInfos[int.Parse(operatePar[0])].Split(';');
@@ -158,12 +158,12 @@ namespace ET
 
                     }
 
-                    if (itemConfig.ItemSubType == 14      //召唤卷轴
-                        || itemConfig.ItemSubType == 114) //宝石
+                    if (Item.ItemSubType == 14      //召唤卷轴
+                        || Item.ItemSubType == 114) //宝石
                     {
                         costNumber = 0;
                     }
-                    if (itemConfig.ItemSubType == 112)   //经验木桩
+                    if (Item.ItemSubType == 112)   //经验木桩
                     {
                         int openDay = DBHelper.GetOpenServerDay(unit.DomainZone());
                         if (openDay <= 1)
@@ -173,14 +173,14 @@ namespace ET
                             return;
                         }
                     }
-                    if (itemConfig.ItemSubType == 127)
+                    if (Item.ItemSubType == 127)
                     {
                         if (unit.GetComponent<BagComponent>().GetBagLeftCell() < 1)
                         {
                             bagIsFull = true;
                         }
                     }
-                    if (itemConfig.ItemSubType == 137)
+                    if (Item.ItemSubType == 137)
                     {
                         //检测要附灵的宠物蛋是否存在
                         long chongwudanId = long.Parse(request.OperatePar);      
@@ -192,7 +192,7 @@ namespace ET
                             return;
                         }
                     }
-                    if (itemConfig.ItemSubType == 138)
+                    if (Item.ItemSubType == 138)
                     {
                         if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TeamDungeonTimes) <= 0)
                         {
@@ -202,7 +202,7 @@ namespace ET
                         }
                     }
 
-                    if (itemConfig.ItemSubType == 142)
+                    if (Item.ItemSubType == 142)
                     {
                         if (unit.GetComponent<BagComponent>().GetBagLeftCell() < 1)
                         {
@@ -221,8 +221,8 @@ namespace ET
                         return;
                     }
 
-                    if (itemConfig.ItemType != 1
-                       && itemConfig.ItemType != 2)
+                    if (Item.ItemType != 1
+                       && Item.ItemType != 2)
                     {
                         reply();
                         return;
@@ -231,22 +231,22 @@ namespace ET
                     {
                         bool costItemStatus = true;
                         //根据道具子类分发不同的功能
-                        switch (itemConfig.ItemSubType)
+                        switch (Item.ItemSubType)
                         {
                             //增加金币
                             case 1:
-                                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, itemConfig.ItemUsePar, true, ItemGetWay.ItemBox_6);
+                                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, Item.ItemUsePar, true, ItemGetWay.ItemBox_6);
                                 break;
                             //增加经验
                             case 2:
-                                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Exp, itemConfig.ItemUsePar, true, ItemGetWay.ItemBox_6);
+                                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Exp, Item.ItemUsePar, true, ItemGetWay.ItemBox_6);
                                 break;
                             //回城卷轴[返回另外一个副本场景]
                             case 4:
-                                if (unit.DomainScene().GetComponent<MapComponent>().SceneTypeEnum == (int)SceneTypeEnum.LocalDungeon)
+                                if (unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                                 {
                                     LocalDungeonComponent localDungeon = unit.DomainScene().GetComponent<LocalDungeonComponent>();
-                                    TransferHelper.LocalDungeonTransfer(unit, 0, int.Parse(itemConfig.ItemUsePar), localDungeon.FubenDifficulty).Coroutine();
+                                    TransferHelper.LocalDungeonTransfer(unit, 0, int.Parse(Item.ItemUsePar), localDungeon.FubenDifficulty).Coroutine();
                                 }
                                 break;
                             //图纸制造
@@ -257,26 +257,26 @@ namespace ET
                                 int dropId = 0;
                                 try
                                 {
-                                    dropId = int.Parse(itemConfig.ItemUsePar);
+                                    dropId = int.Parse(Item.ItemUsePar);
                                 }
                                 catch (Exception ex)
                                 { 
-                                    Log.Error(ex.ToString() + $"{itemConfig.Id}   dropId ==0");
+                                    Log.Error(ex.ToString() + $"{Item.Id}   dropId ==0");
 
                                 }
                                 if (dropId > 0)
                                 {
                                     DropHelper.DropIDToDropItem_2(dropId, droplist);
-                                    unit.GetComponent<BagComponent>().OnAddItemData(droplist, string.Empty, $"{ItemGetWay.ItemBox_6}_{TimeHelper.ServerNow()}_{itemConfig.Id}");
+                                    unit.GetComponent<BagComponent>().OnAddItemData(droplist, string.Empty, $"{ItemGetWay.ItemBox_6}_{TimeHelper.ServerNow()}_{Item.Id}");
                                 }
                                 break;
                             //兑换：
                             case 8:
-                                string[] duihuanparams = itemConfig.ItemUsePar.Split(';');
+                                string[] duihuanparams = Item.ItemUsePar.Split(';');
                                 int neednum = int.Parse(duihuanparams[0]);
                                 int newItem = int.Parse(duihuanparams[1]);
 
-                                unit.GetComponent<BagComponent>().OnCostItemData($"{itemConfig.Id};{neednum - 1}", ItemLocType.ItemLocBag, ItemGetWay.DuiHuan);
+                                unit.GetComponent<BagComponent>().OnCostItemData($"{Item.Id};{neednum - 1}", ItemLocType.ItemLocBag, ItemGetWay.DuiHuan);
                                 unit.GetComponent<BagComponent>().OnAddItemData($"{newItem};1", $"{ItemGetWay.ItemBox_8}_{TimeHelper.ServerNow()}");
                                 break;
                             case 9:
@@ -285,25 +285,25 @@ namespace ET
                             //冷却时间清空卷轴"
                             case 12:
                                 unit.GetComponent<UserInfoComponent>().OnCleanBossCD();
-                                if (unit.DomainScene().GetComponent<MapComponent>().SceneTypeEnum == (int)SceneTypeEnum.LocalDungeon)
+                                if (unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                                 {
                                     unit.DomainScene().GetComponent<LocalDungeonComponent>().OnCleanBossCD();
                                 }
                                 break;
                             //召唤卷轴
                             case 14:
-                                if (unit.DomainScene().GetComponent<MapComponent>().SceneTypeEnum == (int)SceneTypeEnum.LocalDungeon)
+                                if (unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                                 {
-                                    UnitFactory.CreateTempFollower(unit, int.Parse(itemConfig.ItemUsePar));
+                                    UnitFactory.CreateTempFollower(unit, int.Parse(Item.ItemUsePar));
                                 }
                                 break;
                             case 15:    //附魔道具
-                                List<HideProList> hideProLists = XiLianHelper.GetItemFumoPro(itemConfig.Id);
-                                unit.GetComponent<BagComponent>().OnEquipFuMo(itemConfig.Id, hideProLists, int.Parse(request.OperatePar));
+                                List<HideProList> hideProLists = XiLianHelper.GetItemFumoPro(Item.Id);
+                                unit.GetComponent<BagComponent>().OnEquipFuMo(Item.Id, hideProLists, int.Parse(request.OperatePar));
                                 unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.FoMoNumber_213, 0, 1);
                                 break;
                             case 16: //附魔技能
-                                unit.GetComponent<UserInfoComponent>().UserInfo.MakeList.Add(int.Parse(itemConfig.ItemUsePar));
+                                unit.GetComponent<UserInfoComponent>().UserInfo.MakeList.Add(int.Parse(Item.ItemUsePar));
                                 break;
                             //使用技能
                             case 101:
@@ -311,12 +311,12 @@ namespace ET
                             //宠物蛋
                             case 102:
                                 string[] getway = useBagInfo.GetWay.Split('_');
-                                unit.GetComponent<PetComponent>().OnAddPet(int.Parse(getway[0]), int.Parse(itemConfig.ItemUsePar), 0, useBagInfo.FuLing);
+                                unit.GetComponent<PetComponent>().OnAddPet(int.Parse(getway[0]), int.Parse(Item.ItemUsePar), 0, useBagInfo.FuLing);
                                 break;
                             //随机宠物蛋
                             case 103:
                                 getway = useBagInfo.GetWay.Split('_');
-                                int petId = int.Parse(itemConfig.ItemUsePar);
+                                int petId = int.Parse(Item.ItemUsePar);
                                 int skinId = 0;
                                 if(!string.IsNullOrEmpty(useBagInfo.ItemPar))
                                 {
@@ -330,14 +330,14 @@ namespace ET
                                 break;
                             //指定道具
                             case 106:
-                                unit.GetComponent<BagComponent>().OnAddItemData(itemConfig.ItemUsePar, $"{ItemGetWay.ItemBox_106}_{TimeHelper.ServerNow()}");
+                                unit.GetComponent<BagComponent>().OnAddItemData(Item.ItemUsePar, $"{ItemGetWay.ItemBox_106}_{TimeHelper.ServerNow()}");
                                 break;
                             //永久技能
                             case 107:
                                 //判定职业是否符合
-                                if (itemConfig.ItemUsePar != "0")
+                                if (Item.ItemUsePar != "0")
                                 {
-                                    if (itemConfig.ItemUsePar == unit.GetComponent<UserInfoComponent>().UserInfo.Occ.ToString() || itemConfig.ItemUsePar == unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo.ToString())
+                                    if (Item.ItemUsePar == unit.GetComponent<UserInfoComponent>().UserInfo.Occ.ToString() || Item.ItemUsePar == unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo.ToString())
                                     {
                                         //符合条件
                                     }
@@ -349,7 +349,7 @@ namespace ET
                                         break;
                                     }
                                 }
-                                unit.GetComponent<SkillSetComponent>().OnAddSkillBook(SkillSourceEnum.Book, int.Parse(itemConfig.SkillID));
+                                //unit.GetComponent<SkillSetComponent>().OnAddSkillBook(SkillSourceEnum.Book, int.Parse(Item.SkillID));
                                 break;
                             case 108:   //宠物经验骨头
                             case 109:   //宠物经验牛奶
@@ -358,11 +358,11 @@ namespace ET
                                 //1;20;70010101,70010102@21;70;70020101,70020102
                                 int createMonsterID = 0;
                                 int lv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
-                                string[] monsters = itemConfig.ItemUsePar.Split('@');
+                                string[] monsters = Item.ItemUsePar.Split('@');
 
                                 if (monsters.Length > 100)
                                 {
-                                    Log.Error($"monsters.Length > 100:  {itemConfig.ItemUsePar}");
+                                    Log.Error($"monsters.Length > 100:  {Item.ItemUsePar}");
                                     reply();
                                     return;
                                 }
@@ -396,7 +396,7 @@ namespace ET
                                 break;
                             //金币袋子
                             case 111:
-                                string[] jinbiInfos = itemConfig.ItemUsePar.Split(';');
+                                string[] jinbiInfos = Item.ItemUsePar.Split(';');
                                 int userLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
                                 ExpConfig expConfig = ExpConfigCategory.Instance.Get(userLv);
                                 long addCoin = (int)RandomHelper.RandomNumberFloat(float.Parse(jinbiInfos[0]) * expConfig.RoseGoldPro, float.Parse(jinbiInfos[1]) * expConfig.RoseGoldPro);
@@ -405,7 +405,7 @@ namespace ET
                                 break;
                             //经验木桩
                             case 112:
-                                string[] expInfos = itemConfig.ItemUsePar.Split('@');
+                                string[] expInfos = Item.ItemUsePar.Split('@');
                                 string[] operatePar = request.OperatePar.Split(';'); //使用类型;数量
                                 int needZuanshi = operatePar[0] == "1"? int.Parse(expInfos[0]) * costNumber : 0;
                                 string[] paramInfo = expInfos[int.Parse(operatePar[0])].Split(';');
@@ -430,7 +430,7 @@ namespace ET
                             case 114: //宝石
                                 break;
                             case 115://宠物皮肤激活道具
-                                unit.GetComponent<PetComponent>().OnUnlockSkin(itemConfig.ItemUsePar);
+                                unit.GetComponent<PetComponent>().OnUnlockSkin(Item.ItemUsePar);
                                 break;
                             case 116:   //角色洗点
                                 unit.GetComponent<HeroDataComponent>().OnResetPoint();
@@ -440,7 +440,7 @@ namespace ET
                             case 119:   //宠物成长
                                 break;
                             case 120://120 冒险积分
-                                unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.MaoXianExp, int.Parse(itemConfig.ItemUsePar), 0);
+                                unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.MaoXianExp, int.Parse(Item.ItemUsePar), 0);
                                 break;
                             case 121: //鉴定符
                                 break;
@@ -454,8 +454,8 @@ namespace ET
                                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.CangKuNumber, cangkuNumber + 1);
                                 break;
                             case 125://坐骑获取
-                                userInfoComponent.OnHorseActive(int.Parse(itemConfig.ItemUsePar), true);
-                                int hourseId = int.Parse(itemConfig.ItemUsePar);
+                                userInfoComponent.OnHorseActive(int.Parse(Item.ItemUsePar), true);
+                                int hourseId = int.Parse(Item.ItemUsePar);
                                 bool canhorse = hourseId == 10001 ? userInfoComponent.UserInfo.Lv >= 25 : true;
                                 if (canhorse && userInfoComponent.UserInfo.HorseIds.Count == 1)
                                 {
@@ -471,12 +471,12 @@ namespace ET
                                 unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.TreasureMapNumber_210, 0, 1);
 
                                 //普通
-                                if (itemConfig.ItemQuality == 4)
+                                if (Item.Quality == 4)
                                 {
                                     unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.TreasureMapNormal_26, 0, 1);
                                     unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.TreasureMapNormal_26, 0, 1);
                                 }
-                                if (itemConfig.ItemQuality == 5)
+                                if (Item.Quality == 5)
                                 {
                                     unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.TreasureMapHigh_27, 0, 1);
                                     unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.TreasureMapHigh_27, 0, 1);
@@ -484,19 +484,19 @@ namespace ET
 
                                 break;
                             case 128://激活称号
-                                unit.GetComponent<TitleComponent>().OnActiveTile(int.Parse(itemConfig.ItemUsePar));
+                                unit.GetComponent<TitleComponent>().OnActiveTile(int.Parse(Item.ItemUsePar));
                                 break;
                             case 129://激活精灵
-                                unit.GetComponent<ChengJiuComponent>().OnActiveJingLing(int.Parse(itemConfig.ItemUsePar));
+                                unit.GetComponent<ChengJiuComponent>().OnActiveJingLing(int.Parse(Item.ItemUsePar));
                                 Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
                                 break;
                             case 131://增加饱食度
-                                string[] baoshipas = itemConfig.ItemUsePar.Split(';')[0].Split(',');
+                                string[] baoshipas = Item.ItemUsePar.Split(';')[0].Split(',');
                                 int baoshiadd = RandomHelper.RandomNumber(int.Parse(baoshipas[0]), int.Parse(baoshipas[1]) + 1);
                                 unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.BaoShiDu, baoshiadd.ToString());
                                 break;
                             case 132:
-                                long reduceTime = long.Parse(itemConfig.ItemUsePar);
+                                long reduceTime = long.Parse(Item.ItemUsePar);
                                 unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.SeasonBossRefreshTime, -1 * reduceTime, 0);
                                 break;
                             case 133:
@@ -504,7 +504,7 @@ namespace ET
                                 break;
                             case 135:
                                 C2M_SkillCmd cmd = new C2M_SkillCmd();
-                                cmd.SkillID = int.Parse(itemConfig.ItemUsePar);
+                                cmd.SkillID = int.Parse(Item.ItemUsePar);
                                 cmd.TargetID = unit.Id;
                                 cmd.TargetAngle = (int)Quaternion.QuaternionToEuler(unit.Rotation).y;
                                 cmd.TargetDistance = 0f;
@@ -541,7 +541,7 @@ namespace ET
                                 //封印的武器
                                 int useindex = int.Parse(request.OperatePar);
                                 int occ = userInfoComponent.UserInfo.Occ;
-                                List<int> weaponids = ItemHelper.GetSealWeaponList(occ, itemConfig.Id);
+                                List<int> weaponids = ItemHelper.GetSealWeaponList(occ, Item.Id);
                                 unit.GetComponent<BagComponent>().OnAddItemData($"{weaponids[useindex]};1", $"{ItemGetWay.ItemBox_8}_{TimeHelper.ServerNow()}");
                                 break;
                             case 143:
@@ -563,13 +563,13 @@ namespace ET
                                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                             }
                         }
-                        if (itemConfig.DayUseNum > 0)
+                        if (Item.DayUseNum > 0)
                         {
-                            userInfoComponent.OnDayItemUse(itemConfig.Id);
+                            userInfoComponent.OnDayItemUse(Item.Id);
                         }
-                        if (itemConfig.SumUseNum > 0)
+                        if (Item.SumUseNum > 0)
                         {
-                            userInfoComponent.OnTotalUseTimes(itemConfig.Id);
+                            userInfoComponent.OnTotalUseTimes(Item.Id);
                         }
                     }
                 }
@@ -586,7 +586,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (ComHelp.IfNull(sellinfo[1]))
+                    if (CommonHelper.IfNull(sellinfo[1]))
                     {
                         response.Error = ErrorCode.ERR_VersionNoMatch;
                         reply();
@@ -603,25 +603,25 @@ namespace ET
                     }
 
                     string[] gemids = useBagInfo.GemIDNew.Split('_');
-                    ItemConfig itemConf = null;
+                    Item itemConf = null;
                     for (int i = 0; i < gemids.Length; i++)
                     {
                         if (gemids[i] == "0")
                         {
                             continue;
                         }
-                        itemConf = ItemConfigCategory.Instance.Get(int.Parse(gemids[i]));
+                        itemConf = ItemCategory.Instance.Get(int.Parse(gemids[i]));
                         unit.GetComponent<UserInfoComponent>().UpdateRoleData((int)itemConf.SellMoneyType, (itemConf.SellMoneyValue).ToString());
                     }
 
                     //珍宝属性价格提升
-                    int sellValue = itemConfig.SellMoneyValue;
+                    int sellValue = Item.SellMoneyValue;
                     if (useBagInfo.HideSkillLists.Contains(68000102))
                     {
-                        sellValue = itemConfig.SellMoneyValue * 20;
+                        sellValue = Item.SellMoneyValue * 20;
                     }
 
-                    itemConf = ItemConfigCategory.Instance.Get(useBagInfo.ItemID);
+                    itemConf = ItemCategory.Instance.Get(useBagInfo.ItemID);
                     unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd((int)itemConf.SellMoneyType, (sellNum * sellValue).ToString(), true, ItemGetWay.Sell);
                     unit.GetComponent<BagComponent>().OnCostItemData(useBagInfo, locType, sellNum);
                     if (useBagInfo.ItemNum <= 0)
@@ -647,7 +647,7 @@ namespace ET
                         return;
                     }
 
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData(itemConfig.SellMoneyType, (sellNum * itemConfig.SellMoneyValue).ToString());
+                    unit.GetComponent<UserInfoComponent>().UpdateRoleData(Item.SellMoneyType, (sellNum * Item.SellMoneyValue).ToString());
                     unit.GetComponent<BagComponent>().OnCostItemData(useBagInfo, locType, sellNum);
                     if (useBagInfo.ItemNum == 0)
                     {
@@ -664,9 +664,9 @@ namespace ET
                 {
                     //判断等级
                     int roleLv = useInfo.Lv;
-                    int equipLv = itemConfig.UseLv;
+                    int equipLv = Item.UseLv;
                     //宝石
-                    if (itemConfig.ItemType == 4)
+                    if (Item.ItemType == 4)
                     {
                         response.Error = ErrorCode.ERR_EquipLvLimit;
                         reply();
@@ -693,35 +693,36 @@ namespace ET
                     }
 
                     //对应部位是否符合
-                    if (itemConfig.ItemType == 3 && itemConfig.EquipType != 0)
+                    int equiptype = ItemHelper.GetNewEquipType(useBagInfo);
+                    if (Item.ItemType == 3 && equiptype != 0)
                     {
                         //查看自身是否是二转
                         if (useInfo.OccTwo > 0)
                         {
-                            OccupationTwoConfig occtwoCof = OccupationTwoConfigCategory.Instance.Get(useInfo.OccTwo);
-                            if (occtwoCof.ArmorMastery == itemConfig.EquipType || itemConfig.EquipType == 99 || itemConfig.EquipType == 101 || itemConfig.EquipType == 201)
+                            Occupation_Transfer occtwoCof = Occupation_TransferCategory.Instance.Get(useInfo.OccTwo);
+                            if (occtwoCof.ArmorMastery ==equiptype ||equiptype == 99 || equiptype == 101 || equiptype == 201)
                             {
                                 //可以穿戴
                             }
                             else
                             {
-                                bool ifWear = ConfigHelper.OccWeaponList[useInfo.Occ].Contains(itemConfig.EquipType);
-                                //if (useInfo.Occ == 1 && (itemConfig.EquipType == 1 || itemConfig.EquipType == 2))
+                                bool ifWear = CommonConfig.OccWeaponList[useInfo.Occ].Contains(equiptype);
+                                //if (useInfo.Occ == 1 && (Item.EquipType == 1 || Item.EquipType == 2))
                                 //{
                                 //    ifWear = true;
                                 //}
 
-                                //if (useInfo.Occ == 2 && (itemConfig.EquipType == 3 || itemConfig.EquipType == 4))
+                                //if (useInfo.Occ == 2 && (Item.EquipType == 3 || Item.EquipType == 4))
                                 //{
                                 //    ifWear = true;
                                 //}
 
-                                //if (useInfo.Occ == 3 && (itemConfig.EquipType == 1 || itemConfig.EquipType == 5))
+                                //if (useInfo.Occ == 3 && (Item.EquipType == 1 || Item.EquipType == 5))
                                 //{
                                 //    ifWear = true;
                                 //}
 
-                                //if (useInfo.Occ == 4 && (itemConfig.EquipType == 3 || itemConfig.EquipType == 4))
+                                //if (useInfo.Occ == 4 && (Item.EquipType == 3 || Item.EquipType == 4))
                                 //{
                                 //    ifWear = true;
                                 //}
@@ -739,7 +740,7 @@ namespace ET
 
                     //获取之前的位置是否有装备
                     BagInfo beforeequip = null;
-                    if (weizhi == (int)ItemSubTypeEnum.Shiping && !ComHelp.IsBanHaoZone(unit.DomainZone()))
+                    if (weizhi == (int)ItemSubTypeEnum.Shiping && !CommonHelper.IsBanHaoZone(unit.DomainZone()))
                     {
                         List<BagInfo> equipList = unit.GetComponent<BagComponent>().GetEquipListByWeizhi(ItemLocType.ItemLocEquip, weizhi);
                         beforeequip = equipList.Count < 3 ? null : equipList[0];
@@ -788,7 +789,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (itemConfig.ItemType == ItemTypeEnum.Equipment && itemConfig.ItemSubType == 201)
+                    if (Item.ItemType == ItemTypeEnum.Equipment && Item.ItemSubType == 201)
                     {
                         reply();
                         return;
@@ -814,11 +815,11 @@ namespace ET
                     int rolelv = useInfo.Lv;
                     string qulitylv = "";
                     bool ifItem = false;
-                    if (baginfoId == 0 && itemConfig != null)
+                    if (baginfoId == 0 && Item != null)
                     {
                         //金币鉴定，扣除金币
-                        qulitylv = itemConfig.UseLv.ToString();
-                        ifSell = unit.GetComponent<BagComponent>().OnCostItemData($"1;{ItemHelper.GetJianDingCoin(itemConfig.UseLv)}", ItemLocType.ItemLocBag, ItemGetWay.CostItem);
+                        qulitylv = Item.UseLv.ToString();
+                        ifSell = unit.GetComponent<BagComponent>().OnCostItemData($"1;{ItemHelper.GetJianDingCoin(Item.UseLv)}", ItemLocType.ItemLocBag, ItemGetWay.CostItem);
                     }
                     else
                     {
@@ -828,7 +829,7 @@ namespace ET
                             //道具鉴定，扣除道具
                             qulitylv = baginfoCost.ItemPar;
                             qulitylv = string.IsNullOrEmpty(qulitylv) ? "0" : qulitylv;
-                            ItemConfig costitemconfig = ItemConfigCategory.Instance.Get(baginfoCost.ItemID);
+                            Item costitemconfig = ItemCategory.Instance.Get(baginfoCost.ItemID);
 
                             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.JianDingQulity_42, int.Parse(qulitylv), 1);
                             unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JianDingQulity_42, int.Parse(qulitylv), 1);
@@ -848,9 +849,10 @@ namespace ET
                         //未鉴定才可以
                         useBagInfo.IfJianDing = false;
 
-                        if (itemConfig.EquipType != 101)
+                        int equiptype = ItemHelper.GetNewEquipType(useBagInfo);
+                        if (equiptype != 101)
                         {
-                            useBagInfo.HideProLists = ItemAddHelper.GetEquipZhuanJingHidePro(itemConfig.ItemEquipID, itemConfig.Id, int.Parse(qulitylv), unit, ifItem);
+                            useBagInfo.HideProLists = ItemAddHelper.GetEquipZhuanJingHidePro(useBagInfo.ItemType, Item.Id, Item.Id, int.Parse(qulitylv), unit, ifItem);
                         }
                         m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                         //如果当前有隐藏技能一起飘出
@@ -860,8 +862,8 @@ namespace ET
                             string skillNameEn = "";
                             for (int i = 0; i < useBagInfo.HideSkillLists.Count; i++)
                             {
-                                skillName = skillName + $" {SkillConfigCategory.Instance.Get(useBagInfo.HideSkillLists[0]).SkillName}";
-                                skillNameEn = skillNameEn + $" {SkillConfigCategory.Instance.Get(useBagInfo.HideSkillLists[0]).SkillName_EN}";
+                                skillName = skillName + $" {SkillCategory.Instance.Get(useBagInfo.HideSkillLists[0]).Name}";
+                                skillNameEn = skillNameEn + $" {SkillCategory.Instance.Get(useBagInfo.HideSkillLists[0]).Name}";
                                 unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.EquipActiveSkillId_222, useBagInfo.HideSkillLists[i], 1);
                             }
 

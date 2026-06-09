@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -27,9 +27,9 @@ namespace ET
 
             int jiayuanlv = unit.GetComponent<UserInfoComponent>().UserInfo.JiaYuanLv;
             JiaYuanComponent jiaYuanComponent = unit.GetComponent<JiaYuanComponent>();  
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(useBagInfo.ItemID);
+            Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
             //7,15;100403,1,5;119203,1,5
-            string[] itemUsePars = itemConfig.ItemUsePar.Split(';');
+            string[] itemUsePars = Item.ItemUsePar.Split(';');
             for (int i = 0; i < itemUsePars.Length; i++)
             {
                 if (i == 0)
@@ -44,7 +44,7 @@ namespace ET
 
                 int numeid = int.Parse(attriinfo[0]);
                 int maxValue = int.Parse(attriinfo[2]);
-                if ( ComHelp.IfNull(useBagInfo.ItemPar) ) 
+                if ( CommonHelper.IfNull(useBagInfo.ItemPar) ) 
                 {
                     useBagInfo.ItemPar = "50";
                 }

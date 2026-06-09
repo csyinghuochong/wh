@@ -114,10 +114,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Actor_TransferResponse))]
-	[Message(OuterOpcode.Actor_TransferRequest)]
+	[ResponseType(nameof(M2C_TransferResponse))]
+	[Message(OuterOpcode.C2M_TransferRequest)]
 	[ProtoContract]
-	public partial class Actor_TransferRequest: Object, IActorLocationRequest
+	public partial class C2M_TransferRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -139,9 +139,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.Actor_TransferResponse)]
+	[Message(OuterOpcode.M2C_TransferResponse)]
 	[ProtoContract]
-	public partial class Actor_TransferResponse: Object, IActorLocationResponse
+	public partial class M2C_TransferResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1949,6 +1949,9 @@ namespace ET
 		[ProtoMember(28)]
 		public int FuLing { get; set; }
 
+		[ProtoMember(29)]
+		public int ItemType { get; set; }
+
 	}
 
 	[Message(OuterOpcode.HideProList)]
@@ -2459,31 +2462,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public int N { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_TransferMap))]
-	[Message(OuterOpcode.C2M_TransferMap)]
-	[ProtoContract]
-	public partial class C2M_TransferMap: Object, IActorLocationRequest
-	{
-		[ProtoMember(1)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TransferMap)]
-	[ProtoContract]
-	public partial class M2C_TransferMap: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 
@@ -4997,6 +4975,9 @@ namespace ET
 
 		[ProtoMember(2)]
 		public int ItemNum { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemType { get; set; }
 
 	}
 

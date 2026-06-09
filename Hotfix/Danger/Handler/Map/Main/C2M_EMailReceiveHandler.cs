@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,8 +49,8 @@ namespace ET
                 
                 if (mailInfo != null && mailInfo.ItemSell != null)
                 {
-                    ItemConfig itemConfig = ItemConfigCategory.Instance.Get(mailInfo.ItemSell.ItemID);
-                    if (itemConfig.ItemType == 3)
+                    Item Item = ItemCategory.Instance.Get(mailInfo.ItemSell.ItemID);
+                    if (Item.ItemType == 3)
                     {
                         unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PaiMaiSellNumber_218, 0, 1);
                     }

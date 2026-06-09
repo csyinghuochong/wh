@@ -12,18 +12,18 @@ namespace ET
             int maxHp = numericComponent.GetAsInt(NumericType.Now_MaxHp);
             //1百分比 2固定伤害
             int totalValue = 0;
-            if (this.mBuffConfig.buffParameterType == 1)
+            if (this.MBuff.buffParameterType == 1)
             {
-                numericComponent.ApplyValue(NumericType.Now_Shield_HP, (int)this.mBuffConfig.buffParameterValue * theUnitFrom.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Hp), true);
-                totalValue = (int)(maxHp * 1f * this.mBuffConfig.buffParameterValue);
+                numericComponent.ApplyValue(NumericType.Now_Shield_HP, (int)this.MBuff.buffParameterValue * theUnitFrom.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Hp), true);
+                totalValue = (int)(maxHp * 1f * this.MBuff.buffParameterValue);
             }
             else
             {
-                totalValue = (int)this.mBuffConfig.buffParameterValue;
+                totalValue = (int)this.MBuff.buffParameterValue;
             }
             numericComponent.ApplyValue(NumericType.Now_Shield_HP, totalValue, true);
             numericComponent.ApplyValue(NumericType.Now_Shield_MaxHP, totalValue, true);
-            numericComponent.Set(NumericType.Now_Shield_DamgeCostPro, this.mBuffConfig.DamgePro, false);
+            numericComponent.Set(NumericType.Now_Shield_DamgeCostPro, this.MBuff.DamgePro, false);
         }
 
         public override void OnUpdate()
@@ -34,9 +34,9 @@ namespace ET
             {
                 this.BuffState = BuffState.Finished;
                 int skillId = 0;
-                if (!string.IsNullOrEmpty(this.mBuffConfig.buffParameterValue2))
+                if (!string.IsNullOrEmpty(this.MBuff.buffParameterValue2))
                 {
-                    skillId = int.Parse(this.mBuffConfig.buffParameterValue2);
+                    skillId = int.Parse(this.MBuff.buffParameterValue2);
                 }
                 if (skillId > 0)
                 {

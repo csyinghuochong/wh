@@ -59,7 +59,7 @@ namespace ET
 
         public  static void ListenerAliPayResult(this ReChargeQDComponent self)
         {
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 self.httpListenerUrl = @"http://127.0.0.1:20004/";
             }

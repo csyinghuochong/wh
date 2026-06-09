@@ -71,7 +71,7 @@ namespace ET
 
             if (dBServerInfo.V1ActivityList.Count == 0)
             {
-                dBServerInfo.V1ActivityList = ActivityConfigHelper.RandomGenerateActivityList(0);
+                dBServerInfo.V1ActivityList = ActivityV1Config.RandomGenerateActivityList(0);
             }
             await Game.Scene.GetComponent<DBComponent>().Save(self.DomainZone(), dBServerInfo);
 
@@ -88,7 +88,7 @@ namespace ET
             for (int i = 0; i < listprogress.Count; i++)
             {
                 List<StartSceneConfig> processScenes = StartSceneConfigCategory.Instance.GetByProcess(listprogress[i].Id);
-                if (processScenes.Count == 0 || listprogress[i].Id == ComHelp.RobotProgress)  //机器人进程
+                if (processScenes.Count == 0 || listprogress[i].Id == CommonConfig.RobotProgress)  //机器人进程
                 {
                     continue;
                 }
@@ -119,7 +119,7 @@ namespace ET
                     dBServerInfo.WeeklyIndex = 0;
                 }
 
-                dBServerInfo.V1ActivityList = ActivityConfigHelper.RandomGenerateActivityList(dBServerInfo.WeeklyIndex);
+                dBServerInfo.V1ActivityList = ActivityV1Config.RandomGenerateActivityList(dBServerInfo.WeeklyIndex);
             }
 
             await Game.Scene.GetComponent<DBComponent>().Save(self.DomainZone(), dBServerInfo);

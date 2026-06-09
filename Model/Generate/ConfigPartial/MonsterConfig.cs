@@ -33,8 +33,18 @@ namespace ET
                     {
                         OpenDayMonsters.Add(monsterConfig.Id, new List<KeyValuePair<int, int>>());
                     }
-                    int openDay = int.Parse(monsterinfo[0]);
-                    int monster = int.Parse(monsterinfo[1]);    
+                    if (!int.TryParse(monsterinfo[0], out int openDay))
+                    {
+                        Log.Error($"int.TryParse error: {monsterinfo[0]} monsterId:{monsterConfig.Id}");
+                        continue;
+                    }
+
+                    if (!int.TryParse(monsterinfo[1], out int monster))
+                    {
+                        Log.Error($"int.TryParse error: {monsterinfo[1]} monsterId:{monsterConfig.Id}");
+                        continue;
+                    }
+
                     OpenDayMonsters[monsterConfig.Id].Add(new KeyValuePair<int, int>(openDay, monster));
                 }
 

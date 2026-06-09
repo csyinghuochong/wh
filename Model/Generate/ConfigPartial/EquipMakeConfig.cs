@@ -23,15 +23,31 @@ namespace ET
                     continue;
                 }
 
-                string[] itemlist = firstWinConfig.NeedItems.Split('@');
+                string[] itemlist = firstWinConfig.NeedItems.Split('|');
                 if (itemlist.Length != 1)
                 {
                     continue;
                 }
 
-                string[] iteminfo = itemlist[0].Split(';');
-                int itemid = int.Parse(iteminfo[0]);
-                int itemnum = int.Parse(iteminfo[1]);
+                string[] iteminfo = itemlist[0].Split('&');
+                if (iteminfo.Length < 2)
+                {
+                    Log.Error($"iteminfo.Length < 2: {itemlist[0]}");
+                    continue;
+                }
+
+                if (!int.TryParse(iteminfo[0], out int itemid))
+                {
+                    Log.Error($"int.TryParse error: {iteminfo[0]}");
+                    continue;
+                }
+
+                if (!int.TryParse(iteminfo[1], out int itemnum))
+                {
+                    Log.Error($"int.TryParse error: {iteminfo[1]}");
+                    continue;
+                }
+
                 if (!GetHeChengList.ContainsKey(itemid))
                 {
                     KeyValuePairInt keyValuePair = new KeyValuePairInt() { KeyId = firstWinConfig.Id, Value = itemnum };
@@ -66,7 +82,7 @@ namespace ET
             {
                 if (equipMakeConfig.ProficiencyType == 8)
                 {
-                    string[] needitems = equipMakeConfig.NeedItems.Split('@');
+                    string[] needitems = equipMakeConfig.NeedItems.Split('|');
 
                     //赋值
                     List<int> itemIdListNew = new List<int>();
@@ -78,8 +94,19 @@ namespace ET
 
                     for (int i = 0; i < needitems.Length; i++)
                     {
+                        string[] itemInfo = needitems[i].Split('&');
+                        if (itemInfo.Length < 1)
+                        {
+                            continue;
+                        }
+
+                        if (!int.TryParse(itemInfo[0], out int itemid))
+                        {
+                            Log.Error($"int.TryParse error: {itemInfo[0]} makeId:{equipMakeConfig.Id}");
+                            continue;
+                        }
+
                         needNum += 1;
-                        int itemid = int.Parse(needitems[i].Split(';')[0]);
                         if (itemIdListNew.Contains(itemid))
                         {
                             itemIdListNew.Remove(itemid);

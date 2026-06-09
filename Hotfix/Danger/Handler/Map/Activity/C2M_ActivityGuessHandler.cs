@@ -15,7 +15,7 @@ namespace ET
                 reply();
                 return;
             }
-            string costItem = ActivityConfigHelper.GetGuessCostItem(activityV1Info.GuessIds.Count);
+            string costItem = ActivityV1Config.GetGuessCostItem(activityV1Info.GuessIds.Count);
             if (!unit.GetComponent<BagComponent>().CheckCostItem(costItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;

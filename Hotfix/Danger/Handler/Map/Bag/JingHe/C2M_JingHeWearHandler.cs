@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -37,15 +37,16 @@ namespace ET
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             if (request.OperateType == 1)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(useBagInfo.ItemID);
+                Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
+                int equipType = ItemHelper.GetNewEquipType(useBagInfo);
 
-                if (unit.GetComponent<UserInfoComponent>().UserInfo.Lv < itemConfig.UseLv)
+                if (unit.GetComponent<UserInfoComponent>().UserInfo.Lv < Item.UseLv)
                 {
                     response.Error = ErrorCode.ERR_EquipLvLimit;
                     reply();
                     return;
                 }
-                if (itemConfig.ItemType != ItemTypeEnum.Equipment || itemConfig.EquipType != 201)
+                if (Item.ItemType != ItemTypeEnum.Equipment || equipType != 201)
                 {
                     response.Error = ErrorCode.ERR_EquipType;
                     reply();

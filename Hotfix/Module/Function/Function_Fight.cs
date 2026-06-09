@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -41,7 +41,7 @@ namespace ET
                 return false;
             }
 
-            SkillConfig skillconfig = skillHandler.SkillConf;
+            Skill skillconfig = skillHandler.SkillConf;
             //吟唱进度
             float singingvalue = 1;
             //蓄力技能计算伤害
@@ -57,9 +57,9 @@ namespace ET
             float buffDamgePro = 0f;
             float buffHurtValueAdd = 0f;
             ///Buff层数触发技能  buffid 1 技能ID 触发间隔
-            if (SkillConfigCategory.Instance.BuffTriggerSkill.ContainsKey(skillconfig.Id))
+            if (SkillCategory.Instance.BuffTriggerSkill.ContainsKey(skillconfig.Id))
             {
-                KeyValuePairLong4 keyValuePairLong = SkillConfigCategory.Instance.BuffTriggerSkill[skillconfig.Id];
+                KeyValuePairLong4 keyValuePairLong = SkillCategory.Instance.BuffTriggerSkill[skillconfig.Id];
                 List<Unit> allDefend = attackUnit.GetParent<UnitComponent>().GetAll();
                 for ( int defend = 0; defend < allDefend.Count; defend++  )
                 {
@@ -82,9 +82,9 @@ namespace ET
             }
 
             ///Buff层数叠加伤害  buffid 2 层数  附加伤害系数
-            if (SkillConfigCategory.Instance.BuffAddHurt.ContainsKey(skillconfig.Id))
+            if (SkillCategory.Instance.BuffAddHurt.ContainsKey(skillconfig.Id))
             {
-                KeyValuePairLong4 keyValuePairLong = SkillConfigCategory.Instance.BuffAddHurt[skillconfig.Id];
+                KeyValuePairLong4 keyValuePairLong = SkillCategory.Instance.BuffAddHurt[skillconfig.Id];
                 int buffId = (int)keyValuePairLong.KeyId;
                 int buffNum = defendUnit.GetComponent<BuffManagerComponent>().GetBuffSourceNumber(0, buffId);
                 if(buffNum > 0)
@@ -138,8 +138,8 @@ namespace ET
             }
 
             //99002002 角斗场免伤状态
-            int sceneType = defendUnit.DomainScene().GetComponent<MapComponent>().SceneTypeEnum;
-            if (sceneType == SceneTypeEnum.Arena && attackUnit.GetComponent<BuffManagerComponent>().GetBuffSourceNumber(0, 99002002) > 0)
+            int sceneType = defendUnit.DomainScene().GetComponent<MapComponent>().MapTypeEnum;
+            if (sceneType == MapTypeEnum.Arena && attackUnit.GetComponent<BuffManagerComponent>().GetBuffSourceNumber(0, 99002002) > 0)
             {
                 return false;
             }
@@ -184,21 +184,21 @@ namespace ET
 
             if (skillHandler.OnlyHideBuffActionUnitID.Count > 0 && !skillHandler.IsSpecifiedFight(defendUnit))
             {
-                SkillBuffConfig skillBuffConfig = SkillBuffConfigCategory.Instance.Get((int)skillHandler.OnlyHideBuffActionUnitID[0]);
+                SkillBuff skillBuff = SkillBuffCategory.Instance.Get((int)skillHandler.OnlyHideBuffActionUnitID[0]);
 
 
                 if (!skillHandler.OnlyHideBuffActionUnitID.Contains(defendUnit.Id))
                 {
-                    if (skillBuffConfig.DamgePro > 0)
+                    if (skillBuff.DamgePro > 0)
                     {
-                        buffDamgePro = (float)skillBuffConfig.DamgePro;
+                        buffDamgePro = (float)skillBuff.DamgePro;
                     }
 
                     skillHandler.OnlyHideBuffActionUnitID.Add(defendUnit.Id);
 
                     BuffData buffData_2 = new BuffData();
                     buffData_2.SkillId = 67000278;
-                    buffData_2.BuffId = int.Parse(skillBuffConfig.buffParameterValue2); //69000046
+                    buffData_2.BuffId = int.Parse(skillBuff.buffParameterValue2); //69000046
                     defendUnit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_2, attackUnit, null, true);
                 }
             }
@@ -329,8 +329,8 @@ namespace ET
             bool ifMonsterBoss_Def = false;
 
             //当前是否在宠物副本
-            bool petfuben = sceneType == SceneTypeEnum.PetDungeon || sceneType == SceneTypeEnum.PetTianTi;
-            if (sceneType == SceneTypeEnum.RunRace)
+            bool petfuben = sceneType == MapTypeEnum.PetDungeon || sceneType == MapTypeEnum.PetTianTi;
+            if (sceneType == MapTypeEnum.RunRace)
             {
                 Log.Warning($"变身大赛触发技能伤害： sceneType == SceneTypeEnum.RunRace  {skillconfig.Id}");
                 return false;
@@ -354,7 +354,7 @@ namespace ET
                 //宠物
                 case UnitType.Pet:
                     defendUnit.GetComponent<AIComponent>()?.BeAttacking(attackUnit);
-                    PetConfig petCof = PetConfigCategory.Instance.Get(defendUnit.ConfigId);
+                    Pet petCof = PetCategory.Instance.Get(defendUnit.ConfigId);
                     defendUnitLv = petCof.PetLv;
                     defend_def += numericComponentDefend.GetAsLong(NumericType.Now_PetAllDef);
                     defend_adf += numericComponentDefend.GetAsLong(NumericType.Now_PetAllAdf);
@@ -386,7 +386,7 @@ namespace ET
                     break;
                 //宠物
                 case UnitType.Pet:
-                    PetConfig petCof = PetConfigCategory.Instance.Get(attackUnit.ConfigId);
+                    Pet petCof = PetCategory.Instance.Get(attackUnit.ConfigId);
                     attackUnitLv = petCof.PetLv;
 
                     //增加宠物属性
@@ -854,8 +854,6 @@ namespace ET
                 if (defendUnit.Type == UnitType.Monster && skillconfig.MonsterActDamge != 0 ) {
                     actDamge += skillconfig.MonsterActDamge;
                 }
-
-  
                 float defHpPro = (float)numericComponentDefend.GetAsInt(NumericType.Now_Hp) / (float)numericComponentDefend.GetAsInt(NumericType.Now_MaxHp);
 
                 float hp_below_value = 0;
@@ -942,7 +940,7 @@ namespace ET
 
                 //破风之击如果目标血量低于50%，则提升50%伤害。 天赋增加这个效果 ID 50041
                 //技能附加伤害
-                if (!ComHelp.IfNull(skillconfig.SkillDamgeAddValue))
+                if (!CommonHelper.IfNull(skillconfig.SkillDamgeAddValue))
                 {
                     string[] skillAddValue = skillconfig.SkillDamgeAddValue.Split(',');
                     if (skillAddValue.Length >= 1)
@@ -1108,7 +1106,7 @@ namespace ET
                     //damgePro -= numericComponentDefend.GetAsFloat(NumericType.Now_PlayerAllDamgeSubPro);
 
                     bool jueXinSkill = false;
-                    if (ConfigHelper.JueXingSkillIDList.Contains(skillHandler.SkillConf.Id))
+                    if (CommonConfig.JueXingSkillIDList.Contains(skillHandler.SkillConf.Id))
                     {
                         jueXinSkill = true;
                     }
@@ -1121,7 +1119,7 @@ namespace ET
                             int occtwo = attackUnit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
                             if (occtwo != 0)
                             {
-                                OccupationTwoConfig occupationConfig = OccupationTwoConfigCategory.Instance.Get(occtwo);
+                                Occupation_Transfer occupationConfig = Occupation_TransferCategory.Instance.Get(occtwo);
                                 juexingid = occupationConfig.JueXingSkill[7];
                             }
                         }
@@ -1231,16 +1229,16 @@ namespace ET
                 //2293987578036158464  入梦
                 if (skillconfig.SkillActType == 1  && GMHelp.DebugPlayerList.ContainsKey(attackUnit.Id))
                 {
-                    Log.Warning($"玩家({GMHelp.DebugPlayerList[attackUnit.Id]})造成伤害   技能:{skillconfig.SkillName}  伤害:{damge}");
+                    Log.Warning($"玩家({GMHelp.DebugPlayerList[attackUnit.Id]})造成伤害   技能:{skillconfig.Name}  伤害:{damge}");
                 }
                 if (skillconfig.SkillActType == 1 && GMHelp.DebugPlayerList.ContainsKey(attackUnit.MasterId))
                 {
-                    Log.Warning($"玩家({GMHelp.DebugPlayerList[attackUnit.MasterId]})宠物伤害  技能:{skillconfig.SkillName}  伤害:{damge}");
+                    Log.Warning($"玩家({GMHelp.DebugPlayerList[attackUnit.MasterId]})宠物伤害  技能:{skillconfig.Name}  伤害:{damge}");
                 }
 
                 if (defendUnit.Type == UnitType.Player && GMHelp.DebugPlayerList.ContainsKey(defendUnit.Id))
                 {
-                    Log.Warning($"玩家({GMHelp.DebugPlayerList[defendUnit.Id]})对手伤害   技能ID:{skillconfig.Id} 技能:{skillconfig.SkillName}  伤害:{damge}");
+                    Log.Warning($"玩家({GMHelp.DebugPlayerList[defendUnit.Id]})对手伤害   技能ID:{skillconfig.Id} 技能:{skillconfig.Name}  伤害:{damge}");
                 }
 
 
@@ -1619,7 +1617,7 @@ namespace ET
         /// <param name="unit"></param>
         public void UnitUpdateProperty_Base(Unit unit, bool notice, bool rank)
         {
-            if (unit.SceneType == SceneTypeEnum.RunRace)
+            if (unit.SceneType == MapTypeEnum.RunRace)
             {
                 return;
             }
@@ -1671,7 +1669,7 @@ namespace ET
             PointNaiLi += roleLv * 2;
             PointMinJie += roleLv * 2;
 
-            OccupationConfig mOccupationConfig = OccupationConfigCategory.Instance.Get(userInfo.Occ);
+            Occupation mOccupationConfig = OccupationCategory.Instance.Get(userInfo.Occ);
             /*
             long occBaseHp = mOccupationConfig.BaseHp + roleLv * mOccupationConfig.LvUpHp + PointTiZhi * 90 ;
             long occBaseMinAct = mOccupationConfig.BaseMinAct + roleLv * mOccupationConfig.LvUpMinAct + PointLiLiang * 4 + PointMinJie * 6;
@@ -1737,35 +1735,36 @@ namespace ET
             for (int i = equipList.Count - 1; i >= 0; i--)
             {
                 BagInfo userBagInfo = equipList[i];
-                if (!ItemConfigCategory.Instance.Contain(userBagInfo.ItemID))
+                if (!ItemCategory.Instance.Contain(userBagInfo.ItemID))
                 {
                     equipList.RemoveAt(i);
                     continue;
                 }
 
                 //存储装备ID
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(userBagInfo.ItemID);
-
+                Item itemCof = ItemCategory.Instance.Get(userBagInfo.ItemID);
+                int equipType = ItemHelper.GetNewEquipType(userBagInfo);                
                 //生肖装备没激活直接跳出来
-                if (itemCof.EquipType == 101 && ItemHelper.IfShengXiaoActive(itemCof.Id, equipList) == false)
+                if (equipType == 101 && ItemHelper.IfShengXiaoActive(itemCof.Id, equipList) == false)
                 {
                     continue;
                 }
 
                 //赛季晶核装备
-                if (itemCof.EquipType == 201)
+                if (equipType == 201)
                 {
 
                 }
 
                 bool ifAddHidePro = true;
                 int occTwoValue = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
+             
                 if (occTwoValue != 0)
                 {
-                    if (itemCof.EquipType == 11 || itemCof.EquipType == 12 || itemCof.EquipType == 13 && equipList[i].Loc == (int)ItemLocType.ItemLocEquip)
+                    if (equipType == 11 || equipType == 12 || equipType == 13 && equipList[i].Loc == (int)ItemLocType.ItemLocEquip)
                     {
-                        int selfMastery = OccupationTwoConfigCategory.Instance.Get(occTwoValue).ArmorMastery;
-                        if (selfMastery != itemCof.EquipType)
+                        int selfMastery = Occupation_TransferCategory.Instance.Get(occTwoValue).ArmorMastery;
+                        if (selfMastery != equipType)
                         {
                             //护甲不匹配不添加专精数据
                             ifAddHidePro = false;
@@ -1835,15 +1834,15 @@ namespace ET
                     for (int s = 0; s < userBagInfo.IncreaseSkillLists.Count; s++)
                     {
                         HideProListConfig hideProListConfig = HideProListConfigCategory.Instance.Get(userBagInfo.IncreaseSkillLists[s]);
-                        SkillConfig skillConfig = SkillConfigCategory.Instance.Get(hideProListConfig.PropertyType);
+                        Skill skill = SkillCategory.Instance.Get(hideProListConfig.PropertyType);
 
-                        if (skillConfig.SkillType != (int)SkillTypeEnum.PassiveAddProSkill)
+                        if (skill.SkillType != (int)SkillTypeEnum.PassiveAddProSkill)
                         {
                             continue;
                         }
 
-                        string GameObjectParameter = skillConfig.GameObjectParameter;
-                        if (ComHelp.IfNull(GameObjectParameter))
+                        string GameObjectParameter = skill.GameObjectParameter;
+                        if (CommonHelper.IfNull(GameObjectParameter))
                         {
                             continue;
                         }
@@ -1877,12 +1876,12 @@ namespace ET
                 }
 
                 //存储装备ID
-                equipIDList.Add(itemCof.ItemEquipID);
+                equipIDList.Add(itemCof.Id);
 
                 //存储装备套装
-                if (EquipConfigCategory.Instance.Contain(itemCof.ItemEquipID))
+                if (EquipConfigCategory.Instance.Contain(itemCof.Id))
                 {
-                    EquipConfig equipCnf = EquipConfigCategory.Instance.Get(itemCof.ItemEquipID);
+                    EquipConfig equipCnf = EquipConfigCategory.Instance.Get(itemCof.Id);
                     if (equipCnf.EquipSuitID != 0)
                     {
                         if (equipSuitIDList.Contains(equipCnf.EquipSuitID) == false)
@@ -1898,7 +1897,7 @@ namespace ET
             }
 
             SeasonLevelConfig seasonLevelConfig = SeasonLevelConfigCategory.Instance.Get(userInfo.SeasonLevel);
-            if (!ComHelp.IfNull(seasonLevelConfig.PripertySet))
+            if (!CommonHelper.IfNull(seasonLevelConfig.PripertySet))
             {
                 string[] addProList = seasonLevelConfig.PripertySet.Split("@");
                 for (int p = 0; p < addProList.Length; p++)
@@ -2010,12 +2009,12 @@ namespace ET
                     }
                 }
 
-                string[] equipSuitProList = equipSuitCof.SuitPropertyID.Split(';');
-
+                string[] equipSuitProList = equipSuitCof.SuitPropertyID.Split('|');
                 for (int y = 0; y < equipSuitProList.Length; y++)
                 {
-                    int NeedNum = int.Parse(equipSuitProList[y].Split(',')[0]);
-                    int NeedID = int.Parse(equipSuitProList[y].Split(',')[1]);
+                    
+                    int NeedNum = int.Parse(equipSuitProList[y].Split('&')[0]);
+                    int NeedID = int.Parse(equipSuitProList[y].Split('&')[1]);
                     if (num >= NeedNum)
                     {
                         //激活对应套装属性
@@ -2081,31 +2080,32 @@ namespace ET
 
             for (int i = 0; i < equipList.Count; i++)
             {
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(equipList[i].ItemID);
+                Item itemCof = ItemCategory.Instance.Get(equipList[i].ItemID);
+                int equipType = ItemHelper.GetNewEquipType(equipList[i]);
 
                 //生肖装备没激活直接跳出来
-                if (itemCof.EquipType == 101 && ItemHelper.IfShengXiaoActive(itemCof.Id, equipList) == false)
+                if (equipType == 101 && ItemHelper.IfShengXiaoActive(itemCof.Id, equipList) == false)
                 {
                     continue;
                 }
-                if (itemCof.ItemEquipID == 0)
+                if (equipType > 0 && equipList[i].ItemID == 0)
                 {
-                    List<int> itemSkills = ItemHelper.GetItemSkill(itemCof.SkillID);
+                    /*List<int> itemSkills = ItemHelper.GetItemSkill(itemCof.SkillID);
                     foreach (int skillid in itemSkills)
                     {
                         SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillid);
                         skillAddCombat += skillConfig.AddCombat;
-                    }
+                    }*/
                     continue;
                 }
 
-                EquipConfig mEquipCon = EquipConfigCategory.Instance.Get(itemCof.ItemEquipID);
+                EquipConfig mEquipCon = EquipConfigCategory.Instance.Get(itemCof.Id);
 
                 //职业专精
                 float occMastery = 0f;
                 if (userInfo.Occ != 0)
                 {
-                    //if (OccupationTwoConfigCategory.Instance.Get(userInfo.OccTwo).ArmorMastery == ItemConfigCategory.Instance.Get(equipIDList[i]).EquipType)
+                    //if (Occupation_TransferCategory.Instance.Get(userInfo.OccTwo).ArmorMastery == ItemCategory.Instance.Get(equipIDList[i]).EquipType)
                     //{
                     //    //occMastery = 0.2f;
                     //    occMastery = 0f;
@@ -2155,8 +2155,8 @@ namespace ET
                         }
                     }
 
-                    SkillConfig skillConfig = SkillConfigCategory.Instance.Get(equipList[i].HideSkillLists[z]);
-                    skillAddCombat += skillConfig.AddCombat;
+                    Skill skill = SkillCategory.Instance.Get(equipList[i].HideSkillLists[z]);
+                    skillAddCombat += skill.AddCombat;
                 }
 
                 //强化登录（List长度13， 13个位置）
@@ -2193,14 +2193,14 @@ namespace ET
                 */
 
                 //存储特殊属性
-                for (int y = 0; y < mEquipCon.AddPropreListType.Length; y++)
+                /*for (int y = 0; y < mEquipCon.AddPropreListType.Length; y++)
                 {
                     if (mEquipCon.AddPropreListType[y] != 0 && mEquipCon.AddPropreListValue.Length > y)
                     {
                         //记录属性
                         AddUpdateProDicList(mEquipCon.AddPropreListType[y], (long)mEquipCon.AddPropreListValue[y], UpdateProDicList);
                     }
-                }
+                }*/
 
                 //获取宝石属性
                 if (string.IsNullOrEmpty(equipList[i].GemIDNew))
@@ -2221,7 +2221,7 @@ namespace ET
                     }
 
                     //史诗宝石数量最多4个
-                    ItemConfig itemGemCof = ItemConfigCategory.Instance.Get(gemID);
+                    Item itemGemCof = ItemCategory.Instance.Get(gemID);
                     if (itemGemCof.ItemSubType == 110)
                     {
                         if (ShiShiGemID.Contains(itemGemCof.Id))
@@ -2242,7 +2242,7 @@ namespace ET
                     }
 
                     // "100403;10@100203;60
-                    ItemConfig gemitemCof = ItemConfigCategory.Instance.Get(gemID);
+                    Item gemitemCof = ItemCategory.Instance.Get(gemID);
                     string[] attributeList = gemitemCof.ItemUsePar.Split('@');
                     for (int a = 0; a < attributeList.Length; a++)
                     {
@@ -2412,7 +2412,7 @@ namespace ET
             //神兽羁绊属性
             int shenshouNumber = unit.GetComponent<PetComponent>().GetShenShouNumber();
             List<PropertyValue> shenshoujiban = new List<PropertyValue>();
-            foreach ((int petnumber, List<PropertyValue> prolist) in ConfigHelper.ShenShouJiBan)
+            foreach ((int petnumber, List<PropertyValue> prolist) in CommonConfig.ShenShouJiBan)
             {
                 if (shenshouNumber >= petnumber)
                 {

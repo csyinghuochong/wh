@@ -19,14 +19,14 @@ namespace ET
             unit.GetComponent<BuffManagerComponent>().BuffRemoveType(1);
 
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
-            if (mapComponent.SceneTypeEnum == SceneTypeEnum.Happy
-             || mapComponent.SceneTypeEnum == SceneTypeEnum.PetTianTi
-             || mapComponent.SceneTypeEnum == SceneTypeEnum.PetDungeon
-             || mapComponent.SceneTypeEnum == SceneTypeEnum.PetMing)
+            if (mapComponent.MapTypeEnum == MapTypeEnum.Happy
+             || mapComponent.MapTypeEnum == MapTypeEnum.PetTianTi
+             || mapComponent.MapTypeEnum == MapTypeEnum.PetDungeon
+             || mapComponent.MapTypeEnum == MapTypeEnum.PetMing)
             {
                 return;
             }
-            if (mapComponent.SceneTypeEnum == SceneTypeEnum.LocalDungeon)
+            if (mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon)
             {
                 if (DungeonConfigCategory.Instance.Get(mapComponent.SceneId).MapType == SceneSubTypeEnum.LocalDungeon_1)
                 {

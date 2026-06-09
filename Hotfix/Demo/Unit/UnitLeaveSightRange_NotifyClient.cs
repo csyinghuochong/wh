@@ -13,7 +13,7 @@
                 return;
             }
             Unit ub = b.GetParent<Unit>();
-            if (a.Unit.SceneType == SceneTypeEnum.LocalDungeon && ub.AI > 0)
+            if (a.Unit.SceneType == MapTypeEnum.LocalDungeon && ub.AI > 0)
             {
                 ub.GetComponent<AIComponent>()?.Stop();
             }

@@ -29,7 +29,11 @@ namespace ET
                 string[] buffinfos = activityConfig.Par_1.Split(',');
                 for (int i = 0; i < buffinfos.Length; i++)
                 {
-                    int buffid = int.Parse(buffinfos[i]);
+                    if (!int.TryParse(buffinfos[i], out int buffid))
+                    {
+                        Log.Error($"int.TryParse error: {buffinfos[i]} activityId:{activityConfig.Id}");
+                        continue;
+                    }
                     if (buffid != 0)
                     {
                         buffids.Add (buffid);   

@@ -10,6 +10,7 @@ namespace ET
             int lingdiLv = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Ling_DiLv);
             int rolelv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
 
+            /*
             LingDiRewardConfig config = LingDiRewardConfigCategory.Instance.Get(request.RewardId);
 
             if (lingdiLv < config.CountryLvlimit)
@@ -24,6 +25,7 @@ namespace ET
                 reply();
                 return;
             }
+           
 
             if (!unit.GetComponent<BagComponent>().OnCostItemData($"{config.BuyItemID};{config.BuyPrice}", ItemLocType.ItemLocBag, ItemGetWay.LingDiReward))
             {
@@ -33,7 +35,7 @@ namespace ET
             }
 
             unit.GetComponent<BagComponent>().OnAddItemData($"{config.ItemID};1", $"{ItemGetWay.LingDiReward}_{TimeHelper.ServerNow()}");
-
+ */
             reply();
             await ETTask.CompletedTask;
         }

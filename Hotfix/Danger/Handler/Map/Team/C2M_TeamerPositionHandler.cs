@@ -10,13 +10,13 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_TeamerPositionRequest request, M2C_TeamerPositionResponse response, Action reply)
         {
-            int sceneType = unit.DomainScene().GetComponent<MapComponent>().SceneTypeEnum;
+            int sceneType = unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum;
             List<Unit> units = unit.GetParent<UnitComponent>().GetAll();
 
             for (int i = 0; i < units.Count; i++)
             {
                
-                if (sceneType == SceneTypeEnum.TeamDungeon && units[i].Id!=unit.Id && units[i].Type == UnitType.Player)
+                if (sceneType == MapTypeEnum.TeamDungeon && units[i].Id!=unit.Id && units[i].Type == UnitType.Player)
                 {
                     response.UnitList.Add(new UnitInfo()
                     {
@@ -30,7 +30,7 @@ namespace ET
                     });
                 }
                
-                if (sceneType == SceneTypeEnum.LocalDungeon && (units[i].ConfigId == SeasonHelper.SeasonBossId || units[i].IsJingLingMonster()))
+                if (sceneType == MapTypeEnum.LocalDungeon && (units[i].ConfigId == SeasonHelper.SeasonBossId || units[i].IsJingLingMonster()))
                 {
                     response.UnitList.Add(new UnitInfo()
                     {

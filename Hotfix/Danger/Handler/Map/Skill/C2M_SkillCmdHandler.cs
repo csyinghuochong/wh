@@ -14,12 +14,12 @@ namespace ET
                 int occtwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
                 if (occtwo != 0)
                 {
-                    OccupationTwoConfig occupationConfig = OccupationTwoConfigCategory.Instance.Get(occtwo);
+                    Occupation_Transfer occupationConfig = Occupation_TransferCategory.Instance.Get(occtwo);
                     juexingid = occupationConfig.JueXingSkill[7];
                 }
                 if (juexingid == request.SkillID)
                 {
-                    if (unit.GetComponent<NumericComponent>().GetAsLong(NumericType.JueXingAnger) < 500 && !ComHelp.IsInnerNet())
+                    if (unit.GetComponent<NumericComponent>().GetAsLong(NumericType.JueXingAnger) < 500 && !CommonHelper.IsInnerNet())
                     {
                         response.Error = ErrorCode.Error_AngleNotEnough;
                         reply();
@@ -27,7 +27,7 @@ namespace ET
                     }
                 }
 
-                if (!SkillConfigCategory.Instance.Contain(request.SkillID))
+                if (!SkillCategory.Instance.Contain(request.SkillID))
                 {
                     Log.Error($"C2M_SkillCmd 1");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -44,7 +44,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (!ItemConfigCategory.Instance.Contain(request.ItemId))
+                    if (!ItemCategory.Instance.Contain(request.ItemId))
                     {
                         Console.WriteLine($"request.SkillID item:  {request.ItemId}");
                         Log.Error($"C2M_SkillCmd 2");
@@ -53,8 +53,8 @@ namespace ET
                         return;
                     }
 
-                    ItemConfig itemConfig = ItemConfigCategory.Instance.Get(request.ItemId);
-                    if (itemConfig.ItemSubType != 101 && itemConfig.ItemSubType != 110)
+                    Item Item =ItemCategory.Instance.Get(request.ItemId);
+                    if (Item.ItemSubType != 101 && Item.ItemSubType != 110)
                     {
                         Console.WriteLine($"request.SkillID error:  {request.SkillID}");
                         Log.Error($"C2M_SkillCmd 3");
@@ -65,12 +65,12 @@ namespace ET
                 }
 
                 MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();        
-                SkillConfig skillConfig = SkillConfigCategory.Instance.Get(request.SkillID);
-                if (mapComponent.SceneTypeEnum != SceneTypeEnum.RunRace && !ComHelp.IsInnerNet())
+                Skill skill = SkillCategory.Instance.Get(request.SkillID);
+                if (mapComponent.MapTypeEnum != MapTypeEnum.RunRace && !CommonHelper.IsInnerNet())
                 {
 
                     if (unit.GetComponent<SkillSetComponent>().GetBySkillID(request.SkillID) == null
-                   && request.SkillID != 60000011 && skillConfig.SkillActType != 0 && request.ItemId == 0
+                   && request.SkillID != 60000011 && skill.SkillActType != 0 && request.ItemId == 0
                    && !skillManagerComponent.SkillSecond.ContainsKey(request.SkillID))
                     {
                         Console.WriteLine($"request.SkillID==null:  {request.SkillID}   {unit.DomainZone()}  {unit.Id}");
@@ -128,7 +128,7 @@ namespace ET
                     {
                         unit.GetComponent<BagComponent>().OnCostItemData($"{request.ItemId};1",ItemLocType.ItemLocBag, ItemGetWay.GM);
 
-                        if (ConfigHelper.ChengJiuLianJin.Contains(request.ItemId))
+                        if (CommonConfig.ChengJiuLianJin.Contains(request.ItemId))
                         {
                             unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.BattleUseItem_214, 0, 1);
                             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.BattleUseItem_30, 0, 1);

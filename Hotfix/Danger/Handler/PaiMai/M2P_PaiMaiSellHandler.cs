@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -10,7 +10,7 @@ namespace ET
 
         protected override async ETTask Run(Scene scene, M2P_PaiMaiSellRequest request, P2M_PaiMaiSellResponse response, Action reply)
         {
-            if (!ItemConfigCategory.Instance.Contain(request.PaiMaiItemInfo.BagInfo.ItemID))
+            if (!ItemHelper.IsValidItem(request.PaiMaiItemInfo.BagInfo))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
@@ -31,7 +31,7 @@ namespace ET
             }
 
             int openday = ServerHelper.GetOpenServerDay(false, scene.DomainZone());
-            long todayGold = ConfigHelper.GetPaiMaiTodayGold(openday);
+            long todayGold = CommonConfig.GetPaiMaiTodayGold(openday);
             long sellGold = request.PaiMaiItemInfo.BagInfo.ItemNum * request.PaiMaiItemInfo.Price;
             if (paimaiingGold + request.PaiMaiTodayGold + sellGold >= todayGold)
             {
@@ -53,8 +53,8 @@ namespace ET
                 }
             }
             // 上架紫色道具刷新该类型的道具
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
-            DBPaiMainInfo dBPaiMainInfo = scene.GetComponent<PaiMaiSceneComponent>().GetPaiMaiDBByType(itemConfig.ItemType);
+            Item Item = ItemCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
+            DBPaiMainInfo dBPaiMainInfo = scene.GetComponent<PaiMaiSceneComponent>().GetPaiMaiDBByType(Item.ItemType);
             if (dBPaiMainInfo == null)
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;

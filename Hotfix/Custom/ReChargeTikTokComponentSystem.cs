@@ -86,7 +86,7 @@ namespace ET
 
         public static void ListenerTikTokResult(this ReChargeTikTokComponent self)
         {
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 self.HttpListenerUrl = @"http://127.0.0.1:20005/";
             }

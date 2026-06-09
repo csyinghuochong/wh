@@ -13,7 +13,7 @@
                 int buffid = 0;
                 int skillid = int.Parse(message.StateValue.Split('_')[0]);
 			
-				ConfigHelper.SingingBuffList.TryGetValue(skillid, out buffid);
+				CommonConfig.SingingBuffList.TryGetValue(skillid, out buffid);
 				if (buffid != 0)
 				{
                     BuffData buffData_1 = new BuffData();

@@ -10,17 +10,17 @@ namespace ET
         {
             if (request.SceneType == 0)
             {
-                int scenetype = unit.DomainScene().GetComponent<MapComponent>().SceneTypeEnum;
+                int scenetype = unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum;
                 request.SceneType = scenetype;
                 Log.Error($"C2M_TowerFightBeginRequest11 request.SceneType=null  {request.SceneType}");
             }
 
             switch (request.SceneType)
             {
-                case SceneTypeEnum.SeasonTower:
+                case MapTypeEnum.SeasonTower:
                     unit.DomainScene().GetComponent<SeasonTowerComponent>()?.BeginTower();
                     break;
-                case SceneTypeEnum.Tower:
+                case MapTypeEnum.TowerDungeon:
                     unit.DomainScene().GetComponent<TowerComponent>()?.BeginTower();
                     break;
                 default:

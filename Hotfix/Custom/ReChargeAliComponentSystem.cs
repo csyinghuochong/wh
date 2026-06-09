@@ -62,7 +62,7 @@ namespace ET
             //第四步:拼接格式 发送给客户端
             string toClientStr = "AliPay" + "," + aliRequestStr;
 
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 self.TestRecharge(dingDanID).Coroutine();
             }
@@ -121,7 +121,7 @@ namespace ET
         /// <summary>监听阿里支付结果 https://docs.open.alipay.com/204/105301/ </summary>
         public static void ListenerAliPayResult(this ReChargeAliComponent self)
         {
-            if (ComHelp.IsInnerNet() )
+            if (CommonHelper.IsInnerNet() )
             {
                 self.HttpListenerUrl = @"http://127.0.0.1:20002/";
             }

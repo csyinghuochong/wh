@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -33,16 +33,17 @@ namespace ET
                 }
 
 
-               ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-
-                if (itemConfig.EquipType > 100)
+               Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+               int equipType = ItemHelper.GetNewEquipType(bagInfo);
+               
+                if (equipType > 100)
                 {
                     response.Error = ErrorCode.ERR_ItemUseError;
                     reply();
                     return;
                 }
 
-                int[] costItems = itemConfig.XiLianStone;
+                int[] costItems = Item.XiLianStone;
                 List<RewardItem> rewardItems = new List<RewardItem>();
 
                 bool ifZuanShi = false;

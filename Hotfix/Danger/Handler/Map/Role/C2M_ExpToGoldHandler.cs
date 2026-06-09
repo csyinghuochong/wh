@@ -11,7 +11,7 @@ namespace ET
         {
             UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
             UserInfo userInfo = userInfoComponent.UserInfo;
-            ServerInfo serverInfo = unit.DomainScene().GetComponent<ServerInfoComponent>().ServerInfo;
+            ServerInfo serverInfo = ConfigData.ServerInfoList[unit.DomainZone()];
             if (userInfo.Lv < 70 &&  userInfo.Lv < serverInfo.WorldLv)
             {
                 response.Error = ErrorCode.ERR_LevelNoEnough;
@@ -76,12 +76,12 @@ namespace ET
                     break;
                 case 0:
                     List<int> weights = ListComponent<int>.Create();
-                    for (int i = 0; i < ConfigHelper.ExpToItemList.Count; i++)
+                    for (int i = 0; i < CommonConfig.ExpToItemList.Count; i++)
                     {
-                        weights.Add(ConfigHelper.ExpToItemList[i].KeyId);
+                        weights.Add(CommonConfig.ExpToItemList[i].KeyId);
                     }
                     int index = RandomHelper.RandomByWeight(weights);
-                    unit.GetComponent<BagComponent>().OnAddItemData(ConfigHelper.ExpToItemList[index].Value,  $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
+                    unit.GetComponent<BagComponent>().OnAddItemData(CommonConfig.ExpToItemList[index].Value,  $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
                     break;
                 default:
                     break;

@@ -51,12 +51,18 @@ namespace ET
         {
             DayMonsterList.Clear();
             JianDingFuQulity = this.Get(44).Value2;
-            FangunSkillId = int.Parse(this.Get(2).Value);
+            if (!int.TryParse(this.Get(2).Value, out FangunSkillId))
+            {
+                Log.Error($"int.TryParse error: {this.Get(2).Value}");
+            }
             BagInitCapacity = this.Get(3).Value2;
             BagMaxCapacity = BagInitCapacity + this.Get(84).Value2;
             HourseInitCapacity = this.Get(4).Value2;
             HourseMaxCapacity = HourseInitCapacity + this.Get(85).Value2;
-            OnLineLimit = int.Parse(this.Get(25).Value);
+            if (!int.TryParse(this.Get(25).Value, out OnLineLimit))
+            {
+                Log.Error($"int.TryParse error: {this.Get(25).Value}");
+            }
             AccountBagMax = this.Get(115).Value2;
             GemStoreInitCapacity = this.Get(118).Value2; 
             GemStoreMaxCapacity = this.Get(118).Value2;
@@ -66,9 +72,30 @@ namespace ET
             for (int i = 0; i < dayrefresh.Length; i++)
             {
                 string[] itemInfo = dayrefresh[i].Split(';');
-                int monsterId = int.Parse(itemInfo[0]);
-                float gaiLv = float.Parse(itemInfo[1]);
-                int total = int.Parse(itemInfo[2]);
+                if (itemInfo.Length < 3)
+                {
+                    Log.Error($"itemInfo.Length < 3: {dayrefresh[i]}");
+                    continue;
+                }
+
+                if (!int.TryParse(itemInfo[0], out int monsterId))
+                {
+                    Log.Error($"int.TryParse error: {itemInfo[0]}");
+                    continue;
+                }
+
+                if (!float.TryParse(itemInfo[1], out float gaiLv))
+                {
+                    Log.Error($"float.TryParse error: {itemInfo[1]}");
+                    continue;
+                }
+
+                if (!int.TryParse(itemInfo[2], out int total))
+                {
+                    Log.Error($"int.TryParse error: {itemInfo[2]}");
+                    continue;
+                }
+
                 DayMonsterList.Add(new DayMonsters()
                 {
                     MonsterId = monsterId,
@@ -81,8 +108,23 @@ namespace ET
             for (int i = 0; i < jinglingfresh.Length; i++)
             {
                 string[] itemInfo = jinglingfresh[i].Split(';');
-                float gaiLv = float.Parse(itemInfo[0]);
-                int total = int.Parse(itemInfo[1]);
+                if (itemInfo.Length < 3)
+                {
+                    Log.Error($"itemInfo.Length < 3: {jinglingfresh[i]}");
+                    continue;
+                }
+
+                if (!float.TryParse(itemInfo[0], out float gaiLv))
+                {
+                    Log.Error($"float.TryParse error: {itemInfo[0]}");
+                    continue;
+                }
+
+                if (!int.TryParse(itemInfo[1], out int total))
+                {
+                    Log.Error($"int.TryParse error: {itemInfo[1]}");
+                    continue;
+                }
 
                 DayJingLing dayJingLing = new DayJingLing();
                 dayJingLing.MonsterId = new List<int>();
@@ -92,8 +134,26 @@ namespace ET
                 for (int m = 0; m < monsterIist.Length; m++)
                 {
                     string[] monsterid = monsterIist[m].Split(',');
-                    dayJingLing.Weights.Add(int.Parse(monsterid[0]));
-                    dayJingLing.MonsterId.Add(int.Parse(monsterid[1]));
+                    if (monsterid.Length < 2)
+                    {
+                        Log.Error($"monsterid.Length < 2: {monsterIist[m]}");
+                        continue;
+                    }
+
+                    if (!int.TryParse(monsterid[0], out int weight))
+                    {
+                        Log.Error($"int.TryParse error: {monsterid[0]}");
+                        continue;
+                    }
+
+                    if (!int.TryParse(monsterid[1], out int monsterId))
+                    {
+                        Log.Error($"int.TryParse error: {monsterid[1]}");
+                        continue;
+                    }
+
+                    dayJingLing.Weights.Add(weight);
+                    dayJingLing.MonsterId.Add(monsterId);
                 }
 
                 dayJingLing.GaiLv = gaiLv;
@@ -105,7 +165,25 @@ namespace ET
             for (int i = 0; i < zhuabuItems.Length; i++)
             {
                 string[] zhubuids = zhuabuItems[i].Split(';');
-                ZhuaPuItem.Add(int.Parse(zhubuids[0]), int.Parse(zhubuids[1]));
+                if (zhubuids.Length < 2)
+                {
+                    Log.Error($"zhubuids.Length < 2: {zhuabuItems[i]}");
+                    continue;
+                }
+
+                if (!int.TryParse(zhubuids[0], out int itemId))
+                {
+                    Log.Error($"int.TryParse error: {zhubuids[0]}");
+                    continue;
+                }
+
+                if (!int.TryParse(zhubuids[1], out int itemNum))
+                {
+                    Log.Error($"int.TryParse error: {zhubuids[1]}");
+                    continue;
+                }
+
+                ZhuaPuItem.Add(itemId, itemNum);
             }
         }
 

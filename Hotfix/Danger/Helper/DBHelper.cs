@@ -70,7 +70,9 @@ namespace ET
         
         public static long GetSoloServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Solo)).InstanceId;
+            Log.Error("GetSoloServerId");
+            return 0;
+            //return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Solo)).InstanceId;
         }
 
         public static long GetUnionServerId(int zone)
@@ -105,7 +107,7 @@ namespace ET
 
         public static long GetMainCityServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{ComHelp.MainCityID()}").InstanceId;
+            return StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{CommonHelper.MainCityID()}").InstanceId;
         }
 
         public static long GetMailServerId(int zone)
@@ -122,25 +124,24 @@ namespace ET
         {
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Team)).InstanceId;
         }
-
-        public static long GetBattleServerId(int zone)
-        {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Battle)).InstanceId;
-        }
-
+        
         public static long GetHappyServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Happy)).InstanceId;
+            Log.Error("GetSoloServerId");
+            return 0;
+            //return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Happy)).InstanceId;
         }
 
         public static long MapCityServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{ComHelp.MainCityID()}").InstanceId;
+            return StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{CommonHelper.MainCityID()}").InstanceId;
         }
 
         public static long GetArenaServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Arena)).InstanceId;
+            Log.Error("GetSoloServerId");
+            return 0;
+            //return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Arena)).InstanceId;
         }
 
         public static long GetJiaYuanServerId(int zone)
@@ -167,7 +168,7 @@ namespace ET
 
         public static int GetOpenServerDay(int zone)
         {
-            return ServerHelper.GetOpenServerDay(ComHelp.IsInnerNet(), zone);
+            return ServerHelper.GetOpenServerDay(CommonHelper.IsInnerNet(), zone);
             //long openSerTime = GetOpenServerTime(zone);
             //if (openSerTime == 0)
             //{

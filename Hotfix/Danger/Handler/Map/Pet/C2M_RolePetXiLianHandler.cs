@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -27,11 +27,11 @@ namespace ET
 				return;
 			}
 
-			ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-			int itemSubType = itemConfig.ItemSubType;
+			Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+			int itemSubType = Item.ItemSubType;
 			bool ifCost = true;
 
-			PetConfig petCof = PetConfigCategory.Instance.Get(petInfo.ConfigId);
+			Pet petCof = PetCategory.Instance.Get(petInfo.ConfigId);
 			//神兽无法学习技能书
 			if (petCof.PetType == 2)
 			{
@@ -109,7 +109,7 @@ namespace ET
 					break;
 				//学习技能书
 				case 122:
-					bool ifok = Pet_AddSkill(unit, petInfo, int.Parse(itemConfig.ItemUsePar));
+					bool ifok = Pet_AddSkill(unit, petInfo, int.Parse(Item.ItemUsePar));
 					if (ifok)
 					{
                         unit.GetComponent<PetComponent>().UpdatePetAttribute(petInfo, true);

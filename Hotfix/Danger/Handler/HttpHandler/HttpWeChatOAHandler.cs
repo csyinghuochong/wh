@@ -44,7 +44,7 @@ namespace ET
 
         public async ETTask Handle(Entity entity, HttpListenerContext context)
         {
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 entity.GetComponent<WeChatOACodeComponent>().BingWeChatOACodeResult("tt", string.Empty).Coroutine();
                 return;

@@ -59,7 +59,7 @@ namespace ET
             userInfo.ServerMailIdCur = -1;
             userInfo.PiLao = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);        //初始化疲劳
             userInfo.Vitality = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);
-            userInfo.MakeList.AddRange(ComHelp.StringArrToIntList(GlobalValueConfigCategory.Instance.Get(18).Value.Split(';')));
+            userInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(GlobalValueConfigCategory.Instance.Get(18).Value.Split(';')));
             userInfo.CreateTime = TimeHelper.ServerNow();
 
             if (createRoleInfo.RobotId > 0)
@@ -121,18 +121,18 @@ namespace ET
             }
             Unit unit = self.GetParent<Unit>();
             int lingdiLv = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Ling_DiLv);
-            LingDiConfig lingDiConfig = LingDiConfigCategory.Instance.Get(lingdiLv);
+          //  LingDiConfig lingDiConfig = LingDiConfigCategory.Instance.Get(lingdiLv);
 
             //unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.Exp, (coefficient *lingDiConfig.HoureExp).ToString(), notice).Coroutine();
-            self.UpdateRoleData(UserDataType.FangRong, (coefficient * lingDiConfig.HoureExp).ToString(), notice);
-            self.UpdateRoleData(UserDataType.RongYu, (coefficient * lingDiConfig.HoureHonor).ToString(), notice);
+           // self.UpdateRoleData(UserDataType.FangRong, (coefficient * lingDiConfig.HoureExp).ToString(), notice);
+           // self.UpdateRoleData(UserDataType.RongYu, (coefficient * lingDiConfig.HoureHonor).ToString(), notice);
         }
 
         public static void OpenAll(this UserInfoComponent self)
         {
             self.UserInfo.FubenPassList.Clear();
 
-            Dictionary<int, ChapterConfig> keyValuePairs = ChapterConfigCategory.Instance.GetAll();
+            /*Dictionary<int, ChapterConfig> keyValuePairs = ChapterConfigCategory.Instance.GetAll();
             foreach (var item in keyValuePairs)
             {
                 self.UserInfo.FubenPassList.Add(new FubenPassInfo()
@@ -140,7 +140,7 @@ namespace ET
                     FubenId = item.Key,
                     Difficulty = (int)FubenDifficulty.DiYu
                 });
-            }
+            }*/
         }
 
 
@@ -267,7 +267,7 @@ namespace ET
             PetComponent petComponent = self.GetParent<Unit>().GetComponent<PetComponent>();
             if (self.UserInfo.RobotId > 0 &&   petComponent.RolePetInfos.Count == 0)
             {
-                List<int> petids = PetConfigCategory.Instance.GetAll().Keys.ToList();
+                List<int> petids = PetCategory.Instance.GetAll().Keys.ToList();
                 int randomindex = RandomHelper.RandomNumber(0, petids.Count);
                 
                 petComponent.OnGmAddPet(petids[randomindex]);
@@ -326,7 +326,7 @@ namespace ET
             {
                 self.UserInfo.Lv = 16;
             }
-            if (ComHelp.IsZhuBoZone(self.DomainZone())
+            if (CommonHelper.IsZhuBoZone(self.DomainZone())
                 && self.Id == 2684307489305985024
                 && self.UserInfo.Lv < 60)
             {
@@ -336,7 +336,7 @@ namespace ET
 
         private static bool IsZhuBoLevel16(this UserInfoComponent self)
         {
-            if (!ComHelp.IsZhuBoZone(self.DomainZone()))
+            if (!CommonHelper.IsZhuBoZone(self.DomainZone()))
             {
                 return false;
 
@@ -596,7 +596,7 @@ namespace ET
                 main.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.ShowLieMonster_1201, 0, 1);
             }
 
-            if (sceneType == SceneTypeEnum.LocalDungeon && monsterConfig.MonsterSonType == 55)
+            if (sceneType == MapTypeEnum.LocalDungeon && monsterConfig.MonsterSonType == 55)
             {
                 self.OnAddChests(sceneId, beKill.ConfigId);
             }
@@ -611,14 +611,14 @@ namespace ET
             numericComponent.ApplyChange(null, NumericType.KillMonsterNumber, 1, 0);
 
             int tiliKillNumber = numericComponent.GetAsInt(NumericType.TiLiKillNumber);
-            if (sceneType == SceneTypeEnum.LocalDungeon && !showlieopen && self.UserInfo.PiLao > 0)
+            if (sceneType == MapTypeEnum.LocalDungeon && !showlieopen && self.UserInfo.PiLao > 0)
             {
                 if (tiliKillNumber >= 4)
                 {
                     numericComponent.ApplyValue(NumericType.TiLiKillNumber, 0, false);
 
                     numericComponent.ApplyChange(null, NumericType.CostTiLi, 1, 0);
-                    if ( ComHelp.IsZhuBoZone(self.DomainZone()) && self.UserInfo.PiLao < 2)
+                    if ( CommonHelper.IsZhuBoZone(self.DomainZone()) && self.UserInfo.PiLao < 2)
                     {
                         self.UpdateRoleData(UserDataType.PiLao, "100", true);
                     }
@@ -642,11 +642,11 @@ namespace ET
             {
                 MonsterConfig mCof = MonsterConfigCategory.Instance.Get(beKill.ConfigId);
                 float expcoefficient = 1f;
-                if (sceneType == SceneTypeEnum.LocalDungeon && beKill.IsBoss())
+                if (sceneType == MapTypeEnum.LocalDungeon && beKill.IsBoss())
                 {
                     int killNumber = main.GetComponent<UserInfoComponent>().GetMonsterKillNumber(mCof.Id);
                     int chpaterid = DungeonConfigCategory.Instance.GetChapterByDungeon(sceneId);
-                    BossDevelopment bossDevelopment = ConfigHelper.GetBossDevelopmentByKill(chpaterid, killNumber);
+                    BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
                     expcoefficient *= bossDevelopment.ExpAdd;
                 }
 
@@ -659,8 +659,8 @@ namespace ET
                 expcoefficient += expAdd;
                 expcoefficient+= now_GoldAdd_Pro;
                 
-                if ((sceneType == SceneTypeEnum.LocalDungeon && self.UserInfo.PiLao > 0)
-                  || sceneType != SceneTypeEnum.LocalDungeon)
+                if ((sceneType == MapTypeEnum.LocalDungeon && self.UserInfo.PiLao > 0)
+                  || sceneType != MapTypeEnum.LocalDungeon)
                 {
                     if (numericComponent.GetAsInt(NumericType.JueXingExp) < 5000)
                     {
@@ -673,7 +673,7 @@ namespace ET
             }
 
             // 纪录击败的Boss
-            if (beKill.IsBoss() && ConfigHelper.DefeatedBossIds.ContainsKey(beKill.ConfigId))
+            if (beKill.IsBoss() && CommonConfig.DefeatedBossIds.ContainsKey(beKill.ConfigId))
             {
                 if (!self.UserInfo.DefeatedBossIds.Contains(beKill.ConfigId))
                 {
@@ -1038,7 +1038,7 @@ namespace ET
                 case UserDataType.BaoShiDu:
                     long addValue = long.Parse(value);
                     newValue = self.UserInfo.BaoShiDu + (int)addValue;
-                    newValue = Math.Min(Math.Max(0, newValue), ComHelp.GetMaxBaoShiDu());
+                    newValue = Math.Min(Math.Max(0, newValue), CommonHelper.GetMaxBaoShiDu());
                     self.UserInfo.BaoShiDu = (int)newValue;
                     saveValue = self.UserInfo.BaoShiDu.ToString();
                     unit.GetComponent<BuffManagerComponent>()?.InitBaoShiBuff();
@@ -1144,20 +1144,14 @@ namespace ET
         public static void Role_AddExp(this UserInfoComponent self, long addValue, bool notice)
         {
             Scene scene = self.DomainScene();
-            ServerInfoComponent serverInfoComponent = scene.GetComponent<ServerInfoComponent>();
-            if (serverInfoComponent == null)
+            ServerInfo serverInfo = ConfigData.ServerInfoList[scene.DomainZone()];
+            if (serverInfo == null)
             {
-                Log.Warning($"ServerInfo==null: {scene.GetComponent<MapComponent>().SceneTypeEnum} {self.Id}");
+                Log.Warning($"ServerInfo==null: {scene.GetComponent<MapComponent>().MapTypeEnum} {self.Id}");
                 return;
             }
-            if (serverInfoComponent.ServerInfo == null)
-            {
-                Log.Warning($"ServerInfo==null: {scene.GetComponent<MapComponent>().SceneTypeEnum} {self.Id}");
-                return;
-            }
-            ServerInfo serverInfo = serverInfoComponent.ServerInfo;
-
-            float expAdd = ComHelp.GetExpAdd(self.UserInfo.Lv, serverInfo);
+        
+            float expAdd = CommonHelper.GetExpAdd(self.UserInfo.Lv, serverInfo);
 
             ExpConfig xiulianconf1 = ExpConfigCategory.Instance.Get(self.UserInfo.Lv);
             long upNeedExp = xiulianconf1.UpExp;
@@ -1495,7 +1489,7 @@ namespace ET
             {
                 return true;
             }
-            if (!ChapterSectionConfigCategory.Instance.Contain(chapterid))
+            /*if (!ChapterSectionConfigCategory.Instance.Contain(chapterid))
             {
                 return false;
             }
@@ -1509,7 +1503,7 @@ namespace ET
                 {
                     return false;
                 }
-            }
+            }*/
             return true;
         }
 
@@ -1529,8 +1523,8 @@ namespace ET
             self.UpdateRoleData(UserDataType.Lv, lv.ToString());
 
             self.UserInfo.HorseIds.Clear();
-            Dictionary<int, ZuoQiShowConfig> allzuoqi = ZuoQiShowConfigCategory.Instance.GetAll();
-            foreach (( int zuoqiid, ZuoQiShowConfig zuoQiShowConfig ) in allzuoqi)
+            Dictionary<int, Mount> allzuoqi = MountCategory.Instance.GetAll();
+            foreach (( int zuoqiid, Mount zuoQiShowConfig ) in allzuoqi)
             {
                 self.UserInfo.HorseIds.Add(zuoqiid);
             }

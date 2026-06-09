@@ -42,7 +42,7 @@ namespace ET
             int needZuanshi = 0;
             if (request.CostType == 2)
             {
-                if (bagComponent.GetItemNumber(ConfigHelper.ZuanShiTenChoukaItem) < 1)
+                if (bagComponent.GetItemNumber(CommonConfig.ZuanShiTenChoukaItem) < 1)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     reply();
@@ -139,7 +139,7 @@ namespace ET
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.ChouKa, request.ChouKaType, 0);
             if (request.CostType == 2)
             {
-                bagComponent.OnCostItemData($"{ConfigHelper.ZuanShiTenChoukaItem};1", ItemLocType.ItemLocBag, ItemGetWay.ChouKa);
+                bagComponent.OnCostItemData($"{CommonConfig.ZuanShiTenChoukaItem};1", ItemLocType.ItemLocBag, ItemGetWay.ChouKa);
             }
             else if (mianfei)
             {

@@ -16,7 +16,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (!bagComponent.CheckCostItem(ActivityConfigHelper.ChouKaCostItem))
+            if (!bagComponent.CheckCostItem(ActivityV1Config.ChouKaCostItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
@@ -25,16 +25,16 @@ namespace ET
 
             unit.GetComponent<NumericComponent>().ApplyChange( null,NumericType.V1ChouKaNumber, 1, 0 );
 
-            int dropId = ActivityConfigHelper.ChouKaDropId[0];
-            ServerInfoComponent serverInfoComponent = unit.DomainScene().GetComponent<ServerInfoComponent>();
-            if (serverInfoComponent != null)
+            int dropId = ActivityV1Config.ChouKaDropId[0];
+            ServerInfo serverInfo = ConfigData.ServerInfoList[unit.DomainZone()];
+            if (serverInfo != null)
             {
-                dropId = serverInfoComponent.ServerInfo.ChouKaDropId;
+                dropId = serverInfo.ChouKaDropId;
             }
 
             List<RewardItem> rewardItems = new List<RewardItem>();  
             DropHelper.DropIDToDropItem_2(dropId, rewardItems);
-            bagComponent.OnCostItemData(ActivityConfigHelper.ChouKaCostItem,  ItemLocType.ItemLocBag, ItemGetWay.Activity);
+            bagComponent.OnCostItemData(ActivityV1Config.ChouKaCostItem,  ItemLocType.ItemLocBag, ItemGetWay.Activity);
             bagComponent.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
 
             reply();

@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class CampLieShouConfigCategory : ProtoObject, IMerge
+    public partial class WordCategory : ProtoObject, IMerge
     {
-        public static CampLieShouConfigCategory Instance;
+        public static WordCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, CampLieShouConfig> dict = new Dictionary<int, CampLieShouConfig>();
+        private Dictionary<int, Word> dict = new Dictionary<int, Word>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<CampLieShouConfig> list = new List<CampLieShouConfig>();
+        private List<Word> list = new List<Word>();
 		
-        public CampLieShouConfigCategory()
+        public WordCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            CampLieShouConfigCategory s = o as CampLieShouConfigCategory;
+            WordCategory s = o as WordCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (CampLieShouConfig config in list)
+            foreach (Word config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public CampLieShouConfig Get(int id)
+        public Word Get(int id)
         {
-            this.dict.TryGetValue(id, out CampLieShouConfig item);
+            this.dict.TryGetValue(id, out Word item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (CampLieShouConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (Word)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, CampLieShouConfig> GetAll()
+        public Dictionary<int, Word> GetAll()
         {
             return this.dict;
         }
 
-        public CampLieShouConfig GetOne()
+        public Word GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,23 +73,17 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class CampLieShouConfig: ProtoObject, IConfig
+	public partial class Word: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>任务名称</summary>
+		/// <summary>中文</summary>
 		[ProtoMember(2)]
-		public string TaskName { get; set; }
-		/// <summary>目标类型</summary>
+		public string CN { get; set; }
+		/// <summary>英文</summary>
 		[ProtoMember(3)]
-		public int TargetType { get; set; }
-		/// <summary>目标ID</summary>
-		[ProtoMember(4)]
-		public int[] Target { get; set; }
-		/// <summary>目标值</summary>
-		[ProtoMember(5)]
-		public int[] TargetValue { get; set; }
+		public string EN { get; set; }
 
 	}
 }

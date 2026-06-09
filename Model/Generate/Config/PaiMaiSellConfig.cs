@@ -78,7 +78,7 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>拍卖类型</summary>
+		/// <summary>拍卖类型 1-材料 2-消耗品 3-宠物</summary>
 		[ProtoMember(2)]
 		public int PaiMaiType { get; set; }
 		/// <summary>章节ID</summary>

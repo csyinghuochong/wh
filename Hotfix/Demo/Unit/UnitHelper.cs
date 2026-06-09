@@ -9,11 +9,11 @@ namespace ET
         {
             int fubenDifficulty = FubenDifficulty.None;
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
-            if (mapComponent.SceneTypeEnum == (int)SceneTypeEnum.CellDungeon)
+            if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
             {
                 fubenDifficulty = unit.DomainScene().GetComponent<CellDungeonComponent>().FubenDifficulty;
             }
-            if (mapComponent.SceneTypeEnum == (int)SceneTypeEnum.CellDungeon)
+            if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
             {
                 fubenDifficulty = unit.DomainScene().GetComponent<LocalDungeonComponent>().FubenDifficulty;
             }

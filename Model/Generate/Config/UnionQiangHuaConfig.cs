@@ -81,6 +81,9 @@ namespace ET
 		/// <summary>装备名称</summary>
 		[ProtoMember(2)]
 		public string EquipSpaceName { get; set; }
+		/// <summary>装备名称</summary>
+		[ProtoMember(3)]
+		public string EquipSpaceName_EN { get; set; }
 		/// <summary>下一级强化</summary>
 		[ProtoMember(4)]
 		public int NextID { get; set; }

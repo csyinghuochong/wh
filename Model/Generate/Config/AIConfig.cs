@@ -87,8 +87,11 @@ namespace ET
 		/// <summary>节点名字</summary>
 		[ProtoMember(4)]
 		public string Name { get; set; }
-		/// <summary>节点参数</summary>
+		/// <summary></summary>
 		[ProtoMember(5)]
+		public string Desc { get; set; }
+		/// <summary>节点参数</summary>
+		[ProtoMember(6)]
 		public string NodeParams { get; set; }
 
 	}

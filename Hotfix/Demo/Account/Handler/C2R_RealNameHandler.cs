@@ -25,7 +25,7 @@ namespace ET
                     return;
                 }
                 
-                DBCenterAccountInfo dbCenterAccountInfo =await DBHelper.GetComponent<DBCenterAccountInfo>(ComHelp.CenterZoneId, request.AccountId);
+                DBCenterAccountInfo dbCenterAccountInfo =await DBHelper.GetComponent<DBCenterAccountInfo>(CommonConfig.CenterZoneId, request.AccountId);
               
                 RealNameCode result_check = new RealNameCode();
                 result_check.data = new RealNameData();
@@ -43,7 +43,7 @@ namespace ET
                     result_check.errcode = 0;
                     result_check.data.result.status = 0;
                 }
-                else if (ComHelp.IsInnerNet())
+                else if (CommonHelper.IsInnerNet())
                 {
                     result_check.errcode = 0;
                     result_check.data.result.status = 0;
@@ -77,7 +77,7 @@ namespace ET
                     playerInfo.Name = request.Name;
                     playerInfo.IdCardNo = request.IdCardNO;
                     playerInfo.RealName = 1;
-                    DBHelper.SaveComponent(ComHelp.CenterZoneId, dbCenterAccountInfo.Id, dbCenterAccountInfo).Coroutine();
+                    DBHelper.SaveComponent(CommonConfig.CenterZoneId, dbCenterAccountInfo.Id, dbCenterAccountInfo).Coroutine();
                     
                     response.Error = ErrorCode.ERR_Success;
                 }

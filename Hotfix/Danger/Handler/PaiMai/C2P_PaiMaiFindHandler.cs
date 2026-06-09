@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -46,7 +46,7 @@ namespace ET
             }
 
             int pagenum = int.Parse(GlobalValueConfigCategory.Instance.Get(104).Value); //每页的数量
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
+            Item Item = ItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
             for (int i = 0; i < PaiMaiItemInfo.Count; i++)
             {
                 if (PaiMaiItemInfo[i].Id == paiMaiItemInfo.Id)

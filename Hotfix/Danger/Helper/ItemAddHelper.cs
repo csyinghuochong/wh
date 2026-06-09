@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ET
@@ -56,7 +56,7 @@ namespace ET
                 return;
             }
 
-            ItemConfig itemCof = ItemConfigCategory.Instance.Get(bagInf0.ItemID);
+            Item itemCof = ItemCategory.Instance.Get(bagInf0.ItemID);
             float minValuePro = (float)shulianValue / (float)int.Parse(itemCof.ItemUsePar);
             if (minValuePro >= 1)
             {
@@ -78,8 +78,8 @@ namespace ET
         public static void TreasureItem(Unit unit, BagInfo bagInfo)
         {
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-            if (itemConfig.ItemSubType != 113 && itemConfig.ItemSubType != 127)
+            Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+            if (Item.ItemSubType != 113 && Item.ItemSubType != 127)
             {
                 return;
             }
@@ -95,7 +95,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (dungeonConfigsAll[i].EnterLv <= roleLv && dungeonConfigsAll[i].Id < ConfigHelper.GMDungeonId)
+                if (dungeonConfigsAll[i].EnterLv <= roleLv && dungeonConfigsAll[i].Id < CommonConfig.GMDungeonId)
                 {
                     dungeonConfigs.Add(dungeonConfigsAll[i]);
                 }
@@ -104,7 +104,7 @@ namespace ET
             int dungeonindex = RandomHelper.RandomNumber(0, dungeonConfigs.Count);
             int dungeonid = dungeonConfigs[dungeonindex].Id;
 
-            int dropId = int.Parse(itemConfig.ItemUsePar);
+            int dropId = int.Parse(Item.ItemUsePar);
             List<RewardItem> rewardList = new List<RewardItem>();
 
             //获取最终奖励
@@ -112,7 +112,7 @@ namespace ET
             {
                 if (dropId == 0)
                 {
-                    Log.Warning($"dropId == 0:  {itemConfig.Id}");
+                    Log.Warning($"dropId == 0:  {Item.Id}");
                 }
                 DropHelper.DropIDToDropItem_2(dropId, rewardList);
             }
@@ -127,7 +127,7 @@ namespace ET
                 {
                     baotutype = 2;
                 }
-                int dropID2 = ComHelp.TreasureToDropID(dungeonid, roleLv, baotutype);
+                int dropID2 = CommonHelper.TreasureToDropID(dungeonid, roleLv, baotutype);
                 if (dropID2 == 0)
                 {
                     Log.Warning($"TreasureToDropID: {roleLv} {baotutype}");
@@ -142,14 +142,16 @@ namespace ET
 
 
         //获取装备的鉴定属性
-        public static List<HideProList> GetEquipZhuanJingHidePro(int equipID, int itemID, int jianDingPinZhi, Unit unit, bool ifItem)
+        public static List<HideProList> GetEquipZhuanJingHidePro(int itemtype ,int equipID, int itemID, int jianDingPinZhi, Unit unit, bool ifItem)
         {
+            
+            
             //获取最大值
             EquipConfig equipCof = EquipConfigCategory.Instance.Get(equipID);
             List<HideProList> hideList = new List<HideProList>();
 
             //获取当前鉴定系数
-            ItemConfig itemCof = ItemConfigCategory.Instance.Get(itemID);
+            Item itemCof = ItemCategory.Instance.Get(itemID);
 
             //鉴定符品质大于装备等级
             /*

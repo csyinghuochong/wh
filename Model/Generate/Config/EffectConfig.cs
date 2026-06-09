@@ -78,32 +78,35 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>特效类型</summary>
+		/// <summary>Buff名称</summary>
 		[ProtoMember(2)]
-		public int EffectType { get; set; }
-		/// <summary>特效是否跟随绑定</summary>
+		public string Name { get; set; }
+		/// <summary>特效类型 1-技能 2-受击 3-场景</summary>
 		[ProtoMember(3)]
+		public int EffectType { get; set; }
+		/// <summary>特效是否跟随绑定 0-跟随 1-不跟随</summary>
+		[ProtoMember(4)]
 		public int IfFollowCollider { get; set; }
 		/// <summary>特效名称</summary>
-		[ProtoMember(4)]
+		[ProtoMember(5)]
 		public string EffectName { get; set; }
 		/// <summary>技能效果延迟时间</summary>
-		[ProtoMember(5)]
-		public double SkillEffectDelayTime { get; set; }
-		/// <summary>绑定父级</summary>
 		[ProtoMember(6)]
+		public double SkillEffectDelayTime { get; set; }
+		/// <summary>绑定父级 0-挂在玩家身上，跟随移动 1-固定位置，玩家自身坐标 2-跟随玩家，但不旋转 3-实时跟随 4-闪电链</summary>
+		[ProtoMember(7)]
 		public int SkillParent { get; set; }
 		/// <summary>绑定父级位置</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public string SkillParentPosition { get; set; }
 		/// <summary>隐藏间隔时间</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int HideTime { get; set; }
 		/// <summary>技能特效存在时间[毫秒]</summary>
-		[ProtoMember(9)]
-		public int SkillEffectLiveTime { get; set; }
-		/// <summary>是否面向施法者播放特效</summary>
 		[ProtoMember(10)]
+		public int SkillEffectLiveTime { get; set; }
+		/// <summary>是否面向施法者播放特效 0-不处理 1-朝向面向施法者</summary>
+		[ProtoMember(11)]
 		public int PlayType { get; set; }
 
 	}

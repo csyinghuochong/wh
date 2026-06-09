@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +24,7 @@ namespace ET
                 List<long> removeIds = new List<long>();    
                 MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
 
-                if (mapComponent.SceneTypeEnum == SceneTypeEnum.BaoZang)
+                if (mapComponent.MapTypeEnum == MapTypeEnum.BaoZangZhiDi)
                 {
                     List<Unit> monsterid = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Monster);
                     for (int i = 0; i < monsterid.Count; i++)
@@ -52,8 +52,8 @@ namespace ET
                 return;
             }
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
-            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / itemConfig.ItemPileSum);
+            Item Item = ItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
+            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / Item.ItemPileSum);
             if (unit.GetComponent<BagComponent>().GetBagLeftCell() < cell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -106,8 +106,8 @@ namespace ET
                 request.IsRecharge = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber);
 
                 if (request.IsRecharge > 0
-                    || ComHelp.IsCanPaiMai_KillBoss(userInfoComponent.UserInfo.MonsterRevives, userInfoComponent.UserInfo.Lv)
-                    || ComHelp.IsCanPaiMai_Level(createDay, userInfoComponent.UserInfo.Lv) == 0)
+                    || CommonHelper.IsCanPaiMai_KillBoss(userInfoComponent.UserInfo.MonsterRevives, userInfoComponent.UserInfo.Lv)
+                    || CommonHelper.IsCanPaiMai_Level(createDay, userInfoComponent.UserInfo.Lv) == 0)
                 {
                     openPaiMai = 1;
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.PaiMaiOpen, 1);
@@ -176,7 +176,7 @@ namespace ET
 
 
                 long baginfoid = 0;
-                if (ItemConfigCategory.Instance.Get(r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID).ItemType == ItemTypeEnum.Equipment)
+                if (ItemCategory.Instance.Get(r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID).ItemType == ItemTypeEnum.Equipment)
                 {
                     baginfoid = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.BagInfoID;
                 }
@@ -223,7 +223,7 @@ namespace ET
                 {
                     //服务器 道具名称 数量  价格  购买者名称 购买者等级  购买者充值 购买者当前金币 购买者账号 出售者名称   出售者账号  出售者等级 出售者当前金币
                     string serverName = ServerHelper.GetGetServerItem(false, unit.DomainZone()).ServerName;
-                    string itemName = itemConfig.ItemName;
+                    string itemName = WordHelper.GetShowText(Item.Name, 0);
                     int itemNumber = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
                     long price = r_GameStatusResponse.PaiMaiItemInfo.Price;
 

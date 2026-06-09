@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 
 namespace ET
 {
-    public partial class ItemConfigCategory
+    public partial class ItemCategory
     {
 
         public List<int> FoodList = new List<int> { };
@@ -12,37 +12,27 @@ namespace ET
 
         public override void AfterEndInit()
         {
-            foreach (ItemConfig itemConfig in this.GetAll().Values)
+            foreach (Item Item in this.GetAll().Values)
             {
-                if (itemConfig.ItemType== 1 && itemConfig.ItemSubType== 131)
+                if (Item.ItemType== 1 && Item.ItemSubType== 131)
                 {
                     List<int> foodlist = null;
-                    FoodLevelList.TryGetValue(itemConfig.UseLv, out foodlist);
+                    FoodLevelList.TryGetValue(Item.UseLv, out foodlist);
                     if (foodlist == null)
                     {
                         foodlist = new List<int>();
-                        FoodLevelList.Add(itemConfig.UseLv, foodlist);
+                        FoodLevelList.Add(Item.UseLv, foodlist);
                     }
-                    foodlist.Add(itemConfig.Id);
+                    foodlist.Add(Item.Id);
                 }
-                if (itemConfig.ItemType == 3 && itemConfig.EquipType != 101)
-                {
-                    List<int> equiplist = null;
-                    EquipTypeList.TryGetValue(itemConfig.ItemSubType, out equiplist);
-                    if (equiplist == null)
-                    {
-                        equiplist = new List<int>();
-                        EquipTypeList.Add(itemConfig.ItemSubType, equiplist);
-                    }
-                    equiplist.Add(itemConfig.Id);
-                }
+               
             }
 
-            foreach (ItemConfig itemConfig in this.GetAll().Values)
+            foreach (Item Item in this.GetAll().Values)
             {
-                if (itemConfig.ItemType == 1 && itemConfig.ItemSubType == 131 && itemConfig.ItemQuality > 2)
+                if (Item.ItemType == 1 && Item.ItemSubType == 131 && Item.Quality > 2)
                 {
-                    FoodList.Add(itemConfig.Id);
+                    FoodList.Add(Item.Id);
                 }
             }
         }
@@ -58,25 +48,25 @@ namespace ET
             List<int> canequiplist = new List<int>();
             for (int i = 0; i < equiplist.Count; i++)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(equiplist[i]);
-                if (itemConfig.ItemSubType != subType ||  itemConfig.UseLv > lv)
+                Item Item = ItemCategory.Instance.Get(equiplist[i]);
+                if (Item.ItemSubType != subType ||  Item.UseLv > lv)
                 {
                     continue;
                 }
-                if ((itemConfig.EquipType == 1|| itemConfig.EquipType == 2))
+                /*if ((Item.EquipType == 1|| Item.EquipType == 2))
                 {
                     if (occ == 1)
                     {
                         canequiplist.Add(equiplist[i]);
                     }
                 }
-                else  if ((itemConfig.EquipType == 3 || itemConfig.EquipType == 4))
+                else  if ((Item.EquipType == 3 || Item.EquipType == 4))
                 {
                     if (occ == 2)
                     {
                         canequiplist.Add(equiplist[i]);
                     }
-                }
+                }*/
                 else
                 {
                     canequiplist.Add(equiplist[i]);

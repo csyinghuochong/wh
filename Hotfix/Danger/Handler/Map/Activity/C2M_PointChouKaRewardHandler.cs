@@ -19,14 +19,14 @@ namespace ET
                 return;
             }
             int choukaindex = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1PointsChouKaIndex);
-            if (choukaindex <= 0 || choukaindex > ActivityConfigHelper.PointsChouKaList.Count)
+            if (choukaindex <= 0 || choukaindex > ActivityV1Config.PointsChouKaList.Count)
             {
                 response.Error = ErrorCode.ERR_Parameter;
                 reply();
                 return;
             }
 
-            string itmeinfo = ActivityConfigHelper.PointsChouKaList[choukaindex - 1].ItemInfo;
+            string itmeinfo = ActivityV1Config.PointsChouKaList[choukaindex - 1].ItemInfo;
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.V1PointsChouKaIndex, 0);
             unit.GetComponent<UserInfoComponent>().UpdateRoleData( UserDataType.V1TotalPoints, "-200");
             unit.GetComponent<BagComponent>().OnAddItemData(itmeinfo, $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");

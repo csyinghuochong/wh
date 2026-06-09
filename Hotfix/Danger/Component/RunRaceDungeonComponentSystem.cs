@@ -129,7 +129,7 @@ namespace ET
             for (int i = 0; i < unitlist.Count; i++)
             {
                 Unit unit = unitlist[i];    
-                int runracemonster = ConfigHelper.RunRaceMonsterList[RandomHelper.RandomNumber(0, ConfigHelper.RunRaceMonsterList.Count)];
+                int runracemonster = CommonConfig.RunRaceMonsterList[RandomHelper.RandomNumber(0, CommonConfig.RunRaceMonsterList.Count)];
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, runracemonster);
                 Function_Fight.GetInstance().UnitUpdateProperty_RunRace(unit, true);
 

@@ -30,7 +30,7 @@ namespace ET
         {
             await ETTask.CompletedTask;
 
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 code = self.WeChatOACodeDict.Values.ToList()[^1];
             }
@@ -51,7 +51,7 @@ namespace ET
             //C2M_PaiMaiBuyHandler 190
 
             int oldzone = UnitIdStruct.GetUnitZone(unitId);
-            int newzone = ComHelp.GetNewServerId(ServerHelper.GetServerList(), oldzone);
+            int newzone = CommonHelper.GetNewServerId(ServerHelper.GetServerList(), oldzone);
 
             //绑定成功
             // NumericType.WeChatOABind = 1;

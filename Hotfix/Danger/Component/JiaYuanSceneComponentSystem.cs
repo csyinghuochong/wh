@@ -90,10 +90,10 @@ namespace ET
                 int jiayuansceneid = 2000011;
                 long fubenid = IdGenerater.Instance.GenerateId();
                 long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "JiaYuan" + masterid.ToString(), SceneType.Fuben);
+                Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "JiaYuan" + masterid.ToString(), SceneType.Map);
                 fubnescene.AddComponent<JiaYuanDungeonComponent>().MasterId = masterid;
                 MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-                mapComponent.SetMapInfo((int)SceneTypeEnum.JiaYuan, jiayuansceneid, 0);
+                mapComponent.SetMapInfo((int)MapTypeEnum.JiaYuan, jiayuansceneid, 0);
                 mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(jiayuansceneid).MapID;
                 await self.CreateJiaYuanUnit(fubnescene, masterid, unitid);
                 FubenHelp.CreateNpc(fubnescene, jiayuansceneid);

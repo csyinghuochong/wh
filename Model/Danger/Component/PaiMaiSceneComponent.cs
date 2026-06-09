@@ -1,4 +1,4 @@
-﻿
+
 
 using System.Collections.Generic;
 
@@ -40,7 +40,7 @@ namespace ET
         //4：宝石
         //5：宠物之核
         /// <summary>
-        /// 拍卖上架 id = 1000 + 道具类型(itemconfig.ItemType) 最多十个列表
+        /// 拍卖上架 id = 1000 + 道具类型(Item.ItemType) 最多十个列表
         /// </summary>
         public DBPaiMainInfo dBPaiMainInfo_Consume = new DBPaiMainInfo();       //消耗品  dBPaiMainInfo.PaiMaiItemInfos里面的消耗品1
         public DBPaiMainInfo dBPaiMainInfo_Material = new DBPaiMainInfo();      //材料    dBPaiMainInfo.PaiMaiItemInfos里面的材料

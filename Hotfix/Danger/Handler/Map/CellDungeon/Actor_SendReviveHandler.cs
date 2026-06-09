@@ -30,7 +30,7 @@ namespace ET
             }
             else
             {
-                if (mapComponent.SceneTypeEnum == SceneTypeEnum.TeamDungeon)
+                if (mapComponent.MapTypeEnum == MapTypeEnum.TeamDungeon)
                 {
                     TeamDungeonComponent teamDungeonComponent = unit.DomainScene().GetComponent<TeamDungeonComponent>();
                     unit.SetBornPosition(teamDungeonComponent.BossDeadPosition, true);
@@ -52,7 +52,7 @@ namespace ET
                 unit.GetComponent<HeroDataComponent>().OnRevive();
             }
 
-            unit.TriggerTeamBuff(mapComponent.SceneTypeEnum);
+            unit.TriggerTeamBuff(mapComponent.MapTypeEnum);
             reply();
             await ETTask.CompletedTask;
         }

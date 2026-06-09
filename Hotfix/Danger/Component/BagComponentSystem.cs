@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -11,7 +11,7 @@ namespace ET
         public override void Awake(BagComponent self)
         {
             self.OnAddItemData(GlobalValueConfigCategory.Instance.Get(9).Value, $"{ItemGetWay.System}_{TimeHelper.ServerNow()}", false);
-            if (ComHelp.IsBanHaoZone(self.DomainZone()))
+            if (CommonHelper.IsBanHaoZone(self.DomainZone()))
             {
                 self.OnAddItemData($"10030001;1", $"{ItemGetWay.System}_{TimeHelper.ServerNow()}", false);
             }
@@ -34,10 +34,11 @@ namespace ET
 
             for (int i = 0; i < allequiplist.Count; i++)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(allequiplist[i].ItemID);
-                if (itemConfig.ItemType == 3
-                    && itemConfig.EquipType >= 0 && itemConfig.EquipType <= 100
-                    && itemConfig.ItemSubType >= 0 && itemConfig.ItemSubType <= 12)
+                Item Item = ItemCategory.Instance.Get(allequiplist[i].ItemID);
+                int equipType = ItemHelper.GetNewEquipType(allequiplist[i]);
+                if (Item.ItemType == 3
+                    && equipType >= 0 && equipType <= 100
+                    && Item.ItemSubType >= 0 && Item.ItemSubType <= 12)
                 {
                     return true;
                 }
@@ -51,8 +52,8 @@ namespace ET
             List<PropertyValue> list = new List<PropertyValue>();
             for (int i = 0; i < self.GemList.Count; i++)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(self.GemList[i].ItemID);
-                string itemUsePar = itemConfig.ItemUsePar;
+                Item Item = ItemCategory.Instance.Get(self.GemList[i].ItemID);
+                string itemUsePar = Item.ItemUsePar;
                 if (string.IsNullOrEmpty(itemUsePar) || itemUsePar == "0")
                 {
                     continue;
@@ -156,7 +157,7 @@ namespace ET
                 {
                     continue;
                 }
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(bagInfos[0].ItemID);
+                Item itemCof = ItemCategory.Instance.Get(bagInfos[0].ItemID);
 
                 int totalNum = 0;
                 int needGrid = 0;
@@ -208,7 +209,7 @@ namespace ET
                 BagInfo bagInfo = ItemTypeList[i];
 
                 //最大堆叠数量
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
+                Item itemCof = ItemCategory.Instance.Get(bagInfo.ItemID);
                 if (bagInfo.ItemNum >= itemCof.ItemPileSum)
                 {
                     continue;
@@ -255,9 +256,8 @@ namespace ET
            
             for (int i = bagInfos.Count - 1; i >= 0; i--)
             {
-
-
-                if (!ItemConfigCategory.Instance.Contain(bagInfos[i].ItemID))
+                
+                if (!ItemCategory.Instance.Contain(bagInfos[i].ItemID))
                 {
                     Console.WriteLine($"CheckValiedItem11:  {bagInfos[i].ItemID}   {bagInfos[i].ItemNum}");
                     bagInfos.RemoveAt(i);
@@ -269,31 +269,32 @@ namespace ET
                     bagInfos[i].ItemNum = 1;
                 }
 
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfos[i].ItemID);
-                if (itemConfig.EquipType != 101 && itemConfig.ItemType == ItemTypeEnum.Equipment && bagInfos[i].InheritSkills.Count == 0 && itemConfig.ItemQuality >= 5 && itemConfig.UseLv >= 60)
+                Item Item =ItemCategory.Instance.Get(bagInfos[i].ItemID);
+                int equipType = ItemHelper.GetNewEquipType(bagInfos[i]);
+                if (equipType != 101 && Item.ItemType == ItemTypeEnum.Equipment && bagInfos[i].InheritSkills.Count == 0 && Item.Quality >= 5 && Item.UseLv >= 60)
                 {
-                    int skillid = XiLianHelper.XiLianChuanChengJianDing(itemConfig, occ, occTwo);
+                    int skillid = XiLianHelper.XiLianChuanChengJianDing(Item, occ, occTwo);
                     if (skillid != 0)
                     {
                         bagInfos[i].InheritSkills.Add(skillid);
                     }
                 }
 
-                if (itemConfig.ItemType == ItemTypeEnum.Equipment && itemConfig.ItemQuality <= 4)
+                if (Item.ItemType == ItemTypeEnum.Equipment && Item.Quality <= 4)
                 {
                     bagInfos[i].InheritSkills.Clear();
                 }
 
-                if (itemConfig.ItemType == ItemTypeEnum.Equipment && itemConfig.ItemQuality >= 5 && itemConfig.UseLv < 60)
+                if (Item.ItemType == ItemTypeEnum.Equipment && Item.Quality >= 5 && Item.UseLv < 60)
                 {
                     bagInfos[i].InheritSkills.Clear();
                 }
 
-                if (itemConfig.EquipType == 101 && bagInfos[i].HideProLists != null)
+                if (equipType == 101 && bagInfos[i].HideProLists != null)
                 {
                     bagInfos[i].HideProLists.Clear();
                 }
-                if (itemConfig.EquipType == 101 && bagInfos[i].InheritSkills != null)
+                if (equipType == 101 && bagInfos[i].InheritSkills != null)
                 {
                     bagInfos[i].InheritSkills.Clear();
                 }
@@ -301,12 +302,12 @@ namespace ET
 
                 BagInfo bagInfoitem = bagInfos[i];
                 //如果有宝石但是没空 加打印。 目前主处理某一个人的
-                if (itemConfig.ItemType == ItemTypeEnum.Equipment
+                if (Item.ItemType == ItemTypeEnum.Equipment
                     && string.IsNullOrEmpty(bagInfoitem.GemHole)
                     && !string.IsNullOrEmpty(bagInfoitem.GemIDNew)
                     && !bagInfoitem.GemIDNew.Equals(ItemHelper.DefaultGem))
                 {
-                    Console.WriteLine($"itemConfig:{self.DomainZone()}  {unit.Id} {itemConfig.ItemName}    GemHole:{bagInfoitem.GemHole}  GemIDNew:{bagInfoitem.GemIDNew}");
+                    Console.WriteLine($"Item:{self.DomainZone()}  {unit.Id} {Item.Name}    GemHole:{bagInfoitem.GemHole}  GemIDNew:{bagInfoitem.GemIDNew}");
 
                     if(unit.Id == 3089814989066797056
                         && bagInfoitem.BagInfoID == 3090684012667600921
@@ -317,7 +318,7 @@ namespace ET
                 }
 
                 //通话森林 白血伤 65弓添加英勇属性
-                //if (itemConfig.Id == 15710201 && bagInfoitem.Loc == (int)ItemLocType.ItemLocEquip)
+                //if (Item.Id == 15710201 && bagInfoitem.Loc == (int)ItemLocType.ItemLocEquip)
                 //{
                 //    if (unit.Id == 3089593540553015296 && bagInfoitem.HideSkillLists.Contains(68000001))
                 //    {
@@ -326,16 +327,16 @@ namespace ET
                 //    }
                 //}
 
-                if (itemConfig.ItemSubType == 113 || itemConfig.ItemSubType == 127)
+                if (Item.ItemSubType == 113 || Item.ItemSubType == 127)
                 {
-                    if (bagInfoitem.ItemPar.Contains(ConfigHelper.GMDungeonId.ToString()))
+                    if (bagInfoitem.ItemPar.Contains(CommonConfig.GMDungeonId.ToString()))
                     {
                         Console.WriteLine($"藏宝图：bagInfoitem.ItemPar ");
                         ItemAddHelper.TreasureItem(unit, bagInfoitem);
                     }
                 }
-
-                if (itemConfig.ItemType == 3 && itemConfig.EquipType == 401 && string.IsNullOrEmpty(bagInfoitem.ItemPar))
+                
+                if (Item.ItemType == 3 && equipType == 401 && string.IsNullOrEmpty(bagInfoitem.ItemPar))
                 {
                     bagInfoitem.IfJianDing = false;
                     bagInfoitem.ItemPar = RandomHelper.RandomNumber(1, 100).ToString();
@@ -371,10 +372,10 @@ namespace ET
 
             for (int i =  self.EquipList.Count - 1; i >=0; i--)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(self.EquipList[i].ItemID);
-                if (itemConfig.ItemType == ItemTypeEnum.Gemstone)
+                Item Item = ItemCategory.Instance.Get(self.EquipList[i].ItemID);
+                if (Item.ItemType == ItemTypeEnum.Gemstone)
                 {
-                    Log.Warning($"误穿宝石！！  {itemConfig.ItemName}");
+                    Log.Warning($"误穿宝石！！  {Item.Name}");
                     self.EquipList.RemoveAt(i);
                     break;
                 }
@@ -436,24 +437,24 @@ namespace ET
             int needcell = 0;
             for  ( int i =0; i < itemids.Count; i++ )
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(itemids[i].ItemID);
+                Item Item = ItemCategory.Instance.Get(itemids[i].ItemID);
                 long curNumber = self.GetItemNumber(itemids[i].ItemID, itemLocType);
 
-                if (curNumber > 0 && curNumber + itemids[i].ItemNum < itemConfig.ItemPileSum)
+                if (curNumber > 0 && curNumber + itemids[i].ItemNum < Item.ItemPileSum)
                 {
                     needcell = 0;
                 }
                 else
                 {
                     int temp = 0;
-                    temp += (int)(1f * itemids[i].ItemNum / itemConfig.ItemPileSum);
-                    temp += (itemids[i].ItemNum % itemConfig.ItemPileSum > 0 ? 1 : 0);
+                    temp += (int)(1f * itemids[i].ItemNum / Item.ItemPileSum);
+                    temp += (itemids[i].ItemNum % Item.ItemPileSum > 0 ? 1 : 0);
 
                     needcell += temp;
 
                     if (temp != 1)
                     {
-                        //Console.WriteLine($"needcell:{needcell}  ItemNum:{itemids[i].ItemNum}   ItemPileSum:{itemConfig.ItemPileSum}");
+                        //Console.WriteLine($"needcell:{needcell}  ItemNum:{itemids[i].ItemNum}   ItemPileSum:{Item.ItemPileSum}");
                     }
                 }
             }
@@ -607,11 +608,11 @@ namespace ET
                     continue;
                 }
 
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(self.EquipList[i].ItemID);
-                if (itemConfig.SkillID.Contains(skillId.ToString()))
+                Item Item = ItemCategory.Instance.Get(self.EquipList[i].ItemID);
+                /*if (Item.SkillID.Contains(skillId.ToString()))
                 {
                     return true;
-                }
+                }*/
                 if (self.EquipList[i].HideSkillLists.Contains(skillId))
                 {
                     return true;
@@ -641,8 +642,9 @@ namespace ET
         {
             for (int i = bagInfos.Count - 1; i >= 0; i--)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfos[i].ItemID);
-                if (itemConfig.EquipType == 201)
+                Item Item = ItemCategory.Instance.Get(bagInfos[i].ItemID);
+                int equipType = ItemHelper.GetNewEquipType(bagInfos[i]);
+                if (equipType == 201)
                 {
                     bagInfos.RemoveAt(i);
                 }
@@ -685,18 +687,20 @@ namespace ET
 
             for (int i = 0; i < self.EquipList.Count; i++)
             {
-                if (!ItemConfigCategory.Instance.Contain(self.EquipList[i].ItemID))
+                if (self.EquipList[i].ItemType != ItemBigType.Type_Equip)
                 {
                     continue;
                 }
 
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(self.EquipList[i].ItemID);
-
-                if (!EquipConfigCategory.Instance.Contain(itemConfig.ItemEquipID))
+                if (!ItemCategory.Instance.Contain(self.EquipList[i].ItemID))
                 {
                     continue;
                 }
-                EquipConfig equipConfig = EquipConfigCategory.Instance.Get(itemConfig.ItemEquipID);
+
+                Item Item = ItemCategory.Instance.Get(self.EquipList[i].ItemID);
+
+              
+                EquipConfig equipConfig = EquipConfigCategory.Instance.Get(self.EquipList[i].ItemID);
                 
 
                 if (equipConfig.TianFuId != 0)
@@ -727,7 +731,7 @@ namespace ET
             List<BagInfo> equipList = self.GetItemByLoc(equipIndex);
             for (int i = 0; i < equipList.Count; i++)
             {
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(equipList[i].ItemID);
+                Item itemCof = ItemCategory.Instance.Get(equipList[i].ItemID);
                 if (itemCof.ItemSubType == position)
                 {
                     bagInfos.Add(equipList[i]);
@@ -755,7 +759,7 @@ namespace ET
             List<BagInfo> equipList = self.GetItemByLoc(equipIndex);
             for (int i = 0; i < equipList.Count; i++)
             {
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(equipList[i].ItemID);
+                Item itemCof = ItemCategory.Instance.Get(equipList[i].ItemID);
                 if (itemCof.ItemSubType == subType)
                 {
                     return equipList[i];
@@ -770,7 +774,7 @@ namespace ET
             List<BagInfo> equipList = self.GetItemByLoc(equipIndex);
             for (int i = 0; i < equipList.Count; i++)
             {
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(equipList[i].ItemID);
+                Item itemCof = ItemCategory.Instance.Get(equipList[i].ItemID);
                 if ((itemCof.ItemSubType == 4001 || itemCof.ItemSubType == 4002) && equipList[i].EquipIndex == position)
                 {
                     return equipList[i];
@@ -860,7 +864,7 @@ namespace ET
                 }
                 else
                 {
-                    equipList = ItemConfigCategory.Instance.GetRandomEquipList(userInfoComponent.UserInfo.Occ, userInfoComponent.UserInfo.Lv);
+                    equipList = ItemCategory.Instance.GetRandomEquipList(userInfoComponent.UserInfo.Occ, userInfoComponent.UserInfo.Lv);
                 }
                 for (int i = 0; i < equipList.Length; i++)
                 {
@@ -868,8 +872,8 @@ namespace ET
                     {
                         continue;
                     }
-                    ItemConfig itemconfig = ItemConfigCategory.Instance.Get(equipList[i]);
-                    if (self.GetEquipBySubType(ItemLocType.ItemLocEquip, itemconfig.ItemSubType) != null)
+                    Item Item = ItemCategory.Instance.Get(equipList[i]);
+                    if (self.GetEquipBySubType(ItemLocType.ItemLocEquip, Item.ItemSubType) != null)
                     {
                         continue;
                     }
@@ -896,8 +900,9 @@ namespace ET
             int number = 0;
             for (int i = 0; i < self.EquipList.Count; i++)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(self.EquipList[i].ItemID);
-                if (itemConfig.EquipType == 101)
+                Item Item = ItemCategory.Instance.Get(self.EquipList[i].ItemID);
+                int equipType = ItemHelper.GetNewEquipType(self.EquipList[i]);
+                if (equipType == 101)
                 {
                     number++;
                 }
@@ -946,7 +951,7 @@ namespace ET
 
         public static bool OnAddItemData(this BagComponent self, BagInfo bagInfo, string getType)
         {
-            ItemConfig itemCof = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
+            Item itemCof = ItemCategory.Instance.Get(bagInfo.ItemID);
             int maxPileSum = itemCof.ItemPileSum;
 
             if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
@@ -992,7 +997,7 @@ namespace ET
             BagInfo useBagInfo = new BagInfo();
             useBagInfo.ItemID = itemid;
             useBagInfo.ItemNum = itemnumber;
-            ItemConfig itemCof = ItemConfigCategory.Instance.Get(itemid);
+            Item itemCof = ItemCategory.Instance.Get(itemid);
             useBagInfo.Loc = itemCof.ItemType == (int)ItemTypeEnum.PetHeXin ? (int)ItemLocType.ItemPetHeXinBag : (int)ItemLocType.ItemLocBag;
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
             useBagInfo.GemHole = ItemHelper.DefaultGem;
@@ -1028,8 +1033,8 @@ namespace ET
                         {
                             continue;
                         }
-                        ItemConfig itemConfig = ItemConfigCategory.Instance.Get(itemId);
-                        if (bagInfoList[i].ItemNum + itemNumber <= itemConfig.ItemPileSum)
+                        Item Item = ItemCategory.Instance.Get(itemId);
+                        if (bagInfoList[i].ItemNum + itemNumber <= Item.ItemPileSum)
                         {
                             return true;
                         }
@@ -1092,12 +1097,12 @@ namespace ET
 
             for (int i = rewardItems.Count - 1; i >= 0; i--)
             {
-                if (rewardItems[i].ItemID == 0 || !ItemConfigCategory.Instance.Contain(rewardItems[i].ItemID))
+                if (rewardItems[i].ItemID == 0 || !ItemCategory.Instance.Contain(rewardItems[i].ItemID))
                 {
                     continue;
                 }
 
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(rewardItems[i].ItemID);
+                Item itemCof = ItemCategory.Instance.Get(rewardItems[i].ItemID);
                 int userDataType = ItemHelper.GetItemToUserDataType(rewardItems[i].ItemID);
                 if (userDataType != UserDataType.None)
                 {
@@ -1145,7 +1150,7 @@ namespace ET
                 {
                     return false;
                 }
-                if (petHeXinNumber > 0 && (petHeXinNumber + self.BagItemPetHeXin.Count > ComHelp.PetHeXinMax) && UseLocType == ItemLocType.ItemLocBag)
+                if (petHeXinNumber > 0 && (petHeXinNumber + self.BagItemPetHeXin.Count > CommonConfig.PetHeXinMax) && UseLocType == ItemLocType.ItemLocBag)
                 {
                     return false;
                 }
@@ -1160,7 +1165,9 @@ namespace ET
             for (int i = rewardItems.Count - 1; i >= 0; i--)
             {
                 int itemID = rewardItems[i].ItemID;
-                if (itemID == 0 || !ItemConfigCategory.Instance.Contain(itemID))
+                int itemtype = rewardItems[i].ItemType;
+           
+                if (itemID == 0 || !ItemHelper.IsValidItem(rewardItems[i]))
                 {
                     continue;
                 }
@@ -1192,8 +1199,9 @@ namespace ET
                 }
 
                 //最大堆叠数量
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(itemID);
-                if (itemCof.EquipType == 101 || itemCof.ItemQuality >= 4 || (itemCof.Id >= 16000101 && itemCof.Id <= 16000312) || (itemCof.Id >= 10030011 && itemCof.Id <= 10030019))
+                Item itemCof = ItemCategory.Instance.Get(itemID);
+                int equipType = ItemHelper.GetNewEquipType(itemtype, itemID);
+                if (equipType == 101 || itemCof.Quality >= 4 || (itemCof.Id >= 16000101 && itemCof.Id <= 16000312) || (itemCof.Id >= 10030011 && itemCof.Id <= 10030019))
                 {
                     Log.Warning($"[获取道具] {unit.Id} {getType} {itemID} {rewardItems[i].ItemNum}");
                 }
@@ -1216,7 +1224,7 @@ namespace ET
                     int sceneId = mapComponent.SceneId;
                     if (sceneId >= 100001 && sceneId <= 100601)
                     {
-                        Log.Error($"[获取道具作弊]{itemCof.Id}：  {unit.DomainZone()}  {unit.Id}  {mapComponent.SceneTypeEnum}  {mapComponent.SceneId}");
+                        Log.Error($"[获取道具作弊]{itemCof.Id}：  {unit.DomainZone()}  {unit.Id}  {mapComponent.MapTypeEnum}  {mapComponent.SceneId}");
                     }
                 }
 
@@ -1247,7 +1255,7 @@ namespace ET
                     itemLockType = ItemLocType.ItemPetHeXinBag;
                     itemlist = self.GetItemByLoc(itemLockType);
                 }
-                else if (getType == ItemGetWay.PickItem && itemCof.ItemType == ItemTypeEnum.Gemstone && itemCof.ItemQuality > 3)
+                else if (getType == ItemGetWay.PickItem && itemCof.ItemType == ItemTypeEnum.Gemstone && itemCof.Quality > 3)
                 {
                     NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
                     if (numericComponent.GetAsInt(NumericType.GemWarehouseOpen) >=1 && self.CheckCanAddItem(itemID, leftNum, ItemLocType.GemWareHouse1))
@@ -1316,7 +1324,7 @@ namespace ET
                     //蓝色品质的装备需要进行鉴定
                     if (!ItemHelper.IsBuyItem(getType) && itemCof.ItemType == 3)
                     {
-                        if (itemCof.ItemQuality >= 4)
+                        if (itemCof.Quality >= 4)
                         {
                             useBagInfo.IfJianDing = true;
                         }
@@ -1325,19 +1333,19 @@ namespace ET
                             //白色和绿色品质都是100% 紫色概率出鉴定
                             float jianDingPro = 0f;
 
-                            if (itemCof.ItemQuality == 1)
+                            if (itemCof.Quality == 1)
                             {
                                 jianDingPro = 0f;
                             }
-                            if (itemCof.ItemQuality == 2)
+                            if (itemCof.Quality == 2)
                             {
                                 jianDingPro = 0f;
                             }
-                            if (itemCof.ItemQuality == 3)
+                            if (itemCof.Quality == 3)
                             {
                                 jianDingPro = 0f;
                             }
-                            if (itemCof.ItemQuality == 4)
+                            if (itemCof.Quality == 4)
                             {
                                 jianDingPro = 0.75f;
                             }
@@ -1354,19 +1362,20 @@ namespace ET
                             useBagInfo.IfJianDing = false;
                         }
 
-                        int equipId = itemCof.ItemEquipID;
+                        int equipId = itemCof.Id;
+                        
                         if (equipId != 0 && EquipConfigCategory.Instance.Get(equipId).AppraisalItem == 0)
                         {
                             useBagInfo.IfJianDing = false;
                         }
 
-                        if (itemCof.EquipType == 101)
+                        if (equipType == 101)
                         {
-                            useBagInfo.IfJianDing = itemCof.ItemQuality >= 5;
+                            useBagInfo.IfJianDing = itemCof.Quality >= 5;
                         }
                     }
                     //默认洗练
-                    if (!ItemHelper.IsBuyItem(getType) && itemCof.ItemEquipID != 0)
+                    if (!ItemHelper.IsBuyItem(getType) &&  itemtype != ItemBigType.Type_Equip)
                     {
                         int xilianLevel = XiLianHelper.GetXiLianId(unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianDu));
                         xilianLevel = xilianLevel != 0 ? EquipXiLianConfigCategory.Instance.Get(xilianLevel).XiLianLevel : 0;
@@ -1379,11 +1388,11 @@ namespace ET
 
                        
                         ItemXiLianResult itemXiLian = new ItemXiLianResult();
-                        if (itemCof.EquipType < 101 || itemCof.EquipType == 301) //装备洗炼
+                        if (equipType < 101 || equipType == 301) //装备洗炼
                         {
                             itemXiLian = XiLianHelper.XiLianItem(unit, useBagInfo, xilianType, xilianLevel, 0,0);
                         }
-                        else if(itemCof.EquipType == 101)//生肖洗炼
+                        else if(equipType == 101)//生肖洗炼
                         {
                             itemXiLian = XiLianHelper.XiLianShengXiao(useBagInfo);
                         }
@@ -1407,7 +1416,7 @@ namespace ET
                     //掉落的橙色装备默认为绑定的物品
                     if (((getType == ItemGetWay.PickItem
                         || getType == ItemGetWay.ChouKa)
-                        && itemCof.ItemQuality >= 5) || itemCof.IfLock == 1)
+                        && itemCof.Quality >= 5) || itemCof.IfLock == 1)
                     {
                         useBagInfo.isBinging = true;
                     }
@@ -1458,24 +1467,24 @@ namespace ET
                     {
                         useBagInfo.ItemPar = RandomHelper.RandomNumber(1, 100).ToString();
                     }
-                    if (itemCof.ItemType == 3 && itemCof.EquipType == 401)
+                    if (itemCof.ItemType == 3 && equipType == 401)
                     {
                         useBagInfo.IfJianDing = false;
                         useBagInfo.ItemPar = RandomHelper.RandomNumber(1, 100).ToString();
                     }
 
                     //拾取到橙色装备
-                    if (itemCof.ItemType == 3 && itemCof.ItemQuality >= 5 && getType == ItemGetWay.PickItem)
+                    if (itemCof.ItemType == 3 && itemCof.Quality >= 5 && getType == ItemGetWay.PickItem)
                     {
                         string name = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
-                        string noticeContent = $"恭喜玩家 {name} 获得装备: <color=#{ComHelp.QualityReturnColor(5)}>{itemCof.ItemName}</color>";
-                        string noticeContentEn = $"Congratulations to player {name} Get Equip: <color=#{ComHelp.QualityReturnColor(5)}>{itemCof.ItemName}</color>";
+                        string noticeContent = $"恭喜玩家 {name} 获得装备: <color=#{CommonHelper.QualityReturnColor(5)}>{itemCof.Name}</color>";
+                        string noticeContentEn = $"Congratulations to player {name} Get Equip: <color=#{CommonHelper.QualityReturnColor(5)}>{itemCof.Name}</color>";
                         ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
                     }
 
                     //刷新传承属性
-                    if (itemCof.ItemType == ItemTypeEnum.Equipment && itemCof.EquipType != 101
-                     && itemCof.ItemQuality >= 5 && itemCof.UseLv >= 60)
+                    if (itemCof.ItemType == ItemTypeEnum.Equipment && equipType != 101
+                     && itemCof.Quality >= 5 && itemCof.UseLv >= 60)
                     {
                         int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
                         int occTwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
@@ -1496,7 +1505,7 @@ namespace ET
                     }
 
                     // 赛季晶核
-                    if (itemCof.ItemType == ItemTypeEnum.Equipment && itemCof.EquipType == 201)
+                    if (itemCof.ItemType == ItemTypeEnum.Equipment && equipType == 201)
                     {
                         useBagInfo.ItemPar = ItemHelper.GetJingHeInitQulity(useBagInfo.ItemID).ToString();
 
@@ -1775,8 +1784,8 @@ namespace ET
 
         public static void OnEquipFuMo(this BagComponent self, int itemid, List<HideProList> hideProLists, int index)
         {
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(itemid);
-            string[] itemparams = itemConfig.ItemUsePar.Split('@');
+            Item Item = ItemCategory.Instance.Get(itemid);
+            string[] itemparams = Item.ItemUsePar.Split('@');
             int weizhi = int.Parse(itemparams[0]);
             List<BagInfo> bagInfos = self.GetEquipListByWeizhi(ItemLocType.ItemLocEquip, weizhi);
             if (bagInfos.Count <= index)
@@ -1890,7 +1899,7 @@ namespace ET
                 "1#10000177#1000",
             };
 
-            self.AdditionalCellNum[0] = ConfigHelper.BuyBagCellCosts.Count; 
+            self.AdditionalCellNum[0] = CommonConfig.BuyBagCellCosts.Count; 
 
             Unit unit = self.GetParent<Unit>();
 
@@ -1936,7 +1945,7 @@ namespace ET
                 }
                 else
                 {
-                    OccupationTwoConfig occupationTwo = OccupationTwoConfigCategory.Instance.Get(occTwo);
+                    Occupation_Transfer occupationTwo = Occupation_TransferCategory.Instance.Get(occTwo);
                     if (occupationTwo.ArmorMastery == 1)
                     {
                         equipList.Add(15801002);
@@ -2001,7 +2010,7 @@ namespace ET
                 }
                 else
                 {
-                    OccupationTwoConfig occupationTwo = OccupationTwoConfigCategory.Instance.Get(occTwo);
+                    Occupation_Transfer occupationTwo = Occupation_TransferCategory.Instance.Get(occTwo);
                     if (occupationTwo.ArmorMastery == 1)
                     {
                         equipList.Add(15401002);
@@ -2053,36 +2062,6 @@ namespace ET
             for (int i = 0; i < equipList.Count; i++)
             {
                 self.OnAddItemData($"{equipList[i]};1", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
-            }
-
-                //"1#14060004#1",
-                //"1#14100004#1",
-                //"1#14100008#1",
-                //"1#14100104#1",
-                //"1#14100108#1",
-                //"1#14100204#1",
-                //穿戴装备
-                for (int i = 0; i < equipList.Count; i++)
-            { 
-                List<BagInfo> equiplist = self.GetIdItemList(equipList[i]);
-                if (equiplist.Count == 0)
-                {
-                    continue;
-                }
-
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(equipList[i]);
-                int itemsubType = itemConfig.ItemSubType;
-
-                BagInfo useBagInfo = equiplist[0];
-                useBagInfo.HideProLists = ItemAddHelper.GetEquipZhuanJingHidePro(itemConfig.ItemEquipID, itemConfig.Id, 100, unit, false);
-                useBagInfo.IfJianDing = false;
-                if (self.GetEquipListByWeizhi(ItemLocType.ItemLocEquip, itemsubType).Count > 0)
-                {
-                    continue;
-                }
-
-                unit.GetComponent<BagComponent>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
-                unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
             }
             
             //激活全部探险家,可领取

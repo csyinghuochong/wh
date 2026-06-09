@@ -31,7 +31,7 @@ namespace ET
             
             if (dBCenterAccountInfo != null)
             {
-                response.TodayCreateRole = ComHelp.GetTodayCreateRoleNumber(dBCenterAccountInfo.RoleList);
+                response.TodayCreateRole = CommonHelper.GetTodayCreateRoleNumber(dBCenterAccountInfo.RoleList);
                 response.CreateTime = dBCenterAccountInfo.CreateTime;
             }
             else

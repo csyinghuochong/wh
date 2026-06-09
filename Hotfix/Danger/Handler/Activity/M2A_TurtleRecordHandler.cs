@@ -17,17 +17,17 @@ namespace ET
                 dBDayActivityInfo.TurtleWinTimes = new List<int> { 0, 0, 0 };
             }
 
-            for (int i = 0; i < ConfigHelper.TurtleList.Count; i++)
+            for (int i = 0; i < CommonConfig.TurtleList.Count; i++)
             {
                 List<KeyValuePair<long, long>> playerids = null;
-                activitySceneComponent.TurtleSupportList.TryGetValue(ConfigHelper.TurtleList[i], out playerids);
+                activitySceneComponent.TurtleSupportList.TryGetValue(CommonConfig.TurtleList[i], out playerids);
                 if (playerids != null)
                 {
                     for (int p = 0; p < playerids.Count; p++)
                     {
                         if (playerids[p].Key == request.AccountId)
                         {
-                            response.SupportId = ConfigHelper.TurtleList[i];
+                            response.SupportId = CommonConfig.TurtleList[i];
                         }
                     }
                     response.SupportTimes.Add(playerids.Count);

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ET
 {
-    public partial class SkillConfigCategory
+    public partial class SkillCategory
     {
         /// <summary>
         /// 69060301 69060302 ..的基础技能都是69060300
@@ -50,7 +50,7 @@ namespace ET
         public override void AfterEndInit()
         {
             BaseSkillList.Clear();  
-            foreach (SkillConfig skillconfig in this.GetAll().Values)
+            foreach (Skill skillconfig in this.GetAll().Values)
             {
                 string buffToSkill = skillconfig.BuffToSkill;
                 if (string.IsNullOrEmpty(buffToSkill) || buffToSkill.Equals("0"))
@@ -66,35 +66,100 @@ namespace ET
                     int removebuff = 0;
                     if (buffInfoParam.Length > 4)
                     {
-                        removebuff = int.Parse(buffInfoParam[4]);
+                        if (!int.TryParse(buffInfoParam[4], out removebuff))
+                        {
+                            Log.Error($"int.TryParse error: {buffInfoParam[4]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
                     }
+
                     if (buffInfoParam[1] == "1")
                     {
+                        if (buffInfoParam.Length < 4)
+                        {
+                            Log.Error($"buffInfoParam.Length < 4 skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
+                        if (!int.TryParse(buffInfoParam[0], out int buffId))
+                        {
+                            Log.Error($"int.TryParse error: {buffInfoParam[0]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
+                        if (!int.TryParse(buffInfoParam[2], out int triggerSkillId))
+                        {
+                            Log.Error($"int.TryParse error: {buffInfoParam[2]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
+                        if (!float.TryParse(buffInfoParam[3], out float skillInterval))
+                        {
+                            Log.Error($"float.TryParse error: {buffInfoParam[3]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
                         //释放skillconfig.Id的判断
                         BuffTriggerSkill.Add(skillconfig.Id, new KeyValuePairLong4()
                         {
-                            KeyId = int.Parse(buffInfoParam[0]),                        //受击者 拥有buffid
-                            Value = int.Parse(buffInfoParam[2]),                        //攻击者 触发新技能
-                            Value2 = (long)(float.Parse(buffInfoParam[3]) * 1000),       //技能间隔
+                            KeyId = buffId,                        //受击者 拥有buffid
+                            Value = triggerSkillId,                        //攻击者 触发新技能
+                            Value2 = (long)(skillInterval * 1000),       //技能间隔
                             Value3 = removebuff                   //移除受击者Buff
                         });
                     }
                     //97050001,2,1.5    buffid/类型/伤害系数
                     if (buffInfoParam[1] == "2")
                     {
+                        if (buffInfoParam.Length < 3)
+                        {
+                            Log.Error($"buffInfoParam.Length < 3 skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
+                        if (!int.TryParse(buffInfoParam[0], out int buffId))
+                        {
+                            Log.Error($"int.TryParse error: {buffInfoParam[0]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
+                        if (!float.TryParse(buffInfoParam[2], out float hurtRate))
+                        {
+                            Log.Error($"float.TryParse error: {buffInfoParam[2]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
                         BuffAddHurt.Add(skillconfig.Id, new KeyValuePairLong4()
                         {
-                            KeyId = int.Parse(buffInfoParam[0]),                        //受击者 拥有buffid
-                            Value2 = (long)(float.Parse(buffInfoParam[2]) * 1000)       //受击者 伤害系数加成
+                            KeyId = buffId,                        //受击者 拥有buffid
+                            Value2 = (long)(hurtRate * 1000)       //受击者 伤害系数加成
                         });
                     }
                     //97050203,3,77008007  buffid/类型/二段技能0  //'key64014301 buffid95102003,3,二段技能64014701,1
                     if (buffInfoParam[1] == "3")
                     {
+                        if (buffInfoParam.Length < 3)
+                        {
+                            Log.Error($"buffInfoParam.Length < 3 skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
+                        if (!int.TryParse(buffInfoParam[0], out int buffId))
+                        {
+                            Log.Error($"int.TryParse error: {buffInfoParam[0]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
+                        if (!int.TryParse(buffInfoParam[2], out int secondSkillId))
+                        {
+                            Log.Error($"int.TryParse error: {buffInfoParam[2]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
+                            continue;
+                        }
+
                         BuffSecondSkill.Add(skillconfig.Id, new KeyValuePairLong4()
                         {
-                            KeyId = int.Parse(buffInfoParam[0]),                        //攻击者 buffid          
-                            Value2 = int.Parse(buffInfoParam[2]),                       //攻击者二段技能  
+                            KeyId = buffId,                        //攻击者 buffid          
+                            Value2 = secondSkillId,                       //攻击者二段技能  
                         });
                     }
                 }
@@ -104,7 +169,7 @@ namespace ET
                 }
             }
 
-            foreach (SkillConfig skillconfig in this.GetAll().Values)
+            foreach (Skill skillconfig in this.GetAll().Values)
             {
                 string equipskill = skillconfig.EquipSkill;
                 if (string.IsNullOrEmpty(equipskill) || equipskill.Equals("0"))
@@ -130,28 +195,33 @@ namespace ET
 
                 foreach (string key in skillkeys)
                 {
-                    try
+                    string[] skillitem = key.Split(',');
+                    if (skillitem.Length != 2)
                     {
-                        string[] skillitem = key.Split(',');
-                        if (skillitem.Length != 2)
-                        {
-                            Log.Error($"skillconfig.EquipSkill.error2: equipskillid: {skillconfig.Id} {equipskill}");
-                            continue;
-                        }
+                        Log.Error($"skillconfig.EquipSkill.error2: equipskillid: {skillconfig.Id} {equipskill}");
+                        continue;
+                    }
 
-                        KeyValuePairInt keyValuePairInt = new KeyValuePairInt();
-                        keyValuePairInt.KeyId = int.Parse(skillitem[0]);
-                        keyValuePairInt.Value = int.Parse(skillitem[1]);
-                        equipSkillds.Add(keyValuePairInt);
-                    }
-                    catch (Exception ex)
+                    if (!int.TryParse(skillitem[0], out int oldSkillId))
                     {
-                        Log.Error(ex.ToString());
+                        Log.Error($"int.TryParse error: {skillitem[0]} skillId:{skillconfig.Id} equipskill:{equipskill}");
+                        continue;
                     }
+
+                    if (!int.TryParse(skillitem[1], out int newSkillId))
+                    {
+                        Log.Error($"int.TryParse error: {skillitem[1]} skillId:{skillconfig.Id} equipskill:{equipskill}");
+                        continue;
+                    }
+
+                    KeyValuePairInt keyValuePairInt = new KeyValuePairInt();
+                    keyValuePairInt.KeyId = oldSkillId;
+                    keyValuePairInt.Value = newSkillId;
+                    equipSkillds.Add(keyValuePairInt);
                 }
             }
 
-            foreach (SkillConfig skillconfig in this.GetAll().Values)
+            foreach (Skill skillconfig in this.GetAll().Values)
             {
                 int[] specimonsters = skillconfig.SpecifiedMonster;
                 if (specimonsters == null || specimonsters.Length == 0)
@@ -172,12 +242,12 @@ namespace ET
             }
 
             // 得到所有技能的基础技能
-            foreach (SkillConfig skillConfig in this.GetAll().Values)
+            foreach (Skill skillConfig in this.GetAll().Values)
             {
                 SetBaseSkill(skillConfig, 0);
             }
 
-            void SetBaseSkill(SkillConfig skillConfig, int baseId)
+            void SetBaseSkill(Skill skillConfig, int baseId)
             {
                 if (!this.BaseSkillList.ContainsKey(skillConfig.Id))
                 {

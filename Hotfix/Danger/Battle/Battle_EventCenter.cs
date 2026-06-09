@@ -19,7 +19,7 @@ namespace ET
             }
 
             //主城不广播任何血量相关数值
-			if (args.Defend.SceneType == SceneTypeEnum.MainCityScene)
+			if (args.Defend.SceneType == MapTypeEnum.MainCityScene)
             {
                 if (args.NumericType == NumericType.Now_MaxHp || args.NumericType == NumericType.Now_Hp)
                 {
@@ -131,7 +131,7 @@ namespace ET
             Scene domainScene = defendUnit.DomainScene();
             MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
             int sceneId = mapComponent.SceneId;
-            int sceneTypeEnum = mapComponent.SceneTypeEnum;
+            int sceneTypeEnum = mapComponent.MapTypeEnum;
             if (mainAttack.Type != UnitType.Player)
             {
                 mainAttack = domainScene.GetComponent<UnitComponent>().Get(mainAttack.GetMasterId());
@@ -139,12 +139,12 @@ namespace ET
             if ((mainAttack == null || mainAttack.IsDisposed) && defendUnit.Type == UnitType.Monster
                 && defendUnit.ConfigId != 90000001 && defendUnit.ConfigId != 90000002 && defendUnit.ConfigId != 90000005)
             {
-                if (sceneTypeEnum == SceneTypeEnum.LocalDungeon)
+                if (sceneTypeEnum == MapTypeEnum.LocalDungeon)
                 {
                     //Log.Warning($"找不到击杀方主人.LocalDungeon1： 防： {defendUnit.ConfigId}  攻： {attackconfid} ");
                     mainAttack = domainScene.GetComponent<LocalDungeonComponent>().MainUnit;
                 }
-                if (sceneTypeEnum == SceneTypeEnum.TeamDungeon)
+                if (sceneTypeEnum == MapTypeEnum.TeamDungeon)
                 {
                     //Log.Warning($"找不到击杀方主人.TeamDungeon：   防： {defendUnit.ConfigId}   攻：  {attackconfid}");
                 }
@@ -154,7 +154,7 @@ namespace ET
             {
                 int realPlayer = 1;
                 List<long> allAttackIds = new List<long>();
-                if (sceneTypeEnum == SceneTypeEnum.TeamDungeon)
+                if (sceneTypeEnum == MapTypeEnum.TeamDungeon)
                 {
                     List<Unit> units = UnitHelper.GetUnitList(domainScene, UnitType.Player);
                     for (int k = 0; k < units.Count; k++)
@@ -201,10 +201,10 @@ namespace ET
                     int jinglingid = mainAttack.GetComponent<ChengJiuComponent>().JingLingId;
                     if (jinglingid != 0)
                     {
-                        JingLingConfig jingLingConfig = JingLingConfigCategory.Instance.Get(jinglingid);
-                        if (jingLingConfig.FunctionType == JingLingFunctionType.ExtraDrop)
+                        Elf elf = ElfCategory.Instance.Get(jinglingid);
+                        if (elf.FunctionType == JingLingFunctionType.ExtraDrop)
                         {
-                            int dropid = int.Parse(jingLingConfig.FunctionValue);
+                            int dropid = int.Parse(elf.FunctionValue);
                             UnitFactory.CreateDropItems(mainAttack, defendUnit, 1, dropid, "1");
                         }
                     }
@@ -228,8 +228,8 @@ namespace ET
                 MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(defendUnit.ConfigId);
                 if (monsterConfig.DeathSkillId != 0)
                 {
-                    SkillConfig skillConfigCategory = SkillConfigCategory.Instance.Get(monsterConfig.DeathSkillId);
-                    waittime = 1000 + (long)(skillConfigCategory.SkillDelayTime * 1000) + skillConfigCategory.SkillLiveTime;
+                    Skill skillCategory = SkillCategory.Instance.Get(monsterConfig.DeathSkillId);
+                    waittime = 1000 + (long)(skillCategory.SkillDelayTime * 1000) + skillCategory.SkillLiveTime;
                 }
             }
             if (defendUnit.Type == UnitType.Pet)
@@ -239,58 +239,58 @@ namespace ET
 
             switch (sceneTypeEnum)
             {
-                case SceneTypeEnum.PetDungeon:
+                case MapTypeEnum.PetDungeon:
                     domainScene.GetComponent<PetFubenSceneComponent>().OnKillEvent();
                     break;
-                case SceneTypeEnum.CellDungeon:
+                case MapTypeEnum.CellDungeon:
                     domainScene.GetComponent<CellDungeonComponent>().OnKillEvent();
                     break;
-                case SceneTypeEnum.PetTianTi:
+                case MapTypeEnum.PetTianTi:
                     domainScene.GetComponent<PetTianTiComponent>().OnKillEvent();
                     break;
-                case SceneTypeEnum.TeamDungeon:
+                case MapTypeEnum.TeamDungeon:
                     domainScene.GetComponent<TeamDungeonComponent>().OnKillEvent(defendUnit);
                     break;
-                case SceneTypeEnum.PetMing:
+                case MapTypeEnum.PetMing:
                     domainScene.GetComponent<PetMingDungeonComponent>().OnKillEvent();
                     break;
-                case SceneTypeEnum.BaoZang:
+                case MapTypeEnum.BaoZangZhiDi:
                     ;
                     break;
-                case SceneTypeEnum.MiJing:
+                case MapTypeEnum.MiJing:
                     domainScene.GetComponent<MiJingComponent>().OnKillEvent(defendUnit);
                     break;
-                case SceneTypeEnum.Solo:
+                case MapTypeEnum.Solo:
                     domainScene.GetComponent<SoloDungeonComponent>().OnKillEvent(mainAttack,defendUnit);
                     break;
-                case SceneTypeEnum.Tower:
+                case MapTypeEnum.TowerDungeon:
                     domainScene.GetComponent<TowerComponent>().OnKillEvent(defendUnit);
                     break;
-                case SceneTypeEnum.RandomTower:
+                case MapTypeEnum.RandomTower:
                     domainScene.GetComponent<RandomTowerComponent>().OnKillEvent(defendUnit);
                     break;
-                case SceneTypeEnum.LocalDungeon:
+                case MapTypeEnum.LocalDungeon:
                     domainScene.GetComponent<LocalDungeonComponent>().OnKillEvent(defendUnit, mainAttack);
                     break;
-                case SceneTypeEnum.Battle:
+                case MapTypeEnum.Battle:
                     domainScene.GetComponent<BattleDungeonComponent>().OnKillEvent(defendUnit, mainAttack);
                     break;
-                case SceneTypeEnum.Arena:
+                case MapTypeEnum.Arena:
                     domainScene.GetComponent<ArenaDungeonComponent>().OnKillEvent(defendUnit, mainAttack);
                     break;
-                case SceneTypeEnum.Union:
+                case MapTypeEnum.Union:
                     domainScene.GetParent<UnionSceneComponent>().OnKillEvent(domainScene, defendUnit);
                     break;
-                case SceneTypeEnum.TrialDungeon:
+                case MapTypeEnum.TrialDungeon:
                     domainScene.GetComponent<TrialDungeonComponent>().OnKillEvent(defendUnit);
                     break;
-                case SceneTypeEnum.SeasonTower:
+                case MapTypeEnum.SeasonTower:
                     domainScene.GetComponent<SeasonTowerComponent>().OnKillEvent(defendUnit);
                     break;
-                case SceneTypeEnum.TowerOfSeal:
+                case MapTypeEnum.TowerOfSeal:
                     domainScene.GetComponent<TowerOfSealComponent>().OnKillEvent(defendUnit);
                     break;
-                case SceneTypeEnum.Demon:
+                case MapTypeEnum.Demon:
                     domainScene.GetComponent<DemonDungeonComponent>().OnKillEvent(defendUnit, mainAttack).Coroutine();
                     break;
                 default:

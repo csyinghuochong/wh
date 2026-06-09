@@ -44,7 +44,7 @@ namespace ET
                 }
                 
                 
-                if (password == ComHelp.RobotPassWord)
+                if (password == CommonConfig.RobotPassWord)
                 {
                     newAccount.PlayerInfo.RealName = 1;
                     newAccount.PlayerInfo.Name = accountName;

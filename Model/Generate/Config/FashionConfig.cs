@@ -78,18 +78,21 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>职业</summary>
+		/// <summary>时装名字</summary>
 		[ProtoMember(2)]
-		public int[] Occ { get; set; }
-		/// <summary>时装部位</summary>
+		public string Name { get; set; }
+		/// <summary>职业</summary>
 		[ProtoMember(3)]
+		public int[] Occ { get; set; }
+		/// <summary>时装部位 1-头 2-脸 3-身体</summary>
+		[ProtoMember(4)]
 		public int Position { get; set; }
 		/// <summary>时装子类</summary>
-		[ProtoMember(4)]
+		[ProtoMember(5)]
 		public int SubType { get; set; }
 		/// <summary>时装名字</summary>
-		[ProtoMember(5)]
-		public string Name { get; set; }
+		[ProtoMember(6)]
+		public string Name_EN { get; set; }
 		/// <summary>时装模型</summary>
 		[ProtoMember(7)]
 		public string Model { get; set; }
@@ -108,6 +111,9 @@ namespace ET
 		/// <summary>时装描述</summary>
 		[ProtoMember(12)]
 		public string PropertyDes { get; set; }
+		/// <summary>时装描述</summary>
+		[ProtoMember(13)]
+		public string PropertyDes_EN { get; set; }
 
 	}
 }

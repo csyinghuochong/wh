@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -51,8 +51,8 @@ namespace ET
                 }
 
                 //判断道具是否可以上架和绑定
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-                if (itemConfig.IfStopPaiMai == 1)
+                Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+                if (Item.IfStopPaiMai == 1)
                 {
                     response.Error = ErrorCode.Err_StopPaiMai; //道具无法上架
                     reply();

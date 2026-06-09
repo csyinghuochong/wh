@@ -33,7 +33,7 @@ namespace ET
             }
             List<Unit> units = self.DomainScene().GetComponent<UnitComponent>().GetAll();
             M2C_BattleInfoResult m2C_Battle = self.m2C_BattleInfoResult;
-            m2C_Battle.SceneType = SceneTypeEnum.Battle;
+            m2C_Battle.SceneType = MapTypeEnum.Battle;
             for (int i = 0; i < units.Count; i++)
             {
                 if (units[i].Type != UnitType.Player)
@@ -114,9 +114,9 @@ namespace ET
         /// <param name="self"></param>
         public static async ETTask KickOutPlayer(this BattleDungeonComponent self)
         {
-            Actor_TransferRequest actor_Transfer = new Actor_TransferRequest()
+            C2M_TransferRequest actor_Transfer = new C2M_TransferRequest()
             {
-                SceneType = SceneTypeEnum.MainCityScene,
+                SceneType = MapTypeEnum.MainCityScene,
             };
             List<Unit> units = self.DomainScene().GetComponent<UnitComponent>().GetAll();
             for (int i = 0; i < units.Count; i++)

@@ -43,7 +43,7 @@ namespace ET
                         }
                         
                     }
-                    await Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(ComHelp.CenterZoneId, newAccount);
+                    await Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(CommonConfig.CenterZoneId, newAccount);
                     long mapInstanceId = DBHelper.GetRankServerId(session.DomainZone());
                     Rank2R_DeleteRoleData deleteResponse = (Rank2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
                     (mapInstanceId, new R2Rank_DeleteRoleData()

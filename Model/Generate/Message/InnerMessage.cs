@@ -2774,10 +2774,10 @@ namespace ET
 	}
 
 //进入战场
-	[ResponseType(nameof(B2M_BattleEnterResponse))]
-	[Message(InnerOpcode.M2B_BattleEnterRequest)]
+	[ResponseType(nameof(FubenCenter2M_BattleEnterResponse))]
+	[Message(InnerOpcode.M2FubenCenter_BattleEnterRequest)]
 	[ProtoContract]
-	public partial class M2B_BattleEnterRequest: Object, IActorRequest
+	public partial class M2FubenCenter_BattleEnterRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -2793,9 +2793,9 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.B2M_BattleEnterResponse)]
+	[Message(InnerOpcode.FubenCenter2M_BattleEnterResponse)]
 	[ProtoContract]
-	public partial class B2M_BattleEnterResponse: Object, IActorResponse
+	public partial class FubenCenter2M_BattleEnterResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3511,11 +3511,11 @@ namespace ET
 
 	}
 
-//进入副本
-	[ResponseType(nameof(LocalDungeon2M_EnterResponse))]
-	[Message(InnerOpcode.M2LocalDungeon_EnterRequest)]
+//进入副本 不走副本中心服
+	[ResponseType(nameof(FubenWork2M_EnterResponse))]
+	[Message(InnerOpcode.M2FubenWork_EnterRequest)]
 	[ProtoContract]
-	public partial class M2LocalDungeon_EnterRequest: Object, IActorRequest
+	public partial class M2FubenWork_EnterRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3540,9 +3540,9 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.LocalDungeon2M_EnterResponse)]
+	[Message(InnerOpcode.FubenWork2M_EnterResponse)]
 	[ProtoContract]
-	public partial class LocalDungeon2M_EnterResponse: Object, IActorResponse
+	public partial class FubenWork2M_EnterResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3562,10 +3562,10 @@ namespace ET
 	}
 
 //退出副本
-	[ResponseType(nameof(LocalDungeon2M_ExitResponse))]
-	[Message(InnerOpcode.M2LocalDungeon_ExitRequest)]
+	[ResponseType(nameof(FubenWork2M_ExitResponse))]
+	[Message(InnerOpcode.M2FubenWork_ExitRequest)]
 	[ProtoContract]
-	public partial class M2LocalDungeon_ExitRequest: Object, IActorRequest
+	public partial class M2FubenWork_ExitRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3590,9 +3590,9 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.LocalDungeon2M_ExitResponse)]
+	[Message(InnerOpcode.FubenWork2M_ExitResponse)]
 	[ProtoContract]
-	public partial class LocalDungeon2M_ExitResponse: Object, IActorResponse
+	public partial class FubenWork2M_ExitResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

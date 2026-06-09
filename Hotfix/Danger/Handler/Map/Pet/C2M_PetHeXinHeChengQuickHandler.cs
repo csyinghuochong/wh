@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -29,12 +29,12 @@ namespace ET
             //去掉多余的
             foreach (var item in keyValuePairs)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(item.Key);
-                if (itemConfig.PetHeXinHeChengID == 0)
+                Item Item = ItemCategory.Instance.Get(item.Key);
+                /*if (Item.PetHeXinHeChengID == 0)
                 {
                     item.Value.Clear();
                     continue;
-                }
+                }*/
                 if (keyValuePairs.Count < 2)
                 {
                     item.Value.Clear();
@@ -47,13 +47,13 @@ namespace ET
 
             foreach (var item in keyValuePairs)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(item.Key);
+                Item Item = ItemCategory.Instance.Get(item.Key);
     
                 int number1 = item.Value.Count / 2;
                 //新增item
                 for (int n = 0; n < number1; n++)
                 {
-                    rewardItems.Add( new RewardItem() { ItemID = itemConfig.PetHeXinHeChengID, ItemNum = 1 } );
+                    //rewardItems.Add( new RewardItem() { ItemID = Item.PetHeXinHeChengID, ItemNum = 1 } );
                 }
 
                 //移除item

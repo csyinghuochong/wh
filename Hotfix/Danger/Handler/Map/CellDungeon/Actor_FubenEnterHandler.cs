@@ -21,7 +21,7 @@ namespace ET
 				//动态创建副本
 				long fubenid = IdGenerater.Instance.GenerateId();
 				long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-				Scene fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "Fuben" + fubenid.ToString(), SceneType.Fuben);
+				Scene fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "Fuben" + fubenid.ToString(), SceneType.Map);
 				fubenComponent = fubnescene.AddComponent<CellDungeonComponent>();
 				fubenComponent.MainUnit = unit;
 				fubenComponent.FubenDifficulty = request.Difficulty;
@@ -29,11 +29,11 @@ namespace ET
 				curCell = fubenComponent.CurrentFubenCell;
 				fubenComponent.EnergySkills = new List<int>() { 64000001, 64000002, 64000003, 64000004, 64000005, 64000006, 64000007, 64000008 };
 				MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-				mapComponent.SetMapInfo((int)SceneTypeEnum.CellDungeon, request.ChapterId, curCell.sonid);
-				mapComponent.NavMeshId = ChapterSonConfigCategory.Instance.Get(curCell.sonid).MapID;
+				mapComponent.SetMapInfo((int)MapTypeEnum.CellDungeon, request.ChapterId, curCell.sonid);
+				//mapComponent.NavMeshId = ChapterSonConfigCategory.Instance.Get(curCell.sonid).MapID;
 
 				TransferHelper.BeforeTransfer(unit);
-				await TransferHelper.Transfer(unit, fubenInstanceId, (int)SceneTypeEnum.CellDungeon, request.ChapterId, request.Difficulty, curCell.sonid.ToString());
+				await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.CellDungeon, request.ChapterId, request.Difficulty, curCell.sonid.ToString());
 			}
 			else
 			{
@@ -42,7 +42,7 @@ namespace ET
 				CellDungeonComponentSystem.RemoveAllNoSelf(unit);
 				fubenComponent.InitFubenCell(request.ChapterId);
 				curCell = fubenComponent.CurrentFubenCell;
-				ChapterSonConfig chapterSon = ChapterSonConfigCategory.Instance.Get(curCell.sonid);
+				/*ChapterSonConfig chapterSon = ChapterSonConfigCategory.Instance.Get(curCell.sonid);
 				MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
 				mapComponent.SetSubLevel(curCell.sonid);
 				mapComponent.NavMeshId = ChapterSonConfigCategory.Instance.Get(curCell.sonid).MapID;
@@ -54,7 +54,7 @@ namespace ET
 				if (fightId != null)
 				{
 					UnitFactory.CreatePet(unit, fightId);
-				}
+				}*/
 				//UnitHelper.BroadcastCreateUnit(unit.DomainScene(), unit);
 			}
 

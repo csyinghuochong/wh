@@ -110,8 +110,8 @@ namespace ET
             unit.ConfigId = skillid;
             unit.Position = vector3;
             unit.Type = UnitType.Bullet;            //子弹Unity,根据这个类型会实例化出特效
-            SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillid);
-            numericComponent.Set(NumericType.Base_Speed_Base, skillConfig.SkillMoveSpeed, false);
+            Skill skill = SkillCategory.Instance.Get(skillid);
+            numericComponent.Set(NumericType.Base_Speed_Base, skill.SkillMoveSpeed, false);
             numericComponent.Set(NumericType.MasterId, masterid, false);
             numericComponent.Set(NumericType.StartAngle, starangle, false);
             numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
@@ -161,7 +161,7 @@ namespace ET
 
             long revetime = 0;
             Unit mainUnit = null;
-            if (mapComponent.SceneTypeEnum == SceneTypeEnum.LocalDungeon)
+            if (mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon)
             {
                 mainUnit = scene.GetComponent<LocalDungeonComponent>().MainUnit;
                 revetime = mainUnit.GetComponent<UserInfoComponent>().GetReviveTime(monsterConfig.Id);
@@ -215,14 +215,14 @@ namespace ET
                 unit.GetComponent<SkillPassiveComponent>().Activeted();
                 numericComponent.Set(NumericType.MasterId, createMonsterInfo.MasterID);
                 AIComponent aIComponent = unit.AddComponent<AIComponent, int>(ai);
-                switch (mapComponent.SceneTypeEnum)
+                switch (mapComponent.MapTypeEnum)
                 {
-                    case SceneTypeEnum.LocalDungeon:
+                    case MapTypeEnum.LocalDungeon:
                         aIComponent.LocalDungeonUnit = mainUnit;
                         aIComponent.LocalDungeonUnitPetComponent = mainUnit.GetComponent<PetComponent>();
                         aIComponent.InitMonster(monsterConfig.Id);
                         break;
-                    case SceneTypeEnum.PetDungeon:
+                    case MapTypeEnum.PetDungeon:
                         aIComponent.InitPetFubenMonster(monsterConfig.Id);
                         break;
                     default:
@@ -391,11 +391,11 @@ namespace ET
             unit.Rotation = Quaternion.Euler(0f, rotation, 0f);
             AIComponent aIComponent = unit.AddComponent<AIComponent, int>(1);     //AI行为树序号
             MapComponent mapComponent = scene.GetComponent<MapComponent>();
-            switch (mapComponent.SceneTypeEnum)
+            switch (mapComponent.MapTypeEnum)
             {
-                case (int)SceneTypeEnum.PetDungeon:
-                case (int)SceneTypeEnum.PetTianTi:
-                case (int)SceneTypeEnum.PetMing:
+                case (int)MapTypeEnum.PetDungeon:
+                case (int)MapTypeEnum.PetTianTi:
+                case (int)MapTypeEnum.PetMing:
                     aIComponent.InitTianTiPet(petinfo.ConfigId);
                     break;
                 default:
@@ -482,7 +482,7 @@ namespace ET
             numericComponent.Set(NumericType.Base_Speed_Base, master.GetComponent<NumericComponent>().GetAsLong(NumericType.Base_Speed_Base), false); 
 
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
-            if (scene.GetComponent<MapComponent>().SceneTypeEnum != (int)SceneTypeEnum.MainCityScene)
+            if (scene.GetComponent<MapComponent>().MapTypeEnum != (int)MapTypeEnum.MainCityScene)
             {
                 unit.AddComponent<SkillPassiveComponent>().UpdatePetPassiveSkill(petinfo);
                 unit.GetComponent<SkillPassiveComponent>().Activeted();
@@ -563,7 +563,7 @@ namespace ET
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             unitInfoComponent.MasterName = master.GetComponent<UserInfoComponent>().UserInfo.Name;
-            unitInfoComponent.UnitName = JingLingConfigCategory.Instance.Get(jinglingId).Name;
+            unitInfoComponent.UnitName = ElfCategory.Instance.Get(jinglingId).Name.ToString();
            
             unit.ConfigId = jinglingId;
             unit.MasterId = master.Id;
@@ -678,11 +678,11 @@ namespace ET
             {
                 int fubenDifficulty = FubenDifficulty.None;
                 dropAdd_Pro += main.GetComponent<NumericComponent>().GetAsFloat(NumericType.Base_DropAdd_Pro_Add);
-                if (sceneType == (int)SceneTypeEnum.CellDungeon)
+                if (sceneType == (int)MapTypeEnum.CellDungeon)
                 {
                     fubenDifficulty = bekill.DomainScene().GetComponent<CellDungeonComponent>().FubenDifficulty;
                 }
-                if (sceneType == (int)SceneTypeEnum.LocalDungeon)
+                if (sceneType == (int)MapTypeEnum.LocalDungeon)
                 {
                     fubenDifficulty = bekill.DomainScene().GetComponent<LocalDungeonComponent>().FubenDifficulty;
                 }
@@ -703,7 +703,7 @@ namespace ET
             }
 
             //1个人掉率降低
-            if (sceneType == SceneTypeEnum.TeamDungeon)
+            if (sceneType == MapTypeEnum.TeamDungeon)
             {
                 if (playerNumer == 1)
                 {
@@ -726,17 +726,17 @@ namespace ET
             }
             
             // 封印之塔提升爆率
-            if (sceneType == SceneTypeEnum.TowerOfSeal)
+            if (sceneType == MapTypeEnum.TowerOfSeal)
             {
                 dropAdd_Pro += 1f;
             }
 
             //个人副本根据成长来
-            if (sceneType == SceneTypeEnum.LocalDungeon && bekill.IsBoss() && bekill.ConfigId != SeasonHelper.SeasonBossId)
+            if (sceneType == MapTypeEnum.LocalDungeon && bekill.IsBoss() && bekill.ConfigId != SeasonHelper.SeasonBossId)
             {
                 int killNumber =  main.GetComponent<UserInfoComponent>().GetMonsterKillNumber(monsterCof.Id);
                 int chpaterid = DungeonConfigCategory.Instance.GetChapterByDungeon(scenid);
-                BossDevelopment bossDevelopment = ConfigHelper.GetBossDevelopmentByKill(chpaterid, killNumber);
+                BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
                 dropAdd_Pro += bossDevelopment.DropAdd;
             }
             
@@ -768,23 +768,23 @@ namespace ET
 
             List<int> adddropidlist = new List<int>();
 
-            if ((sceneType == SceneTypeEnum.LocalDungeon || sceneType == SceneTypeEnum.TeamDungeon) && !bekill.IsBoss())
+            if ((sceneType == MapTypeEnum.LocalDungeon || sceneType == MapTypeEnum.TeamDungeon) && !bekill.IsBoss())
             {
-                if (ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_GrowthTree) )
+                if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_GrowthTree) )
                 {
-                    adddropidlist.Add ( ActivityConfigHelper.GrowthTreeDropId );
+                    adddropidlist.Add ( ActivityV1Config.GrowthTreeDropId );
                 }
-                if (ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_Feed))
+                if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_Feed))
                 {
-                    adddropidlist.Add(ActivityConfigHelper.FeedDropId);
+                    adddropidlist.Add(ActivityV1Config.FeedDropId);
                 }
-                if (ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_Order))
+                if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_Order))
                 {
-                    adddropidlist.Add(ActivityConfigHelper.OrderDropId);
+                    adddropidlist.Add(ActivityV1Config.OrderDropId);
                 }
-                if (ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_NewYearCollectionWord))
+                if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_NewYearCollectionWord))
                 {
-                    adddropidlist.Add(ActivityConfigHelper.CollectionWordDropId);
+                    adddropidlist.Add(ActivityV1Config.CollectionWordDropId);
                 }
             }
 
@@ -844,7 +844,7 @@ namespace ET
                 Scene DomainScene = main != null ? main.DomainScene() : bekill.DomainScene();
                 for (int i = 0; i < droplist.Count; i++)
                 {
-                    if (sceneType == SceneTypeEnum.TeamDungeon && ( droplist[i].ItemID>= 10030011 && droplist[i].ItemID <= 10030019))
+                    if (sceneType == MapTypeEnum.TeamDungeon && ( droplist[i].ItemID>= 10030011 && droplist[i].ItemID <= 10030019))
                     {
                         //Log.Error($"掉落装备.字: {droplist[i].ItemID}   {sceneType}");
                     }
@@ -984,7 +984,7 @@ namespace ET
             }
 
             Scene domainScene = beKill.DomainScene();
-            int sceneType = domainScene.GetComponent<MapComponent>().SceneTypeEnum;
+            int sceneType = domainScene.GetComponent<MapComponent>().MapTypeEnum;
 
             // 0 公共掉落 2保护掉落   1私有掉落  3 归属掉落
             if (dropType == 0) 
@@ -1004,7 +1004,7 @@ namespace ET
 
                 for (int i = 0; i < droplist.Count; i++)
                 {
-                    if ( (droplist[i].ItemID >= 10030011 && droplist[i].ItemID <= 10030019)  && sceneType != SceneTypeEnum.LocalDungeon)
+                    if ( (droplist[i].ItemID >= 10030011 && droplist[i].ItemID <= 10030019)  && sceneType != MapTypeEnum.LocalDungeon)
                     {
                         Log.Error($"掉落装备.字: {droplist[i].ItemID}  {par}   {sceneType}");
                     }
@@ -1041,7 +1041,7 @@ namespace ET
 
                 for (int k = 0; k < droplist.Count; k++)
                 {
-                    if ((droplist[k].ItemID >= 10030011 && droplist[k].ItemID <= 10030019) && sceneType == SceneTypeEnum.TeamDungeon)
+                    if ((droplist[k].ItemID >= 10030011 && droplist[k].ItemID <= 10030019) && sceneType == MapTypeEnum.TeamDungeon)
                     {
                         Log.Error($"掉落装备.字: {droplist[k].ItemID}  {par}   {sceneType}");
                     }

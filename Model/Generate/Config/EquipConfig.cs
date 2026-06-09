@@ -78,85 +78,85 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>鉴定道具消耗</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
+		public string ItemName { get; set; }
+		/// <summary>鉴定道具消耗</summary>
+		[ProtoMember(3)]
 		public int AppraisalItem { get; set; }
 		/// <summary>套装ID</summary>
-		[ProtoMember(3)]
-		public int EquipSuitID { get; set; }
-		/// <summary>隐藏属性类型</summary>
 		[ProtoMember(4)]
-		public int HideType { get; set; }
-		/// <summary>隐藏属性最大值</summary>
+		public int EquipSuitID { get; set; }
+		/// <summary>隐藏属性类型 0：无 1：攻击/物防/魔防 2：生命/物防/魔防/攻击 3：生命</summary>
 		[ProtoMember(5)]
+		public int HideType { get; set; }
+		/// <summary>隐藏属性 最大值</summary>
+		[ProtoMember(6)]
 		public int HideMax { get; set; }
 		/// <summary>单条隐藏属性出现概率</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public double HideShowPro { get; set; }
 		/// <summary>一级属性随机值</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int OneProRandomValue { get; set; }
 		/// <summary>初始宝石孔位</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int GemHole { get; set; }
 		/// <summary>血量</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int Equip_Hp { get; set; }
 		/// <summary>最低攻击</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int Equip_MinAct { get; set; }
 		/// <summary>最高攻击</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int Equip_MaxAct { get; set; }
 		/// <summary>最低攻击</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int Equip_MinMagAct { get; set; }
 		/// <summary>最高攻击</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public int Equip_MaxMagAct { get; set; }
 		/// <summary>最低防御</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public int Equip_MinDef { get; set; }
 		/// <summary>最高防御</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int Equip_MaxDef { get; set; }
 		/// <summary>最低防御</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public int Equip_MinAdf { get; set; }
 		/// <summary>最高防御</summary>
-		[ProtoMember(17)]
+		[ProtoMember(18)]
 		public int Equip_MaxAdf { get; set; }
 		/// <summary>暴击</summary>
-		[ProtoMember(18)]
+		[ProtoMember(19)]
 		public double Equip_Cri { get; set; }
 		/// <summary>命中</summary>
-		[ProtoMember(19)]
+		[ProtoMember(20)]
 		public double Equip_Hit { get; set; }
 		/// <summary>闪避</summary>
-		[ProtoMember(20)]
+		[ProtoMember(21)]
 		public double Equip_Dodge { get; set; }
 		/// <summary>伤害加成</summary>
-		[ProtoMember(21)]
+		[ProtoMember(22)]
 		public double Equip_DamgeAdd { get; set; }
 		/// <summary>伤害减免</summary>
-		[ProtoMember(22)]
+		[ProtoMember(23)]
 		public double Equip_DamgeSub { get; set; }
 		/// <summary>速度</summary>
-		[ProtoMember(23)]
+		[ProtoMember(24)]
 		public double Equip_Speed { get; set; }
 		/// <summary>幸运值</summary>
-		[ProtoMember(24)]
-		public int Equip_Lucky { get; set; }
-		/// <summary>附加属性类型</summary>
 		[ProtoMember(25)]
-		public int[] AddPropreListType { get; set; }
-		/// <summary>附加属性值</summary>
+		public int Equip_Lucky { get; set; }
+		/// <summary>附加属性</summary>
 		[ProtoMember(26)]
-		public long[] AddPropreListValue { get; set; }
-		/// <summary>是否显示属性</summary>
+		public string AddProperty { get; set; }
+		/// <summary>是否 显示属性 0-显示 1-不显示</summary>
 		[ProtoMember(27)]
-		public long[] AddPropreListIfShow { get; set; }
-		/// <summary>附加</summary>
+		public string AddPropreListIfShow { get; set; }
+		/// <summary>附加 RolePropertyAdd  增加角色属性 SkillPropertyAdd   增加技能属性 1-增加范围  2-攻击系数 3-固定上海  4-减少CD 5-技能持续时间 6-额外附加BUFF BuffIdAdd   添加Buff属性 ReplaceSkillId  替换技能 SkillIdAdd 增加技能 BuffPropertyAdd 增加buff效果 1-buff属性值 2-buff持续时间</summary>
 		[ProtoMember(28)]
 		public int TianFuId { get; set; }
 

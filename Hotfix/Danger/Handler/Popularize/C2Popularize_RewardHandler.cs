@@ -25,7 +25,7 @@ namespace ET
                 {
                     long unitid = dBPopularizeInfo.MyPopularizeList[i].UnitId;
                     int oldZone = UnitIdStruct.GetUnitZone(unitid);
-                    int newZone = ComHelp.GetNewServerId(ServerHelper.GetServerList(), oldZone);
+                    int newZone = CommonHelper.GetNewServerId(ServerHelper.GetServerList(), oldZone);
                     if (newZone < 5)
                     {
                         continue;

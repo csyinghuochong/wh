@@ -7,7 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_FubenTimesResetRequest request, M2C_FubenTimesResetResponse response, Action reply)
         {
-            if (request.SceneType != SceneTypeEnum.PetTianTi)
+            if (request.SceneType != MapTypeEnum.PetTianTi)
             {
                 response.Error = ErrorCode.ERR_NetWorkError;
                 reply();

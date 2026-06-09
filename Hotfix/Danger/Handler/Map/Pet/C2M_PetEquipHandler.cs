@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -34,15 +34,15 @@ namespace ET
                     reply();
                     return;
                 }
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-                if (rolePetInfo.PetLv < itemConfig.UseLv)
+                Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+                if (rolePetInfo.PetLv < Item.UseLv)
                 {
                     response.Error = ErrorCode.ERR_LevelIsNot;
                     reply();
                     return;
                 }
 
-                int itemSubType = itemConfig.ItemSubType;
+                int itemSubType = Item.ItemSubType;
                 for (int i = rolePetInfo.PetEquipList.Count - 1; i >= 0; i--)
                 { 
                     BagInfo petequipInfo = bagComponent.GetItemByLoc(ItemLocType.PetLocEquip, rolePetInfo.PetEquipList[i]);
@@ -50,7 +50,7 @@ namespace ET
                     {
                         rolePetInfo.PetEquipList.RemoveAt(i);   
                     }
-                    if(ItemConfigCategory.Instance.Get(petequipInfo.ItemID).ItemSubType == itemSubType)
+                    if(ItemCategory.Instance.Get(petequipInfo.ItemID).ItemSubType == itemSubType)
                     {
                         takeOffId = rolePetInfo.PetEquipList[i];
                         break;

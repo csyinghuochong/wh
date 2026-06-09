@@ -10,7 +10,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ActivityTreeTendRequest request, M2C_ActivityTreeTendResponse response, Action reply)
         {
-            if (!ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_GrowthTree))
+            if (!ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_GrowthTree))
             {
                 response.Error = ErrorCode.ERR_AlreadyFinish;
                 reply();
@@ -25,7 +25,7 @@ namespace ET
                 int itemid = request.CostList[i].ItemID;
                 int usenum = request.CostList[i].ItemNum;
 
-                ActivityConfigHelper.ActivityTreeCostItem.TryGetValue(itemid, out var costitemcomponent);
+                ActivityV1Config.ActivityTreeCostItem.TryGetValue(itemid, out var costitemcomponent);
                 if (costitemcomponent == default)
                 {
                     request.CostList.RemoveAt(i);
@@ -49,7 +49,7 @@ namespace ET
             }
 
             int addscore = RandomHelper.RandomNumber(lower, upper + 1);
-            ActivityTreeTendItem activityTreeTendItem =  ActivityConfigHelper.GetActivityTreeTendItem(addscore);
+            ActivityTreeTendItem activityTreeTendItem =  ActivityV1Config.GetActivityTreeTendItem(addscore);
 
             List<RewardItem> droplist = new List<RewardItem>();
             DropHelper.DropIDToDropItem_2(activityTreeTendItem.Reward, droplist);
@@ -73,15 +73,15 @@ namespace ET
 
             ActivityComponent activityComponent = unit.GetComponent<ActivityComponent>();
             long oldtreevalue = activityComponent.ActivityV1Info.GrowthTreeValue;
-            int oldstage = ActivityConfigHelper.GetActivityTreeStageItem(oldtreevalue);
+            int oldstage = ActivityV1Config.GetActivityTreeStageItem(oldtreevalue);
             activityComponent.ActivityV1Info.GrowthTreeValue += addscore;
             long newtreevalue = activityComponent.ActivityV1Info.GrowthTreeValue;
-            int newstate = ActivityConfigHelper.GetActivityTreeStageItem(newtreevalue);
+            int newstate = ActivityV1Config.GetActivityTreeStageItem(newtreevalue);
 
             if (oldstage != newstate)
             {
                 //发送邮件奖励
-                ActivityTreeStageItem activityTreeStageItem = ActivityConfigHelper.ActivityTreeStageDesc[oldstage];
+                ActivityTreeStageItem activityTreeStageItem = ActivityV1Config.ActivityTreeStageDesc[oldstage];
 
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.Status = 0;

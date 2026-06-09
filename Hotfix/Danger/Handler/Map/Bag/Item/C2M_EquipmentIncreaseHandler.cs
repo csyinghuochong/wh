@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -34,9 +34,10 @@ namespace ET
                 return;
             }
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(equipmentBagInfo.ItemID);
+            Item Item = ItemCategory.Instance.Get(equipmentBagInfo.ItemID);
+            int equipType = ItemHelper.GetNewEquipType(equipmentBagInfo);
 
-            if (itemConfig.EquipType == 101 || itemConfig.EquipType == 201)
+            if (equipType == 101 || equipType == 201)
             {
                 response.Error = ErrorCode.ERR_ItemUseError;
                 reply();

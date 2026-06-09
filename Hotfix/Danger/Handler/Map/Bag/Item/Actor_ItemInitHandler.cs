@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -44,8 +44,8 @@ namespace ET
                 }
 
 				//鉴定符错误
-				//ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfos[i].ItemID);
-				//if(itemConfig.ItemSubType == 121)
+				//Item Item = ItemCategory.Instance.Get(bagInfos[i].ItemID);
+				//if(Item.ItemSubType == 121)
 				//{
 				//	try
 				//	{
@@ -85,7 +85,7 @@ namespace ET
 
             if (bagComponent.FashionEquipList.Count == 0)
 			{
-                OccupationConfig occupationConfig = OccupationConfigCategory.Instance.Get(occ);
+                Occupation occupationConfig = OccupationCategory.Instance.Get(occ);
 				for (int i = 0; i < occupationConfig.FashionBase.Length; i++)
 				{
 					bagComponent.FashionEquipList.Add(occupationConfig.FashionBase[i]);
@@ -93,7 +93,7 @@ namespace ET
 			}
             if (bagComponent.FashionActiveIds.Count == 0)
             {
-                OccupationConfig occupationConfig = OccupationConfigCategory.Instance.Get(occ);
+                Occupation occupationConfig = OccupationCategory.Instance.Get(occ);
                 for (int i = 0; i < occupationConfig.FashionBase.Length; i++)
                 {
                     bagComponent.FashionActiveIds.Add(occupationConfig.FashionBase[i]);

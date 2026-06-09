@@ -88,7 +88,7 @@ namespace ET
             }
             if (unit.Type == UnitType.Player)
             {
-                if (unit.SceneType == SceneTypeEnum.RunRace || unit.SceneType == SceneTypeEnum.Demon)
+                if (unit.SceneType == MapTypeEnum.RunRace || unit.SceneType == MapTypeEnum.Demon)
                 {
                     return;
                 }
@@ -231,8 +231,8 @@ namespace ET
 
         public static void AddPassiveSkill(this SkillPassiveComponent self, int skillId, Dictionary<int, int> magicskills = null)
         {
-            SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillId);
-            self.AddPassiveSkillByType(skillConfig, magicskills);
+            Skill skill = SkillCategory.Instance.Get(skillId);
+            self.AddPassiveSkillByType(skill, magicskills);
         }
 
         public static void RemovePassiveSkill(this SkillPassiveComponent self, int skillId)
@@ -263,12 +263,12 @@ namespace ET
                 {
                     continue;
                 }
-                if (!SkillConfigCategory.Instance.Contain(skillList[i].SkillID))
+                if (!SkillCategory.Instance.Contain(skillList[i].SkillID))
                 {
                     continue;
                 }
-                SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillList[i].SkillID);
-                self.AddPassiveSkillByType(skillConfig);
+                Skill skill = SkillCategory.Instance.Get(skillList[i].SkillID);
+                self.AddPassiveSkillByType(skill);
             }
         }
 
@@ -292,12 +292,12 @@ namespace ET
                 {
                     continue;
                 }
-                if (!SkillConfigCategory.Instance.Contain(aiSkillIDList[i]))
+                if (!SkillCategory.Instance.Contain(aiSkillIDList[i]))
                 {
                     continue;
                 }
-                SkillConfig skillConfig = SkillConfigCategory.Instance.Get(aiSkillIDList[i]);
-                self.AddPassiveSkillByType(skillConfig);
+                Skill skill = SkillCategory.Instance.Get(aiSkillIDList[i]);
+                self.AddPassiveSkillByType(skill);
             }
         }
 
@@ -308,14 +308,14 @@ namespace ET
 
         public static void UpdateJingLingSkill(this SkillPassiveComponent self, int jinglingid)
         {
-            JingLingConfig jingLingConfig = JingLingConfigCategory.Instance.Get(jinglingid);
-            if (jingLingConfig.FunctionType != JingLingFunctionType.AddSkill)
+            Elf elf = ElfCategory.Instance.Get(jinglingid);
+            if (elf.FunctionType != JingLingFunctionType.AddSkill)
             {
                 return;
             }
 
-             SkillConfig skillConfig = SkillConfigCategory.Instance.Get(int.Parse(jingLingConfig.FunctionValue));
-            self.AddPassiveSkillByType(skillConfig);
+             Skill skill = SkillCategory.Instance.Get(int.Parse(elf.FunctionValue));
+            self.AddPassiveSkillByType(skill);
         }
 
         public static bool HaveSkillId(this SkillPassiveComponent self, int skillId)
@@ -334,7 +334,7 @@ namespace ET
         {
             self.SkillPassiveInfos.Clear();
             int configId = self.GetParent<Unit>().ConfigId;
-            PetConfig MonsterCof = PetConfigCategory.Instance.Get(configId);
+            Pet MonsterCof = PetCategory.Instance.Get(configId);
             List<int> zhuanzhuids = new List<int>();
             string[] zhuanzhuskills = MonsterCof.ZhuanZhuSkillID.Split(';');
             for (int i = 0; i < zhuanzhuskills.Length; i++)
@@ -347,8 +347,8 @@ namespace ET
 
             for(int i = 0; i < zhuanzhuids.Count; i++)
             {
-                SkillConfig skillConfig = SkillConfigCategory.Instance.Get(zhuanzhuids[i]);
-                self.AddPassiveSkillByType(skillConfig);
+                Skill skill = SkillCategory.Instance.Get(zhuanzhuids[i]);
+                self.AddPassiveSkillByType(skill);
             }
 
             string[] baseSkillID = MonsterCof.BaseSkillID.Split(';');
@@ -360,8 +360,8 @@ namespace ET
                     continue;
                 }
 
-                SkillConfig skillConfig = SkillConfigCategory.Instance.Get(baseSkillId);
-                self.AddPassiveSkillByType(skillConfig);
+                Skill skill = SkillCategory.Instance.Get(baseSkillId);
+                self.AddPassiveSkillByType(skill);
             }
 
             for (int i = 0; i < rolePetInfo.PetSkill.Count; i++)
@@ -372,20 +372,20 @@ namespace ET
                     continue;
                 }
 
-                SkillConfig skillConfig = SkillConfigCategory.Instance.Get(baseSkillId);
-                self.AddPassiveSkillByType(skillConfig);
+                Skill skill = SkillCategory.Instance.Get(baseSkillId);
+                self.AddPassiveSkillByType(skill);
             }
         }
 
-        public static void AddPassiveSkillByType(this SkillPassiveComponent self, SkillConfig skillConfig, Dictionary<int, int> magicskills = null)
+        public static void AddPassiveSkillByType(this SkillPassiveComponent self, Skill skill, Dictionary<int, int> magicskills = null)
         {
-            if (skillConfig.SkillType == 1 || SkillHelp.havePassiveSkillType(skillConfig.PassiveSkillType, 0))
+            if (skill.SkillType == 1 || SkillHelp.havePassiveSkillType(skill.PassiveSkillType, 0))
             {
                 return;
             }
             for (int i = 0; i < self.SkillPassiveInfos.Count; i++)
             {
-                if (self.SkillPassiveInfos[i].SkillId == skillConfig.Id)
+                if (self.SkillPassiveInfos[i].SkillId == skill.Id)
                 {
                     return;
                 }
@@ -393,20 +393,20 @@ namespace ET
 
             List<int> PassiveSkillType = new List<int>();
             List<float> PassiveSkillPro = new List<float> {  };   
-            for (int i = 0; i < skillConfig.PassiveSkillType.Length; i++)
+            for (int i = 0; i < skill.PassiveSkillType.Length; i++)
             {
-                PassiveSkillType.Add(skillConfig.PassiveSkillType[i]);
-                PassiveSkillPro.Add((float)skillConfig.PassiveSkillPro[i]);  
+                PassiveSkillType.Add(skill.PassiveSkillType[i]);
+                PassiveSkillPro.Add((float)skill.PassiveSkillPro[i]);  
             }
 
             int magicqulity = 0;
-            if (magicskills!=null && magicskills.ContainsKey(skillConfig.Id))
+            if (magicskills!=null && magicskills.ContainsKey(skill.Id))
             {
-                magicqulity = magicskills[skillConfig.Id];
+                magicqulity = magicskills[skill.Id];
             }
 
-            SkillPassiveInfo skillPassiveInfo = new SkillPassiveInfo(skillConfig.Id, PassiveSkillType,
-               PassiveSkillPro, skillConfig.PassiveSkillTriggerOnce, skillConfig.SkillCD);
+            SkillPassiveInfo skillPassiveInfo = new SkillPassiveInfo(skill.Id, PassiveSkillType,
+               PassiveSkillPro, skill.PassiveSkillTriggerOnce, skill.SkillCD);
             skillPassiveInfo.MagicQulity = magicqulity; 
             self.SkillPassiveInfos.Add(skillPassiveInfo);
         }
@@ -429,10 +429,10 @@ namespace ET
             TimerComponent.Instance.Remove(ref self.SingTimer);
 
             Unit unit = self.GetParent<Unit>();
-            SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillIfo.SkillId);
+            Skill skill = SkillCategory.Instance.Get(skillIfo.SkillId);
             int angle = (int)Quaternion.QuaternionToEuler(unit.Rotation).y;
             self.StateComponent.StateTypeAdd(StateTypeEnum.Singing, $"{skillIfo.SkillId}_{angle}");
-            self.SingTimer = TimerComponent.Instance.NewOnceTimer(TimeHelper.ServerNow() + (long)(skillConfig.SkillFrontSingTime * 1000), TimerType.MonsterSingingTimer, self);
+            self.SingTimer = TimerComponent.Instance.NewOnceTimer(TimeHelper.ServerNow() + (long)(skill.SkillFrontSingTime * 1000), TimerType.MonsterSingingTimer, self);
         }
 
         public static void OnSingOver(this SkillPassiveComponent self)
@@ -462,25 +462,25 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             List<long> targetIdList = new List<long>();
             AIComponent aIComponent = unit.GetComponent<AIComponent>();
-            SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillIfo.SkillId);
+            Skill skill = SkillCategory.Instance.Get(skillIfo.SkillId);
             if (aIComponent != null)
             {
                 targetId = aIComponent.TargetID;
                 Unit aiTarget = unit.GetParent<UnitComponent>().Get(targetId);
-                if (aiTarget != null && skillConfig.SkillTargetType == (int)SkillTargetType.TargetOnly
+                if (aiTarget != null && skill.SkillTargetType == (int)SkillTargetType.TargetOnly
                     && PositionHelper.Distance2D(unit.Position, aiTarget.Position) > aIComponent.ActDistance)
                 {
                     return;
                 }
 
-                if (skillConfig.SkillTargetTypeNum == 0)
+                if (skill.SkillTargetTypeNum == 0)
                 {
                     targetIdList.Add(targetId);
                 }
                 else
                 {
-                    List<long> enemyids = AIHelp.GetNearestEnemyIds(unit, (float)aIComponent.ActRange, skillConfig.SkillTargetTypeNum);
-                    if ( ( skillConfig.SkillTargetTypeNum == 2 || skillConfig.SkillTargetTypeNum == 3) && enemyids.Count > 0)
+                    List<long> enemyids = AIGetTargetHelp.GetNearestEnemyIds(unit, (float)aIComponent.ActRange, skill.SkillTargetTypeNum);
+                    if ( ( skill.SkillTargetTypeNum == 2 || skill.SkillTargetTypeNum == 3) && enemyids.Count > 0)
                     {
                         aIComponent.ChangeTarget(enemyids[0]);
                     }
@@ -521,7 +521,7 @@ namespace ET
             }
 
             long serverTime = TimeHelper.ServerNow();
-            long rigidityEndTime  = (long)(skillConfig.SkillRigidity * 1000) + serverTime;
+            long rigidityEndTime  = (long)(skill.SkillRigidity * 1000) + serverTime;
             if (unit.IsDisposed)
             {
                 Log.Debug("SkillPassiveComponent :unit.IsDisposed ");
@@ -648,8 +648,9 @@ namespace ET
                 if (skillPassiveTypeEnum == SkillPassiveTypeEnum.WandBuff_8)
                 {
                     int weapontype = Convert.ToInt32(skillproValue);
-                    int buffId = SkillConfigCategory.Instance.Get(skillIfo.SkillId).InitBuffID[0];
-                    int weaponType = targetId == 0 ? ItemEquipType.Common : (int)ItemConfigCategory.Instance.Get((int)targetId).EquipType;
+                    int buffId = SkillCategory.Instance.Get(skillIfo.SkillId).InitBuffID[0];
+                    int equipType = ItemHelper.GetNewEquipType(ItemBigType.Type_Item, (int)targetId);
+                    int weaponType = targetId == 0 ? ItemEquipType.Common : equipType;
                     if (weaponType != weapontype)
                     {
                         unit.GetComponent<BuffManagerComponent>().BuffRemoveByUnit(0, buffId);
@@ -750,8 +751,8 @@ namespace ET
 
                 //int weaponSkill = unit.GetWeaponSkill(skillIfo.SkillId);
                 //SkillConfig skillConfig = SkillConfigCategory.Instance.Get(weaponSkill);
-                SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillIfo.SkillId);
-                if (skillConfig.SkillFrontSingTime > 0f)
+                Skill skill = SkillCategory.Instance.Get(skillIfo.SkillId);
+                if (skill.SkillFrontSingTime > 0f)
                 {
                     self.BeginSingSkill(skillIfo, targetId);
                 }

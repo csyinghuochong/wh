@@ -11,13 +11,13 @@ namespace ET
             PetComponent petComponent = unit.GetComponent<PetComponent>();
             switch (request.SceneType)
             {
-                case SceneTypeEnum.PetDungeon:
+                case MapTypeEnum.PetDungeon:
                     petComponent.PetFormations = request.PetFormat;
                     break;
-                case SceneTypeEnum.PetTianTi:
+                case MapTypeEnum.PetTianTi:
                     petComponent.TeamPetList = request.PetFormat;
                     break;
-                case SceneTypeEnum.PetMing:
+                case MapTypeEnum.PetMing:
                     petComponent.PetMingList = request.PetFormat;
                     petComponent.PetMingPosition = request.PetPosition;   
                     break;

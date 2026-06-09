@@ -32,14 +32,14 @@ namespace ET
 
             //答题列表
             self.QuestionList.Clear();
-            List<QuestionBankConfig> questionBankConfigs = QuestionBankConfigCategory.Instance.GetAll().Values.ToList();
+            /*List<QuestionBankConfig> questionBankConfigs = QuestionBankConfigCategory.Instance.GetAll().Values.ToList();
             GlobalValueConfig globalValueConfig = GlobalValueConfigCategory.Instance.Get(12);
             int questionNumber = int.Parse(globalValueConfig.Value);
             int startIndex = RandomHelper.RandomNumber(0, questionBankConfigs.Count - questionNumber);
             for (int i = startIndex; i < startIndex + questionNumber; i++)
             {
                 self.QuestionList.Add(questionBankConfigs[i].Id);
-            }
+            }*/
         }
 
         public static void OnZeroClockUpdate(this EnergyComponent self)

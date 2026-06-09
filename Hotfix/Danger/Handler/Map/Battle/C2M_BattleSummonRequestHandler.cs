@@ -11,7 +11,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_BattleSummonRequest request, M2C_BattleSummonResponse response, Action reply)
         {
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
-            if (mapComponent.SceneTypeEnum != SceneTypeEnum.Battle)
+            if (mapComponent.MapTypeEnum != MapTypeEnum.Battle)
             {
                 Log.Error($"C2M_BattleSummonRequest.1");
                 response.Error = ErrorCode.ERR_ModifyData;

@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class SkillConfigCategory : ProtoObject, IMerge
+    public partial class SkillCategory : ProtoObject, IMerge
     {
-        public static SkillConfigCategory Instance;
+        public static SkillCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, SkillConfig> dict = new Dictionary<int, SkillConfig>();
+        private Dictionary<int, Skill> dict = new Dictionary<int, Skill>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<SkillConfig> list = new List<SkillConfig>();
+        private List<Skill> list = new List<Skill>();
 		
-        public SkillConfigCategory()
+        public SkillCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            SkillConfigCategory s = o as SkillConfigCategory;
+            SkillCategory s = o as SkillCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (SkillConfig config in list)
+            foreach (Skill config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public SkillConfig Get(int id)
+        public Skill Get(int id)
         {
-            this.dict.TryGetValue(id, out SkillConfig item);
+            this.dict.TryGetValue(id, out Skill item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (SkillConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (Skill)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, SkillConfig> GetAll()
+        public Dictionary<int, Skill> GetAll()
         {
             return this.dict;
         }
 
-        public SkillConfig GetOne()
+        public Skill GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,30 +73,30 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class SkillConfig: ProtoObject, IConfig
+	public partial class Skill: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>技能名称</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public string SkillName { get; set; }
-		/// <summary>技能名称</summary>
+		public int Name { get; set; }
+		/// <summary>描述</summary>
 		[ProtoMember(3)]
-		public string SkillName_EN { get; set; }
-		/// <summary>技能等级</summary>
+		public int Desc { get; set; }
+		/// <summary>图标</summary>
 		[ProtoMember(4)]
-		public int SkillLv { get; set; }
-		/// <summary>技能Icon</summary>
-		[ProtoMember(5)]
 		public string SkillIcon { get; set; }
-		/// <summary>下一级技能</summary>
+		/// <summary>等级</summary>
+		[ProtoMember(5)]
+		public int SkillLv { get; set; }
+		/// <summary>下一级</summary>
 		[ProtoMember(6)]
 		public int NextSkillID { get; set; }
 		/// <summary>使用武器触发</summary>
 		[ProtoMember(7)]
 		public int WeaponType { get; set; }
-		/// <summary>学习技能等级</summary>
+		/// <summary>学习等级</summary>
 		[ProtoMember(8)]
 		public int LearnRoseLv { get; set; }
 		/// <summary>升级消耗SP值</summary>
@@ -105,7 +105,7 @@ namespace ET
 		/// <summary>升级消耗金币</summary>
 		[ProtoMember(10)]
 		public int CostGoldValue { get; set; }
-		/// <summary>被控制是否可以放技能</summary>
+		/// <summary>被控制时 可否释放 0-否 1-是</summary>
 		[ProtoMember(11)]
 		public int OpenType { get; set; }
 		/// <summary>装备升级前ID</summary>
@@ -204,10 +204,10 @@ namespace ET
 		/// <summary>技能移动速度</summary>
 		[ProtoMember(43)]
 		public double SkillMoveSpeed { get; set; }
-		/// <summary>初始化BUFFID</summary>
+		/// <summary>初始化 BUFFID</summary>
 		[ProtoMember(44)]
 		public int[] InitBuffID { get; set; }
-		/// <summary>释放BUFFID</summary>
+		/// <summary>释放 BUFFID</summary>
 		[ProtoMember(45)]
 		public int[] BuffID { get; set; }
 		/// <summary>只释放一次buff</summary>
@@ -222,7 +222,7 @@ namespace ET
 		/// <summary>技能特效ID</summary>
 		[ProtoMember(49)]
 		public int SkillHitEffectID { get; set; }
-		/// <summary>技能特效ID</summary>
+		/// <summary>特效ID</summary>
 		[ProtoMember(50)]
 		public int[] SkillEffectID { get; set; }
 		/// <summary>脚本名称</summary>
@@ -237,68 +237,65 @@ namespace ET
 		/// <summary>是否显示</summary>
 		[ProtoMember(54)]
 		public int IsShow { get; set; }
-		/// <summary>技能描述</summary>
-		[ProtoMember(55)]
-		public string SkillDescribe { get; set; }
 		/// <summary>施法时面对目标时间</summary>
-		[ProtoMember(57)]
+		[ProtoMember(55)]
 		public double IfLookAtTatgetTime { get; set; }
 		/// <summary>触发技能时附带技能</summary>
-		[ProtoMember(58)]
+		[ProtoMember(56)]
 		public int[] AddSkillID { get; set; }
 		/// <summary>技能触发时间</summary>
-		[ProtoMember(59)]
+		[ProtoMember(57)]
 		public double PassiveSkillTriggerTime { get; set; }
 		/// <summary>施法时是否面对目标</summary>
-		[ProtoMember(60)]
+		[ProtoMember(58)]
 		public int IfLookAtTarget { get; set; }
 		/// <summary>怪物技能延迟</summary>
-		[ProtoMember(61)]
+		[ProtoMember(59)]
 		public double MonsterDelayTime { get; set; }
 		/// <summary>宠物互斥ID</summary>
-		[ProtoMember(62)]
+		[ProtoMember(60)]
 		public int HuChiID { get; set; }
 		/// <summary>触发自身拥有技能</summary>
-		[ProtoMember(63)]
+		[ProtoMember(61)]
 		public int[] TriggerSelfSkillID { get; set; }
 		/// <summary>释放技能是否打断移动</summary>
-		[ProtoMember(64)]
+		[ProtoMember(62)]
 		public int IfStopMove { get; set; }
 		/// <summary>技能持续伤害是否触发Buff</summary>
-		[ProtoMember(65)]
+		[ProtoMember(63)]
 		public int DamgeChiXuTrigerBuff { get; set; }
 		/// <summary>技能持续伤害间隔时间</summary>
-		[ProtoMember(66)]
+		[ProtoMember(64)]
 		public int DamgeChiXuInterval { get; set; }
 		/// <summary>技能持续伤害百分比</summary>
-		[ProtoMember(67)]
+		[ProtoMember(65)]
 		public double DamgeChiXuPro { get; set; }
 		/// <summary>技能持续伤害固定值</summary>
-		[ProtoMember(68)]
+		[ProtoMember(66)]
 		public int DamgeChiXuValue { get; set; }
 		/// <summary>是否显示技能指示器字段</summary>
-		[ProtoMember(69)]
+		[ProtoMember(67)]
 		public int IfShowSkillZhiShi { get; set; }
 		/// <summary>结束时技能</summary>
-		[ProtoMember(70)]
+		[ProtoMember(68)]
 		public int EndSkillId { get; set; }
 		/// <summary>Buff触发技能</summary>
-		[ProtoMember(71)]
+		[ProtoMember(69)]
 		public string BuffToSkill { get; set; }
 		/// <summary>技能伤害增加</summary>
-		[ProtoMember(72)]
+		[ProtoMember(70)]
 		public string SkillDamgeAddValue { get; set; }
 		/// <summary>技能最多攻击人数</summary>
-		[ProtoMember(73)]
+		[ProtoMember(71)]
 		public int MaxAttackNumber { get; set; }
 		/// <summary>额外附加属性</summary>
-		[ProtoMember(74)]
+		[ProtoMember(72)]
 		public string ExtraProperty { get; set; }
 		/// <summary>指定攻击怪物</summary>
-		[ProtoMember(75)]
+		[ProtoMember(73)]
 		public int[] SpecifiedMonster { get; set; }
 		/// <summary>附带固定战力</summary>
-		[ProtoMember(76)]
+		[ProtoMember(74)]
 		public int AddCombat { get; set; }
 
 	}

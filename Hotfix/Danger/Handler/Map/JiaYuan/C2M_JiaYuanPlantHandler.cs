@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -23,11 +23,11 @@ namespace ET
             }
 
             bagComponent.OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost);
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(request.ItemId);
+            Item Item = ItemCategory.Instance.Get(request.ItemId);
             JiaYuanPlant jiaYuanPlant = new JiaYuanPlant()
             {
                 CellIndex = request.CellIndex,
-                ItemId = int.Parse(itemConfig.ItemUsePar),
+                ItemId = int.Parse(Item.ItemUsePar),
                 StartTime = TimeHelper.ServerNow(),
                 UnitId = IdGenerater.Instance.GenerateId(),
             };

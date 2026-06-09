@@ -59,14 +59,14 @@ namespace ET
                 if (request.CostType == 2)
                 {
                     BagComponent bagComponent = unit.GetComponent<BagComponent>();
-                    if (bagComponent.GetItemNumber(ConfigHelper.ZuanShiTenChoukaItem) < 1)
+                    if (bagComponent.GetItemNumber(CommonConfig.ZuanShiTenChoukaItem) < 1)
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();
                         return;
                     }
 
-                    bagComponent.OnCostItemData($"{ConfigHelper.ZuanShiTenChoukaItem};1", ItemLocType.ItemLocBag, ItemGetWay.ChouKa);
+                    bagComponent.OnCostItemData($"{CommonConfig.ZuanShiTenChoukaItem};1", ItemLocType.ItemLocBag, ItemGetWay.ChouKa);
                     unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetExploreNumber, 10, 0);
                 }
                 else

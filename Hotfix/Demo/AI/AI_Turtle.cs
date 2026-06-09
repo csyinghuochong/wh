@@ -65,8 +65,8 @@ namespace ET
             {
                 return;
             }
-            int index = ConfigHelper.TurtleList.IndexOf(unit.ConfigId);
-            string messagecontent = $"{index + 1}{ConfigHelper.TurtleWinNotice}";
+            int index = CommonConfig.TurtleList.IndexOf(unit.ConfigId);
+            string messagecontent = $"{index + 1}{CommonConfig.TurtleWinNotice}";
             string messagecontentEn = $"{index + 1} Player No. Won the final victory of the Little Turtle Competition.";
             ServerMessageHelper.SendBroadMessage(aiComponent.DomainZone(), NoticeType.Notice, messagecontent, messagecontentEn);
 
@@ -75,7 +75,7 @@ namespace ET
             UnitComponent unitComponent = unit.GetParent<UnitComponent>();
             for (int i = units.Count - 1; i >= 0; i--)
             {
-                if (ConfigHelper.TurtleList.Contains(units[i].ConfigId))
+                if (CommonConfig.TurtleList.Contains(units[i].ConfigId))
                 {
                     units[i].GetComponent<AIComponent>().Stop_2();
                     unitComponent.Remove(units[i].Id);

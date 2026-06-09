@@ -84,9 +84,6 @@ namespace ET
 		/// <summary>商店值</summary>
 		[ProtoMember(4)]
 		public int ShopValue { get; set; }
-		/// <summary>NPC类型</summary>
-		[ProtoMember(5)]
-		public int NpcType { get; set; }
 		/// <summary>任务ID</summary>
 		[ProtoMember(6)]
 		public int[] TaskID { get; set; }
@@ -114,15 +111,21 @@ namespace ET
 		/// <summary>移动坐标</summary>
 		[ProtoMember(14)]
 		public string MovePosition { get; set; }
-		/// <summary>摄像头是否拉近</summary>
+		/// <summary>拉近摄像头 0-否 1-是</summary>
 		[ProtoMember(15)]
 		public int ifCameraLaJin { get; set; }
 		/// <summary>对话信息</summary>
 		[ProtoMember(16)]
 		public string SpeakText { get; set; }
+		/// <summary>对话信息</summary>
+		[ProtoMember(17)]
+		public string SpeakText_EN { get; set; }
 		/// <summary>头部说话</summary>
 		[ProtoMember(18)]
 		public string NpcHeadSpeakText { get; set; }
+		/// <summary>对话信息</summary>
+		[ProtoMember(19)]
+		public string NpcHeadSpeakText_EN { get; set; }
 		/// <summary>任务提示</summary>
 		[ProtoMember(20)]
 		public string TaskHint { get; set; }

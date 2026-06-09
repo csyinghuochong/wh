@@ -118,37 +118,6 @@ namespace ET
                         }
 
                         //await MergeZoneHelper.QueryRecharge();
-
-
-                        List<ItemConfig> itemConfigs = ItemConfigCategory.Instance.GetAll().Values.ToList();
-
-                        int weaponNumber = 0;
-                        for (int i = 0; i < itemConfigs.Count; i++)
-                        {
-                            if (itemConfigs[i].ItemType == 3 && itemConfigs[i].ItemSubType ==1
-                                && itemConfigs[i].EquipType ==2)
-                            {
-                                weaponNumber++;
-                            }
-                        }
-
-
-                        List<int> monstermodels = new List<int>();
-                        List<MonsterConfig> allmonsters = MonsterConfigCategory.Instance.GetAll().Values.ToList();
-                        for (int  i = 0; i < allmonsters.Count; i++)
-                        {
-                            if (allmonsters[i].MonsterType != 3)
-                            {
-                                continue;
-                            }
-
-                            if (!monstermodels.Contains(allmonsters[i].MonsterModelID))
-                            {
-                                monstermodels.Add(allmonsters[i].MonsterModelID);
-                            }
-                        }
-                        monstermodels.Sort();
-                        Log.Debug(monstermodels.Count.ToString());
                         break;
                 }
                 case AppType.MergeZone:

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -28,11 +28,11 @@ namespace ET
                     reply();
                     return;
                 }
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(useBagInfo.ItemID);
+                Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
 
                 //判断等级
                 int roleLv = useInfo.Lv;
-                int equipLv = itemConfig.UseLv;
+                int equipLv = Item.UseLv;
                 //简易
                 if (useBagInfo.HideSkillLists.Contains(68000103))
                 {
@@ -53,19 +53,20 @@ namespace ET
                 }
 
                 //对应部位是否符合
-                if (itemConfig.ItemType == 3 && itemConfig.EquipType != 0)
+                int equipType = ItemHelper.GetNewEquipType(useBagInfo);
+                if (Item.ItemType == 3 && equipType != 0)
                 {
                     //查看自身是否是二转
                     if (useInfo.OccTwo > 0)
                     {
-                        OccupationTwoConfig occtwoCof = OccupationTwoConfigCategory.Instance.Get(useInfo.OccTwo);
-                        if (occtwoCof.ArmorMastery == itemConfig.EquipType || itemConfig.EquipType == 99 || itemConfig.EquipType == 101)
+                        Occupation_Transfer occtwoCof = Occupation_TransferCategory.Instance.Get(useInfo.OccTwo);
+                        if (occtwoCof.ArmorMastery == equipType || equipType == 99 || equipType== 101)
                         {
                             //可以穿戴
                         }
                         else
                         {
-                            bool ifWear = ConfigHelper.OccWeaponList[useInfo.Occ].Contains(itemConfig.EquipType); ;
+                            bool ifWear = CommonConfig.OccWeaponList[useInfo.Occ].Contains(equipType); ;
                             
 
                             //佩戴部位不符
@@ -79,7 +80,7 @@ namespace ET
                     }
                 }
 
-                int weizhi = itemConfig.ItemSubType;
+                int weizhi = Item.ItemSubType;
                 if (weizhi != (int)ItemSubTypeEnum.Wuqi)
                 {
                     response.Error = ErrorCode.ERR_EquipType;     //错误码:穿戴类型不符
@@ -90,7 +91,7 @@ namespace ET
                 ///猎人   默认 0弓箭   1剑
                 ///巨刃士 默认 0刀     1弓箭
                 int equipIndex = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.EquipIndex);
-                int equipType = itemConfig.EquipType;
+  
                 int findIndex = -1;
 
                 if (occ == 3)
@@ -116,7 +117,7 @@ namespace ET
                     }
                 }
 
-                if (itemConfig.Id == 10030001 || itemConfig.Id == 10030003)
+                if (Item.Id == 10030001 || Item.Id == 10030003)
                 {
                     findIndex = 0;
                 }

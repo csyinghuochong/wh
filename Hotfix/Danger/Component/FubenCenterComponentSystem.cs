@@ -100,11 +100,11 @@ namespace ET
             int sceneid = 0;
             if (functionId == 1058)
             {
-                sceneid = BattleHelper.GetSceneIdByType(SceneTypeEnum.RunRace);
+                sceneid = BattleHelper.GetSceneIdByType(MapTypeEnum.RunRace);
             }
             if (functionId == 1059)
             {
-                sceneid = BattleHelper.GetSceneIdByType(SceneTypeEnum.Demon);
+                sceneid = BattleHelper.GetSceneIdByType(MapTypeEnum.Demon);
             }
             if (sceneid == 0)
             {
@@ -124,18 +124,17 @@ namespace ET
             mapComponent.SetMapInfo(sceneConfig.MapType, sceneConfig.Id, 0);
             mapComponent.NavMeshId = sceneConfig.MapID;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
-            fubnescene.GetComponent<ServerInfoComponent>().ServerInfo = self.ServerInfo;
             YeWaiRefreshComponent yeWaiRefreshComponen = fubnescene.AddComponent<YeWaiRefreshComponent>();
             yeWaiRefreshComponen.SceneId = sceneConfig.Id;
 
             switch (sceneConfig.MapType)
             {
-                case SceneTypeEnum.RunRace:
+                case MapTypeEnum.RunRace:
                     fubnescene.AddComponent<RunRaceDungeonComponent>();
 
                     fubnescene.GetComponent<RunRaceDungeonComponent>().OnBegin();
                     break;
-                case SceneTypeEnum.Demon:
+                case MapTypeEnum.Demon:
                     fubnescene.AddComponent<DemonDungeonComponent>();
                     fubnescene.GetComponent<DemonDungeonComponent>().OnBegin();
                     break;
@@ -191,7 +190,7 @@ namespace ET
                         scene.GetComponent<RunRaceDungeonComponent>().OnClose();
                     }
 
-                    FuntionConfig funtionConfig = FuntionConfigCategory.Instance.Get(1058);
+                    FunctionConfig funtionConfig = FunctionConfigCategory.Instance.Get(1058);
                     string[] openTimes = funtionConfig.OpenTime.Split('@');
 
                     int closeTime_1 = int.Parse(openTimes[1].Split(';')[0]);
@@ -217,7 +216,7 @@ namespace ET
                         scene.GetComponent<DemonDungeonComponent>().OnClose();
                     }
 
-                    funtionConfig = FuntionConfigCategory.Instance.Get(1059);
+                    funtionConfig = FunctionConfigCategory.Instance.Get(1059);
                     openTimes = funtionConfig.OpenTime.Split('@');
 
                      closeTime_1 = int.Parse(openTimes[1].Split(';')[0]);
@@ -260,9 +259,9 @@ namespace ET
                 }
               
                 Scene scene = Entity as Scene;
-                Actor_TransferRequest actor_Transfer = new Actor_TransferRequest()
+                C2M_TransferRequest actor_Transfer = new C2M_TransferRequest()
                 {
-                    SceneType = SceneTypeEnum.MainCityScene,
+                    SceneType = MapTypeEnum.MainCityScene,
                 };
                 List<Unit> units = scene.GetComponent<UnitComponent>().GetAll();
                 for (int i = 0; i < units.Count; i++)
@@ -291,8 +290,8 @@ namespace ET
             List<SceneConfig> sceneConfigs =  SceneConfigCategory.Instance.GetAll().Values.ToList();
             for (int i = 0; i < sceneConfigs.Count; i++)
             {
-                if (sceneConfigs[i].MapType != SceneTypeEnum.BaoZang 
-                && sceneConfigs[i].MapType != SceneTypeEnum.MiJing )
+                if (sceneConfigs[i].MapType != MapTypeEnum.BaoZangZhiDi 
+                && sceneConfigs[i].MapType != MapTypeEnum.MiJing )
                 {
                     continue;
                 }
@@ -308,13 +307,12 @@ namespace ET
                 MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
                 mapComponent.SetMapInfo(sceneConfigs[i].MapType, sceneConfigs[i].Id, 0);
                 mapComponent.NavMeshId = sceneConfigs[i].MapID; 
-                fubnescene.GetComponent<ServerInfoComponent>().ServerInfo = self.ServerInfo;
                 YeWaiRefreshComponent yeWaiRefreshComponen = fubnescene.AddComponent<YeWaiRefreshComponent>();
                 yeWaiRefreshComponen.SceneId = sceneConfigs[i].Id;
                 
                 switch (sceneConfigs[i].MapType)
                 {
-                    case SceneTypeEnum.MiJing:
+                    case MapTypeEnum.MiJing:
                         fubnescene.AddComponent<MiJingComponent>();
                         break;
                     default:

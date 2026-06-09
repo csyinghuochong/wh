@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +19,7 @@ namespace ET
 		/// <param name="sceneType"></param>
         public static void TriggerTeamBuff(this Unit self, int sceneType)
         {
-            if (sceneType == SceneTypeEnum.MainCityScene)
+            if (sceneType == MapTypeEnum.MainCityScene)
             {
                 return;
             }
@@ -159,7 +159,7 @@ namespace ET
 			{
 				//4; 0,0,0; 71020001; 2,2; 2, 2
 				int playerLv = 1;
-				if (scene.GetComponent<MapComponent>().SceneTypeEnum == SceneTypeEnum.Tower)
+				if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TowerDungeon)
 				{
 					Unit mainUnit = scene.GetComponent<TowerComponent>().MainUnit;
 					playerLv = mainUnit.GetComponent<UserInfoComponent>().UserInfo.Lv;
@@ -198,8 +198,8 @@ namespace ET
             List<KeyValuePairInt> randomMonsterList = new List<KeyValuePairInt>();	
 
             MapComponent mapComponent = scene.GetComponent<MapComponent>();
-			int sceneType = mapComponent.SceneTypeEnum;
-			if (sceneType != SceneTypeEnum.LocalDungeon)
+			int sceneType = mapComponent.MapTypeEnum;
+			if (sceneType != MapTypeEnum.LocalDungeon)
 			{ 
 				return randomMonsterList;
 			}
@@ -239,7 +239,7 @@ namespace ET
 			
 			for (int i = 0; i < monsters.Length; i++)
 			{
-				if (ComHelp.IfNull(monsters[i]))
+				if (CommonHelper.IfNull(monsters[i]))
 				{
 					continue;
 				}
@@ -286,13 +286,13 @@ namespace ET
 
 		public static  void CreateMonsterList(Scene scene, string createMonster)
 		{
-			if (ComHelp.IfNull(createMonster))
+			if (CommonHelper.IfNull(createMonster))
             {
 				return;
             }
 
 			MapComponent mapComponent = scene.GetComponent<MapComponent>();
-			int sceneType = mapComponent.SceneTypeEnum;
+			int sceneType = mapComponent.MapTypeEnum;
 			string[] monsters = createMonster.Split('@');
 			//1;37.65,0,3.2;70005005;1@138.43,0,0.06;70005010;1
 
@@ -300,7 +300,7 @@ namespace ET
 
 			for (int i = 0; i < monsters.Length; i++)
 			{
-				if (ComHelp.IfNull(monsters[i]))
+				if (CommonHelper.IfNull(monsters[i]))
 				{
 					continue;
 				}
@@ -334,9 +334,9 @@ namespace ET
                         if (monsterConfig.MonsterSonType == 58) //奇遇宠物
                         {
 							int itemid = monsterConfig.Parameter[1];
-							ItemConfig itemConfig = ItemConfigCategory.Instance.Get(itemid);
-							int petId = int.Parse(itemConfig.ItemUsePar);
-							PetConfig petConfig = PetConfigCategory.Instance.Get(petId );
+							Item Item = ItemCategory.Instance.Get(itemid);
+							int petId = int.Parse(Item.ItemUsePar);
+							Pet petConfig = PetCategory.Instance.Get(petId );
 
                             List<int> weight = new List<int>(petConfig.SkinPro);
                             int index = RandomHelper.RandomByWeight(weight);
@@ -357,7 +357,7 @@ namespace ET
 					continue;
 				}
 				
-				if (sceneType == SceneTypeEnum.LocalDungeon && monsterConfig.MonsterSonType == 55)
+				if (sceneType == MapTypeEnum.LocalDungeon && monsterConfig.MonsterSonType == 55)
 				{
 					LocalDungeonComponent localDungeonComponent = scene.GetComponent<LocalDungeonComponent>();
 					UserInfoComponent userInfoComponent = localDungeonComponent.MainUnit.GetComponent<UserInfoComponent>();
@@ -439,7 +439,7 @@ namespace ET
 				{
 					//4; 0,0,0; 71020001; 2,2; 2, 2  //是随机塔附加属性
 					int playerLv = 1;
-					if (scene.GetComponent<MapComponent>().SceneTypeEnum == SceneTypeEnum.Tower)
+					if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TowerDungeon)
 					{
 						Unit mainUnit = scene.GetComponent<TowerComponent>().MainUnit;
 						playerLv = mainUnit.GetComponent<UserInfoComponent>().UserInfo.Lv;
@@ -526,16 +526,16 @@ namespace ET
 			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
             m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;			//拾取道具的消息，此为玩家unitid
             m2C_SyncChatInfo.ChatInfo.ParamId = dropInfo.UnitId;//拾取道具的消息，此为道具unitid
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(dropInfo.ItemID);
+            Item Item = ItemCategory.Instance.Get(dropInfo.ItemID);
 			string numShow = "";
-			if (itemConfig.Id == 1)
+			if (Item.Id == 1)
 			{
 				numShow = dropInfo.ItemNum.ToString();
 			}
-			string colorValue = ComHelp.QualityReturnColor(itemConfig.ItemQuality);
-			m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>拾取<color=#{colorValue}>{numShow}{itemConfig.ItemName}</color>";
+			string colorValue = CommonHelper.QualityReturnColor(Item.Quality);
+			m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>拾取<color=#{colorValue}>{numShow}{Item.Name}</color>";
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>pick up<color=#{colorValue}>{numShow}{itemConfig.ItemName_EN}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>pick up<color=#{colorValue}>{numShow}{Item.Name}</color>";
             for (int p = 0; p < points.Count; p++)
 			{
 				Unit player = unit.GetParent<UnitComponent>().Get(ids[p]);
@@ -563,13 +563,13 @@ namespace ET
 			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
 			m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;   //拾取道具的消息，此为玩家id
 			m2C_SyncChatInfo.ChatInfo.ParamId = dropInfo.UnitId;
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(dropInfo.ItemID);
+			Item Item =ItemCategory.Instance.Get(dropInfo.ItemID);
 			string numShow = "";
-			if (itemConfig.Id == 1)
+			if (Item.Id == 1)
 			{
 				numShow = dropInfo.ItemNum.ToString();
 			}
-			string colorValue = ComHelp.QualityReturnColor(itemConfig.ItemQuality);
+			string colorValue = CommonHelper.QualityReturnColor(Item.Quality);
 
             string bybox = string.Empty;
             string byboxen = string.Empty;
@@ -582,9 +582,9 @@ namespace ET
                 byboxen = "By Diamond Chest";
             }
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name} {bybox}</color>拾取<color=#{colorValue}>{numShow}{itemConfig.ItemName}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name} {bybox}</color>拾取<color=#{colorValue}>{numShow}{Item.Name}</color>";
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name} {byboxen}</color>pick up<color=#{colorValue}>{numShow}{itemConfig.ItemName_EN}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name} {byboxen}</color>pick up<color=#{colorValue}>{numShow}{Item.Name}</color>";
 
             //MessageHelper.SendToClient(GetUnitList(unit.DomainScene(), UnitType.Player), m2C_SyncChatInfo);
             //Log.Warning($"SendFubenPickMessage: {unit.Id} {dropInfo.ItemID}");

@@ -84,7 +84,7 @@ namespace ET
 		/// <summary>奖励道具</summary>
 		[ProtoMember(3)]
 		public string RewardItems { get; set; }
-		/// <summary>奖励钻石</summary>
+		/// <summary>奖励钻石 min|max</summary>
 		[ProtoMember(4)]
 		public int[] RewardDiamond { get; set; }
 

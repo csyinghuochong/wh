@@ -11,7 +11,7 @@ namespace ET
         public string product_id { get; set; }
     }
 
-    public class Receipt
+    public class ReceiptServer
     {
 
         public List<InApp> in_app { get; set; }
@@ -87,7 +87,7 @@ namespace ET
         /// <summary>
         /// 
         /// </summary>
-        public Receipt receipt { get; set; }
+        public ReceiptServer receipt { get; set; }
         /// <summary>
         /// 
         /// </summary>

@@ -51,11 +51,11 @@ namespace ET
         {
             DateTime dateTime = TimeHelper.DateTimeNow();
             int curTime = (dateTime.Hour * 60 + dateTime.Minute) * 60 + dateTime.Second;
-            FuntionConfig funtionConfig = FuntionConfigCategory.Instance.Get(1031);
-            string[] openTimes = funtionConfig.OpenTime.Split('@');
-            int openTime = (int.Parse(openTimes[0].Split(';')[0]) * 60 + int.Parse(openTimes[0].Split(';')[1])) * 60;
-            int closeTime = (int.Parse(openTimes[1].Split(';')[0]) * 60 + int.Parse(openTimes[1].Split(';')[1])) * 60;
-            int overTime = (int.Parse(openTimes[2].Split(';')[0]) * 60 + int.Parse(openTimes[2].Split(';')[1])) * 60;
+            FunctionConfig funtionConfig = FunctionConfigCategory.Instance.Get(1031);
+            string[] openTimes = funtionConfig.OpenTime.Split('|');
+            int openTime = (int.Parse(openTimes[0].Split(':')[0]) * 60 + int.Parse(openTimes[0].Split(':')[1])) * 60;
+            int closeTime = (int.Parse(openTimes[1].Split(':')[0]) * 60 + int.Parse(openTimes[1].Split(':')[1])) * 60;
+            int overTime = (int.Parse(openTimes[2].Split(':')[0]) * 60 + int.Parse(openTimes[2].Split(':')[1])) * 60;
             if (curTime < openTime)
             {
                 self.AreneSceneStatu = 0;
@@ -82,11 +82,11 @@ namespace ET
         {
             DateTime dateTime = TimeHelper.DateTimeNow();
             int curTime = (dateTime.Hour * 60 + dateTime.Minute) * 60 + dateTime.Second;
-            FuntionConfig funtionConfig = FuntionConfigCategory.Instance.Get(1031);
-            string[] openTimes = funtionConfig.OpenTime.Split('@');
-            int openTime = (int.Parse(openTimes[0].Split(';')[0]) * 60 + int.Parse(openTimes[0].Split(';')[1])) * 60;
-            int closeTime = (int.Parse(openTimes[1].Split(';')[0]) * 60 + int.Parse(openTimes[1].Split(';')[1])) * 60;
-            int overTime = (int.Parse(openTimes[2].Split(';')[0]) * 60 + int.Parse(openTimes[2].Split(';')[1])) * 60;
+            FunctionConfig funtionConfig = FunctionConfigCategory.Instance.Get(1031);
+            string[] openTimes = funtionConfig.OpenTime.Split('|');
+            int openTime = (int.Parse(openTimes[0].Split(':')[0]) * 60 + int.Parse(openTimes[0].Split(':')[1])) * 60;
+            int closeTime = (int.Parse(openTimes[1].Split(':')[0]) * 60 + int.Parse(openTimes[1].Split(':')[1])) * 60;
+            int overTime = (int.Parse(openTimes[2].Split(':')[0]) * 60 + int.Parse(openTimes[2].Split(':')[1])) * 60;
 
             if (curTime < openTime && self.AreneSceneStatu== 0)
             {
@@ -185,7 +185,7 @@ namespace ET
                     return battleInfo.FubenInstanceId;
                 }
 
-                if (battleInfo.PlayerList.Count < ComHelp.GetPlayerLimit(sceneId))
+                if (battleInfo.PlayerList.Count < CommonHelper.GetPlayerLimit(sceneId))
                 {
                     battleInfo.PlayerList.Add(unitId, new ArenaPlayerStatu() { UnitId = unitId });
                     return battleInfo.FubenInstanceId;
@@ -195,11 +195,11 @@ namespace ET
             //动态创建副本
             long fubenid = IdGenerater.Instance.GenerateId();
             long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-            Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "Battle" + fubenid.ToString(), SceneType.Fuben);
+            Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "Battle" + fubenid.ToString(), SceneType.Map);
             fubnescene.AddComponent<ArenaDungeonComponent>();
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-            mapComponent.SetMapInfo((int)SceneTypeEnum.Arena, sceneId, 0);
+            mapComponent.SetMapInfo((int)MapTypeEnum.Arena, sceneId, 0);
             mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(sceneId).MapID;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             fubnescene.AddComponent<YeWaiRefreshComponent>().SceneId = sceneId;

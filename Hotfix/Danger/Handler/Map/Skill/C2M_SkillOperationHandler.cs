@@ -45,7 +45,7 @@ namespace ET
                         return;
                     }
 
-                    if (!OccupationTwoConfigCategory.Instance.Contain(toOcc))
+                    if (!Occupation_TransferCategory.Instance.Contain(toOcc))
                     {
                         Log.Error($"C2M_ChangeOccTwoRequest.1");
                         response.Error = ErrorCode.ERR_ModifyData;

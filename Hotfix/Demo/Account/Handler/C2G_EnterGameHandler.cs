@@ -104,7 +104,7 @@ namespace ET
 			{
 				using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.LoginGate, player.AccountId.GetHashCode()))
 				{
-                    List<DBCenterServerInfo> result = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterServerInfo>(ComHelp.CenterZoneId, d => d.Id == ComHelp.CenterZoneId);
+                    List<DBCenterServerInfo> result = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterServerInfo>(CommonConfig.CenterZoneId, d => d.Id == CommonConfig.CenterZoneId);
 
                     if (!string.IsNullOrEmpty(request.DeviceID) && result[0].BanDeviceID.Contains(request.DeviceID))
                     {
@@ -127,7 +127,7 @@ namespace ET
                         return;
                     }
 
-                    List<DBCenterAccountInfo> centerAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id == request.AccountId);
+                    List<DBCenterAccountInfo> centerAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id == request.AccountId);
                     if (centerAccountInfos == null|| centerAccountInfos.Count == 0)
 					{
                         response.Error = ErrorCode.ERR_AccountInBlackListError;
@@ -277,7 +277,7 @@ namespace ET
 						player.TeamServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
 						player.FriendServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Friend)).InstanceId;
 						player.UnionServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Union)).InstanceId;
-						player.SoloServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Solo)).InstanceId;
+						//player.SoloServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Solo)).InstanceId;
 						player.PopularizeServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Popularize)).InstanceId;
 						player.ReChargeServerID = StartSceneConfigCategory.Instance.RechargeConfig.InstanceId;
 						response.MyId = unitId;
@@ -290,8 +290,8 @@ namespace ET
 
 
                         reply();
-						StartSceneConfig startSceneConfig = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), $"Map{ComHelp.MainCityID()}");
-						await TransferHelper.Transfer(unit, startSceneConfig.InstanceId, (int)SceneTypeEnum.MainCityScene, ComHelp.MainCityID(), 0, "0");
+						StartSceneConfig startSceneConfig = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), $"Map{CommonHelper.MainCityID()}");
+						await TransferHelper.Transfer(unit, startSceneConfig.InstanceId, (int)MapTypeEnum.MainCityScene, CommonHelper.MainCityID(), 0, "0");
 
 						player.PlayerState = PlayerState.Game;
 						player.UnitId = request.UserID;

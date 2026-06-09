@@ -10,6 +10,9 @@ namespace ET
 
         public static async ETTask OnArchiveHandler(int zone, long unitid, int day) //archive 5 2631939174340558848 1
         {
+
+            ExpConfig expConfig = ExpConfigCategory.Instance.Get(1);
+            int hp = expConfig.BaseHp;
             await ETTask.CompletedTask;
             Console.WriteLine($"OnArchiveHandler  Begin===   {zone} {unitid}");
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,8 +26,8 @@ namespace ET
 				return;
 			}
 
-			ItemConfig itemConfig = ItemConfigCategory.Instance.Get(paiMaiSellConfig.ItemID);
-			int cell = Mathf.CeilToInt(request.BuyNum * 1f / itemConfig.ItemPileSum);
+			Item Item = ItemCategory.Instance.Get(paiMaiSellConfig.ItemID);
+			int cell = Mathf.CeilToInt(request.BuyNum * 1f / Item.ItemPileSum);
 			if (unit.GetComponent<BagComponent>().GetBagLeftCell() < cell)
 			{
 				response.Error = ErrorCode.ERR_BagIsFull;

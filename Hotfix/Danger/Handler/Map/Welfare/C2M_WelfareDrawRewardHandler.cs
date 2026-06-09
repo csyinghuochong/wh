@@ -17,18 +17,18 @@ namespace ET
             }
             
             int index = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.DrawIndex);
-            if (index == 0 || index > ConfigHelper.WelfareDrawList.Count)
+            if (index == 0 || index > CommonConfig.WelfareDrawList.Count)
             {
                 reply();
                 return;
             }
 
 
-            string reward = ConfigHelper.WelfareDrawList[index - 1].Value;
+            string reward = CommonConfig.WelfareDrawList[index - 1].Value;
             if (index == 7)
             { 
                 UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-                int weaponId = ComHelp.GetWelfareWeapon( userInfoComponent.UserInfo.Occ, userInfoComponent.UserInfo.OccTwo );
+                int weaponId = CommonHelper.GetWelfareWeapon( userInfoComponent.UserInfo.Occ, userInfoComponent.UserInfo.OccTwo );
                 reward = $"{weaponId};1";
             }
 

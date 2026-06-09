@@ -203,10 +203,10 @@ namespace ET
               $"{  TimeHelper.DateTimeNow().ToString()}  移除";
 
             Scene scene = unit.DomainScene();
-            int sceneTypeEnum = scene.GetComponent<MapComponent>().SceneTypeEnum;
-            if (sceneTypeEnum == SceneTypeEnum.MainCityScene)
+            int sceneTypeEnum = scene.GetComponent<MapComponent>().MapTypeEnum;
+            if (sceneTypeEnum == MapTypeEnum.MainCityScene)
             {
-                unit.RecordPostion(sceneTypeEnum, ComHelp.MainCityID());
+                unit.RecordPostion(sceneTypeEnum, CommonHelper.MainCityID());
             }
             unit.GetComponent<EnergyComponent>().OnDisconnect();
             TransferHelper.BeforeTransfer(unit, 2);

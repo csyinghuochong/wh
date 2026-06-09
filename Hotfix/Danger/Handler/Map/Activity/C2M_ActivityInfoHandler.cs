@@ -23,7 +23,7 @@ namespace ET
             }
 
             TaskComponent taskComponent = unit.GetComponent<TaskComponent>();   
-            if (ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_WeeklyTask)
+            if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_WeeklyTask)
                 && taskComponent.GetTaskCountryByType(TaskCountryType.ActivityWeekly).Count == 0)
             {
                 taskComponent.InitActivityWeekTask(true);
@@ -46,13 +46,13 @@ namespace ET
 
             ActivityV1Info activityV1Info = activityComponent.ActivityV1Info;
             long servertime = TimeHelper.ServerNow();
-            if (servertime - activityV1Info.OrderLastFefreshTime >= ActivityConfigHelper.ActivityOrderRefreshTime)
+            if (servertime - activityV1Info.OrderLastFefreshTime >= ActivityV1Config.ActivityOrderRefreshTime)
             {
                 activityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
-                activityV1Info.OrderId  = ActivityConfigHelper.GenerateActivityOrderId();
+                activityV1Info.OrderId  = ActivityV1Config.GenerateActivityOrderId();
             }
 
-            ServerInfo dBServerInfo = unit.DomainScene().GetComponent<ServerInfoComponent>().ServerInfo;
+            ServerInfo dBServerInfo = ConfigData.ServerInfoList[unit.DomainZone()];
             activityV1Info.ChouKaDropId = dBServerInfo.ChouKaDropId;
             activityV1Info.V1ActivityList = ConfigData.V1ActivityList;
             activityV1Info.GuessIds.Clear();

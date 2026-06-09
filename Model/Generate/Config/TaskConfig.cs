@@ -93,7 +93,7 @@ namespace ET
 		/// <summary>任务子类</summary>
 		[ProtoMember(7)]
 		public int TaskSonType { get; set; }
-		/// <summary>触发类型</summary>
+		/// <summary>触发类型 1：等级 2：任务 3：直接触发    下一级</summary>
 		[ProtoMember(8)]
 		public int TriggerType { get; set; }
 		/// <summary>触发值</summary>
@@ -105,41 +105,38 @@ namespace ET
 		/// <summary>任务金币</summary>
 		[ProtoMember(11)]
 		public int TaskCoin { get; set; }
-		/// <summary>奖励道具ID</summary>
+		/// <summary>任务奖励</summary>
 		[ProtoMember(12)]
-		public string ItemID { get; set; }
-		/// <summary>奖励道具数量</summary>
-		[ProtoMember(13)]
-		public string ItemNum { get; set; }
+		public string RewardItems { get; set; }
 		/// <summary>接取任务的NPC</summary>
-		[ProtoMember(14)]
+		[ProtoMember(13)]
 		public int GetNpcID { get; set; }
 		/// <summary>交任务的Npc</summary>
-		[ProtoMember(15)]
+		[ProtoMember(14)]
 		public int CompleteNpcID { get; set; }
 		/// <summary>目标类型</summary>
-		[ProtoMember(16)]
+		[ProtoMember(15)]
 		public int TargetType { get; set; }
 		/// <summary>目标ID</summary>
-		[ProtoMember(17)]
+		[ProtoMember(16)]
 		public int[] Target { get; set; }
 		/// <summary>目标值</summary>
-		[ProtoMember(18)]
+		[ProtoMember(17)]
 		public int[] TargetValue { get; set; }
 		/// <summary>目标点</summary>
-		[ProtoMember(19)]
+		[ProtoMember(18)]
 		public int TargetPosition { get; set; }
 		/// <summary>任务描述</summary>
-		[ProtoMember(20)]
+		[ProtoMember(19)]
 		public string TaskDes { get; set; }
 		/// <summary>任务描述</summary>
-		[ProtoMember(21)]
+		[ProtoMember(20)]
 		public string TaskDes_EN { get; set; }
-		/// <summary>任务经验和金币是否跟随等级成长</summary>
-		[ProtoMember(22)]
+		/// <summary>任务经验和金币是否跟随等级成长 0：否 1：是</summary>
+		[ProtoMember(21)]
 		public int Development { get; set; }
 		/// <summary>权重</summary>
-		[ProtoMember(23)]
+		[ProtoMember(22)]
 		public int Weight { get; set; }
 
 	}

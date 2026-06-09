@@ -15,7 +15,7 @@ namespace ET
                 dBDayActivityInfo.TurtleWinTimes = new List<int> { 0,0,0 };
             }
             
-            int index = ConfigHelper.TurtleList.IndexOf( request.TurtleId );
+            int index = CommonConfig.TurtleList.IndexOf( request.TurtleId );
             if (index != -1)
             {
                 dBDayActivityInfo.TurtleWinTimes[index]++;

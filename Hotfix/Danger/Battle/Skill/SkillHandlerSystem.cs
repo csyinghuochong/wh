@@ -12,7 +12,7 @@ namespace ET
             self.SkillInfo = skillcmd;
             self.HurtIds.Clear();
             self.LastHurtTimes.Clear();
-            self.SkillConf = SkillConfigCategory.Instance.Get(skillcmd.WeaponSkillID);
+            self.SkillConf = SkillCategory.Instance.Get(skillcmd.WeaponSkillID);
             self.TheUnitFrom = theUnitFrom;
             SkillSetComponent skillSetComponent = theUnitFrom.GetComponent<SkillSetComponent>();
             self.TianfuProAdd = skillSetComponent != null ? skillSetComponent.GetSkillPropertyAdd(skillcmd.WeaponSkillID) : null;
@@ -36,7 +36,7 @@ namespace ET
             self.OnlyHideBuffActionUnitID.Clear();
 
             //获取通用脚本参数
-            if (ComHelp.IfNull(self.SkillConf.ComObjParameter) == false)
+            if (CommonHelper.IfNull(self.SkillConf.ComObjParameter) == false)
             {
                 string[] skillParList = self.SkillConf.ComObjParameter.Split('@');
                 for (int i = 0; i < skillParList.Length; i++)
@@ -80,10 +80,10 @@ namespace ET
 
             //隐身buff加成
             BuffManagerComponent buffManagerComponent = theUnitFrom.GetComponent<BuffManagerComponent>();
-            SkillBuffConfig skillBuffConfig = buffManagerComponent.GetHideBuffDamgePro();
-            if (skillBuffConfig != null)
+            SkillBuff skillBuff = buffManagerComponent.GetHideBuffDamgePro();
+            if (skillBuff != null)
             {
-                self.OnlyHideBuffActionUnitID.Add(skillBuffConfig.Id);
+                self.OnlyHideBuffActionUnitID.Add(skillBuff.Id);
             }
             //退出隐身状态
             buffManagerComponent.BuffRemoveType(3);
@@ -353,7 +353,7 @@ namespace ET
                 if (uu.Type == UnitType.Monster)
                 {
                     List<int> canskillid = null;
-                    SkillConfigCategory.Instance.SkillSpecifiedMonster.TryGetValue(uu.ConfigId, out canskillid);
+                    SkillCategory.Instance.SkillSpecifiedMonster.TryGetValue(uu.ConfigId, out canskillid);
                     if (canskillid == null)
                     {
                         return true;
@@ -409,10 +409,10 @@ namespace ET
                 List<int> addbuff = new List<int>();    
                 for(int i = 0; i < self.PassiveTypeEnum_22.Count; i++)
                 {
-                    SkillConfig skillConfig = SkillConfigCategory.Instance.Get(self.PassiveTypeEnum_22[i] );
-                    if (skillConfig.BuffID != null)
+                    Skill skill = SkillCategory.Instance.Get(self.PassiveTypeEnum_22[i] );
+                    if (skill.BuffID != null)
                     {
-                        addbuff.AddRange(skillConfig.BuffID);
+                        addbuff.AddRange(skill.BuffID);
                     }
                 }
 
@@ -523,7 +523,7 @@ namespace ET
             }
             
             List<PropertyValue> extrapros = null; 
-            SkillConfigCategory.Instance.ExtraPropertyFromSelf.TryGetValue(self.SkillConf.Id, out extrapros);
+            SkillCategory.Instance.ExtraPropertyFromSelf.TryGetValue(self.SkillConf.Id, out extrapros);
             if (extrapros == null)
             {
                 extrapros = new List<PropertyValue>();
@@ -535,7 +535,7 @@ namespace ET
                     NumericHelp.GetProList(extrapro[1], extrapros);
                 }
 
-                SkillConfigCategory.Instance.ExtraPropertyFromSelf.Add(self.SkillConf.Id, extrapros);
+                SkillCategory.Instance.ExtraPropertyFromSelf.Add(self.SkillConf.Id, extrapros);
             }
 
             //技能额外属性来自被动技能
@@ -657,21 +657,21 @@ namespace ET
             {
                 return;
             }
-            if (!SkillBuffConfigCategory.Instance.Contain(buffID))
+            if (!SkillBuffCategory.Instance.Contain(buffID))
             {
                 Log.Warning($"config==null： buffid{buffID}");
                 return;
             }
-            SkillBuffConfig skillBuffConfig = SkillBuffConfigCategory.Instance.Get(buffID);
+            SkillBuff skillBuff = SkillBuffCategory.Instance.Get(buffID);
 
 
-            bool teshui = uu.Type == UnitType.JingLing && skillBuffConfig.TargetType == 1;
+            bool teshui = uu.Type == UnitType.JingLing && skillBuff.TargetType == 1;
             if (!uu.IsCanBeAttack() && !teshui)
             {
                 return;
             }
 
-            if (skillBuffConfig.BuffBenefitType == 2
+            if (skillBuff.BuffBenefitType == 2
                && uu.GetComponent<StateComponent>().StateTypeGet(StateTypeEnum.WuDi))
             {
                 //有无敌 
@@ -685,7 +685,7 @@ namespace ET
             //    return;
             //}
             bool triggerbuff = false;
-            int[] buffTargetTypes = skillBuffConfig.BuffTargetType;
+            int[] buffTargetTypes = skillBuff.BuffTargetType;
             if (buffTargetTypes != null)
             {
                 for (int i = 0; i < buffTargetTypes.Length; i++)
@@ -708,7 +708,7 @@ namespace ET
             //6: 己方召唤兽，不包含宠物
             //7: 己方召唤兽，包含宠物
             bool canBuff = false;
-            switch (skillBuffConfig.TargetType)
+            switch (skillBuff.TargetType)
             {
                 //对自己释放
                 case 1:
@@ -760,7 +760,7 @@ namespace ET
 
             BuffData buffData = new BuffData();
             buffData.SkillId = self.SkillConf.Id;
-            buffData.BuffId = skillBuffConfig.Id;
+            buffData.BuffId = skillBuff.Id;
             uu.GetComponent<BuffManagerComponent>().BuffFactory(buffData, self.TheUnitFrom, self);
             //Log.Info("结束释放buff" + buffID);
         }

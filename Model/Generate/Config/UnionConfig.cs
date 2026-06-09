@@ -93,10 +93,10 @@ namespace ET
 		/// <summary>捐献消耗钻石</summary>
 		[ProtoMember(6)]
 		public int DonateDiamond { get; set; }
-		/// <summary>捐献增加经验</summary>
+		/// <summary>捐献增加经验 mix|max</summary>
 		[ProtoMember(7)]
 		public int[] DonateExp { get; set; }
-		/// <summary>捐献增加贡献值</summary>
+		/// <summary>捐献增加贡献值 min|max</summary>
 		[ProtoMember(8)]
 		public int[] DonateReward { get; set; }
 		/// <summary>升级全员奖励</summary>

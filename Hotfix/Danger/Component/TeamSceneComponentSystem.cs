@@ -12,11 +12,11 @@ namespace ET
             //动态创建副本
             long fubenid = IdGenerater.Instance.GenerateId();
             long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-            Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "TeamDungeon" + fubenid.ToString(), SceneType.Fuben);
+            Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "TeamDungeon" + fubenid.ToString(), SceneType.Map);
             TeamDungeonComponent teamDungeonComponent = fubnescene.AddComponent<TeamDungeonComponent>();
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
             SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(teamInfo.SceneId);
-            mapComponent.SetMapInfo((int)SceneTypeEnum.TeamDungeon, teamInfo.SceneId, 0);
+            mapComponent.SetMapInfo((int)MapTypeEnum.TeamDungeon, teamInfo.SceneId, 0);
             mapComponent.NavMeshId = sceneConfig.MapID;
             teamDungeonComponent.TeamInfo = teamInfo;
             teamDungeonComponent.EnterTime = TimeHelper.ServerNow();
@@ -31,9 +31,9 @@ namespace ET
 
             if (teamInfo.FubenType == TeamFubenType.ShenYuan)
             {
-                if (ConfigHelper.ShenYuanCreateConfig.ContainsKey(teamInfo.SceneId))
+                if (CommonConfig.ShenYuanCreateConfig.ContainsKey(teamInfo.SceneId))
                 {
-                    int postionid = ConfigHelper.ShenYuanCreateConfig[teamInfo.SceneId];
+                    int postionid = CommonConfig.ShenYuanCreateConfig[teamInfo.SceneId];
                     FubenHelp.CreateMonsterByPos(fubnescene, postionid);
                 }
                 else
@@ -45,7 +45,7 @@ namespace ET
             //69和 72的2个副本 有10%概率 在每个BOSS附近刷新出 80002010 这个宝箱，
             //这个宝箱的掉落是只有自己的可以拾取的，并且宝箱和掉落只有自己可见，
             //在聊天广播中提示要加入XXX玩家通过XXX宝箱拾取XXX,而不是之前的那个通用的广播
-            if (ComHelp.IsInnerNet() || (RandomHelper.RandFloat01() < 0.15f && sceneConfig.EnterLv >= 69))
+            if (CommonHelper.IsInnerNet() || (RandomHelper.RandFloat01() < 0.15f && sceneConfig.EnterLv >= 69))
             {
                 int bossid = sceneConfig.BossId;
                 Vector3 bosspostion = Vector3.zero;

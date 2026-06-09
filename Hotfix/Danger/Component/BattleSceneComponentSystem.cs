@@ -54,10 +54,10 @@ namespace ET
             {
                 try
                 {
-                    LocalDungeon2M_ExitResponse createUnit = (LocalDungeon2M_ExitResponse)await ActorMessageSenderComponent.Instance.Call(
-                          self.BattleInfos[i].ProgressId, new M2LocalDungeon_ExitRequest()
+                    FubenWork2M_ExitResponse createUnit = (FubenWork2M_ExitResponse)await ActorMessageSenderComponent.Instance.Call(
+                          self.BattleInfos[i].ProgressId, new M2FubenWork_ExitRequest()
                           {
-                              SceneType = SceneTypeEnum.Battle,
+                              SceneType = MapTypeEnum.Battle,
                               FubenId = self.BattleInfos[i].FubenId,
                               Camp1Player = self.BattleInfos[i].Camp1Player,
                               Camp2Player = self.BattleInfos[i].Camp2Player,
@@ -108,7 +108,7 @@ namespace ET
                     return keyValuePairInt;
                 }
 
-                if (battleInfo.PlayerNumber < ComHelp.GetPlayerLimit(sceneId))
+                if (battleInfo.PlayerNumber < CommonHelper.GetPlayerLimit(sceneId))
                 {
                     battleInfo.PlayerNumber++;
                     camp = battleInfo.PlayerNumber % 2 + 1;
@@ -132,15 +132,13 @@ namespace ET
         public static async ETTask<KeyValuePairInt> GenerateBattleInstanceId(this BattleSceneComponent self, long unitid, int sceneId)
         {
             //动态创建副本
-            List<StartSceneConfig> zonelocaldungeons = StartSceneConfigCategory.Instance.LocalDungeons[self.DomainZone()];
-            int n = RandomHelper.RandomNumber(0, zonelocaldungeons.Count);
-            StartSceneConfig startSceneConfig = zonelocaldungeons[n];
+            StartSceneConfig startSceneConfig =  StartSceneConfigCategory.Instance.GetRandomFubenWork(self.DomainZone());
 
-            LocalDungeon2M_EnterResponse createUnit = (LocalDungeon2M_EnterResponse)await ActorMessageSenderComponent.Instance.Call(
-                      startSceneConfig.InstanceId, new M2LocalDungeon_EnterRequest()
+            FubenWork2M_EnterResponse createUnit = (FubenWork2M_EnterResponse)await ActorMessageSenderComponent.Instance.Call(
+                      startSceneConfig.InstanceId, new M2FubenWork_EnterRequest()
                       {
                           UserID = unitid,
-                          SceneType = SceneTypeEnum.Battle,
+                          SceneType = MapTypeEnum.Battle,
                           SceneId = sceneId,
                           TransferId = 0,
                           Difficulty = 0

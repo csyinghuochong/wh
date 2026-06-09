@@ -16,12 +16,12 @@ namespace ET
             self.TheUnitBelongto = theUnitBelongto;
             self.BuffState = BuffState.Running;
             self.BeginTime = TimeHelper.ServerNow();
-            self.mSkillConf = SkillConfigCategory.Instance.Get(buffData.SkillId);
-            self.mBuffConfig = SkillBuffConfigCategory.Instance.Get(buffData.BuffId);
-            self.DelayTime = self.mBuffConfig.BuffDelayTime;
-            self.BuffEndTime = CheckBuffTime(theUnitBelongto, self.mBuffConfig) + 1000 * (int)self.GetTianfuProAdd((int)BuffAttributeEnum.AddBuffTime) + TimeHelper.ServerNow();
+            self.mSkillConf = SkillCategory.Instance.Get(buffData.SkillId);
+            self.MBuff = SkillBuffCategory.Instance.Get(buffData.BuffId);
+            self.DelayTime = self.MBuff.BuffDelayTime;
+            self.BuffEndTime = CheckBuffTime(theUnitBelongto, self.MBuff) + 1000 * (int)self.GetTianfuProAdd((int)BuffAttributeEnum.AddBuffTime) + TimeHelper.ServerNow();
             self.BuffEndTime = buffData.BuffEndTime > 0 ? buffData.BuffEndTime : self.BuffEndTime;
-            self.InterValTime = self.mBuffConfig.BuffLoopTime * 1000;
+            self.InterValTime = self.MBuff.BuffLoopTime * 1000;
             self.InterValTimeBegin = TimeHelper.ServerNow();
             self.NowBuffValue = 0f;
         }
@@ -32,11 +32,11 @@ namespace ET
         /// <param name="theUnitBelongto"></param>
         /// <param name="skillBuffConfig"></param>
         /// <returns></returns>
-        public static int CheckBuffTime(Unit theUnitBelongto, SkillBuffConfig skillBuffConfig)
+        public static int CheckBuffTime(Unit theUnitBelongto, SkillBuff skillBuff)
         {
-            int buffTime = skillBuffConfig.BuffTime;
-            if ( (skillBuffConfig.BuffType == 2 && skillBuffConfig.buffParameterType == 7)
-                ||  skillBuffConfig.BuffScript.Equals("RoleBuff_Bounce"))
+            int buffTime = skillBuff.BuffTime;
+            if ( (skillBuff.BuffType == 2 && skillBuff.buffParameterType == 7)
+                ||  skillBuff.BuffScript.Equals("RoleBuff_Bounce"))
             {
                 //韧性缩短眩晕时间
                 NumericComponent numericComponent = theUnitBelongto.GetComponent<NumericComponent>();
@@ -60,7 +60,7 @@ namespace ET
                 return 0f;
 
             float addValue = 0f;
-            Dictionary<int, float> keyValuePairs = skillSetComponent.GetBuffPropertyAdd(self.mBuffConfig.Id);
+            Dictionary<int, float> keyValuePairs = skillSetComponent.GetBuffPropertyAdd(self.MBuff.Id);
             if (keyValuePairs == null)
                 return addValue;
             keyValuePairs.TryGetValue(key, out addValue);

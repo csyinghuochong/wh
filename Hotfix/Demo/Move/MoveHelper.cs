@@ -69,7 +69,7 @@ namespace ET
                     LogHelper.LogWarning("path.Count < 2");
                 }
 
-                if (mapComponent.SceneTypeEnum == SceneTypeEnum.MainCityScene)
+                if (mapComponent.MapTypeEnum == MapTypeEnum.MainCityScene)
                 {
                     MessageHelper.BroadcastMainCity(unit, m2CPathfindingResult);
                 }

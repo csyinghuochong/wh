@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -18,11 +18,12 @@ namespace ET
                 {
                     continue;
                 }
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(useBagInfo.ItemID);
+                Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
 
 
                 //魔能不出售
-                if (itemConfig.ItemType == ItemTypeEnum.Equipment && itemConfig.EquipType == 401)
+                int equiptype = ItemHelper.GetNewEquipType(useBagInfo);
+                if (Item.ItemType == ItemTypeEnum.Equipment && equiptype == 401)
                 {
                     continue;
                 }
@@ -39,25 +40,25 @@ namespace ET
                         continue;
                     }
                     gemIdList.Add(int.Parse(gemids[gem]));
-                    ItemConfig itemConf = ItemConfigCategory.Instance.Get(int.Parse(gemids[gem]));
+                    Item itemConf = ItemCategory.Instance.Get(int.Parse(gemids[gem]));
                     unit.GetComponent<UserInfoComponent>().UpdateRoleData((int)itemConf.SellMoneyType, (itemConf.SellMoneyValue).ToString());
                 }
 
                 //珍宝属性价格提升
-                int sellValue = itemConfig.SellMoneyValue;
+                int sellValue = Item.SellMoneyValue;
                 if (useBagInfo.HideSkillLists.Contains(68000102))
                 {
-                    sellValue = itemConfig.SellMoneyValue * 20;
+                    sellValue = Item.SellMoneyValue * 20;
                 }
 
-                if (itemConfig.SellMoneyType == UserDataType.Gold)
+                if (Item.SellMoneyType == UserDataType.Gold)
                 {
                     sellGold += (useBagInfo.ItemNum * sellValue);
                     unit.GetComponent<BagComponent>().OnCostItemData(useBagInfo, (ItemLocType)request.OperateType, useBagInfo.ItemNum);
                 }
                 else
                 {
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd((int)itemConfig.SellMoneyType, (useBagInfo.ItemNum * sellValue).ToString(), true, 39);
+                    unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd((int)Item.SellMoneyType, (useBagInfo.ItemNum * sellValue).ToString(), true, 39);
                     unit.GetComponent<BagComponent>().OnCostItemData(useBagInfo, (ItemLocType)request.OperateType, useBagInfo.ItemNum);
                 }
                 if (useBagInfo.ItemNum == 0)

@@ -23,7 +23,7 @@
         public void GetTheUnitTarget()
         {
             //寻找最近的可攻击对象
-            this.TheUnitTarget = AIHelp.GetNearestEnemyByPosition(this.TheUnitFrom, this.BulletUnit.Position, 10);
+            this.TheUnitTarget = AIGetTargetHelp.GetNearestEnemyByPosition(this.TheUnitFrom, this.BulletUnit.Position, 10);
         }
 
         public override void OnUpdate()

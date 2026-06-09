@@ -16,9 +16,9 @@ namespace ET
             activitySceneComponent.DBDayActivityInfo.FeedPlayerList[request.UnitID]++;
 
             int baoshiadd = 1;
-            if (ActivityConfigHelper.FeedItemReward.ContainsKey(request.ItemID))
+            if (ActivityV1Config.FeedItemReward.ContainsKey(request.ItemID))
             {
-                KeyValuePairLong keyValuePairLong = ActivityConfigHelper.FeedItemReward[request.ItemID];
+                KeyValuePairLong keyValuePairLong = ActivityV1Config.FeedItemReward[request.ItemID];
                 baoshiadd = RandomHelper.RandomNumber((int)keyValuePairLong.Value, (int)keyValuePairLong.Value2 + 1);
             }
 
@@ -26,7 +26,7 @@ namespace ET
             int newid = activitySceneComponent.DBDayActivityInfo.BaoShiDu;
             int lastindex = activitySceneComponent.DBDayActivityInfo.FeedRewardKey;
 
-            int rewardkey = ActivityConfigHelper.GetFeed1RewardIndex(lastindex, newid);
+            int rewardkey = ActivityV1Config.GetFeed1RewardIndex(lastindex, newid);
             if (rewardkey > 0)
             {
                 ///发送饱食度奖励
@@ -35,7 +35,7 @@ namespace ET
                 long mailServerId = DBHelper.GetMailServerId(scene.DomainZone());
 
                 List<BagInfo> itemList = new List<BagInfo>();
-                string[] rewardItem = ActivityConfigHelper.Feed1RewardList[rewardkey].Split('@');
+                string[] rewardItem = ActivityV1Config.Feed1RewardList[rewardkey].Split('@');
                 for (int i = 0; i < rewardItem.Length; i++)
                 {
                     string[] itemInfo = rewardItem[i].Split(';');

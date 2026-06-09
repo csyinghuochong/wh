@@ -18,7 +18,7 @@ namespace ET
 
             string result = HttpHelper.OnWebRequestPost_Form("http://checkuser.quickapi.net/v2/checkUserInfo", paramslist);
 
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 result = "1";
             }

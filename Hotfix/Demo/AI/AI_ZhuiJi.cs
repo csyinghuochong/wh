@@ -34,9 +34,9 @@ namespace ET
             long checktime;
             switch (aiComponent.SceneTypeEnum)
             {
-                case SceneTypeEnum.PetDungeon:
-                case SceneTypeEnum.PetTianTi:
-                case SceneTypeEnum.PetMing:
+                case MapTypeEnum.PetDungeon:
+                case MapTypeEnum.PetTianTi:
+                case MapTypeEnum.PetMing:
                     checktime = 100;
                     break;
                 default:

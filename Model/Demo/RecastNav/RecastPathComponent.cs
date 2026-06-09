@@ -29,10 +29,10 @@ namespace ET
             Dictionary<int, SceneConfig> sceneConfigs = SceneConfigCategory.Instance.GetAll();
             foreach (var sceneConfig in sceneConfigs)
             {
-                if (sceneConfig.Value.MapType != (int)SceneTypeEnum.MainCityScene
-                    && sceneConfig.Value.MapType != (int)SceneTypeEnum.BaoZang
-                    && sceneConfig.Value.MapType != (int)SceneTypeEnum.MiJing
-                    && sceneConfig.Value.MapType != (int)SceneTypeEnum.JiaYuan)
+                if (sceneConfig.Value.MapType != (int)MapTypeEnum.MainCityScene
+                    && sceneConfig.Value.MapType != (int)MapTypeEnum.BaoZangZhiDi
+                    && sceneConfig.Value.MapType != (int)MapTypeEnum.MiJing
+                    && sceneConfig.Value.MapType != (int)MapTypeEnum.JiaYuan)
                 {
                     continue;
                 }

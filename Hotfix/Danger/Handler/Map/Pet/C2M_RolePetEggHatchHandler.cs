@@ -13,7 +13,7 @@ namespace ET
             RolePetEgg rolePetEgg = petComponent.RolePetEggs[request.Index];
             if (rolePetEgg.EndTime == 0 && rolePetEgg.ItemId!= 0)
             {
-                string[] useparams = ItemConfigCategory.Instance.Get(rolePetEgg.ItemId).ItemUsePar.Split('@');
+                string[] useparams = ItemCategory.Instance.Get(rolePetEgg.ItemId).ItemUsePar.Split('@');
                 long needTime = long.Parse(useparams[0]);
                 rolePetEgg.EndTime = TimeHelper.ServerNow() + needTime * 1000;
             }

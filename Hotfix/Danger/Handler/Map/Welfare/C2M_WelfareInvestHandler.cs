@@ -14,7 +14,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (request.Index < 0 || request.Index >= ConfigHelper.WelfareInvestList.Count)
+            if (request.Index < 0 || request.Index >= CommonConfig.WelfareInvestList.Count)
             {
                 Log.Error($"C2M_WelfareInvestRequest 1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -28,14 +28,14 @@ namespace ET
                 return;
             }
 
-            int ment = ConfigHelper.WelfareInvestList[request.Index].KeyId;
+            int ment = CommonConfig.WelfareInvestList[request.Index].KeyId;
             if (unit.GetComponent<UserInfoComponent>().UserInfo.Gold <= ment)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
                 return;
             }
-            string reward = ConfigHelper.WelfareInvestList[request.Index].Value;
+            string reward = CommonConfig.WelfareInvestList[request.Index].Value;
             unit.GetComponent<BagComponent>().OnAddItemData(reward, $"{ItemGetWay.Welfare}_{TimeHelper.ServerNow()}");
             unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub( UserDataType.Gold,(ment * -1).ToString(), true, ItemGetWay.Welfare );
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.InvestMent, ment, 0);

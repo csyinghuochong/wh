@@ -60,7 +60,7 @@ namespace ET
             self.UpdateExchangeGold(DBHelper.GetOpenServerDay(self.DomainZone()));
             //上午重启不刷新世界等级
             DateTime dateTime = TimeHelper.DateTimeNow();
-            if (self.DBServerInfo.ServerInfo.WorldLv == 0|| dateTime.Hour >= 12 || ComHelp.IsInnerNet())
+            if (self.DBServerInfo.ServerInfo.WorldLv == 0|| dateTime.Hour >= 12 || CommonHelper.IsInnerNet())
             {
                 self.UpdateWorldLv();
             }
@@ -88,7 +88,7 @@ namespace ET
             for (int i = 0; i < listprogress.Count; i++)
             {
                 List<StartSceneConfig> processScenes = StartSceneConfigCategory.Instance.GetByProcess(listprogress[i].Id);
-                if (processScenes.Count == 0 || listprogress[i].Id == ComHelp.RobotProgress)  //机器人进程
+                if (processScenes.Count == 0 || listprogress[i].Id == CommonConfig.RobotProgress)  //机器人进程
                 {
                     continue;
                 }
@@ -210,7 +210,7 @@ namespace ET
                 Log.Info("更新货币兑换值:" + self.DBServerInfo.ServerInfo.ExChangeGold);
             }
 
-            self.DBServerInfo.ServerInfo.ChouKaDropId = ActivityConfigHelper.ChouKaDropId[RandomHelper.RandomNumber(0, ActivityConfigHelper.ChouKaDropId.Count)];
+            self.DBServerInfo.ServerInfo.ChouKaDropId = ActivityV1Config.ChouKaDropId[RandomHelper.RandomNumber(0, ActivityV1Config.ChouKaDropId.Count)];
         }
 
         public static async ETTask InitDBRankInfo(this RankSceneComponent self)
@@ -526,7 +526,7 @@ namespace ET
 
             if (!have)
             {
-                if (rankList.Count < ComHelp.CampRankNumber)
+                if (rankList.Count < CommonConfig.CampRankNumber)
                 {
                     rankList.Add(rankingInfo);
                 }
@@ -579,7 +579,7 @@ namespace ET
                 return;
             }
             List<int> allPet = new List<int>() { 1000101, 1000201 , 1000301 , 1000401 , 1000501 ,1000601, 1000701};
-            for (int i = 0; i < ComHelp.PetRankNumber; i++)
+            for (int i = 0; i < CommonConfig.PetRankNumber; i++)
             {
                 int[] indexs = RandomHelper.GetRandoms(3, 0, allPet.Count);
                 List<int> pets = new List<int>();
@@ -756,7 +756,7 @@ namespace ET
                 for (int i = 0; i < listprogress.Count; i++)
                 {
                     List<StartSceneConfig> processScenes = StartSceneConfigCategory.Instance.GetByProcess(listprogress[i].Id);
-                    if (processScenes.Count == 0 || listprogress[i].Id == ComHelp.RobotProgress)  //机器人进程
+                    if (processScenes.Count == 0 || listprogress[i].Id == CommonConfig.RobotProgress)  //机器人进程
                     {
                         continue;
                     }

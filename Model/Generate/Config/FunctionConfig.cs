@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class FuntionConfigCategory : ProtoObject, IMerge
+    public partial class FunctionConfigCategory : ProtoObject, IMerge
     {
-        public static FuntionConfigCategory Instance;
+        public static FunctionConfigCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, FuntionConfig> dict = new Dictionary<int, FuntionConfig>();
+        private Dictionary<int, FunctionConfig> dict = new Dictionary<int, FunctionConfig>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<FuntionConfig> list = new List<FuntionConfig>();
+        private List<FunctionConfig> list = new List<FunctionConfig>();
 		
-        public FuntionConfigCategory()
+        public FunctionConfigCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            FuntionConfigCategory s = o as FuntionConfigCategory;
+            FunctionConfigCategory s = o as FunctionConfigCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (FuntionConfig config in list)
+            foreach (FunctionConfig config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public FuntionConfig Get(int id)
+        public FunctionConfig Get(int id)
         {
-            this.dict.TryGetValue(id, out FuntionConfig item);
+            this.dict.TryGetValue(id, out FunctionConfig item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (FuntionConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (FunctionConfig)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, FuntionConfig> GetAll()
+        public Dictionary<int, FunctionConfig> GetAll()
         {
             return this.dict;
         }
 
-        public FuntionConfig GetOne()
+        public FunctionConfig GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class FuntionConfig: ProtoObject, IConfig
+	public partial class FunctionConfig: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -81,7 +81,7 @@ namespace ET
 		/// <summary>UI</summary>
 		[ProtoMember(2)]
 		public string Name { get; set; }
-		/// <summary>开启条件类型</summary>
+		/// <summary>开启条件类型 1-等级 2-任务</summary>
 		[ProtoMember(3)]
 		public int[] ConditionType { get; set; }
 		/// <summary>开启条件参数</summary>

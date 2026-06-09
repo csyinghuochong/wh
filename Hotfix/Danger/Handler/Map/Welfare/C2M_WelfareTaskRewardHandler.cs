@@ -23,7 +23,7 @@ namespace ET
                 return;
             }
 
-            string reward = ConfigHelper.WelfareTaskReward[request.day];
+            string reward = CommonConfig.WelfareTaskReward[request.day];
             if (!unit.GetComponent<BagComponent>().OnAddItemData(reward, $"{ItemGetWay.Welfare}_{TimeHelper.ServerNow()}"))
             { 
                 response.Error = ErrorCode.ERR_BagIsFull;

@@ -81,16 +81,16 @@ namespace ET
 		/// <summary>怪物名称</summary>
 		[ProtoMember(2)]
 		public string MonsterName { get; set; }
-		/// <summary>怪物类型</summary>
+		/// <summary>怪物类型 1-普通 2-精英 3-BOSS 4-怪物召唤 5-场景物</summary>
 		[ProtoMember(4)]
 		public int MonsterType { get; set; }
 		/// <summary>怪物子类</summary>
 		[ProtoMember(5)]
 		public int MonsterSonType { get; set; }
-		/// <summary>阵营</summary>
+		/// <summary>阵营 11-猎魔 12-曙光</summary>
 		[ProtoMember(6)]
 		public int MonsterCamp { get; set; }
-		/// <summary>怪物种族</summary>
+		/// <summary>怪物种族 0-通用 1-野兽 2-人物</summary>
 		[ProtoMember(7)]
 		public int MonsterRace { get; set; }
 		/// <summary>怪物头像</summary>
@@ -153,7 +153,7 @@ namespace ET
 		/// <summary>怪物免伤</summary>
 		[ProtoMember(27)]
 		public double DamgeAdd { get; set; }
-		/// <summary>怪物复活时间</summary>
+		/// <summary>怪物复活时间 单位：秒</summary>
 		[ProtoMember(28)]
 		public double ReviveTime { get; set; }
 		/// <summary>巡逻范围</summary>
@@ -171,16 +171,16 @@ namespace ET
 		/// <summary>怪物经验</summary>
 		[ProtoMember(33)]
 		public int Exp { get; set; }
-		/// <summary>是否显示大血条</summary>
+		/// <summary>显示大血条 0-不显示 1-显示</summary>
 		[ProtoMember(34)]
 		public int IfBoss { get; set; }
 		/// <summary>选中条大小</summary>
 		[ProtoMember(35)]
 		public double SelectSize { get; set; }
-		/// <summary>掉落类型</summary>
+		/// <summary>掉落类型 0-通用 1-私有 2-保护 30秒内击杀者可拾取 3-伤害统计掉落</summary>
 		[ProtoMember(36)]
 		public int DropType { get; set; }
-		/// <summary>造成伤害才有掉落</summary>
+		/// <summary>掉落情况 0-看见掉落 1-伤害掉落</summary>
 		[ProtoMember(37)]
 		public int IfDamgeDrop { get; set; }
 		/// <summary>掉落ID</summary>
@@ -201,7 +201,7 @@ namespace ET
 		/// <summary>技能ID</summary>
 		[ProtoMember(43)]
 		public int[] SkillID { get; set; }
-		/// <summary>怪物参数</summary>
+		/// <summary>怪物参数 出现权重|捕捉概率系数</summary>
 		[ProtoMember(44)]
 		public int[] Parameter { get; set; }
 		/// <summary>AI</summary>
@@ -225,10 +225,10 @@ namespace ET
 		/// <summary>攻击初始位置</summary>
 		[ProtoMember(51)]
 		public double ActBasePosiY { get; set; }
-		/// <summary>是否对敌人隐身</summary>
+		/// <summary>对敌人隐身 0-不隐身 1-隐身</summary>
 		[ProtoMember(52)]
 		public int IfHide { get; set; }
-		/// <summary>是否带走buff</summary>
+		/// <summary>是否带走buff 0-带走 1-不带走</summary>
 		[ProtoMember(53)]
 		public int RemoveBuff { get; set; }
 

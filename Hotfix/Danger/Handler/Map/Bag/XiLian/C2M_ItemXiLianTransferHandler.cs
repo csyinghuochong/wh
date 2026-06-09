@@ -22,20 +22,20 @@ namespace ET
             }
 
             //判断品质
-            ItemConfig itemConfig_0 = ItemConfigCategory.Instance.Get(bagInfo_1.ItemID);
-            ItemConfig itemConfig_1 = ItemConfigCategory.Instance.Get(bagInfo_2.ItemID);
+            Item itemConfig_0 = ItemCategory.Instance.Get(bagInfo_1.ItemID);
+            Item itemConfig_1 = ItemCategory.Instance.Get(bagInfo_2.ItemID);
 
-            bool all60green = itemConfig_0.UseLv >= 60 && itemConfig_0.ItemQuality >= 5 && itemConfig_1.UseLv >= 60 && itemConfig_1.ItemQuality >= 5;
+            bool all60green = itemConfig_0.UseLv >= 60 && itemConfig_0.Quality >= 5 && itemConfig_1.UseLv >= 60 && itemConfig_1.Quality >= 5;
 
 
             //绑定装备无法转移(客户端已经给出对应提示)
-            if (bagInfo_1.isBinging == true && bagInfo_2.isBinging == false && itemConfig_1.ItemQuality == 4)
+            if (bagInfo_1.isBinging == true && bagInfo_2.isBinging == false && itemConfig_1.Quality == 4)
             {
                 bagInfo_2.isBinging = true;
             }
 
             //紫色品质以上才可以转移
-            if (itemConfig_0.ItemQuality < 4 || itemConfig_1.ItemQuality < 4)
+            if (itemConfig_0.Quality < 4 || itemConfig_1.Quality < 4)
             {
                 response.Error = ErrorCode.Pre_Condition_Error;
                 reply();
@@ -45,8 +45,11 @@ namespace ET
             //相同部位  只有护甲类型相同的装备才能转移
             if (!all60green)
             {
+                int equipType1 = ItemHelper.GetNewEquipType(bagInfo_1);
+                int equipType2 = ItemHelper.GetNewEquipType(bagInfo_2);
+       
                 //相同部位
-                if (itemConfig_0.EquipType != itemConfig_1.EquipType)
+                if (equipType1 != equipType2)
                 {
                     response.Error = ErrorCode.Pre_Condition_Error;
                     reply();

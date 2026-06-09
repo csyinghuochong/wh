@@ -91,7 +91,7 @@ namespace ET
                 if (message.GMMsg == "#gaoji"
 					|| message.GMMsg == "#zhongji")
 				{
-					if (!ComHelp.IsBanHaoZone(unit.DomainZone()))
+					if (!CommonHelper.IsBanHaoZone(unit.DomainZone()))
 					{
 						return;
 					}
@@ -126,7 +126,7 @@ namespace ET
                     unit.GetComponent<ChengJiuComponent>().OnGmGaoJi();
 
 					//激活试炼之地所有层数
-					 int trialFubenid = TowerHelper.GetLastTowerIdByScene(SceneTypeEnum.TrialDungeon);
+					 int trialFubenid = TowerHelper.GetLastTowerIdByScene(MapTypeEnum.TrialDungeon);
 					 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TrialDungeonId, trialFubenid);
 
                     //激活家园里的美味大师//激活家园里的菜谱

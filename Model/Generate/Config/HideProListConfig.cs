@@ -81,6 +81,9 @@ namespace ET
 		/// <summary>隐藏属性名称</summary>
 		[ProtoMember(2)]
 		public string Name { get; set; }
+		/// <summary>隐藏属性名称</summary>
+		[ProtoMember(3)]
+		public string Name_EN { get; set; }
 		/// <summary>下一ID</summary>
 		[ProtoMember(4)]
 		public int NtxtID { get; set; }
@@ -93,13 +96,13 @@ namespace ET
 		/// <summary>随机概率</summary>
 		[ProtoMember(7)]
 		public double TriggerPro { get; set; }
-		/// <summary>隐藏属性类型</summary>
+		/// <summary>隐藏属性类型 极品属性时为属性类型 隐藏技能时为技能ID</summary>
 		[ProtoMember(8)]
 		public int PropertyType { get; set; }
 		/// <summary>是否根据等级成长</summary>
 		[ProtoMember(9)]
 		public int IfEquipLvUp { get; set; }
-		/// <summary>隐藏属性类型</summary>
+		/// <summary>隐藏属性类型 0-小数 1-整数</summary>
 		[ProtoMember(10)]
 		public int HideProValueType { get; set; }
 		/// <summary>隐藏属性最小值</summary>
@@ -111,7 +114,7 @@ namespace ET
 		/// <summary>附加战力</summary>
 		[ProtoMember(13)]
 		public int AddFightValue { get; set; }
-		/// <summary>转移是否继承</summary>
+		/// <summary>转移是否继承 0-否 1-是</summary>
 		[ProtoMember(14)]
 		public int IfMove { get; set; }
 		/// <summary>激活条件</summary>

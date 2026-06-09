@@ -46,7 +46,7 @@ namespace ET
                         continue;
                     }
 
-                    ItemConfig itemCof = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
+                    Item itemCof = ItemCategory.Instance.Get(bagInfo.ItemID);
                     if ( (warehourseInfo.ItemNum + bagInfo.ItemNum) > itemCof.ItemPileSum)
                     {
                         continue;

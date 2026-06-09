@@ -20,7 +20,7 @@ namespace ET
             }
 
             //神兽不能进化
-            PetConfig petCof = PetConfigCategory.Instance.Get(rolePetInfo.ConfigId);
+            Pet petCof = PetCategory.Instance.Get(rolePetInfo.ConfigId);
             if (petCof.PetType == 2)
             {
                 response.Error = ErrorCode.ERR_Pet_UpStage;
@@ -46,7 +46,7 @@ namespace ET
                 {
                     //移除宠物
                     petComponent.RemovePet(request.PetInfoXianJiId,2);
-                    response.OldPetInfo = ComHelp.DeepCopy<RolePetInfo>(rolePetInfo);
+                    response.OldPetInfo = CommonHelper.DeepCopy<RolePetInfo>(rolePetInfo);
 
                     //获取评分
                     int pingfen = PetHelper.PetPingJia(rolePetInfoXianJi);

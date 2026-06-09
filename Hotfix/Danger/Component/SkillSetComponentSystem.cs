@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +18,7 @@ namespace ET
 			//根据不同的职业初始化技能
 			if (self.SkillList.Count == 0)
 			{
-				int[] SkillList = OccupationConfigCategory.Instance.Get(self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Occ).InitSkillID;
+				int[] SkillList = OccupationCategory.Instance.Get(self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Occ).InitSkillID;
 				for (int i = 0; i < SkillList.Length; i++)
 				{
 					if (i == 0)
@@ -60,7 +60,7 @@ namespace ET
 				return false;
 			}
 
-			OccupationTwoConfig occupationConfig = OccupationTwoConfigCategory.Instance.Get(occtwo);
+			Occupation_Transfer occupationConfig = Occupation_TransferCategory.Instance.Get(occtwo);
 			juexingid = occupationConfig.JueXingSkill[7];
 			return self.GetBySkillID(juexingid) != null;
 		}
@@ -290,20 +290,20 @@ namespace ET
 				{
 					continue;
 				}
-				if (!SkillConfigCategory.Instance.Contain(self.SkillList[i].SkillID))
+				if (!SkillCategory.Instance.Contain(self.SkillList[i].SkillID))
 				{
 					continue;
 				}
 
-				SkillConfig skillConfig = SkillConfigCategory.Instance.Get(self.SkillList[i].SkillID);
+				Skill skill = SkillCategory.Instance.Get(self.SkillList[i].SkillID);
 
-				if (skillConfig.SkillType != (int)SkillTypeEnum.PassiveAddProSkill)
+				if (skill.SkillType != (int)SkillTypeEnum.PassiveAddProSkill)
 				{
 					continue;
 				}
 
-				string GameObjectParameter = skillConfig.GameObjectParameter;
-				if (ComHelp.IfNull(GameObjectParameter))
+				string GameObjectParameter = skill.GameObjectParameter;
+				if (CommonHelper.IfNull(GameObjectParameter))
 				{
 					continue;
 				}
@@ -349,13 +349,13 @@ namespace ET
                 }
 				int magicQulity = self.SkillList[i].MagicQulity;
 
-                SkillConfig skillConfig = SkillConfigCategory.Instance.Get(self.SkillList[i].SkillID);
-                if (skillConfig.SkillType != (int)SkillTypeEnum.AddProToSpecifiedSkill)
+                Skill skill = SkillCategory.Instance.Get(self.SkillList[i].SkillID);
+                if (skill.SkillType != (int)SkillTypeEnum.AddProToSpecifiedSkill)
                 {
                     continue;
                 }
 
-                string[] extrapro = skillConfig.ExtraProperty.Split('&');
+                string[] extrapro = skill.ExtraProperty.Split('&');
                 if (extrapro.Length == 2 && extrapro[0] != "0" && extrapro[0].Contains(skillid.ToString()))
                 {
                     NumericHelp.GetProList(extrapro[1], proList, magicQulity);
@@ -375,15 +375,15 @@ namespace ET
 					continue;
 				}
 
-				SkillConfig skillConfig = SkillConfigCategory.Instance.Get(self.SkillList[i].SkillID);
+				Skill skill = SkillCategory.Instance.Get(self.SkillList[i].SkillID);
 
-				if (skillConfig.SkillType != (int)SkillTypeEnum.PassiveAddProSkillNoFight)
+				if (skill.SkillType != (int)SkillTypeEnum.PassiveAddProSkillNoFight)
 				{
 					continue;
 				}
 
-				string GameObjectParameter = skillConfig.GameObjectParameter;
-				if (ComHelp.IfNull(GameObjectParameter))
+				string GameObjectParameter = skill.GameObjectParameter;
+				if (CommonHelper.IfNull(GameObjectParameter))
 				{
 					continue;
 				}
@@ -549,7 +549,7 @@ namespace ET
 					}
                     string addBuffList = properInfo[2];
 
-                    if (!ComHelp.IfNull(addBuffList))
+                    if (!CommonHelper.IfNull(addBuffList))
                     {
 						string[] bufflist = addBuffList.Split(",");
 						for (int buff = 0; buff < bufflist.Length; buff++ )
@@ -688,8 +688,8 @@ namespace ET
 			userInfoComponent.UserInfo.OccTwo = occTwo;
 
 			//新增技能
-			OccupationTwoConfig occupationTwoConfig = OccupationTwoConfigCategory.Instance.Get(occTwo);
-			int[] addSkills = occupationTwoConfig.SkillID;
+			Occupation_Transfer occupationTransfer = Occupation_TransferCategory.Instance.Get(occTwo);
+			int[] addSkills = occupationTransfer.SkillID;
 			for (int i = 0; i < addSkills.Length; i++)
 			{
 				SkillPro skillPro = new SkillPro();
@@ -729,7 +729,7 @@ namespace ET
 				return ids;
 			}
 
-            OccupationTwoConfig occupationConfig = OccupationTwoConfigCategory.Instance.Get(occtweo);
+            Occupation_Transfer occupationConfig = Occupation_TransferCategory.Instance.Get(occtweo);
             int[] juexingids = occupationConfig.JueXingSkill;
 
 			for (int i = 0; i < juexingids.Length; i++)
@@ -794,19 +794,19 @@ namespace ET
 
         public static void CheckSkillTianFu(this SkillSetComponent self, int skillId, bool active)
         {
-            SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillId);
+            Skill skill = SkillCategory.Instance.Get(skillId);
 
-            if (skillConfig.SkillType == 1 || !SkillHelp.havePassiveSkillType(skillConfig.PassiveSkillType, 11))
+            if (skill.SkillType == 1 || !SkillHelp.havePassiveSkillType(skill.PassiveSkillType, 11))
             {
                 return;
             }
-            int tianfuid = int.Parse(skillConfig.ComObjParameter);
+            int tianfuid = int.Parse(skill.ComObjParameter);
             self.AddiontTianFu(tianfuid, active);
         }
 
 		public static bool IsCanMultiple(this SkillSetComponent self, int skillId)
 		{
-			return SkillConfigCategory.Instance.Get(skillId).SkillType == 8;
+			return SkillCategory.Instance.Get(skillId).SkillType == 8;
 		}
 
         public static void OnRmItemSkill(this SkillSetComponent self, List<int> itemSkills, long baginfoid)
@@ -908,7 +908,7 @@ namespace ET
 		            case SkillSetEnum.None:
 		            case SkillSetEnum.Skill:
 		            {
-			            if (!SkillConfigCategory.Instance.Contain(self.SkillList[k].SkillID))
+			            if (!SkillCategory.Instance.Contain(self.SkillList[k].SkillID))
 			            {
 				            self.SkillList.RemoveAt(k);
 			            }
@@ -917,7 +917,7 @@ namespace ET
 		            }
 		            case SkillSetEnum.Item:
 		            {
-			            if (!ItemConfigCategory.Instance.Contain(self.SkillList[k].SkillID))
+			            if (!ItemCategory.Instance.Contain(self.SkillList[k].SkillID))
 			            {
 				            self.SkillList.RemoveAt(k);
 			            }
@@ -932,15 +932,15 @@ namespace ET
                 for (int k = self.SkillList.Count - 1; k >= 0; k--)
                 {
                     int skillId = self.SkillList[k].SkillID;
-                    if (ConfigHelper.HunterFarSkill.Contains(skillId)
-                        || ConfigHelper.HunterNearSkill.Contains(skillId))
+                    if (CommonConfig.HunterFarSkill.Contains(skillId)
+                        || CommonConfig.HunterNearSkill.Contains(skillId))
                     {
                         self.SkillList.RemoveAt(k);
                     }
                 }
 
                 int equipIndex = 0;
-                List<int> addskills = equipIndex == 0 ? ConfigHelper.HunterFarSkill : ConfigHelper.HunterNearSkill;
+                List<int> addskills = equipIndex == 0 ? CommonConfig.HunterFarSkill : CommonConfig.HunterNearSkill;
                 for (int i = 0; i < addskills.Count; i++)
                 {
                     SkillPro skillPro = new SkillPro();
@@ -1081,9 +1081,9 @@ namespace ET
 
             if (userInfoComponent.UserInfo.Occ == 3)
 			{
-                self.OnRmItemSkill(ConfigHelper.HunterFarSkill, 0);
-                self.OnRmItemSkill(ConfigHelper.HunterNearSkill, 0);
-                self.OnAddItemSkill(equipIndex == 0 ? ConfigHelper.HunterFarSkill : ConfigHelper.HunterNearSkill);
+                self.OnRmItemSkill(CommonConfig.HunterFarSkill, 0);
+                self.OnRmItemSkill(CommonConfig.HunterNearSkill, 0);
+                self.OnAddItemSkill(equipIndex == 0 ? CommonConfig.HunterFarSkill : CommonConfig.HunterNearSkill);
             }
         }
 
@@ -1101,18 +1101,15 @@ namespace ET
                 return;
             }
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-            List<int> itemSkills = ItemHelper.GetItemSkill(itemConfig.SkillID);
+            Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+            /*List<int> itemSkills = ItemHelper.GetItemSkill(Item.SkillID);
 
             itemSkills.AddRange(bagInfo.HideSkillLists);
             itemSkills.AddRange(bagInfo.InheritSkills);
             self.OnRmItemSkill(itemSkills, baginfoid);
 
-			if (itemConfig.ItemEquipID > 0)
-			{
-                EquipConfig equipConfig = EquipConfigCategory.Instance.Get(itemConfig.ItemEquipID);
-                self.TianFuRemove(equipConfig.TianFuId);
-            }
+            EquipConfig equipConfig = EquipConfigCategory.Instance.Get(bagInfo.ItemID);
+            self.TianFuRemove(equipConfig.TianFuId);*/
         }
 
         /// <summary>
@@ -1129,11 +1126,12 @@ namespace ET
 				return;
 			}
 
-			Dictionary<int, int> magicSkills = null;
-			ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-            List<int> itemSkills = ItemHelper.GetItemSkill(itemConfig.SkillID);
+			//Dictionary<int, int> magicSkills = null;
+			//Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+            /*List<int> itemSkills = ItemHelper.GetItemSkill(Item.SkillID);
 
-            if (itemConfig.ItemType == 3 && itemConfig.EquipType == 401 && !string.IsNullOrEmpty(bagInfo.ItemPar))
+            int equipType = ItemHelper.GetNewEquipType(bagInfo);
+            if (Item.ItemType == 3 && equipType == 401 && !string.IsNullOrEmpty(bagInfo.ItemPar))
             {
                 magicSkills = new Dictionary<int, int>();
 				int magicQulity = int.Parse(bagInfo.ItemPar);
@@ -1147,11 +1145,8 @@ namespace ET
 			itemSkills.AddRange(bagInfo.InheritSkills);
 			self.OnAddItemSkill(itemSkills, magicSkills, bagInfo.BagInfoID);
 
-			if (itemConfig.ItemEquipID > 0)
-			{
-                EquipConfig equipConfig = EquipConfigCategory.Instance.Get(itemConfig.ItemEquipID);
-                self.TianFuAdd(equipConfig.TianFuId);
-            }
+			EquipConfig equipConfig = EquipConfigCategory.Instance.Get(Item.Id);
+			self.TianFuAdd(equipConfig.TianFuId);*/
 		}
 
 		public static int SetSkillIdByPosition(this SkillSetComponent self, C2M_SkillSet request)
@@ -1278,7 +1273,7 @@ namespace ET
 			self.OnRmItemSkill( openjuexing, 0 );
 
 			List<int> newjuexing = new List<int>();
-            OccupationTwoConfig occupationConfig = OccupationTwoConfigCategory.Instance.Get(occNew);
+            Occupation_Transfer occupationConfig = Occupation_TransferCategory.Instance.Get(occNew);
             int[] juexingids = occupationConfig.JueXingSkill;
 			for (int i = 0; i < openjuexing.Count; i++ )
 			{
@@ -1299,7 +1294,7 @@ namespace ET
 			UserInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<UserInfoComponent>();
 			if (userInfoComponent.UserInfo.OccTwo != 0)
 			{
-				int[] twoskill = OccupationTwoConfigCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).SkillID;
+				int[] twoskill = Occupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).SkillID;
 				skilllist.AddRange(twoskill);
 			}
 
@@ -1326,11 +1321,11 @@ namespace ET
 							self.SkillList.Remove(skillPro);
 							break;
 						}
-						SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillId);
-						int nextId = skillConfig.NextSkillID;
+						Skill skill = SkillCategory.Instance.Get(skillId);
+						int nextId = skill.NextSkillID;
 						if (nextId != 0)
 						{
-							sp += skillConfig.CostSPValue;
+							sp += skill.CostSPValue;
 						}
 						skillId = nextId;
 					}
@@ -1494,13 +1489,13 @@ namespace ET
 		{
 			List<int> skilllist = new List<int>();
 			UserInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<UserInfoComponent>();
-			int[] initskill = OccupationConfigCategory.Instance.Get(userInfoComponent.UserInfo.Occ).InitSkillID;
-			int[] baseSkill = OccupationConfigCategory.Instance.Get(userInfoComponent.UserInfo.Occ).BaseSkill;
+			int[] initskill = OccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).InitSkillID;
+			int[] baseSkill = OccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).BaseSkill;
 			skilllist.AddRange(initskill);
 			skilllist.AddRange(baseSkill);
 			if (userInfoComponent.UserInfo.OccTwo != 0)
 			{
-				int[] twoskill = OccupationTwoConfigCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).ShowTalentSkill;
+				int[] twoskill = Occupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).ShowTalentSkill;
 				skilllist.AddRange(twoskill);
 			}
 
@@ -1527,7 +1522,7 @@ namespace ET
                             skillPro.SkillPosition = 0;
                             break;
                         }
-                        skillId = SkillConfigCategory.Instance.Get(skillId).NextSkillID;
+                        skillId = SkillCategory.Instance.Get(skillId).NextSkillID;
                     }
                     catch (Exception ex)
 					{

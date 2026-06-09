@@ -54,7 +54,7 @@ namespace ET
 							return;
 						}
 
-                        List<DBCenterAccountInfo> centerAccountList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id == request.AccountId);
+                        List<DBCenterAccountInfo> centerAccountList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id == request.AccountId);
                         if (centerAccountList == null || centerAccountList.Count == 0)
                         {
                             response.Error = ErrorCode.ERR_NotFindAccount;
@@ -62,9 +62,9 @@ namespace ET
                             return;
                         }
 
-						if (!ComHelp.IsBanHaoZone(session.DomainZone())
+						if (!CommonHelper.IsBanHaoZone(session.DomainZone())
                             && !GMHelp.GmAccount.Contains(centerAccountList[0].Account)
-                            && ComHelp.GetTodayCreateRoleNumber(centerAccountList[0].RoleList) >= 8)
+                            && CommonHelper.GetTodayCreateRoleNumber(centerAccountList[0].RoleList) >= 8)
 						{
                             response.Error = ErrorCode.ERR_CreateRole_Limit;
                             reply();
@@ -74,12 +74,12 @@ namespace ET
 						long accountCrateTime = centerAccountList[0].CreateTime;
 						long serverNowTime = TimeHelper.ServerNow();
 						long serverOpenTime = ServerHelper.GetOpenServerTime(false, request.ServerId);
-						if (!ComHelp.IsBanHaoZone(session.DomainZone()) 
+						if (!CommonHelper.IsBanHaoZone(session.DomainZone()) 
 							&& !ServerHelper.IsGoogleServer(session.DomainZone())
                             && !GMHelp.GmAccount.Contains(centerAccountList[0].Account)
 							&& !GMHelp.TestNewOccAccount.Contains(centerAccountList[0].Account))
 						{
-                            if (!centerAccountList[0].Password.Equals(ComHelp.RobotPassWord) && accountCrateTime > 0 && (accountCrateTime - serverOpenTime >= TimeHelper.OneDay * 14))
+                            if (!centerAccountList[0].Password.Equals(CommonConfig.RobotPassWord) && accountCrateTime > 0 && (accountCrateTime - serverOpenTime >= TimeHelper.OneDay * 14))
                             {
                                 response.Error = ErrorCode.ERR_CreateRole_Limit_2;
                                 reply();
@@ -87,7 +87,7 @@ namespace ET
                             }
                         }
                      
-						if (!OccupationConfigCategory.Instance.Contain(request.CreateOcc))
+						if (!OccupationCategory.Instance.Contain(request.CreateOcc))
 						{
                             Log.Error($"C2A_CreateRoleHandler.3");
                             response.Error = ErrorCode.ERR_ModifyData;
@@ -141,7 +141,7 @@ namespace ET
 						//await DBHelper.AddDataComponent<DBMailInfo>(request.ServerId, userId, DBHelper.DBMailInfo);
 
 						int robotId = 0;
-						if(centerAccountList[0].Password == ComHelp.RobotPassWord)
+						if(centerAccountList[0].Password == CommonConfig.RobotPassWord)
 						{
 							robotId = int.Parse(centerAccountList[0].Account.Split('_')[0]);
 						}
@@ -155,12 +155,12 @@ namespace ET
 						createRoleInfo.ServerId = request.ServerId;
 						createRoleInfo.RobotId = robotId;
 						centerAccountList[0].RoleList.Add(createRoleInfo);
-                        Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(ComHelp.CenterZoneId, centerAccountList[0]).Coroutine();
+                        Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(CommonConfig.CenterZoneId, centerAccountList[0]).Coroutine();
                         
                         //返回角色信息
                         //CreateRoleInfo roleList = Function_Role.GetInstance().GetRoleListInfo(userInfo,  userId);
 						response.createRoleInfo = createRoleInfo;
-						response.TodayCreateRole = ComHelp.GetTodayCreateRoleNumber(centerAccountList[0].RoleList);
+						response.TodayCreateRole = CommonHelper.GetTodayCreateRoleNumber(centerAccountList[0].RoleList);
                         reply();
 					}
 				}

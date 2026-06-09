@@ -75,7 +75,7 @@ namespace ET
             //存储订单信息,方便面收到返回数据进行比对
             self.orderDic.Add(dingDanID, $"{request.Zone}_{request.UnitId}_{request.UnitName}_{request.RechargeType}");
 
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 self.TestRecharge(dingDanID).Coroutine();
             }
@@ -112,7 +112,7 @@ namespace ET
 
         public static void WeChatPayResultListener(this ReChargeWXComponent self)
         {
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 self.Order_Url = @"http://127.0.0.1:20003/";
             }

@@ -17,13 +17,27 @@ namespace ET
 
                 if (!string.IsNullOrEmpty(functionConfig.AutoPath))
                 {
-                    string[] autoPathList = functionConfig.AutoPath.Split(';');
+                    string[] autoPathList = functionConfig.AutoPath.Split('|');
                     for (int i = 0; i < autoPathList.Length; i++)
                     {
-                        string[] AutoPathItem = autoPathList[i].Split(',');
+                        string[] AutoPathItem = autoPathList[i].Split('&');
+                        if (AutoPathItem.Length < 2)
+                        {
+                            Log.Error($"AutoPathItem.Length < 2: {autoPathList[i]}");
+                            continue;
+                        }
 
-                        int targetdungeon = int.Parse(AutoPathItem[0]);
-                        int transfomid = int.Parse(AutoPathItem[1]);
+                        if (!int.TryParse(AutoPathItem[0], out int targetdungeon))
+                        {
+                            Log.Error($"int.TryParse error: {AutoPathItem[0]}");
+                            continue;
+                        }
+
+                        if (!int.TryParse(AutoPathItem[1], out int transfomid))
+                        {
+                            Log.Error($"int.TryParse error: {AutoPathItem[1]}");
+                            continue;
+                        }
 
                         if (!AutoPathList.ContainsKey(dungeonid))
                         {
@@ -48,14 +62,14 @@ namespace ET
         public int GetTransformId(int dungoenid, int targetdungoen)
         {
             List<KeyValuePairInt> keyValuePairInts = null;
-            AutoPathList.TryGetValue(dungoenid, out keyValuePairInts);
+            AutoPathList.TryGetValue( dungoenid, out keyValuePairInts );
             if (keyValuePairInts == null)
             {
                 return 0;
             }
             for (int i = 0; i < keyValuePairInts.Count; i++)
             {
-                if (keyValuePairInts[i].KeyId == targetdungoen)
+                if (  keyValuePairInts[i].KeyId == targetdungoen )
                 {
                     return (int)keyValuePairInts[i].Value;
                 }

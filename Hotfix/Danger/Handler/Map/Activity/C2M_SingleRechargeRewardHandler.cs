@@ -19,7 +19,7 @@ namespace ET
 
             if (ServerHelper.IsGoogleServer(unit.DomainZone()))
             {
-                if (!ConfigHelper.SingleRechargeReward_EN.ContainsKey(request.RewardId))
+                if (!CommonConfig.SingleRechargeReward_EN.ContainsKey(request.RewardId))
                 {
                     Log.Error($"C2M_SingleRechargeRewardRequest 1");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -29,7 +29,7 @@ namespace ET
             }
             else
             {
-                if (!ConfigHelper.SingleRechargeReward.ContainsKey(request.RewardId))
+                if (!CommonConfig.SingleRechargeReward.ContainsKey(request.RewardId))
                 {
                     Log.Error($"C2M_SingleRechargeRewardRequest 1");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -55,11 +55,11 @@ namespace ET
             string[] rewarditemlist = null;
             if (ServerHelper.IsGoogleServer(unit.DomainZone()))
             {
-                rewarditemlist = ConfigHelper.SingleRechargeReward_EN[request.RewardId].Split('@');
+                rewarditemlist = CommonConfig.SingleRechargeReward_EN[request.RewardId].Split('@');
             }
             else
             {
-                rewarditemlist = ConfigHelper.SingleRechargeReward[request.RewardId].Split('@');
+                rewarditemlist = CommonConfig.SingleRechargeReward[request.RewardId].Split('@');
             }
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
             if (bagComponent.GetBagLeftCell() < rewarditemlist.Length)
@@ -73,11 +73,11 @@ namespace ET
             bool ret = false;
             if (ServerHelper.IsGoogleServer(unit.DomainZone()))
             {
-                ret = unit.GetComponent<BagComponent>().OnAddItemData(ConfigHelper.SingleRechargeReward_EN[request.RewardId], $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
+                ret = unit.GetComponent<BagComponent>().OnAddItemData(CommonConfig.SingleRechargeReward_EN[request.RewardId], $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
             }
             else
             {
-                ret = unit.GetComponent<BagComponent>().OnAddItemData(ConfigHelper.SingleRechargeReward[request.RewardId], $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
+                ret = unit.GetComponent<BagComponent>().OnAddItemData(CommonConfig.SingleRechargeReward[request.RewardId], $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
             }
 
             if (ret)

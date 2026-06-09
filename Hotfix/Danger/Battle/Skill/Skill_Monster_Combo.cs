@@ -17,7 +17,7 @@ namespace ET
             //1;0@2;0                   时间;参数(保留字段)@ 时间;参数
             //1;90010503@2;90010503     时间;技能@ 时间;技能
             this.ComboTimeList.Clear();
-            string[] skillparams = SkillConfigCategory.Instance.Get(this.SkillInfo.WeaponSkillID).GameObjectParameter.Split('@');
+            string[] skillparams = SkillCategory.Instance.Get(this.SkillInfo.WeaponSkillID).GameObjectParameter.Split('@');
             for (int i = 0; i < skillparams.Length; i++)
             {
                 string[] comboinfo = skillparams[i].Split(';');

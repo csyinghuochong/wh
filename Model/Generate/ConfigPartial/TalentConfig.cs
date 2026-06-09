@@ -32,8 +32,17 @@ namespace ET
                     switch (properInfo[0])
                     {
                         case TianFuProEnum.SkillIdAdd:
+                            if (properInfo.Length < 2)
+                            {
+                                Log.Error($"properInfo.Length < 2: {addPropreListStr[k]} talentId:{talentConfig.Id}");
+                                break;
+                            }
 
-                            int skillId = int.Parse(properInfo[1]);
+                            if (!int.TryParse(properInfo[1], out int skillId))
+                            {
+                                Log.Error($"int.TryParse error: {properInfo[1]} talentId:{talentConfig.Id}");
+                                break;
+                            }
 
                             if (!SkillToTalentList.ContainsKey(skillId))
                             {

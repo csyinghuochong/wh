@@ -10,11 +10,11 @@ namespace ET
         {
             if (oldHorse > 0)
             {
-                ZuoQiShowConfig zuoqiCof = ZuoQiShowConfigCategory.Instance.Get(oldHorse);
+                Mount zuoqiCof = MountCategory.Instance.Get(oldHorse);
                 self.GetComponent<BuffManagerComponent>().BuffRemoveByUnit(0, zuoqiCof.MoveBuffID);
             }
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
-            if (SceneConfigHelper.UseSceneConfig(mapComponent.SceneTypeEnum))
+            if (SceneConfigHelper.UseSceneConfig(mapComponent.MapTypeEnum))
             {
                 int sceneid = mapComponent.SceneId;
                 SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(sceneid);
@@ -27,7 +27,7 @@ namespace ET
             int horseRide = self.GetComponent<NumericComponent>().GetAsInt(NumericType.HorseRide);
             if (horseRide > 1)
             {
-                ZuoQiShowConfig zuoqiCof = ZuoQiShowConfigCategory.Instance.Get(horseRide);
+                Mount zuoqiCof = MountCategory.Instance.Get(horseRide);
                 BuffData buffData_2 = new BuffData();
                 buffData_2.SkillId = 67000278;
                 buffData_2.BuffId = zuoqiCof.MoveBuffID;
@@ -41,11 +41,11 @@ namespace ET
 
             for (int i = self.UserInfo.HorseIds.Count - 1; i >= 0; i--)
             {
-                ZuoQiShowConfig titleConfig = ZuoQiShowConfigCategory.Instance.Get(self.UserInfo.HorseIds[i]);
+                Mount titleConfig = MountCategory.Instance.Get(self.UserInfo.HorseIds[i]);
                 string[] attributeInfoList = titleConfig.AddProperty.Split('@');
                 for (int a = 0; a < attributeInfoList.Length; a++)
                 {
-                    if (ComHelp.IfNull(attributeInfoList[a]))
+                    if (CommonHelper.IfNull(attributeInfoList[a]))
                     {
                         continue;
                     }

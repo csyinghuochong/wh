@@ -87,7 +87,7 @@ namespace ET
 		/// <summary>套装名称2</summary>
 		[ProtoMember(4)]
 		public string EquipSuitDes_EN { get; set; }
-		/// <summary>是否显示套装件数</summary>
+		/// <summary>是否显示套装件数 0-显示 1-不显示 配合多行数据显示调用</summary>
 		[ProtoMember(5)]
 		public int ifShowSuitNum { get; set; }
 		/// <summary>血量</summary>

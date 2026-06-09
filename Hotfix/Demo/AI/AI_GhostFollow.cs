@@ -29,7 +29,7 @@ namespace ET
                 return true;
             }
 
-            Unit nearest = AIHelp.GetNearestEnemyInRange(master, master.Position, aiComponent.ActRange, unit.Position);
+            Unit nearest = AIGetTargetHelp.GetNearestEnemyInRange(master, master.Position, aiComponent.ActRange, unit.Position);
             if (nearest != null)
             {
                 aiComponent.TargetID = nearest.Id;

@@ -87,7 +87,7 @@ namespace ET
                 {
                     using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.LoginAccount, request.AccountName.Trim().GetHashCode()))
                     {
-                        List<DBCenterAccountInfo> centerAccountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Account.Equals(request.AccountName));
+                        List<DBCenterAccountInfo> centerAccountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Account.Equals(request.AccountName));
                         DBCenterAccountInfo dbcenterAccountInfo = null;
                         if (centerAccountInfoList != null && centerAccountInfoList.Count > 0)
                         {
@@ -226,7 +226,7 @@ namespace ET
                             UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
                             NumericComponent numericComponent =await DBHelper.GetComponent<NumericComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
                             BagComponent bagComponent =await DBHelper.GetComponent<BagComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
-                            CreateRoleInfo roleList = ComHelp.DeepCopy(createRoleInfo);
+                            CreateRoleInfo roleList = CommonHelper.DeepCopy(createRoleInfo);
 
                             roleList.PlayerLv = userInfoComponent.UserInfo.Lv;
                             roleList.WeaponId = numericComponent.GetAsInt(NumericType.Now_Weapon);
@@ -236,7 +236,7 @@ namespace ET
                             response.RoleLists.Add(roleList);
                         }
                       
-                        response.RelinkRecord = ConfigHelper.RelinkRecordUsers.Contains(request.AccountName) ? 1 : 0;
+                        response.RelinkRecord = CommonConfig.RelinkRecordUsers.Contains(request.AccountName) ? 1 : 0;
                         response.TodayCreateRole = dbcenterAccountInfo.TodayCreateRole();
                         response.TaprepRequest = dbcenterAccountInfo.TaprepRequest;
                         response.PlayerInfo = centerPlayerInfo;

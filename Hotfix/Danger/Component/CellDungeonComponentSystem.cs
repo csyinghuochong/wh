@@ -12,16 +12,16 @@ namespace ET
             self.FubenInfo = new FubenInfo();
             self.SonFubenInfo = new SonFubenInfo();
 
-            self.ChapterConfig = ChapterConfigCategory.Instance.Get(chapterid);
+            /*self.ChapterConfig = ChapterConfigCategory.Instance.Get(chapterid);
             self.ChapterId = chapterid;
 
             ////随机生成地图格子
             ChapterConfig chapterConfig = self.ChapterConfig;
             int rowTotal = chapterConfig.InitSize[0];
-            int lineTotal = chapterConfig.InitSize[1];
+            int lineTotal = chapterConfig.InitSize[1];*/
 
             //第一列随机起点
-            self.FubenInfo.StartCell = self.GetCellIndex(RandomHelper.RandomNumber(0, rowTotal), 0);
+            /*self.FubenInfo.StartCell = self.GetCellIndex(RandomHelper.RandomNumber(0, rowTotal), 0);
             //最后列列随机终点
             self.FubenInfo.EndCell = self.GetCellIndex(RandomHelper.RandomNumber(0, rowTotal), lineTotal - 1);
 
@@ -61,7 +61,7 @@ namespace ET
                     if (cellIndex == self.FubenInfo.EndCell)
                     {
                         fubenCellInfo.ctype = (byte)CellDungeonStatu.End;
-                        fubenCellInfo.sonid = chapterConfig.EndArea;
+                        //fubenCellInfo.sonid = chapterConfig.EndArea;
                         continue;
                     }
                     if (fubenCellInfo.ctype == (byte)CellDungeonStatu.Passable)
@@ -204,12 +204,12 @@ namespace ET
                         self.FubenInfo.FubenCellNpcs.Add(new KeyValuePair() { KeyId = CellDungeonNpc.ChestList, Value = cellIndex.ToString() });
                     }
                 }
-            }
+            }*/
         }
     
         public static CellDungeonInfo GetNextSonCell(this CellDungeonComponent self, int cellIndex, int directionType)
         {
-            int row = cellIndex % self.ChapterConfig.InitSize[0];
+            /*int row = cellIndex % self.ChapterConfig.InitSize[0];
             int line = cellIndex / self.ChapterConfig.InitSize[0];
 
             switch (directionType)
@@ -231,7 +231,7 @@ namespace ET
             if (row >= 0 && row < self.ChapterConfig.InitSize[0] && line >= 0 && line < self.ChapterConfig.InitSize[1])
             {
                 return self.FubenCellInfoList[row][line];
-            }
+            }*/
             return null;
         }
 
@@ -242,15 +242,17 @@ namespace ET
 
         public static int GetCellIndex(this CellDungeonComponent self, int row, int line)
         {
-            int rowTotal = self.ChapterConfig.InitSize[0];
-            return line * rowTotal + row;
+            /*int rowTotal = self.ChapterConfig.InitSize[0];
+            return line * rowTotal + row;*/
+            return 0;
         }
 
         public static CellDungeonInfo GetByCellIndex(this CellDungeonComponent self, int cellIndex)
         {
-            int row = cellIndex % self.ChapterConfig.InitSize[0];
+            /*int row = cellIndex % self.ChapterConfig.InitSize[0];
             int line = cellIndex / self.ChapterConfig.InitSize[0];
-            return self.GetFubenCell(row, line);
+            return self.GetFubenCell(row, line);*/
+            return null;
         }
 
         public static void RemoveAllNoSelf(Unit unit)
@@ -267,10 +269,10 @@ namespace ET
 
         public static CellDungeonInfo GetFubenCell(this CellDungeonComponent self, int row, int line)
         {
-            if (row >= 0 && row < self.ChapterConfig.InitSize[0] && line >= 0 && line < self.ChapterConfig.InitSize[1])
+            /*if (row >= 0 && row < self.ChapterConfig.InitSize[0] && line >= 0 && line < self.ChapterConfig.InitSize[1])
             {
                 return self.FubenCellInfoList[row][line];
-            }
+            }*/
             return null;
         }
 
@@ -320,114 +322,16 @@ namespace ET
         public static void GenerateFubenScene(this CellDungeonComponent self,  bool pass)
         {
             CellDungeonInfo fubenCellInfo = self.CurrentFubenCell;
-            ChapterSonConfig chapterSonConfig = ChapterSonConfigCategory.Instance.Get(fubenCellInfo.sonid);
-
-            //回血道具
-            bool huifu = self.HaveFubenCellNpc(CellDungeonNpc.HuiFuItem, self.GetCurentIndex());
-            if (huifu && !pass)
-            {
-                string createScenceMonster = chapterSonConfig.CreateScenceMonster;
-                string[] sceneMonsters = createScenceMonster.Split('@');
-                for (int i = 0; i < sceneMonsters.Length; i++)
-                {
-                    string[] seneItems = sceneMonsters[i].Split(';');
-                    if (seneItems.Length < 2)
-                    {
-                        continue;
-                    }
-
-                    string[] position = seneItems[0].Split(",");
-                    Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
-                    UnitFactory.CreateMonster(self.DomainScene(), int.Parse(seneItems[1]), vector3,  new CreateMonsterInfo()
-                    { 
-                        Camp = CampEnum.CampMonster1
-                    });
-                }
-            }
-
-            //生成宝箱
-            bool chest = self.HaveFubenCellNpc(CellDungeonNpc.ChestList, self.GetCurentIndex());
-            if (chest && !pass)
-            {
-                string[] createScenceMonsterPro = chapterSonConfig.CreateScenceMonsterPro.Split("@");
-                for (int i = 0; i < createScenceMonsterPro.Length; i++)
-                {
-                    string[] monsterInfo = createScenceMonsterPro[i].Split(";");
-                    if (monsterInfo.Length < 3)
-                    {
-                        continue;
-                    }
-                    string[] position = monsterInfo[1].Split(",");
-                    Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
-                    UnitFactory.CreateMonster(self.DomainScene(), int.Parse(monsterInfo[2]), vector3,  new CreateMonsterInfo()
-                    { 
-                        Camp = CampEnum.CampMonster1
-                    });
-                }
-            }
-
-            //开始刷怪
-            if (!pass)
-            {
-                FubenHelp.CreateMonsterList(self.DomainScene(), chapterSonConfig.CreateMonster);
-            }
-
-            //生成npc
-            int[] npcList = chapterSonConfig.NpcList;
-            for (int i = 0; i < npcList.Length; i++)
-            {
-                if (npcList[i] == 0)
-                {
-                    continue;
-                }
-                if (npcList[i] == 1000016)
-                {
-                    self.InitMysteryItemInfos();
-                }
-                //UnitFactory.CreateNpc(self.DomainScene(), npcList[i]);
-            }
-
-            //生成传送点
-            List<int> passableFlags = self.GetPassableFlag();
-            string[] chuansongs = chapterSonConfig.TransmitPosi.Split(';');
-
-            for (int i = 0; i < chuansongs.Length; i++)
-            {
-                if (chuansongs[i] == "0")
-                {
-                    continue;
-                }
-                if (passableFlags[i] != 1)
-                {
-                    //不能传送
-                }
-                else
-                {
-                    //读取传送坐标点配置
-                    string[] position = chuansongs[i].Split(',');
-                    Vector3 vector3 = new Vector3(float.Parse(position[0]) * 0.01f, float.Parse(position[1]) * 0.01f, float.Parse(position[2]) * 0.01f);
-                    //创建传送点Unit
-                    Unit chuansong = self.DomainScene().GetComponent<UnitComponent>().AddChildWithId<Unit,int>(IdGenerater.Instance.GenerateId(), 1);
-                    chuansong.Type = UnitType.Chuansong;
-                    self.DomainScene().GetComponent<UnitComponent>().Add(chuansong);
-                    ChuansongComponent chuansongComponent = chuansong.AddComponent<ChuansongComponent>();
-                    chuansongComponent.CellIndex = self.GetCellIndex(fubenCellInfo.row, fubenCellInfo.line);        //走过的格子
-                    chuansongComponent.DirectionType = i + 1;
-                    UnitInfoComponent unitInfoComponent = chuansong.AddComponent<UnitInfoComponent>();
-                    chuansong.Position = vector3;
-                    chuansong.AddComponent<AOIEntity, int, Vector3>(9 * 1000, chuansong.Position);
-                }
-            }
         }
 
         public static void OnKillEvent(this CellDungeonComponent self)
         {
             if(self.IsAllMonsterDead() && self.CurrentFubenCell.ctype == (int)CellDungeonStatu.End)
             {
-                int starNumber = 0;
+                //int starNumber = 0;
                 long needTime = TimeHelper.ServerNow() - self.EnterTime;
                 long maxHp = self.MainUnit.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_MaxHp);
-                ChapterConfig chapterConfig = ChapterConfigCategory.Instance.Get(self.ChapterId);
+                /*ChapterConfig chapterConfig = ChapterConfigCategory.Instance.Get(self.ChapterId);
 
                 M2C_FubenSettlement m2C_FubenSettlement = new M2C_FubenSettlement();
 
@@ -477,7 +381,7 @@ namespace ET
                 self.MainUnit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, chapterConfig.RewardGold.ToString(), true, ItemGetWay.FubenGetReward);
 
                 self.MainUnit.GetComponent<TaskComponent>().OnPassFuben(self.FubenDifficulty, self.ChapterId, starNumber);
-                self.MainUnit.GetComponent<ChengJiuComponent>().OnPassFuben(self.FubenDifficulty, self.ChapterId, starNumber);
+                self.MainUnit.GetComponent<ChengJiuComponent>().OnPassFuben(self.FubenDifficulty, self.ChapterId, starNumber);*/
             }
         }
 

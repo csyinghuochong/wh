@@ -24,7 +24,7 @@ namespace ET
                 reply();
                 return;
             }
-            int sceneid = BattleHelper.GetSceneIdByType( SceneTypeEnum.PetMing );
+            int sceneid = BattleHelper.GetSceneIdByType( MapTypeEnum.PetMing );
             numericComponent.ApplyChange( null, NumericType.PetMineReset, 1, 0 );
             userInfoComponent.UpdateRoleData( UserDataType.Diamond,  "-350");
             userInfoComponent.AddFubenTimes(sceneid, 5);

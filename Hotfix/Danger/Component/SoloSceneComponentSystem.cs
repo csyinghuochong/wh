@@ -94,13 +94,13 @@ namespace ET
                 self.PlayerCombatList.TryGetValue(soloPlayerList[i].UnitId, out combat);
 
          
-                OccupationConfig occupationConfig = OccupationConfigCategory.Instance.Get(soloPlayerList[i].Occ);
-                string occName = occupationConfig.OccupationName;
+                Occupation occupationConfig = OccupationCategory.Instance.Get(soloPlayerList[i].Occ);
+                string occName =  WordHelper.GetShowText(occupationConfig.Name);
                 UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(self.DomainZone(), soloPlayerList[i].UnitId);
 
                 if (userInfoComponent.UserInfo.OccTwo > 0)
                 {
-                    occName = OccupationTwoConfigCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).OccupationName;
+                    occName = WordHelper.GetShowText(Occupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).Name);
                 }
 
                 string soloInfo =   $"玩家: {soloPlayerList[i].Name}  击杀:{soloPlayerList[i].WinNum} 等级:{userInfoComponent.UserInfo.Lv} 职业:{occName}  战力:{combat}";
@@ -262,7 +262,7 @@ namespace ET
 
 
             self.MatchList.Add(teamPlayerInfo);
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 self.MatchList.Add(teamPlayerInfo);
             }
@@ -409,11 +409,11 @@ namespace ET
             long fubenid = IdGenerater.Instance.GenerateId();
             long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
             //创建新的副本场景,并给副本场景附加对应组件
-            Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "Solo" + unitID_1.ToString(), SceneType.Fuben);
+            Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "Solo" + unitID_1.ToString(), SceneType.Map);
             fubnescene.AddComponent<SoloDungeonComponent>();
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-            mapComponent.SetMapInfo((int)SceneTypeEnum.Solo, sceneId, 0);
+            mapComponent.SetMapInfo((int)MapTypeEnum.Solo, sceneId, 0);
             mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(sceneId).MapID;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             return fubenid;

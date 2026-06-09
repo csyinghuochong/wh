@@ -16,7 +16,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.DomainScene().GetComponent<MapComponent>().SceneTypeEnum != SceneTypeEnum.MainCityScene)
+            if (unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum != MapTypeEnum.MainCityScene)
             {
                 response.Error = ErrorCode.ERR_OtherNotExist;
                 reply();

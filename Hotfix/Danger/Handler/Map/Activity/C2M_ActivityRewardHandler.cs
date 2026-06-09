@@ -22,7 +22,7 @@ namespace ET
 
             switch (request.ActivityType)
             {
-                case ActivityConfigHelper.ActivityV1_ChouKa:
+                case ActivityV1Config.ActivityV1_ChouKa:
                     if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1ChouKaNumber) < request.RewardId)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
@@ -30,7 +30,7 @@ namespace ET
                         return;
                     }
 
-                    if (!ActivityConfigHelper.ChouKaNumberReward.ContainsKey(request.RewardId))
+                    if (!ActivityV1Config.ChouKaNumberReward.ContainsKey(request.RewardId))
                     {
                         Log.Error($"C2M_ActivityReceiveRequest.4");
                         response.Error = ErrorCode.ERR_ModifyData;
@@ -43,12 +43,12 @@ namespace ET
                         reply();
                         return;
                     }
-                    rewarditem = ActivityConfigHelper.ChouKaNumberReward[request.RewardId];
+                    rewarditem = ActivityV1Config.ChouKaNumberReward[request.RewardId];
                     unit.GetComponent<BagComponent>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
                     activityComponent.ActivityV1Info.ChouKaNumberReward.Add(request.RewardId);
                     break;
-                case ActivityConfigHelper.ActivityV1_Consume:
-                    if (!ActivityConfigHelper.ConsumeDiamondReward.ContainsKey(request.RewardId))
+                case ActivityV1Config.ActivityV1_Consume:
+                    if (!ActivityV1Config.ConsumeDiamondReward.ContainsKey(request.RewardId))
                     {
                         Log.Error($"C2M_ActivityReceiveRequest.5");
                         response.Error = ErrorCode.ERR_ModifyData;
@@ -67,13 +67,13 @@ namespace ET
                         reply();
                         return;
                     }
-                    rewarditem = ActivityConfigHelper.ConsumeDiamondReward[request.RewardId];
+                    rewarditem = ActivityV1Config.ConsumeDiamondReward[request.RewardId];
                     unit.GetComponent<BagComponent>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponent.ActivityV1Info.ConsumeDiamondReward.Add(request.RewardId);
                     break;
-                case ActivityConfigHelper.ActivityV1_Points:
+                case ActivityV1Config.ActivityV1_Points:
 
-                    if (!ActivityConfigHelper.PointsRewardList.ContainsKey(request.RewardId))
+                    if (!ActivityV1Config.PointsRewardList.ContainsKey(request.RewardId))
                     {
                         Log.Error($"C2M_ActivityReceiveRequest.6");
                         response.Error = ErrorCode.ERR_ModifyData;
@@ -92,7 +92,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    rewarditem = ActivityConfigHelper.PointsRewardList[request.RewardId];
+                    rewarditem = ActivityV1Config.PointsRewardList[request.RewardId];
                     int needcell = ItemHelper.GetNeedCell(rewarditem);
                     if (bagComponent.GetBagLeftCell() < needcell)
                     {
@@ -107,8 +107,8 @@ namespace ET
                     activityComponent.ActivityV1Info.PointsReward.Add(request.RewardId);
                     break;
 
-                case ActivityConfigHelper.ActivityV1_PointsShunXu:
-                    if (!ActivityConfigHelper.PointsShunXuRewardList.ContainsKey(request.RewardId))
+                case ActivityV1Config.ActivityV1_PointsShunXu:
+                    if (!ActivityV1Config.PointsShunXuRewardList.ContainsKey(request.RewardId))
                     {
                         Log.Error($"C2M_ActivityReceiveRequest.7");
                         response.Error = ErrorCode.ERR_ModifyData;
@@ -116,7 +116,7 @@ namespace ET
                         return;
                     }
 
-                    int getnextRewardId = ActivityConfigHelper.GetNextShunXuReward(activityComponent.ActivityV1Info.PointsShuxuReward);
+                    int getnextRewardId = ActivityV1Config.GetNextShunXuReward(activityComponent.ActivityV1Info.PointsShuxuReward);
                     if (getnextRewardId!= request.RewardId)
                     {
                         response.Error = ErrorCode.ERR_AlreadyReceived;
@@ -129,7 +129,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    rewarditem = ActivityConfigHelper.PointsShunXuRewardList[request.RewardId];
+                    rewarditem = ActivityV1Config.PointsShunXuRewardList[request.RewardId];
                     needcell = ItemHelper.GetNeedCell(rewarditem);
                     if (bagComponent.GetBagLeftCell() < needcell)
                     {
@@ -143,7 +143,7 @@ namespace ET
                     unit.GetComponent<BagComponent>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponent.ActivityV1Info.PointsShuxuReward = request.RewardId;
                     break;
-                case ActivityConfigHelper.ActivityV1_PointsChouKa:
+                case ActivityV1Config.ActivityV1_PointsChouKa:
 
                     if (unit.GetComponent<UserInfoComponent>().UserInfo.V1TotalPoints < 200f)
                     {
@@ -153,12 +153,12 @@ namespace ET
                     }
 
                     int choukaindex = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1PointsChouKaIndex);
-                    if (choukaindex <= 0 || choukaindex > ActivityConfigHelper.PointsChouKaList.Count)
+                    if (choukaindex <= 0 || choukaindex > ActivityV1Config.PointsChouKaList.Count)
                     {
                         List<int> weights = new List<int>();
-                        for (int i = 0; i < ActivityConfigHelper.PointsChouKaList.Count; i++)
+                        for (int i = 0; i < ActivityV1Config.PointsChouKaList.Count; i++)
                         {
-                            weights.Add(ActivityConfigHelper.PointsChouKaList[i].Weight);
+                            weights.Add(ActivityV1Config.PointsChouKaList[i].Weight);
                         }
                         int index = RandomHelper.RandomByWeight(weights);
                         choukaindex = index + 1;
@@ -166,7 +166,7 @@ namespace ET
                     }
                     response.Message = choukaindex.ToString();
                     break;
-                case ActivityConfigHelper.ActivityV1_HongBao:
+                case ActivityV1Config.ActivityV1_HongBao:
                     int hongbaoNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1HongBaoNumber);
                     long v1rechargeNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1RechageNumber);
                     int totalHongBa0 = (int)(v1rechargeNumber / 98);
@@ -177,7 +177,7 @@ namespace ET
                         return;
                     }
                     List<RewardItem> rewardItems = new List<RewardItem>();  
-                    DropHelper.DropIDToDropItem_2(ActivityConfigHelper.HongBaoDropId, rewardItems);
+                    DropHelper.DropIDToDropItem_2(ActivityV1Config.HongBaoDropId, rewardItems);
                     if (bagComponent.GetBagLeftCell() < rewardItems.Count)
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;
@@ -187,14 +187,14 @@ namespace ET
                     unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.ItemBox_9}_{TimeHelper.ServerNow()}");
                     unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.V1HongBaoNumber, 1, 0);
                     break;
-                case ActivityConfigHelper.ActivityV1_DuiHuanWord:
+                case ActivityV1Config.ActivityV1_DuiHuanWord:
                     if (bagComponent.GetBagLeftCell() < 1)
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;
                         reply();
                         return;
                     }
-                    if (request.RewardId > 0 && !ActivityConfigHelper.DuiHuanWordReward.ContainsKey(request.RewardId))
+                    if (request.RewardId > 0 && !ActivityV1Config.DuiHuanWordReward.ContainsKey(request.RewardId))
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();
@@ -205,17 +205,17 @@ namespace ET
                     string rewardItem = string.Empty;
                     if (request.RewardId == 0)
                     {
-                        List<int> allword = ActivityConfigHelper.DuiHuanWordReward.Keys.ToList();
+                        List<int> allword = ActivityV1Config.DuiHuanWordReward.Keys.ToList();
                         for (int i = 0; i < allword.Count; i++)
                         {
                             costItemList.Add( new RewardItem() { ItemID = allword[i], ItemNum = 1 } );
                         }
-                        rewardItem = ActivityConfigHelper.GroupsWordReward;
+                        rewardItem = ActivityV1Config.GroupsWordReward;
                     }
                     else
                     {
                         costItemList.Add( new RewardItem() { ItemID = request.RewardId, ItemNum = 1 } );
-                        rewardItem = ActivityConfigHelper.DuiHuanWordReward[request.RewardId];
+                        rewardItem = ActivityV1Config.DuiHuanWordReward[request.RewardId];
                     }
                     if (!bagComponent.OnCostItemData(costItemList, ItemLocType.ItemLocBag, ItemGetWay.Activity))
                     {
@@ -225,33 +225,33 @@ namespace ET
                     }
                     bagComponent.OnAddItemData(rewardItem, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                     break;
-                case ActivityConfigHelper.ActivityV1_ChouKa2:
+                case ActivityV1Config.ActivityV1_ChouKa2:
                     if (bagComponent.GetBagLeftCell() < 1)
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;
                         reply();
                         return;
                     }
-                    if (!bagComponent.CheckCostItem(ActivityConfigHelper.Chou2CostItem))
+                    if (!bagComponent.CheckCostItem(ActivityV1Config.Chou2CostItem))
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();
                         return;
                     }
-                    int rewardIndex = ActivityConfigHelper.GetChouKa2RewardIndex(activityComponent.ActivityV1Info.ChouKa2ItemList, activityComponent.ActivityV1Info.ChouKa2RewardIds);
+                    int rewardIndex = ActivityV1Config.GetChouKa2RewardIndex(activityComponent.ActivityV1Info.ChouKa2ItemList, activityComponent.ActivityV1Info.ChouKa2RewardIds);
                     activityComponent.ActivityV1Info.ChouKa2RewardIds.Add(rewardIndex);
                     string[] rewardList = activityComponent.ActivityV1Info.ChouKa2ItemList.Split('@');
                     rewardItem = rewardList[rewardIndex];
-                    bagComponent.OnCostItemData(ActivityConfigHelper.Chou2CostItem, ItemLocType.ItemLocBag, ItemGetWay.Activity);
+                    bagComponent.OnCostItemData(ActivityV1Config.Chou2CostItem, ItemLocType.ItemLocBag, ItemGetWay.Activity);
                     bagComponent.OnAddItemData(rewardItem, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                     //全部抽完则自动刷新
                     if (activityComponent.ActivityV1Info.ChouKa2RewardIds.Count >= rewardList.Length )
                     {
                         activityComponent.ActivityV1Info.ChouKa2RewardIds.Clear();
-                        activityComponent.ActivityV1Info.ChouKa2ItemList = ActivityConfigHelper.GetChouKa2RewardList();
+                        activityComponent.ActivityV1Info.ChouKa2ItemList = ActivityV1Config.GetChouKa2RewardList();
                     }
                     break;
-                case ActivityConfigHelper.ActivityV1_GoldWeeklyCard:
+                case ActivityV1Config.ActivityV1_GoldWeeklyCard:
                     long servertimer = TimeHelper.ServerNow();
                     long weeklycardtime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.GoldWeeklyCard);
                     if (weeklycardtime <= 0 || servertimer < weeklycardtime)
@@ -261,7 +261,7 @@ namespace ET
                         return;
                     }
 
-                    List<string> rewardlists = ActivityConfigHelper.ActivityV1WeeklyCardReward[1];
+                    List<string> rewardlists = ActivityV1Config.ActivityV1WeeklyCardReward[1];
                     if (request.RewardId >= rewardlists.Count)
                     {
                         response.Error = ErrorCode.ERR_ModifyData;
@@ -275,7 +275,7 @@ namespace ET
                         return;
                     }
                    
-                    int diffday = ComHelp.GetDaysDiffByDate(servertimer, weeklycardtime );
+                    int diffday = CommonHelper.GetDaysDiffByDate(servertimer, weeklycardtime );
 
                     //已经过了周卡时间
                     //if (diffday >= rewardlists.Count)
@@ -305,7 +305,7 @@ namespace ET
                     bagComponent.OnAddItemData(rewardinfo, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                     activityComponent.ActivityV1Info.GoldWeeklyCardRewards.Add(request.RewardId);
                     break;
-                case ActivityConfigHelper.ActivityV1_DiamondWeeklyCard:
+                case ActivityV1Config.ActivityV1_DiamondWeeklyCard:
                     servertimer = TimeHelper.ServerNow();
                     weeklycardtime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.DiamondWeeklyCard);
                     if (weeklycardtime <= 0 || servertimer < weeklycardtime)
@@ -315,7 +315,7 @@ namespace ET
                         return;
                     }
 
-                    rewardlists = ActivityConfigHelper.ActivityV1WeeklyCardReward[2];
+                    rewardlists = ActivityV1Config.ActivityV1WeeklyCardReward[2];
                     if (request.RewardId >= rewardlists.Count)
                     {
                         response.Error = ErrorCode.ERR_ModifyData;
@@ -329,7 +329,7 @@ namespace ET
                         return;
                     }
                    
-                    diffday = ComHelp.GetDaysDiffByDate(servertimer, weeklycardtime);
+                    diffday = CommonHelper.GetDaysDiffByDate(servertimer, weeklycardtime);
 
                     //已经过了周卡时间
                     //if (diffday >= rewardlists.Count)
@@ -357,7 +357,7 @@ namespace ET
                     bagComponent.OnAddItemData(rewardlists[request.RewardId], $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                     activityComponent.ActivityV1Info.DiamondWeeklyCardRewards.Add(request.RewardId);
                     break;
-                case ActivityConfigHelper.ActivityV1_LiBao:
+                case ActivityV1Config.ActivityV1_LiBao:
                     if (bagComponent.GetBagLeftCell() < 6)
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;
@@ -377,7 +377,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    LiBaoListItem keyValuePair = ActivityConfigHelper.LiBaoList[request.RewardId];
+                    LiBaoListItem keyValuePair = ActivityV1Config.LiBaoList[request.RewardId];
                     if (!bagComponent.OnCostItemData(keyValuePair.Value, ItemLocType.ItemLocBag, ItemGetWay.Activity    ))
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;

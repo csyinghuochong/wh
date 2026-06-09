@@ -51,7 +51,7 @@ namespace ET
                 string[] monsterids = summonParList[6].Split(",");
                 for (int i = 0; i < monsterids.Length; i++)
                 {
-                    if (!ComHelp.IfNull(monsterids[i]))
+                    if (!CommonHelper.IfNull(monsterids[i]))
                     {
                         destoryOldMonsterList.Add(int.Parse(monsterids[i]));
                     }

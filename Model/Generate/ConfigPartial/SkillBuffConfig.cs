@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ET
 {
-    public partial class SkillBuffConfigCategory
+    public partial class SkillBuffCategory
     {
         // 该buff可以解除的buff Id
         public Dictionary<int, List<int>> RelieveBuffList = new Dictionary<int, List<int>>();
@@ -23,7 +23,7 @@ namespace ET
         
         public override void AfterEndInit()
         {
-            foreach (SkillBuffConfig skillBuffConfig in this.GetAll().Values)
+            foreach (SkillBuff skillBuffConfig in this.GetAll().Values)
             {
                 try
                 {
@@ -33,7 +33,12 @@ namespace ET
                         string[] ids = skillBuffConfig.buffParameterValue2.Split(',');
                         foreach (string id in ids)
                         {
-                            buffIds.Add(int.Parse(id));
+                            if (!int.TryParse(id, out int buffId))
+                            {
+                                Log.Error($"int.TryParse error: {id} skillBuffId:{skillBuffConfig.Id}");
+                                continue;
+                            }
+                            buffIds.Add(buffId);
                         }
                         this.RelieveBuffList.Add(skillBuffConfig.Id, buffIds);
                     }

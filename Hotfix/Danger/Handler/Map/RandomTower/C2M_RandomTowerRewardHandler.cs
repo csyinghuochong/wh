@@ -26,7 +26,7 @@ namespace ET
 
             int sceneType = request.SceneType;  
 
-            if (sceneType == SceneTypeEnum.TrialDungeon)
+            if (sceneType == MapTypeEnum.TrialDungeon)
             {
                 int passId = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TrialDungeonId);
                 if (passId < request.RewardId )
@@ -38,7 +38,7 @@ namespace ET
                 }
             }
 
-            if (sceneType != SceneTypeEnum.TrialDungeon)
+            if (sceneType != MapTypeEnum.TrialDungeon)
             {
                 Log.Error($"C2M_RandomTowerRewardRequest 3");
                 response.Error = ErrorCode.ERR_ModifyData;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -22,10 +22,10 @@ namespace ET
             unit.GetComponent<BagComponent>().FuMoProList = request.FuMoProList;
             unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.FoMoNumber_213, 0, 1);
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(useBagInfo.ItemID);
+            Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
 
-            unit.GetComponent<TaskComponent>().TriggerTaskEvent( TaskTargetType.FuMoQulity_41, itemConfig.ItemQuality, 1 );
-            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.FuMoQulity_41, itemConfig.ItemQuality, 1);
+            unit.GetComponent<TaskComponent>().TriggerTaskEvent( TaskTargetType.FuMoQulity_41, Item.Quality, 1 );
+            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.FuMoQulity_41, Item.Quality, 1);
             
             reply();
             await ETTask.CompletedTask;

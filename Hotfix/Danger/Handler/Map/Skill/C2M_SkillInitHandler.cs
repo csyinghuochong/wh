@@ -45,7 +45,7 @@ namespace ET
 
             if (!haveqianghuaskill)
             {
-                int[] baseSkilllist = OccupationConfigCategory.Instance.Get(occ).BaseSkill;
+                int[] baseSkilllist = OccupationCategory.Instance.Get(occ).BaseSkill;
                 for (int i = 0; i < baseSkilllist.Length; i++)
                 {
                     if (skillSetComponent.GetBySkillID(baseSkilllist[i]) != null)
@@ -61,7 +61,7 @@ namespace ET
             {
                 ///移除重复的转职技能
 
-                OccupationTwoConfig occupationTwo = OccupationTwoConfigCategory.Instance.Get(occTwo);
+                Occupation_Transfer occupationTwo = Occupation_TransferCategory.Instance.Get(occTwo);
 
                 List<int> occTwoSkillList = new List<int>(occupationTwo.SkillID) { };
                 List<int> selfoccTwoSkill = new List<int>() { };
@@ -69,7 +69,7 @@ namespace ET
                 int removeSkillIndex = 0;
                 for (int i = 0; i < skillSetComponent.SkillList.Count; i++)
                 {
-                    int initskillid = SkillConfigCategory.Instance.GetInitSkill(skillSetComponent.SkillList[i].SkillID);
+                    int initskillid = SkillCategory.Instance.GetInitSkill(skillSetComponent.SkillList[i].SkillID);
 
                     //if (skillSetComponent.SkillList[i].SkillID >= 64015201 && skillSetComponent.SkillList[i].SkillID <= 64015206)
                     //{

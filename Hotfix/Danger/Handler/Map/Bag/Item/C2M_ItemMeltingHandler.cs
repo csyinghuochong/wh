@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemMeltingRequest request, M2C_ItemMeltingResponse response, Action reply)
         {
             //通过回收列表计算所得
-            int getItemId = ComHelp.MeltingItemId;
+            int getItemId = CommonConfig.MeltingItemId;
             int getNumber = 1;
 
 
@@ -55,8 +55,8 @@ namespace ET
 
                 //to do
                 minNum = 0;
-                ItemConfig itemCof = ItemConfigCategory.Instance.Get(bagInfo.ItemID);
-                if (itemCof.ItemQuality >= 4) {
+                Item itemCof = ItemCategory.Instance.Get(bagInfo.ItemID);
+                if (itemCof.Quality >= 4) {
 
                     if (itemCof.UseLv >= 1 && itemCof.UseLv < 20)
                     {

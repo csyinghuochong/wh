@@ -40,7 +40,7 @@ namespace ET
             if (!string.IsNullOrEmpty(anid))
             {
                 DBCenterTaprepRequest dBCenterTaprepRequest = null;
-                List<DBCenterTaprepRequest> centerAccountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterTaprepRequest>(ComHelp.CenterZoneId, d => d.anid == anid);
+                List<DBCenterTaprepRequest> centerAccountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterTaprepRequest>(CommonConfig.CenterZoneId, d => d.anid == anid);
                 if (centerAccountInfoList == null || centerAccountInfoList.Count == 0)
                 {
                      dBCenterTaprepRequest = entity.AddChild<DBCenterTaprepRequest>();
@@ -55,7 +55,7 @@ namespace ET
                 dBCenterTaprepRequest.tap_project_id = tap_project_id;
                 dBCenterTaprepRequest.tap_track_id = tap_track_id;
                 dBCenterTaprepRequest.DownloadType = 0;
-                await Game.Scene.GetComponent<DBComponent>().Save(ComHelp.CenterZoneId, dBCenterTaprepRequest);
+                await Game.Scene.GetComponent<DBComponent>().Save(CommonConfig.CenterZoneId, dBCenterTaprepRequest);
                 dBCenterTaprepRequest.Dispose();
                 dBCenterTaprepRequest = null;
             }
@@ -105,7 +105,7 @@ namespace ET
             if (!string.IsNullOrEmpty(anid))
             {
                 DBCenterTaprepRequest dBCenterTaprepRequest = null;
-                List<DBCenterTaprepRequest> centerAccountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterTaprepRequest>(ComHelp.CenterZoneId, d => d.anid == anid);
+                List<DBCenterTaprepRequest> centerAccountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterTaprepRequest>(CommonConfig.CenterZoneId, d => d.anid == anid);
                 if (centerAccountInfoList == null || centerAccountInfoList.Count == 0)
                 {
                     dBCenterTaprepRequest = entity.AddChild<DBCenterTaprepRequest>();
@@ -123,7 +123,7 @@ namespace ET
                 dBCenterTaprepRequest.tap_project_id = tap_project_id;
                 dBCenterTaprepRequest.tap_track_id = tap_track_id;
                 dBCenterTaprepRequest.DownloadType = DownLoadTypeEnum.ADS;
-                await Game.Scene.GetComponent<DBComponent>().Save(ComHelp.CenterZoneId, dBCenterTaprepRequest);
+                await Game.Scene.GetComponent<DBComponent>().Save(CommonConfig.CenterZoneId, dBCenterTaprepRequest);
                 dBCenterTaprepRequest.Dispose();
                 dBCenterTaprepRequest = null;
             }

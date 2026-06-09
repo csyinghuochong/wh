@@ -50,10 +50,10 @@ namespace ET
             self.MapIdList.Add(DBHelper.GetPaiMaiServerId(self.DomainZone()));
             self.MapIdList.Add(DBHelper.GetRankServerId(self.DomainZone()));
             self.MapIdList.Add(DBHelper.GetFubenCenterId(self.DomainZone()));
-            self.MapIdList.Add(DBHelper.GetArenaServerId(self.DomainZone()));
-            self.MapIdList.Add(DBHelper.GetBattleServerId(self.DomainZone()));
-            self.MapIdList.Add(DBHelper.GetUnionServerId(self.DomainZone()));
-            self.MapIdList.Add(DBHelper.GetSoloServerId(self.DomainZone()));
+            //self.MapIdList.Add(DBHelper.GetArenaServerId(self.DomainZone()));
+            //self.MapIdList.Add(DBHelper.GetBattleServerId(self.DomainZone()));
+            //self.MapIdList.Add(DBHelper.GetUnionServerId(self.DomainZone()));
+            //self.MapIdList.Add(DBHelper.GetSoloServerId(self.DomainZone()));
             self.MapIdList.Add(DBHelper.GetDbCacheId(self.DomainZone()));
             self.InitDayActivity().Coroutine();
             self.InitFunctionButton();
@@ -98,7 +98,7 @@ namespace ET
             List<MineBattleConfig> mineBattleConfig = MineBattleConfigCategory.Instance.GetAll().Values.ToList();
             for (int i = 0; i < mineBattleConfig.Count; i++)
             {
-                int totalNumber = ConfigHelper.PetMiningList[mineBattleConfig[i].Id].Count;
+                int totalNumber = CommonConfig.PetMiningList[mineBattleConfig[i].Id].Count;
 
                 int hexinNumber = 1;
 
@@ -154,7 +154,7 @@ namespace ET
                 {
                     long playerLimit = playerLimitList[petMingPlayers[i].UnitId];
 
-                    float coffi = ComHelp.GetMineCoefficient(openDay, petMingPlayers[i].MineType, petMingPlayers[i].Postion, self.DBDayActivityInfo.PetMingHexinList);
+                    float coffi = CommonHelper.GetMineCoefficient(openDay, petMingPlayers[i].MineType, petMingPlayers[i].Postion, self.DBDayActivityInfo.PetMingHexinList);
 
                     MineBattleConfig mineBattleConfig = MineBattleConfigCategory.Instance.Get(petMingPlayers[i].MineType);
                     int chanchu = (int)(mineBattleConfig.GoldOutPut * coffi * (self.CheckIndex * 1f/ TimeHelper.Hour));
@@ -236,7 +236,7 @@ namespace ET
                 switch (functionId)
                 {
                     case 1025://战场
-                        sceneserverid = DBHelper.GetBattleServerId(self.DomainZone());
+                        sceneserverid = DBHelper.GetFubenCenterId(self.DomainZone());
                         break;
                     case 1043: //家族Boss
                         sceneserverid = DBHelper.GetUnionServerId(self.DomainZone());
@@ -310,7 +310,7 @@ namespace ET
 
                 if (functonIds[i] == 2000)
                 {
-                    if (ComHelp.IsInnerNet())
+                    if (CommonHelper.IsInnerNet())
                     {
                         continue;
                     }
@@ -373,11 +373,11 @@ namespace ET
 
         private static async ETTask CreateRobot(this ActivitySceneComponent self, int openServerDay)
         {
-            if (ComHelp.IsInnerNet())
+            if (CommonHelper.IsInnerNet())
             {
                 return;
             }
-            if (!ComHelp.IsInnerNet())
+            if (!CommonHelper.IsInnerNet())
             {
                 return;
             }
@@ -460,15 +460,15 @@ namespace ET
                 self.InitFunctionButton();
             }
             
-            if (!ComHelp.IsInnerNet() && self.DomainZone() != 3 && hour == 6)
+            if (!CommonHelper.IsInnerNet() && self.DomainZone() != 3 && hour == 6)
             {
                 Log.Warning($"刷新机器人: {self.DomainZone()}");
                 self.CreateRobot(openServerDay).Coroutine();
             }
 
-            if (ActivityConfigHelper.GuessRewardList.ContainsKey(hour))
+            if (ActivityV1Config.GuessRewardList.ContainsKey(hour))
             {
-                int guessIndex = RandomHelper.RandomNumber(0, ActivityConfigHelper.GuessNumber);
+                int guessIndex = RandomHelper.RandomNumber(0, ActivityV1Config.GuessNumber);
                 List<long> playerIds = null;
                 self.DBDayActivityInfo.GuessPlayerList.TryGetValue(guessIndex, out playerIds);
                 if (playerIds == null)
@@ -477,7 +477,7 @@ namespace ET
                 }
 
                 List<BagInfo> itemList = new List<BagInfo>();
-                string[] rewardItem = ActivityConfigHelper.GuessRewardList[hour].Split('@');
+                string[] rewardItem = ActivityV1Config.GuessRewardList[hour].Split('@');
                 for (int i = 0; i < rewardItem.Length; i++)
                 {
                     string[] itemInfo = rewardItem[i].Split(';');

@@ -32,7 +32,7 @@ namespace ET
                     //例如 http://api.example.com 等价于 http://api.example.com:80
                     //HTTPS 协议：默认端口是 443
                     //例如 https://api.example.com 等价于 https://api.example.com:443
-                    int tapport = ComHelp.IsInnerNet() ? ComHelp.TapHttpIneer : ComHelp.TapHttpOuter;
+                    int tapport = CommonHelper.IsInnerNet() ? CommonConfig.TapHttpIneer : CommonConfig.TapHttpOuter;
                     
                     scene.AddComponent<HttpComponent, string>($"http://*:{tapport}/");
                     scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
@@ -90,12 +90,6 @@ namespace ET
                 case SceneType.Union:
                     scene.AddComponent<UnionSceneComponent>();
                     break;
-                case SceneType.LocalDungeon:
-                    scene.AddComponent<LocalDungeonSceneComponent>();
-                    break;
-                case SceneType.Solo:
-                    scene.AddComponent<SoloSceneComponent>();
-                    break;
                 case SceneType.ReCharge:
                     if (Game.Options.StartConfig.Contains("BanHao"))
                     {
@@ -116,32 +110,22 @@ namespace ET
                         scene.AddComponent<ReChargeGoogleComponent>();
                     }
                     break;
-                case SceneType.Happy:
-                    scene.AddComponent<HappySceneComponent>();
-                    break;
-                case SceneType.Battle:
-                    scene.AddComponent<BattleSceneComponent>();
-                    break;
-                case SceneType.Arena:
-                    scene.AddComponent<ArenaSceneComponent>();
-                    break;
                 case SceneType.JiaYuan:
                     scene.AddComponent<JiaYuanSceneComponent>();
-                    break;
-                case SceneType.Fuben:           //副本地图
-                    scene.AddComponent<MapComponent>();
-                    scene.AddComponent<UnitComponent>();
-                    scene.AddComponent<ServerInfoComponent>();
-                    scene.AddComponent<AOIManagerComponent>();
-                    //scene.AddComponent<RecastPathComponent>();
                     break;
                 case SceneType.Map:             //野外地图
                     scene.AddComponent<MapComponent>();
                     scene.AddComponent<UnitComponent>();
-                    scene.AddComponent<ServerInfoComponent>();
                     scene.AddComponent<AOIManagerComponent>();
                     scene.AddComponent<NpcComponent>();
                     //scene.AddComponent<RecastPathComponent>();
+                    break;
+                case SceneType.FubenWork:
+                    
+                    scene.AddComponent<HappySceneComponent>();
+                    scene.AddComponent<BattleSceneComponent>();
+                    scene.AddComponent<ArenaSceneComponent>();
+                    scene.AddComponent<SoloSceneComponent>();
                     break;
                 case SceneType.Popularize:
 

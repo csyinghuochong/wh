@@ -12,21 +12,21 @@ namespace ET
         {
             int lingdiLv = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Ling_DiLv);
             int lingdiExp = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Ling_DiExp);
-            LingDiConfig lingDiConfig = LingDiConfigCategory.Instance.Get(lingdiLv);
+            /*LingDiConfig lingDiConfig = LingDiConfigCategory.Instance.Get(lingdiLv);
            
             int maxLevel = LingDiConfigCategory.Instance.GetAll().Values.Count;
             if (lingdiLv >= maxLevel && lingdiExp >= lingDiConfig.UpExp)
             {
                 return;
-            }
+            }*/
 
-            int needCoin = lingDiConfig.GoldUp;
+            /*int needCoin = lingDiConfig.GoldUp;
             if (addExp + lingdiExp >= lingDiConfig.UpExp && lingdiLv < maxLevel)
             {
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Ling_DiLv, lingdiLv + 1, notice);
                 addExp = addExp + lingdiExp - lingDiConfig.UpExp;
             }
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Ling_DiExp, addExp + lingdiExp, notice);
+            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Ling_DiExp, addExp + lingdiExp, notice);*/
         }
 
 

@@ -15,13 +15,13 @@ namespace ET
                 reply();
                 return;
             }
-            JingLingConfig jingLingConfig = JingLingConfigCategory.Instance.Get(jinglingid);
-            if (jingLingConfig.FunctionType!= JingLingFunctionType.RandomDrop)
+            Elf elf = ElfCategory.Instance.Get(jinglingid);
+            if (elf.FunctionType!= JingLingFunctionType.RandomDrop)
             {
                 reply();
                 return;
             }
-            int dropId = int.Parse(jingLingConfig.FunctionValue);
+            int dropId = int.Parse(elf.FunctionValue);
             if (dropId == 0)
             {
                 Log.Warning($"C2M_JingLingDropRequest.dropId == 0");

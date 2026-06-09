@@ -53,7 +53,7 @@ namespace ET
                 }
             });
 
-            int maxnumber = Math.Min(rankRunRace.Count, ComHelp.RankNumber);
+            int maxnumber = Math.Min(rankRunRace.Count, CommonConfig.RankNumber);
             rankSceneComponent.DBRankInfo.rankingTrial = rankRunRace.GetRange(0, maxnumber);
             response.RankId = rankSceneComponent.GetTrialRank(request.RankingInfo.KeyId);
             reply();

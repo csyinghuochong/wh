@@ -40,7 +40,7 @@ namespace ET
             }
 
             //获取宠物碎片
-            PetConfig petCof = PetConfigCategory.Instance.Get(rolePetInfo.ConfigId);
+            Pet petCof = PetCategory.Instance.Get(rolePetInfo.ConfigId);
 			if (petCof.ReleaseReward != null && petCof.ReleaseReward.Length > 2)
 			{
 				unit.GetComponent<BagComponent>().OnAddItemData(petCof.ReleaseReward, $"{ItemGetWay.PetFenjie}_{TimeHelper.ServerNow()}");

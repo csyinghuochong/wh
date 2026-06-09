@@ -60,8 +60,8 @@ namespace ET
                                     MailHelp.SendUserMail(scene.DomainZone(), dBUnionInfo.UnionInfo.UnionPlayerList[i].UserID, mailInfo).Coroutine();
                                 }
 
-                                string noticeContent = $"恭喜 <color=#{ComHelp.QualityReturnColor(5)}>{dBUnionInfo.UnionInfo.UnionName}</color> 家族等级提升至{dBUnionInfo.UnionInfo.Level}级";
-                                string noticeContentEn = $"Congratulations <color=#{ComHelp.QualityReturnColor(5)}>{dBUnionInfo.UnionInfo.UnionName}</color> Family level has been raised to {dBUnionInfo.UnionInfo.Level}";
+                                string noticeContent = $"恭喜 <color=#{CommonHelper.QualityReturnColor(5)}>{dBUnionInfo.UnionInfo.UnionName}</color> 家族等级提升至{dBUnionInfo.UnionInfo.Level}级";
+                                string noticeContentEn = $"Congratulations <color=#{CommonHelper.QualityReturnColor(5)}>{dBUnionInfo.UnionInfo.UnionName}</color> Family level has been raised to {dBUnionInfo.UnionInfo.Level}";
                                 ServerMessageHelper.SendBroadMessage(scene.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
 
                             }

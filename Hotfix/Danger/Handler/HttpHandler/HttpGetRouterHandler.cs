@@ -35,7 +35,7 @@ namespace ET
             if (long.TryParse(param1, out long createTimne) && !string.IsNullOrEmpty(anid) && !anid.Contains("00000000"))
             {
                 DBCenterDataCache dBCenterDataCache = null;
-                List<DBCenterDataCache> centerDataCaches = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterDataCache>(ComHelp.CenterZoneId, d => d.anid == anid);
+                List<DBCenterDataCache> centerDataCaches = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterDataCache>(CommonConfig.CenterZoneId, d => d.anid == anid);
                 if (centerDataCaches == null || centerDataCaches.Count == 0)
                 {
                     dBCenterDataCache = entity.AddChild<DBCenterDataCache>();
@@ -48,7 +48,7 @@ namespace ET
                 dBCenterDataCache.anid = anid;
                 dBCenterDataCache.CreateTimeLong = createTimne;
                 dBCenterDataCache.CreateTimeString = TimeInfo.Instance.ToDateTime(createTimne).ToString();
-                await Game.Scene.GetComponent<DBComponent>().Save(ComHelp.CenterZoneId, dBCenterDataCache);
+                await Game.Scene.GetComponent<DBComponent>().Save(CommonConfig.CenterZoneId, dBCenterDataCache);
                 dBCenterDataCache.Dispose();
                 dBCenterDataCache = null;
             }

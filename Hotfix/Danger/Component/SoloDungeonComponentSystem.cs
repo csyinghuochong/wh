@@ -168,9 +168,9 @@ namespace ET
         /// <param name="self"></param>
         public static void KickOutPlayer(this SoloDungeonComponent self)
         {
-            Actor_TransferRequest actor_Transfer = new Actor_TransferRequest()
+            C2M_TransferRequest actor_Transfer = new C2M_TransferRequest()
             {
-                SceneType = SceneTypeEnum.MainCityScene,
+                SceneType = MapTypeEnum.MainCityScene,
             };
             List<Unit> units = self.DomainScene().GetComponent<UnitComponent>().GetAll();
             for (int i = 0; i < units.Count; i++)

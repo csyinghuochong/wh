@@ -273,8 +273,8 @@ namespace ET
             DBUnionInfo dBUnionInfo = await self.GetDBUnionInfo(winunionid);
             if (dBUnionInfo != null)
             {
-                string messageContent = $"恭喜 <color=#{ComHelp.QualityReturnColor(2)}>{dBUnionInfo.UnionInfo.UnionName}</color>家族占领了家族争霸赛地图!";
-                string messageContentEn = $"Congratulations <color=#{ComHelp.QualityReturnColor(2)}>{dBUnionInfo.UnionInfo.UnionName}</color>Family Take over Family Fight Map!";
+                string messageContent = $"恭喜 <color=#{CommonHelper.QualityReturnColor(2)}>{dBUnionInfo.UnionInfo.UnionName}</color>家族占领了家族争霸赛地图!";
+                string messageContentEn = $"Congratulations <color=#{CommonHelper.QualityReturnColor(2)}>{dBUnionInfo.UnionInfo.UnionName}</color>Family Take over Family Fight Map!";
                 ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, messageContent, messageContentEn);
             }
         }
@@ -395,7 +395,7 @@ namespace ET
             {
                 List<Unit> units = UnitHelper.GetUnitList(fubnescene, UnitType.Player);
                 M2C_UnionRaceInfoResult m2C_Battle = new M2C_UnionRaceInfoResult();
-                m2C_Battle.SceneType = SceneTypeEnum.UnionRace;
+                m2C_Battle.SceneType = MapTypeEnum.UnionRace;
                 for (int i = 0; i < units.Count; i++)
                 {
                     MessageHelper.SendToClient(units[i], m2C_Battle);
@@ -407,9 +407,9 @@ namespace ET
             fubnescene = self.GetChild<Scene>(self.UnionRaceSceneId);
             if (fubnescene != null)
             {
-                Actor_TransferRequest actor_Transfer = new Actor_TransferRequest()
+                C2M_TransferRequest actor_Transfer = new C2M_TransferRequest()
                 {
-                    SceneType = SceneTypeEnum.MainCityScene,
+                    SceneType = MapTypeEnum.MainCityScene,
                 };
                 List<Unit> units = UnitHelper.GetUnitList(fubnescene, UnitType.Player);
                 for (int i = 0; i < units.Count; i++)
@@ -582,10 +582,10 @@ namespace ET
             }
             int unionsceneid = 2000009;
             long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-            Scene fubnescene = SceneFactory.Create(self, unionid, fubenInstanceId, self.DomainZone(), "Union" + unionid.ToString(), SceneType.Fuben);
+            Scene fubnescene = SceneFactory.Create(self, unionid, fubenInstanceId, self.DomainZone(), "Union" + unionid.ToString(), SceneType.Map);
            
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-            mapComponent.SetMapInfo((int)SceneTypeEnum.Union, unionsceneid, 0);
+            mapComponent.SetMapInfo((int)MapTypeEnum.Union, unionsceneid, 0);
             mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(unionsceneid).MapID;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             FubenHelp.CreateNpc(fubnescene, unionsceneid);

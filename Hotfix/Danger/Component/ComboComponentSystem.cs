@@ -40,7 +40,7 @@ namespace ET
             }
             else
             {
-                self.ComboSkillId = SkillConfigCategory.Instance.Get(self.ComboSkillId).ComboSkillID;
+                self.ComboSkillId = SkillCategory.Instance.Get(self.ComboSkillId).ComboSkillID;
             }
 
             int EquipType = self.EquipType;
@@ -106,10 +106,10 @@ namespace ET
 
         public static float UpdateAttackDis(this ComboComponent self)
         {
-            SkillConfig skillConfig = SkillConfigCategory.Instance.Get(
+            Skill skill = SkillCategory.Instance.Get(
                 SkillHelp.GetWeaponSkill(self.SkillId, self.EquipType, null)
              );
-            return (float)skillConfig.SkillRangeSize - 1;
+            return (float)skill.SkillRangeSize - 1;
         }
 
         public static void OnInitOcc(this ComboComponent self, int occ, int equipType)
@@ -121,7 +121,7 @@ namespace ET
 
             self.EquipType = equipType;
             //普通攻击
-            OccupationConfig occConfig = OccupationConfigCategory.Instance.Get(occ);
+            Occupation occConfig = OccupationCategory.Instance.Get(occ);
             self.UpdateSkillInfo(occConfig.InitActSkillID);
             self.UpdateComboTime();
             self.SetAttackSpeed();
@@ -130,15 +130,15 @@ namespace ET
         public static void UpdateSkillInfo(this ComboComponent self, int skillid)
         {
             self.SkillId = skillid;
-            self.ComboSkillId = SkillConfigCategory.Instance.Get(skillid).ComboSkillID;
+            self.ComboSkillId = SkillCategory.Instance.Get(skillid).ComboSkillID;
             
             self.SkillList.Clear();
             while (skillid != 0 && self.SkillList.Count < 3)
             {
                 self.SkillList.Add(skillid);
-                SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillid);
-                skillid = skillConfig.ComboSkillID;
-                if (!SkillConfigCategory.Instance.Contain(skillid))
+                Skill skill = SkillCategory.Instance.Get(skillid);
+                skillid = skill.ComboSkillID;
+                if (!SkillCategory.Instance.Contain(skillid))
                 {
                     break;
                 }

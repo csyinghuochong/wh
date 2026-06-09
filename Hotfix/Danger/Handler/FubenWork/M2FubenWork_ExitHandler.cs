@@ -3,10 +3,10 @@
 namespace ET
 {
     [ActorMessageHandler]
-    public class M2LocalDungeon_ExitHandler : AMActorRpcHandler<Scene, M2LocalDungeon_ExitRequest, LocalDungeon2M_ExitResponse>
+    public class M2FubenWork_ExitHandler : AMActorRpcHandler<Scene, M2FubenWork_ExitRequest, FubenWork2M_ExitResponse>
     {
 
-        private async ETTask CloseBattleFubenScene(Scene fubenscene, M2LocalDungeon_ExitRequest request)
+        private async ETTask CloseBattleFubenScene(Scene fubenscene, M2FubenWork_ExitRequest request)
         {
             //Console.WriteLine($"M2LocalDungeon_Exit:  {fubenscene.Name}  {request.Camp1Player.Count}  {request.Camp2Player.Count}   {fubenscene.DomainZone()} ");
             fubenscene.GetComponent<BattleDungeonComponent>().OnBattleOver(request.Camp1Player, request.Camp2Player);
@@ -16,11 +16,11 @@ namespace ET
             fubenscene.Dispose();
         }
 
-        protected override async ETTask Run(Scene scene, M2LocalDungeon_ExitRequest request, LocalDungeon2M_ExitResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, M2FubenWork_ExitRequest request, FubenWork2M_ExitResponse response, Action reply)
         {
             switch (request.SceneType)
             {
-                case SceneTypeEnum.Battle:
+                case MapTypeEnum.Battle:
                     Scene fubenscene = Game.Scene.Get(request.FubenId);
                     CloseBattleFubenScene(fubenscene, request).Coroutine();
                     break;

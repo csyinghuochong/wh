@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -36,7 +36,7 @@ namespace ET
             //通知客户端背包道具发生改变
             m2c_bagUpdate.BagInfoUpdate = new List<BagInfo>();
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(useBagInfo.ItemID);
+            Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
 
             //镶嵌宝石
             if (request.OperateType == 9)
@@ -70,7 +70,7 @@ namespace ET
                     return;
                 }
 
-                if (equipGeminfos[gemIndex] != itemConfig.ItemSubType.ToString() && itemConfig.ItemSubType != 110 && itemConfig.ItemSubType != 111)
+                if (equipGeminfos[gemIndex] != Item.ItemSubType.ToString() && Item.ItemSubType != 110 && Item.ItemSubType != 111)
                 {
                     response.Error = ErrorCode.ERR_ItemUseError;
                     reply();
@@ -78,7 +78,7 @@ namespace ET
                 }
 
                 //史诗宝石最多镶嵌4个
-                if (itemConfig.ItemSubType == 110) 
+                if (Item.ItemSubType == 110) 
                 {
                     int equipShiShiGemNum = 0;
                     bool isTihuan = false;
@@ -88,9 +88,9 @@ namespace ET
                         string[] gemList = EquipList[i].GemIDNew.Split('_');
                         for (int y = 0; y < gemList.Length; y++) 
                         {
-                            if (ComHelp.IfNull(gemList[y]) == false)
+                            if (CommonHelper.IfNull(gemList[y]) == false)
                             {
-                                ItemConfig gemItemCof = ItemConfigCategory.Instance.Get(int.Parse(gemList[y]));
+                                Item gemItemCof = ItemCategory.Instance.Get(int.Parse(gemList[y]));
                                 if (gemItemCof.ItemSubType == 110)
                                 {
                                     equipShiShiGemNum += 1;
@@ -143,13 +143,13 @@ namespace ET
                 int gemItemId = int.Parse(gemIdList[gemIndex]);
 
                 //类型110的不能卸
-                if (!ItemConfigCategory.Instance.Contain(gemItemId))
+                if (!ItemCategory.Instance.Contain(gemItemId))
                 {
                     response.Error = ErrorCode.ERR_GemNoError;
                     reply();
                     return;
                 }
-                ItemConfig gemItemConfig = ItemConfigCategory.Instance.Get(gemItemId);
+                Item gemItemConfig = ItemCategory.Instance.Get(gemItemId);
                 if (gemItemConfig.ItemSubType == 110)
                 {
                     response.Error = ErrorCode.ERR_GemNoError;

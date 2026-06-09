@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_KillMonsterRewardRequest request, M2C_KillMonsterRewardResponse response, Action reply)
         {
-            if (!ConfigHelper.KillMonsterReward.Keys.Contains(request.Key))
+            if (!CommonConfig.KillMonsterReward.Keys.Contains(request.Key))
             {
                 Log.Error($"C2M_KillMonsterRewardRequest 1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -33,7 +33,7 @@ namespace ET
             }
 
             UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-            string[] occItems = ConfigHelper.KillMonsterReward[request.Key].Split('&');
+            string[] occItems = CommonConfig.KillMonsterReward[request.Key].Split('&');
             string[] items;
             if (occItems.Length == 3)
             {

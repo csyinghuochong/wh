@@ -11,7 +11,7 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Recharge, unit.Id))
             {
                 long dbCacheId = DBHelper.GetRealmCenter();
-                if (ComHelp.IsBanHaoZone(unit.DomainZone()))
+                if (CommonHelper.IsBanHaoZone(unit.DomainZone()))
                 {
                     LogHelper.LogWarning($"充值[版号服]SendDiamondToUnit: {unit.Id}");
                     Console.WriteLine($"充值[版号服]SendDiamondToUnit: {unit.Id}");
@@ -26,7 +26,7 @@ namespace ET
                 //    return;
                 //}
 
-                if (request.RechargeNumber <= 0 || ConfigHelper.GetDiamondNumber(request.RechargeNumber, unit.DomainZone()) <= 0)
+                if (request.RechargeNumber <= 0 || CommonConfig.GetDiamondNumber(request.RechargeNumber, unit.DomainZone()) <= 0)
                 {
                     Log.Console($"充值作弊： 区：{unit.DomainZone()}  ID：{unit.Id}  rechargenumber: {request.RechargeNumber}");
                     Log.Warning($"充值作弊： 区：{unit.DomainZone()}  ID：{unit.Id}  rechargenumber: {request.RechargeNumber}");

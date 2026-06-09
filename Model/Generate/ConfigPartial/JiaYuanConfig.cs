@@ -46,8 +46,18 @@ namespace ET
                             continue;
                         }
 
-                        int key = int.Parse(proinfo[0]);
-                        int val = int.Parse(proinfo[1]);
+                        if (!int.TryParse(proinfo[0], out int key))
+                        {
+                            Log.Error($"int.TryParse error: {proinfo[0]} jiaYuanId:{functionConfig.Id}");
+                            continue;
+                        }
+
+                        if (!int.TryParse(proinfo[1], out int val))
+                        {
+                            Log.Error($"int.TryParse error: {proinfo[1]} jiaYuanId:{functionConfig.Id}");
+                            continue;
+                        }
+
                         if (!keyValuePairs.ContainsKey(key))
                         {
                             keyValuePairs.Add( key, val );

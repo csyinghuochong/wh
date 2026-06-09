@@ -78,25 +78,25 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>制造类型</summary>
+		/// <summary>类型</summary>
 		[ProtoMember(2)]
 		public int ProficiencyType { get; set; }
 		/// <summary>制造装备</summary>
 		[ProtoMember(3)]
 		public int MakeItemID { get; set; }
-		/// <summary>学习类型</summary>
+		/// <summary>学习类型 0：训练师 1：图纸</summary>
 		[ProtoMember(4)]
 		public int LearnType { get; set; }
-		/// <summary>学习等级</summary>
+		/// <summary>学习等级 低于学习等级 五级以上不在 学习列表显示</summary>
 		[ProtoMember(5)]
 		public int LearnLv { get; set; }
-		/// <summary>学习消耗金币</summary>
+		/// <summary>消耗金币</summary>
 		[ProtoMember(6)]
 		public int LearnGoldValue { get; set; }
-		/// <summary>消耗活力值</summary>
+		/// <summary>消耗活力</summary>
 		[ProtoMember(7)]
 		public int CostVitality { get; set; }
-		/// <summary>学习需要道具</summary>
+		/// <summary>需要道具</summary>
 		[ProtoMember(8)]
 		public string LearnNeedItems { get; set; }
 		/// <summary>制造装备数量</summary>
@@ -111,22 +111,22 @@ namespace ET
 		/// <summary>触发隐藏属性概率</summary>
 		[ProtoMember(12)]
 		public string MakeHintPro { get; set; }
-		/// <summary>制造装备等级</summary>
+		/// <summary>制造装备 等级</summary>
 		[ProtoMember(13)]
 		public int MakeLv { get; set; }
-		/// <summary>制造装备最大等级</summary>
+		/// <summary>制造装备 最大等级</summary>
 		[ProtoMember(14)]
 		public int MakeLvMax { get; set; }
 		/// <summary>制造星级</summary>
 		[ProtoMember(15)]
 		public int MakeStar { get; set; }
-		/// <summary>需要熟练度</summary>
+		/// <summary>需要 熟练度</summary>
 		[ProtoMember(16)]
 		public int NeedProficiencyValue { get; set; }
-		/// <summary>增长熟练度上限</summary>
+		/// <summary>增长 熟练度上限</summary>
 		[ProtoMember(17)]
 		public int ProficiencyMax { get; set; }
-		/// <summary>增长熟练点数</summary>
+		/// <summary>增长 熟练点数 min|max</summary>
 		[ProtoMember(18)]
 		public int[] ProficiencyValue { get; set; }
 		/// <summary>熟练度转换概率生效值</summary>
@@ -135,7 +135,7 @@ namespace ET
 		/// <summary>熟练点数转换概率</summary>
 		[ProtoMember(20)]
 		public double ProficiencyProValue { get; set; }
-		/// <summary>制造冷却时间</summary>
+		/// <summary>制造冷却时间 单位：秒</summary>
 		[ProtoMember(21)]
 		public int MakeTime { get; set; }
 		/// <summary>制造消耗金币</summary>

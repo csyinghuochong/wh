@@ -154,8 +154,8 @@ namespace ET
 		 public const ushort Chat2M_UpdateLevel = 20151;
 		 public const ushort G2Chat_RequestExitChat = 20152;
 		 public const ushort Chat2G_RequestExitChat = 20153;
-		 public const ushort M2B_BattleEnterRequest = 20154;
-		 public const ushort B2M_BattleEnterResponse = 20155;
+		 public const ushort M2FubenCenter_BattleEnterRequest = 20154;
+		 public const ushort FubenCenter2M_BattleEnterResponse = 20155;
 		 public const ushort G2Robot_MessageRequest = 20156;
 		 public const ushort M2D_DeleteUnit = 20157;
 		 public const ushort D2M_DeleteUnit = 20158;
@@ -193,10 +193,10 @@ namespace ET
 		 public const ushort S2M_SoloEnterResponse = 20190;
 		 public const ushort S2R_SoloResultRequest = 20191;
 		 public const ushort R2S_SoloResultResponse = 20192;
-		 public const ushort M2LocalDungeon_EnterRequest = 20193;
-		 public const ushort LocalDungeon2M_EnterResponse = 20194;
-		 public const ushort M2LocalDungeon_ExitRequest = 20195;
-		 public const ushort LocalDungeon2M_ExitResponse = 20196;
+		 public const ushort M2FubenWork_EnterRequest = 20193;
+		 public const ushort FubenWork2M_EnterResponse = 20194;
+		 public const ushort M2FubenWork_ExitRequest = 20195;
+		 public const ushort FubenWork2M_ExitResponse = 20196;
 		 public const ushort ServerMailItem = 20197;
 		 public const ushort Mail2Chat_GetUnitList = 20198;
 		 public const ushort Chat2Mail_GetUnitList = 20199;

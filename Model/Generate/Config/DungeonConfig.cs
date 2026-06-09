@@ -87,7 +87,7 @@ namespace ET
 		/// <summary>音乐</summary>
 		[ProtoMember(4)]
 		public string Music { get; set; }
-		/// <summary>个人副本类型</summary>
+		/// <summary>个人副本类型 0-野外刷怪 1-喜从天降</summary>
 		[ProtoMember(5)]
 		public int MapType { get; set; }
 		/// <summary>进入等级限制</summary>

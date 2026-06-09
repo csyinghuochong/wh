@@ -78,7 +78,7 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>成就类型</summary>
+		/// <summary>成就类型 1-关卡 2-探索 3-实力</summary>
 		[ProtoMember(2)]
 		public int ChengjiuType { get; set; }
 		/// <summary>章节ID</summary>

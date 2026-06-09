@@ -31,13 +31,13 @@ namespace ET
             }          
            
             int openDay = unit.GetComponent<UserInfoComponent>().GetCrateDay();
-            int index = ComHelp.GetWelfareDrawIndex( openDay );
+            int index = CommonHelper.GetWelfareDrawIndex( openDay );
 
             if (index == -1)
             {
                 List<int> weights = new List<int>();
 
-                List<KeyValuePair> drawlist = ConfigHelper.WelfareDrawList;
+                List<KeyValuePair> drawlist = CommonConfig.WelfareDrawList;
                 for (int i = 0; i < drawlist.Count; i++)
                 {
                     weights.Add(drawlist[i].KeyId);

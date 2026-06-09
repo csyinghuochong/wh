@@ -58,14 +58,15 @@ namespace ET
 
             for (int r = 10; r > 0; r--)
             {
-                int newCell = RandomHelper.RandomNumber(0, HappyHelper.PositionList.Count);
+                int newCell = RandomHelper.RandomNumber(0, HappyFubenConfig.PositionList.Count);
 
                 bool haveorange = false;
                 List<Unit> droplist = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.DropItem);
                 for (int i = 0; i < droplist.Count; i++)
                 {
-                    int itemid = droplist[i].GetComponent<DropComponent>().ItemID;
-                    if (ItemConfigCategory.Instance.Get(itemid).ItemQuality >= 5)
+                    DropComponent dropComponent = droplist[i].GetComponent<DropComponent>();
+                    int qulity = ItemHelper.GetNewQulity(dropComponent.ItemType, dropComponent.ItemID);
+                    if (qulity >= 5)
                     {
                         haveorange = true;
                         break;
@@ -79,7 +80,7 @@ namespace ET
                 }
 
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HappyCellIndex, newCell + 1);
-                Vector3 vector3 = HappyHelper.PositionList[newCell];
+                Vector3 vector3 = HappyFubenConfig.PositionList[newCell];
                 unit.Position = vector3;
                 break;
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -115,7 +115,7 @@ namespace ET
                 response.NewMakeId = newMakeId;
             }
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(equipMakeConfig.MakeItemID);
+            Item Item = ItemCategory.Instance.Get(equipMakeConfig.MakeItemID);
 
 
             if (equipMakeConfig.ProficiencyType != 4 
@@ -126,7 +126,7 @@ namespace ET
                 int curShuLian = unit.GetComponent<NumericComponent>().GetAsInt(shulianduNumeric);
                 int addShuLian = RandomHelper.RandomNumber(equipMakeConfig.ProficiencyValue[0], equipMakeConfig.ProficiencyValue[1]);
                 curShuLian += addShuLian;
-                curShuLian = Math.Min(ComHelp.MaxShuLianDu(), curShuLian);
+                curShuLian = Math.Min(CommonHelper.MaxShuLianDu(), curShuLian);
                 unit.GetComponent<NumericComponent>().ApplyValue(shulianduNumeric, curShuLian);
                 unit.GetComponent<ChengJiuComponent>().OnSkillShuLianDu(curShuLian);
 
@@ -134,8 +134,8 @@ namespace ET
             unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.MakeNumber_216, 0, 1);
             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.MakeNumber_12, 0, 1);
             unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.MakeNumber_12, 0, 1);
-            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.MakeQulityNumber_29, itemConfig.ItemQuality, 1);
-            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.MakeQulityNumber_29, itemConfig.ItemQuality, 1);
+            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.MakeQulityNumber_29, Item.Quality, 1);
+            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.MakeQulityNumber_29, Item.Quality, 1);
 
             reply();
             await ETTask.CompletedTask;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -33,13 +33,13 @@ namespace ET
             List<BagInfo> gemList = new List<BagInfo>();
             for (int i = 0; i < bagItemList.Count; i++)
             {
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(bagItemList[i].ItemID);
-                if (itemConfig.ItemType != ItemTypeEnum.Gemstone)
+                Item Item = ItemCategory.Instance.Get(bagItemList[i].ItemID);
+                if (Item.ItemType != ItemTypeEnum.Gemstone)
                 {
                     continue;
                 }
 
-                if (!EquipMakeConfigCategory.Instance.GetHeChengList.ContainsKey(itemConfig.Id))
+                if (!EquipMakeConfigCategory.Instance.GetHeChengList.ContainsKey(Item.Id))
                 {
                     continue;
                 }

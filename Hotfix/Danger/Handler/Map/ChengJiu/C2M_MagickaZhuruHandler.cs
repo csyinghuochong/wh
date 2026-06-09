@@ -31,12 +31,12 @@ namespace ET
                 {
                     continue;
                 }
-                if (!ConfigHelper.MagicAddShieldExp.ContainsKey(bagInfo.ItemID))
+                if (!CommonConfig.MagicAddShieldExp.ContainsKey(bagInfo.ItemID))
                 {
                     continue;
                 }
 
-                int addValue = ConfigHelper.MagicAddShieldExp[bagInfo.ItemID];
+                int addValue = CommonConfig.MagicAddShieldExp[bagInfo.ItemID];
                 if (addValue > 10)
                 {
                     addValue = RandomHelper.NextInt((int)(addValue * 0.8f), (int)(addValue * 1.2f));

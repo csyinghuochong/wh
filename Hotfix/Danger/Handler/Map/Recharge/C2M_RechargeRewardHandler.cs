@@ -11,7 +11,7 @@ namespace ET
         {
             if (ServerHelper.IsGoogleServer(unit.DomainZone()))
             {
-                if (!ConfigHelper.RechargeReward_EN.ContainsKey(request.RechargeNumber))
+                if (!CommonConfig.RechargeReward_EN.ContainsKey(request.RechargeNumber))
                 {
                     Log.Error($"C2M_RechargeRewardRequest 1");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -21,7 +21,7 @@ namespace ET
             }
             else
             {
-                if (!ConfigHelper.RechargeReward.ContainsKey(request.RechargeNumber))
+                if (!CommonConfig.RechargeReward.ContainsKey(request.RechargeNumber))
                 {
                     Log.Error($"C2M_RechargeRewardRequest 1");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -49,11 +49,11 @@ namespace ET
             string rewarditem = "";
             if (ServerHelper.IsGoogleServer(unit.DomainZone()))
             {
-                rewarditem = ConfigHelper.RechargeReward_EN[request.RechargeNumber];
+                rewarditem = CommonConfig.RechargeReward_EN[request.RechargeNumber];
             }
             else
             {
-                rewarditem = ConfigHelper.RechargeReward[request.RechargeNumber];
+                rewarditem = CommonConfig.RechargeReward[request.RechargeNumber];
             }
             
             string[] rewardList = rewarditem.Split('@');

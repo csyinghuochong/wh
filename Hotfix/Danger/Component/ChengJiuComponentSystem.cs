@@ -23,7 +23,7 @@ namespace ET
            
             for (int i = 0; i < self.JingLingList.Count; i++)
             {
-                JingLingConfig jinglingCof = JingLingConfigCategory.Instance.Get(self.JingLingList[i]);
+                Elf jinglingCof = ElfCategory.Instance.Get(self.JingLingList[i]);
                 NumericHelp.GetProList(jinglingCof.AddProperty, proList);
             }
 
@@ -31,7 +31,7 @@ namespace ET
             {
                 return proList;
             }
-            JingLingConfig lifeShieldConfig = JingLingConfigCategory.Instance.Get(self.JingLingId);
+            Elf lifeShieldConfig = ElfCategory.Instance.Get(self.JingLingId);
            // NumericHelp.GetProList(lifeShieldConfig.AddProperty, proList);
             if (lifeShieldConfig.FunctionType == JingLingFunctionType.AddProperty)
             {
@@ -78,11 +78,11 @@ namespace ET
                 bool isBoss = monsterConfig.MonsterType == (int)MonsterTypeEnum.Boss;
                 MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
                 int fubenDifficulty = (int)FubenDifficulty.None;
-                if (mapComponent.SceneTypeEnum == (int)SceneTypeEnum.CellDungeon)
+                if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
                 {
                     fubenDifficulty = (int)self.GetParent<Unit>().DomainScene().GetComponent<CellDungeonComponent>().FubenDifficulty;
                 }
-                if (mapComponent.SceneTypeEnum == (int)SceneTypeEnum.LocalDungeon)
+                if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                 {
                     fubenDifficulty = (int)self.GetParent<Unit>().DomainScene().GetComponent<LocalDungeonComponent>().FubenDifficulty;
                 }
@@ -229,7 +229,7 @@ namespace ET
             }
 
             self.JingLingList.Clear();  
-            Dictionary<int, JingLingConfig> alljingling = JingLingConfigCategory.Instance.GetAll();
+            Dictionary<int, Elf> alljingling = ElfCategory.Instance.GetAll();
             foreach (var item in alljingling)
             {
                 self.OnActiveJingLing(item.Key); 

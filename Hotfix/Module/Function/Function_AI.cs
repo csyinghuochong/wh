@@ -55,7 +55,7 @@ namespace ET
 			int ziZhi_Adf = petinfo.ZiZhi_Adf;
 			int ziZhi_ActSpeed = petinfo.ZiZhi_ActSpeed;
 
-			PetConfig petconf = PetConfigCategory.Instance.Get(petID);
+			Pet petconf = PetCategory.Instance.Get(petID);
 			//最大资质
 			float zizhiMax_Hp = petconf.ZiZhi_Hp_Max;
 			float zizhiMax_Act = petconf.ZiZhi_Act_Max;
@@ -144,7 +144,7 @@ namespace ET
 		public bool Pet_AddRandomChengZhang(RolePetInfo petinfo)
 		{
 			int petID = petinfo.ConfigId;		
-			PetConfig petconf = PetConfigCategory.Instance.Get(petID);
+			Pet petconf =PetCategory.Instance.Get(petID);
 			float chengzhang = petinfo.ZiZhi_ChengZhang;
 			float ziZhi_ChengZhang_Max = (float)petconf.ZiZhi_ChengZhang_Max;
 

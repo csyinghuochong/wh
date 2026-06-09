@@ -25,13 +25,13 @@ namespace ET
             }
 #if SERVER
            
-            List<DBCenterDataCache> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterDataCache>(ComHelp.CenterZoneId, _account => _account.Id > 0);
+            List<DBCenterDataCache> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterDataCache>(CommonConfig.CenterZoneId, _account => _account.Id > 0);
             for (int i = 0; i < accoutResult.Count; i++)
             {
                 DBCenterDataCache dBCenterAccount = accoutResult[i];
                 dBCenterAccount.OldAccount = 0;
                 dBCenterAccount.DownloadType = 0;
-                await Game.Scene.GetComponent<DBComponent>().Save(ComHelp.CenterZoneId, dBCenterAccount);
+                await Game.Scene.GetComponent<DBComponent>().Save(CommonConfig.CenterZoneId, dBCenterAccount);
             }
             Console.WriteLine($"accoutResult:  {accoutResult.Count}");
 #endif
@@ -53,11 +53,11 @@ namespace ET
             }
 #if SERVER
             int robotnumber = 0;
-            List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, _account => _account.Id > 0);
+            List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, _account => _account.Id > 0);
             for (int i = 0; i < accoutResult.Count; i++)
             {
                 DBCenterAccountInfo dBCenterAccount = accoutResult[i];
-                if (ComHelp.RobotPassWord.Equals(dBCenterAccount.Password)) 
+                if (CommonConfig.RobotPassWord.Equals(dBCenterAccount.Password)) 
                 {
                     robotnumber++;
                     continue;
@@ -67,7 +67,7 @@ namespace ET
                 {
                     Console.WriteLine($"{dBCenterAccount.Account}  {dBCenterAccount.TotalRecharge}");
                 }
-                await Game.Scene.GetComponent<DBComponent>().Save(ComHelp.CenterZoneId, dBCenterAccount);
+                await Game.Scene.GetComponent<DBComponent>().Save(CommonConfig.CenterZoneId, dBCenterAccount);
             }
             Console.WriteLine($"robotnumber:  {robotnumber}");
 #endif
@@ -931,7 +931,7 @@ namespace ET
             //7.主线任务完成不超过10个
             //8.拍卖行收益总共超过100万
             long serverNow = TimeHelper.ServerNow();
-            int curDate = ComHelp.GetDayByTime(serverNow);
+            int curDate = CommonHelper.GetDayByTime(serverNow);
 
             Dictionary<string, int> accountNumber = new Dictionary<string, int>();
 
@@ -967,7 +967,7 @@ namespace ET
 
                     //击败boss>3返回
                     //击败boss>3返回
-                    int killmonsterNumber = ComHelp.KillBoss_Lv_Number(userInfoComponent.UserInfo.MonsterRevives, userInfoComponent.UserInfo.Lv);
+                    int killmonsterNumber = CommonHelper.KillBoss_Lv_Number(userInfoComponent.UserInfo.MonsterRevives, userInfoComponent.UserInfo.Lv);
                     //if (killmonsterNumber >= 3)
                     //{
                     //    continue;
@@ -1055,7 +1055,7 @@ namespace ET
                     //}
 
 
-                    List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, _account => _account.Account == userInfoComponent.Account);
+                    List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, _account => _account.Account == userInfoComponent.Account);
                     if (accoutResult == null || accoutResult.Count == 0)
                     {
                         continue;
@@ -1141,7 +1141,7 @@ namespace ET
             //8.拍卖行收益总共超过100万
 
             long serverNow = TimeHelper.ServerNow();
-            int curDate = ComHelp.GetDayByTime(serverNow);
+            int curDate = CommonHelper.GetDayByTime(serverNow);
            
             Dictionary<string, List<long>> accountNumber = new Dictionary<string, List<long>>();  
             
@@ -1184,7 +1184,7 @@ namespace ET
             }
 
             long serverNow = TimeHelper.ServerNow();
-            int curDate = ComHelp.GetDayByTime(serverNow);
+            int curDate = CommonHelper.GetDayByTime(serverNow);
             Dictionary<string, List<long>> accountNumber = new Dictionary<string, List<long>>();
 #endif
         }
@@ -2320,7 +2320,7 @@ namespace ET
                 return ErrorCode.ERR_PlayerIsNot;
             }
 
-            List<DBCenterAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id.Equals(userInfoComponent.UserInfo.AccInfoID));
+            List<DBCenterAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id.Equals(userInfoComponent.UserInfo.AccInfoID));
             if (dBAccountInfos.Count == 0)
             {
                 return ErrorCode.ERR_PlayerIsNot;
@@ -2335,7 +2335,7 @@ namespace ET
                 }
             }
 
-            await Game.Scene.GetComponent<DBComponent>().Save( ComHelp.CenterZoneId,dbCenterAccountInfo);
+            await Game.Scene.GetComponent<DBComponent>().Save( CommonConfig.CenterZoneId,dbCenterAccountInfo);
 #endif
 
             return ErrorCode.ERR_Success;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,15 +24,16 @@ namespace ET
             for (int equip = 0; equip < bagComponent.EquipList.Count; equip++)
             {
                 BagInfo equipInfo = bagComponent.EquipList[equip];
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(equipInfo.ItemID);
-                if (itemConfig.EquipType <= 100)
+                Item Item = ItemCategory.Instance.Get(equipInfo.ItemID);
+                int equipType = ItemHelper.GetNewEquipType(equipInfo);
+                if (equipType <= 100)
                 {
                     equip1number++;
                 }
 
-                if (!equiplist.Contains(itemConfig.EquipType))
+                if (!equiplist.Contains(equipType))
                 {
-                    equiplist.Add(itemConfig.EquipType);
+                    equiplist.Add(equipType);
                 }
             }
 
@@ -69,8 +70,9 @@ namespace ET
                     continue;
                 }
 
-                ItemConfig itemConfig = ItemConfigCategory.Instance.Get(equipInfo.ItemID);
-                if (itemConfig.EquipType > 100)
+                Item Item = ItemCategory.Instance.Get(equipInfo.ItemID);
+                int equipType = ItemHelper.GetNewEquipType(equipInfo);
+                if (equipType > 100)
                 {
                     continue;
                 }
@@ -126,7 +128,7 @@ namespace ET
                 skillSetComponent.SkillList.RemoveAt(k);
             }
 
-            int[] SkillList = OccupationConfigCategory.Instance.Get(request.Occ).InitSkillID;
+            int[] SkillList = OccupationCategory.Instance.Get(request.Occ).InitSkillID;
             for (int i = 0; i < SkillList.Length; i++)
             {
                 if (i == 0)
@@ -151,7 +153,7 @@ namespace ET
             {
                 FashionConfig fashionConfig = FashionConfigCategory.Instance.Get(bagComponent.FashionActiveIds[fashion]);
 
-                if (ComHelp.IfNull(fashionConfig.ActiveCost) || fashionConfig.ActiveCost.Equals("0;0"))
+                if (CommonHelper.IfNull(fashionConfig.ActiveCost) || fashionConfig.ActiveCost.Equals("0;0"))
                 {
                     continue;
                 }

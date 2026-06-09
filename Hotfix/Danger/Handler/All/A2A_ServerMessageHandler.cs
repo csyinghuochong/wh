@@ -31,13 +31,11 @@ namespace ET
                             scene.GetComponent<TeamSceneComponent>().OnRecvUnitLeave(long.Parse(request.MessageValue), true);
                         }
                         break;
-                    case SceneType.Solo:
+                    case SceneType.FubenWork:
                         if (request.MessageType == NoticeType.PlayerExit)
                         {
                             scene.GetComponent<SoloSceneComponent>().OnRecvUnitLeave(long.Parse(request.MessageValue));
                         }
-                        break;
-                    case SceneType.Battle:
                         break;
                     case SceneType.Rank:
                         if (request.MessageType == NoticeType.RankRefresh)

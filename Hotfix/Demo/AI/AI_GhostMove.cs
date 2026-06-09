@@ -40,7 +40,7 @@ namespace ET
                 {
                     //随机坐标
                     float randomrange = aiComponent.ActRange;
-                    Vector3 targetpos = AIHelp.GetRandomPointInRing(master.Position, 2, randomrange);
+                    Vector3 targetpos = AIGetTargetHelp.GetRandomPointInRing(master.Position, 2, randomrange);
 
                     aiComponent.LastAttackTime = 0;
                     await unit.FindPathMoveToAsync(targetpos, cancellationToken, false);

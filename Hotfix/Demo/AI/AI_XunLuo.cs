@@ -17,14 +17,14 @@ namespace ET
             }
             Unit unit = aiComponent.GetParent<Unit>();
             Unit nearestEnemy = null;
-            if (aiComponent.SceneTypeEnum == SceneTypeEnum.PetDungeon
-                || aiComponent.SceneTypeEnum == SceneTypeEnum.PetTianTi)
+            if (aiComponent.SceneTypeEnum == MapTypeEnum.PetDungeon
+                || aiComponent.SceneTypeEnum == MapTypeEnum.PetTianTi)
             {
-                nearestEnemy = AIHelp.GetNearestCell(unit);
+                nearestEnemy = AIGetTargetHelp.GetNearestCell(unit);
             }
             else
             {
-                nearestEnemy = AIHelp.GetNearestEnemy(unit, aiComponent.ActRange, true); ;
+                nearestEnemy = AIGetTargetHelp.GetNearestEnemy(unit, aiComponent.ActRange, true); ;
             } 
             if (nearestEnemy == null)
             {

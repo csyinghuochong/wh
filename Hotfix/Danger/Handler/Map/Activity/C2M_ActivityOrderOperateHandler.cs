@@ -15,27 +15,27 @@ namespace ET
             switch (request.OperatateType)
             {
                 case 1:
-                    if (!bagComponent.CheckCostItem(ActivityConfigHelper.ActivityOrderRefreshItem))
+                    if (!bagComponent.CheckCostItem(ActivityV1Config.ActivityOrderRefreshItem))
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();
                         return;
                     }
 
-                    bagComponent.OnCostItemData(ActivityConfigHelper.ActivityOrderRefreshItem, ItemLocType.ItemLocBag, ItemGetWay.Activity);
-                    activityComponent.ActivityV1Info.OrderId = ActivityConfigHelper.GenerateActivityOrderId();
+                    bagComponent.OnCostItemData(ActivityV1Config.ActivityOrderRefreshItem, ItemLocType.ItemLocBag, ItemGetWay.Activity);
+                    activityComponent.ActivityV1Info.OrderId = ActivityV1Config.GenerateActivityOrderId();
                     activityComponent.ActivityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
 
                     break;
                 case 2:
                     int orderId = activityComponent.ActivityV1Info.OrderId;
-                    if (orderId < 0 || orderId >= ActivityConfigHelper.ActivityOrderItemList.Count)
+                    if (orderId < 0 || orderId >= ActivityV1Config.ActivityOrderItemList.Count)
                     {
                         response.Error = ErrorCode.ERR_Parameter;
                         reply();
                         return;
                     }
-                    ActivityOrderItem activityOrderItem = ActivityConfigHelper.ActivityOrderItemList[orderId];
+                    ActivityOrderItem activityOrderItem = ActivityV1Config.ActivityOrderItemList[orderId];
                    
                     if (!bagComponent.CheckCostItem(activityOrderItem.Give))
                     {
@@ -63,7 +63,7 @@ namespace ET
                     //activityComponent.ActivityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
                     break;
                 case 3:  //自动刷新
-                    activityComponent.ActivityV1Info.OrderId = ActivityConfigHelper.GenerateActivityOrderId();
+                    activityComponent.ActivityV1Info.OrderId = ActivityV1Config.GenerateActivityOrderId();
                     activityComponent.ActivityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
                     break;
             }

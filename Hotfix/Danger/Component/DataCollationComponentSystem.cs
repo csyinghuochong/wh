@@ -390,12 +390,12 @@ namespace ET
 
             self.CreateAccountTime = userInfoComponent.CreateAccountTime;
             self.CreateAccountTimeStr = TimeInfo.Instance.ToDateTime(self.CreateAccountTime).ToString();
-
-            self.Occ = OccupationConfigCategory.Instance.Get(userInfoComponent.UserInfo.Occ).OccupationName;
+            
+            self.Occ = WordHelper.GetShowText(OccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).Name);
 
             if (userInfoComponent.UserInfo.OccTwo > 0)
             {
-                self.OccTwo = OccupationTwoConfigCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).OccupationName;
+                WordHelper.GetShowText(Occupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).Name);
             }
 
             self.Combat = userInfoComponent.UserInfo.Combat;

@@ -20,7 +20,7 @@ namespace ET
             
             ActivityComponent activityComponent = unit.GetComponent<ActivityComponent>();
             int receNum = activityComponent.TimerChouKaReceiveIndex;
-            if (receNum >= ConfigHelper.TimerChouKaRewardList.Count)
+            if (receNum >= CommonConfig.TimerChouKaRewardList.Count)
             {
                 response.Error = ErrorCode.ERR_AlreadyFinish;
                 reply();
@@ -28,7 +28,7 @@ namespace ET
             }
 
             long passtime = activityComponent.LastTimerChouKaPassTime;
-            long validTime =  ConfigHelper.TimerChouKaRewardList[receNum].Interval * TimeHelper.Minute;
+            long validTime =  CommonConfig.TimerChouKaRewardList[receNum].Interval * TimeHelper.Minute;
 
             if (passtime < validTime)
             {
@@ -51,7 +51,7 @@ namespace ET
             //int recvid = validids[index];
 
             int recvid = activityComponent.TimerChouKaReceiveIndex;
-            string getitem = ConfigHelper.TimerChouKaRewardList[recvid].ItemInfo;
+            string getitem = CommonConfig.TimerChouKaRewardList[recvid].ItemInfo;
             bagComponent.OnAddItemData(getitem, $"{ItemGetWay.ChouKa}_{TimeHelper.ServerNow()}");
             activityComponent.TimerChouKaReceiveIndex++;
             activityComponent.LastTimerChouKaPassTime = 0;

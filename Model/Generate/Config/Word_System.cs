@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class CampRewardConfigCategory : ProtoObject, IMerge
+    public partial class Word_SystemCategory : ProtoObject, IMerge
     {
-        public static CampRewardConfigCategory Instance;
+        public static Word_SystemCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, CampRewardConfig> dict = new Dictionary<int, CampRewardConfig>();
+        private Dictionary<int, Word_System> dict = new Dictionary<int, Word_System>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<CampRewardConfig> list = new List<CampRewardConfig>();
+        private List<Word_System> list = new List<Word_System>();
 		
-        public CampRewardConfigCategory()
+        public Word_SystemCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            CampRewardConfigCategory s = o as CampRewardConfigCategory;
+            Word_SystemCategory s = o as Word_SystemCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (CampRewardConfig config in list)
+            foreach (Word_System config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public CampRewardConfig Get(int id)
+        public Word_System Get(int id)
         {
-            this.dict.TryGetValue(id, out CampRewardConfig item);
+            this.dict.TryGetValue(id, out Word_System item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (CampRewardConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (Word_System)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, CampRewardConfig> GetAll()
+        public Dictionary<int, Word_System> GetAll()
         {
             return this.dict;
         }
 
-        public CampRewardConfig GetOne()
+        public Word_System GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,20 +73,11 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class CampRewardConfig: ProtoObject, IConfig
+	public partial class Word_System: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>名次</summary>
-		[ProtoMember(2)]
-		public int[] RankRange { get; set; }
-		/// <summary>胜利奖励</summary>
-		[ProtoMember(3)]
-		public string Win_RewardList { get; set; }
-		/// <summary>失败奖励</summary>
-		[ProtoMember(4)]
-		public string Fail_RewardList { get; set; }
 
 	}
 }

@@ -14,13 +14,13 @@ namespace ET
 
         public static async ETTask QueryTodayAccount()
         {
-            var startZoneConfig = StartZoneConfigCategory.Instance.Get(ComHelp.CenterZoneId);
+            var startZoneConfig = StartZoneConfigCategory.Instance.Get(CommonConfig.CenterZoneId);
             Game.Scene.GetComponent<DBComponent>().InitDatabase(startZoneConfig);
 
             long serverNow = TimeHelper.ServerNow();
-            int todayNumber = ComHelp.GetDayByTime(serverNow);  
+            int todayNumber = CommonHelper.GetDayByTime(serverNow);  
             string tipinfo = string.Empty;  
-            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id > 0);
+            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id > 0);
             foreach (var entity in dBAccountInfos_new)
             {
                 if (entity.CreateTime == 0)
@@ -28,7 +28,7 @@ namespace ET
                     continue;
                 }
 
-                int accountDay = ComHelp.GetDayByTime(entity.CreateTime);
+                int accountDay = CommonHelper.GetDayByTime(entity.CreateTime);
                 if (todayNumber!= accountDay)
                 {
                     continue;
@@ -53,13 +53,13 @@ namespace ET
 
         public static async ETTask QueryTaptapAccount()
         {
-            var startZoneConfig = StartZoneConfigCategory.Instance.Get(ComHelp.CenterZoneId);
+            var startZoneConfig = StartZoneConfigCategory.Instance.Get(CommonConfig.CenterZoneId);
             Game.Scene.GetComponent<DBComponent>().InitDatabase(startZoneConfig);
 
             long serverNow = TimeHelper.ServerNow();
-            int todayNumber = ComHelp.GetDayByTime(serverNow);
+            int todayNumber = CommonHelper.GetDayByTime(serverNow);
             string tipinfo = string.Empty;
-            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id > 0);
+            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id > 0);
           
             Dictionary<int, long> DayCreateNumber = new Dictionary<int, long>();    
             
@@ -70,7 +70,7 @@ namespace ET
                     continue;
                 }
 
-                int accountDay = ComHelp.GetDayByTime(entity.CreateTime);
+                int accountDay = CommonHelper.GetDayByTime(entity.CreateTime);
                
                 if (entity.Password != "6" )
                 {
@@ -241,7 +241,7 @@ namespace ET
         public static async ETTask QueryRecharge_2()
         {
 
-            ListComponent<int> mergezones = new ListComponent<int>() { 81, ComHelp.CenterZoneId };
+            ListComponent<int> mergezones = new ListComponent<int>() { 81, CommonConfig.CenterZoneId };
             for (int i = 0; i < mergezones.Count; i++)
             {
                 var startZoneConfig = StartZoneConfigCategory.Instance.Get(mergezones[i]);
@@ -249,7 +249,7 @@ namespace ET
             }
 
 
-            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id > 0);
+            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id > 0);
             foreach (var entity in dBAccountInfos_new)
             {
                 long sigleRecharge = 0;
@@ -273,9 +273,9 @@ namespace ET
 
         public static async ETTask QueryCard(string card)
         {
-            var startZoneConfig = StartZoneConfigCategory.Instance.Get(ComHelp.CenterZoneId);
+            var startZoneConfig = StartZoneConfigCategory.Instance.Get(CommonConfig.CenterZoneId);
             Game.Scene.GetComponent<DBComponent>().InitDatabase(startZoneConfig);
-            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id > 0);
+            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id > 0);
             foreach (var entity in dBAccountInfos_new)
             {
                 if (entity.PlayerInfo != null && entity.PlayerInfo.IdCardNo ==card)
@@ -287,9 +287,9 @@ namespace ET
 
         public static async ETTask QueryOrderInfo(string dingdan)
         {
-            var startZoneConfig = StartZoneConfigCategory.Instance.Get(ComHelp.CenterZoneId);
+            var startZoneConfig = StartZoneConfigCategory.Instance.Get(CommonConfig.CenterZoneId);
             Game.Scene.GetComponent<DBComponent>().InitDatabase(startZoneConfig);
-            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(ComHelp.CenterZoneId, d => d.Id > 0);
+            List<DBCenterAccountInfo> dBAccountInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id > 0);
             foreach (var entity in dBAccountInfos_new)
             {
                 if (entity.PlayerInfo == null)
@@ -666,7 +666,7 @@ namespace ET
                 int lv = 0;
                 userLevel.TryGetValue(entity.Id, out lv);
 
-                List<BagInfo> rewardlist = ConfigHelper.GetHeQuReward(lv);
+                List<BagInfo> rewardlist = CommonConfig.GetHeQuReward(lv);
                 if (rewardlist!=null && rewardlist.Count > 0)
                 {
                     MailInfo mailInfo = new MailInfo();

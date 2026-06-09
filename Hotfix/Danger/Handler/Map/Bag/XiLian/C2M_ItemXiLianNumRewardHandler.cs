@@ -16,7 +16,7 @@ namespace ET
                 return;
             }
 
-            if (!ConfigHelper.ItemXiLianNumReward.Keys.Contains(request.RewardId))
+            if (!CommonConfig.ItemXiLianNumReward.Keys.Contains(request.RewardId))
             {
                 Log.Error($"C2M_ItemXiLianNumReward 1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -31,7 +31,7 @@ namespace ET
                 return;
             }
 
-            string[] reward = ConfigHelper.ItemXiLianNumReward[request.RewardId].Split('$');
+            string[] reward = CommonConfig.ItemXiLianNumReward[request.RewardId].Split('$');
             string[] items = reward[0].Split('@');
             string[] diamond = reward[1].Split(';')[1].Split(',');
             if (unit.GetComponent<BagComponent>().GetBagLeftCell() < items.Length)

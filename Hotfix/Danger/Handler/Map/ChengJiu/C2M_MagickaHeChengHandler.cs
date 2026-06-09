@@ -46,7 +46,7 @@ namespace ET
 
             foreach (int itemid in removeids) 
             {
-                foreach ( ( int key, List<int>  idlist) in ConfigHelper.MagicHeChengList)
+                foreach ( ( int key, List<int>  idlist) in CommonConfig.MagicHeChengList)
                 {
                     if (!idlist.Contains(itemid))
                     {
@@ -68,7 +68,7 @@ namespace ET
             }
 
             //已经最大等级了。
-            if (magiclevel >= ConfigHelper.MagicHeChengList.Count)
+            if (magiclevel >= CommonConfig.MagicHeChengList.Count)
             {
                 response.Error = ErrorCode.ERR_MagicHeCheng_3;
                 reply();
@@ -86,7 +86,7 @@ namespace ET
                 newlevel = magiclevel + 1;
             }
 
-            List<int> newmagicids = ConfigHelper.MagicHeChengList[newlevel];
+            List<int> newmagicids = CommonConfig.MagicHeChengList[newlevel];
             int idindex =  RandomHelper.RandomNumber(0, newmagicids.Count);
             int newmagid = newmagicids[idindex];
 

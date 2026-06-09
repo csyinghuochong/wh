@@ -84,16 +84,16 @@ namespace ET
 		/// <summary>下一步</summary>
 		[ProtoMember(3)]
 		public int NextID { get; set; }
-		/// <summary>是否保存</summary>
+		/// <summary>是否保存 0-保存 1-不保存</summary>
 		[ProtoMember(4)]
 		public int Save { get; set; }
-		/// <summary>触发条件</summary>
+		/// <summary>触发条件 1-打开界面 2-进入副本 3-接取任务 4-提交任务 5-掉落道具 6-技能升级 7-玩家升级 8-获得宠物</summary>
 		[ProtoMember(5)]
 		public int TrigerType { get; set; }
 		/// <summary>触发目标</summary>
 		[ProtoMember(6)]
 		public string TrigerParams { get; set; }
-		/// <summary>行为类型</summary>
+		/// <summary>行为类型 1-按钮 2-点击NPC</summary>
 		[ProtoMember(7)]
 		public int ActionType { get; set; }
 		/// <summary>行为对象</summary>
@@ -108,6 +108,9 @@ namespace ET
 		/// <summary>引导文本</summary>
 		[ProtoMember(11)]
 		public string Text { get; set; }
+		/// <summary>引导文本</summary>
+		[ProtoMember(12)]
+		public string Text_EN { get; set; }
 		/// <summary>文本位置[相对于按钮]</summary>
 		[ProtoMember(13)]
 		public int TextPosition { get; set; }

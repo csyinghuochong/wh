@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -20,9 +20,9 @@ namespace ET
                 return; 
             }
 
-            int neednum = ConfigHelper.GetMagitFefreshNeedNum(beforeequip.ItemID);
+            int neednum = CommonConfig.GetMagitFefreshNeedNum(beforeequip.ItemID);
 
-            if (!bagComponent.OnCostItemData($"{ConfigHelper.MagitFefreshItemId};{neednum}", ItemLocType.ItemLocBag, ItemGetWay.MagicKa))
+            if (!bagComponent.OnCostItemData($"{CommonConfig.MagitFefreshItemId};{neednum}", ItemLocType.ItemLocBag, ItemGetWay.MagicKa))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
@@ -31,12 +31,12 @@ namespace ET
 
             beforeequip.ItemPar = RandomHelper.RandomNumber(1, 100).ToString();
 
-            ItemConfig itemConfig = ItemConfigCategory.Instance.Get(beforeequip.ItemID);
-            List<int> itemSkills = ItemHelper.GetItemSkill(itemConfig.SkillID);
+            Item Item =ItemCategory.Instance.Get(beforeequip.ItemID);
+            /*List<int> itemSkills = ItemHelper.GetItemSkill(Item.SkillID);
             if (itemSkills.Count > 0)
             {
                 unit.GetComponent<SkillPassiveComponent>().UpdateMagicQulity(itemSkills[0], int.Parse(beforeequip.ItemPar));
-            }
+            }*/
 
             //通知客户端背包刷新
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();

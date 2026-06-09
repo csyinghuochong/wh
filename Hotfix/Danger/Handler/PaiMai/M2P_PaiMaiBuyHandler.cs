@@ -10,13 +10,13 @@ namespace ET
         protected override async ETTask Run(Scene scene, M2P_PaiMaiBuyRequest request, P2M_PaiMaiBuyResponse response, Action reply)
         {
             //获取列表,对应的缓存进行清空
-            if (!ItemConfigCategory.Instance.Contain(request.PaiMaiItemInfo.BagInfo.ItemID))
+            if (!ItemHelper.IsValidItem(request.PaiMaiItemInfo.BagInfo))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
                 return;
             }
-            ItemConfig itemCof = ItemConfigCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
+            Item itemCof = ItemCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
             int itemType = itemCof.ItemType;
             DBPaiMainInfo dBPaiMainInfo = scene.GetComponent<PaiMaiSceneComponent>().GetPaiMaiDBByType(itemType);
             if (dBPaiMainInfo == null)

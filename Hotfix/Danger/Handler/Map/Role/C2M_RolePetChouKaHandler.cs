@@ -75,7 +75,7 @@ namespace ET
             }
 
             int petId = petList[RandomHelper.RandomNumber(0, petList.Count)];
-            PetConfig petConfig = PetConfigCategory.Instance.Get(petId);
+            Pet petConfig = PetCategory.Instance.Get(petId);
             List<int> weight = new List<int>(petConfig.SkinPro);
             int index = RandomHelper.RandomByWeight(weight);
             int skinId = petConfig.Skin[index];
