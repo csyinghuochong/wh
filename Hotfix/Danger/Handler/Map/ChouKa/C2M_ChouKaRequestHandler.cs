@@ -42,7 +42,7 @@ namespace ET
             int needZuanshi = 0;
             if (request.CostType == 2)
             {
-                if (bagComponent.GetItemNumber(CommonConfig.ZuanShiTenChoukaItem) < 1)
+                if (bagComponent.GetItemNumber(ItemBigType.Type_Item,CommonConfig.ZuanShiTenChoukaItem) < 1)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     reply();

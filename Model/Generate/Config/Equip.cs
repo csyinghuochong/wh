@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class EquipConfigCategory : ProtoObject, IMerge
+    public partial class EquipCategory : ProtoObject, IMerge
     {
-        public static EquipConfigCategory Instance;
+        public static EquipCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, EquipConfig> dict = new Dictionary<int, EquipConfig>();
+        private Dictionary<int, Equip> dict = new Dictionary<int, Equip>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<EquipConfig> list = new List<EquipConfig>();
+        private List<Equip> list = new List<Equip>();
 		
-        public EquipConfigCategory()
+        public EquipCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            EquipConfigCategory s = o as EquipConfigCategory;
+            EquipCategory s = o as EquipCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (EquipConfig config in list)
+            foreach (Equip config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public EquipConfig Get(int id)
+        public Equip Get(int id)
         {
-            this.dict.TryGetValue(id, out EquipConfig item);
+            this.dict.TryGetValue(id, out Equip item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (EquipConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (Equip)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, EquipConfig> GetAll()
+        public Dictionary<int, Equip> GetAll()
         {
             return this.dict;
         }
 
-        public EquipConfig GetOne()
+        public Equip GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,48 +73,48 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class EquipConfig: ProtoObject, IConfig
+	public partial class Equip: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public string ItemName { get; set; }
-		/// <summary>鉴定道具消耗</summary>
+		public int Name { get; set; }
+		/// <summary>图标</summary>
 		[ProtoMember(3)]
+		public string Icon { get; set; }
+		/// <summary>模型</summary>
+		[ProtoMember(4)]
+		public string Model { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(5)]
+		public int Sub_Type { get; set; }
+		/// <summary>穿戴等级</summary>
+		[ProtoMember(6)]
+		public int UseLv { get; set; }
+		/// <summary>品质</summary>
+		[ProtoMember(7)]
+		public int Quality { get; set; }
+		/// <summary>鉴定道具</summary>
+		[ProtoMember(8)]
 		public int AppraisalItem { get; set; }
 		/// <summary>套装ID</summary>
-		[ProtoMember(4)]
-		public int EquipSuitID { get; set; }
-		/// <summary>隐藏属性类型 0：无 1：攻击/物防/魔防 2：生命/物防/魔防/攻击 3：生命</summary>
-		[ProtoMember(5)]
-		public int HideType { get; set; }
-		/// <summary>隐藏属性 最大值</summary>
-		[ProtoMember(6)]
-		public int HideMax { get; set; }
-		/// <summary>单条隐藏属性出现概率</summary>
-		[ProtoMember(7)]
-		public double HideShowPro { get; set; }
-		/// <summary>一级属性随机值</summary>
-		[ProtoMember(8)]
-		public int OneProRandomValue { get; set; }
-		/// <summary>初始宝石孔位</summary>
 		[ProtoMember(9)]
-		public int GemHole { get; set; }
+		public int EquipSuitID { get; set; }
 		/// <summary>血量</summary>
 		[ProtoMember(10)]
 		public int Equip_Hp { get; set; }
-		/// <summary>最低攻击</summary>
+		/// <summary>物攻min</summary>
 		[ProtoMember(11)]
 		public int Equip_MinAct { get; set; }
-		/// <summary>最高攻击</summary>
+		/// <summary>物攻max</summary>
 		[ProtoMember(12)]
 		public int Equip_MaxAct { get; set; }
-		/// <summary>最低攻击</summary>
+		/// <summary>法攻min</summary>
 		[ProtoMember(13)]
 		public int Equip_MinMagAct { get; set; }
-		/// <summary>最高攻击</summary>
+		/// <summary>法攻max</summary>
 		[ProtoMember(14)]
 		public int Equip_MaxMagAct { get; set; }
 		/// <summary>最低防御</summary>
@@ -150,15 +150,6 @@ namespace ET
 		/// <summary>幸运值</summary>
 		[ProtoMember(25)]
 		public int Equip_Lucky { get; set; }
-		/// <summary>附加属性</summary>
-		[ProtoMember(26)]
-		public string AddProperty { get; set; }
-		/// <summary>是否 显示属性 0-显示 1-不显示</summary>
-		[ProtoMember(27)]
-		public string AddPropreListIfShow { get; set; }
-		/// <summary>附加 RolePropertyAdd  增加角色属性 SkillPropertyAdd   增加技能属性 1-增加范围  2-攻击系数 3-固定上海  4-减少CD 5-技能持续时间 6-额外附加BUFF BuffIdAdd   添加Buff属性 ReplaceSkillId  替换技能 SkillIdAdd 增加技能 BuffPropertyAdd 增加buff效果 1-buff属性值 2-buff持续时间</summary>
-		[ProtoMember(28)]
-		public int TianFuId { get; set; }
 
 	}
 }

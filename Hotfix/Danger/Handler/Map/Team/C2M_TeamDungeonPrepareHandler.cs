@@ -30,7 +30,7 @@ namespace ET
 			if (leader != null)
 			{
 				BagComponent bagComponent = leader.GetComponent<BagComponent>();
-				if (request.TeamInfo.FubenType == TeamFubenType.ShenYuan && bagComponent.GetItemNumber(CommonConfig.ShenYuanCostId) < 1)
+				if (request.TeamInfo.FubenType == TeamFubenType.ShenYuan && bagComponent.GetItemNumber(ItemBigType.Type_Item, CommonConfig.ShenYuanCostId) < 1)
 				{
 					errorcode = ErrorCode.Err_ShenYuanItemError;
 				}

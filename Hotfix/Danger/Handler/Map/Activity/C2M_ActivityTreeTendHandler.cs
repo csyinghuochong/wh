@@ -37,7 +37,7 @@ namespace ET
                     continue;
                 }
 
-                if (bagComponent.GetItemNumber(itemid) < usenum)
+                if (bagComponent.GetItemNumber(ItemBigType.Type_Item, itemid) < usenum)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     reply();

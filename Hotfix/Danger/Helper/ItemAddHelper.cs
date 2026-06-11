@@ -19,11 +19,26 @@ namespace ET
             MessageHelper.SendToClient(self, m2c_bagUpdate);
         }
         
-        public static void OnGetItem(this Unit self, int getWay, int itemId, int itemNum)
+        
+        public static void OnGetItem(this Unit self, int getWay, BagInfo bagInfo)
         {
-            self.GetComponent<TaskComponent>().OnGetItem_2(itemId);
+            /*self.GetComponent<TaskComponent>().OnGetItem_2(itemId);
+            self.GetComponent<TaskComponent>().OnGetItemNumber( getWay, itemId, itemNum);
+            self.GetComponent<ShoujiComponent>().OnGetItem(itemId);*/
+        }
+        
+        public static void OnGetItem(this Unit self, int getWay, int itemType, int itemId, int itemNumber)
+        {
+            /*self.GetComponent<TaskComponent>().OnGetItem_2(itemId);
+            self.GetComponent<TaskComponent>().OnGetItemNumber( getWay, itemId, itemNum);
+            self.GetComponent<ShoujiComponent>().OnGetItem(itemId);*/
+        }
+        
+        public static void OnGetItem(this Unit self, int getWay, RewardItem rewardItem)
+        {
+            /*self.GetComponent<TaskComponent>().OnGetItem_2(itemId);
             self.GetComponent<TaskComponent>().OnGetItemNumber( getWay, itemId, itemNum);       
-            self.GetComponent<ShoujiComponent>().OnGetItem(itemId);
+            self.GetComponent<ShoujiComponent>().OnGetItem(itemId);*/
         }
 
         /// <summary>
@@ -43,18 +58,6 @@ namespace ET
         /// <param name="getType">1购买</param>
         public static void JianDingFuItem(BagInfo bagInf0, int shulianValue, int getType)
         {
-            if (ItemHelper.IsBuyItem(getType))
-            {
-                bagInf0.ItemPar = GlobalValueConfigCategory.Instance.JianDingFuQulity.ToString();
-                return;
-            }
-
-            //万能鉴定符固定为60
-            if (bagInf0.ItemID == 11200000)
-            {
-                bagInf0.ItemPar = "100";
-                return;
-            }
 
             Item itemCof = ItemCategory.Instance.Get(bagInf0.ItemID);
             float minValuePro = (float)shulianValue / (float)int.Parse(itemCof.ItemUsePar);
@@ -144,10 +147,9 @@ namespace ET
         //获取装备的鉴定属性
         public static List<HideProList> GetEquipZhuanJingHidePro(int itemtype ,int equipID, int itemID, int jianDingPinZhi, Unit unit, bool ifItem)
         {
-            
-            
+
             //获取最大值
-            EquipConfig equipCof = EquipConfigCategory.Instance.Get(equipID);
+            Equip equipCof = EquipCategory.Instance.Get(equipID);
             List<HideProList> hideList = new List<HideProList>();
 
             //获取当前鉴定系数
@@ -252,82 +254,6 @@ namespace ET
             if (randomNum == 0)
             {
                 return null;
-            }
-
-            //获取随机属性的最大值和最小值
-            JianDingDate jiandingDate = ItemHelper.GetEquipZhuanJingPro( equipID, itemID, jianDingPinZhi,ifItem);
-
-            for (int i = 0; i < randomNum; i++)
-            {
-                //随机值(高品质保底属性)
-                /*
-                int minNum = 1;
-                if (JianDingPro > 1f) {
-                    minNum = (int)((float)equipCof.OneProRandomValue * (JianDingPro - 1f) * 0.68f);
-                }
-                int maxNum = (int)((float)equipCof.OneProRandomValue * JianDingPro * 0.8f);
-                if (minNum > maxNum) {
-                    maxNum = minNum;
-                }
-                if (maxNum > equipCof.OneProRandomValue) {
-                    maxNum = equipCof.OneProRandomValue;
-                }
-
-                int randomValueInt = RandomHelper.RandomNumber(minNum, maxNum + 1);
-                */
-                int randomValueInt = RandomHelper.RandomNumber(jiandingDate.MinNum, jiandingDate.MaxNum + 1);
-                randomValueInt = (int)(randomValueInt * JianDingPro);
-                if (randomValueInt > equipCof.OneProRandomValue)
-                {
-                    randomValueInt = equipCof.OneProRandomValue;
-                }
-                //如果品质符足够好,保底为5
-                if (randomValueInt < 5)
-                {
-                    if (JianDingPro >= 1.5f)
-                    {
-                        randomValueInt = 5;
-                    }
-                    else if (JianDingPro >= 1f)
-                    {
-                        randomValueInt = 3;
-                    }
-                }
-
-                //保底为1点,防止出现0点属性
-                if (randomValueInt < 1)
-                {
-                    randomValueInt = 1;
-                }
-
-                //随机属性类型
-                int randomIDInt = RandomHelper.RandomNumber(1, 6);
-                //
-                int proID = 105101;
-                switch (randomIDInt)
-                {
-                    case 1:
-                        proID = 105101;
-                        break;
-                    case 2:
-                        proID = 105201;
-                        break;
-                    case 3:
-                        proID = 105301;
-                        break;
-                    case 4:
-                        proID = 105401;
-                        break;
-                    case 5:
-                        proID = 105501;
-                        break;
-                }
-
-                HideProList hideProList = new HideProList();
-                hideProList.HideID = proID;
-                hideProList.HideValue = randomValueInt;
-                hideList.Add(hideProList);
-
             }
 
             return hideList;

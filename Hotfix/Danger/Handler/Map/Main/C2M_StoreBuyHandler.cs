@@ -51,8 +51,9 @@ namespace ET
 
             UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
             List<RewardItem> rewardItems = new List<RewardItem>();
-            rewardItems.Add(new RewardItem() { ItemID = storeSellConfig.SellItemID, ItemNum = storeSellConfig.SellItemNum * request.SellItemNum });
+            rewardItems.Add(new RewardItem() {  ItemType = ItemBigType.Type_Item, ItemID = storeSellConfig.SellItemID, ItemNum = storeSellConfig.SellItemNum * request.SellItemNum });
 
+            int itemType = ItemBigType.Type_Item;
             int costType = storeSellConfig.SellType;
             string costValue = (-1 * storeSellConfig.SellValue * request.SellItemNum).ToString();
 
@@ -83,7 +84,7 @@ namespace ET
                     }
                     break;
                 default:
-                    if (unit.GetComponent<BagComponent>().GetItemNumber(costType) < storeSellConfig.SellValue * request.SellItemNum)
+                    if (unit.GetComponent<BagComponent>().GetItemNumber(itemType, costType) < storeSellConfig.SellValue * request.SellItemNum)
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     }

@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class Word_SystemCategory : ProtoObject, IMerge
+    public partial class Equip_TypeCategory : ProtoObject, IMerge
     {
-        public static Word_SystemCategory Instance;
+        public static Equip_TypeCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Word_System> dict = new Dictionary<int, Word_System>();
+        private Dictionary<int, Equip_Type> dict = new Dictionary<int, Equip_Type>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Word_System> list = new List<Word_System>();
+        private List<Equip_Type> list = new List<Equip_Type>();
 		
-        public Word_SystemCategory()
+        public Equip_TypeCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            Word_SystemCategory s = o as Word_SystemCategory;
+            Equip_TypeCategory s = o as Equip_TypeCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Word_System config in list)
+            foreach (Equip_Type config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Word_System Get(int id)
+        public Equip_Type Get(int id)
         {
-            this.dict.TryGetValue(id, out Word_System item);
+            this.dict.TryGetValue(id, out Equip_Type item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Word_System)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (Equip_Type)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Word_System> GetAll()
+        public Dictionary<int, Equip_Type> GetAll()
         {
             return this.dict;
         }
 
-        public Word_System GetOne()
+        public Equip_Type GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,14 +73,17 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Word_System: ProtoObject, IConfig
+	public partial class Equip_Type: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>中文</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public string CN { get; set; }
+		public int Name { get; set; }
+		/// <summary>包含子类</summary>
+		[ProtoMember(3)]
+		public int[] Type_Sub { get; set; }
 
 	}
 }

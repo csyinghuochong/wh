@@ -51,7 +51,7 @@ namespace ET
             }
             foreach (( int itemid, int itemnum ) in itemNumber)
             {
-                if (bagComponent.GetItemNumber(itemid) < itemnum)
+                if (bagComponent.GetItemNumber(ItemBigType.Type_Item,itemid) < itemnum)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     reply();

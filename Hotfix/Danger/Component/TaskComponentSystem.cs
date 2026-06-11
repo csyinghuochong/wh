@@ -270,11 +270,11 @@ namespace ET
                     {
                         if (i == 0)
                         {
-                            taskPro.taskTargetNum_1 = (int)unit.GetComponent<BagComponent>().GetItemNumber(taskConfig.Target[i]);
+                            taskPro.taskTargetNum_1 = (int)unit.GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item, taskConfig.Target[i]);
                         }
                         if (i == 1)
                         {
-                            taskPro.taskTargetNum_2 = (int)unit.GetComponent<BagComponent>().GetItemNumber(taskConfig.Target[i]);
+                            taskPro.taskTargetNum_2 = (int)unit.GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item, taskConfig.Target[i]);
                         }
                     }
                     break;
@@ -436,7 +436,7 @@ namespace ET
                 BagComponent bagComponent = self.GetParent<Unit>().GetComponent<BagComponent>();
                 int needid = Target[0];
                 int neednumber = TargetValue[0];
-                int curnumber = (int)bagComponent.GetItemNumber(needid);
+                int curnumber = (int)bagComponent.GetItemNumber(ItemBigType.Type_Item, needid);
                 if (curnumber < neednumber)
                 {
                     self.TriggerTaskEvent(TaskTargetType.ItemID_Number_2, needid, 0);
@@ -1293,14 +1293,14 @@ namespace ET
             {
                 if (targetType == TaskTargetType.ItemID_Number_2)
                 {
-                    long targetNumber = self.GetParent<Unit>().GetComponent<BagComponent>().GetItemNumber(Target[t]);
+                    long targetNumber = self.GetParent<Unit>().GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item, Target[t]);
                     if (targetNumber >= Int32.MaxValue)
                     {
                         targetValue = Int32.MaxValue;
                     }
                     else
                     {
-                        targetValue = (int)self.GetParent<Unit>().GetComponent<BagComponent>().GetItemNumber(Target[t]);
+                        targetValue = (int)self.GetParent<Unit>().GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item, Target[t]);
                     }
                 }
 

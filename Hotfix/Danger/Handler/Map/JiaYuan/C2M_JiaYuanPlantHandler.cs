@@ -15,7 +15,7 @@ namespace ET
                 return;
             }
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
-            if (bagComponent.GetItemNumber(request.ItemId) < 1)
+            if (bagComponent.GetItemNumber(ItemBigType.Type_Item,request.ItemId) < 1)
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();

@@ -77,7 +77,7 @@ namespace ET
                     {
                         string[] duihuanparams = Item.ItemUsePar.Split(';');
                         int neednum = int.Parse(duihuanparams[0]);
-                        if (unit.GetComponent<BagComponent>().GetItemNumber(Item.Id) < neednum)
+                        if (unit.GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item, Item.Id) < neednum)
                         {
                             response.Error = ErrorCode.ERR_ItemNotEnoughError;
                             reply();

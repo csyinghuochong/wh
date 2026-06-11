@@ -424,6 +424,12 @@ namespace ET
 
         public static void BuffFactory(this BuffManagerComponent self, BuffData buffData, Unit from, SkillHandler skillHandler, bool notice = true)
         {
+            if (buffData.BuffId <= 0)
+            {
+                Log.Error("buffData.BuffId <= 0");
+                return;
+            }
+
             Unit unit = self.GetParent<Unit>();
             SkillBuff skillBuff = SkillBuffCategory.Instance.Get(buffData.BuffId);
             float now_DiKangPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Now_DiKangPro);
@@ -846,7 +852,7 @@ namespace ET
 
         public static void InitCombatRankBuff(this BuffManagerComponent self)
         {
-            Unit unit = self.GetParent<Unit>();
+            /*Unit unit = self.GetParent<Unit>();
             if (unit.Type != UnitType.Player)
             {
                 return;
@@ -863,7 +869,7 @@ namespace ET
                 buffData_2.SkillId = 67000278;
                 buffData_2.BuffId = CommonConfig.GetRankBuff(rankId, occRankId, occ);
                 self.BuffFactory(buffData_2, unit, null);
-            }
+            }*/
         }
 
         public static void InitBaoShiBuff(this BuffManagerComponent self)
@@ -880,7 +886,7 @@ namespace ET
             //self.BuffRemove(99001011);
             self.BuffRemoveList(CommonConfig.BaoShiBuff);
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            /*UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
             if (userInfoComponent.UserInfo.BaoShiDu >= 80)
             {
                 BuffData buffData_2 = new BuffData();
@@ -921,7 +927,7 @@ namespace ET
                 buffData_2.SkillId = 67000278;
                 buffData_2.BuffId = 99001011;
                 self.BuffFactory(buffData_2, unit, null);
-            }
+            }*/
         }
 
         public static void InitBuff(this BuffManagerComponent self, int sceneType)

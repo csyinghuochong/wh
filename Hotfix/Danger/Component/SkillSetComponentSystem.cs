@@ -905,19 +905,18 @@ namespace ET
             {
 	            switch (self.SkillList[k].SkillSetType)
 	            {
-		            case SkillSetEnum.None:
-		            case SkillSetEnum.Skill:
+		            case SkillSetEnum.Item:
 		            {
-			            if (!SkillCategory.Instance.Contain(self.SkillList[k].SkillID))
+			            if (!ItemCategory.Instance.Contain(self.SkillList[k].SkillID))
 			            {
 				            self.SkillList.RemoveAt(k);
 			            }
 
-			            break;
+			            continue;
 		            }
-		            case SkillSetEnum.Item:
+		           default:
 		            {
-			            if (!ItemCategory.Instance.Contain(self.SkillList[k].SkillID))
+			            if (!SkillCategory.Instance.Contain(self.SkillList[k].SkillID))
 			            {
 				            self.SkillList.RemoveAt(k);
 			            }

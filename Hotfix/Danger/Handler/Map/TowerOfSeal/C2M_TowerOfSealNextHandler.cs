@@ -54,7 +54,7 @@ namespace ET
                 BagComponent bagComponent = unit.GetComponent<BagComponent>();
                 GlobalValueConfig globalValueConfig = GlobalValueConfigCategory.Instance.Get(90);
                 int itemConfigID = int.Parse(globalValueConfig.Value);
-                if (bagComponent.GetItemNumber(itemConfigID) <= 0)
+                if (bagComponent.GetItemNumber(ItemBigType.Type_Item, itemConfigID) <= 0)
                 {
                     reply();
                     return;
@@ -97,7 +97,7 @@ namespace ET
                 BagComponent bagComponent = unit.GetComponent<BagComponent>();
                 GlobalValueConfig globalValueConfig = GlobalValueConfigCategory.Instance.Get(90);
                 int itemConfigID = int.Parse(globalValueConfig.Value);
-                if (bagComponent.GetItemNumber(itemConfigID) <= 0)
+                if (bagComponent.GetItemNumber(ItemBigType.Type_Item, itemConfigID) <= 0)
                 {
                     reply();
                     return;

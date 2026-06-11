@@ -23,7 +23,7 @@ namespace ET
                 return;
             }
 
-            Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+            Equip Item = EquipCategory.Instance.Get(bagInfo.ItemID);
             string costitem = ItemHelper.GetInheritCost(bagInfo.InheritTimes);
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
             if (!bagComponent.CheckCostItem(costitem))
@@ -34,7 +34,7 @@ namespace ET
             }
             unit.GetComponent<BagComponent>().OnCostItemData(costitem, ItemLocType.ItemLocBag, ItemGetWay.ItemXiLian  );
           
-            int subtype = Item.ItemSubType;
+          
             int skillid = XiLianHelper.XiLianChuanChengJianDing(Item, unit.GetComponent<UserInfoComponent>().UserInfo.Occ, unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo);
 
             if (skillid == 0) {

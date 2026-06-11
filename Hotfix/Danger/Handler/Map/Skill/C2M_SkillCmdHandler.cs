@@ -38,7 +38,7 @@ namespace ET
                 SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
                 if (request.ItemId > 0)
                 { 
-                    if(unit.GetComponent<BagComponent>().GetItemNumber(request.ItemId) <= 0)
+                    if(unit.GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item, request.ItemId) <= 0)
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();

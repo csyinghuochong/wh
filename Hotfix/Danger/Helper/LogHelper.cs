@@ -519,16 +519,6 @@ namespace ET
 
             if (openDay <= 180 || userInfo.UserInfo.Lv < 60)
             {
-                //金币线
-                if (userInfo.UserInfo.Gold >= unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber) * 300000 + 5000000 + userInfo.UserInfo.Lv * 500000)
-                {
-                    LogHelper.ZuobiInfo("金币作弊:" + userInfo.UserInfo.Gold + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.UserInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));
-                }
-
-                //道具线
-                if (unit.GetComponent<BagComponent>().GetItemNumber(10010083) > 1000 + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber) * 10) {
-                    LogHelper.ZuobiInfo("洗练石作弊:" + unit.GetComponent<BagComponent>().GetItemNumber(10010083) + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.UserInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));
-                }
             }
 
             //查找神兽

@@ -272,6 +272,14 @@ namespace ET
 
         public static void OnLogin(this PetComponent self)
         {
+            for (int  i = self.RolePetInfos.Count - 1; i >= 0; i--)
+            {
+                if (!PetCategory.Instance.Contain(self.RolePetInfos[i].ConfigId))
+                {
+                    self.RolePetInfos.RemoveAt(i);
+                }
+            }
+
             self.CheckSkin();
             self.CheckPetPingFen();
             self.CheckPetZiZhi();
@@ -1029,8 +1037,9 @@ namespace ET
                 }
 
 
-                EquipConfig mEquipCon = EquipConfigCategory.Instance.Get(itemCof.Id);
+                Equip mEquipCon = EquipCategory.Instance.Get(itemCof.Id);
 
+                /*
                 string[] addpro = mEquipCon.AddProperty.Split("|");
                 for (int y = 0; y < addpro.Length; y++)
                 {
@@ -1040,7 +1049,7 @@ namespace ET
                         string[] proinfo = addpro[y].Split("&");
                         Function_Fight.AddUpdateProDicList(int.Parse(proinfo[0]), long.Parse(proinfo[1]), attriDic);
                     }
-                }
+                }*/
             }
 
             //获取宠物身上属性

@@ -15,23 +15,6 @@ namespace ET
             SkillSetComponent skillSetComponent = unit.GetComponent<SkillSetComponent>();
             response.SkillSetInfo = new SkillSetInfo();
 
-            //for (int i = skillSetComponent.SkillList.Count - 1; i >= 0; i--)
-            //{
-            //	SkillPro skillPro = skillSetComponent.SkillList[i];
-            //	if (skillPro.SkillPosition == 0)
-            //	{
-            //		continue;
-            //	}
-            //	if (skillPro.SkillSetType == (int)SkillSetEnum.Skill)
-            //	{
-            //		if (!SkillConfigCategory.Instance.Contain(skillPro.SkillID))
-            //		{
-            //			skillSetComponent.SkillList.RemoveAt(i);
-            //		}
-            //		continue;
-            //	}
-            //}
-
             //强化技能可以激活
             bool haveqianghuaskill = false;
             for (int i = 0; i < skillSetComponent.SkillList.Count; i++)
@@ -115,40 +98,7 @@ namespace ET
                     }
                 }
             }
-
-
-            //刷新转职技能-猎人被动技能强制刷新
-            if (occTwo == 401 || occTwo == 402 || occTwo == 403)
-            {
-                ///移除重复的转职技能
-                //63203002   -   63303002
-                //63201003   -   63301003
-                //63202002   -   63302002
-
-                for (int occskill = 0; occskill < skillSetComponent.SkillList.Count; occskill++)
-                {
-                    if (skillSetComponent.SkillList[occskill].SkillID == 63203002)
-                    {
-                        skillSetComponent.SkillList[occskill].SkillID = 63303002;
-
-                        Console.WriteLine($"63203002->63303002:   {unit.Id}");
-                    }
-
-                    if (skillSetComponent.SkillList[occskill].SkillID == 63201003)
-                    {
-                        skillSetComponent.SkillList[occskill].SkillID = 63301003;
-
-                        Console.WriteLine($"63201003->63301003:   {unit.Id}");
-                    }
-
-                    if (skillSetComponent.SkillList[occskill].SkillID == 63202002)
-                    {
-                        skillSetComponent.SkillList[occskill].SkillID = 63302002;
-
-                        Console.WriteLine($"63202002->63302002:   {unit.Id}");
-                    }
-                }
-            }
+            
             //if (unit.Id == 2294043601589567488)
             //{
             //    Console.WriteLine("重置雨天坏蛋生命之魂！");
@@ -188,6 +138,28 @@ namespace ET
                     userInfoComponent.UpdateRoleData(UserDataType.Sp, (level - sp).ToString(), false);
                     unit.GetComponent<SkillSetComponent>().ResetNengLiangZhiDi();
                     unit.GetComponent<SkillSetComponent>().OnSkillReset(false);
+                }
+            }
+            
+            for (int i = skillSetComponent.SkillList.Count - 1; i >= 0; i--)
+            {
+                SkillPro skillPro = skillSetComponent.SkillList[i];
+                
+                if (skillPro.SkillSetType == (int)SkillSetEnum.Item)
+                {
+                    if (!ItemCategory.Instance.Contain(skillPro.SkillID))
+                    {
+                        skillSetComponent.SkillList.RemoveAt(i);
+                    }
+                    continue;
+                }
+                else
+                {
+                    if (!SkillCategory.Instance.Contain(skillPro.SkillID))
+                    {
+                        skillSetComponent.SkillList.RemoveAt(i);
+                    }
+                    continue;
                 }
             }
            

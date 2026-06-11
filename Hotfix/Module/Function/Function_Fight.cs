@@ -1879,9 +1879,9 @@ namespace ET
                 equipIDList.Add(itemCof.Id);
 
                 //存储装备套装
-                if (EquipConfigCategory.Instance.Contain(itemCof.Id))
+                if (EquipCategory.Instance.Contain(itemCof.Id))
                 {
-                    EquipConfig equipCnf = EquipConfigCategory.Instance.Get(itemCof.Id);
+                    Equip equipCnf = EquipCategory.Instance.Get(itemCof.Id);
                     if (equipCnf.EquipSuitID != 0)
                     {
                         if (equipSuitIDList.Contains(equipCnf.EquipSuitID) == false)
@@ -2099,7 +2099,7 @@ namespace ET
                     continue;
                 }
 
-                EquipConfig mEquipCon = EquipConfigCategory.Instance.Get(itemCof.Id);
+                Equip mEquipCon = EquipCategory.Instance.Get(itemCof.Id);
 
                 //职业专精
                 float occMastery = 0f;

@@ -17,7 +17,7 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<BagComponent>().GetItemNumber(10000136) < 1)
+            if (unit.GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item,10000136) < 1)
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError ;
                 reply();

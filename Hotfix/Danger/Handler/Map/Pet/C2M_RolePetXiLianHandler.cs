@@ -20,7 +20,7 @@ namespace ET
 				reply();
 				return;
 			}
-			if (unit.GetComponent<BagComponent>().GetItemNumber(bagInfo.ItemID) < 1)
+			if (unit.GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item,bagInfo.ItemID) < 1)
 			{
 				response.Error = ErrorCode.ERR_ItemNotEnoughError;
 				reply();

@@ -233,12 +233,14 @@ namespace ET
                 }
 				switch (int.Parse(commands[0]))
 				{
-					case 1:             //新增道具1#12000003#200 【添加道具/道具id/道具数量】
-						int itemId = int.Parse(commands[1]);
-						int itemNumber = int.Parse(commands[2]);
-
+					case 1:             //新增道具1#1#1001#1 1#2#1012#1 【添加道具/道具类型/道具id/道具数量】
+						int itemType  =int.Parse(commands[1]);
+						int itemId = int.Parse(commands[2]);
+						int itemNumber = int.Parse(commands[3]);
+						//5 图纸  1012  剑
+						
 						List<RewardItem> rewardItems = new List<RewardItem>();
-						rewardItems.Add(new RewardItem() { ItemID = itemId, ItemNum = itemNumber });
+						rewardItems.Add(new RewardItem() {  ItemType =itemType,  ItemID = itemId, ItemNum = itemNumber });
 						unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", true, true);
 						break;
                     //70001001  0    71001010    1       70001003     2      70001011    3

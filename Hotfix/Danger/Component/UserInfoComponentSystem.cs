@@ -255,14 +255,26 @@ namespace ET
                 maxTowerId = self.UserInfo.TowerRewardIds[self.UserInfo.TowerRewardIds.Count - 1];
             }
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
-            
+
+            for (int  i =  self.UserInfo.HorseIds.Count - 1; i >= 0; i--)
+            {
+                if ( !MountCategory.Instance.Contain( self.UserInfo.HorseIds[i]))
+                {
+                    self.UserInfo.HorseIds.RemoveAt(i);
+                }
+            }
+
             if (self.UserInfo.RobotId > 0 &&    self.UserInfo.HorseIds.Count == 0)
             {
-                int randomid = RandomHelper.RandomNumber(10001, 10014);
+                List<Mount> mounts = MountCategory.Instance.GetAll().Values.ToList();
+                int intdexxx =  RandomHelper.RandomNumber(0, mounts.Count);
+                int randomid = mounts[intdexxx].Id;
                 self.OnHorseActive(randomid, true);
                 numericComponent.Set(NumericType.HorseFightID, randomid, false);
                 numericComponent.Set(NumericType.HorseRide, randomid, false);
             }
+            
+            
             
             PetComponent petComponent = self.GetParent<Unit>().GetComponent<PetComponent>();
             if (self.UserInfo.RobotId > 0 &&   petComponent.RolePetInfos.Count == 0)

@@ -59,7 +59,7 @@ namespace ET
                 if (request.CostType == 2)
                 {
                     BagComponent bagComponent = unit.GetComponent<BagComponent>();
-                    if (bagComponent.GetItemNumber(CommonConfig.ZuanShiTenChoukaItem) < 1)
+                    if (bagComponent.GetItemNumber(ItemBigType.Type_Item, CommonConfig.ZuanShiTenChoukaItem) < 1)
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();

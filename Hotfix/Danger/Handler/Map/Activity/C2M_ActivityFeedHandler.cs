@@ -23,7 +23,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (bagComponent.GetItemNumber(costItemId) < 1)
+            if (bagComponent.GetItemNumber(ItemBigType.Type_Item, costItemId) < 1)
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
