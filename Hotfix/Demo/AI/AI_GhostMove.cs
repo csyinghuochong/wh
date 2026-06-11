@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace ET
@@ -29,7 +29,7 @@ namespace ET
 
             Unit unit = aiComponent.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            numericComponent.Set(NumericType.Extra_Buff_Speed_Add, 0);
+            numericComponent.Set(NumericType.Numeric_Error, 0);
             long masterid = numericComponent.GetAsLong(NumericType.MasterId);
             Unit master = aiComponent.UnitComponent.Get(masterid);
 

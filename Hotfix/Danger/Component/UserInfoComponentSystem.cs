@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -662,10 +662,10 @@ namespace ET
                     expcoefficient *= bossDevelopment.ExpAdd;
                 }
 
-                float expAdd = (numericComponent.GetAsFloat(NumericType.Now_ExpAdd) - 1f);
+                float expAdd = (numericComponent.GetAsFloat(NumericType.Numeric_Error) - 1f);
                 expAdd = Math.Clamp(expAdd, 0f, 1f);    
                 
-                float now_GoldAdd_Pro  = (numericComponent.GetAsFloat(NumericType.Now_ExpAdd_Pro));
+                float now_GoldAdd_Pro  = (numericComponent.GetAsFloat(NumericType.Numeric_Error));
                 now_GoldAdd_Pro = Math.Clamp(now_GoldAdd_Pro, 0f, 1f);
                 
                 expcoefficient += expAdd;
@@ -973,8 +973,8 @@ namespace ET
 
                     self.UserInfo.Lv += int.Parse(value);
                     saveValue = self.UserInfo.Lv.ToString();
-                    long maxHp = unit.GetComponent<NumericComponent>().GetAsLong((int)NumericType.Now_MaxHp);
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Hp, maxHp, false);
+                    long maxHp = unit.GetComponent<NumericComponent>().GetAsLong((int)NumericType.Numeric_Error);
+                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Numeric_Error, maxHp, false);
                     unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PointRemain, int.Parse(value) * 10, 0);
                     unit.GetComponent<TaskComponent>().OnUpdateLevel(self.UserInfo.Lv);
                     unit.GetComponent<ChengJiuComponent>().OnUpdateLevel(self.UserInfo.Lv);
@@ -1165,8 +1165,8 @@ namespace ET
         
             float expAdd = CommonHelper.GetExpAdd(self.UserInfo.Lv, serverInfo);
 
-            ExpConfig xiulianconf1 = ExpConfigCategory.Instance.Get(self.UserInfo.Lv);
-            long upNeedExp = xiulianconf1.UpExp;
+            Exp xiulianconf1 = ExpCategory.Instance.Get(self.UserInfo.Lv);
+            long upNeedExp = xiulianconf1.Exp_Role;
 
             TaskComponent taskComponent = self.GetParent<Unit>().GetComponent<TaskComponent>();
 

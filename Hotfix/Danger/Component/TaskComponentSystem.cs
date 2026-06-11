@@ -1130,8 +1130,8 @@ namespace ET
             self.InitActivityWeekTask(false);
             self.TriggerTaskCountryEvent(  TaskTargetType.Login_1001, 0, 1, false );
 
-            //numericComponent.ApplyValue(NumericType.RankID, chat2G_EnterChat.RankId, false, false);
-            //numericComponent.ApplyValue(NumericType.PetRankID, chat2G_EnterChat.PetRankId, false, false);
+            //numericComponent.ApplyValue(NumericType.Numeric_Error, chat2G_EnterChat.RankId, false, false);
+            //numericComponent.ApplyValue(NumericType.Numeric_Error, chat2G_EnterChat.PetRankId, false, false);
             //numericComponent.ApplyValue(NumericType.SoloRankId, chat2G_EnterChat.SoloRankId, false, false);
             //numericComponent.ApplyValue(NumericType.TrialRankId, chat2G_EnterChat.TrialRankId, false, false);
             self.TriggerTaskEvent( TaskTargetType.TrialRank_81, numericComponent.GetAsInt(NumericType.TrialRankId),1 );

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -67,7 +67,7 @@ namespace ET
             if (unit.GetComponent<NumericComponent>() == null)
             {
                 NumericComponent numericComponentServer = unit.AddComponent<NumericComponent>();
-                numericComponentServer.ApplyValue(NumericType.Now_Speed, 60000, false); // 速度是6米每秒
+                numericComponentServer.ApplyValue(NumericType.Speed_Current, 60000, false); // 速度是6米每秒
                 numericComponentServer.ApplyValue(NumericType.AOI, 15000, false); // 视野15米
             }
             
@@ -89,8 +89,8 @@ namespace ET
             await unit.AddDBComonent<DBMailInfo>(unit.Id);
             
             //NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-            //numericComponent.Set((int)NumericType.Now_Speed, 6f); // 速度是6米每秒
-            //numericComponent.Set(NumericType.AOI, 15000); // 视野15米
+            //numericComponent.Set((int)NumericType.Numeric_Error, 6f); // 速度是6米每秒
+            //numericComponent.Set(NumericType.Numeric_Error, 15000); // 视野15米
             //unitComponent.Add(unit);
             //// 加入aoi
             //unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
@@ -111,7 +111,7 @@ namespace ET
             unit.Position = vector3;
             unit.Type = UnitType.Bullet;            //子弹Unity,根据这个类型会实例化出特效
             Skill skill = SkillCategory.Instance.Get(skillid);
-            numericComponent.Set(NumericType.Base_Speed_Base, skill.SkillMoveSpeed, false);
+            numericComponent.Set(NumericType.Numeric_Error, skill.SkillMoveSpeed, false);
             numericComponent.Set(NumericType.MasterId, masterid, false);
             numericComponent.Set(NumericType.StartAngle, starangle, false);
             numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
@@ -275,7 +275,7 @@ namespace ET
                 unit.AddComponent<MoveComponent>();
                 unit.AddComponent<StateComponent>();
                 NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-                numericComponent.Set(NumericType.Now_Speed, npcConfig.NpcPar[0]);
+                numericComponent.Set(NumericType.Numeric_Error, npcConfig.NpcPar[0]);
                 unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
                 unit.AddComponent<AIComponent, int>(npcConfig.AI);     //AI行为树序号	
                 unit.GetComponent<AIComponent>().InitNpc(npcId);
@@ -303,7 +303,7 @@ namespace ET
                 unit.AddComponent<MoveComponent>();
                 unit.AddComponent<StateComponent>();
                 NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-                numericComponent.Set(NumericType.Now_Speed, npcConfig.NpcPar[0]);
+                numericComponent.Set(NumericType.Numeric_Error, npcConfig.NpcPar[0]);
                 unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
                 unit.AddComponent<AIComponent, int>(npcConfig.AI);     //AI行为树序号	
                 unit.GetComponent<AIComponent>().InitNpc(npcId);
@@ -408,8 +408,8 @@ namespace ET
             numericComponent.Set(NumericType.BattleCamp, roleCamp);
             numericComponent.Set(NumericType.MasterId, masterId);
             numericComponent.Set(NumericType.UnitPositon, cell);
-            long max_hp = numericComponent.GetAsLong(NumericType.Now_MaxHp);
-            numericComponent.NumericDic[NumericType.Now_Hp] = max_hp;
+            long max_hp = numericComponent.GetAsLong(NumericType.Numeric_Error);
+            numericComponent.NumericDic[NumericType.Numeric_Error] = max_hp;
             unit.AddComponent<AOIEntity, int, Vector3>(1 * 1000, unit.Position);
             unit.AddComponent<SkillPassiveComponent>().UpdatePetPassiveSkill(petinfo);
             unit.GetComponent<SkillPassiveComponent>().Activeted();
@@ -435,7 +435,7 @@ namespace ET
             unit.Position = JiaYuanHelper.JiaYuanPetPosition[1];
             unit.Type = UnitType.Pet;
             numericComponent.Set(NumericType.MasterId, masterid, false);
-            numericComponent.Set(NumericType.Base_Speed_Base, 10000, false);
+            numericComponent.Set(NumericType.Numeric_Error, 10000, false);
             AIComponent aIComponent = unit.AddComponent<AIComponent, int>(11);     //AI行为树序号
             aIComponent.InitJiaYuanPet( );
             aIComponent.Begin();
@@ -477,9 +477,9 @@ namespace ET
             numericComponent.Set(NumericType.AttackMode, master != null ? master.GetAttackMode() : 0);
             numericComponent.Set(NumericType.TeamId, master.GetTeamId(), false); ;
             numericComponent.Set(NumericType.UnionId_0, master.GetUnionId(), false);
-            long max_hp = numericComponent.GetAsLong(NumericType.Now_MaxHp);
-            numericComponent.NumericDic[NumericType.Now_Hp] = max_hp;
-            numericComponent.Set(NumericType.Base_Speed_Base, master.GetComponent<NumericComponent>().GetAsLong(NumericType.Base_Speed_Base), false); 
+            long max_hp = numericComponent.GetAsLong(NumericType.Numeric_Error);
+            numericComponent.NumericDic[NumericType.Numeric_Error] = max_hp;
+            numericComponent.Set(NumericType.Numeric_Error, master.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error), false); 
 
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             if (scene.GetComponent<MapComponent>().MapTypeEnum != (int)MapTypeEnum.MainCityScene)
@@ -545,7 +545,7 @@ namespace ET
             //添加其他组件
             unit.AddComponent<HeroDataComponent>().InitPasture(jiaYuanPastures, false);
             numericComponent.Set(NumericType.MasterId, unitid, false);
-            numericComponent.Set(NumericType.Base_Speed_Base, 30000, false);
+            numericComponent.Set(NumericType.Numeric_Error, 30000, false);
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             return unit;
         }
@@ -583,7 +583,7 @@ namespace ET
             numericComponent.Set(NumericType.AttackMode, master != null ? master.GetAttackMode() : 0);
             numericComponent.Set(NumericType.TeamId, master.GetTeamId(), false);
             numericComponent.Set(NumericType.UnionId_0, master.GetUnionId(), false);
-            //numericComponent.Set(NumericType.Base_Speed_Base, 50000, false);
+            //numericComponent.Set(NumericType.Numeric_Error, 50000, false);
 
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             unit.AddComponent<SkillPassiveComponent>().UpdateJingLingSkill(jinglingId);
@@ -677,7 +677,7 @@ namespace ET
             if (bekill.IsBoss() && main != null && bekill.ConfigId != SeasonHelper.SeasonBossId)
             {
                 int fubenDifficulty = FubenDifficulty.None;
-                dropAdd_Pro += main.GetComponent<NumericComponent>().GetAsFloat(NumericType.Base_DropAdd_Pro_Add);
+                dropAdd_Pro += main.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
                 if (sceneType == (int)MapTypeEnum.CellDungeon)
                 {
                     fubenDifficulty = bekill.DomainScene().GetComponent<CellDungeonComponent>().FubenDifficulty;
@@ -743,10 +743,10 @@ namespace ET
 
             if (bekill.IsBoss())
             {
-                float dropadd = main.GetComponent<NumericComponent>().GetAsFloat(NumericType.Max_KillMonsterDropRate);
+                float dropadd = main.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
                 if (dropadd > 0f)
                 {
-                    main.GetComponent<BuffManagerComponent>().RemoveBuffByNumericType(NumericType.Max_KillMonsterDropRate);
+                    main.GetComponent<BuffManagerComponent>().RemoveBuffByNumericType(NumericType.Numeric_Error);
                     dropAdd_Pro += dropadd;
                 }
             }

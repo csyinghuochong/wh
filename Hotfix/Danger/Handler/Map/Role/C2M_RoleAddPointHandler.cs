@@ -35,11 +35,11 @@ namespace ET
                 }
 
                 NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-                numericComponent.ApplyValue(NumericType.PointLiLiang, request.PointList[0]);
-                numericComponent.ApplyValue(NumericType.PointZhiLi, request.PointList[1]);
-                numericComponent.ApplyValue(NumericType.PointTiZhi, request.PointList[2]);
-                numericComponent.ApplyValue(NumericType.PointNaiLi, request.PointList[3]);
-                numericComponent.ApplyValue(NumericType.PointMinJie, request.PointList[4]);
+                numericComponent.ApplyValue(NumericType.Point_LiLiang, request.PointList[0]);
+                numericComponent.ApplyValue(NumericType.Point_ZhiLi, request.PointList[1]);
+                numericComponent.ApplyValue(NumericType.Point_TiZhi, request.PointList[2]);
+                numericComponent.ApplyValue(NumericType.Point_NaiLi, request.PointList[3]);
+                numericComponent.ApplyValue(NumericType.Point_MinJie, request.PointList[4]);
                 numericComponent.ApplyValue(NumericType.PointRemain, remainPoint);
                 //unit.GetComponent<HeroDataComponent>().CheckNumeric();
                 Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);

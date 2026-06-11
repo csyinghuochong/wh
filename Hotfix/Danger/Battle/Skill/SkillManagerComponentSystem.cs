@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -642,7 +642,7 @@ namespace ET
                 unit.GetComponent<AttackRecordComponent>().AttackingId = skillcmd.TargetID;
             }
 
-            float now_ZhuanZhuPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Now_ZhuanZhuPro);
+            float now_ZhuanZhuPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
             if (zhudong && RandomHelper.RandFloat01() < now_ZhuanZhuPro
                 && TimeHelper.ServerFrameTime() - self.LastLianJiTime >= 4000
                 && !SkillHelp.IsChongJi(weaponSkill.GameObjectName))
@@ -822,7 +822,7 @@ namespace ET
             skillcd.SkillID = skillId;
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            float attackSpped = 1f + numericComponent.GetAsFloat(NumericType.Now_ActSpeedPro);
+            float attackSpped = 1f + numericComponent.GetAsFloat(NumericType.Numeric_Error);
             int EquipType = UnitHelper.GetEquipType(unit);
             List<int> normalskillCDs = EquipType == (int)ItemEquipType.Knife ? new List<int>() { 500, 1000, 1000 } : new List<int>() { 700, 700, 700 };
             for (int i = 0; i < normalskillCDs.Count; i++)
@@ -876,7 +876,7 @@ namespace ET
                 reduceCD = reduceCDlist[0];
             }
 
-            float nocdPro = numericComponent.GetAsFloat(NumericType.Now_SkillNoCDPro);
+            float nocdPro = numericComponent.GetAsFloat(NumericType.Numeric_Error);
             if (nocdPro > RandomHelper.RandFloat01())
             {
                 skillcdTime = 1;  //1秒冷却CD
@@ -884,7 +884,7 @@ namespace ET
             }
             else
             {
-                float now_cdpro= numericComponent.GetAsFloat(NumericType.Now_SkillCDTimeCostPro);
+                float now_cdpro= numericComponent.GetAsFloat(NumericType.Numeric_Error);
                 //急速削减最多达到75%
                 if (now_cdpro > 0.75f) {
                     now_cdpro = 0.75f;
@@ -913,9 +913,9 @@ namespace ET
             //if (unit.Type != UnitType.Player && unit.MasterId != 0 && skillConfig.SkillActType == 0)
             if (unit.Type != UnitType.Player && skill.SkillActType == 0)
             {
-                //float attackSpped = 1f - numericComponent.GetAsFloat(NumericType.Now_ActSpeedPro);
+                //float attackSpped = 1f - numericComponent.GetAsFloat(NumericType.Numeric_Error);
                 //攻击速度调整
-                float attackSpped = 1f / (1 +  numericComponent.GetAsFloat(NumericType.Now_ActSpeedPro));
+                float attackSpped = 1f / (1 +  numericComponent.GetAsFloat(NumericType.Numeric_Error));
 
                 //最低是0.25秒触发一次
                 if (attackSpped <= 0.25f)

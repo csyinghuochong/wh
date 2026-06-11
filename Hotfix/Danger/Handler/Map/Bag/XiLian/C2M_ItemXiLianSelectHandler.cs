@@ -15,6 +15,7 @@ namespace ET
                 bagInfo = unit.GetComponent<BagComponent>().GetItemByLoc(ItemLocType.ItemLocEquip, request.OperateBagID);
                 itemLocType = ItemLocType.ItemLocEquip;
             }
+            /*
             if (bagInfo == null)
             {
                 bagInfo = unit.GetComponent<BagComponent>().GetItemByLoc(ItemLocType.ItemLocEquip_2, request.OperateBagID);
@@ -25,6 +26,7 @@ namespace ET
             {
                 unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(itemLocType, bagInfo, bagInfo.BagInfoID);
             }
+            */
 
             ItemXiLianResult itemXiLian = request.ItemXiLianResult;
             if (itemXiLian != null)
@@ -34,7 +36,7 @@ namespace ET
                 bagInfo.XiLianHideTeShuProLists = itemXiLian.XiLianHideTeShuProLists;    //特殊属性洗炼
             }
 
-            if (itemLocType == ItemLocType.ItemLocEquip || itemLocType == ItemLocType.ItemLocEquip_2)
+            if (itemLocType == ItemLocType.ItemLocEquip ) //|| itemLocType == ItemLocType.ItemLocEquip_2)
             {
                     unit.GetComponent<SkillSetComponent>().OnWearEquip(bagInfo);
             }

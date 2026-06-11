@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace ET
 {
@@ -9,12 +9,12 @@ namespace ET
             this.OnBaseBuffInit(buffData,  theUnitFrom,  theUnitBelongto);
 
             NumericComponent numericComponent = this.TheUnitBelongto.GetComponent<NumericComponent>();
-            int maxHp = numericComponent.GetAsInt(NumericType.Now_MaxHp);
+            int maxHp = numericComponent.GetAsInt(NumericType.HP_Max);
             //1百分比 2固定伤害
             int totalValue = 0;
             if (this.MBuff.buffParameterType == 1)
             {
-                numericComponent.ApplyValue(NumericType.Now_Shield_HP, (int)this.MBuff.buffParameterValue * theUnitFrom.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Hp), true);
+                numericComponent.ApplyValue(NumericType.Now_Shield_HP, (int)this.MBuff.buffParameterValue * theUnitFrom.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error), true);
                 totalValue = (int)(maxHp * 1f * this.MBuff.buffParameterValue);
             }
             else

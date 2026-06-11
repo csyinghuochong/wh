@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace ET
@@ -97,16 +97,16 @@ namespace ET
         {
             unit.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.BePulled);
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            float oldSpeed = numericComponent.GetAsFloat(NumericType.Now_Speed);
-            float oldspeedAdd = numericComponent.GetAsFloat(NumericType.Extra_Buff_Speed_Add);
-            double addPro = (double)numericComponent.GetAsInt(NumericType.Now_JumpDisAdd) / 10;
+            float oldSpeed = numericComponent.GetAsFloat(NumericType.Speed_Current);
+            float oldspeedAdd = numericComponent.GetAsFloat(NumericType.Speed_Fixed);
+            double addPro = 0f;
             float newSpeed = (float)(this.SkillConf.SkillMoveSpeed * (1 + addPro));
             float newspeedAdd = newSpeed - oldSpeed;
 
             if (newSpeed > oldSpeed && newspeedAdd > oldspeedAdd)
             {
                 //this.SpeedAddValue = newspeedAdd - oldspeedAdd;
-                //numericComponent.Set(NumericType.Extra_Buff_Speed_Add, newspeedAdd);
+                //numericComponent.Set(NumericType.Numeric_Error, newspeedAdd);
 
                 this.SpeedAddValue = newSpeed * 1f / oldSpeed;
             }
@@ -132,9 +132,7 @@ namespace ET
         public void ReSetUnit(Unit unit)
         {
             unit.GetComponent<StateComponent>().StateTypeRemove(StateTypeEnum.BePulled);
-            //NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            //float curspeedAdd = numericComponent.GetAsFloat(NumericType.Extra_Buff_Speed_Add) - this.SpeedAddValue;
-            //numericComponent.Set(NumericType.Extra_Buff_Speed_Add, Mathf.Max(0, curspeedAdd));
+          
         }
 
         public Vector3 GetBulletTargetPoint(int angle)

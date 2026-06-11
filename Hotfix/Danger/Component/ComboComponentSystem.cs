@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 
@@ -21,7 +21,7 @@ namespace ET
             int EquipType = self.EquipType;
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            float attackSpped = 1f + numericComponent.GetAsFloat(NumericType.Now_ActSpeedPro);
+            float attackSpped = 1f + numericComponent.GetAsFloat(NumericType.Numeric_Error);
             self.SkillCDs = EquipType == (int)ItemEquipType.Knife ? new List<int>() { 500, 1000, 1000 } : new List<int>() { 700, 700, 700 };
             for (int i = 0; i < self.SkillCDs.Count; i++)
             {

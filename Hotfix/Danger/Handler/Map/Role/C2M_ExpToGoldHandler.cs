@@ -50,8 +50,8 @@ namespace ET
             if (request.OperateType == 2) {
                 costPro = 0.3f;
             }
-            ExpConfig expCof = ExpConfigCategory.Instance.Get(userInfo.Lv);
-            int costExp = (int)(expCof.UpExp * costPro);
+            Exp expCof = ExpCategory.Instance.Get(userInfo.Lv);
+            int costExp = (int)(expCof.Exp_Role * costPro);
             if (userInfo.Exp < costExp||costExp <= 0)
             {
                 response.Error = ErrorCode.ERR_ExpNoEnough;
@@ -62,10 +62,10 @@ namespace ET
             switch (request.OperateType)
             {
                 case 3:
-                     int sendGold = (int)(10000 + expCof.RoseGoldPro * 10);
-                     sendGold = (int)(10000 + expCof.RoseGoldPro * 10);
-                     userInfoComponent.UpdateRoleMoneyAdd(UserDataType.Gold, sendGold.ToString(), true, 32);
-                     Log.Debug($"Gold:  {userInfoComponent.Id} {sendGold} excharge");
+                     /*int sendGold = (int)(10000 + expCof.Exp_Role * 10);
+                     sendGold = (int)(10000 + expCof.Exp_Role * 10);
+                     userInfoComponent.UpdateRoleMoneyAdd(UserDataType.Gold, sendGold.ToString(), true, 32);*/
+                     //Log.Debug($"Gold:  {userInfoComponent.Id} {sendGold} excharge");
                     break;
                 case 2:
                     string[] droplist = GlobalValueConfigCategory.Instance.Get(81).Value.Split(';');

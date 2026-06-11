@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -137,14 +137,14 @@ namespace ET
             //只有玩家和宠物有回血
             if (self.UnitType == UnitType.Pet)
             {
-                long maxHp = self.NumericComponent.GetAsLong(NumericType.Now_MaxHp);
+                long maxHp = self.NumericComponent.GetAsLong(NumericType.Numeric_Error);
 
                 //满血不触发回血
-                if (self.NumericComponent.GetAsLong((int)NumericType.Now_Hp) >= maxHp)
+                if (self.NumericComponent.GetAsLong((int)NumericType.Numeric_Error) >= maxHp)
                     return;
 
                 long addHpValue = 0;
-                float now_SecHpAddPro = self.NumericComponent.GetAsFloat(NumericType.Now_SecHpAddPro);
+                float now_SecHpAddPro = self.NumericComponent.GetAsFloat(NumericType.Numeric_Error);
                 if (now_SecHpAddPro > 0f)
                 {
                     addHpValue = (long)(maxHp * now_SecHpAddPro);
@@ -152,25 +152,25 @@ namespace ET
                 addHpValue += (long)(maxHp * 0.05f);
 
                 //每5秒恢复5%生命
-                self.NumericComponent.ApplyChange(null, NumericType.Now_Hp, addHpValue ,0, true);
+                self.NumericComponent.ApplyChange(null, NumericType.Numeric_Error, addHpValue ,0, true);
             }
 
             if (self.UnitType == UnitType.Player)
             {
-                long maxHp = self.NumericComponent.GetAsLong(NumericType.Now_MaxHp);
+                long maxHp = self.NumericComponent.GetAsLong(NumericType.Numeric_Error);
 
                 //满血不触发回血
-                if (self.NumericComponent.GetAsLong((int)NumericType.Now_Hp) >= maxHp)
+                if (self.NumericComponent.GetAsLong((int)NumericType.Numeric_Error) >= maxHp)
                     return;
 
                 long addHpValue = 0;
-                float now_SecHpAddPro = self.NumericComponent.GetAsFloat(NumericType.Now_SecHpAddPro);
+                float now_SecHpAddPro = self.NumericComponent.GetAsFloat(NumericType.Numeric_Error);
                 if (now_SecHpAddPro > 0f)
                 {
                     addHpValue = (long)(maxHp * now_SecHpAddPro);
                 }
 
-                long now_HuiXue = self.NumericComponent.GetAsLong(NumericType.Now_HuiXue);
+                long now_HuiXue = self.NumericComponent.GetAsLong(NumericType.Numeric_Error);
                 if (now_HuiXue > 0f)
                 {
                     addHpValue = now_HuiXue * 5;
@@ -178,7 +178,7 @@ namespace ET
 
                 if (addHpValue > 0)
                 {
-                    self.NumericComponent.ApplyChange(null, NumericType.Now_Hp, addHpValue, 0, true);
+                    self.NumericComponent.ApplyChange(null, NumericType.Numeric_Error, addHpValue, 0, true);
                 }
             }
         }
@@ -213,8 +213,8 @@ namespace ET
             {
                 NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
                 int nowMp = numericComponent.GetAsInt(NumericType.SkillUseMP);
-                int maxMp = numericComponent.GetAsInt(NumericType.Max_SkillUseMP);
-                float addMp = numericComponent.GetAsFloat(NumericType.Max_SkillUseMPAdd);
+                int maxMp = numericComponent.GetAsInt(NumericType.Numeric_Error);
+                float addMp = numericComponent.GetAsFloat(NumericType.Numeric_Error);
                 int equipIndex = numericComponent.GetAsInt(NumericType.EquipIndex);
                 //equipIndex 0弓   1剑
                 int huifuspeed = equipIndex == 0 ? 1 : 2;
@@ -690,8 +690,8 @@ namespace ET
                             numCom = (master != null && !master.IsDisposed) ? master.GetComponent<NumericComponent>() : numCom;
                         }
 
-                        long nowHp = numCom.GetAsLong((int)NumericType.Now_Hp);
-                        long maxHp = numCom.GetAsLong((int)NumericType.Now_MaxHp);
+                        long nowHp = numCom.GetAsLong((int)NumericType.Numeric_Error);
+                        long maxHp = numCom.GetAsLong((int)NumericType.Numeric_Error);
                         float hpPro = (float)nowHp / (float)maxHp;
                         trigger = hpPro <= skillproValue;
                         break;

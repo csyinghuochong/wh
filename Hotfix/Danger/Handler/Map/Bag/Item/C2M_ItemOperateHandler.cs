@@ -398,10 +398,10 @@ namespace ET
                             case 111:
                                 string[] jinbiInfos = Item.ItemUsePar.Split(';');
                                 int userLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
-                                ExpConfig expConfig = ExpConfigCategory.Instance.Get(userLv);
-                                long addCoin = (int)RandomHelper.RandomNumberFloat(float.Parse(jinbiInfos[0]) * expConfig.RoseGoldPro, float.Parse(jinbiInfos[1]) * expConfig.RoseGoldPro);
+                                Exp exp = ExpCategory.Instance.Get(userLv);
+                                /*long addCoin = (int)RandomHelper.RandomNumberFloat(float.Parse(jinbiInfos[0]) * exp.Exp_Role, float.Parse(jinbiInfos[1]) * exp.Exp_Role);
                                 addCoin *= costNumber;
-                                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, addCoin.ToString(), true, ItemGetWay.ItemBox_6);
+                                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, addCoin.ToString(), true, ItemGetWay.ItemBox_6);*/
                                 break;
                             //经验木桩
                             case 112:
@@ -411,16 +411,16 @@ namespace ET
                                 string[] paramInfo = expInfos[int.Parse(operatePar[0])].Split(';');
                                 userLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
 
-                                expConfig = ExpConfigCategory.Instance.Get(userLv);
-                                int addExp = (int)RandomHelper.RandomNumberFloat(float.Parse(paramInfo[0]) * expConfig.RoseExpPro, float.Parse(paramInfo[1]) * expConfig.RoseExpPro);
+                                /*exp = ExpCategory.Instance.Get(userLv);
+                                int addExp = (int)RandomHelper.RandomNumberFloat(float.Parse(paramInfo[0]) * exp.RoseExpPro, float.Parse(paramInfo[1]) * exp.RoseExpPro);
                                 addExp *= costNumber;   
                                 unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Exp, addExp.ToString(), true, ItemGetWay.DuiHuan);
                                 if (needZuanshi > 0)
                                 {
                                     unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.DuiHuan);
-                                }
+                                }*/
 
-                                response.OperatePar = addExp.ToString();
+                                //response.OperatePar = addExp.ToString();
                                 break;
                             //藏宝图
                             case 113:

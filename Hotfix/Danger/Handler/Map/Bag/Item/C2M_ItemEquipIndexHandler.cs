@@ -14,7 +14,7 @@ namespace ET
         {
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
             BagInfo equip_0 = bagComponent.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)ItemSubTypeEnum.Wuqi);
-            BagInfo equip_1 = bagComponent.GetEquipBySubType(ItemLocType.ItemLocEquip_2, (int)ItemSubTypeEnum.Wuqi);
+            BagInfo equip_1 = null;///bagComponent.GetEquipBySubType(ItemLocType.ItemLocEquip_2, (int)ItemSubTypeEnum.Wuqi);
             if (equip_0 == null || equip_1 == null)
             {
                 response.Error = ErrorCode.ERR_EquipType;
@@ -29,8 +29,8 @@ namespace ET
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
 
             //交换装备位置
-            unit.GetComponent<BagComponent>().OnChangeItemLoc(equip_0, ItemLocType.ItemLocEquip_2, ItemLocType.ItemLocEquip);
-            unit.GetComponent<BagComponent>().OnChangeItemLoc(equip_1, ItemLocType.ItemLocEquip, ItemLocType.ItemLocEquip_2);
+           // unit.GetComponent<BagComponent>().OnChangeItemLoc(equip_0, ItemLocType.ItemLocEquip_2, ItemLocType.ItemLocEquip);
+            //unit.GetComponent<BagComponent>().OnChangeItemLoc(equip_1, ItemLocType.ItemLocEquip, ItemLocType.ItemLocEquip_2);
 
             unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, equip_0);
             unit.GetComponent<SkillSetComponent>().OnWearEquip(equip_1);

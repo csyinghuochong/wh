@@ -22,10 +22,6 @@ namespace ET
             {
                 equipmentBagInfo = unit.GetComponent<BagComponent>().GetItemByLoc(ItemLocType.ItemLocEquip, request.EquipmentBagInfo.BagInfoID);
             }
-            if (equipmentBagInfo == null)
-            {
-                equipmentBagInfo = unit.GetComponent<BagComponent>().GetItemByLoc(ItemLocType.ItemLocEquip_2, request.EquipmentBagInfo.BagInfoID);
-            }
 
             if (equipmentBagInfo == null)
             {

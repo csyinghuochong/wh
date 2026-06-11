@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
@@ -40,7 +40,7 @@ namespace ET
             {
                 //韧性缩短眩晕时间
                 NumericComponent numericComponent = theUnitBelongto.GetComponent<NumericComponent>();
-                float addResPro = numericComponent.GetAsFloat(NumericType.Now_Res);
+                float addResPro = numericComponent.GetAsFloat(NumericType.Numeric_Error);
 
                 //最多抵抗一半
                 if (addResPro >= 0.5f)

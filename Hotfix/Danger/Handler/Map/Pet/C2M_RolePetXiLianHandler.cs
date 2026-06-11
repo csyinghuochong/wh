@@ -73,17 +73,17 @@ namespace ET
 					break;
 				//增加经验
 				case 108:
-					if (ExpConfigCategory.Instance.Contain(petInfo.PetLv))
+					if (ExpCategory.Instance.Contain(petInfo.PetLv))
 					{
-                        int addExp = ExpConfigCategory.Instance.Get(petInfo.PetLv).PetItemUpExp;
+                        /*int addExp = ExpCategory.Instance.Get(petInfo.PetLv).PetItemUpExp;
                         unit.GetComponent<PetComponent>().PetAddExp(petInfo, addExp);
-                        response.rolePetInfo = petInfo;
+                        response.rolePetInfo = petInfo;*/
                     }
 					break;
 				//增加等级
 				case 109:
 					///////
-					if ( !ExpConfigCategory.Instance.Contain(petInfo.PetLv + 1) )
+					if ( !ExpCategory.Instance.Contain(petInfo.PetLv + 1) )
 					{
 						reply();
 						return;
@@ -314,22 +314,6 @@ namespace ET
 			//Function_AI.GetInstance().Pet_Create(petinfo, 1);
 
 			return ErrorCore;
-		}
-
-		//成长提高
-		private bool Pet_AddRandomChengZhang(RolePetInfo petinfo)
-		{
-			return Function_AI.GetInstance().Pet_AddRandomChengZhang(petinfo);
-			//langStrHint = Game_PublicClassVar.Get_gameSettingLanguge.LoadLocalizationHint("hint_228");
-			//Game_PublicClassVar.Get_function_UI.GameGirdHint_Front(langStrHint);
-			////Game_PublicClassVar.Get_function_UI.GameGirdHint_Front("一股神秘的力量让你的宠物成长提高了！");
-			//Obj_PetShow.GetComponent<UI_PetXiLianShow>().showPetProperty();
-			////消耗当前的道具,刷新对应的栏位显示
-			//if (Game_PublicClassVar.Get_function_Rose.CostBagItem(XiLianNeedItemID, int.Parse(XiLianNeedItemNum)))
-			//{
-			//	BagItemSkillBtnList();
-			//	nowXiLianNum = nowXiLianNum + 1;
-			//}
 		}
 
 		//宝宝属性点重置

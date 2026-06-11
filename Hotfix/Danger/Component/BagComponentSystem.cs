@@ -78,7 +78,7 @@ namespace ET
 
             return list;
         }
-
+        
         public static List<BagInfo> GetItemByLoc(this BagComponent self, ItemLocType itemEquipType)
         {
             List<BagInfo> ItemTypeList = null;
@@ -132,9 +132,9 @@ namespace ET
                 case ItemLocType.ChouKaWarehouse:
                     ItemTypeList = self.ChouKaWarehouse;
                     break;
-                case ItemLocType.ItemLocEquip_2:
+                /*case ItemLocType.ItemLocEquip_2:
                     ItemTypeList = self.EquipList_2;
-                    break;
+                    break;*/
                 case ItemLocType.SeasonJingHe:
                     ItemTypeList = self.SeasonJingHe;
                     break;
@@ -1685,274 +1685,386 @@ namespace ET
 
         public static void OnGmGaoJi(this BagComponent self, int level)
         {
-            List<string> gmitemList = new List<string>()
-            {
-                //道具
-                "1#10#648",
-                "1#1#599999999",
-                "1#3#99999999",
-                "1#13#9999999",
-                "1#16#999999",
-                "1#10020001#9999",
-                "1#10021010#9999",
-                "1#10021009#9999",
-                "1#10021008#9999",
-                "1#10021005#9999",
-                "1#10010037#9999",
-                "1#10000136#9999",
-                "1#11300001#1",
-                "1#11300004#1",
-                "1#11300003#1",
-                "1#11300502#1",
-                "1#11300503#1",
-                "1#11300504#1",
-                "1#10000162#9999",
-                "1#10000164#9999",
-                "1#10000165#9999",
-                "1#10000155#9999",
-                "1#10010083#9999",
-                "1#10010078#9999",
-                "1#10010079#9999",
-                "1#10010085#99999",
-                "1#10010086#9999",
-                "1#10010087#9999",
-                "1#10010093#1",
-                "1#10010093#1",
-                "1#10010093#1",
-                "1#10010103#999",
-                "1#10010029#9999",
-                "1#10010030#9999",
-                "1#10036021#1",
-                "1#10036028#1",
-                "1#10036030#1",
-                "1#10033001#999",
-                "1#10035001#999",
-                "1#10034001#999",
+          
+        
+        }
 
-                //装备
-                "1#14060004#1",
-                "1#14100004#1",
-                "1#14100008#1",
-                "1#14100104#1",
-                "1#14100108#1",
-                "1#14100204#1",
-
-                //宝石
-                "1#10045101#999",
-                "1#10045102#999",
-                "1#10045103#999",
-                "1#10045201#999",
-                "1#10045202#999",
-                "1#10045203#999",
-                "1#10045301#999",
-                "1#10045302#999",
-                "1#10045303#999",
-                "1#10045401#999",
-                "1#10045402#999",
-                "1#10045403#999",
-                "1#10000143#99999",
-                "1#10000132#99999",
-                "1#10000144#99999",
-                "1#10000145#99999",
-                "1#10000146#99999",
-                "1#10000147#99999",
-                "1#10000131#99999",
-                "1#10000151#99999",
-                "1#10000150#9999",
-                "1#10000148#99999",
-                "1#10000149#99999",
-                "1#10000152#99999",
-                "1#10000156#999",
-                "1#10000157#99999",
-                "1#17002006#1",
-                "1#17002003#1",
-                "1#17002002#1",
-                "1#10000159#9999",
-                
-                "1#10000160#1000",
-                "1#10000176#1000",
-                "1#10000177#1000",
-            };
-
-            self.AdditionalCellNum[0] = CommonConfig.BuyBagCellCosts.Count; 
-
+        public static void GetEquipAttribute(this BagComponent self, List<HideProList> occInitAttribute)
+        {
             Unit unit = self.GetParent<Unit>();
-
-            List<int> equipList = new List<int>() 
+            int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
+            List<int> equipIDList = new List<int>();
+            List<int> equipSuitIDList = new List<int>();
+            List<BagInfo> equipList =  self.GetItemByLoc(ItemLocType.ItemLocEquip);
+            //List<BagInfo> equipList_2 = unit.GetComponent<BagComponent>().GetItemByLoc(ItemLocType.ItemLocEquip_2);
+            
+           // List<BagInfo> equipList = new List<BagInfo>();
+           // equipList.AddRange(equipList_1);
+            //equipList.AddRange(equipList_2);
+ 
+            for (int i = equipList.Count - 1; i >= 0; i--)
             {
-                
-            };
+                BagInfo userBagInfo = equipList[i];
+                if (!EquipCategory.Instance.Contain(userBagInfo.ItemID))
+                {
+                    equipList.RemoveAt(i);
+                    continue;
+                }
 
-            UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
-
-            if (level == 1) //高级
-            {
-                if (userInfo.Occ == 1)  //战士
-                {
-                    equipList.Add(15810001);
-                    equipList.Add(15810002);
-                }
-                if (userInfo.Occ == 2)  //法师
-                {
-                    equipList.Add(15810101);
-                    equipList.Add(15810102);
-                }
-                if (userInfo.Occ == 3)  //猎人
-                {
-                    equipList.Add(15810001);
-                    equipList.Add(15810201);
-                }
-                //11:布甲
-                //12:轻甲
-                //13:重甲
-                int occTwo = userInfo.OccTwo;
-                if (occTwo == 0)
-                {
-                    equipList.Add(10030001);
-                    equipList.Add(15806001);
-                    equipList.Add(15807001);
-                    equipList.Add(15808001);
-                    equipList.Add(15809001);
-                    equipList.Add(15806001);
-                    equipList.Add(15807001);
-                    equipList.Add(15808001);
-                    equipList.Add(15809001);
-                }
-                else
-                {
-                    Occupation_Transfer occupationTwo = Occupation_TransferCategory.Instance.Get(occTwo);
-                    if (occupationTwo.ArmorMastery == 1)
-                    {
-                        equipList.Add(15801002);
-                        equipList.Add(15802002);
-                        equipList.Add(15803002);
-                        equipList.Add(15804002);
-                        equipList.Add(15805002);
-                        equipList.Add(15811002);
-                    }
-                    if (occupationTwo.ArmorMastery == 12)
-                    {
-                        equipList.Add(15801001);
-                        equipList.Add(15802001);
-                        equipList.Add(15803001);
-                        equipList.Add(15804001);
-                        equipList.Add(15805001);
-                        equipList.Add(15811001);
-                    }
-                    if (occupationTwo.ArmorMastery == 13)
-                    {
-                        equipList.Add(15801003);
-                        equipList.Add(15802003);
-                        equipList.Add(15803003);
-                        equipList.Add(15804003);
-                        equipList.Add(15805003);
-                        equipList.Add(15811003);
-                    }
-                }
-            }
-            if (level == 2)  //中级158-154
-            {
-                if (userInfo.Occ == 1)  //战士
-                {
-                    equipList.Add(15410001);
-                    equipList.Add(15410002);
-                }
-                if (userInfo.Occ == 2)  //法师
-                {
-                    equipList.Add(15410101);
-                    equipList.Add(15410102);
-                }
-                if (userInfo.Occ == 3)  //猎人
-                {
-                    equipList.Add(15410001);
-                    equipList.Add(15410201);
-                }
-                //11:布甲
-                //12:轻甲
-                //13:重甲
-                int occTwo = userInfo.OccTwo;
-                if (occTwo == 0)
-                {
-                    equipList.Add(10030001);
-                    equipList.Add(15406001);
-                    equipList.Add(15407001);
-                    equipList.Add(15408001);
-                    equipList.Add(15409001);
-                    equipList.Add(15406001);
-                    equipList.Add(15407001);
-                    equipList.Add(15408001);
-                    equipList.Add(15409001);
-                }
-                else
-                {
-                    Occupation_Transfer occupationTwo = Occupation_TransferCategory.Instance.Get(occTwo);
-                    if (occupationTwo.ArmorMastery == 1)
-                    {
-                        equipList.Add(15401002);
-                        equipList.Add(15402002);
-                        equipList.Add(15403002);
-                        equipList.Add(15404002);
-                        equipList.Add(15405002);
-                        equipList.Add(15411002);
-                    }
-                    if (occupationTwo.ArmorMastery == 12)
-                    {
-                        equipList.Add(15401001);
-                        equipList.Add(15402001);
-                        equipList.Add(15403001);
-                        equipList.Add(15404001);
-                        equipList.Add(15405001);
-                        equipList.Add(15411001);
-                    }
-                    if (occupationTwo.ArmorMastery == 13)
-                    {
-                        equipList.Add(15401003);
-                        equipList.Add(15402003);
-                        equipList.Add(15403003);
-                        equipList.Add(15404003);
-                        equipList.Add(15405003);
-                        equipList.Add(15411003);
-                    }
-                }
-            }
-            if (level == 3)  //低级账号
-            {
-
-            }
-
-
-            for (int i = 0; i < gmitemList.Count; i++)
-            { 
-                string[] itemInfo = gmitemList[i].Split('#');
-                int itemId = int.Parse(itemInfo[0]);
-
-                if (equipList.Contains(itemId) && self.GetItemNumber(ItemBigType.Type_Item,  itemId )> 0)
+                //存储装备ID
+                Equip itemCof = EquipCategory.Instance.Get(userBagInfo.ItemID);
+                int equipType = ItemHelper.GetNewEquipType(userBagInfo);                
+                //生肖装备没激活直接跳出来
+                if (equipType == 101 && ItemHelper.IfShengXiaoActive(itemCof.Id, equipList) == false)
                 {
                     continue;
                 }
 
-                self.OnAddItemData($"{itemInfo[1]};{itemInfo[2]}", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
-            }
+                //赛季晶核装备
+                if (equipType == 201)
+                {
 
-            for (int i = 0; i < equipList.Count; i++)
-            {
-                self.OnAddItemData($"{equipList[i]};1", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
+                }
+
+                bool ifAddHidePro = true;
+               
+                if (ifAddHidePro)
+                {
+                    //存储装备精炼数值
+                    if (userBagInfo.HideProLists.Count > 0)
+                    {
+                        occInitAttribute.AddRange(userBagInfo.HideProLists);
+                    }
+                }
+
+                //存储洗炼数值
+                if (userBagInfo.XiLianHideProLists.Count > 0)
+                {
+                    occInitAttribute.AddRange(userBagInfo.XiLianHideProLists);
+                }
+
+                //存储洗炼数值
+                if (userBagInfo.XiLianHideTeShuProLists.Count > 0)
+                {
+                    occInitAttribute.AddRange(userBagInfo.XiLianHideTeShuProLists);
+                }
+
+                //存储附魔属性
+                if (userBagInfo.FumoProLists .Count > 0)
+                {
+                    occInitAttribute.AddRange(userBagInfo.FumoProLists); 
+                }
+
+                // 存储增幅属性
+                if (userBagInfo.IncreaseProLists != null && userBagInfo.IncreaseProLists.Count > 0)
+                {
+                    occInitAttribute.AddRange(userBagInfo.IncreaseProLists); 
+                 
+                }
+                //.InheritSkills //传承技能
+                // 存储增幅技能属性
+                if (userBagInfo.IncreaseSkillLists != null && userBagInfo.IncreaseSkillLists.Count > 0)
+                {
+                    for (int s = 0; s < userBagInfo.IncreaseSkillLists.Count; s++)
+                    {
+                        HideProListConfig hideProListConfig = HideProListConfigCategory.Instance.Get(userBagInfo.IncreaseSkillLists[s]);
+                        Skill skill = SkillCategory.Instance.Get(hideProListConfig.PropertyType);
+
+                        if (skill.SkillType != (int)SkillTypeEnum.PassiveAddProSkill)
+                        {
+                            continue;
+                        }
+
+                        string GameObjectParameter = skill.GameObjectParameter;
+                        if (CommonHelper.IfNull(GameObjectParameter))
+                        {
+                            continue;
+                        }
+
+                        string[] addProList = GameObjectParameter.Split(";");
+                        for (int p = 0; p < addProList.Length; p++)
+                        {
+                            string[] addPro = addProList[p].Split(",");
+                            if (addPro.Length < 2)
+                            {
+                                break;
+                            }
+                            //int key = int.Parse(addPro[0]);
+                            //occInitAttribute.AddRange();
+                            /*try
+                            {
+                                if (NumericHelp.GetNumericValueType(key) == 1)
+                                {
+                                    AddUpdateProDicList(key, long.Parse(addPro[1]), UpdateProDicList);
+                                }
+                                else
+                                {
+                                    AddUpdateProDicList(key, (int)(float.Parse(addPro[1]) * 10000), UpdateProDicList);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error($"{ex.ToString()} {GameObjectParameter}");
+                            }*/
+                        }
+                    }
+                }
+
+                //存储装备ID
+                equipIDList.Add(itemCof.Id);
+
+                //存储装备套装
+                if (EquipCategory.Instance.Contain(itemCof.Id))
+                {
+                    Equip equipCnf = EquipCategory.Instance.Get(itemCof.Id);
+                    if (equipCnf.EquipSuitID != 0)
+                    {
+                        if (equipSuitIDList.Contains(equipCnf.EquipSuitID) == false)
+                        {
+                            equipSuitIDList.Add(equipCnf.EquipSuitID);
+                        }
+                    }
+                }
+                else
+                {
+                    //Log.Debug($"无效的装备: {itemCof.Id}");
+                }
             }
             
-            //激活全部探险家,可领取
-            //激活令牌 累充98和298
-            self.OnAddItemData("10;98", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
-            self.OnAddItemData("10;298", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
-            for (int i = 0; i < 50; i++)
+            
+               ///职业套装
+            List<int> occsuit = new List<int>();
+            /*quipSuitConfigCategory.Instance.OccSuiList.TryGetValue(userInfo.Occ, out occsuit);
+            if(occsuit!=null)
             {
-                self.OnAddItemData("10;648", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
-            }
+                equipSuitIDList.AddRange(occsuit);
+            }*/
+            
+            //装备套装属性
+            for (int i = 0; i < equipSuitIDList.Count; i++)
+            {
+                if (!EquipSuitConfigCategory.Instance.Contain(equipSuitIDList[i]))
+                {
+                    continue;
+                }
+                EquipSuitConfig equipSuitCof = EquipSuitConfigCategory.Instance.Get(equipSuitIDList[i]);
+                int num = 0;
+                if (equipSuitCof.SuitType == 0) //默认套装
+                {
+                    int[] needEquipList = equipSuitCof.NeedEquipID;
+                    for (int y = 0; y < needEquipList.Length; y++)
+                    {
+                        int needEquipID = needEquipList[y];
+                        if (equipIDList.Contains(needEquipID))
+                        {
+                            num = num + 1;
+                        }
+                    }
+                }
+                else  //时装套装
+                {
+                    int[] needEquipList = equipSuitCof.NeedEquipID;
+                    for (int y = 0; y < needEquipList.Length; y++)
+                    {
+                        if (self.FashionActiveIds.Contains(needEquipList[y]))
+                        {
+                            num++;
+                        }
+                    }
+                }
 
-            for (int i = 0; i < self.QiangHuaLevel.Count; i++)
-            {
-                int maxLevel = QiangHuaHelper.GetQiangHuaMaxLevel(i);
-                self.QiangHuaLevel[i] = maxLevel - 1;
+                string[] equipSuitProList = equipSuitCof.SuitPropertyID.Split('|');
+                for (int y = 0; y < equipSuitProList.Length; y++)
+                {
+                    
+                    int NeedNum = int.Parse(equipSuitProList[y].Split('&')[0]);
+                    int NeedID = int.Parse(equipSuitProList[y].Split('&')[1]);
+                    if (num >= NeedNum)
+                    {
+                        //激活对应套装属性
+                        EquipSuitPropertyConfig equipSuitProCof = EquipSuitPropertyConfigCategory.Instance.Get(NeedID);
+                        // return list<hirepro>
+                        //BaseDamgeSubAdd_EquipSuit += equipSuitProCof.Equip_Hp;
+
+                        /*
+                        if (equipSuitProCof.AddPropreListStr != "0")
+                        {
+                            string[] AddPropreList = equipSuitProCof.AddPropreListStr.Split(';');
+                            for (int z = 0; z < AddPropreList.Length; z++)
+                            {
+                                int addProType = int.Parse(AddPropreList[z].Split(',')[0]);
+                                int type = NumericHelp.GetNumericValueType(addProType);
+                                int addProValue = 0;
+                                if (type == 1)
+                                {
+                                    addProValue = int.Parse(AddPropreList[z].Split(',')[1]);
+                                }
+                                else
+                                {
+                                    addProValue = (int)(float.Parse(AddPropreList[z].Split(',')[1]) * 10000);
+                                }
+
+                                AddUpdateProDicList(addProType, addProValue, UpdateProDicList);
+                            }
+                        }*/
+                    }
+                }
             }
+            
+            
+            
+            for (int i = 0; i < equipList.Count; i++)
+            {
+                Equip mEquipCon = EquipCategory.Instance.Get(equipList[i].ItemID);
+                int equipType = ItemHelper.GetNewEquipType(equipList[i]);
+
+                //生肖装备没激活直接跳出来
+             
+                if (equipType > 0 && equipList[i].ItemID == 0)
+                {
+                    /*List<int> itemSkills = ItemHelper.GetItemSkill(itemCof.SkillID);
+                    foreach (int skillid in itemSkills)
+                    {
+                        SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillid);
+                        skillAddCombat += skillConfig.AddCombat;
+                    }*/
+                    continue;
+                }
+                
+                //职业专精
+                if (occ != 0)
+                {
+                    //if (Occupation_TransferCategory.Instance.Get(userInfo.OccTwo).ArmorMastery == ItemCategory.Instance.Get(equipIDList[i]).EquipType)
+                    //{
+                    //    //occMastery = 0.2f;
+                    //    occMastery = 0f;
+                    //}
+                }
+
+                //极品属性
+                //强化登录（List长度13， 13个位置）
+                int caowei = ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID);
+                int qianghuaLv = unit.GetComponent<BagComponent>().GetQiangHuaLevel(caowei);
+
+                EquipQiangHuaConfig equipQiangHuaConfig = QiangHuaHelper.GetQiangHuaConfig(caowei, qianghuaLv);
+                if (equipQiangHuaConfig != null)
+                {
+                    
+                    //addPro += float.Parse(EquipQiangHuaConfigCategory.Instance.Get(QiangHuaHelper.GetQiangHuaId(itemCof.ItemSubType, qianghuaLv[itemCof.ItemSubType])).EquipPropreAdd);
+                }
+
+                occInitAttribute.AddRange( EquipCategory.Instance.GetEquipAttribute(equipList[i].ItemID) );
+
+                //获取宝石属性
+                if (string.IsNullOrEmpty(equipList[i].GemIDNew))
+                {
+                    equipList[i].GemIDNew = ItemHelper.DefaultGem;
+                    //Log.Debug($"GemIDNew==null  unit.Id: {unit.Id} BagInfoID:{equipList[i].BagInfoID}");
+                }
+
+                string[] gemList = equipList[i].GemIDNew.Split('_');
+
+                for (int z = 0; z < gemList.Length; z++)
+                {
+
+                    int gemID = int.Parse(gemList[z]);
+                    if (gemID == 0)
+                    {
+                        continue;
+                    }
+
+                    //史诗宝石数量最多4个
+                 
+
+                    // "100403;10@100203;60
+                    Item gemitemCof = ItemCategory.Instance.Get(gemID);
+                    string[] attributeList = gemitemCof.ItemUsePar.Split('@');
+                    for (int a = 0; a < attributeList.Length; a++)
+                    {
+                        //100203;113
+                        string attributeItem = attributeList[a];
+                        string[] attributeInfo = attributeItem.Split(';');
+                        int gemPro = 0;
+                        try
+                        {
+                            gemPro = int.Parse(attributeInfo[0]);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Debug("attri: " + ex.ToString());
+                            continue;
+                        }
+
+                        long gemValue = long.Parse(attributeInfo[1]);
+
+                        //浮点数处理
+                        if (NumericHelp.GetNumericValueType(gemPro) == 2)
+                        {
+                            //gemValue = gemValue * 10000;
+                        }
+
+                        //宝石专精
+                        if (equipList[i].HideSkillLists.Contains(68000108) || equipList[i].IncreaseSkillLists.Contains(2108) || equipList[i].IncreaseSkillLists.Contains(3902))
+                        {
+                            gemValue = (long)((float)gemValue * 1.2f);
+                        }
+
+                        //AddUpdateProDicList(gemPro, gemValue, UpdateProDicList);
+                    }
+                }
+            }
+        }
+
+        public static void GetSeasonHexinAttribute(this BagComponent self)
+        {
+            
+            ///晶核列表
+            /*
+            List<BagInfo> jingHeList = unit.GetComponent<BagComponent>().GetCurJingHeList();
+
+            for (int i = 0; i < jingHeList.Count; i++)
+            {
+                //存储装备精炼数值
+                if (jingHeList[i].XiLianHideProLists != null)
+                {
+                    for (int y = 0; y < jingHeList[i].XiLianHideProLists.Count; y++)
+                    {
+                        HideProList hidePro = jingHeList[i].XiLianHideProLists[y];
+                        AddUpdateProDicList(hidePro.HideID, hidePro.HideValue, UpdateProDicList);
+                    }
+                }
+            }
+            */
+            
+            /*SeasonLevelConfig seasonLevelConfig = SeasonLevelConfigCategory.Instance.Get(userInfo.SeasonLevel);
+            if (!CommonHelper.IfNull(seasonLevelConfig.PripertySet))
+            {
+                string[] addProList = seasonLevelConfig.PripertySet.Split("@");
+                for (int p = 0; p < addProList.Length; p++)
+                {
+                    string[] addPro = addProList[p].Split(";");
+                    if (addPro.Length < 2)
+                    {
+                        break;
+                    }
+                    int key = int.Parse(addPro[0]);
+                    try
+                    {
+                        if (NumericHelp.GetNumericValueType(key) == 1)
+                        {
+                            AddUpdateProDicList(key, long.Parse(addPro[1]), UpdateProDicList);
+                        }
+                        else
+                        {
+                            AddUpdateProDicList(key, (int)(float.Parse(addPro[1]) * 10000), UpdateProDicList);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"赛季属性配置错误：{ex.ToString()} {seasonLevelConfig.PripertySet}");
+                    }
+                }
+            }*/
         }
 
         public static bool OnCostItemData(this BagComponent self, BagInfo bagInfo, ItemLocType locType, int number)

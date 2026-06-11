@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -62,9 +62,7 @@ namespace ET
                             break;
                         //自身血量低攻击提升
                         case "3":
-                            float defendUnitHpPro = (float)theUnitFrom.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Hp) / (float)theUnitFrom.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_MaxHp);
-                            if (defendUnitHpPro <= float.Parse(parList[1]))
-                                self.ActTargetAddPro = float.Parse(parList[2]);
+                          
                             break;
                     }
                 }
@@ -494,7 +492,7 @@ namespace ET
             {
                 foreach (SkillParValue_HpUpAct now in self.SkillParValueHpUpAct)
                 {
-                    float defendUnitHpPro = (float)uu.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Hp) / (float)uu.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_MaxHp);
+                    float defendUnitHpPro = (float)uu.GetComponent<NumericComponent>().GetAsInt(NumericType.Numeric_Error) / (float)uu.GetComponent<NumericComponent>().GetAsInt(NumericType.Numeric_Error);
                     //血量低于
                     if (now.type == 1)
                     {

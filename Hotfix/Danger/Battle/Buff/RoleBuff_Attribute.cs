@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
@@ -108,7 +108,7 @@ namespace ET
 
                         if (NowBuffParameterType == 3001 && NowBuffParameterValue > 0f)
                         {
-                            //NowBuffParameterValue += heroCom.GetAsFloat(NumericType.Now_ShenNongPro);
+                            //NowBuffParameterValue += heroCom.GetAsFloat(NumericType.Numeric_Error);
                         }
 
                         //取整数
@@ -132,13 +132,7 @@ namespace ET
                     if (NowBuffParameterType == 3001)
                     {
                         //神农属性额外处理
-                        this.NowBuffValue = this.NowBuffValue * (1f + heroCom.GetAsFloat(NumericType.Now_ShenNongPro) + heroCom.GetAsFloat(NumericType.Now_ShenNongProNoFight));
-                        int nowdamgeType = 2;
-                        if (this.NowBuffValue < 0)
-                        {
-                            nowdamgeType = 0;
-                        }
-                        heroCom.ApplyChange(TheUnitFrom, NumericType.Now_Hp, (long)this.NowBuffValue, 0, true, nowdamgeType);
+                      
                     }
                     else if (NowBuffParameterType == 3164)
                     {

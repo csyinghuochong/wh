@@ -81,7 +81,7 @@ namespace ET
                 unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, equipInfo);
             }
 
-            long[] equipids_2 = bagComponent.EquipList_2.Select(p => p.BagInfoID).ToArray();
+            /*long[] equipids_2 = bagComponent.EquipList_2.Select(p => p.BagInfoID).ToArray();
             foreach (long equipid in equipids_2)
             {
                 BagInfo equipInfo = bagComponent.GetItemByLoc(ItemLocType.ItemLocEquip_2, equipid);
@@ -93,7 +93,7 @@ namespace ET
 
                 unit.GetComponent<BagComponent>().OnChangeItemLoc(equipInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip_2);
                 unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip_2, equipInfo);
-            }
+            }*/
             unit.GetComponent<SkillPassiveComponent>().OnTrigegerPassiveSkill(SkillPassiveTypeEnum.WandBuff_8, 0);
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Weapon, 0);
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -200,11 +200,11 @@ namespace ET
                         unit.DomainScene().GetComponent<HappyDungeonComponent>().NoticeRefreshTime(unit);
                         break;
                     case MapTypeEnum.Battle:
-						//int todayCamp = numericComponent.GetAsInt(NumericType.BattleTodayCamp);
+						//int todayCamp = numericComponent.GetAsInt(NumericType.Numeric_Error);
 						//todayCamp = todayCamp > 0 ? todayCamp : int.Parse(request.ParamInfo);
 						int todayCamp = int.Parse(request.ParamInfo);
 						numericComponent.Set(NumericType.BattleCamp, todayCamp); //1 2
-						//numericComponent.Set(NumericType.BattleTodayCamp, todayCamp); //1 2
+						//numericComponent.Set(NumericType.Numeric_Error, todayCamp); //1 2
 						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
 						sceneConfig = SceneConfigCategory.Instance.Get(request.ChapterId);
 						int startIndex = todayCamp == 1 ? 0 : 3;

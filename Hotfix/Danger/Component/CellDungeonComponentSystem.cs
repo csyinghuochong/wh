@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
@@ -330,7 +330,7 @@ namespace ET
             {
                 //int starNumber = 0;
                 long needTime = TimeHelper.ServerNow() - self.EnterTime;
-                long maxHp = self.MainUnit.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_MaxHp);
+                long maxHp = self.MainUnit.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error);
                 /*ChapterConfig chapterConfig = ChapterConfigCategory.Instance.Get(self.ChapterId);
 
                 M2C_FubenSettlement m2C_FubenSettlement = new M2C_FubenSettlement();

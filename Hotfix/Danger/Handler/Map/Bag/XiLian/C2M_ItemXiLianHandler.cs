@@ -11,19 +11,19 @@ namespace ET
         {
             try
             {
-                ItemLocType itemLocType = ItemLocType.ItemLocBag;
+                //ItemLocType itemLocType = ItemLocType.ItemLocBag;
                 BagComponent bagComponent = unit.GetComponent<BagComponent>();
                 BagInfo bagInfo = bagComponent.GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID);
 
                 if (bagInfo == null)
                 {
                     bagInfo = bagComponent.GetItemByLoc(ItemLocType.ItemLocEquip, request.OperateBagID);
-                    itemLocType = ItemLocType.ItemLocEquip;
+                    //itemLocType = ItemLocType.ItemLocEquip;
                 }
                 if (bagInfo == null)
                 {
-                    bagInfo = bagComponent.GetItemByLoc(ItemLocType.ItemLocEquip_2, request.OperateBagID); 
-                    itemLocType = ItemLocType.ItemLocEquip_2;
+                    /*bagInfo = bagComponent.GetItemByLoc(ItemLocType.ItemLocEquip_2, request.OperateBagID); 
+                    itemLocType = ItemLocType.ItemLocEquip_2;*/
                 }
                 if (bagInfo == null)
                 {
@@ -102,10 +102,11 @@ namespace ET
                     unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.ItemXiLianNumber, request.Times, 0);
                 }
 
+                /*
                 if (request.Times == 1 && (itemLocType == ItemLocType.ItemLocEquip || itemLocType == ItemLocType.ItemLocEquip_2))
                 {
                     unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(itemLocType, bagInfo, bagInfo.BagInfoID);
-                }
+                }*/
 
                 if (request.Times == 1)
                 {
@@ -120,10 +121,10 @@ namespace ET
                     MessageHelper.SendToClient(unit, m2c_bagUpdate);
                 }
 
-                if (request.Times == 1 && (itemLocType == ItemLocType.ItemLocEquip || itemLocType == ItemLocType.ItemLocEquip_2))
+                /*if (request.Times == 1 && (itemLocType == ItemLocType.ItemLocEquip || itemLocType == ItemLocType.ItemLocEquip_2))
                 {
                     unit.GetComponent<SkillSetComponent>().OnWearEquip(bagInfo);
-                }
+                }*/
 
                 for (int i = 0; i < response.ItemXiLianResults.Count; i++)
                 {

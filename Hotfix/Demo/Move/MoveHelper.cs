@@ -78,7 +78,7 @@ namespace ET
                     MessageHelper.Broadcast(unit, m2CPathfindingResult);
                 }
 
-                float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Now_Speed);
+                float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Speed_Current);
                 MoveComponent moveComponent = unit.GetComponent<MoveComponent>();
                 bool ret = await moveComponent.MoveToAsync(path, speed * (speedrate * 0.01f), 0, cancellationToken);
                 if (ret) // 如果返回false，说明被其它移动取消了，这时候不需要通知客户端stop
@@ -93,7 +93,7 @@ namespace ET
 
         public static async ETTask FindPathResultToAsync(this Unit unit, List<Vector3> positonsss)
         {
-            float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Now_Speed);
+            float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
             bool ret = await unit.GetComponent<MoveComponent>().MoveToAsync(positonsss, speed);
             if (ret) // 如果返回false，说明被其它移动取消了，这时候不需要通知客户端stop
             {
@@ -106,7 +106,7 @@ namespace ET
         // 可以多次调用，多次调用的话会取消上一次的协程
         public static async ETTask<int> BulletMoveToAsync(this Unit unit, Vector3 target)
         {
-            float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Now_Speed);
+            float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
             if (speed < 0.01)
             {
                 unit.SendStop(-1);

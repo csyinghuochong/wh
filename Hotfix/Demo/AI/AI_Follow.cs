@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace ET
@@ -92,8 +92,8 @@ namespace ET
             long speedadd = 40000;
             if (master != null && !master.IsDisposed)
             {
-                nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Speed);
-                unit.GetComponent<NumericComponent>().Set(NumericType.Base_Speed_Base, nowspeed);
+                nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error);
+                unit.GetComponent<NumericComponent>().Set(NumericType.Numeric_Error, nowspeed);
             }
 
             while (true)
@@ -118,7 +118,7 @@ namespace ET
                 if (distacne > 1.5f && errorCode == ErrorCode.ERR_Success)
                 {
                     Vector3 nextTarget = GetFollowPosition(unit, master);
-                    //unit.GetComponent<NumericComponent>().Set(NumericType.Extra_Buff_Speed_Add, speedadd);
+                    //unit.GetComponent<NumericComponent>().Set(NumericType.Numeric_Error, speedadd);
                     unit.FindPathMoveToAsync(nextTarget, cancellationToken, false, Math.Max(100, (int)((speedadd+nowspeed) * 100f / nowspeed))).Coroutine();
                 }
                 bool result = await TimerComponent.Instance.WaitAsync(200, cancellationToken);
@@ -142,7 +142,7 @@ namespace ET
                 long nowspeed = 60000;
                 if (master != null && !master.IsDisposed)
                 {
-                    nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Speed);
+                    nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error);
                 }
                 int errorCode = unit.GetComponent<StateComponent>().CanMove();
                 float distacne = Vector3.Distance(unit.Position, master.Position);
@@ -170,7 +170,7 @@ namespace ET
                 if (nowspeed > 0)
                 {
                     Vector3 nextTarget = GetFollowPosition(unit, master);
-                    unit.GetComponent<NumericComponent>().Set(NumericType.Now_Speed, nowspeed);
+                    unit.GetComponent<NumericComponent>().Set(NumericType.Numeric_Error, nowspeed);
                     unit.FindPathMoveToAsync(nextTarget, cancellationToken, false).Coroutine();
                 }
                 bool result = await TimerComponent.Instance.WaitAsync(200, cancellationToken);

@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class ExpConfigCategory : ProtoObject, IMerge
+    public partial class ExpConfig_restoreCategory : ProtoObject, IMerge
     {
-        public static ExpConfigCategory Instance;
+        public static ExpConfig_restoreCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, ExpConfig> dict = new Dictionary<int, ExpConfig>();
+        private Dictionary<int, ExpConfig_restore> dict = new Dictionary<int, ExpConfig_restore>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<ExpConfig> list = new List<ExpConfig>();
+        private List<ExpConfig_restore> list = new List<ExpConfig_restore>();
 		
-        public ExpConfigCategory()
+        public ExpConfig_restoreCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            ExpConfigCategory s = o as ExpConfigCategory;
+            ExpConfig_restoreCategory s = o as ExpConfig_restoreCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (ExpConfig config in list)
+            foreach (ExpConfig_restore config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public ExpConfig Get(int id)
+        public ExpConfig_restore Get(int id)
         {
-            this.dict.TryGetValue(id, out ExpConfig item);
+            this.dict.TryGetValue(id, out ExpConfig_restore item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (ExpConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (ExpConfig_restore)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, ExpConfig> GetAll()
+        public Dictionary<int, ExpConfig_restore> GetAll()
         {
             return this.dict;
         }
 
-        public ExpConfig GetOne()
+        public ExpConfig_restore GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class ExpConfig: ProtoObject, IConfig
+	public partial class ExpConfig_restore: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

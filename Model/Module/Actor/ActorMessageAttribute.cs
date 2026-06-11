@@ -2,7 +2,7 @@
 
 namespace ET
 {
-    public class ActorMessageAttribute: Attribute
+    public class ActorMessageAttribute: System.Attribute
     {
         public ushort Opcode { get; private set; }
 

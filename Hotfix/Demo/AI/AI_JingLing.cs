@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace ET
 {
@@ -27,7 +27,7 @@ namespace ET
 
             while (true)
             {
-                long nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Speed) + 1 ;
+                long nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error) + 1 ;
                 int errorCode = unit.GetComponent<StateComponent>().CanMove();
                 float distacne = Vector3.Distance(unit.Position, master.Position);
 
@@ -48,7 +48,7 @@ namespace ET
                 if (nowspeed > 0)
                 {
                     Vector3 nextTarget = GetFollowPosition(unit, master);
-                    unit.GetComponent<NumericComponent>().Set(NumericType.Now_Speed, nowspeed);
+                    unit.GetComponent<NumericComponent>().Set(NumericType.Numeric_Error, nowspeed);
                     unit.FindPathMoveToAsync(nextTarget, cancellationToken, false).Coroutine();
                 }
                 bool result = await TimerComponent.Instance.WaitAsync(200, cancellationToken);

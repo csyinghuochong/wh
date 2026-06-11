@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -166,7 +166,7 @@ namespace ET
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            long speed = numericComponent.GetAsLong(NumericType.Now_Speed);
+            long speed = numericComponent.GetAsLong(NumericType.Numeric_Error);
             if (buffId > 0)
             {
                 self.m_BuffRecord.Add(new KeyValuePairLong() { KeyId = buffId, Value = operate, Value2 = speed });
@@ -217,11 +217,11 @@ namespace ET
                     }
 
                     strLog += "当前速度属性： ";
-                    strLog += $" {numericComponent.GetAsLong(NumericType.Base_Speed_Base)} ";
-                    strLog += $" {numericComponent.GetAsLong(NumericType.Base_Speed_Mul)} ";
-                    strLog += $" {numericComponent.GetAsLong(NumericType.Base_Speed_Add)} ";
-                    strLog += $" {numericComponent.GetAsLong(NumericType.Extra_Buff_Speed_Add)} ";
-                    strLog += $" {numericComponent.GetAsLong(NumericType.Extra_Buff_Speed_Mul)} ";
+                    strLog += $" {numericComponent.GetAsLong(NumericType.Numeric_Error)} ";
+                    strLog += $" {numericComponent.GetAsLong(NumericType.Numeric_Error)} ";
+                    strLog += $" {numericComponent.GetAsLong(NumericType.Numeric_Error)} ";
+                    strLog += $" {numericComponent.GetAsLong(NumericType.Numeric_Error)} ";
+                    strLog += $" {numericComponent.GetAsLong(NumericType.Numeric_Error)} ";
 
                     self.m_BuffRecord.Clear();
                     Log.Warning(strLog);
@@ -432,7 +432,7 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
             SkillBuff skillBuff = SkillBuffCategory.Instance.Get(buffData.BuffId);
-            float now_DiKangPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Now_DiKangPro);
+            float now_DiKangPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
             if (RandomHelper.RandFloat01() < now_DiKangPro && skillBuff.BuffBenefitType == 2)
             {
                 //抵抗,添加瓢字
@@ -454,7 +454,7 @@ namespace ET
             }
 
             //眩晕抵抗
-            float now_DizzinessPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Now_Resistance_Dizziness_Pro);
+            float now_DizzinessPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
             if (RandomHelper.RandFloat01() < now_DizzinessPro)
             {
                 if (newState == StateTypeEnum.Dizziness)
@@ -987,9 +987,9 @@ namespace ET
 
             //恢复血量
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            long max_hp = numericComponent.GetAsLong(NumericType.Now_MaxHp);
-            numericComponent.NumericDic[NumericType.Now_Hp] = 0;
-            numericComponent.ApplyChange(null, NumericType.Now_Hp, max_hp, 0);
+            long max_hp = numericComponent.GetAsLong(NumericType.HP_Max);
+            numericComponent.NumericDic[NumericType.HP_Current] = 0;
+            numericComponent.ApplyChange(null, NumericType.HP_Current, max_hp, 0);
         }
 
         public static void InitDonationBuff(this BuffManagerComponent self)

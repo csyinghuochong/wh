@@ -182,7 +182,7 @@ namespace ET
                     rolePetInfo.ShouHuPos = 5;
                 }
 
-                if (rolePetInfo.PetLv > maxLv && !ExpConfigCategory.Instance.Contain(rolePetInfo.PetLv))
+                if (rolePetInfo.PetLv > maxLv && !ExpCategory.Instance.Contain(rolePetInfo.PetLv))
                 {
                     rolePetInfo.PetLv = maxLv;
                 }
@@ -883,11 +883,11 @@ namespace ET
 
             int maxLv = GlobalValueConfigCategory.Instance.Get(41).Value2;
             int newExp = rolePetInfo.PetExp + exp;
-            ExpConfig xiulianconf1 = ExpConfigCategory.Instance.Get(rolePetInfo.PetLv);
-            if (newExp >= xiulianconf1.PetUpExp && rolePetInfo.PetLv < maxLv)
+            Exp xiulianconf1 = ExpCategory.Instance.Get(rolePetInfo.PetLv);
+            if (newExp >= xiulianconf1.Exp_Role && rolePetInfo.PetLv < maxLv)
             {
                 self.PetAddLv(rolePetInfo, 1);
-                newExp -= xiulianconf1.PetUpExp;
+                newExp -= xiulianconf1.Exp_Role;
             }
 
             rolePetInfo.PetExp = newExp;
@@ -1054,11 +1054,11 @@ namespace ET
 
             //获取宠物身上属性
             self.UpdatePetNumeric(attriDic);
-            long Power_value = Function_Fight.GetOnePro(NumericType.Now_Power, attriDic);           //力量
-            long Agility_value = Function_Fight.GetOnePro(NumericType.Now_Agility, attriDic);       //敏捷
-            long Intellect_value = Function_Fight.GetOnePro(NumericType.Now_Intellect, attriDic);       //智力
-            long Stamina_value = Function_Fight.GetOnePro(NumericType.Now_Stamina, attriDic);           //耐力
-            long Constitution_value = Function_Fight.GetOnePro(NumericType.Now_Constitution, attriDic);         //体质
+            long Power_value = 0;           //力量
+            //long Agility_value = 0;  //敏捷
+            long Intellect_value = 0;    //智力
+            long Stamina_value = 0;      //耐力
+            long Constitution_value =  0;       //体质
             //Console.WriteLine($"Power_value: {Power_value} {Agility_value} {Intellect_value} {Stamina_value}  {Constitution_value}");
 
 
@@ -1077,30 +1077,30 @@ namespace ET
             int adf_Now = (int)((petCof.Base_Adf + rolePetInfo.PetLv * petCof.Lv_Adf + (PointNaiLi + Stamina_value) * 8) * adfPro * rolePetInfo.ZiZhi_ChengZhang);
 
             float speed = petCof.Base_MoveSpeed;
-            //float speed = self.GetParent<Unit>().GetComponent<NumericComponent>().GetAsFloat(NumericType.Now_Speed);
+            //float speed = self.GetParent<Unit>().GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
 
 
             ///传承鉴定：你的召唤物属性提升10%
             ///宠物如有需要 ，在此处加上
-            ///rolePetInfo.Ks.Add((int)NumericType.Now_Hp);
+            ///rolePetInfo.Ks.Add((int)NumericType.Numeric_Error);
             ///rolePetInfo.Vs.Add(hp_Now * (1 + now_SummonAddPro));
-            float now_SummonAddPro = numericComponent.GetAsFloat(NumericType.Now_SummonAddPro);
+            float now_SummonAddPro = numericComponent.GetAsFloat(NumericType.Numeric_Error);
 
             //宠物之核
             List<int> petheXinLv = new List<int>();
 
-            Function_Fight.AddUpdateProDicList(NumericType.Now_Hp, hp_Now, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, hp_Now, attriDic);
             Function_Fight.AddUpdateProDicList(NumericType.PetSkin, rolePetInfo.SkinId, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_Speed_Base, (long)speed * 10000, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_MaxHp_Base, hp_Now, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_MaxAct_Base, act_Now, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_Mage_Base, mage_Now, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_MaxDef_Base, def_Now, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_MaxAdf_Base, adf_Now, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_Cri_Base, 0, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_Res_Base, 0, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_Hit_Base, 0, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Base_Dodge_Base, 0, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, (long)speed * 10000, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, hp_Now, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, act_Now, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, mage_Now, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, def_Now, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, adf_Now, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, 0, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, 0, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, 0, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, 0, attriDic);
 
             for (int i = 0; i < rolePetInfo.PetHeXinList.Count; i++)
             {
@@ -1380,12 +1380,12 @@ namespace ET
             }
             petUnit.GetComponent<HeroDataComponent>().InitPet(rolePetInfo, true);
             //NumericComponent numericComponent = petUnit.GetComponent<NumericComponent>();
-            //numericComponent.ApplyValue(NumericType.Now_Hp, self.GetByKey(rolePetInfo, NumericType.Now_Hp), true);
-            //numericComponent.ApplyValue(NumericType.Now_MaxHp, self.GetByKey(rolePetInfo, NumericType.Now_MaxHp), true);
-            //numericComponent.ApplyValue(NumericType.Now_MaxAct, self.GetByKey(rolePetInfo, NumericType.Now_MaxAct), true);
-            //numericComponent.ApplyValue(NumericType.Now_Mage, self.GetByKey(rolePetInfo, NumericType.Now_Mage), true);
-            //numericComponent.ApplyValue(NumericType.Now_MaxDef, self.GetByKey(rolePetInfo, NumericType.Now_MaxDef), true);
-            //numericComponent.ApplyValue(NumericType.Now_MaxAdf, self.GetByKey(rolePetInfo, NumericType.Now_MaxAdf), true);
+            //numericComponent.ApplyValue(NumericType.Numeric_Error, self.GetByKey(rolePetInfo, NumericType.Numeric_Error), true);
+            //numericComponent.ApplyValue(NumericType.Numeric_Error, self.GetByKey(rolePetInfo, NumericType.Numeric_Error), true);
+            //numericComponent.ApplyValue(NumericType.Numeric_Error, self.GetByKey(rolePetInfo, NumericType.Numeric_Error), true);
+            //numericComponent.ApplyValue(NumericType.Numeric_Error, self.GetByKey(rolePetInfo, NumericType.Numeric_Error), true);
+            //numericComponent.ApplyValue(NumericType.Numeric_Error, self.GetByKey(rolePetInfo, NumericType.Numeric_Error), true);
+            //numericComponent.ApplyValue(NumericType.Numeric_Error, self.GetByKey(rolePetInfo, NumericType.Numeric_Error), true);
         }
 
         //根据资质换算出当前系数

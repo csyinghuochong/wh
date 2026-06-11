@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
@@ -101,8 +101,8 @@ namespace ET
                     NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
                     if (aiComponent.SceneTypeEnum != MapTypeEnum.TeamDungeon && numericComponent.GetAsInt(NumericType.Now_Dead) == 0)
                     {
-                        long max_hp = numericComponent.GetAsLong(NumericType.Now_MaxHp);
-                        numericComponent.ApplyValue(NumericType.Now_Hp, max_hp);
+                        long max_hp = numericComponent.GetAsLong(NumericType.Numeric_Error);
+                        numericComponent.ApplyValue(NumericType.Numeric_Error, max_hp);
                     }
                     aiComponent.IsRetreat = 0;
                 }

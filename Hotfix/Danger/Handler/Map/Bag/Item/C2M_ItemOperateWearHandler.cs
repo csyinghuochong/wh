@@ -134,7 +134,7 @@ namespace ET
                 M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
 
                 //获取之前的位置是否有装备
-                ItemLocType toLocType = findIndex == 0 ? ItemLocType.ItemLocEquip : ItemLocType.ItemLocEquip_2;
+                ItemLocType toLocType = findIndex == 0? ItemLocType.ItemLocEquip : ItemLocType.ItemLocEquip;///ItemLocType.ItemLocEquip_2;
                 BagInfo beforeequip = unit.GetComponent<BagComponent>().GetEquipBySubType(toLocType, weizhi);
 
                 if (beforeequip != null)
@@ -174,8 +174,8 @@ namespace ET
                 BagInfo useBagInfo = unit.GetComponent<BagComponent>().GetItemByLoc(beloc, bagInfoID);
                 if (useBagInfo == null)
                 {
-                    beloc = ItemLocType.ItemLocEquip_2;
-                    useBagInfo = unit.GetComponent<BagComponent>().GetItemByLoc(beloc, bagInfoID);
+                    /*beloc = ItemLocType.ItemLocEquip_2;
+                    useBagInfo = unit.GetComponent<BagComponent>().GetItemByLoc(beloc, bagInfoID);*/
                 }
 
                 if (useBagInfo == null)

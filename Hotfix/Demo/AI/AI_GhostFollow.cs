@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using UnityEngine;
 
@@ -60,7 +60,7 @@ namespace ET
                 long nowspeed = 60000;
                 if (master != null && !master.IsDisposed)
                 {
-                    nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Speed);
+                    nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error);
                 }
                 int errorCode = unit.GetComponent<StateComponent>().CanMove();
                 float distacne = Vector3.Distance(unit.Position, master.Position);
@@ -91,9 +91,9 @@ namespace ET
                 {
                     Vector3 nextTarget = GetFollowPosition(unit, master);
                     NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-                    long oldspeed = numericComponent.GetAsLong(NumericType.Now_Speed);
-                    //float addspeed = nowspeed * 0.0001f - numericComponent.GetAsFloat(NumericType.Base_Speed_Base);
-                    //numericComponent.Set(NumericType.Extra_Buff_Speed_Add, addspeed);
+                    long oldspeed = numericComponent.GetAsLong(NumericType.Numeric_Error);
+                    //float addspeed = nowspeed * 0.0001f - numericComponent.GetAsFloat(NumericType.Numeric_Error);
+                    //numericComponent.Set(NumericType.Numeric_Error, addspeed);
                     unit.FindPathMoveToAsync(nextTarget, cancellationToken, true, (int)(nowspeed * 100f/ oldspeed)).Coroutine();
                 }
                 bool result = await TimerComponent.Instance.WaitAsync(200, cancellationToken);

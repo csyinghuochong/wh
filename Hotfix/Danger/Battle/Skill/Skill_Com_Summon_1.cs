@@ -48,8 +48,8 @@ namespace ET
                 {
                     //随机坐标
                     float rangValue = float.Parse(skillParList[3]);
-                    float ran_x = Function_Role.GetInstance().ReturnRamdomValue_Float(0, rangValue) - rangValue / 2;
-                    float ran_z = Function_Role.GetInstance().ReturnRamdomValue_Float(0, rangValue) - rangValue / 2;
+                    float ran_x = RandomHelper.ReturnRamdomValue_Float(0, rangValue) - rangValue / 2;
+                    float ran_z = RandomHelper.ReturnRamdomValue_Float(0, rangValue) - rangValue / 2;
 
                     //获取追踪目标点
                     Vector3 initPosi = Vector3.zero;

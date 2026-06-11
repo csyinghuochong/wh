@@ -1,4 +1,4 @@
-﻿using MsgCryptTest;
+using MsgCryptTest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -143,7 +143,7 @@ namespace ET
 						{
 							continue;
 						}
-						units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.Now_Hp, -1000000000, 0);
+						units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.Numeric_Error, -1000000000, 0);
 					}
 					return;
 				}
@@ -156,7 +156,7 @@ namespace ET
                         {
                             continue;
                         }
-                        units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.Now_Hp, -1000000000, 0);
+                        units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.Numeric_Error, -1000000000, 0);
                     }
                     return;
                 }
@@ -174,7 +174,7 @@ namespace ET
 						{
 							continue;
 						}
-						units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.Now_Hp, -1000000000, 0);
+						units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.Numeric_Error, -1000000000, 0);
 					}
 					return;
 				}
@@ -215,7 +215,7 @@ namespace ET
                 if (message.GMMsg.Contains("#addack"))  //#addack#400000
                 {
 					int addAck = int.Parse(commands[2]);
-					unit.GetComponent<NumericComponent>().Set(NumericType.Extra_Buff_MaxAct_Add, addAck);
+					unit.GetComponent<NumericComponent>().Set(NumericType.Numeric_Error, addAck);
 					return;
 				}
 				if (message.GMMsg.Contains("#wechattoken"))
