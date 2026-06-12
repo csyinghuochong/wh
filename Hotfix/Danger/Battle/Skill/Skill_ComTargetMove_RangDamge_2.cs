@@ -12,14 +12,14 @@ namespace ET
         {
             this.BaseOnInit(skillId, theUnitFrom);
 
-            this.SkillExcuteNum = int.Parse(this.SkillConf.GameObjectParameter);
+            this.SkillExcuteNum = int.Parse(this.LdSkillConf.GameObjectParameter);
         }
 
         public override void OnExecute()
         {
             if (this.SkillExcuteNum > 100)
             {
-                Log.Error($"Skill_ComTargetMove_RangDamge_2: {this.SkillConf.Id}");
+                Log.Error($"Skill_ComTargetMove_RangDamge_2: {this.LdSkillConf.Id}");
                 return;
             }
 
@@ -31,7 +31,7 @@ namespace ET
                 //buffData.TargetAngle = 360 / SkillExcuteNum * i;      //设置旋转球出现的位置
                 //this.TheUnitFrom.GetComponent<BuffManagerComponent>().BulletFactory(buffData, TheUnitFrom, this);
 
-                Unit unit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(),  this.TheUnitFrom.Id, this.SkillConf.Id, 360 / SkillExcuteNum * i, this.TheUnitFrom.Position, new CreateMonsterInfo());
+                Unit unit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(),  this.TheUnitFrom.Id, this.LdSkillConf.Id, 360 / SkillExcuteNum * i, this.TheUnitFrom.Position, new CreateMonsterInfo());
                 unit.AddComponent<RoleBullet2Componnet>().OnBaseBulletInit(this, this.TheUnitFrom.Id);
             }
 

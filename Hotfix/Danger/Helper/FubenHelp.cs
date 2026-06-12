@@ -334,13 +334,13 @@ namespace ET
                         if (monsterConfig.MonsterSonType == 58) //奇遇宠物
                         {
 							int itemid = monsterConfig.Parameter[1];
-							Item Item = ItemCategory.Instance.Get(itemid);
-							int petId = int.Parse(Item.ItemUsePar);
-							Pet petConfig = PetCategory.Instance.Get(petId );
+							LDItem ldItem = LDItemCategory.Instance.Get(itemid);
+							int petId = int.Parse(ldItem.ItemUsePar);
+							LDPet ldPetConfig = LDPetCategory.Instance.Get(petId );
 
-                            List<int> weight = new List<int>(petConfig.SkinPro);
+                            List<int> weight = new List<int>(ldPetConfig.SkinPro);
                             int index = RandomHelper.RandomByWeight(weight);
-                            skinId = petConfig.Skin[index];
+                            skinId = ldPetConfig.Skin[index];
                         }
                         Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
                         Unit unitmonster = UnitFactory.CreateMonster(scene, monsterid, vector3, new CreateMonsterInfo()
@@ -526,16 +526,16 @@ namespace ET
 			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
             m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;			//拾取道具的消息，此为玩家unitid
             m2C_SyncChatInfo.ChatInfo.ParamId = dropInfo.UnitId;//拾取道具的消息，此为道具unitid
-            Item Item = ItemCategory.Instance.Get(dropInfo.ItemID);
+            LDItem ldItem = LDItemCategory.Instance.Get(dropInfo.ItemID);
 			string numShow = "";
-			if (Item.Id == 1)
+			if (ldItem.Id == 1)
 			{
 				numShow = dropInfo.ItemNum.ToString();
 			}
-			string colorValue = CommonHelper.QualityReturnColor(Item.Quality);
-			m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>拾取<color=#{colorValue}>{numShow}{Item.Name}</color>";
+			string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);
+			m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>pick up<color=#{colorValue}>{numShow}{Item.Name}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
             for (int p = 0; p < points.Count; p++)
 			{
 				Unit player = unit.GetParent<UnitComponent>().Get(ids[p]);
@@ -563,13 +563,13 @@ namespace ET
 			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
 			m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;   //拾取道具的消息，此为玩家id
 			m2C_SyncChatInfo.ChatInfo.ParamId = dropInfo.UnitId;
-			Item Item =ItemCategory.Instance.Get(dropInfo.ItemID);
+			LDItem ldItem =LDItemCategory.Instance.Get(dropInfo.ItemID);
 			string numShow = "";
-			if (Item.Id == 1)
+			if (ldItem.Id == 1)
 			{
 				numShow = dropInfo.ItemNum.ToString();
 			}
-			string colorValue = CommonHelper.QualityReturnColor(Item.Quality);
+			string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);
 
             string bybox = string.Empty;
             string byboxen = string.Empty;
@@ -582,9 +582,9 @@ namespace ET
                 byboxen = "By Diamond Chest";
             }
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name} {bybox}</color>拾取<color=#{colorValue}>{numShow}{Item.Name}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name} {bybox}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name} {byboxen}</color>pick up<color=#{colorValue}>{numShow}{Item.Name}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<UserInfoComponent>().UserInfo.Name} {byboxen}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
 
             //MessageHelper.SendToClient(GetUnitList(unit.DomainScene(), UnitType.Player), m2C_SyncChatInfo);
             //Log.Warning($"SendFubenPickMessage: {unit.Id} {dropInfo.ItemID}");

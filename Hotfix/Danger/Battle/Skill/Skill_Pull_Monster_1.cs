@@ -21,7 +21,7 @@ namespace ET
 
         public void InitPullMonster()
         {
-            List<Unit> monsters = AIGetTargetHelp.GetEnemyMonsters(this.TheUnitFrom, this.TargetPosition, (float)(this.SkillConf.DamgeRange[0])*2);
+            List<Unit> monsters = AIGetTargetHelp.GetEnemyMonsters(this.TheUnitFrom, this.TargetPosition, (float)(this.LdSkillConf.DamgeRange[0])*2);
          
             for (int i = 0; i < monsters.Count; i++)
             {

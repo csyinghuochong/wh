@@ -12,21 +12,21 @@ namespace ET
         {
             this.BaseOnInit(skillId, theUnitFrom);
 
-            if (string.IsNullOrEmpty(SkillConf.GameObjectParameter))
+            if (string.IsNullOrEmpty(this.LdSkillConf.GameObjectParameter))
             {
                 this.SkillTriggerInvelTime = 1000;
-                Log.Warning($"SkillConf.GameObjectParameter:  {SkillConf.Id}  {SkillConf.GameObjectParameter}");
+                Log.Warning($"SkillConf.GameObjectParameter:  {this.LdSkillConf.Id}  {this.LdSkillConf.GameObjectParameter}");
             }
             else
             {
                 try
                 {
-                    this.SkillTriggerInvelTime = (long)(float.Parse(SkillConf.GameObjectParameter) * 1000);
+                    this.SkillTriggerInvelTime = (long)(float.Parse(this.LdSkillConf.GameObjectParameter) * 1000);
                 }
                 catch (Exception ex)
                 {
                     Log.Debug(ex.ToString());
-                    Log.Warning($"SkillConf.GameObjectParameter:  {SkillConf.Id}  {SkillConf.GameObjectParameter}");
+                    Log.Warning($"SkillConf.GameObjectParameter:  {this.LdSkillConf.Id}  {this.LdSkillConf.GameObjectParameter}");
                 }
 
             }
@@ -41,7 +41,7 @@ namespace ET
         public override void OnUpdate()
         {
             this.IsExcuteHurt = false;
-            if (this.SkillConf.SkillTargetType == SkillTargetType.SelfFollow)
+            if (this.LdSkillConf.SkillTargetType == SkillTargetType.SelfFollow)
             {
                 this.UpdateCheckPoint(this.TheUnitFrom.Position);
             }

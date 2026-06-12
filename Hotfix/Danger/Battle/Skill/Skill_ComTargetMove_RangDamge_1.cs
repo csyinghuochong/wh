@@ -12,7 +12,7 @@ namespace ET
             this.BaseOnInit(skillId, theUnitFrom);
 
             //60; 5; 0.3; 3
-            string[] paraminfos = this.SkillConf.GameObjectParameter.Split(';');//60;3;0.5;1  64014451
+            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');//60;3;0.5;1  64014451
             if (paraminfos.Length >= 4)
             {
                 this.SkillTriggerLastTime = 0;
@@ -29,7 +29,7 @@ namespace ET
         {
             Vector3 sourcePoint = TheUnitFrom.Position;
             Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * SkillConf.SkillLiveTime * (float)SkillConf.SkillMoveSpeed * 0.001f;
+            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * this.LdSkillConf.SkillLiveTime * (float)this.LdSkillConf.SkillMoveSpeed * 0.001f;
             return TargetPoint;
         }
 
@@ -52,7 +52,7 @@ namespace ET
 
             this.HurtIds.Clear();
             this.SkillTriggerLastTime = serverTime;
-            string[] paraminfos = this.SkillConf.GameObjectParameter.Split(';');
+            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');
             int angle = this.SkillInfo.TargetAngle;
             int range = paraminfos.Length > 1 ? int.Parse(paraminfos[0]) : 0;
             int number = paraminfos.Length > 1 ? int.Parse(paraminfos[1]) : 1;
@@ -61,13 +61,13 @@ namespace ET
 
             if (number > 100)
             {
-                Log.Error($"Skill_ComTargetMove_RangDamge_1: {this.SkillConf.Id}");
+                Log.Error($"Skill_ComTargetMove_RangDamge_1: {this.LdSkillConf.Id}");
                 return;
             }
             for (int i = 0; i < number; i++)
             {
                 Vector3 targetpos = this.GetBulletTargetPoint(starAngle + i * delta);
-                Unit unit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(), this.TheUnitFrom.Id, this.SkillConf.Id, 0, this.TheUnitFrom.Position, new CreateMonsterInfo());
+                Unit unit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(), this.TheUnitFrom.Id, this.LdSkillConf.Id, 0, this.TheUnitFrom.Position, new CreateMonsterInfo());
                 unit.AddComponent<RoleBullet1Componnet>().OnBaseBulletInit(this, this.TheUnitFrom.Id);
                 unit.BulletMoveToAsync(targetpos).Coroutine();
             }

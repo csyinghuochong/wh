@@ -189,7 +189,7 @@ namespace ET
                     break;
                 case 5:  //驱散
                     //(buffParameterValue2  ) 需要提前解析要移除的buffid。拓展SkillBuffConfig 放在ConfigPartial
-                    List<int> relieveBuffs = SkillBuffCategory.Instance.GetRelieveBuffs(this.MBuff.Id);
+                    List<int> relieveBuffs = LDSkillBuffCategory.Instance.GetRelieveBuffs(this.MBuff.Id);
                     if (relieveBuffs != null && relieveBuffs.Count > 0)
                     {
                         foreach (int buffId in relieveBuffs)

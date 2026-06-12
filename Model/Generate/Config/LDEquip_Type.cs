@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class ExpCategory : ProtoObject, IMerge
+    public partial class LDEquip_TypeCategory : ProtoObject, IMerge
     {
-        public static ExpCategory Instance;
+        public static LDEquip_TypeCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Exp> dict = new Dictionary<int, Exp>();
+        private Dictionary<int, LDEquip_Type> dict = new Dictionary<int, LDEquip_Type>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Exp> list = new List<Exp>();
+        private List<LDEquip_Type> list = new List<LDEquip_Type>();
 		
-        public ExpCategory()
+        public LDEquip_TypeCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            ExpCategory s = o as ExpCategory;
+            LDEquip_TypeCategory s = o as LDEquip_TypeCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Exp config in list)
+            foreach (LDEquip_Type config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Exp Get(int id)
+        public LDEquip_Type Get(int id)
         {
-            this.dict.TryGetValue(id, out Exp item);
+            this.dict.TryGetValue(id, out LDEquip_Type item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Exp)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDEquip_Type)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Exp> GetAll()
+        public Dictionary<int, LDEquip_Type> GetAll()
         {
             return this.dict;
         }
 
-        public Exp GetOne()
+        public LDEquip_Type GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,14 +73,17 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Exp: ProtoObject, IConfig
+	public partial class LDEquip_Type: ProtoObject, IConfig
 	{
-		/// <summary>等级</summary>
+		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>角色升级经验</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public int Exp_Role { get; set; }
+		public int Name { get; set; }
+		/// <summary>包含子类</summary>
+		[ProtoMember(3)]
+		public int[] Type_Sub { get; set; }
 
 	}
 }

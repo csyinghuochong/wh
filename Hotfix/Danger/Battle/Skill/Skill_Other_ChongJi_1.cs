@@ -38,7 +38,7 @@ namespace ET
             //this.TargetPosition = theUnitFrom.DomainScene().GetComponent<MapComponent>().GetCanChongJiPath(theUnitFrom.Position, TargetPosition);
             //1-10 表示 10%-100%
             double addPro = 0f;
-            float newSpeed = (float)(this.SkillConf.SkillMoveSpeed * (1 + addPro));
+            float newSpeed = (float)(this.LdSkillConf.SkillMoveSpeed * (1 + addPro));
             float newspeedAdd = newSpeed - oldSpeed;
 
             if (newSpeed > oldSpeed && newspeedAdd > oldspeedAdd)
@@ -52,7 +52,7 @@ namespace ET
             }
             this.TheUnitFrom.GetComponent<StateComponent>().SetRigidityEndTime(0);
             this.TheUnitFrom.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.ChongJi);
-            float moveDistance = ((float)this.SkillConf.SkillMoveSpeed * this.SkillConf.SkillLiveTime * 0.001f);
+            float moveDistance = ((float)this.LdSkillConf.SkillMoveSpeed * this.LdSkillConf.SkillLiveTime * 0.001f);
             Quaternion rotation = Quaternion.Euler(0, this.SkillInfo.TargetAngle, 0); //按照Z轴旋转30度的Quaterion
             this.TargetPosition = this.TheUnitFrom.Position + rotation * Vector3.forward * moveDistance;
             this.TargetPosition = this.TheUnitFrom.DomainScene().GetComponent<MapComponent>().GetCanChongJiPath(this.TheUnitFrom,this.TheUnitFrom.Position, TargetPosition);
@@ -107,7 +107,7 @@ namespace ET
                 }
             }
 
-            if (this.SkillFirstHurtTime > 0 && this.SkillConf.GameObjectParameter == "1")
+            if (this.SkillFirstHurtTime > 0 && this.LdSkillConf.GameObjectParameter == "1")
             {
                 this.TheUnitFrom.Stop(-2);
                 this.SetSkillState(SkillState.Finished);

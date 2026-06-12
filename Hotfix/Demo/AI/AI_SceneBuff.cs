@@ -15,13 +15,13 @@ namespace ET
         {
             Unit unit = aiComponent.GetParent<Unit>();
             MonsterConfig monsterCof = MonsterConfigCategory.Instance.Get(unit.ConfigId);
-            Skill skill = SkillCategory.Instance.Get(monsterCof.ActSkillID);
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(monsterCof.ActSkillID);
 
             bool remove = false;
             long instanceId = aiComponent.InstanceId;
             for (int i = 0; i < 100000; ++i)
             {
-                Unit target = AIGetTargetHelp.GetNearestEnemy(unit, (float)skill.SkillRangeSize, true);
+                Unit target = AIGetTargetHelp.GetNearestEnemy(unit, (float)ldSkill.SkillRangeSize, true);
 
                 //检测目标是否在技能范围
                 if (!remove &&  target != null )
@@ -32,7 +32,7 @@ namespace ET
                     C2M_SkillCmd cmd = new C2M_SkillCmd();
                     cmd.SkillID = monsterCof.ActSkillID;
                     cmd.TargetID = target.Id;
-                    if (skill.SkillZhishiTargetType == 1)  //自身点
+                    if (ldSkill.SkillZhishiTargetType == 1)  //自身点
                     {
                         cmd.TargetAngle = 0;
                         cmd.TargetDistance = 0;

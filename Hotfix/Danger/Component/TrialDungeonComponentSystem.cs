@@ -111,7 +111,7 @@ namespace ET
                 string skillName = string.Empty;
                 if (skillid != 0)
                 {
-                    skillName = SkillCategory.Instance.Get(skillid).Name.ToString(); 
+                    skillName = LDSkillCategory.Instance.Get(skillid).Name.ToString(); 
                 }
                 
                 if (attack.Type == UnitType.Player)
@@ -120,8 +120,8 @@ namespace ET
                 }
                 if (attack.Type == UnitType.Pet)
                 {
-                    Pet petConfig = PetCategory.Instance.Get(attack.ConfigId);
-                    LogHelper.TrialBattleInfo(44, $"南宫灵蓝 宠物{petConfig.Name} 使用{skillName} 造成了{damage}伤害");
+                    LDPet ldPetConfig = LDPetCategory.Instance.Get(attack.ConfigId);
+                    LogHelper.TrialBattleInfo(44, $"南宫灵蓝 宠物{ldPetConfig.Name} 使用{skillName} 造成了{damage}伤害");
                 }
                 if (attack.Type == UnitType.Monster)
                 {

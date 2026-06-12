@@ -118,7 +118,7 @@ namespace ET
         }
 
 
-        public static void BroadcastBuff(Unit unit, IActorMessage message, SkillBuff buff, int sceneType)
+        public static void BroadcastBuff(Unit unit, IActorMessage message, LDSkillBuff buff, int sceneType)
         {
             //主城只给自己广播
             if (unit.Type == UnitType.Player && sceneType == MapTypeEnum.MainCityScene)

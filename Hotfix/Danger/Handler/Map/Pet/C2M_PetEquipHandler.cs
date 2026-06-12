@@ -34,15 +34,15 @@ namespace ET
                     reply();
                     return;
                 }
-                Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
-                if (rolePetInfo.PetLv < Item.UseLv)
+                LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
+                if (rolePetInfo.PetLv < ldItem.UseLv)
                 {
                     response.Error = ErrorCode.ERR_LevelIsNot;
                     reply();
                     return;
                 }
 
-                int itemSubType = Item.ItemSubType;
+                int itemSubType = ldItem.ItemSubType;
                 for (int i = rolePetInfo.PetEquipList.Count - 1; i >= 0; i--)
                 { 
                     BagInfo petequipInfo = bagComponent.GetItemByLoc(ItemLocType.PetLocEquip, rolePetInfo.PetEquipList[i]);
@@ -50,7 +50,7 @@ namespace ET
                     {
                         rolePetInfo.PetEquipList.RemoveAt(i);   
                     }
-                    if(ItemCategory.Instance.Get(petequipInfo.ItemID).ItemSubType == itemSubType)
+                    if(LDItemCategory.Instance.Get(petequipInfo.ItemID).ItemSubType == itemSubType)
                     {
                         takeOffId = rolePetInfo.PetEquipList[i];
                         break;

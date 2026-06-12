@@ -36,7 +36,7 @@ namespace ET
             //通知客户端背包道具发生改变
             m2c_bagUpdate.BagInfoUpdate = new List<BagInfo>();
 
-            Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
+            LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
 
             //镶嵌宝石
             if (request.OperateType == 9)
@@ -70,7 +70,7 @@ namespace ET
                     return;
                 }
 
-                if (equipGeminfos[gemIndex] != Item.ItemSubType.ToString() && Item.ItemSubType != 110 && Item.ItemSubType != 111)
+                if (equipGeminfos[gemIndex] != ldItem.ItemSubType.ToString() && ldItem.ItemSubType != 110 && ldItem.ItemSubType != 111)
                 {
                     response.Error = ErrorCode.ERR_ItemUseError;
                     reply();
@@ -78,7 +78,7 @@ namespace ET
                 }
 
                 //史诗宝石最多镶嵌4个
-                if (Item.ItemSubType == 110) 
+                if (ldItem.ItemSubType == 110) 
                 {
                     int equipShiShiGemNum = 0;
                     bool isTihuan = false;
@@ -90,8 +90,8 @@ namespace ET
                         {
                             if (CommonHelper.IfNull(gemList[y]) == false)
                             {
-                                Item gemItemCof = ItemCategory.Instance.Get(int.Parse(gemList[y]));
-                                if (gemItemCof.ItemSubType == 110)
+                                LDItem gemLdItemCof = LDItemCategory.Instance.Get(int.Parse(gemList[y]));
+                                if (gemLdItemCof.ItemSubType == 110)
                                 {
                                     equipShiShiGemNum += 1;
                                 }
@@ -143,14 +143,14 @@ namespace ET
                 int gemItemId = int.Parse(gemIdList[gemIndex]);
 
                 //类型110的不能卸
-                if (!ItemCategory.Instance.Contain(gemItemId))
+                if (!LDItemCategory.Instance.Contain(gemItemId))
                 {
                     response.Error = ErrorCode.ERR_GemNoError;
                     reply();
                     return;
                 }
-                Item gemItemConfig = ItemCategory.Instance.Get(gemItemId);
-                if (gemItemConfig.ItemSubType == 110)
+                LDItem gemLdItemConfig = LDItemCategory.Instance.Get(gemItemId);
+                if (gemLdItemConfig.ItemSubType == 110)
                 {
                     response.Error = ErrorCode.ERR_GemNoError;
                     reply();

@@ -32,7 +32,7 @@ namespace ET
                 mailInfo.Title = "小龟竞猜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                string[] needList = GlobalValueCategory.Instance.Get(97).Value.Split('@');
+                string[] needList = LDGlobalValueCategory.Instance.Get(97).Value.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');

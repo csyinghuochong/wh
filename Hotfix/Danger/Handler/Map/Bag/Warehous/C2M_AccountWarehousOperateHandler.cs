@@ -28,7 +28,7 @@ namespace ET
                 {
                     ///1放入仓库  2取出仓库 3整理仓库 
                     case 1:
-                        if (dBAccountBagWarehouse.BagInfoList.Count >= GlobalValueCategory.Instance.AccountBagMax)
+                        if (dBAccountBagWarehouse.BagInfoList.Count >= LDGlobalValueCategory.Instance.AccountBagMax)
                         {
                             response.Error = ErrorCode.ERR_WarehouseIsFull;
                             reply();
@@ -47,9 +47,9 @@ namespace ET
                             reply();
                             return;
                         }
-                        Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+                        LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
                         int equipType = ItemHelper.GetNewEquipType(bagInfo);
-                        if (Item.ItemType != 3 || equipType > 100)
+                        if (ldItem.ItemType != 3 || equipType > 100)
                         {
                             response.Error = ErrorCode.ERR_ItemNotExist;
                             reply();

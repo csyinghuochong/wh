@@ -67,12 +67,12 @@ namespace ET
                     removeIds.Add(drops[i].UnitId);
                 }
         
-                Item Item = ItemCategory.Instance.Get(addItemID);
-                if (sceneTypeEnum == MapTypeEnum.Happy && Item.Quality >= 5)
+                LDItem ldItem = LDItemCategory.Instance.Get(addItemID);
+                if (sceneTypeEnum == MapTypeEnum.Happy && ldItem.Quality >= 5)
                 {
                     string uername = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
-                    string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{Item.Name}</color>";
-                    string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{Item.Name}</color> from  A blessing from the heavens";
+                    string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color>";
+                    string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color> from  A blessing from the heavens";
                     ServerMessageHelper.SendBroadMessage(unit.DomainZone(), NoticeType.Notice, getmessage, getmessageEn);
                 }
             }
@@ -121,9 +121,9 @@ namespace ET
 
                 int addItemID = dropComponent!=null ? dropComponent.ItemID : drops[i].ItemID;
                 int addItemNum = dropComponent != null ? dropComponent.ItemNum : drops[i].ItemNum;
-                Item Item = ItemCategory.Instance.Get(addItemID);
+                LDItem ldItem = LDItemCategory.Instance.Get(addItemID);
 
-                bool teshuItem = Item.Quality >= 4 && Item.ItemType == 2 && Item.ItemSubType == 1;
+                bool teshuItem = ldItem.Quality >= 4 && ldItem.ItemType == 2 && ldItem.ItemSubType == 1;
 
                 //紫色品质通知客户端抉择
                 //DropType ==   0 公共掉落 1私有掉落 2保护掉落   3 归属掉落
@@ -145,7 +145,7 @@ namespace ET
                 {
                     errorCode = ErrorCode.Error_PickWaitSelect;
                 }
-                if (drops[i].DropType == 0 && Item.Quality >= 4  && !teshuItem
+                if (drops[i].DropType == 0 && ldItem.Quality >= 4  && !teshuItem
                     && !teamDungeonComponent.ItemFlags.ContainsKey(unitDrop.Id))
                 {
                     teamDungeonComponent.AddTeamDropItem( drops[i]);   //这个地方通知客户端弹窗需求还是放弃
@@ -159,7 +159,7 @@ namespace ET
                 m2C_SyncChatInfo.ChatInfo.Occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
                 m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
                 m2C_SyncChatInfo.ChatInfo.Time = TimeHelper.ServerNow();
-                string colorValue = CommonHelper.QualityReturnColor(Item.Quality);
+                string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);
                 string numShow = "";
                 Unit owner = null;
                 if (drops[i].DropType == 1)
@@ -178,7 +178,7 @@ namespace ET
                     {
                         byboxen = "By Diamond Chest";
                     }
-                    if (Item.Id == 1)
+                    if (ldItem.Id == 1)
                     {
                         numShow = drops[i].ItemNum.ToString();
                     }
@@ -186,15 +186,15 @@ namespace ET
                     long ownderid = unit.Id;
                     string pick_name = teamDungeonComponent.TeamPlayers[ownderid].PlayerName;
                     pick_name += (owner == null ? "(未在副本中)" : string.Empty);
-                    m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{pick_name}</color>{bybox}拾取<color=#{colorValue}>{numShow}{Item.Name}</color>";
+                    m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{pick_name}</color>{bybox}拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
 
                     string pick_nam_en = teamDungeonComponent.TeamPlayers[ownderid].PlayerName;
                     pick_nam_en += (owner == null ? "(not in the dungeon)" : string.Empty);
-                    m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{pick_nam_en}</color>{byboxen}拾取<color=#{colorValue}>{numShow}{Item.Name}</color>";
+                    m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{pick_nam_en}</color>{byboxen}拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
                 }
                 else
                 {
-                    if (Item.Id == 1)
+                    if (ldItem.Id == 1)
                     {
                         numShow = unitDrop.GetComponent<DropComponent>().ItemNum.ToString();
                     }
@@ -210,11 +210,11 @@ namespace ET
 
                         string pick_name = teamDungeonComponent.TeamPlayers[ownderid].PlayerName;
                         pick_name += (owner == null ? "(未在副本中)" : string.Empty);
-                        m2C_SyncChatInfo.ChatInfo.ChatMsg = m2C_SyncChatInfo.ChatInfo.ChatMsg + $"{pick_name}拾取{Item.Name}";
+                        m2C_SyncChatInfo.ChatInfo.ChatMsg = m2C_SyncChatInfo.ChatInfo.ChatMsg + $"{pick_name}拾取{ldItem.Name}";
 
                         string pick_nam_en = teamDungeonComponent.TeamPlayers[ownderid].PlayerName;
                         pick_nam_en += (owner == null ? "(not in the dungeon)" : string.Empty);
-                        m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = m2C_SyncChatInfo.ChatInfo.ChatMsg_EN + $"{pick_nam_en}pick up{Item.Name}";
+                        m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = m2C_SyncChatInfo.ChatInfo.ChatMsg_EN + $"{pick_nam_en}pick up{ldItem.Name}";
                     }
                     else
                     {
@@ -252,11 +252,11 @@ namespace ET
                         owner = unit.GetParent<UnitComponent>().Get(maxPlayerId);
                         string pick_name = teamDungeonComponent.TeamPlayers[maxPlayerId].PlayerName;
                         pick_name += (owner == null ? "(未在副本中)" : string.Empty);
-                        m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{pick_name}</color>拾取<color=#{colorValue}>{numShow}{Item.Name}</color>({m2C_SyncChatInfo.ChatInfo.ChatMsg})";
+                        m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{pick_name}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>({m2C_SyncChatInfo.ChatInfo.ChatMsg})";
 
                         string pick_nam_en = teamDungeonComponent.TeamPlayers[maxPlayerId].PlayerName;
                         pick_nam_en += (owner == null ? "(not in the dungeon)" : string.Empty);
-                        m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{pick_nam_en}</color>pick up<color=#{colorValue}>{numShow}{Item.Name}</color>({m2C_SyncChatInfo.ChatInfo.ChatMsg_EN})";
+                        m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{pick_nam_en}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>({m2C_SyncChatInfo.ChatInfo.ChatMsg_EN})";
                     }
                 }
 

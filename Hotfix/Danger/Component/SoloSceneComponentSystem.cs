@@ -94,8 +94,8 @@ namespace ET
                 self.PlayerCombatList.TryGetValue(soloPlayerList[i].UnitId, out combat);
 
          
-                Occupation occupationConfig = OccupationCategory.Instance.Get(soloPlayerList[i].Occ);
-                string occName =  WordHelper.GetShowText(occupationConfig.Name);
+                LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(soloPlayerList[i].Occ);
+                string occName =  WordHelper.GetShowText(ldOccupationConfig.Name);
                 UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(self.DomainZone(), soloPlayerList[i].UnitId);
 
                 if (userInfoComponent.UserInfo.OccTwo > 0)

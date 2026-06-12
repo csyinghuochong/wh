@@ -59,8 +59,8 @@ namespace ET
         public static void JianDingFuItem(BagInfo bagInf0, int shulianValue, int getType)
         {
 
-            Item itemCof = ItemCategory.Instance.Get(bagInf0.ItemID);
-            float minValuePro = (float)shulianValue / (float)int.Parse(itemCof.ItemUsePar);
+            LDItem ldItemCof = LDItemCategory.Instance.Get(bagInf0.ItemID);
+            float minValuePro = (float)shulianValue / (float)int.Parse(ldItemCof.ItemUsePar);
             if (minValuePro >= 1)
             {
                 minValuePro = 1;
@@ -81,8 +81,8 @@ namespace ET
         public static void TreasureItem(Unit unit, BagInfo bagInfo)
         {
 
-            Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
-            if (Item.ItemSubType != 113 && Item.ItemSubType != 127)
+            LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
+            if (ldItem.ItemSubType != 113 && ldItem.ItemSubType != 127)
             {
                 return;
             }
@@ -107,7 +107,7 @@ namespace ET
             int dungeonindex = RandomHelper.RandomNumber(0, dungeonConfigs.Count);
             int dungeonid = dungeonConfigs[dungeonindex].Id;
 
-            int dropId = int.Parse(Item.ItemUsePar);
+            int dropId = int.Parse(ldItem.ItemUsePar);
             List<RewardItem> rewardList = new List<RewardItem>();
 
             //获取最终奖励
@@ -115,7 +115,7 @@ namespace ET
             {
                 if (dropId == 0)
                 {
-                    Log.Warning($"dropId == 0:  {Item.Id}");
+                    Log.Warning($"dropId == 0:  {ldItem.Id}");
                 }
                 DropHelper.DropIDToDropItem_2(dropId, rewardList);
             }
@@ -149,11 +149,11 @@ namespace ET
         {
 
             //获取最大值
-            Equip equipCof = EquipCategory.Instance.Get(equipID);
+            LDEquip ldEquipCof = LDEquipCategory.Instance.Get(equipID);
             List<HideProList> hideList = new List<HideProList>();
 
             //获取当前鉴定系数
-            Item itemCof = ItemCategory.Instance.Get(itemID);
+            LDItem ldItemCof = LDItemCategory.Instance.Get(itemID);
 
             //鉴定符品质大于装备等级
             /*
@@ -172,13 +172,13 @@ namespace ET
             //jianDingPinZhi = 99;
 
             //最低系数是20
-            int pro = itemCof.UseLv;
+            int pro = ldItemCof.UseLv;
             if (pro <= 20)
             {
                 pro = 20;
             }
 
-            if (ifItem == true && itemCof.UseLv < 30)
+            if (ifItem == true && ldItemCof.UseLv < 30)
             {
                 jianDingPinZhi = jianDingPinZhi + 5;
             }
@@ -230,12 +230,12 @@ namespace ET
             */
 
             //65级装备默认最低2条属性
-            if (itemCof.UseLv >= 65 && randomNum<2) {
+            if (ldItemCof.UseLv >= 65 && randomNum<2) {
                 randomNum = 2;
             }
 
             //70级装备默认3条属性
-            if (itemCof.UseLv >= 70 && randomNum < 3)
+            if (ldItemCof.UseLv >= 70 && randomNum < 3)
             {
                 randomNum = 3;
             }

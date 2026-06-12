@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace ET
 {
-    public partial class OccupationCategory
+    public partial class LDOccupationCategory
     {
 
         private Dictionary<int, List<HideProList>> OccInitAttribute = new Dictionary<int,List<HideProList>> { };
 
         public override void AfterEndInit()
         {
-            foreach (Occupation occupation in this.GetAll().Values)
+            foreach (LDOccupation occupation in this.GetAll().Values)
             {
                 if (!OccInitAttribute.ContainsKey(occupation.Id))
                 {

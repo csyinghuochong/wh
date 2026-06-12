@@ -63,8 +63,8 @@ namespace ET
 				}
 
 				//判断道具是否可以上架和绑定
-				Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
-				if (Item.IfStopPaiMai == 1) 
+				LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
+				if (ldItem.IfStopPaiMai == 1) 
 				{
 					response.Error = ErrorCode.Err_StopPaiMai;      //道具无法上架
 					reply();

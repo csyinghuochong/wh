@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class GlobalValueCategory : ProtoObject, IMerge
+    public partial class LDRechargeCategory : ProtoObject, IMerge
     {
-        public static GlobalValueCategory Instance;
+        public static LDRechargeCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, GlobalValue> dict = new Dictionary<int, GlobalValue>();
+        private Dictionary<int, LDRecharge> dict = new Dictionary<int, LDRecharge>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<GlobalValue> list = new List<GlobalValue>();
+        private List<LDRecharge> list = new List<LDRecharge>();
 		
-        public GlobalValueCategory()
+        public LDRechargeCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            GlobalValueCategory s = o as GlobalValueCategory;
+            LDRechargeCategory s = o as LDRechargeCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (GlobalValue config in list)
+            foreach (LDRecharge config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public GlobalValue Get(int id)
+        public LDRecharge Get(int id)
         {
-            this.dict.TryGetValue(id, out GlobalValue item);
+            this.dict.TryGetValue(id, out LDRecharge item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (GlobalValue)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDRecharge)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, GlobalValue> GetAll()
+        public Dictionary<int, LDRecharge> GetAll()
         {
             return this.dict;
         }
 
-        public GlobalValue GetOne()
+        public LDRecharge GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,17 +73,20 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class GlobalValue: ProtoObject, IConfig
+	public partial class LDRecharge: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>唯一索引</summary>
+		/// <summary>SKU</summary>
 		[ProtoMember(2)]
-		public string Key { get; set; }
-		/// <summary>值</summary>
+		public string Recharge_Sku { get; set; }
+		/// <summary>人民币</summary>
 		[ProtoMember(3)]
-		public string Value { get; set; }
+		public int Recharge_CNY { get; set; }
+		/// <summary>美元</summary>
+		[ProtoMember(4)]
+		public int Recharge_USD { get; set; }
 
 	}
 }

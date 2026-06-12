@@ -50,8 +50,8 @@ namespace ET
             if (request.OperateType == 2) {
                 costPro = 0.3f;
             }
-            Exp expCof = ExpCategory.Instance.Get(userInfo.Lv);
-            int costExp = (int)(expCof.Exp_Role * costPro);
+            LDExp ldExpCof = LDExpCategory.Instance.Get(userInfo.Lv);
+            int costExp = (int)(ldExpCof.Exp_Role * costPro);
             if (userInfo.Exp < costExp||costExp <= 0)
             {
                 response.Error = ErrorCode.ERR_ExpNoEnough;
@@ -68,7 +68,7 @@ namespace ET
                      //Log.Debug($"Gold:  {userInfoComponent.Id} {sendGold} excharge");
                     break;
                 case 2:
-                    string[] droplist = GlobalValueCategory.Instance.Get(81).Value.Split(';');
+                    string[] droplist = LDGlobalValueCategory.Instance.Get(81).Value.Split(';');
                     int dropid = int.Parse(droplist[0]);
                     List<RewardItem> rewardItems = new List<RewardItem>();
                     DropHelper.DropIDToDropItem_2(dropid, rewardItems);

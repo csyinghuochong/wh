@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ET
 {
-    public partial class SkillBuffCategory
+    public partial class LDSkillBuffCategory
     {
         // 该buff可以解除的buff Id
         public Dictionary<int, List<int>> RelieveBuffList = new Dictionary<int, List<int>>();
@@ -23,7 +23,7 @@ namespace ET
         
         public override void AfterEndInit()
         {
-            foreach (SkillBuff skillBuffConfig in this.GetAll().Values)
+            foreach (LDSkillBuff skillBuffConfig in this.GetAll().Values)
             {
                 try
                 {

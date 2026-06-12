@@ -20,8 +20,8 @@ namespace ET
             }
 
             //神兽不能进化
-            Pet petCof = PetCategory.Instance.Get(rolePetInfo.ConfigId);
-            if (petCof.PetType == 2)
+            LDPet ldPetCof = LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
+            if (ldPetCof.PetType == 2)
             {
                 response.Error = ErrorCode.ERR_Pet_UpStage;
                 reply();

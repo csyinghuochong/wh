@@ -23,8 +23,8 @@ namespace ET
                 return;
             }
 
-            Item Item = ItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
-            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / Item.ItemPileSum);
+            LDItem ldItem = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
+            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / ldItem.ItemPileSum);
             if (unit.GetComponent<BagComponent>().GetBagLeftCell() < cell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;

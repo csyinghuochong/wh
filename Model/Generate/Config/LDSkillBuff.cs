@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class SkillBuffCategory : ProtoObject, IMerge
+    public partial class LDSkillBuffCategory : ProtoObject, IMerge
     {
-        public static SkillBuffCategory Instance;
+        public static LDSkillBuffCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, SkillBuff> dict = new Dictionary<int, SkillBuff>();
+        private Dictionary<int, LDSkillBuff> dict = new Dictionary<int, LDSkillBuff>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<SkillBuff> list = new List<SkillBuff>();
+        private List<LDSkillBuff> list = new List<LDSkillBuff>();
 		
-        public SkillBuffCategory()
+        public LDSkillBuffCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            SkillBuffCategory s = o as SkillBuffCategory;
+            LDSkillBuffCategory s = o as LDSkillBuffCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (SkillBuff config in list)
+            foreach (LDSkillBuff config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public SkillBuff Get(int id)
+        public LDSkillBuff Get(int id)
         {
-            this.dict.TryGetValue(id, out SkillBuff item);
+            this.dict.TryGetValue(id, out LDSkillBuff item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (SkillBuff)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDSkillBuff)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, SkillBuff> GetAll()
+        public Dictionary<int, LDSkillBuff> GetAll()
         {
             return this.dict;
         }
 
-        public SkillBuff GetOne()
+        public LDSkillBuff GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class SkillBuff: ProtoObject, IConfig
+	public partial class LDSkillBuff: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

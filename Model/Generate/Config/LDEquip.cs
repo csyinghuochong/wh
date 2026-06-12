@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class EquipCategory : ProtoObject, IMerge
+    public partial class LDEquipCategory : ProtoObject, IMerge
     {
-        public static EquipCategory Instance;
+        public static LDEquipCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Equip> dict = new Dictionary<int, Equip>();
+        private Dictionary<int, LDEquip> dict = new Dictionary<int, LDEquip>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Equip> list = new List<Equip>();
+        private List<LDEquip> list = new List<LDEquip>();
 		
-        public EquipCategory()
+        public LDEquipCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            EquipCategory s = o as EquipCategory;
+            LDEquipCategory s = o as LDEquipCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Equip config in list)
+            foreach (LDEquip config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Equip Get(int id)
+        public LDEquip Get(int id)
         {
-            this.dict.TryGetValue(id, out Equip item);
+            this.dict.TryGetValue(id, out LDEquip item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Equip)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDEquip)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Equip> GetAll()
+        public Dictionary<int, LDEquip> GetAll()
         {
             return this.dict;
         }
 
-        public Equip GetOne()
+        public LDEquip GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Equip: ProtoObject, IConfig
+	public partial class LDEquip: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -150,6 +150,9 @@ namespace ET
 		/// <summary>幸运值</summary>
 		[ProtoMember(25)]
 		public int Equip_Lucky { get; set; }
+		/// <summary>获取绑定 0-否 1-是</summary>
+		[ProtoMember(26)]
+		public int IfLock { get; set; }
 
 	}
 }

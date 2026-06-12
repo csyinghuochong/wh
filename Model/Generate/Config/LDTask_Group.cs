@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class Equip_TypeCategory : ProtoObject, IMerge
+    public partial class LDTask_GroupCategory : ProtoObject, IMerge
     {
-        public static Equip_TypeCategory Instance;
+        public static LDTask_GroupCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Equip_Type> dict = new Dictionary<int, Equip_Type>();
+        private Dictionary<int, LDTask_Group> dict = new Dictionary<int, LDTask_Group>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Equip_Type> list = new List<Equip_Type>();
+        private List<LDTask_Group> list = new List<LDTask_Group>();
 		
-        public Equip_TypeCategory()
+        public LDTask_GroupCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            Equip_TypeCategory s = o as Equip_TypeCategory;
+            LDTask_GroupCategory s = o as LDTask_GroupCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Equip_Type config in list)
+            foreach (LDTask_Group config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Equip_Type Get(int id)
+        public LDTask_Group Get(int id)
         {
-            this.dict.TryGetValue(id, out Equip_Type item);
+            this.dict.TryGetValue(id, out LDTask_Group item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Equip_Type)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDTask_Group)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Equip_Type> GetAll()
+        public Dictionary<int, LDTask_Group> GetAll()
         {
             return this.dict;
         }
 
-        public Equip_Type GetOne()
+        public LDTask_Group GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,17 +73,23 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Equip_Type: ProtoObject, IConfig
+	public partial class LDTask_Group: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>名称</summary>
+		/// <summary>页码</summary>
 		[ProtoMember(2)]
-		public int Name { get; set; }
-		/// <summary>包含子类</summary>
+		public int Group { get; set; }
+		/// <summary>名称</summary>
 		[ProtoMember(3)]
-		public int[] Type_Sub { get; set; }
+		public int Name { get; set; }
+		/// <summary>资源</summary>
+		[ProtoMember(4)]
+		public string Resources { get; set; }
+		/// <summary>类型 1-日 2-周 3-月</summary>
+		[ProtoMember(5)]
+		public int Type { get; set; }
 
 	}
 }

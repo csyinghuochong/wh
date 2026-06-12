@@ -73,7 +73,7 @@ namespace ET
                 for (int i = 0; i < droplist.Count; i++)
                 {
                     int itemid = droplist[i].GetComponent<DropComponent>().ItemID;
-                    if (ItemCategory.Instance.Get(itemid).Quality >= 5)
+                    if (LDItemCategory.Instance.Get(itemid).Quality >= 5)
                     {
                         haveorange = true;
                         break;

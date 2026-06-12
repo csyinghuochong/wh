@@ -391,7 +391,7 @@ namespace ET
             self.CreateAccountTime = userInfoComponent.CreateAccountTime;
             self.CreateAccountTimeStr = TimeInfo.Instance.ToDateTime(self.CreateAccountTime).ToString();
             
-            self.Occ = WordHelper.GetShowText(OccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).Name);
+            self.Occ = WordHelper.GetShowText(LDOccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).Name);
 
             if (userInfoComponent.UserInfo.OccTwo > 0)
             {

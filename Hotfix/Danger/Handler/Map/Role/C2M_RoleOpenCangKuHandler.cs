@@ -15,7 +15,7 @@ namespace ET
                 return;
             }
 
-            string costItems = GlobalValueCategory.Instance.Get(38).Value;
+            string costItems = LDGlobalValueCategory.Instance.Get(38).Value;
             if (!unit.GetComponent<BagComponent>().OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;

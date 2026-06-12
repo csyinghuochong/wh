@@ -29,7 +29,7 @@ namespace ET
             //去掉多余的
             foreach (var item in keyValuePairs)
             {
-                Item Item = ItemCategory.Instance.Get(item.Key);
+                LDItem ldItem = LDItemCategory.Instance.Get(item.Key);
                 /*if (Item.PetHeXinHeChengID == 0)
                 {
                     item.Value.Clear();
@@ -47,7 +47,7 @@ namespace ET
 
             foreach (var item in keyValuePairs)
             {
-                Item Item = ItemCategory.Instance.Get(item.Key);
+                LDItem ldItem = LDItemCategory.Instance.Get(item.Key);
     
                 int number1 = item.Value.Count / 2;
                 //新增item

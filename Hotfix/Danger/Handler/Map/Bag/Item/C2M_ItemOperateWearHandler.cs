@@ -28,11 +28,11 @@ namespace ET
                     reply();
                     return;
                 }
-                Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
+                LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
 
                 //判断等级
                 int roleLv = useInfo.Lv;
-                int equipLv = Item.UseLv;
+                int equipLv = ldItem.UseLv;
                 //简易
                 if (useBagInfo.HideSkillLists.Contains(68000103))
                 {
@@ -54,7 +54,7 @@ namespace ET
 
                 //对应部位是否符合
                 int equipType = ItemHelper.GetNewEquipType(useBagInfo);
-                if (Item.ItemType == 3 && equipType != 0)
+                if (ldItem.ItemType == 3 && equipType != 0)
                 {
                     //查看自身是否是二转
                     if (useInfo.OccTwo > 0)
@@ -80,7 +80,7 @@ namespace ET
                     }
                 }
 
-                int weizhi = Item.ItemSubType;
+                int weizhi = ldItem.ItemSubType;
                 if (weizhi != (int)ItemSubTypeEnum.Wuqi)
                 {
                     response.Error = ErrorCode.ERR_EquipType;     //错误码:穿戴类型不符
@@ -117,7 +117,7 @@ namespace ET
                     }
                 }
 
-                if (Item.Id == 10030001 || Item.Id == 10030003)
+                if (ldItem.Id == 10030001 || ldItem.Id == 10030003)
                 {
                     findIndex = 0;
                 }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ET
 {
-    public partial class SkillCategory
+    public partial class LDSkillCategory
     {
         /// <summary>
         /// 69060301 69060302 ..的基础技能都是69060300
@@ -50,7 +50,7 @@ namespace ET
         public override void AfterEndInit()
         {
             BaseSkillList.Clear();  
-            foreach (Skill skillconfig in this.GetAll().Values)
+            foreach (LDSkill skillconfig in this.GetAll().Values)
             {
                 string buffToSkill = skillconfig.BuffToSkill;
                 if (string.IsNullOrEmpty(buffToSkill) || buffToSkill.Equals("0"))
@@ -169,7 +169,7 @@ namespace ET
                 }
             }
 
-            foreach (Skill skillconfig in this.GetAll().Values)
+            foreach (LDSkill skillconfig in this.GetAll().Values)
             {
                 string equipskill = skillconfig.EquipSkill;
                 if (string.IsNullOrEmpty(equipskill) || equipskill.Equals("0"))
@@ -221,7 +221,7 @@ namespace ET
                 }
             }
 
-            foreach (Skill skillconfig in this.GetAll().Values)
+            foreach (LDSkill skillconfig in this.GetAll().Values)
             {
                 int[] specimonsters = skillconfig.SpecifiedMonster;
                 if (specimonsters == null || specimonsters.Length == 0)
@@ -242,12 +242,12 @@ namespace ET
             }
 
             // 得到所有技能的基础技能
-            foreach (Skill skillConfig in this.GetAll().Values)
+            foreach (LDSkill skillConfig in this.GetAll().Values)
             {
                 SetBaseSkill(skillConfig, 0);
             }
 
-            void SetBaseSkill(Skill skillConfig, int baseId)
+            void SetBaseSkill(LDSkill skillConfig, int baseId)
             {
                 if (!this.BaseSkillList.ContainsKey(skillConfig.Id))
                 {

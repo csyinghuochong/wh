@@ -42,7 +42,7 @@ namespace ET
             
             Vector3 dir = (this.TargetPosition - this.NowPosition).normalized;
             float dis = PositionHelper.Distance2D(this.NowPosition, this.TargetPosition);
-            float move = (float)this.SkillConf.SkillMoveSpeed * 0.1f;            //服务器0.1秒一帧
+            float move = (float)this.LdSkillConf.SkillMoveSpeed * 0.1f;            //服务器0.1秒一帧
             move = Mathf.Min(dis, move);
             this.NowPosition = this.NowPosition + move * dir;
           
@@ -53,9 +53,9 @@ namespace ET
                 return;
             }
 
-            float damgeRange = (float)this.SkillConf.DamgeRange[0];
-            if (this.SkillConf.SkillTargetType == (int)SkillTargetType.TargetOnly
-            || this.SkillConf.SkillTargetType == (int)SkillTargetType.MulTarget
+            float damgeRange = (float)this.LdSkillConf.DamgeRange[0];
+            if (this.LdSkillConf.SkillTargetType == (int)SkillTargetType.TargetOnly
+            || this.LdSkillConf.SkillTargetType == (int)SkillTargetType.MulTarget
             ||  damgeRange == 0f)
             {
                 this.OnCollisionUnit(this.TheUnitTarget);

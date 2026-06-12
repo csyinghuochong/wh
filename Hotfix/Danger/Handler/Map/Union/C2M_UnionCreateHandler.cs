@@ -17,8 +17,8 @@ namespace ET
                 return;
             }
             UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
-            int needLevel = int.Parse(GlobalValueCategory.Instance.Get(21).Value);
-            int needDiamond = int.Parse(GlobalValueCategory.Instance.Get(22).Value);
+            int needLevel = int.Parse(LDGlobalValueCategory.Instance.Get(21).Value);
+            int needDiamond = int.Parse(LDGlobalValueCategory.Instance.Get(22).Value);
             if (userInfo.Lv < needLevel || userInfo.Diamond < needDiamond)
             {
                 response.Error = ErrorCode.ERR_Error;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ET
 {
     
-    public partial class AttributeCategory
+    public partial class LDAttributeCategory
     {
 
         

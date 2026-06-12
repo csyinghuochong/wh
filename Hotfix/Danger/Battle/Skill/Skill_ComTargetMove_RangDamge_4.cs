@@ -16,7 +16,7 @@ namespace ET
         {
             this.InitSelfBuff();
 
-            string[] paraminfos = this.SkillConf.GameObjectParameter.Split('@');
+            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split('@');
             using ListComponent<Vector3> vector3s = new ListComponent<Vector3>(); 
             for (int i = 0; i < paraminfos.Length; i++)
             {
@@ -32,7 +32,7 @@ namespace ET
             Vector3 targetpos = vector3s[endindex];
 
             //创建一个Unit添加子弹组件向目标点移动
-            Unit unit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(), this.TheUnitFrom.Id, this.SkillConf.Id, 0, startpos, new CreateMonsterInfo());
+            Unit unit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(), this.TheUnitFrom.Id, this.LdSkillConf.Id, 0, startpos, new CreateMonsterInfo());
             unit.AddComponent<RoleBullet1Componnet>().OnBaseBulletInit(this, this.TheUnitFrom.Id);
             unit.BulletMoveToAsync(targetpos).Coroutine();
 

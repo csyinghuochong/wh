@@ -13,7 +13,7 @@ namespace ET
             {
                 UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
                
-                long costgold = GlobalValueCategory.Instance.TempValue;
+                long costgold = LDGlobalValueCategory.Instance.TempValue;
                 if (userInfoComponent.UserInfo.Gold < costgold)
                 {
                     response.Error = ErrorCode.ERR_GoldNotEnoughError;

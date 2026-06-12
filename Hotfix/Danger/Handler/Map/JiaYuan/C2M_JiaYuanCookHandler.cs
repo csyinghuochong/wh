@@ -39,8 +39,8 @@ namespace ET
                     break;
                 }
                 //道具配置
-                Item Item =ItemCategory.Instance.Get(bagInfo.ItemID);
-                totallv += (Item.UseLv);
+                LDItem ldItem =LDItemCategory.Instance.Get(bagInfo.ItemID);
+                totallv += (ldItem.UseLv);
                 itemIdList.Add(bagInfo.ItemID);
 
                 if (!itemNumber.ContainsKey(bagInfo.ItemID))
@@ -112,7 +112,7 @@ namespace ET
                     if (randLv < 1) {
                         randLv = 1;
                     }
-                    getItemid = ItemCategory.Instance.GetFoodId(randLv);
+                    getItemid = LDItemCategory.Instance.GetFoodId(randLv);
                     if (getItemid == 0)
                     {
                         reply();

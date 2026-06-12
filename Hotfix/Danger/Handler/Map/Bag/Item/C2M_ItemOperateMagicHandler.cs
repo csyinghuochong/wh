@@ -37,15 +37,15 @@ namespace ET
             }
 
             int weizhi = -1;
-            Item Item = null;
+            LDItem ldItem = null;
             if (useBagInfo != null)
             {
-                Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
-                weizhi = Item.ItemSubType;
+                ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
+                weizhi = ldItem.ItemSubType;
             }
 
             int equipType = ItemHelper.GetNewEquipType(useBagInfo);
-            if (Item.ItemType != 3 || equipType != 401)
+            if (ldItem.ItemType != 3 || equipType != 401)
             {
                 reply();
                 return;
@@ -59,7 +59,7 @@ namespace ET
             }
 
 
-            int subtype = Item.ItemSubType - 4001; //0 1 2
+            int subtype = ldItem.ItemSubType - 4001; //0 1 2
             int curtype = equipposition / 3;
             if (curtype != subtype && curtype != 2)
             {
@@ -74,7 +74,7 @@ namespace ET
             {
                 //判断等级
                 int roleLv = useInfo.Lv;
-                int equipLv = Item.UseLv;
+                int equipLv = ldItem.UseLv;
                
                 if (roleLv < equipLv)
                 {

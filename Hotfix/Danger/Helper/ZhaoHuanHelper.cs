@@ -20,8 +20,8 @@ namespace ET
                 return;
             }
 
-            Skill skill = SkillCategory.Instance.Get(args.SkillId);
-            string gameObjectParameter = skill.GameObjectParameter;
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(args.SkillId);
+            string gameObjectParameter = ldSkill.GameObjectParameter;
             string[] summonParListold = gameObjectParameter.Split(';');
             string[] summonParList = new string[summonParListold.Length - 1];
             Array.Copy(summonParListold, 1, summonParList, 0, summonParList.Length);
@@ -40,7 +40,7 @@ namespace ET
             }
             catch (Exception ex)
             {
-                Log.Error("Skill_Com_Summon_5:Error:  ", skill.Id);
+                Log.Error("Skill_Com_Summon_5:Error:  ", ldSkill.Id);
                 Log.Error(ex.ToString());
                 return;
             }

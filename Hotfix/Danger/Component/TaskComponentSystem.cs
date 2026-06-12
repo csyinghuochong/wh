@@ -10,7 +10,7 @@ namespace ET
         {
             if (self.RoleTaskList.Count == 0)
             {
-                int initTask = int.Parse(GlobalValueCategory.Instance.Get(1).Value);
+                int initTask = int.Parse(LDGlobalValueCategory.Instance.Get(1).Value);
                 self.RoleTaskList.Add(new TaskPro() { taskID = initTask, TrackStatus = 1, taskStatus = (int)TaskStatuEnum.Completed, taskTargetNum_1 = 1});
             }
         }
@@ -494,7 +494,7 @@ namespace ET
             if (taskPro.TaskType == TaskTypeEnum.Weekly)
             {
                 int weekTaskNumber = numericComponent.GetAsInt(NumericType.WeeklyTaskNumber) + 1;
-                if (weekTaskNumber >= GlobalValueCategory.Instance.TempValue + 1)
+                if (weekTaskNumber >= LDGlobalValueCategory.Instance.TempValue + 1)
                 {
                     Log.Error($"TaskComponent 1 ");
                     return ErrorCode.ERR_ModifyData;
@@ -571,7 +571,7 @@ namespace ET
             if (taskPro.TaskType == TaskTypeEnum.Daily)
             {
                 int dailyTaskNumber = numericComponent.GetAsInt(NumericType.DailyTaskNumber) + 1;
-                if (dailyTaskNumber < GlobalValueCategory.Instance.TempValue)
+                if (dailyTaskNumber < LDGlobalValueCategory.Instance.TempValue)
                 {
                     numericComponent.ApplyValue(null, NumericType.DailyTaskNumber, dailyTaskNumber, 0);
                     numericComponent.ApplyValue(NumericType.DailyTaskID, TaskHelper.GetTaskIdByType(TaskTypeEnum.Daily, 1));
@@ -588,7 +588,7 @@ namespace ET
             {
                 int weekTaskNumber = numericComponent.GetAsInt(NumericType.WeeklyTaskNumber) + 1;
                 
-                if (weekTaskNumber < GlobalValueCategory.Instance.TempValue)
+                if (weekTaskNumber < LDGlobalValueCategory.Instance.TempValue)
                 {
                     numericComponent.ApplyValue(NumericType.WeeklyTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Weekly, 1));
                     numericComponent.ApplyValue(NumericType.WeeklyTaskNumber, weekTaskNumber);
@@ -617,7 +617,7 @@ namespace ET
             if (taskPro.TaskType == TaskTypeEnum.Union)
             {
                 int unionTaskNumber = numericComponent.GetAsInt(NumericType.UnionTaskNumber) + 1;
-                if (unionTaskNumber <  GlobalValueCategory.Instance.TempValue)
+                if (unionTaskNumber <  LDGlobalValueCategory.Instance.TempValue)
                 {
                     numericComponent.ApplyValue(null, NumericType.UnionTaskNumber, unionTaskNumber, 0);
                     numericComponent.ApplyValue(NumericType.UnionTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Union, 1));
@@ -1100,11 +1100,11 @@ namespace ET
                 self.TriggerTaskCountryEvent(TaskTargetType.GetItemNumber_142, itemId, itemNumber);
             }
 
-            Item Item = ItemCategory.Instance.Get(itemId);
-            if (Item.ItemType == ItemTypeEnum.Equipment && Item.Quality >= 5)
+            LDItem ldItem = LDItemCategory.Instance.Get(itemId);
+            if (ldItem.ItemType == ItemTypeEnum.Equipment && ldItem.Quality >= 5)
             {
-                self.TriggerTaskEvent(TaskTargetType.GetOrangeEquip_139, Item.UseLv, 1);
-                self.TriggerTaskCountryEvent(TaskTargetType.GetOrangeEquip_139, Item.UseLv, 1);
+                self.TriggerTaskEvent(TaskTargetType.GetOrangeEquip_139, ldItem.UseLv, 1);
+                self.TriggerTaskCountryEvent(TaskTargetType.GetOrangeEquip_139, ldItem.UseLv, 1);
             }
         }
 

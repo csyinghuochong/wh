@@ -110,8 +110,8 @@ namespace ET
             unit.ConfigId = skillid;
             unit.Position = vector3;
             unit.Type = UnitType.Bullet;            //子弹Unity,根据这个类型会实例化出特效
-            Skill skill = SkillCategory.Instance.Get(skillid);
-            numericComponent.Set(NumericType.Numeric_Error, skill.SkillMoveSpeed, false);
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillid);
+            numericComponent.Set(NumericType.Numeric_Error, ldSkill.SkillMoveSpeed, false);
             numericComponent.Set(NumericType.MasterId, masterid, false);
             numericComponent.Set(NumericType.StartAngle, starangle, false);
             numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
@@ -563,7 +563,7 @@ namespace ET
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             unitInfoComponent.MasterName = master.GetComponent<UserInfoComponent>().UserInfo.Name;
-            unitInfoComponent.UnitName = ElfCategory.Instance.Get(jinglingId).Name.ToString();
+            unitInfoComponent.UnitName = LDElfCategory.Instance.Get(jinglingId).Name.ToString();
            
             unit.ConfigId = jinglingId;
             unit.MasterId = master.Id;
@@ -610,14 +610,7 @@ namespace ET
                     LDDrop ldDrop = LDDropCategory.Instance.Get(dropID[i]);
                     List<RewardItem> dropItemList_2 = new List<RewardItem>();
                     DropHelper.DropIDToDropItem(dropID[i], dropItemList_2, monsterID, dropProValue, all);
-                    if (ldDrop.ifEnterBag == 1)
-                    {
-                        unit.GetComponent<BagComponent>().OnAddItemData(dropItemList_2, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
-                    }
-                    else
-                    {
-                        dropItemList.AddRange(dropItemList_2);
-                    }
+                    dropItemList.AddRange(dropItemList_2);
                 }
             }
             return dropItemList;

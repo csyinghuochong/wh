@@ -37,16 +37,16 @@ namespace ET
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             if (request.OperateType == 1)
             {
-                Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
+                LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
                 int equipType = ItemHelper.GetNewEquipType(useBagInfo);
 
-                if (unit.GetComponent<UserInfoComponent>().UserInfo.Lv < Item.UseLv)
+                if (unit.GetComponent<UserInfoComponent>().UserInfo.Lv < ldItem.UseLv)
                 {
                     response.Error = ErrorCode.ERR_EquipLvLimit;
                     reply();
                     return;
                 }
-                if (Item.ItemType != ItemTypeEnum.Equipment || equipType != 201)
+                if (ldItem.ItemType != ItemTypeEnum.Equipment || equipType != 201)
                 {
                     response.Error = ErrorCode.ERR_EquipType;
                     reply();

@@ -31,7 +31,7 @@ namespace ET
 
             beforeequip.ItemPar = RandomHelper.RandomNumber(1, 100).ToString();
 
-            Item Item =ItemCategory.Instance.Get(beforeequip.ItemID);
+            LDItem ldItem =LDItemCategory.Instance.Get(beforeequip.ItemID);
             /*List<int> itemSkills = ItemHelper.GetItemSkill(Item.SkillID);
             if (itemSkills.Count > 0)
             {

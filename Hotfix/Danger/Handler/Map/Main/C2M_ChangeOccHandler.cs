@@ -24,7 +24,7 @@ namespace ET
             for (int equip = 0; equip < bagComponent.EquipList.Count; equip++)
             {
                 BagInfo equipInfo = bagComponent.EquipList[equip];
-                Item Item = ItemCategory.Instance.Get(equipInfo.ItemID);
+                LDItem ldItem = LDItemCategory.Instance.Get(equipInfo.ItemID);
                 int equipType = ItemHelper.GetNewEquipType(equipInfo);
                 if (equipType <= 100)
                 {
@@ -70,7 +70,7 @@ namespace ET
                     continue;
                 }
 
-                Item Item = ItemCategory.Instance.Get(equipInfo.ItemID);
+                LDItem ldItem = LDItemCategory.Instance.Get(equipInfo.ItemID);
                 int equipType = ItemHelper.GetNewEquipType(equipInfo);
                 if (equipType > 100)
                 {
@@ -128,7 +128,7 @@ namespace ET
                 skillSetComponent.SkillList.RemoveAt(k);
             }
 
-            int[] SkillList = OccupationCategory.Instance.Get(request.Occ).InitSkillID;
+            int[] SkillList = LDOccupationCategory.Instance.Get(request.Occ).InitSkillID;
             for (int i = 0; i < SkillList.Length; i++)
             {
                 if (i == 0)
@@ -151,13 +151,13 @@ namespace ET
             //时装(清空 返回碎片或者其他)
             for (int fashionid = 0; fashionid < bagComponent.FashionActiveIds.Count; fashionid++)
             {
-                Fashion fashion = FashionCategory.Instance.Get(bagComponent.FashionActiveIds[fashionid]);
+                LDFashion ldFashion = LDFashionCategory.Instance.Get(bagComponent.FashionActiveIds[fashionid]);
 
-                if (CommonHelper.IfNull(fashion.ActiveCost) || fashion.ActiveCost.Equals("0;0"))
+                if (CommonHelper.IfNull(ldFashion.ActiveCost) || ldFashion.ActiveCost.Equals("0;0"))
                 {
                     continue;
                 }
-                bagComponent.OnAddItemData(fashion.ActiveCost, $"{ItemGetWay.HuiShou}_{TimeHelper.ServerNow()}", false);
+                bagComponent.OnAddItemData(ldFashion.ActiveCost, $"{ItemGetWay.HuiShou}_{TimeHelper.ServerNow()}", false);
             }
             bagComponent.FashionActiveIds.Clear();
             bagComponent.FashionEquipList.Clear();

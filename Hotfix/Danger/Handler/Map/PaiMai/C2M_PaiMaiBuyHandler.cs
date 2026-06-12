@@ -52,8 +52,8 @@ namespace ET
                 return;
             }
 
-            Item Item = ItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
-            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / Item.ItemPileSum);
+            LDItem ldItem = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
+            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / ldItem.ItemPileSum);
             if (unit.GetComponent<BagComponent>().GetBagLeftCell() < cell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -176,7 +176,7 @@ namespace ET
 
 
                 long baginfoid = 0;
-                if (ItemCategory.Instance.Get(r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID).ItemType == ItemTypeEnum.Equipment)
+                if (LDItemCategory.Instance.Get(r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID).ItemType == ItemTypeEnum.Equipment)
                 {
                     baginfoid = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.BagInfoID;
                 }
@@ -223,7 +223,7 @@ namespace ET
                 {
                     //服务器 道具名称 数量  价格  购买者名称 购买者等级  购买者充值 购买者当前金币 购买者账号 出售者名称   出售者账号  出售者等级 出售者当前金币
                     string serverName = ServerHelper.GetGetServerItem(false, unit.DomainZone()).ServerName;
-                    string itemName = WordHelper.GetShowText(Item.Name, 0);
+                    string itemName = WordHelper.GetShowText(ldItem.Name, 0);
                     int itemNumber = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
                     long price = r_GameStatusResponse.PaiMaiItemInfo.Price;
 

@@ -87,7 +87,7 @@ namespace ET
                             }
                         }
                      
-						if (!OccupationCategory.Instance.Contain(request.CreateOcc))
+						if (!LDOccupationCategory.Instance.Contain(request.CreateOcc))
 						{
                             Log.Error($"C2A_CreateRoleHandler.3");
                             response.Error = ErrorCode.ERR_ModifyData;

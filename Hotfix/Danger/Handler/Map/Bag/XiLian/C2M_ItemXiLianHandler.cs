@@ -33,7 +33,7 @@ namespace ET
                 }
 
 
-               Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
+               LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
                int equipType = ItemHelper.GetNewEquipType(bagInfo);
                
                 if (equipType > 100)
@@ -43,7 +43,7 @@ namespace ET
                     return;
                 }
 
-                int[] costItems = Item.XiLianStone;
+                int[] costItems = ldItem.XiLianStone;
                 List<RewardItem> rewardItems = new List<RewardItem>();
 
                 bool ifZuanShi = false;
@@ -61,7 +61,7 @@ namespace ET
                     //钻石洗炼
                     UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
                     int itemXiLianNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianNumber);
-                    string[] set = GlobalValueCategory.Instance.Get(116).Value.Split(';');
+                    string[] set = LDGlobalValueCategory.Instance.Get(116).Value.Split(';');
                     double discount;
                     if (itemXiLianNumber < int.Parse(set[0]))
                     {
@@ -71,7 +71,7 @@ namespace ET
                     {
                         discount = double.Parse(set[1]);
                     }
-                    int needDimanond = int.Parse(GlobalValueCategory.Instance.Get(73).Value.Split('@')[0]);
+                    int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(73).Value.Split('@')[0]);
                     needDimanond = (int)(needDimanond * discount);
                     if (userInfo.Diamond < needDimanond)
                     {
@@ -150,7 +150,7 @@ namespace ET
                 Function_Fight.GetInstance().UnitUpdateProperty_Base( unit, true, true );
 
 
-                string[] xiliandu = GlobalValueCategory.Instance.Get(49).Value.Split(";");
+                string[] xiliandu = LDGlobalValueCategory.Instance.Get(49).Value.Split(";");
                 int addXilian = RandomHelper.RandomNumber(int.Parse(xiliandu[0]), int.Parse(xiliandu[1]));
                 if (ifZuanShi)
                 {

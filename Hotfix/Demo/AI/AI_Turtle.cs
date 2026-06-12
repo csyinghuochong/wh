@@ -27,7 +27,7 @@ namespace ET
             Unit unit = aiComponent.GetParent<Unit>();
             List<Unit> units = UnitHelper.GetUnitList( aiComponent.DomainScene(), unit.Position, UnitType.Player, 3f );
 
-            int dropid = GlobalValueCategory.Instance.TempValue;
+            int dropid = LDGlobalValueCategory.Instance.TempValue;
 
             List<string> rewardName = new List<string>();   
             for (int i = 0; i < units.Count; i++)

@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class Equip_Type_SubCategory : ProtoObject, IMerge
+    public partial class LDAttributeCategory : ProtoObject, IMerge
     {
-        public static Equip_Type_SubCategory Instance;
+        public static LDAttributeCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Equip_Type_Sub> dict = new Dictionary<int, Equip_Type_Sub>();
+        private Dictionary<int, LDAttribute> dict = new Dictionary<int, LDAttribute>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Equip_Type_Sub> list = new List<Equip_Type_Sub>();
+        private List<LDAttribute> list = new List<LDAttribute>();
 		
-        public Equip_Type_SubCategory()
+        public LDAttributeCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            Equip_Type_SubCategory s = o as Equip_Type_SubCategory;
+            LDAttributeCategory s = o as LDAttributeCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Equip_Type_Sub config in list)
+            foreach (LDAttribute config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Equip_Type_Sub Get(int id)
+        public LDAttribute Get(int id)
         {
-            this.dict.TryGetValue(id, out Equip_Type_Sub item);
+            this.dict.TryGetValue(id, out LDAttribute item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Equip_Type_Sub)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDAttribute)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Equip_Type_Sub> GetAll()
+        public Dictionary<int, LDAttribute> GetAll()
         {
             return this.dict;
         }
 
-        public Equip_Type_Sub GetOne()
+        public LDAttribute GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Equip_Type_Sub: ProtoObject, IConfig
+	public partial class LDAttribute: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -81,6 +81,15 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
+		/// <summary>描述</summary>
+		[ProtoMember(3)]
+		public int Desc { get; set; }
+		/// <summary>排序</summary>
+		[ProtoMember(4)]
+		public int Order_SL { get; set; }
+		/// <summary>显示</summary>
+		[ProtoMember(5)]
+		public int IsShow { get; set; }
 
 	}
 }

@@ -23,7 +23,7 @@ namespace ET
            
             for (int i = 0; i < self.JingLingList.Count; i++)
             {
-                Elf jinglingCof = ElfCategory.Instance.Get(self.JingLingList[i]);
+                LDElf jinglingCof = LDElfCategory.Instance.Get(self.JingLingList[i]);
                 NumericHelp.GetProList(jinglingCof.AddProperty, proList);
             }
 
@@ -31,7 +31,7 @@ namespace ET
             {
                 return proList;
             }
-            Elf lifeShieldConfig = ElfCategory.Instance.Get(self.JingLingId);
+            LDElf lifeShieldConfig = LDElfCategory.Instance.Get(self.JingLingId);
            // NumericHelp.GetProList(lifeShieldConfig.AddProperty, proList);
             if (lifeShieldConfig.FunctionType == JingLingFunctionType.AddProperty)
             {
@@ -229,7 +229,7 @@ namespace ET
             }
 
             self.JingLingList.Clear();  
-            Dictionary<int, Elf> alljingling = ElfCategory.Instance.GetAll();
+            Dictionary<int, LDElf> alljingling = LDElfCategory.Instance.GetAll();
             foreach (var item in alljingling)
             {
                 self.OnActiveJingLing(item.Key); 

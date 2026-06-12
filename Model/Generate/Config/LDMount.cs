@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class MountCategory : ProtoObject, IMerge
+    public partial class LDMountCategory : ProtoObject, IMerge
     {
-        public static MountCategory Instance;
+        public static LDMountCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Mount> dict = new Dictionary<int, Mount>();
+        private Dictionary<int, LDMount> dict = new Dictionary<int, LDMount>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Mount> list = new List<Mount>();
+        private List<LDMount> list = new List<LDMount>();
 		
-        public MountCategory()
+        public LDMountCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            MountCategory s = o as MountCategory;
+            LDMountCategory s = o as LDMountCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Mount config in list)
+            foreach (LDMount config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Mount Get(int id)
+        public LDMount Get(int id)
         {
-            this.dict.TryGetValue(id, out Mount item);
+            this.dict.TryGetValue(id, out LDMount item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Mount)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDMount)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Mount> GetAll()
+        public Dictionary<int, LDMount> GetAll()
         {
             return this.dict;
         }
 
-        public Mount GetOne()
+        public LDMount GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Mount: ProtoObject, IConfig
+	public partial class LDMount: ProtoObject, IConfig
 	{
 		/// <summary>ID</summary>
 		[ProtoMember(1)]

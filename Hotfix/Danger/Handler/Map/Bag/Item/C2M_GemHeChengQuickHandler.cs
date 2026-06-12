@@ -33,13 +33,13 @@ namespace ET
             List<BagInfo> gemList = new List<BagInfo>();
             for (int i = 0; i < bagItemList.Count; i++)
             {
-                Item Item = ItemCategory.Instance.Get(bagItemList[i].ItemID);
-                if (Item.ItemType != ItemTypeEnum.Gemstone)
+                LDItem ldItem = LDItemCategory.Instance.Get(bagItemList[i].ItemID);
+                if (ldItem.ItemType != ItemTypeEnum.Gemstone)
                 {
                     continue;
                 }
 
-                if (!EquipMakeConfigCategory.Instance.GetHeChengList.ContainsKey(Item.Id))
+                if (!EquipMakeConfigCategory.Instance.GetHeChengList.ContainsKey(ldItem.Id))
                 {
                     continue;
                 }

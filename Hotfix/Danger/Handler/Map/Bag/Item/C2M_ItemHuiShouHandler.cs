@@ -41,8 +41,8 @@ namespace ET
                     {
                         continue;  
                     }
-                    Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
-                    string huishouItem = Item.HuiShouGetItem;
+                    LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
+                    string huishouItem = ldItem.HuiShouGetItem;
                     if (huishouItem.Length == 0 || string.IsNullOrEmpty(huishouItem))
                     {
                         continue;

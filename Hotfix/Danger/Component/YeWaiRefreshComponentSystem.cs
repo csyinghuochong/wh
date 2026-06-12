@@ -540,7 +540,7 @@ namespace ET
             if (mapComponent.MapTypeEnum == MapTypeEnum.Battle)
             {
                 if (monsterConfig.MonsterSonType != 55 && monsterConfig.MonsterSonType != 56
-                    && monsterNumber >= GlobalValueCategory.Instance.TempValue)
+                    && monsterNumber >= LDGlobalValueCategory.Instance.TempValue)
                 {
                     return;
                 }
@@ -557,7 +557,7 @@ namespace ET
                 }
 
 
-                if (monsterNumber >= GlobalValueCategory.Instance.TempValue)
+                if (monsterNumber >= LDGlobalValueCategory.Instance.TempValue)
                 {
                     return;
                 }

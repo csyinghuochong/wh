@@ -12,7 +12,7 @@ namespace ET
         {
             if (request.ChouKaType == 1)
             {
-                string needItems = GlobalValueCategory.Instance.Get(16).Value;
+                string needItems = LDGlobalValueCategory.Instance.Get(16).Value;
                 bool  sucess = unit.GetComponent<BagComponent>().OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetChouKa);
                 if (!sucess)
                 {
@@ -32,7 +32,7 @@ namespace ET
                 }
                 */
                 UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
-                int needDimanond = int.Parse(GlobalValueCategory.Instance.Get(17).Value);
+                int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(17).Value);
                 if (userInfo.Diamond < needDimanond)
                 {
                     response.Error = ErrorCode.ERR_DiamondNotEnoughError;
@@ -75,10 +75,10 @@ namespace ET
             }
 
             int petId = petList[RandomHelper.RandomNumber(0, petList.Count)];
-            Pet petConfig = PetCategory.Instance.Get(petId);
-            List<int> weight = new List<int>(petConfig.SkinPro);
+            LDPet ldPetConfig = LDPetCategory.Instance.Get(petId);
+            List<int> weight = new List<int>(ldPetConfig.SkinPro);
             int index = RandomHelper.RandomByWeight(weight);
-            int skinId = petConfig.Skin[index];
+            int skinId = ldPetConfig.Skin[index];
             response.RolePetInfo = unit.GetComponent<PetComponent>().OnAddPet(ItemGetWay.PetExplore, petId, skinId);
             reply();
             await ETTask.CompletedTask;

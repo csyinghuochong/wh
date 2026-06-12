@@ -30,7 +30,7 @@ namespace ET
                 return;
             }
 
-            Item Item = ItemCategory.Instance.Get(equipmentBagInfo.ItemID);
+            LDItem ldItem = LDItemCategory.Instance.Get(equipmentBagInfo.ItemID);
             int equipType = ItemHelper.GetNewEquipType(equipmentBagInfo);
 
             if (equipType == 101 || equipType == 201)

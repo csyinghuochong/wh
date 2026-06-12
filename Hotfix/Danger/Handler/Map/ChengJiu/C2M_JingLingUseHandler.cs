@@ -15,10 +15,10 @@ namespace ET
             }
             if (chengJiuComponent.JingLingId != 0)
             {
-                Elf elf = ElfCategory.Instance.Get(chengJiuComponent.JingLingId);
-                if (elf.FunctionType == JingLingFunctionType.AddSkill)
+                LDElf ldElf = LDElfCategory.Instance.Get(chengJiuComponent.JingLingId);
+                if (ldElf.FunctionType == JingLingFunctionType.AddSkill)
                 {
-                    int skillid = int.Parse(elf.FunctionValue);
+                    int skillid = int.Parse(ldElf.FunctionValue);
                     BuffManagerComponent buffManagerComponent = unit.GetComponent<BuffManagerComponent>();
                     buffManagerComponent.BuffRemoveBySkillid(skillid);
                 }

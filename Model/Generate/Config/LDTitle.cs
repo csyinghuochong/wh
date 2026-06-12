@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class TitleCategory : ProtoObject, IMerge
+    public partial class LDTitleCategory : ProtoObject, IMerge
     {
-        public static TitleCategory Instance;
+        public static LDTitleCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Title> dict = new Dictionary<int, Title>();
+        private Dictionary<int, LDTitle> dict = new Dictionary<int, LDTitle>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Title> list = new List<Title>();
+        private List<LDTitle> list = new List<LDTitle>();
 		
-        public TitleCategory()
+        public LDTitleCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            TitleCategory s = o as TitleCategory;
+            LDTitleCategory s = o as LDTitleCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Title config in list)
+            foreach (LDTitle config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Title Get(int id)
+        public LDTitle Get(int id)
         {
-            this.dict.TryGetValue(id, out Title item);
+            this.dict.TryGetValue(id, out LDTitle item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Title)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDTitle)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Title> GetAll()
+        public Dictionary<int, LDTitle> GetAll()
         {
             return this.dict;
         }
 
-        public Title GetOne()
+        public LDTitle GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Title: ProtoObject, IConfig
+	public partial class LDTitle: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

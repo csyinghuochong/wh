@@ -22,7 +22,7 @@
         {
             //每间隔一段时间触发一次伤害
             long serverNow = TimeHelper.ServerNow();
-            if (serverNow - this.SkillTriggerLastTime >= this.SkillConf.DamgeChiXuInterval)
+            if (serverNow - this.SkillTriggerLastTime >= this.LdSkillConf.DamgeChiXuInterval)
             {
                 SkillTriggerLastTime = TimeHelper.ServerNow();
                 HurtIds.Clear();

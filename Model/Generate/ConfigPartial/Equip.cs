@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace ET
 {
-    public partial class EquipCategory
+    public partial class LDEquipCategory
     {
 
         private Dictionary<int, List<HideProList>> EquipAttribute = new Dictionary<int,List<HideProList>> { };
 
         public override void AfterEndInit()
         {
-            foreach (Equip occupation in this.GetAll().Values)
+            foreach (LDEquip occupation in this.GetAll().Values)
             {
                 List<HideProList> equipAttribute = new List<HideProList>();
  

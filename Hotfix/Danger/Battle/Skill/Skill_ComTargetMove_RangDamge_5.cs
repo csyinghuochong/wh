@@ -15,7 +15,7 @@ namespace ET
         {
             this.BaseOnInit(skillId, theUnitFrom);
 
-            string[] paraminfos = this.SkillConf.GameObjectParameter.Split(';');
+            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');
             this.isChonFeng = int.Parse(paraminfos[0]);
             if (paraminfos[1] != "0")
             {
@@ -79,7 +79,7 @@ namespace ET
 
             this.HurtIds.Clear();
 
-            Unit unit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(), this.TheUnitFrom.Id, this.SkillConf.Id, 0, this.TheUnitFrom.Position,
+            Unit unit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(), this.TheUnitFrom.Id, this.LdSkillConf.Id, 0, this.TheUnitFrom.Position,
                 new CreateMonsterInfo());
             unit.AddComponent<RoleBullet5Componnet>().OnBaseBulletInit(this, this.TheUnitFrom.Id);
             Vector3 target = this.GetBulletTargetPoint(this.SkillInfo.TargetAngle);
@@ -100,7 +100,7 @@ namespace ET
             float oldSpeed = numericComponent.GetAsFloat(NumericType.Speed_Current);
             float oldspeedAdd = numericComponent.GetAsFloat(NumericType.Speed_Fixed);
             double addPro = 0f;
-            float newSpeed = (float)(this.SkillConf.SkillMoveSpeed * (1 + addPro));
+            float newSpeed = (float)(this.LdSkillConf.SkillMoveSpeed * (1 + addPro));
             float newspeedAdd = newSpeed - oldSpeed;
 
             if (newSpeed > oldSpeed && newspeedAdd > oldspeedAdd)
@@ -139,7 +139,7 @@ namespace ET
         {
             Vector3 sourcePoint = this.TheUnitFrom.Position;
             Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * SkillConf.SkillLiveTime * (float)SkillConf.SkillMoveSpeed * 0.001f;
+            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * this.LdSkillConf.SkillLiveTime * (float)this.LdSkillConf.SkillMoveSpeed * 0.001f;
             return TargetPoint;
         }
     }

@@ -17,8 +17,8 @@ namespace ET
             }
 
             //判断品质
-            Item itemConfig_0 = ItemCategory.Instance.Get(bagInfo_1.ItemID);
-            Item itemConfig_1 = ItemCategory.Instance.Get(bagInfo_2.ItemID);
+            LDItem ldItemConfig0 = LDItemCategory.Instance.Get(bagInfo_1.ItemID);
+            LDItem ldItemConfig1 = LDItemCategory.Instance.Get(bagInfo_2.ItemID);
 
             int equipType = ItemHelper.GetNewEquipType(bagInfo_1);
             if (equipType > 100)
@@ -47,13 +47,13 @@ namespace ET
 
 
             //绑定装备无法转移(客户端已经给出对应提示)
-            if (bagInfo_1.isBinging == true && bagInfo_2.isBinging == false && itemConfig_1.Quality == 4)
+            if (bagInfo_1.isBinging == true && bagInfo_2.isBinging == false && ldItemConfig1.Quality == 4)
             {
                 bagInfo_2.isBinging = true;
             }
 
             //紫色品质以上才可以转移
-            if (itemConfig_0.Quality < 4 || itemConfig_1.Quality < 4)
+            if (ldItemConfig0.Quality < 4 || ldItemConfig1.Quality < 4)
             {
                 reply();
                 return;
@@ -80,7 +80,7 @@ namespace ET
                 //}
             }
 
-            string costItem = GlobalValueCategory.Instance.Get(51).Value;
+            string costItem = LDGlobalValueCategory.Instance.Get(51).Value;
             if (!unit.GetComponent<BagComponent>().OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.ItemXiLian))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;

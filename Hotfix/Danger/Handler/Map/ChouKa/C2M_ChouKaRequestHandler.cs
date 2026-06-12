@@ -51,7 +51,7 @@ namespace ET
             }
             else
             {
-                long cdTime = long.Parse(GlobalValueCategory.Instance.Get(request.ChouKaType == 1 ? 35 : 36).Value) * 1000;
+                long cdTime = long.Parse(LDGlobalValueCategory.Instance.Get(request.ChouKaType == 1 ? 35 : 36).Value) * 1000;
 
                 long lastTime = unit.GetComponent<NumericComponent>().GetAsLong(request.ChouKaType == 1 ? NumericType.ChouKaOneTime : NumericType.ChouKaTenTime);
                 mianfei = TimeHelper.ServerNow() - lastTime >= cdTime;

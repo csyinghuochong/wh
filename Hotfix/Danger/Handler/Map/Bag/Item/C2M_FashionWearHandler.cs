@@ -19,12 +19,12 @@ namespace ET
             }
 
             int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
-            Fashion fashion = FashionCategory.Instance.Get(request.FashionId);
+            LDFashion ldFashion = LDFashionCategory.Instance.Get(request.FashionId);
 
             bool canwear = false;
-            for (int i = 0; i < fashion.Occ.Length; i++)
+            for (int i = 0; i < ldFashion.Occ.Length; i++)
             {
-                if (fashion.Occ[i] == occ)
+                if (ldFashion.Occ[i] == occ)
                 {
                     canwear = true;
                     break;
@@ -49,8 +49,8 @@ namespace ET
 
                 for (int  i = bagComponent.FashionEquipList.Count - 1; i >= 0 ; i--)
                 {
-                    Fashion fashion2 = FashionCategory.Instance.Get(bagComponent.FashionEquipList[i]);
-                    if (fashion2.SubType == fashion.SubType)
+                    LDFashion fashion2 = LDFashionCategory.Instance.Get(bagComponent.FashionEquipList[i]);
+                    if (fashion2.SubType == ldFashion.SubType)
                     {
                         bagComponent.FashionEquipList.RemoveAt(i);  
                     }

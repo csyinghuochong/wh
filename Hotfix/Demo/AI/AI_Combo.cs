@@ -53,7 +53,7 @@ namespace ET
 
                 if (aiComponent.TargetID != 0 && distance <= aiComponent.ActDistance && skillManagerComponent.IsCanUseSkill(skillId) == ErrorCode.ERR_Success)
                 {
-                    Skill skill = SkillCategory.Instance.Get(skillId);
+                    LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
                     Vector3 direction = target.Position - unit.Position;
 
                     C2M_SkillCmd cmd = aiComponent.c2M_SkillCmd;
@@ -61,7 +61,7 @@ namespace ET
                     cmd.TargetID = target.Id;
                     cmd.SkillID = skillId;
 
-                    if (skill.SkillZhishiTargetType == 1)  //自身点
+                    if (ldSkill.SkillZhishiTargetType == 1)  //自身点
                     {
                         cmd.TargetAngle = 0;
                         cmd.TargetDistance = 0;
@@ -76,7 +76,7 @@ namespace ET
                     long serverNow = TimeHelper.ServerNow();
                     aiComponent.LastAttackTime = serverNow;
                     skillManagerComponent.OnUseSkill(cmd, true);
-                    rigidityEndTime = (long)(SkillCategory.Instance.Get(cmd.SkillID).SkillRigidity * 1000) + serverNow;
+                    rigidityEndTime = (long)(LDSkillCategory.Instance.Get(cmd.SkillID).SkillRigidity * 1000) + serverNow;
                 }
 
                 if (rigidityEndTime > stateComponent.RigidityEndTime)

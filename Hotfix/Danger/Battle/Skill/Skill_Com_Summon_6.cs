@@ -25,7 +25,7 @@ namespace ET
                 // 召唤物释放相同技能
                 // '90000102,90000103(如果填0是所有)
                 // 召唤ID,召唤ID
-                string[] summonParList = this.SkillConf.GameObjectParameter.Split(';');
+                string[] summonParList = this.LdSkillConf.GameObjectParameter.Split(';');
                 List<int> monsterIds = new List<int>();
                 bool allMonster = false;
                 try
@@ -43,7 +43,7 @@ namespace ET
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Skill_Com_Summon_6:Error:  ", this.SkillConf.Id);
+                    Log.Error("Skill_Com_Summon_6:Error:  ", this.LdSkillConf.Id);
                     Log.Error(ex.ToString());
                     return;
                 }
@@ -55,8 +55,8 @@ namespace ET
                     {
                         C2M_SkillCmd cmd = unit.GetComponent<AIComponent>().c2M_SkillCmd;
                         cmd.TargetID = this.SkillInfo.TargetID;
-                        cmd.SkillID = this.SkillConf.Id;
-                        if (this.SkillConf.SkillZhishiTargetType == 1) //自身点
+                        cmd.SkillID = this.LdSkillConf.Id;
+                        if (this.LdSkillConf.SkillZhishiTargetType == 1) //自身点
                         {
                             cmd.TargetAngle = 0;
                             cmd.TargetDistance = 0;

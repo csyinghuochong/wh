@@ -30,7 +30,7 @@ namespace ET
                 }
 
                 //获取当前任务是否已达上限
-                if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.DailyTaskNumber) >=  GlobalValueCategory.Instance.TempValue)
+                if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.DailyTaskNumber) >=  LDGlobalValueCategory.Instance.TempValue)
                 {
                     response.Error = ErrorCode.ERR_ShangJinNumFull;
                     reply();

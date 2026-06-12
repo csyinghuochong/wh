@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ET
 {
-    public partial class ItemCategory
+    public partial class LDItemCategory
     {
 
         public List<int> FoodList = new List<int> { };
@@ -12,7 +12,7 @@ namespace ET
 
         public override void AfterEndInit()
         {
-            foreach (Item Item in this.GetAll().Values)
+            foreach (LDItem Item in this.GetAll().Values)
             {
                 if (Item.ItemType== 1 && Item.ItemSubType== 131)
                 {
@@ -28,7 +28,7 @@ namespace ET
                
             }
 
-            foreach (Item Item in this.GetAll().Values)
+            foreach (LDItem Item in this.GetAll().Values)
             {
                 if (Item.ItemType == 1 && Item.ItemSubType == 131 && Item.Quality > 2)
                 {
@@ -48,8 +48,8 @@ namespace ET
             List<int> canequiplist = new List<int>();
             for (int i = 0; i < equiplist.Count; i++)
             {
-                Item Item = ItemCategory.Instance.Get(equiplist[i]);
-                if (Item.ItemSubType != subType ||  Item.UseLv > lv)
+                LDItem ldItem = LDItemCategory.Instance.Get(equiplist[i]);
+                if (ldItem.ItemSubType != subType ||  ldItem.UseLv > lv)
                 {
                     continue;
                 }

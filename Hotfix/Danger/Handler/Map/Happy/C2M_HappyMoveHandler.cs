@@ -30,13 +30,13 @@ namespace ET
                     return;
                 }
 
-                long mianfeicd = GlobalValueCategory.Instance.TempValue * 1000;
+                long mianfeicd = LDGlobalValueCategory.Instance.TempValue * 1000;
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HappyMoveTime, TimeHelper.ServerNow() + mianfeicd);
             }
             if (request.OperatateType == 2)
             {
-                GlobalValue globalValue = GlobalValueCategory.Instance.Get(94);
-                if (userInfoComponent.UserInfo.Gold < GlobalValueCategory.Instance.TempValue)
+                LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(94);
+                if (userInfoComponent.UserInfo.Gold < LDGlobalValueCategory.Instance.TempValue)
                 {
                     response.Error = ErrorCode.ERR_GoldNotEnoughError;
                     reply();

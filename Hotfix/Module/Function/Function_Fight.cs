@@ -41,7 +41,7 @@ namespace ET
                 return false;
             }
 
-            Skill skillconfig = skillHandler.SkillConf;
+            LDSkill skillconfig = skillHandler.LdSkillConf;
             //吟唱进度
             float singingvalue = 1;
             //蓄力技能计算伤害
@@ -57,9 +57,9 @@ namespace ET
             float buffDamgePro = 0f;
             float buffHurtValueAdd = 0f;
             ///Buff层数触发技能  buffid 1 技能ID 触发间隔
-            if (SkillCategory.Instance.BuffTriggerSkill.ContainsKey(skillconfig.Id))
+            if (LDSkillCategory.Instance.BuffTriggerSkill.ContainsKey(skillconfig.Id))
             {
-                KeyValuePairLong4 keyValuePairLong = SkillCategory.Instance.BuffTriggerSkill[skillconfig.Id];
+                KeyValuePairLong4 keyValuePairLong = LDSkillCategory.Instance.BuffTriggerSkill[skillconfig.Id];
                 List<Unit> allDefend = attackUnit.GetParent<UnitComponent>().GetAll();
                 for ( int defend = 0; defend < allDefend.Count; defend++  )
                 {
@@ -82,9 +82,9 @@ namespace ET
             }
 
             ///Buff层数叠加伤害  buffid 2 层数  附加伤害系数
-            if (SkillCategory.Instance.BuffAddHurt.ContainsKey(skillconfig.Id))
+            if (LDSkillCategory.Instance.BuffAddHurt.ContainsKey(skillconfig.Id))
             {
-                KeyValuePairLong4 keyValuePairLong = SkillCategory.Instance.BuffAddHurt[skillconfig.Id];
+                KeyValuePairLong4 keyValuePairLong = LDSkillCategory.Instance.BuffAddHurt[skillconfig.Id];
                 int buffId = (int)keyValuePairLong.KeyId;
                 int buffNum = defendUnit.GetComponent<BuffManagerComponent>().GetBuffSourceNumber(0, buffId);
                 if(buffNum > 0)
@@ -184,21 +184,21 @@ namespace ET
 
             if (skillHandler.OnlyHideBuffActionUnitID.Count > 0 && !skillHandler.IsSpecifiedFight(defendUnit))
             {
-                SkillBuff skillBuff = SkillBuffCategory.Instance.Get((int)skillHandler.OnlyHideBuffActionUnitID[0]);
+                LDSkillBuff ldSkillBuff = LDSkillBuffCategory.Instance.Get((int)skillHandler.OnlyHideBuffActionUnitID[0]);
 
 
                 if (!skillHandler.OnlyHideBuffActionUnitID.Contains(defendUnit.Id))
                 {
-                    if (skillBuff.DamgePro > 0)
+                    if (ldSkillBuff.DamgePro > 0)
                     {
-                        buffDamgePro = (float)skillBuff.DamgePro;
+                        buffDamgePro = (float)ldSkillBuff.DamgePro;
                     }
 
                     skillHandler.OnlyHideBuffActionUnitID.Add(defendUnit.Id);
 
                     BuffData buffData_2 = new BuffData();
                     buffData_2.SkillId = 67000278;
-                    buffData_2.BuffId = int.Parse(skillBuff.buffParameterValue2); //69000046
+                    buffData_2.BuffId = int.Parse(ldSkillBuff.buffParameterValue2); //69000046
                     defendUnit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_2, attackUnit, null, true);
                 }
             }
@@ -354,8 +354,8 @@ namespace ET
                 //宠物
                 case UnitType.Pet:
                     defendUnit.GetComponent<AIComponent>()?.BeAttacking(attackUnit);
-                    Pet petCof = PetCategory.Instance.Get(defendUnit.ConfigId);
-                    defendUnitLv = petCof.PetLv;
+                    LDPet ldPetCof = LDPetCategory.Instance.Get(defendUnit.ConfigId);
+                    defendUnitLv = ldPetCof.PetLv;
                     defend_def += numericComponentDefend.GetAsLong(NumericType.Numeric_Error);
                     defend_adf += numericComponentDefend.GetAsLong(NumericType.Numeric_Error);
                     defend_def += (int)(defend_def * numericComponentDefend.GetAsFloat(NumericType.Numeric_Error));
@@ -386,8 +386,8 @@ namespace ET
                     break;
                 //宠物
                 case UnitType.Pet:
-                    Pet petCof = PetCategory.Instance.Get(attackUnit.ConfigId);
-                    attackUnitLv = petCof.PetLv;
+                    LDPet ldPetCof = LDPetCategory.Instance.Get(attackUnit.ConfigId);
+                    attackUnitLv = ldPetCof.PetLv;
 
                     //增加宠物属性
                     ///从主人身上取
@@ -1106,7 +1106,7 @@ namespace ET
                     //damgePro -= numericComponentDefend.GetAsFloat(NumericType.Numeric_Error);
 
                     bool jueXinSkill = false;
-                    if (CommonConfig.JueXingSkillIDList.Contains(skillHandler.SkillConf.Id))
+                    if (CommonConfig.JueXingSkillIDList.Contains(skillHandler.LdSkillConf.Id))
                     {
                         jueXinSkill = true;
                     }
@@ -1124,7 +1124,7 @@ namespace ET
                             }
                         }
 
-                        jueXinSkill = juexingid != 0 && juexingid == skillHandler.SkillConf.Id;
+                        jueXinSkill = juexingid != 0 && juexingid == skillHandler.LdSkillConf.Id;
                     }
 
                     //普通攻击降低
@@ -1632,7 +1632,7 @@ namespace ET
             int PointMinJie = numericComponent.GetAsInt(NumericType.Point_MinJie);
             
             //职业属性
-            List<HideProList> occInitAttribute = OccupationCategory.Instance.GetOccInitAttribute(userInfo.Occ);
+            List<HideProList> occInitAttribute = LDOccupationCategory.Instance.GetOccInitAttribute(userInfo.Occ);
             //装备属性
             unit.GetComponent<BagComponent>().GetEquipAttribute(occInitAttribute);
             
@@ -1645,20 +1645,20 @@ namespace ET
             List<int> fashionids = unit.GetComponent<BagComponent>().FashionActiveIds;
             for (int i = 0; i < fashionids.Count; i++)
             {
-                if (!FashionCategory.Instance.Contain(fashionids[i]))
+                if (!LDFashionCategory.Instance.Contain(fashionids[i]))
                 {
                     continue;
                 }
 
-                Fashion fashion = FashionCategory.Instance.Get(fashionids[i]);
-                if (fashion.PropertyKey == null || fashion.PropertyKey.Length == 0 || fashion.PropertyKey[0] == 0)
+                LDFashion ldFashion = LDFashionCategory.Instance.Get(fashionids[i]);
+                if (ldFashion.PropertyKey == null || ldFashion.PropertyKey.Length == 0 || ldFashion.PropertyKey[0] == 0)
                 {
                     continue;
                 }
 
-                for (int pro = 0; pro < fashion.PropertyKey.Length; pro++ )
+                for (int pro = 0; pro < ldFashion.PropertyKey.Length; pro++ )
                 {
-                    AddUpdateProDicList(fashion.PropertyKey[pro], fashion.PropertyValue[pro], UpdateProDicList);
+                    AddUpdateProDicList(ldFashion.PropertyKey[pro], ldFashion.PropertyValue[pro], UpdateProDicList);
                 }
             }
             

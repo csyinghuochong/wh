@@ -29,7 +29,7 @@ namespace ET
             self.Skills.Clear();
             self.DelaySkillList.Clear();
             self.SkillCDs.Clear();
-            self.FangunSkillId = int.Parse(GlobalValueCategory.Instance.Get(2).Value);
+            self.FangunSkillId = int.Parse(LDGlobalValueCategory.Instance.Get(2).Value);
             self.SelfUnitComponent = self.DomainScene().GetComponent<UnitComponent>();
             self.SelfUnit = self.GetParent<Unit>();
         }
@@ -58,7 +58,7 @@ namespace ET
             if (self.SkillSecond.ContainsKey(skillcmd.SkillID))
             {
                 //有对应的buff才能触发二段斩
-                int buffId = (int)SkillCategory.Instance.BuffSecondSkill[self.SkillSecond[skillcmd.SkillID]].KeyId;
+                int buffId = (int)LDSkillCategory.Instance.BuffSecondSkill[self.SkillSecond[skillcmd.SkillID]].KeyId;
 
                 List<Unit> allDefend = unit.GetParent<UnitComponent>().GetAll();
                 for (int defend = 0; defend < allDefend.Count; defend++)
@@ -93,10 +93,10 @@ namespace ET
             }
 
 
-            Skill skill = SkillCategory.Instance.Get(weaponSkill);
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(weaponSkill);
             Unit target = unit.GetParent<UnitComponent>().Get(skillcmd.TargetID);
 
-            switch (skill.SkillTargetType)
+            switch (ldSkill.SkillTargetType)
             {
                 case (int)SkillTargetType.SelfPosition:
                 case (int)SkillTargetType.SelfFollow:
@@ -132,7 +132,7 @@ namespace ET
                     skillInfos.Add(skillInfo);
                     break;
                 case (int)SkillTargetType.SelfRandom:                   //自身中心点随机
-                    string[] randomInfos = skill.GameObjectParameter.Split(';');
+                    string[] randomInfos = ldSkill.GameObjectParameter.Split(';');
                     int randomSkillId = 0;
                     int randomNumber = 0;
                     int randomRange = 0;
@@ -146,7 +146,7 @@ namespace ET
 
                     if (randomInfos.Length < 3)
                     {
-                        Log.Warning($"技能配置错误: {skill.Id}");
+                        Log.Warning($"技能配置错误: {ldSkill.Id}");
                     }
                     else
                     {
@@ -169,7 +169,7 @@ namespace ET
                     }
                     break;
                 case (int)SkillTargetType.TargetRandom:                 //目标中心点随机
-                    randomInfos = skill.GameObjectParameter.Split(';');
+                    randomInfos = ldSkill.GameObjectParameter.Split(';');
                     randomSkillId = int.Parse(randomInfos[0]);
                     randomNumber = int.Parse(randomInfos[1]);
                     randomRange = int.Parse(randomInfos[2]);
@@ -194,7 +194,7 @@ namespace ET
                     }
                     break;
                 case (int)SkillTargetType.PositionRandom:       //定点位置随机
-                    randomInfos = skill.GameObjectParameter.Split(';');
+                    randomInfos = ldSkill.GameObjectParameter.Split(';');
                     randomSkillId = int.Parse(randomInfos[0]);
                     randomNumber = int.Parse(randomInfos[1]);
                     randomRange = int.Parse(randomInfos[2]);
@@ -222,7 +222,7 @@ namespace ET
                     }
                     break;
                 case (int)SkillTargetType.TargetFollow:         //跟随目标随机
-                    randomInfos = skill.GameObjectParameter.Split(';');
+                    randomInfos = ldSkill.GameObjectParameter.Split(';');
                     randomSkillId = int.Parse(randomInfos[0]);
                     float intervalTime = float.Parse(randomInfos[1]);
                     skillNumber = Mathf.FloorToInt(float.Parse(randomInfos[2]) / intervalTime);
@@ -267,10 +267,10 @@ namespace ET
                     float range = 1f;
                     List<long> targetIds = null;
 
-                    if (skill.SkillTargetType == SkillTargetType.MulTarget)
+                    if (ldSkill.SkillTargetType == SkillTargetType.MulTarget)
                     {
-                        targetNum = int.Parse(skill.GameObjectParameter);
-                        range = (float)skill.SkillRangeSize;
+                        targetNum = int.Parse(ldSkill.GameObjectParameter);
+                        range = (float)ldSkill.SkillRangeSize;
                         targetIds = AIGetTargetHelp.GetNearestEnemyByNumber(unit, range, targetNum);
                     }
                     else
@@ -281,7 +281,7 @@ namespace ET
                         }
                         else
                         {
-                            string[] targetinfo =  skill.GameObjectParameter.Split(';');
+                            string[] targetinfo =  ldSkill.GameObjectParameter.Split(';');
                             targetNum = int.Parse(targetinfo[0]);
                             range = float.Parse(targetinfo[1]);
                             targetIds = AIGetTargetHelp.GetNearestEnemyByNumber(unit, target.Position, range, targetNum);
@@ -327,12 +327,12 @@ namespace ET
                         skillInfo.TargetAngle = skillcmd.TargetAngle;
                         skillInfos.Add(skillInfo);
                     }
-                    else if (target == null && skill.SkillActType == 0)
+                    else if (target == null && ldSkill.SkillActType == 0)
                     {
                         skillInfo = new SkillInfo();
                         skillInfo.TargetAngle = (int)Quaternion.QuaternionToEuler(unit.Rotation).y;
-                        Skill skillConfig1 = SkillCategory.Instance.Get(weaponSkill);
-                        Vector3 targetPosition = unit.Position + unit.Rotation * Vector3.forward * (float)skillConfig1.SkillRangeSize;
+                        LDSkill ldSkillConfig1 = LDSkillCategory.Instance.Get(weaponSkill);
+                        Vector3 targetPosition = unit.Position + unit.Rotation * Vector3.forward * (float)ldSkillConfig1.SkillRangeSize;
                         skillInfo.WeaponSkillID = weaponSkill;
                         skillInfo.PosX = targetPosition.x;
                         skillInfo.PosY = targetPosition.y;
@@ -348,7 +348,7 @@ namespace ET
                     break;
             }
             //如果是闪现技能，并且目标点不能到达
-            if (skill.GameObjectName == "Skill_ShanXian_1" && skillInfos.Count > 0)
+            if (ldSkill.GameObjectName == "Skill_ShanXian_1" && skillInfos.Count > 0)
             {
                 MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
                 Vector3 vector3 = new Vector3(skillInfos[0].PosX, skillInfos[0].PosY, skillInfos[0].PosZ);
@@ -359,7 +359,7 @@ namespace ET
                 skillInfos[0].PosZ = target3.z;
             }
             //90010909
-            if (skill.GameObjectName == "Skill_ShanXian_2" && skillInfos.Count > 0 && target!=null)
+            if (ldSkill.GameObjectName == "Skill_ShanXian_2" && skillInfos.Count > 0 && target!=null)
             {
                 Vector3 dir =  target.Rotation * Vector3.back;
                 Vector3 vector3 = target.Position + dir * 1f;
@@ -423,7 +423,7 @@ namespace ET
             for (int i = skillcnt - 1; i >= 0; i--)
             {
                 SkillHandler skillHandler = self.Skills[i];
-                if (skillHandler.SkillConf.Id != skillId)
+                if (skillHandler.LdSkillConf.Id != skillId)
                 {
                     continue;
                 }
@@ -442,11 +442,11 @@ namespace ET
             for (int i = skillcnt - 1; i >= 0; i--)
             {
                 SkillHandler skillHandler = self.Skills[i];
-                if (!skillHandler.SkillConf.GameObjectName.Equals(skillName))
+                if (!skillHandler.LdSkillConf.GameObjectName.Equals(skillName))
                 {
                     continue;
                 }
-                self.InterruptSkill(skillHandler.SkillConf.Id);
+                self.InterruptSkill(skillHandler.LdSkillConf.Id);
                 break;
             }
         }
@@ -456,7 +456,7 @@ namespace ET
             int skillcnt = self.Skills.Count;
             for (int i = skillcnt - 1; i >= 0; i--)
             {
-                if (self.Skills[i].SkillConf.GameObjectName.Equals(skilltype))
+                if (self.Skills[i].LdSkillConf.GameObjectName.Equals(skilltype))
                 {
                     return true;
                 }
@@ -472,19 +472,19 @@ namespace ET
         /// <returns></returns>
         public static bool CheckChongJi(this SkillManagerComponent self, int skillId)
         {
-            if (!SkillCategory.Instance.Contain(skillId))
+            if (!LDSkillCategory.Instance.Contain(skillId))
             {
                 return false;
             }
-            Skill skill = SkillCategory.Instance.Get(skillId);
-            if (!SkillHelp.IsChongJi(skill.GameObjectName))
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
+            if (!SkillHelp.IsChongJi(ldSkill.GameObjectName))
             {
                 return false;
             }
             int skillcnt = self.Skills.Count;
             for (int i = skillcnt - 1; i >= 0; i--)
             {
-                if (self.Skills[i].SkillConf.GameObjectName == skill.GameObjectName)
+                if (self.Skills[i].LdSkillConf.GameObjectName == ldSkill.GameObjectName)
                 {
                     return true;
                 }
@@ -503,12 +503,12 @@ namespace ET
             for (int i = self.Skills.Count - 1; i >= 0; i--)
             {
                 SkillHandler skillHandler = self.Skills[i];
-                if (skillHandler.SkillConf.SkillSingTime == 0)
+                if (skillHandler.LdSkillConf.SkillSingTime == 0)
                 {
                     continue;
                 }
                 
-                if (skillHandler.SkillConf.Name.Equals(SkillHelp.Skill_XuanZhuan_Attack_2))
+                if (skillHandler.LdSkillConf.Name.Equals(SkillHelp.Skill_XuanZhuan_Attack_2))
                 {
                     ifStop = true;
                 }
@@ -517,7 +517,7 @@ namespace ET
                 if (ifStop)
                 {
                     skillHandler.SetSkillState(SkillState.Finished);
-                    M2C_SkillInterruptResult m2C_SkillInterruptResult = new M2C_SkillInterruptResult() { UnitId = unit.Id, SkillId = skillHandler.SkillConf.Id };
+                    M2C_SkillInterruptResult m2C_SkillInterruptResult = new M2C_SkillInterruptResult() { UnitId = unit.Id, SkillId = skillHandler.LdSkillConf.Id };
                     //MessageHelper.Broadcast(unit, m2C_SkillInterruptResult);
                     self.BroadcastSkill(unit, m2C_SkillInterruptResult);
                 }
@@ -552,7 +552,7 @@ namespace ET
             {
                 weaponSkillid = tianfuSkill;
             }
-            Skill weaponSkill = SkillCategory.Instance.Get(weaponSkillid);
+            LDSkill weaponLdSkill = LDSkillCategory.Instance.Get(weaponSkillid);
             List<SkillInfo> skillList = self.GetRandomSkills(skillcmd, weaponSkillid);
             if (skillList == null ||  skillList.Count == 0)
             {
@@ -576,8 +576,8 @@ namespace ET
                 Log.Debug($"skillPassiveComponent == null: {unit.Type}");
             }
             if (zhudong && skillPassiveComponent!= null
-                && !SkillHelp.NOPassiveSkill.Contains(weaponSkill.Id) 
-                && !SkillHelp.IsChongJi(weaponSkill.GameObjectName))
+                && !SkillHelp.NOPassiveSkill.Contains(weaponLdSkill.Id) 
+                && !SkillHelp.IsChongJi(weaponLdSkill.GameObjectName))
             {
                 passiveTypeEnum_22 = skillPassiveComponent.IsTrigegerPassiveTypeEnum_22();
             }
@@ -595,7 +595,7 @@ namespace ET
             }
 
             //添加技能CD列表  给客户端发送消息 我创建了一个技能,客户端创建特效等相关功能
-            SkillCDItem skillCd = self.AddSkillCD(skillcmd.ItemId, skillcmd.SkillID,  weaponSkill, zhudong);
+            SkillCDItem skillCd = self.AddSkillCD(skillcmd.ItemId, skillcmd.SkillID,  weaponLdSkill, zhudong);
             m2C_Skill.Error = ErrorCode.ERR_Success;
             m2C_Skill.CDEndTime = skillCd != null ? skillCd.CDEndTime : 0;
             m2C_Skill.PublicCDTime = self.SkillPublicCDTime;
@@ -615,29 +615,29 @@ namespace ET
                 handlerList[i].OnExecute();
                 self.Skills.Add(handlerList[i] );
             }
-            if (zhudong && !SkillHelp.NOPassiveSkill.Contains(weaponSkill.Id)  && !SkillHelp.IsChongJi(weaponSkill.GameObjectName))
+            if (zhudong && !SkillHelp.NOPassiveSkill.Contains(weaponLdSkill.Id)  && !SkillHelp.IsChongJi(weaponLdSkill.GameObjectName))
             {
-                if (weaponSkill.SkillActType == 0)
+                if (weaponLdSkill.SkillActType == 0)
                 {
                     skillPassiveComponent?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AckNumber_16, skillcmd.TargetID, skillcmd.SkillID);
                 }
 
-                skillPassiveComponent?.OnTrigegerPassiveSkill(weaponSkill.SkillActType == 0 ? SkillPassiveTypeEnum.AckGaiLv_1 : SkillPassiveTypeEnum.SkillGaiLv_7, skillcmd.TargetID, skillcmd.SkillID);
-                skillPassiveComponent?.OnTrigegerPassiveSkill(weaponSkill.SkillRangeSize <= 4 ? SkillPassiveTypeEnum.AckDistance_9 : SkillPassiveTypeEnum.AckDistance_10, skillcmd.TargetID, skillcmd.SkillID);
+                skillPassiveComponent?.OnTrigegerPassiveSkill(weaponLdSkill.SkillActType == 0 ? SkillPassiveTypeEnum.AckGaiLv_1 : SkillPassiveTypeEnum.SkillGaiLv_7, skillcmd.TargetID, skillcmd.SkillID);
+                skillPassiveComponent?.OnTrigegerPassiveSkill(weaponLdSkill.SkillRangeSize <= 4 ? SkillPassiveTypeEnum.AckDistance_9 : SkillPassiveTypeEnum.AckDistance_10, skillcmd.TargetID, skillcmd.SkillID);
                 skillPassiveComponent?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AllSkill_17, skillcmd.TargetID, skillcmd.SkillID);
                 skillPassiveComponent?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.PassiveTypeEnum_22, skillcmd.TargetID, skillcmd.SkillID, passiveTypeEnum_22);
             }
-            if (unit.Type == UnitType.Player && weaponSkill.SkillUseMP > 0)
+            if (unit.Type == UnitType.Player && weaponLdSkill.SkillUseMP > 0)
             {
-                unit.GetComponent<NumericComponent>().ApplyChange( null, NumericType.SkillUseMP, weaponSkill.SkillUseMP * -1, 0 );
+                unit.GetComponent<NumericComponent>().ApplyChange( null, NumericType.SkillUseMP, weaponLdSkill.SkillUseMP * -1, 0 );
             }
 
             Unit unitTarget = unit.GetParent<UnitComponent>().Get(skillcmd.TargetID);
-            if (weaponSkill.SkillType == 1 &&  unitTarget !=null) 
+            if (weaponLdSkill.SkillType == 1 &&  unitTarget !=null) 
             {
                 unitTarget.GetComponent<AttackRecordComponent>().BeAttackId = unit.Id;  
             }
-            if (weaponSkill.SkillType == 1 && skillcmd.TargetID > 0)
+            if (weaponLdSkill.SkillType == 1 && skillcmd.TargetID > 0)
             {
                 unit.GetComponent<AttackRecordComponent>().AttackingId = skillcmd.TargetID;
             }
@@ -645,7 +645,7 @@ namespace ET
             float now_ZhuanZhuPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
             if (zhudong && RandomHelper.RandFloat01() < now_ZhuanZhuPro
                 && TimeHelper.ServerFrameTime() - self.LastLianJiTime >= 4000
-                && !SkillHelp.IsChongJi(weaponSkill.GameObjectName))
+                && !SkillHelp.IsChongJi(weaponLdSkill.GameObjectName))
             {
                 if (unit.Type == UnitType.Player)
                 {
@@ -655,7 +655,7 @@ namespace ET
                 self.OnContinueSkill(skillcmd).Coroutine();
             }
 
-            self.TriggerAddSkill(skillcmd, weaponSkill.Id).Coroutine();
+            self.TriggerAddSkill(skillcmd, weaponLdSkill.Id).Coroutine();
             self.AddSkillTimer();
             return m2C_Skill;
         }
@@ -670,7 +670,7 @@ namespace ET
             }
         }
 
-        public static SkillCDItem AddSkillCD(this SkillManagerComponent self, int itemid, int skillid, Skill weapon, bool zhudong)
+        public static SkillCDItem AddSkillCD(this SkillManagerComponent self, int itemid, int skillid, LDSkill weapon, bool zhudong)
         {
             SkillCDItem skillCd = null;
             if (skillid == self.FangunSkillId)
@@ -710,8 +710,8 @@ namespace ET
                 {
                     return;
                 }
-                Skill skill = SkillCategory.Instance.Get((int)keyValuePair.Value);
-                if (unit.GetComponent<StateComponent>().CanUseSkill(skill, true) != ErrorCode.ERR_Success)
+                LDSkill ldSkill = LDSkillCategory.Instance.Get((int)keyValuePair.Value);
+                if (unit.GetComponent<StateComponent>().CanUseSkill(ldSkill, true) != ErrorCode.ERR_Success)
                 {
                     return;
                 }
@@ -734,8 +734,8 @@ namespace ET
 
         public static async ETTask TriggerAddSkill(this SkillManagerComponent self, C2M_SkillCmd c2M_SkillCmd, int skillId)
         {
-            Skill skill = SkillCategory.Instance.Get(skillId);
-            if (skill.AddSkillID == null || skill.AddSkillID.Length == 0)
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
+            if (ldSkill.AddSkillID == null || ldSkill.AddSkillID.Length == 0)
             {
                 return;
             }
@@ -744,21 +744,21 @@ namespace ET
             {
                 return;
             }
-            int addSkillId = skill.AddSkillID[0];
-            if (addSkillId!= 0 && !SkillCategory.Instance.Contain(addSkillId))
+            int addSkillId = ldSkill.AddSkillID[0];
+            if (addSkillId!= 0 && !LDSkillCategory.Instance.Contain(addSkillId))
             {
                 Log.Debug($"skillConfig.AddSkillID无效：  {skillId} {addSkillId}");
             }
-            if (addSkillId!=0 && SkillCategory.Instance.Contain(addSkillId))
+            if (addSkillId!=0 && LDSkillCategory.Instance.Contain(addSkillId))
             {
-                int skillNumber = skill.AddSkillID.Length >= 2 ? skill.AddSkillID[1] : 1;
+                int skillNumber = ldSkill.AddSkillID.Length >= 2 ? ldSkill.AddSkillID[1] : 1;
                 for (int i = 0; i < skillNumber; i++)
                 {
                     c2M_SkillCmd.SkillID = addSkillId;
                     self.OnUseSkill(c2M_SkillCmd, false);
                 }
             }
-            int[] selfSkillList = skill.TriggerSelfSkillID;
+            int[] selfSkillList = ldSkill.TriggerSelfSkillID;
             if (selfSkillList == null || selfSkillList.Length == 0 || selfSkillList[0] == 0)
             {
                 return;
@@ -785,11 +785,11 @@ namespace ET
 
             while (true)
             {
-                if (!SkillCategory.Instance.Contain(skillId - 1))
+                if (!LDSkillCategory.Instance.Contain(skillId - 1))
                 {
                     break;
                 }
-                if (SkillCategory.Instance.Get(skillId - 1).ComboSkillID != skillId)
+                if (LDSkillCategory.Instance.Get(skillId - 1).ComboSkillID != skillId)
                 {
                     break;
                 }
@@ -806,10 +806,10 @@ namespace ET
             //int equipType = UnitHelper.GetEquipType(unit);
             SkillCDItem skillcd = null;
 
-            Skill skill = SkillCategory.Instance.Get(skillId);
-            if (skill.ComboSkillID > 0)
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
+            if (ldSkill.ComboSkillID > 0)
             {
-                skillId = self.GetFirstComSkill(skillId, skill.ComboSkillID);
+                skillId = self.GetFirstComSkill(skillId, ldSkill.ComboSkillID);
             }
 
 
@@ -831,7 +831,7 @@ namespace ET
             }
 
             int comindex = 0;
-            if (skill.ComboSkillID > 0)
+            if (ldSkill.ComboSkillID > 0)
             {
                 comindex = (skillId % 10) - 1;
             }
@@ -845,19 +845,19 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             SkillCDItem skillcd = null;
-            Skill skill = SkillCategory.Instance.Get(weaponSkill);
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(weaponSkill);
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            double skillcdTime = skill.SkillCD;
+            double skillcdTime = ldSkill.SkillCD;
 
-            if (skill.SkillActType == 0 && unit.Type == UnitType.Monster)
+            if (ldSkill.SkillActType == 0 && unit.Type == UnitType.Monster)
             {
                 MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(unit.ConfigId);
                 skillcdTime = monsterConfig.ActInterValTime;
             }
-            if(skill.SkillActType == 0 && unit.Type == UnitType.Pet)
+            if(ldSkill.SkillActType == 0 && unit.Type == UnitType.Pet)
             {
-                Pet petConfig = PetCategory.Instance.Get(unit.ConfigId);
-                skillcdTime = petConfig.Base_ActSpeed;
+                LDPet ldPetConfig = LDPetCategory.Instance.Get(unit.ConfigId);
+                skillcdTime = ldPetConfig.Base_ActSpeed;
             }
 
 
@@ -893,7 +893,7 @@ namespace ET
                 skillcdTime *= ( 1f - now_cdpro);
 
 
-                if (skill.SkillActType != 0)
+                if (ldSkill.SkillActType != 0)
                 {
                     //技能最低不会低于2秒的CD
                     if (skillcdTime <= 2)
@@ -911,7 +911,7 @@ namespace ET
             }
 
             //if (unit.Type != UnitType.Player && unit.MasterId != 0 && skillConfig.SkillActType == 0)
-            if (unit.Type != UnitType.Player && skill.SkillActType == 0)
+            if (unit.Type != UnitType.Player && ldSkill.SkillActType == 0)
             {
                 //float attackSpped = 1f - numericComponent.GetAsFloat(NumericType.Numeric_Error);
                 //攻击速度调整
@@ -967,7 +967,7 @@ namespace ET
                 skillcd.CDPassive = TimeHelper.ServerNow() + (int)(1000 * skillcdTime);
             }
 
-            if (zhudong && skill.IfPublicSkillCD == 0 && skillcdTime >= 0)
+            if (zhudong && ldSkill.IfPublicSkillCD == 0 && skillcdTime >= 0)
             {
                 //添加技能公共CD
                 self.SkillPublicCDTime = TimeHelper.ServerNow() + 500;  //公共1秒CD  
@@ -1024,18 +1024,18 @@ namespace ET
             { 
                 return ErrorCode.ERR_SkillMoveTime;
             }
-            if (!SkillCategory.Instance.Contain(nowSkillID))
+            if (!LDSkillCategory.Instance.Contain(nowSkillID))
             {
                 return ErrorCode.ERR_ItemNotExist;
             }
             
             Unit unit = self.GetParent<Unit>();
-            Skill skill = SkillCategory.Instance.Get(nowSkillID);
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(nowSkillID);
             StateComponent stateComponent = unit.GetComponent<StateComponent>();
 
-            if (skill.ComboSkillID > 0)
+            if (ldSkill.ComboSkillID > 0)
             {
-                nowSkillID = self.GetFirstComSkill(nowSkillID, skill.ComboSkillID);
+                nowSkillID = self.GetFirstComSkill(nowSkillID, ldSkill.ComboSkillID);
             }
 
             //判断技能是否再冷却中
@@ -1076,13 +1076,13 @@ namespace ET
             if (unit.Type != UnitType.Player)
             {
                 //判断当前眩晕状态
-                int errorCode = stateComponent.CanUseSkill(skill, checkDead);
+                int errorCode = stateComponent.CanUseSkill(ldSkill, checkDead);
                 if (ErrorCode.ERR_Success!= errorCode)
                 {
                     return errorCode;
                 }
                 //判定是否再公共冷却时间
-                if (serverNow < self.SkillPublicCDTime && skill.SkillActType != 0)
+                if (serverNow < self.SkillPublicCDTime && ldSkill.SkillActType != 0)
                 {
                     return ErrorCode.ERR_UseSkillInCD2;
                 }
@@ -1092,16 +1092,16 @@ namespace ET
         
         public static SkillHandler SkillFactory(this SkillManagerComponent self, SkillInfo skillcmd, Unit from)
         {
-            Skill skill = SkillCategory.Instance.Get(skillcmd.WeaponSkillID);
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillcmd.WeaponSkillID);
             SkillHandler skillHandler = null;
 
             if (MongoHelper.NoRecovery)
             {
-                skillHandler = (SkillHandler)ObjectPool.Instance.Fetch2(SkillDispatcherComponent.Instance.SkillTypes[skill.GameObjectName]);
+                skillHandler = (SkillHandler)ObjectPool.Instance.Fetch2(SkillDispatcherComponent.Instance.SkillTypes[ldSkill.GameObjectName]);
             }
             else
             {
-                skillHandler = (SkillHandler)ObjectPool.Instance.Fetch(SkillDispatcherComponent.Instance.SkillTypes[skill.GameObjectName]);
+                skillHandler = (SkillHandler)ObjectPool.Instance.Fetch(SkillDispatcherComponent.Instance.SkillTypes[ldSkill.GameObjectName]);
             }
             skillHandler.OnInit(skillcmd, from);
             return skillHandler;
@@ -1132,7 +1132,7 @@ namespace ET
                     continue;
                 }
                 //self.Skills[i].OnUpdate();
-                if (!skillHandler.SkillConf.GameObjectName.Equals(StringBuilderHelper.Skill_Halo_2))
+                if (!skillHandler.LdSkillConf.GameObjectName.Equals(StringBuilderHelper.Skill_Halo_2))
                 {
                     continue;
                 }
@@ -1169,7 +1169,7 @@ namespace ET
         {
             KeyValuePairLong4 keyValuePairLong = null;
             //有二段斩则记录到self.SkillSecond， 无则返回
-            SkillCategory.Instance.BuffSecondSkill.TryGetValue(skillHandler.SkillConf.Id, out keyValuePairLong);
+            LDSkillCategory.Instance.BuffSecondSkill.TryGetValue(skillHandler.LdSkillConf.Id, out keyValuePairLong);
             if (keyValuePairLong == null)
             {
                 return;
@@ -1187,7 +1187,7 @@ namespace ET
                 return;
             }
 
-            int cdskillid = skillHandler.OriginalSkill > 0 ? skillHandler.OriginalSkill : skillHandler.SkillConf.Id;
+            int cdskillid = skillHandler.OriginalSkill > 0 ? skillHandler.OriginalSkill : skillHandler.LdSkillConf.Id;
 
             ///攻击到目标则暂时清除CD
             SkillCDItem skillCDItem = null;
@@ -1201,7 +1201,7 @@ namespace ET
             }
            
 
-            self.SkillSecond[(int)(keyValuePairLong.Value2)] = skillHandler.SkillConf.Id;//702-302
+            self.SkillSecond[(int)(keyValuePairLong.Value2)] = skillHandler.LdSkillConf.Id;//702-302
         }
 
         public static void CheckEndSkill(this SkillManagerComponent self, int endSkillId)
@@ -1210,7 +1210,7 @@ namespace ET
             {
                 return;
             }
-            if (!SkillCategory.Instance.Contain(endSkillId))
+            if (!LDSkillCategory.Instance.Contain(endSkillId))
             {
                 return;
             }
@@ -1253,7 +1253,7 @@ namespace ET
                 if (self.Skills[i].GetSkillState() == SkillState.Finished)
                 {
                     SkillHandler skillHandler = self.Skills[i];
-                    int enskillid = skillHandler.SkillConf.EndSkillId;
+                    int enskillid = skillHandler.LdSkillConf.EndSkillId;
                     ObjectPool.Instance.Recycle(skillHandler);
                     skillHandler.OnFinished();
                     self.Skills.RemoveAt(i);

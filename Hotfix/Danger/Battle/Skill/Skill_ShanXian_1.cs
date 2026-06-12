@@ -14,7 +14,7 @@ namespace ET
 
         public override void OnExecute()
         {
-            if (this.SkillConf.GameObjectParameter == "0")
+            if (this.LdSkillConf.GameObjectParameter == "0")
             {
                 //先跳过去再触发伤害
                 this.SyncPostion();
@@ -53,7 +53,7 @@ namespace ET
             }
 
             this.BaseOnUpdate();
-            if (this.SkillConf.GameObjectParameter == "1"  && serverNow > this.SkillExcuteHurtTime)
+            if (this.LdSkillConf.GameObjectParameter == "1"  && serverNow > this.SkillExcuteHurtTime)
             {
                 this.SyncPostion();
                 this.SetSkillState( SkillState.Finished);

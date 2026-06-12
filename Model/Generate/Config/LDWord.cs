@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class Word_SystemCategory : ProtoObject, IMerge
+    public partial class LDWordCategory : ProtoObject, IMerge
     {
-        public static Word_SystemCategory Instance;
+        public static LDWordCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Word_System> dict = new Dictionary<int, Word_System>();
+        private Dictionary<int, LDWord> dict = new Dictionary<int, LDWord>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Word_System> list = new List<Word_System>();
+        private List<LDWord> list = new List<LDWord>();
 		
-        public Word_SystemCategory()
+        public LDWordCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            Word_SystemCategory s = o as Word_SystemCategory;
+            LDWordCategory s = o as LDWordCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Word_System config in list)
+            foreach (LDWord config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Word_System Get(int id)
+        public LDWord Get(int id)
         {
-            this.dict.TryGetValue(id, out Word_System item);
+            this.dict.TryGetValue(id, out LDWord item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Word_System)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDWord)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Word_System> GetAll()
+        public Dictionary<int, LDWord> GetAll()
         {
             return this.dict;
         }
 
-        public Word_System GetOne()
+        public LDWord GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Word_System: ProtoObject, IConfig
+	public partial class LDWord: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -81,6 +81,9 @@ namespace ET
 		/// <summary>中文</summary>
 		[ProtoMember(2)]
 		public string CN { get; set; }
+		/// <summary>英文</summary>
+		[ProtoMember(3)]
+		public string EN { get; set; }
 
 	}
 }

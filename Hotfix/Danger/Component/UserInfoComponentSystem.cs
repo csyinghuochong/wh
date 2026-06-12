@@ -57,9 +57,9 @@ namespace ET
             userInfo.AccInfoID =accountId;
             userInfo.Name = createRoleInfo.PlayerName;
             userInfo.ServerMailIdCur = -1;
-            userInfo.PiLao = int.Parse(GlobalValueCategory.Instance.Get(10).Value);        //初始化疲劳
-            userInfo.Vitality = int.Parse(GlobalValueCategory.Instance.Get(10).Value);
-            userInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(GlobalValueCategory.Instance.Get(18).Value.Split(';')));
+            userInfo.PiLao = int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);        //初始化疲劳
+            userInfo.Vitality = int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
+            userInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
             userInfo.CreateTime = TimeHelper.ServerNow();
 
             if (createRoleInfo.RobotId > 0)
@@ -258,7 +258,7 @@ namespace ET
 
             for (int  i =  self.UserInfo.HorseIds.Count - 1; i >= 0; i--)
             {
-                if ( !MountCategory.Instance.Contain( self.UserInfo.HorseIds[i]))
+                if ( !LDMountCategory.Instance.Contain( self.UserInfo.HorseIds[i]))
                 {
                     self.UserInfo.HorseIds.RemoveAt(i);
                 }
@@ -266,7 +266,7 @@ namespace ET
 
             if (self.UserInfo.RobotId > 0 &&    self.UserInfo.HorseIds.Count == 0)
             {
-                List<Mount> mounts = MountCategory.Instance.GetAll().Values.ToList();
+                List<LDMount> mounts = LDMountCategory.Instance.GetAll().Values.ToList();
                 int intdexxx =  RandomHelper.RandomNumber(0, mounts.Count);
                 int randomid = mounts[intdexxx].Id;
                 self.OnHorseActive(randomid, true);
@@ -279,7 +279,7 @@ namespace ET
             PetComponent petComponent = self.GetParent<Unit>().GetComponent<PetComponent>();
             if (self.UserInfo.RobotId > 0 &&   petComponent.RolePetInfos.Count == 0)
             {
-                List<int> petids = PetCategory.Instance.GetAll().Keys.ToList();
+                List<int> petids = LDPetCategory.Instance.GetAll().Keys.ToList();
                 int randomindex = RandomHelper.RandomNumber(0, petids.Count);
                 
                 petComponent.OnGmAddPet(petids[randomindex]);
@@ -1041,7 +1041,7 @@ namespace ET
                     {
                         return;
                     }
-                    int maxValue = unit.IsYueKaStates() ? int.Parse(GlobalValueCategory.Instance.Get(26).Value) : int.Parse(GlobalValueCategory.Instance.Get(10).Value);
+                    int maxValue = unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
                     long newValue = long.Parse(value) + self.UserInfo.PiLao;
                     newValue = Math.Min(Math.Max(0, newValue), maxValue);
                     self.UserInfo.PiLao = newValue;
@@ -1165,7 +1165,7 @@ namespace ET
         
             float expAdd = CommonHelper.GetExpAdd(self.UserInfo.Lv, serverInfo);
 
-            Exp xiulianconf1 = ExpCategory.Instance.Get(self.UserInfo.Lv);
+            LDExp xiulianconf1 = LDExpCategory.Instance.Get(self.UserInfo.Lv);
             long upNeedExp = xiulianconf1.Exp_Role;
 
             TaskComponent taskComponent = self.GetParent<Unit>().GetComponent<TaskComponent>();
@@ -1217,7 +1217,7 @@ namespace ET
         public static int GetRandomMonsterId(this UserInfoComponent self)
         {
             List<KeyValuePairInt> dayMonster = self.UserInfo.DayMonsters;
-            List<DayMonsters> dayMonsterConfig = GlobalValueCategory.Instance.DayMonsterList;
+            List<DayMonsters> dayMonsterConfig = LDGlobalValueCategory.Instance.DayMonsterList;
 
             for (int i = 0; i < dayMonsterConfig.Count; i++)
             {
@@ -1252,7 +1252,7 @@ namespace ET
 
         public static int GetRandomJingLingId(this UserInfoComponent self)
         {
-            List<DayJingLing> dayMonsterConfig = GlobalValueCategory.Instance.DayJingLingList;
+            List<DayJingLing> dayMonsterConfig = LDGlobalValueCategory.Instance.DayJingLingList;
             List<int> dayMonster = self.UserInfo.DayJingLing;
             for(int i = 0; i < dayMonsterConfig.Count; i++)
             {
@@ -1535,8 +1535,8 @@ namespace ET
             self.UpdateRoleData(UserDataType.Lv, lv.ToString());
 
             self.UserInfo.HorseIds.Clear();
-            Dictionary<int, Mount> allzuoqi = MountCategory.Instance.GetAll();
-            foreach (( int zuoqiid, Mount zuoQiShowConfig ) in allzuoqi)
+            Dictionary<int, LDMount> allzuoqi = LDMountCategory.Instance.GetAll();
+            foreach (( int zuoqiid, LDMount zuoQiShowConfig ) in allzuoqi)
             {
                 self.UserInfo.HorseIds.Add(zuoqiid);
             }

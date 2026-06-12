@@ -21,8 +21,8 @@ namespace ET
             energyComponent.QuestionIndex++;
             if (request.AnswerIndex == 1)
             {
-                GlobalValue globalValue = GlobalValueCategory.Instance.Get(15);
-                unit.GetComponent<BagComponent>().OnAddItemData(globalValue.Value, $"{ItemGetWay.Energy}_{TimeHelper.ServerNow()}");
+                LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(15);
+                unit.GetComponent<BagComponent>().OnAddItemData(ldGlobalValue.Value, $"{ItemGetWay.Energy}_{TimeHelper.ServerNow()}");
             }
 
             reply();

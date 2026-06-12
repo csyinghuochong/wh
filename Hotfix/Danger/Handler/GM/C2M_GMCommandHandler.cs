@@ -284,7 +284,7 @@ namespace ET
                         UserInfoComponent userInfoComponent =  unit.GetComponent<UserInfoComponent>();
 						TaskComponent taskComponent = unit.GetComponent<TaskComponent>();	
                         //if (newLevel <= userInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList))
-						if(newLevel <= GlobalValueCategory.Instance.MaxLevel)
+						if(newLevel <= LDGlobalValueCategory.Instance.MaxLevel)
 						{
 							int level = newLevel - unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
                             userInfoComponent.UpdateRoleData(UserDataType.Lv, level.ToString());

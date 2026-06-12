@@ -16,8 +16,8 @@ namespace ET
             self.TheUnitBelongto = theUnitBelongto;
             self.BuffState = BuffState.Running;
             self.BeginTime = TimeHelper.ServerNow();
-            self.mSkillConf = SkillCategory.Instance.Get(buffData.SkillId);
-            self.MBuff = SkillBuffCategory.Instance.Get(buffData.BuffId);
+            self.MLdSkillConf = LDSkillCategory.Instance.Get(buffData.SkillId);
+            self.MBuff = LDSkillBuffCategory.Instance.Get(buffData.BuffId);
             self.DelayTime = self.MBuff.BuffDelayTime;
             self.BuffEndTime = CheckBuffTime(theUnitBelongto, self.MBuff) + 1000 * (int)self.GetTianfuProAdd((int)BuffAttributeEnum.AddBuffTime) + TimeHelper.ServerNow();
             self.BuffEndTime = buffData.BuffEndTime > 0 ? buffData.BuffEndTime : self.BuffEndTime;
@@ -32,11 +32,11 @@ namespace ET
         /// <param name="theUnitBelongto"></param>
         /// <param name="skillBuffConfig"></param>
         /// <returns></returns>
-        public static int CheckBuffTime(Unit theUnitBelongto, SkillBuff skillBuff)
+        public static int CheckBuffTime(Unit theUnitBelongto, LDSkillBuff ldSkillBuff)
         {
-            int buffTime = skillBuff.BuffTime;
-            if ( (skillBuff.BuffType == 2 && skillBuff.buffParameterType == 7)
-                ||  skillBuff.BuffScript.Equals("RoleBuff_Bounce"))
+            int buffTime = ldSkillBuff.BuffTime;
+            if ( (ldSkillBuff.BuffType == 2 && ldSkillBuff.buffParameterType == 7)
+                ||  ldSkillBuff.BuffScript.Equals("RoleBuff_Bounce"))
             {
                 //韧性缩短眩晕时间
                 NumericComponent numericComponent = theUnitBelongto.GetComponent<NumericComponent>();

@@ -202,10 +202,10 @@ namespace ET
                     int jinglingid = mainAttack.GetComponent<ChengJiuComponent>().JingLingId;
                     if (jinglingid != 0)
                     {
-                        Elf elf = ElfCategory.Instance.Get(jinglingid);
-                        if (elf.FunctionType == JingLingFunctionType.ExtraDrop)
+                        LDElf ldElf = LDElfCategory.Instance.Get(jinglingid);
+                        if (ldElf.FunctionType == JingLingFunctionType.ExtraDrop)
                         {
-                            int dropid = int.Parse(elf.FunctionValue);
+                            int dropid = int.Parse(ldElf.FunctionValue);
                             UnitFactory.CreateDropItems(mainAttack, defendUnit, 1, dropid, "1");
                         }
                     }
@@ -229,8 +229,8 @@ namespace ET
                 MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(defendUnit.ConfigId);
                 if (monsterConfig.DeathSkillId != 0)
                 {
-                    Skill skillCategory = SkillCategory.Instance.Get(monsterConfig.DeathSkillId);
-                    waittime = 1000 + (long)(skillCategory.SkillDelayTime * 1000) + skillCategory.SkillLiveTime;
+                    LDSkill ldSkillCategory = LDSkillCategory.Instance.Get(monsterConfig.DeathSkillId);
+                    waittime = 1000 + (long)(ldSkillCategory.SkillDelayTime * 1000) + ldSkillCategory.SkillLiveTime;
                 }
             }
             if (defendUnit.Type == UnitType.Pet)

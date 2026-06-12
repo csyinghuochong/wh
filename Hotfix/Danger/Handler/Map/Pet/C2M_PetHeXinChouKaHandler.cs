@@ -17,7 +17,7 @@ namespace ET
 
             int dropId = 0;
             int exlporeNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PetHeXinExploreNumber);
-            string[] set = GlobalValueCategory.Instance.Get(112).Value.Split(';');
+            string[] set = LDGlobalValueCategory.Instance.Get(112).Value.Split(';');
             float discount;
             if (exlporeNumber < int.Parse(set[0])) // 超过300次打8折
             {
@@ -30,8 +30,8 @@ namespace ET
 
             if (request.ChouKaType == 1)
             {
-                string needItems = GlobalValueCategory.Instance.Get(110).Value.Split('@')[0];
-                dropId = int.Parse(GlobalValueCategory.Instance.Get(110).Value.Split('@')[1]);
+                string needItems = LDGlobalValueCategory.Instance.Get(110).Value.Split('@')[0];
+                dropId = int.Parse(LDGlobalValueCategory.Instance.Get(110).Value.Split('@')[1]);
                 bool sucess = unit.GetComponent<BagComponent>().OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);
                 if (!sucess)
                 {
@@ -44,8 +44,8 @@ namespace ET
             }
             else if (request.ChouKaType == 10)
             {
-                string[] itemInfo10 = GlobalValueCategory.Instance.Get(111).Value.Split('@')[0].Split(';');
-                dropId = int.Parse(GlobalValueCategory.Instance.Get(111).Value.Split('@')[1]);
+                string[] itemInfo10 = LDGlobalValueCategory.Instance.Get(111).Value.Split('@')[0].Split(';');
+                dropId = int.Parse(LDGlobalValueCategory.Instance.Get(111).Value.Split('@')[1]);
                 bool sucess = unit.GetComponent<BagComponent>().OnCostItemData(new List<RewardItem>()
                 {
                     new RewardItem() { ItemID = int.Parse(itemInfo10[0]), ItemNum = (int)(int.Parse(itemInfo10[1]) * discount) }

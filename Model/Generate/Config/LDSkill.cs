@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class SkillCategory : ProtoObject, IMerge
+    public partial class LDSkillCategory : ProtoObject, IMerge
     {
-        public static SkillCategory Instance;
+        public static LDSkillCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Skill> dict = new Dictionary<int, Skill>();
+        private Dictionary<int, LDSkill> dict = new Dictionary<int, LDSkill>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Skill> list = new List<Skill>();
+        private List<LDSkill> list = new List<LDSkill>();
 		
-        public SkillCategory()
+        public LDSkillCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            SkillCategory s = o as SkillCategory;
+            LDSkillCategory s = o as LDSkillCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Skill config in list)
+            foreach (LDSkill config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Skill Get(int id)
+        public LDSkill Get(int id)
         {
-            this.dict.TryGetValue(id, out Skill item);
+            this.dict.TryGetValue(id, out LDSkill item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Skill)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDSkill)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Skill> GetAll()
+        public Dictionary<int, LDSkill> GetAll()
         {
             return this.dict;
         }
 
-        public Skill GetOne()
+        public LDSkill GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Skill: ProtoObject, IConfig
+	public partial class LDSkill: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

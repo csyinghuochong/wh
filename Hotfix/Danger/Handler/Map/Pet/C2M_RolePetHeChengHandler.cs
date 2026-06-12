@@ -45,8 +45,8 @@ namespace ET
 			int petID_2 = petinfo_2.ConfigId;
 
 			////神兽无法合成
-			Pet xiulianconf1 = PetCategory.Instance.Get(petID_1);
-			Pet xiulianconf2 = PetCategory.Instance.Get(petID_2);
+			LDPet xiulianconf1 = LDPetCategory.Instance.Get(petID_1);
+			LDPet xiulianconf2 = LDPetCategory.Instance.Get(petID_2);
 			int petType_1 = xiulianconf1.PetType;
 			int petType_2 = xiulianconf2.PetType;
 			
@@ -180,8 +180,8 @@ namespace ET
 			}
 
             int petID = 0;
-            Pet itemConf1 = PetCategory.Instance.Get(petID_1);
-            Pet itemConf2 = PetCategory.Instance.Get(petID_2);
+            LDPet itemConf1 = LDPetCategory.Instance.Get(petID_1);
+            LDPet itemConf2 = LDPetCategory.Instance.Get(petID_2);
 			int fightLv_1 = itemConf1.FightLv;
 			int fightLv_2 = itemConf2.FightLv;
 
@@ -198,8 +198,8 @@ namespace ET
             }
 
             //填补必带技能
-            Pet bidaiPet = PetCategory.Instance.Get(petID);
-			string[] baseSkillID = bidaiPet.BaseSkillID.Split(';');
+            LDPet bidaiLdPet = LDPetCategory.Instance.Get(petID);
+			string[] baseSkillID = bidaiLdPet.BaseSkillID.Split(';');
 			for (int i = 0; i < baseSkillID.Length;i++) {
 				if (savePetSkillID.Contains(int.Parse(baseSkillID[i])) == false) {
 					savePetSkillID.Add(int.Parse(baseSkillID[i]));
@@ -359,7 +359,7 @@ namespace ET
 			//petinfo_update.ZiZhi_ChengZhang = Mathf.FloorToInt(zizhiNow_ChengZhang * GetMultiple());
 			petinfo_update.ZiZhi_ChengZhang = zizhiNow_ChengZhang;
 			petinfo_update.PetSkill = savePetSkillID;
-			Pet petconf = PetCategory.Instance.Get(petID);
+			LDPet petconf = LDPetCategory.Instance.Get(petID);
 			petinfo_update.PetName = petconf.Name.ToString();
             petinfo_update.LockSkill.Clear();
             petComponent.OnResetPoint(petinfo_update);

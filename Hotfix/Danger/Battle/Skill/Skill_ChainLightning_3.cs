@@ -51,7 +51,7 @@ namespace ET
 
             if (this.HurtIds.Count == 0)
             {
-                this.TheUnitTarget = AIGetTargetHelp.GetNearestEnemy(this.TheUnitFrom, (float)this.SkillConf.DamgeRange[0], true);
+                this.TheUnitTarget = AIGetTargetHelp.GetNearestEnemy(this.TheUnitFrom, (float)this.LdSkillConf.DamgeRange[0], true);
                 if (this.TheUnitTarget == null || this.TheUnitTarget.IsDisposed)
                 {
                     this.SetSkillState(SkillState.Finished);
@@ -91,7 +91,7 @@ namespace ET
             lastTarget = this.TheUnitFrom.GetParent<UnitComponent>().Get(this.HurtIds[^1]);
             // this.OnCollisionUnit(lastTarget);
 
-            this.TheUnitTarget = AIGetTargetHelp.GetNearestUnit(this.TheUnitFrom, lastTarget.Position, (float)this.SkillConf.DamgeRange[0], this.HurtIds);
+            this.TheUnitTarget = AIGetTargetHelp.GetNearestUnit(this.TheUnitFrom, lastTarget.Position, (float)this.LdSkillConf.DamgeRange[0], this.HurtIds);
             if (this.TheUnitTarget == null)
             {
                 this.BroadcastSkill(lastTarget.Id, lastTarget.Id, 0f, 0f, 0f);

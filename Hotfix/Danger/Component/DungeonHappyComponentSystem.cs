@@ -19,7 +19,7 @@ namespace ET
     {
         public static int GetDropId(this DungeonHappyComponent self, int openDay)
         {
-            string dropinfo = GlobalValueCategory.Instance.Get(102).Value;
+            string dropinfo = LDGlobalValueCategory.Instance.Get(102).Value;
             string[] dropList = dropinfo.Split('@');
 
             for (int i = dropList.Length - 1; i >= 0; i--)

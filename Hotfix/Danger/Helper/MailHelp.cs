@@ -9,9 +9,9 @@ namespace ET
         public static async ETTask SendPaiMaiEmail(int zone, PaiMaiItemInfo paiMaiItemInfo,int costNum, long unitid)
         {
             MailInfo mailInfo = new MailInfo();
-            Item itemCof = ItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
+            LDItem ldItemCof = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
             mailInfo.Status = 0;
-            mailInfo.Context = "你拍卖行出售的道具:" + itemCof.Name + ",已经被其他玩家购买" + costNum + "个。";
+            mailInfo.Context = "你拍卖行出售的道具:" + ldItemCof.Name + ",已经被其他玩家购买" + costNum + "个。";
             mailInfo.Title = "拍卖行邮件";
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
             BagInfo reward = new BagInfo();
@@ -164,13 +164,13 @@ namespace ET
                         continue;
                     }
 
-                    if (mailinfolist[i].ItemList.Count >= 1 && !ItemCategory.Instance.Contain(mailinfolist[i].ItemList[0].ItemID))  //
+                    if (mailinfolist[i].ItemList.Count >= 1 && !LDItemCategory.Instance.Contain(mailinfolist[i].ItemList[0].ItemID))  //
                     {
                         mailinfolist.RemoveAt(i);
                         continue;
                     }
 
-                    if (mailinfolist[i].ItemList.Count >= 2 && !ItemCategory.Instance.Contain(mailinfolist[i].ItemList[1].ItemID))
+                    if (mailinfolist[i].ItemList.Count >= 2 && !LDItemCategory.Instance.Contain(mailinfolist[i].ItemList[1].ItemID))
                     {
                         mailinfolist.RemoveAt(i);
                         continue;

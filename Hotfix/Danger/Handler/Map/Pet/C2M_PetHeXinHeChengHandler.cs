@@ -22,7 +22,7 @@ namespace ET
                 return;
             }
             
-            Item Item = ItemCategory.Instance.Get(bagInfo_1.ItemID);
+            LDItem ldItem = LDItemCategory.Instance.Get(bagInfo_1.ItemID);
             /*if (Item.PetHeXinHeChengID==0)
             {
                 reply();

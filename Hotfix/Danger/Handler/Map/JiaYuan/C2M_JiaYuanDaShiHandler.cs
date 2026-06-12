@@ -27,9 +27,9 @@ namespace ET
 
             int jiayuanlv = unit.GetComponent<UserInfoComponent>().UserInfo.JiaYuanLv;
             JiaYuanComponent jiaYuanComponent = unit.GetComponent<JiaYuanComponent>();  
-            Item Item = ItemCategory.Instance.Get(useBagInfo.ItemID);
+            LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
             //7,15;100403,1,5;119203,1,5
-            string[] itemUsePars = Item.ItemUsePar.Split(';');
+            string[] itemUsePars = ldItem.ItemUsePar.Split(';');
             for (int i = 0; i < itemUsePars.Length; i++)
             {
                 if (i == 0)

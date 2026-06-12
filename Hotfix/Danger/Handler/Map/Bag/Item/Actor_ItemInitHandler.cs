@@ -65,42 +65,42 @@ namespace ET
 
             if (bagComponent.FashionEquipList.Count == 0)
 			{
-                Occupation occupationConfig = OccupationCategory.Instance.Get(occ);
-				for (int i = 0; i < occupationConfig.FashionBase.Length; i++)
+                LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(occ);
+				for (int i = 0; i < ldOccupationConfig.FashionBase.Length; i++)
 				{
-					bagComponent.FashionEquipList.Add(occupationConfig.FashionBase[i]);
+					bagComponent.FashionEquipList.Add(ldOccupationConfig.FashionBase[i]);
                 }
 			}
             if (bagComponent.FashionActiveIds.Count == 0)
             {
-                Occupation occupationConfig = OccupationCategory.Instance.Get(occ);
-                for (int i = 0; i < occupationConfig.FashionBase.Length; i++)
+                LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(occ);
+                for (int i = 0; i < ldOccupationConfig.FashionBase.Length; i++)
                 {
-                    bagComponent.FashionActiveIds.Add(occupationConfig.FashionBase[i]);
+                    bagComponent.FashionActiveIds.Add(ldOccupationConfig.FashionBase[i]);
                 }
             }
 
             List<int> fashionTypes = new List<int>();
 			for (int i = bagComponent.FashionEquipList.Count - 1; i >= 0; i--)
 			{
-				if(!FashionCategory.Instance.Contain(bagComponent.FashionEquipList[i]))
+				if(!LDFashionCategory.Instance.Contain(bagComponent.FashionEquipList[i]))
 				{
                     bagComponent.FashionEquipList.RemoveAt(i);	
                     continue;
                 }
 
-				Fashion fashion = FashionCategory.Instance.Get(bagComponent.FashionEquipList[i]);
-				if (fashionTypes.Contains(fashion.SubType))
+				LDFashion ldFashion = LDFashionCategory.Instance.Get(bagComponent.FashionEquipList[i]);
+				if (fashionTypes.Contains(ldFashion.SubType))
 				{
                     fashionTypes.RemoveAt(i);	
                     continue;
 				}
 
-				fashionTypes.Add(fashion.SubType);
+				fashionTypes.Add(ldFashion.SubType);
             }
 			for (int i = bagComponent.FashionActiveIds.Count - 1; i >= 0; i--)
 			{
-				if (!FashionCategory.Instance.Contain(bagComponent.FashionActiveIds[i]))
+				if (!LDFashionCategory.Instance.Contain(bagComponent.FashionActiveIds[i]))
 				{
 					bagComponent.FashionActiveIds.RemoveAt(i);
 					continue;

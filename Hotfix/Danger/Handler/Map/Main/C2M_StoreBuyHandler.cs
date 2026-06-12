@@ -99,7 +99,7 @@ namespace ET
                         int zone = unit.DomainZone();
                         string playername = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
                         string servername = ServerHelper.GetGetServerItem(false, zone).ServerName;
-                        string itemname = WordHelper.GetShowText(ItemCategory.Instance.Get(rewardItems[0].ItemID).Name, 0);
+                        string itemname = WordHelper.GetShowText(LDItemCategory.Instance.Get(rewardItems[0].ItemID).Name, 0);
                         string loginfo = $"{servername}: {playername} 消耗:珍品羽毛X{storeSellConfig.SellValue * request.SellItemNum} 兑换:{itemname}X{rewardItems[0].ItemNum}";
 
                         LogHelper.ZhenPingDuiHuanLog(loginfo);

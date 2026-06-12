@@ -16,8 +16,8 @@ namespace ET
                 reply();
                 return;
             }
-            Item itemCof = ItemCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
-            int itemType = itemCof.ItemType;
+            LDItem ldItemCof = LDItemCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
+            int itemType = ldItemCof.ItemType;
             DBPaiMainInfo dBPaiMainInfo = scene.GetComponent<PaiMaiSceneComponent>().GetPaiMaiDBByType(itemType);
             if (dBPaiMainInfo == null)
             {
@@ -74,7 +74,7 @@ namespace ET
                 BagInfo useBagInfo = new BagInfo();
                 useBagInfo.ItemID = bagInfo.ItemID;
                 useBagInfo.ItemNum = request.BuyNum;
-                useBagInfo.Loc = itemCof.ItemType == (int)ItemTypeEnum.PetHeXin ? (int)ItemLocType.ItemPetHeXinBag : (int)ItemLocType.ItemLocBag;
+                useBagInfo.Loc = ldItemCof.ItemType == (int)ItemTypeEnum.PetHeXin ? (int)ItemLocType.ItemPetHeXinBag : (int)ItemLocType.ItemLocBag;
                 useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
                 useBagInfo.GemHole = ItemHelper.DefaultGem;
                 useBagInfo.GemIDNew = ItemHelper.DefaultGem;

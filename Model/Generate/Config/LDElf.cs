@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class ElfCategory : ProtoObject, IMerge
+    public partial class LDElfCategory : ProtoObject, IMerge
     {
-        public static ElfCategory Instance;
+        public static LDElfCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Elf> dict = new Dictionary<int, Elf>();
+        private Dictionary<int, LDElf> dict = new Dictionary<int, LDElf>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Elf> list = new List<Elf>();
+        private List<LDElf> list = new List<LDElf>();
 		
-        public ElfCategory()
+        public LDElfCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            ElfCategory s = o as ElfCategory;
+            LDElfCategory s = o as LDElfCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Elf config in list)
+            foreach (LDElf config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Elf Get(int id)
+        public LDElf Get(int id)
         {
-            this.dict.TryGetValue(id, out Elf item);
+            this.dict.TryGetValue(id, out LDElf item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Elf)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDElf)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Elf> GetAll()
+        public Dictionary<int, LDElf> GetAll()
         {
             return this.dict;
         }
 
-        public Elf GetOne()
+        public LDElf GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Elf: ProtoObject, IConfig
+	public partial class LDElf: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

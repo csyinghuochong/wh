@@ -16,14 +16,14 @@ namespace ET
                 reply();
                 return;
             }
-            if (bagInfo.InheritTimes >= GlobalValueCategory.Instance.TempValue)
+            if (bagInfo.InheritTimes >= LDGlobalValueCategory.Instance.TempValue)
             {
                 response.Error = ErrorCode.ERR_TimesIsNot;
                 reply();
                 return;
             }
 
-            Equip Item = EquipCategory.Instance.Get(bagInfo.ItemID);
+            LDEquip Item = LDEquipCategory.Instance.Get(bagInfo.ItemID);
             string costitem = ItemHelper.GetInheritCost(bagInfo.InheritTimes);
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
             if (!bagComponent.CheckCostItem(costitem))

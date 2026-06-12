@@ -51,8 +51,8 @@ namespace ET
                 return;
             }
 
-            GlobalValue globalValue = GlobalValueCategory.Instance.Get(70);
-            if (unit.GetComponent<BagComponent>().OnCostItemData(globalValue.Value, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
+            LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(70);
+            if (unit.GetComponent<BagComponent>().OnCostItemData(ldGlobalValue.Value, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
             {
                 unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.Name, request.NewName);
                 M2C_RoleDataBroadcast m2C_BroadcastRoleData = new M2C_RoleDataBroadcast();

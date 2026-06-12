@@ -11,7 +11,7 @@ namespace ET
         {
             this.BaseOnInit(skillId, theUnitFrom);
 
-            if (this.SkillConf.SkillMoveSpeed == 0f)
+            if (this.LdSkillConf.SkillMoveSpeed == 0f)
             {
                 this.NowPosition = this.TargetPosition;
             }
@@ -19,7 +19,7 @@ namespace ET
             {
                 this.NowPosition = theUnitFrom.Position;
                 Quaternion rotation = Quaternion.Euler(0, skillId.TargetAngle, 0); //按照Z轴旋转30度的Quaterion
-                Vector3 movePosition = rotation * Vector3.forward * (this.SkillConf.SkillLiveTime * (float)(this.SkillConf.SkillMoveSpeed) * 0.001f);
+                Vector3 movePosition = rotation * Vector3.forward * (this.LdSkillConf.SkillLiveTime * (float)(this.LdSkillConf.SkillMoveSpeed) * 0.001f);
                 this.TargetPosition = this.NowPosition + movePosition;
             }
             OnExecute();
@@ -33,7 +33,7 @@ namespace ET
 
         public void UpdatePullPlayer()
         {
-            List<Unit> players = AIGetTargetHelp.GetEnemyUnit(this.TheUnitFrom, UnitType.Player, this.NowPosition, (float)(2f * this.SkillConf.DamgeRange[0]));
+            List<Unit> players = AIGetTargetHelp.GetEnemyUnit(this.TheUnitFrom, UnitType.Player, this.NowPosition, (float)(2f * this.LdSkillConf.DamgeRange[0]));
             for (int i = players.Count - 1; i >= 0; i--)
             {
                 Unit unit = players[i];
@@ -48,7 +48,7 @@ namespace ET
                 }
                 this.LastHurtTimes.Add(players[i].Id, TimeHelper.ServerNow());
                 BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = this.SkillConf.Id;
+                buffData_2.SkillId = this.LdSkillConf.Id;
                 buffData_2.BuffId = 99002001;
                 unit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_2, unit, null);
                 unit.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.BePulled);
@@ -66,7 +66,7 @@ namespace ET
                     continue;
                 }
               
-                if (Vector3.Distance(unit.Position, this.NowPosition) > (float)(2f * this.SkillConf.DamgeRange[0]))
+                if (Vector3.Distance(unit.Position, this.NowPosition) > (float)(2f * this.LdSkillConf.DamgeRange[0]))
                 {
                     unit.GetComponent<BuffManagerComponent>().BuffRemoveByUnit(0, 99002001);
                     unit.GetComponent<StateComponent>().StateTypeRemove(StateTypeEnum.BePulled);
@@ -82,7 +82,7 @@ namespace ET
 
         public void UpdatePullMonster()
         {
-            List<Unit> monsters = AIGetTargetHelp.GetEnemyMonsters(this.TheUnitFrom, this.NowPosition, (float)(2f *this.SkillConf.DamgeRange[0]));
+            List<Unit> monsters = AIGetTargetHelp.GetEnemyMonsters(this.TheUnitFrom, this.NowPosition, (float)(2f *this.LdSkillConf.DamgeRange[0]));
             for (int i = monsters.Count - 1; i >= 0; i--)
             {
                 Unit unit = monsters[i];
@@ -98,7 +98,7 @@ namespace ET
 
                 this.LastHurtTimes.Add(monsters[i].Id, TimeHelper.ServerNow());
                 BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = this.SkillConf.Id;
+                buffData_2.SkillId = this.LdSkillConf.Id;
                 buffData_2.BuffId = 99002001;
                 unit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_2, unit, null);
                 unit.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.BePulled);
@@ -124,7 +124,7 @@ namespace ET
                     continue;
                 }
                 
-                if (Vector3.Distance(unit.Position, this.NowPosition) > (float)(2f * this.SkillConf.DamgeRange[0]))
+                if (Vector3.Distance(unit.Position, this.NowPosition) > (float)(2f * this.LdSkillConf.DamgeRange[0]))
                 {
                     unit.GetComponent<BuffManagerComponent>().BuffRemoveByUnit(0, 99002001);
                     unit.GetComponent<StateComponent>().StateTypeRemove(StateTypeEnum.BePulled);
@@ -198,13 +198,13 @@ namespace ET
             }
             Vector3 dir = (this.TargetPosition - NowPosition).normalized;
             float dis = PositionHelper.Distance2D(NowPosition, this.TargetPosition);
-            float move = (float)this.SkillConf.SkillMoveSpeed * 0.1f;            //服务器0.1秒一帧
+            float move = (float)this.LdSkillConf.SkillMoveSpeed * 0.1f;            //服务器0.1秒一帧
             move = Mathf.Min(dis, move);
             this.NowPosition = this.NowPosition + move * dir;
             this.NowPosition.y = this.TargetPosition.y + 0.5f;
 
             this.UpdatePullMonster();
-            if(this.SkillConf.GameObjectParameter == "1")
+            if(this.LdSkillConf.GameObjectParameter == "1")
             {
                 this.UpdatePullPlayer();
             }
@@ -214,7 +214,7 @@ namespace ET
             this.BaseOnUpdate();
             //获取目标与自身的距离是否小于0.5f,小于触发将伤害,销毁自身
             dis = PositionHelper.Distance2D(NowPosition, this.TargetPosition);
-            if (this.SkillConf.SkillMoveSpeed > 0f && dis < 0.5f)
+            if (this.LdSkillConf.SkillMoveSpeed > 0f && dis < 0.5f)
             {
                 this.SetSkillState(SkillState.Finished);
             }

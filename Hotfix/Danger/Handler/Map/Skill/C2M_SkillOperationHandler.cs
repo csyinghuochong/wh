@@ -16,8 +16,8 @@ namespace ET
 			switch (request.OperationType)
 			{
 				case 1:
-                    GlobalValue globalValue = GlobalValueCategory.Instance.Get(20);
-                    int needGold = int.Parse(globalValue.Value);
+                    LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(20);
+                    int needGold = int.Parse(ldGlobalValue.Value);
                     userInfoComponent = unit.GetComponent<UserInfoComponent>();
                     if (userInfoComponent.UserInfo.Gold < needGold)
                     {

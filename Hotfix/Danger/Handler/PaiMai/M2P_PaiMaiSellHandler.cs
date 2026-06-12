@@ -53,8 +53,8 @@ namespace ET
                 }
             }
             // 上架紫色道具刷新该类型的道具
-            Item Item = ItemCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
-            DBPaiMainInfo dBPaiMainInfo = scene.GetComponent<PaiMaiSceneComponent>().GetPaiMaiDBByType(Item.ItemType);
+            LDItem ldItem = LDItemCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
+            DBPaiMainInfo dBPaiMainInfo = scene.GetComponent<PaiMaiSceneComponent>().GetPaiMaiDBByType(ldItem.ItemType);
             if (dBPaiMainInfo == null)
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;

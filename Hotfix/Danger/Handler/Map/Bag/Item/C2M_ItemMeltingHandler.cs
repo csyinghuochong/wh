@@ -55,30 +55,30 @@ namespace ET
 
                 //to do
                 minNum = 0;
-                Item itemCof = ItemCategory.Instance.Get(bagInfo.ItemID);
-                if (itemCof.Quality >= 4) {
+                LDItem ldItemCof = LDItemCategory.Instance.Get(bagInfo.ItemID);
+                if (ldItemCof.Quality >= 4) {
 
-                    if (itemCof.UseLv >= 1 && itemCof.UseLv < 20)
+                    if (ldItemCof.UseLv >= 1 && ldItemCof.UseLv < 20)
                     {
                         minNum = 1;
                         minMax = 3;
 
-                    } else if (itemCof.UseLv >= 20) {
+                    } else if (ldItemCof.UseLv >= 20) {
 
                         minNum = 1;
                         minMax = 4;
 
-                    } else if (itemCof.UseLv >= 30) {
+                    } else if (ldItemCof.UseLv >= 30) {
 
                         minNum = 2;
                         minMax = 4;
                     }
-                    else if (itemCof.UseLv >= 40)
+                    else if (ldItemCof.UseLv >= 40)
                     {
                         minNum = 2;
                         minMax = 5;
                     }
-                    else if (itemCof.UseLv >= 50)
+                    else if (ldItemCof.UseLv >= 50)
                     {
                         minNum = 3;
                         minMax = 5;

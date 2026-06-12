@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class ItemCategory : ProtoObject, IMerge
+    public partial class LDItemCategory : ProtoObject, IMerge
     {
-        public static ItemCategory Instance;
+        public static LDItemCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Item> dict = new Dictionary<int, Item>();
+        private Dictionary<int, LDItem> dict = new Dictionary<int, LDItem>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Item> list = new List<Item>();
+        private List<LDItem> list = new List<LDItem>();
 		
-        public ItemCategory()
+        public LDItemCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            ItemCategory s = o as ItemCategory;
+            LDItemCategory s = o as LDItemCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Item config in list)
+            foreach (LDItem config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Item Get(int id)
+        public LDItem Get(int id)
         {
-            this.dict.TryGetValue(id, out Item item);
+            this.dict.TryGetValue(id, out LDItem item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Item)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDItem)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Item> GetAll()
+        public Dictionary<int, LDItem> GetAll()
         {
             return this.dict;
         }
 
-        public Item GetOne()
+        public LDItem GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Item: ProtoObject, IConfig
+	public partial class LDItem: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

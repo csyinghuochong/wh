@@ -22,20 +22,20 @@ namespace ET
             }
 
             //判断品质
-            Item itemConfig_0 = ItemCategory.Instance.Get(bagInfo_1.ItemID);
-            Item itemConfig_1 = ItemCategory.Instance.Get(bagInfo_2.ItemID);
+            LDItem ldItemConfig0 = LDItemCategory.Instance.Get(bagInfo_1.ItemID);
+            LDItem ldItemConfig1 = LDItemCategory.Instance.Get(bagInfo_2.ItemID);
 
-            bool all60green = itemConfig_0.UseLv >= 60 && itemConfig_0.Quality >= 5 && itemConfig_1.UseLv >= 60 && itemConfig_1.Quality >= 5;
+            bool all60green = ldItemConfig0.UseLv >= 60 && ldItemConfig0.Quality >= 5 && ldItemConfig1.UseLv >= 60 && ldItemConfig1.Quality >= 5;
 
 
             //绑定装备无法转移(客户端已经给出对应提示)
-            if (bagInfo_1.isBinging == true && bagInfo_2.isBinging == false && itemConfig_1.Quality == 4)
+            if (bagInfo_1.isBinging == true && bagInfo_2.isBinging == false && ldItemConfig1.Quality == 4)
             {
                 bagInfo_2.isBinging = true;
             }
 
             //紫色品质以上才可以转移
-            if (itemConfig_0.Quality < 4 || itemConfig_1.Quality < 4)
+            if (ldItemConfig0.Quality < 4 || ldItemConfig1.Quality < 4)
             {
                 response.Error = ErrorCode.Pre_Condition_Error;
                 reply();
@@ -60,7 +60,7 @@ namespace ET
             if (!all60green)
             {
                 //相同部位  只有相同部位的装备才能转移
-                if (itemConfig_0.ItemSubType != itemConfig_1.ItemSubType)
+                if (ldItemConfig0.ItemSubType != ldItemConfig1.ItemSubType)
                 {
                     response.Error = ErrorCode.Pre_Condition_Error;
                     reply();
@@ -68,7 +68,7 @@ namespace ET
                 }
             }
 
-            string costItem = GlobalValueCategory.Instance.Get(51).Value;
+            string costItem = LDGlobalValueCategory.Instance.Get(51).Value;
             if (!unit.GetComponent<BagComponent>().OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.ItemXiLian))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;

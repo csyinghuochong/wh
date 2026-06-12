@@ -119,11 +119,11 @@ namespace ET
                     self.m_Buffs.RemoveAt(i);
                 }
             }
-            SkillBuff skillBuff = SkillBuffCategory.Instance.Get(buffid);
+            LDSkillBuff ldSkillBuff = LDSkillBuffCategory.Instance.Get(buffid);
             M2C_UnitBuffRemove m2C_UnitBuffUpdate = self.m2C_UnitBuffRemove;
             m2C_UnitBuffUpdate.UnitIdBelongTo = self.GetParent<Unit>().Id;
             m2C_UnitBuffUpdate.BuffID = buffid;
-            MessageHelper.BroadcastBuff(self.GetParent<Unit>(), m2C_UnitBuffUpdate, skillBuff, self.SceneType);
+            MessageHelper.BroadcastBuff(self.GetParent<Unit>(), m2C_UnitBuffUpdate, ldSkillBuff, self.SceneType);
         }
 
         public static void OnRemoveBuffItem(this BuffManagerComponent self, BuffHandler buffHandler)
@@ -176,13 +176,13 @@ namespace ET
                 bool haveSpeedBuff = false;
                 for (int i = 0; i < self.m_Buffs.Count; i++)
                 {
-                    SkillBuff skillBuff = self.m_Buffs[i].MBuff;
-                    if (skillBuff.BuffType == 1 && (skillBuff.buffParameterType == 100911 || skillBuff.buffParameterType == 100912))
+                    LDSkillBuff ldSkillBuff = self.m_Buffs[i].MBuff;
+                    if (ldSkillBuff.BuffType == 1 && (ldSkillBuff.buffParameterType == 100911 || ldSkillBuff.buffParameterType == 100912))
                     {
                         haveSpeedBuff = true;
                         break;
                     }
-                    if (skillBuff.BuffScript.Equals("RoleBuff_JiTui"))
+                    if (ldSkillBuff.BuffScript.Equals("RoleBuff_JiTui"))
                     {
                         haveSpeedBuff = true;
                         break;
@@ -272,25 +272,25 @@ namespace ET
         /// 隐身buff伤害加成, 技能效果内只加成一次
         /// </summary>
         /// <returns></returns>
-        public static SkillBuff GetHideBuffDamgePro(this BuffManagerComponent self)
+        public static LDSkillBuff GetHideBuffDamgePro(this BuffManagerComponent self)
         {
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
                 //判断当前状态是否为暴击状态的buff
-                SkillBuff skillBuff = self.m_Buffs[i].MBuff;
+                LDSkillBuff ldSkillBuff = self.m_Buffs[i].MBuff;
 
-                if (skillBuff.BuffType != 2)
+                if (ldSkillBuff.BuffType != 2)
                 {
                     continue;
                 }
 
-                if (skillBuff.buffParameterType != 12)
+                if (ldSkillBuff.buffParameterType != 12)
                 {
                     continue;
                 }
 
-                if (skillBuff.DamgePro <= 0)
+                if (ldSkillBuff.DamgePro <= 0)
                 {
                     continue;
                 }
@@ -396,7 +396,7 @@ namespace ET
             List<BuffHandler> nowAllBuffList = self.m_Buffs;
             for (int i = nowAllBuffList.Count - 1; i >= 0; i--)
             {
-                if (nowAllBuffList[i].mSkillConf.Id == skillid)
+                if (nowAllBuffList[i].MLdSkillConf.Id == skillid)
                 {
                     self.OnRemoveBuffItem(self.m_Buffs[i]);
                     self.m_Buffs.RemoveAt(i);
@@ -431,18 +431,18 @@ namespace ET
             }
 
             Unit unit = self.GetParent<Unit>();
-            SkillBuff skillBuff = SkillBuffCategory.Instance.Get(buffData.BuffId);
+            LDSkillBuff ldSkillBuff = LDSkillBuffCategory.Instance.Get(buffData.BuffId);
             float now_DiKangPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
-            if (RandomHelper.RandFloat01() < now_DiKangPro && skillBuff.BuffBenefitType == 2)
+            if (RandomHelper.RandFloat01() < now_DiKangPro && ldSkillBuff.BuffBenefitType == 2)
             {
                 //抵抗,添加瓢字
                 return;
             }
             StateComponent stateComponent = unit.GetComponent<StateComponent>();
-            long newState = skillBuff.buffParameterType;
-            if (skillBuff.BuffType == 2)
+            long newState = ldSkillBuff.buffParameterType;
+            if (ldSkillBuff.BuffType == 2)
             {
-                newState = (1 << skillBuff.buffParameterType);
+                newState = (1 << ldSkillBuff.buffParameterType);
             }
             if (stateComponent.StateTypeGet(StateTypeEnum.SilenceImmune) && newState == StateTypeEnum.Silence)
             {
@@ -498,19 +498,19 @@ namespace ET
             List<BuffHandler> nowAllBuffList = self.m_Buffs;
 
             //判断叠加上限
-            if (skillBuff.BuffAddClassMax != 0)
+            if (ldSkillBuff.BuffAddClassMax != 0)
             {
                 int curNumber = 0;
                 for (int i = nowAllBuffList.Count - 1; i >= 0; i--)
                 {
                     buffHandler = nowAllBuffList[i];
-                    SkillBuff tempBuff = buffHandler.MBuff;
-                    if (tempBuff.Id == skillBuff.Id)
+                    LDSkillBuff tempBuff = buffHandler.MBuff;
+                    if (tempBuff.Id == ldSkillBuff.Id)
                     {
                         curNumber++;
                     }
                 }
-                if (curNumber >= skillBuff.BuffAddClassMax)
+                if (curNumber >= ldSkillBuff.BuffAddClassMax)
                 {
                     return;
                 }
@@ -518,9 +518,9 @@ namespace ET
 
             string[] weiyiBuffId = new string[0];
             List<int> weiyiBuffList = new List<int>();
-            if (!CommonHelper.IfNull(skillBuff.WeiYiBuffID))
+            if (!CommonHelper.IfNull(ldSkillBuff.WeiYiBuffID))
             {
-                weiyiBuffId = skillBuff.WeiYiBuffID.Split(";");
+                weiyiBuffId = ldSkillBuff.WeiYiBuffID.Split(";");
             }
             for (int w = 0; w < weiyiBuffId.Length; w++)
             {
@@ -531,8 +531,8 @@ namespace ET
             {
                 bool remove = false;
                 buffHandler = nowAllBuffList[i];
-                SkillBuff tempBuff = buffHandler.MBuff;
-                if (tempBuff.Id == skillBuff.Id && skillBuff.BuffAddClass == 0)
+                LDSkillBuff tempBuff = buffHandler.MBuff;
+                if (tempBuff.Id == ldSkillBuff.Id && ldSkillBuff.BuffAddClass == 0)
                 {
                     remove = true;
                 }
@@ -544,10 +544,10 @@ namespace ET
                 }
 
                 //操作同状态的Buff
-                if (tempBuff.BuffType == 2 && tempBuff.BuffType == skillBuff.BuffType
-                    && tempBuff.buffParameterType == skillBuff.buffParameterType)
+                if (tempBuff.BuffType == 2 && tempBuff.BuffType == ldSkillBuff.BuffType
+                    && tempBuff.buffParameterType == ldSkillBuff.buffParameterType)
                 {
-                    long newEndTime = TimeHelper.ServerNow() + skillBuff.BuffTime;
+                    long newEndTime = TimeHelper.ServerNow() + ldSkillBuff.BuffTime;
                     if (newEndTime < buffHandler.BuffEndTime)
                     {
                         addBufStatus = 4;
@@ -579,7 +579,7 @@ namespace ET
             //添加Buff
             if (addBufStatus == 1)
             {
-                string BuffClassScript = skillBuff.BuffScript;
+                string BuffClassScript = ldSkillBuff.BuffScript;
                 if (MongoHelper.NoRecovery)
                 {
                     buffHandler = (BuffHandler)ObjectPool.Instance.Fetch2(BuffDispatcherComponent.Instance.BuffTypes[BuffClassScript]); ;
@@ -601,7 +601,7 @@ namespace ET
             {
                 M2C_UnitBuffUpdate m2C_UnitBuffUpdate = self.m2C_UnitBuffUpdate;
                 m2C_UnitBuffUpdate.UnitIdBelongTo = unit.Id;
-                m2C_UnitBuffUpdate.BuffID = skillBuff.Id;
+                m2C_UnitBuffUpdate.BuffID = ldSkillBuff.Id;
                 m2C_UnitBuffUpdate.BuffOperateType = addBufStatus;
                 m2C_UnitBuffUpdate.BuffEndTime = buffHandler.BuffEndTime;
                 m2C_UnitBuffUpdate.TargetPostion.Clear();
@@ -618,10 +618,10 @@ namespace ET
                     Log.Error($"unit.GetComponent<AOIEntity>() == null  {unit.Type} {unit.ConfigId}  {unit.Id}  {unit.IsDisposed}");
                     return;
                 }
-                MessageHelper.BroadcastBuff(unit, m2C_UnitBuffUpdate, skillBuff, self.SceneType);
+                MessageHelper.BroadcastBuff(unit, m2C_UnitBuffUpdate, ldSkillBuff, self.SceneType);
             }
 
-            int[] addSkill = skillBuff.AddSkill;
+            int[] addSkill = ldSkillBuff.AddSkill;
             if (addSkill != null && addSkill.Length >= 2 && from != null && self.GetBuffSourceNumber(from.Id, buffData.BuffId) >= addSkill[0])
             {
                 C2M_SkillCmd cmd = new C2M_SkillCmd();
@@ -634,13 +634,13 @@ namespace ET
 
                 self.BuffRemoveByUnit(from.Id, buffData.BuffId);
             }
-            if (notice && addBufStatus == 1 && skillBuff.BuffAddSync == 1)
+            if (notice && addBufStatus == 1 && ldSkillBuff.BuffAddSync == 1)
             {
-                self.BuffAddSyncTime(buffHandler.BuffEndTime, skillBuff);
+                self.BuffAddSyncTime(buffHandler.BuffEndTime, ldSkillBuff);
             }
 
             if (addBufStatus == 1 && unit.Type == UnitType.Player
-                && skillBuff.Id >= 92041030 && skillBuff.Id <= 92041034)
+                && ldSkillBuff.Id >= 92041030 && ldSkillBuff.Id <= 92041034)
             {
                 long rolePetId = unit.GetComponent<PetComponent>().GetFightPetId();
                 Unit unitpet = unit.GetParent<UnitComponent>().Get(rolePetId);
@@ -651,21 +651,21 @@ namespace ET
             }
         }
 
-        public static void BuffAddSyncTime(this BuffManagerComponent self, long endTime, SkillBuff skillBuff)
+        public static void BuffAddSyncTime(this BuffManagerComponent self, long endTime, LDSkillBuff ldSkillBuff)
         {
             Unit unit = self.GetParent<Unit>();
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
                 BuffHandler buffHandler = self.m_Buffs[i];
-                if (buffHandler.MBuff.Id == skillBuff.Id)
+                if (buffHandler.MBuff.Id == ldSkillBuff.Id)
                 {
                     buffHandler.BuffEndTime = endTime;
                 }
             }
             M2C_UnitBuffUpdate m2C_UnitBuffUpdate = self.m2C_UnitBuffUpdate;
             m2C_UnitBuffUpdate.UnitIdBelongTo = unit.Id;
-            m2C_UnitBuffUpdate.BuffID = skillBuff.Id;
+            m2C_UnitBuffUpdate.BuffID = ldSkillBuff.Id;
             m2C_UnitBuffUpdate.BuffOperateType = 3;
             m2C_UnitBuffUpdate.BuffEndTime = endTime;
             if (unit.GetComponent<AOIEntity>() == null)
@@ -673,7 +673,7 @@ namespace ET
                 Log.Error($"unit.GetComponent<AOIEntity>() == null  {unit.Type} {unit.ConfigId}  {unit.Id}  {unit.IsDisposed}");
                 return;
             }
-            MessageHelper.BroadcastBuff(unit, m2C_UnitBuffUpdate, skillBuff, self.SceneType);
+            MessageHelper.BroadcastBuff(unit, m2C_UnitBuffUpdate, ldSkillBuff, self.SceneType);
         }
 
         public static int GetCritBuffNumber(this BuffManagerComponent self)
@@ -684,8 +684,8 @@ namespace ET
             for (int i = bufflist - 1; i >= 0; i--)
             {
                 int buffId = self.m_Buffs[i].BuffData.BuffId;
-                SkillBuff skillBuff = SkillBuffCategory.Instance.Get(buffId);
-                if (skillBuff.BuffType == 2 && skillBuff.buffParameterType == 13)
+                LDSkillBuff ldSkillBuff = LDSkillBuffCategory.Instance.Get(buffId);
+                if (ldSkillBuff.BuffType == 2 && ldSkillBuff.buffParameterType == 13)
                 {
                     buffnumber++;
                 }
@@ -705,8 +705,8 @@ namespace ET
             for (int i = 0; i < buffcnt; i++)
             {
                 int buffId = self.m_Buffs[i].BuffData.BuffId;
-                SkillBuff skillBuff = SkillBuffCategory.Instance.Get(buffId);
-                if (skillBuff.BuffType == 2 && skillBuff.buffParameterType == 13)
+                LDSkillBuff ldSkillBuff = LDSkillBuffCategory.Instance.Get(buffId);
+                if (ldSkillBuff.BuffType == 2 && ldSkillBuff.buffParameterType == 13)
                 {
                     self.OnRemoveBuffItem(self.m_Buffs[i]);
                     self.m_Buffs.RemoveAt(i);
@@ -721,7 +721,7 @@ namespace ET
             int buffcnt = self.m_Buffs.Count;
             for (int i = 0; i < buffcnt; i++)
             {
-                SkillBuff buff = self.m_Buffs[i].MBuff;
+                LDSkillBuff buff = self.m_Buffs[i].MBuff;
                 if (buff.BuffType != 7)
                 {
                     continue;
@@ -1103,14 +1103,14 @@ namespace ET
             for (int i = 0; i < self.m_Buffs.Count; i++)
             {
                 BuffHandler buffHandler = self.m_Buffs[i];
-                SkillBuff skillBuff = buffHandler.MBuff;
-                if (skillBuff == null || skillBuff.Id < 10) //子弹
+                LDSkillBuff ldSkillBuff = buffHandler.MBuff;
+                if (ldSkillBuff == null || ldSkillBuff.Id < 10) //子弹
                 {
                     continue;
                 }
                 Buffs.Add(new KeyValuePair()
                 {
-                    KeyId = skillBuff.Id,
+                    KeyId = ldSkillBuff.Id,
                     Value = $"{buffHandler.BuffData.SkillId}_{buffHandler.BuffData.Spellcaster}",
                     Value2 = buffHandler.BuffEndTime.ToString()
                 }); ;

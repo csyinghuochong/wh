@@ -392,8 +392,8 @@ namespace ET
 
             for (int i = 0;  i < oldPaiMaiAl.Count; i++)
             {
-                Item Item = ItemCategory.Instance.Get(oldPaiMaiAl[i].BagInfo.ItemID);
-                if (Item.ItemType == itemType)
+                LDItem ldItem = LDItemCategory.Instance.Get(oldPaiMaiAl[i].BagInfo.ItemID);
+                if (ldItem.ItemType == itemType)
                 {
                     paiMaiType.Add(oldPaiMaiAl[i]);
                 }
@@ -653,7 +653,7 @@ namespace ET
 
                 //int price = 0;
                 PaiMaiShopItemInfo shopInfo = self.GetPaiMaiShopInfo(paiMaiItem.BagInfo.ItemID);
-                if (shopInfo != null && shopInfo.Price <= 500000 && ItemCategory.Instance.Get(paiMaiItem.BagInfo.ItemID).ItemType != 3)
+                if (shopInfo != null && shopInfo.Price <= 500000 && LDItemCategory.Instance.Get(paiMaiItem.BagInfo.ItemID).ItemType != 3)
                 {
                     //int singPro = (int)(paiMaiItem.Price / paiMaiItem.BagInfo.ItemNum);  //单价
                     float pro = paiMaiItem.Price / shopInfo.Price;
@@ -680,9 +680,9 @@ namespace ET
                         buyPro = 0.025f;
                     }
 
-                    Item itemCof = ItemCategory.Instance.Get(paiMaiItem.BagInfo.ItemID);
+                    LDItem ldItemCof = LDItemCategory.Instance.Get(paiMaiItem.BagInfo.ItemID);
                     int costNum = 0;
-                    switch (itemCof.Quality)
+                    switch (ldItemCof.Quality)
                     {
 
                         case 1:

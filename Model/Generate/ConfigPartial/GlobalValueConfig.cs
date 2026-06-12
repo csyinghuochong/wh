@@ -19,7 +19,7 @@ namespace ET
         public int TotalNumber;
     }
 
-    public partial class GlobalValueCategory
+    public partial class LDGlobalValueCategory
     {
 
         public int JianDingFuQulity = 0;
@@ -54,7 +54,7 @@ namespace ET
             DayMonsterList.Clear();
          
 
-            string[] dayrefresh = this.Get(79).Value.Split('@');
+            /*string[] dayrefresh = this.Get(79).Value.Split('@');
             for (int i = 0; i < dayrefresh.Length; i++)
             {
                 string[] itemInfo = dayrefresh[i].Split(';');
@@ -170,7 +170,7 @@ namespace ET
                 }
 
                 ZhuaPuItem.Add(itemId, itemNum);
-            }
+            }*/
         }
 
 

@@ -45,9 +45,9 @@ namespace ET
 
             string rewardItems = "";
             if (request.RewardType == 0)
-                rewardItems = GlobalValueCategory.Instance.Get(13).Value;
+                rewardItems = LDGlobalValueCategory.Instance.Get(13).Value;
             else if (request.RewardType == 1)
-                rewardItems = GlobalValueCategory.Instance.Get(14).Value;
+                rewardItems = LDGlobalValueCategory.Instance.Get(14).Value;
             else
                 rewardItems = "";
 

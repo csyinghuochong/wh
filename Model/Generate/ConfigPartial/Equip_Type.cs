@@ -2,13 +2,13 @@ using System.Collections.Generic;
 
 namespace ET
 {
-    public partial class Equip_TypeCategory
+    public partial class LDEquip_TypeCategory
     {
         private readonly Dictionary<int, int> subTypeToCaoWei = new Dictionary<int, int>();
 
         public override void AfterEndInit()
         {
-            foreach (Equip_Type equipType in GetAll().Values)
+            foreach (LDEquip_Type equipType in GetAll().Values)
             {
                 if (equipType.Type_Sub == null || equipType.Type_Sub.Length == 0)
                 {

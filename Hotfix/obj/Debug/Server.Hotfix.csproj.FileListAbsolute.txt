@@ -1,3 +1,9 @@
+E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.csproj.AssemblyReference.cache
+E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.GeneratedMSBuildEditorConfig.editorconfig
+E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.AssemblyInfoInputs.cache
+E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.AssemblyInfo.cs
+E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.csproj.CoreCompileInputs.cache
+E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.sourcelink.json
 E:\GiteeLDYQReSkin\Bin\libRecastNavDll.dylib
 E:\GiteeLDYQReSkin\Bin\libRecastNavDll.so
 E:\GiteeLDYQReSkin\Bin\RecastNavDll.dll
@@ -8,12 +14,6 @@ E:\GiteeLDYQReSkin\Bin\kcp.dll
 E:\GiteeLDYQReSkin\Bin\Server.Hotfix.deps.json
 E:\GiteeLDYQReSkin\Bin\Server.Hotfix.dll
 E:\GiteeLDYQReSkin\Bin\Server.Hotfix.pdb
-E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.csproj.AssemblyReference.cache
-E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.GeneratedMSBuildEditorConfig.editorconfig
-E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.AssemblyInfoInputs.cache
-E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.AssemblyInfo.cs
-E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.csproj.CoreCompileInputs.cache
-E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.sourcelink.json
 E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.H.125A2A85.Up2Date
 E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\Server.Hotfix.dll
 E:\GiteeLDYQReSkin\Server\Hotfix\obj\Debug\refint\Server.Hotfix.dll

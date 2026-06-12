@@ -27,7 +27,7 @@ namespace ET
                     }
                 }
 
-                if (!SkillCategory.Instance.Contain(request.SkillID))
+                if (!LDSkillCategory.Instance.Contain(request.SkillID))
                 {
                     Log.Error($"C2M_SkillCmd 1");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -44,7 +44,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (!ItemCategory.Instance.Contain(request.ItemId))
+                    if (!LDItemCategory.Instance.Contain(request.ItemId))
                     {
                         Console.WriteLine($"request.SkillID item:  {request.ItemId}");
                         Log.Error($"C2M_SkillCmd 2");
@@ -53,8 +53,8 @@ namespace ET
                         return;
                     }
 
-                    Item Item =ItemCategory.Instance.Get(request.ItemId);
-                    if (Item.ItemSubType != 101 && Item.ItemSubType != 110)
+                    LDItem ldItem =LDItemCategory.Instance.Get(request.ItemId);
+                    if (ldItem.ItemSubType != 101 && ldItem.ItemSubType != 110)
                     {
                         Console.WriteLine($"request.SkillID error:  {request.SkillID}");
                         Log.Error($"C2M_SkillCmd 3");
@@ -65,12 +65,12 @@ namespace ET
                 }
 
                 MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();        
-                Skill skill = SkillCategory.Instance.Get(request.SkillID);
+                LDSkill ldSkill = LDSkillCategory.Instance.Get(request.SkillID);
                 if (mapComponent.MapTypeEnum != MapTypeEnum.RunRace && !CommonHelper.IsInnerNet())
                 {
 
                     if (unit.GetComponent<SkillSetComponent>().GetBySkillID(request.SkillID) == null
-                   && request.SkillID != 60000011 && skill.SkillActType != 0 && request.ItemId == 0
+                   && request.SkillID != 60000011 && ldSkill.SkillActType != 0 && request.ItemId == 0
                    && !skillManagerComponent.SkillSecond.ContainsKey(request.SkillID))
                     {
                         Console.WriteLine($"request.SkillID==null:  {request.SkillID}   {unit.DomainZone()}  {unit.Id}");

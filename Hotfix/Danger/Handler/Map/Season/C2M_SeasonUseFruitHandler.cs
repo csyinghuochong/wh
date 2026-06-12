@@ -46,8 +46,8 @@ namespace ET
                 return;
             }
 
-            Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
-            if (Item.ItemType != ItemTypeEnum.Consume || Item.ItemSubType != 132)
+            LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
+            if (ldItem.ItemType != ItemTypeEnum.Consume || ldItem.ItemSubType != 132)
             {
                 Log.Error($"C2M_SeasonUseFruitRequest 3");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -55,7 +55,7 @@ namespace ET
                 return;
             }
 
-            reduceTime += long.Parse(Item.ItemUsePar);
+            reduceTime += long.Parse(ldItem.ItemUsePar);
 
             bagComponent.OnCostItemData(request.BagInfoIDs[0], 1);
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.SeasonBossRefreshTime, -1 * reduceTime, 0);

@@ -40,7 +40,7 @@ namespace ET
             }
             else
             {
-                self.ComboSkillId = SkillCategory.Instance.Get(self.ComboSkillId).ComboSkillID;
+                self.ComboSkillId = LDSkillCategory.Instance.Get(self.ComboSkillId).ComboSkillID;
             }
 
             int EquipType = self.EquipType;
@@ -106,10 +106,10 @@ namespace ET
 
         public static float UpdateAttackDis(this ComboComponent self)
         {
-            Skill skill = SkillCategory.Instance.Get(
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(
                 SkillHelp.GetWeaponSkill(self.SkillId, self.EquipType, null)
              );
-            return (float)skill.SkillRangeSize - 1;
+            return (float)ldSkill.SkillRangeSize - 1;
         }
 
         public static void OnInitOcc(this ComboComponent self, int occ, int equipType)
@@ -121,7 +121,7 @@ namespace ET
 
             self.EquipType = equipType;
             //普通攻击
-            Occupation occConfig = OccupationCategory.Instance.Get(occ);
+            LDOccupation occConfig = LDOccupationCategory.Instance.Get(occ);
             self.UpdateSkillInfo(occConfig.InitActSkillID);
             self.UpdateComboTime();
             self.SetAttackSpeed();
@@ -130,15 +130,15 @@ namespace ET
         public static void UpdateSkillInfo(this ComboComponent self, int skillid)
         {
             self.SkillId = skillid;
-            self.ComboSkillId = SkillCategory.Instance.Get(skillid).ComboSkillID;
+            self.ComboSkillId = LDSkillCategory.Instance.Get(skillid).ComboSkillID;
             
             self.SkillList.Clear();
             while (skillid != 0 && self.SkillList.Count < 3)
             {
                 self.SkillList.Add(skillid);
-                Skill skill = SkillCategory.Instance.Get(skillid);
-                skillid = skill.ComboSkillID;
-                if (!SkillCategory.Instance.Contain(skillid))
+                LDSkill ldSkill = LDSkillCategory.Instance.Get(skillid);
+                skillid = ldSkill.ComboSkillID;
+                if (!LDSkillCategory.Instance.Contain(skillid))
                 {
                     break;
                 }

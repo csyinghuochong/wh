@@ -14,7 +14,7 @@ namespace ET
 
             if (request.Revive)
             {
-                string reviveCost = GlobalValueCategory.Instance.Get(5).Value;
+                string reviveCost = LDGlobalValueCategory.Instance.Get(5).Value;
                 bool success = unit.GetComponent<BagComponent>().OnCostItemData(reviveCost, ItemLocType.ItemLocBag, ItemGetWay.FubenGetReward  );
                 if (!success)
                 {

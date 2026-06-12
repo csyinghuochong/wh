@@ -40,10 +40,10 @@ namespace ET
             }
 
             //获取宠物碎片
-            Pet petCof = PetCategory.Instance.Get(rolePetInfo.ConfigId);
-			if (petCof.ReleaseReward != null && petCof.ReleaseReward.Length > 2)
+            LDPet ldPetCof = LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
+			if (ldPetCof.ReleaseReward != null && ldPetCof.ReleaseReward.Length > 2)
 			{
-				unit.GetComponent<BagComponent>().OnAddItemData(petCof.ReleaseReward, $"{ItemGetWay.PetFenjie}_{TimeHelper.ServerNow()}");
+				unit.GetComponent<BagComponent>().OnAddItemData(ldPetCof.ReleaseReward, $"{ItemGetWay.PetFenjie}_{TimeHelper.ServerNow()}");
 			}
 
 			if (petType == 1)

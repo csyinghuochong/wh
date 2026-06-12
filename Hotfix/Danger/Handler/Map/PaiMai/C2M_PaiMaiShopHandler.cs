@@ -26,8 +26,8 @@ namespace ET
 				return;
 			}
 
-			Item Item = ItemCategory.Instance.Get(paiMaiSellConfig.ItemID);
-			int cell = Mathf.CeilToInt(request.BuyNum * 1f / Item.ItemPileSum);
+			LDItem ldItem = LDItemCategory.Instance.Get(paiMaiSellConfig.ItemID);
+			int cell = Mathf.CeilToInt(request.BuyNum * 1f / ldItem.ItemPileSum);
 			if (unit.GetComponent<BagComponent>().GetBagLeftCell() < cell)
 			{
 				response.Error = ErrorCode.ERR_BagIsFull;

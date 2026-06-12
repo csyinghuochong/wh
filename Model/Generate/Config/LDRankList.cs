@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class AttributeCategory : ProtoObject, IMerge
+    public partial class LDRankListCategory : ProtoObject, IMerge
     {
-        public static AttributeCategory Instance;
+        public static LDRankListCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, Attribute> dict = new Dictionary<int, Attribute>();
+        private Dictionary<int, LDRankList> dict = new Dictionary<int, LDRankList>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<Attribute> list = new List<Attribute>();
+        private List<LDRankList> list = new List<LDRankList>();
 		
-        public AttributeCategory()
+        public LDRankListCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            AttributeCategory s = o as AttributeCategory;
+            LDRankListCategory s = o as LDRankListCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (Attribute config in list)
+            foreach (LDRankList config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public Attribute Get(int id)
+        public LDRankList Get(int id)
         {
-            this.dict.TryGetValue(id, out Attribute item);
+            this.dict.TryGetValue(id, out LDRankList item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (Attribute)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDRankList)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, Attribute> GetAll()
+        public Dictionary<int, LDRankList> GetAll()
         {
             return this.dict;
         }
 
-        public Attribute GetOne()
+        public LDRankList GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,23 +73,23 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class Attribute: ProtoObject, IConfig
+	public partial class LDRankList: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>名称</summary>
+		/// <summary>类型</summary>
 		[ProtoMember(2)]
-		public int Name { get; set; }
-		/// <summary>描述</summary>
+		public int Type { get; set; }
+		/// <summary>排名</summary>
 		[ProtoMember(3)]
-		public int Desc { get; set; }
-		/// <summary>排序</summary>
+		public int Rank_Min { get; set; }
+		/// <summary>排名</summary>
 		[ProtoMember(4)]
-		public int Order_SL { get; set; }
-		/// <summary>显示</summary>
+		public int Rank_Max { get; set; }
+		/// <summary>奖励</summary>
 		[ProtoMember(5)]
-		public int IsShow { get; set; }
+		public string Reward { get; set; }
 
 	}
 }

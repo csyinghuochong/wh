@@ -27,13 +27,13 @@ namespace ET
 				return;
 			}
 
-			Item Item = ItemCategory.Instance.Get(bagInfo.ItemID);
-			int itemSubType = Item.ItemSubType;
+			LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
+			int itemSubType = ldItem.ItemSubType;
 			bool ifCost = true;
 
-			Pet petCof = PetCategory.Instance.Get(petInfo.ConfigId);
+			LDPet ldPetCof = LDPetCategory.Instance.Get(petInfo.ConfigId);
 			//神兽无法学习技能书
-			if (petCof.PetType == 2)
+			if (ldPetCof.PetType == 2)
 			{
 				if(itemSubType == 105 || itemSubType == 118 || itemSubType == 119 || itemSubType == 122)
                 {
@@ -59,9 +59,9 @@ namespace ET
 
 					if (!PetHelper.IsBianYI(petInfo) && RandomHelper.RandomNumber(0, 101) <= 5)
 					{
-						if (petCof.Skin.Length >= 2)
+						if (ldPetCof.Skin.Length >= 2)
 						{
-							petInfo.SkinId = petCof.Skin[RandomHelper.RandomNumber(1, petCof.Skin.Length)];
+							petInfo.SkinId = ldPetCof.Skin[RandomHelper.RandomNumber(1, ldPetCof.Skin.Length)];
 						}
 					}
 					
@@ -73,7 +73,7 @@ namespace ET
 					break;
 				//增加经验
 				case 108:
-					if (ExpCategory.Instance.Contain(petInfo.PetLv))
+					if (LDExpCategory.Instance.Contain(petInfo.PetLv))
 					{
                         /*int addExp = ExpCategory.Instance.Get(petInfo.PetLv).PetItemUpExp;
                         unit.GetComponent<PetComponent>().PetAddExp(petInfo, addExp);
@@ -83,7 +83,7 @@ namespace ET
 				//增加等级
 				case 109:
 					///////
-					if ( !ExpCategory.Instance.Contain(petInfo.PetLv + 1) )
+					if ( !LDExpCategory.Instance.Contain(petInfo.PetLv + 1) )
 					{
 						reply();
 						return;
@@ -109,7 +109,7 @@ namespace ET
 					break;
 				//学习技能书
 				case 122:
-					bool ifok = Pet_AddSkill(unit, petInfo, int.Parse(Item.ItemUsePar));
+					bool ifok = Pet_AddSkill(unit, petInfo, int.Parse(ldItem.ItemUsePar));
 					if (ifok)
 					{
                         unit.GetComponent<PetComponent>().UpdatePetAttribute(petInfo, true);
@@ -145,9 +145,9 @@ namespace ET
 						return;
 					}
 
-					if (petCof.Skin.Length >= 2)
+					if (ldPetCof.Skin.Length >= 2)
 					{
-						petInfo.SkinId = petCof.Skin[RandomHelper.RandomNumber(1, petCof.Skin.Length)];
+						petInfo.SkinId = ldPetCof.Skin[RandomHelper.RandomNumber(1, ldPetCof.Skin.Length)];
 					}
 					response.rolePetInfo = petInfo;
 					break;

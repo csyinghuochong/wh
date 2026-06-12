@@ -7,14 +7,14 @@
         public override void OnInit(SkillInfo skillId, Unit theUnitFrom)
         {
             this.BaseOnInit(skillId, theUnitFrom);
-            this.SkillTriggerInvelTime = (long)(float.Parse(SkillConf.GameObjectParameter) * 1000);
+            this.SkillTriggerInvelTime = (long)(float.Parse(this.LdSkillConf.GameObjectParameter) * 1000);
             this.SkillTriggerLastTime = 0;
         }
 
         public override void OnExecute()
         {
-            this.BulletUnit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(), this.TheUnitFrom.Id, this.SkillConf.Id, 0, this.NowPosition, new CreateMonsterInfo());
-            this.BulletUnit.AddComponent<DeathTimeComponent, long>((long)(this.SkillConf.SkillLiveTime * 1000 + TimeHelper.Minute));
+            this.BulletUnit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(), this.TheUnitFrom.Id, this.LdSkillConf.Id, 0, this.NowPosition, new CreateMonsterInfo());
+            this.BulletUnit.AddComponent<DeathTimeComponent, long>((long)(this.LdSkillConf.SkillLiveTime * 1000 + TimeHelper.Minute));
 
             this.GetTheUnitTarget();
             this.OnUpdate();

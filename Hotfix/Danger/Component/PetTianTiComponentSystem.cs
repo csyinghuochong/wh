@@ -100,8 +100,8 @@ namespace ET
             m2C_FubenSettlement.BattleResult = result;
             if (result == CombatResultEnum.Win)
             {
-                GlobalValue globalValue = GlobalValueCategory.Instance.Get(68);
-                int dropId = int.Parse(globalValue.Value);
+                LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(68);
+                int dropId = int.Parse(ldGlobalValue.Value);
                 List<RewardItem> rewardItems = new List<RewardItem>();
                 DropHelper.DropIDToDropItem(dropId, rewardItems);
                 DropHelper.zhenglirewardItems(rewardItems);

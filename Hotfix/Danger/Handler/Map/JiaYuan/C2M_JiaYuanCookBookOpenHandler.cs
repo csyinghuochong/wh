@@ -12,8 +12,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_JiaYuanCookBookOpen request, M2C_JiaYuanCookBookOpen response, Action reply)
         {
             UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-            Item itemCof = ItemCategory.Instance.Get(request.LearnMakeId);
-            long needzijin = JiaYuanHelper.GetCookBookCost(itemCof.UseLv);
+            LDItem ldItemCof = LDItemCategory.Instance.Get(request.LearnMakeId);
+            long needzijin = JiaYuanHelper.GetCookBookCost(ldItemCof.UseLv);
 
             if (userInfoComponent.UserInfo.JiaYuanFund < needzijin)
             {

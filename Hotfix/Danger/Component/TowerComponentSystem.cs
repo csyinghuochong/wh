@@ -60,7 +60,7 @@ namespace ET
             }
             TimerComponent.Instance.Remove(ref self.Timer);
 
-            string[] ids = GlobalValueCategory.Instance.Get(65).Value.Split(';');
+            string[] ids = LDGlobalValueCategory.Instance.Get(65).Value.Split(';');
             int startTowerId = int.Parse(ids[self.FubenDifficulty - 1]); //起始波
             int endId =  self.TowerId; //当前波
 
@@ -138,7 +138,7 @@ namespace ET
 
         public static void BeginTower(this TowerComponent self)
         {
-            string[] ids = GlobalValueCategory.Instance.Get(65).Value.Split(';');
+            string[] ids = LDGlobalValueCategory.Instance.Get(65).Value.Split(';');
             int index = self.FubenDifficulty - 1;
 
             if (index < 0)

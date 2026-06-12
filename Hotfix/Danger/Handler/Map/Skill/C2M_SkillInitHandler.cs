@@ -28,7 +28,7 @@ namespace ET
 
             if (!haveqianghuaskill)
             {
-                int[] baseSkilllist = OccupationCategory.Instance.Get(occ).BaseSkill;
+                int[] baseSkilllist = LDOccupationCategory.Instance.Get(occ).BaseSkill;
                 for (int i = 0; i < baseSkilllist.Length; i++)
                 {
                     if (skillSetComponent.GetBySkillID(baseSkilllist[i]) != null)
@@ -52,7 +52,7 @@ namespace ET
                 int removeSkillIndex = 0;
                 for (int i = 0; i < skillSetComponent.SkillList.Count; i++)
                 {
-                    int initskillid = SkillCategory.Instance.GetInitSkill(skillSetComponent.SkillList[i].SkillID);
+                    int initskillid = LDSkillCategory.Instance.GetInitSkill(skillSetComponent.SkillList[i].SkillID);
 
                     //if (skillSetComponent.SkillList[i].SkillID >= 64015201 && skillSetComponent.SkillList[i].SkillID <= 64015206)
                     //{
@@ -147,7 +147,7 @@ namespace ET
                 
                 if (skillPro.SkillSetType == (int)SkillSetEnum.Item)
                 {
-                    if (!ItemCategory.Instance.Contain(skillPro.SkillID))
+                    if (!LDItemCategory.Instance.Contain(skillPro.SkillID))
                     {
                         skillSetComponent.SkillList.RemoveAt(i);
                     }
@@ -155,7 +155,7 @@ namespace ET
                 }
                 else
                 {
-                    if (!SkillCategory.Instance.Contain(skillPro.SkillID))
+                    if (!LDSkillCategory.Instance.Contain(skillPro.SkillID))
                     {
                         skillSetComponent.SkillList.RemoveAt(i);
                     }
