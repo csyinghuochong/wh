@@ -23,17 +23,17 @@ namespace ET
                 UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
                 if (SceneConfigHelper.UseSceneConfig(request.SceneType) && request.SceneId > 0)
                 {
-                    if (!SceneConfigCategory.Instance.Contain(request.SceneId))
+                    if (!LDSceneCategory.Instance.Contain(request.SceneId))
                     {
                         return ErrorCode.ERR_TimesIsNot;
                     }
 
-                    SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(request.SceneId);
-                    if (sceneConfig.DayEnterNum > 0 && sceneConfig.DayEnterNum <= userInfoComponent.GetSceneFubenTimes(request.SceneId))
+                    LDScene ldScene = LDSceneCategory.Instance.Get(request.SceneId);
+                    if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= userInfoComponent.GetSceneFubenTimes(request.SceneId))
                     {
                         return ErrorCode.ERR_TimesIsNot;
                     }
-                    if (sceneConfig.EnterLv > userInfoComponent.UserInfo.Lv)
+                    if (ldScene.EnterLv > userInfoComponent.UserInfo.Lv)
                     {
                         return ErrorCode.ERR_LevelIsNot;
                     }
@@ -106,7 +106,7 @@ namespace ET
                         fubnescene.AddComponent<TrialDungeonComponent>();
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.TrialDungeon, request.SceneId, int.Parse(request.paramInfo));
-                        mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(request.SceneId).MapID;
+                        mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).MapID;
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.TrialDungeon, request.SceneId, FubenDifficulty.None, request.paramInfo);
                         TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
@@ -134,7 +134,7 @@ namespace ET
                         fubnescene.AddComponent<SeasonTowerComponent>();
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.SeasonTower, request.SceneId, int.Parse(request.paramInfo));
-                        mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(request.SceneId).MapID;
+                        mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).MapID;
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.SeasonTower, request.SceneId, FubenDifficulty.None, request.paramInfo);
                         TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
@@ -153,7 +153,7 @@ namespace ET
                         fubnescene.AddComponent<TowerOfSealComponent>();
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.TowerOfSeal, request.SceneId, int.Parse(request.paramInfo));
-                        mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(request.SceneId).MapID;
+                        mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).MapID;
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.TowerOfSeal, request.SceneId, FubenDifficulty.None, request.paramInfo);
                         TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
@@ -166,7 +166,7 @@ namespace ET
                         fubnescene.AddComponent<RandomTowerComponent>();
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.RandomTower, request.SceneId, 0);
-                        mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(request.SceneId).MapID;
+                        mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).MapID;
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.RandomTower, request.SceneId, 0, "0");
                         TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
@@ -213,7 +213,7 @@ namespace ET
                         fubnescene.AddComponent<TowerComponent>().FubenDifficulty = request.Difficulty;
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.TowerDungeon, request.SceneId, 0);
-                        mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(request.SceneId).MapID;
+                        mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).MapID;
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.TowerDungeon, request.SceneId, request.Difficulty, "0");
                         TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
@@ -229,7 +229,7 @@ namespace ET
                             fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "OneChallenge" + fubenid.ToString(), SceneType.Map);
                             mapComponent = fubnescene.GetComponent<MapComponent>();
                             mapComponent.SetMapInfo((int)MapTypeEnum.OneChallenge, request.SceneId, 0);
-                            mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(request.SceneId).MapID;
+                            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).MapID;
                             Game.Scene.GetComponent<RecastPathComponent>().Update(fubnescene.GetComponent<MapComponent>().NavMeshId);
                         }
                         fubenInstanceId = fubnescene.InstanceId;
@@ -345,14 +345,14 @@ namespace ET
                             return ErrorCode.ERR_MapLimit;
                         }
 
-                        SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(request.SceneId);
+                        LDScene ldScene = LDSceneCategory.Instance.Get(request.SceneId);
                         int curPlayerNum = int.Parse(f2M_YeWaiSceneIdResponse.Message); // UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Player).Count;
-                        if (sceneConfig.PlayerLimit > 0 && sceneConfig.PlayerLimit <= curPlayerNum)
+                        if (ldScene.PlayerLimit > 0 && ldScene.PlayerLimit <= curPlayerNum)
                         {
                             return ErrorCode.ERR_MapLimit;
                         }
                         TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, sceneConfig.MapType, request.SceneId, 0, "0");
+                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.MapType, request.SceneId, 0, "0");
                         break;
                     case MapTypeEnum.RunRace:
                     case MapTypeEnum.Demon:
@@ -362,9 +362,9 @@ namespace ET
                         {
                             return ErrorCode.ERR_AlreadyFinish;
                         }
-                        sceneConfig = SceneConfigCategory.Instance.Get(request.SceneId);
+                        ldScene = LDSceneCategory.Instance.Get(request.SceneId);
                         TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, sceneConfig.MapType, request.SceneId, 0, "0");
+                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.MapType, request.SceneId, 0, "0");
                         break;
                     case MapTypeEnum.Solo:
                         long soloServerId = DBHelper.GetSoloServerId(unit.DomainZone());
@@ -441,8 +441,8 @@ namespace ET
                         break;
                     case MapTypeEnum.Arena:
                         userInfoComponent = unit.GetComponent<UserInfoComponent>();
-                        sceneConfig = SceneConfigCategory.Instance.Get(request.SceneId);
-                        if (userInfoComponent.UserInfo.Lv < sceneConfig.EnterLv)
+                        ldScene = LDSceneCategory.Instance.Get(request.SceneId);
+                        if (userInfoComponent.UserInfo.Lv < ldScene.EnterLv)
                         {
                             return ErrorCode.ERR_LevelIsNot;
                         }

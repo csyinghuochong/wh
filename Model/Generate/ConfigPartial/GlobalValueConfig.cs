@@ -26,8 +26,8 @@ namespace ET
 
         public int FangunSkillId = 0;
 
-        public int BagInitCapacity = 0;
-        public int BagMaxCapacity = 0;
+        public int BagInitCapacity = 100;
+        public int BagMaxCapacity = 100;
 
         public int HourseInitCapacity = 0;
         public int HourseMaxCapacity = 0;

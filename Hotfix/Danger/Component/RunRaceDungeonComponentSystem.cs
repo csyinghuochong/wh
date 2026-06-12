@@ -101,7 +101,7 @@ namespace ET
         public static void OnPullBack(this RunRaceDungeonComponent self)
         {
             int sceneid = self.DomainScene().GetComponent<MapComponent>().SceneId;
-            SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(sceneid);
+            LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
             List<Unit> unitlist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
             for (int i = 0; i < unitlist.Count; i++)
             {
@@ -110,7 +110,7 @@ namespace ET
                 if (unit.Position.z >= -38.36f)
                 {
                     unit.GetComponent<MoveComponent>().Clear();
-                    unit.Position = new Vector3(sceneConfig.InitPos[0] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1), sceneConfig.InitPos[1] * 0.01f, sceneConfig.InitPos[2] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1));
+                    unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1), ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1));
                     unit.Stop(-2);
 
                     unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.PullBack, "1");
@@ -210,19 +210,19 @@ namespace ET
                     numericComponent.ApplyValue(NumericType.RunRaceRankId, Response.RankId);
 
                     // 领取奖励
-                    RankRewardConfig rankRewardConfig = RankHelper.GetRankReward(Response.RankId, 5);
+                    LDRankList rankRewardConfig = RankHelper.GetRankReward(Response.RankId, 5);
                     if (rankRewardConfig == null)
                     {
                         continue;
                     }
                     BagComponent bagComponent = unit.GetComponent<BagComponent>();
 
-                    string[] itemList = rankRewardConfig.RewardItems.Split('@');
+                    string[] itemList = rankRewardConfig.Reward.Split('|');
                     List<RewardItem> rewardItems = new List<RewardItem>();
                     MailInfo mailInfo = new MailInfo();
                     for (int k = 0; k < itemList.Length; k++)
                     {
-                        string[] itemInfo = itemList[k].Split(';');
+                        string[] itemInfo = itemList[k].Split('&');
                         if (itemInfo.Length < 2)
                         {
                             continue;
@@ -236,7 +236,7 @@ namespace ET
 
                     if (itemList.Length <= bagComponent.GetBagLeftCell())
                     {
-                        bagComponent.OnAddItemData(rankRewardConfig.RewardItems, $"{ItemGetWay.RunRace}_{serverTime}");
+                        bagComponent.OnAddItemData(rankRewardConfig.Reward, $"{ItemGetWay.RunRace}_{serverTime}");
                     }
                     else
                     {

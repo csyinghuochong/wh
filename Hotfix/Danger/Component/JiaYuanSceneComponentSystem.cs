@@ -94,7 +94,7 @@ namespace ET
                 fubnescene.AddComponent<JiaYuanDungeonComponent>().MasterId = masterid;
                 MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
                 mapComponent.SetMapInfo((int)MapTypeEnum.JiaYuan, jiayuansceneid, 0);
-                mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(jiayuansceneid).MapID;
+                mapComponent.NavMeshId = LDSceneCategory.Instance.Get(jiayuansceneid).MapID;
                 await self.CreateJiaYuanUnit(fubnescene, masterid, unitid);
                 FubenHelp.CreateNpc(fubnescene, jiayuansceneid);
                 TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();

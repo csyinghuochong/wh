@@ -26,7 +26,7 @@ namespace ET
 
             RecastInterface.Init();
 
-            Dictionary<int, SceneConfig> sceneConfigs = SceneConfigCategory.Instance.GetAll();
+            Dictionary<int, LDScene> sceneConfigs = LDSceneCategory.Instance.GetAll();
             foreach (var sceneConfig in sceneConfigs)
             {
                 if (sceneConfig.Value.MapType != (int)MapTypeEnum.MainCityScene

@@ -1041,7 +1041,8 @@ namespace ET
                     {
                         return;
                     }
-                    int maxValue = unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
+
+                    int maxValue = 100;///unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
                     long newValue = long.Parse(value) + self.UserInfo.PiLao;
                     newValue = Math.Min(Math.Max(0, newValue), maxValue);
                     self.UserInfo.PiLao = newValue;

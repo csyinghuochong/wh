@@ -15,19 +15,19 @@ namespace ET
             Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "TeamDungeon" + fubenid.ToString(), SceneType.Map);
             TeamDungeonComponent teamDungeonComponent = fubnescene.AddComponent<TeamDungeonComponent>();
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-            SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(teamInfo.SceneId);
+            LDScene ldScene = LDSceneCategory.Instance.Get(teamInfo.SceneId);
             mapComponent.SetMapInfo((int)MapTypeEnum.TeamDungeon, teamInfo.SceneId, 0);
-            mapComponent.NavMeshId = sceneConfig.MapID;
+            mapComponent.NavMeshId = ldScene.MapID;
             teamDungeonComponent.TeamInfo = teamInfo;
             teamDungeonComponent.EnterTime = TimeHelper.ServerNow();
             teamDungeonComponent.FubenType = teamInfo.FubenType;
-            teamDungeonComponent.BossDeadPosition = new Vector3(sceneConfig.InitPos[0] * 0.01f, sceneConfig.InitPos[1] * 0.01f, sceneConfig.InitPos[2] * 0.01f);
+            teamDungeonComponent.BossDeadPosition = new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f);
             teamDungeonComponent.InitPlayerList();
             teamInfo.FubenInstanceId = fubenInstanceId;
             teamInfo.FubenUUId = fubenid;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
-            FubenHelp.CreateMonsterList(fubnescene, SceneConfigCategory.Instance.Get(teamInfo.SceneId).CreateMonster);
-            FubenHelp.CreateMonsterList(fubnescene, SceneConfigCategory.Instance.Get(teamInfo.SceneId).CreateMonsterPosi);
+            FubenHelp.CreateMonsterList(fubnescene, LDSceneCategory.Instance.Get(teamInfo.SceneId).CreateMonster);
+            FubenHelp.CreateMonsterList(fubnescene, LDSceneCategory.Instance.Get(teamInfo.SceneId).CreateMonsterPosi);
 
             if (teamInfo.FubenType == TeamFubenType.ShenYuan)
             {
@@ -45,9 +45,9 @@ namespace ET
             //69和 72的2个副本 有10%概率 在每个BOSS附近刷新出 80002010 这个宝箱，
             //这个宝箱的掉落是只有自己的可以拾取的，并且宝箱和掉落只有自己可见，
             //在聊天广播中提示要加入XXX玩家通过XXX宝箱拾取XXX,而不是之前的那个通用的广播
-            if (CommonHelper.IsInnerNet() || (RandomHelper.RandFloat01() < 0.15f && sceneConfig.EnterLv >= 69))
+            if (CommonHelper.IsInnerNet() || (RandomHelper.RandFloat01() < 0.15f && ldScene.EnterLv >= 69))
             {
-                int bossid = sceneConfig.BossId;
+                int bossid = ldScene.BossId;
                 Vector3 bosspostion = Vector3.zero;
                 List<Unit> monsterlist = UnitHelper.GetUnitList(fubnescene, UnitType.Monster);
                 for (int i = 0; i < monsterlist.Count; i++)

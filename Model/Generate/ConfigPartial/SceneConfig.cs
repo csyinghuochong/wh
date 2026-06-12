@@ -4,14 +4,14 @@ using UnityEngine;
 namespace ET
 {
 
-    public partial class SceneConfigCategory
+    public partial class LDSceneCategory
     {
 
         public List<int> NpcIdList = new List<int>();
 
         public override void AfterEndInit()
         {
-            foreach (SceneConfig sceneConfig in this.GetAll().Values)
+            foreach (LDScene sceneConfig in this.GetAll().Values)
             {
                 if (sceneConfig.Id == 101)
                 {
@@ -20,9 +20,9 @@ namespace ET
             }
         }
 
-        public void InitMainNpc(SceneConfig sceneConfig)
+        public void InitMainNpc(LDScene ldScene)
         {
-            int[] npcids = sceneConfig.NpcList;
+            int[] npcids = ldScene.NpcList;
             for (int i = 0; i < npcids.Length; i++)
             {
                 NpcIdList.Add(npcids[i]);

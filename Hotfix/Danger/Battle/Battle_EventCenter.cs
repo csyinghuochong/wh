@@ -214,11 +214,11 @@ namespace ET
                 if (mainAttack.Type == UnitType.Player && defendUnit.Type == UnitType.Player
                  && SceneConfigHelper.UseSceneConfig(sceneTypeEnum))
                 {
-                    SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(sceneId);
+                    LDScene ldScene = LDSceneCategory.Instance.Get(sceneId);
                     string attackname = mainAttack.GetComponent<UserInfoComponent>().UserInfo.Name;
                     string defendname = defendUnit.GetComponent<UserInfoComponent>().UserInfo.Name;
-                    string killtext = $"<color=#B6FF00>{attackname}</color> 在<color=#FFA313>{sceneConfig.Name}</color> 击败了 <color=#00F6E6>{defendname}</color>";
-                    string killtextEn = $"<color=#B6FF00>{attackname}</color> 在<color=#FFA313>{sceneConfig.Name}</color> Defeated <color=#00F6E6>{defendname}</color>";
+                    string killtext = $"<color=#B6FF00>{attackname}</color> 在<color=#FFA313>{ldScene.Name}</color> 击败了 <color=#00F6E6>{defendname}</color>";
+                    string killtextEn = $"<color=#B6FF00>{attackname}</color> 在<color=#FFA313>{ldScene.Name}</color> Defeated <color=#00F6E6>{defendname}</color>";
                     ServerMessageHelper.SendBroadMessage(defendUnit.DomainZone(), NoticeType.KillEvent, killtext, killtextEn);
                 }
             }

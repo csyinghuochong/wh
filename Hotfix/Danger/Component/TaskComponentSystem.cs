@@ -1612,6 +1612,14 @@ namespace ET
             System.DateTime dateTime = TimeHelper.DateTimeNow();
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
+                
+              
+                if(!LDTaskCategory.Instance.Contain(self.RoleTaskList[i].taskID))
+                {
+                    self.RoleTaskList.RemoveAt(i);
+                    continue;
+                }
+
                 LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
                 if (self.RoleTaskList[i].TaskType == TaskTypeEnum.Daily
                     || self.RoleTaskList[i].TaskType == TaskTypeEnum.Union)

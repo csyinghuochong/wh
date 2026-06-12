@@ -461,10 +461,10 @@ namespace ET
             self.RefreshMonsters.Clear();
 
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
-            SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(mapComponent.SceneId);
+            LDScene ldScene = LDSceneCategory.Instance.Get(mapComponent.SceneId);
 
-            FubenHelp.CreateMonsterList(self.DomainScene(), sceneConfig.CreateMonster);
-            FubenHelp.CreateMonsterList(self.DomainScene(), sceneConfig.CreateMonsterPosi);
+            FubenHelp.CreateMonsterList(self.DomainScene(), ldScene.CreateMonster);
+            FubenHelp.CreateMonsterList(self.DomainScene(), ldScene.CreateMonsterPosi);
         }
 
         public static void OnTimer(this YeWaiRefreshComponent self)

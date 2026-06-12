@@ -37,15 +37,15 @@ namespace ET
                 }
                 else
                 {
-                    SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(mapComponent.SceneId);
+                    LDScene ldScene = LDSceneCategory.Instance.Get(mapComponent.SceneId);
 
                     if (unit.GetBattleCamp() == CampEnum.CampPlayer_1)
                     {
-                        unit.SetBornPosition(new Vector3(sceneConfig.InitPos[0] * 0.01f, sceneConfig.InitPos[1] * 0.01f, sceneConfig.InitPos[2] * 0.01f), true);
+                        unit.SetBornPosition(new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f), true);
                     }
                     else
                     {
-                        unit.SetBornPosition(new Vector3(sceneConfig.InitPos[3] * 0.01f, sceneConfig.InitPos[4] * 0.01f, sceneConfig.InitPos[5] * 0.01f), true);
+                        unit.SetBornPosition(new Vector3(ldScene.InitPos[3] * 0.01f, ldScene.InitPos[4] * 0.01f, ldScene.InitPos[5] * 0.01f), true);
                     }
                 }
 

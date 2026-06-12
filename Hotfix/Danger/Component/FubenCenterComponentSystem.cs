@@ -111,7 +111,7 @@ namespace ET
                 return 0;
             }
 
-            SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(sceneid);
+            LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
             long fubenid = IdGenerater.Instance.GenerateId();
             long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
             Log.Warning($"GenarateFuben2.{fubenInstanceId}");
@@ -119,15 +119,15 @@ namespace ET
             self.FubenInstanceList.Add(fubenInstanceId);
             //self.YeWaiFubenList.Add(sceneConfig.Id, fubenInstanceId);  可能有多个不能这样搞
 
-            Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "Fuben" + sceneConfig.Id.ToString(), SceneType.Map);
+            Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "Fuben" + ldScene.Id.ToString(), SceneType.Map);
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-            mapComponent.SetMapInfo(sceneConfig.MapType, sceneConfig.Id, 0);
-            mapComponent.NavMeshId = sceneConfig.MapID;
+            mapComponent.SetMapInfo(ldScene.MapType, ldScene.Id, 0);
+            mapComponent.NavMeshId = ldScene.MapID;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             YeWaiRefreshComponent yeWaiRefreshComponen = fubnescene.AddComponent<YeWaiRefreshComponent>();
-            yeWaiRefreshComponen.SceneId = sceneConfig.Id;
+            yeWaiRefreshComponen.SceneId = ldScene.Id;
 
-            switch (sceneConfig.MapType)
+            switch (ldScene.MapType)
             {
                 case MapTypeEnum.RunRace:
                     fubnescene.AddComponent<RunRaceDungeonComponent>();
@@ -142,8 +142,8 @@ namespace ET
                     break;
             }
 
-            FubenHelp.CreateMonsterList(fubnescene, sceneConfig.CreateMonster);
-            FubenHelp.CreateMonsterList(fubnescene, sceneConfig.CreateMonsterPosi);
+            FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonster);
+            FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonsterPosi);
 
             playerList.Add( fubenid, new List<long>() { unitId } );
 
@@ -287,7 +287,7 @@ namespace ET
         {
             await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(0, 1000));
            
-            List<SceneConfig> sceneConfigs =  SceneConfigCategory.Instance.GetAll().Values.ToList();
+            List<LDScene> sceneConfigs =  LDSceneCategory.Instance.GetAll().Values.ToList();
             for (int i = 0; i < sceneConfigs.Count; i++)
             {
                 if (sceneConfigs[i].MapType != MapTypeEnum.BaoZangZhiDi 

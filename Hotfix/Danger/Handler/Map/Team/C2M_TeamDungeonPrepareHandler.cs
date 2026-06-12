@@ -16,8 +16,8 @@ namespace ET
 			}
 
 			UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-			SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(sceneid);
-			if (sceneConfig.DayEnterNum > 0 && sceneConfig.DayEnterNum <= userInfoComponent.GetSceneFubenTimes(sceneid))
+			LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
+			if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= userInfoComponent.GetSceneFubenTimes(sceneid))
 			{
 				response.Error = ErrorCode.ERR_TimesIsNot;
 				reply();

@@ -89,7 +89,7 @@ namespace ET
             int camp = unit.GetBattleCamp();
             int monsterid = battleSummonConfig.MonsterIds[camp - 1];
             int monsternum = battleSummonConfig.MonsterNumber;
-            SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(sceneid);
+            LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
 
             for (int i = 0;i <monsternum; i++)
             {
@@ -98,7 +98,7 @@ namespace ET
                 float ran_x = RandomHelper.RandomNumberFloat(-1 * range, range);
                 float ran_z = RandomHelper.RandomNumberFloat(-1 * range, range);
                 int startIndex = camp == 1 ? 0 : 3;
-                Vector3 initPosi = new Vector3(sceneConfig.InitPos[startIndex + 0] * 0.01f + ran_x, sceneConfig.InitPos[startIndex + 1] * 0.01f, sceneConfig.InitPos[startIndex + 2] * 0.01f + ran_z);
+                Vector3 initPosi = new Vector3(ldScene.InitPos[startIndex + 0] * 0.01f + ran_x, ldScene.InitPos[startIndex + 1] * 0.01f, ldScene.InitPos[startIndex + 2] * 0.01f + ran_z);
 
                 Unit unitMonster = UnitFactory.CreateMonster(unit.DomainScene(), monsterid, initPosi, new CreateMonsterInfo()
                 { Camp = camp });

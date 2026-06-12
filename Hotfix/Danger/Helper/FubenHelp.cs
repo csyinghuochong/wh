@@ -472,13 +472,13 @@ namespace ET
 
 		public static void CreateNpc(Scene scene, int sceneId)
 		{
-			SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(sceneId);
-			int[] npcs = sceneConfig.NpcList;
+			LDScene ldScene = LDSceneCategory.Instance.Get(sceneId);
+			int[] npcs = ldScene.NpcList;
 			if (npcs == null)
 			{
 				return;
 			}
-			Vector3 npcpos = new Vector3(sceneConfig.InitPos[0]*0.01f,sceneConfig.InitPos[1], sceneConfig.InitPos[2]*0.01f );
+			Vector3 npcpos = new Vector3(ldScene.InitPos[0]*0.01f,ldScene.InitPos[1], ldScene.InitPos[2]*0.01f );
 			for (int i = 0; i < npcs.Length; i++)
 			{
 				if (npcs[i] == 0)

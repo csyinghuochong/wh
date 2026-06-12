@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class SceneConfigCategory : ProtoObject, IMerge
+    public partial class LDSceneCategory : ProtoObject, IMerge
     {
-        public static SceneConfigCategory Instance;
+        public static LDSceneCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, SceneConfig> dict = new Dictionary<int, SceneConfig>();
+        private Dictionary<int, LDScene> dict = new Dictionary<int, LDScene>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<SceneConfig> list = new List<SceneConfig>();
+        private List<LDScene> list = new List<LDScene>();
 		
-        public SceneConfigCategory()
+        public LDSceneCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            SceneConfigCategory s = o as SceneConfigCategory;
+            LDSceneCategory s = o as LDSceneCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (SceneConfig config in list)
+            foreach (LDScene config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public SceneConfig Get(int id)
+        public LDScene Get(int id)
         {
-            this.dict.TryGetValue(id, out SceneConfig item);
+            this.dict.TryGetValue(id, out LDScene item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (SceneConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDScene)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, SceneConfig> GetAll()
+        public Dictionary<int, LDScene> GetAll()
         {
             return this.dict;
         }
 
-        public SceneConfig GetOne()
+        public LDScene GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class SceneConfig: ProtoObject, IConfig
+	public partial class LDScene: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

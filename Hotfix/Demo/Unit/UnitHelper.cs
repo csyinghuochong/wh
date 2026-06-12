@@ -435,14 +435,14 @@ namespace ET
             }
             else
             {
-                if (!SceneConfigCategory.Instance.Contain(sceneId))
+                if (!LDSceneCategory.Instance.Contain(sceneId))
                 {
                     record = false;
                     Log.Debug($"sceneconfig ==null:  sceneType: {sceneType} sceneId: {sceneId}");
                 }
                 else
                 {
-                    record = SceneConfigCategory.Instance.Get(sceneId).IfInitPosi == 1;
+                    record = LDSceneCategory.Instance.Get(sceneId).IfInitPosi == 1;
                 }
             }
             if (record)

@@ -29,7 +29,7 @@ namespace ET
             self.Skills.Clear();
             self.DelaySkillList.Clear();
             self.SkillCDs.Clear();
-            self.FangunSkillId = int.Parse(LDGlobalValueCategory.Instance.Get(2).Value);
+            self.FangunSkillId = 0;////int.Parse(LDGlobalValueCategory.Instance.Get(2).Value);
             self.SelfUnitComponent = self.DomainScene().GetComponent<UnitComponent>();
             self.SelfUnit = self.GetParent<Unit>();
         }

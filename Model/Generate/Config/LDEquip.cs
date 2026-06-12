@@ -90,7 +90,7 @@ namespace ET
 		/// <summary>类型</summary>
 		[ProtoMember(5)]
 		public int Sub_Type { get; set; }
-		/// <summary>穿戴等级</summary>
+		/// <summary>穿戴 等级</summary>
 		[ProtoMember(6)]
 		public int UseLv { get; set; }
 		/// <summary>品质</summary>

@@ -779,7 +779,7 @@ namespace ET
             long mailServerId = DBHelper.GetMailServerId( self.DomainZone() );
             for (int i = 0; i < rankingInfos.Count; i++)
             {
-                RankRewardConfig rankRewardConfig = RankHelper.GetRankReward(i + 1, 5);
+                LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 5);
                 if (rankRewardConfig == null)
                 {
                     continue;
@@ -793,7 +793,7 @@ namespace ET
                 mailInfo.Title = "恶魔排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                string[] needList = rankRewardConfig.RewardItems.Split('@');
+                string[] needList = rankRewardConfig.Reward.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -825,7 +825,7 @@ namespace ET
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
             for (int i = 0; i < rankingInfos.Count; i++)
             {
-                RankRewardConfig rankRewardConfig = RankHelper.GetRankReward(i + 1, 4);
+                LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 4);
                 if (rankRewardConfig == null)
                 {
                     continue;
@@ -839,7 +839,7 @@ namespace ET
                 mailInfo.Title = "家族战排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                string[] needList = rankRewardConfig.RewardItems.Split('@');
+                string[] needList = rankRewardConfig.Reward.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -873,7 +873,7 @@ namespace ET
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
             for (int i = 0; i < rankingInfos.Count; i++)
             {
-                RankRewardConfig rankRewardConfig = RankHelper.GetRankReward(i + 1, 3);
+                LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 3);
                 if (rankRewardConfig == null)
                 {
                     continue;
@@ -885,7 +885,7 @@ namespace ET
                 mailInfo.Title = "狩猎排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
                 Log.Debug($"发放狩猎排行榜奖励：zone. {zone} rankid.{i + 1}  unitid.{rankingInfos[i].UnitID}  {rankingInfos[i].PlayerName}  {rankingInfos[i].KillNumber}");
-                string[] needList = rankRewardConfig.RewardItems.Split('@');
+                string[] needList = rankRewardConfig.Reward.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -927,7 +927,7 @@ namespace ET
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
             for (int i = 0; i < rankingInfos.Count; i++)
             {
-                RankRewardConfig rankRewardConfig = RankHelper.GetRankReward(i + 1, 6);
+                LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 6);
                 if (rankRewardConfig == null)
                 {
                     continue;
@@ -943,7 +943,7 @@ namespace ET
                 {
                     Log.Warning($"试炼奖励: {self.DomainZone()} {rankingInfos[i].KeyId}");
                 }
-                string[] needList = rankRewardConfig.RewardItems.Split('@');
+                string[] needList = rankRewardConfig.Reward.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -984,7 +984,7 @@ namespace ET
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
             for (int i = 0; i < rankingInfos.Count; i++)
             {
-                RankRewardConfig rankRewardConfig = RankHelper.GetRankReward(i + 1, 7);
+                LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 7);
                 if (rankRewardConfig == null)
                 {
                     continue;
@@ -1000,7 +1000,7 @@ namespace ET
                 {
                     Log.Warning($"赛季之塔奖励: {self.DomainZone()} {rankingInfos[i].KeyId}");
                 }
-                string[] needList = rankRewardConfig.RewardItems.Split('@');
+                string[] needList = rankRewardConfig.Reward.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -1044,7 +1044,7 @@ namespace ET
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
             for (int i = 0; i < rankingInfos.Count; i++)
             {
-                RankRewardConfig rankRewardConfig = RankHelper.GetRankReward(i+1, 1);
+                LDRankList rankRewardConfig = RankHelper.GetRankReward(i+1, 1);
                 if (rankRewardConfig == null)
                 {
                     continue;
@@ -1060,7 +1060,7 @@ namespace ET
                 {
                     Log.Warning($"战力奖励: {self.DomainZone()} {rankingInfos[i].UserId}   {i}");
                 }
-                string[] needList = rankRewardConfig.RewardItems.Split('@');
+                string[] needList = rankRewardConfig.Reward.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -1109,7 +1109,7 @@ namespace ET
                     continue;
                 }
 
-                RankRewardConfig rankRewardConfig = RankHelper.GetRankReward(i + 1, 2);
+                LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 2);
                 if (rankRewardConfig == null)
                 {
                     continue;
@@ -1122,7 +1122,7 @@ namespace ET
                 mailInfo.Title = "排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                string[] needList = rankRewardConfig.RewardItems.Split('@');
+                string[] needList = rankRewardConfig.Reward.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');

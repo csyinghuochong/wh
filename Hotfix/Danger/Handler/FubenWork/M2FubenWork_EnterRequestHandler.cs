@@ -36,12 +36,12 @@ namespace ET
                     fubnescene.GetComponent<BattleDungeonComponent>().BattleOpenTime = TimeHelper.ServerNow();
                     MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
                     mapComponent.SetMapInfo((int)MapTypeEnum.Battle, sceneId, 0);
-                    mapComponent.NavMeshId = SceneConfigCategory.Instance.Get(sceneId).MapID;
+                    mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).MapID;
                     Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
                     fubnescene.AddComponent<YeWaiRefreshComponent>().SceneId = sceneId;
                     FubenHelp.CreateNpc(fubnescene, sceneId);
-                    FubenHelp.CreateMonsterList(fubnescene, SceneConfigCategory.Instance.Get(sceneId).CreateMonster);
-                    FubenHelp.CreateMonsterList(fubnescene, SceneConfigCategory.Instance.Get(sceneId).CreateMonsterPosi);
+                    FubenHelp.CreateMonsterList(fubnescene, LDSceneCategory.Instance.Get(sceneId).CreateMonster);
+                    FubenHelp.CreateMonsterList(fubnescene, LDSceneCategory.Instance.Get(sceneId).CreateMonsterPosi);
                     response.FubenId = fubenid;
                     response.FubenInstanceId = fubenInstanceId;
                     TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();

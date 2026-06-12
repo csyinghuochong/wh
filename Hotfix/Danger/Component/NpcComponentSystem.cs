@@ -25,8 +25,8 @@ namespace ET
 
         public static void InitNpc(this NpcComponent self, int sceneId)
         {
-            SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(sceneId);
-            int[] npcs =sceneConfig.NpcList;
+            LDScene ldScene = LDSceneCategory.Instance.Get(sceneId);
+            int[] npcs =ldScene.NpcList;
             if (npcs == null)
             { 
                 return ;

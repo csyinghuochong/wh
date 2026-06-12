@@ -17,8 +17,8 @@ namespace ET
             if (SceneConfigHelper.UseSceneConfig(mapComponent.MapTypeEnum))
             {
                 int sceneid = mapComponent.SceneId;
-                SceneConfig sceneConfig = SceneConfigCategory.Instance.Get(sceneid);
-                if (sceneConfig.IfMount == 1)
+                LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
+                if (ldScene.IfMount == 1)
                 {
                     return;
                 }
