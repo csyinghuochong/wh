@@ -19,7 +19,7 @@ namespace ET
         public int TotalNumber;
     }
 
-    public partial class GlobalValueConfigCategory
+    public partial class GlobalValueCategory
     {
 
         public int JianDingFuQulity = 0;
@@ -47,26 +47,12 @@ namespace ET
 
         public Dictionary<int, int> ZhuaPuItem = new Dictionary<int, int>();
 
+        public int TempValue = 0;
+
         public override void AfterEndInit()
         {
             DayMonsterList.Clear();
-            JianDingFuQulity = this.Get(44).Value2;
-            if (!int.TryParse(this.Get(2).Value, out FangunSkillId))
-            {
-                Log.Error($"int.TryParse error: {this.Get(2).Value}");
-            }
-            BagInitCapacity = this.Get(3).Value2;
-            BagMaxCapacity = BagInitCapacity + this.Get(84).Value2;
-            HourseInitCapacity = this.Get(4).Value2;
-            HourseMaxCapacity = HourseInitCapacity + this.Get(85).Value2;
-            if (!int.TryParse(this.Get(25).Value, out OnLineLimit))
-            {
-                Log.Error($"int.TryParse error: {this.Get(25).Value}");
-            }
-            AccountBagMax = this.Get(115).Value2;
-            GemStoreInitCapacity = this.Get(118).Value2; 
-            GemStoreMaxCapacity = this.Get(118).Value2;
-            MaxLevel = this.Get(41).Value2;
+         
 
             string[] dayrefresh = this.Get(79).Value.Split('@');
             for (int i = 0; i < dayrefresh.Length; i++)

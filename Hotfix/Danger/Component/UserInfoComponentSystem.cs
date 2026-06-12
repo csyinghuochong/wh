@@ -57,9 +57,9 @@ namespace ET
             userInfo.AccInfoID =accountId;
             userInfo.Name = createRoleInfo.PlayerName;
             userInfo.ServerMailIdCur = -1;
-            userInfo.PiLao = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);        //初始化疲劳
-            userInfo.Vitality = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);
-            userInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(GlobalValueConfigCategory.Instance.Get(18).Value.Split(';')));
+            userInfo.PiLao = int.Parse(GlobalValueCategory.Instance.Get(10).Value);        //初始化疲劳
+            userInfo.Vitality = int.Parse(GlobalValueCategory.Instance.Get(10).Value);
+            userInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(GlobalValueCategory.Instance.Get(18).Value.Split(';')));
             userInfo.CreateTime = TimeHelper.ServerNow();
 
             if (createRoleInfo.RobotId > 0)
@@ -1041,7 +1041,7 @@ namespace ET
                     {
                         return;
                     }
-                    int maxValue = unit.IsYueKaStates() ? int.Parse(GlobalValueConfigCategory.Instance.Get(26).Value) : int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);
+                    int maxValue = unit.IsYueKaStates() ? int.Parse(GlobalValueCategory.Instance.Get(26).Value) : int.Parse(GlobalValueCategory.Instance.Get(10).Value);
                     long newValue = long.Parse(value) + self.UserInfo.PiLao;
                     newValue = Math.Min(Math.Max(0, newValue), maxValue);
                     self.UserInfo.PiLao = newValue;
@@ -1217,7 +1217,7 @@ namespace ET
         public static int GetRandomMonsterId(this UserInfoComponent self)
         {
             List<KeyValuePairInt> dayMonster = self.UserInfo.DayMonsters;
-            List<DayMonsters> dayMonsterConfig = GlobalValueConfigCategory.Instance.DayMonsterList;
+            List<DayMonsters> dayMonsterConfig = GlobalValueCategory.Instance.DayMonsterList;
 
             for (int i = 0; i < dayMonsterConfig.Count; i++)
             {
@@ -1252,7 +1252,7 @@ namespace ET
 
         public static int GetRandomJingLingId(this UserInfoComponent self)
         {
-            List<DayJingLing> dayMonsterConfig = GlobalValueConfigCategory.Instance.DayJingLingList;
+            List<DayJingLing> dayMonsterConfig = GlobalValueCategory.Instance.DayJingLingList;
             List<int> dayMonster = self.UserInfo.DayJingLing;
             for(int i = 0; i < dayMonsterConfig.Count; i++)
             {

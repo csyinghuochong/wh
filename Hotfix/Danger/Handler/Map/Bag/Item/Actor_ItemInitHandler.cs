@@ -83,24 +83,24 @@ namespace ET
             List<int> fashionTypes = new List<int>();
 			for (int i = bagComponent.FashionEquipList.Count - 1; i >= 0; i--)
 			{
-				if(!FashionConfigCategory.Instance.Contain(bagComponent.FashionEquipList[i]))
+				if(!FashionCategory.Instance.Contain(bagComponent.FashionEquipList[i]))
 				{
                     bagComponent.FashionEquipList.RemoveAt(i);	
                     continue;
                 }
 
-				FashionConfig fashionConfig = FashionConfigCategory.Instance.Get(bagComponent.FashionEquipList[i]);
-				if (fashionTypes.Contains(fashionConfig.SubType))
+				Fashion fashion = FashionCategory.Instance.Get(bagComponent.FashionEquipList[i]);
+				if (fashionTypes.Contains(fashion.SubType))
 				{
                     fashionTypes.RemoveAt(i);	
                     continue;
 				}
 
-				fashionTypes.Add(fashionConfig.SubType);
+				fashionTypes.Add(fashion.SubType);
             }
 			for (int i = bagComponent.FashionActiveIds.Count - 1; i >= 0; i--)
 			{
-				if (!FashionConfigCategory.Instance.Contain(bagComponent.FashionActiveIds[i]))
+				if (!FashionCategory.Instance.Contain(bagComponent.FashionActiveIds[i]))
 				{
 					bagComponent.FashionActiveIds.RemoveAt(i);
 					continue;

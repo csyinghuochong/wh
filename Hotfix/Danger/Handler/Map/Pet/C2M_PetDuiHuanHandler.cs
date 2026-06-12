@@ -17,8 +17,8 @@ namespace ET
             }
 
             int configId = request.OperateId;
-            GlobalValueConfig globalValueConfig = GlobalValueConfigCategory.Instance.Get(configId);
-            string[] configInfo = globalValueConfig.Value.Split('@');
+            GlobalValue globalValue = GlobalValueCategory.Instance.Get(configId);
+            string[] configInfo = globalValue.Value.Split('@');
             if(configInfo.Length < 2)
             {
                 Log.Error($"C2M_PetDuiHuanRequest 1");

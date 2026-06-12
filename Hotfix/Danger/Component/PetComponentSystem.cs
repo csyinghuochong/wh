@@ -156,7 +156,7 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
             UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
-            int maxLv = GlobalValueConfigCategory.Instance.Get(41).Value2;
+            int maxLv = GlobalValueCategory.Instance.TempValue;
             for (int i = 0; i < self.RolePetInfos.Count; i++)
             {
                 RolePetInfo rolePetInfo = self.RolePetInfos[i];
@@ -881,7 +881,7 @@ namespace ET
                 return;
             }
 
-            int maxLv = GlobalValueConfigCategory.Instance.Get(41).Value2;
+            int maxLv = GlobalValueCategory.Instance.TempValue;
             int newExp = rolePetInfo.PetExp + exp;
             Exp xiulianconf1 = ExpCategory.Instance.Get(rolePetInfo.PetLv);
             if (newExp >= xiulianconf1.Exp_Role && rolePetInfo.PetLv < maxLv)

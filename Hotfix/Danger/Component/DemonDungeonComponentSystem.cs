@@ -54,7 +54,7 @@ namespace ET
             mailInfo.Context = $"恶魔活动{rewardTime}奖励";
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-            GlobalValueConfig globalValue = GlobalValueConfigCategory.Instance.Get(rewardId);
+            GlobalValue globalValue = GlobalValueCategory.Instance.Get(rewardId);
             string[] rewardList = globalValue.Value.Split('@');
             for (int i = 0; i < rewardList.Length; i++)
             {

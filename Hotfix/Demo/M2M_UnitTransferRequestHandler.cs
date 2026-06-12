@@ -370,7 +370,7 @@ namespace ET
                                 if (fubenType == TeamFubenType.XieZhu && unit.Id == teamDungeonComponent.TeamInfo.TeamId)
                                 {
                                     int times_2 = unit.GetTeamDungeonXieZhu();
-                                    int totalTimes_2 = int.Parse(GlobalValueConfigCategory.Instance.Get(74).Value);
+                                    int totalTimes_2 = int.Parse(GlobalValueCategory.Instance.Get(74).Value);
                                     if (totalTimes_2 > times_2)
                                     {
                                         unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonXieZhu, unit.GetTeamDungeonXieZhu() + 1);

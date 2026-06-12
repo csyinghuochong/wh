@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_FashionActiveRequest request, M2C_FashionActiveResponse response, Action reply)
         {
-            if (request.FashionId == 0 || !FashionConfigCategory.Instance.Contain(request.FashionId))
+            if (request.FashionId == 0 || !FashionCategory.Instance.Contain(request.FashionId))
             {
                 Log.Error($"C2M_FashionActiveRequest.1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -24,8 +24,8 @@ namespace ET
                 return;
             }
 
-            FashionConfig fashionConfig = FashionConfigCategory.Instance.Get(request.FashionId  );
-            if (!bagComponent.CheckCostItem(fashionConfig.ActiveCost))
+            Fashion fashion = FashionCategory.Instance.Get(request.FashionId  );
+            if (!bagComponent.CheckCostItem(fashion.ActiveCost))
             {
                 response.Error = ErrorCode.ERR_HouBiNotEnough;
                 reply();
@@ -34,7 +34,7 @@ namespace ET
 
             Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
 
-            bagComponent.OnCostItemData(fashionConfig.ActiveCost, ItemLocType.ItemLocBag, 98 );
+            bagComponent.OnCostItemData(fashion.ActiveCost, ItemLocType.ItemLocBag, 98 );
             bagComponent.FashionActiveIds.Add( request.FashionId );
 
             reply();

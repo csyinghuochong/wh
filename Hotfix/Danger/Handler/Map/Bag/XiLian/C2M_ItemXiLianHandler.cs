@@ -61,7 +61,7 @@ namespace ET
                     //钻石洗炼
                     UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
                     int itemXiLianNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianNumber);
-                    string[] set = GlobalValueConfigCategory.Instance.Get(116).Value.Split(';');
+                    string[] set = GlobalValueCategory.Instance.Get(116).Value.Split(';');
                     double discount;
                     if (itemXiLianNumber < int.Parse(set[0]))
                     {
@@ -71,7 +71,7 @@ namespace ET
                     {
                         discount = double.Parse(set[1]);
                     }
-                    int needDimanond = int.Parse(GlobalValueConfigCategory.Instance.Get(73).Value.Split('@')[0]);
+                    int needDimanond = int.Parse(GlobalValueCategory.Instance.Get(73).Value.Split('@')[0]);
                     needDimanond = (int)(needDimanond * discount);
                     if (userInfo.Diamond < needDimanond)
                     {
@@ -150,7 +150,7 @@ namespace ET
                 Function_Fight.GetInstance().UnitUpdateProperty_Base( unit, true, true );
 
 
-                string[] xiliandu = GlobalValueConfigCategory.Instance.Get(49).Value.Split(";");
+                string[] xiliandu = GlobalValueCategory.Instance.Get(49).Value.Split(";");
                 int addXilian = RandomHelper.RandomNumber(int.Parse(xiliandu[0]), int.Parse(xiliandu[1]));
                 if (ifZuanShi)
                 {

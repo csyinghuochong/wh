@@ -214,10 +214,10 @@ namespace ET
 			TaskPro taskPro = mainUnit.GetComponent<TaskComponent>().GetTreasureMonster(mapComponent.SceneId);
 			if (taskPro!=null)
 			{
-				TaskConfig taskConfig = TaskConfigCategory.Instance.Get(taskPro.taskID);
+				LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
                 KeyValuePairInt keyValuePairInt = new KeyValuePairInt();
                 keyValuePairInt.KeyId = taskPro.WaveId;
-				keyValuePairInt.Value = taskConfig.Target[0];
+				keyValuePairInt.Value = ldTask.Param1;
                 randomMonsterList.Add( keyValuePairInt );
 			}
 

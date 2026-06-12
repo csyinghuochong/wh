@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class GlobalValueConfigCategory : ProtoObject, IMerge
+    public partial class GlobalValueCategory : ProtoObject, IMerge
     {
-        public static GlobalValueConfigCategory Instance;
+        public static GlobalValueCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, GlobalValueConfig> dict = new Dictionary<int, GlobalValueConfig>();
+        private Dictionary<int, GlobalValue> dict = new Dictionary<int, GlobalValue>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<GlobalValueConfig> list = new List<GlobalValueConfig>();
+        private List<GlobalValue> list = new List<GlobalValue>();
 		
-        public GlobalValueConfigCategory()
+        public GlobalValueCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            GlobalValueConfigCategory s = o as GlobalValueConfigCategory;
+            GlobalValueCategory s = o as GlobalValueCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (GlobalValueConfig config in list)
+            foreach (GlobalValue config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public GlobalValueConfig Get(int id)
+        public GlobalValue Get(int id)
         {
-            this.dict.TryGetValue(id, out GlobalValueConfig item);
+            this.dict.TryGetValue(id, out GlobalValue item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (GlobalValueConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (GlobalValue)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, GlobalValueConfig> GetAll()
+        public Dictionary<int, GlobalValue> GetAll()
         {
             return this.dict;
         }
 
-        public GlobalValueConfig GetOne()
+        public GlobalValue GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,17 +73,17 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class GlobalValueConfig: ProtoObject, IConfig
+	public partial class GlobalValue: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>值</summary>
+		/// <summary>唯一索引</summary>
 		[ProtoMember(2)]
-		public string Value { get; set; }
-		/// <summary>值2</summary>
+		public string Key { get; set; }
+		/// <summary>值</summary>
 		[ProtoMember(3)]
-		public int Value2 { get; set; }
+		public string Value { get; set; }
 
 	}
 }

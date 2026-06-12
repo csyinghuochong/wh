@@ -607,10 +607,10 @@ namespace ET
                     if (dropID[i] == 60700201)
                         continue;
 
-                    DropConfig dropConfig = DropConfigCategory.Instance.Get(dropID[i]);
+                    LDDrop ldDrop = LDDropCategory.Instance.Get(dropID[i]);
                     List<RewardItem> dropItemList_2 = new List<RewardItem>();
                     DropHelper.DropIDToDropItem(dropID[i], dropItemList_2, monsterID, dropProValue, all);
-                    if (dropConfig.ifEnterBag == 1)
+                    if (ldDrop.ifEnterBag == 1)
                     {
                         unit.GetComponent<BagComponent>().OnAddItemData(dropItemList_2, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
                     }

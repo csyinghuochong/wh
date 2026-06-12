@@ -8,7 +8,7 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_YueKaOpenRequest request, M2C_YueKaOpenResponse response, Action reply)
         {
-            int cost = int.Parse( GlobalValueConfigCategory.Instance.Get(37).Value );
+            int cost = int.Parse( GlobalValueCategory.Instance.Get(37).Value );
             //判定是否是月卡用户
             if (unit.IsYueKaStates())
             {
@@ -29,7 +29,7 @@ namespace ET
 
             unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (cost * -1).ToString(), true, ItemGetWay.CostItem);
 
-            long addPilao = int.Parse(GlobalValueConfigCategory.Instance.Get(26).Value) - int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);
+            long addPilao = int.Parse(GlobalValueCategory.Instance.Get(26).Value) - int.Parse(GlobalValueCategory.Instance.Get(10).Value);
             unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.PiLao, addPilao.ToString());
             //Log.Warning($"[增加疲劳] {unit.DomainZone()}  {unit.Id}   {0}  {addPilao}");
             reply();

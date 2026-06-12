@@ -28,7 +28,7 @@ namespace ET
                 {
                     ///1放入仓库  2取出仓库 3整理仓库 
                     case 1:
-                        if (dBAccountBagWarehouse.BagInfoList.Count >= GlobalValueConfigCategory.Instance.AccountBagMax)
+                        if (dBAccountBagWarehouse.BagInfoList.Count >= GlobalValueCategory.Instance.AccountBagMax)
                         {
                             response.Error = ErrorCode.ERR_WarehouseIsFull;
                             reply();

@@ -33,7 +33,7 @@ namespace ET
 
         public static int GetDropId(this HappyDungeonComponent self, int openDay)
         {
-            string dropinfo = GlobalValueConfigCategory.Instance.Get(96).Value;
+            string dropinfo = GlobalValueCategory.Instance.Get(96).Value;
             string[] dropList = dropinfo.Split('@');
 
             for (int i = dropList.Length - 1; i >= 0; i--)

@@ -149,15 +149,15 @@ namespace ET
             }
 
             //时装(清空 返回碎片或者其他)
-            for (int fashion = 0; fashion < bagComponent.FashionActiveIds.Count; fashion++)
+            for (int fashionid = 0; fashionid < bagComponent.FashionActiveIds.Count; fashionid++)
             {
-                FashionConfig fashionConfig = FashionConfigCategory.Instance.Get(bagComponent.FashionActiveIds[fashion]);
+                Fashion fashion = FashionCategory.Instance.Get(bagComponent.FashionActiveIds[fashionid]);
 
-                if (CommonHelper.IfNull(fashionConfig.ActiveCost) || fashionConfig.ActiveCost.Equals("0;0"))
+                if (CommonHelper.IfNull(fashion.ActiveCost) || fashion.ActiveCost.Equals("0;0"))
                 {
                     continue;
                 }
-                bagComponent.OnAddItemData(fashionConfig.ActiveCost, $"{ItemGetWay.HuiShou}_{TimeHelper.ServerNow()}", false);
+                bagComponent.OnAddItemData(fashion.ActiveCost, $"{ItemGetWay.HuiShou}_{TimeHelper.ServerNow()}", false);
             }
             bagComponent.FashionActiveIds.Clear();
             bagComponent.FashionEquipList.Clear();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -540,7 +540,7 @@ namespace ET
             if (mapComponent.MapTypeEnum == MapTypeEnum.Battle)
             {
                 if (monsterConfig.MonsterSonType != 55 && monsterConfig.MonsterSonType != 56
-                    && monsterNumber >= GlobalValueConfigCategory.Instance.Get(59).Value2)
+                    && monsterNumber >= GlobalValueCategory.Instance.TempValue)
                 {
                     return;
                 }
@@ -557,7 +557,7 @@ namespace ET
                 }
 
 
-                if (monsterNumber >= GlobalValueConfigCategory.Instance.Get(78).Value2)
+                if (monsterNumber >= GlobalValueCategory.Instance.TempValue)
                 {
                     return;
                 }

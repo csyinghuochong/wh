@@ -29,7 +29,7 @@ namespace ET
 
         public static List<int> GetInitMakeList( int makeType)
         {
-            string[] makeValue = GlobalValueConfigCategory.Instance.Get(43).Value.Split(';');
+            string[] makeValue = GlobalValueCategory.Instance.Get(43).Value.Split(';');
             List<int> makeList = new List<int>();
             for (int i = 0; i < makeValue.Length; i++)
             {

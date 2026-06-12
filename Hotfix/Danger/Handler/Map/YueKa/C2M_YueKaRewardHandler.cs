@@ -19,7 +19,7 @@ namespace ET
                 reply();    //当天已领取
                 return;
             }
-            string reward = GlobalValueConfigCategory.Instance.Get(28).Value;
+            string reward = GlobalValueCategory.Instance.Get(28).Value;
             int itemNumber = reward.Split('@').Length;
             if (unit.GetComponent<BagComponent>().GetBagLeftCell() < itemNumber)
             {

@@ -12,7 +12,7 @@ namespace ET
         {
             if (request.ChouKaType == 1)
             {
-                string needItems = GlobalValueConfigCategory.Instance.Get(16).Value;
+                string needItems = GlobalValueCategory.Instance.Get(16).Value;
                 bool  sucess = unit.GetComponent<BagComponent>().OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetChouKa);
                 if (!sucess)
                 {
@@ -32,7 +32,7 @@ namespace ET
                 }
                 */
                 UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
-                int needDimanond = int.Parse(GlobalValueConfigCategory.Instance.Get(17).Value);
+                int needDimanond = int.Parse(GlobalValueCategory.Instance.Get(17).Value);
                 if (userInfo.Diamond < needDimanond)
                 {
                     response.Error = ErrorCode.ERR_DiamondNotEnoughError;

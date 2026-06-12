@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -13,7 +13,7 @@ namespace ET
             {
                 UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
                
-                long costgold = GlobalValueConfigCategory.Instance.Get(98).Value2;
+                long costgold = GlobalValueCategory.Instance.TempValue;
                 if (userInfoComponent.UserInfo.Gold < costgold)
                 {
                     response.Error = ErrorCode.ERR_GoldNotEnoughError;

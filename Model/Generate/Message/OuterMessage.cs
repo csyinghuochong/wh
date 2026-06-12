@@ -3958,6 +3958,9 @@ namespace ET
 		[ProtoMember(8)]
 		public int WaveId { get; set; }
 
+		[ProtoMember(9)]
+		public int TaskType { get; set; }
+
 	}
 
 	[ResponseType(nameof(M2C_RolePetList))]

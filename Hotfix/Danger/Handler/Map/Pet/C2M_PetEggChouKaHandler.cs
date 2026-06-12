@@ -25,7 +25,7 @@ namespace ET
 
             int dropId = 0;
             int exlporeNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PetExploreNumber);
-            string[] set = GlobalValueConfigCategory.Instance.Get(107).Value.Split(';');
+            string[] set = GlobalValueCategory.Instance.Get(107).Value.Split(';');
             float discount;
             if (exlporeNumber < int.Parse(set[0])) // 超过300次打8折
             {
@@ -38,8 +38,8 @@ namespace ET
 
             if (request.ChouKaType == 1)
             {
-                string needItems = GlobalValueConfigCategory.Instance.Get(39).Value.Split('@')[0];
-                dropId = int.Parse(GlobalValueConfigCategory.Instance.Get(39).Value.Split('@')[1]);
+                string needItems = GlobalValueCategory.Instance.Get(39).Value.Split('@')[0];
+                dropId = int.Parse(GlobalValueCategory.Instance.Get(39).Value.Split('@')[1]);
                 bool sucess = unit.GetComponent<BagComponent>().OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
                 if (!sucess)
                 {
@@ -53,8 +53,8 @@ namespace ET
             else if (request.ChouKaType == 10)
             {
                 UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
-                int needDimanond = int.Parse(GlobalValueConfigCategory.Instance.Get(40).Value.Split('@')[0]);
-                dropId = int.Parse(GlobalValueConfigCategory.Instance.Get(40).Value.Split('@')[1]);
+                int needDimanond = int.Parse(GlobalValueCategory.Instance.Get(40).Value.Split('@')[0]);
+                dropId = int.Parse(GlobalValueCategory.Instance.Get(40).Value.Split('@')[1]);
 
                 if (request.CostType == 2)
                 {

@@ -68,7 +68,7 @@ namespace ET
                      //Log.Debug($"Gold:  {userInfoComponent.Id} {sendGold} excharge");
                     break;
                 case 2:
-                    string[] droplist = GlobalValueConfigCategory.Instance.Get(81).Value.Split(';');
+                    string[] droplist = GlobalValueCategory.Instance.Get(81).Value.Split(';');
                     int dropid = int.Parse(droplist[0]);
                     List<RewardItem> rewardItems = new List<RewardItem>();
                     DropHelper.DropIDToDropItem_2(dropid, rewardItems);

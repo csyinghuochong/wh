@@ -331,13 +331,13 @@ namespace ET
                 if (leader != null && self.FubenType == TeamFubenType.XieZhu)
                 {
                     //协助副本掉落
-                    int dropId = int.Parse(GlobalValueConfigCategory.Instance.Get(75).Value);
+                    int dropId = int.Parse(GlobalValueCategory.Instance.Get(75).Value);
                     UnitFactory.CreateDropItems(leader, unit, 1, dropId, "1");
                 }
                 if (self.FubenType == TeamFubenType.ShenYuan)
                 {
                     //深渊副本掉落
-                    int dropId = int.Parse(GlobalValueConfigCategory.Instance.Get(77).Value);
+                    int dropId = int.Parse(GlobalValueCategory.Instance.Get(77).Value);
                     UnitFactory.CreateDropItems(null, unit, 0, dropId, "1");
                 }
 

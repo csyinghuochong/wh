@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
@@ -27,7 +27,7 @@ namespace ET
             Unit unit = aiComponent.GetParent<Unit>();
             List<Unit> units = UnitHelper.GetUnitList( aiComponent.DomainScene(), unit.Position, UnitType.Player, 3f );
 
-            int dropid = GlobalValueConfigCategory.Instance.Get(99).Value2;
+            int dropid = GlobalValueCategory.Instance.TempValue;
 
             List<string> rewardName = new List<string>();   
             for (int i = 0; i < units.Count; i++)

@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class FashionConfigCategory : ProtoObject, IMerge
+    public partial class FashionCategory : ProtoObject, IMerge
     {
-        public static FashionConfigCategory Instance;
+        public static FashionCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, FashionConfig> dict = new Dictionary<int, FashionConfig>();
+        private Dictionary<int, Fashion> dict = new Dictionary<int, Fashion>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<FashionConfig> list = new List<FashionConfig>();
+        private List<Fashion> list = new List<Fashion>();
 		
-        public FashionConfigCategory()
+        public FashionCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            FashionConfigCategory s = o as FashionConfigCategory;
+            FashionCategory s = o as FashionCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (FashionConfig config in list)
+            foreach (Fashion config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public FashionConfig Get(int id)
+        public Fashion Get(int id)
         {
-            this.dict.TryGetValue(id, out FashionConfig item);
+            this.dict.TryGetValue(id, out Fashion item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (FashionConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (Fashion)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, FashionConfig> GetAll()
+        public Dictionary<int, Fashion> GetAll()
         {
             return this.dict;
         }
 
-        public FashionConfig GetOne()
+        public Fashion GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class FashionConfig: ProtoObject, IConfig
+	public partial class Fashion: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

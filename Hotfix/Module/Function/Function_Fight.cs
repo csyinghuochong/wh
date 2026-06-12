@@ -1645,20 +1645,20 @@ namespace ET
             List<int> fashionids = unit.GetComponent<BagComponent>().FashionActiveIds;
             for (int i = 0; i < fashionids.Count; i++)
             {
-                if (!FashionConfigCategory.Instance.Contain(fashionids[i]))
+                if (!FashionCategory.Instance.Contain(fashionids[i]))
                 {
                     continue;
                 }
 
-                FashionConfig fashionConfig = FashionConfigCategory.Instance.Get(fashionids[i]);
-                if (fashionConfig.PropertyKey == null || fashionConfig.PropertyKey.Length == 0 || fashionConfig.PropertyKey[0] == 0)
+                Fashion fashion = FashionCategory.Instance.Get(fashionids[i]);
+                if (fashion.PropertyKey == null || fashion.PropertyKey.Length == 0 || fashion.PropertyKey[0] == 0)
                 {
                     continue;
                 }
 
-                for (int pro = 0; pro < fashionConfig.PropertyKey.Length; pro++ )
+                for (int pro = 0; pro < fashion.PropertyKey.Length; pro++ )
                 {
-                    AddUpdateProDicList(fashionConfig.PropertyKey[pro], fashionConfig.PropertyValue[pro], UpdateProDicList);
+                    AddUpdateProDicList(fashion.PropertyKey[pro], fashion.PropertyValue[pro], UpdateProDicList);
                 }
             }
             

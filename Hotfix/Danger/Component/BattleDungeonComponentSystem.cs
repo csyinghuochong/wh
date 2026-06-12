@@ -68,7 +68,7 @@ namespace ET
             {
                 winCamp = CampEnum.CampPlayer_2;
             }
-            GlobalValueConfig globalValueConfig = GlobalValueConfigCategory.Instance.Get(56);
+            GlobalValue globalValue = GlobalValueCategory.Instance.Get(56);
             List<long> winPlayers = winCamp == 1 ? Camp1Player: Camp2Player;
         
             long serverTime = TimeHelper.ServerNow();
@@ -79,7 +79,7 @@ namespace ET
                 mailInfo.Context = "战场奖励";
                 mailInfo.Title = "战场奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                string[] needList = globalValueConfig.Value.Split('@');
+                string[] needList = globalValue.Value.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');

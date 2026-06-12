@@ -10,7 +10,7 @@ namespace ET
 
         public override void Awake(BagComponent self)
         {
-            self.OnAddItemData(GlobalValueConfigCategory.Instance.Get(9).Value, $"{ItemGetWay.System}_{TimeHelper.ServerNow()}", false);
+            self.OnAddItemData(GlobalValueCategory.Instance.Get(9).Value, $"{ItemGetWay.System}_{TimeHelper.ServerNow()}", false);
             if (CommonHelper.IsBanHaoZone(self.DomainZone()))
             {
                 self.OnAddItemData($"10030001;1", $"{ItemGetWay.System}_{TimeHelper.ServerNow()}", false);
@@ -470,9 +470,9 @@ namespace ET
         {
             if (self.WarehouseAddedCell.Count == 0 || self.AdditionalCellNum.Count == 0)
             {
-                return GlobalValueConfigCategory.Instance.BagInitCapacity;
+                return GlobalValueCategory.Instance.BagInitCapacity;
             }
-            return self.WarehouseAddedCell[0] + self.AdditionalCellNum[0] + + GlobalValueConfigCategory.Instance.BagInitCapacity;
+            return self.WarehouseAddedCell[0] + self.AdditionalCellNum[0] + + GlobalValueCategory.Instance.BagInitCapacity;
         }
 
         public static bool IsHourseFullByLoc(this BagComponent self, int hourseId)
@@ -489,10 +489,10 @@ namespace ET
 
         public static int GetHourseTotalCell(this BagComponent self, int hourseId)
         {
-            int storeCapacity = GlobalValueConfigCategory.Instance.HourseInitCapacity;
+            int storeCapacity = GlobalValueCategory.Instance.HourseInitCapacity;
             if (hourseId == (int)ItemLocType.GemWareHouse1)
             {
-                storeCapacity = GlobalValueConfigCategory.Instance.GemStoreInitCapacity;
+                storeCapacity = GlobalValueCategory.Instance.GemStoreInitCapacity;
             }
             return storeCapacity + self.WarehouseAddedCell[hourseId] + self.AdditionalCellNum[hourseId];
         }
