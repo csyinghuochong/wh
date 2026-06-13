@@ -433,18 +433,7 @@ namespace ET
             {
                 record = false;
             }
-            else
-            {
-                if (!LDSceneCategory.Instance.Contain(sceneId))
-                {
-                    record = false;
-                    Log.Debug($"sceneconfig ==null:  sceneType: {sceneType} sceneId: {sceneId}");
-                }
-                else
-                {
-                    record = LDSceneCategory.Instance.Get(sceneId).IfInitPosi == 1;
-                }
-            }
+     
             if (record)
             {
                 numericComponent.Set(NumericType.MainCity_X, self.Position.x);

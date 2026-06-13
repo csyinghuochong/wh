@@ -92,11 +92,12 @@ namespace ET
 					case (int)MapTypeEnum.PetDungeon:
 					case (int)MapTypeEnum.PetTianTi:
 						LDScene ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-						scene.GetComponent<MapComponent>().NavMeshId = ldScene.MapID;
-						unit.AddComponent<PathfindingComponent, int>(ldScene.MapID);
-						Game.Scene.GetComponent<RecastPathComponent>().Update(ldScene.MapID);
+
+						scene.GetComponent<MapComponent>().NavMeshId = ldScene.GetNavMeshId();
+						unit.AddComponent<PathfindingComponent, int>(ldScene.GetNavMeshId());
+						Game.Scene.GetComponent<RecastPathComponent>().Update(ldScene.GetNavMeshId());
 						//更新unit坐标
-						unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f);
+						unit.Position = ldScene.GetBornPos(); 
 						unit.Rotation = Quaternion.identity;
 
 						m2CCreateUnits = new M2C_CreateMyUnit();
@@ -125,8 +126,8 @@ namespace ET
 						break;
 					case (int)MapTypeEnum.LocalDungeon:
 						numericComponent.ApplyValue(NumericType.TaskDungeonId, request.ChapterId, false);
-						DungeonConfig dungeonConfig = DungeonConfigCategory.Instance.Get(request.ChapterId);
-						scene.GetComponent<MapComponent>().NavMeshId = dungeonConfig.MapID;
+						LDScene dungeonConfig = LDSceneCategory.Instance.Get(request.ChapterId);
+						scene.GetComponent<MapComponent>().NavMeshId = dungeonConfig.GetNavMeshId();
 						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
 						Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
                         scene.GetComponent<LocalDungeonComponent>().MainUnit = unit;
@@ -135,12 +136,12 @@ namespace ET
                         int transferId = int.Parse(request.ParamInfo);
 						if (transferId != 0)
 						{
-							DungeonTransferConfig transferConfig = DungeonTransferConfigCategory.Instance.Get(transferId);
-							unit.Position = new Vector3(transferConfig.BornPos[0] * 0.01f, transferConfig.BornPos[1] * 0.01f, transferConfig.BornPos[2] * 0.01f);
+							LDScene_Teleport transferConfig = LDScene_TeleportCategory.Instance.Get(transferId);
+							unit.Position = new Vector3(transferConfig.Position[0] , transferConfig.Position[1] , transferConfig.Position[2]);
 						}
 						else
 						{
-							unit.Position = new Vector3(dungeonConfig.BornPosLeft[0] * 0.01f, dungeonConfig.BornPosLeft[1] * 0.01f, dungeonConfig.BornPosLeft[2] * 0.01f);
+							unit.Position = dungeonConfig.GetBornPos();
 						}
 
 						//神秘之门返回
@@ -208,7 +209,7 @@ namespace ET
 						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
 						ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
 						int startIndex = todayCamp == 1 ? 0 : 3;
-						unit.Position = new Vector3(ldScene.InitPos[startIndex+0] * 0.01f, ldScene.InitPos[startIndex + 1] * 0.01f, ldScene.InitPos[startIndex + 2] * 0.01f);
+						unit.Position = ldScene.GetBornPos();
 						unit.Rotation = Quaternion.identity;
 						// 通知客户端创建My Unit
 						m2CCreateUnits = new M2C_CreateMyUnit();
@@ -222,7 +223,7 @@ namespace ET
 					case MapTypeEnum.Arena:
 						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
 						ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-						unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f);
+						unit.Position = ldScene.GetBornPos();
 						unit.Rotation = Quaternion.identity;
 
 						// 通知客户端创建My Unit
@@ -237,7 +238,7 @@ namespace ET
 					case MapTypeEnum.UnionRace:
 						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
 						ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-						unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f);
+						unit.Position = ldScene.GetBornPos();
 						unit.Rotation = Quaternion.identity;
 
 						// 通知客户端创建My Unit
@@ -257,7 +258,7 @@ namespace ET
 						if (units.Count == 1)
 						{
 							//第1个人
-							unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f);
+							unit.Position = ldScene.GetBornPos();
 						}
 
 						if (units.Count == 2)
@@ -280,7 +281,7 @@ namespace ET
 					case MapTypeEnum.RunRace:
                         unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
                         ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-                        unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f + RandomHelper.RandomNumberFloat(-1f, 1f), ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f + RandomHelper.RandomNumberFloat(-1f, 1f));
+                        unit.Position = ldScene.GetBornPos();
                         unit.Rotation = Quaternion.identity;
 
                         unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, 0, false);
@@ -300,7 +301,7 @@ namespace ET
 					case MapTypeEnum.Demon:
                         unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
                         ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-                        unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f + RandomHelper.RandomNumberFloat(-1f, 1f), ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f + RandomHelper.RandomNumberFloat(-1f, 1f));
+                        unit.Position = ldScene.GetBornPos();
                         unit.Rotation = Quaternion.identity;
 
                         unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, 0, false);
@@ -317,13 +318,13 @@ namespace ET
 						if (unit.GetParent<UnitComponent>().GetAll().Count == 1)
                         {
 							//第一个玩家坐标
-                            unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f);
+							unit.Position = ldScene.GetBornPos();
                             unit.Rotation = Quaternion.identity;
                         }
 						else
 						{
                             //第二个玩家坐标
-                            unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f + 1f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f + 1f);
+                            unit.Position = RandomHelper.GetRandomPointInCircle(ldScene.GetBornPos(), 2f);
                             unit.Rotation = Quaternion.identity;
                         }
 
@@ -347,7 +348,7 @@ namespace ET
                     case MapTypeEnum.SeasonTower:
                         unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
 						ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-						unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f);
+						unit.Position = ldScene.GetBornPos();
 						unit.Rotation = Quaternion.identity;
 
 						// 通知客户端创建My Unit
@@ -423,7 +424,7 @@ namespace ET
                     case MapTypeEnum.TowerOfSeal:
 	                    unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
 	                    ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-	                    unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f);
+	                    unit.Position = ldScene.GetBornPos();
 	                    unit.Rotation = Quaternion.identity;
 
 	                    // 通知客户端创建My Unit

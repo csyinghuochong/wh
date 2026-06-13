@@ -103,9 +103,9 @@ namespace ET
 
             //判断家族人数是否已满
             //获取家族等级
-            UnionConfig unionCof = UnionConfigCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
+            LDUnion ldUnionCof = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
             //判断家族成员是否已达上限
-            if (replyCode == 1 && dBUnionInfo.UnionInfo.UnionPlayerList.Count >= unionCof.PeopleNum)
+            if (replyCode == 1 && dBUnionInfo.UnionInfo.UnionPlayerList.Count >= ldUnionCof.PeopleNum)
             {
                 return ErrorCode.ERR_Union_PeopleMax;
             }
@@ -534,11 +534,15 @@ namespace ET
         /// <param name="defend"></param>
         public static void OnKillEvent(this UnionSceneComponent self, Scene scene,Unit defend)
         {
+            
+            Log.Error("UnionSceneComponent.OnKillEvent:  {defend.ConfigId}");
+            /*
             LDScene ldScene = LDSceneCategory.Instance.Get(2000009);
             if (defend.Type != UnitType.Monster || defend.ConfigId != ldScene.BossId)
             {
                 return;
             }
+            */
 
             long serverTime = TimeHelper.ServerNow();
             List<Unit> players = UnitHelper.GetUnitList(scene, UnitType.Player);
@@ -563,11 +567,12 @@ namespace ET
             Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "UnionRace" + ldScene.Id.ToString(), SceneType.Map);
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
             mapComponent.SetMapInfo(ldScene.MapType, ldScene.Id, 0);
-            mapComponent.NavMeshId = ldScene.MapID;
+            mapComponent.NavMeshId = ldScene.Id;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             fubnescene.AddComponent<YeWaiRefreshComponent>().SceneId = 2000008;
-            FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonster);
-            FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonsterPosi);
+           
+            //FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonsterPosi);
+            
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
             self.UnionRaceSceneId = fubenid;
             self.UnionRaceSceneInstanceId = fubenInstanceId;    
@@ -586,7 +591,7 @@ namespace ET
            
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
             mapComponent.SetMapInfo((int)MapTypeEnum.Union, unionsceneid, 0);
-            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(unionsceneid).MapID;
+            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(unionsceneid).Id;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             FubenHelp.CreateNpc(fubnescene, unionsceneid);
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();

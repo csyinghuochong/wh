@@ -414,7 +414,7 @@ namespace ET
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
             mapComponent.SetMapInfo((int)MapTypeEnum.Solo, sceneId, 0);
-            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).MapID;
+            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).Id;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             return fubenid;
         }

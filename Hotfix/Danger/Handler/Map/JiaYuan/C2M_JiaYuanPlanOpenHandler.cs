@@ -17,13 +17,13 @@ namespace ET
                 return;
             }
             UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-            JiaYuanConfig jiaYuanConfig = JiaYuanConfigCategory.Instance.Get(userInfoComponent.UserInfo.JiaYuanLv);
-            if (jiaYuanComponent.GetOpenPlanNumber() >= jiaYuanConfig.FarmNumMax)
+            LDHome ldHome = LDHomeCategory.Instance.Get(userInfoComponent.UserInfo.JiaYuanLv);
+            /*if (jiaYuanComponent.GetOpenPlanNumber() >= ldHome.FarmNumMax)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;
                 reply();
                 return;
-            }
+            }*/
 
             int costNumber = CommonConfig.JiaYuanFarmOpen[request.CellIndex];
             if (!unit.GetComponent<BagComponent>().CheckCostItem($"13;{costNumber}"))

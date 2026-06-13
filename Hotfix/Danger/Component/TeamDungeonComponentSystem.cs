@@ -345,7 +345,7 @@ namespace ET
             }
 
             LDScene ldScene = LDSceneCategory.Instance.Get(self.TeamInfo.SceneId);
-            if (unit.ConfigId != ldScene.BossId)
+            if (unit.ConfigId != ldScene.GetBossID())
             {
                 return;
             }
@@ -353,17 +353,7 @@ namespace ET
             M2C_TeamDungeonSettlement m2C_FubenSettlement = new M2C_TeamDungeonSettlement();
             m2C_FubenSettlement.PassTime = 5*60 * 1000;
             m2C_FubenSettlement.PlayerList = self.TeamInfo.PlayerList;
-
-            DropHelper.DropIDToDropItem_2(ldScene.BoxDropID, m2C_FubenSettlement.RewardExtraItem);
-
-            DropHelper.DropIDToDropItem_2(ldScene.BoxDropID, m2C_FubenSettlement.ReardList);
-            DropHelper.DropIDToDropItem_2(ldScene.BoxDropID, m2C_FubenSettlement.ReardList);
-            DropHelper.DropIDToDropItem_2(ldScene.BoxDropID, m2C_FubenSettlement.ReardList);
-
-            DropHelper.DropIDToDropItem_2(ldScene.BoxDropID, m2C_FubenSettlement.ReardListExcess);
-            DropHelper.DropIDToDropItem_2(ldScene.BoxDropID, m2C_FubenSettlement.ReardListExcess);
-            DropHelper.DropIDToDropItem_2(ldScene.BoxDropID, m2C_FubenSettlement.ReardListExcess);
-
+            
             //最高伤害额外奖励
             long idExtra = 0;
             int damageMax = 0;

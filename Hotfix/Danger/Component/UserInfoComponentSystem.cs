@@ -51,8 +51,8 @@ namespace ET
             UserInfo userInfo = self.UserInfo;
             userInfo.Sp = 1;
             userInfo.UserId = userId;
+            userInfo.JiaYuanLv = 1;
             userInfo.BaoShiDu = 100;
-            userInfo.JiaYuanLv = 10001;
             userInfo.JiaYuanFund = 10000;
             userInfo.AccInfoID =accountId;
             userInfo.Name = createRoleInfo.PlayerName;
@@ -103,14 +103,17 @@ namespace ET
 
         public static void OnJiaYuanExp(this UserInfoComponent self, float hour)
         {
-            JiaYuanConfig jiaYuanConfig = JiaYuanConfigCategory.Instance.Get(self.UserInfo.JiaYuanLv);
-            if (jiaYuanConfig.NextID == 0)
+            
+            if ( !LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv + 1) )
             {
+                
                 return;
             }
+            
+            LDHome ldHome = LDHomeCategory.Instance.Get(self.UserInfo.JiaYuanLv);
             //self.UserInfo.JiaYuanExp += jiaYuanConfig.JiaYuanAddExp;
-            int addexp = Mathf.FloorToInt(hour * jiaYuanConfig.JiaYuanAddExp);
-            self.UpdateRoleMoneyAdd(UserDataType.JiaYuanExp, $"{addexp}", true, ItemGetWay.JiaYuanExchange);
+            //int addexp = Mathf.FloorToInt(hour * ldHome.JiaYuanAddExp);
+            //self.UpdateRoleMoneyAdd(UserDataType.JiaYuanExp, $"{addexp}", true, ItemGetWay.JiaYuanExchange);
         }
 
         public static void OnRongyuChanChu(this UserInfoComponent self, int coefficient, bool notice)
@@ -231,10 +234,9 @@ namespace ET
 
         public static void CheckData(this UserInfoComponent self)
         {
-
-            if (self.UserInfo.JiaYuanLv <= 0)
+            if (LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv))
             {
-                self.UserInfo.JiaYuanLv = 10001;
+                self.UserInfo.JiaYuanLv = 1;
             }
             if (self.UserInfo.SeasonLevel == 0)
             {
@@ -329,7 +331,7 @@ namespace ET
                     self.UserInfo.UnionKeJiList.Add(UnionKeJiConfigCategory.Instance.GetFristId( keji ) );
                 }
             }
-            if (JiaYuanConfigCategory.Instance.Get(self.UserInfo.JiaYuanLv).NextID <= 0 && self.UserInfo.JiaYuanExp > 0)
+            if (LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv +1) && self.UserInfo.JiaYuanExp > 0)
             {
                 Console.WriteLine($"清空家园经验: {self.Id}  {self.UserInfo.JiaYuanLv}  {self.UserInfo.JiaYuanExp}");
             }
@@ -657,7 +659,7 @@ namespace ET
                 if (sceneType == MapTypeEnum.LocalDungeon && beKill.IsBoss())
                 {
                     int killNumber = main.GetComponent<UserInfoComponent>().GetMonsterKillNumber(mCof.Id);
-                    int chpaterid = DungeonConfigCategory.Instance.GetChapterByDungeon(sceneId);
+                    int chpaterid = -1;////LDSceneCategory.Instance.GetChapterByDungeon(sceneId);
                     BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
                     expcoefficient *= bossDevelopment.ExpAdd;
                 }
@@ -1544,9 +1546,9 @@ namespace ET
             self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, self.UserInfo.HorseIds[0]);
             self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.HorseFightID, self.UserInfo.HorseIds[0]);
 
-            JiaYuanConfig maxjiayuan = null;
-            Dictionary<int, JiaYuanConfig> allJiayuan = JiaYuanConfigCategory.Instance.GetAll();
-            foreach ((int jiayualv, JiaYuanConfig jiaYuanConfig) in allJiayuan)
+            LDHome maxjiayuan = null;
+            Dictionary<int, LDHome> allJiayuan = LDHomeCategory.Instance.GetAll();
+            foreach ((int jiayualv, LDHome jiaYuanConfig) in allJiayuan)
             {
                 maxjiayuan = jiaYuanConfig;
             }

@@ -104,8 +104,8 @@ namespace ET
                 if (round == 0 || round >= 10)
                 {
                     round = 0;
-                    NpcConfig npcConfig = NpcConfigCategory.Instance.Get(unit.ConfigId);
-                    float moverate = npcConfig.NpcPar[1] * 0.0001f;
+                    LDNPC ldNpc = LDNPCCategory.Instance.Get(unit.ConfigId);
+                    float moverate = 0f;///ldNpc.NpcPar[1] * 0.0001f;
                     int state = RandomHelper.RandFloat01() >= moverate ? 1 : 2; //1移动 2停止
                     if (state == 1 || lastState == 0)
                     {

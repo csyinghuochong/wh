@@ -17,12 +17,13 @@ namespace ET
 
 			UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
 			LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
-			if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= userInfoComponent.GetSceneFubenTimes(sceneid))
+			
+			/*if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= userInfoComponent.GetSceneFubenTimes(sceneid))
 			{
 				response.Error = ErrorCode.ERR_TimesIsNot;
 				reply();
 				return;
-			}
+			}*/
 
 			int errorcode = ErrorCode.ERR_Success;
 			//判断队长是否有深渊票

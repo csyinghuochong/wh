@@ -10,26 +10,26 @@ namespace ET
         {
             UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
             int lvid = userInfoComponent.UserInfo.JiaYuanLv;
-            JiaYuanConfig jiaYuanConfig = JiaYuanConfigCategory.Instance.Get(lvid);
-            if (jiaYuanConfig.NextID == 0)
+            LDHome ldHome = LDHomeCategory.Instance.Get(lvid);
+            if ( !LDHomeCategory.Instance.Contain(lvid) )
             {
                 reply();
                 return;
             }
-            if (userInfoComponent.UserInfo.Lv < jiaYuanConfig.NeedRoseLv)
+            /*if (userInfoComponent.UserInfo.Lv < ldHome.NeedRoseLv)
             {
                 response.Error = ErrorCode.ERR_LevelIsNot;
                 reply();
                 return;
-            }
-            if (userInfoComponent.UserInfo.JiaYuanExp < jiaYuanConfig.Exp)
+            }*/
+            if (userInfoComponent.UserInfo.JiaYuanExp < ldHome.Exp)
             {
                 response.Error = ErrorCode.ERR_ExpNoEnough;
                 reply();
                 return;
             }
 
-            userInfoComponent.UpdateRoleData(UserDataType.JiaYuanExp, (jiaYuanConfig.Exp * -1).ToString());
+            userInfoComponent.UpdateRoleData(UserDataType.JiaYuanExp, (ldHome.Exp * -1).ToString());
             userInfoComponent.UpdateRoleData(UserDataType.JiaYuanLv, "1");
 
             reply();

@@ -36,7 +36,7 @@ namespace ET
                 {
                     continue;
                 }
-                Update(sceneConfig.Value.MapID);
+                Update(sceneConfig.Key);
             }
         }
 

@@ -463,8 +463,6 @@ namespace ET
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
             LDScene ldScene = LDSceneCategory.Instance.Get(mapComponent.SceneId);
 
-            FubenHelp.CreateMonsterList(self.DomainScene(), ldScene.CreateMonster);
-            FubenHelp.CreateMonsterList(self.DomainScene(), ldScene.CreateMonsterPosi);
         }
 
         public static void OnTimer(this YeWaiRefreshComponent self)

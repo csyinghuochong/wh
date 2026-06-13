@@ -90,15 +90,15 @@ namespace ET
 
         public static void GenerateFubenScene(this LocalDungeonComponent self, int mapid)
         {
-            DungeonConfig chapterSonConfig = DungeonConfigCategory.Instance.Get(mapid);
+            LDScene chapterSonConfig = LDSceneCategory.Instance.Get(mapid);
 
             string allmonster = SceneConfigHelper.GetLocalDungeonMonsters_2(mapid);
             FubenHelp.CreateMonsterList(self.DomainScene(), allmonster);
 
             //生成npc
             int[] npcList = chapterSonConfig.NpcList;
-            Vector3 npcpos = new Vector3(chapterSonConfig.BornPosLeft[0]*0.01f,chapterSonConfig.BornPosLeft[1], chapterSonConfig.BornPosLeft[2]*0.01f );
-            if (npcList != null)
+            Vector3 npcpos = chapterSonConfig.GetBornPos();
+          if (npcList != null)
             {
                 for (int i = 0; i < npcList.Length; i++)
                 {
@@ -111,7 +111,7 @@ namespace ET
             }
             //生成传送点
             //读取传送坐标点配置
-            if (chapterSonConfig.TransmitPos != null)
+            /*if (chapterSonConfig.TransmitPos != null)
             {
                 for (int i = 0; i < chapterSonConfig.TransmitPos.Length; i++)
                 {
@@ -134,7 +134,7 @@ namespace ET
                     chuansong.Position = vector3;
                     chuansong.AddComponent<AOIEntity, int, Vector3>(9 * 1000, chuansong.Position);
                 }
-            }
+            }*/
             
         }
 

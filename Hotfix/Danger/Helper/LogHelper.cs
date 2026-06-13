@@ -92,7 +92,7 @@ namespace ET
                 return;
             }
             string serverName = serverItem.ServerName;
-            string sceneName = LDSceneCategory.Instance.Get(mapComponent.SceneId).Name;
+            string sceneName = LDSceneCategory.Instance.Get(mapComponent.SceneId).GetSceneName();
 
             UserInfoComponent attackUserinfo = attack.GetComponent<UserInfoComponent>();
             UserInfoComponent defendUserinfo = defend.GetComponent<UserInfoComponent>();

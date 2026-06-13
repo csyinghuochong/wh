@@ -41,11 +41,11 @@ namespace ET
 
                     if (unit.GetBattleCamp() == CampEnum.CampPlayer_1)
                     {
-                        unit.SetBornPosition(new Vector3(ldScene.InitPos[0] * 0.01f, ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f), true);
+                        unit.SetBornPosition(ldScene.GetBornPos(), false);
                     }
                     else
                     {
-                        unit.SetBornPosition(new Vector3(ldScene.InitPos[3] * 0.01f, ldScene.InitPos[4] * 0.01f, ldScene.InitPos[5] * 0.01f), true);
+                        unit.SetBornPosition(ldScene.GetBorn2Pos(), false);
                     }
                 }
 

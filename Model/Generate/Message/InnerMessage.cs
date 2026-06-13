@@ -2332,38 +2332,6 @@ namespace ET
 	}
 
 //通知其他服务进程刷新肝帝
-	[ResponseType(nameof(F2R_WorldLvUpdateResponse))]
-	[Message(InnerOpcode.R2F_WorldLvUpdateRequest)]
-	[ProtoContract]
-	public partial class R2F_WorldLvUpdateRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public ServerInfo ServerInfo { get; set; }
-
-	}
-
-	[Message(InnerOpcode.F2R_WorldLvUpdateResponse)]
-	[ProtoContract]
-	public partial class F2R_WorldLvUpdateResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//通知其他服务进程刷新肝帝
 	[ResponseType(nameof(M2F_ServerInfoUpdateResponse))]
 	[Message(InnerOpcode.F2M_ServerInfoUpdateRequest)]
 	[ProtoContract]

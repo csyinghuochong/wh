@@ -333,8 +333,8 @@ namespace ET
             List<int> openfubenids = new List<int>();
             int lv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
 
-            Dictionary<int, DungeonConfig> allfuben =  DungeonConfigCategory.Instance.GetAll();
-            foreach (( int fubenid, DungeonConfig config) in allfuben)
+            Dictionary<int, LDScene> allfuben =  LDSceneCategory.Instance.GetAll();
+            foreach (( int fubenid, LDScene config) in allfuben)
             {
                 if (config.Id == 50007)
                 {
@@ -344,7 +344,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (config.EnterLv <= lv && config.Id < CommonConfig.GMDungeonId)
+                if (config.GetEnterLv() <= lv && config.Id < CommonConfig.GMDungeonId)
                 {
                     openfubenids.Add(fubenid);
                 }

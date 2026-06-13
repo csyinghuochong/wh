@@ -852,19 +852,7 @@ namespace ET
         //字符串添加道具 
         public static bool OnAddItemData(this BagComponent self, string rewardItems, string getType, bool notice = true)
         {
-            List<RewardItem> costItems = new List<RewardItem>();
-            string[] needList = rewardItems.Split('@');
-            for (int i = 0; i < needList.Length; i++)
-            {
-                string[] itemInfo = needList[i].Split(';');
-                if (itemInfo.Length < 2)
-                {
-                    continue;
-                }
-                int itemId = int.Parse(itemInfo[0]);
-                int itemNum = int.Parse(itemInfo[1]);
-                costItems.Add(new RewardItem() { ItemID = itemId, ItemNum = itemNum });
-            }
+            List<RewardItem> costItems = ItemHelper.GetRewardItems(rewardItems);
             return self.OnAddItemData(costItems, string.Empty, getType, notice);
         }
 

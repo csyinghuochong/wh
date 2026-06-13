@@ -60,7 +60,7 @@ namespace ET
                 int addvalue = RandomHelper.RandomNumber(int.Parse(attriinfo[1]), maxValue + 1);
                 KeyValuePair keyValuePair = jiaYuanComponent.GetDaShiProInfo(numeid);
                 int curvalue = keyValuePair != null ? int.Parse(keyValuePair.Value) : 0;
-                int maxvalue = JiaYuanConfigCategory.Instance.GetProMax(jiayuanlv, numeid);
+                int maxvalue = LDHomeCategory.Instance.GetProMax(jiayuanlv, numeid);
                 addvalue = Math.Min(addvalue, maxvalue - curvalue);
                 addvalue = Math.Max( addvalue, 0 );
                 jiaYuanComponent.UpdateDaShiProInfo( numeid, addvalue );

@@ -18,10 +18,10 @@ namespace ET
             {
                 int sceneid = mapComponent.SceneId;
                 LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
-                if (ldScene.IfMount == 1)
+                /*if (ldScene.IfMount == 1)
                 {
                     return;
-                }
+                }*/
             }
 
             int horseRide = self.GetComponent<NumericComponent>().GetAsInt(NumericType.HorseRide);

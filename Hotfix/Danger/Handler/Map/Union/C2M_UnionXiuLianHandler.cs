@@ -59,10 +59,10 @@ namespace ET
                        DBHelper.GetUnionServerId(unit.DomainZone()),
                        new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });
             int unionLevel = int.Parse(responseUnionEnter.Par);
-            UnionConfig unionConfig = UnionConfigCategory.Instance.Get(unionLevel);
+            LDUnion ldUnion = LDUnionCategory.Instance.Get(unionLevel);
 
             //Console.WriteLine($"unionConfig:  {unionLevel}  {unionConfig.XiuLianLevel} {unionQiangHuaConfig.QiangHuaLv}");
-            if (unionQiangHuaConfig.QiangHuaLv >= unionConfig.XiuLianLevel)
+            if (unionQiangHuaConfig.QiangHuaLv >= ldUnion.XiuLianLevel)
             {
                 reply();
                 return; 

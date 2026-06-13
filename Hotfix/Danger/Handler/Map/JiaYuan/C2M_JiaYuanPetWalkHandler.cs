@@ -28,14 +28,14 @@ namespace ET
             }
 
             UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-            JiaYuanConfig jiaYuanConfig = JiaYuanConfigCategory.Instance.Get(userInfoComponent.UserInfo.JiaYuanLv);
-            if (request.Position == 1 &&  userInfoComponent.UserInfo.Lv < jiaYuanConfig.Lv)
+
+            if (request.Position == 1 &&  userInfoComponent.UserInfo.Lv < userInfoComponent.UserInfo.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;
                 reply();
                 return;
             }
-            if (request.Position == 2 && userInfoComponent.UserInfo.Lv < jiaYuanConfig.Lv)
+            if (request.Position == 2 && userInfoComponent.UserInfo.Lv < userInfoComponent.UserInfo.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;
                 reply();

@@ -45,8 +45,8 @@ namespace ET
                         return;
                     }
 
-                    JiaYuanFarmConfig jiaYuanFarmConfig = JiaYuanFarmConfigCategory.Instance.Get(unitplan.ConfigId);
-                    unit.GetComponent<BagComponent>().OnAddItemData($"{jiaYuanFarmConfig.GetItemID};1", $"{ItemGetWay.JiaYuanGather}_{TimeHelper.ServerNow()}");
+                    LDHome_Farm ldHomeFarm = LDHome_FarmCategory.Instance.Get(unitplan.ConfigId);
+                    unit.GetComponent<BagComponent>().OnAddItemData(ldHomeFarm.Reward, $"{ItemGetWay.JiaYuanGather}_{TimeHelper.ServerNow()}");
 
                     unitplan.GetComponent<NumericComponent>().ApplyValue(NumericType.GatherLastTime, TimeHelper.ServerNow());
                     unitplan.GetComponent<NumericComponent>().ApplyChange(null, NumericType.GatherNumber, 1, 0);

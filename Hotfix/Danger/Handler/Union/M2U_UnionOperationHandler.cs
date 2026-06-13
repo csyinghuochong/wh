@@ -23,7 +23,7 @@ namespace ET
                 {
                     case 1:
                         //Par = $"{playerName}_{getWay}_{dataType}_{dataValue}
-                        UnionConfig unionConfig = null;
+                        LDUnion ldUnion = null;
                         string[] valuePararm = request.Par.Split('_');
 
                         if (valuePararm[2] == "17") // UserDataType.UnionExp
@@ -36,19 +36,19 @@ namespace ET
                             }
                             int level = dBUnionInfo.UnionInfo.Level;
                             dBUnionInfo.UnionInfo.Exp += addExp;
-                            unionConfig = UnionConfigCategory.Instance.Get(level);
-                            if (dBUnionInfo.UnionInfo.Exp >= unionConfig.Exp && UnionConfigCategory.Instance.Contain(level + 1))
+                            ldUnion = LDUnionCategory.Instance.Get(level);
+                            if (dBUnionInfo.UnionInfo.Exp >= ldUnion.Exp && LDUnionCategory.Instance.Contain(level + 1))
                             {
                                 dBUnionInfo.UnionInfo.Level++;
-                                dBUnionInfo.UnionInfo.Exp -= unionConfig.Exp;
+                                dBUnionInfo.UnionInfo.Exp -= ldUnion.Exp;
 
                                 MailInfo mailInfo = new MailInfo();
                                 mailInfo.Title = "家族升级";
                                 mailInfo.Context = "恭喜您!您所在得家族等级获得提升,这是家族升级的奖励!";
 
                                 long serverTime = TimeHelper.ServerNow();
-                                UnionConfig unionCof = UnionConfigCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
-                                string[] rewardStrList = unionCof.UpAllReward.Split(';');
+                                LDUnion ldUnionCof = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
+                                string[] rewardStrList = ldUnionCof.UpAllReward.Split(';');
                                 for (int i = 0; i < rewardStrList.Length; i++)
                                 {
                                     string[] rewardList = rewardStrList[i].Split(',');
@@ -68,11 +68,11 @@ namespace ET
                         }
                         else if (valuePararm[2] == "35") //UserDataType.UnionGold
                         {
-                            unionConfig = UnionConfigCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
+                            ldUnion = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
                             dBUnionInfo.UnionInfo.UnionGold += int.Parse(valuePararm[3]);
-                            if (dBUnionInfo.UnionInfo.UnionGold > unionConfig.UnionGoldLimit)
+                            if (dBUnionInfo.UnionInfo.UnionGold > ldUnion.UnionGoldLimit)
                             {
-                                dBUnionInfo.UnionInfo.UnionGold = unionConfig.UnionGoldLimit;
+                                dBUnionInfo.UnionInfo.UnionGold = ldUnion.UnionGoldLimit;
                             }
                         }
                         else
@@ -95,9 +95,9 @@ namespace ET
                     case 3:  //金币捐献
                         dBUnionInfo.UnionInfo.Level = Math.Max(dBUnionInfo.UnionInfo.Level, 1);
                         response.Par = dBUnionInfo.UnionInfo.Level.ToString();
-                        unionConfig = UnionConfigCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
+                        ldUnion = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
                         long selfgold = long.Parse(request.Par);
-                        if (selfgold < unionConfig.DonateGold)
+                        if (selfgold < ldUnion.DonateGold)
                         {
                             response.Error = ErrorCode.ERR_GoldNotEnoughError;
                             reply();
@@ -109,7 +109,7 @@ namespace ET
                         }
                         dBUnionInfo.UnionInfo.DonationRecords.Add( new DonationRecord()
                         { 
-                            Gold = unionConfig.DonateGold,
+                            Gold = ldUnion.DonateGold,
                             Time = TimeHelper.ServerNow(),
                             UnitId = request.UnitId
                         });
@@ -118,9 +118,9 @@ namespace ET
                     case 4: //钻石捐献
                         dBUnionInfo.UnionInfo.Level = Math.Max(dBUnionInfo.UnionInfo.Level, 1);
                         response.Par = dBUnionInfo.UnionInfo.Level.ToString();
-                        unionConfig = UnionConfigCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
+                        ldUnion = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
                         long selfDiamond = long.Parse(request.Par);
-                        if (selfDiamond < unionConfig.DonateDiamond)
+                        if (selfDiamond < ldUnion.DonateDiamond)
                         {
                             response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                             reply();
@@ -132,7 +132,7 @@ namespace ET
                         }
                         dBUnionInfo.UnionInfo.DonationRecords.Add( new DonationRecord()
                         { 
-                            Diamond = unionConfig.DonateDiamond,
+                            Diamond = ldUnion.DonateDiamond,
                             Time = TimeHelper.ServerNow(),
                             UnitId = request.UnitId
                         });

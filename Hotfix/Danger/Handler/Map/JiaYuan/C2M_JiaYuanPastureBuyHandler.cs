@@ -41,27 +41,27 @@ namespace ET
 
             JiaYuanComponent jiaYuanComponent = unit.GetComponent<JiaYuanComponent>();
             UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-            JiaYuanConfig jiaYuanConfig = JiaYuanConfigCategory.Instance.Get(userInfoComponent.UserInfo.JiaYuanLv);
+            LDHome ldHome = LDHomeCategory.Instance.Get(userInfoComponent.UserInfo.JiaYuanLv);
 
-            if (jiaYuanPastureConfig.BuyJiaYuanLv > jiaYuanConfig.Lv)
+            if (jiaYuanPastureConfig.BuyJiaYuanLv > userInfoComponent.UserInfo.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_LvNoHigh;
                 reply();
                 return;
             }
             
-            if (jiaYuanComponent.GetPeopleNumber() >= jiaYuanConfig.PeopleNumMax)
+            /*if (jiaYuanComponent.GetPeopleNumber() >= ldHome.PeopleNumMax)
             {
                 response.Error = ErrorCode.ERR_PeopleNumber;
                 reply();
                 return;
             }
-            if (jiaYuanComponent.GetPeopleNumber() + jiaYuanPastureConfig.PeopleNum > jiaYuanConfig.PeopleNumMax)
+            if (jiaYuanComponent.GetPeopleNumber() + jiaYuanPastureConfig.PeopleNum > ldHome.PeopleNumMax)
             {
                 response.Error = ErrorCode.ERR_PeopleNoEnough;
                 reply();
                 return;
-            }
+            }*/
 
             if (request.ProductId != -1)
             {

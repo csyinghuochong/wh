@@ -78,102 +78,51 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>章节名称</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public string Name { get; set; }
-		/// <summary>章节名称</summary>
+		public int Name { get; set; }
+		/// <summary>描述</summary>
 		[ProtoMember(3)]
-		public string Name_EN { get; set; }
-		/// <summary>图标显示</summary>
+		public int Desc { get; set; }
+		/// <summary>准入 等级</summary>
 		[ProtoMember(4)]
-		public string Icon { get; set; }
-		/// <summary>图标显示2</summary>
+		public int Lv_Enter { get; set; }
+		/// <summary>推荐 等级</summary>
 		[ProtoMember(5)]
-		public string Icon2 { get; set; }
-		/// <summary>摆摊区域</summary>
+		public int Lv_Suggest { get; set; }
+		/// <summary>人数 限制</summary>
 		[ProtoMember(6)]
-		public int[] StallArea { get; set; }
-		/// <summary>出生坐标点</summary>
+		public int Limit_Player { get; set; }
+		/// <summary>次数 限制</summary>
 		[ProtoMember(7)]
-		public int[] InitPos { get; set; }
-		/// <summary>NPC</summary>
+		public int Limit_Times { get; set; }
+		/// <summary>类型</summary>
 		[ProtoMember(8)]
-		public int[] NpcList { get; set; }
-		/// <summary>地图类型</summary>
-		[ProtoMember(9)]
 		public int MapType { get; set; }
-		/// <summary>地图ID</summary>
+		/// <summary>出生点</summary>
+		[ProtoMember(9)]
+		public double[] Pos_Born { get; set; }
+		/// <summary>传送ID</summary>
 		[ProtoMember(10)]
-		public int MapID { get; set; }
-		/// <summary>loading图</summary>
+		public int[] Teleport_Id { get; set; }
+		/// <summary>NPC</summary>
 		[ProtoMember(11)]
-		public string LoadingRes { get; set; }
-		/// <summary>是否有小地图</summary>
+		public int[] NpcList { get; set; }
+		/// <summary>小地图 0-不显示 1-显示</summary>
 		[ProtoMember(12)]
-		public int ifShowMinMap { get; set; }
-		/// <summary>是否可以使用复活</summary>
+		public int If_MiniMap { get; set; }
+		/// <summary>允许坐骑 0-否 1-是</summary>
 		[ProtoMember(13)]
-		public int IfUseRes { get; set; }
-		/// <summary>PVP 0-不允许 1-允许</summary>
+		public int If_Mount { get; set; }
+		/// <summary>摄像机</summary>
 		[ProtoMember(14)]
-		public int IfPVP { get; set; }
-		/// <summary>使用道具 0-可以 1-不可以</summary>
-		[ProtoMember(15)]
-		public int IfUseSkillItem { get; set; }
-		/// <summary>返回主城是否在默认点 0-默认点 1-上次坐标点</summary>
-		[ProtoMember(16)]
-		public int IfInitPosi { get; set; }
-		/// <summary>音乐</summary>
-		[ProtoMember(17)]
-		public string Music { get; set; }
-		/// <summary>创建等级限制</summary>
-		[ProtoMember(18)]
-		public int CreateLv { get; set; }
-		/// <summary>进入等级限制</summary>
-		[ProtoMember(19)]
-		public int EnterLv { get; set; }
-		/// <summary>推荐等级</summary>
-		[ProtoMember(20)]
-		public int[] TuiJianLv { get; set; }
-		/// <summary>进入人数限制</summary>
-		[ProtoMember(21)]
-		public int PlayerLimit { get; set; }
-		/// <summary>进入次数限制</summary>
-		[ProtoMember(22)]
-		public int DayEnterNum { get; set; }
-		/// <summary>是否可以上马</summary>
-		[ProtoMember(23)]
-		public int IfMount { get; set; }
-		/// <summary>章节BossId</summary>
-		[ProtoMember(24)]
-		public int BossId { get; set; }
-		/// <summary>怪物生成坐标点</summary>
-		[ProtoMember(25)]
-		public string CreateMonster { get; set; }
-		/// <summary>怪物生成坐标点</summary>
-		[ProtoMember(26)]
-		public int[] CreateMonsterPosi { get; set; }
-		/// <summary>章节文本描述</summary>
-		[ProtoMember(27)]
-		public string ChapterDes { get; set; }
-		/// <summary>章节文本描述</summary>
-		[ProtoMember(28)]
-		public string ChapterDes_EN { get; set; }
-		/// <summary>奖励展示</summary>
-		[ProtoMember(29)]
-		public string RewardShow { get; set; }
-		/// <summary>通关经验奖励</summary>
-		[ProtoMember(30)]
-		public int RewardExp { get; set; }
-		/// <summary>通关金币奖励</summary>
-		[ProtoMember(31)]
-		public int RewardGold { get; set; }
-		/// <summary>翻卡掉落ID</summary>
-		[ProtoMember(32)]
-		public int BoxDropID { get; set; }
-		/// <summary>摄像机参数</summary>
-		[ProtoMember(33)]
 		public double[] CameraPos { get; set; }
+		/// <summary>Loading</summary>
+		[ProtoMember(15)]
+		public int[] LoadingRes { get; set; }
+		/// <summary>音乐</summary>
+		[ProtoMember(16)]
+		public string Music { get; set; }
 
 	}
 }

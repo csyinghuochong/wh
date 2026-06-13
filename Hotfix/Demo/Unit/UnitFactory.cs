@@ -259,7 +259,7 @@ namespace ET
 
         public static Unit CreateNpc(Scene scene, int npcId, Vector3 vector3)
         {
-            NpcConfig npcConfig = NpcConfigCategory.Instance.Get(npcId);
+            LDNPC ldNpc = LDNPCCategory.Instance.Get(npcId);
 
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), npcId);
             scene.GetComponent<UnitComponent>().Add(unit);
@@ -268,27 +268,16 @@ namespace ET
             unit.ConfigId = npcId;
             unit.Position = vector3;
             //unit.Position = new Vector3(npcConfig.Position[0] * 0.01f, npcConfig.Position[1] * 0.01f, npcConfig.Position[2] * 0.01f);
-            unit.Rotation = Quaternion.Euler(0, npcConfig.Rotation, 0);
+            unit.Rotation = Quaternion.Euler(0, 0, 0);
             unit.Type = UnitType.Npc;
-            if (npcConfig.AI > 0)
-            {
-                unit.AddComponent<MoveComponent>();
-                unit.AddComponent<StateComponent>();
-                NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-                numericComponent.Set(NumericType.Numeric_Error, npcConfig.NpcPar[0]);
-                unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
-                unit.AddComponent<AIComponent, int>(npcConfig.AI);     //AI行为树序号	
-                unit.GetComponent<AIComponent>().InitNpc(npcId);
-                unit.GetComponent<AIComponent>().Begin();
-            }
-
+           
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             return unit;
         }
 
         public static Unit CreateNpcByPosition(Scene scene, int npcId, Vector3 vector3)
         {
-            NpcConfig npcConfig = NpcConfigCategory.Instance.Get(npcId);
+            LDNPC ldNpc = LDNPCCategory.Instance.Get(npcId);
 
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), npcId);
             scene.GetComponent<UnitComponent>().Add(unit);
@@ -296,20 +285,9 @@ namespace ET
             unit.AddComponent<UnitInfoComponent>();
             unit.ConfigId = npcId;
             unit.Position = vector3;
-            unit.Rotation = Quaternion.Euler(0, npcConfig.Rotation, 0);
+            unit.Rotation = Quaternion.Euler(0, 0, 0);
             unit.Type = UnitType.Npc;
-            if (npcConfig.AI > 0)
-            {
-                unit.AddComponent<MoveComponent>();
-                unit.AddComponent<StateComponent>();
-                NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-                numericComponent.Set(NumericType.Numeric_Error, npcConfig.NpcPar[0]);
-                unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
-                unit.AddComponent<AIComponent, int>(npcConfig.AI);     //AI行为树序号	
-                unit.GetComponent<AIComponent>().InitNpc(npcId);
-                unit.GetComponent<AIComponent>().Begin();
-            }
-
+            
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             return unit;
         }
@@ -503,7 +481,7 @@ namespace ET
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
 
-            unitInfoComponent.UnitName = JiaYuanFarmConfigCategory.Instance.Get(jiaYuanPlant.ItemId).Name;
+            unitInfoComponent.UnitName = LDHome_FarmCategory.Instance.Get(jiaYuanPlant.ItemId).Id.ToString();
 
             unit.ConfigId = jiaYuanPlant.ItemId;
             unit.AddComponent<StateComponent>();         //添加状态组件
@@ -728,7 +706,7 @@ namespace ET
             if (sceneType == MapTypeEnum.LocalDungeon && bekill.IsBoss() && bekill.ConfigId != SeasonHelper.SeasonBossId)
             {
                 int killNumber =  main.GetComponent<UserInfoComponent>().GetMonsterKillNumber(monsterCof.Id);
-                int chpaterid = DungeonConfigCategory.Instance.GetChapterByDungeon(scenid);
+                int chpaterid = -1;
                 BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
                 dropAdd_Pro += bossDevelopment.DropAdd;
             }

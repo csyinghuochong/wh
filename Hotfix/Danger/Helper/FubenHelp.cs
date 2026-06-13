@@ -478,7 +478,8 @@ namespace ET
 			{
 				return;
 			}
-			Vector3 npcpos = new Vector3(ldScene.InitPos[0]*0.01f,ldScene.InitPos[1], ldScene.InitPos[2]*0.01f );
+
+			Vector3 npcpos = ldScene.GetBornPos();
 			for (int i = 0; i < npcs.Length; i++)
 			{
 				if (npcs[i] == 0)

@@ -110,7 +110,9 @@ namespace ET
                 if (unit.Position.z >= -38.36f)
                 {
                     unit.GetComponent<MoveComponent>().Clear();
-                    unit.Position = new Vector3(ldScene.InitPos[0] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1), ldScene.InitPos[1] * 0.01f, ldScene.InitPos[2] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1));
+                    unit.Position = new Vector3((float)ldScene.Pos_Born[0]  + RandomHelper.RandomNumberFloat(-1, 1), 
+                        (float)ldScene.Pos_Born[1] * 0.01f, 
+                        (float)ldScene.Pos_Born[2] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1));
                     unit.Stop(-2);
 
                     unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.PullBack, "1");

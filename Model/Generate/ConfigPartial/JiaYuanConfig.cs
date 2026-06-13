@@ -2,7 +2,7 @@
 
 namespace ET
 {
-    public partial class JiaYuanConfigCategory
+    public partial class LDHomeCategory
     {
 
         public Dictionary<int, Dictionary<int, int>> JiaYuanProMax = new Dictionary<int, Dictionary<int, int>>();
@@ -23,7 +23,7 @@ namespace ET
 
         public override void AfterEndInit()
         {
-            foreach (JiaYuanConfig functionConfig in this.GetAll().Values)
+            foreach (LDHome functionConfig in this.GetAll().Values)
             {
    
                 if (!JiaYuanProMax.ContainsKey(functionConfig.Id))
@@ -31,7 +31,7 @@ namespace ET
                     Dictionary<int, int> keyValuePairs = new Dictionary<int, int>() { };
 
                     JiaYuanProMax.Add(functionConfig.Id, keyValuePairs);
-                    string proMax = functionConfig.ProMax;
+                    string proMax = string.Empty; /// functionConfig.ProMax;
                     string[] prolist = proMax.Split(';');
 
                     for (int i = 0; i < prolist.Length; i++)

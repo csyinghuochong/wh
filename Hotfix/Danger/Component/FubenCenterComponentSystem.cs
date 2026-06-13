@@ -122,7 +122,7 @@ namespace ET
             Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "Fuben" + ldScene.Id.ToString(), SceneType.Map);
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
             mapComponent.SetMapInfo(ldScene.MapType, ldScene.Id, 0);
-            mapComponent.NavMeshId = ldScene.MapID;
+            mapComponent.NavMeshId = ldScene.Id;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             YeWaiRefreshComponent yeWaiRefreshComponen = fubnescene.AddComponent<YeWaiRefreshComponent>();
             yeWaiRefreshComponen.SceneId = ldScene.Id;
@@ -142,8 +142,8 @@ namespace ET
                     break;
             }
 
-            FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonster);
-            FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonsterPosi);
+            //FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonster);
+            //FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonsterPosi);
 
             playerList.Add( fubenid, new List<long>() { unitId } );
 
@@ -306,7 +306,7 @@ namespace ET
                 Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "YeWai" + sceneConfigs[i].Id.ToString(), SceneType.Map);
                 MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
                 mapComponent.SetMapInfo(sceneConfigs[i].MapType, sceneConfigs[i].Id, 0);
-                mapComponent.NavMeshId = sceneConfigs[i].MapID; 
+                mapComponent.NavMeshId = sceneConfigs[i].Id; 
                 YeWaiRefreshComponent yeWaiRefreshComponen = fubnescene.AddComponent<YeWaiRefreshComponent>();
                 yeWaiRefreshComponen.SceneId = sceneConfigs[i].Id;
                 
@@ -319,8 +319,8 @@ namespace ET
                         break;
                 }
 
-                FubenHelp.CreateMonsterList(fubnescene, sceneConfigs[i].CreateMonster);
-                FubenHelp.CreateMonsterList(fubnescene, sceneConfigs[i].CreateMonsterPosi);
+                //FubenHelp.CreateMonsterList(fubnescene, sceneConfigs[i].CreateMonster);
+                //FubenHelp.CreateMonsterList(fubnescene, sceneConfigs[i].CreateMonsterPosi);
 
                 int openDay = DBHelper.GetOpenServerDay(self.DomainZone());
                 yeWaiRefreshComponen.OnZeroClockUpdate(openDay);

@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class UnionConfigCategory : ProtoObject, IMerge
+    public partial class LDUnionCategory : ProtoObject, IMerge
     {
-        public static UnionConfigCategory Instance;
+        public static LDUnionCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, UnionConfig> dict = new Dictionary<int, UnionConfig>();
+        private Dictionary<int, LDUnion> dict = new Dictionary<int, LDUnion>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<UnionConfig> list = new List<UnionConfig>();
+        private List<LDUnion> list = new List<LDUnion>();
 		
-        public UnionConfigCategory()
+        public LDUnionCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            UnionConfigCategory s = o as UnionConfigCategory;
+            LDUnionCategory s = o as LDUnionCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (UnionConfig config in list)
+            foreach (LDUnion config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public UnionConfig Get(int id)
+        public LDUnion Get(int id)
         {
-            this.dict.TryGetValue(id, out UnionConfig item);
+            this.dict.TryGetValue(id, out LDUnion item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (UnionConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDUnion)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, UnionConfig> GetAll()
+        public Dictionary<int, LDUnion> GetAll()
         {
             return this.dict;
         }
 
-        public UnionConfig GetOne()
+        public LDUnion GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class UnionConfig: ProtoObject, IConfig
+	public partial class LDUnion: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

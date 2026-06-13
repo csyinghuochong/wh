@@ -87,8 +87,8 @@ namespace ET
                 return;
             }
 
-            List<DungeonConfig> dungeonConfigs = new List<DungeonConfig>();
-            List<DungeonConfig> dungeonConfigsAll = DungeonConfigCategory.Instance.GetAll().Values.ToList();
+            List<LDScene> dungeonConfigs = new List<LDScene>();
+            List<LDScene> dungeonConfigsAll = LDSceneCategory.Instance.GetAll().Values.ToList();
 
             int roleLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
 
@@ -98,7 +98,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (dungeonConfigsAll[i].EnterLv <= roleLv && dungeonConfigsAll[i].Id < CommonConfig.GMDungeonId)
+                if (dungeonConfigsAll[i].GetEnterLv() <= roleLv && dungeonConfigsAll[i].Id < CommonConfig.GMDungeonId)
                 {
                     dungeonConfigs.Add(dungeonConfigsAll[i]);
                 }

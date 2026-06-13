@@ -31,7 +31,7 @@ namespace ET
             }
             if (mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon)
             {
-                if (DungeonConfigCategory.Instance.Get(mapComponent.SceneId).MapType == SceneSubTypeEnum.LocalDungeon_1)
+                if (LDSceneCategory.Instance.Get(mapComponent.SceneId).MapType == SceneSubTypeEnum.LocalDungeon_1)
                 {
                     return;
                 }
