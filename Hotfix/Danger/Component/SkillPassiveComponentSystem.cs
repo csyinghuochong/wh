@@ -281,7 +281,7 @@ namespace ET
             self.SkillPassiveInfos.Clear();
             int configId = self.GetParent<Unit>().ConfigId;
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(configId);
-            int[] aiSkillIDList = ldMonsterCof.SkillID;
+            int[] aiSkillIDList = null;
             if (aiSkillIDList == null)
             {
                 return;

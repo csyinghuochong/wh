@@ -20,7 +20,6 @@ namespace ET
             {
                 return;
             }
-            self.DropType = LDMonsterCategory.Instance.Get(self.GetParent<Unit>().ConfigId).DropType;
         }
     }
 

@@ -141,7 +141,7 @@ namespace ET
             HeroDataComponent heroDataComponent = unit.AddComponent<HeroDataComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unitInfoComponent.EnergySkillId = createMonsterInfo.SkillId;
-            unitInfoComponent.UnitName = ldMonster.MonsterName;
+            unitInfoComponent.UnitName = ldMonster.Name.ToString();
             unit.Type = UnitType.Monster;
             unit.Position = vector3;
             unit.ConfigId = ldMonster.Id;
@@ -171,85 +171,42 @@ namespace ET
                 revetime = 0;
             }
 
-            if (ldMonster.DeathTime > 0)
-            {
-                unit.AddComponent<DeathTimeComponent, long>(ldMonster.DeathTime * 1000 - createMonsterInfo.BornTime);
-            }
-
             if (mainUnit != null && TimeHelper.ServerNow() < revetime)
             {
                 unit.AddComponent<ReviveTimeComponent, long>(revetime);
                 numericComponent.ApplyValue(NumericType.ReviveTime, revetime, false);
                 numericComponent.ApplyValue(NumericType.Now_Dead, 1, false);
             }
-            //51 场景怪
-            //52 能量台子
-            //53 传送门
-            //54 场景怪 显示名称
-            //55 宝箱
-            if (ldMonster.AI != 0)
+            heroDataComponent.InitMonsterInfo(ldMonster, createMonsterInfo);
+          
+            int ai = createMonsterInfo.AI > 0 ? createMonsterInfo.AI : 1;
+            unit.AI = ai;
+            unit.AddComponent<ObjectWait>();
+            unit.AddComponent<MoveComponent>();
+            unit.AddComponent<SkillManagerComponent>();
+            unit.AddComponent<SkillPassiveComponent>();
+            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            //添加其他组件
+            unit.AddComponent<StateComponent>();         //添加状态组件
+            unit.AddComponent<BuffManagerComponent>();      //添加Buff管理器
+            unit.GetComponent<SkillPassiveComponent>().UpdateMonsterPassiveSkill();
+            unit.GetComponent<SkillPassiveComponent>().Activeted();
+            numericComponent.Set(NumericType.MasterId, createMonsterInfo.MasterID);
+            AIComponent aIComponent = unit.AddComponent<AIComponent, int>(ai);
+            switch (mapComponent.MapTypeEnum)
             {
-                if (createMonsterInfo.MasterID > 0 && !string.IsNullOrEmpty(createMonsterInfo.AttributeParams))
-                {
-                    heroDataComponent.InitMonsterInfo_Summon2(ldMonster, createMonsterInfo);
-                }
-                else
-                {
-                    heroDataComponent.InitMonsterInfo(ldMonster, createMonsterInfo);
-                }
-            }
-
-            if (ldMonster.AI != 0)
-            {
-                int ai = createMonsterInfo.AI > 0 ? createMonsterInfo.AI : ldMonster.AI;
-                unit.AI = ai;
-                unit.AddComponent<ObjectWait>();
-                unit.AddComponent<MoveComponent>();
-                unit.AddComponent<SkillManagerComponent>();
-                unit.AddComponent<SkillPassiveComponent>();
-                unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
-                //添加其他组件
-                unit.AddComponent<StateComponent>();         //添加状态组件
-                unit.AddComponent<BuffManagerComponent>();      //添加Buff管理器
-                unit.GetComponent<SkillPassiveComponent>().UpdateMonsterPassiveSkill();
-                unit.GetComponent<SkillPassiveComponent>().Activeted();
-                numericComponent.Set(NumericType.MasterId, createMonsterInfo.MasterID);
-                AIComponent aIComponent = unit.AddComponent<AIComponent, int>(ai);
-                switch (mapComponent.MapTypeEnum)
-                {
-                    case MapTypeEnum.LocalDungeon:
-                        aIComponent.LocalDungeonUnit = mainUnit;
-                        aIComponent.LocalDungeonUnitPetComponent = mainUnit.GetComponent<PetComponent>();
-                        aIComponent.InitMonster(ldMonster.Id);
-                        break;
-                    case MapTypeEnum.PetDungeon:
-                        aIComponent.InitPetFubenMonster(ldMonster.Id);
-                        break;
-                    default:
-                        aIComponent.InitMonster(ldMonster.Id);
-                        aIComponent.Begin();
-                        break;
-                }
-
-                if (ldMonster.AI == 15)
-                {
-                    ComboComponent comboComponent = unit.AddComponent<ComboComponent>();
-                    if (master != null)
-                    {
-                        int occ = master.GetComponent<UserInfoComponent>().UserInfo.Occ;
-                        int equiptype = master.GetEquipType();
-                        comboComponent.OnInitOcc(occ, equiptype);
-                        numericComponent.Set(NumericType.Now_Weapon, equiptype, false);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"ldMonster.AI == 15     master== null");
-                        comboComponent.OnInitOcc(1, 0);
-                    }
-
-                    aIComponent.ActDistance = comboComponent.UpdateAttackDis();
-                    aIComponent.ComboComponent = comboComponent;
-                }
+                case MapTypeEnum.LocalDungeon:
+                    aIComponent.LocalDungeonUnit = mainUnit;
+                    aIComponent.LocalDungeonUnitPetComponent = mainUnit.GetComponent<PetComponent>();
+                    aIComponent.InitMonster(ldMonster.Id);
+                    break;
+                case MapTypeEnum.PetDungeon:
+                    aIComponent.InitPetFubenMonster(ldMonster.Id);
+                    break;
+                default:
+                    aIComponent.InitMonster(ldMonster.Id);
+                    aIComponent.Begin();
+                    break;
             }
 
             scene.GetComponent<UnitComponent>().Add(unit);
@@ -574,7 +531,7 @@ namespace ET
             //根据怪物ID获得掉落ID
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(monsterID);
             List<RewardItem> dropItemList = new List<RewardItem>();
-            int[] dropID = ldMonsterCof.DropID;
+            int[] dropID = null; //ldMonsterCof.DropID;
 
             if (dropID != null)
             {
@@ -614,16 +571,6 @@ namespace ET
                 drop = main.GetComponent<UserInfoComponent>().UserInfo.PiLao > 0 || bekill.IsBoss();
 
                 //场景宝箱掉落和体力无关
-                if (ldMonsterCof.MonsterType == 5 &&
-                    (ldMonsterCof.MonsterSonType == 55 || ldMonsterCof.MonsterSonType == 57)) 
-                {
-                    drop = true;
-                }
-
-                if (ldMonsterCof.MonsterType == 1 && ldMonsterCof.MonsterSonType == 3) 
-                {
-                    drop = true;
-                }
 
                 if (main.IsRobot())
                 {
@@ -721,21 +668,7 @@ namespace ET
                     dropAdd_Pro += dropadd;
                 }
             }
-
-            //创建掉落
-            if (main != null && ldMonsterCof.MonsterSonType == 1)
-            {
-                int nowUserLv = main.GetComponent<UserInfoComponent>().UserInfo.Lv;
-                for (int i = 0; i < ldMonsterCof.Parameter.Length; i++)
-                {
-                    LDMonster nowmonsterCof = LDMonsterCategory.Instance.Get(ldMonsterCof.Parameter[i]);
-                    if (nowUserLv >= nowmonsterCof.Lv)
-                    {
-                        //指定等级对应属性
-                        ldMonsterCof = nowmonsterCof;
-                    }
-                }
-            }
+            
 
             List<int> adddropidlist = new List<int>();
 
@@ -780,17 +713,13 @@ namespace ET
                 }
             }
 
-            if ((ldMonsterCof.MonsterSonType == 55 || ldMonsterCof.MonsterSonType == 56) && droplist.Count == 0)
+            /*if ((ldMonsterCof.MonsterSonType == 55 || ldMonsterCof.MonsterSonType == 56) && droplist.Count == 0)
             {
                 Log.Warning($"宝箱掉落为空{ldMonsterCof.Id} {main.Id}");
-            }
-            if (ldMonsterCof.MonsterType == (int)MonsterTypeEnum.Boss && droplist.Count == 0)
+            }*/
+            if (ldMonsterCof.Type == (int)MonsterTypeEnum.Boss && droplist.Count == 0)
             {
                 Log.Warning($"BOSS掉落为空{ldMonsterCof.Id}  {main.Id}");
-            }
-            if (ldMonsterCof.Id == 72006013)
-            {
-                Log.Warning($"BOSS掉落数量[72006013]： {ldMonsterCof.Id}  {droplist.Count}");
             }
 
             if (droplist.Count > 100)
@@ -807,9 +736,10 @@ namespace ET
             }
             //1只要造成伤害就有 2是保护掉落 最后一刀 3是那个按照伤害统计
             // 0 公共掉落 2保护掉落   1私有掉落 3 归属掉落
-            if (ldMonsterCof.DropType == 0 
-                || ldMonsterCof.DropType == 2
-                || ldMonsterCof.DropType == 3) 
+            int dropType = 0;
+            if (dropType == 0 
+                || dropType == 2
+                || dropType == 3) 
             {
                 long serverTime = TimeHelper.ServerNow();
                 Scene DomainScene = main != null ? main.DomainScene() : bekill.DomainScene();
@@ -826,15 +756,14 @@ namespace ET
                     dropitem.Type = UnitType.DropItem;
                     DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
                     dropComponent.SetItemInfo(droplist[i].ItemID, droplist[i].ItemNum);
-                    dropComponent.IfDamgeDrop = ldMonsterCof.IfDamgeDrop;
                     dropComponent.BeAttackPlayerList = beattackIds;
-                    dropComponent.DropType = ldMonsterCof.DropType;
                     dropComponent.BeKillId = bekill.Id;
                     dropComponent.BeKillConfig = bekill.ConfigId;
                     dropitem.ConfigId = droplist[i].ItemID;
                     //掉落归属问题 掉落类型为2 原来为： 最后一刀 修改为 第一拾取权限为优先攻击他的人,如果这个人死了，那么拾取权限清空，下一次伤害是谁归属权就是谁。
 
                     long ownderId = main != null ? main.Id : 0;
+                    /*
                     switch (ldMonsterCof.DropType)
                     {
                         case 2:
@@ -855,6 +784,7 @@ namespace ET
                             dropComponent.ProtectTime = ldMonsterCof.DropType == 0 ? 0 : serverTime + 30000;
                             break;
                     }
+                    */
 
                     //单人副本不要搞归属掉落，以免出问题
                     if ( SceneConfigHelper.IsSingleFuben(sceneType) )
@@ -869,7 +799,7 @@ namespace ET
                     dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
                 }
 
-                if (ldMonsterCof.DropType == 3)
+                /*if (ldMonsterCof.DropType == 3)
                 {
                     long belongid = bekill.GetComponent<NumericComponent>().GetAsLong(NumericType.BossBelongID);
                     LogHelper.LogWarning($"BOSS归属掉落日志：{ldMonsterCof.MonsterName}");
@@ -880,9 +810,9 @@ namespace ET
                     {
                         LogHelper.LogWarning($"{uid} {hurt}");
                     }
-                }
+                }*/
             }
-            if (ldMonsterCof.DropType == 1)
+            if (dropType == 1)
             {
                 for (int i = 0; i < beattackIds.Count; i++)
                 {
@@ -905,11 +835,7 @@ namespace ET
                         //}
 
                         //宠物蛋直接进背包
-                        if (ldMonsterCof.MonsterSonType == 57)
-                        {
-                            beAttack.GetComponent<BagComponent>().OnAddItemData($"{droplist[k].ItemID};{droplist[k].ItemNum}", $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
-                            continue;
-                        }
+                    
                         DropInfo dropInfo = new DropInfo()
                         {
                             DropType = 1,

@@ -391,7 +391,7 @@ namespace ET
                                 {
                                     LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(createMonsterID);
                                     ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(unit.DomainZone()),
-                                        NoticeType.Notice, "玩家" + unit.GetComponent<UserInfoComponent>().UserInfo.Name + "在宝藏之地召唤出领主怪物:<color=#FF75F0>" + ldMonsterCof.MonsterName + "</color>").Coroutine();
+                                        NoticeType.Notice, "玩家" + unit.GetComponent<UserInfoComponent>().UserInfo.Name + "在宝藏之地召唤出领主怪物:<color=#FF75F0>" + ldMonsterCof.Name + "</color>").Coroutine();
                                 }
                                 break;
                             //金币袋子

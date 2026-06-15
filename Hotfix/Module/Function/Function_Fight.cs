@@ -346,7 +346,7 @@ namespace ET
                     defendUnit.GetComponent<AIComponent>()?.BeAttacking(attackUnit);
                     LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(defendUnit.ConfigId);
                     defendUnitLv = ldMonsterCof.Lv;
-                    if (ldMonsterCof.MonsterType == (int)MonsterTypeEnum.Boss)
+                    if (ldMonsterCof.Type == (int)MonsterTypeEnum.Boss)
                     {
                         ifMonsterBoss_Act = true;
                     }
@@ -381,7 +381,7 @@ namespace ET
                 case UnitType.Monster:
                     LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(attackUnit.ConfigId);
                     attackUnitLv = ldMonsterCof.Lv;
-                    if (ldMonsterCof.MonsterType == (int)MonsterTypeEnum.Boss)
+                    if (ldMonsterCof.Type == (int)MonsterTypeEnum.Boss)
                         ifMonsterBoss_Def = true;
                     break;
                 //宠物
@@ -1051,53 +1051,8 @@ namespace ET
                         damgePro = damgePro - numericComponentDefend.GetAsFloat(NumericType.Numeric_Error);
                         break;
                 }
-
-                //种族抗性
-                if (ifMonsterBoss_Act)
-                {
-                    switch (LDMonsterCategory.Instance.Get(defendUnit.ConfigId).MonsterRace)
-                    {
-                        //通用
-                        case 0:
-                            break;
-                        //野兽
-                        case 1:
-                            damgePro = damgePro - numericComponentDefend.GetAsFloat(NumericType.Numeric_Error);
-                            break;
-                        //人类
-                        case 2:
-                            damgePro = damgePro - numericComponentDefend.GetAsFloat(NumericType.Numeric_Error);
-                            break;
-                        //恶魔
-                        case 3:
-                            damgePro = damgePro - numericComponentDefend.GetAsFloat(NumericType.Numeric_Error);
-                            break;
-                    }
-                }
-
-                //种族伤害
-                if (ifMonsterBoss_Def)
-                {
-                    switch (LDMonsterCategory.Instance.Get(attackUnit.ConfigId).MonsterRace)
-                    {
-                        //通用
-                        case 0:
-                            break;
-                        //野兽
-                        case 1:
-                            damgePro = damgePro + numericComponentAttack.GetAsFloat(NumericType.Numeric_Error);
-                            break;
-                        //人类
-                        case 2:
-                            damgePro = damgePro + numericComponentAttack.GetAsFloat(NumericType.Numeric_Error);
-                            break;
-                        //恶魔
-                        case 3:
-                            damgePro = damgePro + numericComponentAttack.GetAsFloat(NumericType.Numeric_Error);
-                            break;
-                    }
-                }
-
+                
+                
                 //pk相关
                 if (playerPKStatus)
                 {
@@ -1576,7 +1531,7 @@ namespace ET
             numericComponent.Set(NumericType.Numeric_Error, 0, notice);
             numericComponent.Set(NumericType.Numeric_Error, 0, notice);
             numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, (float)ldMonster.MoveSpeed, notice);
+            numericComponent.Set(NumericType.Numeric_Error, 5f, notice);
         }
 
         /// <summary>

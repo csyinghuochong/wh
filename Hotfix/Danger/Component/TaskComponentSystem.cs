@@ -862,7 +862,7 @@ namespace ET
             {
                 int unitconfigId = bekill.ConfigId;
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
-                bool isBoss = ldMonster.MonsterType == (int)MonsterTypeEnum.Boss;
+                bool isBoss = ldMonster.Type == (int)MonsterTypeEnum.Boss;
                 MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
                 int fubenDifficulty = FubenDifficulty.None;
                 Scene DomainScene = self.GetParent<Unit>().DomainScene();

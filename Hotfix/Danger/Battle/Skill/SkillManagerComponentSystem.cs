@@ -852,7 +852,7 @@ namespace ET
             if (ldSkill.SkillActType == 0 && unit.Type == UnitType.Monster)
             {
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(unit.ConfigId);
-                skillcdTime = ldMonster.ActInterValTime;
+                skillcdTime = 1f;
             }
             if(ldSkill.SkillActType == 0 && unit.Type == UnitType.Pet)
             {

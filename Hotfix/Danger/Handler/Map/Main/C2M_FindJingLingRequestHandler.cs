@@ -15,11 +15,12 @@ namespace ET
             {
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(units[i].ConfigId);
 
+                /*
                 if (ldMonster.MonsterSonType == 57 || ldMonster.MonsterSonType == 58 || ldMonster.MonsterSonType == 59)
                 {
                     jinglingid = ldMonster.Id;
                     break;
-                }
+                }*/
             }
 
             response.MonsterID = jinglingid;    

@@ -41,7 +41,7 @@ namespace ET
                 int skinId = zhupuUnit.GetComponent<NumericComponent>().GetAsInt(NumericType.PetSkin);
 
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(zhupuUnit.ConfigId);
-                int getItemid = ldMonster.Parameter[1];
+                int getItemid = -1;///ldMonster.Parameter[1];
                 unit.GetComponent<BagComponent>().OnAddItemData($"{getItemid};1",$"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
 
                 List<BagInfo> bagInfolist = unit.GetComponent<BagComponent>().GetIdItemList(getItemid);

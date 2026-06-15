@@ -44,7 +44,7 @@ namespace ET
             {
                 return;
             }
-            if (ldMonster.MonsterType == (int)MonsterTypeEnum.Boss && userInfoComponent.UserInfo.Lv >= 20)
+            if (ldMonster.Type == (int)MonsterTypeEnum.Boss && userInfoComponent.UserInfo.Lv >= 20)
             {
                 userInfoComponent.UpdateRoleData(UserDataType.BaoShiDu, "-1", true);
                 return;

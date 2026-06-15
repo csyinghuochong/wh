@@ -25,11 +25,7 @@ namespace ET
             int monsterid = boxUnit.ConfigId;
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
             string itemneeds = "";
-            if (ldMonster.Parameter != null && ldMonster.Parameter.Length > 0
-                && ldMonster.Parameter[0]>0)
-            {
-                itemneeds = $"{ldMonster.Parameter[0]};{ldMonster.Parameter[1]}";
-            }
+          
             if (itemneeds.Length >2 && !unit.GetComponent<BagComponent>().OnCostItemData(itemneeds, ItemLocType.ItemLocBag, ItemGetWay.ItemBox_6))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -37,7 +33,7 @@ namespace ET
                 return;
             }
 
-            if (ldMonster.MonsterSonType == 57) 
+            /*if (ldMonster.MonsterSonType == 57) 
             {
                 //背包是否满
                 if (unit.GetComponent<BagComponent>().IsBagFull())
@@ -54,7 +50,7 @@ namespace ET
                     reply();
                     return;
                 }
-            }
+            }*/
 
             boxUnit.GetComponent<HeroDataComponent>().OnDead(unit);
 

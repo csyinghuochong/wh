@@ -278,34 +278,9 @@ namespace ET
                             request.Difficulty = 1;
                         }
                        
-                        if (request.SceneId > 0)
+                        if (LDSceneCategory.Instance.Contain(request.SceneId))
                         {
-                            if (( request.SceneId >= 100001 && request.SceneId <= 100601)
-                                && !UnitHelper.IsHaveNpc(unit.DomainScene(), 40000003) && userInfoComponent.UserInfo.Lv < 20)
-                            {
-                                Log.Error($"神秘之门异常: {unit.DomainZone()} {unit.Id}");
-                                return ErrorCode.ERR_ModifyData;
-                            }
-
-                            if ((request.SceneId >= 100001 && request.SceneId <= 100601))
-                            {
-                                Log.Warning($"神秘之门进入: {unit.DomainZone()} {unit.Id}");
-                            }
-                            
-                            int chaptierd = 1;
-                            if (!LDSceneCategory.Instance.Contain(request.SceneId))
-                            {
-                                return ErrorCode.ERR_LevelIsNot;
-                            }
-
-                            LDSection ldSection = LDSectionCategory.Instance.Get(chaptierd);
-                            int openLv = ldSection.OpenLevel[request.Difficulty - 1];
-                            int enterlv = LDSceneCategory.Instance.Get(request.SceneId).GetEnterLv();
-                            enterlv = Math.Max(enterlv, openLv);
-                            if (userInfoComponent.UserInfo.Lv < enterlv)
-                            {
-                                return ErrorCode.ERR_LevelIsNot;
-                            }
+                            return ErrorCode.ERR_Parameter;
                         }
 
                         LocalDungeonComponent localDungeon = unit.DomainScene().GetComponent<LocalDungeonComponent>();

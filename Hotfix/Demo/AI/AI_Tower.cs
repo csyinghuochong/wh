@@ -24,9 +24,9 @@ namespace ET
                     return;
 
                 C2M_SkillCmd cmd = new C2M_SkillCmd();
-                cmd.SkillID = ldMonsterCof.ActSkillID;
+                cmd.SkillID = -1;///ldMonsterCof.ActSkillID;
                 //技能释放角度
-                cmd.TargetAngle = int.Parse(ldMonsterCof.AIParameter);
+                cmd.TargetAngle = 0;// int.Parse(ldMonsterCof.AIParameter);
 
                 //触发技能
                 unit.GetComponent<SkillManagerComponent>().OnUseSkill(cmd, true);

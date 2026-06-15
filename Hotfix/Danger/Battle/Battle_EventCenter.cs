@@ -227,11 +227,6 @@ namespace ET
             if (defendUnit.Type == UnitType.Monster)
             {
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(defendUnit.ConfigId);
-                if (ldMonster.DeathSkillId != 0)
-                {
-                    LDSkill ldSkillCategory = LDSkillCategory.Instance.Get(ldMonster.DeathSkillId);
-                    waittime = 1000 + (long)(ldSkillCategory.SkillDelayTime * 1000) + ldSkillCategory.SkillLiveTime;
-                }
             }
             if (defendUnit.Type == UnitType.Pet)
             {

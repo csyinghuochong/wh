@@ -120,14 +120,14 @@ namespace ET
 					//54 场景怪 有AI 显示名称
 					//55 宝箱类(一次) 无AI
 					//56 宝箱类(无限) 无AI
-					if (ldMonster.MonsterSonType != 52)
+					/*if (ldMonster.MonsterSonType != 52)
 					{
 						UnitFactory.CreateMonster(scene, ldMonster.Id, vector3, new CreateMonsterInfo()
 						{
 							Camp = ldMonster.MonsterCamp,
 							Rotation = monsterPosition.Create,
 						});
-					}
+					}*/
 				}
 			}
 			if (mtype == 2)
@@ -145,7 +145,7 @@ namespace ET
 					Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
 					UnitFactory.CreateMonster(scene, monsterPosition.MonsterID, vector3, new CreateMonsterInfo()
 					{
-						Camp = ldMonster.MonsterCamp,
+						Camp = CampEnum.CampMonster1,
 						Rotation = monsterPosition.Create,
 					});
 				}
@@ -179,7 +179,7 @@ namespace ET
 					{
 						PlayerLevel = playerLv,
 						AttributeParams = monsterPosition.Par,
-						Camp = ldMonster.MonsterCamp,
+						Camp = CampEnum.CampMonster1,
 						Rotation = monsterPosition.Create,
 					});
 				}
@@ -247,7 +247,7 @@ namespace ET
 				string[] mondels = monsters[i].Split(';');
 				int monsterid = int.Parse(mondels[2]);
 				LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
-				if (ldMonster.MonsterType != MonsterTypeEnum.Normal && ldMonster.MonsterSonType != 55)
+				if (ldMonster.Type != MonsterTypeEnum.Normal ) //&& ldMonster.MonsterSonType != 55)
 				{
 					continue;
 				}
@@ -304,11 +304,12 @@ namespace ET
 				{
 					continue;
 				}
+
 				//2;37.65,0,3.2;70005005;1,2
 				string[] mondels = monsters[i].Split(';');
 				string[] mtype = mondels[0].Split(',');
 				string[] position = mondels[1].Split(',');
-				int monsterid =  int.Parse(mondels[2]);
+				int monsterid = int.Parse(mondels[2]);
 				string[] mcount = mondels[3].Split(',');
 				if (!LDMonsterCategory.Instance.Contain(monsterid))
 				{
@@ -325,147 +326,154 @@ namespace ET
 						Log.Warning($"生成随机怪错误： {mapComponent.SceneId} {i} {(int)randomMonsterList[kk].Value}  {position}");
 					}
 
-                    if (randomMonsterList[kk].KeyId == i && (int)randomMonsterList[kk].Value > 0 && position.Length >= 3)
+					if (randomMonsterList[kk].KeyId == i && (int)randomMonsterList[kk].Value > 0 && position.Length >= 3)
 					{
 						monsterid = (int)randomMonsterList[kk].Value;
 						ldMonster = LDMonsterCategory.Instance.Get(monsterid);
 
 						int skinId = 0;
-                        if (ldMonster.MonsterSonType == 58) //奇遇宠物
-                        {
+						/*if (ldMonster.MonsterSonType == 58) //奇遇宠物
+						{
 							int itemid = ldMonster.Parameter[1];
 							LDItem ldItem = LDItemCategory.Instance.Get(itemid);
 							int petId = int.Parse(ldItem.ItemUsePar);
 							LDPet ldPetConfig = LDPetCategory.Instance.Get(petId );
 
-                            List<int> weight = new List<int>(ldPetConfig.SkinPro);
-                            int index = RandomHelper.RandomByWeight(weight);
-                            skinId = ldPetConfig.Skin[index];
-                        }
-                        Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
-                        Unit unitmonster = UnitFactory.CreateMonster(scene, monsterid, vector3, new CreateMonsterInfo()
-                        {
-                            Camp = ldMonster.MonsterCamp,
-							SkinId = skinId,	
-                        });
-                       
-                        haveotherMonster = true;
-                    }
+						    List<int> weight = new List<int>(ldPetConfig.SkinPro);
+						    int index = RandomHelper.RandomByWeight(weight);
+						    skinId = ldPetConfig.Skin[index];
+						}*/
+						Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
+						Unit unitmonster = UnitFactory.CreateMonster(scene, monsterid, vector3,
+							new CreateMonsterInfo() { Camp = CampEnum.CampMonster1, SkinId = skinId, });
+
+						haveotherMonster = true;
+					}
 				}
+
 				if (haveotherMonster)
 				{
 					continue;
 				}
-				
-				if (sceneType == MapTypeEnum.LocalDungeon && ldMonster.MonsterSonType == 55)
+
+				if (sceneType == MapTypeEnum.LocalDungeon) // && ldMonster.MonsterSonType == 55)
 				{
 					LocalDungeonComponent localDungeonComponent = scene.GetComponent<LocalDungeonComponent>();
 					UserInfoComponent userInfoComponent = localDungeonComponent.MainUnit.GetComponent<UserInfoComponent>();
 					TaskComponent taskComponent = localDungeonComponent.MainUnit.GetComponent<TaskComponent>();
 					if (userInfoComponent.IsCheskOpen(mapComponent.SceneId, monsterid)
-					&& !taskComponent.IsItemTask(monsterid))
+					    && !taskComponent.IsItemTask(monsterid))
 					{
 						continue;
 					}
 				}
 
-				if (mtype[0] == "1")//固定位置刷怪
+				int cmcount = int.Parse(mcount[0]);
+				if (cmcount > 100)
 				{
-                    int cmcount = int.Parse(mcount[0]);
-                    if (cmcount > 100)
-					{
-						Log.Error($"int.Parse(mcount[0]) > 100； {createMonster}");
-                        return;
-                    }
+					Log.Error($"int.Parse(mcount[0]) > 100； {createMonster}");
+					return;
+				}
 
-					for (int c = 0; c < cmcount; c++)
-					{
-						Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
+				for (int c = 0; c < cmcount; c++)
+				{
+					Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
 
-						//51 场景怪 有AI 不显示名称
-						//52 能量台子 无AI
-						//54 场景怪 有AI 显示名称
-						//55 宝箱类 无AI
-						if (ldMonster.MonsterSonType == 52)
+					//51 场景怪 有AI 不显示名称
+					//52 能量台子 无AI
+					//54 场景怪 有AI 显示名称
+					//55 宝箱类 无AI
+					/*if (ldMonster.MonsterSonType == 52)
+					{
+						CellDungeonComponent cellDungeonComponent = scene.GetComponent<CellDungeonComponent>();
+						if (cellDungeonComponent!=null)
 						{
-							CellDungeonComponent cellDungeonComponent = scene.GetComponent<CellDungeonComponent>();
-							if (cellDungeonComponent!=null)
+							List<int> EnergySkills = cellDungeonComponent.EnergySkills;
+							int skillId = EnergySkills[RandomHelper.RandomNumber(0, EnergySkills.Count)];
+							EnergySkills.Remove(skillId);
+							UnitFactory.CreateMonster(scene, ldMonster.Id, vector3, new CreateMonsterInfo()
 							{
-								List<int> EnergySkills = cellDungeonComponent.EnergySkills;
-								int skillId = EnergySkills[RandomHelper.RandomNumber(0, EnergySkills.Count)];
-								EnergySkills.Remove(skillId);
-								UnitFactory.CreateMonster(scene, ldMonster.Id, vector3, new CreateMonsterInfo()
-								{
-									SkillId = skillId,
-									Camp = ldMonster.MonsterCamp
-								});
-							}
-						}
-						else
-						{
-							UnitFactory.CreateMonster(scene, monsterid, vector3,  new CreateMonsterInfo()
-							{
+								SkillId = skillId,
 								Camp = ldMonster.MonsterCamp
 							});
 						}
 					}
-				}
-				if (mtype[0] == "2") //随机位置
-				{
-					int cmcount = int.Parse(mcount[0]);
-                    if (cmcount > 100)
-                    {
-                        Log.Error($"int.Parse(mcount[0]) > 100； {createMonster}");
-                        return;
-                    }
-
-                    for (int c = 0; c < cmcount; c++)
+					else
 					{
-						float range = float.Parse(mcount[1]);
-						Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
-						UnitFactory.CreateMonster(scene, monsterid, vector3, new CreateMonsterInfo()
-						{ 
+						UnitFactory.CreateMonster(scene, monsterid, vector3,  new CreateMonsterInfo()
+						{
 							Camp = ldMonster.MonsterCamp
 						});
 					}
-				}
-				if (mtype[0] == "3")
-				{
-					//野外场景定时刷新
-					//scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterList(createMonster);
-					scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterList(monsters[i]);
-				}
-				if (mtype[0] == "4")
-				{
-					//4; 0,0,0; 71020001; 2,2; 2, 2  //是随机塔附加属性
-					int playerLv = 1;
-					if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TowerDungeon)
-					{
-						Unit mainUnit = scene.GetComponent<TowerComponent>().MainUnit;
-						playerLv = mainUnit.GetComponent<UserInfoComponent>().UserInfo.Lv;
-					}
-					int cmcount = int.Parse(mcount[0]);
-                    if (cmcount > 100)
-                    {
-                        Log.Error($"int.Parse(mcount[0]) > 100； {createMonster}");
-						return;
-                    }
+				}*/
 
-                    for (int c = 0; c < cmcount; c++)
+					if (mtype[0] == "1") //固定位置刷怪
 					{
-						float range = float.Parse(mcount[1]);
-						Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
-						UnitFactory.CreateMonster(scene, monsterid, vector3,  new CreateMonsterInfo() {
-							PlayerLevel = playerLv, AttributeParams = mondels[4] + ";" + mondels[5],
-							Camp = ldMonster.MonsterCamp
-						});
+
 					}
-				}
-				//固定时间刷新
-				if (mtype[0] == "5" || mtype[0] == "6")
-				{
-					//scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterList_2(createMonster);
-					scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterList_2(monsters[i]);
+
+					if (mtype[0] == "2") //随机位置
+					{
+						/*cmcount = int.Parse(mcount[0]);
+	                    if (cmcount > 100)
+	                    {
+	                        Log.Error($"int.Parse(mcount[0]) > 100； {createMonster}");
+	                        return;
+	                    }
+
+	                    for (int c = 0; c < cmcount; c++)
+						{
+							float range = float.Parse(mcount[1]);
+							vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
+							UnitFactory.CreateMonster(scene, monsterid, vector3, new CreateMonsterInfo()
+							{
+								Camp = CampEnum.CampMonster1
+							});
+						}*/
+					}
+
+					if (mtype[0] == "3")
+					{
+						//野外场景定时刷新
+						//scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterList(createMonster);
+						scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterList(monsters[i]);
+					}
+
+					if (mtype[0] == "4")
+					{
+						//4; 0,0,0; 71020001; 2,2; 2, 2  //是随机塔附加属性
+						/*int playerLv = 1;
+						if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TowerDungeon)
+						{
+							Unit mainUnit = scene.GetComponent<TowerComponent>().MainUnit;
+							playerLv = mainUnit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+						}
+						cmcount = int.Parse(mcount[0]);
+	                    if (cmcount > 100)
+	                    {
+	                        Log.Error($"int.Parse(mcount[0]) > 100； {createMonster}");
+							return;
+	                    }
+
+	                    for (int c = 0; c < cmcount; c++)
+						{
+							float range = float.Parse(mcount[1]);
+							Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
+							UnitFactory.CreateMonster(scene, monsterid, vector3,  new CreateMonsterInfo() {
+								PlayerLevel = playerLv, AttributeParams = mondels[4] + ";" + mondels[5],
+								Camp = CampEnum.CampMonster1
+							});
+						}*/
+					}
+
+					//固定时间刷新
+					if (mtype[0] == "5" || mtype[0] == "6")
+					{
+						//scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterList_2(createMonster);
+						scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterList_2(monsters[i]);
+					}
+
+
 				}
 			}
 		}

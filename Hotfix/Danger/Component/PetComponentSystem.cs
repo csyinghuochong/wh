@@ -604,7 +604,7 @@ namespace ET
                 return;
             }
 
-            self.PetAddExp(rolePetInfo, mCof.Exp);
+            self.PetAddExp(rolePetInfo, 1);
         }
 
         public static void UpdatePetZiZhi(this PetComponent self, RolePetInfo rolePetInfo, int itemId)

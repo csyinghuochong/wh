@@ -518,7 +518,7 @@ namespace ET
                 Log.Warning($"refreshMonster.UnionRace: {refreshMonster.MonsterId}");
             }
 
-            if (mapComponent.MapTypeEnum == MapTypeEnum.MiJing && ldMonster.MonsterType == MonsterTypeEnum.Boss)
+            if (mapComponent.MapTypeEnum == MapTypeEnum.MiJing && ldMonster.Type == MonsterTypeEnum.Boss)
             {
                 self.DomainScene().GetComponent<MiJingComponent>().BossId = refreshMonster.MonsterId;
 
@@ -533,42 +533,7 @@ namespace ET
                     });
                 }
             }
-
-            int monsterNumber = UnitHelper.GetUnitListByCamp(self.GetParent<Scene>(), UnitType.Monster, ldMonster.MonsterCamp).Count;
-            if (mapComponent.MapTypeEnum == MapTypeEnum.Battle)
-            {
-                if (ldMonster.MonsterSonType != 55 && ldMonster.MonsterSonType != 56
-                    && monsterNumber >= LDGlobalValueCategory.Instance.TempValue)
-                {
-                    return;
-                }
-            }
-            else if (mapComponent.MapTypeEnum == MapTypeEnum.BaoZangZhiDi)
-            {
-                if (!ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_NewYearMonster))
-                {
-                    if (refreshMonster.MonsterId == 72009001 || refreshMonster.MonsterId == 72009002)
-                    {
-                        return;
-                    }
-
-                }
-
-
-                if (monsterNumber >= LDGlobalValueCategory.Instance.TempValue)
-                {
-                    return;
-                }
-            }
-            else 
-            {
-                if (monsterNumber >= 1000)
-                {
-                    Log.Console($"monsterNumber >= 1000:  {mapComponent.SceneId}");
-                    return;
-                }
-            }
-
+            
             if (refreshMonster.Number > 100)
             {
                 Log.Error($"refreshMonster.Number > 100");
@@ -581,7 +546,7 @@ namespace ET
                 Vector3 vector3 = new Vector3(form.x + RandomHelper.RandomNumberFloat(-1 * range, range), form.y, form.z + RandomHelper.RandomNumberFloat(-1 * range, range));
                 UnitFactory.CreateMonster(self.GetParent<Scene>(), refreshMonster.MonsterId, vector3, new CreateMonsterInfo()
                 {  
-                    Camp = ldMonster.MonsterCamp,
+                    Camp = CampEnum.CampMonster1,
                     Rotation = refreshMonster.Rotation, 
                 });
                 await TimerComponent.Instance.WaitFrameAsync();
@@ -591,8 +556,8 @@ namespace ET
             if (ldMonster.Id == 72009021 || ldMonster.Id == 72009022 || ldMonster.Id == 72009023 || ldMonster.Id == 72009024 || ldMonster.Id == 72009021)
             {
 
-                string noticeContent = $"神器活动!<color=#B6FF00>{ldMonster.MonsterName}</color>携带神器出现在地图<color=#FFA313>{"宝藏之地"}</color>,想要挑战的玩家请在主城宝藏之地处进入!";
-                string noticeContentEn = $"Artifact Activity!<color=#B6FF00>{ldMonster.MonsterName}</color>Appeared on the<color=#FFA313>{"Treasure Land"}with the Artifact</color>,Players who wish to challenge (it), please enter at the Treasure Land in the main city!";
+                string noticeContent = $"神器活动!<color=#B6FF00>{ldMonster.Name}</color>携带神器出现在地图<color=#FFA313>{"宝藏之地"}</color>,想要挑战的玩家请在主城宝藏之地处进入!";
+                string noticeContentEn = $"Artifact Activity!<color=#B6FF00>{ldMonster.Name}</color>Appeared on the<color=#FFA313>{"Treasure Land"}with the Artifact</color>,Players who wish to challenge (it), please enter at the Treasure Land in the main city!";
                 ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
             }
         }

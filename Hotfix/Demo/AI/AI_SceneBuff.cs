@@ -15,7 +15,7 @@ namespace ET
         {
             Unit unit = aiComponent.GetParent<Unit>();
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(unit.ConfigId);
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(ldMonsterCof.ActSkillID);
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(-1);
 
             bool remove = false;
             long instanceId = aiComponent.InstanceId;
@@ -30,7 +30,7 @@ namespace ET
                     Vector3 direction = target.Position - unit.Position;
                     
                     C2M_SkillCmd cmd = new C2M_SkillCmd();
-                    cmd.SkillID = ldMonsterCof.ActSkillID;
+                    cmd.SkillID =-1;
                     cmd.TargetID = target.Id;
                     if (ldSkill.SkillZhishiTargetType == 1)  //自身点
                     {

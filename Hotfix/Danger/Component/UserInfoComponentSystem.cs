@@ -508,11 +508,6 @@ namespace ET
                 main.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.ShowLieMonster_1201, 0, 1);
             }
 
-            if (sceneType == MapTypeEnum.LocalDungeon && ldMonster.MonsterSonType == 55)
-            {
-                self.OnAddChests(sceneId, beKill.ConfigId);
-            }
-
             if (SeasonHelper.GetOpenSeason(self.UserInfo.Lv)!=null && beKill.IsBoss() && ldMonster.Lv >= 40)
             {
                 int seasonExp = RandomHelper.RandomNumber(1, 6);
@@ -580,7 +575,7 @@ namespace ET
                     }
                 }
 
-                int addexp = (int)(expcoefficient * mCof.Exp);
+                int addexp = (int)(expcoefficient * 0);
                 self.UpdateRoleData(UserDataType.Exp, addexp.ToString());
             }
 

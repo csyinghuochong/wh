@@ -126,7 +126,7 @@ namespace ET
                 if (attack.Type == UnitType.Monster)
                 {
                     LDMonster ldMonster = LDMonsterCategory.Instance.Get(attack.ConfigId);
-                    LogHelper.TrialBattleInfo(44, $"南宫灵蓝 召唤怪{ldMonster.MonsterName} 使用{skillName} 造成了{damage}伤害");
+                    LogHelper.TrialBattleInfo(44, $"南宫灵蓝 召唤怪{ldMonster.Name} 使用{skillName} 造成了{damage}伤害");
                 }
             }
         }
