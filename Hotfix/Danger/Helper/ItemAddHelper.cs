@@ -94,7 +94,7 @@ namespace ET
 
             for (int i = 0; i < dungeonConfigsAll.Count; i++)
             {
-                if(DungeonSectionConfigCategory.Instance.MysteryDungeonList.Contains(dungeonConfigsAll[i].Id))
+                if(LDSectionCategory.Instance.MysteryDungeonList.Contains(dungeonConfigsAll[i].Id))
                 {
                     continue;
                 }

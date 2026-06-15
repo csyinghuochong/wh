@@ -200,7 +200,7 @@ namespace ET
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
             mapComponent.SetMapInfo((int)MapTypeEnum.Arena, sceneId, 0);
-            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).Id;
+            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).GetNavMeshId();
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             fubnescene.AddComponent<YeWaiRefreshComponent>().SceneId = sceneId;
             //FubenHelp.CreateMonsterList(fubnescene, LDSceneCategory.Instance.Get(sceneId).CreateMonster);

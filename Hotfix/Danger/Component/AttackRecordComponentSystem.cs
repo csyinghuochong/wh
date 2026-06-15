@@ -20,7 +20,7 @@ namespace ET
             {
                 return;
             }
-            self.DropType = MonsterConfigCategory.Instance.Get(self.GetParent<Unit>().ConfigId).DropType;
+            self.DropType = LDMonsterCategory.Instance.Get(self.GetParent<Unit>().ConfigId).DropType;
         }
     }
 

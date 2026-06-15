@@ -47,7 +47,7 @@ namespace ET
             fubnescene.AddComponent<HappyDungeonComponent>().OnHappyBegin();
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
             mapComponent.SetMapInfo((int)MapTypeEnum.Happy, sceneId, 0);
-            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).Id;
+            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).GetNavMeshId();
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             FubenHelp.CreateNpc(fubnescene, sceneId);
             self.FubenPlayers.Add(fubenid, new List<long>() { unitId }); 

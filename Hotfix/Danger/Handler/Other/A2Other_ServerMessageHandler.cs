@@ -5,10 +5,10 @@ namespace ET
 
     //服务器之间通用通信协议
     [ActorMessageHandler]
-    public class A2A_ServerMessageHandler : AMActorRpcHandler<Scene, A2A_ServerMessageRequest, A2A_ServerMessageRResponse>
+    public class A2Other_ServerMessageHandler : AMActorRpcHandler<Scene, A2Other_ServerMessageRequest, Other2A_ServerMessageRResponse>
     {
 
-        protected override async ETTask Run(Scene scene, A2A_ServerMessageRequest request, A2A_ServerMessageRResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, A2Other_ServerMessageRequest request, Other2A_ServerMessageRResponse response, Action reply)
         {
             try
             {

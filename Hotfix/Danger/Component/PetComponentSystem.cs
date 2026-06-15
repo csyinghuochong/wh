@@ -595,7 +595,7 @@ namespace ET
             {
                 return;
             }
-            MonsterConfig mCof = MonsterConfigCategory.Instance.Get(beKill.ConfigId);
+            LDMonster mCof = LDMonsterCategory.Instance.Get(beKill.ConfigId);
             int playerLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
 
             //超过5级不能获得经验

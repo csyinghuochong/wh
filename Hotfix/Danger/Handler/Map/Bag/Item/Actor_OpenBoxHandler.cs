@@ -23,12 +23,12 @@ namespace ET
                 return;
             }
             int monsterid = boxUnit.ConfigId;
-            MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(monsterid);
+            LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
             string itemneeds = "";
-            if (monsterConfig.Parameter != null && monsterConfig.Parameter.Length > 0
-                && monsterConfig.Parameter[0]>0)
+            if (ldMonster.Parameter != null && ldMonster.Parameter.Length > 0
+                && ldMonster.Parameter[0]>0)
             {
-                itemneeds = $"{monsterConfig.Parameter[0]};{monsterConfig.Parameter[1]}";
+                itemneeds = $"{ldMonster.Parameter[0]};{ldMonster.Parameter[1]}";
             }
             if (itemneeds.Length >2 && !unit.GetComponent<BagComponent>().OnCostItemData(itemneeds, ItemLocType.ItemLocBag, ItemGetWay.ItemBox_6))
             {
@@ -37,7 +37,7 @@ namespace ET
                 return;
             }
 
-            if (monsterConfig.MonsterSonType == 57) 
+            if (ldMonster.MonsterSonType == 57) 
             {
                 //背包是否满
                 if (unit.GetComponent<BagComponent>().IsBagFull())

@@ -98,30 +98,27 @@ namespace ET
 		public int Limit_Times { get; set; }
 		/// <summary>类型</summary>
 		[ProtoMember(8)]
-		public int MapType { get; set; }
+		public int Scene_Type { get; set; }
 		/// <summary>出生点</summary>
 		[ProtoMember(9)]
 		public double[] Pos_Born { get; set; }
 		/// <summary>传送ID</summary>
 		[ProtoMember(10)]
 		public int[] Teleport_Id { get; set; }
-		/// <summary>NPC</summary>
-		[ProtoMember(11)]
-		public int[] NpcList { get; set; }
 		/// <summary>小地图 0-不显示 1-显示</summary>
-		[ProtoMember(12)]
+		[ProtoMember(11)]
 		public int If_MiniMap { get; set; }
 		/// <summary>允许坐骑 0-否 1-是</summary>
-		[ProtoMember(13)]
+		[ProtoMember(12)]
 		public int If_Mount { get; set; }
 		/// <summary>摄像机</summary>
-		[ProtoMember(14)]
+		[ProtoMember(13)]
 		public double[] CameraPos { get; set; }
 		/// <summary>Loading</summary>
-		[ProtoMember(15)]
+		[ProtoMember(14)]
 		public int[] LoadingRes { get; set; }
 		/// <summary>音乐</summary>
-		[ProtoMember(16)]
+		[ProtoMember(15)]
 		public string Music { get; set; }
 
 	}

@@ -298,8 +298,8 @@ namespace ET
                                 return ErrorCode.ERR_LevelIsNot;
                             }
 
-                            DungeonSectionConfig dungeonSectionConfig = DungeonSectionConfigCategory.Instance.Get(chaptierd);
-                            int openLv = dungeonSectionConfig.OpenLevel[request.Difficulty - 1];
+                            LDSection ldSection = LDSectionCategory.Instance.Get(chaptierd);
+                            int openLv = ldSection.OpenLevel[request.Difficulty - 1];
                             int enterlv = LDSceneCategory.Instance.Get(request.SceneId).GetEnterLv();
                             enterlv = Math.Max(enterlv, openLv);
                             if (userInfoComponent.UserInfo.Lv < enterlv)
@@ -352,7 +352,7 @@ namespace ET
                             return ErrorCode.ERR_MapLimit;
                         }*/
                         TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.MapType, request.SceneId, 0, "0");
+                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.Scene_Type, request.SceneId, 0, "0");
                         break;
                     case MapTypeEnum.RunRace:
                     case MapTypeEnum.Demon:
@@ -364,7 +364,7 @@ namespace ET
                         }
                         ldScene = LDSceneCategory.Instance.Get(request.SceneId);
                         TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.MapType, request.SceneId, 0, "0");
+                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.Scene_Type, request.SceneId, 0, "0");
                         break;
                     case MapTypeEnum.Solo:
                         long soloServerId = DBHelper.GetSoloServerId(unit.DomainZone());
@@ -508,7 +508,7 @@ namespace ET
             }
 
             //前往神秘之门
-            if (DungeonSectionConfigCategory.Instance.MysteryDungeonList.Contains(sceneId))
+            if (LDSectionCategory.Instance.MysteryDungeonList.Contains(sceneId))
             {
                 unit.GetComponent<UnitInfoComponent>().LastDungeonId = unit.DomainScene().GetComponent<MapComponent>().SceneId;
                 unit.GetComponent<UnitInfoComponent>().LastDungeonPosition = unit.Position;
@@ -567,7 +567,7 @@ namespace ET
         public static async ETTask LocalDungeonTransfer_Old(Unit unit, int sceneId, int transferId, int difficulty)
         {
             //前往神秘之门
-            if (DungeonSectionConfigCategory.Instance.MysteryDungeonList.Contains(sceneId))
+            if (LDSectionCategory.Instance.MysteryDungeonList.Contains(sceneId))
             {
                 unit.GetComponent<UnitInfoComponent>().LastDungeonId = unit.DomainScene().GetComponent<MapComponent>().SceneId;
                 unit.GetComponent<UnitInfoComponent>().LastDungeonPosition = unit.Position;

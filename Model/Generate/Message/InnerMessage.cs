@@ -450,43 +450,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2A_ServerMessageRResponse))]
-	[Message(InnerOpcode.A2A_ServerMessageRequest)]
-	[ProtoContract]
-	public partial class A2A_ServerMessageRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public int MessageType { get; set; }
-
-		[ProtoMember(5)]
-		public string MessageValue { get; set; }
-
-		[ProtoMember(6)]
-		public string MessageValueEn { get; set; }
-
-	}
-
-	[Message(InnerOpcode.A2A_ServerMessageRResponse)]
-	[ProtoContract]
-	public partial class A2A_ServerMessageRResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(G2G_LockReleaseResponse))]
 	[Message(InnerOpcode.G2G_LockReleaseRequest)]
 	[ProtoContract]
@@ -1093,10 +1056,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2A_ActivityUpdateResponse))]
-	[Message(InnerOpcode.A2A_ActivityUpdateRequest)]
+	[ResponseType(nameof(Other2A_ActivityUpdateResponse))]
+	[Message(InnerOpcode.A2Other_ActivityUpdateRequest)]
 	[ProtoContract]
-	public partial class A2A_ActivityUpdateRequest: Object, IActorRequest
+	public partial class A2Other_ActivityUpdateRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1118,9 +1081,46 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.A2A_ActivityUpdateResponse)]
+	[Message(InnerOpcode.Other2A_ActivityUpdateResponse)]
 	[ProtoContract]
-	public partial class A2A_ActivityUpdateResponse: Object, IActorResponse
+	public partial class Other2A_ActivityUpdateResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(Other2A_ServerMessageRResponse))]
+	[Message(InnerOpcode.A2Other_ServerMessageRequest)]
+	[ProtoContract]
+	public partial class A2Other_ServerMessageRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(2)]
+		public int MessageType { get; set; }
+
+		[ProtoMember(5)]
+		public string MessageValue { get; set; }
+
+		[ProtoMember(6)]
+		public string MessageValueEn { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Other2A_ServerMessageRResponse)]
+	[ProtoContract]
+	public partial class Other2A_ServerMessageRResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

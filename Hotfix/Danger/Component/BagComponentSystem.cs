@@ -10,11 +10,7 @@ namespace ET
 
         public override void Awake(BagComponent self)
         {
-            self.OnAddItemData(LDGlobalValueCategory.Instance.Get(9).Value, $"{ItemGetWay.System}_{TimeHelper.ServerNow()}", false);
-            if (CommonHelper.IsBanHaoZone(self.DomainZone()))
-            {
-                self.OnAddItemData($"10030001;1", $"{ItemGetWay.System}_{TimeHelper.ServerNow()}", false);
-            }
+          
         }
     }
 
@@ -1898,8 +1894,6 @@ namespace ET
                     }
                 }
             }
-            
-            
             
             for (int i = 0; i < equipList.Count; i++)
             {

@@ -9,6 +9,7 @@ namespace ET
     public class DBCenterSerialInfo : Entity
     {
         public int SerialIndex = 0;
+        public int LastHour = 0;
         public List<KeyValuePair> SerialList = new List<KeyValuePair>();
     }
 }

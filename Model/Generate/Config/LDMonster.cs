@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class MonsterConfigCategory : ProtoObject, IMerge
+    public partial class LDMonsterCategory : ProtoObject, IMerge
     {
-        public static MonsterConfigCategory Instance;
+        public static LDMonsterCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, MonsterConfig> dict = new Dictionary<int, MonsterConfig>();
+        private Dictionary<int, LDMonster> dict = new Dictionary<int, LDMonster>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<MonsterConfig> list = new List<MonsterConfig>();
+        private List<LDMonster> list = new List<LDMonster>();
 		
-        public MonsterConfigCategory()
+        public LDMonsterCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            MonsterConfigCategory s = o as MonsterConfigCategory;
+            LDMonsterCategory s = o as LDMonsterCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (MonsterConfig config in list)
+            foreach (LDMonster config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public MonsterConfig Get(int id)
+        public LDMonster Get(int id)
         {
-            this.dict.TryGetValue(id, out MonsterConfig item);
+            this.dict.TryGetValue(id, out LDMonster item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (MonsterConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDMonster)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, MonsterConfig> GetAll()
+        public Dictionary<int, LDMonster> GetAll()
         {
             return this.dict;
         }
 
-        public MonsterConfig GetOne()
+        public LDMonster GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class MonsterConfig: ProtoObject, IConfig
+	public partial class LDMonster: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

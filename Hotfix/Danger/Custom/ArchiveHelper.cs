@@ -323,8 +323,8 @@ namespace ET
         public static async ETTask NoticeAccountServerArchive(int zone, string acccout, long unitid, int archive)
         {
             long gateinstanceid = StartSceneConfigCategory.Instance.GetBySceneName(zone, "Account").InstanceId;
-            A2A_ServerMessageRResponse g_SendChatRequest = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-              (gateinstanceid, new A2A_ServerMessageRequest()
+            Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
+              (gateinstanceid, new A2Other_ServerMessageRequest()
               {
                   MessageType = NoticeType.Archive,
                   MessageValue = $"{acccout} {unitid} {archive}",

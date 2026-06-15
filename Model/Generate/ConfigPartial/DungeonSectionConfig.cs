@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ET
 {
-    public partial class DungeonSectionConfigCategory
+    public partial class LDSectionCategory
     {
 
         /// <summary>
@@ -24,11 +24,11 @@ namespace ET
         public override void AfterEndInit()
         {
 
-            foreach (DungeonSectionConfig functionConfig in this.GetAll().Values)
+            foreach (LDSection functionConfig in this.GetAll().Values)
             {
                 MysteryWeights.Add(functionConfig.Id, new List<int>());
                 MysteryDungeon.Add(functionConfig.Id, new List<int>());
-                string[] shenminds = functionConfig.ShenMiEnterID.Split('|');
+                /*string[] shenminds = functionConfig.ShenMiEnterID.Split('|');
                 for (int i = 0; i < shenminds.Length; i++)
                 {
                     string[] shenminfuben = shenminds[i].Split('&');
@@ -53,7 +53,7 @@ namespace ET
                     MysteryWeights[functionConfig.Id].Add(weight);
                     MysteryDungeon[functionConfig.Id].Add(mysteryDungeonId);
                     MysteryDungeonList.Add(mysteryDungeonId);
-                }
+                }*/
             }
         }
 

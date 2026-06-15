@@ -39,10 +39,9 @@ namespace ET
                 else
                 {
                     newAccount.PlayerInfo.Name ="loginType_" + loginType;
-                    newAccount.PlayerInfo.RealName = 1;
-                    newAccount.PlayerInfo.IdCardNo = "429001199012282996";
+                    newAccount.PlayerInfo.RealName = 0;
+                    newAccount.PlayerInfo.IdCardNo = string.Empty;
                 }
-                
                 
                 if (password == CommonConfig.RobotPassWord)
                 {

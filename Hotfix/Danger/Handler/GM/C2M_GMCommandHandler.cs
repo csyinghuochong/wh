@@ -20,7 +20,7 @@ namespace ET
 				}
 				if (message.GMMsg == "#allmonster")
 				{
-					List<MonsterConfig> monsterConfigs = MonsterConfigCategory.Instance.GetAll().Values.ToList();
+					List<LDMonster> monsterConfigs = LDMonsterCategory.Instance.GetAll().Values.ToList();
 					for (int i = 0; i < monsterConfigs.Count; i++)
 					{
 						await TimerComponent.Instance.WaitAsync(1);
@@ -82,12 +82,7 @@ namespace ET
 					unit.GetComponent<BagComponent>().OnAddJianDing();
                     return;
                 }
-				if (message.GMMsg == "#nextweek")
-				{
-                    long centerid = DBHelper.GetRealmCenter();
-                    A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                                 (centerid, new A2A_ActivityUpdateRequest() { Hour = -1 });
-                }
+
                 if (message.GMMsg == "#gaoji"
 					|| message.GMMsg == "#zhongji")
 				{

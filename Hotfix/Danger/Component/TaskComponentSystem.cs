@@ -10,8 +10,7 @@ namespace ET
         {
             if (self.RoleTaskList.Count == 0)
             {
-                int initTask = int.Parse(LDGlobalValueCategory.Instance.Get(1).Value);
-                self.RoleTaskList.Add(new TaskPro() { taskID = initTask, TrackStatus = 1, taskStatus = (int)TaskStatuEnum.Completed, taskTargetNum_1 = 1});
+               
             }
         }
     }
@@ -293,7 +292,7 @@ namespace ET
                     taskPro.taskTargetNum_1 = unit.GetComponent<PetComponent>().GetPassMaxFubenId();
                     break;
                 case (int)TaskTargetType.JiaYuanLevel_22:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<UserInfoComponent>().UserInfo.JiaYuanLv - 10000;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<UserInfoComponent>().UserInfo.JiaYuanLv;
                     break;
                 case (int)TaskTargetType.CombatToValue_133:
                     taskPro.taskTargetNum_1 = unit.GetComponent<UserInfoComponent>().UserInfo.Combat;
@@ -340,7 +339,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (DungeonSectionConfigCategory.Instance.MysteryDungeonList.Contains(config.Id))
+                if (LDSectionCategory.Instance.MysteryDungeonList.Contains(config.Id))
                 {
                     continue;
                 }
@@ -862,8 +861,8 @@ namespace ET
             if (bekill.Type == UnitType.Monster)
             {
                 int unitconfigId = bekill.ConfigId;
-                MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(unitconfigId);
-                bool isBoss = monsterConfig.MonsterType == (int)MonsterTypeEnum.Boss;
+                LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
+                bool isBoss = ldMonster.MonsterType == (int)MonsterTypeEnum.Boss;
                 MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
                 int fubenDifficulty = FubenDifficulty.None;
                 Scene DomainScene = self.GetParent<Unit>().DomainScene();
@@ -916,8 +915,8 @@ namespace ET
                         self.TriggerTaskEvent(TaskTargetType.KillDiYuBossNumber_132, 0, 1);
                         self.TriggerTaskCountryEvent(TaskTargetType.KillDiYuBossNumber_132, 0, 1);
 
-                        self.TriggerTaskEvent(TaskTargetType.KillDiYuBoss_141, monsterConfig.Lv, 1);
-                        self.TriggerTaskCountryEvent(TaskTargetType.KillDiYuBoss_141, monsterConfig.Lv, 1);
+                        self.TriggerTaskEvent(TaskTargetType.KillDiYuBoss_141, ldMonster.Lv, 1);
+                        self.TriggerTaskCountryEvent(TaskTargetType.KillDiYuBoss_141, ldMonster.Lv, 1);
                     }
                 }
                 

@@ -30,7 +30,7 @@ namespace ET
             {
                 string[] skillParList = summonParList[y].Split(';');
                 int createMonsterID = int.Parse(skillParList[0]);
-                if (!MonsterConfigCategory.Instance.Contain(createMonsterID))
+                if (!LDMonsterCategory.Instance.Contain(createMonsterID))
                 {
                     Log.Error($"config==null  monsterid {createMonsterID}");
                     break;

@@ -62,7 +62,7 @@ namespace ET
             LDUnion ldUnion = LDUnionCategory.Instance.Get(unionLevel);
 
             //Console.WriteLine($"unionConfig:  {unionLevel}  {unionConfig.XiuLianLevel} {unionQiangHuaConfig.QiangHuaLv}");
-            if (unionQiangHuaConfig.QiangHuaLv >= ldUnion.XiuLianLevel)
+            if (unionQiangHuaConfig.QiangHuaLv >= ldUnion.Id)
             {
                 reply();
                 return; 

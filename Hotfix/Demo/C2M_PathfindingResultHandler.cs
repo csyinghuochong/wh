@@ -26,13 +26,7 @@ namespace ET
             {
                 return;
             }
-            if (mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon)
-            {
-                if (LDSceneCategory.Instance.Get(mapComponent.SceneId).MapType == SceneSubTypeEnum.LocalDungeon_1)
-                {
-                    return;
-                }
-            }
+            
 
             unit.GetComponent<DBSaveComponent>().NoFindPath = 0;
             skillManagerComponent.InterruptSing(0, true);

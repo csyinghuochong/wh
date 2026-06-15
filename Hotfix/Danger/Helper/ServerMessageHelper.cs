@@ -14,8 +14,8 @@ namespace ET
 
         public static async ETTask SendServerMessage(long serverid, int messageType, string message, string messageEn = "")
         {
-            A2A_ServerMessageRResponse g_SendChatRequest = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-               (serverid, new A2A_ServerMessageRequest()
+            Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
+               (serverid, new A2Other_ServerMessageRequest()
                {
                    MessageType = messageType,
                    MessageValue = message,

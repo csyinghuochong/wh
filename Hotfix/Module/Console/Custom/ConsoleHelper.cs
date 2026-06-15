@@ -338,22 +338,14 @@ namespace ET
             await ETTask.CompletedTask;
 #if SERVER
             await TimerComponent.Instance.WaitAsync(1 * TimeHelper.Minute);
-            for (int i = 0; i < zoneList.Count; i++)
-            {
-                List<long> mapids = new List<long>()
-                            {
-                                 StartSceneConfigCategory.Instance.GetBySceneName(zoneList[i], "PaiMai").InstanceId,
-                                 StartSceneConfigCategory.Instance.GetBySceneName(zoneList[i], "Rank").InstanceId,
-                                 StartSceneConfigCategory.Instance.GetBySceneName(zoneList[i], "Union").InstanceId,
-                            };
 
-                for (int map = 0; map < mapids.Count; map++)
-                {
-                    A2A_ServerMessageRResponse m2m_TrasferUnitResponse = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                            (mapids[map], new A2A_ServerMessageRequest() { MessageType = NoticeType.StopSever });
-                }
-            }
 
+            long realmserver = DBHelper.GetRealmCenter();
+
+            Other2A_ServerMessageRResponse trasferUnitResponse = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
+                            (realmserver, new A2Other_ServerMessageRequest() { MessageType = NoticeType.StopSever });
+
+           
             await TimerComponent.Instance.WaitAsync(10 * TimeHelper.Minute);
             for (int i = 0; i < zoneList.Count; i++)
             {
@@ -366,8 +358,8 @@ namespace ET
 
                 for (int map = 0; map < mapids.Count; map++)
                 {
-                    A2A_ServerMessageRResponse m2m_TrasferUnitResponse = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                            (mapids[map], new A2A_ServerMessageRequest() { MessageType = NoticeType.StopSever });
+                    Other2A_ServerMessageRResponse m2m_TrasferUnitResponse = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
+                            (mapids[map], new A2Other_ServerMessageRequest() { MessageType = NoticeType.StopSever });
                 }
             }
 
@@ -408,8 +400,8 @@ namespace ET
                     Log.Console($"zoneList111: {zoneList[i]} ");
 
                     long chatServerId = StartSceneConfigCategory.Instance.GetBySceneName(zoneList[i], "Chat").InstanceId;
-                    A2A_ServerMessageRResponse g_SendChatRequest = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                        (chatServerId, new A2A_ServerMessageRequest()
+                    Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
+                        (chatServerId, new A2Other_ServerMessageRequest()
                         {
                             MessageType = NoticeType.StopSever,
                             MessageValue = "停服维护"
@@ -417,9 +409,9 @@ namespace ET
                 }
             }
 
-            long accountServerId = StartSceneConfigCategory.Instance.RealmConfig.InstanceId;
-            A2A_ServerMessageRResponse response = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                (accountServerId, new A2A_ServerMessageRequest()
+            long realmServerId = StartSceneConfigCategory.Instance.RealmConfig.InstanceId;
+            Other2A_ServerMessageRResponse response = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
+                (realmServerId, new A2Other_ServerMessageRequest()
                 {
                     MessageType = NoticeType.StopSever,
                     MessageValue = $"{ss[2]}_{ss[3]}"
@@ -627,8 +619,8 @@ namespace ET
 #if SERVER
             int zone = int.Parse(chaxunInfo[1]);
             long chatServerId = StartSceneConfigCategory.Instance.GetBySceneName(zone, "Chat").InstanceId;
-            A2A_ServerMessageRResponse g_SendChatRequest = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                (chatServerId, new A2A_ServerMessageRequest()
+            Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
+                (chatServerId, new A2Other_ServerMessageRequest()
                 {
                     MessageType = NoticeType.ClearChat,
                     MessageValue = "清空聊天"
@@ -651,8 +643,8 @@ namespace ET
 
             int zone = int.Parse(chaxunInfo[1]);
             long chatServerId = StartSceneConfigCategory.Instance.GetBySceneName(zone, "Chat").InstanceId;
-            A2A_ServerMessageRResponse g_SendChatRequest = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                (chatServerId, new A2A_ServerMessageRequest()
+            Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
+                (chatServerId, new A2Other_ServerMessageRequest()
                 {
                     MessageType = NoticeType.JinYan,
                     MessageValue = content

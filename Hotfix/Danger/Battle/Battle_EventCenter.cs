@@ -226,10 +226,10 @@ namespace ET
             long waittime = defendUnit.IsChest() ? 1000 : 100;
             if (defendUnit.Type == UnitType.Monster)
             {
-                MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(defendUnit.ConfigId);
-                if (monsterConfig.DeathSkillId != 0)
+                LDMonster ldMonster = LDMonsterCategory.Instance.Get(defendUnit.ConfigId);
+                if (ldMonster.DeathSkillId != 0)
                 {
-                    LDSkill ldSkillCategory = LDSkillCategory.Instance.Get(monsterConfig.DeathSkillId);
+                    LDSkill ldSkillCategory = LDSkillCategory.Instance.Get(ldMonster.DeathSkillId);
                     waittime = 1000 + (long)(ldSkillCategory.SkillDelayTime * 1000) + ldSkillCategory.SkillLiveTime;
                 }
             }

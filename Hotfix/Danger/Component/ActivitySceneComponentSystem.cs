@@ -270,16 +270,16 @@ namespace ET
 
                 if (todayopen)
                 {
-                    A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                                    (sceneserverid, new A2A_ActivityUpdateRequest() { Hour = -1, FunctionId = functionId, FunctionType = self.ActivityTimerList[0].FunctionType });
+                    Other2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (Other2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
+                                    (sceneserverid, new A2Other_ActivityUpdateRequest() { Hour = -1, FunctionId = functionId, FunctionType = self.ActivityTimerList[0].FunctionType });
                 }
                 if (todayopen && functionId == 1044 && self.ActivityTimerList[0].FunctionType == 2)
                 {
                     //1044
                     long rankserverid = DBHelper.GetRankServerId(self.DomainZone());
                     ////家族战结束. 发送奖励
-                    A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                                 (rankserverid, new A2A_ActivityUpdateRequest() { Hour = -1, FunctionId = functionId, FunctionType = 2 });
+                    Other2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (Other2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
+                                 (rankserverid, new A2Other_ActivityUpdateRequest() { Hour = -1, FunctionId = functionId, FunctionType = 2 });
                 }
 
                 self.ActivityTimerList.RemoveAt(0);
@@ -446,8 +446,8 @@ namespace ET
 
             for (int i = 0; i < self.MapIdList.Count; i++)
             {
-                A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                        (self.MapIdList[i], new A2A_ActivityUpdateRequest() { Hour = hour, OpenDay = openServerDay });
+                Other2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (Other2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
+                        (self.MapIdList[i], new A2Other_ActivityUpdateRequest() { Hour = hour, OpenDay = openServerDay });
             }
 
             if (hour == 0)

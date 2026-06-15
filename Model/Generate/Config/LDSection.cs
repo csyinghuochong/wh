@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDUnionCategory : ProtoObject, IMerge
+    public partial class LDSectionCategory : ProtoObject, IMerge
     {
-        public static LDUnionCategory Instance;
+        public static LDSectionCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDUnion> dict = new Dictionary<int, LDUnion>();
+        private Dictionary<int, LDSection> dict = new Dictionary<int, LDSection>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDUnion> list = new List<LDUnion>();
+        private List<LDSection> list = new List<LDSection>();
 		
-        public LDUnionCategory()
+        public LDSectionCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDUnionCategory s = o as LDUnionCategory;
+            LDSectionCategory s = o as LDSectionCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDUnion config in list)
+            foreach (LDSection config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDUnion Get(int id)
+        public LDSection Get(int id)
         {
-            this.dict.TryGetValue(id, out LDUnion item);
+            this.dict.TryGetValue(id, out LDSection item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDUnion)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDSection)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDUnion> GetAll()
+        public Dictionary<int, LDSection> GetAll()
         {
             return this.dict;
         }
 
-        public LDUnion GetOne()
+        public LDSection GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,17 +73,17 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDUnion: ProtoObject, IConfig
+	public partial class LDSection: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>经验</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public int Exp { get; set; }
-		/// <summary>人数限制</summary>
+		public int Name { get; set; }
+		/// <summary>场景ID</summary>
 		[ProtoMember(3)]
-		public int Limit_Player { get; set; }
+		public int[] Scene_Id { get; set; }
 
 	}
 }

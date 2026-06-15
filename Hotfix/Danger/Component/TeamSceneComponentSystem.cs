@@ -17,7 +17,7 @@ namespace ET
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
             LDScene ldScene = LDSceneCategory.Instance.Get(teamInfo.SceneId);
             mapComponent.SetMapInfo((int)MapTypeEnum.TeamDungeon, teamInfo.SceneId, 0);
-            mapComponent.NavMeshId = ldScene.Id;
+            mapComponent.NavMeshId = ldScene.GetNavMeshId();
             teamDungeonComponent.TeamInfo = teamInfo;
             teamDungeonComponent.EnterTime = TimeHelper.ServerNow();
             teamDungeonComponent.FubenType = teamInfo.FubenType;

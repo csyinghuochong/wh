@@ -82,8 +82,8 @@ namespace ET
             //1059
             long rankserverid = DBHelper.GetRankServerId(self.DomainZone());
             ////恶魔结束. 发送奖励
-            A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                         (rankserverid, new A2A_ActivityUpdateRequest() { Hour = -1, FunctionId = 1059, FunctionType = 2 });
+            Other2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (Other2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
+                         (rankserverid, new A2Other_ActivityUpdateRequest() { Hour = -1, FunctionId = 1059, FunctionType = 2 });
         }
 
         public static async ETTask OnUpdateScore(this DemonDungeonComponent self, Unit unit, int score)

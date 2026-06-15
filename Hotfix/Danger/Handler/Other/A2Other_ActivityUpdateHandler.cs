@@ -8,7 +8,7 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class A2A_ActivityUpdateHandler : AMActorRpcHandler<Scene, A2A_ActivityUpdateRequest, A2A_ActivityUpdateResponse>
+    public class A2Other_ActivityUpdateHandler : AMActorRpcHandler<Scene, A2Other_ActivityUpdateRequest, Other2A_ActivityUpdateResponse>
     {
 
         private async ETTask TestSmss(Scene scene)
@@ -67,7 +67,7 @@ namespace ET
 
         }
 
-        protected override async ETTask Run(Scene scene, A2A_ActivityUpdateRequest request, A2A_ActivityUpdateResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, A2Other_ActivityUpdateRequest request, Other2A_ActivityUpdateResponse response, Action reply)
         {
             int hour = request.Hour;
             switch (scene.SceneType)
@@ -259,30 +259,39 @@ namespace ET
                         FubenCenterComponent fubenCenter = scene.GetComponent<FubenCenterComponent>();
                         fubenCenter.OnActivityClose(request.FunctionId);
                     }
+
+                    Log.Error($"FubenCenterComponent:  {request.FunctionId}");
+
                     if (hour == 0)
                     {
                         scene.GetComponent<BattleSceneComponent>().OnZeroClockUpdate();
                     }
                     if (request.FunctionId == 1025 && request.FunctionType == 1)
                     {
-                        //Log.Console("OnBattleOpen");
-                        scene.GetComponent<BattleSceneComponent>().OnBattleOpen();
+                        //Log.Console("OnBattleOpen");scene
+                      
+                        scene.GetComponent<FubenCenterComponent>().OnActivityOpen(request.FunctionId);  
+
+                        //scene.GetComponent<BattleSceneComponent>().OnBattleOpen();
                     }
                     if (request.FunctionId == 1025 && request.FunctionType == 2)
                     {
                         // Log.Console("OnBattleOver");
-                        scene.GetComponent<BattleSceneComponent>().OnBattleOver().Coroutine();
+                        //scene.GetComponent<BattleSceneComponent>().OnBattleOver().Coroutine();
                     }
                     if (request.FunctionId == 1045 && request.FunctionType == 1)
                     {
-                        scene.GetComponent<SoloSceneComponent>().OnSoloBegin().Coroutine();
+                        //scene.GetComponent<SoloSceneComponent>().OnSoloBegin().Coroutine();
                     }
                     if (request.FunctionId == 1045 && request.FunctionType == 2)
                     {
-                        scene.GetComponent<SoloSceneComponent>().OnSoloOver().Coroutine();
+                        //scene.GetComponent<SoloSceneComponent>().OnSoloOver().Coroutine();
                     }
                     break;
                 case SceneType.Realm:
+
+                    Log.Error($"SceneType.Realm -1");
+
                     /*if (hour == 0 && self.DomainZone() == 3) //通知中心服
                     {
                         Console.WriteLine($"通知中心服:  {hour}");
@@ -299,28 +308,8 @@ namespace ET
                     }*/
                     
                     ///可以移动到CenterServerComponent
-                    if (hour == 0)
-                    {
-                        scene.GetComponent<CenterServerComponent>().CheckHoliday().Coroutine();
-                    }
-                    if (hour == 21)
-                    {
-                        Console.WriteLine("savedb 0");
-                        Game.EventSystem.Publish(new EventType.GMCommonRequest() { Context = "savedb 0" });
-                    }
-                    
-                    if (hour == 3)
-                    {
-                        CenterServerComponent centerServerComponent = scene.GetComponent<CenterServerComponent>();
-                        centerServerComponent.UpdateWeeklyIndex(TimeHelper.DateTimeNow()).Coroutine();
-                    }
-                    if (hour == -1)
-                    {
-                        CenterServerComponent centerServerComponent = scene.GetComponent<CenterServerComponent>();
-                        centerServerComponent.UpdateWeeklyIndex(TimeInfo.Instance.ToDateTime(1767542401000)).Coroutine();
-                    }
-
-                    LogHelper.CheckLogSize();
+                    //if (hour == 0)
+                   
                     break;
                 default:
                     break;

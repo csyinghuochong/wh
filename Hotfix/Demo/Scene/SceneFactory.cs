@@ -26,6 +26,7 @@ namespace ET
 
                     /*if (!ServerHelper.IsBanHaoServer(0))
                     {
+                    {
                         scene.AddComponent<HttpComponent, string>($"http://*:80/");
                     }*/
                     //HTTP 协议：默认端口是 80

@@ -74,8 +74,8 @@ namespace ET
             if (defend.Type == UnitType.Monster)
             {
                 int unitconfigId = defend.ConfigId;
-                MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(unitconfigId);
-                bool isBoss = monsterConfig.MonsterType == (int)MonsterTypeEnum.Boss;
+                LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
+                bool isBoss = ldMonster.MonsterType == (int)MonsterTypeEnum.Boss;
                 MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
                 int fubenDifficulty = (int)FubenDifficulty.None;
                 if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)

@@ -280,8 +280,8 @@ namespace ET
         {
             self.SkillPassiveInfos.Clear();
             int configId = self.GetParent<Unit>().ConfigId;
-            MonsterConfig MonsterCof = MonsterConfigCategory.Instance.Get(configId);
-            int[] aiSkillIDList = MonsterCof.SkillID;
+            LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(configId);
+            int[] aiSkillIDList = ldMonsterCof.SkillID;
             if (aiSkillIDList == null)
             {
                 return;

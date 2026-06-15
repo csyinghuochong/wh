@@ -122,7 +122,7 @@ namespace ET
         public static Unit CreateMonster(Scene scene, int monsterID, Vector3 vector3, CreateMonsterInfo createMonsterInfo)
         {
             int openDay = ServerHelper.GetOpenServerDay( false, scene.DomainZone()) ;
-            monsterID = MonsterConfigCategory.Instance.GetNewMonsterId( openDay, monsterID );
+            monsterID = LDMonsterCategory.Instance.GetNewMonsterId( openDay, monsterID );
 
             //精灵不能作为主人
             Unit master = scene.GetComponent<UnitComponent>().Get(createMonsterInfo.MasterID);
@@ -131,7 +131,7 @@ namespace ET
                 createMonsterInfo.MasterID = master.MasterId;
             }
 
-            MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(monsterID);
+            LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterID);
             MapComponent mapComponent = scene.GetComponent<MapComponent>();
 
             long unitid = createMonsterInfo.UnitId > 0 ? createMonsterInfo.UnitId : IdGenerater.Instance.GenerateId();
@@ -141,10 +141,10 @@ namespace ET
             HeroDataComponent heroDataComponent = unit.AddComponent<HeroDataComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unitInfoComponent.EnergySkillId = createMonsterInfo.SkillId;
-            unitInfoComponent.UnitName = monsterConfig.MonsterName;
+            unitInfoComponent.UnitName = ldMonster.MonsterName;
             unit.Type = UnitType.Monster;
             unit.Position = vector3;
-            unit.ConfigId = monsterConfig.Id;
+            unit.ConfigId = ldMonster.Id;
             unit.Rotation = Quaternion.Euler(0, createMonsterInfo.Rotation, 0);
             numericComponent.Set(NumericType.BattleCamp, createMonsterInfo.Camp);
             numericComponent.Set(NumericType.TeamId, master != null ? master.GetTeamId() : 0);
@@ -164,16 +164,16 @@ namespace ET
             if (mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon)
             {
                 mainUnit = scene.GetComponent<LocalDungeonComponent>().MainUnit;
-                revetime = mainUnit.GetComponent<UserInfoComponent>().GetReviveTime(monsterConfig.Id);
+                revetime = mainUnit.GetComponent<UserInfoComponent>().GetReviveTime(ldMonster.Id);
             }
             if (unit.MasterId > 0)
             {
                 revetime = 0;
             }
 
-            if (monsterConfig.DeathTime > 0)
+            if (ldMonster.DeathTime > 0)
             {
-                unit.AddComponent<DeathTimeComponent, long>(monsterConfig.DeathTime * 1000 - createMonsterInfo.BornTime);
+                unit.AddComponent<DeathTimeComponent, long>(ldMonster.DeathTime * 1000 - createMonsterInfo.BornTime);
             }
 
             if (mainUnit != null && TimeHelper.ServerNow() < revetime)
@@ -187,21 +187,21 @@ namespace ET
             //53 传送门
             //54 场景怪 显示名称
             //55 宝箱
-            if (monsterConfig.AI != 0)
+            if (ldMonster.AI != 0)
             {
                 if (createMonsterInfo.MasterID > 0 && !string.IsNullOrEmpty(createMonsterInfo.AttributeParams))
                 {
-                    heroDataComponent.InitMonsterInfo_Summon2(monsterConfig, createMonsterInfo);
+                    heroDataComponent.InitMonsterInfo_Summon2(ldMonster, createMonsterInfo);
                 }
                 else
                 {
-                    heroDataComponent.InitMonsterInfo(monsterConfig, createMonsterInfo);
+                    heroDataComponent.InitMonsterInfo(ldMonster, createMonsterInfo);
                 }
             }
 
-            if (monsterConfig.AI != 0)
+            if (ldMonster.AI != 0)
             {
-                int ai = createMonsterInfo.AI > 0 ? createMonsterInfo.AI : monsterConfig.AI;
+                int ai = createMonsterInfo.AI > 0 ? createMonsterInfo.AI : ldMonster.AI;
                 unit.AI = ai;
                 unit.AddComponent<ObjectWait>();
                 unit.AddComponent<MoveComponent>();
@@ -220,18 +220,18 @@ namespace ET
                     case MapTypeEnum.LocalDungeon:
                         aIComponent.LocalDungeonUnit = mainUnit;
                         aIComponent.LocalDungeonUnitPetComponent = mainUnit.GetComponent<PetComponent>();
-                        aIComponent.InitMonster(monsterConfig.Id);
+                        aIComponent.InitMonster(ldMonster.Id);
                         break;
                     case MapTypeEnum.PetDungeon:
-                        aIComponent.InitPetFubenMonster(monsterConfig.Id);
+                        aIComponent.InitPetFubenMonster(ldMonster.Id);
                         break;
                     default:
-                        aIComponent.InitMonster(monsterConfig.Id);
+                        aIComponent.InitMonster(ldMonster.Id);
                         aIComponent.Begin();
                         break;
                 }
 
-                if (monsterConfig.AI == 15)
+                if (ldMonster.AI == 15)
                 {
                     ComboComponent comboComponent = unit.AddComponent<ComboComponent>();
                     if (master != null)
@@ -243,7 +243,7 @@ namespace ET
                     }
                     else
                     {
-                        Console.WriteLine($"monsterConfig.AI == 15     master== null");
+                        Console.WriteLine($"ldMonster.AI == 15     master== null");
                         comboComponent.OnInitOcc(1, 0);
                     }
 
@@ -572,9 +572,9 @@ namespace ET
         public static List<RewardItem> AI_MonsterDrop(Unit unit, int monsterID, float dropProValue, bool all)
         {
             //根据怪物ID获得掉落ID
-            MonsterConfig monsterCof = MonsterConfigCategory.Instance.Get(monsterID);
+            LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(monsterID);
             List<RewardItem> dropItemList = new List<RewardItem>();
-            int[] dropID = monsterCof.DropID;
+            int[] dropID = ldMonsterCof.DropID;
 
             if (dropID != null)
             {
@@ -608,19 +608,19 @@ namespace ET
                 return;
             }
             bool drop = true;
-            MonsterConfig monsterCof = MonsterConfigCategory.Instance.Get(bekill.ConfigId);
+            LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(bekill.ConfigId);
             if (SceneConfigHelper.IsSingleFuben(sceneType) )
             {
                 drop = main.GetComponent<UserInfoComponent>().UserInfo.PiLao > 0 || bekill.IsBoss();
 
                 //场景宝箱掉落和体力无关
-                if (monsterCof.MonsterType == 5 &&
-                    (monsterCof.MonsterSonType == 55 || monsterCof.MonsterSonType == 57)) 
+                if (ldMonsterCof.MonsterType == 5 &&
+                    (ldMonsterCof.MonsterSonType == 55 || ldMonsterCof.MonsterSonType == 57)) 
                 {
                     drop = true;
                 }
 
-                if (monsterCof.MonsterType == 1 && monsterCof.MonsterSonType == 3) 
+                if (ldMonsterCof.MonsterType == 1 && ldMonsterCof.MonsterSonType == 3) 
                 {
                     drop = true;
                 }
@@ -632,9 +632,9 @@ namespace ET
             }
             if (ActivityHelper.IsShowLieOpen() && !drop && !main.IsRobot())
             {
-                MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(bekill.ConfigId);
+                LDMonster ldMonster = LDMonsterCategory.Instance.Get(bekill.ConfigId);
                 int userlv = main.GetComponent<UserInfoComponent>().UserInfo.Lv;
-                if( monsterConfig.Lv >= 60 || Mathf.Abs(userlv - monsterConfig.Lv) <= 9 ) 
+                if( ldMonster.Lv >= 60 || Mathf.Abs(userlv - ldMonster.Lv) <= 9 ) 
                 {
                     drop = true;
                 }
@@ -705,7 +705,7 @@ namespace ET
             //个人副本根据成长来
             if (sceneType == MapTypeEnum.LocalDungeon && bekill.IsBoss() && bekill.ConfigId != SeasonHelper.SeasonBossId)
             {
-                int killNumber =  main.GetComponent<UserInfoComponent>().GetMonsterKillNumber(monsterCof.Id);
+                int killNumber =  main.GetComponent<UserInfoComponent>().GetMonsterKillNumber(ldMonsterCof.Id);
                 int chpaterid = -1;
                 BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
                 dropAdd_Pro += bossDevelopment.DropAdd;
@@ -723,16 +723,16 @@ namespace ET
             }
 
             //创建掉落
-            if (main != null && monsterCof.MonsterSonType == 1)
+            if (main != null && ldMonsterCof.MonsterSonType == 1)
             {
                 int nowUserLv = main.GetComponent<UserInfoComponent>().UserInfo.Lv;
-                for (int i = 0; i < monsterCof.Parameter.Length; i++)
+                for (int i = 0; i < ldMonsterCof.Parameter.Length; i++)
                 {
-                    MonsterConfig nowmonsterCof = MonsterConfigCategory.Instance.Get(monsterCof.Parameter[i]);
+                    LDMonster nowmonsterCof = LDMonsterCategory.Instance.Get(ldMonsterCof.Parameter[i]);
                     if (nowUserLv >= nowmonsterCof.Lv)
                     {
                         //指定等级对应属性
-                        monsterCof = nowmonsterCof;
+                        ldMonsterCof = nowmonsterCof;
                     }
                 }
             }
@@ -759,13 +759,13 @@ namespace ET
                 }
             }
 
-            List <RewardItem> droplist = AI_MonsterDrop(main, monsterCof.Id, dropAdd_Pro, false);
+            List <RewardItem> droplist = AI_MonsterDrop(main, ldMonsterCof.Id, dropAdd_Pro, false);
            
             List<RewardItem> droplist_2 = null;
             if (main!=null && !main.IsDisposed)
             {
                 int playerLv = main.GetComponent<UserInfoComponent>().UserInfo.Lv;
-                droplist_2 = DropHelper.AI_DropByPlayerLv(monsterCof.Id, playerLv, dropAdd_Pro, false);
+                droplist_2 = DropHelper.AI_DropByPlayerLv(ldMonsterCof.Id, playerLv, dropAdd_Pro, false);
             }
             if (droplist_2 != null)
             {
@@ -780,23 +780,23 @@ namespace ET
                 }
             }
 
-            if ((monsterCof.MonsterSonType == 55 || monsterCof.MonsterSonType == 56) && droplist.Count == 0)
+            if ((ldMonsterCof.MonsterSonType == 55 || ldMonsterCof.MonsterSonType == 56) && droplist.Count == 0)
             {
-                Log.Warning($"宝箱掉落为空{monsterCof.Id} {main.Id}");
+                Log.Warning($"宝箱掉落为空{ldMonsterCof.Id} {main.Id}");
             }
-            if (monsterCof.MonsterType == (int)MonsterTypeEnum.Boss && droplist.Count == 0)
+            if (ldMonsterCof.MonsterType == (int)MonsterTypeEnum.Boss && droplist.Count == 0)
             {
-                Log.Warning($"BOSS掉落为空{monsterCof.Id}  {main.Id}");
+                Log.Warning($"BOSS掉落为空{ldMonsterCof.Id}  {main.Id}");
             }
-            if (monsterCof.Id == 72006013)
+            if (ldMonsterCof.Id == 72006013)
             {
-                Log.Warning($"BOSS掉落数量[72006013]： {monsterCof.Id}  {droplist.Count}");
+                Log.Warning($"BOSS掉落数量[72006013]： {ldMonsterCof.Id}  {droplist.Count}");
             }
 
             if (droplist.Count > 100)
             {
-                Log.Error($"掉落道具数量异常： {monsterCof.Id}  {droplist.Count}");
-                Log.Warning($"掉落道具数量异常： {monsterCof.Id}  {droplist.Count}");
+                Log.Error($"掉落道具数量异常： {ldMonsterCof.Id}  {droplist.Count}");
+                Log.Warning($"掉落道具数量异常： {ldMonsterCof.Id}  {droplist.Count}");
                 return;
             }
 
@@ -807,9 +807,9 @@ namespace ET
             }
             //1只要造成伤害就有 2是保护掉落 最后一刀 3是那个按照伤害统计
             // 0 公共掉落 2保护掉落   1私有掉落 3 归属掉落
-            if (monsterCof.DropType == 0 
-                || monsterCof.DropType == 2
-                || monsterCof.DropType == 3) 
+            if (ldMonsterCof.DropType == 0 
+                || ldMonsterCof.DropType == 2
+                || ldMonsterCof.DropType == 3) 
             {
                 long serverTime = TimeHelper.ServerNow();
                 Scene DomainScene = main != null ? main.DomainScene() : bekill.DomainScene();
@@ -826,24 +826,24 @@ namespace ET
                     dropitem.Type = UnitType.DropItem;
                     DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
                     dropComponent.SetItemInfo(droplist[i].ItemID, droplist[i].ItemNum);
-                    dropComponent.IfDamgeDrop = monsterCof.IfDamgeDrop;
+                    dropComponent.IfDamgeDrop = ldMonsterCof.IfDamgeDrop;
                     dropComponent.BeAttackPlayerList = beattackIds;
-                    dropComponent.DropType = monsterCof.DropType;
+                    dropComponent.DropType = ldMonsterCof.DropType;
                     dropComponent.BeKillId = bekill.Id;
                     dropComponent.BeKillConfig = bekill.ConfigId;
                     dropitem.ConfigId = droplist[i].ItemID;
                     //掉落归属问题 掉落类型为2 原来为： 最后一刀 修改为 第一拾取权限为优先攻击他的人,如果这个人死了，那么拾取权限清空，下一次伤害是谁归属权就是谁。
 
                     long ownderId = main != null ? main.Id : 0;
-                    switch (monsterCof.DropType)
+                    switch (ldMonsterCof.DropType)
                     {
                         case 2:
                             if (beattackIds.Count > 0 && unitComponent.Get(beattackIds[0]) != null)
                             {
                                 ownderId = beattackIds[0];
                             }
-                            dropComponent.OwnerId = monsterCof.DropType == 0 ? 0 : ownderId;
-                            dropComponent.ProtectTime = monsterCof.DropType == 0 ? 0 : serverTime + 30000;
+                            dropComponent.OwnerId = ldMonsterCof.DropType == 0 ? 0 : ownderId;
+                            dropComponent.ProtectTime = ldMonsterCof.DropType == 0 ? 0 : serverTime + 30000;
                             break;
                         case 3:
                             long belongid = bekill.GetComponent<NumericComponent>().GetAsLong(NumericType.BossBelongID);
@@ -852,7 +852,7 @@ namespace ET
                                 ownderId = belongid;
                             }
                             dropComponent.OwnerId = ownderId;
-                            dropComponent.ProtectTime = monsterCof.DropType == 0 ? 0 : serverTime + 30000;
+                            dropComponent.ProtectTime = ldMonsterCof.DropType == 0 ? 0 : serverTime + 30000;
                             break;
                     }
 
@@ -869,10 +869,10 @@ namespace ET
                     dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
                 }
 
-                if (monsterCof.DropType == 3)
+                if (ldMonsterCof.DropType == 3)
                 {
                     long belongid = bekill.GetComponent<NumericComponent>().GetAsLong(NumericType.BossBelongID);
-                    LogHelper.LogWarning($"BOSS归属掉落日志：{monsterCof.MonsterName}");
+                    LogHelper.LogWarning($"BOSS归属掉落日志：{ldMonsterCof.MonsterName}");
                     LogHelper.LogWarning($"BOSS归属者ID: {bekill.DomainZone()} {belongid}");
                     LogHelper.LogWarning("BOSS伤害日志：");
                     Dictionary<long, long> keyValuePairsHurt = bekill.GetComponent<AttackRecordComponent>().BeAttackPlayerList;
@@ -882,7 +882,7 @@ namespace ET
                     }
                 }
             }
-            if (monsterCof.DropType == 1)
+            if (ldMonsterCof.DropType == 1)
             {
                 for (int i = 0; i < beattackIds.Count; i++)
                 {
@@ -905,7 +905,7 @@ namespace ET
                         //}
 
                         //宠物蛋直接进背包
-                        if (monsterCof.MonsterSonType == 57)
+                        if (ldMonsterCof.MonsterSonType == 57)
                         {
                             beAttack.GetComponent<BagComponent>().OnAddItemData($"{droplist[k].ItemID};{droplist[k].ItemNum}", $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
                             continue;
@@ -924,7 +924,7 @@ namespace ET
                         m2C_CreateDropItems.Drops.Add(dropInfo);
                         beAttack.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
 
-                        if (monsterCof.Id == 70003003)
+                        if (ldMonsterCof.Id == 70003003)
                         {
                             Log.Warning($"BOSS掉落道具位置:  {main.Position.x}  {main.Position.z}  {bekill.Position.x} {bekill.Position.z}");
                         }

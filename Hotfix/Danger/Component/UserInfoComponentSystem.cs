@@ -57,9 +57,9 @@ namespace ET
             userInfo.AccInfoID =accountId;
             userInfo.Name = createRoleInfo.PlayerName;
             userInfo.ServerMailIdCur = -1;
-            userInfo.PiLao = int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);        //初始化疲劳
-            userInfo.Vitality = int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
-            userInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
+            userInfo.PiLao = 120;     //初始化疲劳
+            userInfo.Vitality = 120;
+            //userInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
             userInfo.CreateTime = TimeHelper.ServerNow();
 
             if (createRoleInfo.RobotId > 0)
@@ -234,7 +234,7 @@ namespace ET
 
         public static void CheckData(this UserInfoComponent self)
         {
-            if (LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv))
+            if (!LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv))
             {
                 self.UserInfo.JiaYuanLv = 1;
             }
@@ -336,16 +336,6 @@ namespace ET
                 Console.WriteLine($"清空家园经验: {self.Id}  {self.UserInfo.JiaYuanLv}  {self.UserInfo.JiaYuanExp}");
             }
 
-            if (self.IsZhuBoLevel16())
-            {
-                self.UserInfo.Lv = 16;
-            }
-            if (CommonHelper.IsZhuBoZone(self.DomainZone())
-                && self.Id == 2684307489305985024
-                && self.UserInfo.Lv < 60)
-            {
-                self.UserInfo.Lv = 60;
-            }
         }
 
         private static bool IsZhuBoLevel16(this UserInfoComponent self)
@@ -368,100 +358,8 @@ namespace ET
         {
             self.CheckData();
             self.RemoteAddress = remoteIp;
-            Unit unit = self.GetParent<Unit>();
-            long currentTime = TimeHelper.ServerNow();
-
-            DateTime dateTime = TimeInfo.Instance.ToDateTime(currentTime);
-            long lastLoginTime = self.LastLoginTime;
-            if (lastLoginTime != 0)
-            {
-                DateTime lastdateTime = TimeInfo.Instance.ToDateTime(lastLoginTime);
-                if (dateTime.Day != lastdateTime.Day)
-                {
-                    Log.Debug($"OnZeroClockUpdate [登录刷新]: {unit.Id}");
-                    float passhour = ((currentTime - lastLoginTime) *1f / TimeHelper.Hour);
-                    if (passhour >= 24f)
-                    {
-                        self.RecoverPiLao(120, false);
-                    }
-                    else
-                    {
-
-                        List<int> indexids_1 = self.GetTiLiIndexsNew(lastdateTime.Hour, 23);
-                        List<int> indexids_2 = self.GetTiLiIndexsNew(0, dateTime.Hour);
-                        List<int> indexids = new List<int>();
-                        indexids.Add(0);
-                        indexids.AddRange(indexids_1);
-                        indexids.AddRange(indexids_2);
-                        if (indexids.Count > 0)
-                        {
-                            int recoverTili = self.GetTiliRecover(indexids);
-                            self.RecoverPiLao(recoverTili, false);
-                            string indexstr = $"{unit.Id}  two day : hour_1: {lastdateTime.Hour}  hour_2:{dateTime.Hour}   indexs: ";
-                            for (int index = 0; index < indexids.Count; index++)
-                            {
-                                indexstr = indexstr + indexids[index].ToString() + "   ";
-                            }
-                            indexstr = indexstr + $"recover: {recoverTili}";
-                            Log.Debug(indexstr);
-                        }
-
-                    }
-                    self.OnZeroClockUpdate(false);
-                    unit.GetComponent<TaskComponent>().CheckWeeklyUpdate(lastLoginTime, currentTime);
-                    unit.GetComponent<TaskComponent>().OnZeroClockUpdate(false);
-                    unit.GetComponent<EnergyComponent>().OnResetEnergyInfo();
-                    unit.GetComponent<HeroDataComponent>().OnZeroClockUpdate(false);
-                    unit.GetComponent<ActivityComponent>().OnZeroClockUpdate(self.UserInfo.Lv);
-                    unit.GetComponent<ChengJiuComponent>().OnZeroClockUpdate();
-                    unit.GetComponent<JiaYuanComponent>().OnZeroClockUpdate(false);
-                    unit.GetComponent<DataCollationComponent>().OnZeroClockUpdate(false);
-                    self.OnJiaYuanExp(Math.Min(passhour, 12f));
-                }
-                else
-                {
-                    int hour_1, hour_2 = 0;
-                    hour_1 = lastdateTime.Hour;
-                    hour_2 = dateTime.Hour;
-
-                    List<int> indexids = self.GetTiLiIndexsNew(hour_1, hour_2);
-                    if (indexids.Count > 0)
-                    { 
-                        int recoverTili = self.GetTiliRecover(indexids);
-                        self.RecoverPiLao(recoverTili, false);
-                        string indexstr = $"{unit.Id}  one day  hour_1: {hour_1}  hour_2:{hour_2}   indexs: ";
-                        for (int index = 0; index < indexids.Count; index++)
-                        {
-                            indexstr = indexstr + indexids[index].ToString() + "   ";
-                        }
-                        indexstr = indexstr + $"recover: {recoverTili}";
-                        Log.Debug(indexstr);
-                    }
-  
-                    unit.GetComponent<JiaYuanComponent>().OnLoginCheck(hour_1, hour_2);
-                    float passhour = ((currentTime - lastLoginTime) * 1f / TimeHelper.Hour);
-                    self.OnJiaYuanExp(Math.Min(passhour, 12f));
-                }
-            }
-            else
-            {
-                Log.Debug($"OnZeroClockUpdate [数据初始化]: {unit.Id}");
-                unit.GetComponent<TaskComponent>().OnZeroClockUpdate(false);
-            }
-
-            unit.GetComponent<BagComponent>().OnLogin(self.UserInfo.RobotId);
-            unit.GetComponent<TaskComponent>().OnLogin();
-            unit.GetComponent<HeroDataComponent>().OnLogin(self.UserInfo.RobotId);
-            unit.GetComponent<DBSaveComponent>().OnLogin();
-            unit.GetComponent<RechargeComponent>().OnLogin();
-            unit.GetComponent<PetComponent>().OnLogin();
-            unit.GetComponent<ActivityComponent>().OnLogin(self.UserInfo.Lv);
-            unit.GetComponent<TitleComponent>().OnCheckTitle(false);
-            unit.GetComponent<ChengJiuComponent>().OnLogin();
-            unit.GetComponent<JiaYuanComponent>().OnLogin();
-            unit.GetComponent<SkillSetComponent>().OnLogin(self.UserInfo.Occ);
-
-            self.LastLoginTime = currentTime;
+            
+            self.LastLoginTime = TimeHelper.ServerNow();
             self.UserName = self.UserInfo.Name;
             self.ShouLieSendTime = 0;
         }
@@ -603,19 +501,19 @@ namespace ET
             }
 
             bool showlieopen = ActivityHelper.IsShowLieOpen();
-            MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(beKill.ConfigId);
-            if (showlieopen && ( monsterConfig.Lv >= 60 || Mathf.Abs(self.UserInfo.Lv - monsterConfig.Lv) <= 9) )
+            LDMonster ldMonster = LDMonsterCategory.Instance.Get(beKill.ConfigId);
+            if (showlieopen && ( ldMonster.Lv >= 60 || Mathf.Abs(self.UserInfo.Lv - ldMonster.Lv) <= 9) )
             {
                 self.OnShowLieKill();
                 main.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.ShowLieMonster_1201, 0, 1);
             }
 
-            if (sceneType == MapTypeEnum.LocalDungeon && monsterConfig.MonsterSonType == 55)
+            if (sceneType == MapTypeEnum.LocalDungeon && ldMonster.MonsterSonType == 55)
             {
                 self.OnAddChests(sceneId, beKill.ConfigId);
             }
 
-            if (SeasonHelper.GetOpenSeason(self.UserInfo.Lv)!=null && beKill.IsBoss() && monsterConfig.Lv >= 40)
+            if (SeasonHelper.GetOpenSeason(self.UserInfo.Lv)!=null && beKill.IsBoss() && ldMonster.Lv >= 40)
             {
                 int seasonExp = RandomHelper.RandomNumber(1, 6);
                 self.UpdateRoleData(UserDataType.SeasonExp, seasonExp.ToString());
@@ -654,7 +552,7 @@ namespace ET
             }
             if (drop)
             {
-                MonsterConfig mCof = MonsterConfigCategory.Instance.Get(beKill.ConfigId);
+                LDMonster mCof = LDMonsterCategory.Instance.Get(beKill.ConfigId);
                 float expcoefficient = 1f;
                 if (sceneType == MapTypeEnum.LocalDungeon && beKill.IsBoss())
                 {

@@ -29,14 +29,7 @@ namespace ET
             {
                 return;
             }
-            if (mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon)
-            {
-                if (LDSceneCategory.Instance.Get(mapComponent.SceneId).MapType == SceneSubTypeEnum.LocalDungeon_1)
-                {
-                    return;
-                }
-            }
-
+   
             if (message.Distance > 0f)
             {
                 Quaternion rotation = Quaternion.Euler(0, message.Direction, 0);

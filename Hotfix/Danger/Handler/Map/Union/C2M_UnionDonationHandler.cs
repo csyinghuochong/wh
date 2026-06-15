@@ -44,13 +44,13 @@ namespace ET
                     unit.GetComponent<NumericComponent>().ApplyChange(unit, NumericType.UnionDonationNumber, 1, 0);
                     UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
 
-                    userInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (ldUnionCof.DonateGold * -1).ToString(), true, ItemGetWay.Donation);
+                    /*userInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (ldUnionCof.DonateGold * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);
                     int randNumGongXian = RandomHelper.RandomNumber(ldUnionCof.DonateReward[0], ldUnionCof.DonateReward[1] + 1);
                     int randUnionGold = RandomHelper.RandomNumber(ldUnionCof.AddUnionGold[0], ldUnionCof.AddUnionGold[1] + 1);
                     userInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionContri, randNumGongXian.ToString(), true, ItemGetWay.Donation);
                     userInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionExp, randNumExp.ToString(), true, ItemGetWay.Donation);
-                    userInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionGold, randUnionGold.ToString(), true, ItemGetWay.Donation);
+                    userInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionGold, randUnionGold.ToString(), true, ItemGetWay.Donation);*/
                 }
                 else if (request.Type == 1) // 钻石捐献
                 {
@@ -79,13 +79,13 @@ namespace ET
                     // 花费250钻石，暂时写死，M2U_UnionOperationRequest也是
                     UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
 
-                    userInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (ldUnionCof.DonateDiamond * -1).ToString(), true, ItemGetWay.Donation);
+                    /*userInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (ldUnionCof.DonateDiamond * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);
                     int randNumGongXian = RandomHelper.RandomNumber(ldUnionCof.DonateReward[0], ldUnionCof.DonateReward[1] + 1);
                     int randUnionGold = RandomHelper.RandomNumber(ldUnionCof.AddUnionGold[0], ldUnionCof.AddUnionGold[1] + 1);
                     userInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionContri, randNumGongXian.ToString(), true, ItemGetWay.Donation);
                     userInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionExp, randNumExp.ToString(), true, ItemGetWay.Donation);
-                    userInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionGold, randUnionGold.ToString(), true, ItemGetWay.Donation);
+                    userInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionGold, randUnionGold.ToString(), true, ItemGetWay.Donation);*/
                 }
             }
 

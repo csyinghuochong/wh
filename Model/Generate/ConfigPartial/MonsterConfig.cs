@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ET
 {
-    public partial class MonsterConfigCategory
+    public partial class LDMonsterCategory
     {
 
         public Dictionary<int, List<KeyValuePair<int, int>>> OpenDayMonsters = new Dictionary<int, List<KeyValuePair<int, int>>>();
@@ -12,10 +12,10 @@ namespace ET
 
         public override void AfterEndInit()
         {
-            foreach (MonsterConfig monsterConfig in this.GetAll().Values)
+            foreach (LDMonster monsterConfig in this.GetAll().Values)
             {
                 //1;70001001@3;70001003
-                if (string.IsNullOrEmpty(monsterConfig.OpenDayMonster))
+                /*if (string.IsNullOrEmpty(monsterConfig.OpenDayMonster))
                 {
                     continue;
                 }
@@ -46,7 +46,7 @@ namespace ET
                     }
 
                     OpenDayMonsters[monsterConfig.Id].Add(new KeyValuePair<int, int>(openDay, monster));
-                }
+                }*/
 
                 //if(monsterConfig.ActSkillID != 70000001)
                 //{

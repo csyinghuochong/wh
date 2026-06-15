@@ -79,12 +79,12 @@ namespace ET
                             && !GMHelp.GmAccount.Contains(centerAccountList[0].Account)
 							&& !GMHelp.TestNewOccAccount.Contains(centerAccountList[0].Account))
 						{
-                            if (!centerAccountList[0].Password.Equals(CommonConfig.RobotPassWord) && accountCrateTime > 0 && (accountCrateTime - serverOpenTime >= TimeHelper.OneDay * 14))
+                           /* if (!centerAccountList[0].Password.Equals(CommonConfig.RobotPassWord) && accountCrateTime > 0 && (accountCrateTime - serverOpenTime >= TimeHelper.OneDay * 14))
                             {
                                 response.Error = ErrorCode.ERR_CreateRole_Limit_2;
                                 reply();
                                 return;
-                            }
+                            }*/
                         }
                      
 						if (!LDOccupationCategory.Instance.Contain(request.CreateOcc))

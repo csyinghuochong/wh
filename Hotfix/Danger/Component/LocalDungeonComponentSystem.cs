@@ -38,13 +38,13 @@ namespace ET
                 return;
             }
 
-            MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(unit.ConfigId);
+            LDMonster ldMonster = LDMonsterCategory.Instance.Get(unit.ConfigId);
             UserInfoComponent userInfoComponent = self.MainUnit.GetComponent<UserInfoComponent>();
             if (userInfoComponent == null || userInfoComponent.IsDisposed)
             {
                 return;
             }
-            if (monsterConfig.MonsterType == (int)MonsterTypeEnum.Boss && userInfoComponent.UserInfo.Lv >= 20)
+            if (ldMonster.MonsterType == (int)MonsterTypeEnum.Boss && userInfoComponent.UserInfo.Lv >= 20)
             {
                 userInfoComponent.UpdateRoleData(UserDataType.BaoShiDu, "-1", true);
                 return;
@@ -96,9 +96,9 @@ namespace ET
             FubenHelp.CreateMonsterList(self.DomainScene(), allmonster);
 
             //生成npc
-            int[] npcList = chapterSonConfig.NpcList;
+            int[] npcList = null;/// chapterSonConfig.NpcList;
             Vector3 npcpos = chapterSonConfig.GetBornPos();
-          if (npcList != null)
+            if (npcList != null)
             {
                 for (int i = 0; i < npcList.Length; i++)
                 {

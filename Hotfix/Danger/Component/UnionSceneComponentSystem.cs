@@ -105,7 +105,7 @@ namespace ET
             //获取家族等级
             LDUnion ldUnionCof = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
             //判断家族成员是否已达上限
-            if (replyCode == 1 && dBUnionInfo.UnionInfo.UnionPlayerList.Count >= ldUnionCof.PeopleNum)
+            if (replyCode == 1 && dBUnionInfo.UnionInfo.UnionPlayerList.Count >= ldUnionCof.Limit_Player)
             {
                 return ErrorCode.ERR_Union_PeopleMax;
             }
@@ -566,8 +566,8 @@ namespace ET
             LDScene ldScene = LDSceneCategory.Instance.Get(2000008);
             Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "UnionRace" + ldScene.Id.ToString(), SceneType.Map);
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-            mapComponent.SetMapInfo(ldScene.MapType, ldScene.Id, 0);
-            mapComponent.NavMeshId = ldScene.Id;
+            mapComponent.SetMapInfo(ldScene.Scene_Type, ldScene.Id, 0);
+            mapComponent.NavMeshId = ldScene.GetNavMeshId();
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             fubnescene.AddComponent<YeWaiRefreshComponent>().SceneId = 2000008;
            
@@ -591,7 +591,7 @@ namespace ET
            
             MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
             mapComponent.SetMapInfo((int)MapTypeEnum.Union, unionsceneid, 0);
-            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(unionsceneid).Id;
+            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(unionsceneid).GetNavMeshId();
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             FubenHelp.CreateNpc(fubnescene, unionsceneid);
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();

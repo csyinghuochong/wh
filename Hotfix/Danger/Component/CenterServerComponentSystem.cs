@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Alipay.AopSdk.Core.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -13,6 +14,7 @@ namespace ET
         {
             try
             {
+                self.OnCheck();
                 self.SaveDB().Coroutine();
             }
             catch (Exception e)
@@ -42,7 +44,7 @@ namespace ET
             self.UpdateServerInfo().Coroutine();
             self.InitDBRankInfo().Coroutine();
             self.UpdateTianQi();
-            self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Minute * 5 + self.DomainZone() * 800, TimerType.AccountCenterTimer, self);
+            self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Second, TimerType.AccountCenterTimer, self);
         }
     }
 
@@ -290,30 +292,61 @@ namespace ET
             Console.WriteLine($"生成第{sindex}序列号: end");
         }
 
+        public static void OnCheck(this CenterServerComponent self)
+        {
+            if (self.DBCenterSerialInfo == null)
+            {
+                return;
+            }
+
+
+            DateTime dateTime = TimeHelper.DateTimeNow();
+            int hour = dateTime.Hour;
+            if (self.DBCenterSerialInfo.LastHour == hour)
+            {
+                return;
+              
+            }
+            self.DBCenterSerialInfo.LastHour = hour;
+
+            self.CheckHoliday().Coroutine();
+
+
+            if (hour == 21)
+            {
+                Console.WriteLine("savedb 0");
+                Game.EventSystem.Publish(new EventType.GMCommonRequest() { Context = "savedb 0" });
+            }
+
+            if (hour == 3)
+            {
+                self.UpdateWeeklyIndex(TimeHelper.DateTimeNow()).Coroutine();
+            }
+            if (hour == -1)
+            {
+                self.UpdateWeeklyIndex(TimeInfo.Instance.ToDateTime(1767542401000)).Coroutine();
+            }
+
+            LogHelper.CheckLogSize();
+
+            //self.TeamUpdateHandler().Coroutine();
+        }
+
         public static async ETTask SaveDB(this CenterServerComponent self)
         {
-            await Game.Scene.GetComponent<DBComponent>().Save<DBCenterSerialInfo>(self.DomainZone(), self.DBCenterSerialInfo);
+            self.CheckIndex++;
+            if (self.CheckIndex >=300)
+            {
+                self.CheckIndex = 0;
+                await Game.Scene.GetComponent<DBComponent>().Save<DBCenterSerialInfo>(self.DomainZone(), self.DBCenterSerialInfo);
+            }
 
+   
             self.TianQITime++;
             if (self.TianQITime >= 12)
             {
                 self.TianQITime = 0;
                 self.UpdateTianQi();
-
-
-                List<int> zones = ServerMessageHelper.GetAllZone();
-                for (int i = 0; i < zones.Count; i++)
-                {
-                    long chatServerId = StartSceneConfigCategory.Instance.GetBySceneName(zones[i], "Chat").InstanceId;
-                    A2A_ServerMessageRResponse g_SendChatRequest = (A2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                        (chatServerId, new A2A_ServerMessageRequest()
-                        {
-                            MessageType = NoticeType.TianQiChange,
-                            MessageValue = self.TianQiValue.ToString(),
-                        });
-
-                    await TimerComponent.Instance.WaitAsync(10000);
-                }
             }
         }
     }

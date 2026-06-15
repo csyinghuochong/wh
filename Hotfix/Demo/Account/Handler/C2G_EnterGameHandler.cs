@@ -243,15 +243,14 @@ namespace ET
                         unit.AddComponent<StateComponent>();
                         unit.AddComponent<HeroDataComponent>();
                         unit.AddComponent<DBSaveComponent>();
-                        unit.GetComponent<UserInfoComponent>().OnLogin(session.RemoteAddress.ToString());
 						unit.GetComponent<UnitInfoComponent>().UnitName = unit.GetComponent<UserInfoComponent>().UserName;
-
 						DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
 						dataCollationComponent.CorrectData();
                         dataCollationComponent.UpdatePlatName(request.Platform, request.PlatformTwo, request.Simulator, request.Root, request.DeviceID, request.UnityVersion, request.BigVersion, request.DeviceName, request.OAID);
                         unit.AddComponent<SkillPassiveComponent>().UpdatePassiveSkill();
 						//unit.GetComponent<DBSaveComponent>().LastDBTime = TimeHelper.ServerNow();
                         unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
+                        unit.OnLogin(session.RemoteAddress.ToString());
 
                         long unitId = unit.Id;
                         await EnterRankServer(unit);

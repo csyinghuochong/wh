@@ -84,8 +84,11 @@ namespace ET
 		/// <summary>说话</summary>
 		[ProtoMember(3)]
 		public int Speak { get; set; }
-		/// <summary>模型</summary>
+		/// <summary>头像</summary>
 		[ProtoMember(4)]
+		public string Icon { get; set; }
+		/// <summary>模型</summary>
+		[ProtoMember(5)]
 		public string Model { get; set; }
 
 	}

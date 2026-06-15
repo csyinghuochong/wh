@@ -36,7 +36,7 @@ namespace ET
                     fubnescene.GetComponent<BattleDungeonComponent>().BattleOpenTime = TimeHelper.ServerNow();
                     MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
                     mapComponent.SetMapInfo((int)MapTypeEnum.Battle, sceneId, 0);
-                    mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).Id;
+                    mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).GetNavMeshId();
                     Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
                     fubnescene.AddComponent<YeWaiRefreshComponent>().SceneId = sceneId;
                     FubenHelp.CreateNpc(fubnescene, sceneId);

@@ -344,9 +344,9 @@ namespace ET
                 case UnitType.Monster:
                    
                     defendUnit.GetComponent<AIComponent>()?.BeAttacking(attackUnit);
-                    MonsterConfig monsterCof = MonsterConfigCategory.Instance.Get(defendUnit.ConfigId);
-                    defendUnitLv = monsterCof.Lv;
-                    if (monsterCof.MonsterType == (int)MonsterTypeEnum.Boss)
+                    LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(defendUnit.ConfigId);
+                    defendUnitLv = ldMonsterCof.Lv;
+                    if (ldMonsterCof.MonsterType == (int)MonsterTypeEnum.Boss)
                     {
                         ifMonsterBoss_Act = true;
                     }
@@ -379,9 +379,9 @@ namespace ET
             {
                 //怪物
                 case UnitType.Monster:
-                    MonsterConfig monsterCof = MonsterConfigCategory.Instance.Get(attackUnit.ConfigId);
-                    attackUnitLv = monsterCof.Lv;
-                    if (monsterCof.MonsterType == (int)MonsterTypeEnum.Boss)
+                    LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(attackUnit.ConfigId);
+                    attackUnitLv = ldMonsterCof.Lv;
+                    if (ldMonsterCof.MonsterType == (int)MonsterTypeEnum.Boss)
                         ifMonsterBoss_Def = true;
                     break;
                 //宠物
@@ -1055,7 +1055,7 @@ namespace ET
                 //种族抗性
                 if (ifMonsterBoss_Act)
                 {
-                    switch (MonsterConfigCategory.Instance.Get(defendUnit.ConfigId).MonsterRace)
+                    switch (LDMonsterCategory.Instance.Get(defendUnit.ConfigId).MonsterRace)
                     {
                         //通用
                         case 0:
@@ -1078,7 +1078,7 @@ namespace ET
                 //种族伤害
                 if (ifMonsterBoss_Def)
                 {
-                    switch (MonsterConfigCategory.Instance.Get(attackUnit.ConfigId).MonsterRace)
+                    switch (LDMonsterCategory.Instance.Get(attackUnit.ConfigId).MonsterRace)
                     {
                         //通用
                         case 0:
@@ -1571,12 +1571,12 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             int monsterid = numericComponent.GetAsInt(NumericType.RunRaceTransform);
-            MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(monsterid);
+            LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
             numericComponent.Set(NumericType.Numeric_Error, 0, notice);
             numericComponent.Set(NumericType.Numeric_Error, 0, notice);
             numericComponent.Set(NumericType.Numeric_Error, 0, notice);
             numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, (float)monsterConfig.MoveSpeed, notice);
+            numericComponent.Set(NumericType.Numeric_Error, (float)ldMonster.MoveSpeed, notice);
         }
 
         /// <summary>

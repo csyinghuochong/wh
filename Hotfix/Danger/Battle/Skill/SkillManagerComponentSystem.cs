@@ -665,7 +665,7 @@ namespace ET
             if (self.Timer == 0)
             {
                 TimerComponent.Instance.Remove(ref self.Timer);
-                long repeatertime = 100;//// unit.Type == UnitType.Monster && MonsterConfigCategory.Instance.NoSkillMonsterList.Contains(unit.ConfigId) ? 200 : 200;
+                long repeatertime = 100;//// unit.Type == UnitType.Monster && LDMonsterCategory.Instance.NoSkillMonsterList.Contains(unit.ConfigId) ? 200 : 200;
                 self.Timer = TimerComponent.Instance.NewRepeatedTimer(repeatertime, TimerType.SkillTimer, self);
             }
         }
@@ -851,8 +851,8 @@ namespace ET
 
             if (ldSkill.SkillActType == 0 && unit.Type == UnitType.Monster)
             {
-                MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(unit.ConfigId);
-                skillcdTime = monsterConfig.ActInterValTime;
+                LDMonster ldMonster = LDMonsterCategory.Instance.Get(unit.ConfigId);
+                skillcdTime = ldMonster.ActInterValTime;
             }
             if(ldSkill.SkillActType == 0 && unit.Type == UnitType.Pet)
             {

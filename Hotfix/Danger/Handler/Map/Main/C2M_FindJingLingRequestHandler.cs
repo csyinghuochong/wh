@@ -13,11 +13,11 @@ namespace ET
             List<Unit> units = UnitHelper.GetUnitList( unit.DomainScene(), UnitType.Monster );
             for (int i = 0; i < units.Count; i++)
             {
-                MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(units[i].ConfigId);
+                LDMonster ldMonster = LDMonsterCategory.Instance.Get(units[i].ConfigId);
 
-                if (monsterConfig.MonsterSonType == 57 || monsterConfig.MonsterSonType == 58 || monsterConfig.MonsterSonType == 59)
+                if (ldMonster.MonsterSonType == 57 || ldMonster.MonsterSonType == 58 || ldMonster.MonsterSonType == 59)
                 {
-                    jinglingid = monsterConfig.Id;
+                    jinglingid = ldMonster.Id;
                     break;
                 }
             }

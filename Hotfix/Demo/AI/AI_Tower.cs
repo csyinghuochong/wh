@@ -16,7 +16,7 @@ namespace ET
         public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
-            MonsterConfig monsterCof = MonsterConfigCategory.Instance.Get(unit.ConfigId);
+            LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(unit.ConfigId);
 
             for (int i = 0; i < 100000; ++i)
             {
@@ -24,9 +24,9 @@ namespace ET
                     return;
 
                 C2M_SkillCmd cmd = new C2M_SkillCmd();
-                cmd.SkillID = monsterCof.ActSkillID;
+                cmd.SkillID = ldMonsterCof.ActSkillID;
                 //技能释放角度
-                cmd.TargetAngle = int.Parse(monsterCof.AIParameter);
+                cmd.TargetAngle = int.Parse(ldMonsterCof.AIParameter);
 
                 //触发技能
                 unit.GetComponent<SkillManagerComponent>().OnUseSkill(cmd, true);

@@ -112,7 +112,7 @@ namespace ET
                     if (vector3 != null) 
                     {
                         Vector3 target = new Vector3(float.Parse(vector3[0]), float.Parse(vector3[1]), float.Parse(vector3[2]));
-                        MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(monsterid);    
+                        LDMonster monsterConfig = LDMonsterCategory.Instance.Get(monsterid);    
                         Unit unitmonster = UnitFactory.CreateMonster(unit.DomainScene(), monsterid, target, new CreateMonsterInfo()
                         {
                             Camp = monsterConfig.MonsterCamp,

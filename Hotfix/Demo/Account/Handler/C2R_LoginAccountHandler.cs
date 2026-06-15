@@ -222,11 +222,18 @@ namespace ET
                             {
                                 continue;
                             }
+                            CreateRoleInfo roleList = CommonHelper.DeepCopy(createRoleInfo);
 
                             UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
+                            if (userInfoComponent == null)
+                            {
+                                response.RoleLists.Add(roleList);
+                                continue;
+                            }
+
                             NumericComponent numericComponent =await DBHelper.GetComponent<NumericComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
                             BagComponent bagComponent =await DBHelper.GetComponent<BagComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
-                            CreateRoleInfo roleList = CommonHelper.DeepCopy(createRoleInfo);
+                           
 
                             roleList.PlayerLv = userInfoComponent.UserInfo.Lv;
                             roleList.WeaponId = numericComponent.GetAsInt(NumericType.Now_Weapon);
@@ -273,10 +280,10 @@ namespace ET
             {
                 return ErrorCode.ERR_Success;
             }
-            if (age < 12)
+            /*if (age < 12)
             {
                 return ErrorCode.ERR_FangChengMi_Tip6;
-            }
+            }*/
             DateTime dateTime = TimeHelper.DateTimeNow();
             if (isHoliday)
             {

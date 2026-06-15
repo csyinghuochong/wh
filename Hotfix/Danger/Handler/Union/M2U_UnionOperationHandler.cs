@@ -48,7 +48,7 @@ namespace ET
 
                                 long serverTime = TimeHelper.ServerNow();
                                 LDUnion ldUnionCof = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
-                                string[] rewardStrList = ldUnionCof.UpAllReward.Split(';');
+                                string[] rewardStrList = null;// ldUnionCof.UpAllReward.Split(';');
                                 for (int i = 0; i < rewardStrList.Length; i++)
                                 {
                                     string[] rewardList = rewardStrList[i].Split(',');
@@ -70,10 +70,10 @@ namespace ET
                         {
                             ldUnion = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
                             dBUnionInfo.UnionInfo.UnionGold += int.Parse(valuePararm[3]);
-                            if (dBUnionInfo.UnionInfo.UnionGold > ldUnion.UnionGoldLimit)
+                            /*if (dBUnionInfo.UnionInfo.UnionGold > ldUnion.UnionGoldLimit)
                             {
                                 dBUnionInfo.UnionInfo.UnionGold = ldUnion.UnionGoldLimit;
-                            }
+                            }*/
                         }
                         else
                         {
@@ -97,7 +97,7 @@ namespace ET
                         response.Par = dBUnionInfo.UnionInfo.Level.ToString();
                         ldUnion = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
                         long selfgold = long.Parse(request.Par);
-                        if (selfgold < ldUnion.DonateGold)
+                        /*if (selfgold < ldUnion.DonateGold)
                         {
                             response.Error = ErrorCode.ERR_GoldNotEnoughError;
                             reply();
@@ -112,7 +112,7 @@ namespace ET
                             Gold = ldUnion.DonateGold,
                             Time = TimeHelper.ServerNow(),
                             UnitId = request.UnitId
-                        });
+                        });*/
                         DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
                         break;
                     case 4: //钻石捐献
@@ -120,7 +120,7 @@ namespace ET
                         response.Par = dBUnionInfo.UnionInfo.Level.ToString();
                         ldUnion = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
                         long selfDiamond = long.Parse(request.Par);
-                        if (selfDiamond < ldUnion.DonateDiamond)
+                        /*if (selfDiamond < ldUnion.DonateDiamond)
                         {
                             response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                             reply();
@@ -135,7 +135,7 @@ namespace ET
                             Diamond = ldUnion.DonateDiamond,
                             Time = TimeHelper.ServerNow(),
                             UnitId = request.UnitId
-                        });
+                        });*/
                         DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
                         break;
                     case 5: //增加金币

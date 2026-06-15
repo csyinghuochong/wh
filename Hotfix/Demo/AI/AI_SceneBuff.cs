@@ -14,8 +14,8 @@ namespace ET
         public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
-            MonsterConfig monsterCof = MonsterConfigCategory.Instance.Get(unit.ConfigId);
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(monsterCof.ActSkillID);
+            LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(unit.ConfigId);
+            LDSkill ldSkill = LDSkillCategory.Instance.Get(ldMonsterCof.ActSkillID);
 
             bool remove = false;
             long instanceId = aiComponent.InstanceId;
@@ -30,7 +30,7 @@ namespace ET
                     Vector3 direction = target.Position - unit.Position;
                     
                     C2M_SkillCmd cmd = new C2M_SkillCmd();
-                    cmd.SkillID = monsterCof.ActSkillID;
+                    cmd.SkillID = ldMonsterCof.ActSkillID;
                     cmd.TargetID = target.Id;
                     if (ldSkill.SkillZhishiTargetType == 1)  //自身点
                     {

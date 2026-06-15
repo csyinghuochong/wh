@@ -22,11 +22,11 @@ namespace ET
 
         public void InitMainNpc(LDScene ldScene)
         {
-            int[] npcids = ldScene.NpcList;
+           /* int[] npcids = ldScene.NpcList;
             for (int i = 0; i < npcids.Length; i++)
             {
                 NpcIdList.Add(npcids[i]);
-            }
+            }*/
         }
     }
 }

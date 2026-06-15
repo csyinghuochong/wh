@@ -112,7 +112,7 @@ namespace ET
 
 				for (int c = 0; c < monsterPosition.CreateNum; c++)
 				{
-					MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(monsterid);
+					LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
 					Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
 
 					//51 场景怪 有AI 不显示名称
@@ -120,11 +120,11 @@ namespace ET
 					//54 场景怪 有AI 显示名称
 					//55 宝箱类(一次) 无AI
 					//56 宝箱类(无限) 无AI
-					if (monsterConfig.MonsterSonType != 52)
+					if (ldMonster.MonsterSonType != 52)
 					{
-						UnitFactory.CreateMonster(scene, monsterConfig.Id, vector3, new CreateMonsterInfo()
+						UnitFactory.CreateMonster(scene, ldMonster.Id, vector3, new CreateMonsterInfo()
 						{
-							Camp = monsterConfig.MonsterCamp,
+							Camp = ldMonster.MonsterCamp,
 							Rotation = monsterPosition.Create,
 						});
 					}
@@ -141,11 +141,11 @@ namespace ET
                 for (int c = 0; c < monsterPosition.CreateNum; c++)
 				{
 					float range = (float)monsterPosition.CreateRange;
-					MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(monsterPosition.MonsterID);
+					LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterPosition.MonsterID);
 					Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
 					UnitFactory.CreateMonster(scene, monsterPosition.MonsterID, vector3, new CreateMonsterInfo()
 					{
-						Camp = monsterConfig.MonsterCamp,
+						Camp = ldMonster.MonsterCamp,
 						Rotation = monsterPosition.Create,
 					});
 				}
@@ -173,13 +173,13 @@ namespace ET
                 for (int c = 0; c < monsterPosition.CreateNum; c++)
 				{
 					float range = (float)monsterPosition.CreateRange;
-					MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(monsterPosition.MonsterID);
+					LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterPosition.MonsterID);
 					Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
 					UnitFactory.CreateMonster(scene, monsterPosition.MonsterID, vector3, new CreateMonsterInfo()
 					{
 						PlayerLevel = playerLv,
 						AttributeParams = monsterPosition.Par,
-						Camp = monsterConfig.MonsterCamp,
+						Camp = ldMonster.MonsterCamp,
 						Rotation = monsterPosition.Create,
 					});
 				}
@@ -246,8 +246,8 @@ namespace ET
 
 				string[] mondels = monsters[i].Split(';');
 				int monsterid = int.Parse(mondels[2]);
-				MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(monsterid);
-				if (monsterConfig.MonsterType != MonsterTypeEnum.Normal && monsterConfig.MonsterSonType != 55)
+				LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
+				if (ldMonster.MonsterType != MonsterTypeEnum.Normal && ldMonster.MonsterSonType != 55)
 				{
 					continue;
 				}
@@ -310,14 +310,14 @@ namespace ET
 				string[] position = mondels[1].Split(',');
 				int monsterid =  int.Parse(mondels[2]);
 				string[] mcount = mondels[3].Split(',');
-				if (!MonsterConfigCategory.Instance.Contain(monsterid))
+				if (!LDMonsterCategory.Instance.Contain(monsterid))
 				{
 					Log.Error($"monsterid==null {monsterid}");
 					continue;
 				}
 
 				bool haveotherMonster = false;
-				MonsterConfig monsterConfig = MonsterConfigCategory.Instance.Get(monsterid);
+				LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
 				for (int kk = 0; kk < randomMonsterList.Count; kk++)
 				{
 					if (position.Length < 3)
@@ -328,12 +328,12 @@ namespace ET
                     if (randomMonsterList[kk].KeyId == i && (int)randomMonsterList[kk].Value > 0 && position.Length >= 3)
 					{
 						monsterid = (int)randomMonsterList[kk].Value;
-						monsterConfig = MonsterConfigCategory.Instance.Get(monsterid);
+						ldMonster = LDMonsterCategory.Instance.Get(monsterid);
 
 						int skinId = 0;
-                        if (monsterConfig.MonsterSonType == 58) //奇遇宠物
+                        if (ldMonster.MonsterSonType == 58) //奇遇宠物
                         {
-							int itemid = monsterConfig.Parameter[1];
+							int itemid = ldMonster.Parameter[1];
 							LDItem ldItem = LDItemCategory.Instance.Get(itemid);
 							int petId = int.Parse(ldItem.ItemUsePar);
 							LDPet ldPetConfig = LDPetCategory.Instance.Get(petId );
@@ -345,7 +345,7 @@ namespace ET
                         Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
                         Unit unitmonster = UnitFactory.CreateMonster(scene, monsterid, vector3, new CreateMonsterInfo()
                         {
-                            Camp = monsterConfig.MonsterCamp,
+                            Camp = ldMonster.MonsterCamp,
 							SkinId = skinId,	
                         });
                        
@@ -357,7 +357,7 @@ namespace ET
 					continue;
 				}
 				
-				if (sceneType == MapTypeEnum.LocalDungeon && monsterConfig.MonsterSonType == 55)
+				if (sceneType == MapTypeEnum.LocalDungeon && ldMonster.MonsterSonType == 55)
 				{
 					LocalDungeonComponent localDungeonComponent = scene.GetComponent<LocalDungeonComponent>();
 					UserInfoComponent userInfoComponent = localDungeonComponent.MainUnit.GetComponent<UserInfoComponent>();
@@ -386,7 +386,7 @@ namespace ET
 						//52 能量台子 无AI
 						//54 场景怪 有AI 显示名称
 						//55 宝箱类 无AI
-						if (monsterConfig.MonsterSonType == 52)
+						if (ldMonster.MonsterSonType == 52)
 						{
 							CellDungeonComponent cellDungeonComponent = scene.GetComponent<CellDungeonComponent>();
 							if (cellDungeonComponent!=null)
@@ -394,10 +394,10 @@ namespace ET
 								List<int> EnergySkills = cellDungeonComponent.EnergySkills;
 								int skillId = EnergySkills[RandomHelper.RandomNumber(0, EnergySkills.Count)];
 								EnergySkills.Remove(skillId);
-								UnitFactory.CreateMonster(scene, monsterConfig.Id, vector3, new CreateMonsterInfo()
+								UnitFactory.CreateMonster(scene, ldMonster.Id, vector3, new CreateMonsterInfo()
 								{
 									SkillId = skillId,
-									Camp = monsterConfig.MonsterCamp
+									Camp = ldMonster.MonsterCamp
 								});
 							}
 						}
@@ -405,7 +405,7 @@ namespace ET
 						{
 							UnitFactory.CreateMonster(scene, monsterid, vector3,  new CreateMonsterInfo()
 							{
-								Camp = monsterConfig.MonsterCamp
+								Camp = ldMonster.MonsterCamp
 							});
 						}
 					}
@@ -425,7 +425,7 @@ namespace ET
 						Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
 						UnitFactory.CreateMonster(scene, monsterid, vector3, new CreateMonsterInfo()
 						{ 
-							Camp = monsterConfig.MonsterCamp
+							Camp = ldMonster.MonsterCamp
 						});
 					}
 				}
@@ -457,7 +457,7 @@ namespace ET
 						Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
 						UnitFactory.CreateMonster(scene, monsterid, vector3,  new CreateMonsterInfo() {
 							PlayerLevel = playerLv, AttributeParams = mondels[4] + ";" + mondels[5],
-							Camp = monsterConfig.MonsterCamp
+							Camp = ldMonster.MonsterCamp
 						});
 					}
 				}
@@ -473,7 +473,7 @@ namespace ET
 		public static void CreateNpc(Scene scene, int sceneId)
 		{
 			LDScene ldScene = LDSceneCategory.Instance.Get(sceneId);
-			int[] npcs = ldScene.NpcList;
+			int[] npcs = null;/// ldScene.NpcList;
 			if (npcs == null)
 			{
 				return;
