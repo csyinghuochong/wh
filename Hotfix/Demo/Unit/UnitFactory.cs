@@ -122,8 +122,7 @@ namespace ET
         public static Unit CreateMonster(Scene scene, int monsterID, Vector3 vector3, CreateMonsterInfo createMonsterInfo)
         {
             int openDay = ServerHelper.GetOpenServerDay( false, scene.DomainZone()) ;
-            monsterID = LDMonsterCategory.Instance.GetNewMonsterId( openDay, monsterID );
-
+         
             //精灵不能作为主人
             Unit master = scene.GetComponent<UnitComponent>().Get(createMonsterInfo.MasterID);
             if (master != null && master.Type == UnitType.JingLing)
@@ -146,11 +145,7 @@ namespace ET
             unit.Position = vector3;
             unit.ConfigId = ldMonster.Id;
             unit.Rotation = Quaternion.Euler(0, createMonsterInfo.Rotation, 0);
-            numericComponent.Set(NumericType.BattleCamp, createMonsterInfo.Camp);
-            numericComponent.Set(NumericType.TeamId, master != null ? master.GetTeamId() : 0);
-            numericComponent.Set(NumericType.AttackMode, master!=null ?  master.GetAttackMode() : 0);
-            numericComponent.Set(NumericType.UnionId_0, master != null ? master.GetUnionId() : 0, false);
-            numericComponent.Set(NumericType.PetSkin, createMonsterInfo.SkinId, false);
+      
             //出生点
             //numericComponent.Set((int)NumericType.Born_X, unit.Position.x, false);
             //numericComponent.Set((int)NumericType.Born_Y, unit.Position.y, false);
@@ -178,7 +173,15 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.Now_Dead, 1, false);
             }
             heroDataComponent.InitMonsterInfo(ldMonster, createMonsterInfo);
-          
+
+            numericComponent.Set(NumericType.BattleCamp, createMonsterInfo.Camp, false);
+            numericComponent.Set(NumericType.TeamId, master != null ? master.GetTeamId() : 0, false);
+            numericComponent.Set(NumericType.AttackMode, master!=null ?  master.GetAttackMode() : 0, false);
+            numericComponent.Set(NumericType.UnionId_0, master != null ? master.GetUnionId() : 0, false);
+            numericComponent.Set(NumericType.PetSkin, createMonsterInfo.SkinId, false);
+            numericComponent.Set(NumericType.MasterId, createMonsterInfo.MasterID, false);
+            numericComponent.Set(NumericType.HP_Current, numericComponent.GetAsLong(NumericType.HP_Max));
+
             int ai = createMonsterInfo.AI > 0 ? createMonsterInfo.AI : 1;
             unit.AI = ai;
             unit.AddComponent<ObjectWait>();
@@ -191,7 +194,7 @@ namespace ET
             unit.AddComponent<BuffManagerComponent>();      //添加Buff管理器
             unit.GetComponent<SkillPassiveComponent>().UpdateMonsterPassiveSkill();
             unit.GetComponent<SkillPassiveComponent>().Activeted();
-            numericComponent.Set(NumericType.MasterId, createMonsterInfo.MasterID);
+        
             AIComponent aIComponent = unit.AddComponent<AIComponent, int>(ai);
             switch (mapComponent.MapTypeEnum)
             {

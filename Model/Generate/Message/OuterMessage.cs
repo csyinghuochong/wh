@@ -902,9 +902,6 @@ namespace ET
 		[ProtoMember(2)]
 		public List<UnitInfo> Units = new List<UnitInfo>();
 
-		[ProtoMember(3)]
-		public List<SpilingInfo> Spilings = new List<SpilingInfo>();
-
 		[ProtoMember(4)]
 		public List<DropInfo> Drops = new List<DropInfo>();
 
@@ -2187,73 +2184,6 @@ namespace ET
 
 		[ProtoMember(94)]
 		public long Id { get; set; }
-
-	}
-
-//创建木桩
-	[Message(OuterOpcode.M2C_CreateSpilings)]
-	[ProtoContract]
-	public partial class M2C_CreateSpilings: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public List<SpilingInfo> Spilings = new List<SpilingInfo>();
-
-	}
-
-	[Message(OuterOpcode.SpilingInfo)]
-	[ProtoContract]
-	public partial class SpilingInfo: Object
-	{
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public float X { get; set; }
-
-		[ProtoMember(3)]
-		public float Y { get; set; }
-
-		[ProtoMember(4)]
-		public float Z { get; set; }
-
-		[ProtoMember(5)]
-		public List<int> Ks = new List<int>();
-
-		[ProtoMember(6)]
-		public List<long> Vs = new List<long>();
-
-		[ProtoMember(8)]
-		public int RoleCamp { get; set; }
-
-		[ProtoMember(9)]
-		public int MonsterID { get; set; }
-
-		[ProtoMember(10)]
-		public int SkillId { get; set; }
-
-		[ProtoMember(12)]
-		public float ForwardX { get; set; }
-
-		[ProtoMember(13)]
-		public float ForwardY { get; set; }
-
-		[ProtoMember(14)]
-		public float ForwardZ { get; set; }
-
-		[ProtoMember(19)]
-		public List<KeyValuePair> Buffs = new List<KeyValuePair>();
-
-		[ProtoMember(20)]
-		public List<SkillInfo> Skills = new List<SkillInfo>();
-
-		[ProtoMember(21)]
-		public List<int> FashionEquipList = new List<int>();
 
 	}
 
@@ -3540,10 +3470,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Actor_ItemInitResponse))]
-	[Message(OuterOpcode.Actor_ItemInitRequest)]
+	[ResponseType(nameof(M2C_ItemInitResponse))]
+	[Message(OuterOpcode.C2M_ItemInitRequest)]
 	[ProtoContract]
-	public partial class Actor_ItemInitRequest: Object, IActorLocationRequest
+	public partial class C2M_ItemInitRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3553,9 +3483,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.Actor_ItemInitResponse)]
+	[Message(OuterOpcode.M2C_ItemInitResponse)]
 	[ProtoContract]
-	public partial class Actor_ItemInitResponse: Object, IActorLocationResponse
+	public partial class M2C_ItemInitResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3568,12 +3498,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public List<BagInfo> BagInfos = new List<BagInfo>();
-
-		[ProtoMember(2)]
-		public List<int> QiangHuaLevel = new List<int>();
-
-		[ProtoMember(3)]
-		public List<int> QiangHuaFails = new List<int>();
 
 //int32 BagAddedCell = 4;
 		[ProtoMember(5)]
@@ -14268,11 +14192,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemOperateWearResponse))]
-//猎人穿戴装备特殊处理
-	[Message(OuterOpcode.C2M_ItemOperateWearRequest)]
+	[ResponseType(nameof(M2C_EquipWearResponse))]
+	[Message(OuterOpcode.C2M_EquipWearRequest)]
 	[ProtoContract]
-	public partial class C2M_ItemOperateWearRequest: Object, IActorLocationRequest
+	public partial class C2M_EquipWearRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -14288,9 +14211,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_ItemOperateWearResponse)]
+	[Message(OuterOpcode.M2C_EquipWearResponse)]
 	[ProtoContract]
-	public partial class M2C_ItemOperateWearResponse: Object, IActorLocationResponse
+	public partial class M2C_EquipWearResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

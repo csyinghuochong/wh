@@ -78,21 +78,15 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>套装名称</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public string Name { get; set; }
-		/// <summary>需要装备ID</summary>
+		public int Name { get; set; }
+		/// <summary>装备ID</summary>
+		[ProtoMember(3)]
+		public int[] Equip_Id { get; set; }
+		/// <summary>属性</summary>
 		[ProtoMember(4)]
-		public int[] NeedEquipID { get; set; }
-		/// <summary>套装属性 件数&套装属性|...</summary>
-		[ProtoMember(5)]
-		public string SuitPropertyID { get; set; }
-		/// <summary>套装类型 0：默认 1：时装</summary>
-		[ProtoMember(6)]
-		public int SuitType { get; set; }
-		/// <summary>职业</summary>
-		[ProtoMember(7)]
-		public int Occ { get; set; }
+		public string Property { get; set; }
 
 	}
 }

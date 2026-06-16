@@ -740,12 +740,12 @@ namespace ET
 
                     //获取之前的位置是否有装备
                     BagInfo beforeequip = null;
-                    if (weizhi == (int)ItemSubTypeEnum.Shiping && !CommonHelper.IsBanHaoZone(unit.DomainZone()))
+                    /*if (weizhi == (int)EquipCaoWeiTypeEnum.Shiping && !CommonHelper.IsBanHaoZone(unit.DomainZone()))
                     {
                         List<BagInfo> equipList = unit.GetComponent<BagComponent>().GetEquipListByWeizhi(ItemLocType.ItemLocEquip, weizhi);
                         beforeequip = equipList.Count < 3 ? null : equipList[0];
                     }
-                    else
+                    else*/
                     {
                         beforeequip = unit.GetComponent<BagComponent>().GetEquipBySubType(ItemLocType.ItemLocEquip, weizhi);
                     }
@@ -770,7 +770,7 @@ namespace ET
                     useBagInfo.isBinging = true;
                     m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
 
-                    if (weizhi == (int)ItemSubTypeEnum.Wuqi)
+                    if (weizhi == (int)EquipCaoWeiTypeEnum.Wuqi_1)
                     {
                         unit.GetComponent<SkillPassiveComponent>().OnTrigegerPassiveSkill(SkillPassiveTypeEnum.WandBuff_8, useBagInfo.ItemID);
                         unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Weapon, useBagInfo.ItemID);
@@ -799,7 +799,7 @@ namespace ET
                     unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
                     Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
                     m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
-                    if (weizhi == (int)ItemSubTypeEnum.Wuqi)
+                    if (weizhi == (int)EquipCaoWeiTypeEnum.Wuqi_1)
                     {
                         unit.GetComponent<SkillPassiveComponent>().OnTrigegerPassiveSkill(SkillPassiveTypeEnum.WandBuff_8, 0);
                         unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Weapon, 0);

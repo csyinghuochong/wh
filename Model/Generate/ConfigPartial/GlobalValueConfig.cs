@@ -39,7 +39,7 @@ namespace ET
 
         public int AccountBagMax = 0;
 
-        public int MaxLevel = 0;
+        public int MaxLevel = 70;
 
         public List<DayMonsters> DayMonsterList = new List<DayMonsters>();
 

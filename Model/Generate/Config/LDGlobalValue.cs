@@ -81,9 +81,15 @@ namespace ET
 		/// <summary>唯一索引</summary>
 		[ProtoMember(2)]
 		public string Key { get; set; }
-		/// <summary>值</summary>
+		/// <summary>备注</summary>
 		[ProtoMember(3)]
+		public string Note_1 { get; set; }
+		/// <summary>值</summary>
+		[ProtoMember(4)]
 		public string Value { get; set; }
+		/// <summary>备注</summary>
+		[ProtoMember(5)]
+		public string Note_2 { get; set; }
 
 	}
 }

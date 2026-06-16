@@ -298,13 +298,7 @@ namespace ET
 
             for (int i =  self.EquipList.Count - 1; i >=0; i--)
             {
-                LDItem ldItem = LDItemCategory.Instance.Get(self.EquipList[i].ItemID);
-                if (ldItem.ItemType == ItemTypeEnum.Gemstone)
-                {
-                    Log.Warning($"误穿宝石！！  {ldItem.Name}");
-                    self.EquipList.RemoveAt(i);
-                    break;
-                }
+                LDEquip ldItem = LDEquipCategory.Instance.Get(self.EquipList[i].ItemID);
             }
 
             bagList.AddRange(self.GemList);
@@ -666,13 +660,6 @@ namespace ET
         public static int GetMaxQiangHuaLevel(this BagComponent self)
         {
             int maxLevel = 0;
-            for (int i = 0; i < self.QiangHuaLevel.Count; i++)
-            {
-                if (self.QiangHuaLevel[i] > maxLevel)
-                {
-                    maxLevel = self.QiangHuaLevel[i];
-                }
-            }
             return maxLevel;
         }
 
@@ -682,8 +669,8 @@ namespace ET
             List<BagInfo> equipList = self.GetItemByLoc(equipIndex);
             for (int i = 0; i < equipList.Count; i++)
             {
-                LDItem ldItemCof = LDItemCategory.Instance.Get(equipList[i].ItemID);
-                if (ldItemCof.ItemSubType == subType)
+                int caowei = ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID);
+                if (caowei == subType)
                 {
                     return equipList[i];
                 }
@@ -744,32 +731,7 @@ namespace ET
             {
                 self.AdditionalCellNum.Add(0);
             }
-
-
-            if (self.QiangHuaLevel.Count == 0)
-            {
-                for (int i = 0; i <= 11; i++)
-                {
-                    self.QiangHuaLevel.Add(0);
-                    self.QiangHuaFails.Add(0);
-                }
-            }
-            else
-            {
-                for (int i = 0; i <= 11; i++)
-                {
-                    int maxLevel = QiangHuaHelper.GetQiangHuaMaxLevel(i);
-                    if (self.QiangHuaLevel[i] >= maxLevel)
-                    {
-                        self.QiangHuaLevel[i] = maxLevel - 1;
-
-                        if (i != 0)
-                        {
-                            Log.Error($"self.QiangHuaLevel[i] >= maxLevel： {unit.Id}   {i}  {self.QiangHuaLevel[i]}");
-                        }
-                    }
-                }
-            }
+            
 
             if (robotId != 0)
             {
@@ -823,12 +785,7 @@ namespace ET
             int number = 0;
             for (int i = 0; i < self.EquipList.Count; i++)
             {
-                LDItem ldItem = LDItemCategory.Instance.Get(self.EquipList[i].ItemID);
-                int equipType = ItemHelper.GetNewEquipType(self.EquipList[i]);
-                if (equipType == 101)
-                {
-                    number++;
-                }
+               
             }
 
             return number;
@@ -836,7 +793,7 @@ namespace ET
 
         public static int GetWuqiItemId(this BagComponent self)
         {
-            BagInfo bagInfo = self.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)ItemSubTypeEnum.Wuqi);
+            BagInfo bagInfo = self.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)EquipCaoWeiTypeEnum.Wuqi_1);
             return bagInfo != null ? bagInfo.ItemID : 0;
         }
 
@@ -1634,11 +1591,7 @@ namespace ET
 
         public static int GetQiangHuaLevel(this BagComponent self, int subType)
         {
-            if (subType > 1000)
-            {
-                return 0;
-            }
-            return self.QiangHuaLevel[subType];
+            return 0;
         }
 
         public static void OnEquipFuMo(this BagComponent self, int itemid, List<HideProList> hideProLists, int index)
@@ -1833,17 +1786,9 @@ namespace ET
                 }
                 LDEquip_Suit ldEquipSuitCof = LDEquip_SuitCategory.Instance.Get(equipSuitIDList[i]);
                 int num = 0;
-                if (ldEquipSuitCof.SuitType == 0) //默认套装
+                /*if (ldEquipSuitCof.SuitType == 0) //默认套装
                 {
-                    int[] needEquipList = ldEquipSuitCof.NeedEquipID;
-                    for (int y = 0; y < needEquipList.Length; y++)
-                    {
-                        int needEquipID = needEquipList[y];
-                        if (equipIDList.Contains(needEquipID))
-                        {
-                            num = num + 1;
-                        }
-                    }
+                    
                 }
                 else  //时装套装
                 {
@@ -1855,14 +1800,22 @@ namespace ET
                             num++;
                         }
                     }
+                }*/
+                int[] needEquipList = ldEquipSuitCof.Equip_Id;
+                for (int y = 0; y < needEquipList.Length; y++)
+                {
+                    int needEquipID = needEquipList[y];
+                    if (equipIDList.Contains(needEquipID))
+                    {
+                        num = num + 1;
+                    }
                 }
 
-                string[] equipSuitProList = ldEquipSuitCof.SuitPropertyID.Split('|');
+                string[] equipSuitProList = ldEquipSuitCof.Property.Split('|');
                 for (int y = 0; y < equipSuitProList.Length; y++)
                 {
-                    
-                    int NeedNum = int.Parse(equipSuitProList[y].Split('&')[0]);
-                    int NeedID = int.Parse(equipSuitProList[y].Split('&')[1]);
+                    int NeedNum = int.Parse(equipSuitProList[y].Split('_')[0]);
+                    int NeedID = int.Parse(equipSuitProList[y].Split('_')[1]);
                     if (num >= NeedNum)
                     {
                         //激活对应套装属性

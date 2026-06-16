@@ -5,9 +5,9 @@ namespace ET
 {
 	//游戏背包
 	[ActorMessageHandler]
-	public class Actor_ItemInitHandler : AMActorLocationRpcHandler<Unit, Actor_ItemInitRequest, Actor_ItemInitResponse>
+	public class C2M_ItemInitHandler : AMActorLocationRpcHandler<Unit, C2M_ItemInitRequest, M2C_ItemInitResponse>
 	{
-		protected override async ETTask Run(Unit unit, Actor_ItemInitRequest request, Actor_ItemInitResponse response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_ItemInitRequest request, M2C_ItemInitResponse response, Action reply)
 		{
 			BagComponent bagComponent = unit.GetComponent<BagComponent>();
 
@@ -108,8 +108,6 @@ namespace ET
 			}
 
             response.BagInfos = bagInfos;
-			response.QiangHuaLevel = bagComponent.QiangHuaLevel;
-			response.QiangHuaFails = bagComponent.QiangHuaFails;
 			//response.BagAddedCell = bagComponent.BagAddedCell;
 			response.WarehouseAddedCell = bagComponent.WarehouseAddedCell;
 			response.FashionActiveIds = bagComponent.FashionActiveIds;	

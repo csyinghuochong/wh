@@ -124,11 +124,11 @@ namespace ET
 			Vector3 initposition = new Vector3(monsterPosition.Position[0], monsterPosition.Position[1], monsterPosition.Position[2]);
 			initposition = RandomHelper.GetRandomPointInCircle(initposition, 2f);
 
-			if (mtype == 1)
+			if (mtype == UnitType.Npc)
 			{
 				UnitFactory.CreateNpc(scene, monsterid, initposition);
 			}
-			if (mtype == 2)
+			if (mtype == UnitType.Monster)
 			{
 				UnitFactory.CreateMonster(scene, monsterid, initposition, new CreateMonsterInfo()
 					{

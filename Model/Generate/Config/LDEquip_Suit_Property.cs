@@ -78,72 +78,9 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>套装名称</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public string EquipSuitName { get; set; }
-		/// <summary>套装名称2</summary>
-		[ProtoMember(3)]
-		public string EquipSuitDes { get; set; }
-		/// <summary>套装名称2</summary>
-		[ProtoMember(4)]
-		public string EquipSuitDes_EN { get; set; }
-		/// <summary>是否显示套装件数 0-显示 1-不显示 配合多行数据显示调用</summary>
-		[ProtoMember(5)]
-		public int ifShowSuitNum { get; set; }
-		/// <summary>血量</summary>
-		[ProtoMember(6)]
-		public int Equip_Hp { get; set; }
-		/// <summary>最低攻击</summary>
-		[ProtoMember(7)]
-		public int Equip_MinAct { get; set; }
-		/// <summary>最高攻击</summary>
-		[ProtoMember(8)]
-		public int Equip_MaxAct { get; set; }
-		/// <summary>最低攻击3</summary>
-		[ProtoMember(9)]
-		public int Equip_MinMagAct { get; set; }
-		/// <summary>最高攻击4</summary>
-		[ProtoMember(10)]
-		public int Equip_MaxMagAct { get; set; }
-		/// <summary>最低防御</summary>
-		[ProtoMember(11)]
-		public int Equip_MinDef { get; set; }
-		/// <summary>最高防御</summary>
-		[ProtoMember(12)]
-		public int Equip_MaxDef { get; set; }
-		/// <summary>最低防御5</summary>
-		[ProtoMember(13)]
-		public int Equip_MinAdf { get; set; }
-		/// <summary>最高防御6</summary>
-		[ProtoMember(14)]
-		public int Equip_MaxAdf { get; set; }
-		/// <summary>暴击</summary>
-		[ProtoMember(15)]
-		public double Equip_Cri { get; set; }
-		/// <summary>命中</summary>
-		[ProtoMember(16)]
-		public double Equip_Hit { get; set; }
-		/// <summary>闪避</summary>
-		[ProtoMember(17)]
-		public double Equip_Dodge { get; set; }
-		/// <summary>伤害加成</summary>
-		[ProtoMember(18)]
-		public double Equip_DamgeAdd { get; set; }
-		/// <summary>伤害减免</summary>
-		[ProtoMember(19)]
-		public double Equip_DamgeSub { get; set; }
-		/// <summary>速度</summary>
-		[ProtoMember(20)]
-		public double Equip_Speed { get; set; }
-		/// <summary>幸运值</summary>
-		[ProtoMember(21)]
-		public int Equip_Lucky { get; set; }
-		/// <summary>套装附加技能</summary>
-		[ProtoMember(22)]
-		public int EquipSuitSkillID { get; set; }
-		/// <summary>附加</summary>
-		[ProtoMember(23)]
-		public string AddPropreListStr { get; set; }
+		public int Name { get; set; }
 
 	}
 }

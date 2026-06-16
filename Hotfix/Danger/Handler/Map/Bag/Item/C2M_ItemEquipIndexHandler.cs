@@ -13,8 +13,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemEquipIndexRequest request, M2C_ItemEquipIndexResponse response, Action reply)
         {
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
-            BagInfo equip_0 = bagComponent.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)ItemSubTypeEnum.Wuqi);
-            BagInfo equip_1 = null;///bagComponent.GetEquipBySubType(ItemLocType.ItemLocEquip_2, (int)ItemSubTypeEnum.Wuqi);
+            BagInfo equip_0 = bagComponent.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)EquipCaoWeiTypeEnum.Wuqi_1);
+            BagInfo equip_1 = null;///bagComponent.GetEquipBySubType(ItemLocType.ItemLocEquip_2, (int)EquipCaoWeiTypeEnum.Wuqi);
             if (equip_0 == null || equip_1 == null)
             {
                 response.Error = ErrorCode.ERR_EquipType;
