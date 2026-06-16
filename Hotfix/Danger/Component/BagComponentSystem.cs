@@ -1827,15 +1827,15 @@ namespace ET
             //装备套装属性
             for (int i = 0; i < equipSuitIDList.Count; i++)
             {
-                if (!EquipSuitConfigCategory.Instance.Contain(equipSuitIDList[i]))
+                if (!LDEquip_SuitCategory.Instance.Contain(equipSuitIDList[i]))
                 {
                     continue;
                 }
-                EquipSuitConfig equipSuitCof = EquipSuitConfigCategory.Instance.Get(equipSuitIDList[i]);
+                LDEquip_Suit ldEquipSuitCof = LDEquip_SuitCategory.Instance.Get(equipSuitIDList[i]);
                 int num = 0;
-                if (equipSuitCof.SuitType == 0) //默认套装
+                if (ldEquipSuitCof.SuitType == 0) //默认套装
                 {
-                    int[] needEquipList = equipSuitCof.NeedEquipID;
+                    int[] needEquipList = ldEquipSuitCof.NeedEquipID;
                     for (int y = 0; y < needEquipList.Length; y++)
                     {
                         int needEquipID = needEquipList[y];
@@ -1847,7 +1847,7 @@ namespace ET
                 }
                 else  //时装套装
                 {
-                    int[] needEquipList = equipSuitCof.NeedEquipID;
+                    int[] needEquipList = ldEquipSuitCof.NeedEquipID;
                     for (int y = 0; y < needEquipList.Length; y++)
                     {
                         if (self.FashionActiveIds.Contains(needEquipList[y]))
@@ -1857,7 +1857,7 @@ namespace ET
                     }
                 }
 
-                string[] equipSuitProList = equipSuitCof.SuitPropertyID.Split('|');
+                string[] equipSuitProList = ldEquipSuitCof.SuitPropertyID.Split('|');
                 for (int y = 0; y < equipSuitProList.Length; y++)
                 {
                     
@@ -1866,14 +1866,14 @@ namespace ET
                     if (num >= NeedNum)
                     {
                         //激活对应套装属性
-                        EquipSuitPropertyConfig equipSuitProCof = EquipSuitPropertyConfigCategory.Instance.Get(NeedID);
+                        LDEquip_Suit_Property ldEquipSuitProCof = LDEquip_Suit_PropertyCategory.Instance.Get(NeedID);
                         // return list<hirepro>
-                        //BaseDamgeSubAdd_EquipSuit += equipSuitProCof.Equip_Hp;
+                        //BaseDamgeSubAdd_EquipSuit += ldEquipSuitProCof.Equip_Hp;
 
                         /*
-                        if (equipSuitProCof.AddPropreListStr != "0")
+                        if (ldEquipSuitProCof.AddPropreListStr != "0")
                         {
-                            string[] AddPropreList = equipSuitProCof.AddPropreListStr.Split(';');
+                            string[] AddPropreList = ldEquipSuitProCof.AddPropreListStr.Split(';');
                             for (int z = 0; z < AddPropreList.Length; z++)
                             {
                                 int addProType = int.Parse(AddPropreList[z].Split(',')[0]);

@@ -87,58 +87,7 @@ namespace ET
                 }
             }
         }
-
-        public static void GenerateFubenScene(this LocalDungeonComponent self, int mapid)
-        {
-            LDScene chapterSonConfig = LDSceneCategory.Instance.Get(mapid);
-
-            string allmonster = SceneConfigHelper.GetLocalDungeonMonsters_2(mapid);
-            FubenHelp.CreateMonsterList(self.DomainScene(), allmonster);
-
-            //生成npc
-            int[] npcList = null;/// chapterSonConfig.NpcList;
-            Vector3 npcpos = chapterSonConfig.GetBornPos();
-            if (npcList != null)
-            {
-                for (int i = 0; i < npcList.Length; i++)
-                {
-                    if (npcList[i] == 0)
-                    {
-                        continue;
-                    }
-                    UnitFactory.CreateNpc(self.DomainScene(), npcList[i],  RandomHelper.GetRandomPointInCircle(npcpos, 1f));
-                }
-            }
-            //生成传送点
-            //读取传送坐标点配置
-            /*if (chapterSonConfig.TransmitPos != null)
-            {
-                for (int i = 0; i < chapterSonConfig.TransmitPos.Length; i++)
-                {
-                    int transferId = chapterSonConfig.TransmitPos[i];
-                    if (transferId == 0)
-                    {
-                        continue;
-                    }
-
-                    DungeonTransferConfig dungeonTransferConfig = DungeonTransferConfigCategory.Instance.Get(transferId);
-                    int[] position = dungeonTransferConfig.Position;
-                    Vector3 vector3 = new Vector3(position[0] * 0.01f, position[1] * 0.01f, position[2] * 0.01f);
-                    //创建传送点Unit
-                    Unit chuansong = self.DomainScene().GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), 1);
-                    self.DomainScene().GetComponent<UnitComponent>().Add(chuansong);
-                    chuansong.AddComponent<ChuansongComponent>();
-                    UnitInfoComponent unitInfoComponent = chuansong.AddComponent<UnitInfoComponent>();
-                    chuansong.ConfigId = transferId;
-                    chuansong.Type = UnitType.Chuansong;
-                    chuansong.Position = vector3;
-                    chuansong.AddComponent<AOIEntity, int, Vector3>(9 * 1000, chuansong.Position);
-                }
-            }*/
-            
-        }
-
-
+        
 
     }
 }

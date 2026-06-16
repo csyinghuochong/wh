@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class EquipSuitConfigCategory : ProtoObject, IMerge
+    public partial class LDEquip_SuitCategory : ProtoObject, IMerge
     {
-        public static EquipSuitConfigCategory Instance;
+        public static LDEquip_SuitCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, EquipSuitConfig> dict = new Dictionary<int, EquipSuitConfig>();
+        private Dictionary<int, LDEquip_Suit> dict = new Dictionary<int, LDEquip_Suit>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<EquipSuitConfig> list = new List<EquipSuitConfig>();
+        private List<LDEquip_Suit> list = new List<LDEquip_Suit>();
 		
-        public EquipSuitConfigCategory()
+        public LDEquip_SuitCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            EquipSuitConfigCategory s = o as EquipSuitConfigCategory;
+            LDEquip_SuitCategory s = o as LDEquip_SuitCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (EquipSuitConfig config in list)
+            foreach (LDEquip_Suit config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public EquipSuitConfig Get(int id)
+        public LDEquip_Suit Get(int id)
         {
-            this.dict.TryGetValue(id, out EquipSuitConfig item);
+            this.dict.TryGetValue(id, out LDEquip_Suit item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (EquipSuitConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDEquip_Suit)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, EquipSuitConfig> GetAll()
+        public Dictionary<int, LDEquip_Suit> GetAll()
         {
             return this.dict;
         }
 
-        public EquipSuitConfig GetOne()
+        public LDEquip_Suit GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class EquipSuitConfig: ProtoObject, IConfig
+	public partial class LDEquip_Suit: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

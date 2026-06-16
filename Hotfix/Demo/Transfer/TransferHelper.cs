@@ -277,12 +277,7 @@ namespace ET
                         {
                             request.Difficulty = 1;
                         }
-                       
-                        if (LDSceneCategory.Instance.Contain(request.SceneId))
-                        {
-                            return ErrorCode.ERR_Parameter;
-                        }
-
+                        
                         LocalDungeonComponent localDungeon = unit.DomainScene().GetComponent<LocalDungeonComponent>();
 
                         if (localDungeon != null && localDungeon.FubenDifficulty != request.Difficulty)
@@ -481,14 +476,7 @@ namespace ET
             {
                 return ErrorCode.ERR_ModifyData;
             }
-
-            //前往神秘之门
-            if (LDSectionCategory.Instance.MysteryDungeonList.Contains(sceneId))
-            {
-                unit.GetComponent<UnitInfoComponent>().LastDungeonId = unit.DomainScene().GetComponent<MapComponent>().SceneId;
-                unit.GetComponent<UnitInfoComponent>().LastDungeonPosition = unit.Position;
-            }
-
+            
             long oldsceneid = unit.DomainScene().Id;
             List<StartSceneConfig> zonelocaldungeons = StartSceneConfigCategory.Instance.FuBenWorkScens[unit.DomainZone()];
             int n = (int)( (unit.Id / 99) % zonelocaldungeons.Count);
@@ -499,18 +487,11 @@ namespace ET
             //}
 
             StartSceneConfig startSceneConfig =  zonelocaldungeons[n];
-            sceneId = transferId != 0 ? LDScene_TeleportCategory.Instance.Get(transferId).Id : sceneId;
+            sceneId = transferId != 0 ? LDScene_TeleportCategory.Instance.Get(transferId).Scene_Target : sceneId;
             if (sceneId == 0)
             {
                 Log.Error($"zonelocaldungeonsb:  unitid: {unit.Id}  n: {n}  transferId: {transferId} sceneId: {sceneId} ");
                 return ErrorCode.ERR_NotFindLevel;
-            }
-
-            if ((sceneId >= 100001 && sceneId <= 100601)
-                                 && !UnitHelper.IsHaveNpc(unit.DomainScene(), 40000003))
-            {
-                Log.Error($"神秘之门异常2: {unit.DomainZone()} {unit.Id}");
-                return ErrorCode.ERR_ModifyData;
             }
 
             //Log.Console($"zonelocaldungeonsb:  unitid: {unit.Id}  n: {n}  transferId: {transferId} sceneId: {sceneId} ");

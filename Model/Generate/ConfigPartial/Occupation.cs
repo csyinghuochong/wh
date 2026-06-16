@@ -21,7 +21,7 @@ namespace ET
                 }
 
                 OccInitAttribute[occupation.Id].Add( new HideProList() { HideID = NumericType.HP_Fixed, HideValue = occupation.BaseHp});
-                OccInitAttribute[occupation.Id].Add( new HideProList() { HideID = NumericType.Speed_Current, HideValue = (long)(occupation.BaseMoveSpeed * 1000)});
+                OccInitAttribute[occupation.Id].Add( new HideProList() { HideID = NumericType.Speed_Current, HideValue = (long)(occupation.BaseMoveSpeed * 10000)});
 
             }
         }

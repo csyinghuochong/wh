@@ -3,14 +3,14 @@
 namespace ET
 {
 
-    public partial class EquipSuitConfigCategory
+    public partial class LDEquip_SuitCategory
     {
 
         public Dictionary<int, List<int>> OccSuiList = new Dictionary<int, List<int>>();
 
         public override void AfterEndInit()
         {
-            foreach (EquipSuitConfig suitConfig in this.GetAll().Values)
+            foreach (LDEquip_Suit suitConfig in this.GetAll().Values)
             {
                 if (suitConfig.Occ == 0)
                 {

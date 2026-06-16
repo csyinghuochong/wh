@@ -136,6 +136,7 @@ namespace ET
 
         public static void TimeCreateMonster(this YeWaiRefreshComponent self, long createTime, int monsterPosiID) {
 
+            /*
             MonsterPositionConfig monsterPosition = MonsterPositionConfigCategory.Instance.Get(monsterPosiID);
             int mtype = monsterPosition.Type;
             string[] position = monsterPosition.Position.Split(',');
@@ -153,6 +154,7 @@ namespace ET
                 Rotation = monsterPosition.Create,
                 Interval = -1,   //-1只刷一次
             });
+            */
 
         }
 
@@ -210,17 +212,8 @@ namespace ET
                 {
                     continue;
                 }
-
-                if (functionId == 1060)
-                {
-                    Log.Warning($"活动-世界领主: {FuntionConfig.CreateMonsterPosi[0]}");
-                }
-                if (functionId == 1061)
-                {
-                    Log.Warning($"活动-宝藏之地: {FuntionConfig.CreateMonsterPosi[0]}");
-                }
-
-                FubenHelp.CreateMonsterList(self.DomainScene(), FuntionConfig.CreateMonsterPosi);
+                
+                FubenHelp.CreateSceneRole(self.DomainScene(), FuntionConfig.Id);
             }
 
             //MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
@@ -314,42 +307,7 @@ namespace ET
                 });
             }
         }
-
-        /// <summary>
-        /// 间隔时间刷新
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="monsterPos"></param>
-        /// <param name="fubenDifficulty"></param>
-        public static void CreateMonsterByPos(this YeWaiRefreshComponent self, int monsterPos)
-        {
-            if (monsterPos == 0)
-            {
-                return;
-            }
-           
-            //Id      NextID  Type Position             MonsterID CreateRange CreateNum Create    Par(3代表刷新时间)
-            //10001   10002   2    - 71.46,0.34,-5.35   81000002       0           1       90    30,60
-            MonsterPositionConfig monsterPosition = MonsterPositionConfigCategory.Instance.Get(monsterPos);
-            int mtype = monsterPosition.Type;
-            string[] position = monsterPosition.Position.Split(',');
-            string[] refreshPar = monsterPosition.Par.Split(',');
-            //Log.Debug($"野外怪定时刷新bbbbbb:  {self.DomainZone()}区：   MonsterID：{monsterPosition.MonsterID} ");
-
-            self.RefreshMonsters.Add(new RefreshMonster()
-            {
-                MonsterId = monsterPosition.MonsterID,
-                NextTime = TimeHelper.ServerNow() + int.Parse(refreshPar[0]) * 1000,
-                PositionX = float.Parse(position[0]),
-                PositionY = float.Parse(position[1]),
-                PositionZ = float.Parse(position[2]),
-                Number = monsterPosition.CreateNum,
-                Range = (float)monsterPosition.CreateRange,
-                Interval = int.Parse(refreshPar[1]) * 1000,
-                Rotation = monsterPosition.Create,
-            });
-        }
-
+        
         /// <summary>
         /// 固定时间刷新
         /// </summary>
@@ -414,7 +372,7 @@ namespace ET
                 return;
             }
             //5;-50,0,2;80002001;10,25;1230,203060
-            MonsterPositionConfig monsterPosition = MonsterPositionConfigCategory.Instance.Get(monsterPos);
+            /*MonsterPositionConfig monsterPosition = MonsterPositionConfigCategory.Instance.Get(monsterPos);
             int mtype = monsterPosition.Type;
             string[] position = monsterPosition.Position.Split(',');
 
@@ -439,7 +397,7 @@ namespace ET
                     Interval = mtype == 5 ? TimeHelper.OneDay : -1,
                     Rotation = monsterPosition.Create,
                 }); ;
-            }
+            }*/
         }
 
         public static long LeftTime(this YeWaiRefreshComponent self, string targetTime)

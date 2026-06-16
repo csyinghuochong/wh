@@ -22,6 +22,8 @@ namespace ET
                     LocalDungeonComponent localDungeon = fubnescene.AddComponent<LocalDungeonComponent>();
                     localDungeon.FubenDifficulty = request.Difficulty;
                     fubnescene.GetComponent<MapComponent>().SetMapInfo((int)MapTypeEnum.LocalDungeon, request.SceneId, 0);
+                    fubnescene.GetComponent<MapComponent>().NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).GetNavMeshId();
+                    
                     response.FubenInstanceId = fubenInstanceId;
                     TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
                     break;

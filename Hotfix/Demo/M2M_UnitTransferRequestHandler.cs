@@ -127,7 +127,7 @@ namespace ET
 					case (int)MapTypeEnum.LocalDungeon:
 						numericComponent.ApplyValue(NumericType.TaskDungeonId, request.ChapterId, false);
 						LDScene dungeonConfig = LDSceneCategory.Instance.Get(request.ChapterId);
-						scene.GetComponent<MapComponent>().NavMeshId = dungeonConfig.GetNavMeshId();
+					
 						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
 						Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
                         scene.GetComponent<LocalDungeonComponent>().MainUnit = unit;
@@ -145,7 +145,7 @@ namespace ET
 						}
 
 						//神秘之门返回
-						if (unit.GetComponent<UnitInfoComponent>().LastDungeonId == request.ChapterId)
+						/*if (unit.GetComponent<UnitInfoComponent>().LastDungeonId == request.ChapterId)
 						{
 							unit.GetComponent<UnitInfoComponent>().LastDungeonId = 0;
 						 	unit.Position = unit.GetComponent<UnitInfoComponent>().LastDungeonPosition;
@@ -162,6 +162,7 @@ namespace ET
 
 							scene.AddComponent<DungeonHappyComponent>();
                         }
+                        */
 
                         unit.Rotation = Quaternion.identity;
 						// 通知客户端创建My Unit
@@ -171,7 +172,8 @@ namespace ET
 						// 加入aoi
 						unit.AddComponent<AOIEntity, int, Vector3>(10 * 1000, unit.Position);
 						TransferHelper.AfterTransfer(unit);
-						scene.GetComponent<LocalDungeonComponent>().GenerateFubenScene(request.ChapterId);
+						FubenHelp.CreateSceneRole(scene, request.ChapterId);
+						FubenHelp.CreateSceneTeleport(scene, request.ChapterId);
 						unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.LocalDungeonTime, 1, 0);
 						break;
                     case MapTypeEnum.Happy:

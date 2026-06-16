@@ -56,53 +56,88 @@ namespace ET
 
 			return false;
 		}
-
-		public static void CreateMonsterList(Scene scene, int[] monsterPos)
+        
+		public static void CreateSceneTeleport(Scene scene, int sceneid)
 		{
-			if (monsterPos == null || monsterPos.Length == 0)
+			LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
+			if (ldScene.Teleport_Id == null)
 			{
 				return;
 			}
-			for (int i = 0; i < monsterPos.Length;i++)
+
+			for (int i = 0 ; i < ldScene.Teleport_Id.Length; i++)
 			{
-				int monsterId = monsterPos[i];
-
-				int whileNumber = 0;
-
-                while (monsterId != 0)
+				int transferId = ldScene.Teleport_Id[i];
+				if (transferId == 0)
 				{
-                    whileNumber++;
-                    if (whileNumber >= 100)
-                    {
-                        Log.Error("whileNumber >= 100");
-                        break;
-                    }
-
-					try
-					{
-						monsterId = CreateMonsterByPos(scene, monsterId);
-					}
-					catch (Exception ex)
-					{
-						Log.Error(ex.ToString());
-					}
+					continue;
 				}
+
+				LDScene_Teleport dungeonTransferConfig = LDScene_TeleportCategory.Instance.Get(transferId);
+				int[] position = dungeonTransferConfig.Position;
+				Vector3 vector3 = new Vector3(position[0], position[1] , position[2]);
+				vector3 = RandomHelper.GetRandomPointInCircle(vector3, 5f);
+				
+				//创建传送点Unit
+				Unit chuansong = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), 1);
+				scene.GetComponent<UnitComponent>().Add(chuansong);
+				chuansong.AddComponent<ChuansongComponent>();
+				UnitInfoComponent unitInfoComponent = chuansong.AddComponent<UnitInfoComponent>();
+				chuansong.ConfigId = transferId;
+				chuansong.Type = UnitType.Chuansong;
+				chuansong.Position = vector3;
+				chuansong.AddComponent<AOIEntity, int, Vector3>(9 * 1000, chuansong.Position);
 			}
 		}
 
-		public static int CreateMonsterByPos(Scene scene, int monsterPos)
+		public static void CreateSceneRole(Scene scene, int sceneid)
+		{
+			LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
+			List<int> monsterlist = LDScene_CreatureCategory.Instance.GetSceneCreatureList(sceneid);
+			CreateSceneRoleById(scene, monsterlist);
+		}
+
+		public static void CreateSceneRoleById(Scene scene, List<int> monsterPos)
+		{
+			if (monsterPos == null || monsterPos.Count == 0)
+			{
+				return;
+			}
+			for (int i = 0; i < monsterPos.Count;i++)
+			{
+				int monsterId = monsterPos[i];
+				CreateSceneRoleById(scene, monsterId);
+			}
+		}
+
+		public static void CreateSceneRoleById(Scene scene, int monsterPos)
 		{
 			if (monsterPos == 0)
 			{
-				return 0;
+				return;
 			}
-			//Id      NextID  Type Position             MonsterID CreateRange CreateNum Create    Par(3代表刷新时间)
-			//10001   10002   2    - 71.46,0.34,-5.35   81000002       0           1       90    30,60
-			MonsterPositionConfig monsterPosition = MonsterPositionConfigCategory.Instance.Get(monsterPos);
-			int mtype = monsterPosition.Type;
-			int monsterid = monsterPosition.MonsterID;
-			string[] position = monsterPosition.Position.Split(',');
-			if (mtype == 1)    //固定位置刷怪
+			
+			LDScene_Creature monsterPosition = LDScene_CreatureCategory.Instance.Get(monsterPos);
+			int mtype = monsterPosition.Type;   //1npc  2 怪物
+			int monsterid = monsterPosition.Match_Id;
+			
+			Vector3 initposition = new Vector3(monsterPosition.Position[0], monsterPosition.Position[1], monsterPosition.Position[2]);
+			initposition = RandomHelper.GetRandomPointInCircle(initposition, 2f);
+
+			if (mtype == 1)
+			{
+				UnitFactory.CreateNpc(scene, monsterid, initposition);
+			}
+			if (mtype == 2)
+			{
+				UnitFactory.CreateMonster(scene, monsterid, initposition, new CreateMonsterInfo()
+					{
+						Camp = CampEnum.CampMonster1,
+						Rotation = monsterPosition.Rotation,
+					});
+			}
+			
+			/*if (mtype == 1)    //固定位置刷怪
 			{
 				if (monsterPosition.CreateNum > 100)
 				{
@@ -127,7 +162,7 @@ namespace ET
 							Camp = ldMonster.MonsterCamp,
 							Rotation = monsterPosition.Create,
 						});
-					}*/
+					}#1#
 				}
 			}
 			if (mtype == 2)
@@ -189,8 +224,7 @@ namespace ET
 				//固定时间刷新  YeWaiRefreshComponent
 				scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterByPos_2(monsterPosition.Id);
 			}
-
-			return monsterPosition.NextID;
+			*/
 		}
 
 		public static List<KeyValuePairInt> GetRandomMonster(Scene scene, int fubenid, string createMonster)

@@ -120,7 +120,7 @@ namespace ET
                             {
                                 LDScene ldScene = LDSceneCategory.Instance.Get(CommonHelper.MainCityID());
                                 MapComponent mapComponent = scene.GetComponent<MapComponent>();
-                                mapComponent.SetMapInfo((int)MapTypeEnum.MainCityScene, ldScene.GetNavMeshId(), 0);
+                                mapComponent.SetMapInfo((int)MapTypeEnum.MainCityScene, ldScene.Id, 0);
                                 mapComponent.NavMeshId = ldScene.GetNavMeshId();
                                 Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
                                 FubenHelp.CreateNpc(scene, 1);

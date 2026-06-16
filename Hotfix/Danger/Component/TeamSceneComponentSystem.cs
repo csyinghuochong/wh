@@ -29,7 +29,7 @@ namespace ET
         
             if (teamInfo.FubenType == TeamFubenType.ShenYuan)
             {
-                if (CommonConfig.ShenYuanCreateConfig.ContainsKey(teamInfo.SceneId))
+                /*if (CommonConfig.ShenYuanCreateConfig.ContainsKey(teamInfo.SceneId))
                 {
                     int postionid = CommonConfig.ShenYuanCreateConfig[teamInfo.SceneId];
                     FubenHelp.CreateMonsterByPos(fubnescene, postionid);
@@ -37,7 +37,7 @@ namespace ET
                 else
                 {
                     Console.WriteLine($"ConfigHelper.ShenYuanCreateConfig.error: {teamInfo.SceneId}");
-                }
+                }*/
             }
 
             //69和 72的2个副本 有10%概率 在每个BOSS附近刷新出 80002010 这个宝箱，

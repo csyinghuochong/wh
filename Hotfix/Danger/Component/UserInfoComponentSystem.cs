@@ -331,8 +331,9 @@ namespace ET
                     self.UserInfo.UnionKeJiList.Add(UnionKeJiConfigCategory.Instance.GetFristId( keji ) );
                 }
             }
-            if (LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv +1) && self.UserInfo.JiaYuanExp > 0)
+            if (!LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv +1) && self.UserInfo.JiaYuanExp > 0)
             {
+                self.UserInfo.JiaYuanExp = 0;
                 Console.WriteLine($"清空家园经验: {self.Id}  {self.UserInfo.JiaYuanLv}  {self.UserInfo.JiaYuanExp}");
             }
 

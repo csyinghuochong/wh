@@ -164,7 +164,7 @@ namespace ET
             if (mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon)
             {
                 mainUnit = scene.GetComponent<LocalDungeonComponent>().MainUnit;
-                revetime = mainUnit.GetComponent<UserInfoComponent>().GetReviveTime(ldMonster.Id);
+                //revetime = mainUnit.GetComponent<UserInfoComponent>().GetReviveTime(ldMonster.Id);
             }
             if (unit.MasterId > 0)
             {
@@ -198,10 +198,10 @@ namespace ET
                 case MapTypeEnum.LocalDungeon:
                     aIComponent.LocalDungeonUnit = mainUnit;
                     aIComponent.LocalDungeonUnitPetComponent = mainUnit.GetComponent<PetComponent>();
-                    aIComponent.InitMonster(ldMonster.Id);
+                    //aIComponent.InitMonster(ldMonster.Id);
                     break;
                 case MapTypeEnum.PetDungeon:
-                    aIComponent.InitPetFubenMonster(ldMonster.Id);
+                    //aIComponent.InitPetFubenMonster(ldMonster.Id);
                     break;
                 default:
                     aIComponent.InitMonster(ldMonster.Id);
