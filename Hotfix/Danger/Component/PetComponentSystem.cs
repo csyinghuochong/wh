@@ -1793,7 +1793,7 @@ namespace ET
                 return;
             }
             LDItem ldItem = LDItemCategory.Instance.Get(itemid);
-            int postion = ldItem.ItemSubType - 1;
+            int postion = ldItem.ItemType - 1;
             bagComponent.OnChangeItemLoc(bagitemList[0], ItemLocType.ItemPetHeXinEquip, ItemLocType.ItemPetHeXinBag);
             rolePetInfo.PetHeXinList[postion] = bagitemList[0].BagInfoID;
         }

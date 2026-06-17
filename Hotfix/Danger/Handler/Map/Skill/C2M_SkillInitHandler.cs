@@ -28,14 +28,17 @@ namespace ET
 
             if (!haveqianghuaskill)
             {
-                int[] baseSkilllist = LDOccupationCategory.Instance.Get(occ).BaseSkill;
-                for (int i = 0; i < baseSkilllist.Length; i++)
+                int[] baseSkilllist = LDOccupationCategory.Instance.Get(occ).Skill_Base;
+                if (baseSkilllist != null)
                 {
-                    if (skillSetComponent.GetBySkillID(baseSkilllist[i]) != null)
+                    for (int i = 0; i < baseSkilllist.Length; i++)
                     {
-                        continue;
+                        if (skillSetComponent.GetBySkillID(baseSkilllist[i]) != null)
+                        {
+                            continue;
+                        }
+                        skillSetComponent.SkillList.Add(new SkillPro() { SkillID = baseSkilllist[i] });
                     }
-                    skillSetComponent.SkillList.Add(new SkillPro() { SkillID = baseSkilllist[i] });
                 }
             }
 

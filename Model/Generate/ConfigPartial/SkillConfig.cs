@@ -171,7 +171,7 @@ namespace ET
 
             foreach (LDSkill skillconfig in this.GetAll().Values)
             {
-                string equipskill = skillconfig.EquipSkill;
+                /*string equipskill = skillconfig.EquipSkill;
                 if (string.IsNullOrEmpty(equipskill) || equipskill.Equals("0"))
                 {
                     continue;
@@ -218,7 +218,7 @@ namespace ET
                     keyValuePairInt.KeyId = oldSkillId;
                     keyValuePairInt.Value = newSkillId;
                     equipSkillds.Add(keyValuePairInt);
-                }
+                }*/
             }
 
             foreach (LDSkill skillconfig in this.GetAll().Values)
@@ -254,7 +254,7 @@ namespace ET
                     if (baseId != 0)
                     {
                         this.BaseSkillList.Add(skillConfig.Id, baseId);
-                        int nextId = skillConfig.NextSkillID;
+                        int nextId = skillConfig.NextId;
                         if (nextId != 0)
                         {
                             SetBaseSkill(this.GetAll()[nextId], baseId);
@@ -263,7 +263,7 @@ namespace ET
                     else
                     {
                         this.BaseSkillList.Add(skillConfig.Id, skillConfig.Id);
-                        int nextId = skillConfig.NextSkillID;
+                        int nextId = skillConfig.NextId;
                         if (nextId != 0)
                         {
                             SetBaseSkill(this.GetAll()[nextId], skillConfig.Id);

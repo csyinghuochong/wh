@@ -82,7 +82,7 @@ namespace ET
         {
 
             LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-            if (ldItem.ItemSubType != 113 && ldItem.ItemSubType != 127)
+            if (ldItem.ItemType != 113 && ldItem.ItemType != 127)
             {
                 return;
             }

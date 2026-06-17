@@ -66,17 +66,23 @@ namespace ET
             if (bagComponent.FashionEquipList.Count == 0)
 			{
                 LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(occ);
-				for (int i = 0; i < ldOccupationConfig.FashionBase.Length; i++)
-				{
-					bagComponent.FashionEquipList.Add(ldOccupationConfig.FashionBase[i]);
+                if (ldOccupationConfig.FashionBase != null)
+                {
+	                for (int i = 0; i < ldOccupationConfig.FashionBase.Length; i++)
+	                {
+		                bagComponent.FashionEquipList.Add(ldOccupationConfig.FashionBase[i]);
+	                }
                 }
 			}
             if (bagComponent.FashionActiveIds.Count == 0)
             {
                 LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(occ);
-                for (int i = 0; i < ldOccupationConfig.FashionBase.Length; i++)
+                if (ldOccupationConfig.FashionBase != null)
                 {
-                    bagComponent.FashionActiveIds.Add(ldOccupationConfig.FashionBase[i]);
+	                for (int i = 0; i < ldOccupationConfig.FashionBase.Length; i++)
+	                {
+		                bagComponent.FashionActiveIds.Add(ldOccupationConfig.FashionBase[i]);
+	                }
                 }
             }
 

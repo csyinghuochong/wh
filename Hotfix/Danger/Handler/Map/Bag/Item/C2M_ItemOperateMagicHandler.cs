@@ -41,7 +41,7 @@ namespace ET
             if (useBagInfo != null)
             {
                 ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
-                weizhi = ldItem.ItemSubType;
+                weizhi = ldItem.ItemType;
             }
 
             int equipType = ItemHelper.GetNewEquipType(useBagInfo);
@@ -59,7 +59,7 @@ namespace ET
             }
 
 
-            int subtype = ldItem.ItemSubType - 4001; //0 1 2
+            int subtype = ldItem.ItemType - 4001; //0 1 2
             int curtype = equipposition / 3;
             if (curtype != subtype && curtype != 2)
             {

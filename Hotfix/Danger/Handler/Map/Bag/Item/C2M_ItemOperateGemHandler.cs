@@ -70,7 +70,7 @@ namespace ET
                     return;
                 }
 
-                if (equipGeminfos[gemIndex] != ldItem.ItemSubType.ToString() && ldItem.ItemSubType != 110 && ldItem.ItemSubType != 111)
+                if (equipGeminfos[gemIndex] != ldItem.ItemType.ToString() && ldItem.ItemType != 110 && ldItem.ItemType != 111)
                 {
                     response.Error = ErrorCode.ERR_ItemUseError;
                     reply();
@@ -78,7 +78,7 @@ namespace ET
                 }
 
                 //史诗宝石最多镶嵌4个
-                if (ldItem.ItemSubType == 110) 
+                if (ldItem.ItemType == 110) 
                 {
                     int equipShiShiGemNum = 0;
                     bool isTihuan = false;
@@ -91,7 +91,7 @@ namespace ET
                             if (CommonHelper.IfNull(gemList[y]) == false)
                             {
                                 LDItem gemLdItemCof = LDItemCategory.Instance.Get(int.Parse(gemList[y]));
-                                if (gemLdItemCof.ItemSubType == 110)
+                                if (gemLdItemCof.ItemType == 110)
                                 {
                                     equipShiShiGemNum += 1;
                                 }
@@ -150,7 +150,7 @@ namespace ET
                     return;
                 }
                 LDItem gemLdItemConfig = LDItemCategory.Instance.Get(gemItemId);
-                if (gemLdItemConfig.ItemSubType == 110)
+                if (gemLdItemConfig.ItemType == 110)
                 {
                     response.Error = ErrorCode.ERR_GemNoError;
                     reply();

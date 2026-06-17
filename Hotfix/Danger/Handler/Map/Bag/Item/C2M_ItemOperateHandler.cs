@@ -43,7 +43,7 @@ namespace ET
                 if (useBagInfo != null)
                 {
                     ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
-                    weizhi = ldItem.ItemSubType;
+                    weizhi = ldItem.ItemType;
                 }
 
                 //通知客户端背包刷新
@@ -73,7 +73,7 @@ namespace ET
                     int costNumber = 1;
                     bool bagIsFull = false;
                     List<RewardItem> droplist = new List<RewardItem>();
-                    if (ldItem.ItemSubType == 8)   //碎片兑换
+                    if (ldItem.ItemType == 8)   //碎片兑换
                     {
                         string[] duihuanparams = ldItem.ItemUsePar.Split(';');
                         int neednum = int.Parse(duihuanparams[0]);
@@ -84,7 +84,7 @@ namespace ET
                             return;
                         }
                     }
-                    if (ldItem.ItemSubType == 9)   //充值达到一定额度开启宝箱获得道具
+                    if (ldItem.ItemType == 9)   //充值达到一定额度开启宝箱获得道具
                     {
                         string[] itemPar = ldItem.ItemUsePar.Split(';');
                         if (unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber) < long.Parse(itemPar[0]))
@@ -101,14 +101,14 @@ namespace ET
                             bagIsFull = true;
                         }
                     }
-                    if (ldItem.ItemSubType == 102 || (ldItem.ItemSubType == 103))  //宠物蛋(点击使用直接获得1个宠物)
+                    if (ldItem.ItemType == 102 || (ldItem.ItemType == 103))  //宠物蛋(点击使用直接获得1个宠物)
                     {
                         if (unit.GetComponent<BagComponent>().GetBagLeftCell() < 1)
                         {
                             bagIsFull = true;
                         }
                     }
-                    if (ldItem.ItemSubType == 104)  //随机道具盒子
+                    if (ldItem.ItemType == 104)  //随机道具盒子
                     {
                         int dropid = int.Parse(ldItem.ItemUsePar);
                         droplist = new List<RewardItem>();
@@ -119,20 +119,20 @@ namespace ET
                         }
                     }
 
-                    if (ldItem.ItemSubType == 110 && unit.DomainScene().GetComponent<MapComponent>().SceneId != 2000001) // 领主怪物召唤
+                    if (ldItem.ItemType == 110 && unit.DomainScene().GetComponent<MapComponent>().SceneId != 2000001) // 领主怪物召唤
                     {
                         response.Error = ErrorCode.ERR_ItemOnlyUseMiJing;
                         reply();
                         return;
                     }
 
-                    if ((ldItem.ItemSubType == 111 || ldItem.ItemSubType == 112)
+                    if ((ldItem.ItemType == 111 || ldItem.ItemType == 112)
                         && CommonConfig.BatchUseItemList.Contains(ldItem.Id))
                     {
                         //目前只有111类型支持批量使用
                         if (!string.IsNullOrEmpty(request.OperatePar))
                         {
-                            if (ldItem.ItemSubType == 112)
+                            if (ldItem.ItemType == 112)
                             {
                                 // 经验盒子特殊处理，有免费开启和钻石开启
                                 costNumber = int.Parse(request.OperatePar.Split(';')[1]);
@@ -158,12 +158,12 @@ namespace ET
 
                     }
 
-                    if (ldItem.ItemSubType == 14      //召唤卷轴
-                        || ldItem.ItemSubType == 114) //宝石
+                    if (ldItem.ItemType == 14      //召唤卷轴
+                        || ldItem.ItemType == 114) //宝石
                     {
                         costNumber = 0;
                     }
-                    if (ldItem.ItemSubType == 112)   //经验木桩
+                    if (ldItem.ItemType == 112)   //经验木桩
                     {
                         int openDay = DBHelper.GetOpenServerDay(unit.DomainZone());
                         if (openDay <= 1)
@@ -173,14 +173,14 @@ namespace ET
                             return;
                         }
                     }
-                    if (ldItem.ItemSubType == 127)
+                    if (ldItem.ItemType == 127)
                     {
                         if (unit.GetComponent<BagComponent>().GetBagLeftCell() < 1)
                         {
                             bagIsFull = true;
                         }
                     }
-                    if (ldItem.ItemSubType == 137)
+                    if (ldItem.ItemType == 137)
                     {
                         //检测要附灵的宠物蛋是否存在
                         long chongwudanId = long.Parse(request.OperatePar);      
@@ -192,7 +192,7 @@ namespace ET
                             return;
                         }
                     }
-                    if (ldItem.ItemSubType == 138)
+                    if (ldItem.ItemType == 138)
                     {
                         if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TeamDungeonTimes) <= 0)
                         {
@@ -202,7 +202,7 @@ namespace ET
                         }
                     }
 
-                    if (ldItem.ItemSubType == 142)
+                    if (ldItem.ItemType == 142)
                     {
                         if (unit.GetComponent<BagComponent>().GetBagLeftCell() < 1)
                         {
@@ -231,7 +231,7 @@ namespace ET
                     {
                         bool costItemStatus = true;
                         //根据道具子类分发不同的功能
-                        switch (ldItem.ItemSubType)
+                        switch (ldItem.ItemType)
                         {
                             //增加金币
                             case 1:
@@ -789,7 +789,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (ldItem.ItemType == ItemTypeEnum.Equipment && ldItem.ItemSubType == 201)
+                    if (ldItem.ItemType == ItemTypeEnum.Equipment && ldItem.ItemType == 201)
                     {
                         reply();
                         return;

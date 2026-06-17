@@ -20,7 +20,7 @@ namespace ET
 
 			List<SkillPro> SkillList = skillSetComponent.SkillList;
 			LDSkill skillconf = LDSkillCategory.Instance.Get(request.SkillID);
-			int nextSkillID = skillconf.NextSkillID;
+			int nextSkillID = skillconf.NextId;
 			if (nextSkillID == 0)
 			{
 				response.Error = ErrorCode.ERR_GoldNotEnoughError;     //错误码:技能达到最大等级
@@ -36,8 +36,8 @@ namespace ET
             }
 
             UserInfoComponent unitInfoComponent = unit.GetComponent<UserInfoComponent>();
-			int costGoldValue = skillconf.CostGoldValue;
-			int costSPValue = skillconf.CostSPValue;
+			string costGoldValue = skillconf.Cost;
+			int costSPValue = 1;
 			int RoseSP = unitInfoComponent.UserInfo.Sp;
 			if (/*unitInfoComponent.UserInfo.Gold < costGoldValue || */RoseSP < costSPValue)
 			{
@@ -57,8 +57,8 @@ namespace ET
 			}
 	
 			response.NewSkillID = nextSkillID;
-			unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (costGoldValue*-1).ToString(), true, ItemGetWay.CostItem);
-			unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.Sp, (costSPValue * -1).ToString());
+			//unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (costGoldValue*-1).ToString(), true, ItemGetWay.CostItem);
+			//unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.Sp, (costSPValue * -1).ToString());
 
 			Function_Fight.GetInstance().UnitUpdateProperty_Base( unit,true, true );
 			//测试跑马灯

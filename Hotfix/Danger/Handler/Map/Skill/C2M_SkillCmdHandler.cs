@@ -54,7 +54,7 @@ namespace ET
                     }
 
                     LDItem ldItem =LDItemCategory.Instance.Get(request.ItemId);
-                    if (ldItem.ItemSubType != 101 && ldItem.ItemSubType != 110)
+                    if (ldItem.ItemType != 101 && ldItem.ItemType != 110)
                     {
                         Console.WriteLine($"request.SkillID error:  {request.SkillID}");
                         Log.Error($"C2M_SkillCmd 3");

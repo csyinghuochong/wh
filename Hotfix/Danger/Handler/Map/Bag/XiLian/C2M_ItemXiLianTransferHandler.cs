@@ -60,7 +60,7 @@ namespace ET
             if (!all60green)
             {
                 //相同部位  只有相同部位的装备才能转移
-                if (ldItemConfig0.ItemSubType != ldItemConfig1.ItemSubType)
+                if (ldItemConfig0.ItemType != ldItemConfig1.ItemType)
                 {
                     response.Error = ErrorCode.Pre_Condition_Error;
                     reply();

@@ -47,7 +47,7 @@ namespace ET
             }
 
             LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-            if (ldItem.ItemType != ItemTypeEnum.Consume || ldItem.ItemSubType != 132)
+            if (ldItem.ItemType != ItemTypeEnum.Consume || ldItem.ItemType != 132)
             {
                 Log.Error($"C2M_SeasonUseFruitRequest 3");
                 response.Error = ErrorCode.ERR_ModifyData;

@@ -18,7 +18,7 @@ namespace ET
 			//根据不同的职业初始化技能
 			if (self.SkillList.Count == 0)
 			{
-				int[] SkillList = LDOccupationCategory.Instance.Get(self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Occ).InitSkillID;
+				int[] SkillList = LDOccupationCategory.Instance.Get(self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Occ).Skill_Base;
 				for (int i = 0; i < SkillList.Length; i++)
 				{
 					if (i == 0)
@@ -1316,10 +1316,10 @@ namespace ET
 							break;
 						}
 						LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
-						int nextId = ldSkill.NextSkillID;
+						int nextId = ldSkill.NextId;
 						if (nextId != 0)
 						{
-							sp += ldSkill.CostSPValue;
+							sp += ldSkill.CostSP;
 						}
 						skillId = nextId;
 					}
@@ -1483,8 +1483,8 @@ namespace ET
 		{
 			List<int> skilllist = new List<int>();
 			UserInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<UserInfoComponent>();
-			int[] initskill = LDOccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).InitSkillID;
-			int[] baseSkill = LDOccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).BaseSkill;
+			int[] initskill = LDOccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).Skill_Base;
+			int[] baseSkill = LDOccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).Skill_Base;
 			skilllist.AddRange(initskill);
 			skilllist.AddRange(baseSkill);
 			if (userInfoComponent.UserInfo.OccTwo != 0)
@@ -1516,7 +1516,7 @@ namespace ET
                             skillPro.SkillPosition = 0;
                             break;
                         }
-                        skillId = LDSkillCategory.Instance.Get(skillId).NextSkillID;
+                        skillId = LDSkillCategory.Instance.Get(skillId).NextId;
                     }
                     catch (Exception ex)
 					{

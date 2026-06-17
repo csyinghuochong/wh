@@ -122,7 +122,7 @@ namespace ET
             self.EquipType = equipType;
             //普通攻击
             LDOccupation occConfig = LDOccupationCategory.Instance.Get(occ);
-            self.UpdateSkillInfo(occConfig.InitActSkillID);
+            self.UpdateSkillInfo(occConfig.Skill_Wewapon_1);
             self.UpdateComboTime();
             self.SetAttackSpeed();
         }

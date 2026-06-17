@@ -14,7 +14,7 @@ namespace ET
         {
             foreach (LDItem Item in this.GetAll().Values)
             {
-                if (Item.ItemType== 1 && Item.ItemSubType== 131)
+                if (Item.ItemType== 1 && Item.ItemType== 131)
                 {
                     List<int> foodlist = null;
                     FoodLevelList.TryGetValue(Item.UseLv, out foodlist);
@@ -30,7 +30,7 @@ namespace ET
 
             foreach (LDItem Item in this.GetAll().Values)
             {
-                if (Item.ItemType == 1 && Item.ItemSubType == 131 && Item.Quality > 2)
+                if (Item.ItemType == 1 && Item.ItemType == 131 && Item.Quality > 2)
                 {
                     FoodList.Add(Item.Id);
                 }
@@ -49,7 +49,7 @@ namespace ET
             for (int i = 0; i < equiplist.Count; i++)
             {
                 LDItem ldItem = LDItemCategory.Instance.Get(equiplist[i]);
-                if (ldItem.ItemSubType != subType ||  ldItem.UseLv > lv)
+                if (ldItem.ItemType != subType ||  ldItem.UseLv > lv)
                 {
                     continue;
                 }

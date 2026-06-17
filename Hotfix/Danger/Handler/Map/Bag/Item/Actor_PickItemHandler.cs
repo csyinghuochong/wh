@@ -123,7 +123,7 @@ namespace ET
                 int addItemNum = dropComponent != null ? dropComponent.ItemNum : drops[i].ItemNum;
                 LDItem ldItem = LDItemCategory.Instance.Get(addItemID);
 
-                bool teshuItem = ldItem.Quality >= 4 && ldItem.ItemType == 2 && ldItem.ItemSubType == 1;
+                bool teshuItem = ldItem.Quality >= 4 && ldItem.ItemType == 2 && ldItem.ItemType == 1;
 
                 //紫色品质通知客户端抉择
                 //DropType ==   0 公共掉落 1私有掉落 2保护掉落   3 归属掉落

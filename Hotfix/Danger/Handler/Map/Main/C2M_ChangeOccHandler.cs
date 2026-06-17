@@ -128,18 +128,23 @@ namespace ET
                 skillSetComponent.SkillList.RemoveAt(k);
             }
 
-            int[] SkillList = LDOccupationCategory.Instance.Get(request.Occ).InitSkillID;
-            for (int i = 0; i < SkillList.Length; i++)
+            int[] SkillList = LDOccupationCategory.Instance.Get(request.Occ).Skill_Base;
+            if (SkillList != null)
             {
-                if (i == 0)
+                for (int i = 0; i < SkillList.Length; i++)
                 {
-                    skillSetComponent.SkillList.Add(new SkillPro() { SkillID = SkillList[i], SkillPosition = 1, SkillSetType = (int)SkillSetEnum.Skill });
+                    if (i == 0)
+                    {
+                        skillSetComponent.SkillList.Add(new SkillPro() { SkillID = SkillList[i], SkillPosition = 1, SkillSetType = (int)SkillSetEnum.Skill });
+                    }
+                    else
+                    {
+                        skillSetComponent.SkillList.Add(new SkillPro() { SkillID = SkillList[i] });
+                    }
                 }
-                else
-                {
-                    skillSetComponent.SkillList.Add(new SkillPro() { SkillID = SkillList[i] });
-                }
+
             }
+
 
             //需要选择第二职业
             if (request.OccTwo != 0)

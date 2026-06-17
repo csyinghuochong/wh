@@ -28,7 +28,7 @@ namespace ET
 			}
 
 			LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-			int itemSubType = ldItem.ItemSubType;
+			int itemSubType = ldItem.ItemType;
 			bool ifCost = true;
 
 			LDPet ldPetCof = LDPetCategory.Instance.Get(petInfo.ConfigId);

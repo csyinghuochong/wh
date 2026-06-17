@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDOccupation_TransferCategory : ProtoObject, IMerge
+    public partial class LDPayCategory : ProtoObject, IMerge
     {
-        public static LDOccupation_TransferCategory Instance;
+        public static LDPayCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDOccupation_Transfer> dict = new Dictionary<int, LDOccupation_Transfer>();
+        private Dictionary<int, LDPay> dict = new Dictionary<int, LDPay>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDOccupation_Transfer> list = new List<LDOccupation_Transfer>();
+        private List<LDPay> list = new List<LDPay>();
 		
-        public LDOccupation_TransferCategory()
+        public LDPayCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDOccupation_TransferCategory s = o as LDOccupation_TransferCategory;
+            LDPayCategory s = o as LDPayCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDOccupation_Transfer config in list)
+            foreach (LDPay config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDOccupation_Transfer Get(int id)
+        public LDPay Get(int id)
         {
-            this.dict.TryGetValue(id, out LDOccupation_Transfer item);
+            this.dict.TryGetValue(id, out LDPay item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDOccupation_Transfer)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDPay)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDOccupation_Transfer> GetAll()
+        public Dictionary<int, LDPay> GetAll()
         {
             return this.dict;
         }
 
-        public LDOccupation_Transfer GetOne()
+        public LDPay GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDOccupation_Transfer: ProtoObject, IConfig
+	public partial class LDPay: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -84,15 +84,15 @@ namespace ET
 		/// <summary>描述</summary>
 		[ProtoMember(3)]
 		public int Desc { get; set; }
-		/// <summary>武器专精</summary>
+		/// <summary>限购</summary>
 		[ProtoMember(4)]
-		public int[] Weapon_Reinforce { get; set; }
-		/// <summary>护甲专精</summary>
+		public int Buy_Limit { get; set; }
+		/// <summary>价格</summary>
 		[ProtoMember(5)]
-		public int[] Armor_Reinforce { get; set; }
-		/// <summary>专精技能</summary>
+		public int Tier_Id { get; set; }
+		/// <summary>奖励</summary>
 		[ProtoMember(6)]
-		public int[] Skill_Reinforce { get; set; }
+		public string Reward { get; set; }
 
 	}
 }

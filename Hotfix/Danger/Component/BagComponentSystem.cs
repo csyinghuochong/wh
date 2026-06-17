@@ -34,7 +34,7 @@ namespace ET
                 int equipType = ItemHelper.GetNewEquipType(allequiplist[i]);
                 if (ldItem.ItemType == 3
                     && equipType >= 0 && equipType <= 100
-                    && ldItem.ItemSubType >= 0 && ldItem.ItemSubType <= 12)
+                    && ldItem.ItemType >= 0 && ldItem.ItemType <= 12)
                 {
                     return true;
                 }
@@ -648,8 +648,8 @@ namespace ET
             List<BagInfo> equipList = self.GetItemByLoc(equipIndex);
             for (int i = 0; i < equipList.Count; i++)
             {
-                LDItem ldItemCof = LDItemCategory.Instance.Get(equipList[i].ItemID);
-                if (ldItemCof.ItemSubType == position)
+                int caowei = ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID);
+                if (caowei == position)
                 {
                     bagInfos.Add(equipList[i]);
                 }
@@ -685,7 +685,7 @@ namespace ET
             for (int i = 0; i < equipList.Count; i++)
             {
                 LDItem ldItemCof = LDItemCategory.Instance.Get(equipList[i].ItemID);
-                if ((ldItemCof.ItemSubType == 4001 || ldItemCof.ItemSubType == 4002) && equipList[i].EquipIndex == position)
+                if ((ldItemCof.ItemType == 4001 || ldItemCof.ItemType == 4002) && equipList[i].EquipIndex == position)
                 {
                     return equipList[i];
                 }
@@ -757,8 +757,8 @@ namespace ET
                     {
                         continue;
                     }
-                    LDItem ldItem = LDItemCategory.Instance.Get(equipList[i]);
-                    if (self.GetEquipBySubType(ItemLocType.ItemLocEquip, ldItem.ItemSubType) != null)
+                    int caowei  = ItemNewHelper.GetNewEquipCaoWei(equipList[i]);
+                    if (self.GetEquipBySubType(ItemLocType.ItemLocEquip, caowei) != null)
                     {
                         continue;
                     }
@@ -1086,7 +1086,7 @@ namespace ET
                 {
                     BagInfo userBagInfo = itemlist[k];
                     
-                    if (userBagInfo.ItemID != itemID && userBagInfo.ItemType != itemtype)
+                    if (userBagInfo.ItemID != itemID || userBagInfo.ItemType != itemtype)
                     {
                         continue;
                     }
@@ -1273,7 +1273,7 @@ namespace ET
                     //道具处理
                     if (itemtype == ItemBigType.Type_Item)
                     {
-                        int subType = LDItemCategory.Instance.Get(itemID).ItemSubType;
+                        int subType = LDItemCategory.Instance.Get(itemID).ItemType;
                         
                            //藏宝图
                         if (subType == ItemNewSubType.CangBaoTu )
