@@ -1,83 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ET
 {
     public static class RechargeHelp
     {
 
-        public static void  SendDiamondToUnit(Unit unit, int rechargeNumber, string orderInfo, int rechargeType)
+        public static void  SendDiamondToUnit(Unit unit, int payid, string orderInfo, int rechargeType)
         {
             //Log.Warning($"RechargeHelp.SendDiamond {unit.Id} {rechargeNumber} {orderInfo}");
-            OnRechage(unit, rechargeNumber, rechargeType, true);
-            long accountId = unit.GetComponent<UserInfoComponent>().UserInfo.AccInfoID;
-            long userId = unit.GetComponent<UserInfoComponent>().UserInfo.UserId;
-            SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType).Coroutine();
+            OnRechage(unit, payid, rechargeType, true);
+            //long accountId = unit.GetComponent<UserInfoComponent>().UserInfo.AccInfoID;
+            //long userId = unit.GetComponent<UserInfoComponent>().UserInfo.UserId;
+            //SendToAccountCenter(accountId, userId, payid, orderInfo, rechargeType).Coroutine();
             unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
         }
 
-        public static void OnRechage(Unit unit, int rechargeNumber, int rechargetType, bool notice)
+        public static void OnRechage(Unit unit, int playId, int rechargetType, bool notice)
         {
-            if (rechargeNumber <= 0)
+            if (playId <= 0)
             { 
                 return; 
             }
         
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
-            Log.Debug($"OnRechage: {unit.Id}   {rechargetType}  {rechargeNumber}  rechargetType:{rechargetType}");
+            Log.Debug($"OnRechage: {unit.Id}   {rechargetType}  {playId}  rechargetType:{rechargetType}");
 
+            string diamondNumber = CommonConfig.GetDiamondNumber(playId, unit.DomainZone());
+            List<RewardItem> rewardItems = ItemHelper.GetRewardItems(diamondNumber);
+            
             //0 砖石  1周卡
             if (rechargetType == 0)
             {
-                int number = CommonConfig.GetDiamondNumber(rechargeNumber, unit.DomainZone());
-                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, number.ToString(), notice, ItemGetWay.Recharge);
+                unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.Recharge}_{TimeHelper.ServerNow()}");
             }
             else
             {
-                Console.WriteLine($"OnRechage: {unit.Id}   {rechargetType}  {rechargeNumber}");
-
-                if (rechargeNumber == 30)
-                {
-                    long serverTime = TimeHelper.ServerNow();
-                    long cardtime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.GoldWeeklyCard);
-
-                    //如果是在第七天开启的， 当天不能领取奖励， 则把时间设置到零点
-                    if (serverTime > cardtime && CommonHelper.GetDaysDiffByDate(serverTime, cardtime) == 6)
-                    {
-                        cardtime = CommonHelper.GetNextDayZeroOneTimestampMilliseconds(serverTime);
-                    }
-                    else
-                    {
-                        cardtime = serverTime;
-                    }
-
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.GoldWeeklyCard, cardtime);
-                    unit.GetComponent<ActivityComponent>().ActivityV1Info.GoldWeeklyCardRewards.Clear();
-                }
-                else if (rechargeNumber == 98)
-                {
-                    long serverTime = TimeHelper.ServerNow();
-                    long cardtime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.DiamondWeeklyCard);
-
-                    //如果是在第七天开启的， 当天不能领取奖励， 则把时间设置到零点
-                    if (serverTime > cardtime && CommonHelper.GetDaysDiffByDate(serverTime, cardtime) == 6)
-                    {
-                        cardtime = CommonHelper.GetNextDayZeroOneTimestampMilliseconds(serverTime);
-                    }
-                    else
-                    {
-                        cardtime = serverTime;
-                    }
-
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.DiamondWeeklyCard, cardtime);
-                    unit.GetComponent<ActivityComponent>().ActivityV1Info.DiamondWeeklyCardRewards.Clear();
-                }
-                else
-                {
-                    Console.WriteLine($"OnRechage.Error: {unit.Id}   {rechargetType}  {rechargeNumber}");
-                }
+                Console.WriteLine($"OnRechage: {unit.Id}   {rechargetType}  {playId}");
             }
 
+            int rechargeNumber = CommonConfig.GetRechargeNumber(playId, unit.DomainZone());
             numericComponent.ApplyChange(null, NumericType.RechargeNumber, rechargeNumber, 1, notice);    
             numericComponent.ApplyChange(null, NumericType.V1RechageNumber, rechargeNumber, 0, notice);    
             //充值签到标记，已经领取的不充值
@@ -90,7 +53,6 @@ namespace ET
             {
                 unit.GetComponent<UserInfoComponent>().UserInfo.SingleRechargeIds.Add(rechargeNumber);
             }
-
         }
 
         public static async ETTask SendToAccountCenter(long accountId, long userId, int rechargeNumber, string ordinfo, int rechargeType)

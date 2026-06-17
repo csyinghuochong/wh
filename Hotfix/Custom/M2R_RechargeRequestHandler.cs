@@ -14,13 +14,6 @@ namespace ET
                     response.Message = await scene.GetComponent<ReChargeWXComponent>().WeChatPay(request);
                     break;
                 case PayTypeEnum.AliPay:
-                    if (!CommonConfig.RechargeGive.ContainsKey(request.RechargeNumber))
-                    {
-                        Log.Error($"M2R_RechargeRequest 1");
-                        response.Error = ErrorCode.ERR_ModifyData;
-                        reply();
-                        return;
-                    }
                     response.Message =  scene.GetComponent<ReChargeAliComponent>().AliPay(request);
                     break;
                 case PayTypeEnum.QuDaoPay:

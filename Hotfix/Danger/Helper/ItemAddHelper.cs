@@ -27,7 +27,7 @@ namespace ET
             self.GetComponent<ShoujiComponent>().OnGetItem(itemId);*/
         }
         
-        public static void OnGetItem(this Unit self, int getWay, int itemType, int itemId, int itemNumber)
+        public static void OnGetItem(this Unit self, int getWay, int itemType, int itemId, long itemNumber)
         {
             /*self.GetComponent<TaskComponent>().OnGetItem_2(itemId);
             self.GetComponent<TaskComponent>().OnGetItemNumber( getWay, itemId, itemNum);

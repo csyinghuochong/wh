@@ -703,7 +703,7 @@ namespace ET
 
                     }
                     //不能超过当前拥有上限
-                    costNum = Math.Min(costNum, paiMaiItem.BagInfo.ItemNum);
+                    costNum = Math.Min(costNum, (int)paiMaiItem.BagInfo.ItemNum);
 
                     //概率购买
                     if (pro < 1.5f && RandomHelper.RandFloat01() < buyPro)

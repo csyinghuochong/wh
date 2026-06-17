@@ -23,8 +23,7 @@ namespace ET
                     RechargeInfo rechargeInfo = playerInfo.RechargeInfos[i];
                     if (rechargeInfo.UserId == request.BuChangId)
                     {
-                        response.BuChangRecharge += rechargeInfo.Amount;
-                        response.BuChangDiamond += CommonConfig.GetDiamondNumber(rechargeInfo.Amount, scene.Zone);
+                        
                     }
                 }
                 playerInfo.DeleteUserList.Clear();

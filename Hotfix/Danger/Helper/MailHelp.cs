@@ -143,49 +143,7 @@ namespace ET
                     return ErrorCode.ERR_NotFindAccount;
                 }
 
-                int totalGold = 0;
                 List<MailInfo> mailinfolist = dBMainInfo.MailInfoList;
-                for (int i = mailinfolist.Count - 1; i >= 0; i--)
-                {
-
-                    if (mailinfolist[i].ItemList.Count != 1)
-                    {
-                        continue;
-                    }
-
-                    if (mailinfolist[i].ItemList[0].ItemID == 1)
-                    {
-                        totalGold += mailinfolist[i].ItemList[0].ItemNum;
-                    }
-
-                    if (mailinfolist[i].ItemList[0].ItemID == 10000151)  //之前有一次全服误发精灵龟 /羽毛
-                    {
-                        mailinfolist.RemoveAt(i);
-                        continue;
-                    }
-
-                    if (mailinfolist[i].ItemList.Count >= 1 && !LDItemCategory.Instance.Contain(mailinfolist[i].ItemList[0].ItemID))  //
-                    {
-                        mailinfolist.RemoveAt(i);
-                        continue;
-                    }
-
-                    if (mailinfolist[i].ItemList.Count >= 2 && !LDItemCategory.Instance.Contain(mailinfolist[i].ItemList[1].ItemID))
-                    {
-                        mailinfolist.RemoveAt(i);
-                        continue;
-                    }
-                }
-
-                if (totalGold > 100000000)
-                {
-                    Log.Error($"邮件大量金币: {zone}  {userID}   {totalGold}");
-
-                    if (userID == 2309112494397915136)
-                    {
-                        mailinfolist.Clear();
-                    }
-                }
 
                 //存储邮件
                 if (mailinfolist.Count > 100)

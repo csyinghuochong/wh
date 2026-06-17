@@ -485,7 +485,7 @@ namespace ET
                
                 if (request.SceneType != MapTypeEnum.RunRace)
 				{
-                    unit.GetComponent<BuffManagerComponent>().InitBuff(request.SceneType);
+                    //unit.GetComponent<BuffManagerComponent>().InitBuff(request.SceneType);
                     unit.GetComponent<SkillPassiveComponent>().Reset();
                     unit.GetComponent<SkillPassiveComponent>().Activeted();
                     unit.OnUpdateHorseRide(0);

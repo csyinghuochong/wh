@@ -160,7 +160,7 @@ namespace ET
                 int finalNum = 0;
                 for (int i = 0; i < bagInfos.Count; i++)
                 {
-                    totalNum += bagInfos[i].ItemNum;
+                    totalNum += (int)bagInfos[i].ItemNum;
                 }
                 needGrid = totalNum / ldItemCof.ItemPileSum;
                 needGrid += (totalNum % ldItemCof.ItemPileSum > 0 ? 1 : 0);
@@ -991,7 +991,7 @@ namespace ET
                     continue;
                 }
 
-                int ItemPileSum = ItemNewHelper.GetNewItemPileSum(rewardItem);
+                long ItemPileSum = ItemNewHelper.GetNewItemPileSum(rewardItem);
                 if (UseLocType >= ItemLocType.ItemWareHouse1)
                 {
                     continue;
@@ -1473,7 +1473,7 @@ namespace ET
             for (int i = costItems.Count - 1; i >= 0; i--)
             {
                 int itemID = costItems[i].ItemID;
-                long itemNum = costItems[i].ItemNum;
+                int itemNum = costItems[i].ItemNum;
 
                 //获取背包内的道具是否足够
                 if (self.GetItemNumber(ItemBigType.Type_Item, itemID, itemLocType) < itemNum)
