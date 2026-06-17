@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDTask_ConditionCategory : ProtoObject, IMerge
+    public partial class LDActivity_CalendarCategory : ProtoObject, IMerge
     {
-        public static LDTask_ConditionCategory Instance;
+        public static LDActivity_CalendarCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDTask_Condition> dict = new Dictionary<int, LDTask_Condition>();
+        private Dictionary<int, LDActivity_Calendar> dict = new Dictionary<int, LDActivity_Calendar>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDTask_Condition> list = new List<LDTask_Condition>();
+        private List<LDActivity_Calendar> list = new List<LDActivity_Calendar>();
 		
-        public LDTask_ConditionCategory()
+        public LDActivity_CalendarCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDTask_ConditionCategory s = o as LDTask_ConditionCategory;
+            LDActivity_CalendarCategory s = o as LDActivity_CalendarCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDTask_Condition config in list)
+            foreach (LDActivity_Calendar config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDTask_Condition Get(int id)
+        public LDActivity_Calendar Get(int id)
         {
-            this.dict.TryGetValue(id, out LDTask_Condition item);
+            this.dict.TryGetValue(id, out LDActivity_Calendar item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDTask_Condition)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDActivity_Calendar)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDTask_Condition> GetAll()
+        public Dictionary<int, LDActivity_Calendar> GetAll()
         {
             return this.dict;
         }
 
-        public LDTask_Condition GetOne()
+        public LDActivity_Calendar GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDTask_Condition: ProtoObject, IConfig
+	public partial class LDActivity_Calendar: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -81,18 +81,12 @@ namespace ET
 		/// <summary>描述</summary>
 		[ProtoMember(2)]
 		public int Desc { get; set; }
-		/// <summary>模式 0-累计 1-覆盖</summary>
+		/// <summary>资源</summary>
 		[ProtoMember(3)]
-		public int Type { get; set; }
-		/// <summary>进度显示 0-否 1-是</summary>
+		public string Resources { get; set; }
+		/// <summary>奖励展示</summary>
 		[ProtoMember(4)]
-		public int Progress_Show { get; set; }
-		/// <summary>消耗 待扩充</summary>
-		[ProtoMember(5)]
-		public string Submit { get; set; }
-		/// <summary>数字处理 0-否 1-是</summary>
-		[ProtoMember(6)]
-		public int Digit_Deal { get; set; }
+		public string Reward_Show { get; set; }
 
 	}
 }

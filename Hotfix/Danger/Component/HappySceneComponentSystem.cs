@@ -49,7 +49,6 @@ namespace ET
             mapComponent.SetMapInfo((int)MapTypeEnum.Happy, sceneId, 0);
             mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).GetNavMeshId();
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
-            FubenHelp.CreateNpc(fubnescene, sceneId);
             self.FubenPlayers.Add(fubenid, new List<long>() { unitId }); 
             return fubenInstanceId;
         }

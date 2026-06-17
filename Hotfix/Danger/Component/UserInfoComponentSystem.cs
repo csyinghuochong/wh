@@ -506,7 +506,7 @@ namespace ET
             if (showlieopen && ( ldMonster.Lv >= 60 || Mathf.Abs(self.UserInfo.Lv - ldMonster.Lv) <= 9) )
             {
                 self.OnShowLieKill();
-                main.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.ShowLieMonster_1201, 0, 1);
+                main.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.ShowLieMonster_1201, 0, 1);
             }
 
             if (SeasonHelper.GetOpenSeason(self.UserInfo.Lv)!=null && beKill.IsBoss() && ldMonster.Lv >= 40)
@@ -838,8 +838,8 @@ namespace ET
                 case UserDataType.JiaYuanLv:
                     self.UserInfo.JiaYuanLv += int.Parse(value);
                     saveValue = self.UserInfo.JiaYuanLv.ToString();
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.JiaYuanLevel_22, 0, self.UserInfo.JiaYuanLv - 10000);
-                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JiaYuanLevel_22, 0, self.UserInfo.JiaYuanLv - 10000);
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, self.UserInfo.JiaYuanLv - 10000);
+                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JiaYuanLevel_22, 0, self.UserInfo.JiaYuanLv - 10000);
                     unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, self.UserInfo.JiaYuanLv - 10000);
                     break;
                 case UserDataType.FangRong:
@@ -975,7 +975,7 @@ namespace ET
                     self.UserInfo.Combat = int.Parse(value);
                     saveValue = self.UserInfo.Combat.ToString();
                     unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, self.UserInfo.Combat);
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.CombatToValue_133, 0, self.UserInfo.Combat);
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, self.UserInfo.Combat);
                     break;
                 case UserDataType.Vitality:
                     NumericComponent numericComponent = unit.GetComponent<NumericComponent>();

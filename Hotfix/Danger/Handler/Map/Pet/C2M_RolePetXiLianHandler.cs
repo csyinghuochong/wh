@@ -32,16 +32,6 @@ namespace ET
 			bool ifCost = true;
 
 			LDPet ldPetCof = LDPetCategory.Instance.Get(petInfo.ConfigId);
-			//神兽无法学习技能书
-			if (ldPetCof.PetType == 2)
-			{
-				if(itemSubType == 105 || itemSubType == 118 || itemSubType == 119 || itemSubType == 122)
-                {
-					response.Error = ErrorCode.ERR_Pet_NoUseItem;
-					reply();
-					return;
-				}
-			}
 			
 			////没有对应子类型的新增一下。
 			////新增的道具都要添加子类型
@@ -59,10 +49,7 @@ namespace ET
 
 					if (!PetHelper.IsBianYI(petInfo) && RandomHelper.RandomNumber(0, 101) <= 5)
 					{
-						if (ldPetCof.Skin.Length >= 2)
-						{
-							petInfo.SkinId = ldPetCof.Skin[RandomHelper.RandomNumber(1, ldPetCof.Skin.Length)];
-						}
+						
 					}
 					
 					//重置资质系数
@@ -113,8 +100,8 @@ namespace ET
 					if (ifok)
 					{
                         unit.GetComponent<PetComponent>().UpdatePetAttribute(petInfo, true);
-                        unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.PetUseSkillBook_36, 0, 1);
-                        unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.PetUseSkillBook_36, 0, 1);
+                        unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetUseSkillBook_36, 0, 1);
+                        unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetUseSkillBook_36, 0, 1);
                         petInfo.LockSkill.Clear();
 
                     }
@@ -145,10 +132,7 @@ namespace ET
 						return;
 					}
 
-					if (ldPetCof.Skin.Length >= 2)
-					{
-						petInfo.SkinId = ldPetCof.Skin[RandomHelper.RandomNumber(1, ldPetCof.Skin.Length)];
-					}
+					
 					response.rolePetInfo = petInfo;
 					break;
 				case 136:
@@ -181,8 +165,8 @@ namespace ET
 
 				if (itemSubType == 105 || itemSubType == 133)
                 {
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.PetXiLian10010086_33, 0, 1);
-                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.PetXiLian10010086_33, 0, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetXiLian10010086_33, 0, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetXiLian10010086_33, 0, 1);
                 }
             }
             unit.GetComponent<PetComponent>().CheckPetPingFen();

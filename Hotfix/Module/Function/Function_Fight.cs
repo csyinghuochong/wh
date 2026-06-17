@@ -355,7 +355,7 @@ namespace ET
                 case UnitType.Pet:
                     defendUnit.GetComponent<AIComponent>()?.BeAttacking(attackUnit);
                     LDPet ldPetCof = LDPetCategory.Instance.Get(defendUnit.ConfigId);
-                    defendUnitLv = ldPetCof.PetLv;
+                    defendUnitLv = 1;//ldPetCof.PetLv;
                     defend_def += numericComponentDefend.GetAsLong(NumericType.Numeric_Error);
                     defend_adf += numericComponentDefend.GetAsLong(NumericType.Numeric_Error);
                     defend_def += (int)(defend_def * numericComponentDefend.GetAsFloat(NumericType.Numeric_Error));
@@ -387,7 +387,7 @@ namespace ET
                 //宠物
                 case UnitType.Pet:
                     LDPet ldPetCof = LDPetCategory.Instance.Get(attackUnit.ConfigId);
-                    attackUnitLv = ldPetCof.PetLv;
+                    attackUnitLv = 1;//ldPetCof.PetLv;
 
                     //增加宠物属性
                     ///从主人身上取

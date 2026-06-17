@@ -593,7 +593,6 @@ namespace ET
             mapComponent.SetMapInfo((int)MapTypeEnum.Union, unionsceneid, 0);
             mapComponent.NavMeshId = LDSceneCategory.Instance.Get(unionsceneid).GetNavMeshId();
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
-            FubenHelp.CreateNpc(fubnescene, unionsceneid);
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
             self.UnionFubens.Add(unionid, fubenInstanceId);
 

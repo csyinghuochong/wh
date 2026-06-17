@@ -43,12 +43,12 @@ namespace ET
             self.MainUnit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetMineBattle,1,0  );
             self.MainUnit.GetComponent<NumericComponent>().ApplyValue(null, NumericType.PetMineCDTime, TimeHelper.ServerNow() + cdTime, 0);
 
-            self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.MineBattleNumber_402, 0, 1);
-            self.MainUnit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.MineBattleNumber_402, 0, 1);
+            self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.MineBattleNumber_402, 0, 1);
+            self.MainUnit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.MineBattleNumber_402, 0, 1);
             if (result == CombatResultEnum.Win)
             {
-                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.MineWinNumber_403, 0, 1);
-                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.MineWinNumber_403, 0, 1);
+                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.MineWinNumber_403, 0, 1);
+                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.MineWinNumber_403, 0, 1);
             }
 
             await ETTask.CompletedTask;

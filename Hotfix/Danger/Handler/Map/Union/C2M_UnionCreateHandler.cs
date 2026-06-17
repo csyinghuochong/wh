@@ -40,8 +40,8 @@ namespace ET
                 unit.GetComponent<NumericComponent>().ApplyValue( NumericType.UnionId_0, d2GGetUnit.UnionId, true);
                 unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.UnionName, request.UnionName);
                 unit.GetComponent<UserInfoComponent>().UpdateRoleDataBroadcast(UserDataType.UnionName, request.UnionName);
-                unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.JoinUnion_9, 0, 1);
-                unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JoinUnion_9, 0, 1);
+                unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JoinUnion_9, 0, 1);
+                unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JoinUnion_9, 0, 1);
                 unit.UpdateUnionToChat().Coroutine();
             }
             response.Error = d2GGetUnit.Error;

@@ -511,26 +511,7 @@ namespace ET
 				}
 			}
 		}
-
-		public static void CreateNpc(Scene scene, int sceneId)
-		{
-			LDScene ldScene = LDSceneCategory.Instance.Get(sceneId);
-			int[] npcs = null;/// ldScene.NpcList;
-			if (npcs == null)
-			{
-				return;
-			}
-
-			Vector3 npcpos = ldScene.GetBornPos();
-			for (int i = 0; i < npcs.Length; i++)
-			{
-				if (npcs[i] == 0)
-				{
-					continue;
-				}
-				UnitFactory.CreateNpc(scene, npcs[i], RandomHelper.GetRandomPointInCircle(npcpos, 1f));
-			}
-		}
+		
 
 		public static bool IsAllMonsterDead(Scene scene, Unit main)
 		{

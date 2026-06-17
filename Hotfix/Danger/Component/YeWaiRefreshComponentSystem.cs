@@ -213,7 +213,7 @@ namespace ET
                     continue;
                 }
                 
-                FubenHelp.CreateSceneRole(self.DomainScene(), FuntionConfig.Id);
+                //FubenHelp.CreateSceneRole(self.DomainScene(), FuntionConfig.Id);
             }
 
             //MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();

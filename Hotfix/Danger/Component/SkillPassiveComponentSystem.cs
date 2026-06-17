@@ -336,7 +336,7 @@ namespace ET
             int configId = self.GetParent<Unit>().ConfigId;
             LDPet MonsterCof = LDPetCategory.Instance.Get(configId);
             List<int> zhuanzhuids = new List<int>();
-            string[] zhuanzhuskills = MonsterCof.ZhuanZhuSkillID.Split(';');
+            string[] zhuanzhuskills = null;///MonsterCof.ZhuanZhuSkillID.Split(';');
             for (int i = 0; i < zhuanzhuskills.Length; i++)
             {
                 if (zhuanzhuskills[i].Length > 1)
@@ -351,7 +351,7 @@ namespace ET
                 self.AddPassiveSkillByType(ldSkill);
             }
 
-            string[] baseSkillID = MonsterCof.BaseSkillID.Split(';');
+            string[] baseSkillID = null;// MonsterCof.BaseSkillID.Split(';');
             for (int i = 0; i < baseSkillID.Length; i++)
             {
                 int baseSkillId = int.Parse(baseSkillID[i]);

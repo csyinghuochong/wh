@@ -43,7 +43,7 @@ namespace ET
                     return;
                 }
 
-                int[] costItems = ldItem.XiLianStone;
+                int[] costItems = null;//ldItem.XiLianStone;
                 List<RewardItem> rewardItems = new List<RewardItem>();
 
                 bool ifZuanShi = false;
@@ -136,12 +136,12 @@ namespace ET
 
                     for (int attr = 0;  attr < itemXiLianResult.XiLianHideProLists.Count; attr++ )
                     {
-                        unit.GetComponent<TaskComponent>().TriggerTaskEvent( TaskTargetType.XiLianAttriId_45, itemXiLianResult.XiLianHideProLists[0].HideID, 1);
-                        unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.XiLianAttriId_45, itemXiLianResult.XiLianHideProLists[0].HideID, 1);
+                        unit.GetComponent<TaskComponent>().TriggerTaskEvent( TastConditionType.XiLianAttriId_45, itemXiLianResult.XiLianHideProLists[0].HideID, 1);
+                        unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.XiLianAttriId_45, itemXiLianResult.XiLianHideProLists[0].HideID, 1);
                     }
 
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.XiLianSkillNumber_44, itemXiLianResult.HideSkillLists.Count, 1);
-                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.XiLianSkillNumber_44, itemXiLianResult.HideSkillLists.Count, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.XiLianSkillNumber_44, itemXiLianResult.HideSkillLists.Count, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.XiLianSkillNumber_44, itemXiLianResult.HideSkillLists.Count, 1);
                 }
 
                 unit.GetComponent<ChengJiuComponent>().OnEquipXiLian(request.Times);

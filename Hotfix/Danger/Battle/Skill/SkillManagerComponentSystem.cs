@@ -857,7 +857,7 @@ namespace ET
             if(ldSkill.SkillActType == 0 && unit.Type == UnitType.Pet)
             {
                 LDPet ldPetConfig = LDPetCategory.Instance.Get(unit.ConfigId);
-                skillcdTime = ldPetConfig.Base_ActSpeed;
+                skillcdTime = 0;/// ldPetConfig.s;
             }
 
 

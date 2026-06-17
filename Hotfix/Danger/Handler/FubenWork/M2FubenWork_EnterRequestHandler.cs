@@ -41,7 +41,6 @@ namespace ET
                     mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).GetNavMeshId();
                     Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
                     fubnescene.AddComponent<YeWaiRefreshComponent>().SceneId = sceneId;
-                    FubenHelp.CreateNpc(fubnescene, sceneId);
                     
                     //FubenHelp.CreateMonsterList(fubnescene, LDSceneCategory.Instance.Get(sceneId).CreateMonsterPosi);
                     response.FubenId = fubenid;

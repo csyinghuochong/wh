@@ -21,12 +21,7 @@ namespace ET
 
             //神兽不能进化
             LDPet ldPetCof = LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
-            if (ldPetCof.PetType == 2)
-            {
-                response.Error = ErrorCode.ERR_Pet_UpStage;
-                reply();
-                return;
-            }
+           
 
             RolePetInfo rolePetInfoXianJi = petComponent.GetPetInfo(request.PetInfoXianJiId);
 

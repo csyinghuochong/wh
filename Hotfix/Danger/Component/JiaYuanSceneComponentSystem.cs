@@ -96,7 +96,6 @@ namespace ET
                 mapComponent.SetMapInfo((int)MapTypeEnum.JiaYuan, jiayuansceneid, 0);
                 mapComponent.NavMeshId = LDSceneCategory.Instance.Get(jiayuansceneid).GetNavMeshId();
                 await self.CreateJiaYuanUnit(fubnescene, masterid, unitid);
-                FubenHelp.CreateNpc(fubnescene, jiayuansceneid);
                 TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
                 self.JiaYuanFubens.Add(masterid, fubenInstanceId);
                 return fubenInstanceId;

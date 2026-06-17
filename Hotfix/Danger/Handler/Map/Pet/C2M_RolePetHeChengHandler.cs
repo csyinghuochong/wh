@@ -47,8 +47,6 @@ namespace ET
 			////神兽无法合成
 			LDPet xiulianconf1 = LDPetCategory.Instance.Get(petID_1);
 			LDPet xiulianconf2 = LDPetCategory.Instance.Get(petID_2);
-			int petType_1 = xiulianconf1.PetType;
-			int petType_2 = xiulianconf2.PetType;
 			
 			// 获取宠物1
 			string petName_1 = petinfo_1.PetName;
@@ -182,8 +180,7 @@ namespace ET
             int petID = 0;
             LDPet itemConf1 = LDPetCategory.Instance.Get(petID_1);
             LDPet itemConf2 = LDPetCategory.Instance.Get(petID_2);
-			int fightLv_1 = itemConf1.FightLv;
-			int fightLv_2 = itemConf2.FightLv;
+			
 
 			float number = RandomHelper.RandFloat();
             //合成形象,50%概率
@@ -199,7 +196,7 @@ namespace ET
 
             //填补必带技能
             LDPet bidaiLdPet = LDPetCategory.Instance.Get(petID);
-			string[] baseSkillID = bidaiLdPet.BaseSkillID.Split(';');
+            string[] baseSkillID = null;// bidaiLdPet.BaseSkillID.Split(';');
 			for (int i = 0; i < baseSkillID.Length;i++) {
 				if (savePetSkillID.Contains(int.Parse(baseSkillID[i])) == false) {
 					savePetSkillID.Add(int.Parse(baseSkillID[i]));

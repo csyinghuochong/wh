@@ -60,8 +60,8 @@ namespace ET
                         PlayerName = unit.GetComponent<UserInfoComponent>().UserInfo.Name,
                     }) ;
                     unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.JiaYuanGatherPlant_401, 0, 1);
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.JiaYuanGatherPlant_93, 0, 1);
-                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JiaYuanGatherPlant_93, 0, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanGatherPlant_93, 0, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JiaYuanGatherPlant_93, 0, 1);
                     break;
                 case 2:
                     JiaYuanPastures jiaYuanPasture = jiaYuanComponent.GetJiaYuanPastures(request.UnitId);
@@ -89,8 +89,8 @@ namespace ET
                     jiaYuanPasture.GatherLastTime = TimeHelper.ServerNow();
                     unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.JiaYuanGatherPasture_402, 0, 1);
 
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.JiaYuanGatherPasture_95, 0, 1);
-                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JiaYuanGatherPasture_95, 0, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanGatherPasture_95, 0, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JiaYuanGatherPasture_95, 0, 1);
                     break;
             }
 

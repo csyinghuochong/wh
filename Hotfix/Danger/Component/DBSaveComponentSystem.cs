@@ -191,7 +191,6 @@ namespace ET
             }
             ActivityComponent activityComponent = unit.GetComponent<ActivityComponent>();
             LogHelper.LogDebug($"活动领取： {activityComponent.ActivityReceiveIds.Count}  {activityComponent.QuTokenRecvive.Count}");
-            LogHelper.LogDebug($"活跃任务： {unit.GetComponent<TaskComponent>().TaskCountryList.Count}");
         }
 
         public static int OnDisconnect(this DBSaveComponent self)

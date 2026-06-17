@@ -76,9 +76,9 @@ namespace ET
 
             int petId = petList[RandomHelper.RandomNumber(0, petList.Count)];
             LDPet ldPetConfig = LDPetCategory.Instance.Get(petId);
-            List<int> weight = new List<int>(ldPetConfig.SkinPro);
+            List<int> weight = new List<int>();
             int index = RandomHelper.RandomByWeight(weight);
-            int skinId = ldPetConfig.Skin[index];
+            int skinId = 0;//ldPetConfig.Skin[index];
             response.RolePetInfo = unit.GetComponent<PetComponent>().OnAddPet(ItemGetWay.PetExplore, petId, skinId);
             reply();
             await ETTask.CompletedTask;

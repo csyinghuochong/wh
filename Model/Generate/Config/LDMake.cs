@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDTaskCategory : ProtoObject, IMerge
+    public partial class LDMakeCategory : ProtoObject, IMerge
     {
-        public static LDTaskCategory Instance;
+        public static LDMakeCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDTask> dict = new Dictionary<int, LDTask>();
+        private Dictionary<int, LDMake> dict = new Dictionary<int, LDMake>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDTask> list = new List<LDTask>();
+        private List<LDMake> list = new List<LDMake>();
 		
-        public LDTaskCategory()
+        public LDMakeCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDTaskCategory s = o as LDTaskCategory;
+            LDMakeCategory s = o as LDMakeCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDTask config in list)
+            foreach (LDMake config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDTask Get(int id)
+        public LDMake Get(int id)
         {
-            this.dict.TryGetValue(id, out LDTask item);
+            this.dict.TryGetValue(id, out LDMake item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDTask)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDMake)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDTask> GetAll()
+        public Dictionary<int, LDMake> GetAll()
         {
             return this.dict;
         }
 
-        public LDTask GetOne()
+        public LDMake GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,40 +73,34 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDTask: ProtoObject, IConfig
+	public partial class LDMake: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>页码</summary>
+		/// <summary>条件1</summary>
 		[ProtoMember(2)]
-		public int Page { get; set; }
-		/// <summary>排序</summary>
+		public int Condition_Type1 { get; set; }
+		/// <summary>值1</summary>
 		[ProtoMember(3)]
-		public int Order_SL { get; set; }
-		/// <summary>类型</summary>
+		public int Condition_Value1 { get; set; }
+		/// <summary>条件2</summary>
 		[ProtoMember(4)]
-		public int Type { get; set; }
-		/// <summary>名称</summary>
+		public int Condition_Type2 { get; set; }
+		/// <summary>值2</summary>
 		[ProtoMember(5)]
-		public int Name { get; set; }
-		/// <summary>描述</summary>
+		public int Condition_Value2 { get; set; }
+		/// <summary>时间</summary>
 		[ProtoMember(6)]
-		public int Desc { get; set; }
-		/// <summary>条件</summary>
+		public int Time { get; set; }
+		/// <summary>特殊消耗</summary>
 		[ProtoMember(7)]
-		public int Condition_Type { get; set; }
-		/// <summary>主参数</summary>
+		public int Special_Consume { get; set; }
+		/// <summary>消耗</summary>
 		[ProtoMember(8)]
-		public int Param1 { get; set; }
-		/// <summary>副参数</summary>
-		[ProtoMember(9)]
-		public int Param2 { get; set; }
-		/// <summary>完成NPC</summary>
-		[ProtoMember(10)]
-		public int NPC { get; set; }
+		public string Consume { get; set; }
 		/// <summary>奖励</summary>
-		[ProtoMember(11)]
+		[ProtoMember(9)]
 		public string Reward { get; set; }
 
 	}

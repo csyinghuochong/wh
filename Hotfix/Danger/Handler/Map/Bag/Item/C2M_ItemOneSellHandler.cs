@@ -41,11 +41,11 @@ namespace ET
                     }
                     gemIdList.Add(int.Parse(gemids[gem]));
                     LDItem ldItemConf = LDItemCategory.Instance.Get(int.Parse(gemids[gem]));
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
+                    //unit.GetComponent<UserInfoComponent>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
                 }
 
                 //珍宝属性价格提升
-                int sellValue = ldItem.SellMoneyValue;
+                /*int sellValue = ldItem.SellMoneyValue;
                 if (useBagInfo.HideSkillLists.Contains(68000102))
                 {
                     sellValue = ldItem.SellMoneyValue * 20;
@@ -60,7 +60,7 @@ namespace ET
                 {
                     unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd((int)ldItem.SellMoneyType, (useBagInfo.ItemNum * sellValue).ToString(), true, 39);
                     unit.GetComponent<BagComponent>().OnCostItemData(useBagInfo, (ItemLocType)request.OperateType, useBagInfo.ItemNum);
-                }
+                }*/
                 if (useBagInfo.ItemNum == 0)
                 {
                     m2c_bagUpdate.BagInfoDelete.Add(useBagInfo);

@@ -42,7 +42,7 @@ namespace ET
                         continue;  
                     }
                     LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-                    string huishouItem = ldItem.HuiShouGetItem;
+                    string huishouItem = string.Empty;
                     if (huishouItem.Length == 0 || string.IsNullOrEmpty(huishouItem))
                     {
                         continue;

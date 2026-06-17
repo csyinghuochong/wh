@@ -3546,91 +3546,6 @@ namespace ET
 
 	}
 
-//每日活跃
-	[ResponseType(nameof(M2C_TaskCountryInitResponse))]
-	[Message(OuterOpcode.C2M_TaskCountryInitRequest)]
-	[ProtoContract]
-	public partial class C2M_TaskCountryInitRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TaskCountryInitResponse)]
-	[ProtoContract]
-	public partial class M2C_TaskCountryInitResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<TaskPro> TaskCountryList = new List<TaskPro>();
-
-		[ProtoMember(2)]
-		public List<int> ReceiveHuoYueIds = new List<int>();
-
-	}
-
-//提交任务
-	[ResponseType(nameof(M2C_CommitTaskCountryResponse))]
-	[Message(OuterOpcode.C2M_CommitTaskCountryRequest)]
-	[ProtoContract]
-	public partial class C2M_CommitTaskCountryRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int TaskId { get; set; }
-
-		[ProtoMember(2)]
-		public long BagInfoID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_CommitTaskCountryResponse)]
-	[ProtoContract]
-	public partial class M2C_CommitTaskCountryResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TaskCountryUpdate)]
-	[ProtoContract]
-	public partial class M2C_TaskCountryUpdate: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int UpdateMode { get; set; }
-
-		[ProtoMember(2)]
-		public List<TaskPro> TaskCountryList = new List<TaskPro>();
-
-	}
-
 //任务列表
 	[ResponseType(nameof(M2C_TaskInitResponse))]
 	[Message(OuterOpcode.C2M_TaskInitRequest)]
@@ -3660,9 +3575,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public List<int> RoleComoleteTaskList = new List<int>();
-
-		[ProtoMember(3)]
-		public List<TaskPro> TaskCountryList = new List<TaskPro>();
 
 		[ProtoMember(4)]
 		public List<int> ReceiveHuoYueIds = new List<int>();

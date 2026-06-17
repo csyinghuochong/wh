@@ -114,8 +114,8 @@ namespace ET
 						{
 							scene.GetComponent<PetTianTiComponent>().MainUnit = unit;
 							scene.GetComponent<PetTianTiComponent>().GeneratePetFuben().Coroutine();
-							unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.PetTianTiNumber_14,0, 1 );
-                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.PetTianTiNumber_14, 0, 1);
+							unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetTianTiNumber_14,0, 1 );
+                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetTianTiNumber_14, 0, 1);
                             unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PetTianTiNumber_310, 0, 1);
 						}
 						if (request.SceneType == (int)MapTypeEnum.PetMing)
@@ -393,15 +393,15 @@ namespace ET
                                 }
                                 if (fubenType == TeamFubenType.ShenYuan)
                                 {
-                                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.ShenYuanNumber_135, 0, 1);
-                                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.ShenYuanNumber_135, 0, 1);
+                                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.ShenYuanNumber_135, 0, 1);
+                                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.ShenYuanNumber_135, 0, 1);
                                 }
                             }
                         }
 						if (request.SceneType == (int)MapTypeEnum.TowerDungeon)
 						{
 							Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
-							unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.Tower_1013, 0, 1);
+							unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.Tower_1013, 0, 1);
 							scene.GetComponent<TowerComponent>().MainUnit = unit;
 						}
 						if (request.SceneType == MapTypeEnum.RandomTower)
@@ -413,7 +413,7 @@ namespace ET
 						{
 							Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
 							scene.GetComponent<TrialDungeonComponent>().GenerateFuben(int.Parse(request.ParamInfo));
-							unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.TrialFuben_1012, 0, 1);
+							unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.TrialFuben_1012, 0, 1);
 						}
 						if(request.SceneType == MapTypeEnum.SeasonTower)
 						{

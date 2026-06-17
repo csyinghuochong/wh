@@ -123,7 +123,7 @@ namespace ET
                                 mapComponent.SetMapInfo((int)MapTypeEnum.MainCityScene, ldScene.Id, 0);
                                 mapComponent.NavMeshId = ldScene.GetNavMeshId();
                                 Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
-                                FubenHelp.CreateNpc(scene, 1);
+                                FubenHelp.CreateSceneRole(scene, ldScene.Id);
                             }
                         }
 

@@ -10,13 +10,13 @@
             {
                 case 1:
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.CombatRankID, message.RankId);
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent( TaskTargetType.CombatRank_83, message.RankId, 1);
-                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.CombatRank_83, message.RankId, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent( TastConditionType.CombatRank_83, message.RankId, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.CombatRank_83, message.RankId, 1);
                     break;
                 case 2:
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.PetTianTiRankID, message.RankId);
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.PetTianTiRank_82, message.RankId, 1);
-                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.PetTianTiRank_82, message.RankId, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetTianTiRank_82, message.RankId, 1);
+                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetTianTiRank_82, message.RankId, 1);
                     break;
                 case 3:
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.RaceDonationRankID, message.RankId);

@@ -473,13 +473,13 @@ namespace ET
                                 //普通
                                 if (ldItem.Quality == 4)
                                 {
-                                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.TreasureMapNormal_26, 0, 1);
-                                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.TreasureMapNormal_26, 0, 1);
+                                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.TreasureMapNormal_26, 0, 1);
+                                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.TreasureMapNormal_26, 0, 1);
                                 }
                                 if (ldItem.Quality == 5)
                                 {
-                                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.TreasureMapHigh_27, 0, 1);
-                                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.TreasureMapHigh_27, 0, 1);
+                                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.TreasureMapHigh_27, 0, 1);
+                                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.TreasureMapHigh_27, 0, 1);
                                 }
 
                                 break;
@@ -611,10 +611,11 @@ namespace ET
                             continue;
                         }
                         ldItemConf = LDItemCategory.Instance.Get(int.Parse(gemids[i]));
-                        unit.GetComponent<UserInfoComponent>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
+                        //unit.GetComponent<UserInfoComponent>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
                     }
 
                     //珍宝属性价格提升
+                    /*
                     int sellValue = ldItem.SellMoneyValue;
                     if (useBagInfo.HideSkillLists.Contains(68000102))
                     {
@@ -624,6 +625,7 @@ namespace ET
                     ldItemConf = LDItemCategory.Instance.Get(useBagInfo.ItemID);
                     unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd((int)ldItemConf.SellMoneyType, (sellNum * sellValue).ToString(), true, ItemGetWay.Sell);
                     unit.GetComponent<BagComponent>().OnCostItemData(useBagInfo, locType, sellNum);
+                    */
                     if (useBagInfo.ItemNum <= 0)
                     {
                         m2c_bagUpdate.BagInfoDelete.Add(useBagInfo);
@@ -647,7 +649,7 @@ namespace ET
                         return;
                     }
 
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData(ldItem.SellMoneyType, (sellNum * ldItem.SellMoneyValue).ToString());
+                    //unit.GetComponent<UserInfoComponent>().UpdateRoleData(ldItem.SellMoneyType, (sellNum * ldItem.SellMoneyValue).ToString());
                     unit.GetComponent<BagComponent>().OnCostItemData(useBagInfo, locType, sellNum);
                     if (useBagInfo.ItemNum == 0)
                     {
@@ -831,10 +833,10 @@ namespace ET
                             qulitylv = string.IsNullOrEmpty(qulitylv) ? "0" : qulitylv;
                             LDItem costitemconfig = LDItemCategory.Instance.Get(baginfoCost.ItemID);
 
-                            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.JianDingQulity_42, int.Parse(qulitylv), 1);
-                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JianDingQulity_42, int.Parse(qulitylv), 1);
+                            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JianDingQulity_42, int.Parse(qulitylv), 1);
+                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JianDingQulity_42, int.Parse(qulitylv), 1);
 
-                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JianDing_1017, 0, 1);
+                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JianDing_1017, 0, 1);
                            
                             ifSell = unit.GetComponent<BagComponent>().OnCostItemData(baginfoId, 1);
                             ifItem = true;
@@ -875,8 +877,8 @@ namespace ET
                         long totalValue = 0;
                         if (useBagInfo.HideProLists != null && useBagInfo.HideProLists.Count > 0)
                         {
-                            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.JianDingAttrNumber_43, useBagInfo.HideProLists.Count, 1);
-                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JianDingAttrNumber_43, useBagInfo.HideProLists.Count, 1);
+                            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JianDingAttrNumber_43, useBagInfo.HideProLists.Count, 1);
+                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JianDingAttrNumber_43, useBagInfo.HideProLists.Count, 1);
 
                             for (int pro = 0; pro < useBagInfo.HideProLists.Count; pro++)
                             {
@@ -884,8 +886,8 @@ namespace ET
                             }
                         }
 
-                        unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.JianDingValue_140, (int)totalValue, 1);
-                        unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JianDingValue_140, (int)totalValue, 1);
+                        unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JianDingValue_140, (int)totalValue, 1);
+                        unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JianDingValue_140, (int)totalValue, 1);
 
                         unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.JianDingEqipNumber_212, int.Parse(qulitylv), 1);
                     }

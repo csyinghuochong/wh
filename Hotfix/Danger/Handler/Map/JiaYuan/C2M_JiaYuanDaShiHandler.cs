@@ -71,8 +71,8 @@ namespace ET
             response.JiaYuanDaShiTime = jiaYuanComponent.JiaYuanDaShiTime_1;
             response.JiaYuanProList = jiaYuanComponent.JiaYuanProList_7;
 
-            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.JiaYuanDashiNumber_96, 0, 1);
-            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.JiaYuanDashiNumber_96, 0, 1);
+            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanDashiNumber_96, 0, 1);
+            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JiaYuanDashiNumber_96, 0, 1);
 
             DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, jiaYuanComponent).Coroutine();
             Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);

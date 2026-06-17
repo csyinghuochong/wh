@@ -24,8 +24,8 @@ namespace ET
 
             LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
 
-            unit.GetComponent<TaskComponent>().TriggerTaskEvent( TaskTargetType.FuMoQulity_41, ldItem.Quality, 1 );
-            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.FuMoQulity_41, ldItem.Quality, 1);
+            unit.GetComponent<TaskComponent>().TriggerTaskEvent( TastConditionType.FuMoQulity_41, ldItem.Quality, 1 );
+            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.FuMoQulity_41, ldItem.Quality, 1);
             
             reply();
             await ETTask.CompletedTask;

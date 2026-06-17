@@ -109,8 +109,8 @@ namespace ET
                 m2C_FubenSettlement.StarInfos = new List<int> { 1, 1, 1 };
 
                 self.MainUnit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetTianTiReward}_{TimeHelper.ServerNow()}");
-                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent( TaskTargetType.PetTianDiWin_37, 0, 1 );
-                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.PetTianDiWin_37, 0, 1);
+                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent( TastConditionType.PetTianDiWin_37, 0, 1 );
+                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetTianDiWin_37, 0, 1);
             }
             else
             {
@@ -122,8 +122,8 @@ namespace ET
                 if (rankid > 0)
                 {
                     self.MainUnit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PetTianTiRank_309, 0, rankid);
-                    self.MainUnit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TaskTargetType.PetTianTiRank_82, 0, rankid);
-                    self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TaskTargetType.PetTianTiRank_82, 0, rankid);
+                    self.MainUnit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetTianTiRank_82, 0, rankid);
+                    self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetTianTiRank_82, 0, rankid);
                 }
                 MessageHelper.SendToClient(self.MainUnit, m2C_FubenSettlement);
             }
