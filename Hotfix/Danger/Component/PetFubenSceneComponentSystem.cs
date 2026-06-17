@@ -63,7 +63,6 @@ namespace ET
                 }
                 self.MainUnit.GetComponent<PetComponent>().OnPassPetFuben(petfubeId, star);
                 self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetFubenId_19, 0, petfubeId - 10000);
-                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetFubenId_19, 0, petfubeId - 10000);
             }
             MessageHelper.SendToClient(self.MainUnit, m2C_FubenSettlement);
         }

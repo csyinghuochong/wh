@@ -131,8 +131,7 @@ namespace ET
                         if (CommonConfig.ChengJiuLianJin.Contains(request.ItemId))
                         {
                             unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.BattleUseItem_214, 0, 1);
-                            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.BattleUseItem_30, 0, 1);
-                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.BattleUseItem_30, 0, 1);
+                            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.BattleUseItem_30, 0, 1);  
                         }
                     }
                     if (juexingid == request.SkillID)

@@ -101,7 +101,7 @@ namespace ET
 					{
                         unit.GetComponent<PetComponent>().UpdatePetAttribute(petInfo, true);
                         unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetUseSkillBook_36, 0, 1);
-                        unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetUseSkillBook_36, 0, 1);
+                   
                         petInfo.LockSkill.Clear();
 
                     }
@@ -166,7 +166,7 @@ namespace ET
 				if (itemSubType == 105 || itemSubType == 133)
                 {
                     unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetXiLian10010086_33, 0, 1);
-                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetXiLian10010086_33, 0, 1);
+              
                 }
             }
             unit.GetComponent<PetComponent>().CheckPetPingFen();

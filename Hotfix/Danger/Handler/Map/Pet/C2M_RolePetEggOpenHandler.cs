@@ -43,11 +43,9 @@ namespace ET
             }
             response.PetInfo =  unit.GetComponent<PetComponent>().OnAddPet(ItemGetWay.PetEggDuiHuan, petlists[index],0, rolePetEgg.FuLing);
             unit.GetComponent<TaskComponent>().TriggerTaskEvent( TastConditionType.PetFuHuaNumber_34, 0, 1 );
-            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetFuHuaNumber_34, 0, 1);
-
+       
             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetFuHuaId_35, rolePetEgg.ItemId, 1);
-            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PetFuHuaId_35, rolePetEgg.ItemId, 1);
-
+          
             rolePetEgg.ItemId = 0;
             rolePetEgg.EndTime = 0;
             rolePetEgg.FuLing = 0;

@@ -12,7 +12,6 @@ namespace ET
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
           
             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.QiangHuaLevel_17, 0, response.QiangHuaLevel);
-            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.QiangHuaLevel_17, 0, response.QiangHuaLevel);
             Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
             reply();
             await ETTask.CompletedTask;

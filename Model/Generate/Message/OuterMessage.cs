@@ -2805,6 +2805,21 @@ namespace ET
 
 	}
 
+	[Message(OuterOpcode.M2C_RechargeUpdate)]
+	[ProtoContract]
+	public partial class M2C_RechargeUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public RechargePro RechargePro { get; set; }
+
+	}
+
 	[Message(OuterOpcode.M2C_HorseNoticeInfo)]
 	[ProtoContract]
 	public partial class M2C_HorseNoticeInfo: Object, IActorMessage
@@ -4801,6 +4816,18 @@ namespace ET
 
 		[ProtoMember(8)]
 		public long BagInfoId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.RechargePro)]
+	[ProtoContract]
+	public partial class RechargePro: Object
+	{
+		[ProtoMember(1)]
+		public long LastRechargeTime { get; set; }
+
+		[ProtoMember(2)]
+		public long TotalRechargeNum { get; set; }
 
 	}
 

@@ -474,12 +474,10 @@ namespace ET
                                 if (ldItem.Quality == 4)
                                 {
                                     unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.TreasureMapNormal_26, 0, 1);
-                                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.TreasureMapNormal_26, 0, 1);
                                 }
                                 if (ldItem.Quality == 5)
                                 {
                                     unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.TreasureMapHigh_27, 0, 1);
-                                    unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.TreasureMapHigh_27, 0, 1);
                                 }
 
                                 break;
@@ -834,9 +832,7 @@ namespace ET
                             LDItem costitemconfig = LDItemCategory.Instance.Get(baginfoCost.ItemID);
 
                             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JianDingQulity_42, int.Parse(qulitylv), 1);
-                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JianDingQulity_42, int.Parse(qulitylv), 1);
 
-                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JianDing_1017, 0, 1);
                            
                             ifSell = unit.GetComponent<BagComponent>().OnCostItemData(baginfoId, 1);
                             ifItem = true;
@@ -878,7 +874,6 @@ namespace ET
                         if (useBagInfo.HideProLists != null && useBagInfo.HideProLists.Count > 0)
                         {
                             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JianDingAttrNumber_43, useBagInfo.HideProLists.Count, 1);
-                            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JianDingAttrNumber_43, useBagInfo.HideProLists.Count, 1);
 
                             for (int pro = 0; pro < useBagInfo.HideProLists.Count; pro++)
                             {
@@ -887,7 +882,6 @@ namespace ET
                         }
 
                         unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JianDingValue_140, (int)totalValue, 1);
-                        unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.JianDingValue_140, (int)totalValue, 1);
 
                         unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.JianDingEqipNumber_212, int.Parse(qulitylv), 1);
                     }

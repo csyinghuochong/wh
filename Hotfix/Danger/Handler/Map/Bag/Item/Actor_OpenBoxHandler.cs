@@ -55,7 +55,6 @@ namespace ET
             boxUnit.GetComponent<HeroDataComponent>().OnDead(unit);
 
             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.OpenBox_137, 0, 1);
-            unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.OpenBox_137, 0, 1);
 
             response.Error = ErrorCode.ERR_Success;
 

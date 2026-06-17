@@ -40,7 +40,27 @@ namespace ET
                 Console.WriteLine($"OnRechage: {unit.Id}   {rechargetType}  {playId}");
             }
 
+            RechargeComponent rechargeComponent = unit.GetComponent<RechargeComponent>();
+        
             int rechargeNumber = CommonConfig.GetRechargeNumber(playId, unit.DomainZone());
+
+            long lastRechargeTime = rechargeComponent.RechargePro.LastRechargeTime;
+            long serverTime = TimeHelper.ServerNow();
+            
+            rechargeComponent.OnRecharge(rechargeNumber);
+
+            bool isSameDay = lastRechargeTime > 0
+                    && TimeInfo.Instance.ToDateTime(lastRechargeTime).Date
+                    == TimeInfo.Instance.ToDateTime(serverTime).Date;
+            
+            TaskComponent taskComponent = unit.GetComponent<TaskComponent>();
+
+           // if (lastRechargeTime == 0 || !isSameDay)
+            {
+                taskComponent.TriggerTaskEvent(TastConditionType.RechageDayNumber_113, 1, 0);
+            }
+
+
             numericComponent.ApplyChange(null, NumericType.RechargeNumber, rechargeNumber, 1, notice);    
             numericComponent.ApplyChange(null, NumericType.V1RechageNumber, rechargeNumber, 0, notice);    
             //充值签到标记，已经领取的不充值
