@@ -100,7 +100,7 @@ namespace ET
 
                 if (userInfoComponent.UserInfo.OccTwo > 0)
                 {
-                    occName = WordHelper.GetShowText(Occupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).Name);
+                    occName = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).Name);
                 }
 
                 string soloInfo =   $"玩家: {soloPlayerList[i].Name}  击杀:{soloPlayerList[i].WinNum} 等级:{userInfoComponent.UserInfo.Lv} 职业:{occName}  战力:{combat}";

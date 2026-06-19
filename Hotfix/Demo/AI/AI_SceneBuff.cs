@@ -21,7 +21,7 @@ namespace ET
             long instanceId = aiComponent.InstanceId;
             for (int i = 0; i < 100000; ++i)
             {
-                Unit target = AIGetTargetHelp.GetNearestEnemy(unit, (float)ldSkill.SkillRangeSize, true);
+                Unit target = AIGetTargetHelp.GetNearestEnemy(unit, (float)ldSkill.Cast_Range, true);
 
                 //检测目标是否在技能范围
                 if (!remove &&  target != null )
@@ -32,7 +32,7 @@ namespace ET
                     C2M_SkillCmd cmd = new C2M_SkillCmd();
                     cmd.SkillID =-1;
                     cmd.TargetID = target.Id;
-                    if (ldSkill.SkillZhishiTargetType == 1)  //自身点
+                    if (ldSkill.NeedTarget == SkillNeedTargetType.NoTarget_0)  //自身点
                     {
                         cmd.TargetAngle = 0;
                         cmd.TargetDistance = 0;

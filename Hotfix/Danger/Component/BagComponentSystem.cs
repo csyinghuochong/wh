@@ -1359,7 +1359,7 @@ namespace ET
             return true;
         }
 
-        public static bool CheckCostItem(this BagComponent self, string rewardItems)
+        public static bool CheckNeedItem(this BagComponent self, string rewardItems)
         {
             string[] needList = rewardItems.Split('@');
             for (int i = 0; i < needList.Length; i++)
@@ -1379,7 +1379,7 @@ namespace ET
             return true;
         }
 
-        public static bool CheckCostItem(this BagComponent self, List<RewardItem> rewardItems)
+        public static bool CheckNeedItem(this BagComponent self, List<RewardItem> rewardItems)
         {
             for (int i = 0; i < rewardItems.Count; i++)
             {
@@ -1706,44 +1706,6 @@ namespace ET
                     {
                         HideProListConfig hideProListConfig = HideProListConfigCategory.Instance.Get(userBagInfo.IncreaseSkillLists[s]);
                         LDSkill ldSkill = LDSkillCategory.Instance.Get(hideProListConfig.PropertyType);
-
-                        if (ldSkill.SkillType != (int)SkillTypeEnum.PassiveAddProSkill)
-                        {
-                            continue;
-                        }
-
-                        string GameObjectParameter = ldSkill.GameObjectParameter;
-                        if (CommonHelper.IfNull(GameObjectParameter))
-                        {
-                            continue;
-                        }
-
-                        string[] addProList = GameObjectParameter.Split(";");
-                        for (int p = 0; p < addProList.Length; p++)
-                        {
-                            string[] addPro = addProList[p].Split(",");
-                            if (addPro.Length < 2)
-                            {
-                                break;
-                            }
-                            //int key = int.Parse(addPro[0]);
-                            //occInitAttribute.AddRange();
-                            /*try
-                            {
-                                if (NumericHelp.GetNumericValueType(key) == 1)
-                                {
-                                    AddUpdateProDicList(key, long.Parse(addPro[1]), UpdateProDicList);
-                                }
-                                else
-                                {
-                                    AddUpdateProDicList(key, (int)(float.Parse(addPro[1]) * 10000), UpdateProDicList);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Error($"{ex.ToString()} {GameObjectParameter}");
-                            }*/
-                        }
                     }
                 }
 

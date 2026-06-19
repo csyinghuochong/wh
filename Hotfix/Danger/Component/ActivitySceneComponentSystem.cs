@@ -207,7 +207,7 @@ namespace ET
             }
             int openServerDay = DBHelper.GetOpenServerDay(zone);
             LogHelper.LogDebug($"InitDayActivity: {zone}  {openServerDay}");
-            self.DBDayActivityInfo.MysteryItemInfos = MysteryShopHelper.InitMysteryItemInfos(openServerDay);
+            self.DBDayActivityInfo.MysteryItemInfos = RandomShopHelper.InitMysteryItemInfos(openServerDay);
 
             if (self.DBDayActivityInfo.PetMingHexinList.Count == 0)
             {
@@ -453,7 +453,7 @@ namespace ET
             if (hour == 0)
             {
                 LogHelper.LogWarning($"神秘商品刷新: {self.DomainZone()}", true);
-                self.DBDayActivityInfo.MysteryItemInfos = MysteryShopHelper.InitMysteryItemInfos(openServerDay);
+                self.DBDayActivityInfo.MysteryItemInfos = RandomShopHelper.InitMysteryItemInfos(openServerDay);
                 self.DBDayActivityInfo.PetMingHexinList.Clear();
 
                 self.InitPetMineExtend();

@@ -25,7 +25,7 @@ namespace ET
                 return;
             }
 
-            if (!Occupation_TransferCategory.Instance.Contain(request.OccTwoID))
+            if (!LDOccupation_TransferCategory.Instance.Contain(request.OccTwoID))
             {
                 Log.Error($"C2M_ChangeOccTwoRequest.1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -41,8 +41,8 @@ namespace ET
             if (OccTwo == 0)
             {
                 string userName = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
-                string occtwoname = WordHelper.GetShowText(Occupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 0);
-                string occtwonameen = WordHelper.GetShowText(Occupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 1);
+                string occtwoname = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 0);
+                string occtwonameen = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 1);
                 
                 string noticeContent = $"{userName} 在主城转职大师处成功转职:<color=#C4FF00>{occtwoname}</color>";
                 string noticeContentEn = $"{userName} at main city Job Change Master transfer successful:<color=#C4FF00>{occtwonameen}</color>";

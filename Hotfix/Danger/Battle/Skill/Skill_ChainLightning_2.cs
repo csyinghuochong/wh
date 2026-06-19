@@ -68,7 +68,7 @@ namespace ET
 
                 //1;0.1@6;0.3
                 int enemyNumber = enemyList.Count;
-                string[] gameparaminfo = this.LdSkillConf.GameObjectParameter.Split('@');
+                /*string[] gameparaminfo = this.LdSkillConf.GameObjectParameter.Split('@');
                 for (int i = gameparaminfo.Length - 1; i >= 0; i--)
                 {
                     string[] hurtaddInfo = gameparaminfo[i].Split(';');
@@ -77,7 +77,7 @@ namespace ET
                         this.HurtAddPro = float.Parse(hurtaddInfo[1]);
                         break;
                     }
-                }
+                }*/
 
                 for (int i = 0; i < enemyList.Count; i++)
                 {

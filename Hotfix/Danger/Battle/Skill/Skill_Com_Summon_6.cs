@@ -25,56 +25,31 @@ namespace ET
                 // 召唤物释放相同技能
                 // '90000102,90000103(如果填0是所有)
                 // 召唤ID,召唤ID
-                string[] summonParList = this.LdSkillConf.GameObjectParameter.Split(';');
-                List<int> monsterIds = new List<int>();
-                bool allMonster = false;
-                try
-                {
-                    foreach (string s in summonParList)
-                    {
-                        if (s == "0")
-                        {
-                            allMonster = true;
-                            break;
-                        }
+                /* string[] summonParList = null;// this.LdSkillConf.GameObjectParameter.Split(';');
+                 List<int> monsterIds = new List<int>();
+                 bool allMonster = false;
+                 try
+                 {
+                     foreach (string s in summonParList)
+                     {
+                         if (s == "0")
+                         {
+                             allMonster = true;
+                             break;
+                         }
 
-                        monsterIds.Add(int.Parse(s));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("Skill_Com_Summon_6:Error:  ", this.LdSkillConf.Id);
-                    Log.Error(ex.ToString());
-                    return;
-                }
+                         monsterIds.Add(int.Parse(s));
+                     }
+                 }
+                 catch (Exception ex)
+                 {
+                     Log.Error("Skill_Com_Summon_6:Error:  ", this.LdSkillConf.Id);
+                     Log.Error(ex.ToString());
+                     return;
+                 }*/
 
                 List<Unit> all = theUnitFrom.GetParent<UnitComponent>().GetAll();
-                foreach (Unit unit in all)
-                {
-                    if (unit.Type == UnitType.Monster && unit.MasterId == theUnitFrom.Id && (allMonster || monsterIds.Contains(unit.ConfigId)))
-                    {
-                        C2M_SkillCmd cmd = unit.GetComponent<AIComponent>().c2M_SkillCmd;
-                        cmd.TargetID = this.SkillInfo.TargetID;
-                        cmd.SkillID = this.LdSkillConf.Id;
-                        if (this.LdSkillConf.SkillZhishiTargetType == 1) //自身点
-                        {
-                            cmd.TargetAngle = 0;
-                            cmd.TargetDistance = 0;
-                        }
-                        else
-                        {
-                            if (this.TheUnitTarget != null)
-                            {
-                                Vector3 direction = this.TheUnitTarget.Position - unit.Position;
-                                float ange = Mathf.Rad2Deg(Mathf.Atan2(direction.x, direction.z));
-                                cmd.TargetAngle = Mathf.FloorToInt(ange);
-                                cmd.TargetDistance = Vector3.Distance(unit.Position, this.TheUnitTarget.Position);
-                            }
-                        }
-
-                        unit.GetComponent<SkillManagerComponent>().OnUseSkill(cmd, true);
-                    }
-                }
+                
             }
 
             this.OnUpdate();

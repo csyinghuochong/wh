@@ -42,7 +42,7 @@ namespace ET
             
             Vector3 dir = (this.TargetPosition - this.NowPosition).normalized;
             float dis = PositionHelper.Distance2D(this.NowPosition, this.TargetPosition);
-            float move = (float)this.LdSkillConf.SkillMoveSpeed * 0.1f;            //服务器0.1秒一帧
+            float move = 1f * 0.1f;            //服务器0.1秒一帧
             move = Mathf.Min(dis, move);
             this.NowPosition = this.NowPosition + move * dir;
           
@@ -53,18 +53,9 @@ namespace ET
                 return;
             }
 
-            float damgeRange = (float)this.LdSkillConf.DamgeRange[0];
-            if (this.LdSkillConf.SkillTargetType == (int)SkillTargetType.TargetOnly
-            || this.LdSkillConf.SkillTargetType == (int)SkillTargetType.MulTarget
-            ||  damgeRange == 0f)
-            {
-                this.OnCollisionUnit(this.TheUnitTarget);
-            }
-            else
-            {
-                this.UpdateCheckPoint(this.NowPosition);
-                this.ExcuteSkillAction();
-            }
+            float damgeRange = (float)this.LdSkillConf.Range_Type_Param1;
+            this.UpdateCheckPoint(this.NowPosition);
+            this.ExcuteSkillAction();
             this.SetSkillState(SkillState.Finished);
         }
 

@@ -57,7 +57,7 @@ namespace ET
 
            // if (lastRechargeTime == 0 || !isSameDay)
             {
-                taskComponent.TriggerTaskEvent(TastConditionType.RechageDayNumber_113, 1, 0);
+                taskComponent.TriggerTaskEvent(TastConditionType.RechageDayNumber_113, 1, 30);
             }
 
 

@@ -11,29 +11,6 @@ namespace ET
         {
             int mysteryId = request.MysteryId;
 
-            if (!MysteryConfigCategory.Instance.Contain(mysteryId))
-            {
-                Log.Error($"C2M_JiaYuanMysteryBuyRequest 1");
-                response.Error = ErrorCode.ERR_ModifyData;
-                reply();
-                return;
-            }
-
-            MysteryConfig mysteryConfig = MysteryConfigCategory.Instance.Get(mysteryId);
-            if (mysteryConfig == null)
-            {
-                response.Error = ErrorCode.ERR_NetWorkError;
-                reply();
-                return;
-            }
-
-            if (!unit.GetComponent<BagComponent>().CheckCostItem($"{mysteryConfig.SellType};{mysteryConfig.SellValue}"))
-            {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                reply();
-                return;
-            }
-
             if (request.ProductId != -1)
             {
                 List<MysteryItemInfo> jiayuanList = new List<MysteryItemInfo>();
@@ -58,9 +35,11 @@ namespace ET
             }
             //unit.GetComponent<UserInfoComponent>().OnMysteryBuy(mysteryId);
             //扣除货币添加对应道具
+            /*
             unit.GetComponent<BagComponent>().OnCostItemData($"{mysteryConfig.SellType};{mysteryConfig.SellValue}", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost );
             unit.GetComponent<BagComponent>().OnAddItemData($"{mysteryConfig.SellItemID};1",
                 $"{ItemGetWay.MysteryBuy}_{TimeHelper.ServerNow()}");
+                */
             
             reply();
             await ETTask.CompletedTask;

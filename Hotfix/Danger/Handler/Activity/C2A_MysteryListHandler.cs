@@ -13,7 +13,7 @@ namespace ET
             {
                 LogHelper.LogDebug($"神秘商店为空: {scene.DomainZone()}");
                 int openServerDay = DBHelper.GetOpenServerDay(scene.DomainZone());
-                activitySceneComponent.DBDayActivityInfo.MysteryItemInfos = MysteryShopHelper.InitMysteryItemInfos(openServerDay);
+                activitySceneComponent.DBDayActivityInfo.MysteryItemInfos = RandomShopHelper.InitMysteryItemInfos(openServerDay);
             }
             response.MysteryItemInfos = activitySceneComponent.DBDayActivityInfo.MysteryItemInfos;
 

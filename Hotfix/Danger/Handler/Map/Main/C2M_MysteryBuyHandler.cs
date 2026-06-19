@@ -11,6 +11,7 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
                 int mysteryId = request.MysteryItemInfo.MysteryId;
+                /*
                 if (!MysteryConfigCategory.Instance.Contain(mysteryId))
                 {
                     Log.Error($"C2M_MysteryBuyRequest 1");
@@ -38,7 +39,7 @@ namespace ET
                     return;
                 }
 
-                if (!unit.GetComponent<BagComponent>().CheckCostItem($"{mysteryConfig.SellType};{mysteryConfig.SellValue}"))
+                if (!unit.GetComponent<BagComponent>().CheckNeedItem($"{mysteryConfig.SellType};{mysteryConfig.SellValue}"))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     reply();
@@ -66,6 +67,7 @@ namespace ET
                 unit.GetComponent<BagComponent>().OnCostItemData($"{mysteryConfig.SellType};{mysteryConfig.SellValue}", ItemLocType.ItemLocBag, ItemGetWay.MysteryBuy);
                 unit.GetComponent<BagComponent>().OnAddItemData($"{mysteryConfig.SellItemID};{1}",
                     $"{ItemGetWay.MysteryBuy}_{TimeHelper.ServerNow()}");
+                    */
 
                 reply();
             }

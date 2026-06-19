@@ -48,22 +48,24 @@ namespace ET
             self.BuffState = BuffState.Running;
             self.SkillHandler = skillHandler;
             self.BeginTime = TimeHelper.ServerNow();
-            self.DelayTime = (long)(1000 * skillHandler.LdSkillConf.SkillDelayTime);
-            self.DamageRange = skillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddDamageRange) + (float)skillHandler.LdSkillConf.DamgeRange[0];
-            self.BuffEndTime = 1000 * (int)skillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddSkillLiveTime) + skillHandler.LdSkillConf.SkillLiveTime + TimeHelper.ServerNow();
+            self.DelayTime = 1;// (long)(1000 * skillHandler.LdSkillConf.SkillDelayTime);
+            self.DamageRange = 1f;// skillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddDamageRange) + (float)skillHandler.LdSkillConf.DamgeRange[0];
+            self.BuffEndTime = 1;/// 1000 * (int)skillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddSkillLiveTime) + skillHandler.LdSkillConf.SkillLiveTime + TimeHelper.ServerNow();
 
             self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.RoleBullet1Timer, self);
         }
 
         public static void CheckChiXuHurt(this RoleBullet1Componnet self)
         {
+            /*
             if (self.SkillHandler.LdSkillConf.DamgeChiXuValue == 0 || self.SkillHandler.TheUnitFrom.IsDisposed)
             {
                 return;
             }
+            */
 
             long servernow = TimeHelper.ServerNow();
-            long interval = self.SkillHandler.LdSkillConf.DamgeChiXuInterval;
+            long interval = (long)self.SkillHandler.LdSkillConf.Time_Interval * 1000;
             if (servernow - self.SkillHandler.DamgeChiXuLastTime < interval)
             {
                 return;

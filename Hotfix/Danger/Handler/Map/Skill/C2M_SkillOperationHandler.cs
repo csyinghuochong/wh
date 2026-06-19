@@ -45,7 +45,7 @@ namespace ET
                         return;
                     }
 
-                    if (!Occupation_TransferCategory.Instance.Contain(toOcc))
+                    if (!LDOccupation_TransferCategory.Instance.Contain(toOcc))
                     {
                         Log.Error($"C2M_ChangeOccTwoRequest.1");
                         response.Error = ErrorCode.ERR_ModifyData;
@@ -56,7 +56,7 @@ namespace ET
 
                     string ChangeOccItem = "10000178;1";
                     BagComponent bagComponent = unit.GetComponent<BagComponent>();  
-                    if (!bagComponent.CheckCostItem(ChangeOccItem))
+                    if (!bagComponent.CheckNeedItem(ChangeOccItem))
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();

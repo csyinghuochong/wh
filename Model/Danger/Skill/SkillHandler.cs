@@ -26,6 +26,7 @@ namespace ET
 
         public long SkillBeginTime;    
         public long SkillEndTime;
+        
         /// <summary>
         /// 记录是否触发过技能伤害
         /// </summary>

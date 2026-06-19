@@ -16,7 +16,7 @@ namespace ET
                 return;
             }
             string costItem = ActivityV1Config.GetGuessCostItem(activityV1Info.GuessIds.Count);
-            if (!unit.GetComponent<BagComponent>().CheckCostItem(costItem))
+            if (!unit.GetComponent<BagComponent>().CheckNeedItem(costItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();

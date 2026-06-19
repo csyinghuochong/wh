@@ -40,7 +40,7 @@ namespace ET
             }
             else
             {
-                self.ComboSkillId = LDSkillCategory.Instance.Get(self.ComboSkillId).ComboSkillID;
+                self.ComboSkillId = 0;//LDSkillCategory.Instance.Get(self.ComboSkillId).ComboSkillID;
             }
 
             int EquipType = self.EquipType;
@@ -109,7 +109,7 @@ namespace ET
             LDSkill ldSkill = LDSkillCategory.Instance.Get(
                 SkillHelp.GetWeaponSkill(self.SkillId, self.EquipType, null)
              );
-            return (float)ldSkill.SkillRangeSize - 1;
+            return 1;//(float)ldSkill.SkillRangeSize - 1;
         }
 
         public static void OnInitOcc(this ComboComponent self, int occ, int equipType)
@@ -130,14 +130,14 @@ namespace ET
         public static void UpdateSkillInfo(this ComboComponent self, int skillid)
         {
             self.SkillId = skillid;
-            self.ComboSkillId = LDSkillCategory.Instance.Get(skillid).ComboSkillID;
+            self.ComboSkillId = 0;//LDSkillCategory.Instance.Get(skillid).ComboSkillID;
             
             self.SkillList.Clear();
             while (skillid != 0 && self.SkillList.Count < 3)
             {
                 self.SkillList.Add(skillid);
                 LDSkill ldSkill = LDSkillCategory.Instance.Get(skillid);
-                skillid = ldSkill.ComboSkillID;
+                skillid = 0;//ldSkill.ComboSkillID;
                 if (!LDSkillCategory.Instance.Contain(skillid))
                 {
                     break;

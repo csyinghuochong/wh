@@ -12,24 +12,17 @@ namespace ET
             this.BaseOnInit(skillId, theUnitFrom);
 
             //60; 5; 0.3; 3
-            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');//60;3;0.5;1  64014451
-            if (paraminfos.Length >= 4)
-            {
-                this.SkillTriggerLastTime = 0;
-                this.SkillTriggerInvelTime = (long)(float.Parse(paraminfos[2]) * 1000);
-                this.SkillExcuteNum = int.Parse(paraminfos[3]);
-            }
-            else
-            {
-                this.SkillExcuteNum = 1;
-            }
+           
+            this.SkillTriggerLastTime = 0;
+            this.SkillTriggerInvelTime = 100;///(long)(float.Parse(paraminfos[2]) * 1000);
+            this.SkillExcuteNum = 1;
         }
 
         public Vector3 GetBulletTargetPoint(int angle)
         {
             Vector3 sourcePoint = TheUnitFrom.Position;
             Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * this.LdSkillConf.SkillLiveTime * (float)this.LdSkillConf.SkillMoveSpeed * 0.001f;
+            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * (float)this.LdSkillConf.Time_3 * 100 * 0.001f;
             return TargetPoint;
         }
 
@@ -52,7 +45,7 @@ namespace ET
 
             this.HurtIds.Clear();
             this.SkillTriggerLastTime = serverTime;
-            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');
+            string[] paraminfos = null;//this.LdSkillConf.GameObjectParameter.Split(';');
             int angle = this.SkillInfo.TargetAngle;
             int range = paraminfos.Length > 1 ? int.Parse(paraminfos[0]) : 0;
             int number = paraminfos.Length > 1 ? int.Parse(paraminfos[1]) : 1;

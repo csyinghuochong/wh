@@ -26,7 +26,7 @@ namespace ET
             }*/
 
             int costNumber = CommonConfig.JiaYuanFarmOpen[request.CellIndex];
-            if (!unit.GetComponent<BagComponent>().CheckCostItem($"13;{costNumber}"))
+            if (!unit.GetComponent<BagComponent>().CheckNeedItem($"13;{costNumber}"))
             {
                 response.PlanOpenList = PlanOpenList_2;
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;

@@ -24,8 +24,8 @@ namespace ET
             self.SkillState = SkillState.Running;
             self.SkillBeginTime = TimeHelper.ServerNow();
             self.DamgeChiXuLastTime = TimeHelper.ServerNow();
-            self.SkillExcuteHurtTime = self.SkillBeginTime + (long)(1000 * self.LdSkillConf.SkillDelayTime);
-            self.SkillEndTime = self.SkillBeginTime + self.LdSkillConf.SkillLiveTime + (long)(1000 * self.GetTianfuProAdd((int)SkillAttributeEnum.AddSkillLiveTime));
+            self.SkillExcuteHurtTime = self.SkillBeginTime + (long)(1000 * self.LdSkillConf.Time_1);
+            self.SkillEndTime = self.SkillBeginTime + (long)(1000 * self.LdSkillConf.Time_3);
             self.TargetPosition = new Vector3(skillcmd.PosX, skillcmd.PosY, skillcmd.PosZ); //获取起始坐标
             self.ICheckShape = new List<Shape>() { self.CreateCheckShape(self.SkillInfo.TargetAngle) };
             self.NowPosition = self.TargetPosition;              //获取技能起始的坐标点
@@ -34,57 +34,7 @@ namespace ET
             self.HurtAddPro = 0f;
             self.OnlyOncePassiveActionUnitID.Clear();
             self.OnlyHideBuffActionUnitID.Clear();
-
-            //获取通用脚本参数
-            if (CommonHelper.IfNull(self.LdSkillConf.ComObjParameter) == false)
-            {
-                string[] skillParList = self.LdSkillConf.ComObjParameter.Split('@');
-                for (int i = 0; i < skillParList.Length; i++)
-                {
-                    string[] parList = self.LdSkillConf.ComObjParameter.Split(';');
-                    switch (parList[0])
-                    {
-                        //目标血量低伤害类型
-                        case "1":
-                            SkillParValue_HpUpAct hpUpAct = new SkillParValue_HpUpAct();
-                            hpUpAct.type = 1;
-                            hpUpAct.hpNeedPro = float.Parse(parList[1]);
-                            hpUpAct.actAddPro = float.Parse(parList[2]);
-                            self.SkillParValueHpUpAct.Add(hpUpAct);
-                            break;
-                        //目标血量低伤害类型
-                        case "2":
-                            hpUpAct = new SkillParValue_HpUpAct();
-                            hpUpAct.type = 2;
-                            hpUpAct.hpNeedPro = float.Parse(parList[1]);
-                            hpUpAct.actAddPro = float.Parse(parList[2]);
-                            self.SkillParValueHpUpAct.Add(hpUpAct);
-                            break;
-                        //自身血量低攻击提升
-                        case "3":
-                          
-                            break;
-                    }
-                }
-            }
-
-            //被动技能额外一次性效果
-            SkillPassiveComponent skillPassiveComponent = theUnitFrom.GetComponent<SkillPassiveComponent>();
-            int passiveTypeEnum_21 = skillPassiveComponent.IsTrigegerPassiveTypeEnum_21();
-            if (passiveTypeEnum_21 > 0)
-            {
-                self.OnlyOncePassiveActionUnitID.Add(passiveTypeEnum_21);
-            }
-
-            //隐身buff加成
-            BuffManagerComponent buffManagerComponent = theUnitFrom.GetComponent<BuffManagerComponent>();
-            LDSkillBuff ldSkillBuff = buffManagerComponent.GetHideBuffDamgePro();
-            if (ldSkillBuff != null)
-            {
-                self.OnlyHideBuffActionUnitID.Add(ldSkillBuff.Id);
-            }
-            //退出隐身状态
-            buffManagerComponent.BuffRemoveType(3);
+            
         }
 
         public static float GetTianfuProAdd(this SkillHandler self, int key)
@@ -131,13 +81,15 @@ namespace ET
                 return;
             }
 
+            /*
             if (self.LdSkillConf.InitBuffID != null && self.LdSkillConf.InitBuffID[0] != 0)
             {
                 for (int y = 0; y < self.LdSkillConf.InitBuffID.Length; y++)
                 {
                     self.SkillBuff(self.LdSkillConf.InitBuffID[y], self.TheUnitFrom);
                 }
-            }
+            }*/
+            
             SkillSetComponent skillSetComponent = self.TheUnitFrom.GetComponent<SkillSetComponent>();
             List<int> buffInitAdd = skillSetComponent != null ? skillSetComponent.GetBuffInitIdAdd(self.LdSkillConf.Id) : null;
             if (buffInitAdd != null)
@@ -168,7 +120,7 @@ namespace ET
             if (!self.IsExcuteHurt)
             {
                 self.IsExcuteHurt = true;
-                if (self.LdSkillConf.SkillTargetType == (int)SkillTargetType.TargetOnly)
+                if (self.LdSkillConf.NeedTarget == (int)SkillNeedTargetType.NeedTarget_1)
                 {
                     UnitComponent unitComponent = self.TheUnitFrom.GetParent<UnitComponent>();
                     if (unitComponent == null)
@@ -177,18 +129,28 @@ namespace ET
                         return;
                     }
                     Unit targetUnit = unitComponent.Get(self.SkillInfo.TargetID);
-                    if (targetUnit != null && self.LdSkillConf.SkillActType == 1)
-                    {
-                        self.OnCollisionUnit(targetUnit);
-                    }
-                    if (targetUnit != null && self.LdSkillConf.SkillActType == 0 && self.CheckShape(targetUnit.Position))
+                    if (targetUnit != null )
                     {
                         self.OnCollisionUnit(targetUnit);
                     }
                 }
-                else if (self.LdSkillConf.SkillTargetType == (int)SkillTargetType.SelfOnly)
+                if ( self.LdSkillConf.NeedTarget == (int)SkillNeedTargetType.NeedTargetOrForce_2)
                 {
-                    self.OnCollisionUnit(self.TheUnitFrom);
+                    UnitComponent unitComponent = self.TheUnitFrom.GetParent<UnitComponent>();
+                    if (unitComponent == null)
+                    {
+                        Log.Warning($"unitComponent == null:  {self.LdSkillConf.Id}");
+                        return;
+                    }
+                    Unit targetUnit = unitComponent.Get(self.SkillInfo.TargetID);
+                    if (targetUnit != null )
+                    {
+                        self.OnCollisionUnit(targetUnit);
+                    }
+                    else
+                    {
+                        self.ExcuteSkillAction();
+                    }
                 }
                 else
                 {
@@ -251,11 +213,7 @@ namespace ET
         public static bool CheckMaxAttackNumber(this SkillHandler self, long unitid)
         {
             //MaxAttackNumber ==0 || -1不限制
-            int MaxAttackNumber = self.LdSkillConf.MaxAttackNumber;
-            if (MaxAttackNumber > 0 && self.HurtIds.Count >= MaxAttackNumber && !self.HurtIds.Contains(unitid))
-            {
-                return true;
-            }
+            
             return false;    
         }
 
@@ -278,19 +236,13 @@ namespace ET
 
         public static void CheckChiXuHurt(this SkillHandler self)
         {
-            if (self.LdSkillConf.DamgeChiXuValue == 0 || self.TheUnitFrom.IsDisposed)
+            if (self.SkillTriggerInvelTime <= 0  || self.TheUnitFrom.IsDisposed)
             {
                 return;
             }
 
             long servernow = TimeHelper.ServerNow();
-            long interval = self.LdSkillConf.DamgeChiXuInterval;
-            if (interval == 0)
-            {
-                interval = 1000;
-            }
-
-            if (servernow - self.DamgeChiXuLastTime < interval)
+            if (servernow - self.DamgeChiXuLastTime < self.SkillTriggerInvelTime)
             {
                 return;
             }
@@ -321,16 +273,7 @@ namespace ET
         /// <returns></returns>
         public static bool IsSpecifiedFight(this SkillHandler self, Unit uu)
         {
-            if (uu.Type!=UnitType.Monster)
-            {
-                return false;
-            }
-            int[] specimonsters = self.LdSkillConf.SpecifiedMonster;
-            if (specimonsters == null || specimonsters.Length == 0)
-            {
-                return false;
-            }
-            return specimonsters.Contains(uu.ConfigId);
+            return false;
         }
 
         public static bool SkillCanAttackUnit(this SkillHandler self, Unit uu)
@@ -345,35 +288,7 @@ namespace ET
             //    return false;
             //}
 
-            int[] specimonsters = self.LdSkillConf.SpecifiedMonster;
-            if (specimonsters == null || specimonsters.Length == 0)
-            {
-                if (uu.Type == UnitType.Monster)
-                {
-                    List<int> canskillid = null;
-                    LDSkillCategory.Instance.SkillSpecifiedMonster.TryGetValue(uu.ConfigId, out canskillid);
-                    if (canskillid == null)
-                    {
-                        return true;
-                    }
-                    return canskillid.Contains(self.LdSkillConf.Id);
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                if (uu.Type == UnitType.Monster)
-                {
-                    return specimonsters.Contains(uu.ConfigId);
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            return true;
         }
 
         public static void OnChiXuHurtCollision(this SkillHandler self, Unit uu)
@@ -387,7 +302,7 @@ namespace ET
             bool ishit = self.TriggeSkillHurt(uu, 1);
 
             //触发Buff
-            if (ishit && self.LdSkillConf.DamgeChiXuTrigerBuff == 1)
+            if (ishit)
             {
                 self.TriggerSkillBuff(uu);
             }
@@ -396,32 +311,9 @@ namespace ET
         //目标附加Buff
         public static void TriggerSkillBuff(this SkillHandler self, Unit uu)
         {
-            if (self.LdSkillConf.SkillType == SkillTypeEnum.PassiveSkill 
-                && SkillHelp.havePassiveSkillType(self.LdSkillConf.PassiveSkillType, SkillPassiveTypeEnum.PassiveTypeEnum_22))
-            {
-                return;
-            }
-
-            if (self.PassiveTypeEnum_22!=null)
-            {
-                List<int> addbuff = new List<int>();    
-                for(int i = 0; i < self.PassiveTypeEnum_22.Count; i++)
-                {
-                    LDSkill ldSkill = LDSkillCategory.Instance.Get(self.PassiveTypeEnum_22[i] );
-                    if (ldSkill.BuffID != null)
-                    {
-                        addbuff.AddRange(ldSkill.BuffID);
-                    }
-                }
-
-                for (int y = 0; y < addbuff.Count; y++)
-                {
-                    self.SkillBuff(addbuff[y], uu);
-                }
-            }
-
+          
             //触发Buff
-            if (self.LdSkillConf.BuffID != null && self.LdSkillConf.BuffID[0] != 0)
+            /*if (self.LdSkillConf.BuffID != null && self.LdSkillConf.BuffID[0] != 0)
             {
                 for (int y = 0; y < self.LdSkillConf.BuffID.Length; y++)
                 {
@@ -437,7 +329,6 @@ namespace ET
                 }
             }
 
-
             SkillSetComponent skillSetComponent = self.TheUnitFrom.GetComponent<SkillSetComponent>();
             List<int> buffInitAdd = skillSetComponent != null ? skillSetComponent.GetBuffIdAdd(self.LdSkillConf.Id) : null;
             if (buffInitAdd != null && buffInitAdd.Count > 0)
@@ -447,11 +338,7 @@ namespace ET
                     self.SkillBuff(buffInitAdd[k], uu);
                 }
             }
-
-            //if (RandomHelper.RandFloat01() > 0.5f && uu.Type == UnitType.Player)
-            //{
-            //    self.SkillBuff(97050403, uu);
-            //}
+            */
         }
 
         public static void SetSkillState(this SkillHandler self, SkillState state)
@@ -474,130 +361,62 @@ namespace ET
         public static bool TriggeSkillHurt(this SkillHandler self, Unit uu, int hurtMode = 0)
         {
             //技能伤害为0不执行
-            if (hurtMode == 0 && self.LdSkillConf.ActDamge == 0 && self.LdSkillConf.DamgeValue == 0)
-            {
-                return true;
-            }
-            if (hurtMode == 1 && self.LdSkillConf.DamgeChiXuValue == 0)
-            {
-                return true;
-            }
+           
             if (!self.TheUnitFrom.IsCanAttackUnit(uu, false, false))
             {
                 return true;
             }
 
-            bool clearnTemporary = false;
-            if (self.SkillParValueHpUpAct != null)
-            {
-                foreach (SkillParValue_HpUpAct now in self.SkillParValueHpUpAct)
-                {
-                    float defendUnitHpPro = (float)uu.GetComponent<NumericComponent>().GetAsInt(NumericType.Numeric_Error) / (float)uu.GetComponent<NumericComponent>().GetAsInt(NumericType.Numeric_Error);
-                    //血量低于
-                    if (now.type == 1)
-                    {
-                        if (defendUnitHpPro <= now.hpNeedPro)
-                        {
-                            self.ActTargetTemporaryAddPro = now.actAddPro;
-                            clearnTemporary = true;
-                        }
-                    }
-
-                    //血量高于
-                    if (now.type == 2)
-                    {
-                        if (defendUnitHpPro <= now.hpNeedPro)
-                        {
-                            self.ActTargetTemporaryAddPro = now.actAddPro;
-                            clearnTemporary = true;
-                        }
-                    }
-                }
-            }
-
+         
             if (uu.GetComponent<BuffManagerComponent>().IsSkillImmune(self.LdSkillConf.Id))
             {
                 return false;
             }
-            
-            List<PropertyValue> extrapros = null; 
-            LDSkillCategory.Instance.ExtraPropertyFromSelf.TryGetValue(self.LdSkillConf.Id, out extrapros);
-            if (extrapros == null)
-            {
-                extrapros = new List<PropertyValue>();
-
-                //0&100411;50000@100203;50@100603;10
-                string[] extrapro = self.LdSkillConf.ExtraProperty.Split('&');
-                if (extrapro.Length == 2 && extrapro[0] == "0")
-                {
-                    NumericHelp.GetProList(extrapro[1], extrapros);
-                }
-
-                LDSkillCategory.Instance.ExtraPropertyFromSelf.Add(self.LdSkillConf.Id, extrapros);
-            }
-
+          
             //技能额外属性来自被动技能
-            if (self.TheUnitFrom.Type == UnitType.Player)
-            {
-                List<PropertyValue> ExtraPropertyFromOther = self.TheUnitFrom.GetComponent<SkillSetComponent>().GetSkillRoleProLists_9(self.LdSkillConf.Id);
-                extrapros.AddRange(ExtraPropertyFromOther);
-            }
-
-            HeroDataComponent heroDataComponent = self.TheUnitFrom.GetComponent<HeroDataComponent>();
-            for (int i = 0; i < extrapros.Count; i++)
-            {
-                heroDataComponent.BuffPropertyUpdate_Long(extrapros[i].HideID, extrapros[i].HideValue);
-            }
-            
-            bool ishit = Function_Fight.GetInstance().Fight(self.TheUnitFrom, uu, self, hurtMode);
-
-            for (int i = 0; i < extrapros.Count; i++)
-            {
-                heroDataComponent.BuffPropertyUpdate_Long(extrapros[i].HideID, extrapros[i].HideValue * -1);
-            }
-
-            if (clearnTemporary)
-            {
-                self.ActTargetTemporaryAddPro = 0;      //清空
-            }
-            if (ishit)
-            {
-                self.SkillFirstHurtTime = TimeHelper.ServerNow();
-                self.TheUnitFrom.GetComponent<SkillManagerComponent>().CheckSkillSecond(self, uu.Id);
-            }
-            return ishit;
+            return true;
         }
 
+        
+        /*范围类型
+   0-单体
+   1-圆形
+   2-扇形
+   3-基准点为一头的矩形
+   4-基准点为中心的矩形*/
         public static Shape CreateCheckShape(this SkillHandler self, int targetAngle)
         {
             Shape ishape = null;
             float addRange = self.GetTianfuProAdd((int)SkillAttributeEnum.AddDamageRange);
 
-            switch (self.LdSkillConf.DamgeRangeType)
+            switch (self.LdSkillConf.Range_Type)
             {
-                case 0:
+                case SkillRangeType.SkillRangeSingle_0:
+                case SkillRangeType.SkillRangeCicle_1:
                     ishape = new Circle();
                     (ishape as Circle).s_position = self.TargetPosition;
-                    (ishape as Circle).range = (float)(self.LdSkillConf.DamgeRange[0]) + addRange;
+                    (ishape as Circle).range = (float)(self.LdSkillConf.Range_Type_Param1) + addRange;
                     break;
-                case 1:
-                    ishape = new Circle();
-                    (ishape as Circle).s_position = self.TargetPosition;
-                    (ishape as Circle).range = (float)(self.LdSkillConf.DamgeRange[0]) + addRange;
-                    break;
-                case 2:
-                    ishape = new Rectangle();
-                    (ishape as Rectangle).s_position = self.TargetPosition;
-                    (ishape as Rectangle).s_forward = (Quaternion.Euler(0, targetAngle, 0) * Vector3.forward).normalized;
-                    (ishape as Rectangle).x_range = (float)(self.LdSkillConf.DamgeRange[0]) * 0.5f;
-                    (ishape as Rectangle).z_range = (float)(self.LdSkillConf.DamgeRange[1] + addRange);
-                    break;
-                case 3:
+                case SkillRangeType.SkillRangeFan_2:
                     ishape = new Fan();
                     (ishape as Fan).s_position = self.TargetPosition;
                     (ishape as Fan).s_rotation = Quaternion.Euler(0, targetAngle, 0);
-                    (ishape as Fan).skill_distance = (float)(self.LdSkillConf.DamgeRange[0]) + addRange;
-                    (ishape as Fan).skill_angle = (float)(self.LdSkillConf.DamgeRange[1]) * 0.5f;
+                    (ishape as Fan).skill_distance = (float)(self.LdSkillConf.Range_Type_Param1) + addRange;
+                    (ishape as Fan).skill_angle = (float)(self.LdSkillConf.Range_Type_Param2) * 0.5f;
+                    break;
+                case SkillRangeType.SkillRangeRectangle_3:
+                    ishape = new Rectangle();
+                    (ishape as Rectangle).s_position = self.TargetPosition;
+                    (ishape as Rectangle).s_forward = (Quaternion.Euler(0, targetAngle, 0) * Vector3.forward).normalized;
+                    (ishape as Rectangle).x_range = (float)(self.LdSkillConf.Range_Type_Param1) * 0.5f;
+                    (ishape as Rectangle).z_range = (float)(self.LdSkillConf.Range_Type_Param2 + addRange);
+                    break;
+                case SkillRangeType.SkillRangeRectangle_4:
+                    ishape = new Rectangle_2();
+                    (ishape as Rectangle_2).s_position = self.TargetPosition;
+                    (ishape as Rectangle_2).s_forward = (Quaternion.Euler(0, targetAngle, 0) * Vector3.forward).normalized;
+                    (ishape as Rectangle_2).x_range = (float)(self.LdSkillConf.Range_Type_Param1) * 0.5f;
+                    (ishape as Rectangle_2).z_range = (float)(self.LdSkillConf.Range_Type_Param2 + addRange);
                     break;
             }
             return ishape;
@@ -613,17 +432,9 @@ namespace ET
                 return;
             }
 
-            switch (self.LdSkillConf.DamgeRangeType)
+            switch (self.LdSkillConf.Range_Type)
             {
-                case 0:
-                case 1:
-                    (self.ICheckShape[0] as Circle).s_position = vector3;
-                    break;
-                case 2:
-                    (self.ICheckShape[0] as Rectangle).s_position = vector3;
-                    break;
-                case 3:
-                    (self.ICheckShape[0] as Fan).s_position = vector3;
+                default:
                     break;
             }
         }

@@ -20,7 +20,7 @@ namespace ET
             int angle = this.SkillInfo.TargetAngle;
             Vector3 sourcePoint = this.TheUnitFrom.Position;
             Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * this.LdSkillConf.SkillLiveTime * (float)this.LdSkillConf.SkillMoveSpeed * 0.001f;
+            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * (float)this.LdSkillConf.Time_1 * 10f * 0.001f;
             this.BulletUnit = UnitFactory.CreateBullet(this.TheUnitFrom.DomainScene(), this.TheUnitFrom.Id, this.LdSkillConf.Id, 0, this.NowPosition, new CreateMonsterInfo());
             this.TargetPosition = TargetPoint;
             this.BulletUnit.BulletMoveToAsync(TargetPoint).Coroutine();

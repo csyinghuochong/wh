@@ -55,8 +55,8 @@ namespace ET
 				return false;
 			}
 
-			Occupation_Transfer occupationConfig = Occupation_TransferCategory.Instance.Get(occtwo);
-			juexingid = occupationConfig.JueXingSkill[7];
+			LDOccupation_Transfer occupationConfig = LDOccupation_TransferCategory.Instance.Get(occtwo);
+			juexingid = 0;
 			return self.GetBySkillID(juexingid) != null;
 		}
 
@@ -279,56 +279,7 @@ namespace ET
 		public static List<PropertyValue> GetSkillRoleProLists(this SkillSetComponent self)
 		{
 			List<PropertyValue> proList = new List<PropertyValue>();
-			for (int i = 0; i < self.SkillList.Count; i++)
-			{
-				if (self.SkillList[i].SkillSetType == (int)SkillSetEnum.Item)
-				{
-					continue;
-				}
-				if (!LDSkillCategory.Instance.Contain(self.SkillList[i].SkillID))
-				{
-					continue;
-				}
-
-				LDSkill ldSkill = LDSkillCategory.Instance.Get(self.SkillList[i].SkillID);
-
-				if (ldSkill.SkillType != (int)SkillTypeEnum.PassiveAddProSkill)
-				{
-					continue;
-				}
-
-				string GameObjectParameter = ldSkill.GameObjectParameter;
-				if (CommonHelper.IfNull(GameObjectParameter))
-				{
-					continue;
-				}
-
-				string[] addProList = GameObjectParameter.Split(";");
-				for (int p = 0; p < addProList.Length; p++)
-				{
-					string[] addPro = addProList[p].Split(",");
-					if (addPro.Length < 2)
-					{
-						break;
-					}
-					int key = int.Parse(addPro[0]);
-					try
-					{
-						if (NumericHelp.GetNumericValueType(key) == 1)
-						{
-							proList.Add(new PropertyValue() { HideID = key, HideValue = long.Parse(addPro[1]) });
-						}
-						else
-						{
-							proList.Add(new PropertyValue() { HideID = key, HideValue = (int)(float.Parse(addPro[1]) * 10000) });
-						}
-					}
-					catch (Exception ex)
-					{
-						Log.Error($"{ex.ToString()} {GameObjectParameter}");
-					}
-				}
-			}
+		
 			return proList;
 		}
 
@@ -336,26 +287,7 @@ namespace ET
         public static List<PropertyValue> GetSkillRoleProLists_9(this SkillSetComponent self, int skillid)
         {
             List<PropertyValue> proList = new List<PropertyValue>();
-            for (int i = 0; i < self.SkillList.Count; i++)
-            {
-                if (self.SkillList[i].SkillSetType == (int)SkillSetEnum.Item)
-                {
-                    continue;
-                }
-				int magicQulity = self.SkillList[i].MagicQulity;
-
-                LDSkill ldSkill = LDSkillCategory.Instance.Get(self.SkillList[i].SkillID);
-                if (ldSkill.SkillType != (int)SkillTypeEnum.AddProToSpecifiedSkill)
-                {
-                    continue;
-                }
-
-                string[] extrapro = ldSkill.ExtraProperty.Split('&');
-                if (extrapro.Length == 2 && extrapro[0] != "0" && extrapro[0].Contains(skillid.ToString()))
-                {
-                    NumericHelp.GetProList(extrapro[1], proList, magicQulity);
-                }
-            }
+           
             return proList;
         }
 
@@ -363,52 +295,7 @@ namespace ET
         public static List<PropertyValue> GetSkillRoleProLists_8(this SkillSetComponent self)
 		{
 			List<PropertyValue> proList = new List<PropertyValue>();
-			for (int i = 0; i < self.SkillList.Count; i++)
-			{
-				if (self.SkillList[i].SkillSetType == (int)SkillSetEnum.Item)
-				{
-					continue;
-				}
-
-				LDSkill ldSkill = LDSkillCategory.Instance.Get(self.SkillList[i].SkillID);
-
-				if (ldSkill.SkillType != (int)SkillTypeEnum.PassiveAddProSkillNoFight)
-				{
-					continue;
-				}
-
-				string GameObjectParameter = ldSkill.GameObjectParameter;
-				if (CommonHelper.IfNull(GameObjectParameter))
-				{
-					continue;
-				}
-
-				string[] addProList = GameObjectParameter.Split(";");
-				for (int p = 0; p < addProList.Length; p++)
-				{
-					string[] addPro = addProList[p].Split(",");
-					if (addPro.Length < 2)
-					{
-						break;
-					}
-					int key = int.Parse(addPro[0]);
-					try
-					{
-						if (NumericHelp.GetNumericValueType(key) == 1)
-						{
-							proList.Add(new PropertyValue() { HideID = key, HideValue = long.Parse(addPro[1]) });
-						}
-						else
-						{
-							proList.Add(new PropertyValue() { HideID = key, HideValue = (int)(float.Parse(addPro[1]) * 10000) });
-						}
-					}
-					catch (Exception ex)
-					{
-						Log.Error($"{ex.ToString()} {GameObjectParameter}");
-					}
-				}
-			}
+			
 			return proList;
 		}
 
@@ -683,8 +570,8 @@ namespace ET
 			userInfoComponent.UserInfo.OccTwo = occTwo;
 
 			//新增技能
-			Occupation_Transfer occupationTransfer = Occupation_TransferCategory.Instance.Get(occTwo);
-			int[] addSkills = occupationTransfer.SkillID;
+			LDOccupation_Transfer occupationTransfer = LDOccupation_TransferCategory.Instance.Get(occTwo);
+			int[] addSkills = occupationTransfer.Skill_Reinforce;
 			for (int i = 0; i < addSkills.Length; i++)
 			{
 				SkillPro skillPro = new SkillPro();
@@ -724,8 +611,8 @@ namespace ET
 				return ids;
 			}
 
-            Occupation_Transfer occupationConfig = Occupation_TransferCategory.Instance.Get(occtweo);
-            int[] juexingids = occupationConfig.JueXingSkill;
+            LDOccupation_Transfer occupationConfig = LDOccupation_TransferCategory.Instance.Get(occtweo);
+            int[] juexingids = null;
 
 			for (int i = 0; i < juexingids.Length; i++)
 			{
@@ -791,18 +678,10 @@ namespace ET
         {
             LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
 
-            if (ldSkill.SkillType == 1 || !SkillHelp.havePassiveSkillType(ldSkill.PassiveSkillType, 11))
-            {
-                return;
-            }
-            int tianfuid = int.Parse(ldSkill.ComObjParameter);
+            int tianfuid = 0;//int.Parse(ldSkill.ComObjParameter);
             self.AddiontTianFu(tianfuid, active);
         }
-
-		public static bool IsCanMultiple(this SkillSetComponent self, int skillId)
-		{
-			return LDSkillCategory.Instance.Get(skillId).SkillType == 8;
-		}
+        
 
         public static void OnRmItemSkill(this SkillSetComponent self, List<int> itemSkills, long baginfoid)
 		{
@@ -1267,8 +1146,8 @@ namespace ET
 			self.OnRmItemSkill( openjuexing, 0 );
 
 			List<int> newjuexing = new List<int>();
-            Occupation_Transfer occupationConfig = Occupation_TransferCategory.Instance.Get(occNew);
-            int[] juexingids = occupationConfig.JueXingSkill;
+            LDOccupation_Transfer occupationConfig = LDOccupation_TransferCategory.Instance.Get(occNew);
+            int[] juexingids = null;//
 			for (int i = 0; i < openjuexing.Count; i++ )
 			{
 				newjuexing.Add(juexingids[i]);
@@ -1288,7 +1167,7 @@ namespace ET
 			UserInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<UserInfoComponent>();
 			if (userInfoComponent.UserInfo.OccTwo != 0)
 			{
-				int[] twoskill = Occupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).SkillID;
+				int[] twoskill = null;
 				skilllist.AddRange(twoskill);
 			}
 
@@ -1489,8 +1368,7 @@ namespace ET
 			skilllist.AddRange(baseSkill);
 			if (userInfoComponent.UserInfo.OccTwo != 0)
 			{
-				int[] twoskill = Occupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).ShowTalentSkill;
-				skilllist.AddRange(twoskill);
+				
 			}
 
 			for (int i = 0; i < skilllist.Count; i++)

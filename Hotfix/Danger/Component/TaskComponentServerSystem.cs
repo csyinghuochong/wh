@@ -359,10 +359,9 @@ namespace ET
                 }
             }
 
-            TaskPro taskPro = self.CreateTask(taskid);
-            M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
-            m2C_TaskUpdate.RoleTaskList = self.RoleTaskList;
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_TaskUpdate);
+            self.CreateTask(taskid);
+          
+            self.SendToUpdateTask();
         }
 
         public static List<TaskPro> GetTrackTaskList(this TaskComponent self)
@@ -458,75 +457,25 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             LDTask ldTask = LDTaskCategory.Instance.Get(taskid);
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-
-            List<RewardItem> rewardItems = TaskHelper.GetTaskRewards(taskid, ldTask);
-            if (taskPro.TaskType == TaskTypeEnum.Weekly)
+            List<RewardItem> rewardItems = ItemHelper.GetRewardItems(ldTask.Reward);
+            int needcell = ItemHelper.GetNeedCell(rewardItems);
+            if (bagComponent.GetBagLeftCell() < needcell)
             {
-                int weekTaskNumber = numericComponent.GetAsInt(NumericType.WeeklyTaskNumber) + 1;
-                if (weekTaskNumber >= LDGlobalValueCategory.Instance.TempValue + 1)
-                {
-                    Log.Error($"TaskComponent 1 ");
-                    return ErrorCode.ERR_ModifyData;
-                }
-
-                int dropId = 0;
-                CommonConfig.WeekTaskDrop.TryGetValue(weekTaskNumber, out dropId);
-                if (dropId > 0)
-                {
-                    List<RewardItem> droplist = new List<RewardItem>();
-                    DropHelper.DropIDToDropItem_2(dropId, droplist);
-                    rewardItems.AddRange(droplist);
-                }
+                return ErrorCode.ERR_BagIsFull;
             }
-            if (taskPro.TaskType == TaskTypeEnum.Ring)
-            {
-                int ringTaskNumber = numericComponent.GetAsInt(NumericType.RingTaskNumber) + 1;
-                if (ringTaskNumber >= 101)
-                {
-                    Log.Error($"TaskComponent 2 ");
-                    return ErrorCode.ERR_ModifyData;
-                }
-
-                int dropId = 0;
-                CommonConfig.RingTaskDrop.TryGetValue(ringTaskNumber, out dropId);
-                if (dropId > 0)
-                {
-                    List<RewardItem> droplist = new List<RewardItem>();
-                    DropHelper.DropIDToDropItem_2(dropId, droplist);
-                    rewardItems.AddRange(droplist);
-                }
-            }
-            if (taskPro.TaskType == TaskTypeEnum.System)
-            {
-                if (numericComponent.GetAsInt(NumericType.SystemTask) != 0
-                    && numericComponent.GetAsInt(NumericType.SystemTask) != request.TaskId - 1)
-                {
-                    Log.Error($"任务作弊:  {unit.DomainZone()} {unit.Id}   {request.TaskId}");
-                    return ErrorCode.ERR_ModifyData;
-                }
-            }
-            if (taskPro.TaskType == TaskTypeEnum.Season)
-            {
-                if (numericComponent.GetAsInt(NumericType.SeasonTask) != 0
-                    && numericComponent.GetAsInt(NumericType.SeasonTask) != request.TaskId - 1)
-                {
-                    Log.Error($"任务作弊:  {unit.DomainZone()} {unit.Id}   {request.TaskId}");
-                    return ErrorCode.ERR_ModifyData;
-                }
-            }
+            
 
             if (bagComponent.GetBagLeftCell()  < rewardItems.Count)
             {
                 return ErrorCode.ERR_BagIsFull;
             }
 
-            int checkError = 0;// self.CheckGiveItemTask(ldTask.TargetType, ldTask.Target,ldTask.TargetValue, request.BagInfoID,taskPro);
+            int checkError = 0;/// self.CheckGiveItemTask(0, null, 0, request.BagInfoID,taskPro);
             if (checkError != ErrorCode.ERR_Success)
             {
                 return checkError;
             }
-
+            
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
                 if (self.RoleTaskList[i].taskID == taskid)
@@ -534,100 +483,11 @@ namespace ET
                     self.RoleTaskList.RemoveAt(i);
                 }
             }
+            self.RoleComoleteTaskList.Add(taskid);
+            bagComponent.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.TaskReward}_{TimeHelper.ServerNow()}");
             
-
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
-
-            if (taskPro.TaskType == TaskTypeEnum.Daily)
-            {
-                int dailyTaskNumber = numericComponent.GetAsInt(NumericType.DailyTaskNumber) + 1;
-                if (dailyTaskNumber < LDGlobalValueCategory.Instance.TempValue)
-                {
-                    numericComponent.ApplyValue(null, NumericType.DailyTaskNumber, dailyTaskNumber, 0);
-                    numericComponent.ApplyValue(NumericType.DailyTaskID, TaskHelper.GetTaskIdByType(TaskTypeEnum.Daily, 1));
-                }
-                else
-                {
-                    numericComponent.ApplyValue(NumericType.DailyTaskID, 0);
-                    numericComponent.ApplyValue(null, NumericType.DailyTaskNumber, dailyTaskNumber, 0);
-                }
-          
-            }
-            if (taskPro.TaskType == TaskTypeEnum.Weekly)
-            {
-                int weekTaskNumber = numericComponent.GetAsInt(NumericType.WeeklyTaskNumber) + 1;
-                
-                if (weekTaskNumber < LDGlobalValueCategory.Instance.TempValue)
-                {
-                    numericComponent.ApplyValue(NumericType.WeeklyTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Weekly, 1));
-                    numericComponent.ApplyValue(NumericType.WeeklyTaskNumber, weekTaskNumber);
-                }
-                else
-                {
-                    numericComponent.ApplyValue(NumericType.WeeklyTaskId, 0);
-                    numericComponent.ApplyValue(NumericType.WeeklyTaskNumber, weekTaskNumber);
-                }
-            }
-            if (taskPro.TaskType == TaskTypeEnum.Ring)
-            {
-                int ringTaskNumber = numericComponent.GetAsInt(NumericType.RingTaskNumber) + 1;
-                
-                if (ringTaskNumber < 100)
-                {
-                    numericComponent.ApplyValue(NumericType.RingTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Ring, 1));
-                    numericComponent.ApplyValue(NumericType.RingTaskNumber, ringTaskNumber);
-                }
-                else
-                {
-                    numericComponent.ApplyValue(NumericType.RingTaskId, 0);
-                    numericComponent.ApplyValue(NumericType.RingTaskNumber, ringTaskNumber);
-                }
-            }
-            if (taskPro.TaskType == TaskTypeEnum.Union)
-            {
-                int unionTaskNumber = numericComponent.GetAsInt(NumericType.UnionTaskNumber) + 1;
-                if (unionTaskNumber <  LDGlobalValueCategory.Instance.TempValue)
-                {
-                    numericComponent.ApplyValue(null, NumericType.UnionTaskNumber, unionTaskNumber, 0);
-                    numericComponent.ApplyValue(NumericType.UnionTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Union, 1));
-                }
-                else
-                {           
-                    numericComponent.ApplyValue(NumericType.UnionTaskId, 0);
-                    numericComponent.ApplyValue(null, NumericType.UnionTaskNumber, unionTaskNumber, 0);
-                }
-                
-            }
-            if (taskPro.TaskType == TaskTypeEnum.Treasure)
-            {
-                //int treasureTask = numericComponent.GetAsInt(NumericType.TreasureTask);
-                //numericComponent.ApplyValue(NumericType.TreasureTask, treasureTask + 1);
-            }
-            if (taskPro.TaskType == TaskTypeEnum.Season)
-            {
-                numericComponent.ApplyValue(NumericType.SeasonTask, taskid);
-                /*if (LDTaskCategory.Instance.Contain(taskid + 1) && LDTaskCategory.Instance.Get(taskid + 1).TaskType == TaskTypeEnum.Season)
-                {
-                    self.OnAcceptedTask(taskid + 1);
-
-                    M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
-                    m2C_TaskUpdate.RoleTaskList = self.RoleTaskList;
-                    MessageHelper.SendToClient(unit, m2C_TaskUpdate);
-                }*/
-            }
-            if (taskPro.TaskType == TaskTypeEnum.System)
-            {
-                numericComponent.ApplyValue(NumericType.SystemTask, taskid);
-                /*if (LDTaskCategory.Instance.Contain(taskid + 1) && LDTaskCategory.Instance.Get(taskid + 1).TaskType == TaskTypeEnum.System)
-                {
-                    self.OnAcceptedTask(taskid + 1);
-
-                    M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
-                    m2C_TaskUpdate.RoleTaskList = self.RoleTaskList;
-                    MessageHelper.SendToClient(unit, m2C_TaskUpdate);
-                }*/
-            }
-
+            self.OnTeskAddTask(taskid);
+            
             return ErrorCode.ERR_Success;
         }
 
@@ -811,23 +671,16 @@ namespace ET
                 MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
                 int fubenDifficulty = FubenDifficulty.None;
                 Scene DomainScene = self.GetParent<Unit>().DomainScene();
-                if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
-                {
-                    fubenDifficulty = DomainScene.GetComponent<CellDungeonComponent>().FubenDifficulty;
-                }
                 if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                 {
                     fubenDifficulty = DomainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
                 }
 
-                self.TriggerTaskEvent(TastConditionType.KillMonsterID_1, unitconfigId, 1);
+                self.TriggerTaskEvent(TastConditionType.KillMonsterByNumber_210, 1, 0);
               
-                self.TriggerTaskEvent(TastConditionType.KillMonster_5, 0, 1);
-     
                 if (isBoss)
                 {
                     self.TriggerTaskEvent(TastConditionType.KillBOSS_6, 0, 1);
-                 
                 }
 
                 if ((int)fubenDifficulty >= (int)FubenDifficulty.TiaoZhan) //挑战
@@ -869,6 +722,34 @@ namespace ET
             self.CheckWeeklyTask();
         }
 
+        private static void OnTeskGetTask(this TaskComponent self)
+        {
+               
+            if (self.RoleTaskList.Count == 0 && self.RoleComoleteTaskList.Count == 0)
+            {
+                self.OnAcceptedTask(1);
+            }
+                    
+            if (self.RoleTaskList.Count() == 1)
+            {
+                self.RoleTaskList[0].TrackStatus = 1;
+            }
+
+        }
+        
+        
+        private static void OnTeskAddTask(this TaskComponent self, int taskid)
+        {
+            self.OnAcceptedTask(taskid + 1);
+
+            if (self.RoleTaskList.Count() == 1)
+            {
+                self.RoleTaskList[0].TrackStatus = 1;
+            }
+
+            self.SendToUpdateTask();
+        }
+
         //登录
         public static void OnLogin(this TaskComponent self)
         {
@@ -890,17 +771,9 @@ namespace ET
                     self.RoleTaskList[i].TrackStatus = 0;
                 }
             }
-            
-            if (self.RoleTaskList.Count == 0 && self.RoleComoleteTaskList.Count == 0)
-            {
-                self.OnAcceptedTask(1);
-            }
 
-            if (self.RoleTaskList.Count() == 1)
-            {
-                self.RoleTaskList[0].TrackStatus = 1;
-            }
-
+            self.OnTeskGetTask();
+    
 
             //触发一下搜集道具类型的任务
             for (int i = 0; i < self.RoleTaskList.Count; i++)
@@ -941,12 +814,12 @@ namespace ET
                 } 
             }
             
-            if (numericComponent.GetAsInt(NumericType.DailyTaskID) == 0)
+            /*if (numericComponent.GetAsInt(NumericType.DailyTaskID) == 0)
             {
                 //self.UpdateDayTask(false);
                 self.CheckDailyTask(false);
-            }
-            if (numericComponent.GetAsInt(NumericType.RingTaskId) == 0 )
+            }*/
+            /*if (numericComponent.GetAsInt(NumericType.RingTaskId) == 0 )
             {
                 self.CheckRingTask();
             }
@@ -961,7 +834,7 @@ namespace ET
             if (numericComponent.GetAsInt(NumericType.SystemTask) == 0)
             {
                 self.CheckSystemTask();
-            }
+            }*/
 
             self.UpdateTargetTask(false);
             self.InitActivityV1Task();
@@ -1076,51 +949,51 @@ namespace ET
                 return;
             }
 
-            M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
-            m2C_TaskUpdate.RoleTaskList = self.RoleTaskList;
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_TaskUpdate);
+            self.SendToUpdateTask();
         }
         
 
         public static void CheckDailyTask(this TaskComponent self, bool notice)
         {
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt(NumericType.DailyTaskID) != 0)
+            /*if (numericComponent.GetAsInt(NumericType.DailyTaskID) != 0)
             {
                 return;
-            }
+            }*/
+            /*
             if (numericComponent.GetAsInt(NumericType.DailyTaskNumber) >= 1)
             {
                 return;
             }
+            */
 
             int roleLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
-            numericComponent.ApplyValue(NumericType.DailyTaskID, TaskHelper.GetTaskIdByType(TaskTypeEnum.Daily, roleLv), notice);
+           // numericComponent.ApplyValue(NumericType.DailyTaskID, TaskHelper.GetTaskIdByType(TaskTypeEnum.Daily, roleLv), notice);
         }
 
         public static void CheckRingTask(this TaskComponent self)
         {
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt(NumericType.RingTaskId) == 0 && numericComponent.GetAsInt(NumericType.RingTaskNumber) < 1)
+            /*if (numericComponent.GetAsInt(NumericType.RingTaskId) == 0 && numericComponent.GetAsInt(NumericType.RingTaskNumber) < 1)
             {
                 //self.ClearTypeTask(TaskTypeEnum.Ring);
 
                 int roleLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
                 int ringTaskId = TaskHelper.GetTaskIdByType(TaskTypeEnum.Ring, roleLv);
                 numericComponent.ApplyValue(NumericType.RingTaskId, ringTaskId, false);
-            }
+            }*/
         }
 
         public static void CheckWeeklyTask(this TaskComponent self)
         {
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt(NumericType.WeeklyTaskId) == 0 && numericComponent.GetAsInt(NumericType.WeeklyTaskNumber) < 1)
+            /*if (numericComponent.GetAsInt(NumericType.WeeklyTaskId) == 0 && numericComponent.GetAsInt(NumericType.WeeklyTaskNumber) < 1)
             {
                 //self.ClearTypeTask(TaskTypeEnum.Ring);
                 int roleLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
                 int weekTaskId = TaskHelper.GetTaskIdByType(TaskTypeEnum.Weekly, roleLv);
                 numericComponent.ApplyValue(NumericType.WeeklyTaskId, weekTaskId, false);
-            }
+            }*/
         }
 
         public static void CheckSystemTask(this TaskComponent self)
@@ -1142,7 +1015,7 @@ namespace ET
                 return;
             }
 
-            int curTakskid = self.GetParent<Unit>().GetComponent<NumericComponent>().GetAsInt(NumericType.SystemTask);
+            /// int curTakskid = 0;self.GetParent<Unit>().GetComponent<NumericComponent>().GetAsInt(NumericType.SystemTask);
             foreach ((int taskid, LDTask taskcofnig) in LDTaskCategory.Instance.GetAll())
             {
                 /*if (taskcofnig.TaskType != TaskTypeEnum.System || taskid <= curTakskid)
@@ -1154,20 +1027,18 @@ namespace ET
                 break;
             }
 
-            M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
-            m2C_TaskUpdate.RoleTaskList = self.RoleTaskList;
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_TaskUpdate);
+           self.SendToUpdateTask();
         }
 
         public static void CheckUnionTask(this TaskComponent self)
         {
-            NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
+            /*NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
             if (numericComponent.GetAsInt(NumericType.UnionTaskId) == 0 && numericComponent.GetAsInt(NumericType.UnionTaskNumber) < 1)
             {
 
                 int roleLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
                 numericComponent.ApplyValue(NumericType.UnionTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Union, roleLv), false);
-            }
+            }*/
         }
 
         public static void OnResetSeason(this TaskComponent self, bool notice)
@@ -1200,7 +1071,7 @@ namespace ET
                 return;
             }
 
-            int curTakskid = self.GetParent<Unit>().GetComponent<NumericComponent>().GetAsInt(NumericType.SeasonTask);
+           // int curTakskid = self.GetParent<Unit>().GetComponent<NumericComponent>().GetAsInt(NumericType.SeasonTask);
             foreach ( ( int taskid, LDTask taskcofnig ) in LDTaskCategory.Instance.GetAll())
             {
                 /*if (taskcofnig.TaskType == TaskTypeEnum.Season && taskid > curTakskid)
@@ -1212,9 +1083,7 @@ namespace ET
 
             if (notice) 
             {
-                M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
-                m2C_TaskUpdate.RoleTaskList = self.RoleTaskList;
-                MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_TaskUpdate);
+               self.SendToUpdateTask();
             }
         }
 
@@ -1297,10 +1166,12 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             int roleLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
            
+            /*
             numericComponent.ApplyValue(NumericType.DailyTaskNumber, 0, notice);
             numericComponent.ApplyValue(NumericType.UnionTaskNumber, 0, notice);
             numericComponent.ApplyValue(NumericType.DailyTaskID, TaskHelper.GetTaskIdByType(TaskTypeEnum.Daily, roleLv), notice);
             numericComponent.ApplyValue(NumericType.UnionTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Union, roleLv), notice);
+            */
 
             //int ringTaskId = TaskHelper.GetTaskIdByType(TaskTypeEnum.Ring, roleLv);
             //numericComponent.ApplyValue(NumericType.RingTaskId, ringTaskId, notice);
@@ -1375,11 +1246,13 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             int roleLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();  
+            /*
             numericComponent.ApplyValue(NumericType.RingTaskNumber, 0, false);
             numericComponent.ApplyValue(NumericType.RingTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Ring, roleLv), false);
 
             numericComponent.ApplyValue(NumericType.WeeklyTaskNumber, 0, false);
             numericComponent.ApplyValue(NumericType.WeeklyTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Weekly, roleLv), false);
+            */
 
             self.UpdateSeasonWeekTask(false);
             self.UpdateActivityWeekTask(notice);
@@ -1470,6 +1343,14 @@ namespace ET
             }
         }
 
+        public static void SendToUpdateTask(this TaskComponent self)
+        {  
+            Unit unit = self.GetParent<Unit>();
+            M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
+            m2C_TaskUpdate.RoleTaskList = self.RoleTaskList;
+            MessageHelper.SendToClient(unit, m2C_TaskUpdate);
+        }
+
         /// <summary>
         /// 重置每日活跃
         /// </summary> 
@@ -1477,15 +1358,13 @@ namespace ET
         public static void OnZeroClockUpdate(this TaskComponent self, bool notice)
         {
             self.OnLineTime = 0;
-            Unit unit = self.GetParent<Unit>();
+         
             self.UpdateDayTask(notice);
             self.UpdateTargetTask(notice);
            
             if (notice)
             {
-                M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
-                m2C_TaskUpdate.RoleTaskList = self.RoleTaskList;
-                MessageHelper.SendToClient(unit, m2C_TaskUpdate);
+                self.SendToUpdateTask();
             }
         }
     }

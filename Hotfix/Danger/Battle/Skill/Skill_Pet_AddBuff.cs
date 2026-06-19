@@ -32,15 +32,7 @@ namespace ET
             Unit other = GetPetOrMaster();
 
             //触发初始化BUFF
-            if (this.LdSkillConf.InitBuffID[0] != 0)
-            {
-                for (int y = 0; y < this.LdSkillConf.InitBuffID.Length; y++)
-                {
-                    this.SkillBuff(this.LdSkillConf.InitBuffID[y], TheUnitFrom);
-                    this.SkillBuff(this.LdSkillConf.InitBuffID[y], other);
-                }
-            }
-
+          
             SkillSetComponent skillSetComponent = TheUnitFrom.GetComponent<SkillSetComponent>();
             List<int> buffInitAdd = skillSetComponent != null ? skillSetComponent.GetBuffInitIdAdd(this.LdSkillConf.Id) : null;
             if (buffInitAdd != null)

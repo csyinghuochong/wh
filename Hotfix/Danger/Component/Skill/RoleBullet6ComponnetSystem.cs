@@ -45,11 +45,12 @@ namespace ET
             self.BuffState = BuffState.Running;
             self.SkillHandler = skillHandler;
             self.BeginTime = TimeHelper.ServerNow();
+            /*
             self.DelayTime = (long)(1000 * skillHandler.LdSkillConf.SkillDelayTime);
             self.DamageRange = skillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddDamageRange) + (float)skillHandler.LdSkillConf.DamgeRange[0];
             self.BuffEndTime = 1000 * (int)skillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddSkillLiveTime) +
                     skillHandler.LdSkillConf.SkillLiveTime + TimeHelper.ServerNow();
-
+*/
             self.IsStop = isStop;
             self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.RoleBullet6Timer, self);
         }

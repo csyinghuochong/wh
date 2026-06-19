@@ -12,7 +12,7 @@ namespace ET
             this.BaseOnInit(skillId, theUnitFrom);
 
             this.ICheckShape.Clear();
-            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');
+            string[] paraminfos = null;
             int angle = this.SkillInfo.TargetAngle;
             int range = paraminfos.Length > 1 ? int.Parse(paraminfos[0]) : 0;
             int number = paraminfos.Length > 1 ? int.Parse(paraminfos[1]) : 1;

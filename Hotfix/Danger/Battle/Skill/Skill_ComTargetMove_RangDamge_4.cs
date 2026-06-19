@@ -16,7 +16,7 @@ namespace ET
         {
             this.InitSelfBuff();
 
-            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split('@');
+            string[] paraminfos = null;
             using ListComponent<Vector3> vector3s = new ListComponent<Vector3>(); 
             for (int i = 0; i < paraminfos.Length; i++)
             {

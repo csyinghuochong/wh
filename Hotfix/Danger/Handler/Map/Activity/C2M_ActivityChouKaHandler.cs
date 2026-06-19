@@ -16,7 +16,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (!bagComponent.CheckCostItem(ActivityV1Config.ChouKaCostItem))
+            if (!bagComponent.CheckNeedItem(ActivityV1Config.ChouKaCostItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();

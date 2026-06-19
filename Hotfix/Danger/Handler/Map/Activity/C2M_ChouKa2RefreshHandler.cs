@@ -15,7 +15,7 @@ namespace ET
             if (activityComponent.ActivityV1Info.ChouKa2RewardIds.Count < activityComponent.ActivityV1Info.ChouKa2ItemList.Split('@').Length / 2)
             {
                 BagComponent bagComponent  = unit.GetComponent <BagComponent>();
-                if (!bagComponent.CheckCostItem(ActivityV1Config.Chou2FreshItem))
+                if (!bagComponent.CheckNeedItem(ActivityV1Config.Chou2FreshItem))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     reply();

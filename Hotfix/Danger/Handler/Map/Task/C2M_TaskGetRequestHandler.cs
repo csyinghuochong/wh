@@ -30,7 +30,7 @@ namespace ET
                 }
 
                 //获取当前任务是否已达上限
-                if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.DailyTaskNumber) >=  LDGlobalValueCategory.Instance.TempValue)
+                /*if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.DailyTaskNumber) >=  LDGlobalValueCategory.Instance.TempValue)
                 {
                     response.Error = ErrorCode.ERR_ShangJinNumFull;
                     reply();
@@ -45,8 +45,8 @@ namespace ET
                     response.Error = ErrorCode.ERR_TaskCanNotGet;
                     reply();
                     return;
-                }
-                response.TaskPro = taskComponent.OnGetDailyTask(dailyTask);
+                }*/
+                //response.TaskPro = taskComponent.OnGetDailyTask(dailyTask);
             }
             /*else if (ldTask.TaskType == TaskTypeEnum.Union)
             {

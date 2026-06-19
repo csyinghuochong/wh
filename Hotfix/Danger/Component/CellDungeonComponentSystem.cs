@@ -389,7 +389,7 @@ namespace ET
         {
             self.MysteryItemInfos.Clear();
             int openServerDay =  DBHelper.GetOpenServerDay(self.DomainZone());
-            self.MysteryItemInfos = MysteryShopHelper.InitMysteryItemInfos(openServerDay);
+            self.MysteryItemInfos = RandomShopHelper.InitMysteryItemInfos(openServerDay);
         }
 
         public static bool IsAllMonsterDead(this CellDungeonComponent self)

@@ -12,24 +12,7 @@ namespace ET
         {
             this.BaseOnInit(skillId, theUnitFrom);
 
-            if (string.IsNullOrEmpty(this.LdSkillConf.GameObjectParameter))
-            {
-                this.SkillTriggerInvelTime = 1000;
-                Log.Warning($"SkillConf.GameObjectParameter:  {this.LdSkillConf.Id}  {this.LdSkillConf.GameObjectParameter}");
-            }
-            else
-            {
-                try
-                {
-                    this.SkillTriggerInvelTime = (long)(float.Parse(this.LdSkillConf.GameObjectParameter) * 1000);
-                }
-                catch (Exception ex)
-                {
-                    Log.Debug(ex.ToString());
-                    Log.Warning($"SkillConf.GameObjectParameter:  {this.LdSkillConf.Id}  {this.LdSkillConf.GameObjectParameter}");
-                }
-
-            }
+            this.SkillTriggerInvelTime = (long)(this.LdSkillConf.Time_Interval * 1000);
         }
 
         public override void OnExecute()
@@ -41,10 +24,6 @@ namespace ET
         public override void OnUpdate()
         {
             this.IsExcuteHurt = false;
-            if (this.LdSkillConf.SkillTargetType == SkillTargetType.SelfFollow)
-            {
-                this.UpdateCheckPoint(this.TheUnitFrom.Position);
-            }
 
             long curTime = TimeHelper.ServerNow();
             for (int i = HurtIds.Count - 1; i >= 0; i--)

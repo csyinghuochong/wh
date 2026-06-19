@@ -130,15 +130,17 @@ namespace ET
                 }
 
                 if (message.GMMsg == "#killall")
-				{
+                {
 					List<Unit> units = unit.GetParent<UnitComponent>().GetAll();
+					
 					for(int i = units.Count - 1; i >= 0; i--)
 					{
 						if (units[i].Type != UnitType.Monster)
 						{
 							continue;
 						}
-						units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.Numeric_Error, -1000000000, 0);
+
+						units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.HP_Current, -1000000000, 0);
 					}
 					return;
 				}

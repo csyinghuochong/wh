@@ -14,8 +14,7 @@ namespace ET
                 int occtwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
                 if (occtwo != 0)
                 {
-                    Occupation_Transfer occupationConfig = Occupation_TransferCategory.Instance.Get(occtwo);
-                    juexingid = occupationConfig.JueXingSkill[7];
+                   
                 }
                 if (juexingid == request.SkillID)
                 {
@@ -68,16 +67,6 @@ namespace ET
                 LDSkill ldSkill = LDSkillCategory.Instance.Get(request.SkillID);
                 if (mapComponent.MapTypeEnum != MapTypeEnum.RunRace && !CommonHelper.IsInnerNet())
                 {
-
-                    if (unit.GetComponent<SkillSetComponent>().GetBySkillID(request.SkillID) == null
-                   && request.SkillID != 60000011 && ldSkill.SkillActType != 0 && request.ItemId == 0
-                   && !skillManagerComponent.SkillSecond.ContainsKey(request.SkillID))
-                    {
-                        Console.WriteLine($"request.SkillID==null:  {request.SkillID}   {unit.DomainZone()}  {unit.Id}");
-                        response.Error = ErrorCode.ERR_UseSkillError;
-                        reply();
-                        return;
-                    }
                 }
                 unit.GetComponent<DBSaveComponent>().NoFindPath = 0;
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, 0, true, true);

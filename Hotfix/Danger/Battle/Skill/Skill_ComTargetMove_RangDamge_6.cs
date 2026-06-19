@@ -14,7 +14,7 @@ namespace ET
         {
             this.BaseOnInit(skillId, theUnitFrom);
 
-            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');
+            string[] paraminfos = null;
             this.MoveTime = (long)(float.Parse(paraminfos[0]) * 1000);
             this.SkillTriggerInvelTime = (long)(float.Parse(paraminfos[1]) * 1000);
             this.IsStop = int.Parse(paraminfos[2]);
@@ -60,7 +60,7 @@ namespace ET
             unit.AddComponent<RoleBullet6Componnet>().OnBaseBulletInit(this, this.TheUnitFrom.Id, this.IsStop);
             Vector3 sourcePoint = this.TheUnitFrom.Position;
             Quaternion rotation = Quaternion.Euler(0, this.SkillInfo.TargetAngle, 0);
-            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * this.MoveTime * (float)this.LdSkillConf.SkillMoveSpeed * 0.001f;
+            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * this.MoveTime  * 0.001f;
             unit.BulletMoveToAsync(TargetPoint).Coroutine();
             this.SkillExcuteNum--;
         }

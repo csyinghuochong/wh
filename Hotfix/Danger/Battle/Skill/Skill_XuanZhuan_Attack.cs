@@ -11,7 +11,7 @@ namespace ET
             this.BaseOnInit(skillId, theUnitFrom);
 
             this.ICheckShape.Clear();
-            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');
+            string[] paraminfos = null;//this.LdSkillConf.GameObjectParameter.Split(';');
             int angle = this.SkillInfo.TargetAngle;
             int range = paraminfos.Length > 1 ? int.Parse(paraminfos[0]) : 0;
             int number = paraminfos.Length > 1 ? int.Parse(paraminfos[1]) : 1;
@@ -45,7 +45,8 @@ namespace ET
                 this.SetSkillState(SkillState.Finished);
                 return;
             }
-            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');
+
+            string[] paraminfos = null;//this.LdSkillConf.GameObjectParameter.Split(';');
             int angle = this.SkillInfo.TargetAngle;
             int speed = paraminfos.Length > 1 ? int.Parse(paraminfos[0]) : 0;   //每秒转多少角度
             int number = paraminfos.Length > 1 ? int.Parse(paraminfos[1]) : 1;

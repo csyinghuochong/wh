@@ -232,7 +232,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (!bagComponent.CheckCostItem(ActivityV1Config.Chou2CostItem))
+                    if (!bagComponent.CheckNeedItem(ActivityV1Config.Chou2CostItem))
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();

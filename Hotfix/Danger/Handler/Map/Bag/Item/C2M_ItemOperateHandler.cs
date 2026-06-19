@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ET
@@ -699,8 +700,8 @@ namespace ET
                         //查看自身是否是二转
                         if (useInfo.OccTwo > 0)
                         {
-                            Occupation_Transfer occtwoCof = Occupation_TransferCategory.Instance.Get(useInfo.OccTwo);
-                            if (occtwoCof.ArmorMastery ==equiptype ||equiptype == 99 || equiptype == 101 || equiptype == 201)
+                            LDOccupation occtwoCof = LDOccupationCategory.Instance.Get(useInfo.OccTwo);
+                            if (occtwoCof.Armor .Contains(equiptype)  ||equiptype == 99 || equiptype == 101 || equiptype == 201)
                             {
                                 //可以穿戴
                             }

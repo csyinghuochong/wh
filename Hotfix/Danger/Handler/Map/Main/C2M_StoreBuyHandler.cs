@@ -9,13 +9,13 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_StoreBuyRequest request, M2C_StoreBuyResponse response, Action reply)
         {
-            if (!StoreSellConfigCategory.Instance.Contain(request.SellItemID))
+            if (!LDShop_GoodsCategory.Instance.Contain(request.SellItemID))
             {
                 reply();
                 return;
             }
 
-            StoreSellConfig storeSellConfig = StoreSellConfigCategory.Instance.Get(request.SellItemID);
+            LDShop_Goods storeSellConfig = LDShop_GoodsCategory.Instance.Get(request.SellItemID);
             if (storeSellConfig == null)
             {
                 response.Error = ErrorCode.ERR_NetWorkError;
@@ -24,14 +24,14 @@ namespace ET
             }
 
             int buynumber =  unit.GetComponent<UserInfoComponent>().GetStoreBuy(storeSellConfig.Id);
-            if (storeSellConfig.LimitNumber >0 && request.SellItemNum +  buynumber > storeSellConfig.LimitNumber)
+            if (storeSellConfig.Buy_Limit_Num >0 && request.SellItemNum +  buynumber > storeSellConfig.Buy_Limit_Num)
             {
                 response.Error = ErrorCode.ERR_BuyMaxLimit;
                 reply();
                 return;
             }
 
-            int needCell = ItemHelper.GetNeedCell($"{storeSellConfig.SellItemID};{storeSellConfig.SellItemNum * request.SellItemNum}");
+            int needCell = ItemHelper.GetNeedCell(storeSellConfig.Goods);
             if (unit.GetComponent<BagComponent>().GetBagLeftCell() < needCell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -49,66 +49,21 @@ namespace ET
                 request.SellItemNum = 100;
             }
 
-            UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
-            List<RewardItem> rewardItems = new List<RewardItem>();
-            rewardItems.Add(new RewardItem() {  ItemType = ItemBigType.Type_Item, ItemID = storeSellConfig.SellItemID, ItemNum = storeSellConfig.SellItemNum * request.SellItemNum });
-
-            int itemType = ItemBigType.Type_Item;
-            int costType = storeSellConfig.SellType;
-            string costValue = (-1 * storeSellConfig.SellValue * request.SellItemNum).ToString();
-
-            switch (costType)
+            string costItem = $"{storeSellConfig.Consume_Type}_{storeSellConfig.Consume_Id}_{storeSellConfig.Consume_Value}";
+            if (!unit.GetComponent<BagComponent>().CheckNeedItem(costItem))
             {
-                case 1:
-                    if (userInfo.Gold < storeSellConfig.SellValue * request.SellItemNum)
-                    {
-                        response.Error = ErrorCode.ERR_GoldNotEnoughError;
-                    }
-                    else
-                    {
-                        unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, costValue);
-                        unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
-                        response.Error = ErrorCode.ERR_Success;
-                    }
-                    break;
-                case 3:
-                    if (userInfo.Diamond < storeSellConfig.SellValue * request.SellItemNum)
-                    {
-                        response.Error = ErrorCode.ERR_DiamondNotEnoughError;
-                    }
-                    else
-                    {
-                        unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, costValue, true, ItemGetWay.CostItem);
-                        unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
-                        response.Error = ErrorCode.ERR_Success;
-                    }
-                    break;
-                default:
-                    if (unit.GetComponent<BagComponent>().GetItemNumber(itemType, costType) < storeSellConfig.SellValue * request.SellItemNum)
-                    {
-                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                    }
-                    else
-                    {
-                        unit.GetComponent<BagComponent>().OnCostItemData($"{costType};{storeSellConfig.SellValue * request.SellItemNum}", ItemLocType.ItemLocBag, ItemGetWay.StoreBuy);
-                        unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
-                    }
-
-                    if (costType == 10000151)
-                    {
-                        int zone = unit.DomainZone();
-                        string playername = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
-                        string servername = ServerHelper.GetGetServerItem(false, zone).ServerName;
-                        string itemname = WordHelper.GetShowText(LDItemCategory.Instance.Get(rewardItems[0].ItemID).Name, 0);
-                        string loginfo = $"{servername}: {playername} 消耗:珍品羽毛X{storeSellConfig.SellValue * request.SellItemNum} 兑换:{itemname}X{rewardItems[0].ItemNum}";
-
-                        LogHelper.ZhenPingDuiHuanLog(loginfo);
-                    }
-
-                    break;
+                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                reply();
+                return;
             }
 
-            if (response.Error == ErrorCode.ERR_Success && storeSellConfig.LimitNumber > 0)
+            UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+            List<RewardItem> rewardItems = ItemHelper.GetRewardItems(storeSellConfig.Goods);
+
+            unit.GetComponent<BagComponent>().OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy );
+            unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
+            
+            if (response.Error == ErrorCode.ERR_Success && storeSellConfig.Buy_Limit_Num > 0)
             {
                 unit.GetComponent<UserInfoComponent>().OnStoreBuy( storeSellConfig.Id );
             }

@@ -25,7 +25,7 @@ namespace ET
             }
             this.InitSelfBuff();
             //70009001;0;1;1
-            string[] summonParList = LDSkillCategory.Instance.Get(this.SkillInfo.WeaponSkillID).GameObjectParameter.Split('@');
+            string[] summonParList = null;///LDSkillCategory.Instance.Get(this.SkillInfo.WeaponSkillID).GameObjectParameter.Split('@');
             for (int y = 0; y < summonParList.Length; y++)
             {
                 string[] skillParList = summonParList[y].Split(';');

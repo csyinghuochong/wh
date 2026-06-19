@@ -61,7 +61,7 @@ namespace ET
                     cmd.TargetID = target.Id;
                     cmd.SkillID = skillId;
 
-                    if (ldSkill.SkillZhishiTargetType == 1)  //自身点
+                    if (ldSkill.NeedTarget == SkillNeedTargetType.NoTarget_0)  //自身点
                     {
                         cmd.TargetAngle = 0;
                         cmd.TargetDistance = 0;
@@ -76,7 +76,7 @@ namespace ET
                     long serverNow = TimeHelper.ServerNow();
                     aiComponent.LastAttackTime = serverNow;
                     skillManagerComponent.OnUseSkill(cmd, true);
-                    rigidityEndTime = (long)(LDSkillCategory.Instance.Get(cmd.SkillID).SkillRigidity * 1000) + serverNow;
+                    rigidityEndTime = (long)(LDSkillCategory.Instance.Get(cmd.SkillID).Time_2 * 1000) + serverNow;
                 }
 
                 if (rigidityEndTime > stateComponent.RigidityEndTime)

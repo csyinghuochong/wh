@@ -1,9 +1,114 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Bson.Serialization.Attributes;
+using ProtoBuf;
 
 namespace ET
 {
+    public struct LDSkillAttributeLimit
+    {
+        public int CompareType;
+        public int NumericType;
+        public long Value;
+    }
+
+    public struct LDSkillConsumeItem
+    {
+        public int NumericType;
+        public long Value;
+    }
+
+    public partial class LDSkill
+    {
+        [ProtoIgnore]
+        [BsonIgnore]
+        public List<KeyValuePairInt> ReplaceSkillList = new List<KeyValuePairInt>();
+
+        [ProtoIgnore]
+        [BsonIgnore]
+        public List<LDSkillAttributeLimit> SelfAttributeLimits = new List<LDSkillAttributeLimit>();
+
+        [ProtoIgnore]
+        [BsonIgnore]
+        public List<LDSkillConsumeItem> ConsumeList = new List<LDSkillConsumeItem>();
+
+        public void ParseRuntimeData()
+        {
+            this.ReplaceSkillList.Clear();
+            this.SelfAttributeLimits.Clear();
+            this.ConsumeList.Clear();
+
+            if (!string.IsNullOrEmpty(this.Replace_Skill) && this.Replace_Skill != "0")
+            {
+                string[] replaceItems = this.Replace_Skill.Split('|');
+                for (int i = 0; i < replaceItems.Length; i++)
+                {
+                    string[] parts = replaceItems[i].Split('_');
+                    if (parts.Length != 2)
+                    {
+                        continue;
+                    }
+                    if (!int.TryParse(parts[0], out int buffId) || !int.TryParse(parts[1], out int newSkillId))
+                    {
+                        continue;
+                    }
+                    KeyValuePairInt pair = new KeyValuePairInt();
+                    pair.KeyId = buffId;
+                    pair.Value = newSkillId;
+                    this.ReplaceSkillList.Add(pair);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(this.Self_Attribute_Limit) && this.Self_Attribute_Limit != "0")
+            {
+                string[] limitItems = this.Self_Attribute_Limit.Split('|');
+                for (int i = 0; i < limitItems.Length; i++)
+                {
+                    string[] parts = limitItems[i].Split('_');
+                    if (parts.Length != 3)
+                    {
+                        continue;
+                    }
+                    if (!int.TryParse(parts[0], out int compareType)
+                        || !int.TryParse(parts[1], out int numericType)
+                        || !long.TryParse(parts[2], out long value))
+                    {
+                        continue;
+                    }
+                    this.SelfAttributeLimits.Add(new LDSkillAttributeLimit
+                    {
+                        CompareType = compareType,
+                        NumericType = numericType,
+                        Value = value,
+                    });
+                }
+            }
+
+            if (!string.IsNullOrEmpty(this.Consume) && this.Consume != "0")
+            {
+                string[] consumeItems = this.Consume.Split('|');
+                for (int i = 0; i < consumeItems.Length; i++)
+                {
+                    string[] parts = consumeItems[i].Split('_');
+                    if (parts.Length != 2)
+                    {
+                        continue;
+                    }
+                    if (!int.TryParse(parts[0], out int numericType) || !long.TryParse(parts[1], out long value))
+                    {
+                        continue;
+                    }
+                    this.ConsumeList.Add(new LDSkillConsumeItem
+                    {
+                        NumericType = numericType,
+                        Value = value,
+                    });
+                }
+            }
+        }
+    }
+
     public partial class LDSkillCategory
     {
         /// <summary>
@@ -49,124 +154,10 @@ namespace ET
 
         public override void AfterEndInit()
         {
-            BaseSkillList.Clear();  
+            BaseSkillList.Clear();
             foreach (LDSkill skillconfig in this.GetAll().Values)
             {
-                string buffToSkill = skillconfig.BuffToSkill;
-                if (string.IsNullOrEmpty(buffToSkill) || buffToSkill.Equals("0"))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    //97050001,1,77006004,0.3      buffid/类型/技能id/时间/是否移除之前的buff
-                    //释放技能时触发
-                    string[] buffInfoParam = buffToSkill.Split(',');
-                    int removebuff = 0;
-                    if (buffInfoParam.Length > 4)
-                    {
-                        if (!int.TryParse(buffInfoParam[4], out removebuff))
-                        {
-                            Log.Error($"int.TryParse error: {buffInfoParam[4]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-                    }
-
-                    if (buffInfoParam[1] == "1")
-                    {
-                        if (buffInfoParam.Length < 4)
-                        {
-                            Log.Error($"buffInfoParam.Length < 4 skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        if (!int.TryParse(buffInfoParam[0], out int buffId))
-                        {
-                            Log.Error($"int.TryParse error: {buffInfoParam[0]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        if (!int.TryParse(buffInfoParam[2], out int triggerSkillId))
-                        {
-                            Log.Error($"int.TryParse error: {buffInfoParam[2]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        if (!float.TryParse(buffInfoParam[3], out float skillInterval))
-                        {
-                            Log.Error($"float.TryParse error: {buffInfoParam[3]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        //释放skillconfig.Id的判断
-                        BuffTriggerSkill.Add(skillconfig.Id, new KeyValuePairLong4()
-                        {
-                            KeyId = buffId,                        //受击者 拥有buffid
-                            Value = triggerSkillId,                        //攻击者 触发新技能
-                            Value2 = (long)(skillInterval * 1000),       //技能间隔
-                            Value3 = removebuff                   //移除受击者Buff
-                        });
-                    }
-                    //97050001,2,1.5    buffid/类型/伤害系数
-                    if (buffInfoParam[1] == "2")
-                    {
-                        if (buffInfoParam.Length < 3)
-                        {
-                            Log.Error($"buffInfoParam.Length < 3 skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        if (!int.TryParse(buffInfoParam[0], out int buffId))
-                        {
-                            Log.Error($"int.TryParse error: {buffInfoParam[0]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        if (!float.TryParse(buffInfoParam[2], out float hurtRate))
-                        {
-                            Log.Error($"float.TryParse error: {buffInfoParam[2]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        BuffAddHurt.Add(skillconfig.Id, new KeyValuePairLong4()
-                        {
-                            KeyId = buffId,                        //受击者 拥有buffid
-                            Value2 = (long)(hurtRate * 1000)       //受击者 伤害系数加成
-                        });
-                    }
-                    //97050203,3,77008007  buffid/类型/二段技能0  //'key64014301 buffid95102003,3,二段技能64014701,1
-                    if (buffInfoParam[1] == "3")
-                    {
-                        if (buffInfoParam.Length < 3)
-                        {
-                            Log.Error($"buffInfoParam.Length < 3 skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        if (!int.TryParse(buffInfoParam[0], out int buffId))
-                        {
-                            Log.Error($"int.TryParse error: {buffInfoParam[0]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        if (!int.TryParse(buffInfoParam[2], out int secondSkillId))
-                        {
-                            Log.Error($"int.TryParse error: {buffInfoParam[2]} skillId:{skillconfig.Id} buffToSkill:{buffToSkill}");
-                            continue;
-                        }
-
-                        BuffSecondSkill.Add(skillconfig.Id, new KeyValuePairLong4()
-                        {
-                            KeyId = buffId,                        //攻击者 buffid          
-                            Value2 = secondSkillId,                       //攻击者二段技能  
-                        });
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e.ToString() + buffToSkill);
-                }
+                skillconfig.ParseRuntimeData();
             }
 
             foreach (LDSkill skillconfig in this.GetAll().Values)
@@ -223,22 +214,7 @@ namespace ET
 
             foreach (LDSkill skillconfig in this.GetAll().Values)
             {
-                int[] specimonsters = skillconfig.SpecifiedMonster;
-                if (specimonsters == null || specimonsters.Length == 0)
-                {
-                    continue;
-                }
-
-                for (int i = 0; i < specimonsters.Length; i++)
-                { 
-                    int monsterid = specimonsters[i];
-                    if (!SkillSpecifiedMonster.ContainsKey(monsterid))
-                    {
-                        SkillSpecifiedMonster.Add(monsterid, new List<int>());
-                    }
-
-                    SkillSpecifiedMonster[monsterid].Add(skillconfig.Id);
-                }
+                
             }
 
             // 得到所有技能的基础技能

@@ -15,7 +15,7 @@ namespace ET
         {
             this.BaseOnInit(skillId, theUnitFrom);
 
-            string[] paraminfos = this.LdSkillConf.GameObjectParameter.Split(';');
+            string[] paraminfos = null;
             this.isChonFeng = int.Parse(paraminfos[0]);
             if (paraminfos[1] != "0")
             {
@@ -99,8 +99,7 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             float oldSpeed = numericComponent.GetAsFloat(NumericType.Speed_Current);
             float oldspeedAdd = numericComponent.GetAsFloat(NumericType.Speed_Fixed);
-            double addPro = 0f;
-            float newSpeed = (float)(this.LdSkillConf.SkillMoveSpeed * (1 + addPro));
+            float newSpeed = 1f;
             float newspeedAdd = newSpeed - oldSpeed;
 
             if (newSpeed > oldSpeed && newspeedAdd > oldspeedAdd)
@@ -139,7 +138,7 @@ namespace ET
         {
             Vector3 sourcePoint = this.TheUnitFrom.Position;
             Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * this.LdSkillConf.SkillLiveTime * (float)this.LdSkillConf.SkillMoveSpeed * 0.001f;
+            Vector3 TargetPoint = sourcePoint + rotation * Vector3.forward * (float)this.LdSkillConf.Time_2 * 0.001f;
             return TargetPoint;
         }
     }

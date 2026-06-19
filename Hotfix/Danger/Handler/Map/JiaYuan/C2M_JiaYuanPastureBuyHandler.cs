@@ -32,7 +32,7 @@ namespace ET
                 jiagerate = CommonHelper.JiaYuanPastureBuy();
             }
 
-            if (!unit.GetComponent<BagComponent>().CheckCostItem($"13;{(int)(jiaYuanPastureConfig.BuyGold * jiagerate)}"))
+            if (!unit.GetComponent<BagComponent>().CheckNeedItem($"13;{(int)(jiaYuanPastureConfig.BuyGold * jiagerate)}"))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();

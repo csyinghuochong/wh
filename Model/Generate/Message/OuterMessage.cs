@@ -3725,6 +3725,38 @@ namespace ET
 	}
 
 //提交任务
+	[ResponseType(nameof(M2C_TaskNpcTalkCompleteResponse))]
+	[Message(OuterOpcode.C2M_TaskNpcTalkCompleteRequest)]
+	[ProtoContract]
+	public partial class C2M_TaskNpcTalkCompleteRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int TaskId { get; set; }
+
+		[ProtoMember(2)]
+		public int NpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TaskNpcTalkCompleteResponse)]
+	[ProtoContract]
+	public partial class M2C_TaskNpcTalkCompleteResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//提交任务
 	[ResponseType(nameof(M2C_TaskCommitResponse))]
 	[Message(OuterOpcode.C2M_TaskCommitRequest)]
 	[ProtoContract]

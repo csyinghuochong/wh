@@ -26,7 +26,7 @@ namespace ET
 
             SeasonJingHeConfig seasonJingHeConfig = SeasonJingHeConfigCategory.Instance.Get(request.JingHeId);
             BagComponent bagComponent = unit.GetComponent<BagComponent>();  
-            if (!bagComponent.CheckCostItem(seasonJingHeConfig.Cost))
+            if (!bagComponent.CheckNeedItem(seasonJingHeConfig.Cost))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();

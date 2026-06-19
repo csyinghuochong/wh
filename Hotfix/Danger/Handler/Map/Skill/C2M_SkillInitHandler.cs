@@ -47,9 +47,9 @@ namespace ET
             {
                 ///移除重复的转职技能
 
-                Occupation_Transfer occupationTwo = Occupation_TransferCategory.Instance.Get(occTwo);
+                LDOccupation_Transfer occupationTwo = LDOccupation_TransferCategory.Instance.Get(occTwo);
 
-                List<int> occTwoSkillList = new List<int>(occupationTwo.SkillID) { };
+                List<int> occTwoSkillList = new List<int>() { };
                 List<int> selfoccTwoSkill = new List<int>() { };
 
                 int removeSkillIndex = 0;

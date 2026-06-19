@@ -19,7 +19,7 @@ namespace ET
                 }
 
                 int mysteryId = request.MysteryId;
-                if (!MysteryConfigCategory.Instance.Contain(mysteryId))
+                if (!LDShop_GoodsCategory.Instance.Contain(mysteryId))
                 {
                     Log.Error($"C2M_UnionMysteryBuyRequest 1");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -27,7 +27,7 @@ namespace ET
                     return;
                 }
 
-                MysteryConfig mysteryConfig = MysteryConfigCategory.Instance.Get(mysteryId);
+                /*MysteryConfig mysteryConfig = MysteryConfigCategory.Instance.Get(mysteryId);
                 if (mysteryConfig == null)
                 {
                     response.Error = ErrorCode.ERR_NetWorkError;
@@ -40,7 +40,7 @@ namespace ET
                     reply();
                     return;
                 }
-                if (!unit.GetComponent<BagComponent>().CheckCostItem($"{mysteryConfig.SellType};{mysteryConfig.SellValue}"))
+                if (!unit.GetComponent<BagComponent>().CheckNeedItem($"{mysteryConfig.SellType};{mysteryConfig.SellValue}"))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     reply();
@@ -67,7 +67,7 @@ namespace ET
                 unit.GetComponent<UserInfoComponent>().OnMysteryBuy(mysteryId);
                 unit.GetComponent<BagComponent>().OnCostItemData($"{mysteryConfig.SellType};{mysteryConfig.SellValue}", ItemLocType.ItemLocBag, ItemGetWay.UnionXiuLian );
                 unit.GetComponent<BagComponent>().OnAddItemData($"{mysteryConfig.SellItemID};{1}",
-                    $"{ItemGetWay.UnionMysteryBuy}_{TimeHelper.ServerNow()}");
+                    $"{ItemGetWay.UnionMysteryBuy}_{TimeHelper.ServerNow()}");*/
                 reply();
             }
         }

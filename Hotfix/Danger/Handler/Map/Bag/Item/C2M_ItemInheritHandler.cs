@@ -26,7 +26,7 @@ namespace ET
             LDEquip Item = LDEquipCategory.Instance.Get(bagInfo.ItemID);
             string costitem = ItemHelper.GetInheritCost(bagInfo.InheritTimes);
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
-            if (!bagComponent.CheckCostItem(costitem))
+            if (!bagComponent.CheckNeedItem(costitem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();

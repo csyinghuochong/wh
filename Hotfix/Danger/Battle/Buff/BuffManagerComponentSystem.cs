@@ -833,7 +833,7 @@ namespace ET
                 return;
             }
 
-            int jifen = unit.GetMaoXianExp();
+            /*int jifen = unit.GetMaoXianExp();
             int activityid = unit.GetComponent<ActivityComponent>().GetMaxActivityId(jifen);
             if (activityid == 0)
             {
@@ -847,7 +847,7 @@ namespace ET
                 buffData_2.SkillId = 67000278;
                 buffData_2.BuffId = buffids[i];
                 self.BuffFactory(buffData_2, unit, null);
-            }
+            }*/
         }
 
         public static void InitCombatRankBuff(this BuffManagerComponent self)

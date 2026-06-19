@@ -25,7 +25,7 @@ namespace ET
             }
 
             LDFashion ldFashion = LDFashionCategory.Instance.Get(request.FashionId  );
-            if (!bagComponent.CheckCostItem(ldFashion.ActiveCost))
+            if (!bagComponent.CheckNeedItem(ldFashion.ActiveCost))
             {
                 response.Error = ErrorCode.ERR_HouBiNotEnough;
                 reply();

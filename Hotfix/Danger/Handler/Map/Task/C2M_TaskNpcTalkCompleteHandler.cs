@@ -1,0 +1,36 @@
+using System;
+
+namespace ET
+{
+
+    [ActorMessageHandler]
+    public class C2M_TaskNpcTalkCompleteHandler : AMActorLocationRpcHandler<Unit, C2M_TaskNpcTalkCompleteRequest, M2C_TaskNpcTalkCompleteResponse>
+    {
+
+        protected override async ETTask Run(Unit unit, C2M_TaskNpcTalkCompleteRequest request, M2C_TaskNpcTalkCompleteResponse response, Action reply)
+        {
+            TaskComponent taskComponent = unit.GetComponent<TaskComponent>();
+            
+            for (int k = 0; k < taskComponent.RoleTaskList.Count; k++)
+            {
+                TaskPro taskPro = taskComponent.RoleTaskList[k];
+                
+                if (!LDTaskCategory.Instance.Contain(taskPro.taskID))
+                {
+                    Log.Debug($"无效的任务ID {taskPro.taskID}");
+                    continue;
+                }
+                LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
+     
+                if (taskPro.taskStatus < (int)TaskStatuEnum.Completed 
+                    && ldTask.Condition_Type  == TastConditionType.TalkToNpc_200  && ldTask.Param2 == request.NpcId)
+                {
+                    taskPro.taskStatus = TaskStatuEnum.Completed;
+                }
+            }
+  
+            reply();
+            await ETTask.CompletedTask;
+        }
+    }
+}

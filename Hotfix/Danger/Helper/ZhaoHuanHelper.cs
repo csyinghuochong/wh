@@ -21,7 +21,7 @@ namespace ET
             }
 
             LDSkill ldSkill = LDSkillCategory.Instance.Get(args.SkillId);
-            string gameObjectParameter = ldSkill.GameObjectParameter;
+            string gameObjectParameter = null;//ldSkill.GameObjectParameter;
             string[] summonParListold = gameObjectParameter.Split(';');
             string[] summonParList = new string[summonParListold.Length - 1];
             Array.Copy(summonParListold, 1, summonParList, 0, summonParList.Length);

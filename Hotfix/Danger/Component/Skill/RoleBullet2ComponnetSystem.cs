@@ -49,12 +49,12 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             self.BeginTime = numericComponent.GetAsLong(NumericType.StartTime);
-            self.DelayTime = (long)(1000 * skillHandler.LdSkillConf.SkillDelayTime);
-            self.DamageRange = self.SkillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddDamageRange) + (float)skillHandler.LdSkillConf.DamgeRange[0];
-            self.BuffEndTime = 1000 * (int)self.SkillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddSkillLiveTime) + skillHandler.LdSkillConf.SkillLiveTime + TimeHelper.ServerNow();
+            self.DelayTime = 1;///(long)(1000 * skillHandler.LdSkillConf.SkillDelayTime);
+            self.DamageRange = 1f;//self.SkillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddDamageRange) + (float)skillHandler.LdSkillConf.DamgeRange[0];
+            self.BuffEndTime = 1000;//1000 * (int)self.SkillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddSkillLiveTime) + skillHandler.LdSkillConf.SkillLiveTime + TimeHelper.ServerNow();
             self.StartAngle = numericComponent.GetAsInt( NumericType.StartAngle );
             self.TheUnitBelongto = unit.GetParent<UnitComponent>().Get(masterid);
-            self.Radius = (float)skillHandler.LdSkillConf.SkillRangeSize;
+            self.Radius = 0.5f;// (float)skillHandler.LdSkillConf.SkillRangeSize;
             self.StartPosition = unit.Position;
             self.InterValTimeSum = 0;
 
@@ -64,11 +64,7 @@ namespace ET
         public static bool CheckMaxAttackNumber(this RoleBullet2Componnet self, long unitid)
         {
             //MaxAttackNumber ==0 || -1不限制
-            int MaxAttackNumber = self.SkillHandler.LdSkillConf.MaxAttackNumber;
-            if (MaxAttackNumber > 0 && MaxAttackNumber >= self.HurtIds.Count && !self.HurtIds.Contains(unitid))
-            {
-                return true;
-            }
+            
             return false;
         }
 
@@ -88,7 +84,7 @@ namespace ET
                 return;
             }
 
-            self.Angle = (self.PassTime * 0.001f) * (float)self.SkillHandler.LdSkillConf.SkillMoveSpeed + self.StartAngle;
+            //self.Angle = (self.PassTime * 0.001f) * (float)self.SkillHandler.LdSkillConf.SkillMoveSpeed + self.StartAngle;
             if (self.Angle >= (self.InterValTimeSum + 1) * 360)
             {
                 self.Angle %= 360;

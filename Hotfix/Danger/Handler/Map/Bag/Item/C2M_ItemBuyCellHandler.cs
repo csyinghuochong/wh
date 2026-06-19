@@ -10,7 +10,7 @@ namespace ET
         {
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
             //string costitems = GlobalValueConfigCategory.Instance.Get(83).Value;
-            //if (!bagComponent.CheckCostItem(costitems))
+            //if (!bagComponent.CheckNeedItem(costitems))
             //{
             //    response.Error = ErrorCode.ERR_DiamondNotEnoughError;
             //    reply();

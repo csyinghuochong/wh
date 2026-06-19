@@ -111,7 +111,7 @@ namespace ET
             unit.Position = vector3;
             unit.Type = UnitType.Bullet;            //子弹Unity,根据这个类型会实例化出特效
             LDSkill ldSkill = LDSkillCategory.Instance.Get(skillid);
-            numericComponent.Set(NumericType.Numeric_Error, ldSkill.SkillMoveSpeed, false);
+            numericComponent.Set(NumericType.Speed_Current, 1, false);
             numericComponent.Set(NumericType.MasterId, masterid, false);
             numericComponent.Set(NumericType.StartAngle, starangle, false);
             numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);

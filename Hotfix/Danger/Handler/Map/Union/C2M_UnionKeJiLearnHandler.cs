@@ -20,7 +20,7 @@ namespace ET
             }
 
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
-            if (!bagComponent.CheckCostItem( unionKeJiConfig.LearnCost ))
+            if (!bagComponent.CheckNeedItem( unionKeJiConfig.LearnCost ))
             {
                 response.UnionKeJiList = userInfoComponent.UserInfo.UnionKeJiList;
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;

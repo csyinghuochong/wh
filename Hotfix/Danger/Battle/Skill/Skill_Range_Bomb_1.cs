@@ -16,7 +16,7 @@ namespace ET
             this.BaseOnInit(skillId, theUnitFrom);
 
             //1; 60031162
-            string[] paramsinfo = this.LdSkillConf.GameObjectParameter.Split(';');
+            string[] paramsinfo = null;//this.LdSkillConf.GameObjectParameter.Split(';');
             this.SkillTriggerInvelTime = (long)(float.Parse(paramsinfo[0]) * 1000);
             this.SkillTriggerLastTime = 0;
             this.TriggeSkillId = int.Parse(paramsinfo[1]);  

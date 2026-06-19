@@ -6895,11 +6895,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj",
+      "projectUniqueName": "e:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj",
       "projectName": "Server.Model",
-      "projectPath": "E:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj",
+      "projectPath": "e:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj",
       "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-      "outputPath": "E:\\GiteeLDYQReSkin\\Server\\Model\\obj\\",
+      "outputPath": "e:\\GiteeLDYQReSkin\\Server\\Model\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -6916,19 +6916,20 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "E:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj": {
-              "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj"
+            "e:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj": {
+              "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj"
             },
-            "E:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj": {
-              "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj"
+            "e:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj": {
+              "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj"
             },
-            "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
-              "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
+            "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
+              "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
             }
           }
         }
       },
       "warningProperties": {
+        "allWarningsAsErrors": true,
         "warnAsError": [
           "NU1605"
         ]

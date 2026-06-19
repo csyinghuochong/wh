@@ -12,7 +12,7 @@ namespace ET
         {
             this.BaseOnInit(skillId, theUnitFrom);
 
-            this.SkillExcuteNum = int.Parse(this.LdSkillConf.GameObjectParameter);
+            this.SkillExcuteNum = 1;
         }
 
         public override void OnExecute()

@@ -951,12 +951,8 @@ namespace ET
                         HideProListConfig hideProListConfig = HideProListConfigCategory.Instance.Get(userBagInfo.IncreaseSkillLists[s]);
                         LDSkill ldSkill = LDSkillCategory.Instance.Get(hideProListConfig.PropertyType);
 
-                        if (ldSkill.SkillType != (int)SkillTypeEnum.PassiveAddProSkill)
-                        {
-                            continue;
-                        }
 
-                        string GameObjectParameter = ldSkill.GameObjectParameter;
+                        string GameObjectParameter = null;///ldSkill.GameObjectParameter;
                         if (CommonHelper.IfNull(GameObjectParameter))
                         {
                             continue;
@@ -1171,65 +1167,13 @@ namespace ET
                     }
                 }
             }
-
-
-
-            //互斥技能处理
-            List<int> huchiList = new List<int>();
-            for (int i = 0; i < rolePetInfo.PetSkill.Count; i++)
-            {
-                LDSkill ldSkillCof = LDSkillCategory.Instance.Get(rolePetInfo.PetSkill[i]);
-                if (rolePetInfo.PetSkill.Contains(ldSkillCof.HuChiID))
-                {
-                    huchiList.Add(rolePetInfo.PetSkill[i]);
-                }
-            }
-
+            
+            
             //宠物技能
             for (int i = 0; i < rolePetInfo.PetSkill.Count; i++)
             {
                 LDSkill ldSkillCof = LDSkillCategory.Instance.Get(rolePetInfo.PetSkill[i]);
-                if (CommonHelper.IfNull(ldSkillCof.GameObjectParameter))
-                {
-                    continue;
-                }
-
-                //判定是否为附加属性
-                if (ldSkillCof.SkillType != 5)
-                {
-                    continue;
-                }
-
-                //判断是否为互斥技能
-                if (huchiList.Contains(rolePetInfo.PetSkill[i]))
-                {
-                    continue;
-                }
-
-                string[] skillStrList = ldSkillCof.GameObjectParameter.Split(';');
-                if (skillStrList.Length == 0)
-                {
-                    continue;
-                }
-
-                for (int y = 0; y < skillStrList.Length; y++)
-                {
-                    try
-                    {
-                        string[] attriItem = skillStrList[y].Split(',');
-                        if (attriItem.Length == 0)
-                        {
-                            continue;
-                        }
-                        int typeId = int.Parse(attriItem[0]);
-                        long typevalue = NumericHelp.GetNumericValueType(typeId) == 2 ? (long)(10000 * float.Parse(attriItem[1])) : long.Parse(attriItem[1]);
-                        Function_Fight.AddUpdateProDicList(typeId, typevalue, attriDic);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Info($"attri Eption：{rolePetInfo.PetSkill[i]} {ex.ToString()}");
-                    }
-                }
+                
             }
 
 

@@ -15,7 +15,7 @@ namespace ET
             switch (request.OperatateType)
             {
                 case 1:
-                    if (!bagComponent.CheckCostItem(ActivityV1Config.ActivityOrderRefreshItem))
+                    if (!bagComponent.CheckNeedItem(ActivityV1Config.ActivityOrderRefreshItem))
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();
@@ -37,7 +37,7 @@ namespace ET
                     }
                     ActivityOrderItem activityOrderItem = ActivityV1Config.ActivityOrderItemList[orderId];
                    
-                    if (!bagComponent.CheckCostItem(activityOrderItem.Give))
+                    if (!bagComponent.CheckNeedItem(activityOrderItem.Give))
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();

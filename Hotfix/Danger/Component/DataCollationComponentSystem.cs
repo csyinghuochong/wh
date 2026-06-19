@@ -395,7 +395,7 @@ namespace ET
 
             if (userInfoComponent.UserInfo.OccTwo > 0)
             {
-                WordHelper.GetShowText(Occupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).Name);
+                WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).Name);
             }
 
             self.Combat = userInfoComponent.UserInfo.Combat;

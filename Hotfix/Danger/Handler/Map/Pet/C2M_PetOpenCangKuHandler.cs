@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PetOpenCangKu request, M2C_PetOpenCangKu response, Action reply)
         {
             string costitem = CommonConfig.PetOpenCangKu[request.OpenIndex - 1];
-            if (!unit.GetComponent<BagComponent>().CheckCostItem(costitem))
+            if (!unit.GetComponent<BagComponent>().CheckNeedItem(costitem))
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
