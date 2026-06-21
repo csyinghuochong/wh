@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj": {}
+    "E:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj": {}
   },
   "projects": {
-    "e:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj": {
+    "E:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj",
+        "projectUniqueName": "E:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj",
         "projectName": "Server.Model",
-        "projectPath": "e:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj",
+        "projectPath": "E:\\GiteeLDYQReSkin\\Server\\Model\\Server.Model.csproj",
         "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-        "outputPath": "e:\\GiteeLDYQReSkin\\Server\\Model\\obj\\",
+        "outputPath": "E:\\GiteeLDYQReSkin\\Server\\Model\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,20 +28,19 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "e:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj": {
-                "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj"
+              "E:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj": {
+                "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj"
               },
-              "e:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj": {
-                "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj"
+              "E:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj": {
+                "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj"
               },
-              "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
-                "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
+              "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
+                "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
               }
             }
           }
         },
         "warningProperties": {
-          "allWarningsAsErrors": true,
           "warnAsError": [
             "NU1605"
           ]
@@ -108,14 +107,14 @@
         }
       }
     },
-    "e:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj": {
+    "E:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj",
+        "projectUniqueName": "E:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj",
         "projectName": "ETTask",
-        "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj",
+        "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj",
         "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-        "outputPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\obj\\",
+        "outputPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\ETTask\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -183,14 +182,14 @@
         }
       }
     },
-    "e:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj": {
+    "E:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj",
+        "projectUniqueName": "E:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj",
         "projectName": "ShareLib",
-        "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj",
+        "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj",
         "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-        "outputPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\obj\\",
+        "outputPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\ShareLib\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -207,8 +206,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
-                "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
+              "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
+                "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
               }
             }
           }
@@ -300,14 +299,14 @@
         }
       }
     },
-    "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
+    "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
+        "projectUniqueName": "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
         "projectName": "UnityEngine",
-        "projectPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
+        "projectPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
         "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-        "outputPath": "e:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\obj\\",
+        "outputPath": "E:\\GiteeLDYQReSkin\\ThirdParty\\UnityEngine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",

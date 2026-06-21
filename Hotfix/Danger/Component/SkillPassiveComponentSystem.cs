@@ -379,7 +379,7 @@ namespace ET
 
         public static void AddPassiveSkillByType(this SkillPassiveComponent self, LDSkill ldSkill, Dictionary<int, int> magicskills = null)
         {
-            if (ldSkill.Type != SkillTypeEnum.SkillTypePassive_4)
+            if (ldSkill.Type != SkillTypeEnum.SkillTypePassive_9)
             {
                 return;
             }

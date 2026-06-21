@@ -53,95 +53,21 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             List<SkillInfo> skillInfos = new List<SkillInfo>();
-            SkillInfo skillInfo = new SkillInfo();
          
-            if (self.SkillSecond.ContainsKey(skillcmd.SkillID))
-            {
-                //有对应的buff才能触发二段斩
-                int buffId = (int)LDSkillCategory.Instance.BuffSecondSkill[self.SkillSecond[skillcmd.SkillID]].KeyId;
-
-                List<Unit> allDefend = unit.GetParent<UnitComponent>().GetAll();
-                for (int defend = 0; defend < allDefend.Count; defend++)
-                {
-                    BuffManagerComponent buffManagerComponent = allDefend[defend].GetComponent<BuffManagerComponent>();
-                    if (buffManagerComponent == null || allDefend[defend].Id == unit.Id) //|| allDefend[defend].Id == request.TargetID 
-                    {
-                        continue;
-                    }
-                    int buffNum = buffManagerComponent.GetBuffSourceNumber(unit.Id, buffId);
-                    if (buffNum <= 0)
-                    {
-                        continue;
-                    }
-                 
-                    buffManagerComponent.BuffRemoveByUnit(0, buffId);
-                    Vector3 direction = allDefend[defend].Position - unit.Position;
-                    float ange = Mathf.Rad2Deg(Mathf.Atan2(direction.x, direction.z));
-                    skillInfo = new SkillInfo();
-                    skillInfo.TargetAngle = (int)Quaternion.QuaternionToEuler(unit.Rotation).y;
-                    Vector3 targetPosition = allDefend[defend].Position;
-                    skillInfo.WeaponSkillID = weaponSkill;
-                    skillInfo.PosX = targetPosition.x;
-                    skillInfo.PosY = targetPosition.y;
-                    skillInfo.PosZ = targetPosition.z;
-                    skillInfo.TargetID = skillcmd.TargetID;
-                    skillInfo.TargetAngle = Mathf.FloorToInt(ange);
-                    skillInfos.Add(skillInfo);
-                }
-
-                return skillInfos;
-            }
-
-
             LDSkill ldSkill = LDSkillCategory.Instance.Get(weaponSkill);
             Unit target = unit.GetParent<UnitComponent>().Get(skillcmd.TargetID);
+            Vector3 targetPosition = LDSkillHelper.ResolveSkillTargetPosition(unit, ldSkill, skillcmd, target);
 
-            switch (ldSkill.Type)
-            {
-                case (int)SkillNeedTargetType.NoTarget_0:
-                    skillInfo = new SkillInfo();
-                    skillInfo.WeaponSkillID = weaponSkill;
-                    skillInfo.PosX = unit.Position.x;
-                    skillInfo.PosY = unit.Position.y;
-                    skillInfo.PosZ = unit.Position.z;
-                    skillInfo.TargetID = skillcmd.TargetID;
-                    skillInfo.TargetAngle = skillcmd.TargetAngle;
-                    skillInfos.Add(skillInfo);
-                    break;
-                case (int)SkillNeedTargetType.NeedTarget_1:
-                case (int)SkillNeedTargetType.NeedTargetOrForce_2:
-                    skillInfo = new SkillInfo();
-                    skillInfo.WeaponSkillID = weaponSkill;
-                    skillInfo.PosX = target != null ? target.Position.x : unit.Position.x;
-                    skillInfo.PosY = target != null ? target.Position.y : unit.Position.y;
-                    skillInfo.PosZ = target != null ? target.Position.z : unit.Position.z;
-                    skillInfo.TargetID = skillcmd.TargetID;
-                    skillInfo.TargetAngle = skillcmd.TargetAngle;
-                    skillInfos.Add(skillInfo);
-                    break;
-            default:
-                    break;
-            }
-            //如果是闪现技能，并且目标点不能到达
-            /*if (ldSkill.GameObjectName == "Skill_ShanXian_1" && skillInfos.Count > 0)
-            {
-                MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
-                Vector3 vector3 = new Vector3(skillInfos[0].PosX, skillInfos[0].PosY, skillInfos[0].PosZ);
-                Vector3 target3 = mapComponent.GetCanReachPath(unit, unit.Position, vector3);
+            SkillInfo skillInfo = new SkillInfo();
+            skillInfo.SkillID = skillcmd.SkillID;
+            skillInfo.WeaponSkillID = weaponSkill;
+            skillInfo.PosX = targetPosition.x;
+            skillInfo.PosY = targetPosition.y;
+            skillInfo.PosZ = targetPosition.z;
+            skillInfo.TargetID = skillcmd.TargetID;
+            skillInfo.TargetAngle = skillcmd.TargetAngle;
+            skillInfos.Add(skillInfo);
 
-                skillInfos[0].PosX = target3.x;
-                skillInfos[0].PosY = target3.y;
-                skillInfos[0].PosZ = target3.z;
-            }
-            //90010909
-            if (ldSkill.GameObjectName == "Skill_ShanXian_2" && skillInfos.Count > 0 && target!=null)
-            {
-                Vector3 dir =  target.Rotation * Vector3.back;
-                Vector3 vector3 = target.Position + dir * 1f;
-                skillInfos[0].PosX = vector3.x;
-                skillInfos[0].PosY = vector3.y;
-                skillInfos[0].PosZ = vector3.z;
-            }*/
             return skillInfos;
         }
 
@@ -297,13 +223,17 @@ namespace ET
             M2C_SkillCmd m2C_Skill = self.M2C_SkillCmd;
             m2C_Skill.Message = String.Empty;
 
-            //判断技能是否可以释放
-            int errorCode = self.IsCanUseSkill(skillcmd.SkillID, zhudong, checkDead);
+            LDSkillHelper.PrepareSkillCmd(unit, skillcmd);
+
+            int errorCode = self.IsCanUseSkill(skillcmd, zhudong, checkDead);
             if (zhudong && errorCode != ErrorCode.ERR_Success)
             {
                 m2C_Skill.Error = errorCode;
                 return m2C_Skill;
             }
+
+            LDSkill baseLdSkill = LDSkillCategory.Instance.Get(skillcmd.SkillID);
+            LDSkillHelper.ApplyConsume(unit, baseLdSkill);
 
             SkillSetComponent skillSetComponent = unit.GetComponent<SkillSetComponent>();
             int weaponSkillid = unit.GetWeaponSkill(skillcmd.SkillID, skillSetComponent!=null ? skillSetComponent.SkillList : null );
@@ -663,7 +593,17 @@ namespace ET
         }
 
         //技能是否可以使用
+        public static int IsCanUseSkill(this SkillManagerComponent self, C2M_SkillCmd skillcmd, bool zhudong = true, bool checkDead = true)
+        {
+            return self.IsCanUseSkill(skillcmd.SkillID, skillcmd.TargetID, zhudong, checkDead);
+        }
+
         public static int IsCanUseSkill(this SkillManagerComponent self, int nowSkillID, bool zhudong = true, bool checkDead = true)
+        {
+            return self.IsCanUseSkill(nowSkillID, 0, zhudong, checkDead);
+        }
+
+        public static int IsCanUseSkill(this SkillManagerComponent self, int nowSkillID, long targetId, bool zhudong = true, bool checkDead = true)
         {
             if (self.CheckChongJi(nowSkillID))
             { 
@@ -675,7 +615,20 @@ namespace ET
             }
             
             Unit unit = self.GetParent<Unit>();
+            nowSkillID = LDSkillHelper.GetEffectiveSkillId(unit, nowSkillID);
             LDSkill ldSkill = LDSkillCategory.Instance.Get(nowSkillID);
+
+            if (LDSkillHelper.IsPassiveSkill(ldSkill))
+            {
+                return ErrorCode.ERR_CanNotUseSkill_1;
+            }
+
+            int castError = LDSkillHelper.CheckCastCondition(unit, ldSkill, targetId);
+            if (castError != ErrorCode.ERR_Success)
+            {
+                return castError;
+            }
+
             StateComponent stateComponent = unit.GetComponent<StateComponent>();
 
             //判断技能是否再冷却中
@@ -778,50 +731,7 @@ namespace ET
             self.SkillCDs.Clear();
             self.OnDispose();
         }
-
-        /// <summary>
-        /// 二段斩第一技能结束
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="skillConfig"></param>
-        public static void CheckSkillSecond(this SkillManagerComponent self, SkillHandler skillHandler, long hurtId) 
-        {
-            KeyValuePairLong4 keyValuePairLong = null;
-            //有二段斩则记录到self.SkillSecond， 无则返回
-            LDSkillCategory.Instance.BuffSecondSkill.TryGetValue(skillHandler.LdSkillConf.Id, out keyValuePairLong);
-            if (keyValuePairLong == null)
-            {
-                return;
-            }
-
-            UnitComponent unitComponent = self.DomainScene().GetComponent<UnitComponent>();
-            Unit target = unitComponent.Get(hurtId);
-            if (target == null)
-            {
-                return;
-            }
-
-            if (target.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) == 1)
-            {
-                return;
-            }
-
-            int cdskillid = skillHandler.OriginalSkill > 0 ? skillHandler.OriginalSkill : skillHandler.LdSkillConf.Id;
-
-            ///攻击到目标则暂时清除CD
-            SkillCDItem skillCDItem = null;
-            self.SkillCDs.TryGetValue(cdskillid, out skillCDItem);
-            if (skillCDItem != null && skillCDItem.CDEndTime != 0)
-            {
-                skillCDItem.CDEndTime = 0;
-                //有伤害才同步 打断CD. 只同步一次
-                M2C_SkillSecondResult request = new M2C_SkillSecondResult() { UnitId = self.Id, SkillId = cdskillid, HurtIds = new List<long> { hurtId } };
-                MessageHelper.SendToClient(self.GetParent<Unit>(), request);
-            }
-           
-
-            self.SkillSecond[(int)(keyValuePairLong.Value2)] = skillHandler.LdSkillConf.Id;//702-302
-        }
+        
 
         public static void CheckEndSkill(this SkillManagerComponent self, int endSkillId)
         {

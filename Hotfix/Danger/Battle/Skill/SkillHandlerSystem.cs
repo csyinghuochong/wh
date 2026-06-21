@@ -25,7 +25,10 @@ namespace ET
             self.SkillBeginTime = TimeHelper.ServerNow();
             self.DamgeChiXuLastTime = TimeHelper.ServerNow();
             self.SkillExcuteHurtTime = self.SkillBeginTime + (long)(1000 * self.LdSkillConf.Time_1);
-            self.SkillEndTime = self.SkillBeginTime + (long)(1000 * self.LdSkillConf.Time_3);
+            double totalTime = LDSkillHelper.GetSkillTotalTime(self.LdSkillConf);
+            self.SkillEndTime = totalTime > 0
+                ? self.SkillBeginTime + (long)(1000 * totalTime)
+                : self.SkillBeginTime + 1000;
             self.TargetPosition = new Vector3(skillcmd.PosX, skillcmd.PosY, skillcmd.PosZ); //获取起始坐标
             self.ICheckShape = new List<Shape>() { self.CreateCheckShape(self.SkillInfo.TargetAngle) };
             self.NowPosition = self.TargetPosition;              //获取技能起始的坐标点
@@ -89,6 +92,12 @@ namespace ET
                     self.SkillBuff(self.LdSkillConf.InitBuffID[y], self.TheUnitFrom);
                 }
             }*/
+
+            int[] initBuffIds = LDSkillHelper.GetInitBuffIds(self.LdSkillConf.Id);
+            for (int i = 0; i < initBuffIds.Length; i++)
+            {
+                self.SkillBuff(initBuffIds[i], self.TheUnitFrom);
+            }
             
             SkillSetComponent skillSetComponent = self.TheUnitFrom.GetComponent<SkillSetComponent>();
             List<int> buffInitAdd = skillSetComponent != null ? skillSetComponent.GetBuffInitIdAdd(self.LdSkillConf.Id) : null;
@@ -134,7 +143,7 @@ namespace ET
                         self.OnCollisionUnit(targetUnit);
                     }
                 }
-                if ( self.LdSkillConf.NeedTarget == (int)SkillNeedTargetType.NeedTargetOrForce_2)
+                else if ( self.LdSkillConf.NeedTarget == (int)SkillNeedTargetType.NeedTargetOrForce_2)
                 {
                     UnitComponent unitComponent = self.TheUnitFrom.GetParent<UnitComponent>();
                     if (unitComponent == null)
@@ -150,6 +159,33 @@ namespace ET
                     else
                     {
                         self.ExcuteSkillAction();
+                    }
+                }
+                else if (self.LdSkillConf.Range_Type == SkillRangeType.SkillRangeSingle_0)
+                {
+                    UnitComponent unitComponent = self.TheUnitFrom.GetParent<UnitComponent>();
+                    Unit targetUnit = unitComponent?.Get(self.SkillInfo.TargetID);
+                    if (targetUnit != null && LDSkillHelper.IsValidTarget(self.TheUnitFrom, targetUnit, self.LdSkillConf))
+                    {
+                        self.OnCollisionUnit(targetUnit);
+                    }
+                    else
+                    {
+                        /*
+                        float searchRange = self.LdSkillConf.Search_Range > 0
+                            ? (float)self.LdSkillConf.Search_Range
+                            : (float)self.LdSkillConf.Cast_Range;
+                        if (searchRange > 0)
+                        {
+                            Unit selected = LDSkillHelper.SelectTarget(
+                                self.TheUnitFrom,
+                                LDSkillHelper.CollectCandidates(self.TheUnitFrom, self.LdSkillConf, searchRange),
+                                self.LdSkillConf);
+                            if (selected != null)
+                            {
+                                self.OnCollisionUnit(selected);
+                            }
+                        }*/
                     }
                 }
                 else
@@ -278,17 +314,7 @@ namespace ET
 
         public static bool SkillCanAttackUnit(this SkillHandler self, Unit uu)
         {
-            //鞭炮打年兽 鞭炮道具10030002 技能76001001年兽 72009001
-            //if (self.SkillConf.Id == 76001001 && uu.ConfigId != 72009001)
-            //{
-            //    return false;
-            //}
-            //if (self.SkillConf.Id != 76001001 && uu.ConfigId == 72009001)
-            //{
-            //    return false;
-            //}
-
-            return true;
+            return LDSkillHelper.IsValidTarget(self.TheUnitFrom, uu, self.LdSkillConf);
         }
 
         public static void OnChiXuHurtCollision(this SkillHandler self, Unit uu)

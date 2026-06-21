@@ -736,6 +736,25 @@ namespace ET
             return false;
         }
 
+        public static int GetBuffNumber(this BuffManagerComponent self, int buffId)
+        {
+            int number = 0;
+            int buffcnt = self.m_Buffs.Count;
+            for (int i = buffcnt - 1; i >= 0; i--)
+            {
+                if (self.m_Buffs[i].BuffData.BuffId == buffId)
+                {
+                    number++;
+                }
+            }
+            return number;
+        }
+
+        public static bool HaveBuff(this BuffManagerComponent self, int buffId)
+        {
+            return self.GetBuffNumber(buffId) > 0;
+        }
+
         public static int GetBuffSourceNumber(this BuffManagerComponent self, long formId, int buffId)
         {
             int buffnumber = 0;
