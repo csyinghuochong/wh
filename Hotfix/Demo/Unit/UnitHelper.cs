@@ -305,11 +305,6 @@ namespace ET
                 int itemId = self.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Weapon);
                 return ItemHelper.GetEquipType(self.ConfigId, itemId);
             }
-            if (self.Type  == UnitType.Monster && self.AI == 15)
-            {
-                return self.GetComponent<ComboComponent>().EquipType;
-            }
-
             return ItemEquipType.Common;
         }
 

@@ -96,12 +96,12 @@ namespace ET
 		/// <summary>模型</summary>
 		[ProtoMember(7)]
 		public string ModelAsset { get; set; }
-		/// <summary>武器技能1</summary>
+		/// <summary>普攻</summary>
 		[ProtoMember(8)]
-		public int Skill_Wewapon_1 { get; set; }
-		/// <summary>武器技能2</summary>
+		public int Skill_Normal { get; set; }
+		/// <summary>武器技能</summary>
 		[ProtoMember(9)]
-		public int[] Skill_Wewapon_2 { get; set; }
+		public int[] Skill_Wewapon { get; set; }
 		/// <summary>基础技能</summary>
 		[ProtoMember(10)]
 		public int[] Skill_Base { get; set; }

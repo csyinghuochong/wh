@@ -217,6 +217,9 @@ namespace ET
 		[ProtoMember(4)]
 		public long AccountId { get; set; }
 
+		[ProtoMember(5)]
+		public int ServerId { get; set; }
+
 	}
 
 	[Message(OuterOpcode.R2C_DeleteRoleData)]

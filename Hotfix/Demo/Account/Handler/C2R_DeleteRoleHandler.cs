@@ -21,7 +21,6 @@ namespace ET
                 using (session.AddComponent<SessionLockingComponent>())
                 {
                     //存储账号信息
-                    int zone = session.DomainZone();
                     List<DBCenterAccountInfo> newAccountList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(session.DomainZone(), d => d.Id == request.AccountId);
                     if (newAccountList.Count == 0)
                     {
@@ -41,17 +40,17 @@ namespace ET
                                 newAccount.RoleList[i].State = (int)RoleInfoState.Freeze;
                             }
                         }
-                        
                     }
-                    await Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(CommonConfig.CenterZoneId, newAccount);
-                    long mapInstanceId = DBHelper.GetRankServerId(session.DomainZone());
+                    
+                    await Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(session.DomainZone(), newAccount);
+                    long mapInstanceId = DBHelper.GetRankServerId(request.ServerId);
                     Rank2R_DeleteRoleData deleteResponse = (Rank2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
                     (mapInstanceId, new R2Rank_DeleteRoleData()
                     {
                         DeleUserID = request.DeleUserID,
                         AccountId = request.AccountId
                     });
-                    long paimaiInstanceid = DBHelper.GetPaiMaiServerId(session.DomainZone());
+                    long paimaiInstanceid = DBHelper.GetPaiMaiServerId(request.ServerId);
                     Paimai2R_DeleteRoleData deleteResponse2 = (Paimai2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
                    (paimaiInstanceid, new R2Paimai_DeleteRoleData()
                    {
@@ -60,16 +59,16 @@ namespace ET
                        DeleteType = 0,
                    });
 
-                    DBHelper.DeleteUnitCache(session.DomainZone(), request.DeleUserID).Coroutine();
-                    UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(zone, request.DeleUserID);
-                    NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(zone, request.DeleUserID);
+                    DBHelper.DeleteUnitCache(request.ServerId, request.DeleUserID).Coroutine();
+                    UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(request.ServerId, request.DeleUserID);
+                    NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(request.ServerId, request.DeleUserID);
                     if (userInfoComponent != null && userInfoComponent.UserInfo.Lv <= 10 &&
                         (numericComponent.GetAsInt(NumericType.RechargeNumber) <= 0 ))
                     {
                         List<string> allComponets = DBHelper.GetAllUnitComponent();
                         for (int i = 0; i < allComponets.Count; i++)
                         {
-                            Game.Scene.GetComponent<DBComponent>().Remove<Entity>(zone, request.DeleUserID, allComponets[i]).Coroutine();
+                            Game.Scene.GetComponent<DBComponent>().Remove<Entity>(request.ServerId, request.DeleUserID, allComponets[i]).Coroutine();
                         }
                     }
                     reply();
