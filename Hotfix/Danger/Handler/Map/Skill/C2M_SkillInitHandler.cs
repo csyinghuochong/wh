@@ -9,27 +9,20 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_SkillInitRequest request, M2C_SkillInitResponse response, Action reply)
         {
-
             int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
             int occTwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
             SkillSetComponent skillSetComponent = unit.GetComponent<SkillSetComponent>();
             response.SkillSetInfo = new SkillSetInfo();
             
-            //刷新转职技能
-            if (occTwo != 0)
-            {
-                ///移除重复的转职技能
-
-                LDOccupation_Transfer occupationTwo = LDOccupation_TransferCategory.Instance.Get(occTwo);
-
-                List<int> occTwoSkillList = new List<int>() { };
-                List<int> selfoccTwoSkill = new List<int>() { };
-
-            }
-
             List<int> allskill = new List<int>();
-          
             
+            //检测一下初始技能
+            LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(occ);
+
+          
+            skillSetComponent.CheckNormalSkill(occ);
+            skillSetComponent.CheckWeaponSkill(occ);
+
             for (int i = skillSetComponent.SkillList.Count - 1; i >= 0; i--)
             {
                 SkillPro skillPro = skillSetComponent.SkillList[i];

@@ -363,13 +363,7 @@ namespace ET
                         break;
 					case 17: //进入副本
 						break;
-					case 18: //添加技能
-						int skillid = int.Parse(commands[1]);
-						unit.GetComponent<SkillSetComponent>().OnAddSkillBook(  SkillSourceEnum.Skill, skillid);
-                        break;
 					case 19:
-						int rankid = int.Parse(commands[1]);
-						unit.GetComponent<NumericComponent>().ApplyValue( NumericType.CombatRankID, rankid );
                         break;
 					default:
 						break;

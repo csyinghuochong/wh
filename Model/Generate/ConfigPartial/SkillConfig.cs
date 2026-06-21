@@ -112,9 +112,9 @@ namespace ET
     public partial class LDSkillCategory
     {
         /// <summary>
-        /// 69060301 69060302 ..的基础技能都是69060300
+        /// 1003 1002 1001..的基础技能都是1001   
         /// </summary>
-        public Dictionary<int, int> BaseSkillList = new Dictionary<int, int>();
+        public Dictionary<int, int> InitWeaponSkillList = new Dictionary<int, int>();
 
         public Dictionary<int, List<KeyValuePairInt>> EquipSkillList = new Dictionary<int, List<KeyValuePairInt>>();
 
@@ -145,106 +145,64 @@ namespace ET
         /// </summary>
         /// <param name="skillid"></param>
         /// <returns></returns>
-        public int GetInitSkill(int skillid)
+        public int GetInitWeaponSkill(int skillid)
         {
-            int baseskillid = 0;
-            BaseSkillList.TryGetValue( skillid, out baseskillid);
-            return baseskillid;
+            if (this.InitWeaponSkillList.TryGetValue(skillid, out int baseskillid))
+            {
+                return baseskillid;
+            }
+            return skillid;
         }
 
         public override void AfterEndInit()
         {
-            BaseSkillList.Clear();
+           
             foreach (LDSkill skillconfig in this.GetAll().Values)
             {
                 skillconfig.ParseRuntimeData();
             }
 
-            foreach (LDSkill skillconfig in this.GetAll().Values)
+            this.InitWeaponSkillList.Clear();
+            this.BuildInitWeaponSkillList();
+        }
+
+        /// <summary>
+        /// 1003、1002、1001 的基础技能都是 1001。沿 NextId 链从链头向下填充。
+        /// </summary>
+        private void BuildInitWeaponSkillList()
+        {
+            Dictionary<int, LDSkill> allSkills = this.GetAll();
+            HashSet<int> hasPrevious = new HashSet<int>();
+            foreach (LDSkill skill in allSkills.Values)
             {
-                /*string equipskill = skillconfig.EquipSkill;
-                if (string.IsNullOrEmpty(equipskill) || equipskill.Equals("0"))
+                if (skill.NextId != 0)
+                {
+                    hasPrevious.Add(skill.NextId);
+                }
+            }
+
+            foreach (LDSkill skill in allSkills.Values)
+            {
+                if (hasPrevious.Contains(skill.Id))
                 {
                     continue;
                 }
 
-                List<KeyValuePairInt> equipSkillds = null;
-                EquipSkillList.TryGetValue(skillconfig.Id, out equipSkillds);
-                if (equipSkillds == null)
+                int baseSkillId = skill.Id;
+                int currentId = skill.Id;
+                HashSet<int> visited = new HashSet<int>();
+                while (currentId != 0 && allSkills.ContainsKey(currentId) && visited.Add(currentId))
                 {
-                    equipSkillds = new List<KeyValuePairInt>();
-                    EquipSkillList.Add(skillconfig.Id, equipSkillds);
+                    this.InitWeaponSkillList[currentId] = baseSkillId;
+                    currentId = allSkills[currentId].NextId;
                 }
-
-                //61023101,61023102;61023102,61023103;61023103,61023104;61023104,61023105;61023105,61023106
-                string[] skillkeys = equipskill.Split(';');
-                if (skillkeys == null)
-                {
-                    Log.Error($"skillconfig.EquipSkill.error1: equipskillid: {skillconfig.Id}  :{equipskill}");
-                    continue;
-                }
-
-                foreach (string key in skillkeys)
-                {
-                    string[] skillitem = key.Split(',');
-                    if (skillitem.Length != 2)
-                    {
-                        Log.Error($"skillconfig.EquipSkill.error2: equipskillid: {skillconfig.Id} {equipskill}");
-                        continue;
-                    }
-
-                    if (!int.TryParse(skillitem[0], out int oldSkillId))
-                    {
-                        Log.Error($"int.TryParse error: {skillitem[0]} skillId:{skillconfig.Id} equipskill:{equipskill}");
-                        continue;
-                    }
-
-                    if (!int.TryParse(skillitem[1], out int newSkillId))
-                    {
-                        Log.Error($"int.TryParse error: {skillitem[1]} skillId:{skillconfig.Id} equipskill:{equipskill}");
-                        continue;
-                    }
-
-                    KeyValuePairInt keyValuePairInt = new KeyValuePairInt();
-                    keyValuePairInt.KeyId = oldSkillId;
-                    keyValuePairInt.Value = newSkillId;
-                    equipSkillds.Add(keyValuePairInt);
-                }*/
             }
 
-            foreach (LDSkill skillconfig in this.GetAll().Values)
+            foreach (LDSkill skill in allSkills.Values)
             {
-                
-            }
-
-            // 得到所有技能的基础技能
-            foreach (LDSkill skillConfig in this.GetAll().Values)
-            {
-                SetBaseSkill(skillConfig, 0);
-            }
-
-            void SetBaseSkill(LDSkill skillConfig, int baseId)
-            {
-                if (!this.BaseSkillList.ContainsKey(skillConfig.Id))
+                if (!this.InitWeaponSkillList.ContainsKey(skill.Id))
                 {
-                    if (baseId != 0)
-                    {
-                        this.BaseSkillList.Add(skillConfig.Id, baseId);
-                        int nextId = skillConfig.NextId;
-                        if (nextId != 0)
-                        {
-                            SetBaseSkill(this.GetAll()[nextId], baseId);
-                        }
-                    }
-                    else
-                    {
-                        this.BaseSkillList.Add(skillConfig.Id, skillConfig.Id);
-                        int nextId = skillConfig.NextId;
-                        if (nextId != 0)
-                        {
-                            SetBaseSkill(this.GetAll()[nextId], skillConfig.Id);
-                        }
-                    }
+                    this.InitWeaponSkillList[skill.Id] = skill.Id;
                 }
             }
         }
