@@ -9,7 +9,7 @@ namespace ET
     public class Function_Fight
     {
 
-        public M2C_UnitNumericListUpdate m2C_UnitNumericListUpdate = new M2C_UnitNumericListUpdate();
+        public  static M2C_UnitNumericListUpdate m2C_UnitNumericListUpdate = new M2C_UnitNumericListUpdate();
 
         private static readonly object obj = new object();
         //实例化自身
@@ -392,22 +392,18 @@ namespace ET
             //智力加魔法穿透
             int mageChuanTouLv = (PointZhiLi + (int)Intellect_value + (int)Intellect_value_add) * 5;
             float adddMageChuanTou = LvProChange(mageChuanTouLv, roleLv);
-            AddUpdateProDicList((int)NumericType.PATK_Max, (int)(adddMageChuanTou * 10000), UpdateProDicList);
-
+            
             //敏捷冷却时间
             int cdTimeLv = (PointMinJie + (int)Agility_value + (int)Agility_value_add) * 2;
             float addMinJie = LvProChange(cdTimeLv, roleLv);
-            AddUpdateProDicList((int)NumericType.PATK_Max, (int)(addMinJie * 10000), UpdateProDicList);
-
+            
             //耐力
             int huixueLv = (PointNaiLi + (int)Stamina_value + (int)Stamina_value_add);
-            AddUpdateProDicList((int)NumericType.PATK_Max, huixueLv, UpdateProDicList);
-
+           
             //体力
             int damgeProCostLv = (PointTiZhi + (int)Constitution_value + (int)Constitution_value_add) * 2;
             float damgeProCost = LvProChange(damgeProCostLv, roleLv);
-            AddUpdateProDicList((int)NumericType.PATK_Max, (int)(damgeProCost * 10000), UpdateProDicList);
-
+          
             //攻击部分
 
             List<int> keys = new List<int>();
@@ -418,6 +414,10 @@ namespace ET
                 //long setValue = numericComponent.GetAsLong(key) + UpdateProDicList[key];
                 long setValue = + UpdateProDicList[key];
 
+                if (key == 22)
+                {
+                    Log.Error("111");
+                }
 
                 if (!notice)
                 {
