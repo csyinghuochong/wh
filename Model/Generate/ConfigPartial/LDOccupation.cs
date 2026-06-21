@@ -15,14 +15,20 @@ namespace ET
         {
             foreach (LDOccupation occupation in this.GetAll().Values)
             {
-                if (!OccInitAttribute.ContainsKey(occupation.Id))
+                if (!OccInitAttribute.TryGetValue(occupation.Id, out List<HideProList> occInitAttris))
                 {
-                    OccInitAttribute.Add(occupation.Id, new List<HideProList>());
+                    occInitAttris = new List<HideProList>();
+                    OccInitAttribute.Add(occupation.Id, occInitAttris);
                 }
 
-                OccInitAttribute[occupation.Id].Add( new HideProList() { HideID = NumericType.HP_Fixed, HideValue = 1000* 10000});
-                OccInitAttribute[occupation.Id].Add( new HideProList() { HideID = NumericType.Speed_Fixed, HideValue =5 * 10000});
-                OccInitAttribute[occupation.Id].Add( new HideProList() { HideID = NumericType.PATK_Max, HideValue = 50 * 10000 });
+                string[] attributeList = occupation.Attribute_Init.Split("|");
+                for (int i = 0; i < attributeList.Length; i++)
+                {
+                    string[] attribute = attributeList[i].Split("_");
+                    int key = int.Parse(attribute[0]);
+                    int value = int.Parse(attribute[1]);
+                    occInitAttris.Add( new HideProList(){ HideID = key, HideValue = value} );
+                }
             }
         }
 

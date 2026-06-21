@@ -21,7 +21,7 @@ namespace ET
         {
             this.OnBaseBuffInit(buffData, theUnitFrom, theUnitBelongto);
             int buff_time = this.MBuff.BuffTime;
-            float oldSpeed = theUnitFrom.GetComponent<NumericComponent>().GetAsFloat(NumericType.Speed_Current);
+            float oldSpeed = theUnitFrom.GetSpeedNow();
             float newSpeed = (float)this.MBuff.buffParameterValue;
             float distance = (buff_time * newSpeed) * 0.001f;
             Vector3 dir = (theUnitBelongto.Position - theUnitFrom.Position).normalized;

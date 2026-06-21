@@ -232,39 +232,24 @@ namespace ET
 
             //初始化属性
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            //numericComponent.ResetProperty();
-
+            numericComponent.ResetProperty();
             
-            Dictionary<int, long> allprodic = numericComponent.NumericDic;
-            foreach (int key in allprodic.Keys)
-            {
-                //这个范围内的属性为特殊属性不进行重置
-                /*if (key >= NumericType.Numeric_Error && key < NumericType.Max)
-                {
-                    continue;
-                }*/
-
-                //buff属性重新计算
-                /*int yushu = key % 100;
-                //203011, 206511
-                if (key == 203011 || key == 206511)  ///暂时先处理这两个
-                ///if (yushu == 11 || yushu == 12)
-                {
-                    long ovalue = allprodic[key];
-                    numericComponent.Set(key, 0, false);
-                    numericComponent.Set(key, ovalue, false);
-                }*/
-            }
-
             //缓存列表
             Dictionary<int, long> UpdateProDicList = new Dictionary<int, long>();
 
+            LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(userInfo.Occ);
+
             //属性点
-            int PointLiLiang = numericComponent.GetAsInt(NumericType.Point_LiLiang);
-            int PointZhiLi = numericComponent.GetAsInt(NumericType.Point_ZhiLi);
-            int PointTiZhi = numericComponent.GetAsInt(NumericType.Point_TiZhi);
-            int PointNaiLi = numericComponent.GetAsInt(NumericType.Point_NaiLi);
-            int PointMinJie = numericComponent.GetAsInt(NumericType.Point_MinJie);
+            int PointLiLiang =  ldOccupation.Add_Point_Default[0];
+            int PointZhiLi = ldOccupation.Add_Point_Default[1];
+            int PointTiZhi =  ldOccupation.Add_Point_Default[2];
+            int PointNaiLi =  ldOccupation.Add_Point_Default[3];
+            int PointMinJie = ldOccupation.Add_Point_Default[4];
+            AddUpdateProDicList(NumericType.Point_Strength, PointLiLiang,UpdateProDicList );
+            AddUpdateProDicList(NumericType.Point_Intelligence, PointLiLiang,UpdateProDicList );
+            AddUpdateProDicList(NumericType.Point_Constitution, PointLiLiang,UpdateProDicList );
+            AddUpdateProDicList(NumericType.Point_Stamina, PointLiLiang,UpdateProDicList );
+            AddUpdateProDicList(NumericType.Point_Agility, PointLiLiang,UpdateProDicList );
             
             //职业属性
             List<HideProList> occInitAttribute = LDOccupationCategory.Instance.GetOccInitAttribute(userInfo.Occ);

@@ -30,7 +30,7 @@ namespace ET
             //    this.SkillInfo.TargetAngle = (int)Mathf.Rad2Deg(Mathf.Atan2(direction.x, direction.z));
             //}
             NumericComponent numericComponent = this.TheUnitFrom.GetComponent<NumericComponent>();
-            float oldSpeed = numericComponent.GetAsFloat(NumericType.Speed_Current);
+            float oldSpeed = this.TheUnitFrom.GetSpeedNow();
             float oldspeedAdd = numericComponent.GetAsFloat(NumericType.Speed_Fixed);
             //float moveDistance = ((float)this.SkillConf.SkillMoveSpeed * this.SkillConf.SkillLiveTime * 0.001f);
             //Quaternion rotation = Quaternion.Euler(0, this.SkillInfo.TargetAngle, 0); //按照Z轴旋转30度的Quaterion

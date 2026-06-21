@@ -96,20 +96,26 @@ namespace ET
 		/// <summary>模型</summary>
 		[ProtoMember(7)]
 		public string ModelAsset { get; set; }
-		/// <summary>普攻</summary>
+		/// <summary>初始属性</summary>
 		[ProtoMember(8)]
+		public string Attribute_Init { get; set; }
+		/// <summary>普攻</summary>
+		[ProtoMember(9)]
 		public int Skill_Normal { get; set; }
 		/// <summary>武器技能</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int[] Skill_Wewapon { get; set; }
 		/// <summary>基础技能</summary>
-		[ProtoMember(10)]
-		public int[] Skill_Base { get; set; }
-		/// <summary>转职ID</summary>
 		[ProtoMember(11)]
+		public int[] Skill_Base { get; set; }
+		/// <summary>默认加点</summary>
+		[ProtoMember(12)]
+		public int[] Add_Point_Default { get; set; }
+		/// <summary>转职ID</summary>
+		[ProtoMember(13)]
 		public int[] TransferId { get; set; }
 		/// <summary>时装部件</summary>
-		[ProtoMember(12)]
+		[ProtoMember(14)]
 		public int[] FashionBase { get; set; }
 
 	}

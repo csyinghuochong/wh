@@ -97,7 +97,7 @@ namespace ET
         {
             unit.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.BePulled);
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            float oldSpeed = numericComponent.GetAsFloat(NumericType.Speed_Current);
+            float oldSpeed = unit.GetSpeedNow();
             float oldspeedAdd = numericComponent.GetAsFloat(NumericType.Speed_Fixed);
             float newSpeed = 1f;
             float newspeedAdd = newSpeed - oldSpeed;

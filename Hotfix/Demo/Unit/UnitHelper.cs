@@ -147,6 +147,11 @@ namespace ET
             MessageHelper.SendToClient(unit, createUnits);
         }
 
+        public static float GetSpeedNow(this Unit self)
+        {
+            return self.GetComponent<NumericComponent>().GetAsFloat(NumericType.Speed_Current) * 100f;
+        }
+        
         public static void GetUnitInfo(Unit sendUnit, M2C_CreateUnits createUnits)
         {
             switch (sendUnit.Type)

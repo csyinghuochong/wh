@@ -590,9 +590,9 @@ namespace ET
                     //public const int PointMinJie = 3046;
 
                     levelInfo += $"\t排名:{rank + 1} \t玩家: {userinfoComponentlist[0].UserName} \t职业: {userinfoComponentlist[0].UserInfo.Occ} " +
-                        $"\t第二职业: {userinfoComponentlist[0].UserInfo.OccTwo} \t力量: {unumericComponentlist[0].GetAsInt(NumericType.Point_LiLiang)} " +
-                        $"\t智力: {unumericComponentlist[0].GetAsInt(NumericType.Point_ZhiLi)} \t体质: {unumericComponentlist[0].GetAsInt(NumericType.Point_TiZhi)} " +
-                        $"\t耐力: {unumericComponentlist[0].GetAsInt(NumericType.Point_NaiLi)} \t敏捷: {unumericComponentlist[0].GetAsInt(NumericType.Point_MinJie)} ";
+                        $"\t第二职业: {userinfoComponentlist[0].UserInfo.OccTwo} \t力量: {unumericComponentlist[0].GetAsInt(NumericType.Point_Strength)} " +
+                        $"\t智力: {unumericComponentlist[0].GetAsInt(NumericType.Point_Intelligence)} \t体质: {unumericComponentlist[0].GetAsInt(NumericType.Point_Constitution)} " +
+                        $"\t耐力: {unumericComponentlist[0].GetAsInt(NumericType.Point_Stamina)} \t敏捷: {unumericComponentlist[0].GetAsInt(NumericType.Point_Agility)} ";
                 }
 
                 LogHelper.GongZuoShi(levelInfo);
