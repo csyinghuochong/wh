@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -11,12 +11,12 @@ namespace ET
         {
             Log.Error($"C2M_BuChangeRequest: {unit.Id}  {request.BuChangId}");
             long accountZone = DBHelper.GetRealmCenter();
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
             R2M_BuChangeResponse centerAccount = (R2M_BuChangeResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2R_BuChangeRequest()
             { 
                 BuChangId = request.BuChangId,
-                UserId = userInfoComponent.Id,
-                AccountId = userInfoComponent.UserInfo.AccInfoID
+                UserId = roleInfoComponent.Id,
+                AccountId = roleInfoComponent.RoleInfo.AccInfoID
             });
  
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.RechargeNumber, centerAccount.BuChangRecharge, 0,true);

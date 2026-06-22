@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 
@@ -14,8 +14,8 @@ namespace ET
             {
                 long friendId = friends[i];
                 D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = friendId, Component = DBHelper.RoleInfoComponent });
-                UserInfoComponent userInfoComponent = d2GGetUnit.Component as UserInfoComponent;
-                if (userInfoComponent == null)
+                RoleInfoComponent roleInfoComponent = d2GGetUnit.Component as RoleInfoComponent;
+                if (roleInfoComponent == null)
                 {
                     continue;
                 }
@@ -29,10 +29,10 @@ namespace ET
                 friendInfos.Add(new FriendInfo()
                 {
                     UserId = friendId,
-                    PlayerLevel = userInfoComponent.UserInfo.Lv,
+                    PlayerLevel = roleInfoComponent.RoleInfo.Lv,
                     OnLineTime = g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0  ? 1 : 0,
-                    PlayerName = userInfoComponent.UserInfo.Name,
-                    Occ = userInfoComponent.UserInfo.Occ
+                    PlayerName = roleInfoComponent.RoleInfo.Name,
+                    Occ = roleInfoComponent.RoleInfo.Occ
                 });
             }
 

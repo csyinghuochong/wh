@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -16,8 +16,8 @@ namespace ET
                 reply();
                 return;
             }
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            LDHome ldHome = LDHomeCategory.Instance.Get(userInfoComponent.UserInfo.JiaYuanLv);
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            LDHome ldHome = LDHomeCategory.Instance.Get(roleInfoComponent.RoleInfo.JiaYuanLv);
             /*if (jiaYuanComponent.GetOpenPlanNumber() >= ldHome.FarmNumMax)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;

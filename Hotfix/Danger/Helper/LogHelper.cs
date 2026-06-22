@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -94,16 +94,16 @@ namespace ET
             string serverName = serverItem.ServerName;
             string sceneName = LDSceneCategory.Instance.Get(mapComponent.SceneId).GetSceneName();
 
-            UserInfoComponent attackUserinfo = attack.GetComponent<RoleInfoComponent>();
-            UserInfoComponent defendUserinfo = defend.GetComponent<RoleInfoComponent>();
-            string attackName = attackUserinfo.UserInfo.Name;
-            string defendName = defendUserinfo.UserInfo.Name;
+            RoleInfoComponent attackUserinfo = attack.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent defendUserinfo = defend.GetComponent<RoleInfoComponent>();
+            string attackName = attackUserinfo.RoleInfo.Name;
+            string defendName = defendUserinfo.RoleInfo.Name;
             attackName = attack.IsRobot() ? $"{attackName}（人机）" : attackName;
             defendName = defend.IsRobot() ? $"{defendName}（人机）" : defendName;
-            int attackOcc = attackUserinfo.UserInfo.OccTwo > 0 ? attackUserinfo.UserInfo.OccTwo : attackUserinfo.UserInfo.Occ;
-            int defendOcc = defendUserinfo.UserInfo.OccTwo > 0 ? defendUserinfo.UserInfo.OccTwo : defendUserinfo.UserInfo.Occ;
+            int attackOcc = attackUserinfo.RoleInfo.OccTwo > 0 ? attackUserinfo.RoleInfo.OccTwo : attackUserinfo.RoleInfo.Occ;
+            int defendOcc = defendUserinfo.RoleInfo.OccTwo > 0 ? defendUserinfo.RoleInfo.OccTwo : defendUserinfo.RoleInfo.Occ;
 
-            string log = $"{TimeHelper.DateTimeNow().ToString()}:  {serverName}：{sceneName}： {attackName} 等级({attackUserinfo.UserInfo.Lv}) 职业:({attackOcc}) 战力:({attackUserinfo.UserInfo.Combat}) 击杀了： {defendName} 等级({defendUserinfo.UserInfo.Lv}) 职业:({defendOcc}) 战力:({defendUserinfo.UserInfo.Combat})";
+            string log = $"{TimeHelper.DateTimeNow().ToString()}:  {serverName}：{sceneName}： {attackName} 等级({attackUserinfo.RoleInfo.Lv}) 职业:({attackOcc}) 战力:({attackUserinfo.RoleInfo.Combat}) 击杀了： {defendName} 等级({defendUserinfo.RoleInfo.Lv}) 职业:({defendOcc}) 战力:({defendUserinfo.RoleInfo.Combat})";
             KillInfoList.Add(log);
             if (KillInfoList.Count >= 10)
             {
@@ -485,7 +485,7 @@ namespace ET
             //{
             //    return;
             //}
-            UserInfoComponent userInfo = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent userInfo = unit.GetComponent<RoleInfoComponent>();
 
             long rechargeValue = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber);
 
@@ -496,19 +496,19 @@ namespace ET
 
             int openDay = DBHelper.GetOpenServerDay(unit.DomainZone());
             //钻石线
-            if (userInfo.UserInfo.Diamond >= unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber) * 150 + 50000)
+            if (userInfo.RoleInfo.Diamond >= unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber) * 150 + 50000)
             {
-                LogHelper.ZuobiInfo("钻石作弊:" + userInfo.UserInfo.Diamond + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.UserInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));
+                LogHelper.ZuobiInfo("钻石作弊:" + userInfo.RoleInfo.Diamond + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.RoleInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));
             }
 
             //等级线
             ServerInfo serverInfo = ConfigData.ServerInfoList[unit.DomainZone()];
-            if (userInfo.UserInfo.Lv > serverInfo.WorldLv) 
+            if (userInfo.RoleInfo.Lv > serverInfo.WorldLv) 
             {
-                LogHelper.ZuobiInfo("玩家等级超过服务器等级限制:" + userInfo.UserInfo.Lv + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.UserInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));
+                LogHelper.ZuobiInfo("玩家等级超过服务器等级限制:" + userInfo.RoleInfo.Lv + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.RoleInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));
             }
 
-            if (openDay <= 180 || userInfo.UserInfo.Lv < 60)
+            if (openDay <= 180 || userInfo.RoleInfo.Lv < 60)
             {
             }
 
@@ -523,8 +523,8 @@ namespace ET
             }
 
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
-            int occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
-            int occTwo = unit.GetComponent<RoleInfoComponent>().UserInfo.OccTwo;
+            int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
+            int occTwo = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo;
             List<BagInfo> bagInfos =  bagComponent.GetAllItems(occ, occTwo  );
             for (int i = 0; i < bagInfos.Count; i++)
             {

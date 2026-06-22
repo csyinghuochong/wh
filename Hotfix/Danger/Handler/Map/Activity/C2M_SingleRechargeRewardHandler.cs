@@ -9,10 +9,10 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_SingleRechargeRewardRequest request, M2C_SingleRechargeRewardResponse response,
         Action reply)
         {
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
             if (request.RewardId == 0)
             {
-                response.RewardIds = userInfo.SingleRechargeIds;
+                response.RewardIds = roleInfo.SingleRechargeIds;
                 reply();
                 return;
             }
@@ -38,14 +38,14 @@ namespace ET
                 }
             }
 
-            if (!userInfo.SingleRechargeIds.Contains(request.RewardId))
+            if (!roleInfo.SingleRechargeIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.Pre_Condition_Error;
                 reply();
                 return;
             }
 
-            if (userInfo.SingleRewardIds.Contains(request.RewardId))
+            if (roleInfo.SingleRewardIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -82,8 +82,8 @@ namespace ET
 
             if (ret)
             {
-                userInfo.SingleRewardIds.Add(request.RewardId);
-                response.RewardIds = userInfo.SingleRewardIds;
+                roleInfo.SingleRewardIds.Add(request.RewardId);
+                response.RewardIds = roleInfo.SingleRewardIds;
             }
             else
             {

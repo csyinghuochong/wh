@@ -60,9 +60,9 @@ namespace ET
                    });
 
                     DBHelper.DeleteUnitCache(request.ServerId, request.DeleUserID).Coroutine();
-                    UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(request.ServerId, request.DeleUserID);
+                    RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(request.ServerId, request.DeleUserID);
                     NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(request.ServerId, request.DeleUserID);
-                    if (userInfoComponent != null && userInfoComponent.UserInfo.Lv <= 10 &&
+                    if (roleInfoComponent != null && roleInfoComponent.RoleInfo.Lv <= 10 &&
                         (numericComponent.GetAsInt(NumericType.RechargeNumber) <= 0 ))
                     {
                         List<string> allComponets = DBHelper.GetAllUnitComponent();

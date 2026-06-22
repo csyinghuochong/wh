@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 
@@ -10,7 +10,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemXiLianRewardRequest request, M2C_ItemXiLianRewardResponse response, Action reply)
         {
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
 
             EquipXiLianConfig equipXiLianConfig = EquipXiLianConfigCategory.Instance.Get(request.XiLianId);
             int shuliandu = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianDu);
@@ -22,7 +22,7 @@ namespace ET
                 return;
             }
 
-            if (userInfoComponent.UserInfo.XiuLianRewardIds.Contains(request.XiLianId))
+            if (roleInfoComponent.RoleInfo.XiuLianRewardIds.Contains(request.XiLianId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -38,7 +38,7 @@ namespace ET
                 return;
             }
 
-            userInfoComponent.UserInfo.XiuLianRewardIds.Add(request.XiLianId);
+            roleInfoComponent.RoleInfo.XiuLianRewardIds.Add(request.XiLianId);
             unit.GetComponent<BagComponent>().OnAddItemData(equipXiLianConfig.RewardList, $"{ItemGetWay.XiLianLevel}_{TimeHelper.ServerNow()}");
             reply();
             await ETTask.CompletedTask;

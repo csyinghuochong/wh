@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +11,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_PetHeXinExploreReward request, M2C_PetHeXinExploreReward response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (userInfoComponent.UserInfo.PetHeXinExploreRewardIds.Contains(request.RewardId))
+            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            if (userInfoComponent.RoleInfo.PetHeXinExploreRewardIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -44,7 +44,7 @@ namespace ET
                 return;
             }
 
-            userInfoComponent.UserInfo.PetHeXinExploreRewardIds.Add(request.RewardId);
+            userInfoComponent.RoleInfo.PetHeXinExploreRewardIds.Add(request.RewardId);
             int randomZuanshi = RandomHelper.RandomNumber(int.Parse(diamond[0]), int.Parse(diamond[1]));
             unit.GetComponent<BagComponent>().OnAddItemData(reward[0], $"{96}_{TimeHelper.ServerNow()}");
             unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 96);

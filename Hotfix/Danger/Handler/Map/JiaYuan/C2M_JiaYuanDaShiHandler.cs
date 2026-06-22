@@ -25,7 +25,7 @@ namespace ET
 
             bagComponent.OnCostItemData(request.BagInfoIDs[0], 1);
 
-            int jiayuanlv = unit.GetComponent<RoleInfoComponent>().UserInfo.JiaYuanLv;
+            int jiayuanlv = unit.GetComponent<RoleInfoComponent>().RoleInfo.JiaYuanLv;
             JiaYuanComponent jiaYuanComponent = unit.GetComponent<JiaYuanComponent>();  
             LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
             //7,15;100403,1,5;119203,1,5

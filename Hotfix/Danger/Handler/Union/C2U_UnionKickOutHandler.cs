@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -52,9 +52,9 @@ namespace ET
                 D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = request.UserId, EntityByte = MongoHelper.ToBson(numericComponent), ComponentType = DBHelper.NumericComponent });
 
                 d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.RoleInfoComponent });
-                UserInfoComponent userInfoComponent = d2GGet.Component as UserInfoComponent;
-                userInfoComponent.UserInfo.UnionName = string.Empty;
-                d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = request.UserId, EntityByte = MongoHelper.ToBson(userInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
+                RoleInfoComponent roleInfoComponent = d2GGet.Component as RoleInfoComponent;
+                roleInfoComponent.RoleInfo.UnionName = string.Empty;
+                d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = request.UserId, EntityByte = MongoHelper.ToBson(roleInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
             }
             reply();
         }

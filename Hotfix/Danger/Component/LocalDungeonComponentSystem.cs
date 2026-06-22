@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,20 +39,20 @@ namespace ET
             }
 
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(unit.ConfigId);
-            RoleInfoComponent userInfoComponent = self.MainUnit.GetComponent<RoleInfoComponent>();
-            if (userInfoComponent == null || userInfoComponent.IsDisposed)
+            RoleInfoComponent roleInfoComponent = self.MainUnit.GetComponent<RoleInfoComponent>();
+            if (roleInfoComponent == null || roleInfoComponent.IsDisposed)
             {
                 return;
             }
-            if (ldMonster.Type == (int)MonsterTypeEnum.Boss && userInfoComponent.UserInfo.Lv >= 20)
+            if (ldMonster.Type == (int)MonsterTypeEnum.Boss && roleInfoComponent.RoleInfo.Lv >= 20)
             {
-                userInfoComponent.UpdateRoleData(UserDataType.BaoShiDu, "-1", true);
+                roleInfoComponent.UpdateRoleData(UserDataType.BaoShiDu, "-1", true);
                 return;
             }
 
 
             ///刷新刷出神秘之门
-            if (userInfoComponent.UserInfo.PiLao > 0 && userInfoComponent.UserInfo.Lv > 20  && !unit.IsSceneItem() && RandomHelper.RandFloat01() < 0.001f)
+            if (roleInfoComponent.RoleInfo.PiLao > 0 && roleInfoComponent.RoleInfo.Lv > 20  && !unit.IsSceneItem() && RandomHelper.RandFloat01() < 0.001f)
             {
                 int shenminId = 40000003;
                 List<Unit> npclist = self.MainUnit.GetParent<UnitComponent>().GetAll();

@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver.Core.Misc;
+using MongoDB.Driver.Core.Misc;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,8 +45,8 @@ namespace ET
             }
 
             //判断金币
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();  
-            if(userInfoComponent.UserInfo.Gold < costgold)
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();  
+            if(roleInfoComponent.RoleInfo.Gold < costgold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();

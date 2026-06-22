@@ -39,9 +39,9 @@ namespace ET
         {
             List<PropertyValue> proList = new List<PropertyValue>();
 
-            for (int i = self.UserInfo.HorseIds.Count - 1; i >= 0; i--)
+            for (int i = self.RoleInfo.HorseIds.Count - 1; i >= 0; i--)
             {
-                LDMount titleConfig = LDMountCategory.Instance.Get(self.UserInfo.HorseIds[i]);
+                LDMount titleConfig = LDMountCategory.Instance.Get(self.RoleInfo.HorseIds[i]);
                 string[] attributeInfoList = titleConfig.AddProperty.Split('@');
                 for (int a = 0; a < attributeInfoList.Length; a++)
                 {
@@ -71,7 +71,7 @@ namespace ET
                         }
                         catch (Exception ex)
                         {
-                            Log.Debug(ex.ToString() + $"坐骑称号: {self.UserInfo.HorseIds[i]}");
+                            Log.Debug(ex.ToString() + $"坐骑称号: {self.RoleInfo.HorseIds[i]}");
                         }
                         proList.Add(new PropertyValue() { HideID = numericType, HideValue = lvalue });
                     }
@@ -82,13 +82,13 @@ namespace ET
 
         public static void OnHorseActive(this RoleInfoComponent self, int horseId, bool active)
         {
-            if (active && !self.UserInfo.HorseIds.Contains(horseId))
+            if (active && !self.RoleInfo.HorseIds.Contains(horseId))
             {
-                self.UserInfo.HorseIds.Add(horseId);
+                self.RoleInfo.HorseIds.Add(horseId);
             }
-            if (!active && self.UserInfo.HorseIds.Contains(horseId))
+            if (!active && self.RoleInfo.HorseIds.Contains(horseId))
             {
-                self.UserInfo.HorseIds.Remove(horseId);
+                self.RoleInfo.HorseIds.Remove(horseId);
             }
         }
 

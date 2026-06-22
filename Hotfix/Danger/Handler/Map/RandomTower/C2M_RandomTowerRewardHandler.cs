@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -16,8 +16,8 @@ namespace ET
             }
 
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (userInfoComponent.UserInfo.TowerRewardIds.Contains(request.RewardId))
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            if (roleInfoComponent.RoleInfo.TowerRewardIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -48,12 +48,12 @@ namespace ET
 
             TowerConfig towerRewardConfig = TowerConfigCategory.Instance.Get(request.RewardId);
 
-            string userName = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
-            Log.Warning($"试炼之地领取奖励： 区:{unit.DomainZone()}   {unit.Id}   {request.RewardId}  {userName}  {unit.GetComponent<RoleInfoComponent>().UserInfo.Lv}");
+            string userName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+            Log.Warning($"试炼之地领取奖励： 区:{unit.DomainZone()}   {unit.Id}   {request.RewardId}  {userName}  {unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv}");
 
             if (unit.GetComponent<BagComponent>().OnAddItemData(towerRewardConfig.DropShow, $"{ItemGetWay.RandomTowerReward}_{TimeHelper.ServerNow()}"))
             {
-                userInfoComponent.UserInfo.TowerRewardIds.Add(request.RewardId);
+                roleInfoComponent.RoleInfo.TowerRewardIds.Add(request.RewardId);
             }
             else
             {

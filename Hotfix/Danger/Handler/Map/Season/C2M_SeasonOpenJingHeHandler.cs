@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 
 namespace ET
@@ -8,8 +8,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_SeasonOpenJingHeRequest request, M2C_SeasonOpenJingHeResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();   
-            if (userInfoComponent.UserInfo.OpenJingHeIds.Contains(request.JingHeId))
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();   
+            if (roleInfoComponent.RoleInfo.OpenJingHeIds.Contains(request.JingHeId))
             {
                 response.Error = ErrorCode.ERR_AlreadyLearn;
                 reply();
@@ -34,7 +34,7 @@ namespace ET
             }
 
             bagComponent.OnCostItemData(seasonJingHeConfig.Cost, ItemLocType.ItemLocBag, ItemGetWay.Season);
-            userInfoComponent.UserInfo.OpenJingHeIds.Add(request.JingHeId);
+            roleInfoComponent.RoleInfo.OpenJingHeIds.Add(request.JingHeId);
 
             reply();
             await ETTask.CompletedTask;

@@ -11,10 +11,10 @@ namespace ET
         {
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
-                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
                
                 long costgold = LDGlobalValueCategory.Instance.TempValue;
-                if (userInfoComponent.UserInfo.Gold < costgold)
+                if (roleInfoComponent.RoleInfo.Gold < costgold)
                 {
                     response.Error = ErrorCode.ERR_GoldNotEnoughError;
                     reply();
@@ -25,7 +25,7 @@ namespace ET
                 M2A_TurtleSupportRequest m2A_TurtleSupport = new M2A_TurtleSupportRequest()
                 {
                     UnitId = unit.Id,   
-                    AccountId = userInfoComponent.UserInfo.AccInfoID,
+                    AccountId = roleInfoComponent.RoleInfo.AccInfoID,
                     SupportId = request.SupportId,
                 };
                 A2M_TurtleSupportResponse a2M_TurtleSupport = (A2M_TurtleSupportResponse)await ActorMessageSenderComponent.Instance.Call
@@ -38,7 +38,7 @@ namespace ET
                     return;
                 }
                 //扣除金币 
-                userInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (costgold * -1).ToString(), true, ItemGetWay.Turtle);
+                roleInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (costgold * -1).ToString(), true, ItemGetWay.Turtle);
 
             }
             reply();

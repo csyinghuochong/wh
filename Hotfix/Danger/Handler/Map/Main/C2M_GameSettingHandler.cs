@@ -10,7 +10,7 @@ namespace ET
 		protected override async ETTask Run(Unit unit, C2M_GameSettingRequest request, M2C_GameSettingResponse response, Action reply)
 		{
 			//读取数据库
-			UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().GetUserInfo();
+			RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().GetUserInfo();
 
 			for (int i = 0; i < request.GameSettingInfos.Count; i++)
 			{
@@ -35,18 +35,18 @@ namespace ET
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.FirstUnionName, int.Parse(request.GameSettingInfos[i].Value));
                 }
 
-                for (int k = 0; k < userInfo.GameSettingInfos.Count; k++)
+                for (int k = 0; k < roleInfo.GameSettingInfos.Count; k++)
 				{
-					if (userInfo.GameSettingInfos[k].KeyId == request.GameSettingInfos[i].KeyId)
+					if (roleInfo.GameSettingInfos[k].KeyId == request.GameSettingInfos[i].KeyId)
 					{
 						exist = true;
-						userInfo.GameSettingInfos[k].Value = request.GameSettingInfos[i].Value;
+						roleInfo.GameSettingInfos[k].Value = request.GameSettingInfos[i].Value;
 						break;
 					}
 				}
 				if (!exist)
 				{
-					userInfo.GameSettingInfos.Add(request.GameSettingInfos[i]);
+					roleInfo.GameSettingInfos.Add(request.GameSettingInfos[i]);
 				}
 			}
 			reply();

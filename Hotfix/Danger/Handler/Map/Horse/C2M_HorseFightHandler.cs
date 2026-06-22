@@ -8,15 +8,15 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_HorseFightRequest request, M2C_HorseFightResponse response, Action reply)
         {
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
-            if (!userInfo.HorseIds.Contains(request.HorseId))
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            if (!roleInfo.HorseIds.Contains(request.HorseId))
             {
                 response.Error = ErrorCode.ERR_HoreseNotActive;
                 reply();
                 return;
             }
 
-            if (request.HorseId == 10001 && userInfo.Lv < 25)
+            if (request.HorseId == 10001 && roleInfo.Lv < 25)
             {
                 response.Error = ErrorCode.ERR_EquipLvLimit;
                 reply();

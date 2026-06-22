@@ -28,14 +28,14 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv < 60)
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv < 60)
             {
                 response.Error = ErrorCode.ERR_LevelIsNot;
                 reply();
                 return;
             }
 
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv < publicQiangHuaConfig.UpLvLimit)
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv < publicQiangHuaConfig.UpLvLimit)
             {
                 response.Error = ErrorCode.ERR_LvNoHigh;
                 reply();

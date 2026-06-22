@@ -27,19 +27,19 @@ namespace ET
                 }
 
                 ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(request.ActivityId);
-                UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
 
                 if (request.ActivityType != activityConfig.ActivityType)
                 {
                     reply();
                     return;
                 }
-                if (request.ActivityType == 21 && userInfo.Lv <int.Parse(activityConfig.Par_1))
+                if (request.ActivityType == 21 && roleInfo.Lv <int.Parse(activityConfig.Par_1))
                 {
                     reply();
                     return;
                 }
-                if (request.ActivityType == 22 && userInfo.Combat < int.Parse(activityConfig.Par_1))
+                if (request.ActivityType == 22 && roleInfo.Combat < int.Parse(activityConfig.Par_1))
                 {
                     reply();
                     return;

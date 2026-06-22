@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_XiuLianCenterRequest request, M2C_XiuLianCenterResponse response, Action reply)
         {
 
-            int level = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
+            int level = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
             //1 经验  2金币
             if (request.XiuLianType == 1)
             {

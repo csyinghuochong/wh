@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -102,8 +102,8 @@ namespace ET
                                 return;
                             }
                         }
-                        RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                        if (userInfoComponent.UserInfo.Lv < int.Parse(activityConfig.Par_1))
+                        RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                        if (roleInfoComponent.RoleInfo.Lv < int.Parse(activityConfig.Par_1))
                         {
                             reply();
                             return;
@@ -154,8 +154,8 @@ namespace ET
                         unit.GetComponent<BagComponent>().OnAddItemData(rewards, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                         break;
                     case 31:    //登录奖励
-                        userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                        if (userInfoComponent.UserInfo.Lv < 10)
+                        roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                        if (roleInfoComponent.RoleInfo.Lv < 10)
                         {
                             reply();
                             return;
@@ -219,7 +219,7 @@ namespace ET
                             return;
                         }
 
-                        if (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv < 20)
+                        if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv < 20)
                         {
                             response.Error = ErrorCode.ERR_EquipLvLimit;
                             reply();
@@ -230,8 +230,8 @@ namespace ET
                         unit.GetComponent<BagComponent>().OnAddItemData(rewardItemlist, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                         break;
                     case 34:
-                        userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                        if (userInfoComponent.UserInfo.Lv < int.Parse(activityConfig.Par_1))
+                        roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                        if (roleInfoComponent.RoleInfo.Lv < int.Parse(activityConfig.Par_1))
                         {
                             response.Error = ErrorCode.ERR_EquipLvLimit;
                             reply();

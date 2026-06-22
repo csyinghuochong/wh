@@ -9,8 +9,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemOperateMagicRequest request, M2C_ItemOperateMagicResponse response, Action reply)
         {
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            UserInfo useInfo = userInfoComponent.UserInfo;
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfo useInfo = roleInfoComponent.RoleInfo;
             long bagInfoID = request.OperateBagID;
 
             ItemLocType locType = ItemLocType.ItemLocBag;

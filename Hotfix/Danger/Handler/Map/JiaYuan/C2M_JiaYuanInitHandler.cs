@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,7 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_JiaYuanInitRequest request, M2C_JiaYuanInitResponse response, Action reply)
         {
             JiaYuanComponent jiaYuanComponent = await DBHelper.GetComponentCache<JiaYuanComponent>(unit.DomainZone(), request.MasterId);
-            UserInfoComponent userInfoComponent = await DBHelper.GetComponentCache<UserInfoComponent>(unit.DomainZone(), request.MasterId);
+            RoleInfoComponent roleInfoComponent = await DBHelper.GetComponentCache<RoleInfoComponent>(unit.DomainZone(), request.MasterId);
             if (unit.Id != request.MasterId)
             {
 
@@ -27,7 +27,7 @@ namespace ET
                     JiaYuanOperate jiaYuanOperate = new JiaYuanOperate();
                     jiaYuanOperate = new JiaYuanOperate();
                     jiaYuanOperate.OperateType = JiaYuanOperateType.Visit;
-                    jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
+                    jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
                     M2M_JiaYuanOperateMessage opmessage = new M2M_JiaYuanOperateMessage()
                     {
                         JiaYuanOperate = jiaYuanOperate,
@@ -40,7 +40,7 @@ namespace ET
                     {
                         OperateType = JiaYuanOperateType.Visit,
                         OperateId = 0,
-                        PlayerName = unit.GetComponent<RoleInfoComponent>().UserInfo.Name,
+                        PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name,
                         Time = TimeHelper.ServerNow(),
                     });
                     await DBHelper.SaveComponentCache(unit.DomainZone(), request.MasterId, jiaYuanComponent);
@@ -60,8 +60,8 @@ namespace ET
             response.JiaYuanDaShiTime = jiaYuanComponent.JiaYuanDaShiTime_1;
             response.JiaYuanPetList = jiaYuanComponent.JiaYuanPetList_2;
 
-            response.JiaYuanLv = userInfoComponent.UserInfo.JiaYuanLv;
-            response.MasterName = userInfoComponent.UserInfo.Name;
+            response.JiaYuanLv = roleInfoComponent.RoleInfo.JiaYuanLv;
+            response.MasterName = roleInfoComponent.RoleInfo.Name;
             reply();
         }
     }

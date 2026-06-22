@@ -14,7 +14,7 @@ namespace ET
             A2M_ZhanQuInfoResponse r_GameStatusResponse = (A2M_ZhanQuInfoResponse)await ActorMessageSenderComponent.Instance.Call
                 (paimaiServerId, new M2A_ZhanQuInfoRequest()
                 {
-                    UserId = unit.GetComponent<RoleInfoComponent>().UserInfo.UserId
+                    UserId = unit.GetComponent<RoleInfoComponent>().RoleInfo.UserId
                 });
 
             ActivityComponent activityComponent = unit.GetComponent<ActivityComponent>();

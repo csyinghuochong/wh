@@ -7,7 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, U2M_UnionKeJiQuickRequest request, M2U_UnionKeJiQuickResponse response, Action reply)
         {
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Diamond <= request.Cost)
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Diamond <= request.Cost)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();

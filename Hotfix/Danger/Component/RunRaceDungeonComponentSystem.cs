@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -179,13 +179,13 @@ namespace ET
 
                 long mapInstanceId = DBHelper.GetRankServerId( self.DomainZone() );
                 RankingInfo rankPetInfo = new RankingInfo();
-                RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
-                rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
-                rankPetInfo.PlayerLv = userInfoComponent.UserInfo.Lv;
-                //rankPetInfo.Combat = userInfoComponent.UserInfo.Combat;
+                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                rankPetInfo.UserId = roleInfoComponent.RoleInfo.UserId;
+                rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
+                rankPetInfo.PlayerLv = roleInfoComponent.RoleInfo.Lv;
+                //rankPetInfo.Combat = roleInfoComponent.RoleInfo.Combat;
                 rankPetInfo.Combat = TimeHelper.ServerNow();
-                rankPetInfo.Occ = userInfoComponent.UserInfo.Occ;
+                rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
                 R2M_RankRunRaceResponse Response = (R2M_RankRunRaceResponse)await ActorMessageSenderComponent.Instance.Call
                          (mapInstanceId, new M2R_RankRunRaceRequest()
                          {
@@ -198,8 +198,8 @@ namespace ET
 
                 if (Response.RankId <= 3)
                 {
-                    string messagecontent = $"恭喜{userInfoComponent.UserInfo.Name} 获得奔跑大赛第{Response.RankId}名";
-                    string messagecontentEn = $"Congratulations{userInfoComponent.UserInfo.Name} Achieved Rank {Response.RankId} in the running race";
+                    string messagecontent = $"恭喜{roleInfoComponent.RoleInfo.Name} 获得奔跑大赛第{Response.RankId}名";
+                    string messagecontentEn = $"Congratulations{roleInfoComponent.RoleInfo.Name} Achieved Rank {Response.RankId} in the running race";
                     ServerMessageHelper.SendBroadMessage( self.DomainZone(), NoticeType.Notice, messagecontent, messagecontentEn);
                 }
 
@@ -253,7 +253,7 @@ namespace ET
                         mailInfo.Title = "赛跑大赛排行榜奖励";
                         mailInfo.MailId = IdGenerater.Instance.GenerateId();
                         E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call(mailServerId,
-                            new M2E_EMailSendRequest() { Id = userInfoComponent.UserInfo.UserId, MailInfo = mailInfo });
+                            new M2E_EMailSendRequest() { Id = roleInfoComponent.RoleInfo.UserId, MailInfo = mailInfo });
 
                     }
 
@@ -274,12 +274,12 @@ namespace ET
                     float distance = Vector3.Distance(units[i].Position, vector3);
 
                     RankingInfo rankPetInfo = new RankingInfo();
-                    RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                    rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
-                    rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
+                    RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                    rankPetInfo.UserId = roleInfoComponent.RoleInfo.UserId;
+                    rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
                     rankPetInfo.PlayerLv = -1;
                     rankPetInfo.Combat = (long)(distance * 100);
-                    rankPetInfo.Occ = userInfoComponent.UserInfo.Occ;
+                    rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
                     rankList.Add( rankPetInfo );
                 }
                 rankList.Sort(delegate (RankingInfo a, RankingInfo b)

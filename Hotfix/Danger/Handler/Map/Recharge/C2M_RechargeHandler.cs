@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -35,8 +35,8 @@ namespace ET
 
              
                 string serverName = ServerHelper.GetGetServerItem(false, unit.DomainZone()).ServerName;
-                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                string userName = userInfoComponent.UserInfo.Name;
+                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                string userName = roleInfoComponent.RoleInfo.Name;
 
                 if (request.PayType == PayTypeEnum.IOSPay)
                 {
@@ -88,9 +88,9 @@ namespace ET
                     UnitId = unit.Id,
                     UnitName = userName,
                     RechargeNumber = request.PayID,
-                    Account = userInfoComponent.Account,
+                    Account = roleInfoComponent.Account,
                     payMessage = request.RiskControlInfo,
-                    ClientIp = userInfoComponent.RemoteAddress,
+                    ClientIp = roleInfoComponent.RemoteAddress,
                     RechargeType = request.RechargeType,    
                 });
 

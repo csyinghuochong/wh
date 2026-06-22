@@ -105,18 +105,18 @@ namespace ET
 
                 int goldValue = 12500;
 
-                if (attackUnit.GetComponent<RoleInfoComponent>().UserInfo.Lv >= 30) 
+                if (attackUnit.GetComponent<RoleInfoComponent>().RoleInfo.Lv >= 30) 
                 {
 
                     goldValue = 15000;
                 }
 
-                if (attackUnit.GetComponent<RoleInfoComponent>().UserInfo.Lv >= 40)
+                if (attackUnit.GetComponent<RoleInfoComponent>().RoleInfo.Lv >= 40)
                 {
                     goldValue = 17500;
                 }
 
-                if (attackUnit.GetComponent<RoleInfoComponent>().UserInfo.Lv >= 50)
+                if (attackUnit.GetComponent<RoleInfoComponent>().RoleInfo.Lv >= 50)
                 {
                     goldValue = 20000;
                 }
@@ -141,17 +141,17 @@ namespace ET
                 rewardFail.ItemID = 1;
                 rewardFail.ItemNum = 7500;
 
-                if (defendUnit.GetComponent<RoleInfoComponent>().UserInfo.Lv >= 30)
+                if (defendUnit.GetComponent<RoleInfoComponent>().RoleInfo.Lv >= 30)
                 {
                     rewardFail.ItemNum = 10000;
                 }
 
-                if (defendUnit.GetComponent<RoleInfoComponent>().UserInfo.Lv >= 40)
+                if (defendUnit.GetComponent<RoleInfoComponent>().RoleInfo.Lv >= 40)
                 {
                     rewardFail.ItemNum = 12500;
                 }
 
-                if (defendUnit.GetComponent<RoleInfoComponent>().UserInfo.Lv >= 50)
+                if (defendUnit.GetComponent<RoleInfoComponent>().RoleInfo.Lv >= 50)
                 {
                     rewardFail.ItemNum = 15000;
                 }

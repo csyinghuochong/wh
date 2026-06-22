@@ -16,10 +16,10 @@ namespace ET
                 reply();
                 return;
             }
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
             int needLevel = int.Parse(LDGlobalValueCategory.Instance.Get(21).Value);
             int needDiamond = int.Parse(LDGlobalValueCategory.Instance.Get(22).Value);
-            if (userInfo.Lv < needLevel || userInfo.Diamond < needDiamond)
+            if (roleInfo.Lv < needLevel || roleInfo.Diamond < needDiamond)
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();
@@ -31,7 +31,7 @@ namespace ET
             {
                 UnionName =request.UnionName,
                 UnionPurpose = request.UnionPurpose,
-                UserID = userInfo.UserId
+                UserID = roleInfo.UserId
             });
 
             if (d2GGetUnit.Error == ErrorCode.ERR_Success)

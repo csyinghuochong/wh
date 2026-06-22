@@ -14,7 +14,7 @@ namespace ET
                         (paimaiserverid, new M2P_PaiMaiAuctionJoinRequest()
                         {
                             UnitID = unit.Id,
-                            Gold = unit.GetComponent<RoleInfoComponent>().UserInfo.Gold
+                            Gold = unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold
                         });
 
                 if (r_GameStatusResponse.Error == ErrorCode.ERR_Success)

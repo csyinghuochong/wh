@@ -192,9 +192,9 @@ namespace ET
             }
 
             //基础职业属性
-            UserInfoComponent UnitInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            UserInfo userInfo = UnitInfoComponent.UserInfo;
-            int roleLv = userInfo.Lv;
+            RoleInfoComponent UnitInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfo roleInfo = UnitInfoComponent.RoleInfo;
+            int roleLv = roleInfo.Lv;
 
             //初始化属性
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
@@ -203,7 +203,7 @@ namespace ET
             //缓存列表
             Dictionary<int, long> UpdateProDicList = new Dictionary<int, long>();
 
-            LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(userInfo.Occ);
+            LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(roleInfo.Occ);
 
             //属性点
             int PointLiLiang =  ldOccupation.Add_Point_Default[0];
@@ -220,7 +220,7 @@ namespace ET
           
             
             //职业属性
-            List<HideProList> occInitAttributes = LDOccupationCategory.Instance.GetOccInitAttribute(userInfo.Occ);
+            List<HideProList> occInitAttributes = LDOccupationCategory.Instance.GetOccInitAttribute(roleInfo.Occ);
             
             List<HideProList> attributeList = new List<HideProList>();
             attributeList.AddRange(occInitAttributes);
@@ -606,7 +606,7 @@ namespace ET
 
             if (zhanliValue < 0 || zhanliValue > 500000)
             {
-                Log.Error($"战力异常: {unit.DomainZone()}  {unit.GetComponent<RoleInfoComponent>().UserInfo.Name}  {zhanliValue}");
+                Log.Error($"战力异常: {unit.DomainZone()}  {unit.GetComponent<RoleInfoComponent>().RoleInfo.Name}  {zhanliValue}");
             }
 
         }

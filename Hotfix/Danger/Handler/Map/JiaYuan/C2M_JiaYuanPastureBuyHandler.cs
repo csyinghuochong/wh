@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -40,10 +40,10 @@ namespace ET
             }
 
             JiaYuanComponent jiaYuanComponent = unit.GetComponent<JiaYuanComponent>();
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            LDHome ldHome = LDHomeCategory.Instance.Get(userInfoComponent.UserInfo.JiaYuanLv);
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            LDHome ldHome = LDHomeCategory.Instance.Get(roleInfoComponent.RoleInfo.JiaYuanLv);
 
-            if (jiaYuanPastureConfig.BuyJiaYuanLv > userInfoComponent.UserInfo.JiaYuanLv)
+            if (jiaYuanPastureConfig.BuyJiaYuanLv > roleInfoComponent.RoleInfo.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_LvNoHigh;
                 reply();

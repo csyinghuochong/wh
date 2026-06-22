@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -36,9 +36,9 @@ namespace ET
             MessageHelper.SendToLocationActor( userID, mail2M_SendServer);
         }
 
-        public static bool CheckSendMail(int MailType, string Title, NumericComponent numericComponent, RoleInfoComponent userInfoComponent, BagComponent bagComponent)
+        public static bool CheckSendMail(int MailType, string Title, NumericComponent numericComponent, RoleInfoComponent roleInfoComponent, BagComponent bagComponent)
         {
-            if (numericComponent == null || userInfoComponent == null || bagComponent == null)
+            if (numericComponent == null || roleInfoComponent == null || bagComponent == null)
             {
                 return false;
             }
@@ -52,7 +52,7 @@ namespace ET
                     }
                     break;
                 case 3: //20级以上 补
-                    if (userInfoComponent.UserInfo.Lv < int.Parse(Title))
+                    if (roleInfoComponent.RoleInfo.Lv < int.Parse(Title))
                     {
                         return false;
                     }
@@ -98,8 +98,8 @@ namespace ET
             //判断条件
             long dbCacheId = DBHelper.GetDbCacheId(zone);
 
-            UserInfoComponent userInfoComponent =await DBHelper.GetComponent<UserInfoComponent>(zone, userID);
-            if (userInfoComponent == null || userInfoComponent.UserInfo.RobotId > 0)
+            RoleInfoComponent roleInfoComponent =await DBHelper.GetComponent<RoleInfoComponent>(zone, userID);
+            if (roleInfoComponent == null || roleInfoComponent.RoleInfo.RobotId > 0)
             {
                 return;
             }
@@ -110,7 +110,7 @@ namespace ET
                 return;
             }
 
-            bool cansendMail = MailHelp.CheckSendMail(serverMailItem.MailType, serverMailItem.ParasmNew, numericComponent, userInfoComponent, bagComponent);
+            bool cansendMail = MailHelp.CheckSendMail(serverMailItem.MailType, serverMailItem.ParasmNew, numericComponent, roleInfoComponent, bagComponent);
             if (cansendMail == false)
             {
                 return;

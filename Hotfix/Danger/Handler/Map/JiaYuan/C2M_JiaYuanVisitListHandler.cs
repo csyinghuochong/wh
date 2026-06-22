@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,15 +18,15 @@ namespace ET
                 return null;
             }
 
-            List<UserInfoComponent> resultUser = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(zone, _account => _account.Id == id);
-            if (resultUser[0].UserInfo.Lv < 10)
+            List<RoleInfoComponent> resultUser = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(zone, _account => _account.Id == id);
+            if (resultUser[0].RoleInfo.Lv < 10)
             {
                 return null;
             }
             JiaYuanVisit jiaYuanVisit = new JiaYuanVisit() ;
-            jiaYuanVisit.Occ = resultUser[0].UserInfo.Occ;
-            jiaYuanVisit.OccTwo = resultUser[0].UserInfo.OccTwo;
-            jiaYuanVisit.PlayerName = resultUser[0].UserInfo.Name;
+            jiaYuanVisit.Occ = resultUser[0].RoleInfo.Occ;
+            jiaYuanVisit.OccTwo = resultUser[0].RoleInfo.OccTwo;
+            jiaYuanVisit.PlayerName = resultUser[0].RoleInfo.Name;
             jiaYuanVisit.UnitId = resultJiaYuan[0].Id;
             jiaYuanVisit.Rubbish = resultJiaYuan[0].GetRubbishNumber();
             jiaYuanVisit.Gather = resultJiaYuan[0].GetCanGatherNumber();

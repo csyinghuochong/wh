@@ -1,4 +1,4 @@
-﻿using SharpCompress.Common;
+using SharpCompress.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -355,13 +355,13 @@ namespace ET
             }
 
             Dictionary<long, RoleInfoComponent> UserinfoComponetDict = new Dictionary<long, RoleInfoComponent>();
-            List<RoleInfoComponent> userInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(zone, d => d.Id > 0);
-            foreach (var entity in userInfoComponents)
+            List<RoleInfoComponent> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(zone, d => d.Id > 0);
+            foreach (var entity in RoleInfoComponents)
             {
                 UserinfoComponetDict.Add(entity.Id, entity as RoleInfoComponent);
-                if ((entity.UserInfo.Gold > 1000000 || entity.UserInfo.Diamond > 10000) && entity.UserInfo.RobotId == 0)
+                if ((entity.RoleInfo.Gold > 1000000 || entity.RoleInfo.Diamond > 10000) && entity.RoleInfo.RobotId == 0)
                 {
-                   // Log.Warning($"Gold:{entity.UserInfo.Gold}  Diamond:{entity.UserInfo.Diamond}  ID:{entity.Id}  Account:{entity.Account} Name: {entity.UserInfo.Name}  Lv:{entity.UserInfo.Lv} ");
+                   // Log.Warning($"Gold:{entity.RoleInfo.Gold}  Diamond:{entity.RoleInfo.Diamond}  ID:{entity.Id}  Account:{entity.Account} Name: {entity.RoleInfo.Name}  Lv:{entity.RoleInfo.Lv} ");
                 }
 
                 if (entity.RemoteAddress != null && entity.RemoteAddress.Contains("39.153.233.46"))
@@ -369,19 +369,19 @@ namespace ET
                     //Log.Warning($"Gold:{entity.Id} ");
                 }
                
-                if (entity.UserInfo.Name.Contains("南宫") || entity.UserInfo.Name.Contains("世家"))
+                if (entity.RoleInfo.Name.Contains("南宫") || entity.RoleInfo.Name.Contains("世家"))
                 {
-                    //Log.Warning($"南宫:   {entity.Id}  {entity.UserInfo.Lv}\t  {entity.UserInfo.Name}\t   {entity.UserInfo.Combat}");
+                    //Log.Warning($"南宫:   {entity.Id}  {entity.RoleInfo.Lv}\t  {entity.RoleInfo.Name}\t   {entity.RoleInfo.Combat}");
                 }
 
-                if (entity.UserInfo.Combat < 0 || entity.UserInfo.Combat > 10000000)
+                if (entity.RoleInfo.Combat < 0 || entity.RoleInfo.Combat > 10000000)
                 {
-                    //Log.Warning($"Combat < 0:   {entity.Id}  {entity.UserInfo.Lv}\t  {entity.UserInfo.Name}\t   {entity.DeviceName}");
+                    //Log.Warning($"Combat < 0:   {entity.Id}  {entity.RoleInfo.Lv}\t  {entity.RoleInfo.Name}\t   {entity.DeviceName}");
                 }
 
-                if (entity.UserInfo.Occ == 3 && (entity.UserInfo.Lv >= 22 ))
+                if (entity.RoleInfo.Occ == 3 && (entity.RoleInfo.Lv >= 22 ))
                 {
-                    Log.Warning($"Occ == 3:   {entity.Id}  \t{entity.UserInfo.Lv}  \t{entity.UserInfo.Name}   \t{entity.UserInfo.Combat}");
+                    Log.Warning($"Occ == 3:   {entity.Id}  \t{entity.RoleInfo.Lv}  \t{entity.RoleInfo.Name}   \t{entity.RoleInfo.Combat}");
                 }
             }
 
@@ -420,10 +420,10 @@ namespace ET
                 RoleInfoComponent userInfo = UserinfoComponetDict[entity.Id];
                 string servername = ServerHelper.GetGetServerItem(false, zone).ServerName;
 
-                string userName = userInfo.UserInfo.Name;
-                int userlv = userInfo.UserInfo.Lv;
+                string userName = userInfo.RoleInfo.Name;
+                int userlv = userInfo.RoleInfo.Lv;
                 long recharget = NumericComponentDict[entity.Id].GetAsLong(NumericType.RechargeNumber);
-                long diamond = userInfo.UserInfo.Diamond;
+                long diamond = userInfo.RoleInfo.Diamond;
 
                 Log.Warning($"{servername} 玩家:{userName}  等级: {userlv}  充值额度:{recharget}  当前钻石{diamond}  拥有神兽:{shenshou}");
             }
@@ -486,28 +486,28 @@ namespace ET
             ///记录玩家等级
             ///Parameters=31_30   31区合并到30区   oldzone合并到newzone
             Dictionary<long, int> userLevel = new Dictionary<long, int>();
-            List<RoleInfoComponent> olduserInfoComponents_0 = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(oldzone, d => d.Id > 0);
+            List<RoleInfoComponent> oldRoleInfoComponents_0 = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(oldzone, d => d.Id > 0);
 
             int validLv = 20;
-            if (olduserInfoComponents_0.Count > 40000)
+            if (oldRoleInfoComponents_0.Count > 40000)
             {
                 validLv = 25;
             }
 
-            foreach (var oldentity in olduserInfoComponents_0)
+            foreach (var oldentity in oldRoleInfoComponents_0)
             {
                 if (!userLevel.ContainsKey(oldentity.Id))
                 {
-                    userLevel.Add(oldentity.Id, oldentity.UserInfo.Lv);
+                    userLevel.Add(oldentity.Id, oldentity.RoleInfo.Lv);
                 }
 
-                if (oldentity.UserInfo.RobotId > 0)
+                if (oldentity.RoleInfo.RobotId > 0)
                 {
                     invalidPlayers.Add(oldentity.Id);
                     continue;
                 }
 
-                if (oldentity.UserInfo.Lv >= validLv)
+                if (oldentity.RoleInfo.Lv >= validLv)
                 {
                     continue;
                 }
@@ -525,8 +525,8 @@ namespace ET
                     continue;
                 }
                 invalidPlayers.Add( oldentity.Id );
-                //Log.Console($"移除玩家： {oldentity.UserInfo.Name}  {oldentity.UserInfo.Lv}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
-                //Log.Warning($"移除玩家： {oldentity.UserInfo.Name}  {oldentity.UserInfo.Lv}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
+                //Log.Console($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Lv}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
+                //Log.Warning($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Lv}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
             }
             Log.Console($"不参与合区的玩家数量 {invalidPlayers.Count}");
 
@@ -1080,18 +1080,18 @@ namespace ET
             dbcount = 0;
             Dictionary<string, RoleInfoComponent> newuserinfoList = new Dictionary<string, RoleInfoComponent>();
             //先初始化新的玩家列表
-            List<RoleInfoComponent> newuserInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(newzone, d => d.Id > 0);
-            foreach (var entity in newuserInfoComponents)
+            List<RoleInfoComponent> newRoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(newzone, d => d.Id > 0);
+            foreach (var entity in newRoleInfoComponents)
             {
-                if (entity.UserInfo == null || string.IsNullOrEmpty(entity.UserInfo.Name))
+                if (entity.RoleInfo == null || string.IsNullOrEmpty(entity.RoleInfo.Name))
                 {
-                    Log.Debug("entity.UserInfo == null:  " + entity.Id);
+                    Log.Debug("entity.RoleInfo == null:  " + entity.Id);
                     continue;
                 }
 
-                if (!newuserinfoList.ContainsKey(entity.UserInfo.Name))
+                if (!newuserinfoList.ContainsKey(entity.RoleInfo.Name))
                 {
-                    newuserinfoList.Add(entity.UserInfo.Name, entity);
+                    newuserinfoList.Add(entity.RoleInfo.Name, entity);
                 }
             }
             Log.Console("newuserinfoList Complelte");
@@ -1110,8 +1110,8 @@ namespace ET
             }
             Log.Console($"maxServerId {maxServerId}");
 
-            List<RoleInfoComponent> olduserInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(oldzone, d => d.Id > 0);
-            foreach (var oldentity in olduserInfoComponents)
+            List<RoleInfoComponent> oldRoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(oldzone, d => d.Id > 0);
+            foreach (var oldentity in oldRoleInfoComponents)
             {
                 if (invalidPlayers.Contains(oldentity.Id))
                 {
@@ -1125,25 +1125,25 @@ namespace ET
                     await TimerComponent.Instance.WaitFrameAsync();
                 }
 
-                if (oldentity.UserInfo == null || string.IsNullOrEmpty(oldentity.UserInfo.Name))
+                if (oldentity.RoleInfo == null || string.IsNullOrEmpty(oldentity.RoleInfo.Name))
                 {
                     continue;
                 }
-                if (newuserinfoList.ContainsKey(oldentity.UserInfo.Name))
+                if (newuserinfoList.ContainsKey(oldentity.RoleInfo.Name))
                 {
                     //合服账号名称规则，A：流星 25级 B 流星 30级 则B流星 名字沿用，A自动发放一个改名卡 （规则 等级高 > 战力高 > id在前）
                     long renameId = 0;
-                    RoleInfoComponent newentity = newuserinfoList[oldentity.UserInfo.Name];
-                    if (oldentity.UserInfo.Lv > newentity.UserInfo.Lv)
+                    RoleInfoComponent newentity = newuserinfoList[oldentity.RoleInfo.Name];
+                    if (oldentity.RoleInfo.Lv > newentity.RoleInfo.Lv)
                     {
                         renameId = newentity.Id;
-                        newentity.UserInfo.Name += oldzone.ToString();
+                        newentity.RoleInfo.Name += oldzone.ToString();
                         await Game.Scene.GetComponent<DBComponent>().Save(newzone, newentity);
                     }
                     else
                     {
                         renameId = oldentity.Id;
-                        oldentity.UserInfo.Name += oldzone.ToString();
+                        oldentity.RoleInfo.Name += oldzone.ToString();
                     }
 
                     List<DBMailInfo> renamedBMailInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBMailInfo>(oldzone, d => d.Id == renameId);
@@ -1165,9 +1165,9 @@ namespace ET
                     }
                 }
 
-                if (maxServerId > 0 && maxServerId > oldentity.UserInfo.ServerMailIdCur)
+                if (maxServerId > 0 && maxServerId > oldentity.RoleInfo.ServerMailIdCur)
                 {
-                    oldentity.UserInfo.ServerMailIdCur = maxServerId;
+                    oldentity.RoleInfo.ServerMailIdCur = maxServerId;
                 }
                 await Game.Scene.GetComponent<DBComponent>().Save(newzone, oldentity);
             }

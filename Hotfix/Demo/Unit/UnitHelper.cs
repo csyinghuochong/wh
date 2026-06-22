@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
@@ -74,10 +74,10 @@ namespace ET
                     unitInfo.Buffs = unit.GetComponent<BuffManagerComponent>().GetMessageBuff();
                     unitInfo.Skills = unit.GetComponent<SkillManagerComponent>().GetMessageSkill();
                     //设置数据
-                    UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                    unitInfo.UnitName = userInfoComponent.UserInfo.Name;
-                    unitInfo.ConfigId = userInfoComponent.UserInfo.Occ;
-                    unitInfo.UnionName = string.IsNullOrWhiteSpace(userInfoComponent.UserInfo.UnionName) ? string.Empty : userInfoComponent.UserInfo.UnionName;
+                    RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                    unitInfo.UnitName = roleInfoComponent.RoleInfo.Name;
+                    unitInfo.ConfigId = roleInfoComponent.RoleInfo.Occ;
+                    unitInfo.UnionName = string.IsNullOrWhiteSpace(roleInfoComponent.RoleInfo.UnionName) ? string.Empty : roleInfoComponent.RoleInfo.UnionName;
                     unitInfo.DemonName = unitInfoComponent.DemonName;
                     unitInfo.FashionEquipList = unit.GetComponent<BagComponent>().FashionEquipList;
                     break;
@@ -233,7 +233,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (allunits[i].GetComponent<RoleInfoComponent>().UserInfo.RobotId == 0)
+                if (allunits[i].GetComponent<RoleInfoComponent>().RoleInfo.RobotId == 0)
                 {
                     realPlayer++;
                 }
@@ -294,7 +294,7 @@ namespace ET
 
         public static bool IsRobot(this Unit self)
         {
-            return self.Type == UnitType.Player && self.GetComponent<RoleInfoComponent>().UserInfo.RobotId > 0;
+            return self.Type == UnitType.Player && self.GetComponent<RoleInfoComponent>().RoleInfo.RobotId > 0;
         }
 
         public static int GetWeaponSkill(this Unit self, int skillId, List<SkillPro> skillPros)

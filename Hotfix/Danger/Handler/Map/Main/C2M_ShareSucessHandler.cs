@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -14,8 +14,8 @@ namespace ET
                 return;
             }
 
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
-            if (userInfo.Lv < 10)
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            if (roleInfo.Lv < 10)
             {
                 response.Error = ErrorCode.ERR_LevelIsNot;
                 reply();
@@ -46,10 +46,10 @@ namespace ET
             }
 
             long accountZone = DBHelper.GetRealmCenter();
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
             R2M_ShareSucessResponse centerAccount = (R2M_ShareSucessResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2R_ShareSucessRequest()
             {
-                AccountId = userInfoComponent.UserInfo.AccInfoID
+                AccountId = roleInfoComponent.RoleInfo.AccInfoID
             });
             if (centerAccount.Error != ErrorCode.ERR_Success)
             {

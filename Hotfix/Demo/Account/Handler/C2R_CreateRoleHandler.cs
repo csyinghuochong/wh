@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -46,7 +46,7 @@ namespace ET
 				{
 					using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.LoginAccount, request.AccountId.GetHashCode()))
 					{
-						List<UserInfoComponent> result = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(request.ServerId, _account => _account.UserName == request.CreateName);
+						List<RoleInfoComponent> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(request.ServerId, _account => _account.UserName == request.CreateName);
 						if (result.Count > 0)
 						{
 							response.Error = ErrorCode.ERR_RoleNameRepeat;
@@ -96,45 +96,45 @@ namespace ET
                         }
 						
                         long userId = IdGenerater.Instance.GenerateUnitId(request.ServerId);
-                        /*RoleInfoComponent userInfoComponent = session.AddChildWithId<RoleInfoComponent>(userId);
-						userInfoComponent.Account = centerAccountList[0].Account;
-                        userInfoComponent.Password = centerAccountList[0].Password;
-						userInfoComponent.CreateAccountTime = centerAccountList[0].CreateTime;
-                        UserInfo userInfo = userInfoComponent.UserInfo;
-						userInfo.Sp = 1;
-						userInfo.UserId = userId;
-						userInfo.BaoShiDu = 100;
-						userInfo.JiaYuanLv = 10001;
-						userInfo.JiaYuanFund = 10000;
-						userInfo.AccInfoID = centerAccountList[0].Id;
-						userInfo.Name = request.CreateName;
-						userInfo.ServerMailIdCur = -1;
-                        userInfo.PiLao = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);        //初始化疲劳
-						userInfo.Vitality = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);
-						userInfo.MakeList.AddRange(ComHelp.StringArrToIntList(GlobalValueConfigCategory.Instance.Get(18).Value.Split(';')));
-						userInfo.CreateTime = TimeHelper.ServerNow();
+                        /*RoleInfoComponent roleInfoComponent = session.AddChildWithId<RoleInfoComponent>(userId);
+						roleInfoComponent.Account = centerAccountList[0].Account;
+                        roleInfoComponent.Password = centerAccountList[0].Password;
+						roleInfoComponent.CreateAccountTime = centerAccountList[0].CreateTime;
+                        RoleInfo roleInfo = roleInfoComponent.RoleInfo;
+						roleInfo.Sp = 1;
+						roleInfo.UserId = userId;
+						roleInfo.BaoShiDu = 100;
+						roleInfo.JiaYuanLv = 10001;
+						roleInfo.JiaYuanFund = 10000;
+						roleInfo.AccInfoID = centerAccountList[0].Id;
+						roleInfo.Name = request.CreateName;
+						roleInfo.ServerMailIdCur = -1;
+                        roleInfo.PiLao = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);        //初始化疲劳
+						roleInfo.Vitality = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);
+						roleInfo.MakeList.AddRange(ComHelp.StringArrToIntList(GlobalValueConfigCategory.Instance.Get(18).Value.Split(';')));
+						roleInfo.CreateTime = TimeHelper.ServerNow();
 
                         if (centerAccountList[0].Password == ComHelp.RobotPassWord)
 						{
 							int robotId = int.Parse(centerAccountList[0].Account.Split('_')[0]);
 							RobotConfig robotConfig = RobotConfigCategory.Instance.Get(robotId);
-							userInfo.Lv = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : robotConfig.Level;
-							userInfo.Occ = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : robotConfig.Occ;
-                            userInfo.Gold = 100000;
-                            userInfo.RobotId = robotId;
-                            //userInfo.OccTwo = robotConfig.OccTwo;
+							roleInfo.Lv = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : robotConfig.Level;
+							roleInfo.Occ = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : robotConfig.Occ;
+                            roleInfo.Gold = 100000;
+                            roleInfo.RobotId = robotId;
+                            //roleInfo.OccTwo = robotConfig.OccTwo;
                         }
 						else
 						{
-							userInfo.Lv = 1;
-							userInfo.Gold = 0;
-                            userInfo.SeasonLevel = 1;
-                            userInfo.Occ = request.CreateOcc;
+							roleInfo.Lv = 1;
+							roleInfo.Gold = 0;
+                            roleInfo.SeasonLevel = 1;
+                            roleInfo.Occ = request.CreateOcc;
 						}*/
 
 						//long dbCacheId = DBHelper.GetDbCacheId(request.ServerId);
-                        //D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = userId, EntityByte = MongoHelper.ToBson(userInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
-						//userInfoComponent.Dispose();
+                        //D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = userId, EntityByte = MongoHelper.ToBson(RoleInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
+						//roleInfoComponent.Dispose();
 						//创建角色组件
 						//await DBHelper.AddDataComponent<NumericComponent>(request.ServerId, userId, DBHelper.NumericComponent);
 						//await DBHelper.AddDataComponent<DBFriendInfo>(request.ServerId, userId, DBHelper.DBFriendInfo);
@@ -158,7 +158,7 @@ namespace ET
                         Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(CommonConfig.CenterZoneId, centerAccountList[0]).Coroutine();
                         
                         //返回角色信息
-                        //CreateRoleInfo roleList = Function_Role.GetInstance().GetRoleListInfo(userInfo,  userId);
+                        //CreateRoleInfo roleList = Function_Role.GetInstance().GetRoleListInfo(roleInfo,  userId);
 						response.createRoleInfo = createRoleInfo;
 						response.TodayCreateRole = CommonHelper.GetTodayCreateRoleNumber(centerAccountList[0].RoleList);
                         reply();

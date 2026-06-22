@@ -400,28 +400,28 @@ namespace ET
                     }
                     break;
                 case UserDataType.Gold:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Gold;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Gold;
                     break;
                 case UserDataType.Diamond:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Diamond;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Diamond;
                     break;
                 case UserDataType.V1TotalPoints:
-                    number = (long)self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.V1TotalPoints;
+                    number = (long)self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.V1TotalPoints;
                     break;
                 case UserDataType.RongYu:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.RongYu;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.RongYu;
                     break;
                 case UserDataType.JiaYuanFund:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.JiaYuanFund;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.JiaYuanFund;
                     break;
                 case UserDataType.UnionContri:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.UnionZiJin;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.UnionZiJin;
                     break;
                 case UserDataType.SeasonCoin:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.SeasonCoin;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.SeasonCoin;
                     break;
                 case UserDataType.WeiJingGold:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.WeiJingGold;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.WeiJingGold;
                     break;
                 default:
                     break;
@@ -736,12 +736,12 @@ namespace ET
             if (robotId != 0)
             {
                 int[] equipList = new int[0];
-                RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
                 RobotConfig robotConfig = RobotConfigCategory.Instance.Get(robotId);
 
-                if (robotConfig.Behaviour != 1 && robotConfig.Level > userInfoComponent.UserInfo.Lv)
+                if (robotConfig.Behaviour != 1 && robotConfig.Level > roleInfoComponent.RoleInfo.Lv)
                 {
-                    userInfoComponent.UserInfo.Lv = robotConfig.Level;
+                    roleInfoComponent.RoleInfo.Lv = robotConfig.Level;
                 }
                 if (robotConfig.EquipList != null)
                 {
@@ -749,7 +749,7 @@ namespace ET
                 }
                 else
                 {
-                    equipList = LDItemCategory.Instance.GetRandomEquipList(userInfoComponent.UserInfo.Occ, userInfoComponent.UserInfo.Lv);
+                    equipList = LDItemCategory.Instance.GetRandomEquipList(roleInfoComponent.RoleInfo.Occ, roleInfoComponent.RoleInfo.Lv);
                 }
                 for (int i = 0; i < equipList.Length; i++)
                 {
@@ -1194,7 +1194,7 @@ namespace ET
                         //拾取到橙色装备
                         if (equipconfig.Quality >= 5 && getType == ItemGetWay.PickItem)
                         {
-                            string name = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
+                            string name = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
                             string noticeContent = $"恭喜玩家 {name} 获得装备: <color=#{CommonHelper.QualityReturnColor(5)}>{equipconfig.Name}</color>";
                             string noticeContentEn = $"Congratulations to player {name} Get Equip: <color=#{CommonHelper.QualityReturnColor(5)}>{equipconfig.Name}</color>";
                             ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
@@ -1203,8 +1203,8 @@ namespace ET
                         //刷新传承属性
                         if (equipconfig.Quality >= 5 && equipconfig.UseLv >= 60)
                         {
-                            int occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
-                            int occTwo = unit.GetComponent<RoleInfoComponent>().UserInfo.OccTwo;
+                            int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
+                            int occTwo = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo;
                             int skillid = XiLianHelper.XiLianChuanChengJianDing(equipconfig, occ, occTwo);
                             if (skillid != 0)
                             {
@@ -1591,7 +1591,7 @@ namespace ET
         public static void GetEquipAttribute(this BagComponent self, List<HideProList> occInitAttribute)
         {
             Unit unit = self.GetParent<Unit>();
-            int occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
+            int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
             List<int> equipIDList = new List<int>();
             List<int> equipSuitIDList = new List<int>();
             List<BagInfo> equipList =  self.GetItemByLoc(ItemLocType.ItemLocEquip);
@@ -1708,7 +1708,7 @@ namespace ET
             
                ///职业套装
             List<int> occsuit = new List<int>();
-            /*quipSuitConfigCategory.Instance.OccSuiList.TryGetValue(userInfo.Occ, out occsuit);
+            /*quipSuitConfigCategory.Instance.OccSuiList.TryGetValue(roleInfo.Occ, out occsuit);
             if(occsuit!=null)
             {
                 equipSuitIDList.AddRange(occsuit);
@@ -1806,7 +1806,7 @@ namespace ET
                 //职业专精
                 if (occ != 0)
                 {
-                    //if (Occupation_TransferCategory.Instance.Get(userInfo.OccTwo).ArmorMastery == ItemCategory.Instance.Get(equipIDList[i]).EquipType)
+                    //if (Occupation_TransferCategory.Instance.Get(roleInfo.OccTwo).ArmorMastery == ItemCategory.Instance.Get(equipIDList[i]).EquipType)
                     //{
                     //    //occMastery = 0.2f;
                     //    occMastery = 0f;
@@ -1908,7 +1908,7 @@ namespace ET
             }
             */
             
-            /*SeasonLevelConfig seasonLevelConfig = SeasonLevelConfigCategory.Instance.Get(userInfo.SeasonLevel);
+            /*SeasonLevelConfig seasonLevelConfig = SeasonLevelConfigCategory.Instance.Get(roleInfo.SeasonLevel);
             if (!CommonHelper.IfNull(seasonLevelConfig.PripertySet))
             {
                 string[] addProList = seasonLevelConfig.PripertySet.Split("@");

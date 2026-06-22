@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 
 namespace ET
@@ -27,8 +27,8 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (userInfoComponent.UserInfo.Gold < occupationJueXingConfig.costGold)
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            if (roleInfoComponent.RoleInfo.Gold < occupationJueXingConfig.costGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -67,7 +67,7 @@ namespace ET
 
             numericComponent.ApplyChange(null, NumericType.JueXingExp, occupationJueXingConfig.costExp * -1, 0);
 
-            userInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (occupationJueXingConfig.costGold * -1).ToString(), true, ItemGetWay.JueXing);
+            roleInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (occupationJueXingConfig.costGold * -1).ToString(), true, ItemGetWay.JueXing);
 
             bagComponent.OnCostItemData(occupationJueXingConfig.costItem, ItemLocType.ItemLocBag, ItemGetWay.JueXing);
 

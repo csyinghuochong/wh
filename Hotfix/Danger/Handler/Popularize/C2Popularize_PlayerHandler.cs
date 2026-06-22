@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -18,8 +18,8 @@ namespace ET
                     reply();
                     return;
                 }
-                UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(scene.DomainZone(), request.ActorId);
-                if (userInfoComponent == null)
+                RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(scene.DomainZone(), request.ActorId);
+                if (roleInfoComponent == null)
                 {
                     reply();
                     return;
@@ -49,14 +49,14 @@ namespace ET
                 }
 
                 long puserid = dBPopularizeInfoList[0].Id;
-                UserInfoComponent userInfoComponent_2 = await DBHelper.GetComponentCache<UserInfoComponent>(newzone, puserid);
-                if (userInfoComponent_2 == null)
+                RoleInfoComponent roleInfoComponent_2 = await DBHelper.GetComponentCache<RoleInfoComponent>(newzone, puserid);
+                if (roleInfoComponent_2 == null)
                 {
                     response.Error = ErrorCode.ERR_PopularizeNot;
                     reply();
                     return;
                 }
-                if (userInfoComponent.UserInfo.AccInfoID == userInfoComponent_2.UserInfo.AccInfoID)
+                if (roleInfoComponent.RoleInfo.AccInfoID == roleInfoComponent_2.RoleInfo.AccInfoID)
                 {
                     response.Error = ErrorCode.ERR_PopularizeThe;
                     reply();

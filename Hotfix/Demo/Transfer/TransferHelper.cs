@@ -1,4 +1,4 @@
-﻿using NLog.Fluent;
+using NLog.Fluent;
 using System;
 using System.Collections.Generic;
 
@@ -20,7 +20,7 @@ namespace ET
                     Log.Debug($"LoginTest1  Actor_Transfer unitId{unit.Id} oldScene:{oldScene}  requestscene{request.SceneType}");
                     return ErrorCode.ERR_RequestRepeatedly;
                 }
-                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
                 if (SceneConfigHelper.UseSceneConfig(request.SceneType) && request.SceneId > 0)
                 {
                     if (!LDSceneCategory.Instance.Contain(request.SceneId))
@@ -29,15 +29,15 @@ namespace ET
                     }
 
                     LDScene ldScene = LDSceneCategory.Instance.Get(request.SceneId);
-                    /*if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= userInfoComponent.GetSceneFubenTimes(request.SceneId))
+                    /*if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= roleInfoComponent.GetSceneFubenTimes(request.SceneId))
                     {
                         return ErrorCode.ERR_TimesIsNot;
                     }
-                    if (ldScene.EnterLv > userInfoComponent.UserInfo.Lv)
+                    if (ldScene.EnterLv > roleInfoComponent.RoleInfo.Lv)
                     {
                         return ErrorCode.ERR_LevelIsNot;
                     }*/
-                    userInfoComponent.AddSceneFubenTimes(request.SceneId);
+                    roleInfoComponent.AddSceneFubenTimes(request.SceneId);
                 }
                 if (oldScene == MapTypeEnum.MainCityScene && request.SceneType > MapTypeEnum.MainCityScene)
                 {
@@ -410,9 +410,9 @@ namespace ET
                         await TransferHelper.Transfer(unit, battleEnter.FubenInstanceId, (int)MapTypeEnum.Battle, request.SceneId, FubenDifficulty.Normal, battleEnter.Camp.ToString());
                         break;
                     case MapTypeEnum.Arena:
-                        userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                        roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
                         ldScene = LDSceneCategory.Instance.Get(request.SceneId);
-                        /*if (userInfoComponent.UserInfo.Lv < ldScene.EnterLv)
+                        /*if (roleInfoComponent.RoleInfo.Lv < ldScene.EnterLv)
                         {
                             return ErrorCode.ERR_LevelIsNot;
                         }*/
@@ -434,7 +434,7 @@ namespace ET
                         mapInstanceId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
                         //[创建副本Scene]
                         T2M_TeamDungeonEnterResponse createUnit = (T2M_TeamDungeonEnterResponse)await ActorMessageSenderComponent.Instance.Call(
-                        mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = unit.GetComponent<RoleInfoComponent>().UserInfo.UserId });
+                        mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = unit.GetComponent<RoleInfoComponent>().RoleInfo.UserId });
                         if (createUnit.Error != ErrorCode.ERR_Success)
                         {
                             return ErrorCode.ERR_TransferFailError;
@@ -458,7 +458,7 @@ namespace ET
         {
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             int sceneTypeEnum = mapComponent.MapTypeEnum;
-            long userId = unit.GetComponent<RoleInfoComponent>().UserInfo.UserId;
+            long userId = unit.GetComponent<RoleInfoComponent>().RoleInfo.UserId;
             unit.GetComponent<UnitInfoComponent>().LastDungeonId = 0;
             //传送回主场景
             long mapInstanceId = DBHelper.GetMainCityServerId(unit.DomainZone());

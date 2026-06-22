@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -31,8 +31,8 @@ namespace ET
             }
             int sceneId = BattleHelper.GetSceneIdByType(request.SceneType);
             numericComponent.ApplyChange(null, NumericType.FubenTimesReset, 1, 0);
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            userInfoComponent.ClearFubenTimes(sceneId);
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            roleInfoComponent.ClearFubenTimes(sceneId);
 
             reply();
             await ETTask.CompletedTask;

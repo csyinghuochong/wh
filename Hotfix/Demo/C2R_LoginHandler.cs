@@ -43,7 +43,7 @@
 
 //			
 
-//				roleList = Function_Role.GetInstance().GetRoleListInfo(userinfo.UserInfo, i, acc.UserList[i]);
+//				roleList = Function_Role.GetInstance().GetRoleListInfo(userinfo.RoleInfo, i, acc.UserList[i]);
 //				response.RoleLists.Add(roleList);
 //			}
 

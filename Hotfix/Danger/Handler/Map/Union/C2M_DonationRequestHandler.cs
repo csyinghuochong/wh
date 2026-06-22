@@ -14,7 +14,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Gold < request.Price)
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold < request.Price)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -27,14 +27,14 @@ namespace ET
             //}
             request.UnitId = unit.Id;
             long serverid = DBHelper.GetUnionServerId(unit.DomainZone());
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
             RankingInfo rankingInfo = new RankingInfo()
             {
                 Combat = request.Price,
                 UserId = unit.Id,
-                PlayerLv = userInfo.Lv,
-                PlayerName = userInfo.Name, 
-                Occ = userInfo.Occ, 
+                PlayerLv = roleInfo.Lv,
+                PlayerName = roleInfo.Name, 
+                Occ = roleInfo.Occ, 
             };
             U2M_DonationResponse d2GGetUnit = (U2M_DonationResponse)await ActorMessageSenderComponent.Instance.Call(serverid,
                 new M2U_DonationRequest() { RankingInfo = rankingInfo }

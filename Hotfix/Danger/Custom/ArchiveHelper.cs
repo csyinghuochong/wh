@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -156,17 +156,17 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponent old_userInfoComponent = GetDBComponent<RoleInfoComponent>(zone, unitid, day, DBHelper.RoleInfoComponent);
-            if (old_userInfoComponent == null)
+            RoleInfoComponent old_RoleInfoComponent = GetDBComponent<RoleInfoComponent>(zone, unitid, day, DBHelper.RoleInfoComponent);
+            if (old_RoleInfoComponent == null)
             {
-                Console.WriteLine($"OnArchiveHandler  userInfoComponent==null:   {zone} {unitid}");
+                Console.WriteLine($"OnArchiveHandler  RoleInfoComponent==null:   {zone} {unitid}");
                 return;
             }
 
 
             Console.WriteLine($"正确获取到玩家全部数据！！！");
 
-            string account = old_userInfoComponent.Account;
+            string account = old_RoleInfoComponent.Account;
             //通知gate服该玩家在回档中，禁止登陆。。。。
 
             Console.WriteLine("准备回档 ，通知玩家可以下线！！");
@@ -191,7 +191,7 @@ namespace ET
            (paimaiInstanceid, new R2Paimai_DeleteRoleData()
            {
                DeleUserID = unitid,
-               AccountId = old_userInfoComponent.UserInfo.AccInfoID, //没用到
+               AccountId = old_RoleInfoComponent.RoleInfo.AccInfoID, //没用到
                DeleteType = 1,
            });
 
@@ -213,7 +213,7 @@ namespace ET
                 }
             }
 
-            List<DBAccountBagInfo> new_dbAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountBagInfo>(zone, d => d.Id == old_userInfoComponent.UserInfo.AccInfoID);
+            List<DBAccountBagInfo> new_dbAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountBagInfo>(zone, d => d.Id == old_RoleInfoComponent.RoleInfo.AccInfoID);
             if (new_dbAccountInfos == null || new_dbAccountInfos.Count == 0)
             {
                 Console.WriteLine($"OnArchiveHandler  new_dbAccountInfos==null:   {zone} {unitid}");
@@ -225,8 +225,8 @@ namespace ET
             }
             //排除在账号仓库的道具。。。
 
-            int occ = old_userInfoComponent.UserInfo.Occ;
-            int occTwo = old_userInfoComponent.UserInfo.OccTwo;
+            int occ = old_RoleInfoComponent.RoleInfo.Occ;
+            int occTwo = old_RoleInfoComponent.RoleInfo.OccTwo;
             List<BagInfo> bagInfos = old_bagComponent.GetAllItems(occ, occTwo );
             for (int i = 0; i < bagInfos.Count; i++)
             {
@@ -265,7 +265,7 @@ namespace ET
                 ///清空该玩家的家族id 
                 old_numericComponent.ApplyValue(NumericType.UnionLeader, 0);
                 old_numericComponent.ApplyValue(NumericType.UnionId_0, 0);
-                old_userInfoComponent.UpdateRoleData(UserDataType.UnionName, "", false);
+                old_RoleInfoComponent.UpdateRoleData(UserDataType.UnionName, "", false);
             }
 
 
@@ -305,7 +305,7 @@ namespace ET
             await SaveDBComponent(zone, old_skillSetComponent);
             await SaveDBComponent(zone, old_taskComponent);
             await SaveDBComponent(zone, old_titleComponent);
-            await SaveDBComponent(zone, old_userInfoComponent);
+            await SaveDBComponent(zone, old_RoleInfoComponent);
 
             Console.WriteLine("回档完成 ，通知玩家可以上线！！");
             await NoticeAccountServerArchive(zone, account, unitid, 0);
@@ -367,22 +367,22 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
 
             List<long> saveuserids = new List<long>();  
-            List<RoleInfoComponent> userinfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(zone, d => d.Id > 0);
-            for (int i = 0; i < userinfoComponentList.Count; i++)
+            List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(zone, d => d.Id > 0);
+            for (int i = 0; i < RoleInfoComponentList.Count; i++)
             {
-                RoleInfoComponent userInfoComponent = userinfoComponentList[i];
-                if (userInfoComponent.UserInfo.RobotId != 0)
+                RoleInfoComponent roleInfoComponent = RoleInfoComponentList[i];
+                if (roleInfoComponent.RoleInfo.RobotId != 0)
                 {
                     continue;
                 }
 
                 //只记录七天内登陆的玩家
-                if (serverTime - userInfoComponent.LastLoginTime > TimeHelper.OneDay * 3)
+                if (serverTime - roleInfoComponent.LastLoginTime > TimeHelper.OneDay * 3)
                 {
                     continue;
                 }
 
-                saveuserids.Add(userInfoComponent.Id);    
+                saveuserids.Add(roleInfoComponent.Id);    
             }
 
             //foreach (Type type in Game.EventSystem.GetTypes().Values)
@@ -436,7 +436,7 @@ namespace ET
 
             SaveListToJson(allComponents, filepath, filepath + fileName);
 
-            //RoleInfoComponent userInfoComponent = GetUserComponent<RoleInfoComponent>(134, 2694759532839632896);
+            //RoleInfoComponent roleInfoComponent = GetUserComponent<RoleInfoComponent>(134, 2694759532839632896);
             //Console.WriteLine(" MongoHelper.Deserialize");
         }
 

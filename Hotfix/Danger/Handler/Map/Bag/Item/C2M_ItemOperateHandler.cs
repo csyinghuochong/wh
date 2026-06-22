@@ -14,8 +14,8 @@ namespace ET
             try
             {
                 //获取UserID及User数据
-                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                UserInfo useInfo = userInfoComponent.UserInfo;
+                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                RoleInfo useInfo = roleInfoComponent.RoleInfo;
                 long bagInfoID = request.OperateBagID;
 
                 ItemLocType locType = ItemLocType.ItemLocBag;
@@ -57,13 +57,13 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (ldItem.DayUseNum > 0 && userInfoComponent.GetDayItemUse(ldItem.Id) >= ldItem.DayUseNum)
+                    if (ldItem.DayUseNum > 0 && roleInfoComponent.GetDayItemUse(ldItem.Id) >= ldItem.DayUseNum)
                     {
                         response.Error = ErrorCode.ERR_ItemNoUseTime;
                         reply();
                         return;
                     }
-                    if (ldItem.SumUseNum > 0 && userInfoComponent.GetTotalUseTimes(ldItem.Id) >= ldItem.SumUseNum)
+                    if (ldItem.SumUseNum > 0 && roleInfoComponent.GetTotalUseTimes(ldItem.Id) >= ldItem.SumUseNum)
                     {
                         response.Error = ErrorCode.ERR_ItemNoUseTime;
                         reply();
@@ -144,7 +144,7 @@ namespace ET
                                 string[] paramInfo = expInfos[int.Parse(operatePar[0])].Split(';');
                              
                                 //如果当前钻石不足返回错误
-                                if (unit.GetComponent<RoleInfoComponent>().UserInfo.Diamond < needZuanshi)
+                                if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Diamond < needZuanshi)
                                 {
                                     response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                                     reply();
@@ -304,7 +304,7 @@ namespace ET
                                 unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.FoMoNumber_213, 0, 1);
                                 break;
                             case 16: //附魔技能
-                                unit.GetComponent<RoleInfoComponent>().UserInfo.MakeList.Add(int.Parse(ldItem.ItemUsePar));
+                                unit.GetComponent<RoleInfoComponent>().RoleInfo.MakeList.Add(int.Parse(ldItem.ItemUsePar));
                                 break;
                             //使用技能
                             case 101:
@@ -338,7 +338,7 @@ namespace ET
                                 //判定职业是否符合
                                 if (ldItem.ItemUsePar != "0")
                                 {
-                                    if (ldItem.ItemUsePar == unit.GetComponent<RoleInfoComponent>().UserInfo.Occ.ToString() || ldItem.ItemUsePar == unit.GetComponent<RoleInfoComponent>().UserInfo.OccTwo.ToString())
+                                    if (ldItem.ItemUsePar == unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ.ToString() || ldItem.ItemUsePar == unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo.ToString())
                                     {
                                         //符合条件
                                     }
@@ -358,7 +358,7 @@ namespace ET
                             case 110:
                                 //1;20;70010101,70010102@21;70;70020101,70020102
                                 int createMonsterID = 0;
-                                int lv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
+                                int lv = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
                                 string[] monsters = ldItem.ItemUsePar.Split('@');
 
                                 if (monsters.Length > 100)
@@ -392,13 +392,13 @@ namespace ET
                                 {
                                     LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(createMonsterID);
                                     ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(unit.DomainZone()),
-                                        NoticeType.Notice, "玩家" + unit.GetComponent<RoleInfoComponent>().UserInfo.Name + "在宝藏之地召唤出领主怪物:<color=#FF75F0>" + ldMonsterCof.Name + "</color>").Coroutine();
+                                        NoticeType.Notice, "玩家" + unit.GetComponent<RoleInfoComponent>().RoleInfo.Name + "在宝藏之地召唤出领主怪物:<color=#FF75F0>" + ldMonsterCof.Name + "</color>").Coroutine();
                                 }
                                 break;
                             //金币袋子
                             case 111:
                                 string[] jinbiInfos = ldItem.ItemUsePar.Split(';');
-                                int userLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
+                                int userLv = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
                                 LDExp ldExp = LDExpCategory.Instance.Get(userLv);
                                 /*long addCoin = (int)RandomHelper.RandomNumberFloat(float.Parse(jinbiInfos[0]) * exp.Exp_Role, float.Parse(jinbiInfos[1]) * exp.Exp_Role);
                                 addCoin *= costNumber;
@@ -410,7 +410,7 @@ namespace ET
                                 string[] operatePar = request.OperatePar.Split(';'); //使用类型;数量
                                 int needZuanshi = operatePar[0] == "1"? int.Parse(expInfos[0]) * costNumber : 0;
                                 string[] paramInfo = expInfos[int.Parse(operatePar[0])].Split(';');
-                                userLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
+                                userLv = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
 
                                 /*exp = ExpCategory.Instance.Get(userLv);
                                 int addExp = (int)RandomHelper.RandomNumberFloat(float.Parse(paramInfo[0]) * exp.RoseExpPro, float.Parse(paramInfo[1]) * exp.RoseExpPro);
@@ -455,10 +455,10 @@ namespace ET
                                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.CangKuNumber, cangkuNumber + 1);
                                 break;
                             case 125://坐骑获取
-                                userInfoComponent.OnHorseActive(int.Parse(ldItem.ItemUsePar), true);
+                                roleInfoComponent.OnHorseActive(int.Parse(ldItem.ItemUsePar), true);
                                 int hourseId = int.Parse(ldItem.ItemUsePar);
-                                bool canhorse = hourseId == 10001 ? userInfoComponent.UserInfo.Lv >= 25 : true;
-                                if (canhorse && userInfoComponent.UserInfo.HorseIds.Count == 1)
+                                bool canhorse = hourseId == 10001 ? roleInfoComponent.RoleInfo.Lv >= 25 : true;
+                                if (canhorse && roleInfoComponent.RoleInfo.HorseIds.Count == 1)
                                 {
                                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseFightID, hourseId);
                                 }
@@ -539,7 +539,7 @@ namespace ET
                             case 142:
                                 //封印的武器
                                 int useindex = int.Parse(request.OperatePar);
-                                int occ = userInfoComponent.UserInfo.Occ;
+                                int occ = roleInfoComponent.RoleInfo.Occ;
                                 List<int> weaponids = ItemHelper.GetSealWeaponList(occ, ldItem.Id);
                                 unit.GetComponent<BagComponent>().OnAddItemData($"{weaponids[useindex]};1", $"{ItemGetWay.ItemBox_8}_{TimeHelper.ServerNow()}");
                                 break;
@@ -564,11 +564,11 @@ namespace ET
                         }
                         if (ldItem.DayUseNum > 0)
                         {
-                            userInfoComponent.OnDayItemUse(ldItem.Id);
+                            roleInfoComponent.OnDayItemUse(ldItem.Id);
                         }
                         if (ldItem.SumUseNum > 0)
                         {
-                            userInfoComponent.OnTotalUseTimes(ldItem.Id);
+                            roleInfoComponent.OnTotalUseTimes(ldItem.Id);
                         }
                     }
                 }

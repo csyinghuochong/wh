@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -24,8 +24,8 @@ namespace ET
                 UnionPlayerInfo unionPlayerInfo = dBUnionInfo.UnionInfo.UnionPlayerList[i];
                 long userId = unionPlayerInfo.UserID;
                 
-                UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(scene.DomainZone(), userId);
-                if (userInfoComponent == null)
+                RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(scene.DomainZone(), userId);
+                if (roleInfoComponent == null)
                 {
                     dBUnionInfo.UnionInfo.UnionPlayerList.RemoveAt(i);
                     continue;
@@ -40,9 +40,9 @@ namespace ET
                     unionPlayerInfo.Position = 1;
                 }
 
-                unionPlayerInfo.PlayerLevel = userInfoComponent.UserInfo.Lv;
-                unionPlayerInfo.PlayerName = userInfoComponent.UserInfo.Name;
-                unionPlayerInfo.Combat = userInfoComponent.UserInfo.Combat;
+                unionPlayerInfo.PlayerLevel = roleInfoComponent.RoleInfo.Lv;
+                unionPlayerInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
+                unionPlayerInfo.Combat = roleInfoComponent.RoleInfo.Combat;
 
                 G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
                     (gateServerId, new T2G_GateUnitInfoRequest()
@@ -55,7 +55,7 @@ namespace ET
                 }
                 if (dBUnionInfo.UnionInfo.LeaderId == userId)
                 {
-                    dBUnionInfo.UnionInfo.LeaderName = userInfoComponent.UserInfo.Name;
+                    dBUnionInfo.UnionInfo.LeaderName = roleInfoComponent.RoleInfo.Name;
                 }
             }
 

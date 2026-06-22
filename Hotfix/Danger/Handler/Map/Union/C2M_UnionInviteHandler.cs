@@ -8,8 +8,8 @@
         {
             Unit beinvite = unit.GetParent<UnitComponent>().Get(message.InviteId);
 
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
-            if (string.IsNullOrEmpty(userInfo.UnionName))
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            if (string.IsNullOrEmpty(roleInfo.UnionName))
             {
                 return;
             }
@@ -29,8 +29,8 @@
                 MessageHelper.SendToClient(beinvite, new M2C_UnionInviteMessage()
                 { 
                     UnionId = unionid,
-                    UnionName = userInfo.UnionName,
-                    PlayerName = userInfo.Name,
+                    UnionName = roleInfo.UnionName,
+                    PlayerName = roleInfo.Name,
                 });
             }
             await ETTask.CompletedTask;

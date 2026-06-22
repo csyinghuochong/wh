@@ -16,10 +16,10 @@ namespace ET
             }
             if (request.StallType == 1) //摆摊
             {
-                UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
-                if (string.IsNullOrEmpty(userInfo.StallName))
+                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+                if (string.IsNullOrEmpty(roleInfo.StallName))
                 {
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.StallName, $"{userInfo.Name}的摊位");
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.StallName, $"{roleInfo.Name}的摊位");
                 }
        
                 TransferHelper.RemovePetAndJingLing(unit );

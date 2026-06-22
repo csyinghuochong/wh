@@ -24,7 +24,7 @@ namespace ET
 
 
     [ObjectSystem]
-    public class UserInfoComponentAwake : AwakeSystem<RoleInfoComponent>
+    public class RoleInfoComponentAwake : AwakeSystem<RoleInfoComponent>
     {
         public override void Awake(RoleInfoComponent self)
         {
@@ -33,7 +33,7 @@ namespace ET
     }
 
     [ObjectSystem]
-    public class UserInfoComponentDestroy : DestroySystem<RoleInfoComponent>
+    public class RoleInfoComponentDestroy : DestroySystem<RoleInfoComponent>
     {
         public override void Destroy(RoleInfoComponent self)
         {
@@ -48,36 +48,36 @@ namespace ET
         {
             self.Account = account;
             self.CreateAccountTime = createRoleInfo.CreateTime;
-            UserInfo userInfo = self.UserInfo;
-            userInfo.Sp = 1;
-            userInfo.UserId = userId;
-            userInfo.JiaYuanLv = 1;
-            userInfo.BaoShiDu = 100;
-            userInfo.JiaYuanFund = 10000;
-            userInfo.AccInfoID =accountId;
-            userInfo.Name = createRoleInfo.PlayerName;
-            userInfo.ServerMailIdCur = -1;
-            userInfo.PiLao = 120;     //初始化疲劳
-            userInfo.Vitality = 120;
-            //userInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
-            userInfo.CreateTime = TimeHelper.ServerNow();
+            RoleInfo roleInfo = self.RoleInfo;
+            roleInfo.Sp = 1;
+            roleInfo.UserId = userId;
+            roleInfo.JiaYuanLv = 1;
+            roleInfo.BaoShiDu = 100;
+            roleInfo.JiaYuanFund = 10000;
+            roleInfo.AccInfoID =accountId;
+            roleInfo.Name = createRoleInfo.PlayerName;
+            roleInfo.ServerMailIdCur = -1;
+            roleInfo.PiLao = 120;     //初始化疲劳
+            roleInfo.Vitality = 120;
+            //roleInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
+            roleInfo.CreateTime = TimeHelper.ServerNow();
 
             if (createRoleInfo.RobotId > 0)
             {
                 int robotId = int.Parse(account.Split('_')[0]);
                 RobotConfig robotConfig = RobotConfigCategory.Instance.Get(robotId);
-                userInfo.Lv = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : robotConfig.Level;
-                userInfo.Occ = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : robotConfig.Occ;
-                userInfo.Gold = 100000;
-                userInfo.RobotId = robotId;
-                //userInfo.OccTwo = robotConfig.OccTwo;
+                roleInfo.Lv = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : robotConfig.Level;
+                roleInfo.Occ = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : robotConfig.Occ;
+                roleInfo.Gold = 100000;
+                roleInfo.RobotId = robotId;
+                //roleInfo.OccTwo = robotConfig.OccTwo;
             }
             else
             {
-                userInfo.Lv = 1;
-                userInfo.Gold = 0;
-                userInfo.SeasonLevel = 1;
-                userInfo.Occ = createRoleInfo.PlayerOcc;
+                roleInfo.Lv = 1;
+                roleInfo.Gold = 0;
+                roleInfo.SeasonLevel = 1;
+                roleInfo.Occ = createRoleInfo.PlayerOcc;
             }
         }
         
@@ -104,14 +104,14 @@ namespace ET
         public static void OnJiaYuanExp(this RoleInfoComponent self, float hour)
         {
             
-            if ( !LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv + 1) )
+            if ( !LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv + 1) )
             {
                 
                 return;
             }
             
-            LDHome ldHome = LDHomeCategory.Instance.Get(self.UserInfo.JiaYuanLv);
-            //self.UserInfo.JiaYuanExp += jiaYuanConfig.JiaYuanAddExp;
+            LDHome ldHome = LDHomeCategory.Instance.Get(self.RoleInfo.JiaYuanLv);
+            //self.RoleInfo.JiaYuanExp += jiaYuanConfig.JiaYuanAddExp;
             //int addexp = Mathf.FloorToInt(hour * ldHome.JiaYuanAddExp);
             //self.UpdateRoleMoneyAdd(UserDataType.JiaYuanExp, $"{addexp}", true, ItemGetWay.JiaYuanExchange);
         }
@@ -133,12 +133,12 @@ namespace ET
 
         public static void OpenAll(this RoleInfoComponent self)
         {
-            self.UserInfo.FubenPassList.Clear();
+            self.RoleInfo.FubenPassList.Clear();
 
             /*Dictionary<int, ChapterConfig> keyValuePairs = ChapterConfigCategory.Instance.GetAll();
             foreach (var item in keyValuePairs)
             {
-                self.UserInfo.FubenPassList.Add(new FubenPassInfo()
+                self.RoleInfo.FubenPassList.Add(new FubenPassInfo()
                 {
                     FubenId = item.Key,
                     Difficulty = (int)FubenDifficulty.DiYu
@@ -234,39 +234,39 @@ namespace ET
 
         public static void CheckData(this RoleInfoComponent self)
         {
-            if (!LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv))
+            if (!LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv))
             {
-                self.UserInfo.JiaYuanLv = 1;
+                self.RoleInfo.JiaYuanLv = 1;
             }
-            if (self.UserInfo.SeasonLevel == 0)
+            if (self.RoleInfo.SeasonLevel == 0)
             {
-                self.UserInfo.SeasonLevel = 1;
+                self.RoleInfo.SeasonLevel = 1;
             }
-            if (self.UserInfo.CreateTime == 0)
+            if (self.RoleInfo.CreateTime == 0)
             {
-                self.UserInfo.CreateTime = TimeHelper.ServerNow();
+                self.RoleInfo.CreateTime = TimeHelper.ServerNow();
             }
-            if (self.UserInfo.Lv < 20 && self.UserInfo.BaoShiDu < 100)
+            if (self.RoleInfo.Lv < 20 && self.RoleInfo.BaoShiDu < 100)
             {
-                self.UserInfo.BaoShiDu = 100;
+                self.RoleInfo.BaoShiDu = 100;
             }
 
             int maxTowerId = 0;
-            if (self.UserInfo.TowerRewardIds.Count > 0)
+            if (self.RoleInfo.TowerRewardIds.Count > 0)
             {
-                maxTowerId = self.UserInfo.TowerRewardIds[self.UserInfo.TowerRewardIds.Count - 1];
+                maxTowerId = self.RoleInfo.TowerRewardIds[self.RoleInfo.TowerRewardIds.Count - 1];
             }
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
 
-            for (int  i =  self.UserInfo.HorseIds.Count - 1; i >= 0; i--)
+            for (int  i =  self.RoleInfo.HorseIds.Count - 1; i >= 0; i--)
             {
-                if ( !LDMountCategory.Instance.Contain( self.UserInfo.HorseIds[i]))
+                if ( !LDMountCategory.Instance.Contain( self.RoleInfo.HorseIds[i]))
                 {
-                    self.UserInfo.HorseIds.RemoveAt(i);
+                    self.RoleInfo.HorseIds.RemoveAt(i);
                 }
             }
 
-            if (self.UserInfo.RobotId > 0 &&    self.UserInfo.HorseIds.Count == 0)
+            if (self.RoleInfo.RobotId > 0 &&    self.RoleInfo.HorseIds.Count == 0)
             {
                 List<LDMount> mounts = LDMountCategory.Instance.GetAll().Values.ToList();
                 int intdexxx =  RandomHelper.RandomNumber(0, mounts.Count);
@@ -279,7 +279,7 @@ namespace ET
             
             
             PetComponent petComponent = self.GetParent<Unit>().GetComponent<PetComponent>();
-            if (self.UserInfo.RobotId > 0 &&   petComponent.RolePetInfos.Count == 0)
+            if (self.RoleInfo.RobotId > 0 &&   petComponent.RolePetInfos.Count == 0)
             {
                 List<int> petids = LDPetCategory.Instance.GetAll().Keys.ToList();
                 int randomindex = RandomHelper.RandomNumber(0, petids.Count);
@@ -298,30 +298,30 @@ namespace ET
             int recharge = numericComponent.GetAsInt(NumericType.RechargeNumber);
             if (recharge!=0 && dataCollationComponent.ChouKaTimes > (recharge * 2) && dataCollationComponent.ChouKaTimes > 100)
             {
-                Log.Warning($"抽卡次数异常:{self.DomainZone()} {self.UserInfo.Name}   充值:{numericComponent.GetAsInt(NumericType.RechargeNumber)}  抽卡:{dataCollationComponent.ChouKaTimes}");
+                Log.Warning($"抽卡次数异常:{self.DomainZone()} {self.RoleInfo.Name}   充值:{numericComponent.GetAsInt(NumericType.RechargeNumber)}  抽卡:{dataCollationComponent.ChouKaTimes}");
             }
 
             // 烟雨楼Id: 2466222808943362373   烟雨楼 寸断De法殇 ID: 2466171477355986944
-            if (self.UserInfo.UserId == 2466171477355986944)
+            if (self.RoleInfo.UserId == 2466171477355986944)
             {
-                //self.UserInfo.UnionName = "烟雨楼";
+                //self.RoleInfo.UnionName = "烟雨楼";
                 //self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.UnionLeader, 0, false);
                 //self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.UnionId_0, 2466222808943362373, false);
             }
 
-            if (self.UserInfo.UnionKeJiList.Count < UnionKeJiConfigCategory.Instance.UnionQiangHuaList.Count)
+            if (self.RoleInfo.UnionKeJiList.Count < UnionKeJiConfigCategory.Instance.UnionQiangHuaList.Count)
             {
-                int curNumber = self.UserInfo.UnionKeJiList.Count;
+                int curNumber = self.RoleInfo.UnionKeJiList.Count;
                 int maxNumber = UnionKeJiConfigCategory.Instance.UnionQiangHuaList.Count;
                 for (int keji = curNumber; keji < maxNumber; keji++)
                 {
-                    self.UserInfo.UnionKeJiList.Add(UnionKeJiConfigCategory.Instance.GetFristId( keji ) );
+                    self.RoleInfo.UnionKeJiList.Add(UnionKeJiConfigCategory.Instance.GetFristId( keji ) );
                 }
             }
-            if (!LDHomeCategory.Instance.Contain(self.UserInfo.JiaYuanLv +1) && self.UserInfo.JiaYuanExp > 0)
+            if (!LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv +1) && self.RoleInfo.JiaYuanExp > 0)
             {
-                self.UserInfo.JiaYuanExp = 0;
-                Console.WriteLine($"清空家园经验: {self.Id}  {self.UserInfo.JiaYuanLv}  {self.UserInfo.JiaYuanExp}");
+                self.RoleInfo.JiaYuanExp = 0;
+                Console.WriteLine($"清空家园经验: {self.Id}  {self.RoleInfo.JiaYuanLv}  {self.RoleInfo.JiaYuanExp}");
             }
 
         }
@@ -348,7 +348,7 @@ namespace ET
             self.RemoteAddress = remoteIp;
             
             self.LastLoginTime = TimeHelper.ServerNow();
-            self.UserName = self.UserInfo.Name;
+            self.UserName = self.RoleInfo.Name;
             self.ShouLieSendTime = 0;
         }
 
@@ -386,7 +386,7 @@ namespace ET
 
             if (hour == 0 )
             {
-                self.RecoverPiLao(30 + self.GetAddPiLao(self.UserInfo.MakeList.Count), notice);
+                self.RecoverPiLao(30 + self.GetAddPiLao(self.RoleInfo.MakeList.Count), notice);
             }
             if (hour == 12)
             {
@@ -406,7 +406,7 @@ namespace ET
         public static void RecoverPiLao(this RoleInfoComponent self, int addValue, bool notice)
         {
             Unit unit = self.GetParent<Unit>();
-            long recoverPiLao = self.GetParent<Unit>().GetMaxPiLao() - self.UserInfo.PiLao;
+            long recoverPiLao = self.GetParent<Unit>().GetMaxPiLao() - self.RoleInfo.PiLao;
             recoverPiLao = Math.Min(recoverPiLao, addValue);
 
             Log.Warning($"[增加体力] {unit.DomainZone()}    {unit.Id}    {recoverPiLao}");
@@ -421,9 +421,9 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             int skillNumber = 1 + numericComponent.GetAsInt(NumericType.MakeType_2) > 0 ? 1 : 0;
-            int updatevalue = unit.GetMaxHuoLi(skillNumber) - self.UserInfo.Vitality;
+            int updatevalue = unit.GetMaxHuoLi(skillNumber) - self.RoleInfo.Vitality;
             self.UpdateRoleData(UserDataType.Vitality, updatevalue.ToString(), notice);
-            //updatevalue = ComHelp.GetMaxBaoShiDu() - self.UserInfo.BaoShiDu;
+            //updatevalue = ComHelp.GetMaxBaoShiDu() - self.RoleInfo.BaoShiDu;
             //self.UpdateRoleData(UserDataType.BaoShiDu, updatevalue.ToString(), notice);
             numericComponent.ApplyValue(NumericType.ZeroClock, 1, notice);
             self.ClearDayData();
@@ -432,9 +432,9 @@ namespace ET
             self.ShouLieKill = 0;
         }
 
-        public static UserInfo GetUserInfo(this RoleInfoComponent self)
+        public static RoleInfo GetUserInfo(this RoleInfoComponent self)
         {
-            return self.UserInfo;
+            return self.RoleInfo;
         }
 
         public static void OnShowLieKill(this RoleInfoComponent self)
@@ -461,10 +461,10 @@ namespace ET
             self.ShouLieSendTime = TimeHelper.ServerNow();
             TimerComponent.Instance.Remove(ref self.ShouLieUpLoadTimer);
             RankShouLieInfo rankPetInfo = new RankShouLieInfo();
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            rankPetInfo.UnitID = userInfoComponent.UserInfo.UserId;
-            rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
-            rankPetInfo.Occ = userInfoComponent.UserInfo.Occ;
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            rankPetInfo.UnitID = roleInfoComponent.RoleInfo.UserId;
+            rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
+            rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
             rankPetInfo.KillNumber = self.ShouLieKill;
             long mapInstanceId = DBHelper.GetRankServerId(self.DomainZone());
             R2M_RankShowLieResponse Response = (R2M_RankShowLieResponse)await ActorMessageSenderComponent.Instance.Call
@@ -490,13 +490,13 @@ namespace ET
 
             bool showlieopen = ActivityHelper.IsShowLieOpen();
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(beKill.ConfigId);
-            if (showlieopen && ( ldMonster.Lv >= 60 || Mathf.Abs(self.UserInfo.Lv - ldMonster.Lv) <= 9) )
+            if (showlieopen && ( ldMonster.Lv >= 60 || Mathf.Abs(self.RoleInfo.Lv - ldMonster.Lv) <= 9) )
             {
                 self.OnShowLieKill();
            
             }
 
-            if (SeasonHelper.GetOpenSeason(self.UserInfo.Lv)!=null && beKill.IsBoss() && ldMonster.Lv >= 40)
+            if (SeasonHelper.GetOpenSeason(self.RoleInfo.Lv)!=null && beKill.IsBoss() && ldMonster.Lv >= 40)
             {
                 int seasonExp = RandomHelper.RandomNumber(1, 6);
                 self.UpdateRoleData(UserDataType.SeasonExp, seasonExp.ToString());
@@ -506,14 +506,14 @@ namespace ET
             numericComponent.ApplyChange(null, NumericType.KillMonsterNumber, 1, 0);
 
             int tiliKillNumber = numericComponent.GetAsInt(NumericType.TiLiKillNumber);
-            if (sceneType == MapTypeEnum.LocalDungeon && !showlieopen && self.UserInfo.PiLao > 0)
+            if (sceneType == MapTypeEnum.LocalDungeon && !showlieopen && self.RoleInfo.PiLao > 0)
             {
                 if (tiliKillNumber >= 4)
                 {
                     numericComponent.ApplyValue(NumericType.TiLiKillNumber, 0, false);
 
                     numericComponent.ApplyChange(null, NumericType.CostTiLi, 1, 0);
-                    if ( CommonHelper.IsZhuBoZone(self.DomainZone()) && self.UserInfo.PiLao < 2)
+                    if ( CommonHelper.IsZhuBoZone(self.DomainZone()) && self.RoleInfo.PiLao < 2)
                     {
                         self.UpdateRoleData(UserDataType.PiLao, "100", true);
                     }
@@ -531,7 +531,7 @@ namespace ET
             bool drop = true;
             if (SceneConfigHelper.IsSingleFuben(sceneType))
             {
-                drop = self.UserInfo.PiLao > 0 || beKill.IsBoss() || showlieopen;
+                drop = self.RoleInfo.PiLao > 0 || beKill.IsBoss() || showlieopen;
             }
             if (drop)
             {
@@ -554,7 +554,7 @@ namespace ET
                 expcoefficient += expAdd;
                 expcoefficient+= now_GoldAdd_Pro;
                 
-                if ((sceneType == MapTypeEnum.LocalDungeon && self.UserInfo.PiLao > 0)
+                if ((sceneType == MapTypeEnum.LocalDungeon && self.RoleInfo.PiLao > 0)
                   || sceneType != MapTypeEnum.LocalDungeon)
                 {
                     if (numericComponent.GetAsInt(NumericType.JueXingExp) < 5000)
@@ -570,9 +570,9 @@ namespace ET
             // 纪录击败的Boss
             if (beKill.IsBoss() && CommonConfig.DefeatedBossIds.ContainsKey(beKill.ConfigId))
             {
-                if (!self.UserInfo.DefeatedBossIds.Contains(beKill.ConfigId))
+                if (!self.RoleInfo.DefeatedBossIds.Contains(beKill.ConfigId))
                 {
-                    self.UserInfo.DefeatedBossIds.Add(beKill.ConfigId);
+                    self.RoleInfo.DefeatedBossIds.Add(beKill.ConfigId);
                 }
             }
         }
@@ -589,11 +589,11 @@ namespace ET
 
         public static int GetMysteryBuy(this RoleInfoComponent self, int mysteryId)
         {
-            for (int i = 0; i < self.UserInfo.MysteryItems.Count; i++)
+            for (int i = 0; i < self.RoleInfo.MysteryItems.Count; i++)
             {
-                if (self.UserInfo.MysteryItems[i].KeyId == mysteryId)
+                if (self.RoleInfo.MysteryItems[i].KeyId == mysteryId)
                 {
-                    return (int)self.UserInfo.MysteryItems[i].Value;
+                    return (int)self.RoleInfo.MysteryItems[i].Value;
                 }
             }
             return 0;
@@ -601,24 +601,24 @@ namespace ET
 
         public static void OnMysteryBuy(this RoleInfoComponent self, int mysteryId)
         {
-            for (int i = 0; i < self.UserInfo.MysteryItems.Count; i++)
+            for (int i = 0; i < self.RoleInfo.MysteryItems.Count; i++)
             {
-                if (self.UserInfo.MysteryItems[i].KeyId == mysteryId)
+                if (self.RoleInfo.MysteryItems[i].KeyId == mysteryId)
                 {
-                    self.UserInfo.MysteryItems[i].Value += 1;
+                    self.RoleInfo.MysteryItems[i].Value += 1;
                     return;
                 }
             }
-            self.UserInfo.MysteryItems.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
+            self.RoleInfo.MysteryItems.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
         }
 
         public static int GetStoreBuy(this RoleInfoComponent self, int mysteryId)
         {
-            for (int i = 0; i < self.UserInfo.BuyStoreItems.Count; i++)
+            for (int i = 0; i < self.RoleInfo.BuyStoreItems.Count; i++)
             {
-                if (self.UserInfo.BuyStoreItems[i].KeyId == mysteryId)
+                if (self.RoleInfo.BuyStoreItems[i].KeyId == mysteryId)
                 {
-                    return (int)self.UserInfo.BuyStoreItems[i].Value;
+                    return (int)self.RoleInfo.BuyStoreItems[i].Value;
                 }
             }
             return 0;
@@ -626,15 +626,15 @@ namespace ET
 
         public static void OnStoreBuy(this RoleInfoComponent self, int mysteryId)
         {
-            for (int i = 0; i < self.UserInfo.BuyStoreItems.Count; i++)
+            for (int i = 0; i < self.RoleInfo.BuyStoreItems.Count; i++)
             {
-                if (self.UserInfo.BuyStoreItems[i].KeyId == mysteryId)
+                if (self.RoleInfo.BuyStoreItems[i].KeyId == mysteryId)
                 {
-                    self.UserInfo.BuyStoreItems[i].Value += 1;
+                    self.RoleInfo.BuyStoreItems[i].Value += 1;
                     return;
                 }
             }
-            self.UserInfo.BuyStoreItems.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
+            self.RoleInfo.BuyStoreItems.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
         }
 
         //加金币
@@ -644,22 +644,22 @@ namespace ET
             long gold = long.Parse(value);
             if (gold < 0)
             {
-                Log.Warning($"增加货币出错:{Type}  {unit.Id} {getWay} {self.UserInfo.Name}  {value}", true);
+                Log.Warning($"增加货币出错:{Type}  {unit.Id} {getWay} {self.RoleInfo.Name}  {value}", true);
             }
             else
             {
                 if (getWay != ItemGetWay.PickItem || gold > 1000)
                 {
-                    LogHelper.LogWarning($"增加货币:{Type} {unit.Id} {getWay} {self.UserInfo.Name}  {value}", true);
+                    LogHelper.LogWarning($"增加货币:{Type} {unit.Id} {getWay} {self.RoleInfo.Name}  {value}", true);
                 }
             }
             if (gold > 100000 || gold < -100000)
             {
-                Log.Warning($"增加货币[大额]:{Type} {unit.Id} {getWay} {self.UserInfo.Name} {value}  {paramsifo}", true);
+                Log.Warning($"增加货币[大额]:{Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}  {paramsifo}", true);
             }
             else if (gold > 1000000 || gold < -1000000)
             {
-                Log.Warning($"增加货币[超额]:{Type} {unit.Id} {getWay} {self.UserInfo.Name} {value}", true);
+                Log.Warning($"增加货币[超额]:{Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}", true);
             }
 
             if (gold > 0 && getWay == ItemGetWay.PaiMaiSell)
@@ -669,38 +669,38 @@ namespace ET
 
             if (Type == UserDataType.Diamond)
             {
-                self.UserInfo.DiamondGetWay.Add(getWay);
-                if (self.UserInfo.DiamondGetWay.Count > 200)
+                self.RoleInfo.DiamondGetWay.Add(getWay);
+                if (self.RoleInfo.DiamondGetWay.Count > 200)
                 {
-                    self.UserInfo.DiamondGetWay.RemoveAt(0);    
+                    self.RoleInfo.DiamondGetWay.RemoveAt(0);    
                 }
             }
 
             if (Type == UserDataType.Gold)
             {
-                self.UserInfo.GoldGetWay.Add(getWay);
-                if (self.UserInfo.GoldGetWay.Count > 200)
+                self.RoleInfo.GoldGetWay.Add(getWay);
+                if (self.RoleInfo.GoldGetWay.Count > 200)
                 {
-                    self.UserInfo.GoldGetWay.RemoveAt(0);
+                    self.RoleInfo.GoldGetWay.RemoveAt(0);
                 }
             }
 
             if (Type == UserDataType.Exp)
             {
-                self.UserInfo.ExpGetWay.Add(getWay);
-                if (self.UserInfo.ExpGetWay.Count > 200)
+                self.RoleInfo.ExpGetWay.Add(getWay);
+                if (self.RoleInfo.ExpGetWay.Count > 200)
                 {
-                    self.UserInfo.ExpGetWay.RemoveAt(0);
+                    self.RoleInfo.ExpGetWay.RemoveAt(0);
                 }
             }
 
             if (Type == UserDataType.Diamond)
             {
-                Log.Warning($"增加钻石: {Type} {unit.Id} {getWay} {self.UserInfo.Name} {value}");
+                Log.Warning($"增加钻石: {Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}");
             }
             if (Type == UserDataType.WeiJingGold)
             {
-                Log.Warning($"增加兑换币: {Type} {unit.Id} {getWay} {self.UserInfo.Name} {value}");
+                Log.Warning($"增加兑换币: {Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}");
             }
     
             if (Type == UserDataType.UnionExp || Type == UserDataType.UnionGold)
@@ -718,23 +718,23 @@ namespace ET
             long gold = long.Parse(value);
             if (gold > 0)
             {
-                LogHelper.LogWarning($"扣除货币出错:{Type} {unit.Id} {getWay} {self.UserInfo.Name}  {value}", true);
+                LogHelper.LogWarning($"扣除货币出错:{Type} {unit.Id} {getWay} {self.RoleInfo.Name}  {value}", true);
             }
             else
             {
-                LogHelper.LogWarning($"扣除货币:{Type} {unit.Id} {getWay} {self.UserInfo.Name} {value}", true);
+                LogHelper.LogWarning($"扣除货币:{Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}", true);
             }
             if (gold > 100000 || gold < -100000)
             {
-                Log.Warning($"扣除货币[大额]:{Type} {unit.Id} {getWay} {self.UserInfo.Name} {value}");
+                Log.Warning($"扣除货币[大额]:{Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}");
             }
             if (Type == UserDataType.Diamond)
             {
-                Log.Warning($"扣除钻石: {Type} {unit.Id} {getWay} {self.UserInfo.Name} {value}");
+                Log.Warning($"扣除钻石: {Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}");
             }
             if (Type == UserDataType.WeiJingGold)
             {
-                Log.Warning($"扣除兑换币: {Type} {unit.Id} {getWay} {self.UserInfo.Name} {value}");
+                Log.Warning($"扣除兑换币: {Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}");
             }
 
             unit.GetComponent<DataCollationComponent>().UpdateRoleMoneySub(Type, getWay, gold);
@@ -749,7 +749,7 @@ namespace ET
             {
                 return;
             }
-            string playerName = self.UserInfo.Name;
+            string playerName = self.RoleInfo.Name;
             long serverod = DBHelper.GetUnionServerId(self.DomainZone() );
             U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                             serverod, new M2U_UnionOperationRequest() { OperateType = 1, UnionId = unionid, Par = $"{playerName}_{getWay}_{dataType}_{dataValue}" });
@@ -792,49 +792,49 @@ namespace ET
                 //    self.SendUnionOperate(5, int.Parse(value)).Coroutine();
                 //    return;
                 case UserDataType.JiaYuanExp:
-                    self.UserInfo.JiaYuanExp += int.Parse(value);
-                    saveValue = self.UserInfo.JiaYuanExp.ToString();
+                    self.RoleInfo.JiaYuanExp += int.Parse(value);
+                    saveValue = self.RoleInfo.JiaYuanExp.ToString();
                     break;
                 case UserDataType.JiaYuanFund:
-                    self.UserInfo.JiaYuanFund += int.Parse(value);
-                    saveValue = self.UserInfo.JiaYuanFund.ToString();
+                    self.RoleInfo.JiaYuanFund += int.Parse(value);
+                    saveValue = self.RoleInfo.JiaYuanFund.ToString();
                     break;
                 case UserDataType.UnionContri:
-                    self.UserInfo.UnionZiJin += int.Parse(value);
-                    saveValue = self.UserInfo.UnionZiJin.ToString();
+                    self.RoleInfo.UnionZiJin += int.Parse(value);
+                    saveValue = self.RoleInfo.UnionZiJin.ToString();
                     break;
                 case UserDataType.SeasonCoin:
-                    self.UserInfo.SeasonCoin += int.Parse(value);
-                    saveValue = self.UserInfo.SeasonCoin.ToString();
+                    self.RoleInfo.SeasonCoin += int.Parse(value);
+                    saveValue = self.RoleInfo.SeasonCoin.ToString();
                     break;
                 case UserDataType.SeasonExp:
-                    self.UserInfo.SeasonExp += int.Parse(value);
-                    SeasonLevelConfig seasonLevelConfig = SeasonLevelConfigCategory.Instance.Get(self.UserInfo.SeasonLevel);
-                    if (self.UserInfo.SeasonExp >= seasonLevelConfig.UpExp && SeasonLevelConfigCategory.Instance.Contain(self.UserInfo.SeasonLevel + 1))
+                    self.RoleInfo.SeasonExp += int.Parse(value);
+                    SeasonLevelConfig seasonLevelConfig = SeasonLevelConfigCategory.Instance.Get(self.RoleInfo.SeasonLevel);
+                    if (self.RoleInfo.SeasonExp >= seasonLevelConfig.UpExp && SeasonLevelConfigCategory.Instance.Contain(self.RoleInfo.SeasonLevel + 1))
                     {
-                        self.UserInfo.SeasonExp -= seasonLevelConfig.UpExp;
+                        self.RoleInfo.SeasonExp -= seasonLevelConfig.UpExp;
                         self.UpdateRoleData( UserDataType.SeasonLevel, "1" );
                     }
-                    saveValue = self.UserInfo.SeasonExp.ToString();
-                    longValue = self.UserInfo.SeasonExp;
+                    saveValue = self.RoleInfo.SeasonExp.ToString();
+                    longValue = self.RoleInfo.SeasonExp;
                     break;
                 case UserDataType.SeasonLevel:
-                    self.UserInfo.SeasonLevel += int.Parse(value);
-                    saveValue = self.UserInfo.SeasonLevel.ToString();
+                    self.RoleInfo.SeasonLevel += int.Parse(value);
+                    saveValue = self.RoleInfo.SeasonLevel.ToString();
                     break;
                 case UserDataType.JiaYuanLv:
-                    self.UserInfo.JiaYuanLv += int.Parse(value);
-                    saveValue = self.UserInfo.JiaYuanLv.ToString();
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, self.UserInfo.JiaYuanLv - 10000);
-                    unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, self.UserInfo.JiaYuanLv - 10000);
+                    self.RoleInfo.JiaYuanLv += int.Parse(value);
+                    saveValue = self.RoleInfo.JiaYuanLv.ToString();
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, self.RoleInfo.JiaYuanLv - 10000);
+                    unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, self.RoleInfo.JiaYuanLv - 10000);
                     break;
                 case UserDataType.FangRong:
                     LingDiHelp.OnAddLingDiExp(unit, int.Parse(value), notice);
                     break;
                 //名字应该在改名的协议处理
                 case UserDataType.Name:
-                    self.UserInfo.Name = value;
-                    saveValue = self.UserInfo.Name;
+                    self.RoleInfo.Name = value;
+                    saveValue = self.RoleInfo.Name;
                     break;
                 case UserDataType.Exp:
                     if (self.IsZhuBoLevel16())
@@ -843,8 +843,8 @@ namespace ET
                     }
 
                     self.Role_AddExp(long.Parse(value), notice);
-                    //saveValue = self.UserInfo.Exp.ToString();
-                    longValue = self.UserInfo.Exp;
+                    //saveValue = self.RoleInfo.Exp.ToString();
+                    longValue = self.RoleInfo.Exp;
                     saveValue = value;
                     break;
                 case UserDataType.Lv:
@@ -853,41 +853,41 @@ namespace ET
                         return;
                     }
 
-                    self.UserInfo.Lv += int.Parse(value);
-                    saveValue = self.UserInfo.Lv.ToString();
+                    self.RoleInfo.Lv += int.Parse(value);
+                    saveValue = self.RoleInfo.Lv.ToString();
                     long maxHp = unit.GetComponent<NumericComponent>().GetAsLong((int)NumericType.Numeric_Error);
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Numeric_Error, maxHp, false);
                     unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PointRemain, int.Parse(value) * 10, 0);
-                    unit.GetComponent<TaskComponent>().OnUpdateLevel(self.UserInfo.Lv);
-                    unit.GetComponent<ChengJiuComponent>().OnUpdateLevel(self.UserInfo.Lv);
+                    unit.GetComponent<TaskComponent>().OnUpdateLevel(self.RoleInfo.Lv);
+                    unit.GetComponent<ChengJiuComponent>().OnUpdateLevel(self.RoleInfo.Lv);
                     unit.GetComponent<HeroDataComponent>().CheckSeasonOpen(true);
                     self.UpdateRoleData(UserDataType.Sp, value, notice);
-                    self.BroadcastLevel(self.UserInfo.Lv).Coroutine();
+                    self.BroadcastLevel(self.RoleInfo.Lv).Coroutine();
                     Function_Fight.UnitUpdateProperty_Base(unit, true,true );
                     break;
                 case UserDataType.Sp:
-                    self.UserInfo.Sp += int.Parse(value);
-                    saveValue = self.UserInfo.Sp.ToString();
+                    self.RoleInfo.Sp += int.Parse(value);
+                    saveValue = self.RoleInfo.Sp.ToString();
                     break;
                 case UserDataType.Gold:
-                    self.UserInfo.Gold += long.Parse(value);
-                    saveValue = self.UserInfo.Gold.ToString();
+                    self.RoleInfo.Gold += long.Parse(value);
+                    saveValue = self.RoleInfo.Gold.ToString();
                     unit.GetComponent<ChengJiuComponent>().OnGetGold(int.Parse(value));
                     unit.GetComponent<TaskComponent>().OnCostCoin(int.Parse(value));
                     break;
                 case UserDataType.WeiJingGold:
-                    self.UserInfo.WeiJingGold += long.Parse(value);
-                    saveValue = self.UserInfo.WeiJingGold.ToString();
+                    self.RoleInfo.WeiJingGold += long.Parse(value);
+                    saveValue = self.RoleInfo.WeiJingGold.ToString();
                     break;
                 case UserDataType.RongYu:
-                    self.UserInfo.RongYu += long.Parse(value);
-                    saveValue = self.UserInfo.RongYu.ToString();
+                    self.RoleInfo.RongYu += long.Parse(value);
+                    saveValue = self.RoleInfo.RongYu.ToString();
                     break;
                 case UserDataType.Diamond:
                     long addDiamond = long.Parse(value);
-                    self.UserInfo.Diamond += addDiamond;
-                    self.UserInfo.Diamond = Math.Max(self.UserInfo.Diamond, 0);
-                    saveValue = self.UserInfo.Diamond.ToString();
+                    self.RoleInfo.Diamond += addDiamond;
+                    self.RoleInfo.Diamond = Math.Max(self.RoleInfo.Diamond, 0);
+                    saveValue = self.RoleInfo.Diamond.ToString();
                     if (addDiamond < 0)
                     {
                         unit.GetComponent<ChengJiuComponent>().OnCostDiamond(addDiamond);
@@ -899,9 +899,9 @@ namespace ET
                     }
                     break;
                 case UserDataType.V1TotalPoints:
-                    self.UserInfo.V1TotalPoints += float.Parse(value);
-                    self.UserInfo.V1TotalPoints = Math.Max(self.UserInfo.V1TotalPoints, 0);
-                    saveValue = self.UserInfo.V1TotalPoints.ToString();
+                    self.RoleInfo.V1TotalPoints += float.Parse(value);
+                    self.RoleInfo.V1TotalPoints = Math.Max(self.RoleInfo.V1TotalPoints, 0);
+                    saveValue = self.RoleInfo.V1TotalPoints.ToString();
                     break;
                 case UserDataType.Occ:
                     break;
@@ -925,17 +925,17 @@ namespace ET
                     }
 
                     int maxValue = 100;///unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
-                    long newValue = long.Parse(value) + self.UserInfo.PiLao;
+                    long newValue = long.Parse(value) + self.RoleInfo.PiLao;
                     newValue = Math.Min(Math.Max(0, newValue), maxValue);
-                    self.UserInfo.PiLao = newValue;
-                    saveValue = self.UserInfo.PiLao.ToString();
+                    self.RoleInfo.PiLao = newValue;
+                    saveValue = self.RoleInfo.PiLao.ToString();
                     break;
                 case UserDataType.BaoShiDu:
                     long addValue = long.Parse(value);
-                    newValue = self.UserInfo.BaoShiDu + (int)addValue;
+                    newValue = self.RoleInfo.BaoShiDu + (int)addValue;
                     newValue = Math.Min(Math.Max(0, newValue), CommonHelper.GetMaxBaoShiDu());
-                    self.UserInfo.BaoShiDu = (int)newValue;
-                    saveValue = self.UserInfo.BaoShiDu.ToString();
+                    self.RoleInfo.BaoShiDu = (int)newValue;
+                    saveValue = self.RoleInfo.BaoShiDu.ToString();
                     unit.GetComponent<BuffManagerComponent>()?.InitBaoShiBuff();
                     break;
                 case UserDataType.HuoYue:
@@ -943,35 +943,35 @@ namespace ET
                 case UserDataType.DungeonTimes:
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonTimes, unit.GetTeamDungeonTimes() - 1);
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonXieZhu, unit.GetTeamDungeonXieZhu() - 1);
-                    self.UserInfo.DayFubenTimes.Clear();
+                    self.RoleInfo.DayFubenTimes.Clear();
                     break;
                 case UserDataType.UnionName:
-                    self.UserInfo.UnionName = value;
-                    saveValue = self.UserInfo.UnionName;
+                    self.RoleInfo.UnionName = value;
+                    saveValue = self.RoleInfo.UnionName;
                     break;
                 case UserDataType.DemonName:
-                    self.UserInfo.DemonName = value;
-                    saveValue = self.UserInfo.DemonName;
+                    self.RoleInfo.DemonName = value;
+                    saveValue = self.RoleInfo.DemonName;
                     break;
                 case UserDataType.StallName:
-                    self.UserInfo.StallName = value;
-                    saveValue = self.UserInfo.StallName;
+                    self.RoleInfo.StallName = value;
+                    saveValue = self.RoleInfo.StallName;
                     break;
                 case UserDataType.Combat:
-                    self.UserInfo.Combat = int.Parse(value);
-                    saveValue = self.UserInfo.Combat.ToString();
-                    unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, self.UserInfo.Combat);
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, self.UserInfo.Combat);
+                    self.RoleInfo.Combat = int.Parse(value);
+                    saveValue = self.RoleInfo.Combat.ToString();
+                    unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, self.RoleInfo.Combat);
+                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, self.RoleInfo.Combat);
                     break;
                 case UserDataType.Vitality:
                     NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
                     int skillNumber = 1 + numericComponent.GetAsInt(NumericType.MakeType_2) > 0 ? 1 : 0;
                     maxValue = unit.GetMaxHuoLi(skillNumber);
                     addValue = long.Parse(value);
-                    newValue = self.UserInfo.Vitality + (int)addValue;
+                    newValue = self.RoleInfo.Vitality + (int)addValue;
                     newValue = Math.Min(Math.Max(0, newValue), maxValue);
-                    self.UserInfo.Vitality = (int)newValue;
-                    saveValue = self.UserInfo.Vitality.ToString();
+                    self.RoleInfo.Vitality = (int)newValue;
+                    saveValue = self.RoleInfo.Vitality.ToString();
                     break;
                 case UserDataType.BuffSkill:
                     longValue = long.Parse(value);
@@ -1003,12 +1003,12 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             long mapInstanceId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Rank)).InstanceId;
             RankingInfo rankPetInfo = new RankingInfo();
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
-            rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
-            rankPetInfo.PlayerLv = userInfoComponent.UserInfo.Lv;
-            rankPetInfo.Combat = userInfoComponent.UserInfo.Combat;
-            rankPetInfo.Occ = userInfoComponent.UserInfo.Occ;
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            rankPetInfo.UserId = roleInfoComponent.RoleInfo.UserId;
+            rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
+            rankPetInfo.PlayerLv = roleInfoComponent.RoleInfo.Lv;
+            rankPetInfo.Combat = roleInfoComponent.RoleInfo.Combat;
+            rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
             R2M_RankUpdateResponse Response = (R2M_RankUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankUpdateRequest()
                      {
@@ -1046,60 +1046,60 @@ namespace ET
                 return;
             }
         
-            float expAdd = CommonHelper.GetExpAdd(self.UserInfo.Lv, serverInfo);
+            float expAdd = CommonHelper.GetExpAdd(self.RoleInfo.Lv, serverInfo);
 
-            LDExp xiulianconf1 = LDExpCategory.Instance.Get(self.UserInfo.Lv);
+            LDExp xiulianconf1 = LDExpCategory.Instance.Get(self.RoleInfo.Lv);
             long upNeedExp = xiulianconf1.Exp_Role;
 
             TaskComponent taskComponent = self.GetParent<Unit>().GetComponent<TaskComponent>();
 
             //等级达到上限,则无法获得经验. 经验最多200%
             int maxlevel = self.GetMaxLevel(taskComponent.RoleComoleteTaskList);
-            if (addValue > 0 &&self.UserInfo.Lv >= maxlevel)
+            if (addValue > 0 &&self.RoleInfo.Lv >= maxlevel)
             {
                 long maxExp = upNeedExp * 2;
 
-                if (self.UserInfo.Exp > maxExp && maxlevel == 70)
+                if (self.RoleInfo.Exp > maxExp && maxlevel == 70)
                 {
                     self.UpdateRoleData(UserDataType.Message, "当前经验超过200%无法获得新的经验！请完成进阶之路任务开启新的等级，或前往主城经验老头处用多余的经验兑换奖励喔！");
                     return;
                 }
-                if (self.UserInfo.Exp > maxExp && maxlevel == 75)
+                if (self.RoleInfo.Exp > maxExp && maxlevel == 75)
                 {
                     self.UpdateRoleData(UserDataType.Message, "当前经验超过200%，请前往主城经验老头处用多余的经验兑换奖励喔！");
                     return;
                 }
 
-                if (self.UserInfo.Exp > maxExp) 
+                if (self.RoleInfo.Exp > maxExp) 
                 {
                     self.UpdateRoleData(UserDataType.Message, "当前经验超过200%，请前往主城经验老头处用多余的经验兑换奖励喔！");
                     return;
                 }
             }
 
-            self.UserInfo.Exp = self.UserInfo.Exp + (int)(addValue * (1.0f + expAdd));
+            self.RoleInfo.Exp = self.RoleInfo.Exp + (int)(addValue * (1.0f + expAdd));
 
-            if (self.UserInfo.Lv >= maxlevel)
+            if (self.RoleInfo.Lv >= maxlevel)
             {
                 return;
             }
 
             //判定是否升级
-            if (self.UserInfo.Lv >= serverInfo.WorldLv)
+            if (self.RoleInfo.Lv >= serverInfo.WorldLv)
             {
                 return;
             }
 
-            if (self.UserInfo.Exp >= upNeedExp)
+            if (self.RoleInfo.Exp >= upNeedExp)
             {
-                self.UserInfo.Exp -= upNeedExp;
+                self.RoleInfo.Exp -= upNeedExp;
                 self.UpdateRoleData(UserDataType.Lv, "1", notice);
             }
         }
 
         public static int GetRandomMonsterId(this RoleInfoComponent self)
         {
-            List<KeyValuePairInt> dayMonster = self.UserInfo.DayMonsters;
+            List<KeyValuePairInt> dayMonster = self.RoleInfo.DayMonsters;
             List<DayMonsters> dayMonsterConfig = LDGlobalValueCategory.Instance.DayMonsterList;
 
             for (int i = 0; i < dayMonsterConfig.Count; i++)
@@ -1136,7 +1136,7 @@ namespace ET
         public static int GetRandomJingLingId(this RoleInfoComponent self)
         {
             List<DayJingLing> dayMonsterConfig = LDGlobalValueCategory.Instance.DayJingLingList;
-            List<int> dayMonster = self.UserInfo.DayJingLing;
+            List<int> dayMonster = self.RoleInfo.DayJingLing;
             for(int i = 0; i < dayMonsterConfig.Count; i++)
             {
                 if (RandomHelper.RandFloat01() > dayMonsterConfig[i].GaiLv)
@@ -1166,7 +1166,7 @@ namespace ET
         public static void OnMakeItem(this RoleInfoComponent self, int makeId)
         {
             EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(makeId);
-            List<KeyValuePairInt> makeList = self.UserInfo.MakeIdList;
+            List<KeyValuePairInt> makeList = self.RoleInfo.MakeIdList;
 
             bool have = false;
             long endTime = TimeHelper.ServerNow() + equipMakeConfig.MakeTime * 1000;
@@ -1180,14 +1180,14 @@ namespace ET
             }
             if (!have)
             {
-                self.UserInfo.MakeIdList.Add(new KeyValuePairInt() { KeyId = makeId, Value = endTime });
+                self.RoleInfo.MakeIdList.Add(new KeyValuePairInt() { KeyId = makeId, Value = endTime });
             }
         }
 
         public static void OnAddChests(this RoleInfoComponent self, int fubenId, int monsterId)
         {
             bool have = false;
-            List<KeyValuePair> chestList = self.UserInfo.OpenChestList;
+            List<KeyValuePair> chestList = self.RoleInfo.OpenChestList;
             for (int i = 0; i < chestList.Count; i++)
             {
                 if (chestList[i].KeyId == fubenId)
@@ -1198,13 +1198,13 @@ namespace ET
             }
             if (!have)
             {
-                self.UserInfo.OpenChestList.Add(new KeyValuePair() { KeyId = fubenId, Value = monsterId.ToString() });
+                self.RoleInfo.OpenChestList.Add(new KeyValuePair() { KeyId = fubenId, Value = monsterId.ToString() });
             }
         }
 
         public static bool IsCheskOpen(this RoleInfoComponent self, int fubenId, int monsterId)
         {
-            List<KeyValuePair> chestList = self.UserInfo.OpenChestList;
+            List<KeyValuePair> chestList = self.RoleInfo.OpenChestList;
             for (int i = 0; i < chestList.Count; i++)
             {
                 if (chestList[i].KeyId == fubenId)
@@ -1218,13 +1218,13 @@ namespace ET
         public static int OnGetFirstWinSelf(this RoleInfoComponent self, int firstwinid, int difficulty)
         {
             KeyValuePair keyValuePair1 = null;
-            for (int i = 0; i < self.UserInfo.FirstWinSelf.Count; i++)
+            for (int i = 0; i < self.RoleInfo.FirstWinSelf.Count; i++)
             {
-                if (self.UserInfo.FirstWinSelf[i].KeyId != firstwinid)
+                if (self.RoleInfo.FirstWinSelf[i].KeyId != firstwinid)
                 {
                     continue;
                 }
-                keyValuePair1 = self.UserInfo.FirstWinSelf[i];
+                keyValuePair1 = self.RoleInfo.FirstWinSelf[i];
                 break;
             }
             if (keyValuePair1 == null)
@@ -1259,9 +1259,9 @@ namespace ET
             }
 
             bool have = false;
-            for (int i = 0; i < self.UserInfo.FirstWinSelf.Count; i++)
+            for (int i = 0; i < self.RoleInfo.FirstWinSelf.Count; i++)
             {
-                KeyValuePair keyValuePair = self.UserInfo.FirstWinSelf[i];
+                KeyValuePair keyValuePair = self.RoleInfo.FirstWinSelf[i];
                 if (keyValuePair.KeyId != firstwinid)
                 {
                     continue;
@@ -1279,27 +1279,27 @@ namespace ET
             }
             if (!have)
             {
-                self.UserInfo.FirstWinSelf.Add( new KeyValuePair() {  KeyId = firstwinid, Value = difficulty.ToString(), Value2 = "" } );
+                self.RoleInfo.FirstWinSelf.Add( new KeyValuePair() {  KeyId = firstwinid, Value = difficulty.ToString(), Value2 = "" } );
             }
 
-            M2C_FirstWinSelfUpdateMessage m2C_FirstWinSelfUpdateMessage = new M2C_FirstWinSelfUpdateMessage() { FirstWinInfos = self.UserInfo.FirstWinSelf  };
+            M2C_FirstWinSelfUpdateMessage m2C_FirstWinSelfUpdateMessage = new M2C_FirstWinSelfUpdateMessage() { FirstWinInfos = self.RoleInfo.FirstWinSelf  };
             MessageHelper.SendToClient( self.GetParent<Unit>(), m2C_FirstWinSelfUpdateMessage);
         }
 
         public static void OnCleanBossCD(this RoleInfoComponent self)
         {
-            for (int i = 0; i < self.UserInfo.MonsterRevives.Count; i++)
+            for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
             {
-                self.UserInfo.MonsterRevives[i].Value = "0";
+                self.RoleInfo.MonsterRevives[i].Value = "0";
             }
         }
 
         public static void OnAddRevive(this RoleInfoComponent self, int monsterId, long reviveTime)
         {
             bool have = false;  
-            for (int i = 0; i < self.UserInfo.MonsterRevives.Count; i++)
+            for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
             {
-                KeyValuePair keyValuePair = self.UserInfo.MonsterRevives[i];
+                KeyValuePair keyValuePair = self.RoleInfo.MonsterRevives[i];
                 if (keyValuePair.KeyId != monsterId)
                 {
                     continue;
@@ -1316,20 +1316,20 @@ namespace ET
             }
             if (!have)
             {
-                self.UserInfo.MonsterRevives.Add(new KeyValuePair() { KeyId = monsterId, Value = reviveTime.ToString(), Value2 = "1" });
+                self.RoleInfo.MonsterRevives.Add(new KeyValuePair() { KeyId = monsterId, Value = reviveTime.ToString(), Value2 = "1" });
             }
 
             M2C_UpdateUserInfoMessage m2C_UpdateUserInfo = new M2C_UpdateUserInfoMessage();
-            m2C_UpdateUserInfo.UserInfo = self.UserInfo;
+            m2C_UpdateUserInfo.RoleInfo = self.RoleInfo;
             MessageHelper.SendToClient( self.GetParent<Unit>(), m2C_UpdateUserInfo );
         }
 
         public static string GetGameSettingValue(this RoleInfoComponent self, GameSettingEnum gameSettingEnum)
         {
-            for (int i = 0; i < self.UserInfo.GameSettingInfos.Count; i++)
+            for (int i = 0; i < self.RoleInfo.GameSettingInfos.Count; i++)
             {
-                if (self.UserInfo.GameSettingInfos[i].KeyId == (int)gameSettingEnum)
-                    return self.UserInfo.GameSettingInfos[i].Value;
+                if (self.RoleInfo.GameSettingInfos[i].KeyId == (int)gameSettingEnum)
+                    return self.RoleInfo.GameSettingInfos[i].Value;
             }
             switch (gameSettingEnum)
             {
@@ -1350,27 +1350,27 @@ namespace ET
         public static void OnFubenSettlement(this RoleInfoComponent self, int levelid, int difficulty)
         {
             FubenPassInfo fubenPassInfo = null;
-            for (int i = 0; i < self.UserInfo.FubenPassList.Count; i++)
+            for (int i = 0; i < self.RoleInfo.FubenPassList.Count; i++)
             {
-                if (self.UserInfo.FubenPassList[i].FubenId == levelid)
+                if (self.RoleInfo.FubenPassList[i].FubenId == levelid)
                 {
-                    fubenPassInfo = self.UserInfo.FubenPassList[i];
+                    fubenPassInfo = self.RoleInfo.FubenPassList[i];
                 }
             }
             if (fubenPassInfo == null)
             {
                 fubenPassInfo = new FubenPassInfo();
                 fubenPassInfo.FubenId = levelid;
-                self.UserInfo.FubenPassList.Add(fubenPassInfo);
+                self.RoleInfo.FubenPassList.Add(fubenPassInfo);
             }
             fubenPassInfo.Difficulty = (difficulty > fubenPassInfo.Difficulty) ? difficulty : fubenPassInfo.Difficulty;
         }
 
         public static bool IsLevelPassed(this RoleInfoComponent self, int levelid)
         {
-            for (int i = 0; i < self.UserInfo.FubenPassList.Count; i++)
+            for (int i = 0; i < self.RoleInfo.FubenPassList.Count; i++)
             {
-                if (self.UserInfo.FubenPassList[i].FubenId == levelid)
+                if (self.RoleInfo.FubenPassList[i].FubenId == levelid)
                 {
                     return true;
                 }
@@ -1404,7 +1404,7 @@ namespace ET
 
         public static int GetCrateDay(this RoleInfoComponent self)
         {
-            return ServerHelper.DateDiff_Time(TimeHelper.ServerNow(), self.UserInfo.CreateTime);
+            return ServerHelper.DateDiff_Time(TimeHelper.ServerNow(), self.RoleInfo.CreateTime);
         }
 
         /// <summary>
@@ -1414,17 +1414,17 @@ namespace ET
         /// <param name="level"></param>
         public static void OnGmGaoJi(this RoleInfoComponent self, int level)
         {
-            int lv = level == 1 ? 70 - self.UserInfo.Lv : 40 - self.UserInfo.Lv;
+            int lv = level == 1 ? 70 - self.RoleInfo.Lv : 40 - self.RoleInfo.Lv;
             self.UpdateRoleData(UserDataType.Lv, lv.ToString());
 
-            self.UserInfo.HorseIds.Clear();
+            self.RoleInfo.HorseIds.Clear();
             Dictionary<int, LDMount> allzuoqi = LDMountCategory.Instance.GetAll();
             foreach (( int zuoqiid, LDMount zuoQiShowConfig ) in allzuoqi)
             {
-                self.UserInfo.HorseIds.Add(zuoqiid);
+                self.RoleInfo.HorseIds.Add(zuoqiid);
             }
-            self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, self.UserInfo.HorseIds[0]);
-            self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.HorseFightID, self.UserInfo.HorseIds[0]);
+            self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, self.RoleInfo.HorseIds[0]);
+            self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.HorseFightID, self.RoleInfo.HorseIds[0]);
 
             LDHome maxjiayuan = null;
             Dictionary<int, LDHome> allJiayuan = LDHomeCategory.Instance.GetAll();
@@ -1432,7 +1432,7 @@ namespace ET
             {
                 maxjiayuan = jiaYuanConfig;
             }
-            self.UserInfo.JiaYuanLv = maxjiayuan.Id;
+            self.RoleInfo.JiaYuanLv = maxjiayuan.Id;
 
 
             SeasonLevelConfig maxseason = null;
@@ -1441,20 +1441,20 @@ namespace ET
             {
                 maxseason = seasonLevelConfig;
             }
-            self.UserInfo.SeasonLevel = maxseason.Id;
+            self.RoleInfo.SeasonLevel = maxseason.Id;
         }
 
         public static void ClearDayData(this RoleInfoComponent self)
         {
-            self.UserInfo.DayFubenTimes.Clear();
-            self.UserInfo.ChouKaRewardIds.Clear();
-            self.UserInfo.MysteryItems.Clear();
-            self.UserInfo.DayItemUse.Clear();
-            self.UserInfo.DayMonsters.Clear();
-            self.UserInfo.DayJingLing.Clear();
-            self.UserInfo.PetExploreRewardIds.Clear();  
-            self.UserInfo.PetHeXinExploreRewardIds.Clear();
-            self.UserInfo.ItemXiLianNumRewardIds.Clear();
+            self.RoleInfo.DayFubenTimes.Clear();
+            self.RoleInfo.ChouKaRewardIds.Clear();
+            self.RoleInfo.MysteryItems.Clear();
+            self.RoleInfo.DayItemUse.Clear();
+            self.RoleInfo.DayMonsters.Clear();
+            self.RoleInfo.DayJingLing.Clear();
+            self.RoleInfo.PetExploreRewardIds.Clear();  
+            self.RoleInfo.PetHeXinExploreRewardIds.Clear();
+            self.RoleInfo.ItemXiLianNumRewardIds.Clear();
         }
 
     }

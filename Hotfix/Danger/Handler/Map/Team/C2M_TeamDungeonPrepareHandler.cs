@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -15,10 +15,10 @@ namespace ET
 				return;
 			}
 
-			UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+		;
 			LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
 			
-			/*if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= userInfoComponent.GetSceneFubenTimes(sceneid))
+			/*if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= RoleInfoComponent.GetSceneFubenTimes(sceneid))
 			{
 				response.Error = ErrorCode.ERR_TimesIsNot;
 				reply();

@@ -195,7 +195,7 @@ namespace ET
 
             for (int i = 0; i < allunits.Count; i++)
             {
-                if (allunits[i].GetComponent<RoleInfoComponent>().UserInfo.RobotId == 0)
+                if (allunits[i].GetComponent<RoleInfoComponent>().RoleInfo.RobotId == 0)
                 {
                     realPlayerNumber++;
                     continue;

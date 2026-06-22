@@ -57,12 +57,12 @@ namespace ET
                 unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, "", $"{ItemGetWay.FubenGetReward}_{TimeHelper.ServerNow()}");
             }
 
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
             M2C_TeamDungeonBoxRewardResult m2C_HorseNoticeInfo = new M2C_TeamDungeonBoxRewardResult()
             { 
-                UserId = userInfo.UserId,
+                UserId = roleInfo.UserId,
                 BoxIndex = request.BoxIndex,
-                PlayerName = userInfo.Name
+                PlayerName = roleInfo.Name
             };
             List<Unit> allPlayer = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Player);
             MessageHelper.SendToClient(allPlayer, m2C_HorseNoticeInfo);

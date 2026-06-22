@@ -31,9 +31,9 @@ namespace ET
                     return;
                 }
                 */
-                UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
                 int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(17).Value);
-                if (userInfo.Diamond < needDimanond)
+                if (roleInfo.Diamond < needDimanond)
                 {
                     response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                     reply();

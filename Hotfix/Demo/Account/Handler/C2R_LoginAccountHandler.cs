@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -224,8 +224,8 @@ namespace ET
                             }
                             CreateRoleInfo roleList = CommonHelper.DeepCopy(createRoleInfo);
 
-                            UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
-                            if (userInfoComponent == null)
+                            RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
+                            if (roleInfoComponent == null)
                             {
                                 response.RoleLists.Add(roleList);
                                 continue;
@@ -239,7 +239,7 @@ namespace ET
                                 continue;
                             }
                             
-                            roleList.PlayerLv = userInfoComponent.UserInfo.Lv;
+                            roleList.PlayerLv = roleInfoComponent.RoleInfo.Lv;
                             roleList.WeaponId = numericComponent.GetAsInt(NumericType.Now_Weapon);
                             roleList.EquipIndex = numericComponent.GetAsInt(NumericType.EquipIndex);
                             roleList.FashionIds = bagComponent.FashionEquipList;

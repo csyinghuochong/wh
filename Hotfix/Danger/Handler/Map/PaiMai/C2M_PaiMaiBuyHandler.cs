@@ -87,7 +87,7 @@ namespace ET
             }
 
             //钱是否足够
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Gold < needGold)
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold < needGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -99,15 +99,15 @@ namespace ET
 
             if (openPaiMai == 0)
             {
-                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                int createDay = userInfoComponent.GetCrateDay();
+                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                int createDay = roleInfoComponent.GetCrateDay();
 
-                //firstDay = createDay <= 1 && userInfoComponent.UserInfo.Lv <= 10;
+                //firstDay = createDay <= 1 && roleInfoComponent.RoleInfo.Lv <= 10;
                 request.IsRecharge = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber);
 
                 if (request.IsRecharge > 0
-                    || CommonHelper.IsCanPaiMai_KillBoss(userInfoComponent.UserInfo.MonsterRevives, userInfoComponent.UserInfo.Lv)
-                    || CommonHelper.IsCanPaiMai_Level(createDay, userInfoComponent.UserInfo.Lv) == 0)
+                    || CommonHelper.IsCanPaiMai_KillBoss(roleInfoComponent.RoleInfo.MonsterRevives, roleInfoComponent.RoleInfo.Lv)
+                    || CommonHelper.IsCanPaiMai_Level(createDay, roleInfoComponent.RoleInfo.Lv) == 0)
                 {
                     openPaiMai = 1;
                     //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.PaiMaiOpen, 1);
@@ -128,7 +128,7 @@ namespace ET
                     (paimaiServerId, new M2P_PaiMaiBuyRequest()
                     {
                         PaiMaiItemInfo = request.PaiMaiItemInfo,
-                        Gold = unit.GetComponent<RoleInfoComponent>().UserInfo.Gold,
+                        Gold = unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold,
                         BuyNum = buyNum
                     });
                 if (r_GameStatusResponse.Error != ErrorCode.ERR_Success)
@@ -158,9 +158,9 @@ namespace ET
                 unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday += needGold;
                 if (unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday >= 50000000)
                 {
-                    UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                    string levelInfo = $"区： {unit.DomainZone()}  {userInfoComponent.UserInfo.Name}   \t拍卖消耗金币:{unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday}  " +
-                        $" \t账号:{userInfoComponent.Account}   \t钻石:{userInfoComponent.UserInfo.Diamond}  \t金币:{userInfoComponent.UserInfo.Gold} \n";
+                    RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                    string levelInfo = $"区： {unit.DomainZone()}  {roleInfoComponent.RoleInfo.Name}   \t拍卖消耗金币:{unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday}  " +
+                        $" \t账号:{roleInfoComponent.Account}   \t钻石:{roleInfoComponent.RoleInfo.Diamond}  \t金币:{roleInfoComponent.RoleInfo.Gold} \n";
                     LogHelper.PaiMaiInfo(levelInfo);
                 }
 
@@ -218,20 +218,20 @@ namespace ET
                     int itemNumber = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
                     long price = r_GameStatusResponse.PaiMaiItemInfo.Price;
 
-                    UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                    string buyPlayerName = userInfoComponent.UserInfo.Name;
-                    int buyPlayerLv = userInfoComponent.UserInfo.Lv;
+                    RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                    string buyPlayerName = roleInfoComponent.RoleInfo.Name;
+                    int buyPlayerLv = roleInfoComponent.RoleInfo.Lv;
                     int buyPlayerRecharge = request.IsRecharge;
-                    long buyNowGold = userInfoComponent.UserInfo.Gold;
-                    string buyAccount = userInfoComponent.Account;
+                    long buyNowGold = roleInfoComponent.RoleInfo.Gold;
+                    string buyAccount = roleInfoComponent.Account;
                     
                     string sellPlayerName = r_GameStatusResponse.PaiMaiItemInfo.PlayerName;
                     string sellAccoount = r_GameStatusResponse.PaiMaiItemInfo.Account;
-                    UserInfoComponent userInfoComponentSell = await DBHelper.GetComponentCache<UserInfoComponent>(unit.DomainZone(), r_GameStatusResponse.PaiMaiItemInfo.UserId);
-                    if (userInfoComponentSell != null)
+                    RoleInfoComponent roleInfoComponentSell = await DBHelper.GetComponentCache<RoleInfoComponent>(unit.DomainZone(), r_GameStatusResponse.PaiMaiItemInfo.UserId);
+                    if (roleInfoComponentSell != null)
                     {
-                        int sellPlayerLv = userInfoComponentSell.UserInfo.Lv;
-                        long sellNowGold = userInfoComponentSell.UserInfo.Gold;
+                        int sellPlayerLv = roleInfoComponentSell.RoleInfo.Lv;
+                        long sellNowGold = roleInfoComponentSell.RoleInfo.Gold;
 
                         string paimaiInfo = $"服务器:{serverName}   \t道具名称:{itemName}   \t数量:{itemNumber}   \t价格:{price}  \t购买者名称:{buyPlayerName}   \t购买者等级:{buyPlayerLv}    " +
                             $"\t购买者充值:{buyPlayerRecharge}   \t购买者当前金币:{buyNowGold}   \t购买者账号:{buyAccount}    \t出售者名称:{sellPlayerName}   \t出售者账号:{sellAccoount}   \t出售者等级:{sellPlayerLv}    \t出售者当前金币:{sellNowGold} ";

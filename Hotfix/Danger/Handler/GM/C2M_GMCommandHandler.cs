@@ -73,7 +73,7 @@ namespace ET
 				}
 				if (message.GMMsg == "#resetlv")
 				{
-					int level = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv - 1;
+					int level = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv - 1;
 					unit.GetComponent<RoleInfoComponent>().UpdateRoleData( UserDataType.Lv, (level*-1).ToString());
 					return;
 				}
@@ -91,7 +91,7 @@ namespace ET
 						return;
 					}
 
-					//if (unit.GetComponent<RoleInfoComponent>().UserInfo.HorseIds.Count > 2)
+					//if (unit.GetComponent<RoleInfoComponent>().RoleInfo.HorseIds.Count > 2)
 					//{
 					//	return;
 					//}
@@ -177,14 +177,14 @@ namespace ET
 				}
 				if (message.GMMsg == "#resetguide")
 				{
-					unit.GetComponent<RoleInfoComponent>().UserInfo.CompleteGuideIds.Clear();
+					unit.GetComponent<RoleInfoComponent>().RoleInfo.CompleteGuideIds.Clear();
 					return;
 				}
 				if (message.GMMsg == "#resetfuben")
 				{
 					unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonTimes, 0);
 					unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonXieZhu, 0);
-					unit.GetComponent<RoleInfoComponent>().UserInfo.DayFubenTimes.Clear();
+					unit.GetComponent<RoleInfoComponent>().RoleInfo.DayFubenTimes.Clear();
 					return;
 				}
                 if (message.GMMsg == "#resettower")
@@ -194,7 +194,7 @@ namespace ET
                 }
                 if (message.GMMsg == "#ceshi1203")
                 {
-                    int level = 70 - unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
+                    int level = 70 - unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
                     level = level > 0 ? level : 0;		
                     unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Lv, level.ToString());
                     return;
@@ -287,13 +287,13 @@ namespace ET
 						break;
 					case 6:
 						int newLevel = int.Parse(commands[1]);
-						RoleInfoComponent userInfoComponent =  unit.GetComponent<RoleInfoComponent>();
+						RoleInfoComponent roleInfoComponent =  unit.GetComponent<RoleInfoComponent>();
 						TaskComponent taskComponent = unit.GetComponent<TaskComponent>();	
-                        //if (newLevel <= userInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList))
+                        //if (newLevel <= roleInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList))
 						if(newLevel <= LDGlobalValueCategory.Instance.MaxLevel)
 						{
-							int level = newLevel - unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
-                            userInfoComponent.UpdateRoleData(UserDataType.Lv, level.ToString());
+							int level = newLevel - unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+                            roleInfoComponent.UpdateRoleData(UserDataType.Lv, level.ToString());
 						}
 						break;
 					case 7:
@@ -302,7 +302,7 @@ namespace ET
 
 						List<string> componentList = new List<string>() { DBHelper.BagComponent, DBHelper.TaskComponent };
 						D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = DBHelper.RoleInfoComponent });
-						userInfoComponent = d2GGetUnit.Component as RoleInfoComponent;
+						roleInfoComponent = d2GGetUnit.Component as RoleInfoComponent;
 						for (int i = 0; i < componentList.Count; i++)
 						{
 							d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = componentList[i] });

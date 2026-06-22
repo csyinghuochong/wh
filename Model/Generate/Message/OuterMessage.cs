@@ -524,9 +524,9 @@ namespace ET
 	}
 
 //等级 经验 货币 或者不变的数值都放在这。
-	[Message(OuterOpcode.UserInfo)]
+	[Message(OuterOpcode.RoleInfo)]
 	[ProtoContract]
-	public partial class UserInfo: Object
+	public partial class RoleInfo: Object
 	{
 		[ProtoMember(1)]
 		public long AccInfoID { get; set; }
@@ -7751,7 +7751,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
-		public UserInfo UserInfo { get; set; }
+		public RoleInfo RoleInfo { get; set; }
 
 		[ProtoMember(3)]
 		public List<KeyValuePair> ReddontList = new List<KeyValuePair>();
@@ -15227,7 +15227,7 @@ namespace ET
 	public partial class M2C_UpdateUserInfoMessage: Object, IActorMessage
 	{
 		[ProtoMember(1)]
-		public UserInfo UserInfo { get; set; }
+		public RoleInfo RoleInfo { get; set; }
 
 	}
 

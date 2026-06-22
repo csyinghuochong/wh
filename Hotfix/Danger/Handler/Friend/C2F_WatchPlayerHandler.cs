@@ -24,8 +24,8 @@ namespace ET
                 //全部
                 case 0:
                     D2G_GetComponent d2GGetUnit_2 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.BagComponent });
-                    response.Lv = userinfo.UserInfo.Lv;
-                    response.Name = userinfo.UserInfo.Name;
+                    response.Lv = userinfo.RoleInfo.Lv;
+                    response.Name = userinfo.RoleInfo.Name;
                     BagComponent bagComponents = d2GGetUnit_2.Component as BagComponent;
                     if (bagComponents == null)
                     {
@@ -37,7 +37,7 @@ namespace ET
                     response.EquipList = bagComponents.EquipList;
                     response.PetHeXinList = bagComponents.PetHeXinList;
                     response.PetEquipList = bagComponents.PetEquipList;
-                    response.Occ = userinfo.UserInfo.Occ;
+                    response.Occ = userinfo.RoleInfo.Occ;
                     D2G_GetComponent d2GGetUnit_3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.PetComponent });
                     PetComponent petComponent = d2GGetUnit_3.Component as PetComponent;
                     List<RolePetInfo> rolePetInfos = petComponent.RolePetInfos;
@@ -71,7 +71,7 @@ namespace ET
                     break;
                 //只返回名字
                 case 1:
-                    response.Name = userinfo.UserInfo.Name;
+                    response.Name = userinfo.RoleInfo.Name;
                     break;
                 case 2:
                     long teamServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;

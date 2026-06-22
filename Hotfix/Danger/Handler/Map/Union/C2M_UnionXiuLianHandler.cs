@@ -39,7 +39,7 @@ namespace ET
             }
 
             UnionQiangHuaConfig unionQiangHuaConfig = UnionQiangHuaConfigCategory.Instance.Get(xiulianid);
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.UnionZiJin < unionQiangHuaConfig.CostGold)
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.UnionZiJin < unionQiangHuaConfig.CostGold)
             {
                 response.Error = ErrorCode.ERR_HouBiNotEnough;
                 reply();
@@ -54,7 +54,7 @@ namespace ET
             }
 
 
-            long selfgold = unit.GetComponent<RoleInfoComponent>().UserInfo.Gold;
+            long selfgold = unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold;
             U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                        DBHelper.GetUnionServerId(unit.DomainZone()),
                        new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });

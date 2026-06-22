@@ -10,12 +10,12 @@ namespace ET
         {
            
             long currentTime = TimeHelper.ServerNow();
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            userInfoComponent.OnLogin(remoteip);
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            roleInfoComponent.OnLogin(remoteip);
             
-            UserInfo userInfo = userInfoComponent.UserInfo;
+            RoleInfo roleInfo = roleInfoComponent.RoleInfo;
             DateTime dateTime = TimeInfo.Instance.ToDateTime(currentTime);
-            long lastLoginTime = userInfoComponent.LastLoginTime;
+            long lastLoginTime = roleInfoComponent.LastLoginTime;
             if (lastLoginTime != 0)
             {
                 DateTime lastdateTime = TimeInfo.Instance.ToDateTime(lastLoginTime);
@@ -25,21 +25,21 @@ namespace ET
                     float passhour = ((currentTime - lastLoginTime) *1f / TimeHelper.Hour);
                     if (passhour >= 24f)
                     {
-                        userInfoComponent.RecoverPiLao(120, false);
+                        roleInfoComponent.RecoverPiLao(120, false);
                     }
                     else
                     {
 
-                        List<int> indexids_1 = userInfoComponent.GetTiLiIndexsNew(lastdateTime.Hour, 23);
-                        List<int> indexids_2 = userInfoComponent.GetTiLiIndexsNew(0, dateTime.Hour);
+                        List<int> indexids_1 = roleInfoComponent.GetTiLiIndexsNew(lastdateTime.Hour, 23);
+                        List<int> indexids_2 = roleInfoComponent.GetTiLiIndexsNew(0, dateTime.Hour);
                         List<int> indexids = new List<int>();
                         indexids.Add(0);
                         indexids.AddRange(indexids_1);
                         indexids.AddRange(indexids_2);
                         if (indexids.Count > 0)
                         {
-                            int recoverTili = userInfoComponent.GetTiliRecover(indexids);
-                            userInfoComponent.RecoverPiLao(recoverTili, false);
+                            int recoverTili = roleInfoComponent.GetTiliRecover(indexids);
+                            roleInfoComponent.RecoverPiLao(recoverTili, false);
                             string indexstr = $"{unit.Id}  two day : hour_1: {lastdateTime.Hour}  hour_2:{dateTime.Hour}   indexs: ";
                             for (int index = 0; index < indexids.Count; index++)
                             {
@@ -50,16 +50,16 @@ namespace ET
                         }
 
                     }
-                    userInfoComponent.OnZeroClockUpdate(false);
+                    roleInfoComponent.OnZeroClockUpdate(false);
                     unit.GetComponent<TaskComponent>().CheckWeeklyUpdate(lastLoginTime, currentTime);
                     unit.GetComponent<TaskComponent>().OnZeroClockUpdate(false);
                     unit.GetComponent<EnergyComponent>().OnResetEnergyInfo();
                     unit.GetComponent<HeroDataComponent>().OnZeroClockUpdate(false);
-                    unit.GetComponent<ActivityComponent>().OnZeroClockUpdate(userInfo.Lv);
+                    unit.GetComponent<ActivityComponent>().OnZeroClockUpdate(roleInfo.Lv);
                     unit.GetComponent<ChengJiuComponent>().OnZeroClockUpdate();
                     unit.GetComponent<JiaYuanComponent>().OnZeroClockUpdate(false);
                     unit.GetComponent<DataCollationComponent>().OnZeroClockUpdate(false);
-                    userInfoComponent.OnJiaYuanExp(Math.Min(passhour, 12f));
+                    roleInfoComponent.OnJiaYuanExp(Math.Min(passhour, 12f));
                 }
                 else
                 {
@@ -67,11 +67,11 @@ namespace ET
                     hour_1 = lastdateTime.Hour;
                     hour_2 = dateTime.Hour;
 
-                    List<int> indexids = userInfoComponent.GetTiLiIndexsNew(hour_1, hour_2);
+                    List<int> indexids = roleInfoComponent.GetTiLiIndexsNew(hour_1, hour_2);
                     if (indexids.Count > 0)
                     { 
-                        int recoverTili = userInfoComponent.GetTiliRecover(indexids);
-                        userInfoComponent.RecoverPiLao(recoverTili, false);
+                        int recoverTili = roleInfoComponent.GetTiliRecover(indexids);
+                        roleInfoComponent.RecoverPiLao(recoverTili, false);
                         string indexstr = $"{unit.Id}  one day  hour_1: {hour_1}  hour_2:{hour_2}   indexs: ";
                         for (int index = 0; index < indexids.Count; index++)
                         {
@@ -83,7 +83,7 @@ namespace ET
   
                     unit.GetComponent<JiaYuanComponent>().OnLoginCheck(hour_1, hour_2);
                     float passhour = ((currentTime - lastLoginTime) * 1f / TimeHelper.Hour);
-                    userInfoComponent.OnJiaYuanExp(Math.Min(passhour, 12f));
+                    roleInfoComponent.OnJiaYuanExp(Math.Min(passhour, 12f));
                 }
             }
             else
@@ -92,17 +92,17 @@ namespace ET
                 unit.GetComponent<TaskComponent>().OnZeroClockUpdate(false);
             }
 
-            unit.GetComponent<BagComponent>().OnLogin(userInfo.RobotId);
+            unit.GetComponent<BagComponent>().OnLogin(roleInfo.RobotId);
             unit.GetComponent<TaskComponent>().OnLogin();
-            unit.GetComponent<HeroDataComponent>().OnLogin(userInfo.RobotId);
+            unit.GetComponent<HeroDataComponent>().OnLogin(roleInfo.RobotId);
             unit.GetComponent<DBSaveComponent>().OnLogin();
             unit.GetComponent<RechargeComponent>().OnLogin();
             unit.GetComponent<PetComponent>().OnLogin();
-            unit.GetComponent<ActivityComponent>().OnLogin(userInfo.Lv);
+            unit.GetComponent<ActivityComponent>().OnLogin(roleInfo.Lv);
             unit.GetComponent<TitleComponent>().OnCheckTitle(false);
             unit.GetComponent<ChengJiuComponent>().OnLogin();
             unit.GetComponent<JiaYuanComponent>().OnLogin();
-            unit.GetComponent<SkillSetComponent>().OnLogin(userInfo.Occ);
+            unit.GetComponent<SkillSetComponent>().OnLogin(roleInfo.Occ);
 
         }
 

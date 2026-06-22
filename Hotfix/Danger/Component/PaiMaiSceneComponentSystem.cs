@@ -213,11 +213,11 @@ namespace ET
                 else
                 {
                     Log.Warning($"OnAuctionOver[离线]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}");
-                    RoleInfoComponent userInfoComponent = await DBHelper.GetComponentCache<RoleInfoComponent>(self.DomainZone(), self.AuctioUnitId);
-                    if (userInfoComponent.UserInfo.Gold >= self.AuctionPrice)
+                    RoleInfoComponent roleInfoComponent = await DBHelper.GetComponentCache<RoleInfoComponent>(self.DomainZone(), self.AuctioUnitId);
+                    if (roleInfoComponent.RoleInfo.Gold >= self.AuctionPrice)
                     {
-                        userInfoComponent.UserInfo.Gold -= self.AuctionPrice;
-                        DBHelper.SaveComponentCache(self.DomainZone(), self.AuctioUnitId, userInfoComponent).Coroutine();
+                        roleInfoComponent.RoleInfo.Gold -= self.AuctionPrice;
+                        DBHelper.SaveComponentCache(self.DomainZone(), self.AuctioUnitId, roleInfoComponent).Coroutine();
 
                         //发送道具
                         getitem = true;

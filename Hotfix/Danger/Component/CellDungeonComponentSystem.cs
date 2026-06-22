@@ -358,8 +358,8 @@ namespace ET
 
                 MessageHelper.SendToClient(self.MainUnit, m2C_FubenSettlement);
 
-                UserInfo userInfo = self.MainUnit.GetComponent<RoleInfoComponent>().UserInfo;
-                List<FubenPassInfo> fubenPassInfos = userInfo.FubenPassList;
+                RoleInfo roleInfo = self.MainUnit.GetComponent<RoleInfoComponent>().RoleInfo;
+                List<FubenPassInfo> fubenPassInfos = roleInfo.FubenPassList;
                 FubenPassInfo fubenPassInfo = null;
                 for (int i = 0; i < fubenPassInfos.Count; i++)
                 {
@@ -373,7 +373,7 @@ namespace ET
                 {
                     fubenPassInfo = new FubenPassInfo();
                     fubenPassInfo.FubenId = self.ChapterId;
-                    userInfo.FubenPassList.Add(fubenPassInfo);
+                    roleInfo.FubenPassList.Add(fubenPassInfo);
                 }
                 fubenPassInfo.Difficulty = ((int)self.FubenDifficulty > fubenPassInfo.Difficulty) ? (int)self.FubenDifficulty : fubenPassInfo.Difficulty;
 

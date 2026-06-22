@@ -9,7 +9,7 @@ namespace ET
         {
             unit.GetComponent<ShoujiComponent>().UpdateShouJIStar();
 
-            response.UserInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+            response.RoleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
             response.ReddontList =  unit.GetComponent<ReddotComponent>().ReddontList;
             response.TreasureInfo = unit.GetComponent<ShoujiComponent>().TreasureInfo;
             response.ShouJiChapterInfos = unit.GetComponent<ShoujiComponent>().ShouJiChapterInfos;

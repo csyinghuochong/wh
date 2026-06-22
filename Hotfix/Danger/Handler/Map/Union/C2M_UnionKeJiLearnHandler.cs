@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -7,13 +7,13 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_UnionKeJiLearnRequest request, M2C_UnionKeJiLearnResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();   
-            int kejiid = userInfoComponent.UserInfo.UnionKeJiList[request.Position];
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();   
+            int kejiid = roleInfoComponent.RoleInfo.UnionKeJiList[request.Position];
 
             UnionKeJiConfig unionKeJiConfig = UnionKeJiConfigCategory.Instance.Get(kejiid);
             if (unionKeJiConfig.NextID == 0)
             {
-                response.UnionKeJiList = userInfoComponent.UserInfo.UnionKeJiList;
+                response.UnionKeJiList = roleInfoComponent.RoleInfo.UnionKeJiList;
                 response.Error = ErrorCode.ERR_UnionXiuLianMax;
                 reply();
                 return;
@@ -22,7 +22,7 @@ namespace ET
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
             if (!bagComponent.CheckNeedItem( unionKeJiConfig.LearnCost ))
             {
-                response.UnionKeJiList = userInfoComponent.UserInfo.UnionKeJiList;
+                response.UnionKeJiList = roleInfoComponent.RoleInfo.UnionKeJiList;
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;
@@ -38,15 +38,15 @@ namespace ET
 
             if(d2GGetUnit.Error != ErrorCode.ERR_Success)
             {
-                response.UnionKeJiList = userInfoComponent.UserInfo.UnionKeJiList;
+                response.UnionKeJiList = roleInfoComponent.RoleInfo.UnionKeJiList;
                 response.Error = d2GGetUnit.Error;
                 reply();
                 return;
             }
 
             bagComponent.OnCostItemData(unionKeJiConfig.LearnCost, ItemLocType.ItemLocBag, ItemGetWay.UnionXiuLian);
-            userInfoComponent.UserInfo.UnionKeJiList[request.Position] = unionKeJiConfig.NextID;
-            response.UnionKeJiList = userInfoComponent.UserInfo.UnionKeJiList;
+            roleInfoComponent.RoleInfo.UnionKeJiList[request.Position] = unionKeJiConfig.NextID;
+            response.UnionKeJiList = roleInfoComponent.RoleInfo.UnionKeJiList;
             reply();
             await ETTask.CompletedTask;
         }

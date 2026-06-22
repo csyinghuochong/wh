@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 
 namespace ET
@@ -17,8 +17,8 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();   
-            if (userInfoComponent.UserInfo.Diamond < 350)
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();   
+            if (roleInfoComponent.RoleInfo.Diamond < 350)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();
@@ -26,8 +26,8 @@ namespace ET
             }
             int sceneid = BattleHelper.GetSceneIdByType( MapTypeEnum.PetMing );
             numericComponent.ApplyChange( null, NumericType.PetMineReset, 1, 0 );
-            userInfoComponent.UpdateRoleData( UserDataType.Diamond,  "-350");
-            userInfoComponent.AddFubenTimes(sceneid, 5);
+            roleInfoComponent.UpdateRoleData( UserDataType.Diamond,  "-350");
+            roleInfoComponent.AddFubenTimes(sceneid, 5);
 
             reply();
             await ETTask.CompletedTask;

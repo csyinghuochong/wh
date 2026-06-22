@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,15 +27,15 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
 
-            if (request.Position == 1 &&  userInfoComponent.UserInfo.Lv < userInfoComponent.UserInfo.JiaYuanLv)
+            if (request.Position == 1 &&  roleInfoComponent.RoleInfo.Lv < roleInfoComponent.RoleInfo.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;
                 reply();
                 return;
             }
-            if (request.Position == 2 && userInfoComponent.UserInfo.Lv < userInfoComponent.UserInfo.JiaYuanLv)
+            if (request.Position == 2 && roleInfoComponent.RoleInfo.Lv < roleInfoComponent.RoleInfo.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;
                 reply();

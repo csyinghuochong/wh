@@ -77,14 +77,14 @@ namespace ET
             }
 
 
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
-            if (userInfo.Gold < costgold)
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            if (roleInfo.Gold < costgold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
                 return;
             }
-            if (userInfo.Vitality < costvitality)
+            if (roleInfo.Vitality < costvitality)
             {
                 response.Error = ErrorCode.ERR_VitalityNotEnoughError;
                 reply();

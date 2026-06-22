@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -9,9 +9,9 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_JiaYuanExchangeRequest request, M2C_JiaYuanExchangeResponse response, Action reply)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            UserInfoComponent userInfoComponent=unit.GetComponent<RoleInfoComponent>();
-            UserInfo userInfo = userInfoComponent.UserInfo;
-            LDHome ldHome = LDHomeCategory.Instance.Get(userInfo.JiaYuanLv);
+            RoleInfoComponent roleInfoComponent=unit.GetComponent<RoleInfoComponent>();
+            RoleInfo roleInfo = roleInfoComponent.RoleInfo;
+            LDHome ldHome = LDHomeCategory.Instance.Get(roleInfo.JiaYuanLv);
             switch (request.ExchangeType)
             {
                 case 1: //金币兑换资金
@@ -22,15 +22,15 @@ namespace ET
                         return;
                     }
                    
-                    /*if (userInfo.Gold < ldHome.ExchangeZiJinCostGold)
+                    /*if (roleInfo.Gold < ldHome.ExchangeZiJinCostGold)
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();
                         return;
                     }
 
-                    userInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (ldHome.ExchangeZiJinCostGold * -1).ToString(), true, ItemGetWay.JiaYuanCost);
-                    userInfoComponent.UpdateRoleMoneyAdd(UserDataType.JiaYuanFund, (ldHome.ExchangeZiJin).ToString(), true, ItemGetWay.JiaYuanExchange);
+                    roleInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (ldHome.ExchangeZiJinCostGold * -1).ToString(), true, ItemGetWay.JiaYuanCost);
+                    roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.JiaYuanFund, (ldHome.ExchangeZiJin).ToString(), true, ItemGetWay.JiaYuanExchange);
                     numericComponent.ApplyChange(null, NumericType.JiaYuanExchangeZiJin, 1, 0);*/
                     break;
                 case 2: //资金兑换经验
@@ -47,15 +47,15 @@ namespace ET
                         return;
                     }
                    
-                    /*if (userInfo.JiaYuanFund < ldHome.ExchangeExpCostZiJin)
+                    /*if (roleInfo.JiaYuanFund < ldHome.ExchangeExpCostZiJin)
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();
                         return;
                     }
 
-                    userInfoComponent.UpdateRoleMoneySub(UserDataType.JiaYuanFund, (ldHome.ExchangeExpCostZiJin * -1).ToString(), true, ItemGetWay.JiaYuanCost);
-                    userInfoComponent.UpdateRoleMoneyAdd(UserDataType.JiaYuanExp, (ldHome.ExchangeExp).ToString(), true, ItemGetWay.JiaYuanExchange);
+                    roleInfoComponent.UpdateRoleMoneySub(UserDataType.JiaYuanFund, (ldHome.ExchangeExpCostZiJin * -1).ToString(), true, ItemGetWay.JiaYuanCost);
+                    roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.JiaYuanExp, (ldHome.ExchangeExp).ToString(), true, ItemGetWay.JiaYuanExchange);
                     numericComponent.ApplyChange(null, NumericType.JiaYuanExchangeExp, 1, 0);*/
                     break;
                 default:

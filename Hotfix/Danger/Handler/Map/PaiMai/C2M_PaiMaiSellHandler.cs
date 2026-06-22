@@ -41,8 +41,8 @@ namespace ET
                 long paimaiItemId = IdGenerater.Instance.GenerateId();
 				request.PaiMaiItemInfo.Id = paimaiItemId;
 
-                request.PaiMaiItemInfo.PlayerName = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
-				request.PaiMaiItemInfo.UserId = unit.GetComponent<RoleInfoComponent>().UserInfo.UserId;
+                request.PaiMaiItemInfo.PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+				request.PaiMaiItemInfo.UserId = unit.GetComponent<RoleInfoComponent>().RoleInfo.UserId;
                 request.PaiMaiItemInfo.Account = unit.GetComponent<RoleInfoComponent>().Account;
 				request.PaiMaiItemInfo.SellTime = currentTime;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 
 namespace ET
@@ -30,8 +30,8 @@ namespace ET
                 }
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (userInfoComponent.UserInfo.RechargeReward.Contains(request.RechargeNumber))
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            if (roleInfoComponent.RoleInfo.RechargeReward.Contains(request.RechargeNumber))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -65,7 +65,7 @@ namespace ET
             }
 
             unit.GetComponent<BagComponent>().OnAddItemData(rewarditem, $"{93}_{TimeHelper.ServerNow()}");
-            userInfoComponent.UserInfo.RechargeReward.Add(request.RechargeNumber);
+            roleInfoComponent.RoleInfo.RechargeReward.Add(request.RechargeNumber);
             reply();
             await ETTask.CompletedTask;
         }

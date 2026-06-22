@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -43,7 +43,7 @@ namespace ET
                 return;
             }
 
-            List<UserInfoComponent> result = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(unit.DomainZone(), _account => _account.UserName == request.NewName);
+            List<RoleInfoComponent> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(unit.DomainZone(), _account => _account.UserName == request.NewName);
             if (result.Count > 0)
             {
                 response.Error = ErrorCode.ERR_RoleNameRepeat;

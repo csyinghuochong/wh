@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -34,12 +34,12 @@ namespace ET
             unionInfo.UnionInfo.UnionName = request.UnionName;
             unionInfo.UnionInfo.UnionPurpose = request.UnionPurpose;
 
-            UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(scene.DomainZone(), request.UserID);
-            unionInfo.UnionInfo.LeaderName = userInfoComponent.UserInfo.Name;
+            RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(scene.DomainZone(), request.UserID);
+            unionInfo.UnionInfo.LeaderName = roleInfoComponent.RoleInfo.Name;
             unionInfo.UnionInfo.UnionPlayerList.Add(new UnionPlayerInfo()
             {
-                 PlayerLevel = userInfoComponent.UserInfo.Lv,
-                 PlayerName = userInfoComponent.UserInfo.Name,
+                 PlayerLevel = roleInfoComponent.RoleInfo.Lv,
+                 PlayerName = roleInfoComponent.RoleInfo.Name,
                  UserID = request.UserID,
             });
             DBHelper.SaveComponent(scene.DomainZone(), unionId, unionInfo).Coroutine();

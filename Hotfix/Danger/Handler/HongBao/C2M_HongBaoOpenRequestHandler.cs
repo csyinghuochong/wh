@@ -9,7 +9,7 @@ namespace ET
         {
             int functionId = 1023;
             
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv < 12)
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv < 12)
             {
                 response.Error = ErrorCode.ERR_HongBaoLevel;
                 reply();
@@ -39,7 +39,7 @@ namespace ET
             }
 
             //获取当前玩家等级
-            int playerLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
+            int playerLv = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
             int minGold = 2000;
             int maxGold = 10000;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -96,14 +96,14 @@ namespace ET
          
                 LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(soloPlayerList[i].Occ);
                 string occName =  WordHelper.GetShowText(ldOccupationConfig.Name);
-                RoleInfoComponent userInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(self.DomainZone(), soloPlayerList[i].UnitId);
+                RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(self.DomainZone(), soloPlayerList[i].UnitId);
 
-                if (userInfoComponent.UserInfo.OccTwo > 0)
+                if (roleInfoComponent.RoleInfo.OccTwo > 0)
                 {
-                    occName = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).Name);
+                    occName = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(roleInfoComponent.RoleInfo.OccTwo).Name);
                 }
 
-                string soloInfo =   $"玩家: {soloPlayerList[i].Name}  击杀:{soloPlayerList[i].WinNum} 等级:{userInfoComponent.UserInfo.Lv} 职业:{occName}  战力:{combat}";
+                string soloInfo =   $"玩家: {soloPlayerList[i].Name}  击杀:{soloPlayerList[i].WinNum} 等级:{roleInfoComponent.RoleInfo.Lv} 职业:{occName}  战力:{combat}";
                 sololist.Add(soloInfo);
             }
 

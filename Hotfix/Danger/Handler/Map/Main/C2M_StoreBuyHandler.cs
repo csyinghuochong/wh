@@ -57,7 +57,7 @@ namespace ET
                 return;
             }
 
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
             List<RewardItem> rewardItems = ItemHelper.GetRewardItems(storeSellConfig.Goods);
 
             unit.GetComponent<BagComponent>().OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy );

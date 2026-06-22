@@ -59,7 +59,7 @@ namespace ET
                 else
                 {
                     //钻石洗炼
-                    UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
                     int itemXiLianNumber = 0;//unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianNumber);
                     string[] set = LDGlobalValueCategory.Instance.Get(116).Value.Split(';');
                     double discount;
@@ -73,7 +73,7 @@ namespace ET
                     }
                     int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(73).Value.Split('@')[0]);
                     needDimanond = (int)(needDimanond * discount);
-                    if (userInfo.Diamond < needDimanond)
+                    if (roleInfo.Diamond < needDimanond)
                     {
                         response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                         reply();

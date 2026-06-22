@@ -60,8 +60,8 @@ namespace ET
             
             if (unit.GetComponent<RoleInfoComponent>() == null)
             {
-                UserInfoComponent userInfoComponentServer = unit.AddComponent<UserInfoComponent>();
-                userInfoComponentServer.OnInit(account, unit.Id, accountId, createRoleInfo);
+                RoleInfoComponent roleInfoComponentServer = unit.AddComponent<RoleInfoComponent>();
+                roleInfoComponentServer.OnInit(account, unit.Id, accountId, createRoleInfo);
             }
 
             if (unit.GetComponent<NumericComponent>() == null)
@@ -261,7 +261,7 @@ namespace ET
             unit.AddComponent<HeroDataComponent>();
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
-            unitInfoComponent.UnitName = master.GetComponent<RoleInfoComponent>().UserInfo.StallName;
+            unitInfoComponent.UnitName = master.GetComponent<RoleInfoComponent>().RoleInfo.StallName;
             unit.GetComponent<NumericComponent>().Set(NumericType.MasterId, master.Id);
             unit.MasterId = master.Id;
             unit.Type = UnitType.Stall;
@@ -467,7 +467,7 @@ namespace ET
             unit.AddComponent<SkillManagerComponent>();
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
-            //unitInfoComponent.MasterName = userInfoComponent.UserInfo.Name;
+            //unitInfoComponent.MasterName = roleInfoComponent.RoleInfo.Name;
             unitInfoComponent.UnitName = JiaYuanPastureConfigCategory.Instance.Get(jiaYuanPastures.ConfigId).Name;
 
             unit.ConfigId = jiaYuanPastures.ConfigId;
@@ -500,7 +500,7 @@ namespace ET
             unit.AddComponent<SkillManagerComponent>();
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
-            unitInfoComponent.MasterName = master.GetComponent<RoleInfoComponent>().UserInfo.Name;
+            unitInfoComponent.MasterName = master.GetComponent<RoleInfoComponent>().RoleInfo.Name;
             unitInfoComponent.UnitName = LDElfCategory.Instance.Get(jinglingId).Name.ToString();
            
             unit.ConfigId = jinglingId;
@@ -571,7 +571,7 @@ namespace ET
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(bekill.ConfigId);
             if (SceneConfigHelper.IsSingleFuben(sceneType) )
             {
-                drop = main.GetComponent<RoleInfoComponent>().UserInfo.PiLao > 0 || bekill.IsBoss();
+                drop = main.GetComponent<RoleInfoComponent>().RoleInfo.PiLao > 0 || bekill.IsBoss();
 
                 //场景宝箱掉落和体力无关
 
@@ -583,7 +583,7 @@ namespace ET
             if (ActivityHelper.IsShowLieOpen() && !drop && !main.IsRobot())
             {
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(bekill.ConfigId);
-                int userlv = main.GetComponent<RoleInfoComponent>().UserInfo.Lv;
+                int userlv = main.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
                 if( ldMonster.Lv >= 60 || Mathf.Abs(userlv - ldMonster.Lv) <= 9 ) 
                 {
                     drop = true;
@@ -700,7 +700,7 @@ namespace ET
             List<RewardItem> droplist_2 = null;
             if (main!=null && !main.IsDisposed)
             {
-                int playerLv = main.GetComponent<RoleInfoComponent>().UserInfo.Lv;
+                int playerLv = main.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
                 droplist_2 = DropHelper.AI_DropByPlayerLv(ldMonsterCof.Id, playerLv, dropAdd_Pro, false);
             }
             if (droplist_2 != null)

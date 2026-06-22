@@ -9,10 +9,10 @@ namespace ET
 	{
 		protected override async ETTask Run(Session session, C2G_PlayerInfo request, G2C_PlayerInfo response, Action reply)
 		{
-			//response.PlayerInfo = new UserInfo();
-			//response.PlayerInfos.Add(new UserInfo() {RpcId = 1});
-			//response.PlayerInfos.Add(new UserInfo() {RpcId = 2});
-			//response.PlayerInfos.Add(new UserInfo() {RpcId = 3});
+			//response.PlayerInfo = new RoleInfo();
+			//response.PlayerInfos.Add(new RoleInfo() {RpcId = 1});
+			//response.PlayerInfos.Add(new RoleInfo() {RpcId = 2});
+			//response.PlayerInfos.Add(new RoleInfo() {RpcId = 3});
 			response.TestRepeatedInt32.Add(4);
 			response.TestRepeatedInt32.Add(5);
 			response.TestRepeatedInt32.Add(6);

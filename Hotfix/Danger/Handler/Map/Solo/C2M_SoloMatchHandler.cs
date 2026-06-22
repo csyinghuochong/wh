@@ -25,9 +25,9 @@ namespace ET
             long soloServerId = DBHelper.GetSoloServerId(unit.DomainZone());  //获取solo服务器ID
             SoloPlayerInfo soloPlayerInfo = new SoloPlayerInfo();
             soloPlayerInfo.UnitId = unit.Id;
-            soloPlayerInfo.Combat = unit.GetComponent<RoleInfoComponent>().UserInfo.Combat;
-            soloPlayerInfo.Name = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
-            soloPlayerInfo.Occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
+            soloPlayerInfo.Combat = unit.GetComponent<RoleInfoComponent>().RoleInfo.Combat;
+            soloPlayerInfo.Name = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+            soloPlayerInfo.Occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
             soloPlayerInfo.MatchTime = TimeHelper.ServerNow();
             S2M_SoloMatchResponse d2GGetUnit = (S2M_SoloMatchResponse)await ActorMessageSenderComponent.Instance.Call(soloServerId, new M2S_SoloMatchRequest()
             {

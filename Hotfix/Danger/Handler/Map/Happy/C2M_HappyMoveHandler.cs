@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_HappyMoveRequest request, M2C_HappyMoveResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
 
             if (request.OperatateType != 1 && request.OperatateType != 3)
             {
@@ -36,24 +36,24 @@ namespace ET
             if (request.OperatateType == 2)
             {
                 LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(94);
-                if (userInfoComponent.UserInfo.Gold < LDGlobalValueCategory.Instance.TempValue)
+                if (roleInfoComponent.RoleInfo.Gold < LDGlobalValueCategory.Instance.TempValue)
                 {
                     response.Error = ErrorCode.ERR_GoldNotEnoughError;
                     reply();
                     return;
                 }
-                //userInfoComponent.UpdateRoleMoneySub( UserDataType.Gold, (globalValue.Value2 * -1).ToString(), true, ItemGetWay.HappyMove);
+                //roleInfoComponent.UpdateRoleMoneySub( UserDataType.Gold, (globalValue.Value2 * -1).ToString(), true, ItemGetWay.HappyMove);
             }
             if (request.OperatateType  == 3)
             {
                 /*GlobalValue globalValue = GlobalValueCategory.Instance.Get(95);
-                if (userInfoComponent.UserInfo.Diamond < globalValue.Value2)
+                if (roleInfoComponent.RoleInfo.Diamond < globalValue.Value2)
                 {
                     response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                     reply();
                     return;
                 }
-                userInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (globalValue.Value2 * -1).ToString(), true, ItemGetWay.HappyMove);*/
+                roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (globalValue.Value2 * -1).ToString(), true, ItemGetWay.HappyMove);*/
             }
 
             for (int r = 10; r > 0; r--)

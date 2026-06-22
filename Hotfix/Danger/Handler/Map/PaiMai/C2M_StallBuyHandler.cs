@@ -41,7 +41,7 @@ namespace ET
             }
 
             //钱是否足够
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Gold < needGold)
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold < needGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -54,7 +54,7 @@ namespace ET
                 P2M_StallBuyResponse p2MStallBuyResponse = (P2M_StallBuyResponse)await ActorMessageSenderComponent.Instance.Call(paimaiServerId,
                     new M2P_StallBuyRequest()
                     {
-                        PaiMaiItemInfo = request.PaiMaiItemInfo, ActorId = unit.GetComponent<RoleInfoComponent>().UserInfo.Gold
+                        PaiMaiItemInfo = request.PaiMaiItemInfo, ActorId = unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold
                     });
                 if (p2MStallBuyResponse.Error != ErrorCode.ERR_Success)
                 {

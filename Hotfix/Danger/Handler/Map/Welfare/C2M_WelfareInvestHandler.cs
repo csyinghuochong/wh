@@ -21,7 +21,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.WelfareInvestList.Contains(request.Index))
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.WelfareInvestList.Contains(request.Index))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -29,7 +29,7 @@ namespace ET
             }
 
             int ment = CommonConfig.WelfareInvestList[request.Index].KeyId;
-            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Gold <= ment)
+            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold <= ment)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -40,7 +40,7 @@ namespace ET
             unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub( UserDataType.Gold,(ment * -1).ToString(), true, ItemGetWay.Welfare );
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.InvestMent, ment, 0);
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.InvestTotal, ment, 0);
-            unit.GetComponent<RoleInfoComponent>().UserInfo.WelfareInvestList.Add(request.Index);
+            unit.GetComponent<RoleInfoComponent>().RoleInfo.WelfareInvestList.Add(request.Index);
             reply();
             await ETTask.CompletedTask;
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,12 +32,12 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
             string[] occItems = CommonConfig.KillMonsterReward[request.Key].Split('&');
             string[] items;
             if (occItems.Length == 3)
             {
-                items = occItems[userInfoComponent.UserInfo.Occ - 1].Split('@');
+                items = occItems[roleInfoComponent.RoleInfo.Occ - 1].Split('@');
             }
             else
             {

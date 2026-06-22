@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -15,7 +15,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             int oldArrived = numericComponent.GetAsInt(NumericType.TowerOfSealArrived);
@@ -40,14 +40,14 @@ namespace ET
             {
                 LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(89);
                 int needGold = int.Parse(ldGlobalValue.Value);
-                if (userInfoComponent.UserInfo.Diamond < needGold)
+                if (roleInfoComponent.RoleInfo.Diamond < needGold)
                 {
                     reply();
                     return;
                 }
 
                 // 消耗钻石
-                userInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
+                roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
             }
             else if(request.CostType == 1)//花费凭证
             {
@@ -73,26 +73,26 @@ namespace ET
             {
                 LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(89);
                 int needGold = int.Parse(ldGlobalValue.Value) + 350;
-                if (userInfoComponent.UserInfo.Diamond < needGold )
+                if (roleInfoComponent.RoleInfo.Diamond < needGold )
                 {
                     reply();
                     return;
                 }
 
                 // 消耗钻石
-                userInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
+                roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
             }
             else if (request.CostType == 11) // 凭证+钻石
             {
                 int needGold = 350;
-                if (userInfoComponent.UserInfo.Diamond < needGold)
+                if (roleInfoComponent.RoleInfo.Diamond < needGold)
                 {
                     reply();
                     return;
                 }
 
                 // 消耗钻石
-                userInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
+                roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
 
                 BagComponent bagComponent = unit.GetComponent<BagComponent>();
                 LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(90);

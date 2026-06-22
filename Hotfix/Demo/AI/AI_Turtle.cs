@@ -44,7 +44,7 @@ namespace ET
                     {
                         units[i].GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Message, "背包已满！");
                     }
-                    rewardName.Add(units[i].GetComponent<RoleInfoComponent>().UserInfo.Name);
+                    rewardName.Add(units[i].GetComponent<RoleInfoComponent>().RoleInfo.Name);
                 }
             }
 

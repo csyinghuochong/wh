@@ -9,7 +9,7 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_RealNameRewardRequest request, M2C_RealNameRewardResponse response, Action reply)
         {
-            long accid = unit.GetComponent<RoleInfoComponent>().UserInfo.AccInfoID;
+            long accid = unit.GetComponent<RoleInfoComponent>().RoleInfo.AccInfoID;
             long dbCacheId = DBHelper.GetDbCacheId(unit.DomainZone());
 
             string globalValueConfig = LDGlobalValueCategory.Instance.Get(6).Value;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -23,7 +23,7 @@ namespace ET
             }
 
             List<DBMailInfo> dBMailInfos = null;
-            List<RoleInfoComponent> accountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(scene.DomainZone(), d => d.UserInfo.Name == request.UserName);
+            List<RoleInfoComponent> accountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(scene.DomainZone(), d => d.RoleInfo.Name == request.UserName);
             if (accountInfoList.Count > 0)
             {
                 dBMailInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBMailInfo>(scene.DomainZone(), d => d.Id == accountInfoList[0].Id);
@@ -38,12 +38,12 @@ namespace ET
                     {
                         continue;
                     }
-                    List<RoleInfoComponent> userinfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(scene.DomainZone(), d => d.Id == dBMailInfos[i].Id);
-                    if (userinfoComponents.Count == 0)
+                    List<RoleInfoComponent> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(scene.DomainZone(), d => d.Id == dBMailInfos[i].Id);
+                    if (RoleInfoComponents.Count == 0)
                     {
                         continue;
                     }
-                    if (userinfoComponents[0].UserInfo.RobotId > 0)
+                    if (RoleInfoComponents[0].RoleInfo.RobotId > 0)
                     {
                         continue;
                     }
@@ -54,7 +54,7 @@ namespace ET
                         continue;
                     }
 
-                    bool cansendMail = MailHelp.CheckSendMail(request.MailType, request.Title, numericInfoList[0], userinfoComponents[0], bagInfoList[0]);
+                    bool cansendMail = MailHelp.CheckSendMail(request.MailType, request.Title, numericInfoList[0], RoleInfoComponents[0], bagInfoList[0]);
                     if (cansendMail == false)
                     {
                         continue;

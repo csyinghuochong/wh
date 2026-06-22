@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -106,7 +106,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             string offLineInfo = $"{unit.DomainZone()}区： " +
                $"unit.id: {unit.GetComponent<RoleInfoComponent>().Id} : " +
-               $" {unit.GetComponent<RoleInfoComponent>().UserInfo.Name} : " +
+               $" {unit.GetComponent<RoleInfoComponent>().RoleInfo.Name} : " +
                $"{TimeHelper.DateTimeNow().ToString()}   二次登陆";
 
             if (!unit.IsRobot())
@@ -123,7 +123,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             string offLineInfo = $"{unit.DomainZone()}区： " +
                $"unit.id: {unit.GetComponent<RoleInfoComponent>().Id} : " +
-               $" {unit.GetComponent<RoleInfoComponent>().UserInfo.Name} : " +
+               $" {unit.GetComponent<RoleInfoComponent>().RoleInfo.Name} : " +
                $"{TimeHelper.DateTimeNow().ToString()}   离线";
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
@@ -138,12 +138,12 @@ namespace ET
                 }
             }
 
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
             string oaid = unit.GetComponent<DataCollationComponent>().OAID;
             string lastgametime =   TimeHelper.DateTimeNow().ToString();
             numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
-            userInfoComponent.OnOffLine();
+            roleInfoComponent.OnOffLine();
             dataCollationComponent.OnOffLine(lastgametime);
             unit.GetComponent<UnitGateComponent>().PlayerState = PlayerState.None;
             if (!unit.IsRobot())
@@ -153,9 +153,9 @@ namespace ET
                 self.UpdateCacheDB();
                 DBHelper.UpdateLastGameTime(oaid, 
                     lastgametime,
-                    userInfoComponent.UserInfo.AccInfoID,
-                    userInfoComponent.RemoteAddress,
-                    userInfoComponent.UserInfo.Lv,
+                    roleInfoComponent.RoleInfo.AccInfoID,
+                    roleInfoComponent.RemoteAddress,
+                    roleInfoComponent.RoleInfo.Lv,
                     self.OnLineTime).Coroutine();
             }
         }
@@ -165,7 +165,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             string offLineInfo = $"{unit.DomainZone()}区： " +
                $"unit.id: {unit.GetComponent<RoleInfoComponent>().Id} : " +
-               $" {unit.GetComponent<RoleInfoComponent>().UserInfo.Name} : " +
+               $" {unit.GetComponent<RoleInfoComponent>().RoleInfo.Name} : " +
                $"{  TimeHelper.DateTimeNow().ToString()}   登录";
             if (!unit.IsRobot())
             {
@@ -198,7 +198,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             string offLineInfo = $"{unit.DomainZone()}区： " +
               $"unit.id: {unit.GetComponent<RoleInfoComponent>().Id} : " +
-              $" {unit.GetComponent<RoleInfoComponent>().UserInfo.Name} : " +
+              $" {unit.GetComponent<RoleInfoComponent>().RoleInfo.Name} : " +
               $"{  TimeHelper.DateTimeNow().ToString()}  移除";
 
             Scene scene = unit.DomainScene();
@@ -218,8 +218,8 @@ namespace ET
             }
 
             long unitId = unit.Id;
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
-            long userId = userInfo.UserId;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            long userId = roleInfo.UserId;
             unit.GetParent<UnitComponent>().Remove(unitId);
 
             Game.EventSystem.Publish(new EventType.PlayerDisconnect() { DomainScene = scene, UnitId = userId });

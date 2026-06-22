@@ -215,8 +215,8 @@ namespace ET
                  && SceneConfigHelper.UseSceneConfig(sceneTypeEnum))
                 {
                     LDScene ldScene = LDSceneCategory.Instance.Get(sceneId);
-                    string attackname = mainAttack.GetComponent<RoleInfoComponent>().UserInfo.Name;
-                    string defendname = defendUnit.GetComponent<RoleInfoComponent>().UserInfo.Name;
+                    string attackname = mainAttack.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+                    string defendname = defendUnit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
                     string killtext = $"<color=#B6FF00>{attackname}</color> 在<color=#FFA313>{ldScene.Name}</color> 击败了 <color=#00F6E6>{defendname}</color>";
                     string killtextEn = $"<color=#B6FF00>{attackname}</color> 在<color=#FFA313>{ldScene.Name}</color> Defeated <color=#00F6E6>{defendname}</color>";
                     ServerMessageHelper.SendBroadMessage(defendUnit.DomainZone(), NoticeType.KillEvent, killtext, killtextEn);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace ET
@@ -95,9 +95,9 @@ namespace ET
             Log.Warning($"挑战奖励:  {self.MainUnit.Id}  {way}");
             MessageHelper.SendToClient(self.MainUnit, message);
 
-            RoleInfoComponent userInfoComponent = self.MainUnit.GetComponent<RoleInfoComponent>();
-            userInfoComponent.UpdateRoleMoneyAdd(UserDataType.Exp, message.RewardExp.ToString(), true, ItemGetWay.TiaoZhan);
-            userInfoComponent.UpdateRoleMoneyAdd(UserDataType.Gold, message.RewardGold.ToString(), true, ItemGetWay.TiaoZhan);
+            RoleInfoComponent roleInfoComponent = self.MainUnit.GetComponent<RoleInfoComponent>();
+            roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.Exp, message.RewardExp.ToString(), true, ItemGetWay.TiaoZhan);
+            roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.Gold, message.RewardGold.ToString(), true, ItemGetWay.TiaoZhan);
             self.TowerId = 0;
         }
 

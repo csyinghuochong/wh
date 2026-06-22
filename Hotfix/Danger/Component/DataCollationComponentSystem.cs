@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -377,36 +377,36 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
 
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             PetComponent petComponent = unit.GetComponent<PetComponent>();  
             BagComponent bagComponent = unit.GetComponent<BagComponent>();  
 
-            self.Name = userInfoComponent.UserInfo.Name;
-            self.Level = userInfoComponent.UserInfo.Lv;
-            self.Account = userInfoComponent.Account;
-            self.Password = userInfoComponent.Password;
+            self.Name = roleInfoComponent.RoleInfo.Name;
+            self.Level = roleInfoComponent.RoleInfo.Lv;
+            self.Account = roleInfoComponent.Account;
+            self.Password = roleInfoComponent.Password;
             self.Robot = unit.IsRobot() ?  1 : 0;
 
-            self.CreateAccountTime = userInfoComponent.CreateAccountTime;
+            self.CreateAccountTime = roleInfoComponent.CreateAccountTime;
             self.CreateAccountTimeStr = TimeInfo.Instance.ToDateTime(self.CreateAccountTime).ToString();
             
-            self.Occ = WordHelper.GetShowText(LDOccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).Name);
+            self.Occ = WordHelper.GetShowText(LDOccupationCategory.Instance.Get(roleInfoComponent.RoleInfo.Occ).Name);
 
-            if (userInfoComponent.UserInfo.OccTwo > 0)
+            if (roleInfoComponent.RoleInfo.OccTwo > 0)
             {
-                WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(userInfoComponent.UserInfo.OccTwo).Name);
+                WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(roleInfoComponent.RoleInfo.OccTwo).Name);
             }
 
-            self.Combat = userInfoComponent.UserInfo.Combat;
+            self.Combat = roleInfoComponent.RoleInfo.Combat;
 
-            self.Gold = userInfoComponent.UserInfo.Gold;    
+            self.Gold = roleInfoComponent.RoleInfo.Gold;    
 
-            self.Diamond = userInfoComponent.UserInfo.Diamond;
+            self.Diamond = roleInfoComponent.RoleInfo.Diamond;
 
             self.Recharge = numericComponent.GetAsLong( NumericType.RechargeNumber );
 
-            self.TodayOnLine = userInfoComponent.TodayOnLine;
+            self.TodayOnLine = roleInfoComponent.TodayOnLine;
 
             self.LastLoginTime = lastgametime;
 
@@ -414,15 +414,15 @@ namespace ET
 
             self.PetPingfen = petComponent.GetPingfenList();
 
-            self.UnionName = userInfoComponent.UserInfo.UnionName;
+            self.UnionName = roleInfoComponent.RoleInfo.UnionName;
 
-            self.JiaYuanLv = userInfoComponent.UserInfo.JiaYuanLv;
+            self.JiaYuanLv = roleInfoComponent.RoleInfo.JiaYuanLv;
 
-            self.JiaYuanFund = userInfoComponent.UserInfo.JiaYuanFund;
+            self.JiaYuanFund = roleInfoComponent.RoleInfo.JiaYuanFund;
 
-            self.PiLao = userInfoComponent.UserInfo.PiLao;
+            self.PiLao = roleInfoComponent.RoleInfo.PiLao;
 
-            self.Vitality = userInfoComponent.UserInfo.Vitality;
+            self.Vitality = roleInfoComponent.RoleInfo.Vitality;
 
             int makeType = numericComponent.GetAsInt( NumericType.MakeType_1 );
             self.MakeSkill = MakeHelper.GetMakeTypeName( makeType );

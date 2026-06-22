@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -10,8 +10,8 @@ namespace ET
         {
             //Log.Warning($"RechargeHelp.SendDiamond {unit.Id} {rechargeNumber} {orderInfo}");
             OnRechage(unit, payid, rechargeType, true);
-            //long accountId = unit.GetComponent<RoleInfoComponent>().UserInfo.AccInfoID;
-            //long userId = unit.GetComponent<RoleInfoComponent>().UserInfo.UserId;
+            //long accountId = unit.GetComponent<RoleInfoComponent>().RoleInfo.AccInfoID;
+            //long userId = unit.GetComponent<RoleInfoComponent>().RoleInfo.UserId;
             //SendToAccountCenter(accountId, userId, payid, orderInfo, rechargeType).Coroutine();
             unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
         }
@@ -69,9 +69,9 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.RechargeSign, 1, notice);
             }
             // 单笔充值奖励记录
-            if (!unit.GetComponent<RoleInfoComponent>().UserInfo.SingleRechargeIds.Contains(rechargeNumber))
+            if (!unit.GetComponent<RoleInfoComponent>().RoleInfo.SingleRechargeIds.Contains(rechargeNumber))
             {
-                unit.GetComponent<RoleInfoComponent>().UserInfo.SingleRechargeIds.Add(rechargeNumber);
+                unit.GetComponent<RoleInfoComponent>().RoleInfo.SingleRechargeIds.Add(rechargeNumber);
             }
         }
 
@@ -129,9 +129,9 @@ namespace ET
                 });
 
                 d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.RoleInfoComponent });
-                UserInfoComponent userInfoComponent = (d2GGetUnit.Component as UserInfoComponent);
+                RoleInfoComponent roleInfoComponent = (d2GGetUnit.Component as RoleInfoComponent);
                 
-                long accountId = userInfoComponent.UserInfo.AccInfoID;
+                long accountId = roleInfoComponent.RoleInfo.AccInfoID;
                 SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType).Coroutine();
                 await ETTask.CompletedTask;
             }
@@ -170,9 +170,9 @@ namespace ET
                 });
 
                 d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.RoleInfoComponent });
-                UserInfoComponent userInfoComponent = (d2GGetUnit.Component as UserInfoComponent);
+                RoleInfoComponent roleInfoComponent = (d2GGetUnit.Component as RoleInfoComponent);
 
-                long accountId = userInfoComponent.UserInfo.AccInfoID;
+                long accountId = roleInfoComponent.RoleInfo.AccInfoID;
                 SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType  ).Coroutine();
             }
 

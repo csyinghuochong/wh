@@ -86,7 +86,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (unit.GetComponent<RoleInfoComponent>().UserInfo.V1TotalPoints < request.RewardId)
+                    if (unit.GetComponent<RoleInfoComponent>().RoleInfo.V1TotalPoints < request.RewardId)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();
@@ -123,7 +123,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (unit.GetComponent<RoleInfoComponent>().UserInfo.V1TotalPoints < request.RewardId)
+                    if (unit.GetComponent<RoleInfoComponent>().RoleInfo.V1TotalPoints < request.RewardId)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();
@@ -145,7 +145,7 @@ namespace ET
                     break;
                 case ActivityV1Config.ActivityV1_PointsChouKa:
 
-                    if (unit.GetComponent<RoleInfoComponent>().UserInfo.V1TotalPoints < 200f)
+                    if (unit.GetComponent<RoleInfoComponent>().RoleInfo.V1TotalPoints < 200f)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();

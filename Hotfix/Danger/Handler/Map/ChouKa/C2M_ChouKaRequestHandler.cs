@@ -12,7 +12,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ChouKaRequest request, M2C_ChouKaResponse response, Action reply)
         {
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
             // 判断背包和仓库是否能够装满
             if (bagComponent.GetBagLeftCell() + bagComponent.GetChouKaLeftSpace() < request.ChouKaType)
             {
@@ -63,7 +63,7 @@ namespace ET
                     needZuanshi = Mathf.CeilToInt(needZuanshi * 0.8f);
                 }
 
-                if (!mianfei && userInfo.Diamond < needZuanshi)
+                if (!mianfei && roleInfo.Diamond < needZuanshi)
                 {
                     response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                     reply();

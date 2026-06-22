@@ -26,7 +26,7 @@ namespace ET
 		 public const ushort C2G_EnterGame = 10023;
 		 public const ushort G2C_EnterGame = 10024;
 		 public const ushort MoveInfo = 10025;
-		 public const ushort UserInfo = 10026;
+		 public const ushort RoleInfo = 10026;
 		 public const ushort KeyValuePair = 10027;
 		 public const ushort KeyValuePairInt = 10028;
 		 public const ushort KeyValuePairLong = 10029;

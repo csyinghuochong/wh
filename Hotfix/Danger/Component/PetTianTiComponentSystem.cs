@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -141,9 +141,9 @@ namespace ET
 
             Unit unit = self.MainUnit;
             RankPetInfo rankPetInfo = new RankPetInfo();
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
-            rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            rankPetInfo.UserId = roleInfoComponent.RoleInfo.UserId;
+            rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
             rankPetInfo.PetUId = unit.GetComponent<PetComponent>().TeamPetList;
             rankPetInfo.TeamName = rankPetInfo.PlayerName;
             for (int i = 0; i < rankPetInfo.PetUId.Count; i++ )

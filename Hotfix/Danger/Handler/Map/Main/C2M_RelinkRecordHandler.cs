@@ -1,4 +1,4 @@
-﻿
+
 using System;
 
 namespace ET
@@ -12,8 +12,8 @@ namespace ET
         {
             Console.WriteLine($"C2M_RelinkRecordRequest:  {unit.Id}   {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}");
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            string accont =  userInfoComponent.Account;
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            string accont =  roleInfoComponent.Account;
             if (!string.IsNullOrEmpty(request.MessageValue))
             {
                 request.MessageValue = request.MessageValue.Replace("&", $"   {accont}\n");

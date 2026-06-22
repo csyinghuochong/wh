@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -153,9 +153,9 @@ namespace ET
                 //    D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(numericComponent), ComponentType = DBHelper.NumericComponent });
 
                 //    d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unitid, Component = DBHelper.RoleInfoComponent });
-                //    RoleInfoComponent userInfoComponent = d2GGet.Component as RoleInfoComponent;
-                //    userInfoComponent.UserInfo.UnionName = dBUnionInfo.UnionInfo.UnionName;
-                //    d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(userInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
+                //    RoleInfoComponent roleInfoComponent = d2GGet.Component as RoleInfoComponent;
+                //    roleInfoComponent.RoleInfo.UnionName = dBUnionInfo.UnionInfo.UnionName;
+                //    d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(RoleInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
                 //}
 
                 U2M_UnionApplyRequest r2M_RechargeRequest = new U2M_UnionApplyRequest() { UnionId = unionid, UnionName = dBUnionInfo.UnionInfo.UnionName };
@@ -176,9 +176,9 @@ namespace ET
                     D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(numericComponent), ComponentType = DBHelper.NumericComponent });
 
                     d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unitid, Component = DBHelper.RoleInfoComponent });
-                    RoleInfoComponent userInfoComponent = d2GGet.Component as RoleInfoComponent;
-                    userInfoComponent.UserInfo.UnionName = dBUnionInfo.UnionInfo.UnionName;
-                    d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(userInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
+                    RoleInfoComponent roleInfoComponent = d2GGet.Component as RoleInfoComponent;
+                    roleInfoComponent.RoleInfo.UnionName = dBUnionInfo.UnionInfo.UnionName;
+                    d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(roleInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
                 }
 
                 if (operateSucess)

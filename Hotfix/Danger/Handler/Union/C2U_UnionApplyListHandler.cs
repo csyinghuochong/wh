@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -25,15 +25,15 @@ namespace ET
                 }
 
                 D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = dBUnionInfo.UnionInfo.ApplyList[i], Component = DBHelper.RoleInfoComponent });
-                UserInfoComponent userInfoComponent = d2GGetUnit.Component as UserInfoComponent;
+                RoleInfoComponent roleInfoComponent = d2GGetUnit.Component as RoleInfoComponent;
                 unionPlayers.Add( new UnionPlayerInfo() 
                 {  
-                    PlayerLevel = userInfoComponent.UserInfo.Lv,
-                    PlayerName = userInfoComponent.UserInfo.Name,
-                    Combat  = userInfoComponent.UserInfo.Combat,
-                    UserID = userInfoComponent.UserInfo.UserId,
-                    Occ = userInfoComponent.UserInfo.Occ,
-                    OccTwo = userInfoComponent.UserInfo.OccTwo, 
+                    PlayerLevel = roleInfoComponent.RoleInfo.Lv,
+                    PlayerName = roleInfoComponent.RoleInfo.Name,
+                    Combat  = roleInfoComponent.RoleInfo.Combat,
+                    UserID = roleInfoComponent.RoleInfo.UserId,
+                    Occ = roleInfoComponent.RoleInfo.Occ,
+                    OccTwo = roleInfoComponent.RoleInfo.OccTwo, 
                 } );
             }
 

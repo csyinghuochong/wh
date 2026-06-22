@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -27,8 +27,8 @@ namespace ET
             string reward = CommonConfig.WelfareDrawList[index - 1].Value;
             if (index == 7)
             { 
-                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                int weaponId = CommonHelper.GetWelfareWeapon( userInfoComponent.UserInfo.Occ, userInfoComponent.UserInfo.OccTwo );
+                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                int weaponId = CommonHelper.GetWelfareWeapon( roleInfoComponent.RoleInfo.Occ, roleInfoComponent.RoleInfo.OccTwo );
                 reward = $"{weaponId};1";
             }
 

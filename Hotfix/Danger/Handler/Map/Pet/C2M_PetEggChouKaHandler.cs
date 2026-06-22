@@ -52,7 +52,7 @@ namespace ET
             }
             else if (request.ChouKaType == 10)
             {
-                UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
                 int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(40).Value.Split('@')[0]);
                 dropId = int.Parse(LDGlobalValueCategory.Instance.Get(40).Value.Split('@')[1]);
 
@@ -71,7 +71,7 @@ namespace ET
                 }
                 else
                 {
-                    if (userInfo.Diamond < (int)(needDimanond * discount))
+                    if (roleInfo.Diamond < (int)(needDimanond * discount))
                     {
                         response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                         reply();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -90,11 +90,11 @@ namespace ET
         {
             long mapInstanceId = DBHelper.GetRankServerId( self.DomainZone() );
             RankingInfo rankPetInfo = new RankingInfo();
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
-            rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
-            rankPetInfo.PlayerLv = userInfoComponent.UserInfo.Lv;
-            rankPetInfo.Occ = userInfoComponent.UserInfo.Occ;
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            rankPetInfo.UserId = roleInfoComponent.RoleInfo.UserId;
+            rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
+            rankPetInfo.PlayerLv = roleInfoComponent.RoleInfo.Lv;
+            rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
             rankPetInfo.Combat = score;
 
             R2M_RankDemonResponse Response = (R2M_RankDemonResponse)await ActorMessageSenderComponent.Instance.Call
@@ -118,7 +118,7 @@ namespace ET
             //1被恶魔打败的玩家会变成小恶魔,
             if (defend.Type == UnitType.Player && monsterId == 0)
             {
-                string attackName = attack.GetComponent<RoleInfoComponent>().UserInfo.Name;
+                string attackName = attack.GetComponent<RoleInfoComponent>().RoleInfo.Name;
                 defend.SetBornPosition(defend.Position, true);
                 defend.GetComponent<HeroDataComponent>().OnRevive();
 

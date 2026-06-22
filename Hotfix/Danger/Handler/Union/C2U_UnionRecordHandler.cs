@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -17,14 +17,14 @@ namespace ET
             for (int i = dBUnionInfo.UnionInfo.DonationRecords.Count - 1; i >=0; i--)
             {
                 DonationRecord donationRecord = dBUnionInfo.UnionInfo.DonationRecords[i];
-                UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(scene.DomainZone(), donationRecord.UnitId);
-                if (userInfoComponent == null)
+                RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(scene.DomainZone(), donationRecord.UnitId);
+                if (roleInfoComponent == null)
                 {
                     dBUnionInfo.UnionInfo.UnionPlayerList.RemoveAt(i);
                     continue;
                 }
-                donationRecord.Name = userInfoComponent.UserInfo.Name;
-                donationRecord.Occ = userInfoComponent.UserInfo.Occ;    
+                donationRecord.Name = roleInfoComponent.RoleInfo.Name;
+                donationRecord.Occ = roleInfoComponent.RoleInfo.Occ;    
             }
             response.DonationRecords = dBUnionInfo.UnionInfo.DonationRecords;
             reply();

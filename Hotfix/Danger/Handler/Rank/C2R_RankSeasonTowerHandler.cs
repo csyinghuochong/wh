@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -40,15 +40,15 @@ namespace ET
                     {
                         continue;
                     }
-                    UserInfoComponent userinfoComponent = (d2GGetUnit.Component as UserInfoComponent);
+                    RoleInfoComponent roleInfoComponent = (d2GGetUnit.Component as RoleInfoComponent);
                     response.RankList.Add(new RankSeasonTowerInfo()
                     {
                         UserId = ranklist[i].KeyId,
                         TotalTime = ranklist[i].Value,        //时间
                         FubenId = (int)(ranklist[i].Value2),  //副本
-                        PlayerLv = userinfoComponent.UserInfo.Lv,
-                        PlayerName = userinfoComponent.UserInfo.Name,
-                        Occ = userinfoComponent.UserInfo.Occ,
+                        PlayerLv = roleInfoComponent.RoleInfo.Lv,
+                        PlayerName = roleInfoComponent.RoleInfo.Name,
+                        Occ = roleInfoComponent.RoleInfo.Occ,
                     });
                 }
                 rankComponent.RankSeasonTowerLastTime = TimeHelper.ServerNow();

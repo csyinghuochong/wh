@@ -883,7 +883,7 @@ namespace ET
             //Log.Console($"战力排行buff: {rankId}");
             if (occRankId >= 1 && occRankId <= 3)
             {
-                int occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
+                int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
                 BuffData buffData_2 = new BuffData();
                 buffData_2.SkillId = 67000278;
                 buffData_2.BuffId = CommonConfig.GetRankBuff(rankId, occRankId, occ);
@@ -905,8 +905,8 @@ namespace ET
             //self.BuffRemove(99001011);
             self.BuffRemoveList(CommonConfig.BaoShiBuff);
 
-            /*RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (userInfoComponent.UserInfo.BaoShiDu >= 80)
+            /*RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            if (roleInfoComponent.RoleInfo.BaoShiDu >= 80)
             {
                 BuffData buffData_2 = new BuffData();
                 buffData_2.SkillId = 67000278;
@@ -919,7 +919,7 @@ namespace ET
                 self.BuffFactory(buffData_2, unit, null);
             }
 
-            if (userInfoComponent.UserInfo.BaoShiDu >= 40 && userInfoComponent.UserInfo.BaoShiDu < 80)
+            if (roleInfoComponent.RoleInfo.BaoShiDu >= 40 && roleInfoComponent.RoleInfo.BaoShiDu < 80)
             {
                 BuffData buffData_2 = new BuffData();
                 buffData_2.SkillId = 67000278;
@@ -932,7 +932,7 @@ namespace ET
                 self.BuffFactory(buffData_2, unit, null);
             }
 
-            if (userInfoComponent.UserInfo.BaoShiDu >= 20 && userInfoComponent.UserInfo.BaoShiDu < 40)
+            if (roleInfoComponent.RoleInfo.BaoShiDu >= 20 && roleInfoComponent.RoleInfo.BaoShiDu < 40)
             {
                 BuffData buffData_2 = new BuffData();
                 buffData_2.SkillId = 67000278;
@@ -940,7 +940,7 @@ namespace ET
                 self.BuffFactory(buffData_2, unit, null);
             }
 
-            if (userInfoComponent.UserInfo.BaoShiDu < 20)
+            if (roleInfoComponent.RoleInfo.BaoShiDu < 20)
             {
                 BuffData buffData_2 = new BuffData();
                 buffData_2.SkillId = 67000278;

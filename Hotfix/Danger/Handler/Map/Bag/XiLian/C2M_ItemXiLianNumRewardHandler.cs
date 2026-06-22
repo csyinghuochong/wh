@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace ET
@@ -8,8 +8,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemXiLianNumReward request, M2C_ItemXiLianNumReward response, Action reply)
         {
-            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (userInfoComponent.UserInfo.ItemXiLianNumRewardIds.Contains(request.RewardId))
+            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            if (roleInfoComponent.RoleInfo.ItemXiLianNumRewardIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -41,7 +41,7 @@ namespace ET
                 return;
             }
 
-            userInfoComponent.UserInfo.ItemXiLianNumRewardIds.Add(request.RewardId);
+            roleInfoComponent.RoleInfo.ItemXiLianNumRewardIds.Add(request.RewardId);
             int randomZuanshi = RandomHelper.RandomNumber(int.Parse(diamond[0]), int.Parse(diamond[1]));
             unit.GetComponent<BagComponent>().OnAddItemData(reward[0], $"{ItemGetWay.ItemXiLian}_{TimeHelper.ServerNow()}");
             unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, ItemGetWay.ItemXiLian);

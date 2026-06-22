@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -44,16 +44,16 @@ namespace ET
                         continue;
                     }
 
-                    UserInfoComponent userInfoComponent = await DBHelper.GetComponentCache<UserInfoComponent>(newZone, unitid);
-                    if (userInfoComponent == null)
+                    RoleInfoComponent roleInfoComponent = await DBHelper.GetComponentCache<RoleInfoComponent>(newZone, unitid);
+                    if (roleInfoComponent == null)
                     {
                         continue;
                     }
 
-                    dBPopularizeInfo.MyPopularizeList[i].Nmae = userInfoComponent.UserInfo.Name;
-                    dBPopularizeInfo.MyPopularizeList[i].Level = userInfoComponent.UserInfo.Lv;
-                    dBPopularizeInfo.MyPopularizeList[i].Occ = userInfoComponent.UserInfo.Occ;
-                    dBPopularizeInfo.MyPopularizeList[i].OccTwo = userInfoComponent.UserInfo.OccTwo;
+                    dBPopularizeInfo.MyPopularizeList[i].Nmae = roleInfoComponent.RoleInfo.Name;
+                    dBPopularizeInfo.MyPopularizeList[i].Level = roleInfoComponent.RoleInfo.Lv;
+                    dBPopularizeInfo.MyPopularizeList[i].Occ = roleInfoComponent.RoleInfo.Occ;
+                    dBPopularizeInfo.MyPopularizeList[i].OccTwo = roleInfoComponent.RoleInfo.OccTwo;
                 }
 
                 response.PopularizeCode = dBPopularizeInfo.PopularizeCode;

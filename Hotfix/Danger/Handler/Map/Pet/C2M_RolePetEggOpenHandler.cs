@@ -20,8 +20,8 @@ namespace ET
             string[] petinfos = ldItemConf.ItemUsePar.Split('@');
             int needCost = CommonHelper.ReturnPetOpenTimeDiamond(rolePetEgg.ItemId,rolePetEgg.EndTime);
 
-            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
-            if (userInfo.Diamond < needCost)
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            if (roleInfo.Diamond < needCost)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();

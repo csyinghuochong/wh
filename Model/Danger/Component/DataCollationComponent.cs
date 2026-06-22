@@ -5,7 +5,7 @@ namespace ET
 {
 
     /// <summary>
-    /// 数据统计。。
+    /// 数据统计。。纯服务器用
     /// </summary>
     public class DataCollationComponent : Entity, IAwake, ITransfer, IUnitCache
     {

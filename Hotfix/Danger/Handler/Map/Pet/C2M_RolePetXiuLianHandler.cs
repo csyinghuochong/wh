@@ -31,8 +31,8 @@ namespace ET
                 //错误码。。
             }*/
 
-            //List<ComponentWithId> resultuserinfo = await dbProxy.Query<UserInfo>(_userInfo => _userInfo.Id == player.UserId);
-            UserInfo userinfo = unit.GetComponent<RoleInfoComponent>().GetUserInfo();
+            //List<ComponentWithId> resultuserinfo = await dbProxy.Query<RoleInfo>(_userInfo => _userInfo.Id == player.UserId);
+            RoleInfo userinfo = unit.GetComponent<RoleInfoComponent>().GetUserInfo();
 
             //判定消耗
             /*string[] costItemList = costItemNum.Split(',');
