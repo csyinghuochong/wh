@@ -118,7 +118,7 @@ namespace ET
 						{
 							int robotId = int.Parse(centerAccountList[0].Account.Split('_')[0]);
 							RobotConfig robotConfig = RobotConfigCategory.Instance.Get(robotId);
-							roleInfo.Lv = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : robotConfig.Level;
+							roleInfo.Level = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : robotConfig.Level;
 							roleInfo.Occ = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : robotConfig.Occ;
                             roleInfo.Gold = 100000;
                             roleInfo.RobotId = robotId;
@@ -126,7 +126,7 @@ namespace ET
                         }
 						else
 						{
-							roleInfo.Lv = 1;
+							roleInfo.Level = 1;
 							roleInfo.Gold = 0;
                             roleInfo.SeasonLevel = 1;
                             roleInfo.Occ = request.CreateOcc;

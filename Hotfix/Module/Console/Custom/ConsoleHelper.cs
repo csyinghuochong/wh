@@ -1,4 +1,4 @@
-using MongoDB.Driver.Linq;
+﻿using MongoDB.Driver.Linq;
 using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
@@ -1737,7 +1737,7 @@ namespace ET
                     {
                         continue;
                     }
-                    //if (roleInfoComponent.RoleInfo.Lv > 40)
+                    //if (roleInfoComponent.RoleInfo.Level > 40)
                     //{
                     //    continue;
                     //}

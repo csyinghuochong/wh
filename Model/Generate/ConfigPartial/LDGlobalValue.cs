@@ -112,5 +112,20 @@ namespace ET
             return result;
         }
 
+        public int[] GetIntArray(string key, char separator = '|')
+        {
+            string value = this.GetByKey(key).Value;
+            string[] parts = value.Split(separator);
+            int[] result = new int[parts.Length];
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (!int.TryParse(parts[i], out result[i]))
+                {
+                    throw new Exception($"LDGlobalValue GetIntArray 解析失败，Key: {key}, Value: {value}");
+                }
+            }
+
+            return result;
+        }
     }
 }

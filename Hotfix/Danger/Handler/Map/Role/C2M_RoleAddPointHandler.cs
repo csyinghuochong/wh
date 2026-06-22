@@ -12,20 +12,36 @@ namespace ET
         {
             try
             {
-                int totalPoint = 0;
-                for (int i = 0; i < request.PointList.Count; i++)
+                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                int level = roleInfoComponent.RoleInfo.Lv;
+                if (!RoleAddPointHelper.CanManualAddPoint(level))
                 {
-                    if (request.PointList[i] < 0 || request.PointList[i] > 2000)
+                    response.Error = ErrorCode.ERR_ModifyData;
+                    reply();
+                    return;
+                }
+
+                if (request.PointList == null || request.PointList.Count != RoleAddPointHelper.PointNumericTypes.Length)
+                {
+                    response.Error = ErrorCode.ERR_ModifyData;
+                    reply();
+                    return;
+                }
+
+                int[] assignedPoints = new int[RoleAddPointHelper.PointNumericTypes.Length];
+                for (int i = 0; i < assignedPoints.Length; i++)
+                {
+                    assignedPoints[i] = request.PointList[i];
+                    if (assignedPoints[i] < 0 || assignedPoints[i] > 2000)
                     {
-                        Log.Error($"C2M_RoleAddPointRequest: {unit.DomainZone()}  {unit.Id}  {request.PointList[i]}");
+                        Log.Error($"C2M_RoleAddPointRequest: {unit.DomainZone()}  {unit.Id}  {assignedPoints[i]}");
                         response.Error = ErrorCode.ERR_ModifyData;
                         reply();
                         return;
                     }
-
-                    totalPoint += request.PointList[i];
                 }
-                int remainPoint = (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv - 1) * 10 - totalPoint;
+
+                int remainPoint = RoleAddPointHelper.GetRemainPoint(unit, assignedPoints);
                 if (remainPoint < 0)
                 {
                     Log.Error($"C2M_RoleAddPointRequest 2");
@@ -35,13 +51,12 @@ namespace ET
                 }
 
                 NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-                numericComponent.ApplyValue(NumericType.Point_Strength, request.PointList[0]);
-                numericComponent.ApplyValue(NumericType.Point_Agility, request.PointList[1]);
-                numericComponent.ApplyValue(NumericType.Point_Intelligence, request.PointList[2]);
-                numericComponent.ApplyValue(NumericType.Point_Constitution , request.PointList[3]);
-                numericComponent.ApplyValue(NumericType.Point_Stamina, request.PointList[4]);
+                for (int i = 0; i < RoleAddPointHelper.PointNumericTypes.Length; i++)
+                {
+                    numericComponent.ApplyValue(RoleAddPointHelper.PointNumericTypes[i], assignedPoints[i]);
+                }
+
                 numericComponent.ApplyValue(NumericType.PointRemain, remainPoint);
-                //unit.GetComponent<HeroDataComponent>().CheckNumeric();
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
                 reply();

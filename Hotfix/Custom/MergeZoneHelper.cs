@@ -361,7 +361,7 @@ namespace ET
                 UserinfoComponetDict.Add(entity.Id, entity as RoleInfoComponent);
                 if ((entity.RoleInfo.Gold > 1000000 || entity.RoleInfo.Diamond > 10000) && entity.RoleInfo.RobotId == 0)
                 {
-                   // Log.Warning($"Gold:{entity.RoleInfo.Gold}  Diamond:{entity.RoleInfo.Diamond}  ID:{entity.Id}  Account:{entity.Account} Name: {entity.RoleInfo.Name}  Lv:{entity.RoleInfo.Lv} ");
+                   // Log.Warning($"Gold:{entity.RoleInfo.Gold}  Diamond:{entity.RoleInfo.Diamond}  ID:{entity.Id}  Account:{entity.Account} Name: {entity.RoleInfo.Name}  Level:{entity.RoleInfo.Level} ");
                 }
 
                 if (entity.RemoteAddress != null && entity.RemoteAddress.Contains("39.153.233.46"))
@@ -371,12 +371,12 @@ namespace ET
                
                 if (entity.RoleInfo.Name.Contains("南宫") || entity.RoleInfo.Name.Contains("世家"))
                 {
-                    //Log.Warning($"南宫:   {entity.Id}  {entity.RoleInfo.Lv}\t  {entity.RoleInfo.Name}\t   {entity.RoleInfo.Combat}");
+                    //Log.Warning($"南宫:   {entity.Id}  {entity.RoleInfo.Level}\t  {entity.RoleInfo.Name}\t   {entity.RoleInfo.Combat}");
                 }
 
                 if (entity.RoleInfo.Combat < 0 || entity.RoleInfo.Combat > 10000000)
                 {
-                    //Log.Warning($"Combat < 0:   {entity.Id}  {entity.RoleInfo.Lv}\t  {entity.RoleInfo.Name}\t   {entity.DeviceName}");
+                    //Log.Warning($"Combat < 0:   {entity.Id}  {entity.RoleInfo.Level}\t  {entity.RoleInfo.Name}\t   {entity.DeviceName}");
                 }
 
                 if (entity.RoleInfo.Occ == 3 && (entity.RoleInfo.Lv >= 22 ))
@@ -525,8 +525,8 @@ namespace ET
                     continue;
                 }
                 invalidPlayers.Add( oldentity.Id );
-                //Log.Console($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Lv}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
-                //Log.Warning($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Lv}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
+                //Log.Console($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Level}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
+                //Log.Warning($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Level}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
             }
             Log.Console($"不参与合区的玩家数量 {invalidPlayers.Count}");
 

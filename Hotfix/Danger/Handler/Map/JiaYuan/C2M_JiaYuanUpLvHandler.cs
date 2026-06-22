@@ -16,7 +16,7 @@ namespace ET
                 reply();
                 return;
             }
-            /*if (roleInfoComponent.RoleInfo.Lv < ldHome.NeedRoseLv)
+            /*if (roleInfoComponent.RoleInfo.Level < ldHome.NeedRoseLv)
             {
                 response.Error = ErrorCode.ERR_LevelIsNot;
                 reply();

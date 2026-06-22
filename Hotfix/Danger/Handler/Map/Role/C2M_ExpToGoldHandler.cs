@@ -23,7 +23,7 @@ namespace ET
             //GlobalValueConfig globalCof = GlobalValueConfigCategory.Instance.Get(41);
             //if (request.OperateType == 2)
             //{
-            //    if (roleInfo.Lv < globalCof.Value2)
+            //    if (roleInfo.Level < globalCof.Value2)
             //    {
             //        response.Error = ErrorCode.ERR_ExpNoEnough;
             //        reply();

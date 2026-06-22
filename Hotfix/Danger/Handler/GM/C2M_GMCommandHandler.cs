@@ -74,7 +74,7 @@ namespace ET
 				if (message.GMMsg == "#resetlv")
 				{
 					int level = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv - 1;
-					unit.GetComponent<RoleInfoComponent>().UpdateRoleData( UserDataType.Lv, (level*-1).ToString());
+					unit.GetComponent<RoleInfoComponent>().UpdateRoleData( UserDataType.Level, (level*-1).ToString());
 					return;
 				}
                 if (message.GMMsg == "#jiandian")
@@ -196,7 +196,7 @@ namespace ET
                 {
                     int level = 70 - unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
                     level = level > 0 ? level : 0;		
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Lv, level.ToString());
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Level, level.ToString());
                     return;
                 }
                 if (message.GMMsg == "#completetask")
@@ -293,7 +293,7 @@ namespace ET
 						if(newLevel <= LDGlobalValueCategory.Instance.MaxLevel)
 						{
 							int level = newLevel - unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
-                            roleInfoComponent.UpdateRoleData(UserDataType.Lv, level.ToString());
+                            roleInfoComponent.UpdateRoleData(UserDataType.Level, level.ToString());
 						}
 						break;
 					case 7:

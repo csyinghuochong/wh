@@ -102,7 +102,7 @@ namespace ET
                 RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
                 int createDay = roleInfoComponent.GetCrateDay();
 
-                //firstDay = createDay <= 1 && roleInfoComponent.RoleInfo.Lv <= 10;
+                //firstDay = createDay <= 1 && roleInfoComponent.RoleInfo.Level <= 10;
                 request.IsRecharge = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber);
 
                 if (request.IsRecharge > 0

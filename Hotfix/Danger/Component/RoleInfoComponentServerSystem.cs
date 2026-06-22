@@ -41,7 +41,7 @@ namespace ET
         }
     }
 
-    public static class RoleInfoComponentSystem
+    public static class RoleInfoComponentServerSystem
     {
 
         public static void OnInit(this RoleInfoComponent self,string account, long userId, long accountId, CreateRoleInfo createRoleInfo)
@@ -847,23 +847,19 @@ namespace ET
                     longValue = self.RoleInfo.Exp;
                     saveValue = value;
                     break;
-                case UserDataType.Lv:
+                case UserDataType.Level:
                     if (self.IsZhuBoLevel16())
                     {
                         return;
                     }
 
-                    self.RoleInfo.Lv += int.Parse(value);
+                    int addLevel = int.Parse(value);
+                    int oldLevel = self.RoleInfo.Lv;
+                    self.RoleInfo.Lv += addLevel;
                     saveValue = self.RoleInfo.Lv.ToString();
-                    long maxHp = unit.GetComponent<NumericComponent>().GetAsLong((int)NumericType.Numeric_Error);
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Numeric_Error, maxHp, false);
-                    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PointRemain, int.Parse(value) * 10, 0);
-                    unit.GetComponent<TaskComponent>().OnUpdateLevel(self.RoleInfo.Lv);
-                    unit.GetComponent<ChengJiuComponent>().OnUpdateLevel(self.RoleInfo.Lv);
-                    unit.GetComponent<HeroDataComponent>().CheckSeasonOpen(true);
-                    self.UpdateRoleData(UserDataType.Sp, value, notice);
-                    self.BroadcastLevel(self.RoleInfo.Lv).Coroutine();
+                    unit.OnUpgrageLevel(self.RoleInfo.Lv, oldLevel);
                     Function_Fight.UnitUpdateProperty_Base(unit, true,true );
+                    self.BroadcastLevel(self.RoleInfo.Lv).Coroutine();
                     break;
                 case UserDataType.Sp:
                     self.RoleInfo.Sp += int.Parse(value);
@@ -1093,7 +1089,7 @@ namespace ET
             if (self.RoleInfo.Exp >= upNeedExp)
             {
                 self.RoleInfo.Exp -= upNeedExp;
-                self.UpdateRoleData(UserDataType.Lv, "1", notice);
+                self.UpdateRoleData(UserDataType.Level, "1", notice);
             }
         }
 
@@ -1415,7 +1411,7 @@ namespace ET
         public static void OnGmGaoJi(this RoleInfoComponent self, int level)
         {
             int lv = level == 1 ? 70 - self.RoleInfo.Lv : 40 - self.RoleInfo.Lv;
-            self.UpdateRoleData(UserDataType.Lv, lv.ToString());
+            self.UpdateRoleData(UserDataType.Level, lv.ToString());
 
             self.RoleInfo.HorseIds.Clear();
             Dictionary<int, LDMount> allzuoqi = LDMountCategory.Instance.GetAll();

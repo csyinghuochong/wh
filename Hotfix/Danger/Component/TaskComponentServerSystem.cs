@@ -978,7 +978,7 @@ namespace ET
             {
                 //self.ClearTypeTask(TaskTypeEnum.Ring);
 
-                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Level;
                 int ringTaskId = TaskHelper.GetTaskIdByType(TaskTypeEnum.Ring, roleLv);
                 numericComponent.ApplyValue(NumericType.RingTaskId, ringTaskId, false);
             }*/
@@ -990,7 +990,7 @@ namespace ET
             /*if (numericComponent.GetAsInt(NumericType.WeeklyTaskId) == 0 && numericComponent.GetAsInt(NumericType.WeeklyTaskNumber) < 1)
             {
                 //self.ClearTypeTask(TaskTypeEnum.Ring);
-                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Level;
                 int weekTaskId = TaskHelper.GetTaskIdByType(TaskTypeEnum.Weekly, roleLv);
                 numericComponent.ApplyValue(NumericType.WeeklyTaskId, weekTaskId, false);
             }*/
@@ -1036,7 +1036,7 @@ namespace ET
             if (numericComponent.GetAsInt(NumericType.UnionTaskId) == 0 && numericComponent.GetAsInt(NumericType.UnionTaskNumber) < 1)
             {
 
-                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Level;
                 numericComponent.ApplyValue(NumericType.UnionTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Union, roleLv), false);
             }*/
         }
