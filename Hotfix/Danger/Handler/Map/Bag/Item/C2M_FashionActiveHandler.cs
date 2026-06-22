@@ -32,7 +32,7 @@ namespace ET
                 return;
             }
 
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
             bagComponent.OnCostItemData(ldFashion.ActiveCost, ItemLocType.ItemLocBag, 98 );
             bagComponent.FashionActiveIds.Add( request.FashionId );

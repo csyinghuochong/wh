@@ -46,7 +46,7 @@ namespace ET
             m2c_bagUpdate.BagInfoUpdate.Add(bagInfo);
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
 
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
             reply();
             await ETTask.CompletedTask;

@@ -103,7 +103,7 @@ namespace ET
                     useBagInfo.EquipIndex = equipposition;
                 }
                
-                Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 useBagInfo.isBinging = true;
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                 //if (weizhi == (int)EquipCaoWeiTypeEnum.Wuqi)
@@ -128,7 +128,7 @@ namespace ET
                
                 unit.GetComponent<BagComponent>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
                 unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
-                Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
 

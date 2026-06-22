@@ -876,7 +876,7 @@ namespace ET
                     unit.GetComponent<HeroDataComponent>().CheckSeasonOpen(true);
                     self.UpdateRoleData(UserDataType.Sp, value, notice);
                     self.BroadcastLevel(self.UserInfo.Lv).Coroutine();
-                    Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true,true );
+                    Function_Fight.UnitUpdateProperty_Base(unit, true,true );
                     break;
                 case UserDataType.Sp:
                     self.UserInfo.Sp += int.Parse(value);

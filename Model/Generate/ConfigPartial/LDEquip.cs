@@ -14,16 +14,26 @@ namespace ET
 
         public override void AfterEndInit()
         {
-            foreach (LDEquip occupation in this.GetAll().Values)
+            foreach (LDEquip ldEquip in this.GetAll().Values)
             {
                 List<HideProList> equipAttribute = new List<HideProList>();
- 
-                equipAttribute.Add( new HideProList() { HideID = NumericType.PATK_Max, HideValue = occupation.Equip_MaxAct});
-           
-                EquipAttribute.Add(occupation.Id, equipAttribute);
+
+                string[] attributeList = ldEquip.Attribute.Split("|");
+
+                for (int i = 0; i < attributeList.Length; i++)
+                {
+                    string[] attributeInfo = attributeList[i].Split("_");
+                    
+                    equipAttribute.Add( new HideProList(){ HideID = int.Parse(attributeInfo[0]), HideValue = int.Parse(attributeInfo[1])} );
+                }
+
+
+                EquipAttribute.Add(ldEquip.Id, equipAttribute);
             }
         }
 
+        
+        
         public List<HideProList> GetEquipAttribute(int equipId)
         {
             this.EquipAttribute.TryGetValue(equipId, out List<HideProList> hideProLists);

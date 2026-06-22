@@ -573,7 +573,7 @@ namespace ET
             }
 
             //如果有皮肤的话更新一次角色属性
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(self.GetParent<Unit>(), true, true);
+            Function_Fight.UnitUpdateProperty_Base(self.GetParent<Unit>(), true, true);
             return newpet;
         }
 

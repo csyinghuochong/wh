@@ -6,26 +6,12 @@ using UnityEngine;
 namespace ET
 {
     //[MessageHandler(AppType.Gate)]
-    public class Function_Fight
+    public static class Function_Fight
     {
 
         public  static M2C_UnitNumericListUpdate m2C_UnitNumericListUpdate = new M2C_UnitNumericListUpdate();
 
-        private static readonly object obj = new object();
-        //实例化自身
-        private static Function_Fight _instance;
-        public static Function_Fight GetInstance()
-        {
-            lock (obj)
-            {
-                if (_instance == null)
-                {
-                    _instance = new Function_Fight();
-                }
-            }
-            return _instance;
-        }
-
+     
         /// <summary>
         /// 
         /// </summary>
@@ -34,7 +20,7 @@ namespace ET
         /// <param name="skillHandler"></param>
         /// <param name="hurtMode">0 默认 1持续伤害</param>
         /// <returns></returns>
-        public bool Fight(Unit attackUnit, Unit defendUnit, SkillHandler skillHandler, int hurtMode)
+        public  static bool Fight(Unit attackUnit, Unit defendUnit, SkillHandler skillHandler, int hurtMode)
         {
             if (defendUnit.IsDisposed)
             {
@@ -149,7 +135,7 @@ namespace ET
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="notice"></param>
-        public void UnitUpdateProperty_DemonBig(Unit unit, bool notice)
+        public static void UnitUpdateProperty_DemonBig(Unit unit, bool notice)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
@@ -168,15 +154,9 @@ namespace ET
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="notice"></param>
-        public void UnitUpdateProperty_DemonLittle(Unit unit, bool notice)
+        public static void UnitUpdateProperty_DemonLittle(Unit unit, bool notice)
         {
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 80000, notice);
+          
         }
 
         /// <summary>
@@ -184,15 +164,9 @@ namespace ET
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="notice"></param>
-        public void UnitUpdateProperty_DemonGhost(Unit unit, bool notice)
+        public  static void UnitUpdateProperty_DemonGhost(Unit unit, bool notice)
         {
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 50000, notice);
+           
         }
 
 
@@ -201,24 +175,16 @@ namespace ET
         /// </summary>
         /// <param name="unit"></param>
         /// <param name="notice"></param>
-        public void UnitUpdateProperty_RunRace(Unit unit, bool notice)
+        public  static void UnitUpdateProperty_RunRace(Unit unit, bool notice)
         {
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-
-            int monsterid = numericComponent.GetAsInt(NumericType.RunRaceTransform);
-            LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 0, notice);
-            numericComponent.Set(NumericType.Numeric_Error, 5f, notice);
+          
         }
 
         /// <summary>
         /// 更新基础的属性
         /// </summary>
         /// <param name="unit"></param>
-        public void UnitUpdateProperty_Base(Unit unit, bool notice, bool rank)
+        public  static void UnitUpdateProperty_Base(Unit unit, bool notice, bool rank)
         {
             if (unit.SceneType == MapTypeEnum.RunRace)
             {
@@ -467,7 +433,7 @@ namespace ET
             
         }
         
-        public void UpdateCombat(Unit unit, NumericComponent numericComponent, bool notice)
+        public  static void UpdateCombat(Unit unit, NumericComponent numericComponent, bool notice)
         {
             //战力计算
             long ShiLi_Act = 0;

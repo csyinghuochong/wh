@@ -367,7 +367,7 @@ namespace ET
 
             petComponent.CheckPetPingFen();
 			petComponent.CheckPetZiZhi();
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             response.DeletePetInfoId = petinfo_delete.Id;
 			response.rolePetInfo = petinfo_update;
 			reply();

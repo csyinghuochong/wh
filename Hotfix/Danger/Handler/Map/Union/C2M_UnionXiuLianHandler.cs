@@ -72,7 +72,7 @@ namespace ET
             unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub( UserDataType.UnionContri,(unionQiangHuaConfig.CostGold * -1).ToString(), true, ItemGetWay.UnionXiuLian);
 
             //刷新角色属性
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit,true,true);
+            Function_Fight.UnitUpdateProperty_Base(unit,true,true);
             PetComponent petComponent = unit.GetComponent<PetComponent>();  
             for (int i = petComponent.RolePetInfos.Count - 1; i >= 0; i--)
             {

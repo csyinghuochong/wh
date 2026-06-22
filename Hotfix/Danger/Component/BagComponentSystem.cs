@@ -1615,7 +1615,7 @@ namespace ET
 
             //通知客户端背包道具发生改变
             MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(self.GetParent<Unit>(), true, true);
+            Function_Fight.UnitUpdateProperty_Base(self.GetParent<Unit>(), true, true);
         }
 
 
@@ -1638,7 +1638,20 @@ namespace ET
            // List<BagInfo> equipList = new List<BagInfo>();
            // equipList.AddRange(equipList_1);
             //equipList.AddRange(equipList_2);
- 
+
+            for (int i = equipList.Count - 1; i >= 0; i--)
+            {
+                BagInfo userBagInfo = equipList[i];
+                if (!LDEquipCategory.Instance.Contain(userBagInfo.ItemID))
+                {
+                    equipList.RemoveAt(i);
+                    continue;
+                }
+
+                List<HideProList> hideProLists = LDEquipCategory.Instance.GetEquipAttribute(userBagInfo.ItemID);
+                occInitAttribute.AddRange(hideProLists);
+            }
+
             for (int i = equipList.Count - 1; i >= 0; i--)
             {
                 BagInfo userBagInfo = equipList[i];

@@ -125,7 +125,7 @@ namespace ET
                 m2c_bagUpdate.BagInfoUpdate.Add(equipInfo);
                 //消耗宝石
                 unit.GetComponent<BagComponent>().OnCostItemData(useBagInfo.BagInfoID, 1);
-                Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             }
 
             //卸下宝石
@@ -170,7 +170,7 @@ namespace ET
                 if (gemItemId != 0)
                 {
                     bool ret =   unit.GetComponent<BagComponent>().OnAddItemData($"{gemItemId};1", $"{ItemGetWay.GemHuiShou}_{TimeHelper.ServerNow()}");
-                    Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                    Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
                     if (!ret)
                     {

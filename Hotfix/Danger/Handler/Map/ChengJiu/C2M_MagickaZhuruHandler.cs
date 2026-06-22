@@ -51,7 +51,7 @@ namespace ET
             //扣除装备
             bagComponent.OnCostItemData(bagidList, ItemLocType.ItemLocBag);
 
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
             response.MagickaSlotIds = chengJiuComponent.MagickaSlotIdList;
 

@@ -16,7 +16,7 @@ namespace ET
             }
 
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TitleID, request.TitleId);
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit,true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit,true, true);
 
             reply();
             await ETTask.CompletedTask;

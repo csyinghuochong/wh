@@ -62,7 +62,7 @@ namespace ET
 				unit.ConfigId = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
 				unit.GetComponent<UserInfoComponent>().UserInfo.DemonName = string.Empty;
                 unit.GetComponent<HeroDataComponent>().CheckNumeric();
-                Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, false, false);
+                Function_Fight.UnitUpdateProperty_Base(unit, false, false);
                 //添加消息类型, GateSession邮箱在收到消息的时候会立即转发给客户端，MessageDispatcher类型会再次对Actor消息进行分发到具体的Handler处理，默认的MailboxComponent类型是MessageDispatcher。
                 //await unit.AddLocation();                     
                 //注册消息机制的ID,可以通过消息ID让其他玩家对自己进行消息发送
@@ -288,7 +288,7 @@ namespace ET
                         unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, 0, false);
 						int runracemonster = CommonConfig.RunRaceMonsterList[RandomHelper.RandomNumber(0, CommonConfig.RunRaceMonsterList.Count)];
 						numericComponent.Set(NumericType.RunRaceTransform, runracemonster, false);
-						Function_Fight.GetInstance().UnitUpdateProperty_RunRace(unit, false);
+						Function_Fight.UnitUpdateProperty_RunRace(unit, false);
 
 						// 通知客户端创建My Unit
 						m2CCreateUnits = new M2C_CreateMyUnit();
@@ -490,7 +490,7 @@ namespace ET
                     unit.OnUpdateHorseRide(0);
                     unit.TriggerTeamBuff(request.SceneType);
                 }
-                //Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, false, true);
+                //Function_Fight.UnitUpdateProperty_Base(unit, false, true);
 				response.NewInstanceId = unit.InstanceId;
 				reply();
                 await ETTask.CompletedTask;

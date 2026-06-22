@@ -82,7 +82,7 @@ namespace ET
                     unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
                 }
 
-                Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 useBagInfo.isBinging = true;
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
@@ -99,7 +99,7 @@ namespace ET
                 useBagInfo.EquipPlan = 0;
                 unit.GetComponent<BagComponent>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.SeasonJingHe);
                 unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.SeasonJingHe, useBagInfo);
-                Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
 

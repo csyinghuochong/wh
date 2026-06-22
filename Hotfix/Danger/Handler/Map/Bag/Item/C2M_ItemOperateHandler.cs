@@ -462,7 +462,7 @@ namespace ET
                                 {
                                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseFightID, hourseId);
                                 }
-                                Function_Fight.GetInstance().UnitUpdateProperty_Base( unit, true, true );
+                                Function_Fight.UnitUpdateProperty_Base( unit, true, true );
                                 break;
                             case 126: //集字
                                 break;
@@ -487,7 +487,7 @@ namespace ET
                                 break;
                             case 129://激活精灵
                                 unit.GetComponent<ChengJiuComponent>().OnActiveJingLing(int.Parse(ldItem.ItemUsePar));
-                                Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                                 break;
                             case 131://增加饱食度
                                 string[] baoshipas = ldItem.ItemUsePar.Split(';')[0].Split(',');
@@ -767,7 +767,7 @@ namespace ET
                     int zodiacnumber = unit.GetComponent<BagComponent>().GetZodiacnumber();
                     unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacnumber);
 
-                    Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                    Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                     useBagInfo.isBinging = true;
                     m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
 
@@ -798,7 +798,7 @@ namespace ET
 
                     unit.GetComponent<BagComponent>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
                     unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
-                    Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                    Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                     m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                     if (weizhi == (int)EquipCaoWeiTypeEnum.Wuqi_1)
                     {

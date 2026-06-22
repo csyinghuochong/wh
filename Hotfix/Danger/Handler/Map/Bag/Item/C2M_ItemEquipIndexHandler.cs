@@ -46,7 +46,7 @@ namespace ET
             unit.GetComponent<SkillSetComponent>().OnChangeEquipIndex(request.EquipIndex);
             unit.GetComponent<SkillPassiveComponent>().OnTrigegerPassiveSkill(SkillPassiveTypeEnum.EquipIndex_15);
 
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             
             reply();
             await ETTask.CompletedTask;

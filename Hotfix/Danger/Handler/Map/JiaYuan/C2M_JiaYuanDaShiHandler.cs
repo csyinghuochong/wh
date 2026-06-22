@@ -74,7 +74,7 @@ namespace ET
             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanDashiNumber_96, 0, 1);
 
             DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, jiaYuanComponent).Coroutine();
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             reply();
             await ETTask.CompletedTask;
         }

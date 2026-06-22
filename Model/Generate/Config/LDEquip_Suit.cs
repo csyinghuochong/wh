@@ -81,6 +81,12 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
+		/// <summary>装备ID</summary>
+		[ProtoMember(3)]
+		public int[] Equip_Id { get; set; }
+		/// <summary>属性</summary>
+		[ProtoMember(4)]
+		public string Property { get; set; }
 
 	}
 }

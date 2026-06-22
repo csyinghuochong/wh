@@ -28,7 +28,7 @@ namespace ET
 
 
             response.PetShouHuList = shouhulist;
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(  unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(  unit, true, true);
             reply();
             await ETTask.CompletedTask;
         }

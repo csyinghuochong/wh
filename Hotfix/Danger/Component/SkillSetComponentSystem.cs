@@ -531,7 +531,7 @@ namespace ET
 			if (!unit.IsRobot())
 			{
 				self.UpdateSkillSet();
-				Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+				Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 				unit.GetComponent<SkillPassiveComponent>().UpdatePassiveSkill();
 			}
 		}

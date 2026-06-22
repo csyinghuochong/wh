@@ -35,7 +35,7 @@ namespace ET
             {
                 destlist[i].GetComponent<NumericComponent>().ApplyValue(NumericType.BattleCamp, CampEnum.CampPlayer_2);
                 destlist[i].GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, 90000017);
-                Function_Fight.GetInstance().UnitUpdateProperty_DemonBig(destlist[i], true);
+                Function_Fight.UnitUpdateProperty_DemonBig(destlist[i], true);
             }
 
             //生成怪物
@@ -126,7 +126,7 @@ namespace ET
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, 90000018);
                 defend.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.DemonName, attackName, true);
                 defend.GetComponent<UserInfoComponent>().UpdateRoleDataBroadcast(UserDataType.DemonName, attackName);
-                Function_Fight.GetInstance().UnitUpdateProperty_DemonBig(defend, true);
+                Function_Fight.UnitUpdateProperty_DemonBig(defend, true);
 
                 await  self.OnUpdateScore(attack, 50);
             }
@@ -137,7 +137,7 @@ namespace ET
                 defend.SetBornPosition(defend.Position, true);
                 defend.GetComponent<HeroDataComponent>().OnRevive();
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, 90000019);
-                Function_Fight.GetInstance().UnitUpdateProperty_DemonGhost(defend, true);
+                Function_Fight.UnitUpdateProperty_DemonGhost(defend, true);
                 BuffData buffData_1 = new BuffData();
                 buffData_1.SkillId = 67000278;
                 buffData_1.BuffId = 99004004;

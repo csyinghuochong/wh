@@ -26,7 +26,7 @@ namespace ET
 
             unit.GetComponent<BagComponent>().OnCostItemData("10000136;1", ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
             unit.GetComponent<BagComponent>().OnAddItemData($"{CommonConfig.PetFramgeItemId};1", $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             reply();
             await ETTask.CompletedTask;
         }

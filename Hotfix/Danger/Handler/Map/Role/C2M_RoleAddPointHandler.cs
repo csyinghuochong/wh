@@ -42,7 +42,7 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.Point_Stamina, request.PointList[4]);
                 numericComponent.ApplyValue(NumericType.PointRemain, remainPoint);
                 //unit.GetComponent<HeroDataComponent>().CheckNumeric();
-                Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
                 reply();
                 await ETTask.CompletedTask;

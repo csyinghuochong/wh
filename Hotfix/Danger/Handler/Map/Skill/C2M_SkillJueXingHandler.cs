@@ -75,7 +75,7 @@ namespace ET
             skillSetComponent.OnJueXing(request.JueXingId);
 
 
-            Function_Fight.GetInstance().UnitUpdateProperty_Base(unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
             reply();
             await ETTask.CompletedTask;
