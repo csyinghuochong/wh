@@ -27,7 +27,7 @@ namespace ET
                     JiaYuanOperate jiaYuanOperate = new JiaYuanOperate();
                     jiaYuanOperate = new JiaYuanOperate();
                     jiaYuanOperate.OperateType = JiaYuanOperateType.Visit;
-                    jiaYuanOperate.PlayerName = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
+                    jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
                     M2M_JiaYuanOperateMessage opmessage = new M2M_JiaYuanOperateMessage()
                     {
                         JiaYuanOperate = jiaYuanOperate,
@@ -40,7 +40,7 @@ namespace ET
                     {
                         OperateType = JiaYuanOperateType.Visit,
                         OperateId = 0,
-                        PlayerName = unit.GetComponent<UserInfoComponent>().UserInfo.Name,
+                        PlayerName = unit.GetComponent<RoleInfoComponent>().UserInfo.Name,
                         Time = TimeHelper.ServerNow(),
                     });
                     await DBHelper.SaveComponentCache(unit.DomainZone(), request.MasterId, jiaYuanComponent);

@@ -23,7 +23,7 @@ namespace ET
                         UnitType = units[i].Type,
                         UnitId = units[i].Id,
                         ConfigId = units[i].ConfigId,
-                        UnitName = units[i].GetComponent<UserInfoComponent>().UserInfo.Name,
+                        UnitName = units[i].GetComponent<RoleInfoComponent>().UserInfo.Name,
                         X = units[i].Position.x,
                         Y = units[i].Position.y,
                         Z = units[i].Position.z,

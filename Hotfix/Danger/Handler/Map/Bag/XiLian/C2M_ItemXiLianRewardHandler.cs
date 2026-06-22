@@ -10,7 +10,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemXiLianRewardRequest request, M2C_ItemXiLianRewardResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
 
             EquipXiLianConfig equipXiLianConfig = EquipXiLianConfigCategory.Instance.Get(request.XiLianId);
             int shuliandu = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianDu);

@@ -25,7 +25,7 @@ namespace ET
 
                     totalPoint += request.PointList[i];
                 }
-                int remainPoint = (unit.GetComponent<UserInfoComponent>().UserInfo.Lv - 1) * 10 - totalPoint;
+                int remainPoint = (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv - 1) * 10 - totalPoint;
                 if (remainPoint < 0)
                 {
                     Log.Error($"C2M_RoleAddPointRequest 2");

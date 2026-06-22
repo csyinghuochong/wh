@@ -32,7 +32,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             string[] occItems = CommonConfig.KillMonsterReward[request.Key].Split('&');
             string[] items;
             if (occItems.Length == 3)

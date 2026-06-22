@@ -28,7 +28,7 @@ namespace ET
                 M2C_OneChallenge m2CCreateUnits = new M2C_OneChallenge();
                 m2CCreateUnits.Operatate = 1;
                 m2CCreateUnits.OtherId = unit.Id;
-                m2CCreateUnits.OtherName = unit.GetComponent<UserInfoComponent>().UserName;
+                m2CCreateUnits.OtherName = unit.GetComponent<RoleInfoComponent>().UserName;
                 MessageHelper.SendToClient(other, m2CCreateUnits);
             }
             if (request.Operatate == 2) //迎接挑战

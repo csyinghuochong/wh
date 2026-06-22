@@ -15,7 +15,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             int oldArrived = numericComponent.GetAsInt(NumericType.TowerOfSealArrived);

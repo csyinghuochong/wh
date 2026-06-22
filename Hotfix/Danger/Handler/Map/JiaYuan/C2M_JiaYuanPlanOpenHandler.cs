@@ -16,7 +16,7 @@ namespace ET
                 reply();
                 return;
             }
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             LDHome ldHome = LDHomeCategory.Instance.Get(userInfoComponent.UserInfo.JiaYuanLv);
             /*if (jiaYuanComponent.GetOpenPlanNumber() >= ldHome.FarmNumMax)
             {

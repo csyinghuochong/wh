@@ -40,7 +40,7 @@ namespace ET
             }
 
             JiaYuanComponent jiaYuanComponent = unit.GetComponent<JiaYuanComponent>();
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             LDHome ldHome = LDHomeCategory.Instance.Get(userInfoComponent.UserInfo.JiaYuanLv);
 
             if (jiaYuanPastureConfig.BuyJiaYuanLv > userInfoComponent.UserInfo.JiaYuanLv)
@@ -74,7 +74,7 @@ namespace ET
                 }
             }
 
-            unit.GetComponent<UserInfoComponent>().OnMysteryBuy(mysteryId);
+            unit.GetComponent<RoleInfoComponent>().OnMysteryBuy(mysteryId);
             unit.GetComponent<BagComponent>().OnCostItemData($"13;{(int)(jiaYuanPastureConfig.BuyGold * jiagerate)}", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost);
             unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanPastureNumber_94, 0, 1);
 

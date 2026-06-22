@@ -54,8 +54,8 @@ namespace ET
 
             long lastDungeonId = players[0].GetComponent<NumericComponent>().GetAsLong(NumericType.TrialDungeonId);
 
-            string userName = players[0].GetComponent<UserInfoComponent>().UserInfo.Name;
-            Log.Warning($"试炼之地通关： 区:{players[0].DomainZone()}   {players[0].Id}   {mapComponent.SonSceneId}  {userName}  {players[0].GetComponent<UserInfoComponent>().UserInfo.Lv}");
+            string userName = players[0].GetComponent<RoleInfoComponent>().UserInfo.Name;
+            Log.Warning($"试炼之地通关： 区:{players[0].DomainZone()}   {players[0].Id}   {mapComponent.SonSceneId}  {userName}  {players[0].GetComponent<RoleInfoComponent>().UserInfo.Lv}");
 
             if (lastDungeonId < mapComponent.SonSceneId)
             {

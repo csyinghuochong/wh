@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_SeasonOpenJingHeRequest request, M2C_SeasonOpenJingHeResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();   
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();   
             if (userInfoComponent.UserInfo.OpenJingHeIds.Contains(request.JingHeId))
             {
                 response.Error = ErrorCode.ERR_AlreadyLearn;

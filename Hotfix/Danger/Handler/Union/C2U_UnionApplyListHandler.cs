@@ -24,7 +24,7 @@ namespace ET
                     continue;
                 }
 
-                D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = dBUnionInfo.UnionInfo.ApplyList[i], Component = DBHelper.UserInfoComponent });
+                D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = dBUnionInfo.UnionInfo.ApplyList[i], Component = DBHelper.RoleInfoComponent });
                 UserInfoComponent userInfoComponent = d2GGetUnit.Component as UserInfoComponent;
                 unionPlayers.Add( new UnionPlayerInfo() 
                 {  

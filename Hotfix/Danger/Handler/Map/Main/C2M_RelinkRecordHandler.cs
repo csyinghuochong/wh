@@ -12,7 +12,7 @@ namespace ET
         {
             Console.WriteLine($"C2M_RelinkRecordRequest:  {unit.Id}   {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}");
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             string accont =  userInfoComponent.Account;
             if (!string.IsNullOrEmpty(request.MessageValue))
             {

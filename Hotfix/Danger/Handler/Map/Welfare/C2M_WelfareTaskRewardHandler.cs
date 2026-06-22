@@ -16,7 +16,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.GetComponent<UserInfoComponent>().UserInfo.WelfareTaskRewards.Contains(request.day))
+            if (unit.GetComponent<RoleInfoComponent>().UserInfo.WelfareTaskRewards.Contains(request.day))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -30,7 +30,7 @@ namespace ET
                 reply();
                 return;
             }
-            unit.GetComponent<UserInfoComponent>().UserInfo.WelfareTaskRewards.Add(request.day);
+            unit.GetComponent<RoleInfoComponent>().UserInfo.WelfareTaskRewards.Add(request.day);
 
             reply();
             await ETTask.CompletedTask;

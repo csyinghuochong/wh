@@ -213,7 +213,7 @@ namespace ET
                 else
                 {
                     Log.Warning($"OnAuctionOver[离线]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}");
-                    UserInfoComponent userInfoComponent = await DBHelper.GetComponentCache<UserInfoComponent>(self.DomainZone(), self.AuctioUnitId);
+                    RoleInfoComponent userInfoComponent = await DBHelper.GetComponentCache<RoleInfoComponent>(self.DomainZone(), self.AuctioUnitId);
                     if (userInfoComponent.UserInfo.Gold >= self.AuctionPrice)
                     {
                         userInfoComponent.UserInfo.Gold -= self.AuctionPrice;

@@ -17,7 +17,7 @@ namespace ET
                 return;
             }
             //判定是否钻石足够
-            if (unit.GetComponent<UserInfoComponent>().UserInfo.Diamond < cost)
+            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Diamond < cost)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();
@@ -27,10 +27,10 @@ namespace ET
             //开启月卡
             unit.UpdateYueKaTimes();
 
-            unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (cost * -1).ToString(), true, ItemGetWay.CostItem);
+            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (cost * -1).ToString(), true, ItemGetWay.CostItem);
 
             long addPilao = int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) - int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
-            unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.PiLao, addPilao.ToString());
+            unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.PiLao, addPilao.ToString());
             //Log.Warning($"[增加疲劳] {unit.DomainZone()}  {unit.Id}   {0}  {addPilao}");
             reply();
             await ETTask.CompletedTask;

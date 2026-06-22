@@ -45,7 +45,7 @@ namespace ET
             }
 
             //判断金币
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();  
+            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();  
             if(userInfoComponent.UserInfo.Gold < costgold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;

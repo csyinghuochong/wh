@@ -50,7 +50,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             int oldOcc = userInfoComponent.UserInfo.Occ;
             if (oldOcc == request.Occ)
             {

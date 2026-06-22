@@ -43,7 +43,7 @@
 //			Unit unit = UnitFactory.Create(scene, player.Id, UnitType.Player);
 //			unit.AddComponent<UnitGateComponent, long>(session.InstanceId);
 
-//			await DBHelper.AddDataComponent<UserInfoComponent>(unit, request.UserID, DBHelper.UserInfoComponent);
+//			await DBHelper.AddDataComponent<RoleInfoComponent>(unit, request.UserID, DBHelper.RoleInfoComponent);
 //			await DBHelper.AddDataComponent<BagComponent>(unit, request.UserID, DBHelper.BagComponent);
 //			await DBHelper.AddDataComponent<TaskComponent>(unit, request.UserID, DBHelper.TaskComponent);
 //			await DBHelper.AddDataComponent<ChengJiuComponent>(unit, request.UserID, DBHelper.ChengJiuComponent);
@@ -53,7 +53,7 @@
 //			await DBHelper.AddDataComponent<ActivityComponent>(unit, request.UserID, DBHelper.ActivityComponent);
 //			//await DBHelper.AddDataComponent<NumericComponent>(unit, request.UserID, DBHelper.NumericComponent);
 //			await DBHelper.AddDataComponent<RechargeComponent>(unit, request.UserID, DBHelper.RechargeComponent);
-//			unit.GetComponent<UserInfoComponent>().OnLogin().Coroutine();
+//			unit.GetComponent<RoleInfoComponent>().OnLogin().Coroutine();
 
 //			StartSceneConfig startSceneConfig = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), "Map1");
 

@@ -35,7 +35,7 @@ namespace ET
 
              
                 string serverName = ServerHelper.GetGetServerItem(false, unit.DomainZone()).ServerName;
-                UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                 string userName = userInfoComponent.UserInfo.Name;
 
                 if (request.PayType == PayTypeEnum.IOSPay)

@@ -8,7 +8,7 @@
         {
             Unit beinvite = unit.GetParent<UnitComponent>().Get(message.InviteId);
 
-            UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
             if (string.IsNullOrEmpty(userInfo.UnionName))
             {
                 return;

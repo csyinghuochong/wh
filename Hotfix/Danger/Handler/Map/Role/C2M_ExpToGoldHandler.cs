@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ExpToGoldRequest request, M2C_ExpToGoldResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             UserInfo userInfo = userInfoComponent.UserInfo;
             ServerInfo serverInfo = ConfigData.ServerInfoList[unit.DomainZone()];
             if (userInfo.Lv < 70 &&  userInfo.Lv < serverInfo.WorldLv)

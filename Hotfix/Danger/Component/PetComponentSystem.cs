@@ -155,7 +155,7 @@ namespace ET
             }
 
             Unit unit = self.GetParent<Unit>();
-            UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
             int maxLv = LDGlobalValueCategory.Instance.TempValue;
             for (int i = 0; i < self.RolePetInfos.Count; i++)
             {
@@ -235,7 +235,7 @@ namespace ET
             newpet.AddPropretyValue = ItemHelper.DefaultGem;
             newpet.ShouHuPos = RandomHelper.RandomNumber(1, 5);
             newpet.PetName = PetSkinConfigCategory.Instance.Get(newpet.SkinId).Name;
-            newpet.PlayerName = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
+            newpet.PlayerName = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
             return newpet;
         }
 
@@ -537,14 +537,14 @@ namespace ET
             if (PetHelper.IsShenShou(petId) && unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber) < 5000)
             {
                 //充值低于5千的就记录 记录信息 等级 名称 充值额度 当前钻石额
-                LogHelper.GongZuoShi($"神兽作弊: {unit.DomainZone()}   \t名称:{unit.GetComponent<UserInfoComponent>().UserInfo.Name}  " +
-                    $"\t等级:{unit.GetComponent<UserInfoComponent>().UserInfo.Lv}" + $"\t钻石:{unit.GetComponent<UserInfoComponent>().UserInfo.Diamond}" +
+                LogHelper.GongZuoShi($"神兽作弊: {unit.DomainZone()}   \t名称:{unit.GetComponent<RoleInfoComponent>().UserInfo.Name}  " +
+                    $"\t等级:{unit.GetComponent<RoleInfoComponent>().UserInfo.Lv}" + $"\t钻石:{unit.GetComponent<RoleInfoComponent>().UserInfo.Diamond}" +
                     $"\t充值:{unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber)}");
             }
 
             /*if (ItemGetWay.PetExplore == getWay && (ldPetConfig.PetQuality >= 3 || ldPetConfig.Skin[0] != newpet.SkinId))
             {
-                string username = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
+                string username = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
                 string petshowname = PetSkinConfigCategory.Instance.Get(newpet.SkinId).Name;
                 string messagecontent = $"恭喜{username} 在宠物探索系统中获得 {petshowname}！";
                 string messagecontentEn = $"Congratulations, {username}  obtained {petshowname} in the Pet Exploration System!";
@@ -590,7 +590,7 @@ namespace ET
                 return;
             }
             LDMonster mCof = LDMonsterCategory.Instance.Get(beKill.ConfigId);
-            int playerLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
+            int playerLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Lv;
 
             //超过5级不能获得经验
             if (rolePetInfo.PetLv >= playerLv + 5)
@@ -790,7 +790,7 @@ namespace ET
                 return;
             }
             Unit unit = self.GetParent<Unit>();
-            int playerLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+            int playerLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
             int newLevel = rolePetInfo.PetLv + lv;
             newLevel = Math.Min(Math.Max(0, newLevel), playerLv + 5);
             rolePetInfo.AddPropretyNum += (newLevel - rolePetInfo.PetLv) * 5;
@@ -1666,7 +1666,7 @@ namespace ET
             RolePetInfo newpet = self.GenerateNewPet(petId, skinId);
 
             newpet = self.PetXiLian(newpet, ItemGetWay.GM, 1, 0, 0);
-            newpet.PetLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+            newpet.PetLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
             newpet.AddPropretyValue = $"{newpet.PetLv}_{newpet.PetLv}_{newpet.PetLv}_{newpet.PetLv}";
             newpet.UpStageStatus = 2;
             self.UpdatePetAttribute(newpet, false);
@@ -1704,7 +1704,7 @@ namespace ET
         {
 
             Unit unit = self.GetParent<Unit>();
-            int userLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+            int userLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
             if (PetHelper.GetBagPetNum(self.RolePetInfos) >= PetHelper.GetPetMaxNumber(unit, userLv))
             {
                 return true;

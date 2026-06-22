@@ -31,7 +31,7 @@ namespace ET
             }
             int sceneId = BattleHelper.GetSceneIdByType(request.SceneType);
             numericComponent.ApplyChange(null, NumericType.FubenTimesReset, 1, 0);
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             userInfoComponent.ClearFubenTimes(sceneId);
 
             reply();

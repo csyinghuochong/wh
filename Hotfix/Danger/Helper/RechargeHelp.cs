@@ -10,8 +10,8 @@ namespace ET
         {
             //Log.Warning($"RechargeHelp.SendDiamond {unit.Id} {rechargeNumber} {orderInfo}");
             OnRechage(unit, payid, rechargeType, true);
-            //long accountId = unit.GetComponent<UserInfoComponent>().UserInfo.AccInfoID;
-            //long userId = unit.GetComponent<UserInfoComponent>().UserInfo.UserId;
+            //long accountId = unit.GetComponent<RoleInfoComponent>().UserInfo.AccInfoID;
+            //long userId = unit.GetComponent<RoleInfoComponent>().UserInfo.UserId;
             //SendToAccountCenter(accountId, userId, payid, orderInfo, rechargeType).Coroutine();
             unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
         }
@@ -69,9 +69,9 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.RechargeSign, 1, notice);
             }
             // 单笔充值奖励记录
-            if (!unit.GetComponent<UserInfoComponent>().UserInfo.SingleRechargeIds.Contains(rechargeNumber))
+            if (!unit.GetComponent<RoleInfoComponent>().UserInfo.SingleRechargeIds.Contains(rechargeNumber))
             {
-                unit.GetComponent<UserInfoComponent>().UserInfo.SingleRechargeIds.Add(rechargeNumber);
+                unit.GetComponent<RoleInfoComponent>().UserInfo.SingleRechargeIds.Add(rechargeNumber);
             }
         }
 
@@ -121,7 +121,6 @@ namespace ET
                 D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.NumericComponent });
                 NumericComponent numericComponent = (d2GGetUnit.Component as NumericComponent);
                 numericComponent.ApplyChange(null, NumericType.RechargeBuChang, rechargeNumber, 1, false);
-                numericComponent.ApplyValue(null, NumericType.RechargeType, rechargeType, 0, false);
                 D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent()
                 {
                     UnitId = userId,
@@ -129,7 +128,7 @@ namespace ET
                     ComponentType = DBHelper.NumericComponent
                 });
 
-                d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.UserInfoComponent });
+                d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.RoleInfoComponent });
                 UserInfoComponent userInfoComponent = (d2GGetUnit.Component as UserInfoComponent);
                 
                 long accountId = userInfoComponent.UserInfo.AccInfoID;
@@ -163,7 +162,6 @@ namespace ET
                 D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.NumericComponent });
                 NumericComponent numericComponent = (d2GGetUnit.Component as NumericComponent);
                 numericComponent.ApplyChange(null, NumericType.RechargeBuChang, rechargeNumber, 1, false);
-                numericComponent.ApplyValue(null, NumericType.RechargeType, rechargeType, 0, false);
                 D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent()
                 {
                     UnitId = userId,
@@ -171,7 +169,7 @@ namespace ET
                     ComponentType = DBHelper.NumericComponent
                 });
 
-                d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.UserInfoComponent });
+                d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.RoleInfoComponent });
                 UserInfoComponent userInfoComponent = (d2GGetUnit.Component as UserInfoComponent);
 
                 long accountId = userInfoComponent.UserInfo.AccInfoID;

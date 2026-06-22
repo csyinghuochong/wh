@@ -26,7 +26,7 @@ namespace ET
                         return;
                     }
 
-                    long selfgold = unit.GetComponent<UserInfoComponent>().UserInfo.Gold;
+                    long selfgold = unit.GetComponent<RoleInfoComponent>().UserInfo.Gold;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit.DomainZone()),
                         new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });
@@ -42,7 +42,7 @@ namespace ET
                     int unionID = int.Parse(responseUnionEnter.Par);
                     LDUnion ldUnionCof = LDUnionCategory.Instance.Get(unionID);
                     unit.GetComponent<NumericComponent>().ApplyChange(unit, NumericType.UnionDonationNumber, 1, 0);
-                    UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                    UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
 
                     /*userInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (ldUnionCof.DonateGold * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);
@@ -61,7 +61,7 @@ namespace ET
                         return;
                     }
 
-                    long selfDiamond = unit.GetComponent<UserInfoComponent>().UserInfo.Diamond;
+                    long selfDiamond = unit.GetComponent<RoleInfoComponent>().UserInfo.Diamond;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit.DomainZone()),
                         new M2U_UnionOperationRequest() { OperateType = 4, UnitId = unit.Id, UnionId = unionid, Par = selfDiamond.ToString() });
@@ -77,7 +77,7 @@ namespace ET
                     LDUnion ldUnionCof = LDUnionCategory.Instance.Get(unionID);
                     unit.GetComponent<NumericComponent>().ApplyChange(unit, NumericType.UnionDiamondDonationNumber, 1, 0);
                     // 花费250钻石，暂时写死，M2U_UnionOperationRequest也是
-                    UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                    UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
 
                     /*userInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (ldUnionCof.DonateDiamond * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);

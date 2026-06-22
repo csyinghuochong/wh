@@ -86,7 +86,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (unit.GetComponent<UserInfoComponent>().UserInfo.V1TotalPoints < request.RewardId)
+                    if (unit.GetComponent<RoleInfoComponent>().UserInfo.V1TotalPoints < request.RewardId)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();
@@ -102,7 +102,7 @@ namespace ET
                     }
 
 
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData( UserDataType.V1TotalPoints, (request.RewardId * -1).ToString());
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData( UserDataType.V1TotalPoints, (request.RewardId * -1).ToString());
                     unit.GetComponent<BagComponent>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponent.ActivityV1Info.PointsReward.Add(request.RewardId);
                     break;
@@ -123,7 +123,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (unit.GetComponent<UserInfoComponent>().UserInfo.V1TotalPoints < request.RewardId)
+                    if (unit.GetComponent<RoleInfoComponent>().UserInfo.V1TotalPoints < request.RewardId)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();
@@ -139,32 +139,19 @@ namespace ET
                     }
 
 
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.V1TotalPoints, (request.RewardId * -1).ToString());
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.V1TotalPoints, (request.RewardId * -1).ToString());
                     unit.GetComponent<BagComponent>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponent.ActivityV1Info.PointsShuxuReward = request.RewardId;
                     break;
                 case ActivityV1Config.ActivityV1_PointsChouKa:
 
-                    if (unit.GetComponent<UserInfoComponent>().UserInfo.V1TotalPoints < 200f)
+                    if (unit.GetComponent<RoleInfoComponent>().UserInfo.V1TotalPoints < 200f)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();
                         return;
                     }
-
-                    int choukaindex = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1PointsChouKaIndex);
-                    if (choukaindex <= 0 || choukaindex > ActivityV1Config.PointsChouKaList.Count)
-                    {
-                        List<int> weights = new List<int>();
-                        for (int i = 0; i < ActivityV1Config.PointsChouKaList.Count; i++)
-                        {
-                            weights.Add(ActivityV1Config.PointsChouKaList[i].Weight);
-                        }
-                        int index = RandomHelper.RandomByWeight(weights);
-                        choukaindex = index + 1;
-                        unit.GetComponent<NumericComponent>().ApplyValue(NumericType.V1PointsChouKaIndex, choukaindex);
-                    }
-                    response.Message = choukaindex.ToString();
+               
                     break;
                 case ActivityV1Config.ActivityV1_HongBao:
                     int hongbaoNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1HongBaoNumber);
@@ -253,109 +240,11 @@ namespace ET
                     break;
                 case ActivityV1Config.ActivityV1_GoldWeeklyCard:
                     long servertimer = TimeHelper.ServerNow();
-                    long weeklycardtime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.GoldWeeklyCard);
-                    if (weeklycardtime <= 0 || servertimer < weeklycardtime)
-                    {
-                        response.Error = ErrorCode.ERR_NoWeeklyCard;
-                        reply();
-                        return;
-                    }
-
-                    List<string> rewardlists = ActivityV1Config.ActivityV1WeeklyCardReward[1];
-                    if (request.RewardId >= rewardlists.Count)
-                    {
-                        response.Error = ErrorCode.ERR_ModifyData;
-                        reply();
-                        return;
-                    }
-                    if (activityComponent.ActivityV1Info.GoldWeeklyCardRewards.Contains(request.RewardId))
-                    {
-                        response.Error = ErrorCode.ERR_AlreadyReceived;
-                        reply();
-                        return;
-                    }
-                   
-                    int diffday = CommonHelper.GetDaysDiffByDate(servertimer, weeklycardtime );
-
-                    //已经过了周卡时间
-                    //if (diffday >= rewardlists.Count)
-                    //{
-                    //    response.Error = ErrorCode.ERR_AlreadyReceived;
-                    //    reply();
-                    //    return;
-                    //}
-
-                    //提前领取？
-                    if (diffday < request.RewardId )
-                    {
-                        response.Error = ErrorCode.ERR_AlreadyReceived;
-                        reply();
-                        return;
-                    }
-
-                    string rewardinfo = rewardlists[request.RewardId];
-                    needcell = ItemHelper.GetNeedCell(rewardinfo);
-                    if (bagComponent.GetBagLeftCell() < needcell)
-                    {
-                        response.Error = ErrorCode.ERR_BagIsFull;
-                        reply();
-                        return;
-                    }
-
-                    bagComponent.OnAddItemData(rewardinfo, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
-                    activityComponent.ActivityV1Info.GoldWeeklyCardRewards.Add(request.RewardId);
+                    
                     break;
                 case ActivityV1Config.ActivityV1_DiamondWeeklyCard:
                     servertimer = TimeHelper.ServerNow();
-                    weeklycardtime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.DiamondWeeklyCard);
-                    if (weeklycardtime <= 0 || servertimer < weeklycardtime)
-                    {
-                        response.Error = ErrorCode.ERR_NoWeeklyCard;
-                        reply();
-                        return;
-                    }
-
-                    rewardlists = ActivityV1Config.ActivityV1WeeklyCardReward[2];
-                    if (request.RewardId >= rewardlists.Count)
-                    {
-                        response.Error = ErrorCode.ERR_ModifyData;
-                        reply();
-                        return;
-                    }
-                    if (activityComponent.ActivityV1Info.DiamondWeeklyCardRewards.Contains(request.RewardId))
-                    {
-                        response.Error = ErrorCode.ERR_AlreadyReceived;
-                        reply();
-                        return;
-                    }
-                   
-                    diffday = CommonHelper.GetDaysDiffByDate(servertimer, weeklycardtime);
-
-                    //已经过了周卡时间
-                    //if (diffday >= rewardlists.Count)
-                    //{
-                    //    response.Error = ErrorCode.ERR_AlreadyReceived;
-                    //    reply();
-                    //    return;
-                    //}
-                    //提前领取？
-                    if (diffday < request.RewardId)
-                    {
-                        response.Error = ErrorCode.ERR_AlreadyReceived;
-                        reply();
-                        return;
-                    }
-                    rewardinfo = rewardlists[request.RewardId];
-                    needcell = ItemHelper.GetNeedCell(rewardinfo);
-                    if (bagComponent.GetBagLeftCell() < needcell)
-                    {
-                        response.Error = ErrorCode.ERR_BagIsFull;
-                        reply();
-                        return;
-                    }
-
-                    bagComponent.OnAddItemData(rewardlists[request.RewardId], $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
-                    activityComponent.ActivityV1Info.DiamondWeeklyCardRewards.Add(request.RewardId);
+                 
                     break;
                 case ActivityV1Config.ActivityV1_LiBao:
                     if (bagComponent.GetBagLeftCell() < 6)

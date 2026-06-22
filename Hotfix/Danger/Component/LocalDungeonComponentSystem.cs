@@ -39,7 +39,7 @@ namespace ET
             }
 
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(unit.ConfigId);
-            UserInfoComponent userInfoComponent = self.MainUnit.GetComponent<UserInfoComponent>();
+            RoleInfoComponent userInfoComponent = self.MainUnit.GetComponent<RoleInfoComponent>();
             if (userInfoComponent == null || userInfoComponent.IsDisposed)
             {
                 return;

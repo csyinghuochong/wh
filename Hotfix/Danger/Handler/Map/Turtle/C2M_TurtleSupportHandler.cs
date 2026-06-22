@@ -11,7 +11,7 @@ namespace ET
         {
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
-                UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                
                 long costgold = LDGlobalValueCategory.Instance.TempValue;
                 if (userInfoComponent.UserInfo.Gold < costgold)

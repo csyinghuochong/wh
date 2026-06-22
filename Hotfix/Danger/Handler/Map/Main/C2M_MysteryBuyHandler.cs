@@ -26,7 +26,7 @@ namespace ET
                     reply();
                     return;
                 }
-                if (unit.GetComponent<UserInfoComponent>().GetMysteryBuy(mysteryId) >= mysteryConfig.BuyNumMax)
+                if (unit.GetComponent<RoleInfoComponent>().GetMysteryBuy(mysteryId) >= mysteryConfig.BuyNumMax)
                 {
                     response.Error = ErrorCode.ERR_MysteryItem_Max;
                     reply();
@@ -63,7 +63,7 @@ namespace ET
                 }
 
                 LogHelper.LogWarning($"神秘商人购买道具: {unit.DomainZone()} {unit.Id} {mysteryId}");
-                unit.GetComponent<UserInfoComponent>().OnMysteryBuy(mysteryId);
+                unit.GetComponent<RoleInfoComponent>().OnMysteryBuy(mysteryId);
                 unit.GetComponent<BagComponent>().OnCostItemData($"{mysteryConfig.SellType};{mysteryConfig.SellValue}", ItemLocType.ItemLocBag, ItemGetWay.MysteryBuy);
                 unit.GetComponent<BagComponent>().OnAddItemData($"{mysteryConfig.SellItemID};{1}",
                     $"{ItemGetWay.MysteryBuy}_{TimeHelper.ServerNow()}");

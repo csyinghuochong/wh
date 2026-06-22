@@ -41,7 +41,7 @@ namespace ET
                     }
                     gemIdList.Add(int.Parse(gemids[gem]));
                     LDItem ldItemConf = LDItemCategory.Instance.Get(int.Parse(gemids[gem]));
-                    //unit.GetComponent<UserInfoComponent>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
+                    //unit.GetComponent<RoleInfoComponent>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
                 }
 
                 //珍宝属性价格提升
@@ -58,7 +58,7 @@ namespace ET
                 }
                 else
                 {
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd((int)ldItem.SellMoneyType, (useBagInfo.ItemNum * sellValue).ToString(), true, 39);
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd((int)ldItem.SellMoneyType, (useBagInfo.ItemNum * sellValue).ToString(), true, 39);
                     unit.GetComponent<BagComponent>().OnCostItemData(useBagInfo, (ItemLocType)request.OperateType, useBagInfo.ItemNum);
                 }*/
                 if (useBagInfo.ItemNum == 0)
@@ -72,7 +72,7 @@ namespace ET
             }
             if (sellGold > 0)
             {
-                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, sellGold.ToString(), true, 39);
+                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, sellGold.ToString(), true, 39);
             }
 
             MessageHelper.SendToClient(unit, m2c_bagUpdate);

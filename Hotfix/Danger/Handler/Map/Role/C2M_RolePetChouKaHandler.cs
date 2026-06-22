@@ -31,7 +31,7 @@ namespace ET
                     return;
                 }
                 */
-                UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+                UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
                 int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(17).Value);
                 if (userInfo.Diamond < needDimanond)
                 {
@@ -39,7 +39,7 @@ namespace ET
                     reply();
                     return;
                 }
-                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needDimanond).ToString(), true,ItemGetWay.PetChouKa);
+                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needDimanond).ToString(), true,ItemGetWay.PetChouKa);
                 unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetChouKa, 1, 0);
                 unit.GetComponent<DataCollationComponent>().OnPetChouKa(1);
             }

@@ -12,7 +12,7 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_EquipWearRequest request, M2C_EquipWearResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             UserInfo useInfo = userInfoComponent.UserInfo;
             long bagInfoID = request.OperateBagID;
             int occ = useInfo.Occ;

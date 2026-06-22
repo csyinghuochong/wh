@@ -30,7 +30,7 @@ namespace ET
             string gameObjectParameter = string.Empty; //this.LdSkillConf.GameObjectParameter;
             string[] summonParList = gameObjectParameter.Split(';');
 
-            UserInfo userInfo = theUnitFrom.GetComponent<UserInfoComponent>()?.UserInfo;
+            UserInfo userInfo = theUnitFrom.GetComponent<RoleInfoComponent>()?.UserInfo;
             if (userInfo != null && userInfo.DefeatedBossIds.Count > 0)
             {
                 int monsterId = 0;

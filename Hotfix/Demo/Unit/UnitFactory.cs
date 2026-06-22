@@ -58,7 +58,7 @@ namespace ET
             unit.Position = new Vector3(-10, 0, -10);
             unit.AddComponent<UnitInfoComponent>();
             
-            if (unit.GetComponent<UserInfoComponent>() == null)
+            if (unit.GetComponent<RoleInfoComponent>() == null)
             {
                 UserInfoComponent userInfoComponentServer = unit.AddComponent<UserInfoComponent>();
                 userInfoComponentServer.OnInit(account, unit.Id, accountId, createRoleInfo);
@@ -159,7 +159,7 @@ namespace ET
             if (mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon)
             {
                 mainUnit = scene.GetComponent<LocalDungeonComponent>().MainUnit;
-                //revetime = mainUnit.GetComponent<UserInfoComponent>().GetReviveTime(ldMonster.Id);
+                //revetime = mainUnit.GetComponent<RoleInfoComponent>().GetReviveTime(ldMonster.Id);
             }
             if (unit.MasterId > 0)
             {
@@ -261,7 +261,7 @@ namespace ET
             unit.AddComponent<HeroDataComponent>();
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
-            unitInfoComponent.UnitName = master.GetComponent<UserInfoComponent>().UserInfo.StallName;
+            unitInfoComponent.UnitName = master.GetComponent<RoleInfoComponent>().UserInfo.StallName;
             unit.GetComponent<NumericComponent>().Set(NumericType.MasterId, master.Id);
             unit.MasterId = master.Id;
             unit.Type = UnitType.Stall;
@@ -500,7 +500,7 @@ namespace ET
             unit.AddComponent<SkillManagerComponent>();
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
-            unitInfoComponent.MasterName = master.GetComponent<UserInfoComponent>().UserInfo.Name;
+            unitInfoComponent.MasterName = master.GetComponent<RoleInfoComponent>().UserInfo.Name;
             unitInfoComponent.UnitName = LDElfCategory.Instance.Get(jinglingId).Name.ToString();
            
             unit.ConfigId = jinglingId;
@@ -571,7 +571,7 @@ namespace ET
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(bekill.ConfigId);
             if (SceneConfigHelper.IsSingleFuben(sceneType) )
             {
-                drop = main.GetComponent<UserInfoComponent>().UserInfo.PiLao > 0 || bekill.IsBoss();
+                drop = main.GetComponent<RoleInfoComponent>().UserInfo.PiLao > 0 || bekill.IsBoss();
 
                 //场景宝箱掉落和体力无关
 
@@ -583,7 +583,7 @@ namespace ET
             if (ActivityHelper.IsShowLieOpen() && !drop && !main.IsRobot())
             {
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(bekill.ConfigId);
-                int userlv = main.GetComponent<UserInfoComponent>().UserInfo.Lv;
+                int userlv = main.GetComponent<RoleInfoComponent>().UserInfo.Lv;
                 if( ldMonster.Lv >= 60 || Mathf.Abs(userlv - ldMonster.Lv) <= 9 ) 
                 {
                     drop = true;
@@ -655,7 +655,7 @@ namespace ET
             //个人副本根据成长来
             if (sceneType == MapTypeEnum.LocalDungeon && bekill.IsBoss() && bekill.ConfigId != SeasonHelper.SeasonBossId)
             {
-                int killNumber =  main.GetComponent<UserInfoComponent>().GetMonsterKillNumber(ldMonsterCof.Id);
+                int killNumber =  main.GetComponent<RoleInfoComponent>().GetMonsterKillNumber(ldMonsterCof.Id);
                 int chpaterid = -1;
                 BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
                 dropAdd_Pro += bossDevelopment.DropAdd;
@@ -700,7 +700,7 @@ namespace ET
             List<RewardItem> droplist_2 = null;
             if (main!=null && !main.IsDisposed)
             {
-                int playerLv = main.GetComponent<UserInfoComponent>().UserInfo.Lv;
+                int playerLv = main.GetComponent<RoleInfoComponent>().UserInfo.Lv;
                 droplist_2 = DropHelper.AI_DropByPlayerLv(ldMonsterCof.Id, playerLv, dropAdd_Pro, false);
             }
             if (droplist_2 != null)

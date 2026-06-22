@@ -12,12 +12,12 @@ namespace ET
             int makeTypeNumeric = request.Plan == 1 ? NumericType.MakeType_1 : NumericType.MakeType_2;
             int shulianduNumeric = request.Plan == 1 ? NumericType.MakeShuLianDu_1 : NumericType.MakeShuLianDu_2;
             int oldMakeType = unit.GetComponent<NumericComponent>().GetAsInt(makeTypeNumeric);
-            unit.GetComponent<UserInfoComponent>().ClearMakeListByType(oldMakeType);
-            unit.GetComponent<UserInfoComponent>().UserInfo.MakeList.AddRange(MakeHelper.GetInitMakeList(request.MakeType));
+            unit.GetComponent<RoleInfoComponent>().ClearMakeListByType(oldMakeType);
+            unit.GetComponent<RoleInfoComponent>().UserInfo.MakeList.AddRange(MakeHelper.GetInitMakeList(request.MakeType));
             unit.GetComponent<NumericComponent>().ApplyValue( makeTypeNumeric, request.MakeType);
             unit.GetComponent<NumericComponent>().ApplyValue( shulianduNumeric, 0);
             unit.GetComponent<ChengJiuComponent>().OnSkillShuLianDu(0);
-            response.MakeList = unit.GetComponent<UserInfoComponent>().UserInfo.MakeList;
+            response.MakeList = unit.GetComponent<RoleInfoComponent>().UserInfo.MakeList;
             reply();
             await ETTask.CompletedTask;
         }

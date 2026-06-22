@@ -7,14 +7,14 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_PaiMaiAuctionPriceRequest request, M2C_PaiMaiAuctionPriceResponse response, Action reply)
         {
-            UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
             if (userInfo.Gold < request.Price)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
                 return;
             }
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             M2P_PaiMaiAuctionPriceRequest message = new M2P_PaiMaiAuctionPriceRequest()
             {
                 Price = request.Price,

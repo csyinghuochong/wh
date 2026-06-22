@@ -41,7 +41,7 @@ namespace ET
             }
 
             //钱是否足够
-            if (unit.GetComponent<UserInfoComponent>().UserInfo.Gold < needGold)
+            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Gold < needGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -54,7 +54,7 @@ namespace ET
                 P2M_StallBuyResponse p2MStallBuyResponse = (P2M_StallBuyResponse)await ActorMessageSenderComponent.Instance.Call(paimaiServerId,
                     new M2P_StallBuyRequest()
                     {
-                        PaiMaiItemInfo = request.PaiMaiItemInfo, ActorId = unit.GetComponent<UserInfoComponent>().UserInfo.Gold
+                        PaiMaiItemInfo = request.PaiMaiItemInfo, ActorId = unit.GetComponent<RoleInfoComponent>().UserInfo.Gold
                     });
                 if (p2MStallBuyResponse.Error != ErrorCode.ERR_Success)
                 {
@@ -65,7 +65,7 @@ namespace ET
 
                 needGold = (long)p2MStallBuyResponse.PaiMaiItemInfo.Price * p2MStallBuyResponse.PaiMaiItemInfo.BagInfo.ItemNum;
 
-                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.StallBuy);
+                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.StallBuy);
                 //背包添加道具
                 unit.GetComponent<BagComponent>()
                         .OnAddItemData(p2MStallBuyResponse.PaiMaiItemInfo.BagInfo, $"{ItemGetWay.StallBuy}_{TimeHelper.ServerNow()}");

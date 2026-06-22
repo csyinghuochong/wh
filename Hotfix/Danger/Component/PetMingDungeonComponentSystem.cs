@@ -10,7 +10,7 @@ namespace ET
             if (self.CombatResultEnum == CombatResultEnum.Win && self.MainUnit != null)
             {
                 string logInfo = string.Empty;
-                string unitName = self.MainUnit.GetComponent<UserInfoComponent>().UserInfo.Name;
+                string unitName = self.MainUnit.GetComponent<RoleInfoComponent>().UserInfo.Name;
                 MineBattleConfig mineBattleConfig = MineBattleConfigCategory.Instance.Get(self.MineType);
                 logInfo = $"玩家 {unitName} 队伍{self.TeamId + 1} 占领了第{self.Position+1} {mineBattleConfig.Name}";
 
@@ -24,7 +24,7 @@ namespace ET
                         Postion = self.Position,
                         UnitID = self.MainUnit.Id,
                         TeamId = self.TeamId,
-                        WinPlayer = self.MainUnit.GetComponent<UserInfoComponent>().UserInfo.Name,
+                        WinPlayer = self.MainUnit.GetComponent<RoleInfoComponent>().UserInfo.Name,
                     });
             }
         }

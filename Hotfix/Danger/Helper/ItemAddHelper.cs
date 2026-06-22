@@ -90,7 +90,7 @@ namespace ET
             List<LDScene> dungeonConfigs = new List<LDScene>();
             List<LDScene> dungeonConfigsAll = LDSceneCategory.Instance.GetAll().Values.ToList();
 
-            int roleLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+            int roleLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
 
             for (int i = 0; i < dungeonConfigsAll.Count; i++)
             {
@@ -140,7 +140,7 @@ namespace ET
             }
 
             bagInfo.ItemPar = $"{dungeonid}@{"TaskMove_6"}@{rewardList[0].ItemID + ";" + rewardList[0].ItemNum}";
-            Log.Debug($"生成藏宝图:  {unit.Id} {unit.GetComponent<UserInfoComponent>().UserName} {rewardList[0].ItemID}");
+            Log.Debug($"生成藏宝图:  {unit.Id} {unit.GetComponent<RoleInfoComponent>().UserName} {rewardList[0].ItemID}");
         }
 
 
@@ -244,8 +244,8 @@ namespace ET
             {
                 if (randomNum >= 2)
                 {
-                    string noticeContent = $"恭喜玩家<color=#B6FF00>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>使用鉴定符鉴定装备时,一道金光装备出现<color=#FFA313>{randomNum}条极品属性</color>";
-                    string noticeContentEn = $"Congratulations to the player<color=#B6FF00>{unit.GetComponent<UserInfoComponent>().UserInfo.Name}</color>Use Identifier to equipment,A flash of golden light   The equipment appeared <color=#FFA313>{randomNum} best attribute</color>";
+                    string noticeContent = $"恭喜玩家<color=#B6FF00>{unit.GetComponent<RoleInfoComponent>().UserInfo.Name}</color>使用鉴定符鉴定装备时,一道金光装备出现<color=#FFA313>{randomNum}条极品属性</color>";
+                    string noticeContentEn = $"Congratulations to the player<color=#B6FF00>{unit.GetComponent<RoleInfoComponent>().UserInfo.Name}</color>Use Identifier to equipment,A flash of golden light   The equipment appeared <color=#FFA313>{randomNum} best attribute</color>";
 
                     ServerMessageHelper.SendBroadMessage(unit.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
                 }

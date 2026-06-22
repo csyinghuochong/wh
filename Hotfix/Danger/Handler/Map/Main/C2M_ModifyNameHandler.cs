@@ -54,7 +54,7 @@ namespace ET
             LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(70);
             if (unit.GetComponent<BagComponent>().OnCostItemData(ldGlobalValue.Value, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
             {
-                unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.Name, request.NewName);
+                unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Name, request.NewName);
                 M2C_RoleDataBroadcast m2C_BroadcastRoleData = new M2C_RoleDataBroadcast();
                 m2C_BroadcastRoleData.UnitId = unit.Id;
                 m2C_BroadcastRoleData.UpdateType = (int)UserDataType.Name;

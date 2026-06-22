@@ -16,7 +16,7 @@ namespace ET
             }
 
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             if (userInfoComponent.UserInfo.TowerRewardIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
@@ -48,8 +48,8 @@ namespace ET
 
             TowerConfig towerRewardConfig = TowerConfigCategory.Instance.Get(request.RewardId);
 
-            string userName = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
-            Log.Warning($"试炼之地领取奖励： 区:{unit.DomainZone()}   {unit.Id}   {request.RewardId}  {userName}  {unit.GetComponent<UserInfoComponent>().UserInfo.Lv}");
+            string userName = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
+            Log.Warning($"试炼之地领取奖励： 区:{unit.DomainZone()}   {unit.Id}   {request.RewardId}  {userName}  {unit.GetComponent<RoleInfoComponent>().UserInfo.Lv}");
 
             if (unit.GetComponent<BagComponent>().OnAddItemData(towerRewardConfig.DropShow, $"{ItemGetWay.RandomTowerReward}_{TimeHelper.ServerNow()}"))
             {

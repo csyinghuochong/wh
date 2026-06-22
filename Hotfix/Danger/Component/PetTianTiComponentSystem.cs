@@ -141,7 +141,7 @@ namespace ET
 
             Unit unit = self.MainUnit;
             RankPetInfo rankPetInfo = new RankPetInfo();
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
             rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
             rankPetInfo.PetUId = unit.GetComponent<PetComponent>().TeamPetList;

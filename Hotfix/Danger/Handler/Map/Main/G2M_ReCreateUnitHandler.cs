@@ -18,7 +18,7 @@
 //                {
 //                    continue;
 //                }
-//                if (value.GetComponent<UserInfoComponent>().UserInfo.UserId == request.UserID)
+//                if (value.GetComponent<RoleInfoComponent>().UserInfo.UserId == request.UserID)
 //                {
 //                    unit = value;
 //                    break;

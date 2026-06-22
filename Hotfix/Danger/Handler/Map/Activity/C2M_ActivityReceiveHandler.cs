@@ -102,7 +102,7 @@ namespace ET
                                 return;
                             }
                         }
-                        UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                        RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                         if (userInfoComponent.UserInfo.Lv < int.Parse(activityConfig.Par_1))
                         {
                             reply();
@@ -154,7 +154,7 @@ namespace ET
                         unit.GetComponent<BagComponent>().OnAddItemData(rewards, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                         break;
                     case 31:    //登录奖励
-                        userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                        userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                         if (userInfoComponent.UserInfo.Lv < 10)
                         {
                             reply();
@@ -199,13 +199,13 @@ namespace ET
                         }
                         break;
                     case 33://节日活动
-                        if (unit.GetComponent<UserInfoComponent>().TodayOnLine < 30)
+                        if (unit.GetComponent<RoleInfoComponent>().TodayOnLine < 30)
                         {
                             response.Error = ErrorCode.Err_OnLineTimeNot;
                             reply();
                             return;
                         }
-                        string rewardItemlist = ActivityHelper.GetJieRiReward(unit.GetComponent<UserInfoComponent>());
+                        string rewardItemlist = ActivityHelper.GetJieRiReward(unit.GetComponent<RoleInfoComponent>());
                         if (unit.GetComponent<BagComponent>().GetBagLeftCell() < rewardItemlist.Split('@').Length)
                         {
                             response.Error = ErrorCode.ERR_BagIsFull;
@@ -219,7 +219,7 @@ namespace ET
                             return;
                         }
 
-                        if (unit.GetComponent<UserInfoComponent>().UserInfo.Lv < 20)
+                        if (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv < 20)
                         {
                             response.Error = ErrorCode.ERR_EquipLvLimit;
                             reply();
@@ -230,7 +230,7 @@ namespace ET
                         unit.GetComponent<BagComponent>().OnAddItemData(rewardItemlist, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                         break;
                     case 34:
-                        userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                        userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                         if (userInfoComponent.UserInfo.Lv < int.Parse(activityConfig.Par_1))
                         {
                             response.Error = ErrorCode.ERR_EquipLvLimit;

@@ -96,7 +96,7 @@ namespace ET
          
                 LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(soloPlayerList[i].Occ);
                 string occName =  WordHelper.GetShowText(ldOccupationConfig.Name);
-                UserInfoComponent userInfoComponent = await DBHelper.GetComponent<UserInfoComponent>(self.DomainZone(), soloPlayerList[i].UnitId);
+                RoleInfoComponent userInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(self.DomainZone(), soloPlayerList[i].UnitId);
 
                 if (userInfoComponent.UserInfo.OccTwo > 0)
                 {

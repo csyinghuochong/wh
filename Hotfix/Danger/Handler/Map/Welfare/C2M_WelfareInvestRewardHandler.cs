@@ -18,7 +18,7 @@ namespace ET
 
             int total = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.InvestTotal);
           
-            unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, total.ToString(), true, ItemGetWay.Welfare);
+            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, total.ToString(), true, ItemGetWay.Welfare);
             unit.GetComponent<NumericComponent>().ApplyValue(null, NumericType.InvestReward, 1, 0);
             reply();
             await ETTask.CompletedTask;

@@ -87,7 +87,7 @@ namespace ET
             }
 
             //钱是否足够
-            if (unit.GetComponent<UserInfoComponent>().UserInfo.Gold < needGold)
+            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Gold < needGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -95,11 +95,11 @@ namespace ET
             }
 
             bool firstDay = false;
-            int openPaiMai = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PaiMaiOpen);
+            int openPaiMai = 0;//unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PaiMaiOpen);
 
             if (openPaiMai == 0)
             {
-                UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                 int createDay = userInfoComponent.GetCrateDay();
 
                 //firstDay = createDay <= 1 && userInfoComponent.UserInfo.Lv <= 10;
@@ -110,7 +110,7 @@ namespace ET
                     || CommonHelper.IsCanPaiMai_Level(createDay, userInfoComponent.UserInfo.Lv) == 0)
                 {
                     openPaiMai = 1;
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.PaiMaiOpen, 1);
+                    //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.PaiMaiOpen, 1);
                 }
             }
 
@@ -128,7 +128,7 @@ namespace ET
                     (paimaiServerId, new M2P_PaiMaiBuyRequest()
                     {
                         PaiMaiItemInfo = request.PaiMaiItemInfo,
-                        Gold = unit.GetComponent<UserInfoComponent>().UserInfo.Gold,
+                        Gold = unit.GetComponent<RoleInfoComponent>().UserInfo.Gold,
                         BuyNum = buyNum
                     });
                 if (r_GameStatusResponse.Error != ErrorCode.ERR_Success)
@@ -140,7 +140,7 @@ namespace ET
 
                 needGold = (long)r_GameStatusResponse.PaiMaiItemInfo.Price * r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
                
-                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.PaiMaiBuy);
+                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.PaiMaiBuy);
                 //背包添加道具
                 bool ret = unit.GetComponent<BagComponent>().OnAddItemData(r_GameStatusResponse.PaiMaiItemInfo.BagInfo, $"{ItemGetWay.PaiMaiBuy}_{TimeHelper.ServerNow()}");
 
@@ -158,7 +158,7 @@ namespace ET
                 unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday += needGold;
                 if (unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday >= 50000000)
                 {
-                    UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                    UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                     string levelInfo = $"区： {unit.DomainZone()}  {userInfoComponent.UserInfo.Name}   \t拍卖消耗金币:{unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday}  " +
                         $" \t账号:{userInfoComponent.Account}   \t钻石:{userInfoComponent.UserInfo.Diamond}  \t金币:{userInfoComponent.UserInfo.Gold} \n";
                     LogHelper.PaiMaiInfo(levelInfo);
@@ -197,14 +197,7 @@ namespace ET
                             dataCollationComponent.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, false);
                             DBHelper.SaveComponentCache(unit.DomainZone(), r_GameStatusResponse.PaiMaiItemInfo.UserId, dataCollationComponent).Coroutine();
                         }
-
-                        NumericComponent numericComponent = await DBHelper.GetComponentCache<NumericComponent>(unit.DomainZone(), r_GameStatusResponse.PaiMaiItemInfo.UserId);
-                        if (numericComponent != null)
-                        {
-                            long paimaigold = numericComponent.GetAsLong(NumericType.PaiMaiTodayGold) + (long)(needGold * 0.95f);
-                            numericComponent.ApplyValue(NumericType.PaiMaiTodayGold, paimaigold, false);
-                            DBHelper.SaveComponentCache(unit.DomainZone(), r_GameStatusResponse.PaiMaiItemInfo.UserId, numericComponent).Coroutine();
-                        }
+                        
                     }
                 }
                 else
@@ -212,8 +205,6 @@ namespace ET
                     DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
                     NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
                     dataCollationComponent.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, true);
-                    long paimaigold = numericComponent.GetAsLong(NumericType.PaiMaiTodayGold)+(long)(needGold * 0.95f);
-                    numericComponent.ApplyValue(NumericType.PaiMaiTodayGold, paimaigold, true);
                 }
                 
                 //每天更新文本。
@@ -227,7 +218,7 @@ namespace ET
                     int itemNumber = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
                     long price = r_GameStatusResponse.PaiMaiItemInfo.Price;
 
-                    UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                    UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                     string buyPlayerName = userInfoComponent.UserInfo.Name;
                     int buyPlayerLv = userInfoComponent.UserInfo.Lv;
                     int buyPlayerRecharge = request.IsRecharge;

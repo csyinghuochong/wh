@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemXiLianNumReward request, M2C_ItemXiLianNumReward response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             if (userInfoComponent.UserInfo.ItemXiLianNumRewardIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
@@ -24,7 +24,7 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianNumber) < request.RewardId)
+           /* if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianNumber) < request.RewardId)
             {
                 response.Error = ErrorCode.Pre_Condition_Error;
                 reply();
@@ -44,8 +44,8 @@ namespace ET
             userInfoComponent.UserInfo.ItemXiLianNumRewardIds.Add(request.RewardId);
             int randomZuanshi = RandomHelper.RandomNumber(int.Parse(diamond[0]), int.Parse(diamond[1]));
             unit.GetComponent<BagComponent>().OnAddItemData(reward[0], $"{ItemGetWay.ItemXiLian}_{TimeHelper.ServerNow()}");
-            unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, ItemGetWay.ItemXiLian);
-
+            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, ItemGetWay.ItemXiLian);
+*/
             reply();
             await ETTask.CompletedTask;
         }

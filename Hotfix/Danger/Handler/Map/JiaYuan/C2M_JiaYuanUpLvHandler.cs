@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanUpLvRequest request, M2C_JiaYuanUpLvResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             int lvid = userInfoComponent.UserInfo.JiaYuanLv;
             LDHome ldHome = LDHomeCategory.Instance.Get(lvid);
             if ( !LDHomeCategory.Instance.Contain(lvid) )

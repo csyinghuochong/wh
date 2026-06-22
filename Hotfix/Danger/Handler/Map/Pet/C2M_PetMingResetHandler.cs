@@ -17,7 +17,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();   
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();   
             if (userInfoComponent.UserInfo.Diamond < 350)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;

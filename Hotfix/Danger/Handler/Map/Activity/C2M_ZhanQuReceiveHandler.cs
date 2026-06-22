@@ -27,7 +27,7 @@ namespace ET
                 }
 
                 ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(request.ActivityId);
-                UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+                UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
 
                 if (request.ActivityType != activityConfig.ActivityType)
                 {

@@ -59,8 +59,8 @@ namespace ET
 
                 unit.Type = UnitType.Player;
                 unit.SceneType = request.SceneType;
-				unit.ConfigId = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
-				unit.GetComponent<UserInfoComponent>().UserInfo.DemonName = string.Empty;
+				unit.ConfigId = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
+				unit.GetComponent<RoleInfoComponent>().UserInfo.DemonName = string.Empty;
                 unit.GetComponent<HeroDataComponent>().CheckNumeric();
                 Function_Fight.UnitUpdateProperty_Base(unit, false, false);
 

@@ -192,7 +192,7 @@ namespace ET
             }
 
             //基础职业属性
-            UserInfoComponent UnitInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent UnitInfoComponent = unit.GetComponent<RoleInfoComponent>();
             UserInfo userInfo = UnitInfoComponent.UserInfo;
             int roleLv = userInfo.Lv;
 
@@ -287,7 +287,7 @@ namespace ET
             }
 
             //坐骑属性
-            List<PropertyValue> zuoqiPros = unit.GetComponent<UserInfoComponent>().GetZuoQiPro();
+            List<PropertyValue> zuoqiPros = unit.GetComponent<RoleInfoComponent>().GetZuoQiPro();
             for (int i = 0; i < zuoqiPros.Count; i++)
             {
                 AddUpdateProDicList(zuoqiPros[i].HideID, zuoqiPros[i].HideValue, UpdateProDicList);
@@ -429,7 +429,7 @@ namespace ET
             //排行榜
             if (rank)
             {
-                unit.GetComponent<UserInfoComponent>().UpdateRankInfo();
+                unit.GetComponent<RoleInfoComponent>().UpdateRankInfo();
             }
             
         }
@@ -602,11 +602,11 @@ namespace ET
             }
 
             //更新战力
-            unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.Combat, zhanliValue.ToString(), notice);
+            unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Combat, zhanliValue.ToString(), notice);
 
             if (zhanliValue < 0 || zhanliValue > 500000)
             {
-                Log.Error($"战力异常: {unit.DomainZone()}  {unit.GetComponent<UserInfoComponent>().UserInfo.Name}  {zhanliValue}");
+                Log.Error($"战力异常: {unit.DomainZone()}  {unit.GetComponent<RoleInfoComponent>().UserInfo.Name}  {zhanliValue}");
             }
 
         }

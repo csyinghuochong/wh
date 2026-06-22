@@ -11,7 +11,7 @@ namespace ET
             try
             {
                 int juexingid = 0;
-                int occtwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
+                int occtwo = unit.GetComponent<RoleInfoComponent>().UserInfo.OccTwo;
                 if (occtwo != 0)
                 {
                    

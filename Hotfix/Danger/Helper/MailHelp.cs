@@ -36,7 +36,7 @@ namespace ET
             MessageHelper.SendToLocationActor( userID, mail2M_SendServer);
         }
 
-        public static bool CheckSendMail(int MailType, string Title, NumericComponent numericComponent, UserInfoComponent userInfoComponent, BagComponent bagComponent)
+        public static bool CheckSendMail(int MailType, string Title, NumericComponent numericComponent, RoleInfoComponent userInfoComponent, BagComponent bagComponent)
         {
             if (numericComponent == null || userInfoComponent == null || bagComponent == null)
             {

@@ -54,7 +54,7 @@ namespace ET
                 // 40-49级 204001
                 // 50-59级 205001
                 // 60-99级 206001
-                int lv = self.MyUnit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+                int lv = self.MyUnit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
                 int baseLevel = 200000;
                 if (lv < 20)
                 {

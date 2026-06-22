@@ -7,7 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_UnionKeJiLearnRequest request, M2C_UnionKeJiLearnResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();   
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();   
             int kejiid = userInfoComponent.UserInfo.UnionKeJiList[request.Position];
 
             UnionKeJiConfig unionKeJiConfig = UnionKeJiConfigCategory.Instance.Get(kejiid);

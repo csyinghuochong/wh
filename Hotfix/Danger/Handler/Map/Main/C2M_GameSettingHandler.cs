@@ -10,7 +10,7 @@ namespace ET
 		protected override async ETTask Run(Unit unit, C2M_GameSettingRequest request, M2C_GameSettingResponse response, Action reply)
 		{
 			//读取数据库
-			UserInfo userInfo = unit.GetComponent<UserInfoComponent>().GetUserInfo();
+			UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().GetUserInfo();
 
 			for (int i = 0; i < request.GameSettingInfos.Count; i++)
 			{

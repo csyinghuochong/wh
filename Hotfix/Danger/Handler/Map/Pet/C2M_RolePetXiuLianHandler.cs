@@ -32,7 +32,7 @@ namespace ET
             }*/
 
             //List<ComponentWithId> resultuserinfo = await dbProxy.Query<UserInfo>(_userInfo => _userInfo.Id == player.UserId);
-            UserInfo userinfo = unit.GetComponent<UserInfoComponent>().GetUserInfo();
+            UserInfo userinfo = unit.GetComponent<RoleInfoComponent>().GetUserInfo();
 
             //判定消耗
             /*string[] costItemList = costItemNum.Split(',');

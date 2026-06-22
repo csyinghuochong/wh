@@ -111,7 +111,7 @@ namespace ET
             {
                 long rechareId = DBHelper.GetRechargeCenter();
 
-                UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                 R2M_RechargeResponse r2M_RechargeResponse = (R2M_RechargeResponse)await ActorMessageSenderComponent.Instance.Call(rechareId, new M2R_RechargeRequest()
                 {
                     Zone = unit.DomainZone(),

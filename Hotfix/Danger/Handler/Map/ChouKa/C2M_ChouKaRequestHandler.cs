@@ -12,7 +12,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ChouKaRequest request, M2C_ChouKaResponse response, Action reply)
         {
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
-            UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
             // 判断背包和仓库是否能够装满
             if (bagComponent.GetBagLeftCell() + bagComponent.GetChouKaLeftSpace() < request.ChouKaType)
             {
@@ -147,7 +147,7 @@ namespace ET
             }
             else
             {
-                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.ChouKa);
+                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.ChouKa);
             }
             if (request.ChouKaType == 10)
             {

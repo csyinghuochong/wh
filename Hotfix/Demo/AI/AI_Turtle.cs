@@ -42,9 +42,9 @@ namespace ET
                     bool sucess = units[i].GetComponent<BagComponent>().OnAddItemData(droplist, string.Empty, $"{ItemGetWay.Turtle}_{TimeHelper.ServerNow()}");
                     if (!sucess)
                     {
-                        units[i].GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.Message, "背包已满！");
+                        units[i].GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Message, "背包已满！");
                     }
-                    rewardName.Add(units[i].GetComponent<UserInfoComponent>().UserInfo.Name);
+                    rewardName.Add(units[i].GetComponent<RoleInfoComponent>().UserInfo.Name);
                 }
             }
 

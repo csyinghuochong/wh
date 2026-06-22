@@ -59,8 +59,8 @@ namespace ET
                 else
                 {
                     //钻石洗炼
-                    UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
-                    int itemXiLianNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianNumber);
+                    UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
+                    int itemXiLianNumber = 0;//unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianNumber);
                     string[] set = LDGlobalValueCategory.Instance.Get(116).Value.Split(';');
                     double discount;
                     if (itemXiLianNumber < int.Parse(set[0]))
@@ -99,7 +99,7 @@ namespace ET
 
                 if (ifZuanShi)
                 {
-                    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.ItemXiLianNumber, request.Times, 0);
+                    //unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.ItemXiLianNumber, request.Times, 0);
                 }
 
                 /*

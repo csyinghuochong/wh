@@ -35,7 +35,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent unitInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent unitInfoComponent = unit.GetComponent<RoleInfoComponent>();
 			string costGoldValue = skillconf.Cost;
 			int costSPValue = 1;
 			int RoseSP = unitInfoComponent.UserInfo.Sp;
@@ -57,8 +57,8 @@ namespace ET
 			}
 	
 			response.NewSkillID = nextSkillID;
-			//unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (costGoldValue*-1).ToString(), true, ItemGetWay.CostItem);
-			//unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.Sp, (costSPValue * -1).ToString());
+			//unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (costGoldValue*-1).ToString(), true, ItemGetWay.CostItem);
+			//unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Sp, (costSPValue * -1).ToString());
 
 			Function_Fight.UnitUpdateProperty_Base( unit,true, true );
 			//测试跑马灯

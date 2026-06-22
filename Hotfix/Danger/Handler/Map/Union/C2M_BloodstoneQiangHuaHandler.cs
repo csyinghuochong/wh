@@ -28,14 +28,14 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<UserInfoComponent>().UserInfo.Lv < 60)
+            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv < 60)
             {
                 response.Error = ErrorCode.ERR_LevelIsNot;
                 reply();
                 return;
             }
 
-            if (unit.GetComponent<UserInfoComponent>().UserInfo.Lv < publicQiangHuaConfig.UpLvLimit)
+            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv < publicQiangHuaConfig.UpLvLimit)
             {
                 response.Error = ErrorCode.ERR_LvNoHigh;
                 reply();
@@ -51,43 +51,47 @@ namespace ET
                 reply();
                 return;
             }
+            /*
+                       int level = 0;
 
-            int level = 0;
+                       int failType = 0;
 
-            int failType = 0;
-            switch (request.QiangHuaType)
-            {
-                case NumericType.Bloodstone:
-                    failType = NumericType.BloodstoneFail;
-                    break;
-                case NumericType.UnionAttribute_1:
-                    failType = NumericType.UnionAttributeFail_1;
-                    break;
-                case NumericType.UnionAttribute_2:
-                    failType = NumericType.UnionAttributeFail_2;
-                    break;
-                default:
-                    response.Error = ErrorCode.ERR_ModifyData;
-                    reply();
-                    return;
-            }
+                      switch (request.QiangHuaType)
+                      {
 
-            double addPro = publicQiangHuaConfig.AdditionPro * numericComponent.GetAsInt(failType);
-            if ((float)publicQiangHuaConfig.SuccessPro + addPro >= RandomHelper.RandFloat01())
-            {
-                level = publicQiangHuaConfig.NextID;
-                numericComponent.ApplyValue(request.QiangHuaType, level);
-                numericComponent.ApplyValue(failType, 0);
-            }
-            else
-            {
-                level = publicQiangHuaConfig.Id;
-                numericComponent.ApplyChange(null, failType, 1, 0);
-            }
+                           case NumericType.Bloodstone:
+                              failType = NumericType.BloodstoneFail;
+                              break;
 
-            response.Level = level;
-            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+                          case NumericType.UnionAttribute_1:
+                              failType = NumericType.UnionAttributeFail_1;
+                              break;
+                          case NumericType.UnionAttribute_2:
+                              failType = NumericType.UnionAttributeFail_2;
+                              break;
 
+                           default:
+                               response.Error = ErrorCode.ERR_ModifyData;
+                               reply();
+                               return;
+                       }
+
+                       double addPro = publicQiangHuaConfig.AdditionPro * numericComponent.GetAsInt(failType);
+                       if ((float)publicQiangHuaConfig.SuccessPro + addPro >= RandomHelper.RandFloat01())
+                       {
+                           level = publicQiangHuaConfig.NextID;
+                           numericComponent.ApplyValue(request.QiangHuaType, level);
+                           numericComponent.ApplyValue(failType, 0);
+                       }
+                       else
+                       {
+                           level = publicQiangHuaConfig.Id;
+                           numericComponent.ApplyChange(null, failType, 1, 0);
+                       }
+
+                       response.Level = level;
+                       Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+            */
             reply();
             await ETTask.CompletedTask;
         }

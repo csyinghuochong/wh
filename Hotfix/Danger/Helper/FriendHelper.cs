@@ -13,7 +13,7 @@ namespace ET
             for (int i = 0; i < friends.Count; i++)
             {
                 long friendId = friends[i];
-                D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = friendId, Component = DBHelper.UserInfoComponent });
+                D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = friendId, Component = DBHelper.RoleInfoComponent });
                 UserInfoComponent userInfoComponent = d2GGetUnit.Component as UserInfoComponent;
                 if (userInfoComponent == null)
                 {

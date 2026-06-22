@@ -115,7 +115,7 @@ namespace ET
                         (float)ldScene.Pos_Born[2] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1));
                     unit.Stop(-2);
 
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.PullBack, "1");
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.PullBack, "1");
                 }
             }
         }
@@ -179,7 +179,7 @@ namespace ET
 
                 long mapInstanceId = DBHelper.GetRankServerId( self.DomainZone() );
                 RankingInfo rankPetInfo = new RankingInfo();
-                UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                 rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
                 rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
                 rankPetInfo.PlayerLv = userInfoComponent.UserInfo.Lv;
@@ -274,7 +274,7 @@ namespace ET
                     float distance = Vector3.Distance(units[i].Position, vector3);
 
                     RankingInfo rankPetInfo = new RankingInfo();
-                    UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                    RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                     rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
                     rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
                     rankPetInfo.PlayerLv = -1;

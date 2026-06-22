@@ -27,7 +27,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             if (userInfoComponent.UserInfo.Gold < occupationJueXingConfig.costGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;

@@ -214,7 +214,7 @@ namespace ET
                         {
                             //服务器也做个记录
                             int skillid = list[ RandomHelper.RandomNumber(0, list.Count) ] ;
-                            this.TheUnitBelongto.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.BuffSkill, skillid.ToString());
+                            this.TheUnitBelongto.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.BuffSkill, skillid.ToString());
                         }
                     }
                     break;

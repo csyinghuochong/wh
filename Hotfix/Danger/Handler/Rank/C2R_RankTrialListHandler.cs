@@ -35,7 +35,7 @@ namespace ET
                     }
 
                     idlist.Add(ranklist[i].KeyId);
-                    D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = ranklist[i].KeyId, Component = DBHelper.UserInfoComponent });
+                    D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = ranklist[i].KeyId, Component = DBHelper.RoleInfoComponent });
                     if (d2GGetUnit.Component == null)
                     {
                         continue;

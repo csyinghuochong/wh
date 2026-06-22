@@ -51,7 +51,7 @@ namespace ET
         public static void AddPlayer(this UnitComponent self, Unit unit)
         {
             if (unit.Type == UnitType.Player && !self.AllPlayers.Contains(unit.Id)
-                && unit.GetComponent<UserInfoComponent>().UserInfo.Lv >= 10)
+                && unit.GetComponent<RoleInfoComponent>().UserInfo.Lv >= 10)
             {
                 self.AllPlayers.Add(unit.Id);
             }

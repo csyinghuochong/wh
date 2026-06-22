@@ -11,7 +11,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_PetHeXinExploreReward request, M2C_PetHeXinExploreReward response, Action reply)
         {
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             if (userInfoComponent.UserInfo.PetHeXinExploreRewardIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
@@ -47,7 +47,7 @@ namespace ET
             userInfoComponent.UserInfo.PetHeXinExploreRewardIds.Add(request.RewardId);
             int randomZuanshi = RandomHelper.RandomNumber(int.Parse(diamond[0]), int.Parse(diamond[1]));
             unit.GetComponent<BagComponent>().OnAddItemData(reward[0], $"{96}_{TimeHelper.ServerNow()}");
-            unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 96);
+            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 96);
 
             reply();
             await ETTask.CompletedTask;

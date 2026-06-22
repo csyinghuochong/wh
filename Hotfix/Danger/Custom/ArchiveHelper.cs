@@ -156,7 +156,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent old_userInfoComponent = GetDBComponent<UserInfoComponent>(zone, unitid, day, DBHelper.UserInfoComponent);
+            RoleInfoComponent old_userInfoComponent = GetDBComponent<RoleInfoComponent>(zone, unitid, day, DBHelper.RoleInfoComponent);
             if (old_userInfoComponent == null)
             {
                 Console.WriteLine($"OnArchiveHandler  userInfoComponent==null:   {zone} {unitid}");
@@ -281,7 +281,7 @@ namespace ET
                 //DBMailInfo    DBPopularizeInfo     DataCollationComponent  EnergyComponent 
                 //JiaYuanComponent    NumericComponent     PetComponent     RechargeComponent 
                 //ReddotComponent     ShoujiComponent     SkillSetComponent    TaskComponent 
-                //TitleComponent      UserInfoComponent 
+                //TitleComponent      RoleInfoComponent 
                 //Game.Scene.GetComponent<DBComponent>().Remove<Entity>(zone, unitid, allComponets[i]).Coroutine();
             }
 
@@ -367,10 +367,10 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
 
             List<long> saveuserids = new List<long>();  
-            List<UserInfoComponent> userinfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(zone, d => d.Id > 0);
+            List<RoleInfoComponent> userinfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(zone, d => d.Id > 0);
             for (int i = 0; i < userinfoComponentList.Count; i++)
             {
-                UserInfoComponent userInfoComponent = userinfoComponentList[i];
+                RoleInfoComponent userInfoComponent = userinfoComponentList[i];
                 if (userInfoComponent.UserInfo.RobotId != 0)
                 {
                     continue;
@@ -409,7 +409,7 @@ namespace ET
             await ExecuteBatchSingleComponent<SkillSetComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<TaskComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<TitleComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<UserInfoComponent>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<RoleInfoComponent>(zone, saveuserids);
         }
 
         public static async ETTask ExecuteBatchSingleComponent<K>(int zone,  List<long> saveuserids) where K : Entity, new()
@@ -436,7 +436,7 @@ namespace ET
 
             SaveListToJson(allComponents, filepath, filepath + fileName);
 
-            //UserInfoComponent userInfoComponent = GetUserComponent<UserInfoComponent>(134, 2694759532839632896);
+            //RoleInfoComponent userInfoComponent = GetUserComponent<RoleInfoComponent>(134, 2694759532839632896);
             //Console.WriteLine(" MongoHelper.Deserialize");
         }
 

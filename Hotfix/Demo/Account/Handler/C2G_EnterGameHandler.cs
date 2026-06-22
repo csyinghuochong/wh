@@ -222,7 +222,7 @@ namespace ET
 						gateMapComponent.Scene = SceneFactory.Create(gateMapComponent, "GateMap", SceneType.GateMap);
 						
 						Unit unit = await UnitFactory.LoadUnit(player, gateMapComponent.Scene, createRoleInfo, centerAccountInfos[0].Account, request.AccountId);
-						/*await DBHelper.AddDataComponent<UserInfoComponent>(unit, request.UserID, DBHelper.UserInfoComponent);
+						/*await DBHelper.AddDataComponent<RoleInfoComponent>(unit, request.UserID, DBHelper.RoleInfoComponent);
 						await DBHelper.AddDataComponent<NumericComponent>(unit, request.UserID, DBHelper.NumericComponent);
 						await DBHelper.AddDataComponent<TaskComponent>(unit, request.UserID, DBHelper.TaskComponent);
 						await DBHelper.AddDataComponent<ShoujiComponent>(unit, request.UserID, DBHelper.ShoujiComponent);
@@ -243,7 +243,7 @@ namespace ET
                         unit.AddComponent<StateComponent>();
                         unit.AddComponent<HeroDataComponent>();
                         unit.AddComponent<DBSaveComponent>();
-						unit.GetComponent<UnitInfoComponent>().UnitName = unit.GetComponent<UserInfoComponent>().UserName;
+						unit.GetComponent<UnitInfoComponent>().UnitName = unit.GetComponent<RoleInfoComponent>().UserName;
 						DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
 						dataCollationComponent.CorrectData();
                         dataCollationComponent.UpdatePlatName(request.Platform, request.PlatformTwo, request.Simulator, request.Root, request.DeviceID, request.UnityVersion, request.BigVersion, request.DeviceName, request.OAID);
@@ -256,7 +256,7 @@ namespace ET
                         await EnterRankServer(unit);
                         await EnterMailServer(unit);
                         player.ChatInfoInstanceId = await EnterWorldChatServer(unit);   //登录聊天服
-                        unit.GetComponent<UserInfoComponent>().UserInfo.AccInfoID = request.AccountId;
+                        unit.GetComponent<RoleInfoComponent>().UserInfo.AccInfoID = request.AccountId;
                         response.AccInfoID = request.AccountId;
 
                         if (session.DomainZone() == 0)
@@ -280,7 +280,7 @@ namespace ET
 						player.PopularizeServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Popularize)).InstanceId;
 						player.ReChargeServerID = StartSceneConfigCategory.Instance.RechargeConfig.InstanceId;
 						response.MyId = unitId;
-						long accountId = unit.GetComponent<UserInfoComponent>().UserInfo.AccInfoID;
+						long accountId = unit.GetComponent<RoleInfoComponent>().UserInfo.AccInfoID;
 						response.IsPopUp = GMHelp.PopUpPlayer.ContainsKey(accountId) ? 1 : 0;
 						if (response.IsPopUp == 1)
 						{
@@ -327,8 +327,8 @@ namespace ET
 			Chat2G_EnterChat chat2G_EnterChat = (Chat2G_EnterChat)await MessageHelper.CallActor(chatServerId, new G2Chat_EnterChat()
 			{ 
 				UnitId = unit.Id,
-				Name = unit.GetComponent<UserInfoComponent>().UserInfo.Name,
-				Level = unit.GetComponent<UserInfoComponent>().UserInfo.Lv,
+				Name = unit.GetComponent<RoleInfoComponent>().UserInfo.Name,
+				Level = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv,
                 UnionId = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0),
 				GateSessionActorId = unit.GetComponent<UnitGateComponent>().GateSessionActorId
 			});
@@ -341,11 +341,11 @@ namespace ET
             Mail2G_EnterMail chat2G_EnterChat = (Mail2G_EnterMail)await MessageHelper.CallActor(mailServerId, new G2Mail_EnterMail()
             {
                 UnitId = unit.Id,
-				ServerMailIdCur = unit.GetComponent<UserInfoComponent>().UserInfo.ServerMailIdCur,
+				ServerMailIdCur = unit.GetComponent<RoleInfoComponent>().UserInfo.ServerMailIdCur,
             });
 			if (chat2G_EnterChat.Error == ErrorCode.ERR_Success)
 			{
-                unit.GetComponent<UserInfoComponent>().UserInfo.ServerMailIdCur  = chat2G_EnterChat.ServerMailIdMax;
+                unit.GetComponent<RoleInfoComponent>().UserInfo.ServerMailIdCur  = chat2G_EnterChat.ServerMailIdMax;
             }
 		}
 
@@ -355,7 +355,7 @@ namespace ET
 			Rank2G_EnterRank chat2G_EnterChat = (Rank2G_EnterRank)await MessageHelper.CallActor(rankServerId, new G2Rank_EnterRank()
 			{
 				UnitId = unit.Id,
-				Occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ
+				Occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ
 			});
 
 			NumericComponent numericComponent = unit.GetComponent<NumericComponent>();

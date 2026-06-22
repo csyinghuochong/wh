@@ -90,7 +90,7 @@ namespace ET
         {
             long mapInstanceId = DBHelper.GetRankServerId( self.DomainZone() );
             RankingInfo rankPetInfo = new RankingInfo();
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             rankPetInfo.UserId = userInfoComponent.UserInfo.UserId;
             rankPetInfo.PlayerName = userInfoComponent.UserInfo.Name;
             rankPetInfo.PlayerLv = userInfoComponent.UserInfo.Lv;
@@ -118,14 +118,14 @@ namespace ET
             //1被恶魔打败的玩家会变成小恶魔,
             if (defend.Type == UnitType.Player && monsterId == 0)
             {
-                string attackName = attack.GetComponent<UserInfoComponent>().UserInfo.Name;
+                string attackName = attack.GetComponent<RoleInfoComponent>().UserInfo.Name;
                 defend.SetBornPosition(defend.Position, true);
                 defend.GetComponent<HeroDataComponent>().OnRevive();
 
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.BattleCamp, CampEnum.CampPlayer_2 );
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, 90000018);
-                defend.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.DemonName, attackName, true);
-                defend.GetComponent<UserInfoComponent>().UpdateRoleDataBroadcast(UserDataType.DemonName, attackName);
+                defend.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.DemonName, attackName, true);
+                defend.GetComponent<RoleInfoComponent>().UpdateRoleDataBroadcast(UserDataType.DemonName, attackName);
                 Function_Fight.UnitUpdateProperty_DemonBig(defend, true);
 
                 await  self.OnUpdateScore(attack, 50);

@@ -94,8 +94,8 @@ namespace ET
             string serverName = serverItem.ServerName;
             string sceneName = LDSceneCategory.Instance.Get(mapComponent.SceneId).GetSceneName();
 
-            UserInfoComponent attackUserinfo = attack.GetComponent<UserInfoComponent>();
-            UserInfoComponent defendUserinfo = defend.GetComponent<UserInfoComponent>();
+            UserInfoComponent attackUserinfo = attack.GetComponent<RoleInfoComponent>();
+            UserInfoComponent defendUserinfo = defend.GetComponent<RoleInfoComponent>();
             string attackName = attackUserinfo.UserInfo.Name;
             string defendName = defendUserinfo.UserInfo.Name;
             attackName = attack.IsRobot() ? $"{attackName}（人机）" : attackName;
@@ -473,15 +473,6 @@ namespace ET
         /// <param name="unit"></param>
         public static void CheckBlackRoom(Unit unit)
         {
-            bool black = false;
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();  
-
-
-
-            if (black)
-            {
-                numericComponent.ApplyValue( NumericType.BlackRoom, 1 );
-            }
         }
 
         /// <summary>
@@ -494,7 +485,7 @@ namespace ET
             //{
             //    return;
             //}
-            UserInfoComponent userInfo = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfo = unit.GetComponent<RoleInfoComponent>();
 
             long rechargeValue = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber);
 
@@ -532,8 +523,8 @@ namespace ET
             }
 
             BagComponent bagComponent = unit.GetComponent<BagComponent>();
-            int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
-            int occTwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
+            int occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
+            int occTwo = unit.GetComponent<RoleInfoComponent>().UserInfo.OccTwo;
             List<BagInfo> bagInfos =  bagComponent.GetAllItems(occ, occTwo  );
             for (int i = 0; i < bagInfos.Count; i++)
             {

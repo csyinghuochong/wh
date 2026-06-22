@@ -27,7 +27,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
 
             if (request.Position == 1 &&  userInfoComponent.UserInfo.Lv < userInfoComponent.UserInfo.JiaYuanLv)
             {

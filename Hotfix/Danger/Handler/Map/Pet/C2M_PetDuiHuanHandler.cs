@@ -8,7 +8,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PetDuiHuanRequest request, M2C_PetDuiHuanResponse response, Action reply)
         {
             PetComponent petComponent = unit.GetComponent<PetComponent>();
-            int userLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+            int userLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
             if (PetHelper.GetBagPetNum(petComponent.RolePetInfos) >= PetHelper.GetPetMaxNumber(unit, userLv))
             {
                 response.Error = ErrorCode.ERR_BagIsFull;

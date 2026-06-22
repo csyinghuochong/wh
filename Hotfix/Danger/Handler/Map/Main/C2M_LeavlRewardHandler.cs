@@ -24,7 +24,7 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<UserInfoComponent>().UserInfo.Lv < request.LvKey)
+            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv < request.LvKey)
             {
                 Log.Error($"C2M_LeavlRewardRequest 3");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -32,7 +32,7 @@ namespace ET
                 return;
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             string[] occItems = CommonConfig.LevelRewardItem[request.LvKey].Split('&');
             string[] items;
             if (occItems.Length > 1)

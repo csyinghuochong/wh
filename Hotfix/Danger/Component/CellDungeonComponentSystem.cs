@@ -358,7 +358,7 @@ namespace ET
 
                 MessageHelper.SendToClient(self.MainUnit, m2C_FubenSettlement);
 
-                UserInfo userInfo = self.MainUnit.GetComponent<UserInfoComponent>().UserInfo;
+                UserInfo userInfo = self.MainUnit.GetComponent<RoleInfoComponent>().UserInfo;
                 List<FubenPassInfo> fubenPassInfos = userInfo.FubenPassList;
                 FubenPassInfo fubenPassInfo = null;
                 for (int i = 0; i < fubenPassInfos.Count; i++)
@@ -377,8 +377,8 @@ namespace ET
                 }
                 fubenPassInfo.Difficulty = ((int)self.FubenDifficulty > fubenPassInfo.Difficulty) ? (int)self.FubenDifficulty : fubenPassInfo.Difficulty;
 
-                self.MainUnit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Exp, chapterConfig.RewardExp.ToString(), true, ItemGetWay.FubenGetReward);
-                self.MainUnit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, chapterConfig.RewardGold.ToString(), true, ItemGetWay.FubenGetReward);
+                self.MainUnit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Exp, chapterConfig.RewardExp.ToString(), true, ItemGetWay.FubenGetReward);
+                self.MainUnit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, chapterConfig.RewardGold.ToString(), true, ItemGetWay.FubenGetReward);
 
                 self.MainUnit.GetComponent<TaskComponent>().OnPassFuben(self.FubenDifficulty, self.ChapterId, starNumber);
                 self.MainUnit.GetComponent<ChengJiuComponent>().OnPassFuben(self.FubenDifficulty, self.ChapterId, starNumber);*/

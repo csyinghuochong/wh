@@ -7,7 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ChouKaRewardRequest request, M2C_ChouKaRewardResponse response, Action reply)
         {
-            UserInfoComponent userInfoComponent= unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent= unit.GetComponent<RoleInfoComponent>();
             if (userInfoComponent.UserInfo.ChouKaRewardIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
@@ -39,7 +39,7 @@ namespace ET
             userInfoComponent.UserInfo.ChouKaRewardIds.Add(request.RewardId);
             int randomZuanshi = RandomHelper.RandomNumber(rewardConfig.RewardDiamond[0], rewardConfig.RewardDiamond[1]);
             unit.GetComponent<BagComponent>().OnAddItemData(rewardConfig.RewardItems, $"{ItemGetWay.ChouKa}_{TimeHelper.ServerNow()}");
-            unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(  UserDataType.Diamond, randomZuanshi.ToString(),true, ItemGetWay.ChouKa);
+            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(  UserDataType.Diamond, randomZuanshi.ToString(),true, ItemGetWay.ChouKa);
 
             reply();
             await ETTask.CompletedTask;

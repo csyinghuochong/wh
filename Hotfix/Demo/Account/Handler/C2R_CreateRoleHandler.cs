@@ -96,7 +96,7 @@ namespace ET
                         }
 						
                         long userId = IdGenerater.Instance.GenerateUnitId(request.ServerId);
-                        /*UserInfoComponent userInfoComponent = session.AddChildWithId<UserInfoComponent>(userId);
+                        /*RoleInfoComponent userInfoComponent = session.AddChildWithId<RoleInfoComponent>(userId);
 						userInfoComponent.Account = centerAccountList[0].Account;
                         userInfoComponent.Password = centerAccountList[0].Password;
 						userInfoComponent.CreateAccountTime = centerAccountList[0].CreateTime;
@@ -133,7 +133,7 @@ namespace ET
 						}*/
 
 						//long dbCacheId = DBHelper.GetDbCacheId(request.ServerId);
-                        //D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = userId, EntityByte = MongoHelper.ToBson(userInfoComponent), ComponentType = DBHelper.UserInfoComponent });
+                        //D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = userId, EntityByte = MongoHelper.ToBson(userInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
 						//userInfoComponent.Dispose();
 						//创建角色组件
 						//await DBHelper.AddDataComponent<NumericComponent>(request.ServerId, userId, DBHelper.NumericComponent);

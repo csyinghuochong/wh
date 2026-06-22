@@ -883,7 +883,7 @@ namespace ET
             //Log.Console($"战力排行buff: {rankId}");
             if (occRankId >= 1 && occRankId <= 3)
             {
-                int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
+                int occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
                 BuffData buffData_2 = new BuffData();
                 buffData_2.SkillId = 67000278;
                 buffData_2.BuffId = CommonConfig.GetRankBuff(rankId, occRankId, occ);
@@ -905,7 +905,7 @@ namespace ET
             //self.BuffRemove(99001011);
             self.BuffRemoveList(CommonConfig.BaoShiBuff);
 
-            /*UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            /*RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             if (userInfoComponent.UserInfo.BaoShiDu >= 80)
             {
                 BuffData buffData_2 = new BuffData();
@@ -957,7 +957,7 @@ namespace ET
                 return;
             }
             long serverTime = TimeHelper.ServerNow();
-            UserInfoComponent unitInfoComponent = unit.GetComponent<UserInfoComponent>();
+            RoleInfoComponent unitInfoComponent = unit.GetComponent<RoleInfoComponent>();
             for (int i = 0; i < unitInfoComponent.Buffs.Count; i++)
             {
                 long endTime = long.Parse(unitInfoComponent.Buffs[i].Value2);
@@ -1144,7 +1144,7 @@ namespace ET
             {
                 return;
             }
-            UserInfoComponent unitInfoComponent = unit.GetComponent<UserInfoComponent>();
+            RoleInfoComponent unitInfoComponent = unit.GetComponent<RoleInfoComponent>();
             unitInfoComponent.Buffs.Clear();
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)

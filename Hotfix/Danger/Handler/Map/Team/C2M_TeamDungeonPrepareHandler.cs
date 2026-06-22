@@ -15,7 +15,7 @@ namespace ET
 				return;
 			}
 
-			UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+			UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
 			LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
 			
 			/*if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= userInfoComponent.GetSceneFubenTimes(sceneid))

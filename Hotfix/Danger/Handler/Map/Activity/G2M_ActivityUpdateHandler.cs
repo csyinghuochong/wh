@@ -12,11 +12,11 @@ namespace ET
             {
                 case 0:
                     Log.Debug($"OnZeroClockUpdate [零点刷新]: {unit.Id}");
-                    UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+                    UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
                     unit.GetComponent<HeroDataComponent>().OnZeroClockUpdate(true);
                     unit.GetComponent<EnergyComponent>().OnZeroClockUpdate();
-                    unit.GetComponent<UserInfoComponent>().OnHourUpdate(0, true);
-                    unit.GetComponent<UserInfoComponent>().OnZeroClockUpdate(true);
+                    unit.GetComponent<RoleInfoComponent>().OnHourUpdate(0, true);
+                    unit.GetComponent<RoleInfoComponent>().OnZeroClockUpdate(true);
                     unit.GetComponent<TaskComponent>().CheckWeeklyUpdate();
                     unit.GetComponent<TaskComponent>().OnZeroClockUpdate(true);
                     unit.GetComponent<ActivityComponent>().OnZeroClockUpdate(userInfo.Lv);
@@ -30,7 +30,7 @@ namespace ET
                 default:
                     //if (message.ActivityType == 18  && unit.DomainZone() == 81)
                     //{
-                    //    UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                    //    RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                     //    DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
                     //    ChengJiuComponent chengJiuComponent = unit.GetComponent<ChengJiuComponent>();
 
@@ -60,7 +60,7 @@ namespace ET
                     //    LogHelper.OnLineInfo(gongzuoshiInfo);    
                     //}
 
-                    unit.GetComponent<UserInfoComponent>().OnHourUpdate(message.ActivityType, true);
+                    unit.GetComponent<RoleInfoComponent>().OnHourUpdate(message.ActivityType, true);
                     break;
             }
    

@@ -10,7 +10,7 @@ namespace ET
         {
            
             long currentTime = TimeHelper.ServerNow();
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             userInfoComponent.OnLogin(remoteip);
             
             UserInfo userInfo = userInfoComponent.UserInfo;

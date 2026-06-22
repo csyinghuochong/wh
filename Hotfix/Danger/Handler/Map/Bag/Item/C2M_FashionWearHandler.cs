@@ -18,7 +18,7 @@ namespace ET
                 return;
             }
 
-            int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
+            int occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
             LDFashion ldFashion = LDFashionCategory.Instance.Get(request.FashionId);
 
             bool canwear = false;

@@ -23,7 +23,7 @@ namespace ET
             }
 
             List<DBMailInfo> dBMailInfos = null;
-            List<UserInfoComponent> accountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(scene.DomainZone(), d => d.UserInfo.Name == request.UserName);
+            List<RoleInfoComponent> accountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(scene.DomainZone(), d => d.UserInfo.Name == request.UserName);
             if (accountInfoList.Count > 0)
             {
                 dBMailInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBMailInfo>(scene.DomainZone(), d => d.Id == accountInfoList[0].Id);
@@ -38,7 +38,7 @@ namespace ET
                     {
                         continue;
                     }
-                    List<UserInfoComponent> userinfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<UserInfoComponent>(scene.DomainZone(), d => d.Id == dBMailInfos[i].Id);
+                    List<RoleInfoComponent> userinfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(scene.DomainZone(), d => d.Id == dBMailInfos[i].Id);
                     if (userinfoComponents.Count == 0)
                     {
                         continue;

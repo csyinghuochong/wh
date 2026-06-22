@@ -30,7 +30,7 @@ namespace ET
                 }
             }
 
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             if (userInfoComponent.UserInfo.RechargeReward.Contains(request.RechargeNumber))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;

@@ -10,7 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_CampRankSelectRequest request, M2C_CampRankSelectResponse response, Action reply)
         {
             unit.GetComponent<NumericComponent>().ApplyValue( NumericType.AcvitiyCamp, request.CampId );
-            unit.GetComponent<UserInfoComponent>().UpdateRankInfo();
+            unit.GetComponent<RoleInfoComponent>().UpdateRankInfo();
 
             reply();
             await ETTask.CompletedTask;

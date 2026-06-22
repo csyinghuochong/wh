@@ -14,7 +14,7 @@ namespace ET
                 return;
             }
 
-            UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+            UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
             if (userInfo.Lv < 10)
             {
                 response.Error = ErrorCode.ERR_LevelIsNot;
@@ -46,7 +46,7 @@ namespace ET
             }
 
             long accountZone = DBHelper.GetRealmCenter();
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             R2M_ShareSucessResponse centerAccount = (R2M_ShareSucessResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2R_ShareSucessRequest()
             {
                 AccountId = userInfoComponent.UserInfo.AccInfoID
@@ -64,12 +64,12 @@ namespace ET
             if (request.ShareType == 8)
             {
                 //给金币
-                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, "1", true, ItemGetWay.Share);
+                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, "1", true, ItemGetWay.Share);
             }
             else
             {
                 //给钻石
-                unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, "120", true, ItemGetWay.Share);
+                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, "120", true, ItemGetWay.Share);
             }
 
             unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.ShareTotalNumber_220, 0, 1);

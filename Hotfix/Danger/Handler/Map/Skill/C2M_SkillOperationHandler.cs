@@ -10,7 +10,7 @@ namespace ET
 		{
             //request.OperationType  = 1 重置技能点
             //request.OperationType  = 2 重置职业
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             int level = userInfoComponent.UserInfo.Lv;
 			int sp = userInfoComponent.UserInfo.Sp;
 			switch (request.OperationType)
@@ -18,7 +18,7 @@ namespace ET
 				case 1:
                     LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(20);
                     int needGold = int.Parse(ldGlobalValue.Value);
-                    userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                    userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                     if (userInfoComponent.UserInfo.Gold < needGold)
                     {
                         response.Error = ErrorCode.ERR_GoldNotEnoughError;
@@ -80,7 +80,7 @@ namespace ET
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.SkillMakePlan2, 1);
                     break;
                 case 4:
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.GemWarehouseOpen, 1);
+                    //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.GemWarehouseOpen, 1);
                     break;
 			}
 

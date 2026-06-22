@@ -52,7 +52,7 @@ namespace ET
             }
             else if (request.ChouKaType == 10)
             {
-                UserInfo userInfo = unit.GetComponent<UserInfoComponent>().UserInfo;
+                UserInfo userInfo = unit.GetComponent<RoleInfoComponent>().UserInfo;
                 int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(40).Value.Split('@')[0]);
                 dropId = int.Parse(LDGlobalValueCategory.Instance.Get(40).Value.Split('@')[1]);
 
@@ -77,7 +77,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (-1 * (int)(needDimanond * discount)).ToString(), true, ItemGetWay.PetChouKa);
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (-1 * (int)(needDimanond * discount)).ToString(), true, ItemGetWay.PetChouKa);
                     unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetExploreNumber, 10, 0);
                 }
             }

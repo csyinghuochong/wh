@@ -25,7 +25,7 @@ namespace ET
 		{
 			int juexingid = 0;
 			Unit unit = self.GetParent<Unit>();
-			int occtwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
+			int occtwo = unit.GetComponent<RoleInfoComponent>().UserInfo.OccTwo;
 			if (occtwo == 0)
 			{
 				return false;
@@ -518,7 +518,7 @@ namespace ET
 				return;
 			}
 			Unit unit = self.GetParent<Unit>();
-			UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+			RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
 			userInfoComponent.UserInfo.OccTwo = occTwo;
 
 			//新增技能
@@ -867,7 +867,7 @@ namespace ET
 
         public static void OnChangeEquipIndex(this SkillSetComponent self,  int equipIndex)
 		{
-			UserInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<UserInfoComponent>();
+			RoleInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<RoleInfoComponent>();
 
             if (userInfoComponent.UserInfo.Occ == 3)
 			{
@@ -1059,7 +1059,7 @@ namespace ET
 		{
 			int sp = 0;
 			List<int> skilllist = new List<int>();
-			UserInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<UserInfoComponent>();
+			RoleInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<RoleInfoComponent>();
 			if (userInfoComponent.UserInfo.OccTwo != 0)
 			{
 				int[] twoskill = null;
@@ -1256,7 +1256,7 @@ namespace ET
 		public static void OnSkillReset(this SkillSetComponent self, bool notice)
 		{
 			List<int> skilllist = new List<int>();
-			UserInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<UserInfoComponent>();
+			RoleInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<RoleInfoComponent>();
 			int[] initskill = LDOccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).Skill_Base;
 			int[] baseSkill = LDOccupationCategory.Instance.Get(userInfoComponent.UserInfo.Occ).Skill_Base;
 			skilllist.AddRange(initskill);

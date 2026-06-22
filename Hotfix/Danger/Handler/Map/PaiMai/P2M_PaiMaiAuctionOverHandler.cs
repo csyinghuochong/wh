@@ -10,10 +10,10 @@ namespace ET
         {
             Log.Warning($"PaiMaiAuctionOver:  {unit.DomainZone()} {unit.Id}");
             
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
             if (userInfoComponent.UserInfo.Gold < request.Price)
             {
-                unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.Message, "金币不足，竞拍失败！");
+                unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Message, "金币不足，竞拍失败！");
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
             }
             else

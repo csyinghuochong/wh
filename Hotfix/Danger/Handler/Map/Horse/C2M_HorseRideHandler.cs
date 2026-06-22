@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_HorseRideRequest request, M2C_HorseRideResponse response, Action reply)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();   
+            UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();   
             if(userInfoComponent.UserInfo.HorseIds.Count == 0)
             {
                 response.Error = ErrorCode.ERR_HoreseNotActive;

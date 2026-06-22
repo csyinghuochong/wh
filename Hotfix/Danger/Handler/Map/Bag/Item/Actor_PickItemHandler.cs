@@ -70,7 +70,7 @@ namespace ET
                 LDItem ldItem = LDItemCategory.Instance.Get(addItemID);
                 if (sceneTypeEnum == MapTypeEnum.Happy && ldItem.Quality >= 5)
                 {
-                    string uername = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
+                    string uername = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
                     string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color>";
                     string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color> from  A blessing from the heavens";
                     ServerMessageHelper.SendBroadMessage(unit.DomainZone(), NoticeType.Notice, getmessage, getmessageEn);
@@ -85,7 +85,7 @@ namespace ET
             long debugId = 1231456;
             if (unit.Id == debugId)
             {
-                LogHelper.LogDebug($"OnTeamPick1: {debugId} {unit.GetComponent<UserInfoComponent>().UserName}");
+                LogHelper.LogDebug($"OnTeamPick1: {debugId} {unit.GetComponent<RoleInfoComponent>().UserName}");
             }
 
             List<DropInfo> drops = request.ItemIds;
@@ -155,8 +155,8 @@ namespace ET
                 //普通道具直接随机分配
                 M2C_SyncChatInfo m2C_SyncChatInfo = FubenHelp.m2C_SyncChatInfo;
                 m2C_SyncChatInfo.ChatInfo = new ChatInfo();
-                m2C_SyncChatInfo.ChatInfo.PlayerLevel = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
-                m2C_SyncChatInfo.ChatInfo.Occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
+                m2C_SyncChatInfo.ChatInfo.PlayerLevel = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
+                m2C_SyncChatInfo.ChatInfo.Occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
                 m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
                 m2C_SyncChatInfo.ChatInfo.Time = TimeHelper.ServerNow();
                 string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);

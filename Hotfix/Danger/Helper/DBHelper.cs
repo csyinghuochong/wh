@@ -8,7 +8,7 @@ namespace ET
 
         public static long DebugUnitId = 2898042534301335552; //
 
-        public const string UserInfoComponent = "UserInfoComponent";
+        public const string RoleInfoComponent = "RoleInfoComponent";
         public const string BagComponent = "BagComponent";
         public const string TaskComponent = "TaskComponent";
         public const string ChengJiuComponent = "ChengJiuComponent";

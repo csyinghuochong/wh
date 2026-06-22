@@ -253,10 +253,10 @@ namespace ET
             switch (ldTask.Condition_Type)
             {
                 case (int)(int)TastConditionType.PlayerLv_1:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
                     break;
                 /*case (int)TastConditionType.KillMonsterID_1:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<UserInfoComponent>().GetReviveTime(ldTask.Param1) > 0?1 : 0;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().GetReviveTime(ldTask.Param1) > 0?1 : 0;
                     break;*/
                 case (int)TastConditionType.ItemID_Number_2:
                     taskPro.taskTargetNum_1 = (int)unit.GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item, ldTask.Param1);
@@ -266,7 +266,7 @@ namespace ET
                     break;
               
                 case (int)TastConditionType.ChangeOcc_8:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo > 0 ? 1 : 0;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().UserInfo.OccTwo > 0 ? 1 : 0;
                     break;
                 case (int)TastConditionType.JoinUnion_9:
                     taskPro.taskTargetNum_1 = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0) > 0? 1 : 0;
@@ -284,10 +284,10 @@ namespace ET
                     taskPro.taskTargetNum_1 = unit.GetComponent<PetComponent>().GetPassMaxFubenId();
                     break;
                 case (int)TastConditionType.JiaYuanLevel_22:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<UserInfoComponent>().UserInfo.JiaYuanLv;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().UserInfo.JiaYuanLv;
                     break;
                 case (int)TastConditionType.CombatToValue_133:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<UserInfoComponent>().UserInfo.Combat;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().UserInfo.Combat;
                     break;
                 case (int)TastConditionType.TrialTowerCeng_134:
                     int curtrialid = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TrialDungeonId);
@@ -324,7 +324,7 @@ namespace ET
         public static void GetRandomFubenId(this TaskComponent self, TaskPro taskPro)
         {
             List<int> openfubenids = new List<int>();
-            int lv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
+            int lv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Lv;
 
             Dictionary<int, LDScene> allfuben =  LDSceneCategory.Instance.GetAll();
             foreach (( int fubenid, LDScene config) in allfuben)
@@ -631,8 +631,8 @@ namespace ET
             {
                 UnitID = unit.Id,
                 KillNumber = 1,
-                Occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ,
-                PlayerName = unit.GetComponent<UserInfoComponent>().UserInfo.Name
+                Occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ,
+                PlayerName = unit.GetComponent<RoleInfoComponent>().UserInfo.Name
             };
             M2R_RankUnionRaceRequest request = new M2R_RankUnionRaceRequest()
             {
@@ -753,7 +753,7 @@ namespace ET
         //登录
         public static void OnLogin(this TaskComponent self)
         {
-            UserInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<UserInfoComponent>();
+            RoleInfoComponent userInfoComponent = self.GetParent<Unit>().GetComponent<RoleInfoComponent>();
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
 
            
@@ -967,7 +967,7 @@ namespace ET
             }
             */
 
-            int roleLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
+            int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Lv;
            // numericComponent.ApplyValue(NumericType.DailyTaskID, TaskHelper.GetTaskIdByType(TaskTypeEnum.Daily, roleLv), notice);
         }
 
@@ -978,7 +978,7 @@ namespace ET
             {
                 //self.ClearTypeTask(TaskTypeEnum.Ring);
 
-                int roleLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
+                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Lv;
                 int ringTaskId = TaskHelper.GetTaskIdByType(TaskTypeEnum.Ring, roleLv);
                 numericComponent.ApplyValue(NumericType.RingTaskId, ringTaskId, false);
             }*/
@@ -990,7 +990,7 @@ namespace ET
             /*if (numericComponent.GetAsInt(NumericType.WeeklyTaskId) == 0 && numericComponent.GetAsInt(NumericType.WeeklyTaskNumber) < 1)
             {
                 //self.ClearTypeTask(TaskTypeEnum.Ring);
-                int roleLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
+                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Lv;
                 int weekTaskId = TaskHelper.GetTaskIdByType(TaskTypeEnum.Weekly, roleLv);
                 numericComponent.ApplyValue(NumericType.WeeklyTaskId, weekTaskId, false);
             }*/
@@ -1036,7 +1036,7 @@ namespace ET
             if (numericComponent.GetAsInt(NumericType.UnionTaskId) == 0 && numericComponent.GetAsInt(NumericType.UnionTaskNumber) < 1)
             {
 
-                int roleLv = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Lv;
+                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Lv;
                 numericComponent.ApplyValue(NumericType.UnionTaskId, TaskHelper.GetTaskIdByType(TaskTypeEnum.Union, roleLv), false);
             }*/
         }
@@ -1089,7 +1089,7 @@ namespace ET
 
         public static void UpdateTargetTask(this TaskComponent self, bool notice)
         {
-            int createDay = self.GetParent<Unit>().GetComponent<UserInfoComponent>().GetCrateDay();
+            int createDay = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().GetCrateDay();
             if (createDay == 0 || createDay > CommonConfig.WelfareTaskList.Count)
             {
                 return;
@@ -1164,7 +1164,7 @@ namespace ET
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            int roleLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+            int roleLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
            
             /*
             numericComponent.ApplyValue(NumericType.DailyTaskNumber, 0, notice);
@@ -1244,7 +1244,7 @@ namespace ET
             }
 
             Unit unit = self.GetParent<Unit>();
-            int roleLv = unit.GetComponent<UserInfoComponent>().UserInfo.Lv;
+            int roleLv = unit.GetComponent<RoleInfoComponent>().UserInfo.Lv;
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();  
             /*
             numericComponent.ApplyValue(NumericType.RingTaskNumber, 0, false);

@@ -400,28 +400,28 @@ namespace ET
                     }
                     break;
                 case UserDataType.Gold:
-                    number = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Gold;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Gold;
                     break;
                 case UserDataType.Diamond:
-                    number = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.Diamond;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.Diamond;
                     break;
                 case UserDataType.V1TotalPoints:
-                    number = (long)self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.V1TotalPoints;
+                    number = (long)self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.V1TotalPoints;
                     break;
                 case UserDataType.RongYu:
-                    number = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.RongYu;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.RongYu;
                     break;
                 case UserDataType.JiaYuanFund:
-                    number = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.JiaYuanFund;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.JiaYuanFund;
                     break;
                 case UserDataType.UnionContri:
-                    number = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.UnionZiJin;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.UnionZiJin;
                     break;
                 case UserDataType.SeasonCoin:
-                    number = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.SeasonCoin;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.SeasonCoin;
                     break;
                 case UserDataType.WeiJingGold:
-                    number = self.GetParent<Unit>().GetComponent<UserInfoComponent>().UserInfo.WeiJingGold;
+                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().UserInfo.WeiJingGold;
                     break;
                 default:
                     break;
@@ -736,7 +736,7 @@ namespace ET
             if (robotId != 0)
             {
                 int[] equipList = new int[0];
-                UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                RoleInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                 RobotConfig robotConfig = RobotConfigCategory.Instance.Get(robotId);
 
                 if (robotConfig.Behaviour != 1 && robotConfig.Level > userInfoComponent.UserInfo.Lv)
@@ -1061,7 +1061,7 @@ namespace ET
                 if (userDataType != UserDataType.None)
                 {
                     //检测任务需求道具
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleMoneyAdd(userDataType, leftNum.ToString(), true, getType);
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(userDataType, leftNum.ToString(), true, getType);
                     ItemAddHelper.OnGetItem(unit, getType, rewardItem);
                     continue;
                 }
@@ -1194,7 +1194,7 @@ namespace ET
                         //拾取到橙色装备
                         if (equipconfig.Quality >= 5 && getType == ItemGetWay.PickItem)
                         {
-                            string name = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
+                            string name = unit.GetComponent<RoleInfoComponent>().UserInfo.Name;
                             string noticeContent = $"恭喜玩家 {name} 获得装备: <color=#{CommonHelper.QualityReturnColor(5)}>{equipconfig.Name}</color>";
                             string noticeContentEn = $"Congratulations to player {name} Get Equip: <color=#{CommonHelper.QualityReturnColor(5)}>{equipconfig.Name}</color>";
                             ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
@@ -1203,8 +1203,8 @@ namespace ET
                         //刷新传承属性
                         if (equipconfig.Quality >= 5 && equipconfig.UseLv >= 60)
                         {
-                            int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
-                            int occTwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
+                            int occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
+                            int occTwo = unit.GetComponent<RoleInfoComponent>().UserInfo.OccTwo;
                             int skillid = XiLianHelper.XiLianChuanChengJianDing(equipconfig, occ, occTwo);
                             if (skillid != 0)
                             {
@@ -1458,49 +1458,49 @@ namespace ET
                 if (itemID == (int)UserDataType.Gold)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, itemNum.ToString(), true, itemGetWay);
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, itemNum.ToString(), true, itemGetWay);
                     continue;
                 }
                 if (itemID == (int)UserDataType.WeiJingGold)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.WeiJingGold, itemNum.ToString(), true, itemGetWay);
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.WeiJingGold, itemNum.ToString(), true, itemGetWay);
                     continue;
                 }
                 if (itemID == (int)UserDataType.Diamond)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, itemNum.ToString(), true, itemGetWay);
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, itemNum.ToString(), true, itemGetWay);
                     continue;
                 }
                 if (itemID == (int)UserDataType.V1TotalPoints)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleMoneySub(UserDataType.V1TotalPoints, itemNum.ToString(), true, itemGetWay);
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.V1TotalPoints, itemNum.ToString(), true, itemGetWay);
                     continue;
                 }
                 if (itemID == (int)UserDataType.RongYu)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.RongYu, itemNum.ToString());
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.RongYu, itemNum.ToString());
                     continue;
                 }
                 if (itemID == (int)UserDataType.JiaYuanFund)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.JiaYuanFund, itemNum.ToString());
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.JiaYuanFund, itemNum.ToString());
                     continue;
                 }
                 if (itemID == (int)UserDataType.SeasonCoin)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.SeasonCoin, itemNum.ToString());
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.SeasonCoin, itemNum.ToString());
                     continue;
                 }
                 if (itemID == (int)UserDataType.UnionContri)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<UserInfoComponent>().UpdateRoleData(UserDataType.UnionContri, itemNum.ToString());
+                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.UnionContri, itemNum.ToString());
                     continue;
                 }
                 
@@ -1591,7 +1591,7 @@ namespace ET
         public static void GetEquipAttribute(this BagComponent self, List<HideProList> occInitAttribute)
         {
             Unit unit = self.GetParent<Unit>();
-            int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
+            int occ = unit.GetComponent<RoleInfoComponent>().UserInfo.Occ;
             List<int> equipIDList = new List<int>();
             List<int> equipSuitIDList = new List<int>();
             List<BagInfo> equipList =  self.GetItemByLoc(ItemLocType.ItemLocEquip);

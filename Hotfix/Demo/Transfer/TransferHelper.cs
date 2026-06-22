@@ -20,7 +20,7 @@ namespace ET
                     Log.Debug($"LoginTest1  Actor_Transfer unitId{unit.Id} oldScene:{oldScene}  requestscene{request.SceneType}");
                     return ErrorCode.ERR_RequestRepeatedly;
                 }
-                UserInfoComponent userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                UserInfoComponent userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                 if (SceneConfigHelper.UseSceneConfig(request.SceneType) && request.SceneId > 0)
                 {
                     if (!LDSceneCategory.Instance.Contain(request.SceneId))
@@ -410,7 +410,7 @@ namespace ET
                         await TransferHelper.Transfer(unit, battleEnter.FubenInstanceId, (int)MapTypeEnum.Battle, request.SceneId, FubenDifficulty.Normal, battleEnter.Camp.ToString());
                         break;
                     case MapTypeEnum.Arena:
-                        userInfoComponent = unit.GetComponent<UserInfoComponent>();
+                        userInfoComponent = unit.GetComponent<RoleInfoComponent>();
                         ldScene = LDSceneCategory.Instance.Get(request.SceneId);
                         /*if (userInfoComponent.UserInfo.Lv < ldScene.EnterLv)
                         {
@@ -434,7 +434,7 @@ namespace ET
                         mapInstanceId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
                         //[创建副本Scene]
                         T2M_TeamDungeonEnterResponse createUnit = (T2M_TeamDungeonEnterResponse)await ActorMessageSenderComponent.Instance.Call(
-                        mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = unit.GetComponent<UserInfoComponent>().UserInfo.UserId });
+                        mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = unit.GetComponent<RoleInfoComponent>().UserInfo.UserId });
                         if (createUnit.Error != ErrorCode.ERR_Success)
                         {
                             return ErrorCode.ERR_TransferFailError;
@@ -458,7 +458,7 @@ namespace ET
         {
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             int sceneTypeEnum = mapComponent.MapTypeEnum;
-            long userId = unit.GetComponent<UserInfoComponent>().UserInfo.UserId;
+            long userId = unit.GetComponent<RoleInfoComponent>().UserInfo.UserId;
             unit.GetComponent<UnitInfoComponent>().LastDungeonId = 0;
             //传送回主场景
             long mapInstanceId = DBHelper.GetMainCityServerId(unit.DomainZone());

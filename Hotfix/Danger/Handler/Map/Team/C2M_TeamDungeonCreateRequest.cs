@@ -7,7 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_TeamDungeonCreateRequest request, M2C_TeamDungeonCreateResponse response, Action reply)
         {
-            if (unit.GetComponent<UserInfoComponent>().UserInfo.Lv != request.TeamPlayerInfo.PlayerLv)
+            if (unit.GetComponent<RoleInfoComponent>().UserInfo.Lv != request.TeamPlayerInfo.PlayerLv)
             {
                 reply();
                 return;
