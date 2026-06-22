@@ -21,9 +21,12 @@ namespace ET
                 string[] attributeList = ldEquip.Attribute.Split("|");
 
                 for (int i = 0; i < attributeList.Length; i++)
-                {
+                { 
                     string[] attributeInfo = attributeList[i].Split("_");
-                    
+                    if (attributeInfo.Length != 2)
+                    {
+                        continue;
+                    }
                     equipAttribute.Add( new HideProList(){ HideID = int.Parse(attributeInfo[0]), HideValue = int.Parse(attributeInfo[1])} );
                 }
 

@@ -1146,128 +1146,90 @@ namespace ET
                     if (itemtype == ItemBigType.Type_Equip)
                     {
                         LDEquip equipconfig = LDEquipCategory.Instance.Get(itemID);
-                            //蓝色品质的装备需要进行鉴定
-                            if (!ItemNewHelper.IsBuyItem(getType) && itemtype == ItemBigType.Type_Equip)
+                        //蓝色品质的装备需要进行鉴定
+                        useBagInfo.IfJianDing = false;
+
+                        //默认洗练
+                        if (!ItemNewHelper.IsBuyItem(getType) &&  itemtype == ItemBigType.Type_Equip)
+                        {
+                            /*int xilianLevel = XiLianHelper.GetXiLianId(unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianDu));
+                            xilianLevel = xilianLevel != 0 ? EquipXiLianConfigCategory.Instance.Get(xilianLevel).XiLianLevel : 0;
+
+                            int xilianType = 0;
+                            if (getType == ItemGetWay.SkillMake || getType == ItemGetWay.TreasureMap)
                             {
-                                int qulity = LDEquipCategory.Instance.Get(itemID).Quality;
-                                if (qulity >= 4)
-                                {
-                                    useBagInfo.IfJianDing = true;
-                                }
-                                else
-                                {
-                                    //白色和绿色品质都是100% 紫色概率出鉴定
-                                    float jianDingPro = 0f;
-                                    if (qulity == 1)
-                                    {
-                                        jianDingPro = 0f;
-                                    }
-                                    if (qulity == 2)
-                                    {
-                                        jianDingPro = 0f;
-                                    }
-                                    if (qulity == 3)
-                                    {
-                                        jianDingPro = 0f;
-                                    }
-                                    if (qulity == 4)
-                                    {
-                                        jianDingPro = 0.75f;
-                                    }
-
-                                    if (RandomHelper.RandFloat() <= jianDingPro)
-                                    {
-                                        useBagInfo.IfJianDing = true;
-                                    }
-                                }
-
-                                if (LDEquipCategory.Instance.Get(itemID).AppraisalItem == 0)
-                                {
-                                    useBagInfo.IfJianDing = false;
-                                }
-                            }
-
-                            //默认洗练
-                            if (!ItemNewHelper.IsBuyItem(getType) &&  itemtype == ItemBigType.Type_Equip)
-                            {
-                                /*int xilianLevel = XiLianHelper.GetXiLianId(unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianDu));
-                                xilianLevel = xilianLevel != 0 ? EquipXiLianConfigCategory.Instance.Get(xilianLevel).XiLianLevel : 0;
-
-                                int xilianType = 0;
-                                if (getType == ItemGetWay.SkillMake || getType == ItemGetWay.TreasureMap)
-                                {
-                                    xilianType = 2;
-                                }
-                                
-                                ItemXiLianResult itemXiLian = new ItemXiLianResult();
-                                if (equipType < 101 || equipType == 301) //装备洗炼
-                                {
-                                    itemXiLian = XiLianHelper.XiLianItem(unit, useBagInfo, xilianType, xilianLevel, 0,0);
-                                }
-                                else if(equipType == 101)//生肖洗炼
-                                {
-                                    itemXiLian = XiLianHelper.XiLianShengXiao(useBagInfo);
-                                }
-
-                                useBagInfo.XiLianHideProLists = itemXiLian.XiLianHideProLists;              //基础属性洗炼
-                                useBagInfo.HideSkillLists = itemXiLian.HideSkillLists;                      //隐藏技能
-                                useBagInfo.XiLianHideTeShuProLists = itemXiLian.XiLianHideTeShuProLists;    //特殊属性洗炼*/
+                                xilianType = 2;
                             }
                             
-                            //掉落的橙色装备默认为绑定的物品
-                            if ((getType == ItemGetWay.PickItem || getType == ItemGetWay.ChouKa) && itemtype == ItemBigType.Type_Equip)
+                            ItemXiLianResult itemXiLian = new ItemXiLianResult();
+                            if (equipType < 101 || equipType == 301) //装备洗炼
                             {
-                               
-                                if (equipconfig.Quality >= 5)
-                                {
-                                    useBagInfo.isBinging = true;
-                                }
-                                if (getType == ItemGetWay.System )
-                                {
-                                    useBagInfo.IfJianDing = false;
-                                }
+                                itemXiLian = XiLianHelper.XiLianItem(unit, useBagInfo, xilianType, xilianLevel, 0,0);
                             }
-                            
-                            
-                            //拾取到橙色装备
-                            if (equipconfig.Quality >= 5 && getType == ItemGetWay.PickItem)
+                            else if(equipType == 101)//生肖洗炼
                             {
-                                string name = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
-                                string noticeContent = $"恭喜玩家 {name} 获得装备: <color=#{CommonHelper.QualityReturnColor(5)}>{equipconfig.Name}</color>";
-                                string noticeContentEn = $"Congratulations to player {name} Get Equip: <color=#{CommonHelper.QualityReturnColor(5)}>{equipconfig.Name}</color>";
-                                ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
+                                itemXiLian = XiLianHelper.XiLianShengXiao(useBagInfo);
                             }
 
-                            //刷新传承属性
-                            if (equipconfig.Quality >= 5 && equipconfig.UseLv >= 60)
+                            useBagInfo.XiLianHideProLists = itemXiLian.XiLianHideProLists;              //基础属性洗炼
+                            useBagInfo.HideSkillLists = itemXiLian.HideSkillLists;                      //隐藏技能
+                            useBagInfo.XiLianHideTeShuProLists = itemXiLian.XiLianHideTeShuProLists;    //特殊属性洗炼*/
+                        }
+                        
+                        //掉落的橙色装备默认为绑定的物品
+                        if ((getType == ItemGetWay.PickItem || getType == ItemGetWay.ChouKa) && itemtype == ItemBigType.Type_Equip)
+                        {
+                           
+                            if (equipconfig.Quality >= 5)
                             {
-                                int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
-                                int occTwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
-                                int skillid = XiLianHelper.XiLianChuanChengJianDing(equipconfig, occ, occTwo);
-                                if (skillid != 0)
-                                {
-                                    useBagInfo.InheritSkills.Add(skillid);
-                                }
+                                useBagInfo.isBinging = true;
                             }
-
-                            
-                            // 赛季晶核
-                            /*if (equipType == 201)
+                            if (getType == ItemGetWay.System )
                             {
-                                useBagInfo.ItemPar = ItemHelper.GetJingHeInitQulity(useBagInfo.ItemID).ToString();
+                                useBagInfo.IfJianDing = false;
+                            }
+                        }
+                        
+                        
+                        //拾取到橙色装备
+                        if (equipconfig.Quality >= 5 && getType == ItemGetWay.PickItem)
+                        {
+                            string name = unit.GetComponent<UserInfoComponent>().UserInfo.Name;
+                            string noticeContent = $"恭喜玩家 {name} 获得装备: <color=#{CommonHelper.QualityReturnColor(5)}>{equipconfig.Name}</color>";
+                            string noticeContentEn = $"Congratulations to player {name} Get Equip: <color=#{CommonHelper.QualityReturnColor(5)}>{equipconfig.Name}</color>";
+                            ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
+                        }
 
-                                //增加技能的晶核无须鉴定
-                                int jingheSkill = ItemHelper.GetJingHeSkillId(useBagInfo.ItemID);
-                                if (jingheSkill > 0)
-                                {
-                                    useBagInfo.IfJianDing = false;
-                                    useBagInfo.HideSkillLists.Add(jingheSkill); 
-                                }
-                                else
-                                {
-                                    useBagInfo.IfJianDing = true;
-                                }
-                            }*/
+                        //刷新传承属性
+                        if (equipconfig.Quality >= 5 && equipconfig.UseLv >= 60)
+                        {
+                            int occ = unit.GetComponent<UserInfoComponent>().UserInfo.Occ;
+                            int occTwo = unit.GetComponent<UserInfoComponent>().UserInfo.OccTwo;
+                            int skillid = XiLianHelper.XiLianChuanChengJianDing(equipconfig, occ, occTwo);
+                            if (skillid != 0)
+                            {
+                                useBagInfo.InheritSkills.Add(skillid);
+                            }
+                        }
+
+                        
+                        // 赛季晶核
+                        /*if (equipType == 201)
+                        {
+                            useBagInfo.ItemPar = ItemHelper.GetJingHeInitQulity(useBagInfo.ItemID).ToString();
+
+                            //增加技能的晶核无须鉴定
+                            int jingheSkill = ItemHelper.GetJingHeSkillId(useBagInfo.ItemID);
+                            if (jingheSkill > 0)
+                            {
+                                useBagInfo.IfJianDing = false;
+                                useBagInfo.HideSkillLists.Add(jingheSkill); 
+                            }
+                            else
+                            {
+                                useBagInfo.IfJianDing = true;
+                            }
+                        }*/
                     }
                     
                     //道具处理

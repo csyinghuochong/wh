@@ -216,15 +216,21 @@ namespace ET
             AddUpdateProDicList(NumericType.Point_Constitution, PointLiLiang,UpdateProDicList );
             AddUpdateProDicList(NumericType.Point_Stamina, PointLiLiang,UpdateProDicList );
             AddUpdateProDicList(NumericType.Point_Agility, PointLiLiang,UpdateProDicList );
+
+          
             
             //职业属性
-            List<HideProList> occInitAttribute = LDOccupationCategory.Instance.GetOccInitAttribute(userInfo.Occ);
-            //装备属性
-            unit.GetComponent<BagComponent>().GetEquipAttribute(occInitAttribute);
+            List<HideProList> occInitAttributes = LDOccupationCategory.Instance.GetOccInitAttribute(userInfo.Occ);
             
-            for (int pro = 0; pro < occInitAttribute.Count; pro++)
+            List<HideProList> attributeList = new List<HideProList>();
+            attributeList.AddRange(occInitAttributes);
+            
+            //装备属性
+            unit.GetComponent<BagComponent>().GetEquipAttribute(attributeList);
+            
+            for (int pro = 0; pro < attributeList.Count; pro++)
             {
-                AddUpdateProDicList(occInitAttribute[pro].HideID, occInitAttribute[pro].HideValue, UpdateProDicList);
+                AddUpdateProDicList(attributeList[pro].HideID, attributeList[pro].HideValue, UpdateProDicList);
             }
             
             //时装
@@ -379,12 +385,7 @@ namespace ET
             {
                 //long setValue = numericComponent.GetAsLong(key) + UpdateProDicList[key];
                 long setValue = + UpdateProDicList[key];
-
-                if (key == 22)
-                {
-                    Log.Error("111");
-                }
-
+    
                 if (!notice)
                 {
                     numericComponent.Update(key, setValue, false);

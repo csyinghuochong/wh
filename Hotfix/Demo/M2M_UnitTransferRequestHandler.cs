@@ -63,6 +63,10 @@ namespace ET
 				unit.GetComponent<UserInfoComponent>().UserInfo.DemonName = string.Empty;
                 unit.GetComponent<HeroDataComponent>().CheckNumeric();
                 Function_Fight.UnitUpdateProperty_Base(unit, false, false);
+
+                long hpmax = numericComponent.GetAsLong(NumericType.HP_Max);
+                numericComponent.Set(NumericType.HP_Current, hpmax, false);
+                
                 //添加消息类型, GateSession邮箱在收到消息的时候会立即转发给客户端，MessageDispatcher类型会再次对Actor消息进行分发到具体的Handler处理，默认的MailboxComponent类型是MessageDispatcher。
                 //await unit.AddLocation();                     
                 //注册消息机制的ID,可以通过消息ID让其他玩家对自己进行消息发送
