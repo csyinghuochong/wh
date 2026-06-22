@@ -114,7 +114,6 @@ namespace ET
         public static void BaseOnUpdate(this SkillHandler self)
         {
             long serverNow = TimeHelper.ServerNow();
-
             //根据技能效果延迟触发伤害
             if (serverNow < self.SkillExcuteHurtTime)
             {
@@ -398,6 +397,8 @@ namespace ET
             {
                 return false;
             }
+
+            Function_Fight.Fight(self.TheUnitFrom, uu, self, 0);
           
             //技能额外属性来自被动技能
             return true;
