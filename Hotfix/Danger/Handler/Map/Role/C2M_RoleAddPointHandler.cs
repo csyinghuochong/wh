@@ -50,10 +50,14 @@ namespace ET
                     return;
                 }
 
+                int[] fixPoints = RoleAddPointHelper.GetFixedPointByLevel(level);
+                
                 NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
                 for (int i = 0; i < RoleAddPointHelper.PointNumericTypes.Length; i++)
                 {
-                    numericComponent.ApplyValue(RoleAddPointHelper.PointNumericTypes[i], assignedPoints[i]);
+                    int oldvalue = numericComponent.GetAsInt(RoleAddPointHelper.PointNumericTypes[i]);
+                    
+                    numericComponent.ApplyValue(RoleAddPointHelper.PointNumericTypes[i], assignedPoints[i] - fixPoints[i]);
                 }
 
                 numericComponent.ApplyValue(NumericType.PointRemain, remainPoint);
