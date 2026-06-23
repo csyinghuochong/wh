@@ -61,9 +61,7 @@ namespace ET
 
                     DBHelper.DeleteUnitCache(request.ServerId, request.DeleUserID).Coroutine();
                     RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(request.ServerId, request.DeleUserID);
-                    NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(request.ServerId, request.DeleUserID);
-                    if (roleInfoComponent != null && roleInfoComponent.RoleInfo.Lv <= 10 &&
-                        (numericComponent.GetAsInt(NumericType.RechargeNumber) <= 0 ))
+                    if (roleInfoComponent != null && roleInfoComponent.RoleInfo.Lv <= 10)
                     {
                         List<string> allComponets = DBHelper.GetAllUnitComponent();
                         for (int i = 0; i < allComponets.Count; i++)

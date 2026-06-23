@@ -10,7 +10,7 @@ namespace ET
             }
 
             long maxHp = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.HP_Max);
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HP_Current, maxHp, false);
+            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HP_Current, maxHp, true);
 
             unit.GetComponent<TaskComponent>().OnUpdateLevel(newLevel);
             unit.GetComponent<ChengJiuComponent>().OnUpdateLevel(newLevel);

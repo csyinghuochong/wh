@@ -118,6 +118,16 @@ namespace ET
             }
         }
 
+        public static void CheckInitPoint(Unit unit)
+        {
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            int[] fixedPoints = GetFixedPointPerLevel();
+            for (int i = 0; i < PointNumericTypes.Length; i++)
+            {
+                numericComponent.ApplyValue(PointNumericTypes[i],  fixedPoints[i], false);
+            }
+        }
+
         /// <summary>升级时增加 1 级的属性点。</summary>
         public static void AddPointsOnLevelUp(Unit unit, int newLevel)
         {
@@ -130,7 +140,7 @@ namespace ET
                     continue;
                 }
 
-                numericComponent.ApplyValue(PointNumericTypes[i], numericComponent.GetAsInt(PointNumericTypes[i]) + fixedPoints[i], false);
+                numericComponent.ApplyValue(PointNumericTypes[i], numericComponent.GetAsInt(PointNumericTypes[i]) + fixedPoints[i], true);
             }
 
             int freePoints = GetFreePointPerLevel();
@@ -150,12 +160,12 @@ namespace ET
                         continue;
                     }
 
-                    numericComponent.ApplyValue(PointNumericTypes[i], numericComponent.GetAsInt(PointNumericTypes[i]) + defaultPoints[i], false);
+                    numericComponent.ApplyValue(PointNumericTypes[i], numericComponent.GetAsInt(PointNumericTypes[i]) + defaultPoints[i], true);
                 }
             }
             else
             {
-                numericComponent.ApplyValue(NumericType.PointRemain, numericComponent.GetAsInt(NumericType.PointRemain) + freePoints, false);
+                numericComponent.ApplyValue(NumericType.PointRemain, numericComponent.GetAsInt(NumericType.PointRemain) + freePoints, true);
             }
         }
 

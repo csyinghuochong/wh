@@ -204,8 +204,16 @@ namespace ET
             Dictionary<int, long> UpdateProDicList = new Dictionary<int, long>();
 
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(roleInfo.Occ);
-
+            
+            
+            int PointLiLiang =  numericComponent.GetAsInt(NumericType.Point_Strength);
+            int PointZhiLi =  numericComponent.GetAsInt(NumericType.Point_Intelligence);
+            int PointTiZhi =   numericComponent.GetAsInt(NumericType.Point_Constitution);
+            int PointNaiLi =   numericComponent.GetAsInt(NumericType.Point_Stamina);
+            int PointMinJie =  numericComponent.GetAsInt(NumericType.Point_Agility);
+            
             //属性点
+            /*
             int PointLiLiang =  ldOccupation.Add_Point_Default[0];
             int PointZhiLi = ldOccupation.Add_Point_Default[1];
             int PointTiZhi =  ldOccupation.Add_Point_Default[2];
@@ -215,9 +223,7 @@ namespace ET
             AddUpdateProDicList(NumericType.Point_Intelligence, PointLiLiang,UpdateProDicList );
             AddUpdateProDicList(NumericType.Point_Constitution, PointLiLiang,UpdateProDicList );
             AddUpdateProDicList(NumericType.Point_Stamina, PointLiLiang,UpdateProDicList );
-            AddUpdateProDicList(NumericType.Point_Agility, PointLiLiang,UpdateProDicList );
-
-          
+            AddUpdateProDicList(NumericType.Point_Agility, PointLiLiang,UpdateProDicList );*/
             
             //职业属性
             List<HideProList> occInitAttributes = LDOccupationCategory.Instance.GetOccInitAttribute(roleInfo.Occ);
@@ -401,6 +407,12 @@ namespace ET
                     keys.Add(key);
                 }
             }
+            
+             PointLiLiang =  numericComponent.GetAsInt(NumericType.Point_Strength);
+             PointZhiLi =  numericComponent.GetAsInt(NumericType.Point_Intelligence);
+             PointTiZhi =   numericComponent.GetAsInt(NumericType.Point_Constitution);
+             PointNaiLi =   numericComponent.GetAsInt(NumericType.Point_Stamina);
+            PointMinJie =  numericComponent.GetAsInt(NumericType.Point_Agility);
 
             if (notice)
             {
