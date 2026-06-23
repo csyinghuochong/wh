@@ -58,7 +58,7 @@ namespace ET
                     if (d2GGetUnit.Component != null)
                     {
                         ReddotComponent reddotComponent = d2GGetUnit.Component as ReddotComponent;
-                        reddotComponent.AddReddont((int)ReddotType.Email);
+                        //reddotComponent.AddReddont((int)BelongReddot.Email);
                         D2M_SaveComponent d2M_SaveComponent = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = request.Id, EntityByte = MongoHelper.ToBson(reddotComponent), ComponentType = DBHelper.ReddotComponent });
                     }
                 }

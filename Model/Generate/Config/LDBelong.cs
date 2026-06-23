@@ -84,24 +84,33 @@ namespace ET
 		/// <summary>排序</summary>
 		[ProtoMember(3)]
 		public int Order_SL { get; set; }
-		/// <summary>名称</summary>
+		/// <summary>红点穿透</summary>
 		[ProtoMember(4)]
+		public int Red_Dot_Penetrate { get; set; }
+		/// <summary>红点消失 0-默认 1-点击本次消失 2-点击永久消失</summary>
+		[ProtoMember(5)]
+		public int Red_Dot_Vanish_Type { get; set; }
+		/// <summary>名称</summary>
+		[ProtoMember(6)]
 		public int Name { get; set; }
 		/// <summary>描述</summary>
-		[ProtoMember(5)]
+		[ProtoMember(7)]
 		public int Desc { get; set; }
 		/// <summary>资源</summary>
-		[ProtoMember(6)]
+		[ProtoMember(8)]
 		public string Resources { get; set; }
 		/// <summary>开服天数 非0生效</summary>
-		[ProtoMember(7)]
+		[ProtoMember(9)]
 		public int Open_Day { get; set; }
 		/// <summary>角色等级 非0生效</summary>
-		[ProtoMember(8)]
+		[ProtoMember(10)]
 		public int Role_Level { get; set; }
 		/// <summary>关系 0-且 1-或</summary>
-		[ProtoMember(9)]
+		[ProtoMember(11)]
 		public int Relationship { get; set; }
+		/// <summary>红点备注</summary>
+		[ProtoMember(12)]
+		public string Note_Red_Dot { get; set; }
 
 	}
 }
