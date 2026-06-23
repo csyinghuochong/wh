@@ -60,6 +60,10 @@
       <Link>Module\AI\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </Compile>
 
+    <Compile Include="..\..\Unity\Assets\Model\Share\**\*.cs">
+      <Link>Module\AI\%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </Compile>
+
     <Compile Include="..\..\Unity\Assets\Model\Module\CoroutineLock\**\*.cs">
       <Link>Module\CoroutineLock\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </Compile>
