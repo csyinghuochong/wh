@@ -30,7 +30,7 @@ namespace ET
 
         public override TValue Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
-            //boxing is required for SetValue to work
+            //boxing is required for SetValueNoSync to work
             object obj = new TValue();
             Type actualType = args.NominalType;
             IBsonReader bsonReader = context.Reader;

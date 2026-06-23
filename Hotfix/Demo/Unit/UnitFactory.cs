@@ -345,8 +345,8 @@ namespace ET
             numericComponent.Set(NumericType.BattleCamp, roleCamp);
             numericComponent.Set(NumericType.MasterId, masterId);
             numericComponent.Set(NumericType.UnitPositon, cell);
-            long max_hp = numericComponent.GetAsLong(NumericType.Numeric_Error);
-            numericComponent.NumericDic[NumericType.Numeric_Error] = max_hp;
+            long max_hp = numericComponent.GetAsLong(NumericType.HP_Max);
+            numericComponent.SetValueNoSync(NumericType.Numeric_Error, max_hp);
             unit.AddComponent<AOIEntity, int, Vector3>(1 * 1000, unit.Position);
             unit.AddComponent<SkillPassiveComponent>().UpdatePetPassiveSkill(petinfo);
             unit.GetComponent<SkillPassiveComponent>().Activeted();
@@ -415,7 +415,7 @@ namespace ET
             numericComponent.Set(NumericType.TeamId, master.GetTeamId(), false); ;
             numericComponent.Set(NumericType.UnionId_0, master.GetUnionId(), false);
             long max_hp = numericComponent.GetAsLong(NumericType.Numeric_Error);
-            numericComponent.NumericDic[NumericType.Numeric_Error] = max_hp;
+            numericComponent.SetValueNoSync(NumericType.Numeric_Error, max_hp);
             numericComponent.Set(NumericType.Numeric_Error, master.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error), false); 
 
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);

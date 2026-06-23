@@ -32,52 +32,9 @@ namespace ET
                 {
                     continue;
                 }
-                //numericComponent.NumericDic[key] = 0;
             }
 
-            if (numericComponent.GetAsInt(NumericType.Ling_DiLv) == 0)
-            {
-                numericComponent.Set(NumericType.Ling_DiLv, 1, false);
-            }
-            if (numericComponent.GetAsInt(NumericType.CangKuNumber) == 0)
-            {
-                numericComponent.Set(NumericType.CangKuNumber, 1, false);
-            }
-            if (numericComponent.GetAsInt(NumericType.JianYuanCangKu) == 0)
-            {
-                numericComponent.Set(NumericType.JianYuanCangKu, 1, false);
-            }
-
-
-            if (numericComponent.GetAsFloat(NumericType.ChouKaTenTime) == 0)
-            {
-                numericComponent.Set(NumericType.ChouKaTenTime, TimeHelper.ServerNow());
-            }
-            if (numericComponent.GetAsFloat(NumericType.ChouKaOneTime) == 0)
-            {
-                numericComponent.Set(NumericType.ChouKaOneTime, TimeHelper.ServerNow());
-            }
-            if (numericComponent.GetAsInt(NumericType.HorseRide) == 1)
-            {
-                numericComponent.Set(NumericType.HorseRide, numericComponent.GetAsInt(NumericType.HorseFightID));
-            }
-            if (numericComponent.GetAsInt(NumericType.UnionXiuLian_0) == 0)
-            {
-                Dictionary<int, List<UnionQiangHuaConfig>> keyValuePairs = UnionQiangHuaConfigCategory.Instance.UnionQiangHuaList;
-                numericComponent.Set(NumericType.UnionXiuLian_0, keyValuePairs[0][0].Id);
-                numericComponent.Set(NumericType.UnionXiuLian_1, keyValuePairs[1][0].Id);
-                numericComponent.Set(NumericType.UnionXiuLian_2, keyValuePairs[2][0].Id);
-                numericComponent.Set(NumericType.UnionXiuLian_3, keyValuePairs[3][0].Id);
-            }
-            if (numericComponent.GetAsInt(NumericType.UnionPetXiuLian_0) == 0)
-            {
-                Dictionary<int, List<UnionQiangHuaConfig>> keyValuePairs = UnionQiangHuaConfigCategory.Instance.UnionQiangHuaList;
-                numericComponent.Set(NumericType.UnionPetXiuLian_0, keyValuePairs[4][0].Id);
-                numericComponent.Set(NumericType.UnionPetXiuLian_1, keyValuePairs[5][0].Id);
-                numericComponent.Set(NumericType.UnionPetXiuLian_2, keyValuePairs[6][0].Id);
-                numericComponent.Set(NumericType.UnionPetXiuLian_3, keyValuePairs[7][0].Id);
-            }
-
+          
             RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
             int PointLiLiang = numericComponent.GetAsInt(NumericType.Point_Strength);
             int PointZhiLi = numericComponent.GetAsInt(NumericType.Point_Intelligence);
@@ -94,15 +51,7 @@ namespace ET
             }
             else
             {
-                long addvalue = PointLiLiang + PointZhiLi + PointTiZhi + PointNaiLi + PointMinJie + PointRemain;
-                if (addvalue != totalPoint || addvalue > totalPoint || PointLiLiang > totalPoint || PointZhiLi > totalPoint
-                    || PointTiZhi > totalPoint || PointNaiLi > totalPoint || PointMinJie > totalPoint
-                    || PointLiLiang < 0 || PointZhiLi < 0 || PointTiZhi < 0 || PointNaiLi < 0 || PointMinJie < 0)
-                {
-
-                    Log.Debug($"{PointLiLiang} {PointZhiLi} {PointTiZhi} {PointNaiLi} {PointMinJie}  {PointRemain}  totalPoint: {totalPoint}");
-                    RoleAddPointHelper.RecalculateAllPoints(unit);
-                }
+              
             }
         }
 
@@ -136,25 +85,7 @@ namespace ET
             numericComponent.Set(NumericType.JueXingAnger, 0, false);
             numericComponent.Set(NumericType.RunRaceRankId, 0, false);
             numericComponent.Set(NumericType.ZeroClock, 0, false);
-
-            if (robotId != 0)
-            {
-                RobotConfig robotConfig = RobotConfigCategory.Instance.Get(robotId);
-                numericComponent.ApplyValue(NumericType.Point_Strength, robotConfig.PointList[0], false);
-                numericComponent.ApplyValue(NumericType.Point_Intelligence, robotConfig.PointList[1], false);
-                numericComponent.ApplyValue(NumericType.Point_Constitution, robotConfig.PointList[2], false);
-                numericComponent.ApplyValue(NumericType.Point_Stamina, robotConfig.PointList[3], false);
-                numericComponent.ApplyValue(NumericType.Point_Agility, robotConfig.PointList[4], false);
-                numericComponent.ApplyValue(NumericType.CombatRankID, 0, false);
-                numericComponent.ApplyValue(NumericType.OccCombatRankID, 0, false);
-            }
-
-            if (numericComponent.GetAsInt(NumericType.CostTiLi) > 600)
-            {
-                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                Log.Warning($"体力消耗异常: {self.DomainZone()}  {roleInfoComponent.RoleInfo.Name} {numericComponent.GetAsInt(NumericType.CostTiLi)}");
-            }
-
+            
             if (numericComponent.UpdateNumber < 1)
             {
                 numericComponent.UpdateNumber = 1;
@@ -344,16 +275,16 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            numericComponent.NumericDic[NumericType.Now_Dead] = 0;
-            numericComponent.NumericDic[NumericType.Now_Damage] = 0;
-            numericComponent.NumericDic[NumericType.BossBelongID] = 0;
-            numericComponent.NumericDic[NumericType.Now_Shield_HP] = 0;
-            numericComponent.NumericDic[NumericType.Now_Shield_MaxHP] = 0;
-            numericComponent.NumericDic[NumericType.Now_Shield_DamgeCostPro] = 0;
+            numericComponent.SetValueNoSync(NumericType.Now_Dead, 0);
+            numericComponent.SetValueNoSync(NumericType.Now_Damage,0);
+            numericComponent.SetValueNoSync(NumericType.BossBelongID, 0);
+            numericComponent.SetValueNoSync(NumericType.Now_Shield_HP, 0);
+            numericComponent.SetValueNoSync(NumericType.Now_Shield_MaxHP, 0);
+            numericComponent.SetValueNoSync(NumericType.Now_Shield_DamgeCostPro,0);
             if (unit.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Dead) <= 0)
             {
                 long max_hp = self.Parent.GetComponent<NumericComponent>().GetAsLong(NumericType.HP_Max);
-                unit.GetComponent<NumericComponent>().NumericDic[NumericType.HP_Current] = max_hp;
+                unit.GetComponent<NumericComponent>().SetValueNoSync(NumericType.HP_Current, max_hp);
             }
         }
 
@@ -453,7 +384,7 @@ namespace ET
             long max_hp = numericComponent.GetAsLong(NumericType.HP_Max);
 
             numericComponent.ApplyValue(NumericType.Now_Dead, 0);
-            numericComponent.NumericDic[NumericType.HP_Current] = 0;
+            numericComponent.SetValueNoSync(NumericType.HP_Current, 0);
             numericComponent.ApplyChange(null, NumericType.HP_Current, max_hp, 0);
             numericComponent.ApplyValue(NumericType.ReviveTime, 0);
             unit.GetComponent<SkillPassiveComponent>()?.Activeted();
@@ -476,7 +407,7 @@ namespace ET
           
             numericComponent.Set((int)NumericType.Speed_Current, 5f, false);
             //设置当前血量
-            numericComponent.NumericDic[(int)NumericType.HP_Current] = numericComponent.NumericDic[(int)NumericType.HP_Current];
+            numericComponent.SetValueNoSync(NumericType.HP_Current, numericComponent.GetAsInt(NumericType.HP_Current));
         }
 
         public static void InitJiaYuanPet(this HeroDataComponent self,  bool notice)

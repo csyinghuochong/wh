@@ -208,7 +208,7 @@ namespace ET
             
             
             
-            int[] fixpoints =   RoleAddPointHelper.GetFixedPointByLevel(unit, roleLv);
+            int[] fixpoints =   RoleAddPointHelper.GetFixedPointByLevel( roleLv);
 
             int PointLiLiang =  numericComponent.GetAsInt(NumericType.Point_Strength);
             int PointMinJie =  numericComponent.GetAsInt(NumericType.Point_Agility);

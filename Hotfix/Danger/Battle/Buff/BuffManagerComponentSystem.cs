@@ -1007,7 +1007,7 @@ namespace ET
             //恢复血量
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             long max_hp = numericComponent.GetAsLong(NumericType.HP_Max);
-            numericComponent.NumericDic[NumericType.HP_Current] = 0;
+            numericComponent.SetValueNoSync(NumericType.HP_Current, 0);
             numericComponent.ApplyChange(null, NumericType.HP_Current, max_hp, 0);
         }
 
