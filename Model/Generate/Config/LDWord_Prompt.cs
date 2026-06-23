@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDGlobalValueCategory : ProtoObject, IMerge
+    public partial class LDWord_PromptCategory : ProtoObject, IMerge
     {
-        public static LDGlobalValueCategory Instance;
+        public static LDWord_PromptCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDGlobalValue> dict = new Dictionary<int, LDGlobalValue>();
+        private Dictionary<int, LDWord_Prompt> dict = new Dictionary<int, LDWord_Prompt>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDGlobalValue> list = new List<LDGlobalValue>();
+        private List<LDWord_Prompt> list = new List<LDWord_Prompt>();
 		
-        public LDGlobalValueCategory()
+        public LDWord_PromptCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDGlobalValueCategory s = o as LDGlobalValueCategory;
+            LDWord_PromptCategory s = o as LDWord_PromptCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDGlobalValue config in list)
+            foreach (LDWord_Prompt config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDGlobalValue Get(int id)
+        public LDWord_Prompt Get(int id)
         {
-            this.dict.TryGetValue(id, out LDGlobalValue item);
+            this.dict.TryGetValue(id, out LDWord_Prompt item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDGlobalValue)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDWord_Prompt)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDGlobalValue> GetAll()
+        public Dictionary<int, LDWord_Prompt> GetAll()
         {
             return this.dict;
         }
 
-        public LDGlobalValue GetOne()
+        public LDWord_Prompt GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,17 +73,17 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDGlobalValue: ProtoObject, IConfig
+	public partial class LDWord_Prompt: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>唯一索引</summary>
+		/// <summary>int</summary>
 		[ProtoMember(2)]
 		public string Key { get; set; }
-		/// <summary>值</summary>
+		/// <summary>中文</summary>
 		[ProtoMember(3)]
-		public string Value { get; set; }
+		public string CN { get; set; }
 
 	}
 }
