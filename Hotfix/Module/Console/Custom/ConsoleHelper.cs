@@ -1946,74 +1946,7 @@ namespace ET
             }
 
 #if SERVER
-            int zone = int.Parse(chaxunInfo[1]);
-            int pyzone = StartZoneConfigCategory.Instance.Get(zone).PhysicZone;
-            long dbCacheId = DBHelper.GetDbCacheId(pyzone);
-
-            //查询全区金币异常
-            if (chaxunInfo.Length == 2)
-            {
-                List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id > 0);
-                for (int i = 0; i < RoleInfoComponentList.Count; i++)
-                {
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponentList[i];
-                    if (roleInfoComponent.RoleInfo.RobotId != 0)
-                    {
-                        continue;
-                    }
-                    long gold = roleInfoComponent.RoleInfo.Gold;
-                    long diamond = roleInfoComponent.RoleInfo.Diamond;
-
-                    if (gold > 1000000 || diamond > 10000)
-                    {
-                        long unitId = RoleInfoComponentList[0].Id;
-
-                        List<BagComponent> baginfoInfoList = await Game.Scene.GetComponent<DBComponent>().Query<BagComponent>(pyzone, d => d.Id == unitId);
-
-                        int occ = roleInfoComponent.RoleInfo.Occ;
-                        int occTwo = roleInfoComponent.RoleInfo.OccTwo;
-
-                        List<BagInfo> bagInfosAll = baginfoInfoList[0].GetAllItems(occ, occTwo);
-
-                        string infolist = $"{roleInfoComponent.RoleInfo.Name}:  \n";
-                        infolist = infolist + $"金币： {gold} \n";
-                        infolist = infolist + $"钻石： {diamond} \n";
-
-                        for (int b = 0; b < bagInfosAll.Count; b++)
-                        {
-                            infolist = infolist + $"{bagInfosAll[b].ItemID};{bagInfosAll[b].ItemNum}\n";
-                        }
-                        LogHelper.LogWarning(infolist);
-                    }
-                }
-            }
-
-            //查询单个玩家
-            if (chaxunInfo.Length == 3)
-            {
-                LogHelper.LogDebug($"name: {chaxunInfo[2]}");
-                List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id > 0 && d.RoleInfo.Name == chaxunInfo[2]);
-                if (RoleInfoComponentList.Count == 0)
-                {
-                    return string.Empty;
-                }
-                long unitId = RoleInfoComponentList[0].Id;
-                IActorResponse reqEnter = (M2G_RequestEnterGameState)await MessageHelper.CallLocationActor(unitId, new G2M_RequestEnterGameState()
-                {
-                    GateSessionActorId = -1
-                });
-                if (reqEnter.Error != ErrorCode.ERR_Success)
-                {
-                    Console.WriteLine("玩家不在线！");
-                    return "玩家不在线！";
-                }
-                else
-                {
-                    Console.WriteLine(reqEnter.Message);
-                    return reqEnter.Message;
-                }
-            }
-
+         
 #endif
             return string.Empty;
         }

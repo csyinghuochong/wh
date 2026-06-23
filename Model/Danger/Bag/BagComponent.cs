@@ -9,12 +9,8 @@ namespace ET
     /// Component公用。 system 分开
     /// </summary>
     
-#if SERVER
     public class BagComponent : Entity, IAwake, ITransfer, IUnitCache
-#else
-    public class BagComponent : Entity, IAwake
-#endif
-    
+
     {
         
         /// <summary>
@@ -41,7 +37,7 @@ namespace ET
         /// 赛季晶核方案
         /// </summary>
         public int SeasonJingHePlan = 0;      
-#if SERVER
+
         public List<BagInfo> BagItemList =new List<BagInfo>();
         public List<BagInfo> BagItemPetHeXin = new List<BagInfo>();
         public List<BagInfo> EquipList = new List<BagInfo>();
@@ -79,8 +75,6 @@ namespace ET
         /// 背包购买格子数量
         /// </summary>
         public int BagAddedCell = 0;
-#else
-
         public List<BagInfo>[] AllItemList;
 
         /// <summary>
@@ -89,6 +83,5 @@ namespace ET
         public int CurrentHouse;
 
         public bool RealAddItem;
-#endif
     }
 }
