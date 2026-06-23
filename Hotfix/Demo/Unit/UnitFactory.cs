@@ -67,10 +67,7 @@ namespace ET
             if (unit.GetComponent<NumericComponent>() == null)
             {
                 NumericComponent numericComponentServer = unit.AddComponent<NumericComponent>();
-                numericComponentServer.ApplyValue(NumericType.Speed_Current, 60000, false); // 速度是6米每秒
                 numericComponentServer.ApplyValue(NumericType.AOI, 15000, false); // 视野15米
-
-                RoleAddPointHelper.CheckInitPoint(unit);
             }
             
             unit.AddDataComponent<TaskComponent>();

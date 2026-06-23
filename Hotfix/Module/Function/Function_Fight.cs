@@ -199,6 +199,7 @@ namespace ET
             //初始化属性
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             numericComponent.ResetProperty();
+
             
             //缓存列表
             Dictionary<int, long> UpdateProDicList = new Dictionary<int, long>();
@@ -206,11 +207,20 @@ namespace ET
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(roleInfo.Occ);
             
             
+            
+            int[] fixpoints =   RoleAddPointHelper.GetFixedPointByLevel(unit, roleLv);
+
             int PointLiLiang =  numericComponent.GetAsInt(NumericType.Point_Strength);
+            int PointMinJie =  numericComponent.GetAsInt(NumericType.Point_Agility);
             int PointZhiLi =  numericComponent.GetAsInt(NumericType.Point_Intelligence);
             int PointTiZhi =   numericComponent.GetAsInt(NumericType.Point_Constitution);
             int PointNaiLi =   numericComponent.GetAsInt(NumericType.Point_Stamina);
-            int PointMinJie =  numericComponent.GetAsInt(NumericType.Point_Agility);
+            
+            PointLiLiang += fixpoints[0];
+            PointMinJie+= fixpoints[1];
+            PointZhiLi+= fixpoints[2];
+            PointTiZhi+= fixpoints[3];
+            PointNaiLi+= fixpoints[4];
             
             //属性点
             /*

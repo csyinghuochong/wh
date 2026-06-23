@@ -276,7 +276,7 @@ namespace ET
                 numericComponent.Set(NumericType.HorseRide, randomid, false);
             }
             
-            
+            UpgrageLevelHelper.CheckInitPoint(self.GetParent<Unit>(),self.RoleInfo.Lv);
             
             PetComponent petComponent = self.GetParent<Unit>().GetComponent<PetComponent>();
             if (self.RoleInfo.RobotId > 0 &&   petComponent.RolePetInfos.Count == 0)
