@@ -38,7 +38,7 @@
     </Compile>
 
     <Compile Include="..\..\Unity\Assets\Hotfix\Share\**\*.cs">
-      <Link>Module\Recast\%(RecursiveDir)%(FileName)%(Extension)</Link>
+      <Link>Share\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </Compile>
 
     <Compile Include="..\..\Unity\Assets\Hotfix\Module\Message\**\*.cs">
