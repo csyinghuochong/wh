@@ -30,15 +30,7 @@ namespace ET
             }
             if (nearest == null || nearest.IsCanBeAttack(true, false))
             {
-                RolePetInfo rolePetInfo = aiComponent.LocalDungeonUnitPetComponentServer.GetFightPet();
-                if (rolePetInfo != null)
-                {
-                    Unit pet = aiComponent.UnitComponent.Get(rolePetInfo.Id);
-                    if (pet != null && PositionHelper.Distance2D(unit, pet) <= aiComponent.ActRange)
-                    {
-                        nearest = pet;
-                    }
-                }
+                
             }
             
             if (nearest == null || !nearest.IsCanBeAttack())

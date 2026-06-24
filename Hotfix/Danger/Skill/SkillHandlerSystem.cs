@@ -561,7 +561,7 @@ namespace ET
                     break;
                 case 2:
                     PetComponentServer petComponentServer = self.TheUnitFrom.GetComponent<PetComponentServer>();
-                    canBuff = self.TheUnitFrom.IsSameTeam(uu) || self.TheUnitFrom.IsMasterOrPet(uu, petComponentServer);
+                    canBuff = self.TheUnitFrom.IsSameTeam(uu);
                     //if (canBuff && skillBuffConfig.Id == 92000032 && uu.Type == UnitType.Monster)
                     //{
                     //    Log.Console("怪物攻速！！！！");

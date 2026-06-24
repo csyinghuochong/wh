@@ -80,6 +80,8 @@ namespace ET
             
             Game.Scene.AddComponent<NetThreadComponent>();
             
+            //Game.Scene.AddComponent<AIDispatcherComponent>();
+
             Game.Scene.AddComponent<NavmeshComponent, Func<string, byte[]>>(RecastFileReader.Read);
 
             ConfigData.OldNavMesh =  !Game.Options.StartConfig.Contains("Google");

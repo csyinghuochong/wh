@@ -198,7 +198,7 @@ namespace ET
             {
                 case MapTypeEnum.LocalDungeon:
                     aIComponent.LocalDungeonUnit = mainUnit;
-                    aIComponent.LocalDungeonUnitPetComponentServer = mainUnit.GetComponent<PetComponentServer>();
+                  
                     //aIComponent.InitMonster(ldMonster.Id);
                     break;
                 case MapTypeEnum.PetDungeon:
