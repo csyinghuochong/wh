@@ -72,7 +72,7 @@ namespace ET
             }
             if (sellGold > 0)
             {
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, sellGold.ToString(), true, 39);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Gold, sellGold.ToString(), true, 39);
             }
 
             MessageHelper.SendToClient(unit, m2c_bagUpdate);

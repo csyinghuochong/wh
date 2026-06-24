@@ -22,7 +22,7 @@ namespace ET
         {
             self.TotalOnLine++;
 
-            self.TodayOnLine = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().TodayOnLine;
+            self.TodayOnLine = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().TodayOnLine;
         }
 
         public static void OnXiLian(this DataCollationComponent self, int times)
@@ -377,36 +377,36 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
 
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             PetComponent petComponent = unit.GetComponent<PetComponent>();  
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();  
 
-            self.Name = roleInfoComponent.RoleInfo.Name;
-            self.Level = roleInfoComponent.RoleInfo.Lv;
-            self.Account = roleInfoComponent.Account;
-            self.Password = roleInfoComponent.Password;
+            self.Name = roleInfoComponentServer.RoleInfo.Name;
+            self.Level = roleInfoComponentServer.RoleInfo.Lv;
+            self.Account = roleInfoComponentServer.Account;
+            self.Password = roleInfoComponentServer.Password;
             self.Robot = unit.IsRobot() ?  1 : 0;
 
-            self.CreateAccountTime = roleInfoComponent.CreateAccountTime;
+            self.CreateAccountTime = roleInfoComponentServer.CreateAccountTime;
             self.CreateAccountTimeStr = TimeInfo.Instance.ToDateTime(self.CreateAccountTime).ToString();
             
-            self.Occ = WordHelper.GetShowText(LDOccupationCategory.Instance.Get(roleInfoComponent.RoleInfo.Occ).Name);
+            self.Occ = WordHelper.GetShowText(LDOccupationCategory.Instance.Get(roleInfoComponentServer.RoleInfo.Occ).Name);
 
-            if (roleInfoComponent.RoleInfo.OccTwo > 0)
+            if (roleInfoComponentServer.RoleInfo.OccTwo > 0)
             {
-                WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(roleInfoComponent.RoleInfo.OccTwo).Name);
+                WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(roleInfoComponentServer.RoleInfo.OccTwo).Name);
             }
 
-            self.Combat = roleInfoComponent.RoleInfo.Combat;
+            self.Combat = roleInfoComponentServer.RoleInfo.Combat;
 
-            self.Gold = roleInfoComponent.RoleInfo.Gold;    
+            self.Gold = roleInfoComponentServer.RoleInfo.Gold;    
 
-            self.Diamond = roleInfoComponent.RoleInfo.Diamond;
+            self.Diamond = roleInfoComponentServer.RoleInfo.Diamond;
 
             self.Recharge = numericComponent.GetAsLong( NumericType.RechargeNumber );
 
-            self.TodayOnLine = roleInfoComponent.TodayOnLine;
+            self.TodayOnLine = roleInfoComponentServer.TodayOnLine;
 
             self.LastLoginTime = lastgametime;
 
@@ -414,15 +414,15 @@ namespace ET
 
             self.PetPingfen = petComponent.GetPingfenList();
 
-            self.UnionName = roleInfoComponent.RoleInfo.UnionName;
+            self.UnionName = roleInfoComponentServer.RoleInfo.UnionName;
 
-            self.JiaYuanLv = roleInfoComponent.RoleInfo.JiaYuanLv;
+            self.JiaYuanLv = roleInfoComponentServer.RoleInfo.JiaYuanLv;
 
-            self.JiaYuanFund = roleInfoComponent.RoleInfo.JiaYuanFund;
+            self.JiaYuanFund = roleInfoComponentServer.RoleInfo.JiaYuanFund;
 
-            self.PiLao = roleInfoComponent.RoleInfo.PiLao;
+            self.PiLao = roleInfoComponentServer.RoleInfo.PiLao;
 
-            self.Vitality = roleInfoComponent.RoleInfo.Vitality;
+            self.Vitality = roleInfoComponentServer.RoleInfo.Vitality;
 
             int makeType = numericComponent.GetAsInt( NumericType.MakeType_1 );
             self.MakeSkill = MakeHelper.GetMakeTypeName( makeType );

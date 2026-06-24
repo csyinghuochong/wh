@@ -7,9 +7,9 @@ namespace ET
 {
 
     [Timer(TimerType.ShouLieUpLoadTimer)]
-    public class ShouLieUpLoadTimer : ATimer<RoleInfoComponent>
+    public class ShouLieUpLoadTimer : ATimer<RoleInfoComponentServer>
     {
-        public override void Run(RoleInfoComponent self)
+        public override void Run(RoleInfoComponentServer self)
         {
             try
             {
@@ -24,18 +24,18 @@ namespace ET
 
 
     [ObjectSystem]
-    public class RoleInfoComponentAwake : AwakeSystem<RoleInfoComponent>
+    public class RoleInfoComponentAwake : AwakeSystem<RoleInfoComponentServer>
     {
-        public override void Awake(RoleInfoComponent self)
+        public override void Awake(RoleInfoComponentServer self)
         {
 
         }
     }
 
     [ObjectSystem]
-    public class RoleInfoComponentDestroy : DestroySystem<RoleInfoComponent>
+    public class RoleInfoComponentDestroy : DestroySystem<RoleInfoComponentServer>
     {
-        public override void Destroy(RoleInfoComponent self)
+        public override void Destroy(RoleInfoComponentServer self)
         {
             TimerComponent.Instance.Remove(ref self.ShouLieUpLoadTimer);
         }
@@ -44,7 +44,7 @@ namespace ET
     public static class RoleInfoComponentServerSystem
     {
 
-        public static void OnInit(this RoleInfoComponent self,string account, long userId, long accountId, CreateRoleInfo createRoleInfo)
+        public static void OnInit(this RoleInfoComponentServer self,string account, long userId, long accountId, CreateRoleInfo createRoleInfo)
         {
             self.Account = account;
             self.CreateAccountTime = createRoleInfo.CreateTime;
@@ -81,7 +81,7 @@ namespace ET
             }
         }
         
-        public static void Check(this RoleInfoComponent self)
+        public static void Check(this RoleInfoComponentServer self)
         {
             self.TodayOnLine++;
             self.LingDiOnLine++;
@@ -101,7 +101,7 @@ namespace ET
             }
         }
 
-        public static void OnJiaYuanExp(this RoleInfoComponent self, float hour)
+        public static void OnJiaYuanExp(this RoleInfoComponentServer self, float hour)
         {
             
             if ( !LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv + 1) )
@@ -116,7 +116,7 @@ namespace ET
             //self.UpdateRoleMoneyAdd(UserDataType.JiaYuanExp, $"{addexp}", true, ItemGetWay.JiaYuanExchange);
         }
 
-        public static void OnRongyuChanChu(this RoleInfoComponent self, int coefficient, bool notice)
+        public static void OnRongyuChanChu(this RoleInfoComponentServer self, int coefficient, bool notice)
         {
             if (coefficient == 0)
             {
@@ -131,7 +131,7 @@ namespace ET
            // self.UpdateRoleData(UserDataType.RongYu, (coefficient * lingDiConfig.HoureHonor).ToString(), notice);
         }
 
-        public static void OpenAll(this RoleInfoComponent self)
+        public static void OpenAll(this RoleInfoComponentServer self)
         {
             self.RoleInfo.FubenPassList.Clear();
 
@@ -147,7 +147,7 @@ namespace ET
         }
 
 
-        public static int GetTiLiTimes(this RoleInfoComponent self, int hour_1, int hour_2)
+        public static int GetTiLiTimes(this RoleInfoComponentServer self, int hour_1, int hour_2)
         {
             int index_1 = self.GetTiLiIndex(hour_1);
             int index_2 = self.GetTiLiIndex(hour_2);
@@ -165,7 +165,7 @@ namespace ET
         /// <param name="hour_1"></param>
         /// <param name="hour_2"></param>  0 6 12 20
         /// <returns></returns>
-        public static List<int> GetTiLiIndexsNew(this RoleInfoComponent self, int hour_1, int hour_2)
+        public static List<int> GetTiLiIndexsNew(this RoleInfoComponentServer self, int hour_1, int hour_2)
         {
             List<int> indexs = new  List<int>();    
             if (hour_1 >= hour_2)
@@ -189,7 +189,7 @@ namespace ET
             return indexs;
         }
 
-        public static int GetTiliRecover(this RoleInfoComponent self, List<int> indexids)
+        public static int GetTiliRecover(this RoleInfoComponentServer self, List<int> indexids)
         {
             int totalTili = 0;
             int totalindex = indexids.Count;
@@ -211,7 +211,7 @@ namespace ET
             return totalTili;
         }
 
-        public static int GetTiLiIndex(this RoleInfoComponent self, int hour_1)
+        public static int GetTiLiIndex(this RoleInfoComponentServer self, int hour_1)
         {
             if (hour_1 < 6)
             {
@@ -232,7 +232,7 @@ namespace ET
             return 5;
         }
 
-        public static void CheckData(this RoleInfoComponent self)
+        public static void CheckData(this RoleInfoComponentServer self)
         {
             if (!LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv))
             {
@@ -326,7 +326,7 @@ namespace ET
 
         }
 
-        private static bool IsZhuBoLevel16(this RoleInfoComponent self)
+        private static bool IsZhuBoLevel16(this RoleInfoComponentServer self)
         {
             if (!CommonHelper.IsZhuBoZone(self.DomainZone()))
             {
@@ -337,12 +337,12 @@ namespace ET
             return self.Id == 2648795239413776384 || self.Id == 2641338471813283840;
         }
 
-        public static void OnOffLine(this RoleInfoComponent self)
+        public static void OnOffLine(this RoleInfoComponentServer self)
         {
             //self.LastLoginTime = TimeHelper.ServerNow();
         }
 
-        public static void OnLogin(this RoleInfoComponent self, string remoteIp)
+        public static void OnLogin(this RoleInfoComponentServer self, string remoteIp)
         {
             self.CheckData();
             self.RemoteAddress = remoteIp;
@@ -358,7 +358,7 @@ namespace ET
         /// <param name="self"></param>
         /// <param name="skillNumber"></param>
         /// <returns></returns>
-        public static int GetAddPiLao(this RoleInfoComponent self, int skillNumber)
+        public static int GetAddPiLao(this RoleInfoComponentServer self, int skillNumber)
         {
             return 0;
         }
@@ -368,7 +368,7 @@ namespace ET
         /// </summary>
         /// <param name="self"></param>
         /// <param name="notice"></param>
-        public static void OnHourUpdate(this RoleInfoComponent self, int hour, bool notice)
+        public static void OnHourUpdate(this RoleInfoComponentServer self, int hour, bool notice)
         {
             if (self.LastLoginTime > 0)
             {
@@ -403,7 +403,7 @@ namespace ET
             //LogHelper.CheckBlackRoom(self.GetParent<Unit>());
         }
 
-        public static void RecoverPiLao(this RoleInfoComponent self, int addValue, bool notice)
+        public static void RecoverPiLao(this RoleInfoComponentServer self, int addValue, bool notice)
         {
             Unit unit = self.GetParent<Unit>();
             long recoverPiLao = self.GetParent<Unit>().GetMaxPiLao() - self.RoleInfo.PiLao;
@@ -416,7 +416,7 @@ namespace ET
 
 
 
-        public static void OnZeroClockUpdate(this RoleInfoComponent self, bool notice)
+        public static void OnZeroClockUpdate(this RoleInfoComponentServer self, bool notice)
         {
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
@@ -432,12 +432,12 @@ namespace ET
             self.ShouLieKill = 0;
         }
 
-        public static RoleInfo GetUserInfo(this RoleInfoComponent self)
+        public static RoleInfo GetUserInfo(this RoleInfoComponentServer self)
         {
             return self.RoleInfo;
         }
 
-        public static void OnShowLieKill(this RoleInfoComponent self)
+        public static void OnShowLieKill(this RoleInfoComponentServer self)
         {
             self.ShouLieKill++;
 
@@ -451,20 +451,20 @@ namespace ET
             }
         }
 
-        public static async ETTask UpdateShowLie(this RoleInfoComponent self)
+        public static async ETTask UpdateShowLie(this RoleInfoComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
-            if (!ActivityHelper.IsShowLieOpen() || unit.IsRobot())
+            if (!ConfigData.ShowLieOpen || unit.IsRobot())
             {
                 return;
             }
             self.ShouLieSendTime = TimeHelper.ServerNow();
             TimerComponent.Instance.Remove(ref self.ShouLieUpLoadTimer);
             RankShouLieInfo rankPetInfo = new RankShouLieInfo();
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            rankPetInfo.UnitID = roleInfoComponent.RoleInfo.UserId;
-            rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
-            rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            rankPetInfo.UnitID = roleInfoComponentServer.RoleInfo.UserId;
+            rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
+            rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
             rankPetInfo.KillNumber = self.ShouLieKill;
             long mapInstanceId = DBHelper.GetRankServerId(self.DomainZone());
             R2M_RankShowLieResponse Response = (R2M_RankShowLieResponse)await ActorMessageSenderComponent.Instance.Call
@@ -480,7 +480,7 @@ namespace ET
         /// </summary>
         /// <param name="self"></param>
         /// <param name="beKill"></param>
-        public static void OnKillUnit(this RoleInfoComponent self, Unit beKill, int sceneType, int sceneId)
+        public static void OnKillUnit(this RoleInfoComponentServer self, Unit beKill, int sceneType, int sceneId)
         {
             Unit main = self.GetParent<Unit>();
             if (beKill.Type != UnitType.Monster)
@@ -488,7 +488,7 @@ namespace ET
                 return;
             }
 
-            bool showlieopen = ActivityHelper.IsShowLieOpen();
+            bool showlieopen = ConfigData.ShowLieOpen;
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(beKill.ConfigId);
             if (showlieopen && ( ldMonster.Lv >= 60 || Mathf.Abs(self.RoleInfo.Lv - ldMonster.Lv) <= 9) )
             {
@@ -539,7 +539,7 @@ namespace ET
                 float expcoefficient = 1f;
                 if (sceneType == MapTypeEnum.LocalDungeon && beKill.IsBoss())
                 {
-                    int killNumber = main.GetComponent<RoleInfoComponent>().GetMonsterKillNumber(mCof.Id);
+                    int killNumber = main.GetComponent<RoleInfoComponentServer>().GetMonsterKillNumber(mCof.Id);
                     int chpaterid = -1;////LDSceneCategory.Instance.GetChapterByDungeon(sceneId);
                     BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
                     expcoefficient *= bossDevelopment.ExpAdd;
@@ -577,7 +577,7 @@ namespace ET
             }
         }
 
-        public static void UpdateRoleDataBroadcast(this RoleInfoComponent self, int Type, string value)
+        public static void UpdateRoleDataBroadcast(this RoleInfoComponentServer self, int Type, string value)
         {
             Unit unit = self.GetParent<Unit>();
             M2C_RoleDataBroadcast m2C_BroadcastRoleData = self.m2C_RoleDataBroadcast;
@@ -587,7 +587,7 @@ namespace ET
             MessageHelper.Broadcast(unit, m2C_BroadcastRoleData);
         }
 
-        public static int GetMysteryBuy(this RoleInfoComponent self, int mysteryId)
+        public static int GetMysteryBuy(this RoleInfoComponentServer self, int mysteryId)
         {
             for (int i = 0; i < self.RoleInfo.MysteryItems.Count; i++)
             {
@@ -599,7 +599,7 @@ namespace ET
             return 0;
         }
 
-        public static void OnMysteryBuy(this RoleInfoComponent self, int mysteryId)
+        public static void OnMysteryBuy(this RoleInfoComponentServer self, int mysteryId)
         {
             for (int i = 0; i < self.RoleInfo.MysteryItems.Count; i++)
             {
@@ -612,7 +612,7 @@ namespace ET
             self.RoleInfo.MysteryItems.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
         }
 
-        public static int GetStoreBuy(this RoleInfoComponent self, int mysteryId)
+        public static int GetStoreBuy(this RoleInfoComponentServer self, int mysteryId)
         {
             for (int i = 0; i < self.RoleInfo.BuyStoreItems.Count; i++)
             {
@@ -624,7 +624,7 @@ namespace ET
             return 0;
         }
 
-        public static void OnStoreBuy(this RoleInfoComponent self, int mysteryId)
+        public static void OnStoreBuy(this RoleInfoComponentServer self, int mysteryId)
         {
             for (int i = 0; i < self.RoleInfo.BuyStoreItems.Count; i++)
             {
@@ -638,7 +638,7 @@ namespace ET
         }
 
         //加金币
-        public static void UpdateRoleMoneyAdd(this RoleInfoComponent self, int Type, string value, bool notice, int getWay, string paramsifo = "")
+        public static void UpdateRoleMoneyAdd(this RoleInfoComponentServer self, int Type, string value, bool notice, int getWay, string paramsifo = "")
         {
             Unit unit = self.GetParent<Unit>();
             long gold = long.Parse(value);
@@ -712,7 +712,7 @@ namespace ET
         }
 
         //扣金币
-        public static void UpdateRoleMoneySub(this RoleInfoComponent self, int Type, string value, bool notice = true, int getWay = ItemGetWay.System, string paramsifo = "")
+        public static void UpdateRoleMoneySub(this RoleInfoComponentServer self, int Type, string value, bool notice = true, int getWay = ItemGetWay.System, string paramsifo = "")
         {
             Unit unit = self.GetParent<Unit>();
             long gold = long.Parse(value);
@@ -741,7 +741,7 @@ namespace ET
             self.UpdateRoleData(Type, value, notice);
         }
 
-        public static async ETTask SendUnionOperate(this RoleInfoComponent self, int getWay, int dataType,  long dataValue)
+        public static async ETTask SendUnionOperate(this RoleInfoComponentServer self, int getWay, int dataType,  long dataValue)
         {
             Unit unit = self.GetParent<Unit>();
             long unionid = unit.GetUnionId();
@@ -755,7 +755,7 @@ namespace ET
                             serverod, new M2U_UnionOperationRequest() { OperateType = 1, UnionId = unionid, Par = $"{playerName}_{getWay}_{dataType}_{dataValue}" });
         }
 
-        public static async ETTask BroadcastLevel(this RoleInfoComponent self, int level)
+        public static async ETTask BroadcastLevel(this RoleInfoComponentServer self, int level)
         {
             Unit unit = self.GetParent<Unit>();
             long chatServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Chat)).InstanceId;
@@ -777,7 +777,7 @@ namespace ET
         }
 
         //需要通知客户端
-        public static void UpdateRoleData(this RoleInfoComponent self, int Type, string value, bool notice = true)
+        public static void UpdateRoleData(this RoleInfoComponentServer self, int Type, string value, bool notice = true)
         {
             Unit unit = self.GetParent<Unit>();
             string saveValue = "";
@@ -988,7 +988,7 @@ namespace ET
             }
         }
 
-        public static async ETTask UploadCombat(this RoleInfoComponent self)
+        public static async ETTask UploadCombat(this RoleInfoComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
             if (unit.IsRobot())
@@ -999,12 +999,12 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             long mapInstanceId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Rank)).InstanceId;
             RankingInfo rankPetInfo = new RankingInfo();
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            rankPetInfo.UserId = roleInfoComponent.RoleInfo.UserId;
-            rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
-            rankPetInfo.PlayerLv = roleInfoComponent.RoleInfo.Lv;
-            rankPetInfo.Combat = roleInfoComponent.RoleInfo.Combat;
-            rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            rankPetInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
+            rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
+            rankPetInfo.PlayerLv = roleInfoComponentServer.RoleInfo.Lv;
+            rankPetInfo.Combat = roleInfoComponentServer.RoleInfo.Combat;
+            rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
             R2M_RankUpdateResponse Response = (R2M_RankUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankUpdateRequest()
                      {
@@ -1021,7 +1021,7 @@ namespace ET
             numericComponent.ApplyValue(NumericType.SoloRankId, Response.SoloRankId);
         }
 
-        public static void  UpdateRankInfo(this RoleInfoComponent self)
+        public static void  UpdateRankInfo(this RoleInfoComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
             if (unit.IsRobot())
@@ -1032,7 +1032,7 @@ namespace ET
         }
 
         //增加经验
-        public static void Role_AddExp(this RoleInfoComponent self, long addValue, bool notice)
+        public static void Role_AddExp(this RoleInfoComponentServer self, long addValue, bool notice)
         {
             Scene scene = self.DomainScene();
             ServerInfo serverInfo = ConfigData.ServerInfoList[scene.DomainZone()];
@@ -1093,7 +1093,7 @@ namespace ET
             }
         }
 
-        public static int GetRandomMonsterId(this RoleInfoComponent self)
+        public static int GetRandomMonsterId(this RoleInfoComponentServer self)
         {
             List<KeyValuePairInt> dayMonster = self.RoleInfo.DayMonsters;
             List<DayMonsters> dayMonsterConfig = LDGlobalValueCategory.Instance.DayMonsterList;
@@ -1129,7 +1129,7 @@ namespace ET
             return 0;
         }
 
-        public static int GetRandomJingLingId(this RoleInfoComponent self)
+        public static int GetRandomJingLingId(this RoleInfoComponentServer self)
         {
             List<DayJingLing> dayMonsterConfig = LDGlobalValueCategory.Instance.DayJingLingList;
             List<int> dayMonster = self.RoleInfo.DayJingLing;
@@ -1159,7 +1159,7 @@ namespace ET
             return 0;
         }
 
-        public static void OnMakeItem(this RoleInfoComponent self, int makeId)
+        public static void OnMakeItem(this RoleInfoComponentServer self, int makeId)
         {
             EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(makeId);
             List<KeyValuePairInt> makeList = self.RoleInfo.MakeIdList;
@@ -1180,7 +1180,7 @@ namespace ET
             }
         }
 
-        public static void OnAddChests(this RoleInfoComponent self, int fubenId, int monsterId)
+        public static void OnAddChests(this RoleInfoComponentServer self, int fubenId, int monsterId)
         {
             bool have = false;
             List<KeyValuePair> chestList = self.RoleInfo.OpenChestList;
@@ -1198,7 +1198,7 @@ namespace ET
             }
         }
 
-        public static bool IsCheskOpen(this RoleInfoComponent self, int fubenId, int monsterId)
+        public static bool IsCheskOpen(this RoleInfoComponentServer self, int fubenId, int monsterId)
         {
             List<KeyValuePair> chestList = self.RoleInfo.OpenChestList;
             for (int i = 0; i < chestList.Count; i++)
@@ -1211,7 +1211,7 @@ namespace ET
             return false;
         }
 
-        public static int OnGetFirstWinSelf(this RoleInfoComponent self, int firstwinid, int difficulty)
+        public static int OnGetFirstWinSelf(this RoleInfoComponentServer self, int firstwinid, int difficulty)
         {
             KeyValuePair keyValuePair1 = null;
             for (int i = 0; i < self.RoleInfo.FirstWinSelf.Count; i++)
@@ -1242,7 +1242,7 @@ namespace ET
             return ErrorCode.ERR_Success;
         }
 
-        public static void OnAddFirstWinSelf(this RoleInfoComponent self, Unit boss, int difficulty)
+        public static void OnAddFirstWinSelf(this RoleInfoComponentServer self, Unit boss, int difficulty)
         {
             if (difficulty == 0)
             {
@@ -1282,7 +1282,7 @@ namespace ET
             MessageHelper.SendToClient( self.GetParent<Unit>(), m2C_FirstWinSelfUpdateMessage);
         }
 
-        public static void OnCleanBossCD(this RoleInfoComponent self)
+        public static void OnCleanBossCD(this RoleInfoComponentServer self)
         {
             for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
             {
@@ -1290,7 +1290,7 @@ namespace ET
             }
         }
 
-        public static void OnAddRevive(this RoleInfoComponent self, int monsterId, long reviveTime)
+        public static void OnAddRevive(this RoleInfoComponentServer self, int monsterId, long reviveTime)
         {
             bool have = false;  
             for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
@@ -1320,7 +1320,7 @@ namespace ET
             MessageHelper.SendToClient( self.GetParent<Unit>(), m2C_UpdateUserInfo );
         }
 
-        public static string GetGameSettingValue(this RoleInfoComponent self, GameSettingEnum gameSettingEnum)
+        public static string GetGameSettingValue(this RoleInfoComponentServer self, GameSettingEnum gameSettingEnum)
         {
             for (int i = 0; i < self.RoleInfo.GameSettingInfos.Count; i++)
             {
@@ -1343,7 +1343,7 @@ namespace ET
             }
         }
 
-        public static void OnFubenSettlement(this RoleInfoComponent self, int levelid, int difficulty)
+        public static void OnFubenSettlement(this RoleInfoComponentServer self, int levelid, int difficulty)
         {
             FubenPassInfo fubenPassInfo = null;
             for (int i = 0; i < self.RoleInfo.FubenPassList.Count; i++)
@@ -1362,7 +1362,7 @@ namespace ET
             fubenPassInfo.Difficulty = (difficulty > fubenPassInfo.Difficulty) ? difficulty : fubenPassInfo.Difficulty;
         }
 
-        public static bool IsLevelPassed(this RoleInfoComponent self, int levelid)
+        public static bool IsLevelPassed(this RoleInfoComponentServer self, int levelid)
         {
             for (int i = 0; i < self.RoleInfo.FubenPassList.Count; i++)
             {
@@ -1374,7 +1374,207 @@ namespace ET
             return false;
         }
 
-        public static bool IsChapterOpen(this RoleInfoComponent self, int chapterid)
+         public static List<int> GetMakeListByType(this RoleInfoComponentServer self, int makeType)
+        {
+            List<int> makeIds =  new List<int> { };
+            if (makeType == 0)
+            { 
+                return makeIds;
+            }
+            for(int i = 0; i < self.RoleInfo.MakeList.Count; i++)
+            {
+                EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(self.RoleInfo.MakeList[i]);
+                if (equipMakeConfig.ProficiencyType == makeType)
+                {
+                    makeIds.Add(self.RoleInfo.MakeList[i]);
+                }
+            }
+            return makeIds; 
+        }
+
+        public static void OnResetSeason(this RoleInfoComponentServer self, bool notice)
+        {
+            self.RoleInfo.SeasonLevel = 1;
+            self.RoleInfo.SeasonExp = 0;
+            self.RoleInfo.SeasonCoin = 0;
+            self.RoleInfo.OpenJingHeIds.Clear();
+        }
+
+        public static void ClearMakeListByType(this RoleInfoComponentServer self, int makeType)
+        {
+            if (makeType == 0)
+            {
+                return;
+            }
+            for (int i = self.RoleInfo.MakeList.Count - 1; i >= 0; i--)
+            {
+                int makeId = self.RoleInfo.MakeList[i];
+                if (makeId == 0)
+                {
+                    self.RoleInfo.MakeList.RemoveAt(i);
+                    continue;
+                }
+
+                EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(makeId);
+                if (equipMakeConfig.ProficiencyType == makeType)
+                {
+                    self.RoleInfo.MakeList.RemoveAt(i); 
+                }
+            }
+        }
+
+        public static int GetMonsterKillNumber(this RoleInfoComponentServer self, int monsterId)
+        {
+            for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
+            {
+                KeyValuePair keyValuePair = self.RoleInfo.MonsterRevives[i];
+                if (keyValuePair.KeyId != monsterId)
+                {
+                    continue;
+                }
+                if (!string.IsNullOrEmpty(keyValuePair.Value2))
+                {
+                    return int.Parse(keyValuePair.Value2);
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+
+        public static long GetReviveTime(this RoleInfoComponentServer self, int monsterId)
+        {
+            for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
+            {
+                if (self.RoleInfo.MonsterRevives[i].KeyId == monsterId)
+                {
+                    return long.Parse(self.RoleInfo.MonsterRevives[i].Value);
+                }
+            }
+            return 0;
+        }
+       
+        public static long GetSceneFubenTimes(this RoleInfoComponentServer self, int sceneId)
+        {
+            for (int i = 0; i < self.RoleInfo.DayFubenTimes.Count; i++)
+            {
+                if (self.RoleInfo.DayFubenTimes[i].KeyId == sceneId)
+                {
+                    return self.RoleInfo.DayFubenTimes[i].Value;
+                }
+            }
+            return 0;
+        }
+       
+        public static int GetDayItemUse(this RoleInfoComponentServer self, int mysteryId)
+        {
+            for (int i = 0; i < self.RoleInfo.DayItemUse.Count; i++)
+            {
+                if (self.RoleInfo.DayItemUse[i].KeyId == mysteryId)
+                {
+                    return (int)self.RoleInfo.DayItemUse[i].Value;
+                }
+            }
+            return 0;
+        }
+
+
+        public static void OnDayItemUse(this RoleInfoComponentServer self, int itemId)
+        {
+            for (int i = 0; i < self.RoleInfo.DayItemUse.Count; i++)
+            {
+                if (self.RoleInfo.DayItemUse[i].KeyId == itemId)
+                {
+                    self.RoleInfo.DayItemUse[i].Value += 1;
+                    return;
+                }
+            }
+            self.RoleInfo.DayItemUse.Add(new KeyValuePairInt() { KeyId = itemId, Value = 1 });
+        }
+
+        public static int GetTotalUseTimes(this RoleInfoComponentServer self, int mysteryId)
+        {
+            for (int i = 0; i < self.RoleInfo.TotalUseTimes.Count; i++)
+            {
+                if (self.RoleInfo.TotalUseTimes[i].KeyId == mysteryId)
+                {
+                    return (int)self.RoleInfo.TotalUseTimes[i].Value;
+                }
+            }
+            return 0;
+        }
+
+        public static void OnTotalUseTimes(this RoleInfoComponentServer self, int itemId, int useNumber = 1)
+        {
+            for (int i = 0; i < self.RoleInfo.TotalUseTimes.Count; i++)
+            {
+                if (self.RoleInfo.TotalUseTimes[i].KeyId == itemId)
+                {
+                    self.RoleInfo.TotalUseTimes[i].Value += useNumber;
+                    return;
+                }
+            }
+            self.RoleInfo.TotalUseTimes.Add(new KeyValuePairInt() { KeyId = itemId, Value = useNumber });
+        }
+
+        public static void AddSceneFubenTimes(this RoleInfoComponentServer self, int sceneId)
+        {
+            for (int i = 0; i < self.RoleInfo.DayFubenTimes.Count; i++)
+            {
+                if (self.RoleInfo.DayFubenTimes[i].KeyId == sceneId)
+                {
+                    self.RoleInfo.DayFubenTimes[i].Value++;
+                    return;
+                }
+            }
+            self.RoleInfo.DayFubenTimes.Add(new KeyValuePairInt() { KeyId = sceneId, Value = 1 });
+        }
+
+        public static void ClearFubenTimes(this RoleInfoComponentServer self, int sceneId)
+        {
+            for (int i = 0; i < self.RoleInfo.DayFubenTimes.Count; i++)
+            {
+                if (self.RoleInfo.DayFubenTimes[i].KeyId == sceneId)
+                {
+                    self.RoleInfo.DayFubenTimes[i].Value = 0;
+                    break;
+                }
+            }
+        }
+
+        public static int GetMaxLevel(this RoleInfoComponentServer self, List<int> compeltetask)
+        {
+            if (compeltetask.Contains(30080019))
+            {
+                return LDGlobalValueCategory.Instance.MaxLevel;
+            }
+            else
+            {
+                return 70;
+            }
+        }
+
+        public static void AddFubenTimes(this RoleInfoComponentServer self, int sceneId, int times)
+        {
+            for (int i = 0; i < self.RoleInfo.DayFubenTimes.Count; i++)
+            {
+                if (self.RoleInfo.DayFubenTimes[i].KeyId == sceneId)
+                {
+                    long curTimes = self.RoleInfo.DayFubenTimes[i].Value -= times;
+                    if (curTimes < 0)
+                    {
+                        curTimes = 0;
+                    }
+                    self.RoleInfo.DayFubenTimes[i].Value = curTimes;
+                    break;
+                }
+            }
+        }
+
+        
+        public static bool IsChapterOpen(this RoleInfoComponentServer self, int chapterid)
         {
             if (chapterid == 1)
             {
@@ -1398,7 +1598,7 @@ namespace ET
             return true;
         }
 
-        public static int GetCrateDay(this RoleInfoComponent self)
+        public static int GetCrateDay(this RoleInfoComponentServer self)
         {
             return ServerHelper.DateDiff_Time(TimeHelper.ServerNow(), self.RoleInfo.CreateTime);
         }
@@ -1408,7 +1608,7 @@ namespace ET
         /// </summary>
         /// <param name="self"></param>
         /// <param name="level"></param>
-        public static void OnGmGaoJi(this RoleInfoComponent self, int level)
+        public static void OnGmGaoJi(this RoleInfoComponentServer self, int level)
         {
             int lv = level == 1 ? 70 - self.RoleInfo.Lv : 40 - self.RoleInfo.Lv;
             self.UpdateRoleData(UserDataType.Level, lv.ToString());
@@ -1440,7 +1640,7 @@ namespace ET
             self.RoleInfo.SeasonLevel = maxseason.Id;
         }
 
-        public static void ClearDayData(this RoleInfoComponent self)
+        public static void ClearDayData(this RoleInfoComponentServer self)
         {
             self.RoleInfo.DayFubenTimes.Clear();
             self.RoleInfo.ChouKaRewardIds.Clear();

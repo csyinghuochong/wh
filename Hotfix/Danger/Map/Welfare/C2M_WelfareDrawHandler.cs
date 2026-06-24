@@ -30,7 +30,7 @@ namespace ET
                 return;
             }          
            
-            int openDay = unit.GetComponent<RoleInfoComponent>().GetCrateDay();
+            int openDay = unit.GetComponent<RoleInfoComponentServer>().GetCrateDay();
             int index = CommonHelper.GetWelfareDrawIndex( openDay );
 
             if (index == -1)

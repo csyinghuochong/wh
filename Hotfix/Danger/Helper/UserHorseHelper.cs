@@ -35,7 +35,7 @@ namespace ET
             }
         }
 
-        public static List<PropertyValue> GetZuoQiPro(this RoleInfoComponent self)
+        public static List<PropertyValue> GetZuoQiPro(this RoleInfoComponentServer self)
         {
             List<PropertyValue> proList = new List<PropertyValue>();
 
@@ -80,7 +80,7 @@ namespace ET
             return proList;
         }
 
-        public static void OnHorseActive(this RoleInfoComponent self, int horseId, bool active)
+        public static void OnHorseActive(this RoleInfoComponentServer self, int horseId, bool active)
         {
             if (active && !self.RoleInfo.HorseIds.Contains(horseId))
             {

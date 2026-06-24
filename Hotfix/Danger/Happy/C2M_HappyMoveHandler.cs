@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_HappyMoveRequest request, M2C_HappyMoveResponse response, Action reply)
         {
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 
             if (request.OperatateType != 1 && request.OperatateType != 3)
             {
@@ -36,7 +36,7 @@ namespace ET
             if (request.OperatateType == 2)
             {
                 LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(94);
-                if (roleInfoComponent.RoleInfo.Gold < LDGlobalValueCategory.Instance.TempValue)
+                if (roleInfoComponentServer.RoleInfo.Gold < LDGlobalValueCategory.Instance.TempValue)
                 {
                     response.Error = ErrorCode.ERR_GoldNotEnoughError;
                     reply();

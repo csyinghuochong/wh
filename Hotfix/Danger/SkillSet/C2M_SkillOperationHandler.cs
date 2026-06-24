@@ -10,24 +10,24 @@ namespace ET
 		{
             //request.OperationType  = 1 重置技能点
             //request.OperationType  = 2 重置职业
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            int level = roleInfoComponent.RoleInfo.Lv;
-			int sp = roleInfoComponent.RoleInfo.Sp;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            int level = roleInfoComponentServer.RoleInfo.Lv;
+			int sp = roleInfoComponentServer.RoleInfo.Sp;
 			switch (request.OperationType)
 			{
 				case 1:
                     LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(20);
                     int needGold = int.Parse(ldGlobalValue.Value);
-                    roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                    if (roleInfoComponent.RoleInfo.Gold < needGold)
+                    roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                    if (roleInfoComponentServer.RoleInfo.Gold < needGold)
                     {
                         response.Error = ErrorCode.ERR_GoldNotEnoughError;
                         reply();
                         return;
                     }
 
-                    roleInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString());
-					roleInfoComponent.UpdateRoleData(UserDataType.Sp, (level - sp).ToString());
+                    roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString());
+					roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, (level - sp).ToString());
 					unit.GetComponent<SkillSetComponent>().OnSkillReset(true);
 					break;
 				case 2:
@@ -63,14 +63,14 @@ namespace ET
                         return;
                     }
 
-                    if (roleInfoComponent.RoleInfo.OccTwo != 0)
+                    if (roleInfoComponentServer.RoleInfo.OccTwo != 0)
                     {
-                        unit.GetComponent<SkillSetComponent>().OnChangeJueXing(roleInfoComponent.RoleInfo.OccTwo, toOcc);
-                        roleInfoComponent.RoleInfo.OccTwoOld.Add(roleInfoComponent.RoleInfo.OccTwo);
+                        unit.GetComponent<SkillSetComponent>().OnChangeJueXing(roleInfoComponentServer.RoleInfo.OccTwo, toOcc);
+                        roleInfoComponentServer.RoleInfo.OccTwoOld.Add(roleInfoComponentServer.RoleInfo.OccTwo);
                     }
 
                     sp = unit.GetComponent<SkillSetComponent>().OnOccReset();
-					roleInfoComponent.UpdateRoleData(UserDataType.Sp, sp.ToString());
+					roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, sp.ToString());
                     bagComponentServer.OnCostItemData(ChangeOccItem, ItemLocType.ItemLocBag, ItemGetWay.SkillMake);
                     
                     unit.GetComponent<SkillSetComponent>().OnChangeOccTwoRequest(toOcc);

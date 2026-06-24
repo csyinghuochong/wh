@@ -50,8 +50,8 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            int oldOcc = roleInfoComponent.RoleInfo.Occ;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            int oldOcc = roleInfoComponentServer.RoleInfo.Occ;
             if (oldOcc == request.Occ)
             {
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -99,10 +99,10 @@ namespace ET
 
             //技能(清空 技能点重置)
             //觉醒转换成对应的
-            int level = roleInfoComponent.RoleInfo.Lv;
-            int sp = roleInfoComponent.RoleInfo.Sp;
+            int level = roleInfoComponentServer.RoleInfo.Lv;
+            int sp = roleInfoComponentServer.RoleInfo.Sp;
 
-            roleInfoComponent.UpdateRoleData(UserDataType.Sp, (level - sp).ToString());
+            roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, (level - sp).ToString());
 
             
             SkillSetComponent skillSetComponent = unit.GetComponent<SkillSetComponent>();
@@ -131,7 +131,7 @@ namespace ET
             //需要选择第二职业
             if (request.OccTwo != 0)
             {
-                skillSetComponent.OnChangeJueXing(roleInfoComponent.RoleInfo.OccTwo, request.OccTwo);
+                skillSetComponent.OnChangeJueXing(roleInfoComponentServer.RoleInfo.OccTwo, request.OccTwo);
                 skillSetComponent.OnChangeOccTwoRequest(request.OccTwo);
             }
 
@@ -152,18 +152,18 @@ namespace ET
             bagComponentServer.OnCostItemData(request.BagInfoID, 1);
 
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
-            dataCollationComponent.OccOld = roleInfoComponent.RoleInfo.Occ;
-            roleInfoComponent.RoleInfo.Occ = request.Occ;
+            dataCollationComponent.OccOld = roleInfoComponentServer.RoleInfo.Occ;
+            roleInfoComponentServer.RoleInfo.Occ = request.Occ;
             
             if (request.OccTwo != 0)
             {
                 dataCollationComponent.OccTwoOld = 0;
-                roleInfoComponent.RoleInfo.OccTwo = request.OccTwo;
+                roleInfoComponentServer.RoleInfo.OccTwo = request.OccTwo;
             }
             else
             {
-                dataCollationComponent.OccTwoOld = roleInfoComponent.RoleInfo.OccTwo;
-                roleInfoComponent.RoleInfo.OccTwo = 0;
+                dataCollationComponent.OccTwoOld = roleInfoComponentServer.RoleInfo.OccTwo;
+                roleInfoComponentServer.RoleInfo.OccTwo = 0;
             }
 
             reply();

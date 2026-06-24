@@ -18,8 +18,8 @@ namespace ET
                     reply();
                     return;
                 }
-                RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(scene.DomainZone(), request.ActorId);
-                if (roleInfoComponent == null)
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(scene.DomainZone(), request.ActorId);
+                if (roleInfoComponentServer == null)
                 {
                     reply();
                     return;
@@ -49,14 +49,14 @@ namespace ET
                 }
 
                 long puserid = dBPopularizeInfoList[0].Id;
-                RoleInfoComponent roleInfoComponent_2 = await DBHelper.GetComponentCache<RoleInfoComponent>(newzone, puserid);
-                if (roleInfoComponent_2 == null)
+                RoleInfoComponentServer roleInfoComponentServer2 = await DBHelper.GetComponentCache<RoleInfoComponentServer>(newzone, puserid);
+                if (roleInfoComponentServer2 == null)
                 {
                     response.Error = ErrorCode.ERR_PopularizeNot;
                     reply();
                     return;
                 }
-                if (roleInfoComponent.RoleInfo.AccInfoID == roleInfoComponent_2.RoleInfo.AccInfoID)
+                if (roleInfoComponentServer.RoleInfo.AccInfoID == roleInfoComponentServer2.RoleInfo.AccInfoID)
                 {
                     response.Error = ErrorCode.ERR_PopularizeThe;
                     reply();

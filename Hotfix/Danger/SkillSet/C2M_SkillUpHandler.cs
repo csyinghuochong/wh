@@ -35,10 +35,10 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponent unitInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer unitInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 			string costGoldValue = skillconf.Cost;
 			int costSPValue = 1;
-			int RoseSP = unitInfoComponent.RoleInfo.Sp;
+			int RoseSP = unitInfoComponentServer.RoleInfo.Sp;
 			if (/*unitInfoComponent.RoleInfo.Gold < costGoldValue || */RoseSP < costSPValue)
 			{
 				response.Error = ErrorCode.ERR_GoldNotEnoughError;     //错误码:升级所需金币或者能量值不足

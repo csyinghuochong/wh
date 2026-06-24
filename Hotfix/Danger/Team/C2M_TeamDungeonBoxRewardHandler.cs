@@ -57,7 +57,7 @@ namespace ET
                 unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, "", $"{ItemGetWay.FubenGetReward}_{TimeHelper.ServerNow()}");
             }
 
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             M2C_TeamDungeonBoxRewardResult m2C_HorseNoticeInfo = new M2C_TeamDungeonBoxRewardResult()
             { 
                 UserId = roleInfo.UserId,

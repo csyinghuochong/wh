@@ -27,8 +27,8 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (roleInfoComponent.RoleInfo.Gold < occupationJueXingConfig.costGold)
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            if (roleInfoComponentServer.RoleInfo.Gold < occupationJueXingConfig.costGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -67,7 +67,7 @@ namespace ET
 
             numericComponent.ApplyChange(null, NumericType.JueXingExp, occupationJueXingConfig.costExp * -1, 0);
 
-            roleInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (occupationJueXingConfig.costGold * -1).ToString(), true, ItemGetWay.JueXing);
+            roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (occupationJueXingConfig.costGold * -1).ToString(), true, ItemGetWay.JueXing);
 
             bagComponentServer.OnCostItemData(occupationJueXingConfig.costItem, ItemLocType.ItemLocBag, ItemGetWay.JueXing);
 

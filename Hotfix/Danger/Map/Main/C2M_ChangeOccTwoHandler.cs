@@ -9,14 +9,14 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ChangeOccTwoRequest request, M2C_ChangeOccTwoResponse response, Action reply)
         {
             //判断当前角色等级是否达到
-            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv < 18) 
+            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < 18) 
             {
                 response.Error = ErrorCode.ERR_Occ_Hint_1;
                 reply();
                 return;
             }
 
-            int OccTwo = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo;
+            int OccTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
             ////判断当前角色是否已经进行转职
             if (OccTwo != 0 )
             {
@@ -40,7 +40,7 @@ namespace ET
 
             if (OccTwo == 0)
             {
-                string userName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+                string userName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
                 string occtwoname = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 0);
                 string occtwonameen = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 1);
                 

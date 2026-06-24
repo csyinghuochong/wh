@@ -9,8 +9,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_HorseRideRequest request, M2C_HorseRideResponse response, Action reply)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();   
-            if(roleInfoComponent.RoleInfo.HorseIds.Count == 0)
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();   
+            if(roleInfoComponentServer.RoleInfo.HorseIds.Count == 0)
             {
                 response.Error = ErrorCode.ERR_HoreseNotActive;
                 reply();
@@ -26,7 +26,7 @@ namespace ET
             }
 
             int horseFightID = 0;
-            string svalue = roleInfoComponent.GetGameSettingValue( GameSettingEnum.RandomHorese);
+            string svalue = roleInfoComponentServer.GetGameSettingValue( GameSettingEnum.RandomHorese);
             if (svalue == "0")
             {
                 horseFightID = numericComponent.GetAsInt(NumericType.HorseFightID);
@@ -39,8 +39,8 @@ namespace ET
             }
             else
             {
-                int randomIndex = RandomHelper.RandomNumber(0, roleInfoComponent.RoleInfo.HorseIds.Count);
-                horseFightID = roleInfoComponent.RoleInfo.HorseIds[randomIndex];
+                int randomIndex = RandomHelper.RandomNumber(0, roleInfoComponentServer.RoleInfo.HorseIds.Count);
+                horseFightID = roleInfoComponentServer.RoleInfo.HorseIds[randomIndex];
             }
             numericComponent.ApplyValue(NumericType.HorseRide, horseFightID);
 

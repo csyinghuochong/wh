@@ -23,7 +23,7 @@ namespace ET
             if (mailInfo[0] == "mail" && zone != 0 && mailInfo[2] != "0")
             {
                 string userName = mailInfo[2];
-                List<RoleInfoComponent> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(zone, _account => _account.UserName == userName);
+                List<RoleInfoComponentServer> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(zone, _account => _account.UserName == userName);
                 if (result == null || result.Count == 0)
                 {
                     errorCode = ErrorCode.ERR_NonePlayerError;

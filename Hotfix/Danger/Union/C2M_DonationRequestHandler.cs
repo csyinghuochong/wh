@@ -14,7 +14,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold < request.Price)
+            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold < request.Price)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -27,7 +27,7 @@ namespace ET
             //}
             request.UnitId = unit.Id;
             long serverid = DBHelper.GetUnionServerId(unit.DomainZone());
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             RankingInfo rankingInfo = new RankingInfo()
             {
                 Combat = request.Price,
@@ -47,7 +47,7 @@ namespace ET
                 return;
             }
             unit.GetComponent<NumericComponent>().ApplyChange(unit, NumericType.RaceDonationNumber, request.Price, 0);
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub( UserDataType.Gold,  (request.Price * -1).ToString(),true, ItemGetWay.Donation );
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub( UserDataType.Gold,  (request.Price * -1).ToString(),true, ItemGetWay.Donation );
             reply();
             await ETTask.CompletedTask;
         }

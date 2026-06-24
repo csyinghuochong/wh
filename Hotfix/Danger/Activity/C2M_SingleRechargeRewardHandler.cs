@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_SingleRechargeRewardRequest request, M2C_SingleRechargeRewardResponse response,
         Action reply)
         {
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             if (request.RewardId == 0)
             {
                 response.RewardIds = roleInfo.SingleRechargeIds;

@@ -12,7 +12,7 @@ namespace ET
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
-                long accountId = unit.GetComponent<RoleInfoComponent>().RoleInfo.AccInfoID;
+                long accountId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID;
                 DBAccountBagInfo dBAccountBagWarehouse = await DBHelper.GetComponent<DBAccountBagInfo>(unit.DomainZone(), accountId);
                 if (dBAccountBagWarehouse == null)
                 {

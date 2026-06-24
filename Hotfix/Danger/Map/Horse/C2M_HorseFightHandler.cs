@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_HorseFightRequest request, M2C_HorseFightResponse response, Action reply)
         {
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             if (!roleInfo.HorseIds.Contains(request.HorseId))
             {
                 response.Error = ErrorCode.ERR_HoreseNotActive;

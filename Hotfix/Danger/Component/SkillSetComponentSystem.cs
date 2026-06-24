@@ -25,7 +25,7 @@ namespace ET
 		{
 			int juexingid = 0;
 			Unit unit = self.GetParent<Unit>();
-			int occtwo = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo;
+			int occtwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
 			if (occtwo == 0)
 			{
 				return false;
@@ -518,8 +518,8 @@ namespace ET
 				return;
 			}
 			Unit unit = self.GetParent<Unit>();
-			RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-			roleInfoComponent.RoleInfo.OccTwo = occTwo;
+			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+			roleInfoComponentServer.RoleInfo.OccTwo = occTwo;
 
 			//新增技能
 			LDOccupation_Transfer occupationTransfer = LDOccupation_TransferCategory.Instance.Get(occTwo);
@@ -867,9 +867,9 @@ namespace ET
 
         public static void OnChangeEquipIndex(this SkillSetComponent self,  int equipIndex)
 		{
-			RoleInfoComponent roleInfoComponent = self.GetParent<Unit>().GetComponent<RoleInfoComponent>();
+			RoleInfoComponentServer roleInfoComponentServer = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
 
-            if (roleInfoComponent.RoleInfo.Occ == 3)
+            if (roleInfoComponentServer.RoleInfo.Occ == 3)
 			{
                 self.OnRmItemSkill(CommonConfig.HunterFarSkill, 0);
                 self.OnRmItemSkill(CommonConfig.HunterNearSkill, 0);
@@ -1059,8 +1059,8 @@ namespace ET
 		{
 			int sp = 0;
 			List<int> skilllist = new List<int>();
-			RoleInfoComponent roleInfoComponent = self.GetParent<Unit>().GetComponent<RoleInfoComponent>();
-			if (roleInfoComponent.RoleInfo.OccTwo != 0)
+			RoleInfoComponentServer roleInfoComponentServer = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
+			if (roleInfoComponentServer.RoleInfo.OccTwo != 0)
 			{
 				int[] twoskill = null;
 				skilllist.AddRange(twoskill);
@@ -1103,7 +1103,7 @@ namespace ET
 					}
 				}
 			}
-			roleInfoComponent.RoleInfo.OccTwo = 0;
+			roleInfoComponentServer.RoleInfo.OccTwo = 0;
 
 			self.UpdateSkillSet();
 			return sp;
@@ -1256,12 +1256,12 @@ namespace ET
 		public static void OnSkillReset(this SkillSetComponent self, bool notice)
 		{
 			List<int> skilllist = new List<int>();
-			RoleInfoComponent roleInfoComponent = self.GetParent<Unit>().GetComponent<RoleInfoComponent>();
-			int[] initskill = LDOccupationCategory.Instance.Get(roleInfoComponent.RoleInfo.Occ).Skill_Base;
-			int[] baseSkill = LDOccupationCategory.Instance.Get(roleInfoComponent.RoleInfo.Occ).Skill_Base;
+			RoleInfoComponentServer roleInfoComponentServer = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
+			int[] initskill = LDOccupationCategory.Instance.Get(roleInfoComponentServer.RoleInfo.Occ).Skill_Base;
+			int[] baseSkill = LDOccupationCategory.Instance.Get(roleInfoComponentServer.RoleInfo.Occ).Skill_Base;
 			skilllist.AddRange(initskill);
 			skilllist.AddRange(baseSkill);
-			if (roleInfoComponent.RoleInfo.OccTwo != 0)
+			if (roleInfoComponentServer.RoleInfo.OccTwo != 0)
 			{
 				
 			}

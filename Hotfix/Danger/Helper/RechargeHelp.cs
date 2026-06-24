@@ -69,9 +69,9 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.RechargeSign, 1, notice);
             }
             // 单笔充值奖励记录
-            if (!unit.GetComponent<RoleInfoComponent>().RoleInfo.SingleRechargeIds.Contains(rechargeNumber))
+            if (!unit.GetComponent<RoleInfoComponentServer>().RoleInfo.SingleRechargeIds.Contains(rechargeNumber))
             {
-                unit.GetComponent<RoleInfoComponent>().RoleInfo.SingleRechargeIds.Add(rechargeNumber);
+                unit.GetComponent<RoleInfoComponentServer>().RoleInfo.SingleRechargeIds.Add(rechargeNumber);
             }
         }
 
@@ -129,9 +129,9 @@ namespace ET
                 });
 
                 d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.RoleInfoComponent });
-                RoleInfoComponent roleInfoComponent = (d2GGetUnit.Component as RoleInfoComponent);
+                RoleInfoComponentServer roleInfoComponentServer = (d2GGetUnit.Component as RoleInfoComponentServer);
                 
-                long accountId = roleInfoComponent.RoleInfo.AccInfoID;
+                long accountId = roleInfoComponentServer.RoleInfo.AccInfoID;
                 SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType).Coroutine();
                 await ETTask.CompletedTask;
             }
@@ -170,9 +170,9 @@ namespace ET
                 });
 
                 d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.RoleInfoComponent });
-                RoleInfoComponent roleInfoComponent = (d2GGetUnit.Component as RoleInfoComponent);
+                RoleInfoComponentServer roleInfoComponentServer = (d2GGetUnit.Component as RoleInfoComponentServer);
 
-                long accountId = roleInfoComponent.RoleInfo.AccInfoID;
+                long accountId = roleInfoComponentServer.RoleInfo.AccInfoID;
                 SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType  ).Coroutine();
             }
 

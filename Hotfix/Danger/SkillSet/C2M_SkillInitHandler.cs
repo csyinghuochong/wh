@@ -9,8 +9,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_SkillInitRequest request, M2C_SkillInitResponse response, Action reply)
         {
-            int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
-            int occTwo = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo;
+            int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
+            int occTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
             SkillSetComponent skillSetComponent = unit.GetComponent<SkillSetComponent>();
             response.SkillSetInfo = new SkillSetInfo();
             

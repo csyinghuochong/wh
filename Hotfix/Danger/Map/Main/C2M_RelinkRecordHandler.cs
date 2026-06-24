@@ -12,8 +12,8 @@ namespace ET
         {
             Console.WriteLine($"C2M_RelinkRecordRequest:  {unit.Id}   {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}");
 
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            string accont =  roleInfoComponent.Account;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            string accont =  roleInfoComponentServer.Account;
             if (!string.IsNullOrEmpty(request.MessageValue))
             {
                 request.MessageValue = request.MessageValue.Replace("&", $"   {accont}\n");

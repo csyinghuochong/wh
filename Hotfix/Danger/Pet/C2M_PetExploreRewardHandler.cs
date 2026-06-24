@@ -8,8 +8,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_PetExploreReward request, M2C_PetExploreReward response, Action reply)
         {
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (roleInfoComponent.RoleInfo.PetExploreRewardIds.Contains(request.RewardId))
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            if (roleInfoComponentServer.RoleInfo.PetExploreRewardIds.Contains(request.RewardId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -41,10 +41,10 @@ namespace ET
                 return;
             }
 
-            roleInfoComponent.RoleInfo.PetExploreRewardIds.Add(request.RewardId);
+            roleInfoComponentServer.RoleInfo.PetExploreRewardIds.Add(request.RewardId);
             int randomZuanshi = RandomHelper.RandomNumber(int.Parse(diamond[0]), int.Parse(diamond[1]));
             unit.GetComponent<BagComponentServer>().OnAddItemData(reward[0], $"{95}_{TimeHelper.ServerNow()}");
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 95);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 95);
 
             reply();
             await ETTask.CompletedTask;

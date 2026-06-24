@@ -17,14 +17,14 @@ namespace ET
             for (int i = dBUnionInfo.UnionInfo.DonationRecords.Count - 1; i >=0; i--)
             {
                 DonationRecord donationRecord = dBUnionInfo.UnionInfo.DonationRecords[i];
-                RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(scene.DomainZone(), donationRecord.UnitId);
-                if (roleInfoComponent == null)
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(scene.DomainZone(), donationRecord.UnitId);
+                if (roleInfoComponentServer == null)
                 {
                     dBUnionInfo.UnionInfo.UnionPlayerList.RemoveAt(i);
                     continue;
                 }
-                donationRecord.Name = roleInfoComponent.RoleInfo.Name;
-                donationRecord.Occ = roleInfoComponent.RoleInfo.Occ;    
+                donationRecord.Name = roleInfoComponentServer.RoleInfo.Name;
+                donationRecord.Occ = roleInfoComponentServer.RoleInfo.Occ;    
             }
             response.DonationRecords = dBUnionInfo.UnionInfo.DonationRecords;
             reply();

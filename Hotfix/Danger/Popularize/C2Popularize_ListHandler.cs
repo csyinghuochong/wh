@@ -44,16 +44,16 @@ namespace ET
                         continue;
                     }
 
-                    RoleInfoComponent roleInfoComponent = await DBHelper.GetComponentCache<RoleInfoComponent>(newZone, unitid);
-                    if (roleInfoComponent == null)
+                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(newZone, unitid);
+                    if (roleInfoComponentServer == null)
                     {
                         continue;
                     }
 
-                    dBPopularizeInfo.MyPopularizeList[i].Nmae = roleInfoComponent.RoleInfo.Name;
-                    dBPopularizeInfo.MyPopularizeList[i].Level = roleInfoComponent.RoleInfo.Lv;
-                    dBPopularizeInfo.MyPopularizeList[i].Occ = roleInfoComponent.RoleInfo.Occ;
-                    dBPopularizeInfo.MyPopularizeList[i].OccTwo = roleInfoComponent.RoleInfo.OccTwo;
+                    dBPopularizeInfo.MyPopularizeList[i].Nmae = roleInfoComponentServer.RoleInfo.Name;
+                    dBPopularizeInfo.MyPopularizeList[i].Level = roleInfoComponentServer.RoleInfo.Lv;
+                    dBPopularizeInfo.MyPopularizeList[i].Occ = roleInfoComponentServer.RoleInfo.Occ;
+                    dBPopularizeInfo.MyPopularizeList[i].OccTwo = roleInfoComponentServer.RoleInfo.OccTwo;
                 }
 
                 response.PopularizeCode = dBPopularizeInfo.PopularizeCode;

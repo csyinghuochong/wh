@@ -46,7 +46,7 @@ namespace ET
 				{
 					using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.LoginAccount, request.AccountId.GetHashCode()))
 					{
-						List<RoleInfoComponent> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(request.ServerId, _account => _account.UserName == request.CreateName);
+						List<RoleInfoComponentServer> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(request.ServerId, _account => _account.UserName == request.CreateName);
 						if (result.Count > 0)
 						{
 							response.Error = ErrorCode.ERR_RoleNameRepeat;

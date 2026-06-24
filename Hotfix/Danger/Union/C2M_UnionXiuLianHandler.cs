@@ -39,7 +39,7 @@ namespace ET
             }
 
             UnionQiangHuaConfig unionQiangHuaConfig = UnionQiangHuaConfigCategory.Instance.Get(xiulianid);
-            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.UnionZiJin < unionQiangHuaConfig.CostGold)
+            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UnionZiJin < unionQiangHuaConfig.CostGold)
             {
                 response.Error = ErrorCode.ERR_HouBiNotEnough;
                 reply();
@@ -54,7 +54,7 @@ namespace ET
             }
 
 
-            long selfgold = unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold;
+            long selfgold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold;
             U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                        DBHelper.GetUnionServerId(unit.DomainZone()),
                        new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });
@@ -69,7 +69,7 @@ namespace ET
             }
 
             unit.GetComponent<NumericComponent>().ApplyValue( numerType, xiulianid+1);
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub( UserDataType.UnionContri,(unionQiangHuaConfig.CostGold * -1).ToString(), true, ItemGetWay.UnionXiuLian);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub( UserDataType.UnionContri,(unionQiangHuaConfig.CostGold * -1).ToString(), true, ItemGetWay.UnionXiuLian);
 
             //刷新角色属性
             Function_Fight.UnitUpdateProperty_Base(unit,true,true);

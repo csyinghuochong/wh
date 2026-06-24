@@ -35,14 +35,14 @@ namespace ET
             }
 
           
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             int PointLiLiang = numericComponent.GetAsInt(NumericType.Point_Strength);
             int PointZhiLi = numericComponent.GetAsInt(NumericType.Point_Intelligence);
             int PointTiZhi = numericComponent.GetAsInt(NumericType.Point_Constitution);
             int PointNaiLi = numericComponent.GetAsInt(NumericType.Point_Stamina);
             int PointMinJie = numericComponent.GetAsInt(NumericType.Point_Agility);
             int PointRemain = numericComponent.GetAsInt(NumericType.PointRemain);
-            int totalPoint = RoleAddPointHelper.GetTotalPointAtLevel(roleInfoComponent.RoleInfo.Lv);
+            int totalPoint = RoleAddPointHelper.GetTotalPointAtLevel(roleInfoComponentServer.RoleInfo.Lv);
             
             //检测属性点
             if (unit.IsRobot())
@@ -94,9 +94,9 @@ namespace ET
 
             if (unit.Type == UnitType.Player && numericComponent.GetAsInt(NumericType.PetExtendNumber) > 0)
             {
-                if (unit.GetComponent<RoleInfoComponent>().GetTotalUseTimes(10000134) <= 0)
+                if (unit.GetComponent<RoleInfoComponentServer>().GetTotalUseTimes(10000134) <= 0)
                 {
-                    unit.GetComponent<RoleInfoComponent>().OnTotalUseTimes(10000134, numericComponent.GetAsInt(NumericType.PetExtendNumber));
+                    unit.GetComponent<RoleInfoComponentServer>().OnTotalUseTimes(10000134, numericComponent.GetAsInt(NumericType.PetExtendNumber));
                 }
             }
            
@@ -121,16 +121,16 @@ namespace ET
             ///赛季数据[赛季开始]
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             long seasonopenTime = numericComponent.GetAsLong(NumericType.SeasonOpenTime);
-            KeyValuePairLong keyValuePairLong = SeasonHelper.GetOpenSeason(roleInfoComponent.RoleInfo.Lv);
+            KeyValuePairLong keyValuePairLong = SeasonHelper.GetOpenSeason(roleInfoComponentServer.RoleInfo.Lv);
 
             if (seasonopenTime != 0 &&  (keyValuePairLong== null  || seasonopenTime != keyValuePairLong.Value) )
             {
                 //清空赛季相关数据. 赛季任务 晶核
                 Log.Warning($"清空赛季数据！:{unit.Id}");
                 Console.WriteLine($"清空赛季数据！: {unit.DomainZone()}  {unit.Id}  {seasonopenTime} ");
-                self.SendSeasonReward(unit.GetComponent<RoleInfoComponent>().RoleInfo.SeasonLevel);
+                self.SendSeasonReward(unit.GetComponent<RoleInfoComponentServer>().RoleInfo.SeasonLevel);
 
                 numericComponent.ApplyValue(NumericType.SeasonOpenTime, 0, notice);
                 numericComponent.ApplyValue(NumericType.SeasonReward, 0, notice);
@@ -139,7 +139,7 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.SeasonTowerId, 0, notice);
                 //numericComponent.ApplyValue(NumericType.SeasonTask, 0, notice);
 
-                unit.GetComponent<RoleInfoComponent>().OnResetSeason(notice);
+                unit.GetComponent<RoleInfoComponentServer>().OnResetSeason(notice);
                 unit.GetComponent<BagComponentServer>().OnResetSeason(notice);
                 unit.GetComponent<TaskComponent>().OnResetSeason(notice);
             }
@@ -148,27 +148,27 @@ namespace ET
         public static void CheckSeasonOpen(this HeroDataComponent self, bool notice)
         {
             Unit unit = self.GetParent<Unit>();
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             if (numericComponent.GetAsInt(NumericType.SeasonBossFuben) >= 100000)
             {
-                numericComponent.ApplyValue(NumericType.SeasonBossFuben, SeasonHelper.GetFubenId(roleInfoComponent.RoleInfo.Lv));
+                numericComponent.ApplyValue(NumericType.SeasonBossFuben, SeasonHelper.GetFubenId(roleInfoComponentServer.RoleInfo.Lv));
             }
 
             if (numericComponent.GetAsInt(NumericType.SeasonBossFuben) >= CommonConfig.GMDungeonId)
             {
                 Console.WriteLine($"赛季boss地图：  {numericComponent.GetAsInt(NumericType.SeasonBossFuben)}");
-                numericComponent.ApplyValue(NumericType.SeasonBossFuben, SeasonHelper.GetFubenId(roleInfoComponent.RoleInfo.Lv));
+                numericComponent.ApplyValue(NumericType.SeasonBossFuben, SeasonHelper.GetFubenId(roleInfoComponentServer.RoleInfo.Lv));
             }
 
-            KeyValuePairLong seasonOpenTime = SeasonHelper.GetOpenSeason(roleInfoComponent.RoleInfo.Lv);
+            KeyValuePairLong seasonOpenTime = SeasonHelper.GetOpenSeason(roleInfoComponentServer.RoleInfo.Lv);
             if (numericComponent.GetAsLong(NumericType.SeasonOpenTime) == 0 && seasonOpenTime != null)
             {
                 //Console.WriteLine($"赛季开启: {unit.DomainZone()}  {unit.Id}  {seasonOpenTime.KeyId}");
 
                 //刷新boss
-                numericComponent.ApplyValue(NumericType.SeasonBossFuben, SeasonHelper.GetFubenId(roleInfoComponent.RoleInfo.Lv), notice);
+                numericComponent.ApplyValue(NumericType.SeasonBossFuben, SeasonHelper.GetFubenId(roleInfoComponentServer.RoleInfo.Lv), notice);
                 numericComponent.ApplyValue(NumericType.SeasonBossRefreshTime, TimeHelper.ServerNow() + TimeHelper.Minute, notice);
                 numericComponent.ApplyValue(NumericType.SeasonOpenTime, seasonOpenTime.Value, notice);
 
@@ -187,11 +187,11 @@ namespace ET
             numericComponent.ApplyValue(NumericType.V1DayCostDiamond, 0, notice);
 
             //每次活动扣除100积分， 对话任意积分可免扣除
-            float v1points =unit.GetComponent<RoleInfoComponent>().RoleInfo.V1TotalPoints;  
+            float v1points =unit.GetComponent<RoleInfoComponentServer>().RoleInfo.V1TotalPoints;  
             if (kouchu)
             {
                 v1points = Math.Min(100f, v1points);
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.V1TotalPoints, (v1points * -1).ToString());
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.V1TotalPoints, (v1points * -1).ToString());
             }
         }
 
@@ -291,8 +291,8 @@ namespace ET
         public static void OnResetPoint(this HeroDataComponent self)
         {
             Unit unit = self.GetParent<Unit>();
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (!RoleAddPointHelper.CanResetPoint(roleInfoComponent.RoleInfo.Lv))
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            if (!RoleAddPointHelper.CanResetPoint(roleInfoComponentServer.RoleInfo.Lv))
             {
                 return;
             }
@@ -320,8 +320,8 @@ namespace ET
             if (SeasonHelper.SeasonBossId == unit.ConfigId && mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
             {
                 LocalDungeonComponent localDungeon = unit.DomainScene().GetComponent<LocalDungeonComponent>();
-                RoleInfoComponent roleInfoComponent = localDungeon.MainUnit.GetComponent<RoleInfoComponent>();
-                localDungeon.MainUnit.GetComponent<NumericComponent>().ApplyValue(NumericType.SeasonBossFuben, SeasonHelper.GetFubenId(roleInfoComponent.RoleInfo.Lv));
+                RoleInfoComponentServer roleInfoComponentServer = localDungeon.MainUnit.GetComponent<RoleInfoComponentServer>();
+                localDungeon.MainUnit.GetComponent<NumericComponent>().ApplyValue(NumericType.SeasonBossFuben, SeasonHelper.GetFubenId(roleInfoComponentServer.RoleInfo.Lv));
                 localDungeon.MainUnit.GetComponent<NumericComponent>().ApplyValue(NumericType.SeasonBossRefreshTime, TimeHelper.ServerNow() + resurrection * 1000);
                 resurrection = 0;
             }
@@ -473,7 +473,7 @@ namespace ET
             Unit masterUnit = nowUnit.GetParent<UnitComponent>().Get(createMonsterInfo.MasterID);
             if (masterUnit.Type == UnitType.Player)
             {
-                monsterlevel = masterUnit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+                monsterlevel = masterUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
             }
             else
             {
@@ -491,7 +491,7 @@ namespace ET
             {
                 UnitInfoComponent unitInfoComponent = nowUnit.GetComponent<UnitInfoComponent>();
                 unitInfoComponent.FashionEquipList = masterUnit.GetComponent<BagComponentServer>().FashionEquipList;
-                numericComponent.Set((int)NumericType.UseMasterModel, masterUnit.GetComponent<RoleInfoComponent>().RoleInfo.Occ, false);
+                numericComponent.Set((int)NumericType.UseMasterModel, masterUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ, false);
             }
 
             string[] attributeList_1 = summonInfo[1].Split(',');    //比列

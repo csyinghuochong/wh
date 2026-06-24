@@ -61,7 +61,7 @@ namespace ET
                     jiaYuanOperate = new JiaYuanOperate();
                     jiaYuanOperate.OperateType = JiaYuanOperateType.Pick;
                     jiaYuanOperate.UnitId = request.UnitId;
-                    jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+                    jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
                     jiaYuanOperate.OperateId = boxUnit.ConfigId;
                     M2M_JiaYuanOperateMessage opmessage = new M2M_JiaYuanOperateMessage()
                     {

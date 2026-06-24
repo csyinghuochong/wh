@@ -95,9 +95,9 @@ namespace ET
             Log.Warning($"挑战奖励:  {self.MainUnit.Id}  {way}");
             MessageHelper.SendToClient(self.MainUnit, message);
 
-            RoleInfoComponent roleInfoComponent = self.MainUnit.GetComponent<RoleInfoComponent>();
-            roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.Exp, message.RewardExp.ToString(), true, ItemGetWay.TiaoZhan);
-            roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.Gold, message.RewardGold.ToString(), true, ItemGetWay.TiaoZhan);
+            RoleInfoComponentServer roleInfoComponentServer = self.MainUnit.GetComponent<RoleInfoComponentServer>();
+            roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Exp, message.RewardExp.ToString(), true, ItemGetWay.TiaoZhan);
+            roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, message.RewardGold.ToString(), true, ItemGetWay.TiaoZhan);
             self.TowerId = 0;
         }
 

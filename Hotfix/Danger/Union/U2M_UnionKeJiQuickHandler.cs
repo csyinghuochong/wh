@@ -7,14 +7,14 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, U2M_UnionKeJiQuickRequest request, M2U_UnionKeJiQuickResponse response, Action reply)
         {
-            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Diamond <= request.Cost)
+            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond <= request.Cost)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();
                 return;
             }
 
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, $"-{request.Cost}", true, ItemGetWay.UnionXiuLian);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, $"-{request.Cost}", true, ItemGetWay.UnionXiuLian);
 
             reply();
             await ETTask.CompletedTask;

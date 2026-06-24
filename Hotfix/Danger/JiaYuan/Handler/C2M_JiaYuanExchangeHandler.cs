@@ -9,8 +9,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_JiaYuanExchangeRequest request, M2C_JiaYuanExchangeResponse response, Action reply)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            RoleInfoComponent roleInfoComponent=unit.GetComponent<RoleInfoComponent>();
-            RoleInfo roleInfo = roleInfoComponent.RoleInfo;
+            RoleInfoComponentServer roleInfoComponentServer=unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             LDHome ldHome = LDHomeCategory.Instance.Get(roleInfo.JiaYuanLv);
             switch (request.ExchangeType)
             {

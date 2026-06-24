@@ -57,7 +57,7 @@ namespace ET
                     {
                         PlayerId = unit.Id,
                         Time = TimeHelper.ServerNow(),
-                        PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name,
+                        PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
                     }) ;
                     unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.JiaYuanGatherPlant_401, 0, 1);
                     unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanGatherPlant_93, 0, 1);

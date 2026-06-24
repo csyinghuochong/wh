@@ -27,8 +27,8 @@ namespace ET
             string reward = CommonConfig.WelfareDrawList[index - 1].Value;
             if (index == 7)
             { 
-                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                int weaponId = CommonHelper.GetWelfareWeapon( roleInfoComponent.RoleInfo.Occ, roleInfoComponent.RoleInfo.OccTwo );
+                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                int weaponId = CommonHelper.GetWelfareWeapon( roleInfoComponentServer.RoleInfo.Occ, roleInfoComponentServer.RoleInfo.OccTwo );
                 reward = $"{weaponId};1";
             }
 

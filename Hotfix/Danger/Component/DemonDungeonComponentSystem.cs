@@ -90,11 +90,11 @@ namespace ET
         {
             long mapInstanceId = DBHelper.GetRankServerId( self.DomainZone() );
             RankingInfo rankPetInfo = new RankingInfo();
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            rankPetInfo.UserId = roleInfoComponent.RoleInfo.UserId;
-            rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
-            rankPetInfo.PlayerLv = roleInfoComponent.RoleInfo.Lv;
-            rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            rankPetInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
+            rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
+            rankPetInfo.PlayerLv = roleInfoComponentServer.RoleInfo.Lv;
+            rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
             rankPetInfo.Combat = score;
 
             R2M_RankDemonResponse Response = (R2M_RankDemonResponse)await ActorMessageSenderComponent.Instance.Call
@@ -118,14 +118,14 @@ namespace ET
             //1被恶魔打败的玩家会变成小恶魔,
             if (defend.Type == UnitType.Player && monsterId == 0)
             {
-                string attackName = attack.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+                string attackName = attack.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
                 defend.SetBornPosition(defend.Position, true);
                 defend.GetComponent<HeroDataComponent>().OnRevive();
 
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.BattleCamp, CampEnum.CampPlayer_2 );
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, 90000018);
-                defend.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.DemonName, attackName, true);
-                defend.GetComponent<RoleInfoComponent>().UpdateRoleDataBroadcast(UserDataType.DemonName, attackName);
+                defend.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.DemonName, attackName, true);
+                defend.GetComponent<RoleInfoComponentServer>().UpdateRoleDataBroadcast(UserDataType.DemonName, attackName);
                 Function_Fight.UnitUpdateProperty_DemonBig(defend, true);
 
                 await  self.OnUpdateScore(attack, 50);

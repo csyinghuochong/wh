@@ -59,7 +59,7 @@ namespace ET
                 else
                 {
                     //钻石洗炼
-                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
                     int itemXiLianNumber = 0;//unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianNumber);
                     string[] set = LDGlobalValueCategory.Instance.Get(116).Value.Split(';');
                     double discount;

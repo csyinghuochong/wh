@@ -94,8 +94,8 @@ namespace ET
             string serverName = serverItem.ServerName;
             string sceneName = LDSceneCategory.Instance.Get(mapComponent.SceneId).GetSceneName();
 
-            RoleInfoComponent attackUserinfo = attack.GetComponent<RoleInfoComponent>();
-            RoleInfoComponent defendUserinfo = defend.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer attackUserinfo = attack.GetComponent<RoleInfoComponentServer>();
+            RoleInfoComponentServer defendUserinfo = defend.GetComponent<RoleInfoComponentServer>();
             string attackName = attackUserinfo.RoleInfo.Name;
             string defendName = defendUserinfo.RoleInfo.Name;
             attackName = attack.IsRobot() ? $"{attackName}（人机）" : attackName;
@@ -485,7 +485,7 @@ namespace ET
             //{
             //    return;
             //}
-            RoleInfoComponent userInfo = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer userInfo = unit.GetComponent<RoleInfoComponentServer>();
 
             long rechargeValue = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber);
 
@@ -523,8 +523,8 @@ namespace ET
             }
 
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
-            int occTwo = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo;
+            int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
+            int occTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
             List<BagInfo> bagInfos =  bagComponentServer.GetAllItems(occ, occTwo  );
             for (int i = 0; i < bagInfos.Count; i++)
             {

@@ -32,12 +32,12 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             string[] occItems = CommonConfig.KillMonsterReward[request.Key].Split('&');
             string[] items;
             if (occItems.Length == 3)
             {
-                items = occItems[roleInfoComponent.RoleInfo.Occ - 1].Split('@');
+                items = occItems[roleInfoComponentServer.RoleInfo.Occ - 1].Split('@');
             }
             else
             {

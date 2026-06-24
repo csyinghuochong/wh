@@ -55,7 +55,7 @@ namespace ET
                 }
 
                
-                if (unit.GetComponent<RoleInfoComponent>().RoleInfo.SerialRewards.Contains(serialIndex))
+                if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.SerialRewards.Contains(serialIndex))
                 {
                     response.Error = ErrorCode.ERR_AlreadyReceived2;
                     reply();
@@ -78,7 +78,7 @@ namespace ET
                 numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
                 if (serialIndex >= 8 && serialIndex <= 11)
                 {
-                    unit.GetComponent<RoleInfoComponent>().RoleInfo.SerialRewards.Add(serialIndex);
+                    unit.GetComponent<RoleInfoComponentServer>().RoleInfo.SerialRewards.Add(serialIndex);
                 }
             }
 

@@ -16,7 +16,7 @@ namespace ET
                 reply();
                 return;
             }
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             int needLevel = int.Parse(LDGlobalValueCategory.Instance.Get(21).Value);
             int needDiamond = int.Parse(LDGlobalValueCategory.Instance.Get(22).Value);
             if (roleInfo.Lv < needLevel || roleInfo.Diamond < needDiamond)
@@ -38,8 +38,8 @@ namespace ET
             {
                 unit.GetComponent<NumericComponent>().ApplyValue( NumericType.UnionLeader, 1, true);
                 unit.GetComponent<NumericComponent>().ApplyValue( NumericType.UnionId_0, d2GGetUnit.UnionId, true);
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.UnionName, request.UnionName);
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleDataBroadcast(UserDataType.UnionName, request.UnionName);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.UnionName, request.UnionName);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleDataBroadcast(UserDataType.UnionName, request.UnionName);
                 unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JoinUnion_9, 0, 1);
                
                 unit.UpdateUnionToChat().Coroutine();

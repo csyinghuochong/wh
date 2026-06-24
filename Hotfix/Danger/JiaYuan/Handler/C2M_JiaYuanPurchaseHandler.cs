@@ -39,7 +39,7 @@ namespace ET
                 return;
             }
 
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.JiaYuanFund, jiaYuanPurchaseItem.BuyZiJin.ToString());
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.JiaYuanFund, jiaYuanPurchaseItem.BuyZiJin.ToString());
             unit.GetComponent<BagComponentServer>().OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost  );
             response.PurchaseItemList = jiaYuanComponentServer.PurchaseItemList_7;
             DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, jiaYuanComponentServer).Coroutine();

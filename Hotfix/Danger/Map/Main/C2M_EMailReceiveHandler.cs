@@ -16,7 +16,7 @@ namespace ET
             {
                 long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
                 E2M_EMailReceiveResponse g_SendChatRequest = (E2M_EMailReceiveResponse)await ActorMessageSenderComponent.Instance.Call
-                    (mailServerId, new M2E_EMailReceiveRequest() { Id = unit.GetComponent<RoleInfoComponent>().RoleInfo.UserId, MailId = request.MailId });
+                    (mailServerId, new M2E_EMailReceiveRequest() { Id = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId, MailId = request.MailId });
 
                 MailInfo mailInfo = g_SendChatRequest.MailInfo;
                 if (mailInfo == null)

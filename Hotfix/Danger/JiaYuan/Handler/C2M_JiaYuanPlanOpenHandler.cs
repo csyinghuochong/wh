@@ -16,8 +16,8 @@ namespace ET
                 reply();
                 return;
             }
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            LDHome ldHome = LDHomeCategory.Instance.Get(roleInfoComponent.RoleInfo.JiaYuanLv);
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            LDHome ldHome = LDHomeCategory.Instance.Get(roleInfoComponentServer.RoleInfo.JiaYuanLv);
             /*if (jiaYuanComponent.GetOpenPlanNumber() >= ldHome.FarmNumMax)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;

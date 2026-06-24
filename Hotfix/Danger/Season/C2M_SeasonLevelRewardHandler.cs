@@ -9,9 +9,9 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_SeasonLevelRewardRequest request, M2C_SeasonLevelRewardResponse response, Action reply)
         {
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();   
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();   
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt( NumericType.SeasonReward ) >= roleInfoComponent.RoleInfo.SeasonLevel)
+            if (numericComponent.GetAsInt( NumericType.SeasonReward ) >= roleInfoComponentServer.RoleInfo.SeasonLevel)
             {
                 response.Error = ErrorCode.ERR_Parameter;
                 reply();
@@ -26,7 +26,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (roleInfoComponent.RoleInfo.SeasonLevel < rewardLevel)
+            if (roleInfoComponentServer.RoleInfo.SeasonLevel < rewardLevel)
             {
                 Log.Error($"C2M_SeasonLevelRewardRequest 3");
                 response.Error = ErrorCode.ERR_ModifyData;

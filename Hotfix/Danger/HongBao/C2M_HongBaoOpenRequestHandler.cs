@@ -9,7 +9,7 @@ namespace ET
         {
             int functionId = 1023;
             
-            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv < 12)
+            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < 12)
             {
                 response.Error = ErrorCode.ERR_HongBaoLevel;
                 reply();
@@ -39,7 +39,7 @@ namespace ET
             }
 
             //获取当前玩家等级
-            int playerLv = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+            int playerLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
             int minGold = 2000;
             int maxGold = 10000;
 
@@ -79,7 +79,7 @@ namespace ET
             int hongbaoAmount = RandomHelper.RandomNumber(minGold, maxGold);
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HongBao, 1);
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HongBaoLastTime, TimeHelper.ServerNow());
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, hongbaoAmount.ToString(), true, 33);// ItemGetWay.HongBao);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Gold, hongbaoAmount.ToString(), true, 33);// ItemGetWay.HongBao);
             response.HongbaoAmount = hongbaoAmount;
 
             reply();

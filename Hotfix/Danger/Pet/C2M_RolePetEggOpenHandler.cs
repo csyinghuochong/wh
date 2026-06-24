@@ -20,14 +20,14 @@ namespace ET
             string[] petinfos = ldItemConf.ItemUsePar.Split('@');
             int needCost = CommonHelper.ReturnPetOpenTimeDiamond(rolePetEgg.ItemId,rolePetEgg.EndTime);
 
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             if (roleInfo.Diamond < needCost)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();
                 return;
             }
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (needCost * -1).ToString(), true,ItemGetWay.PetChouKa);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (needCost * -1).ToString(), true,ItemGetWay.PetChouKa);
             List<int> weights = new List<int>();
             List<int> petlists = new List<int>();
             for (int i = 2; i < petinfos.Length; i++)

@@ -35,8 +35,8 @@ namespace ET
 
              
                 string serverName = ServerHelper.GetGetServerItem(false, unit.DomainZone()).ServerName;
-                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                string userName = roleInfoComponent.RoleInfo.Name;
+                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                string userName = roleInfoComponentServer.RoleInfo.Name;
 
                 if (request.PayType == PayTypeEnum.IOSPay)
                 {
@@ -88,9 +88,9 @@ namespace ET
                     UnitId = unit.Id,
                     UnitName = userName,
                     RechargeNumber = request.PayID,
-                    Account = roleInfoComponent.Account,
+                    Account = roleInfoComponentServer.Account,
                     payMessage = request.RiskControlInfo,
-                    ClientIp = roleInfoComponent.RemoteAddress,
+                    ClientIp = roleInfoComponentServer.RemoteAddress,
                     RechargeType = request.RechargeType,    
                 });
 

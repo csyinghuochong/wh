@@ -32,11 +32,11 @@ namespace ET
             }
        
             //判断钻石是否足够
-            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Diamond >= diamond)
+            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond >= diamond)
             {
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (diamond * -1).ToString(), true, ItemGetWay.DuiHuan);
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, (diamond * d2GGetUnit.ServerInfo.ExChangeGold).ToString(), true, ItemGetWay.DuiHuan);
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.WeiJingGold,( (int)(diamond / 100) ).ToString(), true, ItemGetWay.DuiHuan);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (diamond * -1).ToString(), true, ItemGetWay.DuiHuan);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Gold, (diamond * d2GGetUnit.ServerInfo.ExChangeGold).ToString(), true, ItemGetWay.DuiHuan);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.WeiJingGold,( (int)(diamond / 100) ).ToString(), true, ItemGetWay.DuiHuan);
                 unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.DuiHuanGold_15, 0, (int)(diamond / 100));
             }
             else 

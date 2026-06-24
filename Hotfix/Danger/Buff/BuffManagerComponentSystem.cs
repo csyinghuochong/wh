@@ -957,21 +957,21 @@ namespace ET
                 return;
             }
             long serverTime = TimeHelper.ServerNow();
-            RoleInfoComponent unitInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            for (int i = 0; i < unitInfoComponent.Buffs.Count; i++)
+            RoleInfoComponentServer unitInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            for (int i = 0; i < unitInfoComponentServer.Buffs.Count; i++)
             {
-                long endTime = long.Parse(unitInfoComponent.Buffs[i].Value2);
+                long endTime = long.Parse(unitInfoComponentServer.Buffs[i].Value2);
                 if (endTime <= serverTime)
                 {
                     continue;
                 }
                 BuffData buffData_1 = new BuffData();
                 buffData_1.SkillId = 67000278;
-                buffData_1.BuffId = unitInfoComponent.Buffs[i].KeyId;
+                buffData_1.BuffId = unitInfoComponentServer.Buffs[i].KeyId;
                 buffData_1.BuffEndTime = endTime;
                 self.BuffFactory(buffData_1, self.GetParent<Unit>(), null, true);
             }
-            unitInfoComponent.Buffs.Clear();
+            unitInfoComponentServer.Buffs.Clear();
 
             if (sceneType != MapTypeEnum.RunRace)
             {
@@ -1144,8 +1144,8 @@ namespace ET
             {
                 return;
             }
-            RoleInfoComponent unitInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            unitInfoComponent.Buffs.Clear();
+            RoleInfoComponentServer unitInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            unitInfoComponentServer.Buffs.Clear();
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
@@ -1157,7 +1157,7 @@ namespace ET
                 {
                     continue;
                 }
-                unitInfoComponent.Buffs.Add(new KeyValuePair() { KeyId = buffHandler.MBuff.Id, Value2 = buffHandler.BuffEndTime.ToString() });
+                unitInfoComponentServer.Buffs.Add(new KeyValuePair() { KeyId = buffHandler.MBuff.Id, Value2 = buffHandler.BuffEndTime.ToString() });
             }
         }
     }

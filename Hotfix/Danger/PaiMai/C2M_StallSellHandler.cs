@@ -7,7 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_StallSellRequest request, M2C_StallSellResponse response, Action reply)
         {
-            if (unit.DomainZone() != 3  &&  !GMHelp.GmAccount.Contains(unit.GetComponent<RoleInfoComponent>().Account))
+            if (unit.DomainZone() != 3  &&  !GMHelp.GmAccount.Contains(unit.GetComponent<RoleInfoComponentServer>().Account))
             {
                 response.Error = ErrorCode.ERR_ModifyData;
                 reply();
@@ -26,8 +26,8 @@ namespace ET
                 long paimaiItemId = IdGenerater.Instance.GenerateId();
                 request.PaiMaiItemInfo.Id = paimaiItemId;
 
-                request.PaiMaiItemInfo.PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
-                request.PaiMaiItemInfo.UserId = unit.GetComponent<RoleInfoComponent>().RoleInfo.UserId;
+                request.PaiMaiItemInfo.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+                request.PaiMaiItemInfo.UserId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId;
 
                 //获取时间戳
                 long currentTime = TimeHelper.ServerNow();

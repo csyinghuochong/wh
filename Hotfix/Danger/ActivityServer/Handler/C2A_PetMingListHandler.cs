@@ -30,14 +30,14 @@ namespace ET
                     for (int i = 0; i < minglist.Count; i++)
                     {
                         long enemyId = minglist[i].UnitId;
-                        RoleInfoComponent roleInfoComponent = null;
+                        RoleInfoComponentServer roleInfoComponentServer = null;
                         PetComponent petComponent = null;
                         D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = enemyId, Component = DBHelper.RoleInfoComponent });
                         if (d2GGetUnit.Component == null)
                         {
                             continue;
                         }
-                        roleInfoComponent = d2GGetUnit.Component as RoleInfoComponent;
+                        roleInfoComponentServer = d2GGetUnit.Component as RoleInfoComponentServer;
                         d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = enemyId, Component = DBHelper.PetComponent });
                         if (d2GGetUnit.Component == null)
                         {
@@ -68,7 +68,7 @@ namespace ET
                             MineType = minglist[i].MineType,
                             Postion = minglist[i].Postion,
                             TeamId = teamid,
-                            PlayerName = roleInfoComponent.RoleInfo.Name,
+                            PlayerName = roleInfoComponentServer.RoleInfo.Name,
                             PetConfig = petconfidds,
                             PetIdList = petidlist,
                             UnitId = minglist[i].UnitId,

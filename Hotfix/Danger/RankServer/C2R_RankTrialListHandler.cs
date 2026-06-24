@@ -40,15 +40,15 @@ namespace ET
                     {
                         continue;
                     }
-                    RoleInfoComponent roleInfoComponent = (d2GGetUnit.Component as RoleInfoComponent);
+                    RoleInfoComponentServer roleInfoComponentServer = (d2GGetUnit.Component as RoleInfoComponentServer);
                     response.RankList.Add(new RankingTrialInfo()
                     { 
                         UserId = ranklist[i].KeyId,
                         Hurt = ranklist[i].Value,
                         FubenId = (int)(ranklist[i].Value2),
-                        PlayerLv = roleInfoComponent.RoleInfo.Lv,
-                        PlayerName = roleInfoComponent.RoleInfo.Name,   
-                        Occ = roleInfoComponent.RoleInfo.Occ,
+                        PlayerLv = roleInfoComponentServer.RoleInfo.Lv,
+                        PlayerName = roleInfoComponentServer.RoleInfo.Name,   
+                        Occ = roleInfoComponentServer.RoleInfo.Occ,
                     });
                 }
                 rankComponent.RankingTrialLastTime = TimeHelper.ServerNow();

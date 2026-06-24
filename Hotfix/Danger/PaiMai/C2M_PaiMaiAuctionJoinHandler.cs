@@ -14,12 +14,12 @@ namespace ET
                         (paimaiserverid, new M2P_PaiMaiAuctionJoinRequest()
                         {
                             UnitID = unit.Id,
-                            Gold = unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold
+                            Gold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold
                         });
 
                 if (r_GameStatusResponse.Error == ErrorCode.ERR_Success)
                 {
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (-1 * r_GameStatusResponse.CostGold).ToString(), true, ItemGetWay.AuctionJoin);
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (-1 * r_GameStatusResponse.CostGold).ToString(), true, ItemGetWay.AuctionJoin);
                 }
                 response.Error = r_GameStatusResponse.Error;
                 reply();

@@ -40,7 +40,7 @@ namespace ET
                 LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
                 int equipType = ItemHelper.GetNewEquipType(useBagInfo);
 
-                if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv < ldItem.UseLv)
+                if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < ldItem.UseLv)
                 {
                     response.Error = ErrorCode.ERR_EquipLvLimit;
                     reply();

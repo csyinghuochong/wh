@@ -18,7 +18,7 @@ namespace ET
             fubenComponent.CurrentFubenCell = fubenCellInfoNext;
             if (!fubenCellInfoNext.pass)
             {
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.PiLao, "-1");
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.PiLao, "-1");
             }
 
             SonFubenInfo enterFubenInfo = new SonFubenInfo();

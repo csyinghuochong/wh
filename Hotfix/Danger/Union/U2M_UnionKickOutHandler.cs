@@ -10,8 +10,8 @@ namespace ET
         {
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.UnionLeader,0);
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.UnionId_0, 0);
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.UnionName, "");
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleDataBroadcast(UserDataType.UnionName, "");
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.UnionName, "");
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleDataBroadcast(UserDataType.UnionName, "");
             unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
             unit.UpdateUnionToChat().Coroutine();
 

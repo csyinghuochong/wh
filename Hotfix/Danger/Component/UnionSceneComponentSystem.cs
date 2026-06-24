@@ -176,9 +176,9 @@ namespace ET
                     D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(numericComponent), ComponentType = DBHelper.NumericComponent });
 
                     d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unitid, Component = DBHelper.RoleInfoComponent });
-                    RoleInfoComponent roleInfoComponent = d2GGet.Component as RoleInfoComponent;
-                    roleInfoComponent.RoleInfo.UnionName = dBUnionInfo.UnionInfo.UnionName;
-                    d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(roleInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
+                    RoleInfoComponentServer roleInfoComponentServer = d2GGet.Component as RoleInfoComponentServer;
+                    roleInfoComponentServer.RoleInfo.UnionName = dBUnionInfo.UnionInfo.UnionName;
+                    d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(roleInfoComponentServer), ComponentType = DBHelper.RoleInfoComponent });
                 }
 
                 if (operateSucess)

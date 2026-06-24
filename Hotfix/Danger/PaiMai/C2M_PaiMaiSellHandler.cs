@@ -41,9 +41,9 @@ namespace ET
                 long paimaiItemId = IdGenerater.Instance.GenerateId();
 				request.PaiMaiItemInfo.Id = paimaiItemId;
 
-                request.PaiMaiItemInfo.PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
-				request.PaiMaiItemInfo.UserId = unit.GetComponent<RoleInfoComponent>().RoleInfo.UserId;
-                request.PaiMaiItemInfo.Account = unit.GetComponent<RoleInfoComponent>().Account;
+                request.PaiMaiItemInfo.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+				request.PaiMaiItemInfo.UserId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId;
+                request.PaiMaiItemInfo.Account = unit.GetComponent<RoleInfoComponentServer>().Account;
 				request.PaiMaiItemInfo.SellTime = currentTime;
 
 				//对比出售数量和道具是否匹配

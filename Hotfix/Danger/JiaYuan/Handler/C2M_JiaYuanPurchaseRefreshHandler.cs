@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanPurchaseRefresh request, M2C_JiaYuanPurchaseRefresh response, Action reply)
         {
-            long jiayuanzijin = unit.GetComponent<RoleInfoComponent>().RoleInfo.JiaYuanFund;
+            long jiayuanzijin = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.JiaYuanFund;
             int refreshtime = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.JiaYuanPurchaseRefresh);
             long needzijin = refreshtime >= 1 ? JiaYuanHelper.JiaYuanPurchaseRefresh : 0;
 
@@ -27,7 +27,7 @@ namespace ET
             }
 
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.JiaYuanPurchaseRefresh, refreshtime + 1);
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.JiaYuanFund, (needzijin * -1).ToString());
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.JiaYuanFund, (needzijin * -1).ToString());
             JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
             jiaYuanComponentServer.UpdatePurchaseItemList_2();
 

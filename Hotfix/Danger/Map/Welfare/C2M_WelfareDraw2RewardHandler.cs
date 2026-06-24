@@ -14,8 +14,8 @@ namespace ET
                 reply();
                 return;
             }
-            int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
-            int occTwo = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo;
+            int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
+            int occTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
             List<string> rewardItems = ActivityHelper.GetWelfareChouKaReward(unit.GetComponent<BagComponentServer>().GetAllItems(occ, occTwo));
             string reward = rewardItems[index - 1];
 

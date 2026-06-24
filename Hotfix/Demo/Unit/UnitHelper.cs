@@ -74,10 +74,10 @@ namespace ET
                     unitInfo.Buffs = unit.GetComponent<BuffManagerComponent>().GetMessageBuff();
                     unitInfo.Skills = unit.GetComponent<SkillManagerComponent>().GetMessageSkill();
                     //设置数据
-                    RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                    unitInfo.UnitName = roleInfoComponent.RoleInfo.Name;
-                    unitInfo.ConfigId = roleInfoComponent.RoleInfo.Occ;
-                    unitInfo.UnionName = string.IsNullOrWhiteSpace(roleInfoComponent.RoleInfo.UnionName) ? string.Empty : roleInfoComponent.RoleInfo.UnionName;
+                    RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                    unitInfo.UnitName = roleInfoComponentServer.RoleInfo.Name;
+                    unitInfo.ConfigId = roleInfoComponentServer.RoleInfo.Occ;
+                    unitInfo.UnionName = string.IsNullOrWhiteSpace(roleInfoComponentServer.RoleInfo.UnionName) ? string.Empty : roleInfoComponentServer.RoleInfo.UnionName;
                     unitInfo.DemonName = unitInfoComponent.DemonName;
                     unitInfo.FashionEquipList = unit.GetComponent<BagComponentServer>().FashionEquipList;
                     break;
@@ -233,7 +233,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (allunits[i].GetComponent<RoleInfoComponent>().RoleInfo.RobotId == 0)
+                if (allunits[i].GetComponent<RoleInfoComponentServer>().RoleInfo.RobotId == 0)
                 {
                     realPlayer++;
                 }
@@ -294,7 +294,7 @@ namespace ET
 
         public static bool IsRobot(this Unit self)
         {
-            return self.Type == UnitType.Player && self.GetComponent<RoleInfoComponent>().RoleInfo.RobotId > 0;
+            return self.Type == UnitType.Player && self.GetComponent<RoleInfoComponentServer>().RoleInfo.RobotId > 0;
         }
 
         public static int GetWeaponSkill(this Unit self, int skillId, List<SkillPro> skillPros)

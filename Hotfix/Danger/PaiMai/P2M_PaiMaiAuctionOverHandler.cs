@@ -10,15 +10,15 @@ namespace ET
         {
             Log.Warning($"PaiMaiAuctionOver:  {unit.DomainZone()} {unit.Id}");
             
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (roleInfoComponent.RoleInfo.Gold < request.Price)
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            if (roleInfoComponentServer.RoleInfo.Gold < request.Price)
             {
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Message, "金币不足，竞拍失败！");
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Message, "金币不足，竞拍失败！");
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
             }
             else
             {
-                roleInfoComponent.UpdateRoleMoneySub( UserDataType.Gold, (request.Price * -1).ToString(), true, ItemGetWay.Auction );
+                roleInfoComponentServer.UpdateRoleMoneySub( UserDataType.Gold, (request.Price * -1).ToString(), true, ItemGetWay.Auction );
                 response.Error = ErrorCode.ERR_Success;
                 Log.Warning($"扣除竞拍价：{unit.DomainZone()} {request.Price}");
             }

@@ -8,7 +8,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_LingDiRewardRequest request, M2C_LingDiRewardResponse response, Action reply)
         {
             int lingdiLv = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Ling_DiLv);
-            int rolelv = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+            int rolelv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
 
             /*
             LingDiRewardConfig config = LingDiRewardConfigCategory.Instance.Get(request.RewardId);

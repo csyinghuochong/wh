@@ -10,7 +10,7 @@ namespace ET
         public override void Awake(ChengJiuComponentServer self)
         {
             self.RandomDrop = 0;
-            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Lv);
+            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv);
         }
     }
 
@@ -52,7 +52,7 @@ namespace ET
                 self.JingLingUnitId = 0;
             }
 
-            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Lv);
+            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv);
         }
 
         public static void OnZeroClockUpdate(this ChengJiuComponentServer self)

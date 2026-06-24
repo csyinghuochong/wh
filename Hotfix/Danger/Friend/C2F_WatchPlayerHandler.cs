@@ -11,7 +11,7 @@ namespace ET
         {
             long dbCacheId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), Enum.GetName(SceneType.DBCache)).InstanceId;
             D2G_GetComponent d2GGetUnit_1 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.RoleInfoComponent });
-            RoleInfoComponent userinfo = d2GGetUnit_1.Component as RoleInfoComponent;
+            RoleInfoComponentServer userinfo = d2GGetUnit_1.Component as RoleInfoComponentServer;
             if (userinfo == null)
             {
                 response.Error = ErrorCode.ERR_Error;

@@ -30,8 +30,8 @@ namespace ET
                 }
             }
 
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            if (roleInfoComponent.RoleInfo.RechargeReward.Contains(request.RechargeNumber))
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            if (roleInfoComponentServer.RoleInfo.RechargeReward.Contains(request.RechargeNumber))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -65,7 +65,7 @@ namespace ET
             }
 
             unit.GetComponent<BagComponentServer>().OnAddItemData(rewarditem, $"{93}_{TimeHelper.ServerNow()}");
-            roleInfoComponent.RoleInfo.RechargeReward.Add(request.RechargeNumber);
+            roleInfoComponentServer.RoleInfo.RechargeReward.Add(request.RechargeNumber);
             reply();
             await ETTask.CompletedTask;
         }

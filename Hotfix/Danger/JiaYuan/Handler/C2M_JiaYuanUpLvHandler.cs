@@ -8,8 +8,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanUpLvRequest request, M2C_JiaYuanUpLvResponse response, Action reply)
         {
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            int lvid = roleInfoComponent.RoleInfo.JiaYuanLv;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            int lvid = roleInfoComponentServer.RoleInfo.JiaYuanLv;
             LDHome ldHome = LDHomeCategory.Instance.Get(lvid);
             if ( !LDHomeCategory.Instance.Contain(lvid) )
             {
@@ -22,15 +22,15 @@ namespace ET
                 reply();
                 return;
             }*/
-            if (roleInfoComponent.RoleInfo.JiaYuanExp < ldHome.Exp)
+            if (roleInfoComponentServer.RoleInfo.JiaYuanExp < ldHome.Exp)
             {
                 response.Error = ErrorCode.ERR_ExpNoEnough;
                 reply();
                 return;
             }
 
-            roleInfoComponent.UpdateRoleData(UserDataType.JiaYuanExp, (ldHome.Exp * -1).ToString());
-            roleInfoComponent.UpdateRoleData(UserDataType.JiaYuanLv, "1");
+            roleInfoComponentServer.UpdateRoleData(UserDataType.JiaYuanExp, (ldHome.Exp * -1).ToString());
+            roleInfoComponentServer.UpdateRoleData(UserDataType.JiaYuanLv, "1");
 
             reply();
             await ETTask.CompletedTask;

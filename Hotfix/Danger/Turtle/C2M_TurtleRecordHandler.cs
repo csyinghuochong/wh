@@ -11,7 +11,7 @@ namespace ET
             long activtiyserverid = DBHelper.GetActivityServerId(unit.DomainZone());
             M2A_TurtleRecordRequest m2A_TurtleRecord = new M2A_TurtleRecordRequest()
             {
-                AccountId = unit.GetComponent<RoleInfoComponent>().RoleInfo.AccInfoID
+                AccountId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID
             };
             A2M_TurtleRecordResponse a2M_TurtleSupport = (A2M_TurtleRecordResponse)await ActorMessageSenderComponent.Instance.Call
                         (activtiyserverid, m2A_TurtleRecord);

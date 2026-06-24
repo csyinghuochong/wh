@@ -24,7 +24,7 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv < request.LvKey)
+            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < request.LvKey)
             {
                 Log.Error($"C2M_LeavlRewardRequest 3");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -32,12 +32,12 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             string[] occItems = CommonConfig.LevelRewardItem[request.LvKey].Split('&');
             string[] items;
             if (occItems.Length > 1)
             {
-                items = occItems[roleInfoComponent.RoleInfo.Occ - 1].Split('@');
+                items = occItems[roleInfoComponentServer.RoleInfo.Occ - 1].Split('@');
             }
             else
             {

@@ -34,12 +34,12 @@ namespace ET
             unionInfo.UnionInfo.UnionName = request.UnionName;
             unionInfo.UnionInfo.UnionPurpose = request.UnionPurpose;
 
-            RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(scene.DomainZone(), request.UserID);
-            unionInfo.UnionInfo.LeaderName = roleInfoComponent.RoleInfo.Name;
+            RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(scene.DomainZone(), request.UserID);
+            unionInfo.UnionInfo.LeaderName = roleInfoComponentServer.RoleInfo.Name;
             unionInfo.UnionInfo.UnionPlayerList.Add(new UnionPlayerInfo()
             {
-                 PlayerLevel = roleInfoComponent.RoleInfo.Lv,
-                 PlayerName = roleInfoComponent.RoleInfo.Name,
+                 PlayerLevel = roleInfoComponentServer.RoleInfo.Lv,
+                 PlayerName = roleInfoComponentServer.RoleInfo.Name,
                  UserID = request.UserID,
             });
             DBHelper.SaveComponent(scene.DomainZone(), unionId, unionInfo).Coroutine();

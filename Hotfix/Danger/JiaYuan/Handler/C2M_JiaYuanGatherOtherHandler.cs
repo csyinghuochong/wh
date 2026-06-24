@@ -82,13 +82,13 @@ namespace ET
                         jiaYuanOperate.OperateType = JiaYuanOperateType.GatherPlant;
                         jiaYuanOperate.UnitId = request.UnitId;
                         jiaYuanOperate.PlayerId = unit.Id;
-                        jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+                        jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
 
                         JiaYuanRecord jiaYuanRecord = new JiaYuanRecord()
                         {
                             OperateType = JiaYuanOperateType.GatherPlant,
                             OperateId = jiaYuanPlan.ItemId,
-                            PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name,
+                            PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
                             Time = TimeHelper.ServerNow(),
                             PlayerId = unit.Id,
                         };
@@ -126,12 +126,12 @@ namespace ET
                         jiaYuanOperate = new JiaYuanOperate();
                         jiaYuanOperate.OperateType = JiaYuanOperateType.GatherPasture;
                         jiaYuanOperate.UnitId = request.UnitId;
-                        jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+                        jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
                         JiaYuanRecord jiaYuanRecord_1 = new JiaYuanRecord()
                         {
                             OperateType = JiaYuanOperateType.GatherPasture,
                             OperateId = jiaYuanPasture.ConfigId,
-                            PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name,
+                            PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
                             Time = TimeHelper.ServerNow(),
                         };
                         jiaYuanComponentServer.AddJiaYuanRecord(jiaYuanRecord_1);

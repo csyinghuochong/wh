@@ -115,7 +115,7 @@ namespace ET
                         (float)ldScene.Pos_Born[2] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1));
                     unit.Stop(-2);
 
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.PullBack, "1");
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.PullBack, "1");
                 }
             }
         }
@@ -179,13 +179,13 @@ namespace ET
 
                 long mapInstanceId = DBHelper.GetRankServerId( self.DomainZone() );
                 RankingInfo rankPetInfo = new RankingInfo();
-                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                rankPetInfo.UserId = roleInfoComponent.RoleInfo.UserId;
-                rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
-                rankPetInfo.PlayerLv = roleInfoComponent.RoleInfo.Lv;
+                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                rankPetInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
+                rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
+                rankPetInfo.PlayerLv = roleInfoComponentServer.RoleInfo.Lv;
                 //rankPetInfo.Combat = roleInfoComponent.RoleInfo.Combat;
                 rankPetInfo.Combat = TimeHelper.ServerNow();
-                rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
+                rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
                 R2M_RankRunRaceResponse Response = (R2M_RankRunRaceResponse)await ActorMessageSenderComponent.Instance.Call
                          (mapInstanceId, new M2R_RankRunRaceRequest()
                          {
@@ -198,8 +198,8 @@ namespace ET
 
                 if (Response.RankId <= 3)
                 {
-                    string messagecontent = $"恭喜{roleInfoComponent.RoleInfo.Name} 获得奔跑大赛第{Response.RankId}名";
-                    string messagecontentEn = $"Congratulations{roleInfoComponent.RoleInfo.Name} Achieved Rank {Response.RankId} in the running race";
+                    string messagecontent = $"恭喜{roleInfoComponentServer.RoleInfo.Name} 获得奔跑大赛第{Response.RankId}名";
+                    string messagecontentEn = $"Congratulations{roleInfoComponentServer.RoleInfo.Name} Achieved Rank {Response.RankId} in the running race";
                     ServerMessageHelper.SendBroadMessage( self.DomainZone(), NoticeType.Notice, messagecontent, messagecontentEn);
                 }
 
@@ -253,7 +253,7 @@ namespace ET
                         mailInfo.Title = "赛跑大赛排行榜奖励";
                         mailInfo.MailId = IdGenerater.Instance.GenerateId();
                         E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call(mailServerId,
-                            new M2E_EMailSendRequest() { Id = roleInfoComponent.RoleInfo.UserId, MailInfo = mailInfo });
+                            new M2E_EMailSendRequest() { Id = roleInfoComponentServer.RoleInfo.UserId, MailInfo = mailInfo });
 
                     }
 
@@ -274,12 +274,12 @@ namespace ET
                     float distance = Vector3.Distance(units[i].Position, vector3);
 
                     RankingInfo rankPetInfo = new RankingInfo();
-                    RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                    rankPetInfo.UserId = roleInfoComponent.RoleInfo.UserId;
-                    rankPetInfo.PlayerName = roleInfoComponent.RoleInfo.Name;
+                    RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                    rankPetInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
+                    rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
                     rankPetInfo.PlayerLv = -1;
                     rankPetInfo.Combat = (long)(distance * 100);
-                    rankPetInfo.Occ = roleInfoComponent.RoleInfo.Occ;
+                    rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
                     rankList.Add( rankPetInfo );
                 }
                 rankList.Sort(delegate (RankingInfo a, RankingInfo b)

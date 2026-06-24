@@ -398,7 +398,7 @@ namespace ET
                 {
                     unititem.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PassTeamShenYuanNumber_21, 0, 1);
                 }
-                if (unititem.GetComponent<RoleInfoComponent>().RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
+                if (unititem.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
                 {
                     BagComponentServer bagComponentServer = unititem.GetComponent<BagComponentServer>();
                     if (bagComponentServer.GetBagLeftCell() < 1)

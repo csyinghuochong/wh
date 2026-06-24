@@ -68,13 +68,13 @@ namespace ET
 				}
 				if (message.GMMsg == "#openall")
 				{
-					unit.GetComponent<RoleInfoComponent>().OpenAll();
+					unit.GetComponent<RoleInfoComponentServer>().OpenAll();
 					return;
 				}
 				if (message.GMMsg == "#resetlv")
 				{
-					int level = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv - 1;
-					unit.GetComponent<RoleInfoComponent>().UpdateRoleData( UserDataType.Level, (level*-1).ToString());
+					int level = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv - 1;
+					unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData( UserDataType.Level, (level*-1).ToString());
 					return;
 				}
                 if (message.GMMsg == "#jiandian")
@@ -100,7 +100,7 @@ namespace ET
                     //激活全部坐骑
                     //家园等级提升到满级
                     //赛季等级达到25级
-                    unit.GetComponent<RoleInfoComponent>().OnGmGaoJi(level);
+                    unit.GetComponent<RoleInfoComponentServer>().OnGmGaoJi(level);
 
 
                     //角色装备强化全部到上限
@@ -177,14 +177,14 @@ namespace ET
 				}
 				if (message.GMMsg == "#resetguide")
 				{
-					unit.GetComponent<RoleInfoComponent>().RoleInfo.CompleteGuideIds.Clear();
+					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.CompleteGuideIds.Clear();
 					return;
 				}
 				if (message.GMMsg == "#resetfuben")
 				{
 					unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonTimes, 0);
 					unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonXieZhu, 0);
-					unit.GetComponent<RoleInfoComponent>().RoleInfo.DayFubenTimes.Clear();
+					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.DayFubenTimes.Clear();
 					return;
 				}
                 if (message.GMMsg == "#resettower")
@@ -194,9 +194,9 @@ namespace ET
                 }
                 if (message.GMMsg == "#ceshi1203")
                 {
-                    int level = 70 - unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+                    int level = 70 - unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
                     level = level > 0 ? level : 0;		
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Level, level.ToString());
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Level, level.ToString());
                     return;
                 }
                 if (message.GMMsg == "#completetask")
@@ -287,13 +287,13 @@ namespace ET
 						break;
 					case 6:
 						int newLevel = int.Parse(commands[1]);
-						RoleInfoComponent roleInfoComponent =  unit.GetComponent<RoleInfoComponent>();
+						RoleInfoComponentServer roleInfoComponentServer =  unit.GetComponent<RoleInfoComponentServer>();
 						TaskComponent taskComponent = unit.GetComponent<TaskComponent>();	
                         //if (newLevel <= roleInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList))
 						if(newLevel <= LDGlobalValueCategory.Instance.MaxLevel)
 						{
-							int level = newLevel - unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
-                            roleInfoComponent.UpdateRoleData(UserDataType.Level, level.ToString());
+							int level = newLevel - unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+                            roleInfoComponentServer.UpdateRoleData(UserDataType.Level, level.ToString());
 						}
 						break;
 					case 7:
@@ -302,7 +302,7 @@ namespace ET
 
 						List<string> componentList = new List<string>() { DBHelper.BagComponentServer, DBHelper.TaskComponent };
 						D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = DBHelper.RoleInfoComponent });
-						roleInfoComponent = d2GGetUnit.Component as RoleInfoComponent;
+						roleInfoComponentServer = d2GGetUnit.Component as RoleInfoComponentServer;
 						for (int i = 0; i < componentList.Count; i++)
 						{
 							d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = componentList[i] });

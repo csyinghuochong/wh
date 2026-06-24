@@ -13,7 +13,7 @@ namespace ET
                 EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(request.MakeId);
 
                 //判断学习金币是否不足
-                if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold <equipMakeConfig.LearnGoldValue)
+                if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold <equipMakeConfig.LearnGoldValue)
                 {
                     response.Error = ErrorCode.ERR_GoldNotEnoughError;
                     reply();
@@ -21,7 +21,7 @@ namespace ET
                 }
 
                 //判断是否已经学习
-                if (unit.GetComponent<RoleInfoComponent>().RoleInfo.MakeList.Contains(request.MakeId))
+                if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.MakeList.Contains(request.MakeId))
                 {
                     reply();
                     return;
@@ -36,7 +36,7 @@ namespace ET
                 }
 
                 //判断学习等级是否满足
-                if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv < equipMakeConfig.LearnLv)
+                if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < equipMakeConfig.LearnLv)
                 {
                     response.Error = ErrorCode.ERR_LevelNoEnough;
                     reply();
@@ -60,8 +60,8 @@ namespace ET
                 bool success = unit.GetComponent<BagComponentServer>().OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.SkillMake);
                 if (success)
                 {
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (equipMakeConfig.LearnGoldValue * -1).ToString(), true, ItemGetWay.SkillMake);
-                    unit.GetComponent<RoleInfoComponent>().RoleInfo.MakeList.Add(request.MakeId);
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (equipMakeConfig.LearnGoldValue * -1).ToString(), true, ItemGetWay.SkillMake);
+                    unit.GetComponent<RoleInfoComponentServer>().RoleInfo.MakeList.Add(request.MakeId);
                 }
                 else
                 {

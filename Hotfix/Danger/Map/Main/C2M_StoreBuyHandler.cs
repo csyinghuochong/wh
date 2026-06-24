@@ -23,7 +23,7 @@ namespace ET
                 return;
             }
 
-            int buynumber =  unit.GetComponent<RoleInfoComponent>().GetStoreBuy(storeSellConfig.Id);
+            int buynumber =  unit.GetComponent<RoleInfoComponentServer>().GetStoreBuy(storeSellConfig.Id);
             if (storeSellConfig.Buy_Limit_Num >0 && request.SellItemNum +  buynumber > storeSellConfig.Buy_Limit_Num)
             {
                 response.Error = ErrorCode.ERR_BuyMaxLimit;
@@ -57,7 +57,7 @@ namespace ET
                 return;
             }
 
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             List<RewardItem> rewardItems = ItemHelper.GetRewardItems(storeSellConfig.Goods);
 
             unit.GetComponent<BagComponentServer>().OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy );
@@ -65,7 +65,7 @@ namespace ET
             
             if (response.Error == ErrorCode.ERR_Success && storeSellConfig.Buy_Limit_Num > 0)
             {
-                unit.GetComponent<RoleInfoComponent>().OnStoreBuy( storeSellConfig.Id );
+                unit.GetComponent<RoleInfoComponentServer>().OnStoreBuy( storeSellConfig.Id );
             }
             reply();
 

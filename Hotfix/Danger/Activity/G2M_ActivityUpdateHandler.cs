@@ -12,10 +12,10 @@ namespace ET
             {
                 case 0:
                     Log.Debug($"OnZeroClockUpdate [零点刷新]: {unit.Id}");
-                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
                     unit.GetComponent<HeroDataComponent>().OnZeroClockUpdate(true);
-                    unit.GetComponent<RoleInfoComponent>().OnHourUpdate(0, true);
-                    unit.GetComponent<RoleInfoComponent>().OnZeroClockUpdate(true);
+                    unit.GetComponent<RoleInfoComponentServer>().OnHourUpdate(0, true);
+                    unit.GetComponent<RoleInfoComponentServer>().OnZeroClockUpdate(true);
                     unit.GetComponent<TaskComponent>().CheckWeeklyUpdate();
                     unit.GetComponent<TaskComponent>().OnZeroClockUpdate(true);
                     unit.GetComponent<ActivityComponentServer>().OnZeroClockUpdate(roleInfo.Lv);
@@ -59,7 +59,7 @@ namespace ET
                     //    LogHelper.OnLineInfo(gongzuoshiInfo);    
                     //}
 
-                    unit.GetComponent<RoleInfoComponent>().OnHourUpdate(message.ActivityType, true);
+                    unit.GetComponent<RoleInfoComponentServer>().OnHourUpdate(message.ActivityType, true);
                     break;
             }
    

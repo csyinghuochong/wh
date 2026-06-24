@@ -77,7 +77,7 @@ namespace ET
             }
 
 
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             if (roleInfo.Gold < costgold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
@@ -150,8 +150,8 @@ namespace ET
                 }
             }
            
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Gold, (costgold * -1).ToString(), true, ItemGetWay.SkillMake);
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Vitality, (costvitality * -1).ToString());
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (costgold * -1).ToString(), true, ItemGetWay.SkillMake);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Vitality, (costvitality * -1).ToString());
 
             reply();
             await ETTask.CompletedTask;

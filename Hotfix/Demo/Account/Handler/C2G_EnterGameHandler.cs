@@ -243,7 +243,7 @@ namespace ET
                         unit.AddComponent<StateComponent>();
                         unit.AddComponent<HeroDataComponent>();
                         unit.AddComponent<DBSaveComponent>();
-						unit.GetComponent<UnitInfoComponent>().UnitName = unit.GetComponent<RoleInfoComponent>().UserName;
+						unit.GetComponent<UnitInfoComponent>().UnitName = unit.GetComponent<RoleInfoComponentServer>().UserName;
 						DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
 						dataCollationComponent.CorrectData();
                         dataCollationComponent.UpdatePlatName(request.Platform, request.PlatformTwo, request.Simulator, request.Root, request.DeviceID, request.UnityVersion, request.BigVersion, request.DeviceName, request.OAID);
@@ -256,7 +256,7 @@ namespace ET
                         await EnterRankServer(unit);
                         await EnterMailServer(unit);
                         player.ChatInfoInstanceId = await EnterWorldChatServer(unit);   //登录聊天服
-                        unit.GetComponent<RoleInfoComponent>().RoleInfo.AccInfoID = request.AccountId;
+                        unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID = request.AccountId;
                         response.AccInfoID = request.AccountId;
 
                         if (session.DomainZone() == 0)
@@ -280,7 +280,7 @@ namespace ET
 						player.PopularizeServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Popularize)).InstanceId;
 						player.ReChargeServerID = StartSceneConfigCategory.Instance.RechargeConfig.InstanceId;
 						response.MyId = unitId;
-						long accountId = unit.GetComponent<RoleInfoComponent>().RoleInfo.AccInfoID;
+						long accountId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID;
 						response.IsPopUp = GMHelp.PopUpPlayer.ContainsKey(accountId) ? 1 : 0;
 						if (response.IsPopUp == 1)
 						{
@@ -327,8 +327,8 @@ namespace ET
 			Chat2G_EnterChat chat2G_EnterChat = (Chat2G_EnterChat)await MessageHelper.CallActor(chatServerId, new G2Chat_EnterChat()
 			{ 
 				UnitId = unit.Id,
-				Name = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name,
-				Level = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv,
+				Name = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
+				Level = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv,
                 UnionId = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0),
 				GateSessionActorId = unit.GetComponent<UnitGateComponent>().GateSessionActorId
 			});
@@ -341,11 +341,11 @@ namespace ET
             Mail2G_EnterMail chat2G_EnterChat = (Mail2G_EnterMail)await MessageHelper.CallActor(mailServerId, new G2Mail_EnterMail()
             {
                 UnitId = unit.Id,
-				ServerMailIdCur = unit.GetComponent<RoleInfoComponent>().RoleInfo.ServerMailIdCur,
+				ServerMailIdCur = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.ServerMailIdCur,
             });
 			if (chat2G_EnterChat.Error == ErrorCode.ERR_Success)
 			{
-                unit.GetComponent<RoleInfoComponent>().RoleInfo.ServerMailIdCur  = chat2G_EnterChat.ServerMailIdMax;
+                unit.GetComponent<RoleInfoComponentServer>().RoleInfo.ServerMailIdCur  = chat2G_EnterChat.ServerMailIdMax;
             }
 		}
 
@@ -355,7 +355,7 @@ namespace ET
 			Rank2G_EnterRank chat2G_EnterChat = (Rank2G_EnterRank)await MessageHelper.CallActor(rankServerId, new G2Rank_EnterRank()
 			{
 				UnitId = unit.Id,
-				Occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ
+				Occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ
 			});
 
 			NumericComponent numericComponent = unit.GetComponent<NumericComponent>();

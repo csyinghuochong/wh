@@ -18,8 +18,8 @@ namespace ET
    //         }
 
             //读取数据库
-            int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
-            int occTwo = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo;
+            int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
+            int occTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
             List<BagInfo> bagInfos = bagComponentServer.GetAllItems(occ, occTwo);
 
 			/*

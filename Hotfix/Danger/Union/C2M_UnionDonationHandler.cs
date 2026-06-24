@@ -26,7 +26,7 @@ namespace ET
                         return;
                     }
 
-                    long selfgold = unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold;
+                    long selfgold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit.DomainZone()),
                         new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });
@@ -60,7 +60,7 @@ namespace ET
                         return;
                     }
 
-                    long selfDiamond = unit.GetComponent<RoleInfoComponent>().RoleInfo.Diamond;
+                    long selfDiamond = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit.DomainZone()),
                         new M2U_UnionOperationRequest() { OperateType = 4, UnitId = unit.Id, UnionId = unionid, Par = selfDiamond.ToString() });
@@ -76,7 +76,7 @@ namespace ET
                     LDUnion ldUnionCof = LDUnionCategory.Instance.Get(unionID);
                     unit.GetComponent<NumericComponent>().ApplyChange(unit, NumericType.UnionDiamondDonationNumber, 1, 0);
                     // 花费250钻石，暂时写死，M2U_UnionOperationRequest也是
-                    RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                    RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 
                     /*roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (ldUnionCof.DonateDiamond * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);

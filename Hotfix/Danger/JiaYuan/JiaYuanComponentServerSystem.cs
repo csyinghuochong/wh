@@ -15,7 +15,7 @@ namespace ET
         }
     }
 
-    public static class JianYuanComponentSystem
+    public static class JianYuanComponentServerSystem
     {
         /// <summary>
         /// int32 Statu = 3;    //0停止散步 1开始散步
@@ -89,7 +89,7 @@ namespace ET
         public static void CheckDaShiPro(this JiaYuanComponentServer self)
         {
 #if SERVER
-            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
             LDHome ldHome = LDHomeCategory.Instance.Get(roleInfo.JiaYuanLv);
 
             string proMax = string.Empty; //// ldHome.ProMax;
@@ -563,7 +563,7 @@ namespace ET
         {
 #if SERVER
             int openday = DBHelper.GetOpenServerDay(self.DomainZone());
-            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
             int jiayuanlv = roleInfo.JiaYuanLv;
 
             /*LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(87);
@@ -602,7 +602,7 @@ namespace ET
 #if SERVER
             self.PurchaseItemList_7.Clear();
 
-            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
             JiaYuanHelper.InitPurchaseItemList(roleInfo.JiaYuanLv, self.PurchaseItemList_7);
 #endif
         }
@@ -619,7 +619,7 @@ namespace ET
                 }
             }
 
-            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
             JiaYuanHelper.InitPurchaseItemList(roleInfo.JiaYuanLv, self.PurchaseItemList_7);
             if (notice)
             {

@@ -354,11 +354,11 @@ namespace ET
                 Game.Scene.GetComponent<DBComponent>().InitDatabase(startZoneConfig);
             }
 
-            Dictionary<long, RoleInfoComponent> UserinfoComponetDict = new Dictionary<long, RoleInfoComponent>();
-            List<RoleInfoComponent> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(zone, d => d.Id > 0);
+            Dictionary<long, RoleInfoComponentServer> UserinfoComponetDict = new Dictionary<long, RoleInfoComponentServer>();
+            List<RoleInfoComponentServer> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(zone, d => d.Id > 0);
             foreach (var entity in RoleInfoComponents)
             {
-                UserinfoComponetDict.Add(entity.Id, entity as RoleInfoComponent);
+                UserinfoComponetDict.Add(entity.Id, entity as RoleInfoComponentServer);
                 if ((entity.RoleInfo.Gold > 1000000 || entity.RoleInfo.Diamond > 10000) && entity.RoleInfo.RobotId == 0)
                 {
                    // Log.Warning($"Gold:{entity.RoleInfo.Gold}  Diamond:{entity.RoleInfo.Diamond}  ID:{entity.Id}  Account:{entity.Account} Name: {entity.RoleInfo.Name}  Level:{entity.RoleInfo.Level} ");
@@ -417,7 +417,7 @@ namespace ET
                     continue;
                 }
 
-                RoleInfoComponent userInfo = UserinfoComponetDict[entity.Id];
+                RoleInfoComponentServer userInfo = UserinfoComponetDict[entity.Id];
                 string servername = ServerHelper.GetGetServerItem(false, zone).ServerName;
 
                 string userName = userInfo.RoleInfo.Name;
@@ -486,7 +486,7 @@ namespace ET
             ///记录玩家等级
             ///Parameters=31_30   31区合并到30区   oldzone合并到newzone
             Dictionary<long, int> userLevel = new Dictionary<long, int>();
-            List<RoleInfoComponent> oldRoleInfoComponents_0 = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(oldzone, d => d.Id > 0);
+            List<RoleInfoComponentServer> oldRoleInfoComponents_0 = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(oldzone, d => d.Id > 0);
 
             int validLv = 20;
             if (oldRoleInfoComponents_0.Count > 40000)
@@ -1062,9 +1062,9 @@ namespace ET
 
             //RoleInfoComponent  玩家信息
             dbcount = 0;
-            Dictionary<string, RoleInfoComponent> newuserinfoList = new Dictionary<string, RoleInfoComponent>();
+            Dictionary<string, RoleInfoComponentServer> newuserinfoList = new Dictionary<string, RoleInfoComponentServer>();
             //先初始化新的玩家列表
-            List<RoleInfoComponent> newRoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(newzone, d => d.Id > 0);
+            List<RoleInfoComponentServer> newRoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(newzone, d => d.Id > 0);
             foreach (var entity in newRoleInfoComponents)
             {
                 if (entity.RoleInfo == null || string.IsNullOrEmpty(entity.RoleInfo.Name))
@@ -1094,7 +1094,7 @@ namespace ET
             }
             Log.Console($"maxServerId {maxServerId}");
 
-            List<RoleInfoComponent> oldRoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(oldzone, d => d.Id > 0);
+            List<RoleInfoComponentServer> oldRoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(oldzone, d => d.Id > 0);
             foreach (var oldentity in oldRoleInfoComponents)
             {
                 if (invalidPlayers.Contains(oldentity.Id))
@@ -1117,7 +1117,7 @@ namespace ET
                 {
                     //合服账号名称规则，A：流星 25级 B 流星 30级 则B流星 名字沿用，A自动发放一个改名卡 （规则 等级高 > 战力高 > id在前）
                     long renameId = 0;
-                    RoleInfoComponent newentity = newuserinfoList[oldentity.RoleInfo.Name];
+                    RoleInfoComponentServer newentity = newuserinfoList[oldentity.RoleInfo.Name];
                     if (oldentity.RoleInfo.Lv > newentity.RoleInfo.Lv)
                     {
                         renameId = newentity.Id;

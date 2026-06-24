@@ -45,7 +45,7 @@ namespace ET
 				return;
 			}
 
-			int errorcode = unit.GetComponent<RoleInfoComponent>().OnGetFirstWinSelf(request.FirstWinId, request.Difficulty);
+			int errorcode = unit.GetComponent<RoleInfoComponentServer>().OnGetFirstWinSelf(request.FirstWinId, request.Difficulty);
 			if (errorcode != ErrorCode.ERR_Success)
 			{
 				response.Error = errorcode;
@@ -54,7 +54,7 @@ namespace ET
 			}
 
 			unit.GetComponent<BagComponentServer>().OnAddItemData(rewardlist, $"{ItemGetWay.FirstWin}_{TimeHelper.ServerNow()}");
-			response.FirstWinInfos = unit.GetComponent<RoleInfoComponent>().RoleInfo.FirstWinSelf;
+			response.FirstWinInfos = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.FirstWinSelf;
 			reply();
 			await ETTask.CompletedTask;
 		}

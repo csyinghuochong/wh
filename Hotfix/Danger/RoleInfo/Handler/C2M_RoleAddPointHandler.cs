@@ -12,8 +12,8 @@ namespace ET
         {
             try
             {
-                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-                int level = roleInfoComponent.RoleInfo.Lv;
+                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                int level = roleInfoComponentServer.RoleInfo.Lv;
                 if (!RoleAddPointHelper.CanManualAddPoint(level))
                 {
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -41,7 +41,7 @@ namespace ET
                     }
                 }
 
-                int remainPoint = RoleAddPointHelper.GetRemainPoint(unit, assignedPoints);
+                int remainPoint = RoleAddPointHelper.GetRemainPoint(level, assignedPoints);
                 if (remainPoint < 0)
                 {
                     Log.Error($"C2M_RoleAddPointRequest 2");

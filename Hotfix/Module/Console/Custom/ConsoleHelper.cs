@@ -270,16 +270,16 @@ namespace ET
                 occtwoNumber[pyzone][502] = 0;
                 occtwoNumber[pyzone][503] = 0;
 
-                List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id > 0);
+                List<RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id > 0);
                 for (int userinfo = 0; userinfo < RoleInfoComponentList.Count; userinfo++)
                 {
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponentList[userinfo];
-                    if (roleInfoComponent.RoleInfo.RobotId != 0)
+                    RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[userinfo];
+                    if (roleInfoComponentServer.RoleInfo.RobotId != 0)
                     {
                         continue;
                     }
 
-                    int occtwo = roleInfoComponent.RoleInfo.OccTwo;
+                    int occtwo = roleInfoComponentServer.RoleInfo.OccTwo;
                     if (occtwo == 0)
                     {
                         continue;
@@ -468,28 +468,28 @@ namespace ET
             int lowCombat = 0;
 
             //查询全部玩家
-            List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id > 0);
+            List<RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id > 0);
             for (int i = 0; i < RoleInfoComponentList.Count; i++)
             {
-                RoleInfoComponent roleInfoComponent = RoleInfoComponentList[i];
-                if (roleInfoComponent.RoleInfo.RobotId != 0)
+                RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[i];
+                if (roleInfoComponentServer.RoleInfo.RobotId != 0)
                 {
                     //continue;
                 }
 
 
-                if (roleInfoComponent.RoleInfo.Lv < 1)
+                if (roleInfoComponentServer.RoleInfo.Lv < 1)
                 {
                     continue;
                 }
 
-                int combatFight = roleInfoComponent.RoleInfo.Combat;
+                int combatFight = roleInfoComponentServer.RoleInfo.Combat;
                 if (combatFight < lowCombat)
                 {
                     continue;
                 }
 
-                dic.Add(roleInfoComponent.RoleInfo.UserId, combatFight);
+                dic.Add(roleInfoComponentServer.RoleInfo.UserId, combatFight);
 
                 if (dic.Count >= 100)
                 {
@@ -507,7 +507,7 @@ namespace ET
 
             foreach (long unitID in dic.Keys)
             {
-                List<RoleInfoComponent> RoleInfoComponentSing = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id > 0 && d.RoleInfo.UserId == unitID);
+                List<RoleInfoComponentServer> RoleInfoComponentSing = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id > 0 && d.RoleInfo.UserId == unitID);
                 if (RoleInfoComponentSing.Count > 0)
                 {
 
@@ -573,7 +573,7 @@ namespace ET
 
                     long unitid = rankingList[rank].UserId;
 
-                    List<RoleInfoComponent> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id == unitid);
+                    List<RoleInfoComponentServer> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == unitid);
                     if (RoleInfoComponentlist.Count == 0)
                     {
                         continue;
@@ -711,7 +711,7 @@ namespace ET
 
                     long unitid = rankingList[rank].UserId;
 
-                    List<RoleInfoComponent> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id == unitid);
+                    List<RoleInfoComponentServer> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == unitid);
                     if (RoleInfoComponentlist.Count == 0)
                     {
                         continue;
@@ -793,13 +793,13 @@ namespace ET
                 {
                     KeyValuePairLong pairLong = allpaimai[paimaigold];
 
-                    List<RoleInfoComponent> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id == pairLong.KeyId);
+                    List<RoleInfoComponentServer> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == pairLong.KeyId);
                     if (RoleInfoComponentlist == null || RoleInfoComponentlist.Count == 0)
                     {
                         return;
                     }
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponentlist[0]; 
-                    levelInfo += $"{roleInfoComponent.RoleInfo.Name}   \t拍卖获得金币:{pairLong.Value}   \t账号:{roleInfoComponent.Account}   \t钻石:{roleInfoComponent.RoleInfo.Diamond}  \t金币:{roleInfoComponent.RoleInfo.Gold} \n";
+                    RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentlist[0]; 
+                    levelInfo += $"{roleInfoComponentServer.RoleInfo.Name}   \t拍卖获得金币:{pairLong.Value}   \t账号:{roleInfoComponentServer.Account}   \t钻石:{roleInfoComponentServer.RoleInfo.Diamond}  \t金币:{roleInfoComponentServer.RoleInfo.Gold} \n";
                 }
 
                 LogHelper.GongZuoShi(levelInfo);
@@ -875,13 +875,13 @@ namespace ET
                 {
                     KeyValuePairLong pairLong = allpaimai[paimaigold];
 
-                    List<RoleInfoComponent> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id == pairLong.KeyId);
+                    List<RoleInfoComponentServer> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == pairLong.KeyId);
                     if (RoleInfoComponentlist == null || RoleInfoComponentlist.Count == 0)
                     {
                         return;
                     }
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponentlist[0];
-                    levelInfo += $"{roleInfoComponent.RoleInfo.Name}   \t拍卖获得金币:{pairLong.Value}   \t账号:{roleInfoComponent.Account}   \t钻石:{roleInfoComponent.RoleInfo.Diamond}  \t金币:{roleInfoComponent.RoleInfo.Gold} \n";
+                    RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentlist[0];
+                    levelInfo += $"{roleInfoComponentServer.RoleInfo.Name}   \t拍卖获得金币:{pairLong.Value}   \t账号:{roleInfoComponentServer.Account}   \t钻石:{roleInfoComponentServer.RoleInfo.Diamond}  \t金币:{roleInfoComponentServer.RoleInfo.Gold} \n";
                 }
             }
             LogHelper.PaiMai2Info(levelInfo);
@@ -945,21 +945,21 @@ namespace ET
                 {
                     long unitId = g2M_UpdateUnitResponse.UnitList[userinfo];
 
-                    List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id == unitId);
+                    List<RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == unitId);
                     if (RoleInfoComponentList == null || RoleInfoComponentList.Count == 0)
                     {
                         continue;
                     }
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponentList[0];
+                    RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[0];
 
-                    if (GMHelp.GmAccount.Contains(roleInfoComponent.Account))
+                    if (GMHelp.GmAccount.Contains(roleInfoComponentServer.Account))
                     {
                         continue;
                     }
 
                     //击败boss>3返回
                     //击败boss>3返回
-                    int killmonsterNumber = CommonHelper.KillBoss_Lv_Number(roleInfoComponent.RoleInfo.MonsterRevives, roleInfoComponent.RoleInfo.Lv);
+                    int killmonsterNumber = CommonHelper.KillBoss_Lv_Number(roleInfoComponentServer.RoleInfo.MonsterRevives, roleInfoComponentServer.RoleInfo.Lv);
                     //if (killmonsterNumber >= 3)
                     //{
                     //    continue;
@@ -982,12 +982,12 @@ namespace ET
                     //    continue;
                     //}
 
-                    List<DataCollationComponent> dataCollations = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(pyzone, d => d.Id == roleInfoComponent.Id);
+                    List<DataCollationComponent> dataCollations = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                     if (dataCollations == null || dataCollations.Count == 0)
                     {
                         continue;
                     }
-                    dataCollations[0].TodayOnLine = roleInfoComponent.TodayOnLine;
+                    dataCollations[0].TodayOnLine = roleInfoComponentServer.TodayOnLine;
                     //游戏总时长超过180分钟返回
                     //暂时不写
 
@@ -1003,7 +1003,7 @@ namespace ET
                     //    continue;
                     //}
 
-                    List<ChengJiuComponentServer> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponentServer>(pyzone, d => d.Id == roleInfoComponent.Id);
+                    List<ChengJiuComponentServer> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponentServer>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                     if (chengJiuComponents == null || chengJiuComponents.Count == 0)
                     {
                         continue;
@@ -1036,7 +1036,7 @@ namespace ET
                     }
 
 
-                    List<TaskComponent> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponent>(pyzone, d => d.Id == roleInfoComponent.Id);
+                    List<TaskComponent> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponent>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                     if (taskComponents == null || taskComponents.Count == 0)
                     {
                         continue;
@@ -1047,7 +1047,7 @@ namespace ET
                     //}
 
 
-                    List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, _account => _account.Account == roleInfoComponent.Account);
+                    List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, _account => _account.Account == roleInfoComponentServer.Account);
                     if (accoutResult == null || accoutResult.Count == 0)
                     {
                         continue;
@@ -1064,17 +1064,17 @@ namespace ET
                     }
 
                     //等级 充值  活跃度 体力 当前金币   成就点数  当前主线任务
-                    gongzuoshiInfo += $"账号: {roleInfoComponent.Account}  \t名称：{roleInfoComponent.RoleInfo.Name}  \t等级:{roleInfoComponent.RoleInfo.Lv}   \t充值:{dataCollations[0].Recharge}" +
-                            $"\t体力:{roleInfoComponent.RoleInfo.PiLao}  \t金币:{roleInfoComponent.RoleInfo.Gold}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
-                            $"\t当前主线:{dataCollations[0].MainTask}  \t角色天数:{roleInfoComponent.GetCrateDay()}  \t金币获取:{dataCollations[0].GoldGet}  \t金币消耗:{dataCollations[0].GoldCost}   \t成就任务:{chengjiuTask}" + 
+                    gongzuoshiInfo += $"账号: {roleInfoComponentServer.Account}  \t名称：{roleInfoComponentServer.RoleInfo.Name}  \t等级:{roleInfoComponentServer.RoleInfo.Lv}   \t充值:{dataCollations[0].Recharge}" +
+                            $"\t体力:{roleInfoComponentServer.RoleInfo.PiLao}  \t金币:{roleInfoComponentServer.RoleInfo.Gold}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
+                            $"\t当前主线:{dataCollations[0].MainTask}  \t角色天数:{roleInfoComponentServer.GetCrateDay()}  \t金币获取:{dataCollations[0].GoldGet}  \t金币消耗:{dataCollations[0].GoldCost}   \t成就任务:{chengjiuTask}" + 
                             $"\t金币获取总值:{dataCollations[0].GetGoldGetTotal()}  \t金币消耗总值:{dataCollations[0].GetGoldCostTotal()} 今日在线:{dataCollations[0].TodayOnLine}  \t击杀boos:{killmonsterNumber} \t设备:{dataCollations[0].GetDeviceID()}" +
-                            $"\tIP:{roleInfoComponent.RemoteAddress}  身份证:{idcard} \n";
+                            $"\tIP:{roleInfoComponentServer.RemoteAddress}  身份证:{idcard} \n";
                     
-                    if (!accountNumber.ContainsKey(roleInfoComponent.Account))
+                    if (!accountNumber.ContainsKey(roleInfoComponentServer.Account))
                     {
-                        accountNumber.Add(roleInfoComponent.Account, 0);
+                        accountNumber.Add(roleInfoComponentServer.Account, 0);
                     }
-                    accountNumber[roleInfoComponent.Account]++;
+                    accountNumber[roleInfoComponentServer.Account]++;
                 }
                 LogHelper.GongZuoShi(gongzuoshiInfo);
             }
@@ -1273,25 +1273,25 @@ namespace ET
 
                 long dbCacheId = DBHelper.GetDbCacheId(pyzone);
 
-                List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id > 0);
+                List<RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id > 0);
                 for (int userinfo = 0; userinfo < RoleInfoComponentList.Count; userinfo++)
                 {
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponentList[userinfo];
-                    if (roleInfoComponent.RoleInfo.RobotId != 0)
+                    RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[userinfo];
+                    if (roleInfoComponentServer.RoleInfo.RobotId != 0)
                     {
                         continue;
                     }
-                    if (string.IsNullOrEmpty(roleInfoComponent.RemoteAddress))
-                    {
-                        continue;
-                    }
-
-                    if (chaxunip!= "0" && !roleInfoComponent.RemoteAddress.Contains(chaxunip))
+                    if (string.IsNullOrEmpty(roleInfoComponentServer.RemoteAddress))
                     {
                         continue;
                     }
 
-                    List<DataCollationComponent> dataCollationComponents = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(pyzone, d => d.Id == roleInfoComponent.Id);
+                    if (chaxunip!= "0" && !roleInfoComponentServer.RemoteAddress.Contains(chaxunip))
+                    {
+                        continue;
+                    }
+
+                    List<DataCollationComponent> dataCollationComponents = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                     if (dataCollationComponents == null || dataCollationComponents.Count == 0)
                     {
                         continue;
@@ -1302,7 +1302,7 @@ namespace ET
                         continue;
                     }
 
-                    gongzuoshiInfo += $"区:{pyzone}   \t账号:{roleInfoComponent.Account}  \t角色:{roleInfoComponent.RoleInfo.Name}  \n";
+                    gongzuoshiInfo += $"区:{pyzone}   \t账号:{roleInfoComponentServer.Account}  \t角色:{roleInfoComponentServer.RoleInfo.Name}  \n";
                 }
 
             }
@@ -1495,7 +1495,7 @@ namespace ET
                     if ( rechargeExp > 1000 && rechargeExp > rechargetNumber * 2)
                     { 
                         
-                        List<RoleInfoComponent> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzoneid, _account => _account.Id == numericComponent.Id);
+                        List<RoleInfoComponentServer> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzoneid, _account => _account.Id == numericComponent.Id);
                         if (RoleInfoComponents == null || RoleInfoComponents.Count == 0)
                         {
                             continue;
@@ -1545,28 +1545,28 @@ namespace ET
                 long dbCacheId = DBHelper.GetDbCacheId(pyzone);
                 Console.WriteLine($"检测: {pyzone}  ");
 
-                List <RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id > 0);
+                List <RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id > 0);
                 for (int userinfo = 0; userinfo < RoleInfoComponentList.Count; userinfo++)
                 {
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponentList[userinfo];
-                    if (roleInfoComponent.RoleInfo.RobotId != 0)
+                    RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[userinfo];
+                    if (roleInfoComponentServer.RoleInfo.RobotId != 0)
                     {
                         continue;
                     }
-                    if (string.IsNullOrEmpty(roleInfoComponent.RemoteAddress))
+                    if (string.IsNullOrEmpty(roleInfoComponentServer.RemoteAddress))
                     {
                         continue;
                     }
                     //220.202.201.103:32361
-                    string[] ipaddres = roleInfoComponent.RemoteAddress.Split(':');
+                    string[] ipaddres = roleInfoComponentServer.RemoteAddress.Split(':');
                     if (ipaddres.Length != 2 || string.IsNullOrEmpty(ipaddres[0]))
                     {
                         continue;
                     }
-                    if (idcardList.Contains(ipaddres[0]) && !accountIdlist.Contains(roleInfoComponent.RoleInfo.AccInfoID))
+                    if (idcardList.Contains(ipaddres[0]) && !accountIdlist.Contains(roleInfoComponentServer.RoleInfo.AccInfoID))
                     {
-                        accountIdlist.Add(roleInfoComponent.RoleInfo.AccInfoID);
-                        Console.WriteLine($"封ip: {pyzone}  {roleInfoComponent.RoleInfo.AccInfoID}");
+                        accountIdlist.Add(roleInfoComponentServer.RoleInfo.AccInfoID);
+                        Console.WriteLine($"封ip: {pyzone}  {roleInfoComponentServer.RoleInfo.AccInfoID}");
                     }
                 }
 
@@ -1657,12 +1657,12 @@ namespace ET
                         continue;
                     }
 
-                    List<RoleInfoComponent> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id == petComponent.Id);
+                    List<RoleInfoComponentServer> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == petComponent.Id);
                     if (RoleInfoComponents.Count == 0 || RoleInfoComponents == null)
                     {
                         continue;
                     }
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponents[0];
+                    RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponents[0];
 
                     //List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == roleInfoComponent.Account);
                     //if (accoutResult == null || accoutResult.Count == 0)
@@ -1681,7 +1681,7 @@ namespace ET
                     }
                     int recharge = NumericComponentlist[0].GetAsInt(NumericType.RechargeNumber);
 
-                    levelInfo = levelInfo + $"区:{pyzone}   \t账号：{roleInfoComponent.Account}  \t玩家:{roleInfoComponent.RoleInfo.Name}  \t神兽数量:{shenshouNumber}   \t等级:{roleInfoComponent.RoleInfo.Lv} \t钻石:{roleInfoComponent.RoleInfo.Diamond}  \t充值:{recharge} \n";
+                    levelInfo = levelInfo + $"区:{pyzone}   \t账号：{roleInfoComponentServer.Account}  \t玩家:{roleInfoComponentServer.RoleInfo.Name}  \t神兽数量:{shenshouNumber}   \t等级:{roleInfoComponentServer.RoleInfo.Lv} \t钻石:{roleInfoComponentServer.RoleInfo.Diamond}  \t充值:{recharge} \n";
 
                 }
 
@@ -1729,11 +1729,11 @@ namespace ET
                 long dbCacheId = DBHelper.GetDbCacheId(pyzone);
 
                 string levelInfo = $"{pyzone}区玩家{chaxun}>{maxGold}列表： \n";
-                List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id > 0);
+                List<RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id > 0);
                 for (int userinfo = 0; userinfo < RoleInfoComponentList.Count; userinfo++)
                 {
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponentList[userinfo];
-                    if (roleInfoComponent.RoleInfo.RobotId != 0 )
+                    RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[userinfo];
+                    if (roleInfoComponentServer.RoleInfo.RobotId != 0 )
                     {
                         continue;
                     }
@@ -1742,16 +1742,16 @@ namespace ET
                     //    continue;
                     //}
 
-                    if (GMHelp.GmAccount.Contains(roleInfoComponent.Account))
+                    if (GMHelp.GmAccount.Contains(roleInfoComponentServer.Account))
                     {
                         continue;
                     }
 
                     if (chaxun == "gold")
                     {
-                        long baggold = roleInfoComponent.RoleInfo.Gold;
+                        long baggold = roleInfoComponentServer.RoleInfo.Gold;
                         long mailgold = 0;
-                        List<DBMailInfo> dBMailInfolist = await Game.Scene.GetComponent<DBComponent>().Query<DBMailInfo>(pyzone, d => d.Id == roleInfoComponent.Id);
+                        List<DBMailInfo> dBMailInfolist = await Game.Scene.GetComponent<DBComponent>().Query<DBMailInfo>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                         if (dBMailInfolist == null || dBMailInfolist.Count == 0)
                         {
                             continue;
@@ -1776,13 +1776,13 @@ namespace ET
                             continue;
                         }
 
-                        List<NumericComponent> NumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == roleInfoComponent.Id);
+                        List<NumericComponent> NumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                         if (NumericComponentlist == null || NumericComponentlist.Count == 0)
                         {
                             continue;
                         }
 
-                        List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == roleInfoComponent.Account);
+                        List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == roleInfoComponentServer.Account);
                         if (accoutResult == null || accoutResult.Count == 0)
                         {
                             continue;
@@ -1798,16 +1798,16 @@ namespace ET
                         //    continue; 
                         //}
                       
-                        levelInfo = levelInfo + $"区:{pyzone}   账号：{roleInfoComponent.Account}  \t玩家:{roleInfoComponent.RoleInfo.Name}  \t等级:{roleInfoComponent.RoleInfo.Lv}  \t金币:{baggold}   \t:邮箱金币:{mailgold}  \t充值:{recharge} \n";
+                        levelInfo = levelInfo + $"区:{pyzone}   账号：{roleInfoComponentServer.Account}  \t玩家:{roleInfoComponentServer.RoleInfo.Name}  \t等级:{roleInfoComponentServer.RoleInfo.Lv}  \t金币:{baggold}   \t:邮箱金币:{mailgold}  \t充值:{recharge} \n";
                     }
                     if (chaxun == "diamond")
                     {
-                        if (roleInfoComponent.RoleInfo.Diamond < maxGold)
+                        if (roleInfoComponentServer.RoleInfo.Diamond < maxGold)
                         {
                             continue;
                         }
 
-                        List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == roleInfoComponent.Account);
+                        List<DBCenterAccountInfo> accoutResult = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(202, _account => _account.Account == roleInfoComponentServer.Account);
                         if (accoutResult == null || accoutResult.Count == 0)
                         {
                             continue;
@@ -1817,14 +1817,14 @@ namespace ET
                             continue;
                         }
 
-                        List<NumericComponent> NumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == roleInfoComponent.Id);
+                        List<NumericComponent> NumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                         if (NumericComponentlist == null || NumericComponentlist.Count == 0)
                         {
                             continue;
                         }
                         int recharge = NumericComponentlist[0].GetAsInt(NumericType.RechargeNumber);
 
-                        levelInfo = levelInfo + $"区:{pyzone}   账号：{roleInfoComponent.Account} 玩家:{roleInfoComponent.RoleInfo.Name} 等级:{roleInfoComponent.RoleInfo.Lv} 钻石:{roleInfoComponent.RoleInfo.Diamond} 充值:{recharge} \n";
+                        levelInfo = levelInfo + $"区:{pyzone}   账号：{roleInfoComponentServer.Account} 玩家:{roleInfoComponentServer.RoleInfo.Name} 等级:{roleInfoComponentServer.RoleInfo.Lv} 钻石:{roleInfoComponentServer.RoleInfo.Diamond} 充值:{recharge} \n";
                     }
                 }
 
@@ -1869,22 +1869,22 @@ namespace ET
 
                 Dictionary<int, int> levelPlayerCount = new Dictionary<int, int>();
 
-                List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.Id > 0);
+                List<RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id > 0);
                 for (int userinfo = 0; userinfo < RoleInfoComponentList.Count; userinfo++)
                 {
-                    RoleInfoComponent roleInfoComponent = RoleInfoComponentList[userinfo];
-                    if (roleInfoComponent.RoleInfo.RobotId != 0)
+                    RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[userinfo];
+                    if (roleInfoComponentServer.RoleInfo.RobotId != 0)
                     {
                         continue;
                     }
 
-                    if (!levelPlayerCount.ContainsKey(roleInfoComponent.RoleInfo.Lv))
+                    if (!levelPlayerCount.ContainsKey(roleInfoComponentServer.RoleInfo.Lv))
                     {
-                        levelPlayerCount.Add(roleInfoComponent.RoleInfo.Lv, 1);
+                        levelPlayerCount.Add(roleInfoComponentServer.RoleInfo.Lv, 1);
                     }
                     else
                     {
-                        levelPlayerCount[roleInfoComponent.RoleInfo.Lv]++;
+                        levelPlayerCount[roleInfoComponentServer.RoleInfo.Lv]++;
                     }
 
                 }
@@ -2015,7 +2015,7 @@ namespace ET
             int zone = int.Parse(chaxunInfo[1]);
             int pyzone = StartZoneConfigCategory.Instance.Get(zone).PhysicZone;
             string userName = chaxunInfo[2];  //角色名或者账号
-            List<RoleInfoComponent> accountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.RoleInfo.Name == userName || d.Account == userName);
+            List<RoleInfoComponentServer> accountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.RoleInfo.Name == userName || d.Account == userName);
             if (accountInfoList == null || accountInfoList.Count == 0)
             {
                 return ErrorCode.ERR_NotFindAccount;
@@ -2233,19 +2233,19 @@ namespace ET
             int pyzone = int.Parse(mailInfo[1]);
 
 #if SERVER
-            List<RoleInfoComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(pyzone, d => d.RoleInfo.Name.Equals(mailInfo[2]));
+            List<RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.RoleInfo.Name.Equals(mailInfo[2]));
             if (RoleInfoComponentList.Count == 0)
             {
                 return ErrorCode.ERR_PlayerIsNot;
             }
 
-            RoleInfoComponent roleInfoComponent = RoleInfoComponentList[0];
+            RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[0];
             if (RoleInfoComponentList.Count == 0)
             {
                 return ErrorCode.ERR_PlayerIsNot;
             }
 
-            List<DBCenterAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id.Equals(roleInfoComponent.RoleInfo.AccInfoID));
+            List<DBCenterAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id.Equals(roleInfoComponentServer.RoleInfo.AccInfoID));
             if (dBAccountInfos.Count == 0)
             {
                 return ErrorCode.ERR_PlayerIsNot;
@@ -2254,7 +2254,7 @@ namespace ET
             DBCenterAccountInfo dbCenterAccountInfo = dBAccountInfos[0];
             for (int i = 0; i < dbCenterAccountInfo.RoleList.Count; i++)
             {
-                if (dbCenterAccountInfo.RoleList[i].UserID == roleInfoComponent.Id)
+                if (dbCenterAccountInfo.RoleList[i].UserID == roleInfoComponentServer.Id)
                 {
                     dbCenterAccountInfo.RoleList[i].State = 0;
                 }

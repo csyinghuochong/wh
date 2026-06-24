@@ -40,15 +40,15 @@ namespace ET
                     {
                         continue;
                     }
-                    RoleInfoComponent roleInfoComponent = (d2GGetUnit.Component as RoleInfoComponent);
+                    RoleInfoComponentServer roleInfoComponentServer = (d2GGetUnit.Component as RoleInfoComponentServer);
                     response.RankList.Add(new RankSeasonTowerInfo()
                     {
                         UserId = ranklist[i].KeyId,
                         TotalTime = ranklist[i].Value,        //时间
                         FubenId = (int)(ranklist[i].Value2),  //副本
-                        PlayerLv = roleInfoComponent.RoleInfo.Lv,
-                        PlayerName = roleInfoComponent.RoleInfo.Name,
-                        Occ = roleInfoComponent.RoleInfo.Occ,
+                        PlayerLv = roleInfoComponentServer.RoleInfo.Lv,
+                        PlayerName = roleInfoComponentServer.RoleInfo.Name,
+                        Occ = roleInfoComponentServer.RoleInfo.Occ,
                     });
                 }
                 rankComponent.RankSeasonTowerLastTime = TimeHelper.ServerNow();

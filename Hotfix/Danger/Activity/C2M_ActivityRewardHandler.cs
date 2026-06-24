@@ -86,7 +86,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (unit.GetComponent<RoleInfoComponent>().RoleInfo.V1TotalPoints < request.RewardId)
+                    if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.V1TotalPoints < request.RewardId)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();
@@ -102,7 +102,7 @@ namespace ET
                     }
 
 
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData( UserDataType.V1TotalPoints, (request.RewardId * -1).ToString());
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData( UserDataType.V1TotalPoints, (request.RewardId * -1).ToString());
                     unit.GetComponent<BagComponentServer>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponentServer.ActivityV1Info.PointsReward.Add(request.RewardId);
                     break;
@@ -123,7 +123,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (unit.GetComponent<RoleInfoComponent>().RoleInfo.V1TotalPoints < request.RewardId)
+                    if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.V1TotalPoints < request.RewardId)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();
@@ -139,13 +139,13 @@ namespace ET
                     }
 
 
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.V1TotalPoints, (request.RewardId * -1).ToString());
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.V1TotalPoints, (request.RewardId * -1).ToString());
                     unit.GetComponent<BagComponentServer>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponentServer.ActivityV1Info.PointsShuxuReward = request.RewardId;
                     break;
                 case ActivityV1Config.ActivityV1_PointsChouKa:
 
-                    if (unit.GetComponent<RoleInfoComponent>().RoleInfo.V1TotalPoints < 200f)
+                    if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.V1TotalPoints < 200f)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();

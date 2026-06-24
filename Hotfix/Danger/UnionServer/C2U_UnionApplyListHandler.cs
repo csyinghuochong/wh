@@ -25,15 +25,15 @@ namespace ET
                 }
 
                 D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = dBUnionInfo.UnionInfo.ApplyList[i], Component = DBHelper.RoleInfoComponent });
-                RoleInfoComponent roleInfoComponent = d2GGetUnit.Component as RoleInfoComponent;
+                RoleInfoComponentServer roleInfoComponentServer = d2GGetUnit.Component as RoleInfoComponentServer;
                 unionPlayers.Add( new UnionPlayerInfo() 
                 {  
-                    PlayerLevel = roleInfoComponent.RoleInfo.Lv,
-                    PlayerName = roleInfoComponent.RoleInfo.Name,
-                    Combat  = roleInfoComponent.RoleInfo.Combat,
-                    UserID = roleInfoComponent.RoleInfo.UserId,
-                    Occ = roleInfoComponent.RoleInfo.Occ,
-                    OccTwo = roleInfoComponent.RoleInfo.OccTwo, 
+                    PlayerLevel = roleInfoComponentServer.RoleInfo.Lv,
+                    PlayerName = roleInfoComponentServer.RoleInfo.Name,
+                    Combat  = roleInfoComponentServer.RoleInfo.Combat,
+                    UserID = roleInfoComponentServer.RoleInfo.UserId,
+                    Occ = roleInfoComponentServer.RoleInfo.Occ,
+                    OccTwo = roleInfoComponentServer.RoleInfo.OccTwo, 
                 } );
             }
 

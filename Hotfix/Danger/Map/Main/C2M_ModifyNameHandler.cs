@@ -43,7 +43,7 @@ namespace ET
                 return;
             }
 
-            List<RoleInfoComponent> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(unit.DomainZone(), _account => _account.UserName == request.NewName);
+            List<RoleInfoComponentServer> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(unit.DomainZone(), _account => _account.UserName == request.NewName);
             if (result.Count > 0)
             {
                 response.Error = ErrorCode.ERR_RoleNameRepeat;
@@ -54,7 +54,7 @@ namespace ET
             LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(70);
             if (unit.GetComponent<BagComponentServer>().OnCostItemData(ldGlobalValue.Value, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
             {
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Name, request.NewName);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Name, request.NewName);
                 M2C_RoleDataBroadcast m2C_BroadcastRoleData = new M2C_RoleDataBroadcast();
                 m2C_BroadcastRoleData.UnitId = unit.Id;
                 m2C_BroadcastRoleData.UpdateType = (int)UserDataType.Name;

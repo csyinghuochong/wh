@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_GuideUpdateRequest request, M2C_GuideUpdateResponse response, Action reply)
         { 
             await ETTask.CompletedTask;
-            unit.GetComponent<RoleInfoComponent>().RoleInfo.CompleteGuideIds.Add(request.GuideId);
+            unit.GetComponent<RoleInfoComponentServer>().RoleInfo.CompleteGuideIds.Add(request.GuideId);
             reply();
         }
     }

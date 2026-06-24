@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, A2M_PetMingChanChuRequest request, M2A_PetMingChanChuResponse response, Action reply)
         {
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.Gold, request.ChanChu.ToString());
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Gold, request.ChanChu.ToString());
             reply();
             await ETTask.CompletedTask;
         }

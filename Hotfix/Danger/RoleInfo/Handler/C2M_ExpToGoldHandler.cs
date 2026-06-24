@@ -9,8 +9,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ExpToGoldRequest request, M2C_ExpToGoldResponse response, Action reply)
         {
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
-            RoleInfo roleInfo = roleInfoComponent.RoleInfo;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             ServerInfo serverInfo = ConfigData.ServerInfoList[unit.DomainZone()];
             if (roleInfo.Lv < 70 &&  roleInfo.Lv < serverInfo.WorldLv)
             {
@@ -86,7 +86,7 @@ namespace ET
                 default:
                     break;
             }
-            roleInfoComponent.UpdateRoleData(UserDataType.Exp, (costExp * -1).ToString());
+            roleInfoComponentServer.UpdateRoleData(UserDataType.Exp, (costExp * -1).ToString());
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.ExpToGoldTimes, 1, 0);
             reply();
             await ETTask.CompletedTask;

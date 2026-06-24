@@ -241,7 +241,7 @@ namespace ET
 			LocalDungeonComponent localDungeonComponent = scene.GetComponent<LocalDungeonComponent>();
 			Unit mainUnit = localDungeonComponent.MainUnit;
 
-            RoleInfoComponent roleInfoComponent = mainUnit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = mainUnit.GetComponent<RoleInfoComponentServer>();
 			NumericComponent numericComponent = mainUnit.GetComponent<NumericComponent>();
 			
 			
@@ -256,7 +256,7 @@ namespace ET
 			}
 
             string[] monsters = createMonster.Split('@');
-            if (SeasonHelper.GetOpenSeason(roleInfoComponent.RoleInfo.Lv)!= null)
+            if (SeasonHelper.GetOpenSeason(roleInfoComponentServer.RoleInfo.Lv)!= null)
 			{
 				//赛季boss
 				long serverNow = TimeHelper.ServerNow();
@@ -290,7 +290,7 @@ namespace ET
 					break;
 				}
 
-				int randomid = roleInfoComponent.GetRandomMonsterId();
+				int randomid = roleInfoComponentServer.GetRandomMonsterId();
 				if (randomid > 0)
 				{
 					localDungeonComponent.RandomMonster = randomid;
@@ -302,7 +302,7 @@ namespace ET
                     break;
 				}
 
-				randomid = roleInfoComponent.GetRandomJingLingId();
+				randomid = roleInfoComponentServer.GetRandomJingLingId();
 				if (randomid > 0)
 				{
 					localDungeonComponent.RandomJingLing = randomid;
@@ -393,9 +393,9 @@ namespace ET
 				if (sceneType == MapTypeEnum.LocalDungeon) // && ldMonster.MonsterSonType == 55)
 				{
 					LocalDungeonComponent localDungeonComponent = scene.GetComponent<LocalDungeonComponent>();
-					RoleInfoComponent roleInfoComponent = localDungeonComponent.MainUnit.GetComponent<RoleInfoComponent>();
+					RoleInfoComponentServer roleInfoComponentServer = localDungeonComponent.MainUnit.GetComponent<RoleInfoComponentServer>();
 					TaskComponent taskComponent = localDungeonComponent.MainUnit.GetComponent<TaskComponent>();
-					if (roleInfoComponent.IsCheskOpen(mapComponent.SceneId, monsterid)
+					if (roleInfoComponentServer.IsCheskOpen(mapComponent.SceneId, monsterid)
 					    && !taskComponent.IsItemTask(monsterid))
 					{
 						continue;
@@ -545,8 +545,8 @@ namespace ET
 		public static void SendTeamPickMessage(Unit unit, DropInfo dropInfo,List<long> ids,  List<int> points)
 		{
 			m2C_SyncChatInfo.ChatInfo = new ChatInfo();
-			m2C_SyncChatInfo.ChatInfo.PlayerLevel = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
-			m2C_SyncChatInfo.ChatInfo.Occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
+			m2C_SyncChatInfo.ChatInfo.PlayerLevel = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+			m2C_SyncChatInfo.ChatInfo.Occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
 			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
             m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;			//拾取道具的消息，此为玩家unitid
             m2C_SyncChatInfo.ChatInfo.ParamId = dropInfo.UnitId;//拾取道具的消息，此为道具unitid
@@ -557,9 +557,9 @@ namespace ET
 				numShow = dropInfo.ItemNum.ToString();
 			}
 			string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);
-			m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponent>().RoleInfo.Name}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
+			m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponent>().RoleInfo.Name}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
             for (int p = 0; p < points.Count; p++)
 			{
 				Unit player = unit.GetParent<UnitComponent>().Get(ids[p]);
@@ -568,10 +568,10 @@ namespace ET
 					continue;
 				}
 				
-				m2C_SyncChatInfo.ChatInfo.ChatMsg += $"{player.GetComponent<RoleInfoComponent>().RoleInfo.Name}:{points[p]}点";
+				m2C_SyncChatInfo.ChatInfo.ChatMsg += $"{player.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}:{points[p]}点";
 				m2C_SyncChatInfo.ChatInfo.ChatMsg += (p == points.Count - 1 ? "" : "  ");
 
-                m2C_SyncChatInfo.ChatInfo.ChatMsg_EN += $"{player.GetComponent<RoleInfoComponent>().RoleInfo.Name}:{points[p]} point";
+                m2C_SyncChatInfo.ChatInfo.ChatMsg_EN += $"{player.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}:{points[p]} point";
                 m2C_SyncChatInfo.ChatInfo.ChatMsg_EN += (p == points.Count - 1 ? "" : "  ");
             }
 
@@ -580,10 +580,10 @@ namespace ET
 
 		public static void SendFubenPickMessage(Unit unit, DropInfo dropInfo)
 		{
-			RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 			m2C_SyncChatInfo.ChatInfo = new ChatInfo();
-			m2C_SyncChatInfo.ChatInfo.PlayerLevel = roleInfoComponent.RoleInfo.Lv;
-			m2C_SyncChatInfo.ChatInfo.Occ = roleInfoComponent.RoleInfo.Occ;
+			m2C_SyncChatInfo.ChatInfo.PlayerLevel = roleInfoComponentServer.RoleInfo.Lv;
+			m2C_SyncChatInfo.ChatInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
 			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
 			m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;   //拾取道具的消息，此为玩家id
 			m2C_SyncChatInfo.ChatInfo.ParamId = dropInfo.UnitId;
@@ -606,9 +606,9 @@ namespace ET
                 byboxen = "By Diamond Chest";
             }
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponent>().RoleInfo.Name} {bybox}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} {bybox}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponent>().RoleInfo.Name} {byboxen}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} {byboxen}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
 
             //MessageHelper.SendToClient(GetUnitList(unit.DomainScene(), UnitType.Player), m2C_SyncChatInfo);
             //Log.Warning($"SendFubenPickMessage: {unit.Id} {dropInfo.ItemID}");

@@ -253,7 +253,7 @@ namespace ET
             switch (ldTask.Condition_Type)
             {
                 case (int)(int)TastConditionType.PlayerLv_1:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
                     break;
                 /*case (int)TastConditionType.KillMonsterID_1:
                     taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().GetReviveTime(ldTask.Param1) > 0?1 : 0;
@@ -266,7 +266,7 @@ namespace ET
                     break;
               
                 case (int)TastConditionType.ChangeOcc_8:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo > 0 ? 1 : 0;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo > 0 ? 1 : 0;
                     break;
                 case (int)TastConditionType.JoinUnion_9:
                     taskPro.taskTargetNum_1 = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0) > 0? 1 : 0;
@@ -284,10 +284,10 @@ namespace ET
                     taskPro.taskTargetNum_1 = unit.GetComponent<PetComponent>().GetPassMaxFubenId();
                     break;
                 case (int)TastConditionType.JiaYuanLevel_22:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().RoleInfo.JiaYuanLv;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.JiaYuanLv;
                     break;
                 case (int)TastConditionType.CombatToValue_133:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().RoleInfo.Combat;
+                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Combat;
                     break;
                 case (int)TastConditionType.TrialTowerCeng_134:
                     int curtrialid = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TrialDungeonId);
@@ -324,7 +324,7 @@ namespace ET
         public static void GetRandomFubenId(this TaskComponent self, TaskPro taskPro)
         {
             List<int> openfubenids = new List<int>();
-            int lv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+            int lv = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
 
             Dictionary<int, LDScene> allfuben =  LDSceneCategory.Instance.GetAll();
             foreach (( int fubenid, LDScene config) in allfuben)
@@ -631,8 +631,8 @@ namespace ET
             {
                 UnitID = unit.Id,
                 KillNumber = 1,
-                Occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ,
-                PlayerName = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name
+                Occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ,
+                PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name
             };
             M2R_RankUnionRaceRequest request = new M2R_RankUnionRaceRequest()
             {
@@ -753,7 +753,7 @@ namespace ET
         //登录
         public static void OnLogin(this TaskComponent self)
         {
-            RoleInfoComponent roleInfoComponent = self.GetParent<Unit>().GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
 
            
@@ -787,7 +787,7 @@ namespace ET
                 }
                 if (ldTask.Condition_Type == TastConditionType.PlayerLv_1)
                 {
-                    int roleLv = roleInfoComponent.RoleInfo.Lv;
+                    int roleLv = roleInfoComponentServer.RoleInfo.Lv;
                     self.TriggerTaskEvent(TastConditionType.PlayerLv_1, ldTask.Param1, roleLv);
                     continue;
                 }
@@ -799,7 +799,7 @@ namespace ET
                 }
                 if (ldTask.Condition_Type == TastConditionType.CombatToValue_133)
                 {
-                    int combat = roleInfoComponent.RoleInfo.Combat;
+                    int combat = roleInfoComponentServer.RoleInfo.Combat;
                     self.TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, combat);
                     continue;
                 }
@@ -967,7 +967,7 @@ namespace ET
             }
             */
 
-            int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+            int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
            // numericComponent.ApplyValue(NumericType.DailyTaskID, TaskHelper.GetTaskIdByType(TaskTypeEnum.Daily, roleLv), notice);
         }
 
@@ -1089,7 +1089,7 @@ namespace ET
 
         public static void UpdateTargetTask(this TaskComponent self, bool notice)
         {
-            int createDay = self.GetParent<Unit>().GetComponent<RoleInfoComponent>().GetCrateDay();
+            int createDay = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().GetCrateDay();
             if (createDay == 0 || createDay > CommonConfig.WelfareTaskList.Count)
             {
                 return;
@@ -1164,7 +1164,7 @@ namespace ET
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            int roleLv = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+            int roleLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
            
             /*
             numericComponent.ApplyValue(NumericType.DailyTaskNumber, 0, notice);
@@ -1244,7 +1244,7 @@ namespace ET
             }
 
             Unit unit = self.GetParent<Unit>();
-            int roleLv = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+            int roleLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();  
             /*
             numericComponent.ApplyValue(NumericType.RingTaskNumber, 0, false);

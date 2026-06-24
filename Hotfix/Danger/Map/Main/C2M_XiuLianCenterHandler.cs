@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_XiuLianCenterRequest request, M2C_XiuLianCenterResponse response, Action reply)
         {
 
-            int level = unit.GetComponent<RoleInfoComponent>().RoleInfo.Lv;
+            int level = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
             //1 经验  2金币
             if (request.XiuLianType == 1)
             {
@@ -24,7 +24,7 @@ namespace ET
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.XiuLian_ExpTime, TimeHelper.ServerNow());
                 float coefficient = float.Parse(LDGlobalValueCategory.Instance.Get(29).Value);
                 int addValue = Mathf.CeilToInt(coefficient * level);
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd( UserDataType.Exp, addValue.ToString(), true, ItemGetWay.XiuLian);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd( UserDataType.Exp, addValue.ToString(), true, ItemGetWay.XiuLian);
             }
             if (request.XiuLianType == 2)
             {
@@ -38,7 +38,7 @@ namespace ET
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.XiuLian_CoinTime, TimeHelper.ServerNow());
                 float coefficient = float.Parse(LDGlobalValueCategory.Instance.Get(30).Value);
                 int addValue = Mathf.CeilToInt(coefficient * level);
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, addValue.ToString(), true, 37);// ItemGetWay.XiuLian);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Gold, addValue.ToString(), true, 37);// ItemGetWay.XiuLian);
             }
             reply();
             await ETTask.CompletedTask;

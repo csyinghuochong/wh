@@ -111,15 +111,15 @@ namespace ET
             {
                 long rechareId = DBHelper.GetRechargeCenter();
 
-                RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 R2M_RechargeResponse r2M_RechargeResponse = (R2M_RechargeResponse)await ActorMessageSenderComponent.Instance.Call(rechareId, new M2R_RechargeRequest()
                 {
                     Zone = unit.DomainZone(),
                     PayType = PayTypeEnum.IOSPay,
                     UnitId = unit.Id,
                     payMessage = request.payMessage,
-                    UnitName = roleInfoComponent.RoleInfo.Name,
-                    Account = roleInfoComponent.Account,
+                    UnitName = roleInfoComponentServer.RoleInfo.Name,
+                    Account = roleInfoComponentServer.Account,
                     RechargeType = request.RechargeType,
                 });
             }

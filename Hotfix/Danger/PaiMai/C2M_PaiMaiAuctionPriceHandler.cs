@@ -7,20 +7,20 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_PaiMaiAuctionPriceRequest request, M2C_PaiMaiAuctionPriceResponse response, Action reply)
         {
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             if (roleInfo.Gold < request.Price)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
                 return;
             }
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             M2P_PaiMaiAuctionPriceRequest message = new M2P_PaiMaiAuctionPriceRequest()
             {
                 Price = request.Price,
                 UnitID = unit.Id, 
-                Occ = roleInfoComponent.RoleInfo.Occ,
-                AuctionPlayer = roleInfoComponent.RoleInfo.Name,
+                Occ = roleInfoComponentServer.RoleInfo.Occ,
+                AuctionPlayer = roleInfoComponentServer.RoleInfo.Name,
             };
             long paimaiserverid = DBHelper.GetPaiMaiServerId(unit.DomainZone());
             P2M_PaiMaiAuctionPriceResponse r_GameStatusResponse = (P2M_PaiMaiAuctionPriceResponse)await ActorMessageSenderComponent.Instance.Call

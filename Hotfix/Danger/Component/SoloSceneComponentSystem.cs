@@ -96,14 +96,14 @@ namespace ET
          
                 LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(soloPlayerList[i].Occ);
                 string occName =  WordHelper.GetShowText(ldOccupationConfig.Name);
-                RoleInfoComponent roleInfoComponent = await DBHelper.GetComponent<RoleInfoComponent>(self.DomainZone(), soloPlayerList[i].UnitId);
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(self.DomainZone(), soloPlayerList[i].UnitId);
 
-                if (roleInfoComponent.RoleInfo.OccTwo > 0)
+                if (roleInfoComponentServer.RoleInfo.OccTwo > 0)
                 {
-                    occName = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(roleInfoComponent.RoleInfo.OccTwo).Name);
+                    occName = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(roleInfoComponentServer.RoleInfo.OccTwo).Name);
                 }
 
-                string soloInfo =   $"玩家: {soloPlayerList[i].Name}  击杀:{soloPlayerList[i].WinNum} 等级:{roleInfoComponent.RoleInfo.Lv} 职业:{occName}  战力:{combat}";
+                string soloInfo =   $"玩家: {soloPlayerList[i].Name}  击杀:{soloPlayerList[i].WinNum} 等级:{roleInfoComponentServer.RoleInfo.Lv} 职业:{occName}  战力:{combat}";
                 sololist.Add(soloInfo);
             }
 

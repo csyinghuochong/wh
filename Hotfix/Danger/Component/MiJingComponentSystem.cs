@@ -98,7 +98,7 @@ namespace ET
             }
             if (teamPlayerInfo == null)
             {
-                RoleInfo roleInfo = attack.GetComponent<RoleInfoComponent>().RoleInfo;
+                RoleInfo roleInfo = attack.GetComponent<RoleInfoComponentServer>().RoleInfo;
                 teamPlayerInfo = new TeamPlayerInfo();
                 teamPlayerInfo.UserID = attack.Id;
                 teamPlayerInfo.PlayerName = roleInfo.Name;

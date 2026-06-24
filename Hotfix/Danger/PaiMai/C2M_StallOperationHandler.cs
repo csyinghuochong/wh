@@ -16,10 +16,10 @@ namespace ET
             }
             if (request.StallType == 1) //摆摊
             {
-                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponent>().RoleInfo;
+                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
                 if (string.IsNullOrEmpty(roleInfo.StallName))
                 {
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.StallName, $"{roleInfo.Name}的摊位");
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.StallName, $"{roleInfo.Name}的摊位");
                 }
        
                 TransferHelper.RemovePetAndJingLing(unit );
@@ -30,7 +30,7 @@ namespace ET
             }
             if (request.StallType == 2 && request.Value != "" && StringHelper.IsSafeSqlString(request.Value)) //修改名字
             {
-                unit.GetComponent<RoleInfoComponent>().UpdateRoleData(UserDataType.StallName, request.Value);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.StallName, request.Value);
 
                 long stallId = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Stall);
                 Unit unitstall = unit.GetParent<UnitComponent>().Get(stallId);

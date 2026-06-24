@@ -18,7 +18,7 @@ namespace ET
                 return null;
             }
 
-            List<RoleInfoComponent> resultUser = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponent>(zone, _account => _account.Id == id);
+            List<RoleInfoComponentServer> resultUser = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(zone, _account => _account.Id == id);
             if (resultUser[0].RoleInfo.Lv < 10)
             {
                 return null;

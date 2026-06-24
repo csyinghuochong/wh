@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_DungeonHappyMoveRequest request, M2C_DungeonHappyMoveResponse response, Action reply)
         {
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 
             if (request.OperatateType != 1 && request.OperatateType != 2 && request.OperatateType != 3)
             {

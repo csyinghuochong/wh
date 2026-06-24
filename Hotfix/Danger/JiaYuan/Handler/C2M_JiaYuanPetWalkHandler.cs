@@ -27,15 +27,15 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 
-            if (request.Position == 1 &&  roleInfoComponent.RoleInfo.Lv < roleInfoComponent.RoleInfo.JiaYuanLv)
+            if (request.Position == 1 &&  roleInfoComponentServer.RoleInfo.Lv < roleInfoComponentServer.RoleInfo.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;
                 reply();
                 return;
             }
-            if (request.Position == 2 && roleInfoComponent.RoleInfo.Lv < roleInfoComponent.RoleInfo.JiaYuanLv)
+            if (request.Position == 2 && roleInfoComponentServer.RoleInfo.Lv < roleInfoComponentServer.RoleInfo.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;
                 reply();
