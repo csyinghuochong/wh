@@ -89,21 +89,36 @@ namespace ET
 		public int Desc_Get { get; set; }
 		/// <summary>模型</summary>
 		[ProtoMember(5)]
-		public string ModelID { get; set; }
-		/// <summary>品质</summary>
+		public string Model { get; set; }
+		/// <summary>特效</summary>
 		[ProtoMember(6)]
-		public int Quality { get; set; }
-		/// <summary>额外属性</summary>
+		public string Effect { get; set; }
+		/// <summary>品质</summary>
 		[ProtoMember(7)]
-		public string AddProperty { get; set; }
-		/// <summary>对应骑乘Buff</summary>
+		public int Quality { get; set; }
+		/// <summary>标签</summary>
 		[ProtoMember(8)]
-		public int MoveBuffID { get; set; }
-		/// <summary>拖尾特效</summary>
+		public string Tage { get; set; }
+		/// <summary>生命资质</summary>
 		[ProtoMember(9)]
-		public string TuoWeiEffectID { get; set; }
-		/// <summary>启用</summary>
+		public int Aptitude_HP { get; set; }
+		/// <summary>物攻资质</summary>
 		[ProtoMember(10)]
+		public int Aptitude_Atk { get; set; }
+		/// <summary>法攻资质</summary>
+		[ProtoMember(11)]
+		public int Aptitude_MagAtk { get; set; }
+		/// <summary>物防资质</summary>
+		[ProtoMember(12)]
+		public int Aptitude_Def { get; set; }
+		/// <summary>法防资质</summary>
+		[ProtoMember(13)]
+		public int Aptitude_MagDef { get; set; }
+		/// <summary>移动速度</summary>
+		[ProtoMember(14)]
+		public int Speed { get; set; }
+		/// <summary>启用</summary>
+		[ProtoMember(15)]
 		public int Enable { get; set; }
 
 	}
