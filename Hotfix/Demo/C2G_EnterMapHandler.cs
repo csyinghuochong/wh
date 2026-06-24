@@ -44,7 +44,7 @@
 //			unit.AddComponent<UnitGateComponent, long>(session.InstanceId);
 
 //			await DBHelper.AddDataComponent<RoleInfoComponent>(unit, request.UserID, DBHelper.RoleInfoComponent);
-//			await DBHelper.AddDataComponent<BagComponent>(unit, request.UserID, DBHelper.BagComponent);
+//			await DBHelper.AddDataComponent<BagComponentServer>(unit, request.UserID, DBHelper.BagComponentServer);
 //			await DBHelper.AddDataComponent<TaskComponent>(unit, request.UserID, DBHelper.TaskComponent);
 //			await DBHelper.AddDataComponent<ChengJiuComponent>(unit, request.UserID, DBHelper.ChengJiuComponent);
 //			await DBHelper.AddDataComponent<PetComponent>(unit, request.UserID, DBHelper.PetComponent);

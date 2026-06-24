@@ -217,7 +217,7 @@ namespace ET
                     {
                         continue;
                     }
-                    BagComponent bagComponent = unit.GetComponent<BagComponent>();
+                    BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
 
                     string[] itemList = rankRewardConfig.Reward.Split('|');
                     List<RewardItem> rewardItems = new List<RewardItem>();
@@ -236,9 +236,9 @@ namespace ET
                         mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.ShowLie}_{serverTime}" });
                     }
 
-                    if (itemList.Length <= bagComponent.GetBagLeftCell())
+                    if (itemList.Length <= bagComponentServer.GetBagLeftCell())
                     {
-                        bagComponent.OnAddItemData(rankRewardConfig.Reward, $"{ItemGetWay.RunRace}_{serverTime}");
+                        bagComponentServer.OnAddItemData(rankRewardConfig.Reward, $"{ItemGetWay.RunRace}_{serverTime}");
                     }
                     else
                     {

@@ -33,7 +33,7 @@ namespace ET
             //0 砖石  1周卡
             if (rechargetType == 0)
             {
-                unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.Recharge}_{TimeHelper.ServerNow()}");
+                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.Recharge}_{TimeHelper.ServerNow()}");
             }
             else
             {

@@ -164,7 +164,7 @@ namespace ET
                                 SkillSetComponent skillSetComponent = skillsetComponentList[userinfo];
 
                                 List<int> equiptianfuids = new List<int>();
-                                List<BagComponent> bagComponentList = await Game.Scene.GetComponent<DBComponent>().Query<BagComponent>(pyzone, d => d.Id == skillSetComponent.Id);
+                                List<BagComponentServer> bagComponentList = await Game.Scene.GetComponent<DBComponent>().Query<BagComponentServer>(pyzone, d => d.Id == skillSetComponent.Id);
                                 if (bagComponentList.Count > 0)
                                 {
                                     equiptianfuids.AddRange(bagComponentList[0].GetEquipTianFuIds());

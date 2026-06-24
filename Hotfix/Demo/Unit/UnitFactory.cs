@@ -72,7 +72,7 @@ namespace ET
             
             unit.AddDataComponent<TaskComponent>();
             unit.AddDataComponent<ChengJiuComponent>();
-            unit.AddDataComponent<BagComponent>();
+            unit.AddDataComponent<BagComponentServer>();
             unit.AddDataComponent<PetComponent>();
             unit.AddDataComponent<SkillSetComponent>();
             unit.AddDataComponent<EnergyComponent>();

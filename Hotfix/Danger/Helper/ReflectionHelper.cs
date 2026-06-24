@@ -20,7 +20,7 @@ namespace ET
             try
             {
                 // 方法1：使用Type判断
-                if (componentType == typeof(BagComponent))
+                if (componentType == typeof(BagComponentServer))
                 {
                     // 获取BagComponent的所有字符串属性
                     ModifyStringProperties(component, newValue);
@@ -35,7 +35,7 @@ namespace ET
 
                 // 方法2：使用类型名称判断（更灵活，不依赖具体类型引用）
                 string typeName = componentType.Name;
-                if (typeName == "BagComponent" || typeName == "TaskComponent")
+                if (typeName == "BagComponentServer" || typeName == "TaskComponent")
                 {
                     ModifyStringProperties(component, newValue);
                     return true;

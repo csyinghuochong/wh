@@ -242,7 +242,7 @@ namespace ET
             attributeList.AddRange(occInitAttributes);
             
             //装备属性
-            unit.GetComponent<BagComponent>().GetEquipAttribute(attributeList);
+            unit.GetComponent<BagComponentServer>().GetEquipAttribute(attributeList);
             
             for (int pro = 0; pro < attributeList.Count; pro++)
             {
@@ -250,7 +250,7 @@ namespace ET
             }
             
             //时装
-            List<int> fashionids = unit.GetComponent<BagComponent>().FashionActiveIds;
+            List<int> fashionids = unit.GetComponent<BagComponentServer>().FashionActiveIds;
             for (int i = 0; i < fashionids.Count; i++)
             {
                 if (!LDFashionCategory.Instance.Contain(fashionids[i]))

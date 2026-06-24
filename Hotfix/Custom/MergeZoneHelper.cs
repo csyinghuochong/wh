@@ -550,9 +550,9 @@ namespace ET
             }
             Log.Console("ActivityComponent Complelte");
 
-            //BagComponent
+            //BagComponentServer
             dbcount = 0;
-            List<BagComponent> bagComponents = await Game.Scene.GetComponent<DBComponent>().Query<BagComponent>(oldzone, d => d.Id > 0);
+            List<BagComponentServer> bagComponents = await Game.Scene.GetComponent<DBComponent>().Query<BagComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in bagComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))
@@ -567,7 +567,7 @@ namespace ET
                 await Game.Scene.GetComponent<DBComponent>().Save(newzone, entity);
             }
             await TimerComponent.Instance.WaitFrameAsync();
-            Log.Console("BagComponent Complelte");
+            Log.Console("BagComponentServer Complelte");
             //ChengJiuComponen
             dbcount = 0;
             List<ChengJiuComponent> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponent>(oldzone, d => d.Id > 0);

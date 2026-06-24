@@ -211,7 +211,7 @@ namespace ET
                 skill8Number = Math.Min(5, skill8Number);
                 if (skill8Number > 0)
                 {
-                    unit.GetComponent<BagComponent>().OnAddItemData($"10010097;{skill8Number}", $"{ItemGetWay.PetFenjie}_{TimeHelper.ServerNow()}");
+                    unit.GetComponent<BagComponentServer>().OnAddItemData($"10010097;{skill8Number}", $"{ItemGetWay.PetFenjie}_{TimeHelper.ServerNow()}");
                 }
             }
         }
@@ -851,7 +851,7 @@ namespace ET
         }
 
        
-        public static void UpdatePetAttributeWithData(this PetComponent self, BagComponent bagComponent, NumericComponent numericComponent, RolePetInfo rolePetInfo, bool updateUnit = false)
+        public static void UpdatePetAttributeWithData(this PetComponent self, BagComponentServer bagComponentServer, NumericComponent numericComponent, RolePetInfo rolePetInfo, bool updateUnit = false)
         {
             //存储数据
             rolePetInfo.Ks.Clear();
@@ -881,7 +881,7 @@ namespace ET
                     continue;
                 }
 
-                BagInfo userBagInfo = bagComponent.GetItemByLoc(ItemLocType.PetLocEquip, baginfoId);
+                BagInfo userBagInfo = bagComponentServer.GetItemByLoc(ItemLocType.PetLocEquip, baginfoId);
                 if (userBagInfo == null || !LDItemCategory.Instance.Contain(userBagInfo.ItemID))
                 {
                     continue;
@@ -1063,7 +1063,7 @@ namespace ET
                     continue;
                 }
 
-                BagInfo bagInfo = bagComponent.GetItemByLoc(ItemLocType.ItemPetHeXinEquip, baginfoId);
+                BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemPetHeXinEquip, baginfoId);
                 if (bagInfo == null || !LDItemCategory.Instance.Contain(bagInfo.ItemID))
                 {
                     continue;
@@ -1265,9 +1265,9 @@ namespace ET
 
         public static void UpdatePetAttribute(this PetComponent self, RolePetInfo rolePetInfo, bool updateUnit)
         {
-            BagComponent bagComponent = self.GetParent<Unit>().GetComponent<BagComponent>();
+            BagComponentServer bagComponentServer = self.GetParent<Unit>().GetComponent<BagComponentServer>();
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
-            self.UpdatePetAttributeWithData(bagComponent, numericComponent, rolePetInfo, updateUnit);
+            self.UpdatePetAttributeWithData(bagComponentServer, numericComponent, rolePetInfo, updateUnit);
 
             //如果是出战的宠物。再广播一下属性
             if (updateUnit == false)
@@ -1329,7 +1329,7 @@ namespace ET
         public static void RemovePet(this PetComponent self, long petId, int removetype)
         {
             Unit unit = self.GetParent<Unit>();
-            BagComponent bagComponent = unit.GetComponent<BagComponent>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             for (int i = self.RolePetInfos.Count - 1; i >= 0; i--)
             {
                 if (self.RolePetInfos[i].Id == petId)
@@ -1344,8 +1344,8 @@ namespace ET
                     }
 
                     //移除宠物之核
-                    bagComponent.OnCostItemData(self.RolePetInfos[i].PetHeXinList, ItemLocType.ItemPetHeXinEquip);
-                    bagComponent.OnCostItemData(self.RolePetInfos[i].PetEquipList, ItemLocType.PetLocEquip);
+                    bagComponentServer.OnCostItemData(self.RolePetInfos[i].PetHeXinList, ItemLocType.ItemPetHeXinEquip);
+                    bagComponentServer.OnCostItemData(self.RolePetInfos[i].PetEquipList, ItemLocType.PetLocEquip);
 
                     self.RolePetInfos.RemoveAt(i);
                     break;
@@ -1686,16 +1686,16 @@ namespace ET
 
         public static void OnGmPetEquip(this PetComponent self, int itemid, RolePetInfo rolePetInfo)
         {
-            BagComponent bagComponent = self.GetParent<Unit>().GetComponent<BagComponent>();
-            bagComponent.OnAddItemData($"{itemid};1", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
-            List<BagInfo> bagitemList = bagComponent.GetIdItemListByLoc(itemid, ItemLocType.ItemPetHeXinBag);
+            BagComponentServer bagComponentServer = self.GetParent<Unit>().GetComponent<BagComponentServer>();
+            bagComponentServer.OnAddItemData($"{itemid};1", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
+            List<BagInfo> bagitemList = bagComponentServer.GetIdItemListByLoc(itemid, ItemLocType.ItemPetHeXinBag);
             if (bagitemList.Count == 0)
             {
                 return;
             }
             LDItem ldItem = LDItemCategory.Instance.Get(itemid);
             int postion = ldItem.ItemType - 1;
-            bagComponent.OnChangeItemLoc(bagitemList[0], ItemLocType.ItemPetHeXinEquip, ItemLocType.ItemPetHeXinBag);
+            bagComponentServer.OnChangeItemLoc(bagitemList[0], ItemLocType.ItemPetHeXinEquip, ItemLocType.ItemPetHeXinBag);
             rolePetInfo.PetHeXinList[postion] = bagitemList[0].BagInfoID;
         }
 

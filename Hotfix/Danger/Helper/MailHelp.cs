@@ -36,9 +36,9 @@ namespace ET
             MessageHelper.SendToLocationActor( userID, mail2M_SendServer);
         }
 
-        public static bool CheckSendMail(int MailType, string Title, NumericComponent numericComponent, RoleInfoComponent roleInfoComponent, BagComponent bagComponent)
+        public static bool CheckSendMail(int MailType, string Title, NumericComponent numericComponent, RoleInfoComponent roleInfoComponent, BagComponentServer bagComponentServer)
         {
-            if (numericComponent == null || roleInfoComponent == null || bagComponent == null)
+            if (numericComponent == null || roleInfoComponent == null || bagComponentServer == null)
             {
                 return false;
             }
@@ -62,11 +62,11 @@ namespace ET
                     {
                         return false;
                     }
-                    if (bagComponent.WarehouseAddedCell.Count < 10)
+                    if (bagComponentServer.WarehouseAddedCell.Count < 10)
                     {
                         return false;
                     }
-                    if (bagComponent.WarehouseAddedCell[6] >= 10)
+                    if (bagComponentServer.WarehouseAddedCell[6] >= 10)
                     {
                         return false;
                     }
@@ -104,13 +104,13 @@ namespace ET
                 return;
             }
             NumericComponent  numericComponent = await DBHelper.GetComponent<NumericComponent>(zone, userID);
-            BagComponent bagComponent = await DBHelper.GetComponent<BagComponent>(zone, userID);
-            if (numericComponent == null || bagComponent == null)
+            BagComponentServer bagComponentServer = await DBHelper.GetComponent<BagComponentServer>(zone, userID);
+            if (numericComponent == null || bagComponentServer == null)
             {
                 return;
             }
 
-            bool cansendMail = MailHelp.CheckSendMail(serverMailItem.MailType, serverMailItem.ParasmNew, numericComponent, roleInfoComponent, bagComponent);
+            bool cansendMail = MailHelp.CheckSendMail(serverMailItem.MailType, serverMailItem.ParasmNew, numericComponent, roleInfoComponent, bagComponentServer);
             if (cansendMail == false)
             {
                 return;

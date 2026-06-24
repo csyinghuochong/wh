@@ -52,10 +52,10 @@ namespace ET
                         continue;
                     }
                     
-                    BagComponent bagComponent = await DBHelper.GetComponent<BagComponent>(self.DomainZone(), self.EnemyId);
+                    BagComponentServer bagComponentServer = await DBHelper.GetComponent<BagComponentServer>(self.DomainZone(), self.EnemyId);
                     NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(self.DomainZone(), self.EnemyId);
 
-                    petComponent_enemy.UpdatePetAttributeWithData(bagComponent ,numericComponent, rolePetInfo, false);
+                    petComponent_enemy.UpdatePetAttributeWithData(bagComponentServer ,numericComponent, rolePetInfo, false);
                     Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,
                        CampEnum.CampPlayer_2, rolePetInfo, AIGetTargetHelp.Formation_2[i], 180f, i);
 
@@ -108,7 +108,7 @@ namespace ET
                 m2C_FubenSettlement.ReardList.AddRange(rewardItems);
                 m2C_FubenSettlement.StarInfos = new List<int> { 1, 1, 1 };
 
-                self.MainUnit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetTianTiReward}_{TimeHelper.ServerNow()}");
+                self.MainUnit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetTianTiReward}_{TimeHelper.ServerNow()}");
                 self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent( TastConditionType.PetTianDiWin_37, 0, 1 );
             }
             else

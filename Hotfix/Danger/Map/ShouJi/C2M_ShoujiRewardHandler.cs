@@ -1,0 +1,61 @@
+﻿using System;
+
+namespace ET
+{
+    [ActorMessageHandler]
+    public class C2M_ShoujiRewardHandler : AMActorLocationRpcHandler<Unit, C2M_ShoujiRewardRequest, M2C_ShoujiRewardResponse>
+    {
+        protected override async ETTask Run(Unit unit, C2M_ShoujiRewardRequest request, M2C_ShoujiRewardResponse response, Action reply)
+        {
+            ShoujiComponent shoujiComponent = unit.GetComponent<ShoujiComponent>();
+            ShouJiChapterInfo shouJiChapterInfo = shoujiComponent.GetShouJiChapterInfo(request.ChapterId);
+            if (!ShouJiConfigCategory.Instance.Contain(request.ChapterId))
+            {
+                Log.Error($"C2M_ShoujiRewardRequest 1");
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
+            ShouJiConfig shouJiConfig = ShouJiConfigCategory.Instance.Get(request.ChapterId);
+            if (request.RewardIndex == 1 && shouJiChapterInfo.StarNum < shouJiConfig.ProList1_StartNum)
+            {
+                response.Error = ErrorCode.ERR_AlreadyReceived;
+                reply();
+                return;
+            }
+            if (request.RewardIndex == 2 && shouJiChapterInfo.StarNum < shouJiConfig.ProList2_StartNum)
+            {
+                response.Error = ErrorCode.ERR_AlreadyReceived;
+                reply();
+                return;
+            }
+            if (request.RewardIndex == 3 && shouJiChapterInfo.StarNum < shouJiConfig.ProList3_StartNum)
+            {
+                response.Error = ErrorCode.ERR_AlreadyReceived;
+                reply();
+                return;
+            }
+            if ((shouJiChapterInfo.RewardInfo & 1 << request.RewardIndex) > 0)
+            {
+                response.Error = ErrorCode.ERR_AlreadyReceived;
+                reply();
+                return;
+            }
+
+            string rewards = "";
+            if (request.RewardIndex == 3) rewards = shouJiConfig.RewardList_3;
+            if (request.RewardIndex == 2) rewards = shouJiConfig.RewardList_2;
+            if (request.RewardIndex == 1) rewards = shouJiConfig.RewardList_1;
+            if (!unit.GetComponent<BagComponentServer>().OnAddItemData(rewards, $"{ItemGetWay.ShoujiReward}_{TimeHelper.ServerNow()}"))
+            {
+                response.Error = ErrorCode.ERR_BagIsFull;
+                reply();
+                return;
+            }
+            shouJiChapterInfo.RewardInfo |= (1 << request.RewardIndex);
+            reply();
+            await ETTask.CompletedTask;
+        }
+
+    }
+}

@@ -167,8 +167,8 @@ namespace ET
                 PetComponent petComponent_enemy = await DBHelper.GetComponent<PetComponent>(self.DomainZone(), enemyId);
                 if (petComponent_enemy != null)
                 {
-                    BagComponent bagComponent =  await DBHelper.GetComponent<BagComponent>(self.DomainZone(), enemyId);
-                    if (bagComponent == null)
+                    BagComponentServer bagComponentServer =  await DBHelper.GetComponent<BagComponentServer>(self.DomainZone(), enemyId);
+                    if (bagComponentServer == null)
                     {
                         return;
                     }
@@ -198,7 +198,7 @@ namespace ET
 
                         int position = petComponent_enemy.PetMingPosition.IndexOf(petinfoid);
                         position = position != -1 ? position %= 9 : i;
-                        petComponent_enemy.UpdatePetAttributeWithData(bagComponent, numericComponent, rolePetInfo, false);
+                        petComponent_enemy.UpdatePetAttributeWithData(bagComponentServer, numericComponent, rolePetInfo, false);
                         Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,
                            CampEnum.CampPlayer_2, rolePetInfo, AIGetTargetHelp.Formation_2[position], 180f,position);
                     }

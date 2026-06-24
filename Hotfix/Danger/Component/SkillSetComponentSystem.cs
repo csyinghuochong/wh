@@ -636,7 +636,7 @@ namespace ET
 		{
 			
             Unit unit = self.GetParent<Unit>();
-            BagComponent bagComponent = unit.GetComponent<BagComponent>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
             for (int i = 0; i < itemSkills.Count; i++)
 			{
@@ -647,7 +647,7 @@ namespace ET
 				}
 
 				//其他装备也持有该技能
-				if ( bagComponent.IsHaveEquipSkill(skillId, baginfoid))
+				if ( bagComponentServer.IsHaveEquipSkill(skillId, baginfoid))
 				{
 					continue;
 				}

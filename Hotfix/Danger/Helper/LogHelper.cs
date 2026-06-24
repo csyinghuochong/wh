@@ -522,10 +522,10 @@ namespace ET
                 }
             }
 
-            BagComponent bagComponent = unit.GetComponent<BagComponent>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
             int occTwo = unit.GetComponent<RoleInfoComponent>().RoleInfo.OccTwo;
-            List<BagInfo> bagInfos =  bagComponent.GetAllItems(occ, occTwo  );
+            List<BagInfo> bagInfos =  bagComponentServer.GetAllItems(occ, occTwo  );
             for (int i = 0; i < bagInfos.Count; i++)
             {
                 if (bagInfos[i].ItemID > 100 && bagInfos[i].ItemNum >= 10000)

@@ -595,7 +595,7 @@ namespace ET
             MessageHelper.SendToClient(unit, m2CStartSceneChange);
 
             await TimerComponent.Instance.WaitFrameAsync();
-            await TransferComponent(unit, sceneInstanceId, DBHelper.BagComponent);
+            await TransferComponent(unit, sceneInstanceId, DBHelper.BagComponentServer);
             await TransferComponent(unit, sceneInstanceId, DBHelper.ChengJiuComponent);
 
             M2M_UnitTransferRequest request = new M2M_UnitTransferRequest();
@@ -606,7 +606,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (key.Name.Equals(DBHelper.BagComponent)
+                if (key.Name.Equals(DBHelper.BagComponentServer)
                  || key.Name.Equals(DBHelper.ChengJiuComponent))
                 {
                     continue;

@@ -92,7 +92,7 @@ namespace ET
                 unit.GetComponent<TaskComponent>().OnZeroClockUpdate(false);
             }
 
-            unit.GetComponent<BagComponent>().OnLogin(roleInfo.RobotId);
+            unit.GetComponent<BagComponentServer>().OnLogin(roleInfo.RobotId);
             unit.GetComponent<TaskComponent>().OnLogin();
             unit.GetComponent<HeroDataComponent>().OnLogin(roleInfo.RobotId);
             unit.GetComponent<DBSaveComponent>().OnLogin();

@@ -232,7 +232,7 @@ namespace ET
                             }
 
                             NumericComponent numericComponent =await DBHelper.GetComponent<NumericComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
-                            BagComponent bagComponent =await DBHelper.GetComponent<BagComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
+                            BagComponentServer bagComponentServer =await DBHelper.GetComponent<BagComponentServer>(createRoleInfo.ServerId,createRoleInfo.UserID);
                             if (numericComponent == null)
                             {
                                 response.RoleLists.Add(roleList);
@@ -242,7 +242,7 @@ namespace ET
                             roleList.PlayerLv = roleInfoComponent.RoleInfo.Lv;
                             roleList.WeaponId = numericComponent.GetAsInt(NumericType.Now_Weapon);
                             roleList.EquipIndex = numericComponent.GetAsInt(NumericType.EquipIndex);
-                            roleList.FashionIds = bagComponent.FashionEquipList;
+                            roleList.FashionIds = bagComponentServer.FashionEquipList;
                             
                             response.RoleLists.Add(roleList);
                         }

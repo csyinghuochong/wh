@@ -22,10 +22,10 @@ namespace ET
                 return;
             }
 
-            BagComponent old_bagComponent = GetDBComponent<BagComponent>(zone, unitid, day, DBHelper.BagComponent);
-            if (old_bagComponent==null)
+            BagComponentServer oldBagComponentServer = GetDBComponent<BagComponentServer>(zone, unitid, day, DBHelper.BagComponentServer);
+            if (oldBagComponentServer==null)
             {
-                Console.WriteLine($"OnArchiveHandler  bagComponent==null:   {zone} {unitid}");
+                Console.WriteLine($"OnArchiveHandler  bagComponentServer==null:   {zone} {unitid}");
                 return;
             }
 
@@ -227,7 +227,7 @@ namespace ET
 
             int occ = old_RoleInfoComponent.RoleInfo.Occ;
             int occTwo = old_RoleInfoComponent.RoleInfo.OccTwo;
-            List<BagInfo> bagInfos = old_bagComponent.GetAllItems(occ, occTwo );
+            List<BagInfo> bagInfos = oldBagComponentServer.GetAllItems(occ, occTwo );
             for (int i = 0; i < bagInfos.Count; i++)
             {
                 if (soldbaginfoids.Contains(bagInfos[i].BagInfoID))
@@ -277,7 +277,7 @@ namespace ET
                 Console.WriteLine($"AllUnitComponent:  {allComponets[i]}！！！");
                 //个人数据组件
                 //
-                //ActivityComponent    BagComponent     ChengJiuComponent    DBFriendInfo 
+                //ActivityComponent    BagComponentServer     ChengJiuComponent    DBFriendInfo 
                 //DBMailInfo    DBPopularizeInfo     DataCollationComponent  EnergyComponent 
                 //JiaYuanComponent    NumericComponent     PetComponent     RechargeComponent 
                 //ReddotComponent     ShoujiComponent     SkillSetComponent    TaskComponent 
@@ -289,7 +289,7 @@ namespace ET
 
             //导入DB数据
             await SaveDBComponent(zone, old_activityComponent);
-            await SaveDBComponent(zone, old_bagComponent);
+            await SaveDBComponent(zone, oldBagComponentServer);
             await SaveDBComponent(zone, old_chengJiuComponent);
             await SaveDBComponent(zone, old_dBFriendInfo);
             await SaveDBComponent(zone, old_dBMailInfo);
@@ -394,7 +394,7 @@ namespace ET
             //}
             Console.WriteLine($"ExecuteBatchAllComponent:  zone: {zone}   number: {saveuserids.Count}");
             await ExecuteBatchSingleComponent<ActivityComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<BagComponent>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<BagComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<ChengJiuComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DBFriendInfo>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DBMailInfo>(zone, saveuserids);

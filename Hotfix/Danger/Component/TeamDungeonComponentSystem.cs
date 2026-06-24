@@ -130,7 +130,7 @@ namespace ET
                 {
                     List<RewardItem> rewardItems = new List<RewardItem>();
                     rewardItems.Add(new RewardItem() { ItemID = teamDropItem.DropInfo.ItemID, ItemNum = teamDropItem.DropInfo.ItemNum });
-                    bool ret = unit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
+                    bool ret = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
                     //Log.Warning($"TeamDungeonComponent.DropInfo：{ret}  {unit.Id} {teamDropItem.DropInfo.ItemID} {teamDropItem.DropInfo.ItemNum}");
                     if (ret)
                     {
@@ -400,8 +400,8 @@ namespace ET
                 }
                 if (unititem.GetComponent<RoleInfoComponent>().RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
                 {
-                    BagComponent bagComponent = unititem.GetComponent<BagComponent>();
-                    if (bagComponent.GetBagLeftCell() < 1)
+                    BagComponentServer bagComponentServer = unititem.GetComponent<BagComponentServer>();
+                    if (bagComponentServer.GetBagLeftCell() < 1)
                     {
                         List<BagInfo> bagInfos = new List<BagInfo>();
                         RewardItem rewardItem = m2C_FubenSettlement.RewardExtraItem[0];
@@ -417,7 +417,7 @@ namespace ET
                     }
                     else
                     {
-                        bagComponent.OnAddItemData(m2C_FubenSettlement.RewardExtraItem, string.Empty, $"{ItemGetWay.FubenGetReward}_{TimeHelper.ServerNow()}");
+                        bagComponentServer.OnAddItemData(m2C_FubenSettlement.RewardExtraItem, string.Empty, $"{ItemGetWay.FubenGetReward}_{TimeHelper.ServerNow()}");
                     }
                 }
                 MessageHelper.SendToClient(unititem, m2C_FubenSettlement);

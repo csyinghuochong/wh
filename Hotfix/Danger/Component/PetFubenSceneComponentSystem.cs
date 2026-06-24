@@ -53,7 +53,7 @@ namespace ET
                 DropHelper.zhenglirewardItems(rewardItems);
 
                 m2C_FubenSettlement.ReardList.AddRange(rewardItems);
-                self.MainUnit.GetComponent<BagComponent>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}");
+                self.MainUnit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}");
 
                 int petfubeId = self.DomainScene().GetComponent<MapComponent>().SonSceneId;
                 int star = 0;

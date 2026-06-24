@@ -81,7 +81,7 @@ namespace ET
             numericComponent.Set((int)NumericType.Now_Stall, 0, false);
             numericComponent.Set((int)NumericType.TeamId, 0, false);
             numericComponent.Set((int)NumericType.HP_Current, numericComponent.GetAsLong((int)NumericType.HP_Max), false);
-            numericComponent.Set((int)NumericType.Now_Weapon, unit.GetComponent<BagComponent>().GetWuqiItemId(), false);
+            numericComponent.Set((int)NumericType.Now_Weapon, unit.GetComponent<BagComponentServer>().GetWuqiItemId(), false);
             numericComponent.Set(NumericType.JueXingAnger, 0, false);
             numericComponent.Set(NumericType.RunRaceRankId, 0, false);
             numericComponent.Set(NumericType.ZeroClock, 0, false);
@@ -140,7 +140,7 @@ namespace ET
                 //numericComponent.ApplyValue(NumericType.SeasonTask, 0, notice);
 
                 unit.GetComponent<RoleInfoComponent>().OnResetSeason(notice);
-                unit.GetComponent<BagComponent>().OnResetSeason(notice);
+                unit.GetComponent<BagComponentServer>().OnResetSeason(notice);
                 unit.GetComponent<TaskComponent>().OnResetSeason(notice);
             }
         }
@@ -490,7 +490,7 @@ namespace ET
             if (useMasterModel == 1)
             {
                 UnitInfoComponent unitInfoComponent = nowUnit.GetComponent<UnitInfoComponent>();
-                unitInfoComponent.FashionEquipList = masterUnit.GetComponent<BagComponent>().FashionEquipList;
+                unitInfoComponent.FashionEquipList = masterUnit.GetComponent<BagComponentServer>().FashionEquipList;
                 numericComponent.Set((int)NumericType.UseMasterModel, masterUnit.GetComponent<RoleInfoComponent>().RoleInfo.Occ, false);
             }
 

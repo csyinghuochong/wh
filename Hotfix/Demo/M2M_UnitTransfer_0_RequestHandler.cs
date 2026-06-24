@@ -15,7 +15,7 @@ namespace ET
             {
                 components.Add(request.Unit.Id, new List<byte[]>());
             }
-            if (request.ParamInfo.Equals(DBHelper.BagComponent))
+            if (request.ParamInfo.Equals(DBHelper.BagComponentServer))
             {
                 components[request.Unit.Id].Clear();
             }

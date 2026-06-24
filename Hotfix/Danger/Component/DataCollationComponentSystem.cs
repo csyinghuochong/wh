@@ -380,7 +380,7 @@ namespace ET
             RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             PetComponent petComponent = unit.GetComponent<PetComponent>();  
-            BagComponent bagComponent = unit.GetComponent<BagComponent>();  
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();  
 
             self.Name = roleInfoComponent.RoleInfo.Name;
             self.Level = roleInfoComponent.RoleInfo.Lv;
@@ -435,7 +435,7 @@ namespace ET
 
             //self.ChouKaTimes 
             //self.PetChouKaTimes
-            self.ChengZhuangNumber = ItemHelper.GetNumberByQulity(bagComponent.EquipList, 5);
+            self.ChengZhuangNumber = ItemHelper.GetNumberByQulity(bagComponentServer.EquipList, 5);
 
             self.XiLianExp = numericComponent.GetAsInt( NumericType.ItemXiLianDu);
 

@@ -79,7 +79,7 @@ namespace ET
                     unitInfo.ConfigId = roleInfoComponent.RoleInfo.Occ;
                     unitInfo.UnionName = string.IsNullOrWhiteSpace(roleInfoComponent.RoleInfo.UnionName) ? string.Empty : roleInfoComponent.RoleInfo.UnionName;
                     unitInfo.DemonName = unitInfoComponent.DemonName;
-                    unitInfo.FashionEquipList = unit.GetComponent<BagComponent>().FashionEquipList;
+                    unitInfo.FashionEquipList = unit.GetComponent<BagComponentServer>().FashionEquipList;
                     break;
                 case UnitType.Monster:
                     unitInfo.MasterName = unitInfoComponent.MasterName;

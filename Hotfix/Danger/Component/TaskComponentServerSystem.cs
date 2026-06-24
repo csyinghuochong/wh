@@ -259,7 +259,7 @@ namespace ET
                     taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponent>().GetReviveTime(ldTask.Param1) > 0?1 : 0;
                     break;*/
                 case (int)TastConditionType.ItemID_Number_2:
-                    taskPro.taskTargetNum_1 = (int)unit.GetComponent<BagComponent>().GetItemNumber(ItemBigType.Type_Item, ldTask.Param1);
+                    taskPro.taskTargetNum_1 = (int)unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, ldTask.Param1);
                     break;
                 case(int)TastConditionType.LookingFor_3:
                     taskPro.taskTargetNum_1 = 1;
@@ -275,7 +275,7 @@ namespace ET
                     taskPro.taskTargetNum_1 = unit.GetComponent<PetComponent>().GetAllPets().Count;
                     break;
                 case (int)TastConditionType.QiangHuaLevel_17:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<BagComponent>().GetMaxQiangHuaLevel();
+                    taskPro.taskTargetNum_1 = unit.GetComponent<BagComponentServer>().GetMaxQiangHuaLevel();
                     break;
                 case (int)TastConditionType.PetNSkill_18:
                     taskPro.taskTargetNum_1 = unit.GetComponent<PetComponent>().GetMaxSkillNumber();
@@ -394,10 +394,10 @@ namespace ET
             //收集道具的任务
             if (TargetType == (int)TastConditionType.ItemID_Number_2)
             {
-                BagComponent bagComponent = self.GetParent<Unit>().GetComponent<BagComponent>();
+                BagComponentServer bagComponentServer = self.GetParent<Unit>().GetComponent<BagComponentServer>();
                 int needid = Target[0];
                 int neednumber = TargetValue[0];
-                int curnumber = (int)bagComponent.GetItemNumber(ItemBigType.Type_Item, needid);
+                int curnumber = (int)bagComponentServer.GetItemNumber(ItemBigType.Type_Item, needid);
                 if (curnumber < neednumber)
                 {
                     self.TriggerTaskEvent(TastConditionType.ItemID_Number_2, needid, 0);
@@ -405,14 +405,14 @@ namespace ET
                     return ErrorCode.ERR_ItemNotEnoughError;
                 }
 
-                bagComponent.OnCostItemData($"{needid};{neednumber}", ItemLocType.ItemLocBag, ItemGetWay.TaskCountry  );
+                bagComponentServer.OnCostItemData($"{needid};{neednumber}", ItemLocType.ItemLocBag, ItemGetWay.TaskCountry  );
                 return ErrorCode.ERR_Success;
             }
             //给予任务
             if (TargetType == (int)TastConditionType.GiveItem_10)
             {
-                BagComponent bagComponent = self.GetParent<Unit>().GetComponent<BagComponent>();
-                BagInfo bagInfo = bagComponent.GetItemByLoc(ItemLocType.ItemLocBag, BagInfoID);
+                BagComponentServer bagComponentServer = self.GetParent<Unit>().GetComponent<BagComponentServer>();
+                BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, BagInfoID);
                 if (bagInfo == null)
                 {
                     return ErrorCode.ERR_ItemNotExist;
@@ -421,7 +421,7 @@ namespace ET
                 {
                     return ErrorCode.ERR_ItemNotEnoughError;
                 }
-                bagComponent.OnCostItemData(BagInfoID, 1);
+                bagComponentServer.OnCostItemData(BagInfoID, 1);
                 return ErrorCode.ERR_Success;
             }
             //给予宠物
@@ -456,16 +456,16 @@ namespace ET
             }
             Unit unit = self.GetParent<Unit>();
             LDTask ldTask = LDTaskCategory.Instance.Get(taskid);
-            BagComponent bagComponent = unit.GetComponent<BagComponent>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             List<RewardItem> rewardItems = ItemHelper.GetRewardItems(ldTask.Reward);
             int needcell = ItemHelper.GetNeedCell(rewardItems);
-            if (bagComponent.GetBagLeftCell() < needcell)
+            if (bagComponentServer.GetBagLeftCell() < needcell)
             {
                 return ErrorCode.ERR_BagIsFull;
             }
             
 
-            if (bagComponent.GetBagLeftCell()  < rewardItems.Count)
+            if (bagComponentServer.GetBagLeftCell()  < rewardItems.Count)
             {
                 return ErrorCode.ERR_BagIsFull;
             }
@@ -484,7 +484,7 @@ namespace ET
                 }
             }
             self.RoleComoleteTaskList.Add(taskid);
-            bagComponent.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.TaskReward}_{TimeHelper.ServerNow()}");
+            bagComponentServer.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.TaskReward}_{TimeHelper.ServerNow()}");
             
             self.OnTeskAddTask(taskid);
             
