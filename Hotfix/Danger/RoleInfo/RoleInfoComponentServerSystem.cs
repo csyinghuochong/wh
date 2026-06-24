@@ -278,15 +278,15 @@ namespace ET
             
             UpgrageLevelHelper.CheckInitPoint(self.GetParent<Unit>(),self.RoleInfo.Lv);
             
-            PetComponent petComponent = self.GetParent<Unit>().GetComponent<PetComponent>();
-            if (self.RoleInfo.RobotId > 0 &&   petComponent.RolePetInfos.Count == 0)
+            PetComponentServer petComponentServer = self.GetParent<Unit>().GetComponent<PetComponentServer>();
+            if (self.RoleInfo.RobotId > 0 &&   petComponentServer.RolePetInfos.Count == 0)
             {
                 List<int> petids = LDPetCategory.Instance.GetAll().Keys.ToList();
                 int randomindex = RandomHelper.RandomNumber(0, petids.Count);
                 
-                petComponent.OnGmAddPet(petids[randomindex]);
-                petComponent.RolePetInfos[0].PetStatus = 1;
-                petComponent.FightPetId = petComponent.RolePetInfos[0].Id;
+                petComponentServer.OnGmAddPet(petids[randomindex]);
+                petComponentServer.RolePetInfos[0].PetStatus = 1;
+                petComponentServer.FightPetId = petComponentServer.RolePetInfos[0].Id;
             }
 
             if (numericComponent.GetAsInt(NumericType.TrialDungeonId) < maxTowerId)
@@ -825,7 +825,7 @@ namespace ET
                 case UserDataType.JiaYuanLv:
                     self.RoleInfo.JiaYuanLv += int.Parse(value);
                     saveValue = self.RoleInfo.JiaYuanLv.ToString();
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, self.RoleInfo.JiaYuanLv - 10000);
+                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, self.RoleInfo.JiaYuanLv - 10000);
                     unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, self.RoleInfo.JiaYuanLv - 10000);
                     break;
                 case UserDataType.FangRong:
@@ -869,7 +869,7 @@ namespace ET
                     self.RoleInfo.Gold += long.Parse(value);
                     saveValue = self.RoleInfo.Gold.ToString();
                     unit.GetComponent<ChengJiuComponentServer>().OnGetGold(int.Parse(value));
-                    unit.GetComponent<TaskComponent>().OnCostCoin(int.Parse(value));
+                    unit.GetComponent<TaskComponentServer>().OnCostCoin(int.Parse(value));
                     break;
                 case UserDataType.WeiJingGold:
                     self.RoleInfo.WeiJingGold += long.Parse(value);
@@ -957,7 +957,7 @@ namespace ET
                     self.RoleInfo.Combat = int.Parse(value);
                     saveValue = self.RoleInfo.Combat.ToString();
                     unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, self.RoleInfo.Combat);
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, self.RoleInfo.Combat);
+                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, self.RoleInfo.Combat);
                     break;
                 case UserDataType.Vitality:
                     NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
@@ -1047,10 +1047,10 @@ namespace ET
             LDExp xiulianconf1 = LDExpCategory.Instance.Get(self.RoleInfo.Lv);
             long upNeedExp = xiulianconf1.Exp_Role;
 
-            TaskComponent taskComponent = self.GetParent<Unit>().GetComponent<TaskComponent>();
+            TaskComponentServer taskComponentServer = self.GetParent<Unit>().GetComponent<TaskComponentServer>();
 
             //等级达到上限,则无法获得经验. 经验最多200%
-            int maxlevel = self.GetMaxLevel(taskComponent.RoleComoleteTaskList);
+            int maxlevel = self.GetMaxLevel(taskComponentServer.RoleComoleteTaskList);
             if (addValue > 0 &&self.RoleInfo.Lv >= maxlevel)
             {
                 long maxExp = upNeedExp * 2;

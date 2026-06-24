@@ -32,8 +32,8 @@ namespace ET
            // unit.GetComponent<BagComponentServer>().OnChangeItemLoc(equip_0, ItemLocType.ItemLocEquip_2, ItemLocType.ItemLocEquip);
             //unit.GetComponent<BagComponentServer>().OnChangeItemLoc(equip_1, ItemLocType.ItemLocEquip, ItemLocType.ItemLocEquip_2);
 
-            unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, equip_0);
-            unit.GetComponent<SkillSetComponent>().OnWearEquip(equip_1);
+            unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, equip_0);
+            unit.GetComponent<SkillSetComponentServer>().OnWearEquip(equip_1);
 
             
             m2c_bagUpdate.BagInfoUpdate.Add(equip_0);
@@ -43,7 +43,7 @@ namespace ET
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.EquipIndex, request.EquipIndex);
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Weapon, bagComponentServer.GetWuqiItemId());
 
-            unit.GetComponent<SkillSetComponent>().OnChangeEquipIndex(request.EquipIndex);
+            unit.GetComponent<SkillSetComponentServer>().OnChangeEquipIndex(request.EquipIndex);
             unit.GetComponent<SkillPassiveComponent>().OnTrigegerPassiveSkill(SkillPassiveTypeEnum.EquipIndex_15);
 
             Function_Fight.UnitUpdateProperty_Base(unit, true, true);

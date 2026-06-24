@@ -11,8 +11,8 @@ namespace ET
         {
             long dbCacheId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), Enum.GetName(SceneType.DBCache)).InstanceId;
             D2G_GetComponent d2GGetUnit_1 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UnitID, Component = DBHelper.PetComponent });
-            PetComponent petComponent = d2GGetUnit_1.Component as PetComponent;
-            if (petComponent == null)
+            PetComponentServer petComponentServer = d2GGetUnit_1.Component as PetComponentServer;
+            if (petComponentServer == null)
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();
@@ -21,7 +21,7 @@ namespace ET
 
             D2G_GetComponent d2GGetUnit_2 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UnitID, Component = DBHelper.BagComponentServer });
             BagComponentServer bagComponentsServer = d2GGetUnit_2.Component as BagComponentServer;
-            response.RolePetInfos = petComponent.GetPetInfo( request.PetId );
+            response.RolePetInfos = petComponentServer.GetPetInfo( request.PetId );
             response.PetHeXinList = bagComponentsServer.PetHeXinList;
             
             D2G_GetComponent d2GGetUnit_3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UnitID, Component = DBHelper.NumericComponent });

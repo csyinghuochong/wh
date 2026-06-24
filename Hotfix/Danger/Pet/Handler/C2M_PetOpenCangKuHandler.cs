@@ -1,0 +1,31 @@
+﻿using System;
+
+
+namespace ET
+{
+    [ActorMessageHandler]
+    public class C2M_PetOpenCangKuHandler : AMActorLocationRpcHandler<Unit, C2M_PetOpenCangKu, M2C_PetOpenCangKu>
+    {
+        protected override async ETTask Run(Unit unit, C2M_PetOpenCangKu request, M2C_PetOpenCangKu response, Action reply)
+        {
+            string costitem = CommonConfig.PetOpenCangKu[request.OpenIndex - 1];
+            if (!unit.GetComponent<BagComponentServer>().CheckNeedItem(costitem))
+            {
+                response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                reply();
+                return;
+            }
+            if (unit.GetComponent<PetComponentServer>().PetCangKuOpen.Contains(request.OpenIndex - 1)) 
+            {
+                response.Error = ErrorCode.ERR_CangKu_Already;
+                reply();
+                return;
+            }
+
+            unit.GetComponent<PetComponentServer>().PetCangKuOpen.Add(request.OpenIndex - 1);
+            unit.GetComponent<BagComponentServer>().OnCostItemData(costitem, ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);
+            reply();
+            await ETTask.CompletedTask;
+        }
+    }
+}

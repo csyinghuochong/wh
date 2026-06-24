@@ -100,8 +100,8 @@ namespace ET
                 return;
             }
 
-            PetComponent old_petComponent = GetDBComponent<PetComponent>(zone, unitid, day, DBHelper.PetComponent);
-            if (old_petComponent == null)
+            PetComponentServer oldPetComponentServer = GetDBComponent<PetComponentServer>(zone, unitid, day, DBHelper.PetComponent);
+            if (oldPetComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  petComponent==null:   {zone} {unitid}");
                 return;
@@ -121,29 +121,29 @@ namespace ET
                 return;
             }
 
-            ShoujiComponent old_shoujiComponent = GetDBComponent<ShoujiComponent>(zone, unitid, day, DBHelper.ShoujiComponent);
-            if (old_shoujiComponent == null)
+            ShoujiComponentServer oldShoujiComponentServer = GetDBComponent<ShoujiComponentServer>(zone, unitid, day, DBHelper.ShoujiComponent);
+            if (oldShoujiComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  shoujiComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            SkillSetComponent old_skillSetComponent = GetDBComponent<SkillSetComponent>(zone, unitid, day, DBHelper.SkillSetComponent);
-            if (old_skillSetComponent == null)
+            SkillSetComponentServer oldSkillSetComponentServer = GetDBComponent<SkillSetComponentServer>(zone, unitid, day, DBHelper.SkillSetComponent);
+            if (oldSkillSetComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  skillSetComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            TaskComponent old_taskComponent = GetDBComponent<TaskComponent>(zone, unitid, day, DBHelper.TaskComponent);
-            if (old_taskComponent == null)
+            TaskComponentServer oldTaskComponentServer = GetDBComponent<TaskComponentServer>(zone, unitid, day, DBHelper.TaskComponent);
+            if (oldTaskComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  taskComponent==null:   {zone} {unitid}");
                 return;
             }
 
             TitleComponent old_titleComponent = GetDBComponent<TitleComponent>(zone, unitid, day, DBHelper.TitleComponent);
-            if (old_taskComponent == null)
+            if (oldTaskComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  titleComponent==null:   {zone} {unitid}");
                 return;
@@ -290,12 +290,12 @@ namespace ET
             await SaveDBComponent(zone, old_dataCollationComponent);
             await SaveDBComponent(zone, oldJiaYuanComponentServer);
             await SaveDBComponent(zone, old_numericComponent);
-            await SaveDBComponent(zone, old_petComponent);
+            await SaveDBComponent(zone, oldPetComponentServer);
             await SaveDBComponent(zone, old_rechargeComponent);
             await SaveDBComponent(zone, old_reddotComponent);
-            await SaveDBComponent(zone, old_shoujiComponent);
-            await SaveDBComponent(zone, old_skillSetComponent);
-            await SaveDBComponent(zone, old_taskComponent);
+            await SaveDBComponent(zone, oldShoujiComponentServer);
+            await SaveDBComponent(zone, oldSkillSetComponentServer);
+            await SaveDBComponent(zone, oldTaskComponentServer);
             await SaveDBComponent(zone, old_titleComponent);
             await SaveDBComponent(zone, oldRoleInfoComponentServer);
 
@@ -393,12 +393,12 @@ namespace ET
             await ExecuteBatchSingleComponent<DataCollationComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<JiaYuanComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<NumericComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<PetComponent>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<PetComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<RechargeComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<ReddotComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<ShoujiComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<SkillSetComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<TaskComponent>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<ShoujiComponentServer>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<SkillSetComponentServer>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<TaskComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<TitleComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<RoleInfoComponentServer>(zone, saveuserids);
         }

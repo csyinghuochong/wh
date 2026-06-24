@@ -31,7 +31,7 @@ namespace ET
                     {
                         long enemyId = minglist[i].UnitId;
                         RoleInfoComponentServer roleInfoComponentServer = null;
-                        PetComponent petComponent = null;
+                        PetComponentServer petComponentServer = null;
                         D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = enemyId, Component = DBHelper.RoleInfoComponent });
                         if (d2GGetUnit.Component == null)
                         {
@@ -45,12 +45,12 @@ namespace ET
                         }
 
                         int teamid = minglist[i].TeamId;
-                        petComponent = d2GGetUnit.Component as PetComponent;
+                        petComponentServer = d2GGetUnit.Component as PetComponentServer;
                         List<int> petconfidds = new List<int>();
                         List<long> petidlist = new List<long>();
                         for (int p = teamid * 5; p < (teamid + 1) * 5; p++ )
                         {
-                            RolePetInfo rolePetInfo = petComponent.GetPetInfo(petComponent.PetMingList[p]);
+                            RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(petComponentServer.PetMingList[p]);
                             if (rolePetInfo != null)
                             {
                                 petidlist.Add(rolePetInfo.Id);

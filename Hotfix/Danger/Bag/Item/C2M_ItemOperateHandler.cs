@@ -312,7 +312,7 @@ namespace ET
                             //宠物蛋
                             case 102:
                                 string[] getway = useBagInfo.GetWay.Split('_');
-                                unit.GetComponent<PetComponent>().OnAddPet(int.Parse(getway[0]), int.Parse(ldItem.ItemUsePar), 0, useBagInfo.FuLing);
+                                unit.GetComponent<PetComponentServer>().OnAddPet(int.Parse(getway[0]), int.Parse(ldItem.ItemUsePar), 0, useBagInfo.FuLing);
                                 break;
                             //随机宠物蛋
                             case 103:
@@ -323,7 +323,7 @@ namespace ET
                                 {
                                     skinId = int.Parse(useBagInfo.ItemPar);
                                 }
-                                unit.GetComponent<PetComponent>().OnAddPet(int.Parse(getway[0]), petId, skinId, useBagInfo.FuLing);
+                                unit.GetComponent<PetComponentServer>().OnAddPet(int.Parse(getway[0]), petId, skinId, useBagInfo.FuLing);
                                 break;
                             //随机盒子
                             case 104:
@@ -431,7 +431,7 @@ namespace ET
                             case 114: //宝石
                                 break;
                             case 115://宠物皮肤激活道具
-                                unit.GetComponent<PetComponent>().OnUnlockSkin(ldItem.ItemUsePar);
+                                unit.GetComponent<PetComponentServer>().OnUnlockSkin(ldItem.ItemUsePar);
                                 break;
                             case 116:   //角色洗点
                                 unit.GetComponent<HeroDataComponent>().OnResetPoint();
@@ -474,11 +474,11 @@ namespace ET
                                 //普通
                                 if (ldItem.Quality == 4)
                                 {
-                                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.TreasureMapNormal_26, 0, 1);
+                                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.TreasureMapNormal_26, 0, 1);
                                 }
                                 if (ldItem.Quality == 5)
                                 {
-                                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.TreasureMapHigh_27, 0, 1);
+                                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.TreasureMapHigh_27, 0, 1);
                                 }
 
                                 break;
@@ -755,14 +755,14 @@ namespace ET
                         unit.GetComponent<BagComponentServer>().OnChangeItemLoc(beforeequip, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
                         unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
 
-                        unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
-                        unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
+                        unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
+                        unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
                         m2c_bagUpdate.BagInfoUpdate.Add(beforeequip);
                     }
                     else
                     {
                         unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
-                        unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
+                        unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
                     }
                     int zodiacnumber = unit.GetComponent<BagComponentServer>().GetZodiacnumber();
                     unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacnumber);
@@ -797,7 +797,7 @@ namespace ET
                     }
 
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
-                    unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
+                    unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
                     Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                     m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                     if (weizhi == (int)EquipCaoWeiTypeEnum.Wuqi_1)
@@ -832,7 +832,7 @@ namespace ET
                             qulitylv = string.IsNullOrEmpty(qulitylv) ? "0" : qulitylv;
                             LDItem costitemconfig = LDItemCategory.Instance.Get(baginfoCost.ItemID);
 
-                            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JianDingQulity_42, int.Parse(qulitylv), 1);
+                            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JianDingQulity_42, int.Parse(qulitylv), 1);
 
                            
                             ifSell = unit.GetComponent<BagComponentServer>().OnCostItemData(baginfoId, 1);
@@ -874,7 +874,7 @@ namespace ET
                         long totalValue = 0;
                         if (useBagInfo.HideProLists != null && useBagInfo.HideProLists.Count > 0)
                         {
-                            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JianDingAttrNumber_43, useBagInfo.HideProLists.Count, 1);
+                            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JianDingAttrNumber_43, useBagInfo.HideProLists.Count, 1);
 
                             for (int pro = 0; pro < useBagInfo.HideProLists.Count; pro++)
                             {
@@ -882,7 +882,7 @@ namespace ET
                             }
                         }
 
-                        unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JianDingValue_140, (int)totalValue, 1);
+                        unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JianDingValue_140, (int)totalValue, 1);
 
                         unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.JianDingEqipNumber_212, int.Parse(qulitylv), 1);
                     }
@@ -936,7 +936,7 @@ namespace ET
                     }
 
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, (ItemLocType)hourseId);
-                    unit.GetComponent<TaskComponent>().OnGetItemForWarehouse(useBagInfo.ItemID);
+                    unit.GetComponent<TaskComponentServer>().OnGetItemForWarehouse(useBagInfo.ItemID);
                     m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                 }
 

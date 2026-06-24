@@ -53,11 +53,11 @@ namespace ET
                     && TimeInfo.Instance.ToDateTime(lastRechargeTime).Date
                     == TimeInfo.Instance.ToDateTime(serverTime).Date;
             
-            TaskComponent taskComponent = unit.GetComponent<TaskComponent>();
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
            // if (lastRechargeTime == 0 || !isSameDay)
             {
-                taskComponent.TriggerTaskEvent(TastConditionType.RechageDayNumber_113, 1, 30);
+                taskComponentServer.TriggerTaskEvent(TastConditionType.RechageDayNumber_113, 1, 30);
             }
 
 

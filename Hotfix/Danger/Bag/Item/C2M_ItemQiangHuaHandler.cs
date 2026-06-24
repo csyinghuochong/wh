@@ -11,7 +11,7 @@ namespace ET
             int maxLevel = QiangHuaHelper.GetQiangHuaMaxLevel(request.WeiZhi);
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
           
-            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.QiangHuaLevel_17, 0, response.QiangHuaLevel);
+            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.QiangHuaLevel_17, 0, response.QiangHuaLevel);
             Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             reply();
             await ETTask.CompletedTask;

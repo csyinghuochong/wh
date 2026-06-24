@@ -12,7 +12,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanPetWalkRequest request, M2C_JiaYuanPetWalkResponse response, Action reply)
         {
-            RolePetInfo rolePetInfo = unit.GetComponent<PetComponent>().GetPetInfo(request.PetId);
+            RolePetInfo rolePetInfo = unit.GetComponent<PetComponentServer>().GetPetInfo(request.PetId);
             if (rolePetInfo == null )
             {
                 response.Error = ErrorCode.ERR_Pet_NoExist;
@@ -44,7 +44,7 @@ namespace ET
 
             JiaYuanPet jiaYuanPet = unit.GetComponent<JiaYuanComponentServer>().GetJiaYuanPet(request.PetId);
           
-            unit.GetComponent<PetComponent>().OnPetWalk(request.PetId, request.PetStatus);
+            unit.GetComponent<PetComponentServer>().OnPetWalk(request.PetId, request.PetStatus);
             unit.GetComponent<JiaYuanComponentServer>().OnJiaYuanPetWalk(rolePetInfo, request.PetStatus, request.Position);
             UnitComponent unitComponent = unit.GetParent<UnitComponent>();
             if (request.PetStatus == 2)
@@ -62,7 +62,7 @@ namespace ET
                 }
                 if (jiaYuanPet != null)
                 {
-                    unit.GetComponent<PetComponent>().PetAddExp(rolePetInfo, (int)jiaYuanPet.CurExp);
+                    unit.GetComponent<PetComponentServer>().PetAddExp(rolePetInfo, (int)jiaYuanPet.CurExp);
                 }
             }
             DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();

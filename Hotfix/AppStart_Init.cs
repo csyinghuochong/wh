@@ -154,29 +154,29 @@ namespace ET
                             int[] number_list = new int[4];
                             int pyzone = StartZoneConfigCategory.Instance.Get(mergezones[zone]).PhysicZone;
 
-                            List<SkillSetComponent> skillsetComponentList = await Game.Scene.GetComponent<DBComponent>().Query<SkillSetComponent>(pyzone, d => d.Id > 0);
+                            List<SkillSetComponentServer> skillsetComponentList = await Game.Scene.GetComponent<DBComponent>().Query<SkillSetComponentServer>(pyzone, d => d.Id > 0);
 
                             Console.WriteLine($"UpdateDB1  :{pyzone}  {skillsetComponentList.Count}");
 
 
                             for (int userinfo = 0; userinfo < skillsetComponentList.Count; userinfo++)
                             {
-                                SkillSetComponent skillSetComponent = skillsetComponentList[userinfo];
+                                SkillSetComponentServer skillSetComponentServer = skillsetComponentList[userinfo];
 
                                 List<int> equiptianfuids = new List<int>();
-                                List<BagComponentServer> bagComponentList = await Game.Scene.GetComponent<DBComponent>().Query<BagComponentServer>(pyzone, d => d.Id == skillSetComponent.Id);
+                                List<BagComponentServer> bagComponentList = await Game.Scene.GetComponent<DBComponent>().Query<BagComponentServer>(pyzone, d => d.Id == skillSetComponentServer.Id);
                                 if (bagComponentList.Count > 0)
                                 {
                                     equiptianfuids.AddRange(bagComponentList[0].GetEquipTianFuIds());
-                                    equiptianfuids.AddRange(skillSetComponent.TianFuAddition);
+                                    equiptianfuids.AddRange(skillSetComponentServer.TianFuAddition);
                                 }
 
                                 //0没有天赋技能  1技能找不到天赋id 2自身丢失天赋 3成功找到天赋
-                                int errorcode = skillSetComponent.CheckSkillToTalent(equiptianfuids);
+                                int errorcode = skillSetComponentServer.CheckSkillToTalent(equiptianfuids);
                                 number_list[errorcode]++;
                                 if (errorcode == 2 ||  errorcode == 3)
                                 {
-                                    await Game.Scene.GetComponent<DBComponent>().Save(pyzone, skillSetComponent);
+                                    await Game.Scene.GetComponent<DBComponent>().Save(pyzone, skillSetComponentServer);
                                 }
                             }
 

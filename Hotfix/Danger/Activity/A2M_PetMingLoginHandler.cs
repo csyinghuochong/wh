@@ -15,7 +15,7 @@ namespace ET
                 return;
             }
             //numericComponent.ApplyValue(NumericType.PetMineLogin, 1);
-            unit.GetComponent<TaskComponent>().OnPetMineLogin(request.PetMineList, request.PetMingExtend);
+            unit.GetComponent<TaskComponentServer>().OnPetMineLogin(request.PetMineList, request.PetMingExtend);
 
             reply();
             await ETTask.CompletedTask;

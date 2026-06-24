@@ -79,7 +79,7 @@ namespace ET
             List<int> weight = new List<int>();
             int index = RandomHelper.RandomByWeight(weight);
             int skinId = 0;//ldPetConfig.Skin[index];
-            response.RolePetInfo = unit.GetComponent<PetComponent>().OnAddPet(ItemGetWay.PetExplore, petId, skinId);
+            response.RolePetInfo = unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.PetExplore, petId, skinId);
             reply();
             await ETTask.CompletedTask;
         }

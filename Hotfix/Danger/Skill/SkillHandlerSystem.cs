@@ -14,8 +14,8 @@ namespace ET
             self.LastHurtTimes.Clear();
             self.LdSkillConf = LDSkillCategory.Instance.Get(skillcmd.WeaponSkillID);
             self.TheUnitFrom = theUnitFrom;
-            SkillSetComponent skillSetComponent = theUnitFrom.GetComponent<SkillSetComponent>();
-            self.TianfuProAdd = skillSetComponent != null ? skillSetComponent.GetSkillPropertyAdd(skillcmd.WeaponSkillID) : null;
+            SkillSetComponentServer skillSetComponentServer = theUnitFrom.GetComponent<SkillSetComponentServer>();
+            self.TianfuProAdd = skillSetComponentServer != null ? skillSetComponentServer.GetSkillPropertyAdd(skillcmd.WeaponSkillID) : null;
             self.OnlyOnceBuffUnitID.Clear();
             self.IsExcuteHurt = false;
             self.SkillFirstHurtTime = 0;
@@ -99,8 +99,8 @@ namespace ET
                 self.SkillBuff(initBuffIds[i], self.TheUnitFrom);
             }
             
-            SkillSetComponent skillSetComponent = self.TheUnitFrom.GetComponent<SkillSetComponent>();
-            List<int> buffInitAdd = skillSetComponent != null ? skillSetComponent.GetBuffInitIdAdd(self.LdSkillConf.Id) : null;
+            SkillSetComponentServer skillSetComponentServer = self.TheUnitFrom.GetComponent<SkillSetComponentServer>();
+            List<int> buffInitAdd = skillSetComponentServer != null ? skillSetComponentServer.GetBuffInitIdAdd(self.LdSkillConf.Id) : null;
             if (buffInitAdd != null)
             {
                 for (int i = 0; i < buffInitAdd.Count; i++)
@@ -560,8 +560,8 @@ namespace ET
                     }
                     break;
                 case 2:
-                    PetComponent petComponent = self.TheUnitFrom.GetComponent<PetComponent>();
-                    canBuff = self.TheUnitFrom.IsSameTeam(uu) || self.TheUnitFrom.IsMasterOrPet(uu, petComponent);
+                    PetComponentServer petComponentServer = self.TheUnitFrom.GetComponent<PetComponentServer>();
+                    canBuff = self.TheUnitFrom.IsSameTeam(uu) || self.TheUnitFrom.IsMasterOrPet(uu, petComponentServer);
                     //if (canBuff && skillBuffConfig.Id == 92000032 && uu.Type == UnitType.Monster)
                     //{
                     //    Log.Console("怪物攻速！！！！");

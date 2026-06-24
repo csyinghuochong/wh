@@ -30,7 +30,7 @@ namespace ET
             }
             if (nearest == null || nearest.IsCanBeAttack(true, false))
             {
-                RolePetInfo rolePetInfo = aiComponent.LocalDungeonUnitPetComponent.GetFightPet();
+                RolePetInfo rolePetInfo = aiComponent.LocalDungeonUnitPetComponentServer.GetFightPet();
                 if (rolePetInfo != null)
                 {
                     Unit pet = aiComponent.UnitComponent.Get(rolePetInfo.Id);

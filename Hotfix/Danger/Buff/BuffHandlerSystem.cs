@@ -55,12 +55,12 @@ namespace ET
 
         public static float GetTianfuProAdd(this BuffHandler self, int key)
         {
-            SkillSetComponent skillSetComponent = self.TheUnitFrom.GetComponent<SkillSetComponent>();
-            if (skillSetComponent == null)
+            SkillSetComponentServer skillSetComponentServer = self.TheUnitFrom.GetComponent<SkillSetComponentServer>();
+            if (skillSetComponentServer == null)
                 return 0f;
 
             float addValue = 0f;
-            Dictionary<int, float> keyValuePairs = skillSetComponent.GetBuffPropertyAdd(self.MBuff.Id);
+            Dictionary<int, float> keyValuePairs = skillSetComponentServer.GetBuffPropertyAdd(self.MBuff.Id);
             if (keyValuePairs == null)
                 return addValue;
             keyValuePairs.TryGetValue(key, out addValue);

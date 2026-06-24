@@ -392,7 +392,7 @@ namespace ET
                 NumericComponentDict.Add(entity.Id, entity as NumericComponent);
             }
 
-            List<PetComponent> petComponents = await Game.Scene.GetComponent<DBComponent>().Query<PetComponent>(zone, d => d.Id > 0);
+            List<PetComponentServer> petComponents = await Game.Scene.GetComponent<DBComponent>().Query<PetComponentServer>(zone, d => d.Id > 0);
             foreach (var entity in petComponents)
             {
                 string shenshou = string.Empty;
@@ -937,7 +937,7 @@ namespace ET
 
             //PetComponent  宠物组件
             dbcount = 0;
-            List<PetComponent> petComponents = await Game.Scene.GetComponent<DBComponent>().Query<PetComponent>(oldzone, d => d.Id > 0);
+            List<PetComponentServer> petComponents = await Game.Scene.GetComponent<DBComponent>().Query<PetComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in petComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))
@@ -991,7 +991,7 @@ namespace ET
 
             //ShoujiComponent  收集大厅
             dbcount = 0;
-            List<ShoujiComponent> shoujiComponents = await Game.Scene.GetComponent<DBComponent>().Query<ShoujiComponent>(oldzone, d => d.Id > 0);
+            List<ShoujiComponentServer> shoujiComponents = await Game.Scene.GetComponent<DBComponent>().Query<ShoujiComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in shoujiComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))
@@ -1009,7 +1009,7 @@ namespace ET
 
             //SkillSetComponent  技能
             dbcount = 0;
-            List<SkillSetComponent> skillSetComponents = await Game.Scene.GetComponent<DBComponent>().Query<SkillSetComponent>(oldzone, d => d.Id > 0);
+            List<SkillSetComponentServer> skillSetComponents = await Game.Scene.GetComponent<DBComponent>().Query<SkillSetComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in skillSetComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))
@@ -1027,7 +1027,7 @@ namespace ET
 
             //TaskComponent  renw组件
             dbcount = 0;
-            List<TaskComponent> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponent>(oldzone, d => d.Id > 0);
+            List<TaskComponentServer> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in taskComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))

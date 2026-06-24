@@ -70,8 +70,8 @@ namespace ET
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(beforeequip, ItemLocType.ItemLocBag, ItemLocType.SeasonJingHe);
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.SeasonJingHe, ItemLocType.ItemLocBag);
 
-                    unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.SeasonJingHe, beforeequip);
-                    unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
+                    unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.SeasonJingHe, beforeequip);
+                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
                     m2c_bagUpdate.BagInfoUpdate.Add(beforeequip);
                 }
                 else
@@ -79,7 +79,7 @@ namespace ET
                     useBagInfo.EquipPlan = bagComponentServer.SeasonJingHePlan;
                     useBagInfo.EquipIndex = equipIndex;
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.SeasonJingHe, ItemLocType.ItemLocBag);
-                    unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
+                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
                 }
 
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
@@ -98,7 +98,7 @@ namespace ET
                 }
                 useBagInfo.EquipPlan = 0;
                 unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.SeasonJingHe);
-                unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.SeasonJingHe, useBagInfo);
+                unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.SeasonJingHe, useBagInfo);
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }

@@ -22,11 +22,11 @@ namespace ET
                 }
             }
 
-            TaskComponent taskComponent = unit.GetComponent<TaskComponent>();   
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();   
             if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_WeeklyTask)
-                && taskComponent.GetTaskCountryByType(TaskCountryType.ActivityWeekly).Count == 0)
+                && taskComponentServer.GetTaskCountryByType(TaskCountryType.ActivityWeekly).Count == 0)
             {
-                taskComponent.InitActivityWeekTask(true);
+                taskComponentServer.InitActivityWeekTask(true);
             }
 
             //if (ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_Task)

@@ -20,10 +20,10 @@ namespace ET
             bool allMonsterDead = FubenHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit);
             int alivedPetNumber = FubenHelp.GetAlivePetNumber(self.DomainScene());
             int number = 0;
-            PetComponent petComponent = self.MainUnit.GetComponent<PetComponent>();
-            for (int i = 0; i < petComponent.PetFormations.Count; i++)
+            PetComponentServer petComponentServer = self.MainUnit.GetComponent<PetComponentServer>();
+            for (int i = 0; i < petComponentServer.PetFormations.Count; i++)
             {
-                number += (petComponent.PetFormations[i] != 0 ? 1 : 0);
+                number += (petComponentServer.PetFormations[i] != 0 ? 1 : 0);
             }
             if (!allMonsterDead)
             {
@@ -61,8 +61,8 @@ namespace ET
                 {
                     star += m2C_FubenSettlement.StarInfos[i];
                 }
-                self.MainUnit.GetComponent<PetComponent>().OnPassPetFuben(petfubeId, star);
-                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetFubenId_19, 0, petfubeId - 10000);
+                self.MainUnit.GetComponent<PetComponentServer>().OnPassPetFuben(petfubeId, star);
+                self.MainUnit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.PetFubenId_19, 0, petfubeId - 10000);
             }
             MessageHelper.SendToClient(self.MainUnit, m2C_FubenSettlement);
         }
@@ -83,12 +83,12 @@ namespace ET
         {
             unit.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.WuDi);
 
-            PetComponent petComponent = unit.GetComponent<PetComponent>();
-            petComponent.CheckSkin();
-            List<long> pets = petComponent.PetFormations;
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+            petComponentServer.CheckSkin();
+            List<long> pets = petComponentServer.PetFormations;
             for (int i = 0; i < pets.Count; i++)
             {
-                RolePetInfo rolePetInfo = petComponent.GetPetInfo(pets[i]);
+                RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(pets[i]);
                 if (rolePetInfo == null)
                 {
                     continue;

@@ -1036,7 +1036,7 @@ namespace ET
                     }
 
 
-                    List<TaskComponent> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponent>(pyzone, d => d.Id == roleInfoComponentServer.Id);
+                    List<TaskComponentServer> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponentServer>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                     if (taskComponents == null || taskComponents.Count == 0)
                     {
                         continue;
@@ -1642,7 +1642,7 @@ namespace ET
                 int pyzone = StartZoneConfigCategory.Instance.Get(zonlist[i]).PhysicZone;
 
                 long dbCacheId = DBHelper.GetDbCacheId(pyzone);
-                List<PetComponent> petComponents = await Game.Scene.GetComponent<DBComponent>().Query<PetComponent>(pyzone, d => d.Id > 0);
+                List<PetComponentServer> petComponents = await Game.Scene.GetComponent<DBComponent>().Query<PetComponentServer>(pyzone, d => d.Id > 0);
                 if (petComponents.Count == 0 || petComponents == null)
                 {
                     continue;
@@ -1650,14 +1650,14 @@ namespace ET
 
                 for ( int pet = 0; pet < petComponents.Count; pet++ )
                 {
-                    PetComponent petComponent = petComponents[pet]; 
-                    int shenshouNumber = petComponent.GetShenShouNumber();
+                    PetComponentServer petComponentServer = petComponents[pet]; 
+                    int shenshouNumber = petComponentServer.GetShenShouNumber();
                     if (shenshouNumber <= 0)
                     {
                         continue;
                     }
 
-                    List<RoleInfoComponentServer> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == petComponent.Id);
+                    List<RoleInfoComponentServer> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == petComponentServer.Id);
                     if (RoleInfoComponents.Count == 0 || RoleInfoComponents == null)
                     {
                         continue;
@@ -1674,7 +1674,7 @@ namespace ET
                     //    continue;
                     //}
 
-                    List<NumericComponent> NumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == petComponent.Id);
+                    List<NumericComponent> NumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == petComponentServer.Id);
                     if (NumericComponentlist == null || NumericComponentlist.Count == 0)
                     {
                         continue;

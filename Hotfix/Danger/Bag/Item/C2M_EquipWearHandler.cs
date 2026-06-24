@@ -55,14 +55,14 @@ namespace ET
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(beforeequip, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
 
-                    unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
-                    unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
+                    unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
+                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
                     m2c_bagUpdate.BagInfoUpdate.Add(beforeequip);
                 }
                 else
                 {
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
-                    unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
+                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
                 }
                 int zodiacnumber = unit.GetComponent<BagComponentServer>().GetZodiacnumber();
                 unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacnumber);
@@ -100,7 +100,7 @@ namespace ET
 
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(useBagInfo.ItemID);
                 unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
-                unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
+                unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                 if (caowei == (int)EquipCaoWeiTypeEnum.Wuqi_1)

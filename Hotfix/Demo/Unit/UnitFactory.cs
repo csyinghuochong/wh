@@ -70,17 +70,17 @@ namespace ET
                 numericComponentServer.ApplyValue(NumericType.AOI, 15000, false); // 视野15米
             }
             
-            unit.AddDataComponent<TaskComponent>();
+            unit.AddDataComponent<TaskComponentServer>();
             unit.AddDataComponent<ChengJiuComponentServer>();
             unit.AddDataComponent<BagComponentServer>();
-            unit.AddDataComponent<PetComponent>();
-            unit.AddDataComponent<SkillSetComponent>();
+            unit.AddDataComponent<PetComponentServer>();
+            unit.AddDataComponent<SkillSetComponentServer>();
             unit.AddDataComponent<ActivityComponentServer>();
             unit.AddDataComponent<RechargeComponent>();
             unit.AddDataComponent<ReddotComponent>();
             unit.AddDataComponent<TitleComponent>();
             unit.AddDataComponent<JiaYuanComponentServer>();
-            unit.AddDataComponent<ShoujiComponent>();
+            unit.AddDataComponent<ShoujiComponentServer>();
             unit.AddDataComponent<DataCollationComponent>();
             
             await unit.AddDBComonent<DBFriendInfo>(unit.Id);
@@ -198,7 +198,7 @@ namespace ET
             {
                 case MapTypeEnum.LocalDungeon:
                     aIComponent.LocalDungeonUnit = mainUnit;
-                    aIComponent.LocalDungeonUnitPetComponent = mainUnit.GetComponent<PetComponent>();
+                    aIComponent.LocalDungeonUnitPetComponentServer = mainUnit.GetComponent<PetComponentServer>();
                     //aIComponent.InitMonster(ldMonster.Id);
                     break;
                 case MapTypeEnum.PetDungeon:

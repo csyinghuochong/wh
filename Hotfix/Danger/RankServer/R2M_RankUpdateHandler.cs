@@ -10,12 +10,12 @@
             {
                 case 1:
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.CombatRankID, message.RankId);
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent( TastConditionType.CombatRank_83, message.RankId, 1);
+                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent( TastConditionType.CombatRank_83, message.RankId, 1);
                    
                     break;
                 case 2:
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.PetTianTiRankID, message.RankId);
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetTianTiRank_82, message.RankId, 1);
+                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.PetTianTiRank_82, message.RankId, 1);
                    
                     break;
                 case 3:

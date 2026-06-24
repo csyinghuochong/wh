@@ -274,7 +274,7 @@ namespace ET
             List<int> ShiShiGemID = new List<int>();
 
             //生命护盾
-            List<PropertyValue> lifeShieldList = unit.GetComponent<SkillSetComponent>().GetShieldProLists();
+            List<PropertyValue> lifeShieldList = unit.GetComponent<SkillSetComponentServer>().GetShieldProLists();
             for (int i = 0; i < lifeShieldList.Count; i++)
             {
                 AddUpdateProDicList(lifeShieldList[i].HideID, lifeShieldList[i].HideValue, UpdateProDicList);
@@ -295,7 +295,7 @@ namespace ET
             }
 
             //技能属性
-            List<PropertyValue> skillProList = unit.GetComponent<SkillSetComponent>().GetSkillRoleProLists();
+            List<PropertyValue> skillProList = unit.GetComponent<SkillSetComponentServer>().GetSkillRoleProLists();
             for (int i = 0; i < skillProList.Count; i++)
             {
                 //Log.Info("隐藏:" + skillProList[i].HideID + "skillProList[i].HideValue = " + skillProList[i].HideValue);
@@ -310,7 +310,7 @@ namespace ET
             }
 
             //收集属性
-            List<PropertyValue> shoujiProList = unit.GetComponent<ShoujiComponent>().GetProList();
+            List<PropertyValue> shoujiProList = unit.GetComponent<ShoujiComponentServer>().GetProList();
             for (int i = 0; i < shoujiProList.Count; i++)
             {
                 AddUpdateProDicList(shoujiProList[i].HideID, shoujiProList[i].HideValue, UpdateProDicList);
@@ -330,7 +330,7 @@ namespace ET
             }
 
             //神兽羁绊属性
-            int shenshouNumber = unit.GetComponent<PetComponent>().GetShenShouNumber();
+            int shenshouNumber = unit.GetComponent<PetComponentServer>().GetShenShouNumber();
             List<PropertyValue> shenshoujiban = new List<PropertyValue>();
             foreach ((int petnumber, List<PropertyValue> prolist) in CommonConfig.ShenShouJiBan)
             {
@@ -353,7 +353,7 @@ namespace ET
             }*/
 
             //天赋系统
-            List<PropertyValue> tianfuProList = unit.GetComponent<SkillSetComponent>().GetTianfuRoleProLists();
+            List<PropertyValue> tianfuProList = unit.GetComponent<SkillSetComponentServer>().GetTianfuRoleProLists();
             for (int i = 0; i < tianfuProList.Count; i++)
             {
                 AddUpdateProDicList(tianfuProList[i].HideID, tianfuProList[i].HideValue, UpdateProDicList);
@@ -550,7 +550,7 @@ namespace ET
 
             //宠物守护附加战力
             int fightNum = 0;
-            PetComponent petCom = unit.GetComponent<PetComponent>();
+            PetComponentServer petCom = unit.GetComponent<PetComponentServer>();
             for (int i = 0; i < 4; i++)
             {
                 if (petCom.PetShouHuList.Count < 4)
@@ -573,7 +573,7 @@ namespace ET
 
             //觉醒战力附加
    
-            List<int> juexingSkillList = unit.GetComponent<SkillSetComponent>().GetJueSkillIds(0);
+            List<int> juexingSkillList = unit.GetComponent<SkillSetComponentServer>().GetJueSkillIds(0);
             int addJueXingZhanLi = 0;
             if (juexingSkillList.Count >= 1)
             {

@@ -22,14 +22,14 @@ namespace ET
                 return;
             }
             
-            TaskComponent taskComponent = unit.GetComponent<TaskComponent>();
-            if (taskComponent.OnLineTime < 30)
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+            if (taskComponentServer.OnLineTime < 30)
             {
                 response.Error = ErrorCode.Err_OnLineTimeNot;
                 reply();
                 return;
             }
-            if (taskComponent.GetHuoYueDu() < 30)
+            if (taskComponentServer.GetHuoYueDu() < 30)
             {
                 response.Error = ErrorCode.ERR_HuoYueNot;
                 reply();

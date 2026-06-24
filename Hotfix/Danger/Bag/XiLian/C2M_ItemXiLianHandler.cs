@@ -136,14 +136,14 @@ namespace ET
 
                     for (int attr = 0;  attr < itemXiLianResult.XiLianHideProLists.Count; attr++ )
                     {
-                        unit.GetComponent<TaskComponent>().TriggerTaskEvent( TastConditionType.XiLianAttriId_45, itemXiLianResult.XiLianHideProLists[0].HideID, 1);
+                        unit.GetComponent<TaskComponentServer>().TriggerTaskEvent( TastConditionType.XiLianAttriId_45, itemXiLianResult.XiLianHideProLists[0].HideID, 1);
                     }
 
-                    unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.XiLianSkillNumber_44, itemXiLianResult.HideSkillLists.Count, 1);
+                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.XiLianSkillNumber_44, itemXiLianResult.HideSkillLists.Count, 1);
                 }
 
                 unit.GetComponent<ChengJiuComponentServer>().OnEquipXiLian(request.Times);
-                unit.GetComponent<TaskComponent>().OnEquipXiLian(request.Times);
+                unit.GetComponent<TaskComponentServer>().OnEquipXiLian(request.Times);
                 unit.GetComponent<DataCollationComponent>().OnXiLian(request.Times);
                 Function_Fight.UnitUpdateProperty_Base( unit, true, true );
 

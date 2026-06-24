@@ -51,8 +51,8 @@ namespace ET
 
                     }
                     roleInfoComponentServer.OnZeroClockUpdate(false);
-                    unit.GetComponent<TaskComponent>().CheckWeeklyUpdate(lastLoginTime, currentTime);
-                    unit.GetComponent<TaskComponent>().OnZeroClockUpdate(false);
+                    unit.GetComponent<TaskComponentServer>().CheckWeeklyUpdate(lastLoginTime, currentTime);
+                    unit.GetComponent<TaskComponentServer>().OnZeroClockUpdate(false);
                     unit.GetComponent<HeroDataComponent>().OnZeroClockUpdate(false);
                     unit.GetComponent<ActivityComponentServer>().OnZeroClockUpdate(roleInfo.Lv);
                     unit.GetComponent<ChengJiuComponentServer>().OnZeroClockUpdate();
@@ -88,20 +88,20 @@ namespace ET
             else
             {
                 Log.Debug($"OnZeroClockUpdate [数据初始化]: {unit.Id}");
-                unit.GetComponent<TaskComponent>().OnZeroClockUpdate(false);
+                unit.GetComponent<TaskComponentServer>().OnZeroClockUpdate(false);
             }
 
             unit.GetComponent<BagComponentServer>().OnLogin(roleInfo.RobotId);
-            unit.GetComponent<TaskComponent>().OnLogin();
+            unit.GetComponent<TaskComponentServer>().OnLogin();
             unit.GetComponent<HeroDataComponent>().OnLogin(roleInfo.RobotId);
             unit.GetComponent<DBSaveComponent>().OnLogin();
             unit.GetComponent<RechargeComponent>().OnLogin();
-            unit.GetComponent<PetComponent>().OnLogin();
+            unit.GetComponent<PetComponentServer>().OnLogin();
             unit.GetComponent<ActivityComponentServer>().OnLogin(roleInfo.Lv);
             unit.GetComponent<TitleComponent>().OnCheckTitle(false);
             unit.GetComponent<ChengJiuComponentServer>().OnLogin();
             unit.GetComponent<JiaYuanComponentServer>().OnLogin();
-            unit.GetComponent<SkillSetComponent>().OnLogin(roleInfo.Occ);
+            unit.GetComponent<SkillSetComponentServer>().OnLogin(roleInfo.Occ);
 
         }
 

@@ -318,25 +318,25 @@ namespace ET
             self.LearnMakeIds_7 = numbers.Distinct().ToList();
 
             //检测宠物
-            PetComponent petComponent = self.GetParent<Unit>().GetComponent<PetComponent>();
+            PetComponentServer petComponentServer = self.GetParent<Unit>().GetComponent<PetComponentServer>();
             for(int i = self.JiaYuanPetList_2.Count - 1; i >= 0; i--)
             {
-                RolePetInfo rolePetInfo = petComponent.GetPetInfo(self.JiaYuanPetList_2[i].unitId);
+                RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(self.JiaYuanPetList_2[i].unitId);
                 if (rolePetInfo == null || rolePetInfo.PetStatus != 2)
                 {
                     self.JiaYuanPetList_2.RemoveAt(i);
                 }
             }
-            for (int i = 0; i < petComponent.RolePetInfos.Count; i++)
+            for (int i = 0; i < petComponentServer.RolePetInfos.Count; i++)
             {
-                if (petComponent.RolePetInfos[i].PetStatus != 2)
+                if (petComponentServer.RolePetInfos[i].PetStatus != 2)
                 {
                     continue;
                 }
 
-                if (null == self.GetJiaYuanPet(petComponent.RolePetInfos[i].Id))
+                if (null == self.GetJiaYuanPet(petComponentServer.RolePetInfos[i].Id))
                 {
-                    petComponent.RolePetInfos[i].PetStatus = 0;
+                    petComponentServer.RolePetInfos[i].PetStatus = 0;
                 }
             }
 
@@ -372,16 +372,16 @@ namespace ET
         {
 #if SERVER
             long serverTime = TimeHelper.ServerNow();
-            PetComponent petComponent = self.GetParent<Unit>().GetComponent<PetComponent>();
+            PetComponentServer petComponentServer = self.GetParent<Unit>().GetComponent<PetComponentServer>();
             for ( int i = self.JiaYuanPetList_2.Count - 1; i >= 0; i--)
             {
                 JiaYuanPet jiaYuanPet = self.JiaYuanPetList_2[i];
-                if (petComponent.GetPetInfo(jiaYuanPet.unitId) == null)
+                if (petComponentServer.GetPetInfo(jiaYuanPet.unitId) == null)
                 {
                     self.JiaYuanPetList_2.RemoveAt(i);
                     continue;
                 }
-                if (petComponent.GetFightPetId() == jiaYuanPet.unitId)
+                if (petComponentServer.GetFightPetId() == jiaYuanPet.unitId)
                 {
                     self.JiaYuanPetList_2.RemoveAt(i);
                     continue;

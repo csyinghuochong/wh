@@ -38,7 +38,7 @@ namespace ET
 
             if (itemLocType == ItemLocType.ItemLocEquip ) //|| itemLocType == ItemLocType.ItemLocEquip_2)
             {
-                    unit.GetComponent<SkillSetComponent>().OnWearEquip(bagInfo);
+                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(bagInfo);
             }
 
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();

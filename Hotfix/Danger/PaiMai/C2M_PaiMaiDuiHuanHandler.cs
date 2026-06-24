@@ -37,7 +37,7 @@ namespace ET
                 unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (diamond * -1).ToString(), true, ItemGetWay.DuiHuan);
                 unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Gold, (diamond * d2GGetUnit.ServerInfo.ExChangeGold).ToString(), true, ItemGetWay.DuiHuan);
                 unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.WeiJingGold,( (int)(diamond / 100) ).ToString(), true, ItemGetWay.DuiHuan);
-                unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.DuiHuanGold_15, 0, (int)(diamond / 100));
+                unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.DuiHuanGold_15, 0, (int)(diamond / 100));
             }
             else 
             {

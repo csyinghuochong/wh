@@ -189,9 +189,9 @@ namespace ET
                     {
                         continue;
                     }
-                    attackUnit.GetComponent<TaskComponent>().OnKillUnit(defendUnit, sceneTypeEnum);
+                    attackUnit.GetComponent<TaskComponentServer>().OnKillUnit(defendUnit, sceneTypeEnum);
                     attackUnit.GetComponent<ChengJiuComponentServer>().OnKillUnit(defendUnit);
-                    attackUnit.GetComponent<PetComponent>().OnKillUnit(defendUnit);
+                    attackUnit.GetComponent<PetComponentServer>().OnKillUnit(defendUnit);
                     attackUnit.GetComponent<RoleInfoComponentServer>().OnKillUnit(defendUnit, sceneTypeEnum, sceneId);
                 }
 

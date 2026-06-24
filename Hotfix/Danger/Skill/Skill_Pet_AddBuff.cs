@@ -21,7 +21,7 @@ namespace ET
             }
             else if (this.TheUnitFrom.Type == UnitType.Player)
             {
-                RolePetInfo rolePetInfo = this.TheUnitFrom.GetComponent<PetComponent>().GetFightPet();
+                RolePetInfo rolePetInfo = this.TheUnitFrom.GetComponent<PetComponentServer>().GetFightPet();
                 return rolePetInfo == null ? null : this.TheUnitFrom.GetParent<UnitComponent>().Get(rolePetInfo.Id);
             }
             return null;
@@ -33,8 +33,8 @@ namespace ET
 
             //触发初始化BUFF
           
-            SkillSetComponent skillSetComponent = TheUnitFrom.GetComponent<SkillSetComponent>();
-            List<int> buffInitAdd = skillSetComponent != null ? skillSetComponent.GetBuffInitIdAdd(this.LdSkillConf.Id) : null;
+            SkillSetComponentServer skillSetComponentServer = TheUnitFrom.GetComponent<SkillSetComponentServer>();
+            List<int> buffInitAdd = skillSetComponentServer != null ? skillSetComponentServer.GetBuffInitIdAdd(this.LdSkillConf.Id) : null;
             if (buffInitAdd != null)
             {
                 for (int i = 0; i < buffInitAdd.Count; i++)

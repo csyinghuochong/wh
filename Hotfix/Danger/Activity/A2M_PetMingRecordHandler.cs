@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, A2M_PetMingRecordRequest request, M2A_PetMingRecordResponse response, Action reply)
         {
-            unit.GetComponent<PetComponent>().OnPetMingRecord( request.PetMingRecord );
+            unit.GetComponent<PetComponentServer>().OnPetMingRecord( request.PetMingRecord );
 
             unit.GetComponent<NumericComponent>().ApplyValue( NumericType.PetMineCDTime, 0 );
 

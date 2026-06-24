@@ -48,7 +48,7 @@ namespace ET
         /// <param name="itemId"></param>
         public static void OnCostItem(this Unit self, int itemId)
         {
-            self.GetComponent<TaskComponent>().OnGetItem_2(itemId);
+            self.GetComponent<TaskComponentServer>().OnGetItem_2(itemId);
         }
 
         /// <summary>

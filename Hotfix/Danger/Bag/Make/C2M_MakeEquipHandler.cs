@@ -96,7 +96,7 @@ namespace ET
                 List<RewardItem> rewardItems = new List<RewardItem>();
                 rewardItems.Add(new RewardItem() { ItemID = equipMakeConfig.MakeItemID, ItemNum = equipMakeConfig.MakeEquipNum });
                 unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name, $"{ItemGetWay.SkillMake}_{request.Plan}_{TimeHelper.ServerNow()}");       //传入制造装备和制造玩家的ID
-                unit.GetComponent<TaskComponent>().OnMakeItem();
+                unit.GetComponent<TaskComponentServer>().OnMakeItem();
                 response.ItemId = equipMakeConfig.MakeItemID;
             }
             else
@@ -132,8 +132,8 @@ namespace ET
 
             }
             unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.MakeNumber_216, 0, 1);
-            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.MakeNumber_12, 0, 1);
-            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.MakeQulityNumber_29, ldItem.Quality, 1);
+            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.MakeNumber_12, 0, 1);
+            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.MakeQulityNumber_29, ldItem.Quality, 1);
 
             reply();
             await ETTask.CompletedTask;

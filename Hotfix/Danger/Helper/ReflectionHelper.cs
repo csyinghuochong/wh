@@ -26,7 +26,7 @@ namespace ET
                     ModifyStringProperties(component, newValue);
                     return true;
                 }
-                else if (componentType == typeof(TaskComponent))
+                else if (componentType == typeof(TaskComponentServer))
                 {
                     // 获取TaskComponent的所有字符串属性
                     ModifyStringProperties(component, newValue);

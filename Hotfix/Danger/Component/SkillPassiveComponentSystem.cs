@@ -256,7 +256,7 @@ namespace ET
         {
             self.SkillPassiveInfos.Clear();
 
-            List<SkillPro> skillList = self.GetParent<Unit>().GetComponent<SkillSetComponent>().SkillList;
+            List<SkillPro> skillList = self.GetParent<Unit>().GetComponent<SkillSetComponentServer>().SkillList;
             for (int i = 0; i < skillList.Count; i++)
             {
                 if (skillList[i].SkillSetType == (int)SkillSetEnum.Item)

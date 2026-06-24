@@ -8,8 +8,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_WelfareTaskRewardRequest request, M2C_WelfareTaskRewardResponse response, Action reply)
         {
-            TaskComponent taskComponent = unit.GetComponent<TaskComponent>();   
-            bool canget = TaskHelper.IsDayTaskComplete(taskComponent.RoleComoleteTaskList, request.day);
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();   
+            bool canget = TaskHelper.IsDayTaskComplete(taskComponentServer.RoleComoleteTaskList, request.day);
             if (!canget)
             {
                 response.Error = ErrorCode.Pre_Condition_Error;

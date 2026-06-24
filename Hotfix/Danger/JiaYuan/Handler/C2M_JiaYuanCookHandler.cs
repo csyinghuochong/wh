@@ -134,7 +134,7 @@ namespace ET
             response.ItemId = getItemid;
             DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, jiaYuanComponentServer).Coroutine();
             unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.JiaYuanCooking_403, 0, 1);
-            unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanCookNumber_91, 0, 1);
+            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JiaYuanCookNumber_91, 0, 1);
             reply();
             await ETTask.CompletedTask;
         }

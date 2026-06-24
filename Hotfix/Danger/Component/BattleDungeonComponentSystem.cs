@@ -96,7 +96,7 @@ namespace ET
                 if (unit != null)
                 {
                     Log.Warning($"发送战场任务奖励: {self.DomainZone()} {winPlayers[i]}");
-                    unit.GetComponent<TaskComponent>().OnWinCampBattle();
+                    unit.GetComponent<TaskComponentServer>().OnWinCampBattle();
                 }
                 if (unit != null && unit.IsRobot())
                 {

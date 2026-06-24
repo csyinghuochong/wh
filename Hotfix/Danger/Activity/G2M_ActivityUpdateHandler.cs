@@ -16,8 +16,8 @@ namespace ET
                     unit.GetComponent<HeroDataComponent>().OnZeroClockUpdate(true);
                     unit.GetComponent<RoleInfoComponentServer>().OnHourUpdate(0, true);
                     unit.GetComponent<RoleInfoComponentServer>().OnZeroClockUpdate(true);
-                    unit.GetComponent<TaskComponent>().CheckWeeklyUpdate();
-                    unit.GetComponent<TaskComponent>().OnZeroClockUpdate(true);
+                    unit.GetComponent<TaskComponentServer>().CheckWeeklyUpdate();
+                    unit.GetComponent<TaskComponentServer>().OnZeroClockUpdate(true);
                     unit.GetComponent<ActivityComponentServer>().OnZeroClockUpdate(roleInfo.Lv);
                     unit.GetComponent<ChengJiuComponentServer>().OnZeroClockUpdate();
                     unit.GetComponent<JiaYuanComponentServer>().OnZeroClockUpdate(true);

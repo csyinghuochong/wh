@@ -141,7 +141,7 @@ namespace ET
 
                 unit.GetComponent<RoleInfoComponentServer>().OnResetSeason(notice);
                 unit.GetComponent<BagComponentServer>().OnResetSeason(notice);
-                unit.GetComponent<TaskComponent>().OnResetSeason(notice);
+                unit.GetComponent<TaskComponentServer>().OnResetSeason(notice);
             }
         }
 
@@ -173,9 +173,9 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.SeasonOpenTime, seasonOpenTime.Value, notice);
 
                 //刷新任务
-                TaskComponent taskComponent = unit.GetComponent<TaskComponent>();
-                taskComponent.InitSeasonMainTask(notice);
-                taskComponent.UpdateSeasonWeekTask(notice); 
+                TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+                taskComponentServer.InitSeasonMainTask(notice);
+                taskComponentServer.UpdateSeasonWeekTask(notice); 
             }
         }
 
@@ -590,11 +590,11 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (unit.Type == UnitType.Player)
             {
-                RolePetInfo rolePetInfo = unit.GetComponent<PetComponent>().GetFightPet();
+                RolePetInfo rolePetInfo = unit.GetComponent<PetComponentServer>().GetFightPet();
                 if (rolePetInfo != null)
                 {
                     unit.GetParent<UnitComponent>().Remove(rolePetInfo.Id);
-                    unit.GetComponent<PetComponent>().OnPetDead(rolePetInfo.Id);
+                    unit.GetComponent<PetComponentServer>().OnPetDead(rolePetInfo.Id);
                 }
 
                 int now_horse = numericComponent.GetAsInt(NumericType.HorseRide);
@@ -628,7 +628,7 @@ namespace ET
                     long manster = numericComponent.GetAsLong(NumericType.MasterId);
                     Unit unit_manster = unit.GetParent<UnitComponent>().Get(manster);
                     //修改宠物出战状态
-                    unit_manster.GetComponent<PetComponent>().OnPetDead(unit.Id);
+                    unit_manster.GetComponent<PetComponentServer>().OnPetDead(unit.Id);
                 }
             }
             

@@ -312,7 +312,7 @@ namespace ET
             }
             self.DBInterval++;
             self.OnLineTime++;
-            unit.GetComponent<TaskComponent>().Check();
+            unit.GetComponent<TaskComponentServer>().Check();
             unit.GetComponent<RoleInfoComponentServer>().Check();
             unit.GetComponent<DataCollationComponent>().Check();
             unit.GetComponent<TitleComponent>().OnCheckTitle(true);

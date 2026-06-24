@@ -43,11 +43,11 @@ namespace ET
             self.MainUnit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetMineBattle,1,0  );
             self.MainUnit.GetComponent<NumericComponent>().ApplyValue(null, NumericType.PetMineCDTime, TimeHelper.ServerNow() + cdTime, 0);
 
-            self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.MineBattleNumber_402, 0, 1);
+            self.MainUnit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.MineBattleNumber_402, 0, 1);
             
             if (result == CombatResultEnum.Win)
             {
-                self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.MineWinNumber_403, 0, 1);
+                self.MainUnit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.MineWinNumber_403, 0, 1);
             }
 
             await ETTask.CompletedTask;
@@ -114,19 +114,19 @@ namespace ET
             //己方队伍
             Unit unit = self.MainUnit;
             unit.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.WuDi);
-            PetComponent petComponent = unit.GetComponent<PetComponent>();
-            petComponent.CheckSkin();
-            List<long> pets = petComponent.PetMingList;
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+            petComponentServer.CheckSkin();
+            List<long> pets = petComponentServer.PetMingList;
             for (int i = 0; i <  5; i++)
             {
                 long petinfoid = pets[i + self.TeamId * 5];
-                RolePetInfo rolePetInfo = petComponent.GetPetInfo(petinfoid);
+                RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(petinfoid);
                 if (rolePetInfo == null)
                 {
                     continue;
                 }
 
-                int position = petComponent.PetMingPosition.IndexOf(petinfoid);
+                int position = petComponentServer.PetMingPosition.IndexOf(petinfoid);
                 position = position != -1 ? position %= 9 : i;   
 
                 Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), unit.Id,
@@ -148,9 +148,9 @@ namespace ET
                         continue;
                     }
 
-                    RolePetInfo petInfo = petComponent.GenerateNewPet(petdefendlist[k], 0);
-                    petComponent.PetXiLian(petInfo,0, 2, 0, 0 );
-                    petComponent.UpdatePetAttribute(petInfo, false);
+                    RolePetInfo petInfo = petComponentServer.GenerateNewPet(petdefendlist[k], 0);
+                    petComponentServer.PetXiLian(petInfo,0, 2, 0, 0 );
+                    petComponentServer.UpdatePetAttribute(petInfo, false);
                     petInfo.PlayerName = "机器人";
                     Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,
                        CampEnum.CampPlayer_2, petInfo, AIGetTargetHelp.Formation_2[k], 180f, k);
@@ -164,8 +164,8 @@ namespace ET
 
                 //self.EnemyId = enemyId;
 
-                PetComponent petComponent_enemy = await DBHelper.GetComponent<PetComponent>(self.DomainZone(), enemyId);
-                if (petComponent_enemy != null)
+                PetComponentServer petComponentServerEnemy = await DBHelper.GetComponent<PetComponentServer>(self.DomainZone(), enemyId);
+                if (petComponentServerEnemy != null)
                 {
                     BagComponentServer bagComponentServer =  await DBHelper.GetComponent<BagComponentServer>(self.DomainZone(), enemyId);
                     if (bagComponentServer == null)
@@ -180,12 +180,12 @@ namespace ET
                     }
 
                     
-                    petComponent_enemy.CheckSkin();
-                    List<long> petsenemy = petComponent_enemy.PetMingList;
+                    petComponentServerEnemy.CheckSkin();
+                    List<long> petsenemy = petComponentServerEnemy.PetMingList;
                     for (int i = 0; i < 5; i++)
                     {
                         long petinfoid = petsenemy[i + teamid * 5];
-                        RolePetInfo rolePetInfo = petComponent_enemy.GetPetInfo(petinfoid);
+                        RolePetInfo rolePetInfo = petComponentServerEnemy.GetPetInfo(petinfoid);
                         if (rolePetInfo == null)
                         {
                             continue;
@@ -196,9 +196,9 @@ namespace ET
                             continue;
                         }
 
-                        int position = petComponent_enemy.PetMingPosition.IndexOf(petinfoid);
+                        int position = petComponentServerEnemy.PetMingPosition.IndexOf(petinfoid);
                         position = position != -1 ? position %= 9 : i;
-                        petComponent_enemy.UpdatePetAttributeWithData(bagComponentServer, numericComponent, rolePetInfo, false);
+                        petComponentServerEnemy.UpdatePetAttributeWithData(bagComponentServer, numericComponent, rolePetInfo, false);
                         Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,
                            CampEnum.CampPlayer_2, rolePetInfo, AIGetTargetHelp.Formation_2[position], 180f,position);
                     }

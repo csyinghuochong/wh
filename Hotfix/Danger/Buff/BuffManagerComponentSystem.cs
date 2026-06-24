@@ -642,7 +642,7 @@ namespace ET
             if (addBufStatus == 1 && unit.Type == UnitType.Player
                 && ldSkillBuff.Id >= 92041030 && ldSkillBuff.Id <= 92041034)
             {
-                long rolePetId = unit.GetComponent<PetComponent>().GetFightPetId();
+                long rolePetId = unit.GetComponent<PetComponentServer>().GetFightPetId();
                 Unit unitpet = unit.GetParent<UnitComponent>().Get(rolePetId);
                 if (unitpet != null)
                 {

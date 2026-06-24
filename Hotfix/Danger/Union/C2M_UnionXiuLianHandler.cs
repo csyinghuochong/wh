@@ -73,10 +73,10 @@ namespace ET
 
             //刷新角色属性
             Function_Fight.UnitUpdateProperty_Base(unit,true,true);
-            PetComponent petComponent = unit.GetComponent<PetComponent>();  
-            for (int i = petComponent.RolePetInfos.Count - 1; i >= 0; i--)
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();  
+            for (int i = petComponentServer.RolePetInfos.Count - 1; i >= 0; i--)
             {
-                petComponent.UpdatePetAttribute(petComponent.RolePetInfos[i], false);
+                petComponentServer.UpdatePetAttribute(petComponentServer.RolePetInfos[i], false);
             }
 
             reply();

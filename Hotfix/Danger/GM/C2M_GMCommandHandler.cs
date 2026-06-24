@@ -107,11 +107,11 @@ namespace ET
                     unit.GetComponent<BagComponentServer>().OnGmGaoJi(level);
 
 					//每个宠物附带满级的宠物之核,并进化
-					unit.GetComponent<PetComponent>().OnGmGaoJi();
+					unit.GetComponent<PetComponentServer>().OnGmGaoJi();
 
                     //激活全部收集
                     //激活全部珍宝
-                    unit.GetComponent<ShoujiComponent>().OnGmGaoJi();
+                    unit.GetComponent<ShoujiComponentServer>().OnGmGaoJi();
                     
                     //激活全部称号
                     unit.GetComponent<TitleComponent>().OnGmGaoJi();
@@ -201,12 +201,12 @@ namespace ET
                 }
                 if (message.GMMsg == "#completetask")
 				{
-					unit.GetComponent<TaskComponent>().GMCompletCurrentTask();
+					unit.GetComponent<TaskComponentServer>().GMCompletCurrentTask();
 					return;
 				}
                 if (message.GMMsg == "#resetweek")
                 {
-                    unit.GetComponent<TaskComponent>().ResetWeeklyTask(true);
+                    unit.GetComponent<TaskComponentServer>().ResetWeeklyTask(true);
                     return;
                 }
                 if (message.GMMsg.Contains("#addack"))  //#addack#400000
@@ -244,7 +244,7 @@ namespace ET
 								unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", true, true);
 								break;
 							case ItemBigType.Type_Pet:
-								unit.GetComponent<PetComponent>().OnAddPet(ItemGetWay.GM, itemId);
+								unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.GM, itemId);
 								break;
 						}
 
@@ -280,15 +280,15 @@ namespace ET
 						}
 						break;
 					case 4: //直接接取某个任务      4#30080019
-                        unit.GetComponent<TaskComponent>().OnGMGetTask(int.Parse(commands[1]));
+                        unit.GetComponent<TaskComponentServer>().OnGMGetTask(int.Parse(commands[1]));
 						break;
 					case 5: //直接获得某个宠物      5#1001301
-                        unit.GetComponent<PetComponent>().OnAddPet(ItemGetWay.GM, int.Parse(commands[1]));
+                        unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.GM, int.Parse(commands[1]));
 						break;
 					case 6:
 						int newLevel = int.Parse(commands[1]);
 						RoleInfoComponentServer roleInfoComponentServer =  unit.GetComponent<RoleInfoComponentServer>();
-						TaskComponent taskComponent = unit.GetComponent<TaskComponent>();	
+						TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();	
                         //if (newLevel <= roleInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList))
 						if(newLevel <= LDGlobalValueCategory.Instance.MaxLevel)
 						{

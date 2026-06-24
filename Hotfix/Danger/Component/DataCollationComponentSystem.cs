@@ -379,7 +379,7 @@ namespace ET
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            PetComponent petComponent = unit.GetComponent<PetComponent>();  
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();  
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();  
 
             self.Name = roleInfoComponentServer.RoleInfo.Name;
@@ -410,9 +410,9 @@ namespace ET
 
             self.LastLoginTime = lastgametime;
 
-            self.MainTask = unit.GetComponent<TaskComponent>().GetMainTaskId();   
+            self.MainTask = unit.GetComponent<TaskComponentServer>().GetMainTaskId();   
 
-            self.PetPingfen = petComponent.GetPingfenList();
+            self.PetPingfen = petComponentServer.GetPingfenList();
 
             self.UnionName = roleInfoComponentServer.RoleInfo.UnionName;
 
@@ -429,7 +429,7 @@ namespace ET
 
             self.MakeShuLiandu = numericComponent.GetAsInt( NumericType.MakeShuLianDu_1 );
 
-            self.PetFubenId = petComponent.GetPassMaxFubenId();
+            self.PetFubenId = petComponentServer.GetPassMaxFubenId();
 
             self.TrialFubenId = numericComponent.GetAsInt( NumericType.TrialDungeonId );
 

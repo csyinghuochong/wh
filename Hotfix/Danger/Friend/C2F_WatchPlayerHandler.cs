@@ -39,8 +39,8 @@ namespace ET
                     response.PetEquipList = bagComponentsServer.PetEquipList;
                     response.Occ = userinfo.RoleInfo.Occ;
                     D2G_GetComponent d2GGetUnit_3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.PetComponent });
-                    PetComponent petComponent = d2GGetUnit_3.Component as PetComponent;
-                    List<RolePetInfo> rolePetInfos = petComponent.RolePetInfos;
+                    PetComponentServer petComponentServer = d2GGetUnit_3.Component as PetComponentServer;
+                    List<RolePetInfo> rolePetInfos = petComponentServer.RolePetInfos;
                     List<RolePetInfo> rolePetInfosResponse = new List<RolePetInfo>();
                     for (int pet = rolePetInfos.Count - 1; pet >= 0; pet-- )
                     {
@@ -51,7 +51,7 @@ namespace ET
                     }
 
                     response.RolePetInfos = rolePetInfosResponse;
-                    response.PetSkinList = petComponent.PetSkinList;
+                    response.PetSkinList = petComponentServer.PetSkinList;
 
                     D2G_GetComponent d2GGetUnit_4 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.NumericComponent });
                     NumericComponent numericComponent = d2GGetUnit_4.Component as NumericComponent;

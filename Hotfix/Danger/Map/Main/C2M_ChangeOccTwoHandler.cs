@@ -34,9 +34,9 @@ namespace ET
             }
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
 
-            unit.GetComponent<SkillSetComponent>().OnChangeJueXing(dataCollationComponent.OccTwoOld, request.OccTwoID);
-            unit.GetComponent<SkillSetComponent>().OnChangeOccTwoRequest(request.OccTwoID);
-            unit.GetComponent<TaskComponent>().OnChangeOccTwo();
+            unit.GetComponent<SkillSetComponentServer>().OnChangeJueXing(dataCollationComponent.OccTwoOld, request.OccTwoID);
+            unit.GetComponent<SkillSetComponentServer>().OnChangeOccTwoRequest(request.OccTwoID);
+            unit.GetComponent<TaskComponentServer>().OnChangeOccTwo();
 
             if (OccTwo == 0)
             {

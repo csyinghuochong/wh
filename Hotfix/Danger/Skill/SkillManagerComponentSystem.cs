@@ -235,9 +235,9 @@ namespace ET
             LDSkill baseLdSkill = LDSkillCategory.Instance.Get(skillcmd.SkillID);
             LDSkillHelper.ApplyConsume(unit, baseLdSkill);
 
-            SkillSetComponent skillSetComponent = unit.GetComponent<SkillSetComponent>();
-            int weaponSkillid = unit.GetWeaponSkill(skillcmd.SkillID, skillSetComponent!=null ? skillSetComponent.SkillList : null );
-            int tianfuSkill = skillSetComponent != null ? skillSetComponent.GetReplaceSkillId(weaponSkillid) : 0;
+            SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
+            int weaponSkillid = unit.GetWeaponSkill(skillcmd.SkillID, skillSetComponentServer!=null ? skillSetComponentServer.SkillList : null );
+            int tianfuSkill = skillSetComponentServer != null ? skillSetComponentServer.GetReplaceSkillId(weaponSkillid) : 0;
             if (tianfuSkill != 0)
             {
                 weaponSkillid = tianfuSkill;
@@ -456,9 +456,9 @@ namespace ET
             //减少的技能CD
             float reduceCD = 0f;
             List<float> reduceCDlist = null;
-            SkillSetComponent skillSetComponent = unit.GetComponent<SkillSetComponent>();
+            SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
 
-            Dictionary<int, List<float>> keyValuePairs = skillSetComponent != null ? skillSetComponent.GetSkillPropertyAdd(weaponSkill) : null;
+            Dictionary<int, List<float>> keyValuePairs = skillSetComponentServer != null ? skillSetComponentServer.GetSkillPropertyAdd(weaponSkill) : null;
             if (keyValuePairs != null)
             {
                 keyValuePairs.TryGetValue((int)SkillAttributeEnum.ReduceSkillCD, out reduceCDlist);

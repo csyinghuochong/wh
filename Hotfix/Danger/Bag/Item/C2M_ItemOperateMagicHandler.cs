@@ -90,8 +90,8 @@ namespace ET
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(beforeequip, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
 
-                    unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
-                    unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
+                    unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
+                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
                     beforeequip.EquipIndex = -1;
                     useBagInfo.EquipIndex = equipposition;
                     m2c_bagUpdate.BagInfoUpdate.Add(beforeequip);
@@ -99,7 +99,7 @@ namespace ET
                 else
                 {
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
-                    unit.GetComponent<SkillSetComponent>().OnWearEquip(useBagInfo);
+                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
                     useBagInfo.EquipIndex = equipposition;
                 }
                
@@ -127,7 +127,7 @@ namespace ET
                 }
                
                 unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
-                unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
+                unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }

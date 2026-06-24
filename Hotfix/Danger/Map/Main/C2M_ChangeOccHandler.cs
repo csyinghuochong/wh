@@ -78,7 +78,7 @@ namespace ET
                 }
 
                 unit.GetComponent<BagComponentServer>().OnChangeItemLoc(equipInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
-                unit.GetComponent<SkillSetComponent>().OnTakeOffEquip(ItemLocType.ItemLocEquip, equipInfo);
+                unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, equipInfo);
             }
 
             /*long[] equipids_2 = bagComponentServer.EquipList_2.Select(p => p.BagInfoID).ToArray();
@@ -105,15 +105,15 @@ namespace ET
             roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, (level - sp).ToString());
 
             
-            SkillSetComponent skillSetComponent = unit.GetComponent<SkillSetComponent>();
-            skillSetComponent.TianFuList.Clear();
-            skillSetComponent.TianFuList1.Clear();
-            skillSetComponent.TianFuPlan = 0;
+            SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
+            skillSetComponentServer.TianFuList.Clear();
+            skillSetComponentServer.TianFuList1.Clear();
+            skillSetComponentServer.TianFuPlan = 0;
 
             //觉醒技能先保留 转职的时候再转换
-            for (int k = skillSetComponent.SkillList.Count - 1; k >= 0; k--)
+            for (int k = skillSetComponentServer.SkillList.Count - 1; k >= 0; k--)
             {
-                SkillPro skillPro = skillSetComponent.SkillList[k];
+                SkillPro skillPro = skillSetComponentServer.SkillList[k];
                 //if (skillPro.SkillSetType == SkillSetEnum.Item)
                 //{
                 //    continue;
@@ -125,14 +125,14 @@ namespace ET
                     continue;
                 }
                 Console.WriteLine($"removeSkill:  {skillid}    {skillPro.SkillSetType}  {skillPro.SkillSource}");
-                skillSetComponent.SkillList.RemoveAt(k);
+                skillSetComponentServer.SkillList.RemoveAt(k);
             }
 
             //需要选择第二职业
             if (request.OccTwo != 0)
             {
-                skillSetComponent.OnChangeJueXing(roleInfoComponentServer.RoleInfo.OccTwo, request.OccTwo);
-                skillSetComponent.OnChangeOccTwoRequest(request.OccTwo);
+                skillSetComponentServer.OnChangeJueXing(roleInfoComponentServer.RoleInfo.OccTwo, request.OccTwo);
+                skillSetComponentServer.OnChangeOccTwoRequest(request.OccTwo);
             }
 
             //时装(清空 返回碎片或者其他)

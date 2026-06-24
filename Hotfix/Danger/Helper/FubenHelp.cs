@@ -245,7 +245,7 @@ namespace ET
 			NumericComponent numericComponent = mainUnit.GetComponent<NumericComponent>();
 			
 			
-			TaskPro taskPro = mainUnit.GetComponent<TaskComponent>().GetTreasureMonster(mapComponent.SceneId);
+			TaskPro taskPro = mainUnit.GetComponent<TaskComponentServer>().GetTreasureMonster(mapComponent.SceneId);
 			if (taskPro!=null)
 			{
 				LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
@@ -394,9 +394,9 @@ namespace ET
 				{
 					LocalDungeonComponent localDungeonComponent = scene.GetComponent<LocalDungeonComponent>();
 					RoleInfoComponentServer roleInfoComponentServer = localDungeonComponent.MainUnit.GetComponent<RoleInfoComponentServer>();
-					TaskComponent taskComponent = localDungeonComponent.MainUnit.GetComponent<TaskComponent>();
+					TaskComponentServer taskComponentServer = localDungeonComponent.MainUnit.GetComponent<TaskComponentServer>();
 					if (roleInfoComponentServer.IsCheskOpen(mapComponent.SceneId, monsterid)
-					    && !taskComponent.IsItemTask(monsterid))
+					    && !taskComponentServer.IsItemTask(monsterid))
 					{
 						continue;
 					}

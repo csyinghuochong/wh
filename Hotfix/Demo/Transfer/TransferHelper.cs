@@ -644,10 +644,10 @@ namespace ET
 
         public static void AfterTransfer(Unit unit)
         {
-            RolePetInfo fightId = unit.GetComponent<PetComponent>().GetFightPet();
+            RolePetInfo fightId = unit.GetComponent<PetComponentServer>().GetFightPet();
             if (fightId != null)
             {
-                unit.GetComponent<PetComponent>().UpdatePetAttribute(fightId, false);
+                unit.GetComponent<PetComponentServer>().UpdatePetAttribute(fightId, false);
                 UnitFactory.CreatePet(unit, fightId);
             }
             int jinglingid  = unit.GetComponent<ChengJiuComponentServer>().JingLingId;
@@ -692,7 +692,7 @@ namespace ET
         public static void RemovePetAndJingLing(Unit unit)
         {
             UnitComponent unitComponent = unit.DomainScene().GetComponent<UnitComponent>();
-            RolePetInfo fightId = unit.GetComponent<PetComponent>().GetFightPet();
+            RolePetInfo fightId = unit.GetComponent<PetComponentServer>().GetFightPet();
             if (fightId != null)
             {
                 unitComponent.Remove(fightId.Id);

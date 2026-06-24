@@ -81,9 +81,9 @@ namespace ET
                 {
                     long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
                     D2G_GetComponent d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = oldUnitid, Component = DBHelper.PetComponent });
-                    PetComponent petComponent = d2GGet.Component as PetComponent;
-                    petComponent.OnPetMingRecord(petMingRecord);
-                    D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = oldUnitid, EntityByte = MongoHelper.ToBson(petComponent), ComponentType = DBHelper.PetComponent });
+                    PetComponentServer petComponentServer = d2GGet.Component as PetComponentServer;
+                    petComponentServer.OnPetMingRecord(petMingRecord);
+                    D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = oldUnitid, EntityByte = MongoHelper.ToBson(petComponentServer), ComponentType = DBHelper.PetComponent });
 
                     D2G_GetComponent d2GGet_2 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = oldUnitid, Component = DBHelper.ReddotComponent });
                     ReddotComponent redComponent = d2GGet_2.Component as ReddotComponent;
