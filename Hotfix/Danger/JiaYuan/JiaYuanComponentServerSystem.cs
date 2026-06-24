@@ -432,38 +432,7 @@ namespace ET
                     self.JiaYuanMonster_2.RemoveAt(i);
                 }
             }
-           
-            while (serverNow - self.RefreshMonsterTime_2 >= TimeHelper.Hour)
-            {
-                if (self.JiaYuanMonster_2.Count >= 6)
-                {
-                    break;
-                }
-
-                self.RefreshMonsterTime_2 += TimeHelper.Hour;
-                JiaYuanMonster keyValuePair = new JiaYuanMonster();
-                keyValuePair.ConfigId = JiaYuanHelper.GetRandomMonster();
-                keyValuePair.BornTime = self.RefreshMonsterTime_2;
-                LDMonster ldMonster = LDMonsterCategory.Instance.Get(keyValuePair.ConfigId);
-                long deathTime = 100000;//////ldMonster.DeathTime * 1000;
-                if (serverNow - keyValuePair.BornTime >= deathTime)
-                {
-                    continue;
-                }
-
-                //每小时40%概率刷新
-                if (RandomHelper.RandFloat01() <= 0.6f)
-                {
-                    break;
-                }
-
-                Vector3 vector3 = JiaYuanHelper.GetMonsterPostion();
-                keyValuePair.x = vector3.x;
-                keyValuePair.y = vector3.y;
-                keyValuePair.z = vector3.z;
-                keyValuePair.unitId = IdGenerater.Instance.GenerateId();
-                self.JiaYuanMonster_2.Add(keyValuePair);
-            }
+            
 #endif
         }
 

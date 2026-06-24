@@ -87,7 +87,7 @@ namespace ET
                 {
                     return self.JiaYuanFubens[masterid];
                 }
-                int jiayuansceneid = 2000011;
+                int jiayuansceneid = CommonHelper.JiaYuanSceneID();
                 long fubenid = IdGenerater.Instance.GenerateId();
                 long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
                 Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "JiaYuan" + masterid.ToString(), SceneType.Map);
