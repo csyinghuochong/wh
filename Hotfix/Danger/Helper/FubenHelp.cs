@@ -121,7 +121,7 @@ namespace ET
 			int mtype = monsterPosition.Type;   //1npc  2 怪物
 			int monsterid = monsterPosition.Match_Id;
 			
-			Vector3 initposition = new Vector3(monsterPosition.Position[0], monsterPosition.Position[1], monsterPosition.Position[2]);
+			Vector3 initposition = new Vector3((float)monsterPosition.Position[0], (float)monsterPosition.Position[1], (float)monsterPosition.Position[2]);
 
 			if (mtype == UnitType.Npc)
 			{

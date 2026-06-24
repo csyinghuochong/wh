@@ -92,7 +92,7 @@ namespace ET
 		public int Refresh { get; set; }
 		/// <summary>位置</summary>
 		[ProtoMember(6)]
-		public int[] Position { get; set; }
+		public double[] Position { get; set; }
 		/// <summary>朝向</summary>
 		[ProtoMember(7)]
 		public int Rotation { get; set; }
