@@ -83,52 +83,6 @@ namespace ET
                     return;
                 }
 
-                if (message.GMMsg == "#gaoji"
-					|| message.GMMsg == "#zhongji")
-				{
-					if (!CommonHelper.IsBanHaoZone(unit.DomainZone()))
-					{
-						return;
-					}
-
-					//if (unit.GetComponent<RoleInfoComponent>().RoleInfo.HorseIds.Count > 2)
-					//{
-					//	return;
-					//}
-					int level = message.GMMsg == "#gaoji" ? 1 : 2;
-
-                    //激活全部坐骑
-                    //家园等级提升到满级
-                    //赛季等级达到25级
-                    unit.GetComponent<RoleInfoComponentServer>().OnGmGaoJi(level);
-
-
-                    //角色装备强化全部到上限
-                    unit.GetComponent<BagComponentServer>().OnGmGaoJi(level);
-
-					//每个宠物附带满级的宠物之核,并进化
-					unit.GetComponent<PetComponentServer>().OnGmGaoJi();
-
-                    //激活全部收集
-                    //激活全部珍宝
-                    unit.GetComponent<ShoujiComponentServer>().OnGmGaoJi();
-                    
-                    //激活全部称号
-                    unit.GetComponent<TitleComponentServer>().OnGmGaoJi();
-
-                    //激活全部成就
-                    //激活全部精灵
-                    unit.GetComponent<ChengJiuComponentServer>().OnGmGaoJi();
-
-					//激活试炼之地所有层数
-					 int trialFubenid = TowerHelper.GetLastTowerIdByScene(MapTypeEnum.TrialDungeon);
-					 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TrialDungeonId, trialFubenid);
-
-                    //激活家园里的美味大师//激活家园里的菜谱
-                    //家园土地默认全部开启
-                    unit.GetComponent<JiaYuanComponentServer>().OnGmGaoJi();
-                }
-
                 if (message.GMMsg == "#killall")
                 {
 					List<Unit> units = unit.GetParent<UnitComponent>().GetAll();
