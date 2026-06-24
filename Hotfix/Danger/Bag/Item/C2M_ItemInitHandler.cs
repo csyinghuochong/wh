@@ -96,13 +96,7 @@ namespace ET
                 }
 
 				LDFashion ldFashion = LDFashionCategory.Instance.Get(bagComponentServer.FashionEquipList[i]);
-				if (fashionTypes.Contains(ldFashion.SubType))
-				{
-                    fashionTypes.RemoveAt(i);	
-                    continue;
-				}
-
-				fashionTypes.Add(ldFashion.SubType);
+			
             }
 			for (int i = bagComponentServer.FashionActiveIds.Count - 1; i >= 0; i--)
 			{

@@ -55,7 +55,7 @@ namespace ET
                 return;
             }
 
-            reduceTime += long.Parse(ldItem.ItemUsePar);
+            reduceTime += 0;///long.Parse(ldItem.ItemUsePar);
 
             bagComponentServer.OnCostItemData(request.BagInfoIDs[0], 1);
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.SeasonBossRefreshTime, -1 * reduceTime, 0);

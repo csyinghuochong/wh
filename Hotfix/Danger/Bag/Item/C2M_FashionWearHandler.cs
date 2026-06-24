@@ -22,14 +22,7 @@ namespace ET
             LDFashion ldFashion = LDFashionCategory.Instance.Get(request.FashionId);
 
             bool canwear = false;
-            for (int i = 0; i < ldFashion.Occ.Length; i++)
-            {
-                if (ldFashion.Occ[i] == occ)
-                {
-                    canwear = true;
-                    break;
-                }
-            }
+           
             if (!canwear)
             {
                 Log.Error($"C2M_FashionWearRequest.2");
@@ -50,10 +43,7 @@ namespace ET
                 for (int  i = bagComponentServer.FashionEquipList.Count - 1; i >= 0 ; i--)
                 {
                     LDFashion fashion2 = LDFashionCategory.Instance.Get(bagComponentServer.FashionEquipList[i]);
-                    if (fashion2.SubType == ldFashion.SubType)
-                    {
-                        bagComponentServer.FashionEquipList.RemoveAt(i);  
-                    }
+                 
                 }
 
                 bagComponentServer.FashionEquipList.Add(request.FashionId);

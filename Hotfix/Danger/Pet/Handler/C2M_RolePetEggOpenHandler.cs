@@ -17,7 +17,7 @@ namespace ET
             }
 
             LDItem ldItemConf = LDItemCategory.Instance.Get(rolePetEgg.ItemId);
-            string[] petinfos = ldItemConf.ItemUsePar.Split('@');
+            string[] petinfos =  null;//gemitemCof.ItemUsePar.Split('@');
             int needCost = CommonHelper.ReturnPetOpenTimeDiamond(rolePetEgg.ItemId,rolePetEgg.EndTime);
 
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;

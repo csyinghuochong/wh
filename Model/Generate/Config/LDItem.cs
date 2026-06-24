@@ -93,44 +93,50 @@ namespace ET
 		/// <summary>使用等级</summary>
 		[ProtoMember(6)]
 		public int UseLv { get; set; }
-		/// <summary>使用职业</summary>
-		[ProtoMember(7)]
-		public int UseOcc { get; set; }
 		/// <summary>子类</summary>
-		[ProtoMember(8)]
+		[ProtoMember(7)]
 		public int ItemType { get; set; }
-		/// <summary>使用参数</summary>
+		/// <summary>参数1</summary>
+		[ProtoMember(8)]
+		public int ItemTypeParam1 { get; set; }
+		/// <summary>参数2</summary>
 		[ProtoMember(9)]
-		public string ItemUsePar { get; set; }
-		/// <summary>堆叠</summary>
+		public int ItemTypeParam2 { get; set; }
+		/// <summary>奖励</summary>
 		[ProtoMember(10)]
+		public int Drop_Id { get; set; }
+		/// <summary>堆叠</summary>
+		[ProtoMember(11)]
 		public int ItemPileSum { get; set; }
 		/// <summary>出售ID</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int Sell_ID { get; set; }
 		/// <summary>出售值</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int Sell_Num { get; set; }
 		/// <summary>进背包 0-否 1-是</summary>
-		[ProtoMember(13)]
-		public int IfBag { get; set; }
-		/// <summary>自动使用 0-否 1-是</summary>
 		[ProtoMember(14)]
+		public int IfBag { get; set; }
+		/// <summary>背包类型</summary>
+		[ProtoMember(15)]
+		public int BagType { get; set; }
+		/// <summary>自动使用 0-否 1-是</summary>
+		[ProtoMember(16)]
 		public int IfAutoUse { get; set; }
 		/// <summary>拍卖上架 0-禁止 1-允许</summary>
-		[ProtoMember(15)]
+		[ProtoMember(17)]
 		public int IfStopPaiMai { get; set; }
 		/// <summary>获取绑定 0-否 1-是</summary>
-		[ProtoMember(16)]
+		[ProtoMember(18)]
 		public int IfLock { get; set; }
 		/// <summary>每天 使用次数</summary>
-		[ProtoMember(17)]
+		[ProtoMember(19)]
 		public int DayUseNum { get; set; }
 		/// <summary>总共 使用次数</summary>
-		[ProtoMember(18)]
+		[ProtoMember(20)]
 		public int SumUseNum { get; set; }
 		/// <summary>显示特效</summary>
-		[ProtoMember(19)]
+		[ProtoMember(21)]
 		public string EquipEffect { get; set; }
 
 	}

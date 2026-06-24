@@ -27,7 +27,7 @@ namespace ET
             JiaYuanPlant jiaYuanPlant = new JiaYuanPlant()
             {
                 CellIndex = request.CellIndex,
-                ItemId = int.Parse(ldItem.ItemUsePar),
+                ItemId = 0,
                 StartTime = TimeHelper.ServerNow(),
                 UnitId = IdGenerater.Instance.GenerateId(),
             };

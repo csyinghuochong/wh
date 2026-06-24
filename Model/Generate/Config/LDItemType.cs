@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDEquip_TypeCategory : ProtoObject, IMerge
+    public partial class LDItemTypeCategory : ProtoObject, IMerge
     {
-        public static LDEquip_TypeCategory Instance;
+        public static LDItemTypeCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDEquip_Type> dict = new Dictionary<int, LDEquip_Type>();
+        private Dictionary<int, LDItemType> dict = new Dictionary<int, LDItemType>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDEquip_Type> list = new List<LDEquip_Type>();
+        private List<LDItemType> list = new List<LDItemType>();
 		
-        public LDEquip_TypeCategory()
+        public LDItemTypeCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDEquip_TypeCategory s = o as LDEquip_TypeCategory;
+            LDItemTypeCategory s = o as LDItemTypeCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDEquip_Type config in list)
+            foreach (LDItemType config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDEquip_Type Get(int id)
+        public LDItemType Get(int id)
         {
-            this.dict.TryGetValue(id, out LDEquip_Type item);
+            this.dict.TryGetValue(id, out LDItemType item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDEquip_Type)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDItemType)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDEquip_Type> GetAll()
+        public Dictionary<int, LDItemType> GetAll()
         {
             return this.dict;
         }
 
-        public LDEquip_Type GetOne()
+        public LDItemType GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDEquip_Type: ProtoObject, IConfig
+	public partial class LDItemType: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -81,12 +81,6 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>包含子类</summary>
-		[ProtoMember(3)]
-		public int[] Type_Sub { get; set; }
-		/// <summary>团队分配职业限制</summary>
-		[ProtoMember(4)]
-		public int[] Team_Allocation_Occ_Limit { get; set; }
 
 	}
 }

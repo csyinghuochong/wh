@@ -84,45 +84,30 @@ namespace ET
 		/// <summary>Weight1</summary>
 		[ProtoMember(3)]
 		public int Weight1 { get; set; }
-		/// <summary>Note1</summary>
-		[ProtoMember(4)]
-		public int Note1 { get; set; }
 		/// <summary>Sub2</summary>
-		[ProtoMember(5)]
+		[ProtoMember(4)]
 		public int Sub2 { get; set; }
 		/// <summary>Weight2</summary>
-		[ProtoMember(6)]
+		[ProtoMember(5)]
 		public int Weight2 { get; set; }
-		/// <summary>Note2</summary>
-		[ProtoMember(7)]
-		public int Note2 { get; set; }
 		/// <summary>Sub3</summary>
-		[ProtoMember(8)]
+		[ProtoMember(6)]
 		public int Sub3 { get; set; }
 		/// <summary>Weight3</summary>
-		[ProtoMember(9)]
+		[ProtoMember(7)]
 		public int Weight3 { get; set; }
-		/// <summary>Note3</summary>
-		[ProtoMember(10)]
-		public int Note3 { get; set; }
 		/// <summary>Sub4</summary>
-		[ProtoMember(11)]
+		[ProtoMember(8)]
 		public int Sub4 { get; set; }
 		/// <summary>Weight4</summary>
-		[ProtoMember(12)]
+		[ProtoMember(9)]
 		public int Weight4 { get; set; }
-		/// <summary>Note4</summary>
-		[ProtoMember(13)]
-		public int Note4 { get; set; }
 		/// <summary>Sub5</summary>
-		[ProtoMember(14)]
+		[ProtoMember(10)]
 		public int Sub5 { get; set; }
 		/// <summary>Weight5</summary>
-		[ProtoMember(15)]
+		[ProtoMember(11)]
 		public int Weight5 { get; set; }
-		/// <summary>Note5</summary>
-		[ProtoMember(16)]
-		public int Note5 { get; set; }
 
 	}
 }

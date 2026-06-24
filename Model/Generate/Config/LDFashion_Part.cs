@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDEquip_TypeCategory : ProtoObject, IMerge
+    public partial class LDFashion_PartCategory : ProtoObject, IMerge
     {
-        public static LDEquip_TypeCategory Instance;
+        public static LDFashion_PartCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDEquip_Type> dict = new Dictionary<int, LDEquip_Type>();
+        private Dictionary<int, LDFashion_Part> dict = new Dictionary<int, LDFashion_Part>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDEquip_Type> list = new List<LDEquip_Type>();
+        private List<LDFashion_Part> list = new List<LDFashion_Part>();
 		
-        public LDEquip_TypeCategory()
+        public LDFashion_PartCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDEquip_TypeCategory s = o as LDEquip_TypeCategory;
+            LDFashion_PartCategory s = o as LDFashion_PartCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDEquip_Type config in list)
+            foreach (LDFashion_Part config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDEquip_Type Get(int id)
+        public LDFashion_Part Get(int id)
         {
-            this.dict.TryGetValue(id, out LDEquip_Type item);
+            this.dict.TryGetValue(id, out LDFashion_Part item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDEquip_Type)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDFashion_Part)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDEquip_Type> GetAll()
+        public Dictionary<int, LDFashion_Part> GetAll()
         {
             return this.dict;
         }
 
-        public LDEquip_Type GetOne()
+        public LDFashion_Part GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDEquip_Type: ProtoObject, IConfig
+	public partial class LDFashion_Part: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -81,12 +81,9 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>包含子类</summary>
+		/// <summary>图标</summary>
 		[ProtoMember(3)]
-		public int[] Type_Sub { get; set; }
-		/// <summary>团队分配职业限制</summary>
-		[ProtoMember(4)]
-		public int[] Team_Allocation_Occ_Limit { get; set; }
+		public string Icon { get; set; }
 
 	}
 }

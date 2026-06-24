@@ -598,7 +598,7 @@ namespace ET
             //10,30;10,30;10,30;10,30;10,30
             LDPet ldPetConfig =LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
             LDItem ldItem = LDItemCategory.Instance.Get(itemId);
-            string[] zishiList = ldItem.ItemUsePar.Split(';');
+            string[] zishiList =  null;//gemitemCof.ItemUsePar.Split('@');
 
             string[] ZiZhi_Hp = zishiList[0].Split(',');
             string[] ZiZhi_Act = zishiList[1].Split(',');
@@ -760,7 +760,8 @@ namespace ET
         {
             LDPet ldPetConfig =LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
             LDItem ldItem = LDItemCategory.Instance.Get(itemId);
-            string[] addinfo = ldItem.ItemUsePar.Split(',');
+            string[] addinfo = null;
+            ;//ldItem.ItemUsePar.Split(',');
             float addChengZhang = RandomHelper.RandomNumberFloat(float.Parse(addinfo[0]), float.Parse(addinfo[1]));
             rolePetInfo.ZiZhi_ChengZhang += addChengZhang;
             //rolePetInfo.ZiZhi_ChengZhang = Math.Min(rolePetInfo.ZiZhi_ChengZhang, (float)ldPetConfig.ZiZhi_ChengZhang_Max);
@@ -1063,7 +1064,7 @@ namespace ET
                 LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
                 petheXinLv.Add(ldItem.UseLv);
 
-                string attriStr = ldItem.ItemUsePar;
+                string attriStr = null;//ldItem.ItemUsePar;
                 string[] attriList = attriStr.Split('@');
                 for (int a = 0; a < attriList.Length; a++)
                 {
@@ -1569,7 +1570,7 @@ namespace ET
 
             for (int i = 0; i < itemids.Count; i++)
             {
-                string itempar = LDItemCategory.Instance.Get(itemids[i]).ItemUsePar;
+                string itempar =null;//ldItem.ItemUsePar;
                 int petid = int.Parse(itempar);
                 if (self.HavePetConfigId(petid))
                 {

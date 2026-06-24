@@ -108,9 +108,6 @@ namespace ET
 		/// <summary>关系 0-且 1-或</summary>
 		[ProtoMember(11)]
 		public int Relationship { get; set; }
-		/// <summary>红点备注</summary>
-		[ProtoMember(12)]
-		public string Note_Red_Dot { get; set; }
 
 	}
 }

@@ -87,72 +87,48 @@ namespace ET
 		/// <summary>值</summary>
 		[ProtoMember(4)]
 		public int Group_Value1 { get; set; }
-		/// <summary>备注</summary>
-		[ProtoMember(5)]
-		public string Note1 { get; set; }
 		/// <summary>组</summary>
-		[ProtoMember(6)]
+		[ProtoMember(5)]
 		public int Group2 { get; set; }
 		/// <summary>值</summary>
-		[ProtoMember(7)]
+		[ProtoMember(6)]
 		public int Group_Value2 { get; set; }
-		/// <summary>备注</summary>
-		[ProtoMember(8)]
-		public string Note2 { get; set; }
 		/// <summary>组</summary>
-		[ProtoMember(9)]
+		[ProtoMember(7)]
 		public int Group3 { get; set; }
 		/// <summary>值</summary>
-		[ProtoMember(10)]
+		[ProtoMember(8)]
 		public int Group_Value3 { get; set; }
-		/// <summary>备注</summary>
-		[ProtoMember(11)]
-		public string Note3 { get; set; }
 		/// <summary>组</summary>
-		[ProtoMember(12)]
+		[ProtoMember(9)]
 		public int Group4 { get; set; }
 		/// <summary>值</summary>
-		[ProtoMember(13)]
+		[ProtoMember(10)]
 		public int Group_Value4 { get; set; }
-		/// <summary>备注</summary>
-		[ProtoMember(14)]
-		public string Note4 { get; set; }
 		/// <summary>组</summary>
-		[ProtoMember(15)]
+		[ProtoMember(11)]
 		public int Group5 { get; set; }
 		/// <summary>值</summary>
-		[ProtoMember(16)]
+		[ProtoMember(12)]
 		public int Group_Value5 { get; set; }
-		/// <summary>备注</summary>
-		[ProtoMember(17)]
-		public string Note5 { get; set; }
 		/// <summary>组</summary>
-		[ProtoMember(18)]
+		[ProtoMember(13)]
 		public int Group6 { get; set; }
 		/// <summary>值</summary>
-		[ProtoMember(19)]
+		[ProtoMember(14)]
 		public int Group_Value6 { get; set; }
-		/// <summary>备注</summary>
-		[ProtoMember(20)]
-		public string Note6 { get; set; }
 		/// <summary>组</summary>
-		[ProtoMember(21)]
+		[ProtoMember(15)]
 		public int Group7 { get; set; }
 		/// <summary>值</summary>
-		[ProtoMember(22)]
+		[ProtoMember(16)]
 		public int Group_Value7 { get; set; }
-		/// <summary>备注</summary>
-		[ProtoMember(23)]
-		public string Note7 { get; set; }
 		/// <summary>组</summary>
-		[ProtoMember(24)]
+		[ProtoMember(17)]
 		public int Group8 { get; set; }
 		/// <summary>值</summary>
-		[ProtoMember(25)]
+		[ProtoMember(18)]
 		public int Group_Value8 { get; set; }
-		/// <summary>备注</summary>
-		[ProtoMember(26)]
-		public string Note8 { get; set; }
 
 	}
 }

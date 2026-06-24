@@ -96,7 +96,7 @@ namespace ET
 					break;
 				//学习技能书
 				case 122:
-					bool ifok = Pet_AddSkill(unit, petInfo, int.Parse(ldItem.ItemUsePar));
+					bool ifok = false;///Pet_AddSkill(unit, petInfo, int.Parse(ldItem.ItemUsePar));
 					if (ifok)
 					{
                         unit.GetComponent<PetComponentServer>().UpdatePetAttribute(petInfo, true);

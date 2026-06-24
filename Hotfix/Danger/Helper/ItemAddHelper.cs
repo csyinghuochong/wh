@@ -60,7 +60,7 @@ namespace ET
         {
 
             LDItem ldItemCof = LDItemCategory.Instance.Get(bagInf0.ItemID);
-            float minValuePro = (float)shulianValue / (float)int.Parse(ldItemCof.ItemUsePar);
+            float minValuePro = 0;/// (float)shulianValue / (float)int.Parse(ldItemCof.ItemUsePar);
             if (minValuePro >= 1)
             {
                 minValuePro = 1;
@@ -107,7 +107,7 @@ namespace ET
             int dungeonindex = RandomHelper.RandomNumber(0, dungeonConfigs.Count);
             int dungeonid = dungeonConfigs[dungeonindex].Id;
 
-            int dropId = int.Parse(ldItem.ItemUsePar);
+            int dropId = -1;// int.Parse(ldItem.ItemUsePar);
             List<RewardItem> rewardList = new List<RewardItem>();
 
             //获取最终奖励

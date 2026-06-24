@@ -259,15 +259,7 @@ namespace ET
                 }
 
                 LDFashion ldFashion = LDFashionCategory.Instance.Get(fashionids[i]);
-                if (ldFashion.PropertyKey == null || ldFashion.PropertyKey.Length == 0 || ldFashion.PropertyKey[0] == 0)
-                {
-                    continue;
-                }
-
-                for (int pro = 0; pro < ldFashion.PropertyKey.Length; pro++ )
-                {
-                    AddUpdateProDicList(ldFashion.PropertyKey[pro], ldFashion.PropertyValue[pro], UpdateProDicList);
-                }
+               
             }
             
             //史诗宝石数量

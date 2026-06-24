@@ -49,7 +49,7 @@ namespace ET
             for (int i = 0; i < self.GemList.Count; i++)
             {
                 LDItem ldItem = LDItemCategory.Instance.Get(self.GemList[i].ItemID);
-                string itemUsePar = ldItem.ItemUsePar;
+                string itemUsePar = null;//ldItem.ItemUsePar;
                 if (string.IsNullOrEmpty(itemUsePar) || itemUsePar == "0")
                 {
                     continue;
@@ -1559,7 +1559,7 @@ namespace ET
         public static void OnEquipFuMo(this BagComponentServer self, int itemid, List<HideProList> hideProLists, int index)
         {
             LDItem ldItem = LDItemCategory.Instance.Get(itemid);
-            string[] itemparams = ldItem.ItemUsePar.Split('@');
+            string[] itemparams =  null;//ldItem.ItemUsePar;
             int weizhi = int.Parse(itemparams[0]);
             List<BagInfo> bagInfos = self.GetEquipListByWeizhi(ItemLocType.ItemLocEquip, weizhi);
             if (bagInfos.Count <= index)
@@ -1845,7 +1845,7 @@ namespace ET
 
                     // "100403;10@100203;60
                     LDItem gemitemCof = LDItemCategory.Instance.Get(gemID);
-                    string[] attributeList = gemitemCof.ItemUsePar.Split('@');
+                    string[] attributeList = null;//gemitemCof.ItemUsePar.Split('@');
                     for (int a = 0; a < attributeList.Length; a++)
                     {
                         //100203;113

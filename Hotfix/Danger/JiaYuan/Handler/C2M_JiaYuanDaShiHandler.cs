@@ -29,7 +29,7 @@ namespace ET
             JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();  
             LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
             //7,15;100403,1,5;119203,1,5
-            string[] itemUsePars = ldItem.ItemUsePar.Split(';');
+            string[] itemUsePars =  null;//gemitemCof.ItemUsePar.Split('@');
             for (int i = 0; i < itemUsePars.Length; i++)
             {
                 if (i == 0)
