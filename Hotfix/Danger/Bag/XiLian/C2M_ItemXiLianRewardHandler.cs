@@ -9,7 +9,11 @@ namespace ET
     public class C2M_ItemXiLianRewardHandler : AMActorLocationRpcHandler<Unit, C2M_ItemXiLianRewardRequest, M2C_ItemXiLianRewardResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_ItemXiLianRewardRequest request, M2C_ItemXiLianRewardResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 
             EquipXiLianConfig equipXiLianConfig = EquipXiLianConfigCategory.Instance.Get(request.XiLianId);
@@ -42,6 +46,7 @@ namespace ET
             unit.GetComponent<BagComponentServer>().OnAddItemData(equipXiLianConfig.RewardList, $"{ItemGetWay.XiLianLevel}_{TimeHelper.ServerNow()}");
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

@@ -16,24 +16,6 @@ namespace ET
                 return;
             }
 
-            if (!SeasonJingHeConfigCategory.Instance.Contain(request.JingHeId))
-            {
-                Log.Error($"C2M_SeasonLevelRewardRequest 4");
-                response.Error = ErrorCode.ERR_ModifyData;
-                reply();
-                return;
-            }
-
-            SeasonJingHeConfig seasonJingHeConfig = SeasonJingHeConfigCategory.Instance.Get(request.JingHeId);
-            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();  
-            if (!bagComponentServer.CheckNeedItem(seasonJingHeConfig.Cost))
-            {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                reply();
-                return;
-            }
-
-            bagComponentServer.OnCostItemData(seasonJingHeConfig.Cost, ItemLocType.ItemLocBag, ItemGetWay.Season);
             roleInfoComponentServer.RoleInfo.OpenJingHeIds.Add(request.JingHeId);
 
             reply();

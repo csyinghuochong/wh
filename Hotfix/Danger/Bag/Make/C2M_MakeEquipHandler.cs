@@ -8,7 +8,11 @@ namespace ET
     public class C2M_MakeEquipHandler : AMActorLocationRpcHandler<Unit, C2M_MakeEquipRequest, M2C_MakeEquipResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_MakeEquipRequest request, M2C_MakeEquipResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() == 0)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -137,7 +141,8 @@ namespace ET
 
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
 
     }
 }

@@ -107,15 +107,15 @@ namespace ET
                 return;
             }
 
-            RechargeComponent old_rechargeComponent = GetDBComponent<RechargeComponent>(zone, unitid, day, DBHelper.RechargeComponent);
-            if (old_rechargeComponent == null)
+            RechargeComponentServer oldRechargeComponentServer = GetDBComponent<RechargeComponentServer>(zone, unitid, day, DBHelper.RechargeComponent);
+            if (oldRechargeComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  rechargeComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            ReddotComponent old_reddotComponent = GetDBComponent<ReddotComponent>(zone, unitid, day, DBHelper.ReddotComponent);
-            if (old_reddotComponent == null)
+            ReddotComponentServer oldReddotComponentServer = GetDBComponent<ReddotComponentServer>(zone, unitid, day, DBHelper.ReddotComponent);
+            if (oldReddotComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  reddotComponent==null:   {zone} {unitid}");
                 return;
@@ -142,7 +142,7 @@ namespace ET
                 return;
             }
 
-            TitleComponent old_titleComponent = GetDBComponent<TitleComponent>(zone, unitid, day, DBHelper.TitleComponent);
+            TitleComponentServer oldTitleComponentServer = GetDBComponent<TitleComponentServer>(zone, unitid, day, DBHelper.TitleComponent);
             if (oldTaskComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  titleComponent==null:   {zone} {unitid}");
@@ -291,12 +291,12 @@ namespace ET
             await SaveDBComponent(zone, oldJiaYuanComponentServer);
             await SaveDBComponent(zone, old_numericComponent);
             await SaveDBComponent(zone, oldPetComponentServer);
-            await SaveDBComponent(zone, old_rechargeComponent);
-            await SaveDBComponent(zone, old_reddotComponent);
+            await SaveDBComponent(zone, oldRechargeComponentServer);
+            await SaveDBComponent(zone, oldReddotComponentServer);
             await SaveDBComponent(zone, oldShoujiComponentServer);
             await SaveDBComponent(zone, oldSkillSetComponentServer);
             await SaveDBComponent(zone, oldTaskComponentServer);
-            await SaveDBComponent(zone, old_titleComponent);
+            await SaveDBComponent(zone, oldTitleComponentServer);
             await SaveDBComponent(zone, oldRoleInfoComponentServer);
 
             Console.WriteLine("回档完成 ，通知玩家可以上线！！");
@@ -394,12 +394,12 @@ namespace ET
             await ExecuteBatchSingleComponent<JiaYuanComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<NumericComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<PetComponentServer>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<RechargeComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<ReddotComponent>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<RechargeComponentServer>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<ReddotComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<ShoujiComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<SkillSetComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<TaskComponentServer>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<TitleComponent>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<TitleComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<RoleInfoComponentServer>(zone, saveuserids);
         }
 

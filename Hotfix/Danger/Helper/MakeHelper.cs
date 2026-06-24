@@ -34,10 +34,7 @@ namespace ET
             for (int i = 0; i < makeValue.Length; i++)
             {
                 int makeId = int.Parse(makeValue[i]);
-                if (EquipMakeConfigCategory.Instance.Get(makeId).ProficiencyType == makeType)
-                {
-                    makeList.Add(makeId);
-                }    
+               
             }
             return makeList;
         }
@@ -47,32 +44,19 @@ namespace ET
         {
             //概率返回
             float chance = RandomHelper.RandFloat01();
-            EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(makeId);
-            Double lingwuPro = equipMakeConfig.LearnPro;
-            if (chance > lingwuPro)
-            {
-                return 0;
-            }
+           
 
             //未学会的制造
             List<int> unLearnIds = new List<int> { };
             
-            Dictionary<int, EquipMakeConfig> keyValuePairs = EquipMakeConfigCategory.Instance.GetAll();
+            Dictionary<int, LDMake> keyValuePairs = LDMakeCategory.Instance.GetAll();
             foreach (var item in keyValuePairs)
             {
-                if (item.Value.ProficiencyType != makeType)
+                //if (item.Value.ProficiencyType != makeType)
                 {
                     continue;
                 }
-                if (equipMakeConfig.LearnLv != item.Value.LearnLv)
-                {
-                    continue;
-                }
-                if (learnIds.Contains(item.Key))
-                {
-                    continue;
-                }
-                unLearnIds.Add(item.Key);
+             
             }
             if (unLearnIds.Count == 0)
             {

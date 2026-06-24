@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class ActivityConfigCategory : ProtoObject, IMerge
+    public partial class LDRobotCategory : ProtoObject, IMerge
     {
-        public static ActivityConfigCategory Instance;
+        public static LDRobotCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, ActivityConfig> dict = new Dictionary<int, ActivityConfig>();
+        private Dictionary<int, LDRobot> dict = new Dictionary<int, LDRobot>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<ActivityConfig> list = new List<ActivityConfig>();
+        private List<LDRobot> list = new List<LDRobot>();
 		
-        public ActivityConfigCategory()
+        public LDRobotCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            ActivityConfigCategory s = o as ActivityConfigCategory;
+            LDRobotCategory s = o as LDRobotCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (ActivityConfig config in list)
+            foreach (LDRobot config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public ActivityConfig Get(int id)
+        public LDRobot Get(int id)
         {
-            this.dict.TryGetValue(id, out ActivityConfig item);
+            this.dict.TryGetValue(id, out LDRobot item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (ActivityConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDRobot)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, ActivityConfig> GetAll()
+        public Dictionary<int, LDRobot> GetAll()
         {
             return this.dict;
         }
 
-        public ActivityConfig GetOne()
+        public LDRobot GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,29 +73,35 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class ActivityConfig: ProtoObject, IConfig
+	public partial class LDRobot: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>活动类型</summary>
+		/// <summary>等级</summary>
 		[ProtoMember(2)]
-		public int ActivityType { get; set; }
-		/// <summary>Icon显示</summary>
+		public int Level { get; set; }
+		/// <summary>第一职业</summary>
 		[ProtoMember(3)]
-		public string Icon { get; set; }
-		/// <summary>参数_1</summary>
+		public int Occ { get; set; }
+		/// <summary>第二职业</summary>
 		[ProtoMember(4)]
-		public string Par_1 { get; set; }
-		/// <summary>参数_2</summary>
+		public int OccTwo { get; set; }
+		/// <summary>装备</summary>
 		[ProtoMember(5)]
-		public string Par_2 { get; set; }
-		/// <summary>参数_3</summary>
+		public int[] EquipList { get; set; }
+		/// <summary>属性点</summary>
 		[ProtoMember(6)]
-		public string Par_3 { get; set; }
-		/// <summary>参数_4</summary>
+		public int[] PointList { get; set; }
+		/// <summary>行为</summary>
 		[ProtoMember(7)]
-		public string Par_4 { get; set; }
+		public int Behaviour { get; set; }
+		/// <summary>行为ID</summary>
+		[ProtoMember(8)]
+		public int BehaviourID { get; set; }
+		/// <summary>参数</summary>
+		[ProtoMember(9)]
+		public string AIParameter { get; set; }
 
 	}
 }

@@ -76,9 +76,9 @@ namespace ET
             unit.AddDataComponent<PetComponentServer>();
             unit.AddDataComponent<SkillSetComponentServer>();
             unit.AddDataComponent<ActivityComponentServer>();
-            unit.AddDataComponent<RechargeComponent>();
-            unit.AddDataComponent<ReddotComponent>();
-            unit.AddDataComponent<TitleComponent>();
+            unit.AddDataComponent<RechargeComponentServer>();
+            unit.AddDataComponent<ReddotComponentServer>();
+            unit.AddDataComponent<TitleComponentServer>();
             unit.AddDataComponent<JiaYuanComponentServer>();
             unit.AddDataComponent<ShoujiComponentServer>();
             unit.AddDataComponent<DataCollationComponent>();
@@ -466,7 +466,7 @@ namespace ET
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             //unitInfoComponent.MasterName = roleInfoComponent.RoleInfo.Name;
-            unitInfoComponent.UnitName = JiaYuanPastureConfigCategory.Instance.Get(jiaYuanPastures.ConfigId).Name;
+            //unitInfoComponent.UnitName = JiaYuanPastureConfigCategory.Instance.Get(jiaYuanPastures.ConfigId).Name;
 
             unit.ConfigId = jiaYuanPastures.ConfigId;
             unit.AddComponent<StateComponent>();         //添加状态组件

@@ -54,11 +54,7 @@ namespace ET
                     //宠物闯关
                     case (int)MapTypeEnum.PetDungeon:
                         int petfubenid = int.Parse(request.paramInfo);
-                        if (!PetFubenConfigCategory.Instance.Contain(petfubenid))
-                        {
-                            Log.Error($"TransferHelper 1");
-                            return ErrorCode.ERR_ModifyData;
-                        }
+                        
                         Scene oldscene = unit.DomainScene();
                         MapComponent mapComponent = oldscene.GetComponent<MapComponent>();
                         int sceneTypeEnum = mapComponent.MapTypeEnum;
@@ -79,17 +75,6 @@ namespace ET
                     case (int)MapTypeEnum.TrialDungeon:
                         int requestTowerId = int.Parse(request.paramInfo);
                         int passId = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TrialDungeonId);
-                        if (!TowerConfigCategory.Instance.Contain(requestTowerId))
-                        {
-                            Log.Error($"试炼之地作弊1:{unit.DomainZone()} {unit.Id} {requestTowerId}   {passId}");
-                            return ErrorCode.ERR_ModifyData;
-                        }
-                        if (TowerConfigCategory.Instance.Get(requestTowerId).MapType!= MapTypeEnum.TrialDungeon)
-                        {
-                            Log.Error($"试炼之地作弊2:{unit.DomainZone()} {unit.Id} {requestTowerId}   {passId}");
-                            return ErrorCode.ERR_ModifyData;
-                        }
-                        
                         if (passId == 0 && requestTowerId != 20001)
                         {
                             Log.Error($"试炼之地作弊3:{unit.DomainZone()} {unit.Id} {requestTowerId}   {passId}");
@@ -121,10 +106,6 @@ namespace ET
                         }
                         else
                         {
-                            if (!TowerConfigCategory.Instance.Contain(seasonTowerid + 1))
-                            {
-                                return ErrorCode.ERR_TowerOfSealReachTop;
-                            }
                             request.paramInfo = (seasonTowerid + 1).ToString();
                         }
 

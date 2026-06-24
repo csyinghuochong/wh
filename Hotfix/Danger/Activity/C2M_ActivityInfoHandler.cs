@@ -14,11 +14,7 @@ namespace ET
             {
                 for (int i = activityComponentServer.ActivityReceiveIds.Count - 1; i >= 0; i--)
                 {
-                    ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(activityComponentServer.ActivityReceiveIds[i]);
-                    if (activityConfig.ActivityType == 23)
-                    {
-                        activityComponentServer.ActivityReceiveIds.RemoveAt(i);
-                    }
+                   
                 }
             }
 

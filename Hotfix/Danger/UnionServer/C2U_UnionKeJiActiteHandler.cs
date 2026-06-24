@@ -16,31 +16,7 @@ namespace ET
             }
 
             int keijiId = dBUnionInfo.UnionInfo.UnionKeJiList[request.Position];
-            UnionKeJiConfig unionKeJiConfig = UnionKeJiConfigCategory.Instance.Get(keijiId);
-            if (unionKeJiConfig.NextID == 0)
-            {
-                response.Error = ErrorCode.ERR_Union_NotActive;
-                reply();
-                return;
-            }
-            if(dBUnionInfo.UnionInfo.UnionGold < unionKeJiConfig.CostUnionGold)
-            {
-                response.Error = ErrorCode.ERR_GoldNotEnoughError;
-                reply();
-                return;
-            }
-
-            if (dBUnionInfo.UnionInfo.KeJiActiteTime != 0)
-            {
-                response.UnionInfo = dBUnionInfo.UnionInfo;
-                response.Error = ErrorCode.ERR_Union_HavActive;
-                reply();
-                return;
-            }
-            dBUnionInfo.UnionInfo.UnionGold -= unionKeJiConfig.CostUnionGold;
-            dBUnionInfo.UnionInfo.KeJiActitePos = request.Position;
-            dBUnionInfo.UnionInfo.KeJiActiteTime = TimeHelper.ServerNow();
-            response.UnionInfo = dBUnionInfo.UnionInfo;
+          
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
             reply();
         }

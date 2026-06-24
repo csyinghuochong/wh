@@ -7,7 +7,11 @@ namespace ET
     public class C2M_EquipmentIncreaseHandler: AMActorLocationRpcHandler<Unit, C2M_EquipmentIncreaseRequest, M2C_EquipmentIncreaseResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_EquipmentIncreaseRequest request, M2C_EquipmentIncreaseResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             BagInfo reelBagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.ReelBagInfo.BagInfoID);
             if (reelBagInfo == null)
@@ -148,6 +152,7 @@ namespace ET
 
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

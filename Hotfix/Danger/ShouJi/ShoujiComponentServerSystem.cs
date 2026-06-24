@@ -72,15 +72,7 @@ namespace ET
         public static int GetShoujiIdByItemId(this ShoujiComponentServer self, int itemId)
         {
             int shoujiId = 0;   
-            Dictionary<int, ShouJiItemConfig> keyValuePairs = ShouJiItemConfigCategory.Instance.GetAll();
-            foreach (var item in keyValuePairs)
-            {
-                if (item.Value.ItemID == itemId && item.Value.StartType == 1)
-                {
-                    return item.Key;
-                }
-            }
-
+           
             return shoujiId;
         }
 
@@ -93,11 +85,7 @@ namespace ET
                 for (int k = 0; k < self.ShouJiChapterInfos[i].ShouJiItemList.Count; k++)
                 {
                     int shoujiId = self.GetShoujiIdByItemId(self.ShouJiChapterInfos[i].ShouJiItemList[k]);
-                    if (!ShouJiItemConfigCategory.Instance.Contain(shoujiId))
-                    {
-                        continue;
-                    }
-                    self.ShouJiChapterInfos[i].StarNum += ShouJiItemConfigCategory.Instance.Get(shoujiId).StartNum;
+                  
                 }
             }
         }
@@ -137,25 +125,9 @@ namespace ET
         {
 #if SERVER
             //收集
-            self.ShouJiChapterInfos.Clear();
-            foreach (var item in ShouJiConfigCategory.Instance.GetAll().Values)
-            {
-                int itemId = item.ItemListID;
-                ShouJiChapterInfo shouJiChapterInfo = new ShouJiChapterInfo();
-                shouJiChapterInfo.ShouJiItemList = new List<int> { };
-                while (itemId != 0)
-                {
-                    ShouJiItemConfig shouJiItemConfig = ShouJiItemConfigCategory.Instance.Get(itemId);
-                    itemId = shouJiItemConfig.NextID;
-
-                    shouJiChapterInfo.ShouJiItemList.Add(shouJiItemConfig.ItemID);
-                }
-                shouJiChapterInfo.ChapterId = item.Id;
-                shouJiChapterInfo.StarNum = item.ProList3_StartNum;
-                self.ShouJiChapterInfos.Add(shouJiChapterInfo);
-            }
-
+           
             //珍宝
+            /*
             Dictionary<int, ShouJiItemConfig>  treasureList = ShouJiItemConfigCategory.Instance.GetAll();
             foreach ((  int shoujiid, ShouJiItemConfig shouJiConfig ) in treasureList) 
             {
@@ -166,11 +138,14 @@ namespace ET
 
                 self.OnShouJiTreasure(shouJiConfig.Id, shouJiConfig.AcitveNum);
             }
+            */
 #endif
         }
 
         public static List<PropertyValue> GetTreasurePro(this ShoujiComponentServer self)
         {
+            return new List<PropertyValue>();
+            /*
             List<PropertyValue> proList = new List<PropertyValue>();
 
             for (int i = 0; i < self.TreasureInfo.Count; i++)
@@ -200,6 +175,7 @@ namespace ET
             }
 
             return proList;
+            */
         }
 
         public static int GetChapterStar(this ShoujiComponentServer self, int chapterid)
@@ -210,6 +186,8 @@ namespace ET
 
         public static bool GetChapterStarLevel(this ShoujiComponentServer self, int chapterid, int level)
         {
+            return false;
+            /*
             int star = self.GetChapterStar(chapterid);
             ShouJiConfig shouJiConfig = ShouJiConfigCategory.Instance.Get(chapterid);
             if (level == 1)
@@ -225,10 +203,13 @@ namespace ET
                 return star >= shouJiConfig.ProList3_StartNum;
             }
             return false;
+            */
         }
 
         public static List<PropertyValue> GetChapterPro(this ShoujiComponentServer self, int chapterid, int level)
         {
+            return new List<PropertyValue>();
+            /*
             List<PropertyValue> proList = new List<PropertyValue>();
             int star = self.GetChapterStar(chapterid);
             ShouJiConfig shouJiConfig = ShouJiConfigCategory.Instance.Get(chapterid);
@@ -254,6 +235,7 @@ namespace ET
                 }
             }
             return proList;
+            */
         }
 
         public static List<PropertyValue> GetProList(this ShoujiComponentServer self)

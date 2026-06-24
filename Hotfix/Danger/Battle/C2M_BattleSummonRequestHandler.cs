@@ -9,7 +9,11 @@ namespace ET
     public class C2M_BattleSummonRequestHandler : AMActorLocationRpcHandler<Unit, C2M_BattleSummonRequest, M2C_BattleSummonResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_BattleSummonRequest request, M2C_BattleSummonResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             if (mapComponent.MapTypeEnum != MapTypeEnum.Battle)
             {
@@ -23,6 +27,7 @@ namespace ET
             AttackRecordComponent attackRecordComponent = unit.GetComponent<AttackRecordComponent>();
             List<BattleSummonInfo> BattleSummonList = attackRecordComponent.BattleSummonList;
 
+            /*
             BattleSummonConfig battleSummonConfig = BattleSummonConfigCategory.Instance.Get(request.SummonId);
 
             //检测金币
@@ -85,6 +90,7 @@ namespace ET
                 });
             }
 
+
             //发兵
             int camp = unit.GetBattleCamp();
             int monsterid = battleSummonConfig.MonsterIds[camp - 1];
@@ -105,9 +111,11 @@ namespace ET
             }
 
             response.BattleSummonList = BattleSummonList;   
+            */
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 
 }

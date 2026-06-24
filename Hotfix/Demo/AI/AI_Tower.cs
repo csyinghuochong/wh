@@ -8,12 +8,12 @@ namespace ET
     public class AI_Tower : AAIHandler
     {
 
-        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             return true;
         }
 
-        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(unit.ConfigId);

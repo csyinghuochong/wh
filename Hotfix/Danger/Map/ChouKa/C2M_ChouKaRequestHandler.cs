@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +10,11 @@ namespace ET
     {
 
         protected override async ETTask Run(Unit unit, C2M_ChouKaRequest request, M2C_ChouKaResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             // 判断背包和仓库是否能够装满
@@ -20,7 +24,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (!TakeCardConfigCategory.Instance.Contain(request.ChapterId))
+           // if (!TakeCardConfigCategory.Instance.Contain(request.ChapterId))
             {
                 response.Error = ErrorCode.ERR_NetWorkError;
                 reply();
@@ -55,7 +59,7 @@ namespace ET
 
                 long lastTime = unit.GetComponent<NumericComponent>().GetAsLong(request.ChouKaType == 1 ? NumericType.ChouKaOneTime : NumericType.ChouKaTenTime);
                 mianfei = TimeHelper.ServerNow() - lastTime >= cdTime;
-                TakeCardConfig takeCardConfig = TakeCardConfigCategory.Instance.Get(request.ChapterId);
+                /* takeCardConfig = TakeCardConfigCategory.Instance.Get(request.ChapterId);
                 needZuanshi = request.ChouKaType == 1 ? takeCardConfig.ZuanShiNum : takeCardConfig.ZuanShiNum_Ten;
                 int totalTimes = numericComponent.GetAsInt(NumericType.ChouKa);
                 if (totalTimes >= 250)
@@ -69,9 +73,10 @@ namespace ET
                     reply();
                     return;
                 }
+                */
             }
 
-            int dropid = TakeCardConfigCategory.Instance.Get(request.ChapterId).DropID;
+            int dropid = -1;////TakeCardConfigCategory.Instance.Get(request.ChapterId).DropID;
             List<RewardItem> droplist = new List<RewardItem>();
             for (int i = 0; i < request.ChouKaType; i++)
             {
@@ -157,6 +162,7 @@ namespace ET
             response.RewardList = droplist;
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

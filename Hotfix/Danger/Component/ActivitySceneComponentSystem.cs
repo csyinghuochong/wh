@@ -95,6 +95,7 @@ namespace ET
 
         public static void InitPetMineExtend(this ActivitySceneComponent self)
         {
+#if false // TODO: migrate to LD config
             List<MineBattleConfig> mineBattleConfig = MineBattleConfigCategory.Instance.GetAll().Values.ToList();
             for (int i = 0; i < mineBattleConfig.Count; i++)
             {
@@ -127,11 +128,12 @@ namespace ET
                     });
                 }
             }
+#endif
         }
 
         public static void CheckPetMine(this ActivitySceneComponent self)
         {
-            
+#if false // TODO: migrate to LD config
             {
                 int openDay = ServerHelper.GetOpenServerDay(false, self.DomainZone());
 
@@ -173,6 +175,7 @@ namespace ET
                     }
                 }
             }
+#endif
         }
 
         public static async ETTask TeamUpdateHandler(this ActivitySceneComponent self)

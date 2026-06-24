@@ -825,23 +825,7 @@ namespace ET
 
         public static void OnMaoXianJiaUpdate(this BuffManagerComponent self)
         {
-            Unit unit = self.GetParent<Unit>();
-
-            int jifen = unit.GetMaoXianExp();
-            int activityid = unit.GetComponent<ActivityComponentServer>().GetMaxActivityId(jifen);
-            if (activityid == 0)
-            {
-                return;
-            }
-
-            //移除之前的
-            for (int i = 30001; i < activityid; i++)
-            {
-                List<int> buffidsold = ActivityConfigCategory.Instance.GetBuffIds(i);
-                self.BuffRemoveList(buffidsold);
-            }
-
-            self.InitMaoXianJiaBuff();
+           
         }
 
         public static void InitMaoXianJiaBuff(this BuffManagerComponent self)

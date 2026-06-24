@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 
 namespace ET
@@ -11,7 +11,11 @@ namespace ET
     public class C2M_JiaYuanGatherHandler : AMActorLocationRpcHandler<Unit, C2M_JiaYuanGatherRequest, M2C_JiaYuanGatherResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanGatherRequest request, M2C_JiaYuanGatherResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < 1)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -95,6 +99,7 @@ namespace ET
             DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, jiaYuanComponentServer).Coroutine();
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

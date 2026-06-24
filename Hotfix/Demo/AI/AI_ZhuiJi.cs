@@ -7,7 +7,7 @@ namespace ET
     [AIHandler]
     public class AI_ZhuiJi : AAIHandler
     {
-        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             if (aiComponent.TargetID == 0 || aiComponent.IsRetreat !=0)
             {
@@ -25,7 +25,7 @@ namespace ET
             return zhuiji;
         }
 
-        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             //获取附近最近距离的目标进行追击
             Unit unit = aiComponent.GetParent<Unit>();

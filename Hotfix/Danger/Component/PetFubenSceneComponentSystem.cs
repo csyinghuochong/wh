@@ -98,6 +98,7 @@ namespace ET
                 petunit.GetComponent<AIComponent>().Stop();
             }
 
+#if false // TODO: migrate to LD config
             PetFubenConfig petFubenConfig = PetFubenConfigCategory.Instance.Get(sceneId);
             self.GenerateCellMonsters(petFubenConfig.Cell_1, 0);
             self.GenerateCellMonsters(petFubenConfig.Cell_2, 1);
@@ -108,6 +109,7 @@ namespace ET
             self.GenerateCellMonsters(petFubenConfig.Cell_7, 6);
             self.GenerateCellMonsters(petFubenConfig.Cell_8, 7);
             self.GenerateCellMonsters(petFubenConfig.Cell_9, 8);
+#endif
         }
 
         public static void GenerateCellMonsters(this PetFubenSceneComponent self, string cellInfo, int index)

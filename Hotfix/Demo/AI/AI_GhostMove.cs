@@ -8,7 +8,7 @@ namespace ET
     public class AI_GhostMove : AAIHandler
     {
 
-        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             if (aiComponent.LastAttackTime > 0)
             {
@@ -23,7 +23,7 @@ namespace ET
             return aiComponent.TargetID == 0 && distance < aiComponent.ActRange;
         }
 
-        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             aiComponent.TargetID = 0;
 

@@ -43,7 +43,7 @@ namespace ET
         }
 
 
-        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             //Unit unit = aiComponent.GetParent<Unit>();
             Vector3 posVec3 = aiComponent.Unit.GetBornPostion();
@@ -64,7 +64,7 @@ namespace ET
             }
         }
 
-        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
             bool haveStealth = false;

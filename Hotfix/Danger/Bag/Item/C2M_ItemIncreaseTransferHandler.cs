@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -7,7 +7,11 @@ namespace ET
     public class C2M_ItemIncreaseTransferHandler : AMActorLocationRpcHandler<Unit,C2M_ItemIncreaseTransferRequest, M2C_ItemIncreaseTransferResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_ItemIncreaseTransferRequest request, M2C_ItemIncreaseTransferResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             BagInfo bagInfo_1 = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID_1);
             BagInfo bagInfo_2 = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID_2);
             if (bagInfo_1 == null || bagInfo_2 == null)
@@ -150,6 +154,7 @@ namespace ET
 
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

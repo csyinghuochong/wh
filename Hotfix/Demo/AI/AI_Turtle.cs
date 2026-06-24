@@ -10,7 +10,7 @@ namespace ET
     [AIHandler]
     public class AI_Turtle : AAIHandler
     {
-        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             return true;
         }
@@ -83,7 +83,7 @@ namespace ET
             }
         }
 
-        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             int lastState = 0;
             Unit unit = aiComponent.GetParent<Unit>();

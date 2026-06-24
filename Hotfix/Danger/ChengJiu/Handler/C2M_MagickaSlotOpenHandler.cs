@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -7,7 +7,11 @@ namespace ET
     {
 
         protected override async ETTask Run(Unit unit, C2M_MagickaSlotOpenRequest request, M2C_MagickaSlotOpenResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
 
             int curid = chengJiuComponentServer.GetCurrentMagickaSlotIdByPosition(request.Position);
@@ -49,6 +53,7 @@ namespace ET
             response.MagickaSlotIds = chengJiuComponentServer.MagickaSlotIdList;
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

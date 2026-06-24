@@ -8,7 +8,7 @@ namespace ET
     public class AI_Attack: AAIHandler
     {
 
-        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             Unit target = aiComponent.UnitComponent.Get(aiComponent.TargetID);
             if (target == null || target.IsDisposed)
@@ -21,7 +21,7 @@ namespace ET
             return distance <= aiComponent.ActDistance;
         }
 
-        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
             SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();

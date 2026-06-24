@@ -11,8 +11,11 @@ namespace ET
             {
                 string logInfo = string.Empty;
                 string unitName = self.MainUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+                logInfo = $"玩家 {unitName} 队伍{self.TeamId + 1} 占领了第{self.Position+1}";
+#if false // TODO: migrate to LD config
                 MineBattleConfig mineBattleConfig = MineBattleConfigCategory.Instance.Get(self.MineType);
                 logInfo = $"玩家 {unitName} 队伍{self.TeamId + 1} 占领了第{self.Position+1} {mineBattleConfig.Name}";
+#endif
 
                 LogHelper.PetMingBattleInfo(self.DomainZone(), logInfo);
 
@@ -137,6 +140,7 @@ namespace ET
             //敌方队伍
             if (r_GameStatusResponse.PetMingPlayerInfo == null)
             {
+#if false // TODO: migrate to LD config
                 MineBattleConfig mineBattleConfig = MineBattleConfigCategory.Instance.Get(self.MineType);
                 int[] petdefendlist = mineBattleConfig.PetDefendInit;
                 //初始配置
@@ -155,6 +159,7 @@ namespace ET
                     Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,
                        CampEnum.CampPlayer_2, petInfo, AIGetTargetHelp.Formation_2[k], 180f, k);
                 }
+#endif
             }
             else
             {

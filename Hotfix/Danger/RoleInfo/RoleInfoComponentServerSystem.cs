@@ -65,9 +65,9 @@ namespace ET
             if (createRoleInfo.RobotId > 0)
             {
                 int robotId = int.Parse(account.Split('_')[0]);
-                RobotConfig robotConfig = RobotConfigCategory.Instance.Get(robotId);
-                roleInfo.Lv = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : robotConfig.Level;
-                roleInfo.Occ = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : robotConfig.Occ;
+                LDRobot ldRobot = LDRobotCategory.Instance.Get(robotId);
+                roleInfo.Lv = ldRobot.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : ldRobot.Level;
+                roleInfo.Occ = ldRobot.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : ldRobot.Occ;
                 roleInfo.Gold = 100000;
                 roleInfo.RobotId = robotId;
                 //roleInfo.OccTwo = robotConfig.OccTwo;
@@ -308,16 +308,7 @@ namespace ET
                 //self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.UnionLeader, 0, false);
                 //self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.UnionId_0, 2466222808943362373, false);
             }
-
-            if (self.RoleInfo.UnionKeJiList.Count < UnionKeJiConfigCategory.Instance.UnionQiangHuaList.Count)
-            {
-                int curNumber = self.RoleInfo.UnionKeJiList.Count;
-                int maxNumber = UnionKeJiConfigCategory.Instance.UnionQiangHuaList.Count;
-                for (int keji = curNumber; keji < maxNumber; keji++)
-                {
-                    self.RoleInfo.UnionKeJiList.Add(UnionKeJiConfigCategory.Instance.GetFristId( keji ) );
-                }
-            }
+            
             if (!LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv +1) && self.RoleInfo.JiaYuanExp > 0)
             {
                 self.RoleInfo.JiaYuanExp = 0;
@@ -809,10 +800,10 @@ namespace ET
                     break;
                 case UserDataType.SeasonExp:
                     self.RoleInfo.SeasonExp += int.Parse(value);
-                    SeasonLevelConfig seasonLevelConfig = SeasonLevelConfigCategory.Instance.Get(self.RoleInfo.SeasonLevel);
-                    if (self.RoleInfo.SeasonExp >= seasonLevelConfig.UpExp && SeasonLevelConfigCategory.Instance.Contain(self.RoleInfo.SeasonLevel + 1))
+                   // SeasonLevelConfig seasonLevelConfig = SeasonLevelConfigCategory.Instance.Get(self.RoleInfo.SeasonLevel);
+                   // if (self.RoleInfo.SeasonExp >= seasonLevelConfig.UpExp && SeasonLevelConfigCategory.Instance.Contain(self.RoleInfo.SeasonLevel + 1))
                     {
-                        self.RoleInfo.SeasonExp -= seasonLevelConfig.UpExp;
+                       // self.RoleInfo.SeasonExp -= seasonLevelConfig.UpExp;
                         self.UpdateRoleData( UserDataType.SeasonLevel, "1" );
                     }
                     saveValue = self.RoleInfo.SeasonExp.ToString();
@@ -1161,11 +1152,11 @@ namespace ET
 
         public static void OnMakeItem(this RoleInfoComponentServer self, int makeId)
         {
-            EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(makeId);
+            LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
             List<KeyValuePairInt> makeList = self.RoleInfo.MakeIdList;
 
             bool have = false;
-            long endTime = TimeHelper.ServerNow() + equipMakeConfig.MakeTime * 1000;
+            long endTime = 0;// TimeHelper.ServerNow() + equipMakeConfig.MakeTime * 1000;
             for (int i = 0; i < makeList.Count; i++)
             {
                 if (makeList[i].KeyId == makeId)
@@ -1383,8 +1374,8 @@ namespace ET
             }
             for(int i = 0; i < self.RoleInfo.MakeList.Count; i++)
             {
-                EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(self.RoleInfo.MakeList[i]);
-                if (equipMakeConfig.ProficiencyType == makeType)
+                LDMake equipMakeConfig = LDMakeCategory.Instance.Get(self.RoleInfo.MakeList[i]);
+                //if (equipMakeConfig.ProficiencyType == makeType)
                 {
                     makeIds.Add(self.RoleInfo.MakeList[i]);
                 }
@@ -1415,8 +1406,8 @@ namespace ET
                     continue;
                 }
 
-                EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(makeId);
-                if (equipMakeConfig.ProficiencyType == makeType)
+                LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
+                //if (equipMakeConfig.ProficiencyType == makeType)
                 {
                     self.RoleInfo.MakeList.RemoveAt(i); 
                 }
@@ -1630,14 +1621,16 @@ namespace ET
             }
             self.RoleInfo.JiaYuanLv = maxjiayuan.Id;
 
-
+            /*
             SeasonLevelConfig maxseason = null;
             Dictionary<int, SeasonLevelConfig> allseason = SeasonLevelConfigCategory.Instance.GetAll(); 
             foreach ((int seasonid, SeasonLevelConfig seasonLevelConfig) in allseason )
             {
                 maxseason = seasonLevelConfig;
             }
+          
             self.RoleInfo.SeasonLevel = maxseason.Id;
+        */
         }
 
         public static void ClearDayData(this RoleInfoComponentServer self)

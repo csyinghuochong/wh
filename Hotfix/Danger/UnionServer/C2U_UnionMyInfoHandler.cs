@@ -7,7 +7,11 @@ namespace ET
     public class C2U_UnionMyInfoHandler : AMActorRpcHandler<Scene, C2U_UnionMyInfoRequest, U2C_UnionMyInfoResponse>
     {
         protected override async ETTask Run(Scene scene, C2U_UnionMyInfoRequest request, U2C_UnionMyInfoResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
             DBUnionInfo dBUnionInfo =await scene.GetComponent<UnionSceneComponent>().GetDBUnionInfo(request.UnionId);
             if (dBUnionInfo == null)
@@ -82,15 +86,7 @@ namespace ET
             if (dBUnionInfo.UnionInfo.KeJiActiteTime > 0)
             {
                 int keijiId = dBUnionInfo.UnionInfo.UnionKeJiList[dBUnionInfo.UnionInfo.KeJiActitePos];
-                UnionKeJiConfig unionKeJiConfig = UnionKeJiConfigCategory.Instance.Get(keijiId);
-                long passTime = (timeNow -  dBUnionInfo.UnionInfo.KeJiActiteTime ) / 1000;
-                //Log.Console($"科技升级 {passTime} {unionKeJiConfig.NeedTime}");
-                if (unionKeJiConfig.NextID > 0 && passTime >= unionKeJiConfig.NeedTime)
-                {
-                    dBUnionInfo.UnionInfo.UnionKeJiList[dBUnionInfo.UnionInfo.KeJiActitePos] = unionKeJiConfig.NextID;
-                    dBUnionInfo.UnionInfo.KeJiActitePos = -1;
-                    dBUnionInfo.UnionInfo.KeJiActiteTime = 0;
-                }
+           
             }
 
             ///判断族长离线时间
@@ -163,6 +159,7 @@ namespace ET
             response.UnionMyInfo = dBUnionInfo.UnionInfo;
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
             reply();
-        }
+        #endif
+}
     }
 }

@@ -9,7 +9,11 @@ namespace ET
     public class C2M_ChangeOccHandler : AMActorLocationRpcHandler<Unit, C2M_ChangeOccRequest, M2C_ChangeOccResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_ChangeOccRequest request, M2C_ChangeOccResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             BagInfo useBagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoID);
             if (useBagInfo == null )
@@ -168,6 +172,7 @@ namespace ET
 
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

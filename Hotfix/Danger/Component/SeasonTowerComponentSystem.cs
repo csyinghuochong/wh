@@ -57,11 +57,14 @@ namespace ET
 
         public static void GenerateFuben(this SeasonTowerComponent self)
         {
+            self.BeginTime = TimeHelper.ServerNow();
+#if false // TODO: migrate to LD config
             int towerId = self.TowerId;
             TowerConfig towerConfig = TowerConfigCategory.Instance.Get(towerId);
             FubenHelp.CreateMonsterList(self.DomainScene(), towerConfig.MonsterSet);
 
             self.BeginTime = TimeHelper.ServerNow();
+#endif
         }
     }
 }

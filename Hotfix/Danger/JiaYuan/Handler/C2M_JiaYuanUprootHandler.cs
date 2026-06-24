@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 
 namespace ET
@@ -7,7 +7,11 @@ namespace ET
     public class C2M_JiaYuanUprootHandler : AMActorLocationRpcHandler<Unit, C2M_JiaYuanUprootRequest, M2C_JiaYuanUprootResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanUprootRequest request, M2C_JiaYuanUprootResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             Unit unitPlan = unit.GetParent<UnitComponent>().Get(request.UnitId);
             if (unitPlan == null)
             {
@@ -33,6 +37,7 @@ namespace ET
             DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

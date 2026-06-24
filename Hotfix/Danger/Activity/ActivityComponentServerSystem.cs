@@ -15,24 +15,8 @@ namespace ET
         public static int GetCurActivityId(this ActivityComponentServer self, int rechargeNumb)
         {
             int activityId = 0;
-            List<ActivityConfig> activityConfigs = ActivityConfigCategory.Instance.GetAll().Values.ToList();
-            for (int i = 0; i < activityConfigs.Count; i++)
-            {
-                if (activityConfigs[i].ActivityType != 101)
-                {
-                    continue;
-                }
-                activityId = activityConfigs[i].Id;
-                int needNumber = int.Parse(activityConfigs[i].Par_2);
-                if (rechargeNumb < needNumber)
-                {
-                    break;
-                }
-                if (rechargeNumb >= needNumber && !self.ActivityReceiveIds.Contains(activityId))
-                {
-                    break;
-                }
-            }
+            List<LDActivity> activityConfigs = LDActivityCategory.Instance.GetAll().Values.ToList();
+           
             return activityId;
         }
 
@@ -55,20 +39,7 @@ namespace ET
         public static int GetMaxActivityId(this ActivityComponentServer self, int rechargeNumb)
         {
             int activityId = 0;
-            List<ActivityConfig> activityConfigs = ActivityConfigCategory.Instance.GetAll().Values.ToList();
-            for (int i = 0; i < activityConfigs.Count; i++)
-            {
-                if (activityConfigs[i].ActivityType != 101)
-                {
-                    continue;
-                }
-                int needNumber = int.Parse(activityConfigs[i].Par_2);
-                if (rechargeNumb < needNumber)
-                {
-                    break;
-                }
-                activityId = activityConfigs[i].Id;
-            }
+           
             return activityId;
         }
 
@@ -92,11 +63,7 @@ namespace ET
         {
             for (int i = self.ActivityReceiveIds.Count - 1; i >= 0; i--)
             {
-                ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(self.ActivityReceiveIds[i]);
-                if (activityConfig.ActivityType == 33)
-                {
-                    self.ActivityReceiveIds.RemoveAt(i);
-                }
+              
             }
         }
 
@@ -112,24 +79,13 @@ namespace ET
             //重置每日特惠 和 新春活动
             for (int i = self.ActivityReceiveIds.Count -1; i >= 0; i--)
             {
-                ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(self.ActivityReceiveIds[i]);
-                if (activityConfig.ActivityType ==2 || activityConfig.ActivityType == 32)
-                {
-                    self.ActivityReceiveIds.RemoveAt(i);
-                }
+               
             }
 
             if (self.TotalSignNumber >= 30)
             {
                 self.TotalSignNumber = 0;
-                for (int i = self.ActivityReceiveIds.Count - 1; i >= 0; i--)
-                {
-                    ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(self.ActivityReceiveIds[i]);
-                    if (activityConfig.ActivityType == 23)
-                    {
-                        self.ActivityReceiveIds.RemoveAt(i);
-                    }
-                }
+               
             }
 
             self.ActivityV1Info.LiBaoAllIds = ActivityV1Config.GetLiBaoList();
@@ -152,19 +108,6 @@ namespace ET
             }
 
             int unGetId = 0;
-            List<ActivityConfig> activityConfigs = ActivityConfigCategory.Instance.GetAll().Values.ToList();
-            for (int i = 0; i < activityConfigs.Count; i++)
-            {
-                if (activityConfigs[i].ActivityType != 31)
-                {
-                    continue;
-                }
-                if (!self.ActivityReceiveIds.Contains(activityConfigs[i].Id))
-                {
-                    unGetId = activityConfigs[i].Id;
-                    break;
-                }
-            }
             if (unGetId == 0)
             {
                 return false;
@@ -177,11 +120,6 @@ namespace ET
             //重置每日特惠
             for (int i = self.ActivityReceiveIds.Count - 1; i >= 0; i--)
             {
-                ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(self.ActivityReceiveIds[i]);
-                if (activityConfig.ActivityType == 2 || activityConfig.ActivityType == 32)
-                {
-                    self.ActivityReceiveIds.RemoveAt(i);
-                }
             }
 
             self.ActivityV1Info.LiBaoBuyIds.Clear();

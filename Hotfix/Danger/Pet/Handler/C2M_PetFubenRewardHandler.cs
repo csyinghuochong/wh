@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -7,7 +7,11 @@ namespace ET
     {
 
         protected override async ETTask Run(Unit unit, C2M_PetFubenRewardRequest request, M2C_PetFubenRewardResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             int rewardId = unit.GetComponent<PetComponentServer>().GetCanRewardId();
             if (rewardId == 0)
             {
@@ -15,6 +19,7 @@ namespace ET
                 reply();
                 return;
             }
+            /*
             PetFubenRewardConfig rewardConfig = PetFubenRewardConfigCategory.Instance.Get(rewardId);
             int needCell =   ItemHelper.GetNeedCell(rewardConfig.RewardItems);
             if ( unit.GetComponent<BagComponentServer>().GetBagLeftCell() < needCell)
@@ -23,6 +28,7 @@ namespace ET
                 reply();
                 return;
             }
+           
 
             bool ret =  unit.GetComponent<BagComponentServer>().OnAddItemData(rewardConfig.RewardItems, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}");
             if (!ret)
@@ -30,9 +36,10 @@ namespace ET
                 Log.Debug($"C2M_PetFubenRewardHandler false : {unit.Id}");
             }
             unit.GetComponent<PetComponentServer>().PetFubeRewardId = rewardId;
-
+ */
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

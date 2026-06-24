@@ -281,7 +281,7 @@ namespace ET
             }
 
             //称号属性
-            List<PropertyValue> titlePros = unit.GetComponent<TitleComponent>().GetTitlePro();
+            List<PropertyValue> titlePros = unit.GetComponent<TitleComponentServer>().GetTitlePro();
             for (int i = 0; i < titlePros.Count; i++)
             {
                 AddUpdateProDicList(titlePros[i].HideID, titlePros[i].HideValue, UpdateProDicList);

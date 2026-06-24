@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -8,8 +8,12 @@ namespace ET
     public class C2M_PetEggDuiHuanHandler : AMActorLocationRpcHandler<Unit, C2M_PetEggDuiHuanRequest, M2C_PetEggDuiHuanResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_PetEggDuiHuanRequest request, M2C_PetEggDuiHuanResponse response, Action reply)
-        {
-            if (!PetEggDuiHuanConfigCategory.Instance.Contain(request.ChouKaId))
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
+            //if (!PetEggDuiHuanConfigCategory.Instance.Contain(request.ChouKaId))
             {
                 Log.Error($"C2M_PetEggDuiHuanRequest 1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -17,6 +21,7 @@ namespace ET
                 return;
             }
 
+            /*
             PetEggDuiHuanConfig config = PetEggDuiHuanConfigCategory.Instance.Get(request.ChouKaId);
             if (unit.GetComponent<BagComponentServer>().OnCostItemData(config.CostItems, ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan   ))
             {
@@ -25,8 +30,10 @@ namespace ET
                 unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetEggDuiHuan}_{TimeHelper.ServerNow()}");
                 response.ReardList = rewardItems;   
             }
+            */
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

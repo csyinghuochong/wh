@@ -8,7 +8,11 @@ namespace ET
     public class C2M_GemHeChengQuickHandler : AMActorLocationRpcHandler<Unit, C2M_GemHeChengQuickRequest, M2C_GemHeChengQuickResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_GemHeChengQuickRequest request, M2C_GemHeChengQuickResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             // request加个仓库。  0是ItemLocType.BagItemList     19ItemLocType.GemWareHouse1
             if (request.LocType != 0 && request.LocType != 19)
             {
@@ -155,6 +159,7 @@ namespace ET
 
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

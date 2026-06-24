@@ -114,7 +114,7 @@ namespace ET
                     unit.GetComponent<ShoujiComponentServer>().OnGmGaoJi();
                     
                     //激活全部称号
-                    unit.GetComponent<TitleComponent>().OnGmGaoJi();
+                    unit.GetComponent<TitleComponentServer>().OnGmGaoJi();
 
                     //激活全部成就
                     //激活全部精灵

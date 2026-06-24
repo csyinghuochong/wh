@@ -1,16 +1,16 @@
 ﻿namespace ET
 {
     [ObjectSystem]
-    public class ReddotComponentAwakeSystem : AwakeSystem<ReddotComponent>
+    public class ReddotComponentAwakeSystem : AwakeSystem<ReddotComponentServer>
     {
-        public override void Awake(ReddotComponent self)
+        public override void Awake(ReddotComponentServer self)
         {
             self.ReddontList.Clear();
         }
     }
 
     //红点数据管理， 驱动表现
-    public static class ReddotComponentSystem
+    public static class ReddotComponentServerSystem
     {
 
         /// <summary>
@@ -18,7 +18,7 @@
         /// </summary>
         /// <param name="self"></param>
         /// <param name="reddotType"></param>
-        public static void AddReddont(this ReddotComponent self, int reddotType)
+        public static void AddReddont(this ReddotComponentServer self, int reddotType)
         {
             bool have = false;
             for (int i = self.ReddontList.Count - 1; i >= 0; i--)
@@ -43,7 +43,7 @@
         }
 
 
-        public static int GetReddot(this ReddotComponent self, int reddotType)
+        public static int GetReddot(this ReddotComponentServer self, int reddotType)
         {
             for (int i = self.ReddontList.Count - 1; i >= 0; i--)
             {
@@ -61,7 +61,7 @@
         /// <param name="self"></param>
         /// <param name="reddotType"></param>
         /// <returns></returns>
-        public static void RemoveReddont(this ReddotComponent self, int reddotType)
+        public static void RemoveReddont(this ReddotComponentServer self, int reddotType)
         {
             for (int i = self.ReddontList.Count - 1; i >=0; i--)
             {

@@ -9,7 +9,7 @@ namespace ET
     [AIHandler]
     public class AI_XunLuo: AAIHandler
     {
-        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             if (aiComponent.TargetID != 0 || aiComponent.IsRetreat != 0)
             {
@@ -42,7 +42,7 @@ namespace ET
         }
 
 
-        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
             while (true)

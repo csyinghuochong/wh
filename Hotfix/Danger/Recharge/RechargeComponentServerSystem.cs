@@ -1,10 +1,10 @@
 ﻿namespace ET
 {
 
-    public static class RechargeComponentSystem
+    public static class RechargeComponentServerSystem
     {
 
-        public static void OnLogin(this RechargeComponent self)
+        public static void OnLogin(this RechargeComponentServer self)
         {
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
             /*int rechargeBuchang = numericComponent.GetAsInt(NumericType.RechargeBuChang);

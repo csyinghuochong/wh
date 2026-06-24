@@ -22,7 +22,7 @@ namespace ET
                 reply();
                 return;
             }
-
+            /*
             UnionKeJiConfig unionKeJiConfig = UnionKeJiConfigCategory.Instance.Get(request.KeJiId);
             if (unionKeJiConfig.NeedUnionLv > dBUnionInfo.UnionInfo.Level)
             {
@@ -30,7 +30,7 @@ namespace ET
                 reply();
                 return;
             }
-
+            */
             reply();
             await ETTask.CompletedTask;
         }

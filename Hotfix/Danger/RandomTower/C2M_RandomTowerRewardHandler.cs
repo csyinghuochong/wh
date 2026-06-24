@@ -7,6 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_RandomTowerRewardRequest request, M2C_RandomTowerRewardResponse response, Action reply)
         {
+            /*
             if (!TowerConfigCategory.Instance.Contain(request.RewardId))
             {
                 Log.Error($"C2M_RandomTowerRewardRequest 1");
@@ -46,6 +47,7 @@ namespace ET
                 return;
             }
 
+            /*
             TowerConfig towerRewardConfig = TowerConfigCategory.Instance.Get(request.RewardId);
 
             string userName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
@@ -61,7 +63,7 @@ namespace ET
                 reply();
                 return;
             }
-
+*/
             reply();
             await ETTask.CompletedTask;
         }

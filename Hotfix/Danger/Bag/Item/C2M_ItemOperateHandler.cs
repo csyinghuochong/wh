@@ -483,7 +483,7 @@ namespace ET
 
                                 break;
                             case 128://激活称号
-                                unit.GetComponent<TitleComponent>().OnActiveTile(int.Parse(ldItem.ItemUsePar));
+                                unit.GetComponent<TitleComponentServer>().OnActiveTile(int.Parse(ldItem.ItemUsePar));
                                 break;
                             case 129://激活精灵
                                 unit.GetComponent<ChengJiuComponentServer>().OnActiveJingLing(int.Parse(ldItem.ItemUsePar));

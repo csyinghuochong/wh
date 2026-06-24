@@ -21,14 +21,18 @@ namespace ET
                 }
             }
 
-            ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(request.ActivityId);
-            if (int.Parse(activityConfig.Par_2) <= receiveNum)
+            
+            await ETTask.CompletedTask;
+            
+            LDActivity activityConfig = LDActivityCategory.Instance.Get(request.ActivityId);
+            //if (int.Parse(activityConfig.Par_2) <= receiveNum)
             {
                 response.Error = ErrorCode.ERR_AlreadyFinish;
                 reply();
                 return;
             }
-
+            
+            /*
             ZhanQuReceiveNumber zhanQuReceive = null;
             for (int i = 0; i < zhanQuReceiveNumbers.Count; i++)
             {
@@ -57,8 +61,11 @@ namespace ET
                 zhanQuReceiveNumber.ReceiveUnitIds.Add(request.UnitId);
                 zhanQuReceiveNumbers.Add(zhanQuReceiveNumber);
             }
+            
             reply();
             await ETTask.CompletedTask;
+            */
         }
+        
     }
 }

@@ -95,10 +95,10 @@ namespace ET
             unit.GetComponent<TaskComponentServer>().OnLogin();
             unit.GetComponent<HeroDataComponent>().OnLogin(roleInfo.RobotId);
             unit.GetComponent<DBSaveComponent>().OnLogin();
-            unit.GetComponent<RechargeComponent>().OnLogin();
+            unit.GetComponent<RechargeComponentServer>().OnLogin();
             unit.GetComponent<PetComponentServer>().OnLogin();
             unit.GetComponent<ActivityComponentServer>().OnLogin(roleInfo.Lv);
-            unit.GetComponent<TitleComponent>().OnCheckTitle(false);
+            unit.GetComponent<TitleComponentServer>().OnCheckTitle(false);
             unit.GetComponent<ChengJiuComponentServer>().OnLogin();
             unit.GetComponent<JiaYuanComponentServer>().OnLogin();
             unit.GetComponent<SkillSetComponentServer>().OnLogin(roleInfo.Occ);

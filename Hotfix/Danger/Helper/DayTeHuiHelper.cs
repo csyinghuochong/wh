@@ -11,20 +11,7 @@ namespace ET
             List<int> sour = new List<int>();
             List<int> dest = new List<int>();
             //2
-            Dictionary<int, ActivityConfig> keyValuePairs = ActivityConfigCategory.Instance.GetAll();
-            foreach (var item in keyValuePairs)
-            {
-                if (item.Value.ActivityType != activityType)
-                {
-                    continue;
-                }
-                string[] levelinfo = item.Value.Par_1.Split(',');
-                if (level >= int.Parse(levelinfo[0]) && level <= int.Parse(levelinfo[1]))
-                {
-                    sour.Add(item.Key);
-                }
-            }
-
+          
             RandomHelper.GetRandListByCount(sour, dest, 4);
             return dest;
         }

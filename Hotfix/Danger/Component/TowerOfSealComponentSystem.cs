@@ -47,6 +47,7 @@ namespace ET
             // 判断该层是否清空
             if (arrivedConfigId > finishedConfigId && arrivedConfigId <= 100)
             {
+#if false // TODO: migrate to LD config
                 // 根据角色等级，配置封印之塔的
                 // 1-19 级  201001
                 // 20-29级 202001
@@ -54,36 +55,12 @@ namespace ET
                 // 40-49级 204001
                 // 50-59级 205001
                 // 60-99级 206001
-                int lv = self.MyUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
-                int baseLevel = 200000;
-                if (lv < 20)
-                {
-                    baseLevel = 201000;
-                }
-                else if (lv < 30)
-                {
-                    baseLevel = 202000;
-                }
-                else if (lv < 40)
-                {
-                    baseLevel = 203000;
-                }
-                else if (lv < 50)
-                {
-                    baseLevel = 204000;
-                }
-                else if (lv < 60)
-                {
-                    baseLevel = 205000;
-                }
-                else if (lv < 100)
-                {
-                    baseLevel = 206000;
-                }
+   
                 
                 // 读取配置表,根据到达层数生成怪物
-                TowerConfig towerConfig = TowerConfigCategory.Instance.Get(baseLevel + arrivedConfigId);
-                FubenHelp.CreateMonsterList(self.DomainScene(), towerConfig.MonsterSet);
+                //TowerConfig towerConfig = TowerConfigCategory.Instance.Get(baseLevel + arrivedConfigId);
+               // FubenHelp.CreateMonsterList(self.DomainScene(), towerConfig.MonsterSet);
+#endif
             }
         }
     }

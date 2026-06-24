@@ -8,7 +8,11 @@ namespace ET
     public class C2M_JiaYuanPastureBuyHandler : AMActorLocationRpcHandler<Unit, C2M_JiaYuanPastureBuyRequest, M2C_JiaYuanPastureBuyResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanPastureBuyRequest request, M2C_JiaYuanPastureBuyResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             int mysteryId = request.MysteryId;
             JiaYuanPastureConfig jiaYuanPastureConfig = JiaYuanPastureConfigCategory.Instance.Get(mysteryId);
             if (jiaYuanPastureConfig == null)
@@ -93,6 +97,7 @@ namespace ET
             response.JiaYuanPastureList = JiaYuanPastureList_3;
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

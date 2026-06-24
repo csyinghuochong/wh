@@ -40,15 +40,12 @@ namespace ET
                 Console.WriteLine($"OnRechage: {unit.Id}   {rechargetType}  {playId}");
             }
 
-            RechargeComponent rechargeComponent = unit.GetComponent<RechargeComponent>();
+            RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
         
             int rechargeNumber = CommonConfig.GetRechargeNumber(playId, unit.DomainZone());
 
-            long lastRechargeTime = rechargeComponent.RechargePro.LastRechargeTime;
+            long lastRechargeTime = rechargeComponentServer.RechargePro.LastRechargeTime;
             long serverTime = TimeHelper.ServerNow();
-            
-            rechargeComponent.OnRecharge(rechargeNumber);
-
             bool isSameDay = lastRechargeTime > 0
                     && TimeInfo.Instance.ToDateTime(lastRechargeTime).Date
                     == TimeInfo.Instance.ToDateTime(serverTime).Date;

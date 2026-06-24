@@ -190,6 +190,8 @@ namespace ET
                         scene.GetComponent<RunRaceDungeonComponent>().OnClose();
                     }
 
+                    waitDisposeTime = 0;
+#if false // TODO: migrate to LD config
                     FunctionConfig funtionConfig = FunctionConfigCategory.Instance.Get(1058);
                     string[] openTimes = funtionConfig.OpenTime.Split('@');
 
@@ -202,6 +204,7 @@ namespace ET
                     long endTime = (endTime_1 * 60 + endTime_2) * 60;
 
                     waitDisposeTime = (endTime - closeTime) * 1000;
+#endif
                     break;
                 case 1059:
                     scene = null;
@@ -216,6 +219,8 @@ namespace ET
                         scene.GetComponent<DemonDungeonComponent>().OnClose();
                     }
 
+                    waitDisposeTime = 0;
+#if false // TODO: migrate to LD config
                     funtionConfig = FunctionConfigCategory.Instance.Get(1059);
                     openTimes = funtionConfig.OpenTime.Split('@');
 
@@ -228,6 +233,7 @@ namespace ET
                      endTime = (endTime_1 * 60 + endTime_2) * 60;
 
                     waitDisposeTime = (endTime - closeTime) * 1000;
+#endif
                     break;
             }
 

@@ -11,12 +11,12 @@ namespace ET
     [AIHandler]
     public class AI_BattleWuDi : AAIHandler
     {
-        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             return true;
         }
 
-        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             await ETTask.CompletedTask;
             Unit unit = aiComponent.GetParent<Unit>();

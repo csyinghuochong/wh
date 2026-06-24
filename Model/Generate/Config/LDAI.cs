@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class TakeCardRewardConfigCategory : ProtoObject, IMerge
+    public partial class LDAICategory : ProtoObject, IMerge
     {
-        public static TakeCardRewardConfigCategory Instance;
+        public static LDAICategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, TakeCardRewardConfig> dict = new Dictionary<int, TakeCardRewardConfig>();
+        private Dictionary<int, LDAI> dict = new Dictionary<int, LDAI>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<TakeCardRewardConfig> list = new List<TakeCardRewardConfig>();
+        private List<LDAI> list = new List<LDAI>();
 		
-        public TakeCardRewardConfigCategory()
+        public LDAICategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            TakeCardRewardConfigCategory s = o as TakeCardRewardConfigCategory;
+            LDAICategory s = o as LDAICategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (TakeCardRewardConfig config in list)
+            foreach (LDAI config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public TakeCardRewardConfig Get(int id)
+        public LDAI Get(int id)
         {
-            this.dict.TryGetValue(id, out TakeCardRewardConfig item);
+            this.dict.TryGetValue(id, out LDAI item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (TakeCardRewardConfig)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDAI)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, TakeCardRewardConfig> GetAll()
+        public Dictionary<int, LDAI> GetAll()
         {
             return this.dict;
         }
 
-        public TakeCardRewardConfig GetOne()
+        public LDAI GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,20 +73,23 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class TakeCardRewardConfig: ProtoObject, IConfig
+	public partial class LDAI: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>抽卡次数</summary>
+		/// <summary>所属ai</summary>
 		[ProtoMember(2)]
-		public int RoseLvLimit { get; set; }
-		/// <summary>奖励道具</summary>
+		public int AIConfigId { get; set; }
+		/// <summary>此ai中的顺序</summary>
 		[ProtoMember(3)]
-		public string RewardItems { get; set; }
-		/// <summary>奖励钻石 min|max</summary>
+		public int Order { get; set; }
+		/// <summary>节点名字</summary>
 		[ProtoMember(4)]
-		public int[] RewardDiamond { get; set; }
+		public string Name { get; set; }
+		/// <summary>节点参数</summary>
+		[ProtoMember(5)]
+		public string NodeParams { get; set; }
 
 	}
 }

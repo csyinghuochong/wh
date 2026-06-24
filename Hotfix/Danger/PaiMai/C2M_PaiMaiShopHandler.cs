@@ -10,23 +10,29 @@ namespace ET
     {
 		//拍卖快捷列表购买道具
 		protected override async ETTask Run(Unit unit, C2M_PaiMaiShopRequest request, M2C_PaiMaiShopResponse response, Action reply)
-		{
-			if(!PaiMaiSellConfigCategory.Instance.Contain(request.PaiMaiId))
+		{            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
+			await ETTask.CompletedTask;
+			//if(!PaiMaiSellConfigCategory.Instance.Contain(request.PaiMaiId))
 			{
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
                 return;
             }
-
-			PaiMaiSellConfig paiMaiSellConfig = PaiMaiSellConfigCategory.Instance.Get(request.PaiMaiId);
+			
+			/*PaiMaiSellConfig paiMaiSellConfig = PaiMaiSellConfigCategory.Instance.Get(request.PaiMaiId);
 			if (paiMaiSellConfig == null)
 			{
 				response.Error = ErrorCode.ERR_NetWorkError;
 				reply();
 				return;
 			}
+			
 
-			LDItem ldItem = LDItemCategory.Instance.Get(paiMaiSellConfig.ItemID);
+			LDItem ldItem = null;/// LDItemCategory.Instance.Get(paiMaiSellConfig.ItemID);
 			int cell = Mathf.CeilToInt(request.BuyNum * 1f / ldItem.ItemPileSum);
 			if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < cell)
 			{
@@ -41,14 +47,13 @@ namespace ET
 				return;
 			}
 
-            Log.Warning($"拍卖行购买请求 : {unit.Id}  {paiMaiSellConfig.ItemID}  {request.BuyNum}  {cell}");
-
+           
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
 			{
 
 				M2P_PaiMaiShopRequest m2P_PaiMaiShopRequest = new M2P_PaiMaiShopRequest()
 				{
-					ItemID = paiMaiSellConfig.ItemID,
+					ItemID = -1,// paiMaiSellConfig.ItemID,
 					BuyNum = request.BuyNum,
 					//Price = r_PaiMaiShopResponse.PaiMaiShopItemInfo.Price,
 					ActorId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold,
@@ -73,9 +78,9 @@ namespace ET
 
 					//添加道具
 					List<RewardItem> rewardItems = new List<RewardItem>();
-					rewardItems.Add(new RewardItem() { ItemID = paiMaiSellConfig.ItemID, ItemNum = request.BuyNum });
-					bool result =  unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PaiMaiShop}_{TimeHelper.ServerNow()}");
-					Log.Warning($"拍卖行购买道具 : {unit.Id}  {paiMaiSellConfig.ItemID}  {request.BuyNum}  {r_PaiMaiShopResponse.PaiMaiShopItemInfo.Price} {cell} {result}");
+					//rewardItems.Add(new RewardItem() { ItemID = paiMaiSellConfig.ItemID, ItemNum = request.BuyNum });
+					//bool result =  unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PaiMaiShop}_{TimeHelper.ServerNow()}");
+					//Log.Warning($"拍卖行购买道具 : {unit.Id}  {paiMaiSellConfig.ItemID}  {request.BuyNum}  {r_PaiMaiShopResponse.PaiMaiShopItemInfo.Price} {cell} {result}");
 				}
 				else
 				{
@@ -83,8 +88,9 @@ namespace ET
 				}
 			}
 			reply();
-			await ETTask.CompletedTask;
-		}
+			*/
+		#endif
+}
 
 	}
 }

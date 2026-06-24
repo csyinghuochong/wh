@@ -8,7 +8,11 @@ namespace ET
     public class C2M_ItemXiLianHandler : AMActorLocationRpcHandler<Unit, C2M_ItemXiLianRequest, M2C_ItemXiLianResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_ItemXiLianRequest request, M2C_ItemXiLianResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             try
             {
                 //ItemLocType itemLocType = ItemLocType.ItemLocBag;
@@ -167,6 +171,7 @@ namespace ET
             {
                 Log.Debug(ex.ToString());
             }
-        }
+        #endif
+}
     }
 }

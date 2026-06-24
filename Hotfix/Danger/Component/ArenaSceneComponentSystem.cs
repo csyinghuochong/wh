@@ -49,6 +49,8 @@ namespace ET
 
         public static void CheckTimer(this ArenaSceneComponent self)
         {
+            return;
+#if false // TODO: migrate to LD config
             DateTime dateTime = TimeHelper.DateTimeNow();
             int curTime = (dateTime.Hour * 60 + dateTime.Minute) * 60 + dateTime.Second;
             FunctionConfig funtionConfig = FunctionConfigCategory.Instance.Get(1031);
@@ -76,10 +78,13 @@ namespace ET
             }
             TimerComponent.Instance.Remove(ref self.Timer);
             self.BeginTimer();
+#endif
         }
 
         public static void BeginTimer(this ArenaSceneComponent self)
         {
+            return;
+#if false // TODO: migrate to LD config
             DateTime dateTime = TimeHelper.DateTimeNow();
             int curTime = (dateTime.Hour * 60 + dateTime.Minute) * 60 + dateTime.Second;
             FunctionConfig funtionConfig = FunctionConfigCategory.Instance.Get(1031);
@@ -106,6 +111,7 @@ namespace ET
                 self.AreneSceneStatu = 3;
                 self.Timer = TimerComponent.Instance.NewOnceTimer(TimeHelper.ServerNow() + TimeHelper.Second * (overTime - curTime), TimerType.ArenaSceneTimer, self);
             }
+#endif
         }
 
         public static void OnArenaOpen(this ArenaSceneComponent self)

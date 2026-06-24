@@ -70,7 +70,7 @@ namespace ET
             message.RewardGold = 0;
             if (endId != 0)
             {
-                int cengNum = TowerConfigCategory.Instance.Get(endId).CengNum;
+                int cengNum = -1;///TowerConfigCategory.Instance.Get(endId).CengNum;
                 if (self.TowerId >= 100101 && self.TowerId <= 100199)
                 {
                     message.RewardExp = 10000 + cengNum * 3000;
@@ -131,9 +131,10 @@ namespace ET
                 return;
             }
             Scene scene = self.DomainScene();
-            TowerConfig towerConfig = TowerConfigCategory.Instance.Get(towerId);
+            /*TowerConfig towerConfig = TowerConfigCategory.Instance.Get(towerId);
             self.WaveTime = towerConfig.NextTime * 1000;
             FubenHelp.CreateMonsterList(scene, towerConfig.MonsterSet);
+            */
         }
 
         public static void BeginTower(this TowerComponent self)

@@ -191,6 +191,8 @@ namespace ET
 
         public static int ReceivedReward(this ChengJiuComponentServer self, int rewardId)
         {
+            return ErrorCode.ERR_ModifyData;
+#if false // TODO: migrate to LD config
             if (self.AlreadReceivedId.Contains(rewardId))
             {
                 return ErrorCode.ERR_Success;
@@ -207,6 +209,7 @@ namespace ET
             {
                 return ErrorCode.ERR_BagIsFull;
             }
+#endif
         }
 
         public static void OnActiveJingLing(this ChengJiuComponentServer self, int jid)
@@ -222,11 +225,13 @@ namespace ET
         {
             self.ChengJiuProgessList.Clear();
             self.ChengJiuCompleteList.Clear();
+#if false // TODO: migrate to LD config
             Dictionary<int, ChengJiuConfig> allchengjiu = ChengJiuConfigCategory.Instance.GetAll();
             foreach (var item in allchengjiu)
             {
                 self.ChengJiuCompleteList.Add( item.Key );
             }
+#endif
 
             self.JingLingList.Clear();  
             Dictionary<int, LDElf> alljingling = LDElfCategory.Instance.GetAll();
@@ -271,6 +276,7 @@ namespace ET
             for (int i = self.ChengJiuProgessList.Count - 1; i >= 0; i--)
             {
                 ChengJiuInfo chengJiuInfo = self.ChengJiuProgessList[i];
+                /*
                 ChengJiuConfig chengJiuConfig = ChengJiuConfigCategory.Instance.Get(chengJiuInfo.ChengJiuID);
                 if (chengJiuTargetInt != chengJiuConfig.TargetType)
                 {
@@ -353,6 +359,7 @@ namespace ET
                 {
                     MessageHelper.SendToClient(unit, new M2C_ChengJiuActiveMessage() { ChengJiuId = acitiveId });
                 }
+                */
             }
         }
 
@@ -360,18 +367,15 @@ namespace ET
         {
             foreach (var magicinfo in self.MagickaSlotIdList)
             {
-                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(magicinfo.SlotId);
-                if (magickaSlotConfig.Position == position + 1)
-                {
-                    return magicinfo.SlotId;
-                }
+               
             }
             return 0;
         }
 
         public static void OnAddMagickaExpByPosition(this ChengJiuComponentServer self, int position, int addexp)
         {
-            MagickaSlotInfo magickaSlotInfo = null;
+            /*MagickaSlotInfo magickaSlotInfo = null;
+
             foreach (var magicinfo in self.MagickaSlotIdList)
             {
                 MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(magicinfo.SlotId);
@@ -396,9 +400,10 @@ namespace ET
             int needexp = MagickaSlotConfigCategory.Instance.Get(curid).NeedExp;
             if (magickaSlotInfo.Exp >= needexp)
             {
-                magickaSlotInfo.Exp -= needexp; 
-                magickaSlotInfo.SlotId = nexid; 
+                magickaSlotInfo.Exp -= needexp;
+                magickaSlotInfo.SlotId = nexid;
             }
+            */
         }
 
         public static int GetCurrentMagickaTotalLevel(this ChengJiuComponentServer self)
@@ -406,8 +411,7 @@ namespace ET
             int totallevel = 0;
             foreach( var magicinfo in self.MagickaSlotIdList )
             {
-                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(magicinfo.SlotId);
-                totallevel += magickaSlotConfig.MagicLevel;
+              
             }
             return totallevel;
         }
@@ -416,11 +420,7 @@ namespace ET
         {
             for (int i = self.MagickaSlotIdList.Count - 1; i >= 0; i--)
             {
-                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(self.MagickaSlotIdList[i].SlotId);
-                if (magickaSlotConfig.Position == position + 1)
-                {
-                    self.MagickaSlotIdList.RemoveAt(i);
-                }
+              
             }
 
             self.MagickaSlotIdList.Add(new MagickaSlotInfo() { SlotId = magicid, Exp = 0 });
@@ -431,44 +431,6 @@ namespace ET
             List<PropertyValue> proList = new List<PropertyValue>();
             for (int i = self.MagickaSlotIdList.Count - 1; i >= 0; i--)
             {
-                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(self.MagickaSlotIdList[i].SlotId);
-
-                string[] attributeInfoList = magickaSlotConfig.AddProperty.Split('@');
-                for (int a = 0; a < attributeInfoList.Length; a++)
-                {
-                    string[] attributeInfo = attributeInfoList[a].Split(';');
-                    if (attributeInfo.Length != 2)
-                    {
-                        continue;
-                    }
-                    try
-                    {
-                        int numericType = int.Parse(attributeInfo[0]);
-                        if (NumericHelp.GetNumericValueType(numericType) == 2)
-                        {
-                            float fvalue = float.Parse(attributeInfo[1]);
-                            proList.Add(new PropertyValue() { HideID = numericType, HideValue = (long)(fvalue * 10000) });
-                        }
-                        else
-                        {
-                            long lvalue = 0;
-                            try
-                            {
-                                lvalue = long.Parse(attributeInfo[1]);
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Debug(ex.ToString() + $"报错MagickaSlotId: {self.MagickaSlotIdList[i].SlotId}");
-                            }
-
-                            proList.Add(new PropertyValue() { HideID = numericType, HideValue = lvalue });
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex.ToString());
-                    }
-                }
             }
 
             return proList;
@@ -477,41 +439,20 @@ namespace ET
         public static int GetMaxMagickaSlotIdPosition(this ChengJiuComponentServer self)
         {
             int position = 0;
-            foreach (var slotinfo in MagickaSlotConfigCategory.Instance.GetAll())
-            {
-                if (slotinfo.Value.Position > position)
-                {
-                    position = slotinfo.Value.Position;
-                }
-            }
+           
             return position;
         }
 
         public static int GetFirstMagickaSlotIdByPosition(this ChengJiuComponentServer self, int position)
         {
-            int id = 0;
-            foreach (var slotinfo in MagickaSlotConfigCategory.Instance.GetAll())
-            {
-                if (slotinfo.Value.Position == position + 1 && id < slotinfo.Key)
-                {
-                    id = slotinfo.Key;
-                    break;
-                }
-            }
-            return id;
+
+            return 0;
         }
 
         public static int GetNextMagickaSlotIdByPosition(this ChengJiuComponentServer self, int position)
         {
             int id = self.GetCurrentMagickaSlotIdByPosition(position);
-            foreach (var slotinfo in MagickaSlotConfigCategory.Instance.GetAll())
-            {
-                if (slotinfo.Value.Position == position + 1 && id < slotinfo.Key)
-                {
-                    id = slotinfo.Key;
-                    break;
-                }
-            }
+           
             return id;
         }
     }

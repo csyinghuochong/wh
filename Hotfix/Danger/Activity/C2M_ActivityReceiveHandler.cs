@@ -8,7 +8,11 @@ namespace ET
     {
 
         protected override async ETTask Run(Unit unit, C2M_ActivityReceiveRequest request, M2C_ActivityReceiveResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
             {
                 if (!ActivityConfigCategory.Instance.Contain(request.ActivityId))
@@ -306,6 +310,7 @@ namespace ET
             LogHelper.LogWarning($"C2M_ActivityReceive[成功]:  {unit.Id} {request.ActivityId} {request.ReceiveIndex} {TimeHelper.ServerNow().ToString()}", true);
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

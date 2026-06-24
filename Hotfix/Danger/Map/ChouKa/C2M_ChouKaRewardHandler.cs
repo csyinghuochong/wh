@@ -6,7 +6,11 @@ namespace ET
     public class C2M_ChouKaRewardHandler : AMActorLocationRpcHandler<Unit, C2M_ChouKaRewardRequest, M2C_ChouKaRewardResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_ChouKaRewardRequest request, M2C_ChouKaRewardResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             RoleInfoComponentServer roleInfoComponentServer= unit.GetComponent<RoleInfoComponentServer>();
             if (roleInfoComponentServer.RoleInfo.ChouKaRewardIds.Contains(request.RewardId))
             {
@@ -43,6 +47,7 @@ namespace ET
 
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

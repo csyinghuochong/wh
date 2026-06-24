@@ -30,6 +30,7 @@ namespace ET
 
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
             int sonsceneid = mapComponent.SonSceneId;
+            /*
             TowerConfig towerConfig = TowerConfigCategory.Instance.Get(sonsceneid);
             if (!towerConfig.MonsterSet.Contains(defend.ConfigId.ToString()))
             {
@@ -64,7 +65,7 @@ namespace ET
             MessageHelper.SendToClient(players[0], m2C_FubenSettlement);
 
             players[0].GetComponent<TaskComponentServer>().TriggerTaskEvent( TastConditionType.TrialTowerCeng_134, mapComponent.SonSceneId, 1);
-            
+            */
         }
 
         public static async ETTask UploadHurtValue(this TrialDungeonComponent self)
@@ -134,8 +135,8 @@ namespace ET
 
         public static void GenerateFuben(this TrialDungeonComponent self, int towerId)
         {
-            TowerConfig towerConfig = TowerConfigCategory.Instance.Get(towerId);
-            FubenHelp.CreateMonsterList(self.DomainScene(), towerConfig.MonsterSet);
+            LDScene towerConfig = LDSceneCategory.Instance.Get(towerId);
+            //FubenHelp.CreateMonsterList(self.DomainScene(), towerConfig.MonsterSet);
             self.HurtValue = 0;
             self.BeginTime = TimeHelper.ServerNow();
         }

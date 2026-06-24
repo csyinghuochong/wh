@@ -36,20 +36,6 @@ namespace ET
     {
         public static void Load(this ShouJiChapterInfoComponent self)
         { 
-            foreach (var item in ShouJiConfigCategory.Instance.GetAll().Values)
-            {
-                int itemId = item.ItemListID;
-                while (itemId != 0)
-                { 
-                    ShouJiItemConfig shouJiItemConfig = ShouJiItemConfigCategory.Instance.Get(itemId);
-                    itemId = shouJiItemConfig.NextID;
-                    ItemStarInfo itemStarInfo = new ItemStarInfo();
-                    itemStarInfo.ItemId = shouJiItemConfig.ItemID;
-                    itemStarInfo.Star = shouJiItemConfig.StartNum;
-                    itemStarInfo.Chapter = item.Id;
-                    self.ItemStarInfos.Add(itemStarInfo);
-                }
-            }
         }
     }
 }

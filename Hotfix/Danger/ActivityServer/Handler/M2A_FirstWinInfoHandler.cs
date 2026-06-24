@@ -23,6 +23,7 @@ namespace ET
             mailInfo.Context = $"首杀奖励";
             mailInfo.Title = "首杀奖励";
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
+            /*
             FirstWinConfig firstWinConfig = FirstWinConfigCategory.Instance.Get(message.FirstWinInfo.FirstWinId);
             string rewardList = firstWinConfig.RewardList_1;
             if (message.FirstWinInfo.Difficulty == 2)
@@ -56,7 +57,7 @@ namespace ET
                          Id = message.FirstWinInfo.UserId,
                          MailInfo = mailInfo
                      });
-
+            */
             await ETTask.CompletedTask;
         }
     }

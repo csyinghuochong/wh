@@ -737,15 +737,15 @@ namespace ET
             {
                 int[] equipList = new int[0];
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-                RobotConfig robotConfig = RobotConfigCategory.Instance.Get(robotId);
+                LDRobot ldRobot = LDRobotCategory.Instance.Get(robotId);
 
-                if (robotConfig.Behaviour != 1 && robotConfig.Level > roleInfoComponentServer.RoleInfo.Lv)
+                if (ldRobot.Behaviour != 1 && ldRobot.Level > roleInfoComponentServer.RoleInfo.Lv)
                 {
-                    roleInfoComponentServer.RoleInfo.Lv = robotConfig.Level;
+                    roleInfoComponentServer.RoleInfo.Lv = ldRobot.Level;
                 }
-                if (robotConfig.EquipList != null)
+                if (ldRobot.EquipList != null)
                 {
-                    equipList = robotConfig.EquipList != null ? robotConfig.EquipList : equipList;
+                    equipList = ldRobot.EquipList != null ? ldRobot.EquipList : equipList;
                 }
                 else
                 {
@@ -1679,8 +1679,8 @@ namespace ET
                 {
                     for (int s = 0; s < userBagInfo.IncreaseSkillLists.Count; s++)
                     {
-                        HideProListConfig hideProListConfig = HideProListConfigCategory.Instance.Get(userBagInfo.IncreaseSkillLists[s]);
-                        LDSkill ldSkill = LDSkillCategory.Instance.Get(hideProListConfig.PropertyType);
+                        //HideProListConfig hideProListConfig = HideProListConfigCategory.Instance.Get(userBagInfo.IncreaseSkillLists[s]);
+                        //LDSkill ldSkill = LDSkillCategory.Instance.Get(hideProListConfig.PropertyType);
                     }
                 }
 
@@ -1818,12 +1818,7 @@ namespace ET
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID);
                 int qianghuaLv = unit.GetComponent<BagComponentServer>().GetQiangHuaLevel(caowei);
 
-                EquipQiangHuaConfig equipQiangHuaConfig = QiangHuaHelper.GetQiangHuaConfig(caowei, qianghuaLv);
-                if (equipQiangHuaConfig != null)
-                {
-                    
-                    //addPro += float.Parse(EquipQiangHuaConfigCategory.Instance.Get(QiangHuaHelper.GetQiangHuaId(itemCof.ItemSubType, qianghuaLv[itemCof.ItemSubType])).EquipPropreAdd);
-                }
+             
 
                 occInitAttribute.AddRange( LDEquipCategory.Instance.GetEquipAttribute(equipList[i].ItemID) );
 

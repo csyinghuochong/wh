@@ -315,7 +315,7 @@ namespace ET
             unit.GetComponent<TaskComponentServer>().Check();
             unit.GetComponent<RoleInfoComponentServer>().Check();
             unit.GetComponent<DataCollationComponent>().Check();
-            unit.GetComponent<TitleComponent>().OnCheckTitle(true);
+            unit.GetComponent<TitleComponentServer>().OnCheckTitle(true);
             return false;
         }
     }

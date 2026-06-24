@@ -23,7 +23,7 @@ namespace ET
             }
 
             int keijiId = dBUnionInfo.UnionInfo.UnionKeJiList[dBUnionInfo.UnionInfo.KeJiActitePos];
-            UnionKeJiConfig unionKeJiConfig = UnionKeJiConfigCategory.Instance.Get(keijiId);
+            /*UnionKeJiConfig unionKeJiConfig = UnionKeJiConfigCategory.Instance.Get(keijiId);
             if (unionKeJiConfig.NextID == 0)
             {
                 response.Error = ErrorCode.ERR_Union_NotActive;
@@ -42,11 +42,12 @@ namespace ET
                 reply();
                 return;
             }
-
-            dBUnionInfo.UnionInfo.UnionKeJiList[dBUnionInfo.UnionInfo.KeJiActitePos] = unionKeJiConfig.NextID;
+          dBUnionInfo.UnionInfo.UnionKeJiList[dBUnionInfo.UnionInfo.KeJiActitePos] = unionKeJiConfig.NextID;
             dBUnionInfo.UnionInfo.KeJiActitePos = -1;
             dBUnionInfo.UnionInfo.KeJiActiteTime = 0;
             response.UnionInfo = dBUnionInfo.UnionInfo;
+*/  
+
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
             reply();
         }

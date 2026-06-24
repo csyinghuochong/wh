@@ -8,19 +8,19 @@ namespace ET
 {
 
     [ObjectSystem]
-    public class TitleComponentSystemAwake: AwakeSystem<TitleComponent>
+    public class TitleComponentSystemAwake: AwakeSystem<TitleComponentServer>
     {
 
-        public override void Awake(TitleComponent self)
+        public override void Awake(TitleComponentServer self)
         {
             self.TitleList.Clear();
         }
     }
 
-    public static class TitleComponentSystem
+    public static class TitleComponentServerSystem
     {
 #if SERVER
-          public static List<PropertyValue> GetTitlePro(this TitleComponent self)
+          public static List<PropertyValue> GetTitlePro(this TitleComponentServer self)
         {
             List<PropertyValue> proList = new List<PropertyValue>();
 
@@ -60,7 +60,7 @@ namespace ET
         /// 移除过期称号
         /// </summary>
         /// <param name="self"></param>
-        public static void OnCheckTitle(this TitleComponent self, bool notice)
+        public static void OnCheckTitle(this TitleComponentServer self, bool notice)
         {
             bool update = false;
             long serverTime = TimeHelper.ServerNow();
@@ -94,7 +94,7 @@ namespace ET
         }
 
 #endif
-        public static bool IsHaveTitle(this TitleComponent self, int titleId)
+        public static bool IsHaveTitle(this TitleComponentServer self, int titleId)
         {
             for (int i = 0; i < self.TitleList.Count; i++)
             {
@@ -112,7 +112,7 @@ namespace ET
         /// <param name="self"></param>
         /// <param name="titleId"></param>
         /// <returns></returns>
-        public static long GetTitlLeftTime(this TitleComponent self, int titleId)
+        public static long GetTitlLeftTime(this TitleComponentServer self, int titleId)
         {
             for (int i = 0; i < self.TitleList.Count; i++)
             {
@@ -131,7 +131,7 @@ namespace ET
             return 0;
         }
 
-        public static void OnGmGaoJi(this TitleComponent self)
+        public static void OnGmGaoJi(this TitleComponentServer self)
         {
             Dictionary<int, LDTitle> allTitle = LDTitleCategory.Instance.GetAll();
             foreach (var key in allTitle.Keys) 
@@ -140,7 +140,7 @@ namespace ET
             }
         }
 
-        public static void OnActiveTile(this TitleComponent self, int titleId)
+        public static void OnActiveTile(this TitleComponentServer self, int titleId)
         {
             for (int i = self.TitleList.Count - 1; i >= 0; i--)
             {

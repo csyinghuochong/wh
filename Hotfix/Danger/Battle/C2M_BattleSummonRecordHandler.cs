@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,12 +11,17 @@ namespace ET
     public class C2M_BattleSummonRecordHandler : AMActorLocationRpcHandler<Unit, C2M_BattleSummonRecord, M2C_BattleSummonRecord>
     {
         protected override async ETTask Run(Unit unit, C2M_BattleSummonRecord request, M2C_BattleSummonRecord response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             AttackRecordComponent attackRecordComponent = unit.GetComponent<AttackRecordComponent>();
             List<BattleSummonInfo> BattleSummonList = attackRecordComponent.BattleSummonList;
 
             int sceneid = unit.DomainScene().GetComponent<MapComponent>().SceneId;
             //默认给个冷却时间
+            /*
             List<BattleSummonConfig> battleSummonInfos = BattleSummonConfigCategory.Instance.GetAll().Values.ToList();
 
             if (BattleSummonList.Count == 0)
@@ -36,10 +41,12 @@ namespace ET
                     });
                 }
             }
+            */
 
             response.BattleSummonList = BattleSummonList;
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

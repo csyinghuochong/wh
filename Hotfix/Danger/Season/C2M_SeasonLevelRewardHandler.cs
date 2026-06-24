@@ -8,7 +8,11 @@ namespace ET
     {
 
         protected override async ETTask Run(Unit unit, C2M_SeasonLevelRewardRequest request, M2C_SeasonLevelRewardResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();   
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (numericComponent.GetAsInt( NumericType.SeasonReward ) >= roleInfoComponentServer.RoleInfo.SeasonLevel)
@@ -33,6 +37,7 @@ namespace ET
                 reply();
                 return;
             }
+            /*
 
             SeasonLevelConfig seasonLevelConfig = SeasonLevelConfigCategory.Instance.Get(rewardLevel);
             if (!unit.GetComponent<BagComponentServer>().OnAddItemData(seasonLevelConfig.Reward, $"{ItemGetWay.Season}_{seasonLevelConfig.Reward}"))
@@ -43,8 +48,10 @@ namespace ET
             }
 
             numericComponent.ApplyValue(NumericType.SeasonReward, rewardLevel);
+            */
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

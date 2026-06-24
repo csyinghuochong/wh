@@ -200,22 +200,6 @@ namespace ET
                 self.OnBaoZangMonster(openDay);
             }
 
-            Dictionary<int, FunctionConfig> keyValuePairs = FunctionConfigCategory.Instance.GetAll();
-            foreach (( int functionId, FunctionConfig FuntionConfig ) in keyValuePairs)
-            { 
-                if (sceneId == 0 || sceneId != FuntionConfig.SceneId )
-                {
-                    continue;
-                }
-
-                if (!FunctionHelp.IsFunctionDayOpen((int)dateTime.DayOfWeek, functionId))
-                {
-                    continue;
-                }
-                
-                //FubenHelp.CreateSceneRole(self.DomainScene(), FuntionConfig.Id);
-            }
-
             //MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
             //if (mapComponent.SceneTypeEnum == SceneTypeEnum.BaoZang)
             //{

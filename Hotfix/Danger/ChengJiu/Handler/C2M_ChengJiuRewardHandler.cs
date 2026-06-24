@@ -1,4 +1,4 @@
-﻿
+
 
 using System;
 
@@ -9,7 +9,11 @@ namespace ET
     {
 
         protected override async ETTask Run(Unit unit, C2M_ChengJiuRewardRequest request, M2C_ChengJiuRewardResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
             if (!ChengJiuRewardConfigCategory.Instance.Contain(request.RewardId))
             {
@@ -33,6 +37,7 @@ namespace ET
             response.Error = chengJiuComponentServer.ReceivedReward(request.RewardId);
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

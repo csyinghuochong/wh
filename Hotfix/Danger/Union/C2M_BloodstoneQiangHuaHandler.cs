@@ -11,87 +11,88 @@ namespace ET
         {
            
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-
-            if (!PublicQiangHuaConfigCategory.Instance.Contain(numericComponent.GetAsInt(request.QiangHuaType)))
-            {
-                Console.WriteLine($"C2M_BloodstoneQiangHuaError: {request.QiangHuaType}   {numericComponent.GetAsInt(request.QiangHuaType)}");
-                reply();
-                return;
-            }
-
-            PublicQiangHuaConfig publicQiangHuaConfig = PublicQiangHuaConfigCategory.Instance.Get(numericComponent.GetAsInt(request.QiangHuaType));
-
-            if (publicQiangHuaConfig.NextID == 0)
-            {
-                response.Error = ErrorCode.ERR_UnionXiuLianMax;
-                reply();
-                return;
-            }
-
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < 60)
-            {
-                response.Error = ErrorCode.ERR_LevelIsNot;
-                reply();
-                return;
-            }
-
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < publicQiangHuaConfig.UpLvLimit)
-            {
-                response.Error = ErrorCode.ERR_LvNoHigh;
-                reply();
-                return;
-            }
-
-            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            string costItems = publicQiangHuaConfig.CostItem;
-            costItems += $"@1;{publicQiangHuaConfig.CostGold}";
-            if (!bagComponentServer.OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.UnionXiuLian ))
-            {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                reply();
-                return;
-            }
             /*
-                       int level = 0;
+                        if (!PublicQiangHuaConfigCategory.Instance.Contain(numericComponent.GetAsInt(request.QiangHuaType)))
+                        {
+                            Console.WriteLine($"C2M_BloodstoneQiangHuaError: {request.QiangHuaType}   {numericComponent.GetAsInt(request.QiangHuaType)}");
+                            reply();
+                            return;
+                        }
 
-                       int failType = 0;
 
-                      switch (request.QiangHuaType)
-                      {
+                        PublicQiangHuaConfig publicQiangHuaConfig = PublicQiangHuaConfigCategory.Instance.Get(numericComponent.GetAsInt(request.QiangHuaType));
 
-                           case NumericType.Bloodstone:
-                              failType = NumericType.BloodstoneFail;
-                              break;
+                        if (publicQiangHuaConfig.NextID == 0)
+                        {
+                            response.Error = ErrorCode.ERR_UnionXiuLianMax;
+                            reply();
+                            return;
+                        }
 
-                          case NumericType.UnionAttribute_1:
-                              failType = NumericType.UnionAttributeFail_1;
-                              break;
-                          case NumericType.UnionAttribute_2:
-                              failType = NumericType.UnionAttributeFail_2;
-                              break;
+                        if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < 60)
+                        {
+                            response.Error = ErrorCode.ERR_LevelIsNot;
+                            reply();
+                            return;
+                        }
 
-                           default:
-                               response.Error = ErrorCode.ERR_ModifyData;
-                               reply();
-                               return;
-                       }
+                        if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < publicQiangHuaConfig.UpLvLimit)
+                        {
+                            response.Error = ErrorCode.ERR_LvNoHigh;
+                            reply();
+                            return;
+                        }
 
-                       double addPro = publicQiangHuaConfig.AdditionPro * numericComponent.GetAsInt(failType);
-                       if ((float)publicQiangHuaConfig.SuccessPro + addPro >= RandomHelper.RandFloat01())
-                       {
-                           level = publicQiangHuaConfig.NextID;
-                           numericComponent.ApplyValue(request.QiangHuaType, level);
-                           numericComponent.ApplyValue(failType, 0);
-                       }
-                       else
-                       {
-                           level = publicQiangHuaConfig.Id;
-                           numericComponent.ApplyChange(null, failType, 1, 0);
-                       }
 
-                       response.Level = level;
-                       Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-            */
+                        BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+                        string costItems = publicQiangHuaConfig.CostItem;
+                        costItems += $"@1;{publicQiangHuaConfig.CostGold}";
+                        if (!bagComponentServer.OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.UnionXiuLian ))
+                        {
+                            response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                            reply();
+                            return;
+                        }
+                                   int level = 0;
+
+                                   int failType = 0;
+
+                                  switch (request.QiangHuaType)
+                                  {
+
+                                       case NumericType.Bloodstone:
+                                          failType = NumericType.BloodstoneFail;
+                                          break;
+
+                                      case NumericType.UnionAttribute_1:
+                                          failType = NumericType.UnionAttributeFail_1;
+                                          break;
+                                      case NumericType.UnionAttribute_2:
+                                          failType = NumericType.UnionAttributeFail_2;
+                                          break;
+
+                                       default:
+                                           response.Error = ErrorCode.ERR_ModifyData;
+                                           reply();
+                                           return;
+                                   }
+
+                                   double addPro = publicQiangHuaConfig.AdditionPro * numericComponent.GetAsInt(failType);
+                                   if ((float)publicQiangHuaConfig.SuccessPro + addPro >= RandomHelper.RandFloat01())
+                                   {
+                                       level = publicQiangHuaConfig.NextID;
+                                       numericComponent.ApplyValue(request.QiangHuaType, level);
+                                       numericComponent.ApplyValue(failType, 0);
+                                   }
+                                   else
+                                   {
+                                       level = publicQiangHuaConfig.Id;
+                                       numericComponent.ApplyChange(null, failType, 1, 0);
+                                   }
+
+                                   response.Level = level;
+                                   Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+                        */
             reply();
             await ETTask.CompletedTask;
         }

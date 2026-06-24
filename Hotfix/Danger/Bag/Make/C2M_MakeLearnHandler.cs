@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -7,7 +7,11 @@ namespace ET
     public class C2M_MakeLearnHandler : AMActorLocationRpcHandler<Unit, C2M_MakeLearnRequest, M2C_MakeLearnResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_MakeLearnRequest request, M2C_MakeLearnResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             try
             {
                 EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(request.MakeId);
@@ -75,7 +79,8 @@ namespace ET
                 Log.Debug(ex.ToString());
             }
             
-        }
+        #endif
+}
     }
 }
 

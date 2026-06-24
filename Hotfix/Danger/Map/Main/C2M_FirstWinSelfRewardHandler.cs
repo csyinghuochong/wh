@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,11 @@ namespace ET
     public class C2M_FirstWinSelfRewardHandler : AMActorLocationRpcHandler<Unit, C2M_FirstWinSelfRewardRequest, M2C_FirstWinSelfRewardResponse>
     {
 		protected override async ETTask Run(Unit unit, C2M_FirstWinSelfRewardRequest request, M2C_FirstWinSelfRewardResponse response, Action reply)
-		{
+		{            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
 			if (!FirstWinConfigCategory.Instance.Contain(request.FirstWinId))
 			{
 				response.Error = ErrorCode.ERR_NetWorkError;
@@ -57,6 +61,7 @@ namespace ET
 			response.FirstWinInfos = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.FirstWinSelf;
 			reply();
 			await ETTask.CompletedTask;
-		}
+		#endif
+}
 	}
 }

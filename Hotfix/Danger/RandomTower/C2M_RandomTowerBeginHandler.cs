@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -7,7 +7,11 @@ namespace ET
     public class C2M_RandomTowerBeginHandler : AMActorLocationRpcHandler<Unit, C2M_RandomTowerBeginRequest, M2C_RandomTowerBeginResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_RandomTowerBeginRequest request, M2C_RandomTowerBeginResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             int randomTowerid = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RandomTowerId);
             if (randomTowerid == 0)
             {
@@ -29,11 +33,12 @@ namespace ET
             }
 
             unit.DomainScene().GetComponent<RandomTowerComponent>().TowerId = randomTowerid;
-            TowerConfig randowTowerConfig = TowerConfigCategory.Instance.Get(randomTowerid);
-            FubenHelp.CreateMonsterList(unit.DomainScene(), randowTowerConfig.MonsterSet);
+           // TowerConfig randowTowerConfig = TowerConfigCategory.Instance.Get(randomTowerid);
+           // FubenHelp.CreateMonsterList(unit.DomainScene(), randowTowerConfig.MonsterSet);
 
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

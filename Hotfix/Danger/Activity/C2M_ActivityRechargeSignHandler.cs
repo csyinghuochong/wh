@@ -10,13 +10,15 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ActivityRechargeSignRequest request, M2C_ActivityRechargeSignResponse response, Action reply)
         {
-            if (!ActivityConfigCategory.Instance.Contain(request.ActivityId))
+            await ETTask.CompletedTask;
+            //if (!ActivityConfigCategory.Instance.Contain(request.ActivityId))
             {
                 Log.Warning($"C2M_ActivityRechargeError {unit.Id} {request.ActivityId}");
                 reply();
                 return;
             }
 
+            /*
             ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(request.ActivityId);
             int itemNumber = ItemHelper.GetNeedCell(activityConfig.Par_2);
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
@@ -39,9 +41,10 @@ namespace ET
             numericComponent.ApplyValue(NumericType.RechargeSign, 2);
             unit.GetComponent<BagComponentServer>().OnAddItemData(activityConfig.Par_2, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
             LogHelper.LogDebug($"充值签到成功2：{unit.Id} { bagComponentServer.GetItemNumber(ItemBigType.Type_Item, 10010043)}");
-    
+           
             reply();
-            await ETTask.CompletedTask;
+           
+             */
         }
     }
 }

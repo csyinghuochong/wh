@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -8,7 +8,11 @@ namespace ET
     {
 
         protected override async ETTask Run(Unit unit, C2M_ZhanQuReceiveRequest request, M2C_ZhanQuReceiveResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
             {
                 ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
@@ -82,6 +86,7 @@ namespace ET
                 reply();
                 await ETTask.CompletedTask;
             }
-        }
+        #endif
+}
     }
 }

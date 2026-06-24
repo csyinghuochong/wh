@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -7,7 +7,11 @@ namespace ET
     public class C2M_UnionXiuLianHandler : AMActorLocationRpcHandler<Unit, C2M_UnionXiuLianRequest, M2C_UnionXiuLianResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_UnionXiuLianRequest request, M2C_UnionXiuLianResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             int numerType = UnionHelper.GetXiuLianId(request.Position, request.Type);
             if (numerType == 0)
             {
@@ -29,15 +33,15 @@ namespace ET
             if (request.Type == 1)
             {
                 position += 4;
-            }
-
-            if (xiulianid >= UnionQiangHuaConfigCategory.Instance.GetMaxId(position))
+            }await ETTask.CompletedTask;
+        
+            //if (xiulianid >= UnionQiangHuaConfigCategory.Instance.GetMaxId(position))
             {
                 response.Error = ErrorCode.ERR_UnionXiuLianMax;
                 reply();
                 return;
             }
-
+            /*
             UnionQiangHuaConfig unionQiangHuaConfig = UnionQiangHuaConfigCategory.Instance.Get(xiulianid);
             if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UnionZiJin < unionQiangHuaConfig.CostGold)
             {
@@ -52,8 +56,7 @@ namespace ET
                 reply();
                 return;
             }
-
-
+           
             long selfgold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold;
             U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                        DBHelper.GetUnionServerId(unit.DomainZone()),
@@ -68,8 +71,9 @@ namespace ET
                 return; 
             }
 
+
             unit.GetComponent<NumericComponent>().ApplyValue( numerType, xiulianid+1);
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub( UserDataType.UnionContri,(unionQiangHuaConfig.CostGold * -1).ToString(), true, ItemGetWay.UnionXiuLian);
+            //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub( UserDataType.UnionContri,(unionQiangHuaConfig.CostGold * -1).ToString(), true, ItemGetWay.UnionXiuLian);
 
             //刷新角色属性
             Function_Fight.UnitUpdateProperty_Base(unit,true,true);
@@ -80,7 +84,8 @@ namespace ET
             }
 
             reply();
-            await ETTask.CompletedTask;
-        }
+            await ETTask.CompletedTask; */
+        #endif
+}
     }
 }

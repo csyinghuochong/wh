@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ReddotReadRequest request, M2C_ReddotReadResponse response, Action reply)
         {
-            unit.GetComponent<ReddotComponent>().RemoveReddont(request.ReddotType);
+            unit.GetComponent<ReddotComponentServer>().RemoveReddont(request.ReddotType);
 
             reply();
             await ETTask.CompletedTask;

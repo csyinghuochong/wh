@@ -6,7 +6,7 @@ namespace ET
     [AIHandler]
     public class AI_TargetRetreat : AAIHandler
     {
-        public override bool Check(AIComponent aiComponent, AIConfig aiConfig)
+        public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             Unit unit = aiComponent.GetParent<Unit>();
             if (aiComponent.TargetZhuiJi == Vector3.zero)
@@ -17,7 +17,7 @@ namespace ET
             return aiComponent.IsRetreat == 0 && distance >= aiComponent.ChaseRange;
         }
 
-        public override async ETTask Execute(AIComponent aiComponent, AIConfig aiConfig, ETCancellationToken cancellationToken)
+        public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
             if (unit.IsBoss())

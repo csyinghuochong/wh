@@ -9,7 +9,11 @@ namespace ET
     public class C2M_JiaYuanCookHandler : AMActorLocationRpcHandler<Unit, C2M_JiaYuanCookRequest, M2C_JiaYuanCookResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanCookRequest request, M2C_JiaYuanCookResponse response, Action reply)
-        {
+        {            response.Error = ErrorCode.ERR_ModifyData;
+            reply();
+            await ETTask.CompletedTask;
+#if false // TODO: migrate to LD config
+
             List<long> huishouList = request.BagInfoIds;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             if (bagComponentServer.GetBagLeftCell() < 1)
@@ -137,6 +141,7 @@ namespace ET
             unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JiaYuanCookNumber_91, 0, 1);
             reply();
             await ETTask.CompletedTask;
-        }
+        #endif
+}
     }
 }

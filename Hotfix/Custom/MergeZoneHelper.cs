@@ -955,7 +955,7 @@ namespace ET
 
             //RechargeComponent  充值记录组件
             dbcount = 0;
-            List<RechargeComponent> rechargeComponents = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponent>(oldzone, d => d.Id > 0);
+            List<RechargeComponentServer> rechargeComponents = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in rechargeComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))
@@ -972,7 +972,7 @@ namespace ET
             Log.Console("DBPopularizeInfo Complelte");
             //ReddotComponent  红点组件
             dbcount = 0;
-            List<ReddotComponent> reddotComponents = await Game.Scene.GetComponent<DBComponent>().Query<ReddotComponent>(oldzone, d => d.Id > 0);
+            List<ReddotComponentServer> reddotComponents = await Game.Scene.GetComponent<DBComponent>().Query<ReddotComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in reddotComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))
@@ -1044,7 +1044,7 @@ namespace ET
             Log.Console("TaskComponent Complelte");
 
             dbcount = 0;
-            List<TitleComponent> titleComponents = await Game.Scene.GetComponent<DBComponent>().Query<TitleComponent>(oldzone, d => d.Id > 0);
+            List<TitleComponentServer> titleComponents = await Game.Scene.GetComponent<DBComponent>().Query<TitleComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in titleComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))

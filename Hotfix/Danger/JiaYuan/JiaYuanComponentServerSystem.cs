@@ -743,8 +743,8 @@ namespace ET
             int number = 0;
             for (int i = 0; i < self.JiaYuanPastureList_7.Count; i++)
             {
-                JiaYuanPastureConfig jiaYuanPastureConfig = JiaYuanPastureConfigCategory.Instance.Get(self.JiaYuanPastureList_7[i].ConfigId);
-                number += jiaYuanPastureConfig.PeopleNum;
+                LDHome_Farm jiaYuanPastureConfig = LDHome_FarmCategory.Instance.Get(self.JiaYuanPastureList_7[i].ConfigId);
+                number += jiaYuanPastureConfig.Id;
             }
             return number;
         }
