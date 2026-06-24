@@ -122,7 +122,6 @@ namespace ET
 			int monsterid = monsterPosition.Match_Id;
 			
 			Vector3 initposition = new Vector3(monsterPosition.Position[0], monsterPosition.Position[1], monsterPosition.Position[2]);
-			initposition = RandomHelper.GetRandomPointInCircle(initposition, 2f);
 
 			if (mtype == UnitType.Npc)
 			{

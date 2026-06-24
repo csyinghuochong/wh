@@ -126,7 +126,7 @@ namespace ET
 		/// <summary>吟唱时常 引导时常</summary>
 		[ProtoMember(17)]
 		public double Skill_Time { get; set; }
-		/// <summary>时间间隔</summary>
+		/// <summary>引导触发 时间间隔</summary>
 		[ProtoMember(18)]
 		public double Time_Interval { get; set; }
 		/// <summary>进入CD 0-立即 1-终止后</summary>
@@ -183,9 +183,9 @@ namespace ET
 		/// <summary>优先级 是否顺序 0-否 1-是</summary>
 		[ProtoMember(36)]
 		public int Target_Priority_Param { get; set; }
-		/// <summary>目标 筛选方式 0-最近优先 1-朝向最近优先 2-最远优先 3-朝向最远优先 4-属性最多 5-属性最少</summary>
+		/// <summary>目标 筛选方式 0-最近优先 1-朝向最近优先 2-最远优先 3-朝向最远优先 4-属性最多 5-属性最少 9-手动锁定</summary>
 		[ProtoMember(37)]
-		public int Target_Select_Type { get; set; }
+		public int[] Target_Select_Type { get; set; }
 		/// <summary>目标筛选 属性ID</summary>
 		[ProtoMember(38)]
 		public int Target_Select_Type_Param { get; set; }

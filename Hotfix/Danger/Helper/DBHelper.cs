@@ -151,11 +151,10 @@ namespace ET
 
         public static long GetRobotServerId()
         {
-            long robotSceneId = StartSceneConfigCategory.Instance.GetBySceneName(1001, "Robot01").InstanceId;
+            long robotSceneId = StartSceneConfigCategory.Instance.Robots[0].InstanceId;
             return robotSceneId;
         }
         
-
         public static long GetRealmCenter()
         {
             return StartSceneConfigCategory.Instance.RealmConfig.InstanceId;

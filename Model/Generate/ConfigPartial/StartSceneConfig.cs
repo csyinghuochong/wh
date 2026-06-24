@@ -26,6 +26,8 @@ namespace ET
 
         public StartSceneConfig RechargeConfig;
 
+        public StartSceneConfig RobotConfig;
+        
         public List<StartSceneConfig> Robots = new List<StartSceneConfig>();
         
         public List<StartSceneConfig> GetByProcess(int process)

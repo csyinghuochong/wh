@@ -95,7 +95,7 @@ namespace ET
 		public int[] Armor { get; set; }
 		/// <summary>模型</summary>
 		[ProtoMember(7)]
-		public string ModelAsset { get; set; }
+		public string Model { get; set; }
 		/// <summary>初始属性</summary>
 		[ProtoMember(8)]
 		public string Attribute_Init { get; set; }

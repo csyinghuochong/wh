@@ -21,33 +21,5 @@ namespace ET
             return relieveBuffs;
         }
         
-        public override void AfterEndInit()
-        {
-            foreach (LDSkillBuff skillBuffConfig in this.GetAll().Values)
-            {
-                try
-                {
-                    if (skillBuffConfig.BuffType != 6 &&  !string.IsNullOrEmpty(skillBuffConfig.buffParameterValue2))
-                    {
-                        List<int> buffIds = new List<int>();
-                        string[] ids = skillBuffConfig.buffParameterValue2.Split(',');
-                        foreach (string id in ids)
-                        {
-                            if (!int.TryParse(id, out int buffId))
-                            {
-                                Log.Error($"int.TryParse error: {id} skillBuffId:{skillBuffConfig.Id}");
-                                continue;
-                            }
-                            buffIds.Add(buffId);
-                        }
-                        this.RelieveBuffList.Add(skillBuffConfig.Id, buffIds);
-                    }
-                }
-                catch (Exception ex) 
-                {
-                    Log.Error(ex.ToString());
-                }
-            }
-        }
     }
 }

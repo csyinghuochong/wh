@@ -291,8 +291,6 @@ namespace ET
                         reply();
 
                         int tomap = CommonHelper.MainCityID();
-                        tomap = 101;
-                        
 						StartSceneConfig startSceneConfig = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), $"Map{tomap}");
 						await TransferHelper.Transfer(unit, startSceneConfig.InstanceId, (int)MapTypeEnum.MainCityScene, CommonHelper.MainCityID(), 0, "0");
 

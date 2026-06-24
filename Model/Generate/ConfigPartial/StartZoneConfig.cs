@@ -28,7 +28,8 @@ namespace ET
             //_serverItems.Add( GetServerItem( 2, "43.139.108.125:20335", "内测服", 1720954800000, 0 ) );
             
             _serverItems.Add( GetServerItem( 1, "127.0.0.1:20325", "版号服", 1779102000000, 1 ) );
-            _serverItems.Add( GetServerItem( 2, "127.0.0.1:20335", "内测服", 1779102000000, 1 ) );
+            _serverItems.Add( GetServerItem( 2, "127.0.0.1:20335", "内测1服", 1779102000000, 1 ) );
+            _serverItems.Add( GetServerItem( 3, "127.0.0.1:20345", "内测2服", 1779102000000, 1 ) );
         }
     }
 }
