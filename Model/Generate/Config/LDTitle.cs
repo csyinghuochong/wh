@@ -90,9 +90,9 @@ namespace ET
 		/// <summary>图标</summary>
 		[ProtoMember(5)]
 		public string Icon { get; set; }
-		/// <summary>额外属性</summary>
+		/// <summary>属性</summary>
 		[ProtoMember(6)]
-		public string AddProperty { get; set; }
+		public string Attribute { get; set; }
 		/// <summary>有效期 单位：秒</summary>
 		[ProtoMember(7)]
 		public int ValidityTime { get; set; }

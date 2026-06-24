@@ -102,7 +102,7 @@ namespace ET
 		/// <summary>升级 消耗</summary>
 		[ProtoMember(9)]
 		public string Cost { get; set; }
-		/// <summary>BUFF 替换技能</summary>
+		/// <summary>BUFF 替换技能 前置优先</summary>
 		[ProtoMember(10)]
 		public string Replace_Skill { get; set; }
 		/// <summary>释放消耗</summary>
@@ -129,7 +129,7 @@ namespace ET
 		/// <summary>时间间隔</summary>
 		[ProtoMember(18)]
 		public double Time_Interval { get; set; }
-		/// <summary>进入CD 0-立即 1-释放后</summary>
+		/// <summary>进入CD 0-立即 1-终止后</summary>
 		[ProtoMember(19)]
 		public int Enter_CD { get; set; }
 		/// <summary>打断自身 普通攻击 0-否 1-是</summary>
@@ -201,7 +201,7 @@ namespace ET
 		/// <summary>施法 目标BUFF要求</summary>
 		[ProtoMember(42)]
 		public int[] Target_Buff_Limit { get; set; }
-		/// <summary>作用时间 非子弹：生效时间 子弹：发射时间</summary>
+		/// <summary>作用时间（前摇） 非子弹：生效时间 子弹：发射时间</summary>
 		[ProtoMember(43)]
 		public double Time_1 { get; set; }
 		/// <summary>硬直时间</summary>
@@ -215,25 +215,25 @@ namespace ET
 		public string Attack_Animation { get; set; }
 		/// <summary>攻击特效</summary>
 		[ProtoMember(47)]
-		public string Attack_Effect { get; set; }
+		public string Attack_VFX { get; set; }
 		/// <summary>攻击挂点</summary>
 		[ProtoMember(48)]
 		public string Attack_Socket { get; set; }
 		/// <summary>攻击材质</summary>
 		[ProtoMember(49)]
-		public string Attack_Material { get; set; }
+		public string Attack_Shader { get; set; }
 		/// <summary>受击动作</summary>
 		[ProtoMember(50)]
 		public string Hit_Animation { get; set; }
 		/// <summary>受击特效</summary>
 		[ProtoMember(51)]
-		public string Hit_Effect { get; set; }
+		public string Hit_VFX { get; set; }
 		/// <summary>受击挂点</summary>
 		[ProtoMember(52)]
 		public string Hit_Socket { get; set; }
 		/// <summary>受击材质</summary>
 		[ProtoMember(53)]
-		public string Hit_Material { get; set; }
+		public string Hit_Shader { get; set; }
 		/// <summary>攻击音效</summary>
 		[ProtoMember(54)]
 		public string Attack_Audio { get; set; }

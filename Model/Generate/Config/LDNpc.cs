@@ -81,15 +81,24 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>说话</summary>
+		/// <summary>头顶描述</summary>
 		[ProtoMember(3)]
-		public int Speak { get; set; }
-		/// <summary>头像</summary>
+		public int Desc_Head { get; set; }
+		/// <summary>对话描述</summary>
 		[ProtoMember(4)]
+		public int Desc_Dialogue { get; set; }
+		/// <summary>头像</summary>
+		[ProtoMember(5)]
 		public string Icon { get; set; }
 		/// <summary>模型</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public string Model { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(7)]
+		public int Type { get; set; }
+		/// <summary>参数</summary>
+		[ProtoMember(8)]
+		public int[] Param { get; set; }
 
 	}
 }

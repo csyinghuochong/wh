@@ -84,102 +84,99 @@ namespace ET
 		/// <summary>描述</summary>
 		[ProtoMember(3)]
 		public int Desc { get; set; }
-		/// <summary>图标类型</summary>
-		[ProtoMember(4)]
-		public string BuffIconType { get; set; }
 		/// <summary>图标</summary>
+		[ProtoMember(4)]
+		public string Icon { get; set; }
+		/// <summary>特殊显示 优先级 LS 0-不显示</summary>
 		[ProtoMember(5)]
-		public string BuffIcon { get; set; }
-		/// <summary>广播目标类型 0-全部 1-队友</summary>
+		public int Icon_Special_Show_Order_LS { get; set; }
+		/// <summary>显示 优先级 LS 0-不显示</summary>
 		[ProtoMember(6)]
-		public int BroadcastType { get; set; }
-		/// <summary>Buff等级</summary>
+		public int Icon_Show_Order_LS { get; set; }
+		/// <summary>类型 0-无 1-增益 2-减益</summary>
 		[ProtoMember(7)]
-		public int BuffLv { get; set; }
-		/// <summary>切换场景保留 0-不保留 1-切场景保留 2-离线保留</summary>
+		public int Type_Effect { get; set; }
+		/// <summary>添加类型 0-替换 1-叠加 2-延长 3-共存</summary>
 		[ProtoMember(8)]
-		public int Transfer { get; set; }
-		/// <summary>Buff存在时间 单位：毫秒</summary>
+		public int Type_Add { get; set; }
+		/// <summary>类型参数 0-无 1-上限数 2-无 3-共存数</summary>
 		[ProtoMember(9)]
-		public int BuffTime { get; set; }
-		/// <summary>Buff延迟生效时间</summary>
+		public int Type_Add_Param { get; set; }
+		/// <summary>自定组</summary>
 		[ProtoMember(10)]
-		public int BuffDelayTime { get; set; }
-		/// <summary>循环触发时间 单位：秒</summary>
+		public int[] Group { get; set; }
+		/// <summary>互斥组</summary>
 		[ProtoMember(11)]
-		public int BuffLoopTime { get; set; }
-		/// <summary>目标类型 1-自身 2-队友 3-己方 4-敌方 5-全部</summary>
+		public int[] Group_Mutex { get; set; }
+		/// <summary>互斥ID</summary>
 		[ProtoMember(12)]
-		public int TargetType { get; set; }
-		/// <summary>Buff脚本</summary>
+		public int[] Id_Mutex { get; set; }
+		/// <summary>初始化 技能</summary>
 		[ProtoMember(13)]
-		public string BuffScript { get; set; }
-		/// <summary>Buff类型 0 1-操作属性 2-操作状态 3-触发技能 4-装备技能 5-移除状态 6-奔跑大赛 7-免除技能上海 8-BUFF层数触发技能</summary>
+		public int Skill_Init { get; set; }
+		/// <summary>刷新触发 技能</summary>
 		[ProtoMember(14)]
-		public int BuffType { get; set; }
-		/// <summary>Buff增益减益 0 1-增益 2-减益</summary>
+		public int Skill_Refresh { get; set; }
+		/// <summary>触发 技能</summary>
 		[ProtoMember(15)]
-		public int BuffBenefitType { get; set; }
-		/// <summary>Buff参数操作类型 1时表示属性 2时表示状态</summary>
+		public int Skill_Trigger { get; set; }
+		/// <summary>时间结束 技能</summary>
 		[ProtoMember(16)]
-		public int buffParameterType { get; set; }
-		/// <summary>Buff参数操作值 buffType=1 具体属性值 buffType=2 配置 0 buffParameterType=3164时 变身怪物ID</summary>
+		public int Skill_TimeEnd { get; set; }
+		/// <summary>消失 技能</summary>
 		[ProtoMember(17)]
-		public double buffParameterValue { get; set; }
-		/// <summary>Buff参数操作值2 护盾类技能配置 护盾被敌人打破 触发的技能ID</summary>
+		public int Skill_Remove { get; set; }
+		/// <summary>特殊效果 添加</summary>
 		[ProtoMember(18)]
-		public string buffParameterValue2 { get; set; }
-		/// <summary>buff操作参数值类型</summary>
+		public int[] Special_Effect { get; set; }
+		/// <summary>特殊效果 免疫</summary>
 		[ProtoMember(19)]
-		public int buffParameterValueType { get; set; }
-		/// <summary>buff操作参数值类型定义 0-整数 1-小数</summary>
+		public int[] Special_Effect_Immune { get; set; }
+		/// <summary>免疫组</summary>
 		[ProtoMember(20)]
-		public int buffParameterValueDef { get; set; }
-		/// <summary>Buff是否叠加 0-不叠加 1-叠加 2-关联BUFF只存在1种</summary>
+		public int[] Group_Immune { get; set; }
+		/// <summary>移动移除 0-否 1-是</summary>
 		[ProtoMember(21)]
-		public int BuffAddClass { get; set; }
-		/// <summary>Buff是叠加层数上限</summary>
+		public int Remove_Move { get; set; }
+		/// <summary>战斗移除 0-否 1-是</summary>
 		[ProtoMember(22)]
-		public int BuffAddClassMax { get; set; }
-		/// <summary>buff叠加后时间统一 0-各自计时 1-刷新计时</summary>
+		public int Remove_Battle_Enter { get; set; }
+		/// <summary>脱战移除 0-否 1-是</summary>
 		[ProtoMember(23)]
-		public int BuffAddSync { get; set; }
-		/// <summary>唯一buffID</summary>
+		public int Remove_Battle_Leave { get; set; }
+		/// <summary>死亡移除 0-否 1-是</summary>
 		[ProtoMember(24)]
-		public string WeiYiBuffID { get; set; }
-		/// <summary>伤害类型 1-物理攻击 2-魔法攻击</summary>
+		public int Remove_Dead { get; set; }
+		/// <summary>安全区移除 0-否 1-是</summary>
 		[ProtoMember(25)]
-		public int DamgeType { get; set; }
-		/// <summary>伤害系数</summary>
+		public int Remove_SafeArea { get; set; }
+		/// <summary>切场景移除 0-否 1-是</summary>
 		[ProtoMember(26)]
-		public double DamgePro { get; set; }
-		/// <summary>固定伤害值</summary>
+		public int Remove_ChangeScene { get; set; }
+		/// <summary>下线移除 0-否 1-是</summary>
 		[ProtoMember(27)]
-		public int DamgeValue { get; set; }
-		/// <summary>是否立即释放 0-立即释放 1-延迟释放</summary>
+		public int Remove_Logout { get; set; }
+		/// <summary>特效1</summary>
 		[ProtoMember(28)]
-		public int IfImmediatelyUse { get; set; }
-		/// <summary>是否在主界面显示BuffIcon 0-不显示 1-显示</summary>
+		public string VFX_1 { get; set; }
+		/// <summary>挂点1</summary>
 		[ProtoMember(29)]
-		public int IfShowIconTips { get; set; }
-		/// <summary>buff特效</summary>
+		public string VFX_Socket1 { get; set; }
+		/// <summary>特效2</summary>
 		[ProtoMember(30)]
-		public int BuffEffectID { get; set; }
-		/// <summary>附加目标类型 0-所有人 1-玩家 2-NPC    3-怪物 4-掉落   5-传送 6-宠物   7-精灵 8-动物   9-植物 10-弹道</summary>
+		public string VFX_2 { get; set; }
+		/// <summary>挂点2</summary>
 		[ProtoMember(31)]
-		public int[] BuffTargetType { get; set; }
-		/// <summary>移除机制 0-默认 1-移动 2-被攻击 3-释放技能</summary>
+		public string VFX_Socket2 { get; set; }
+		/// <summary>特效3</summary>
 		[ProtoMember(32)]
-		public int[] Remove { get; set; }
-		/// <summary>移动触发 0-默认 1-只有移动时触发</summary>
+		public string VFX_3 { get; set; }
+		/// <summary>挂点3</summary>
 		[ProtoMember(33)]
-		public int MoveAction { get; set; }
-		/// <summary>叠加层数触发技能</summary>
+		public string VFX_Socket3 { get; set; }
+		/// <summary>材质</summary>
 		[ProtoMember(34)]
-		public int[] AddSkill { get; set; }
-		/// <summary>被击杀后是否移除机制 0-死亡移除 1-死亡不移除</summary>
-		[ProtoMember(35)]
-		public int DeadNoRemove { get; set; }
+		public string Buff_Shader { get; set; }
 
 	}
 }

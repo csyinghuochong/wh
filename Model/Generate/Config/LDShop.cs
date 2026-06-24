@@ -99,6 +99,9 @@ namespace ET
 		/// <summary>自动刷新 1-日 2-周 3-月 9-特殊</summary>
 		[ProtoMember(8)]
 		public int Auto_Refresh { get; set; }
+		/// <summary>资源条 0-默认</summary>
+		[ProtoMember(9)]
+		public int[] Resource_Bar { get; set; }
 
 	}
 }

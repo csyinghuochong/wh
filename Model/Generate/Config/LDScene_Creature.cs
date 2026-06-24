@@ -96,6 +96,12 @@ namespace ET
 		/// <summary>朝向</summary>
 		[ProtoMember(7)]
 		public int Rotation { get; set; }
+		/// <summary>小地图 0-不显示 1-NPC 2-首领</summary>
+		[ProtoMember(8)]
+		public int MiniMap_Type { get; set; }
+		/// <summary>小地图 排序</summary>
+		[ProtoMember(9)]
+		public int MiniMap_Order_SL { get; set; }
 
 	}
 }
