@@ -66,6 +66,7 @@
     <ProjectReference Include="..\Model\Server.Model.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Danger\ActivityServer\" />
     <Folder Include="Module\Function\" />
   </ItemGroup>
   <ItemGroup>

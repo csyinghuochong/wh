@@ -290,20 +290,20 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             int maxping = self.GetPetMaxPingFen();
 
-            unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PegScoreToValue_307, 0, maxping);
+            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PegScoreToValue_307, 0, maxping);
 
             int arrayping = self.GetPetArrayPingFen();
-            unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PetArrayScoreToValue_308, 0, arrayping);
+            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PetArrayScoreToValue_308, 0, arrayping);
         }
 
         public static void CheckPetZiZhi(this PetComponent self)
         {
             Unit unit = self.GetParent<Unit>();
-            unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 1, self.GetPetMaxZiZhi(1));
-            unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 2, self.GetPetMaxZiZhi(2));
-            unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 3, self.GetPetMaxZiZhi(3));
-            unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 4, self.GetPetMaxZiZhi(4));
-            unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 5, self.GetPetMaxZiZhi(5));
+            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 1, self.GetPetMaxZiZhi(1));
+            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 2, self.GetPetMaxZiZhi(2));
+            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 3, self.GetPetMaxZiZhi(3));
+            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 4, self.GetPetMaxZiZhi(4));
+            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 5, self.GetPetMaxZiZhi(5));
         }
 
         public static int GetPetMaxZiZhi(this PetComponent self, int zizhiType)
@@ -531,7 +531,7 @@ namespace ET
             self.CheckPetPingFen();
             self.CheckPetZiZhi();
 
-            unit.GetComponent<ChengJiuComponent>().OnGetPet(newpet);
+            unit.GetComponent<ChengJiuComponentServer>().OnGetPet(newpet);
             unit.GetComponent<TaskComponent>().OnGetPet(newpet);
 
             if (PetHelper.IsShenShou(petId) && unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber) < 5000)
@@ -1673,7 +1673,7 @@ namespace ET
             self.CheckPetPingFen();
             self.CheckPetZiZhi();
 
-            unit.GetComponent<ChengJiuComponent>().OnGetPet(newpet);
+            unit.GetComponent<ChengJiuComponentServer>().OnGetPet(newpet);
             unit.GetComponent<TaskComponent>().OnGetPet(newpet);
 
             self.OnGmPetEquip(10060230, newpet);

@@ -42,29 +42,29 @@ namespace ET
 
         public static async ETTask CreateJiaYuanUnit(this JiaYuanSceneComponent self, Scene fubnescene, long masterid, long unitid)
         {
-            JiaYuanComponent jiaYuanComponent = await DBHelper.GetComponentCache<JiaYuanComponent>(fubnescene.DomainZone(), masterid);
+            JiaYuanComponentServer jiaYuanComponentServer = await DBHelper.GetComponentCache<JiaYuanComponentServer>(fubnescene.DomainZone(), masterid);
 
-            if (jiaYuanComponent.JiaYuanPastureList_7.Count > 100 
-                || jiaYuanComponent.JianYuanPlantList_7.Count > 100
-                || jiaYuanComponent.JiaYuanMonster_2.Count > 100)
+            if (jiaYuanComponentServer.JiaYuanPastureList_7.Count > 100 
+                || jiaYuanComponentServer.JianYuanPlantList_7.Count > 100
+                || jiaYuanComponentServer.JiaYuanMonster_2.Count > 100)
             {
                 Log.Error($"CreateJiaYuanUnit:  {masterid}");
                 return;
             }
 
-            for (int i = 0;i < jiaYuanComponent.JiaYuanPastureList_7.Count; i++)
+            for (int i = 0;i < jiaYuanComponentServer.JiaYuanPastureList_7.Count; i++)
             {
-                UnitFactory.CreatePasture(fubnescene, jiaYuanComponent.JiaYuanPastureList_7[i], masterid);
+                UnitFactory.CreatePasture(fubnescene, jiaYuanComponentServer.JiaYuanPastureList_7[i], masterid);
             }
-            for (int i = 0; i < jiaYuanComponent.JianYuanPlantList_7.Count; i++)
+            for (int i = 0; i < jiaYuanComponentServer.JianYuanPlantList_7.Count; i++)
             {
-                UnitFactory.CreatePlan(fubnescene, jiaYuanComponent.JianYuanPlantList_7[i], masterid);
+                UnitFactory.CreatePlan(fubnescene, jiaYuanComponentServer.JianYuanPlantList_7[i], masterid);
             }
 
             long serverTime = TimeHelper.ServerNow();
-            for (int i = 0; i < jiaYuanComponent.JiaYuanMonster_2.Count; i++)
+            for (int i = 0; i < jiaYuanComponentServer.JiaYuanMonster_2.Count; i++)
             {
-                JiaYuanMonster keyValuePair = jiaYuanComponent.JiaYuanMonster_2[i];
+                JiaYuanMonster keyValuePair = jiaYuanComponentServer.JiaYuanMonster_2[i];
                 Vector3 vector3 = new Vector3(keyValuePair.x, keyValuePair.y, keyValuePair.z);
                 UnitFactory.CreateMonster(fubnescene, keyValuePair.ConfigId, vector3, new CreateMonsterInfo()
                 {
@@ -73,9 +73,9 @@ namespace ET
                     UnitId = keyValuePair.unitId
                 }); 
             }
-            for (int i = 0; i < jiaYuanComponent.JiaYuanPetList_2.Count; i++)
+            for (int i = 0; i < jiaYuanComponentServer.JiaYuanPetList_2.Count; i++)
             {
-                UnitFactory.CreateJiaYuanPet(fubnescene, masterid, jiaYuanComponent.JiaYuanPetList_2[i]);
+                UnitFactory.CreateJiaYuanPet(fubnescene, masterid, jiaYuanComponentServer.JiaYuanPetList_2[i]);
             }
         }
 

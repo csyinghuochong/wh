@@ -72,7 +72,7 @@ namespace ET
                 unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, "120", true, ItemGetWay.Share);
             }
 
-            unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.ShareTotalNumber_220, 0, 1);
+            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ShareTotalNumber_220, 0, 1);
             reply();
             await ETTask.CompletedTask;
         }

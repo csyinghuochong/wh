@@ -15,7 +15,7 @@ namespace ET
         public const string PetComponent = "PetComponent";
         public const string SkillSetComponent = "SkillSetComponent";
         public const string EnergyComponent = "EnergyComponent";
-        public const string ActivityComponent = "ActivityComponent";
+        public const string ActivityComponent = "ActivityComponentServer";
         public const string NumericComponent = "NumericComponent";
         public const string RechargeComponent = "RechargeComponent";
         public const string ReddotComponent = "ReddotComponent";

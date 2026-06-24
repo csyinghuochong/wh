@@ -1003,7 +1003,7 @@ namespace ET
                     //    continue;
                     //}
 
-                    List<ChengJiuComponent> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponent>(pyzone, d => d.Id == roleInfoComponent.Id);
+                    List<ChengJiuComponentServer> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponentServer>(pyzone, d => d.Id == roleInfoComponent.Id);
                     if (chengJiuComponents == null || chengJiuComponents.Count == 0)
                     {
                         continue;

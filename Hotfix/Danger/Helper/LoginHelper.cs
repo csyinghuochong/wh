@@ -53,11 +53,10 @@ namespace ET
                     roleInfoComponent.OnZeroClockUpdate(false);
                     unit.GetComponent<TaskComponent>().CheckWeeklyUpdate(lastLoginTime, currentTime);
                     unit.GetComponent<TaskComponent>().OnZeroClockUpdate(false);
-                    unit.GetComponent<EnergyComponent>().OnResetEnergyInfo();
                     unit.GetComponent<HeroDataComponent>().OnZeroClockUpdate(false);
-                    unit.GetComponent<ActivityComponent>().OnZeroClockUpdate(roleInfo.Lv);
-                    unit.GetComponent<ChengJiuComponent>().OnZeroClockUpdate();
-                    unit.GetComponent<JiaYuanComponent>().OnZeroClockUpdate(false);
+                    unit.GetComponent<ActivityComponentServer>().OnZeroClockUpdate(roleInfo.Lv);
+                    unit.GetComponent<ChengJiuComponentServer>().OnZeroClockUpdate();
+                    unit.GetComponent<JiaYuanComponentServer>().OnZeroClockUpdate(false);
                     unit.GetComponent<DataCollationComponent>().OnZeroClockUpdate(false);
                     roleInfoComponent.OnJiaYuanExp(Math.Min(passhour, 12f));
                 }
@@ -81,7 +80,7 @@ namespace ET
                         Log.Debug(indexstr);
                     }
   
-                    unit.GetComponent<JiaYuanComponent>().OnLoginCheck(hour_1, hour_2);
+                    unit.GetComponent<JiaYuanComponentServer>().OnLoginCheck(hour_1, hour_2);
                     float passhour = ((currentTime - lastLoginTime) * 1f / TimeHelper.Hour);
                     roleInfoComponent.OnJiaYuanExp(Math.Min(passhour, 12f));
                 }
@@ -98,10 +97,10 @@ namespace ET
             unit.GetComponent<DBSaveComponent>().OnLogin();
             unit.GetComponent<RechargeComponent>().OnLogin();
             unit.GetComponent<PetComponent>().OnLogin();
-            unit.GetComponent<ActivityComponent>().OnLogin(roleInfo.Lv);
+            unit.GetComponent<ActivityComponentServer>().OnLogin(roleInfo.Lv);
             unit.GetComponent<TitleComponent>().OnCheckTitle(false);
-            unit.GetComponent<ChengJiuComponent>().OnLogin();
-            unit.GetComponent<JiaYuanComponent>().OnLogin();
+            unit.GetComponent<ChengJiuComponentServer>().OnLogin();
+            unit.GetComponent<JiaYuanComponentServer>().OnLogin();
             unit.GetComponent<SkillSetComponent>().OnLogin(roleInfo.Occ);
 
         }

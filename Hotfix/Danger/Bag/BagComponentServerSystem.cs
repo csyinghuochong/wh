@@ -698,7 +698,7 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
             int zodiacnumber = self.GetZodiacnumber();
-            unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacnumber);
+            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacnumber);
 
 
             ///old

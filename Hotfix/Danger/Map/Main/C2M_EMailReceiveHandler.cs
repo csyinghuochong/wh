@@ -52,7 +52,7 @@ namespace ET
                     LDItem ldItem = LDItemCategory.Instance.Get(mailInfo.ItemSell.ItemID);
                     if (ldItem.ItemType == 3)
                     {
-                        unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PaiMaiSellNumber_218, 0, 1);
+                        unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PaiMaiSellNumber_218, 0, 1);
                     }
                 }
             }

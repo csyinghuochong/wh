@@ -1294,12 +1294,12 @@ namespace ET
 
             List<int> taskCountryList = TaskHelper.GetActivityV1Task(unit, 120);
 
-            bool isduihuan = unit.GetComponent<ActivityComponent>().ActivityV1Info.PointsReward.Count > 0;
+            bool isduihuan = unit.GetComponent<ActivityComponentServer>().ActivityV1Info.PointsReward.Count > 0;
 
             //每次活动扣除100积分， 对话任意积分可免扣除
 
             unit.GetComponent<HeroDataComponent>().ActivityV1Reset(!isduihuan, notice);
-            unit.GetComponent<ActivityComponent>().ActivityV1Reset(notice);
+            unit.GetComponent<ActivityComponentServer>().ActivityV1Reset(notice);
         }
 
         public static void UpdateSeasonWeekTask(this TaskComponent self, bool notice)

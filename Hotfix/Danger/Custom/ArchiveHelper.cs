@@ -15,10 +15,10 @@ namespace ET
             await ETTask.CompletedTask;
             Console.WriteLine($"OnArchiveHandler  Begin===   {zone} {unitid}");
 
-            ActivityComponent old_activityComponent = GetDBComponent<ActivityComponent>(zone, unitid, day, DBHelper.ActivityComponent);
-            if (old_activityComponent == null)
+            ActivityComponentServer oldActivityComponentServer = GetDBComponent<ActivityComponentServer>(zone, unitid, day, DBHelper.ActivityComponent);
+            if (oldActivityComponentServer == null)
             {
-                Console.WriteLine($"OnArchiveHandler  activityComponent==null:   {zone} {unitid}");
+                Console.WriteLine($"OnArchiveHandler  activityComponentServer==null:   {zone} {unitid}");
                 return;
             }
 
@@ -29,8 +29,8 @@ namespace ET
                 return;
             }
 
-            ChengJiuComponent old_chengJiuComponent = GetDBComponent<ChengJiuComponent>(zone, unitid, day, DBHelper.ChengJiuComponent);
-            if (old_chengJiuComponent == null)
+            ChengJiuComponentServer oldChengJiuComponentServer = GetDBComponent<ChengJiuComponentServer>(zone, unitid, day, DBHelper.ChengJiuComponent);
+            if (oldChengJiuComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  chengJiuComponent==null:   {zone} {unitid}");
                 return;
@@ -86,15 +86,8 @@ namespace ET
                 return;
             }
 
-            EnergyComponent old_energyComponent = GetDBComponent<EnergyComponent>(zone, unitid, day, DBHelper.EnergyComponent);
-            if (old_energyComponent == null)
-            {
-                Console.WriteLine($"OnArchiveHandler  energyComponent==null:   {zone} {unitid}");
-                return;
-            }
-
-            JiaYuanComponent old_jiaYuanComponent = GetDBComponent<JiaYuanComponent>(zone, unitid, day, DBHelper.JiaYuanComponent);
-            if (old_jiaYuanComponent == null)
+            JiaYuanComponentServer oldJiaYuanComponentServer = GetDBComponent<JiaYuanComponentServer>(zone, unitid, day, DBHelper.JiaYuanComponent);
+            if (oldJiaYuanComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  jiaYuanComponent==null:   {zone} {unitid}");
                 return;
@@ -277,7 +270,7 @@ namespace ET
                 Console.WriteLine($"AllUnitComponent:  {allComponets[i]}！！！");
                 //个人数据组件
                 //
-                //ActivityComponent    BagComponentServer     ChengJiuComponent    DBFriendInfo 
+                //ActivityComponentServer    BagComponentServer     ChengJiuComponent    DBFriendInfo 
                 //DBMailInfo    DBPopularizeInfo     DataCollationComponent  EnergyComponent 
                 //JiaYuanComponent    NumericComponent     PetComponent     RechargeComponent 
                 //ReddotComponent     ShoujiComponent     SkillSetComponent    TaskComponent 
@@ -288,15 +281,14 @@ namespace ET
             //除了DBFriendInfo  DBMailInfo   DBPopularizeInfo几个组件，其他的都是进入游戏的已经加载到缓存服，这三个组件需要的时候才加载。
 
             //导入DB数据
-            await SaveDBComponent(zone, old_activityComponent);
+            await SaveDBComponent(zone, oldActivityComponentServer);
             await SaveDBComponent(zone, oldBagComponentServer);
-            await SaveDBComponent(zone, old_chengJiuComponent);
+            await SaveDBComponent(zone, oldChengJiuComponentServer);
             await SaveDBComponent(zone, old_dBFriendInfo);
             await SaveDBComponent(zone, old_dBMailInfo);
 
             await SaveDBComponent(zone, old_dataCollationComponent);
-            await SaveDBComponent(zone, old_energyComponent);
-            await SaveDBComponent(zone, old_jiaYuanComponent);
+            await SaveDBComponent(zone, oldJiaYuanComponentServer);
             await SaveDBComponent(zone, old_numericComponent);
             await SaveDBComponent(zone, old_petComponent);
             await SaveDBComponent(zone, old_rechargeComponent);
@@ -393,14 +385,13 @@ namespace ET
             //    }
             //}
             Console.WriteLine($"ExecuteBatchAllComponent:  zone: {zone}   number: {saveuserids.Count}");
-            await ExecuteBatchSingleComponent<ActivityComponent>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<ActivityComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<BagComponentServer>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<ChengJiuComponent>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<ChengJiuComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DBFriendInfo>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DBMailInfo>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DataCollationComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<EnergyComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<JiaYuanComponent>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<JiaYuanComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<NumericComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<PetComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<RechargeComponent>(zone, saveuserids);

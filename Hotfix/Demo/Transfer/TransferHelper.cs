@@ -190,9 +190,9 @@ namespace ET
                         ///进入之前先刷新一下
                         if (long.Parse(request.paramInfo) == unit.Id)
                         {
-                            JiaYuanComponent jiaYuanComponent = unit.GetComponent<JiaYuanComponent>();
-                            jiaYuanComponent.OnBeforEnter();
-                            await DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, jiaYuanComponent);
+                            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
+                            jiaYuanComponentServer.OnBeforEnter();
+                            await DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, jiaYuanComponentServer);
                         }
                         J2M_JiaYuanEnterResponse j2M_JianYuanEnterResponse = (J2M_JiaYuanEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2J_JiaYuanEnterRequest() { MasterId = long.Parse(request.paramInfo), UnitId = unit.Id, SceneId = request.SceneId });
@@ -650,11 +650,11 @@ namespace ET
                 unit.GetComponent<PetComponent>().UpdatePetAttribute(fightId, false);
                 UnitFactory.CreatePet(unit, fightId);
             }
-            int jinglingid  = unit.GetComponent<ChengJiuComponent>().JingLingId;
+            int jinglingid  = unit.GetComponent<ChengJiuComponentServer>().JingLingId;
             if (jinglingid != 0)
             {
                 long JingLingUnitId = UnitFactory.CreateJingLing(unit, jinglingid).Id;
-                unit.GetComponent<ChengJiuComponent>().JingLingUnitId = JingLingUnitId;
+                unit.GetComponent<ChengJiuComponentServer>().JingLingUnitId = JingLingUnitId;
             }
         }
 
@@ -697,12 +697,12 @@ namespace ET
             {
                 unitComponent.Remove(fightId.Id);
             }
-            long jinglingUnitId = unit.GetComponent<ChengJiuComponent>().JingLingUnitId;
+            long jinglingUnitId = unit.GetComponent<ChengJiuComponentServer>().JingLingUnitId;
             if (jinglingUnitId != 0 && unitComponent.Get(jinglingUnitId) != null)
             {
                 unitComponent.Remove(jinglingUnitId);
             }
-            unit.GetComponent<ChengJiuComponent>().JingLingUnitId = 0;
+            unit.GetComponent<ChengJiuComponentServer>().JingLingUnitId = 0;
         }
 
         /// <summary>

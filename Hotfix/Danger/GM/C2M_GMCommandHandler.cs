@@ -118,7 +118,7 @@ namespace ET
 
                     //激活全部成就
                     //激活全部精灵
-                    unit.GetComponent<ChengJiuComponent>().OnGmGaoJi();
+                    unit.GetComponent<ChengJiuComponentServer>().OnGmGaoJi();
 
 					//激活试炼之地所有层数
 					 int trialFubenid = TowerHelper.GetLastTowerIdByScene(MapTypeEnum.TrialDungeon);
@@ -126,7 +126,7 @@ namespace ET
 
                     //激活家园里的美味大师//激活家园里的菜谱
                     //家园土地默认全部开启
-                    unit.GetComponent<JiaYuanComponent>().OnGmGaoJi();
+                    unit.GetComponent<JiaYuanComponentServer>().OnGmGaoJi();
                 }
 
                 if (message.GMMsg == "#killall")

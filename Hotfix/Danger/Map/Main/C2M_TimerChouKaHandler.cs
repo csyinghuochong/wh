@@ -18,8 +18,8 @@ namespace ET
                 return;
             }
             
-            ActivityComponent activityComponent = unit.GetComponent<ActivityComponent>();
-            int receNum = activityComponent.TimerChouKaReceiveIndex;
+            ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
+            int receNum = activityComponentServer.TimerChouKaReceiveIndex;
             if (receNum >= CommonConfig.TimerChouKaRewardList.Count)
             {
                 response.Error = ErrorCode.ERR_AlreadyFinish;
@@ -27,7 +27,7 @@ namespace ET
                 return;
             }
 
-            long passtime = activityComponent.LastTimerChouKaPassTime;
+            long passtime = activityComponentServer.LastTimerChouKaPassTime;
             long validTime =  CommonConfig.TimerChouKaRewardList[receNum].Interval * TimeHelper.Minute;
 
             if (passtime < validTime)
@@ -41,7 +41,7 @@ namespace ET
             //List<int> weights = new List<int>();
             //for (int i = 0; i < ConfigHelper.TimerChouKaRewardList.Count; i++)
             //{
-            //    if (!activityComponent.TimerChouKaReceiveIds.Contains(i))
+            //    if (!activityComponentServer.TimerChouKaReceiveIds.Contains(i))
             //    {
             //        validids.Add(i);
             //        weights.Add(ConfigHelper.TimerChouKaRewardList[i].Weight);
@@ -50,15 +50,15 @@ namespace ET
             //int index = RandomHelper.RandomByWeight(weights);
             //int recvid = validids[index];
 
-            int recvid = activityComponent.TimerChouKaReceiveIndex;
+            int recvid = activityComponentServer.TimerChouKaReceiveIndex;
             string getitem = CommonConfig.TimerChouKaRewardList[recvid].ItemInfo;
             bagComponentServer.OnAddItemData(getitem, $"{ItemGetWay.ChouKa}_{TimeHelper.ServerNow()}");
-            activityComponent.TimerChouKaReceiveIndex++;
-            activityComponent.LastTimerChouKaPassTime = 0;
+            activityComponentServer.TimerChouKaReceiveIndex++;
+            activityComponentServer.LastTimerChouKaPassTime = 0;
 
 
-            response.LastTimerChouKaPassTime = activityComponent.LastTimerChouKaPassTime;
-            response.TimerChouKaReceiveIndex = activityComponent.TimerChouKaReceiveIndex;
+            response.LastTimerChouKaPassTime = activityComponentServer.LastTimerChouKaPassTime;
+            response.TimerChouKaReceiveIndex = activityComponentServer.TimerChouKaReceiveIndex;
             reply();
             await ETTask.CompletedTask;
         }

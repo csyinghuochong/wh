@@ -393,10 +393,10 @@ namespace ET
                 unititem.GetComponent<TaskComponent>().TriggerTaskEvent( TastConditionType.TeamDungeonHurt_136, self.TeamInfo.SceneId, hurtRate);
              
                 unititem.GetComponent<TaskComponent>().OnPassTeamFuben();
-                unititem.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PassTeamFubenNumber_20, 0, 1);
+                unititem.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PassTeamFubenNumber_20, 0, 1);
                 if (self.FubenType == TeamFubenType.ShenYuan)
                 {
-                    unititem.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PassTeamShenYuanNumber_21, 0, 1);
+                    unititem.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PassTeamShenYuanNumber_21, 0, 1);
                 }
                 if (unititem.GetComponent<RoleInfoComponent>().RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
                 {

@@ -530,8 +530,8 @@ namespace ET
             }
             Log.Console($"不参与合区的玩家数量 {invalidPlayers.Count}");
 
-            //ActivityComponent
-            List<ActivityComponent> activityComponents = await Game.Scene.GetComponent<DBComponent>().Query<ActivityComponent>(oldzone, d => d.Id > 0);
+            //ActivityComponentServer
+            List<ActivityComponentServer> activityComponents = await Game.Scene.GetComponent<DBComponent>().Query<ActivityComponentServer>(oldzone, d => d.Id > 0);
             long dbcount = 0;
             int onecount = 1000;
             foreach (var entity in activityComponents)
@@ -548,7 +548,7 @@ namespace ET
                 }
                 await Game.Scene.GetComponent<DBComponent>().Save(newzone, entity);
             }
-            Log.Console("ActivityComponent Complelte");
+            Log.Console("ActivityComponentServer Complelte");
 
             //BagComponentServer
             dbcount = 0;
@@ -570,7 +570,7 @@ namespace ET
             Log.Console("BagComponentServer Complelte");
             //ChengJiuComponen
             dbcount = 0;
-            List<ChengJiuComponent> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponent>(oldzone, d => d.Id > 0);
+            List<ChengJiuComponentServer> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in chengJiuComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))
@@ -898,25 +898,9 @@ namespace ET
             Log.Console("DataCollationComponent Complelte");
 
             //EnergyComponent 正能量组件
+            
             dbcount = 0;
-            List<EnergyComponent> db_energyComponents = await Game.Scene.GetComponent<DBComponent>().Query<EnergyComponent>(oldzone, d => d.Id > 0);
-            foreach (var entity in db_energyComponents)
-            {
-                if (invalidPlayers.Contains(entity.Id))
-                {
-                    continue;
-                }
-
-                dbcount++;
-                if (dbcount % onecount == 0)
-                {
-                    await TimerComponent.Instance.WaitFrameAsync();
-                }
-                await Game.Scene.GetComponent<DBComponent>().Save(newzone, entity);
-            }
-
-            dbcount = 0;
-            List<JiaYuanComponent> jiayuanComponents = await Game.Scene.GetComponent<DBComponent>().Query<JiaYuanComponent>(oldzone, d => d.Id > 0);
+            List<JiaYuanComponentServer> jiayuanComponents = await Game.Scene.GetComponent<DBComponent>().Query<JiaYuanComponentServer>(oldzone, d => d.Id > 0);
             foreach (var entity in jiayuanComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))

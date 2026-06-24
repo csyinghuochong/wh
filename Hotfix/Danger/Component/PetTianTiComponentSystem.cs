@@ -120,7 +120,7 @@ namespace ET
             {
                 if (rankid > 0)
                 {
-                    self.MainUnit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PetTianTiRank_309, 0, rankid);
+                    self.MainUnit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PetTianTiRank_309, 0, rankid);
                  
                     self.MainUnit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.PetTianTiRank_82, 0, rankid);
                 }

@@ -398,7 +398,7 @@ namespace ET
                 self.RecoverPiLao(50, notice);
             }
 
-            self.GetParent<Unit>().GetComponent<JiaYuanComponent>().OnHourUpdate(hour, notice);
+            self.GetParent<Unit>().GetComponent<JiaYuanComponentServer>().OnHourUpdate(hour, notice);
             LogHelper.CheckZuoBi(self.GetParent<Unit>());
             //LogHelper.CheckBlackRoom(self.GetParent<Unit>());
         }
@@ -664,7 +664,7 @@ namespace ET
 
             if (gold > 0 && getWay == ItemGetWay.PaiMaiSell)
             {
-                unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.PaiMaiGetGoldNumber_217, 0, (int)gold);
+                unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PaiMaiGetGoldNumber_217, 0, (int)gold);
             }
 
             if (Type == UserDataType.Diamond)
@@ -826,7 +826,7 @@ namespace ET
                     self.RoleInfo.JiaYuanLv += int.Parse(value);
                     saveValue = self.RoleInfo.JiaYuanLv.ToString();
                     unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, self.RoleInfo.JiaYuanLv - 10000);
-                    unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, self.RoleInfo.JiaYuanLv - 10000);
+                    unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, self.RoleInfo.JiaYuanLv - 10000);
                     break;
                 case UserDataType.FangRong:
                     LingDiHelp.OnAddLingDiExp(unit, int.Parse(value), notice);
@@ -868,7 +868,7 @@ namespace ET
                 case UserDataType.Gold:
                     self.RoleInfo.Gold += long.Parse(value);
                     saveValue = self.RoleInfo.Gold.ToString();
-                    unit.GetComponent<ChengJiuComponent>().OnGetGold(int.Parse(value));
+                    unit.GetComponent<ChengJiuComponentServer>().OnGetGold(int.Parse(value));
                     unit.GetComponent<TaskComponent>().OnCostCoin(int.Parse(value));
                     break;
                 case UserDataType.WeiJingGold:
@@ -886,7 +886,7 @@ namespace ET
                     saveValue = self.RoleInfo.Diamond.ToString();
                     if (addDiamond < 0)
                     {
-                        unit.GetComponent<ChengJiuComponent>().OnCostDiamond(addDiamond);
+                        unit.GetComponent<ChengJiuComponentServer>().OnCostDiamond(addDiamond);
                         unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.V1DayCostDiamond, addDiamond * - 1, 0);
                         long costdiamond = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.V1DayCostDiamond);
 
@@ -956,7 +956,7 @@ namespace ET
                 case UserDataType.Combat:
                     self.RoleInfo.Combat = int.Parse(value);
                     saveValue = self.RoleInfo.Combat.ToString();
-                    unit.GetComponent<ChengJiuComponent>().TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, self.RoleInfo.Combat);
+                    unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, self.RoleInfo.Combat);
                     unit.GetComponent<TaskComponent>().TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, self.RoleInfo.Combat);
                     break;
                 case UserDataType.Vitality:

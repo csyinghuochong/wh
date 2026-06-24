@@ -71,16 +71,15 @@ namespace ET
             }
             
             unit.AddDataComponent<TaskComponent>();
-            unit.AddDataComponent<ChengJiuComponent>();
+            unit.AddDataComponent<ChengJiuComponentServer>();
             unit.AddDataComponent<BagComponentServer>();
             unit.AddDataComponent<PetComponent>();
             unit.AddDataComponent<SkillSetComponent>();
-            unit.AddDataComponent<EnergyComponent>();
-            unit.AddDataComponent<ActivityComponent>();
+            unit.AddDataComponent<ActivityComponentServer>();
             unit.AddDataComponent<RechargeComponent>();
             unit.AddDataComponent<ReddotComponent>();
             unit.AddDataComponent<TitleComponent>();
-            unit.AddDataComponent<JiaYuanComponent>();
+            unit.AddDataComponent<JiaYuanComponentServer>();
             unit.AddDataComponent<ShoujiComponent>();
             unit.AddDataComponent<DataCollationComponent>();
             

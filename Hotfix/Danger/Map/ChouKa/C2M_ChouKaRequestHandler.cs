@@ -151,7 +151,7 @@ namespace ET
             }
             if (request.ChouKaType == 10)
             {
-                unit.GetComponent<ChengJiuComponent>().OnChouKaTen();
+                unit.GetComponent<ChengJiuComponentServer>().OnChouKaTen();
             }
             unit.GetComponent<DataCollationComponent>().OnChouKa(request.ChouKaType);
             response.RewardList = droplist;

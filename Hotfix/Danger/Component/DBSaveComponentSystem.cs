@@ -189,8 +189,8 @@ namespace ET
             {
                 return;
             }
-            ActivityComponent activityComponent = unit.GetComponent<ActivityComponent>();
-            LogHelper.LogDebug($"活动领取： {activityComponent.ActivityReceiveIds.Count}  {activityComponent.QuTokenRecvive.Count}");
+            ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
+            LogHelper.LogDebug($"活动领取： {activityComponentServer.ActivityReceiveIds.Count}  {activityComponentServer.QuTokenRecvive.Count}");
         }
 
         public static int OnDisconnect(this DBSaveComponent self)
@@ -207,7 +207,7 @@ namespace ET
             {
                 unit.RecordPostion(sceneTypeEnum, CommonHelper.MainCityID());
             }
-            unit.GetComponent<EnergyComponent>().OnDisconnect();
+
             TransferHelper.BeforeTransfer(unit, 2);
             if (!unit.IsRobot())
             {
@@ -286,7 +286,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             if (unit.GetComponent<UnitGateComponent>().PlayerState!= PlayerState.None)
             {
-                unit.GetComponent<ActivityComponent>().Check();
+                unit.GetComponent<ActivityComponentServer>().Check();
             }
         }
 

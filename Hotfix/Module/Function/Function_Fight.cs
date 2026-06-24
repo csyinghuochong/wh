@@ -288,7 +288,7 @@ namespace ET
             }
 
             //家园属性
-            List<PropertyValue> jiayuanPros = unit.GetComponent<JiaYuanComponent>().GetJianYuanPro();
+            List<PropertyValue> jiayuanPros = unit.GetComponent<JiaYuanComponentServer>().GetJianYuanPro();
             for (int i = 0; i < jiayuanPros.Count; i++)
             {
                 AddUpdateProDicList(jiayuanPros[i].HideID, jiayuanPros[i].HideValue, UpdateProDicList);
@@ -317,13 +317,13 @@ namespace ET
             }
 
             //精灵属性
-            List<PropertyValue> jinglingProList = unit.GetComponent<ChengJiuComponent>().GetJingLingProLists();
+            List<PropertyValue> jinglingProList = unit.GetComponent<ChengJiuComponentServer>().GetJingLingProLists();
             for (int i = 0; i < jinglingProList.Count; i++)
             {
                 AddUpdateProDicList(jinglingProList[i].HideID, jinglingProList[i].HideValue, UpdateProDicList);
             }
 
-            List<PropertyValue> magickaProList = unit.GetComponent<ChengJiuComponent>().GetMagickaProLists();
+            List<PropertyValue> magickaProList = unit.GetComponent<ChengJiuComponentServer>().GetMagickaProLists();
             for (int i = 0; i < magickaProList.Count; i++)
             {
                 AddUpdateProDicList(magickaProList[i].HideID, magickaProList[i].HideValue, UpdateProDicList);

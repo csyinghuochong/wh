@@ -34,7 +34,7 @@ namespace ET
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HP_Current, maxHp, true);
 
             unit.GetComponent<TaskComponent>().OnUpdateLevel(newLevel);
-            unit.GetComponent<ChengJiuComponent>().OnUpdateLevel(newLevel);
+            unit.GetComponent<ChengJiuComponentServer>().OnUpdateLevel(newLevel);
         }
 
         public static void OnUpgrageLevel(this Unit unit, int newLevel)
