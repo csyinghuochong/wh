@@ -84,11 +84,14 @@ namespace ET
 		/// <summary>描述</summary>
 		[ProtoMember(3)]
 		public int Desc { get; set; }
-		/// <summary>排序</summary>
+		/// <summary>类型 0-固定值 1-万分比</summary>
 		[ProtoMember(4)]
+		public int Type { get; set; }
+		/// <summary>排序</summary>
+		[ProtoMember(5)]
 		public int Order_SL { get; set; }
 		/// <summary>显示</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public int IsShow { get; set; }
 
 	}

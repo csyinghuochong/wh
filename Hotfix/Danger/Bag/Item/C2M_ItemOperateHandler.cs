@@ -510,63 +510,7 @@ namespace ET
                 //出售道具
                 if (request.OperateType == 2 && locType == ItemLocType.ItemLocBag)
                 {
-                    //默认出售全部
-                    //给与对应金币或货币奖励
-                    string[] sellinfo = request.OperatePar.Split('_');
-                    if (sellinfo.Length < 2)
-                    {
-                        response.Error = ErrorCode.ERR_VersionNoMatch;
-                        reply();
-                        return;
-                    }
-                    if (CommonHelper.IfNull(sellinfo[1]))
-                    {
-                        response.Error = ErrorCode.ERR_VersionNoMatch;
-                        reply();
-                        return;
-                    }
-
-                    int sellNum = int.Parse(sellinfo[1]);
-                    if (sellNum <= 0 || sellNum > useBagInfo.ItemNum)
-                    {
-                        Log.Error($"C2M_ItemOperateHandler 3");
-                        response.Error = ErrorCode.ERR_ModifyData;
-                        reply();
-                        return;
-                    }
-
-                    string[] gemids = useBagInfo.GemIDNew.Split('_');
-                    LDItem ldItemConf = null;
-                    for (int i = 0; i < gemids.Length; i++)
-                    {
-                        if (gemids[i] == "0")
-                        {
-                            continue;
-                        }
-                        ldItemConf = LDItemCategory.Instance.Get(int.Parse(gemids[i]));
-                        //unit.GetComponent<RoleInfoComponent>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
-                    }
-
-                    //珍宝属性价格提升
-                    /*
-                    int sellValue = ldItem.SellMoneyValue;
-                    if (useBagInfo.HideSkillLists.Contains(68000102))
-                    {
-                        sellValue = ldItem.SellMoneyValue * 20;
-                    }
-
-                    ldItemConf = LDItemCategory.Instance.Get(useBagInfo.ItemID);
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd((int)ldItemConf.SellMoneyType, (sellNum * sellValue).ToString(), true, ItemGetWay.Sell);
-                    unit.GetComponent<BagComponentServer>().OnCostItemData(useBagInfo, locType, sellNum);
-                    */
-                    if (useBagInfo.ItemNum <= 0)
-                    {
-                        m2c_bagUpdate.BagInfoDelete.Add(useBagInfo);
-                    }
-                    else
-                    {
-                        m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
-                    }
+                    Log.Error("request.OperateType == 222");
                 }
 
                 if (request.OperateType == 2 && locType == ItemLocType.ItemPetHeXinBag)

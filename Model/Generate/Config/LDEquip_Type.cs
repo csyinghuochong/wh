@@ -81,12 +81,6 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>包含子类</summary>
-		[ProtoMember(3)]
-		public int[] Type_Sub { get; set; }
-		/// <summary>团队分配职业限制</summary>
-		[ProtoMember(4)]
-		public int[] Team_Allocation_Occ_Limit { get; set; }
 
 	}
 }

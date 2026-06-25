@@ -205,36 +205,7 @@ namespace ET
             Dictionary<int, long> UpdateProDicList = new Dictionary<int, long>();
 
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(roleInfo.Occ);
-            
-            
-            
-            int[] fixpoints =   RoleAddPointHelper.GetFixedPointByLevel( roleLv);
 
-            int PointLiLiang =  numericComponent.GetAsInt(NumericType.Point_Strength);
-            int PointMinJie =  numericComponent.GetAsInt(NumericType.Point_Agility);
-            int PointZhiLi =  numericComponent.GetAsInt(NumericType.Point_Intelligence);
-            int PointTiZhi =   numericComponent.GetAsInt(NumericType.Point_Constitution);
-            int PointNaiLi =   numericComponent.GetAsInt(NumericType.Point_Stamina);
-            
-            PointLiLiang += fixpoints[0];
-            PointMinJie+= fixpoints[1];
-            PointZhiLi+= fixpoints[2];
-            PointTiZhi+= fixpoints[3];
-            PointNaiLi+= fixpoints[4];
-            
-            //属性点
-            /*
-            int PointLiLiang =  ldOccupation.Add_Point_Default[0];
-            int PointZhiLi = ldOccupation.Add_Point_Default[1];
-            int PointTiZhi =  ldOccupation.Add_Point_Default[2];
-            int PointNaiLi =  ldOccupation.Add_Point_Default[3];
-            int PointMinJie = ldOccupation.Add_Point_Default[4];
-            AddUpdateProDicList(NumericType.Point_Strength, PointLiLiang,UpdateProDicList );
-            AddUpdateProDicList(NumericType.Point_Intelligence, PointLiLiang,UpdateProDicList );
-            AddUpdateProDicList(NumericType.Point_Constitution, PointLiLiang,UpdateProDicList );
-            AddUpdateProDicList(NumericType.Point_Stamina, PointLiLiang,UpdateProDicList );
-            AddUpdateProDicList(NumericType.Point_Agility, PointLiLiang,UpdateProDicList );*/
-            
             //职业属性
             List<HideProList> occInitAttributes = LDOccupationCategory.Instance.GetOccInitAttribute(roleInfo.Occ);
             
@@ -248,6 +219,22 @@ namespace ET
             {
                 AddUpdateProDicList(attributeList[pro].HideID, attributeList[pro].HideValue, UpdateProDicList);
             }
+            
+               
+            int[] fixpoints =   RoleAddPointHelper.GetFixedPointByLevel( roleLv);
+            
+            for (int pointType = NumericType.Point_Strength; pointType <= NumericType.Point_Strength; pointType++)
+            {
+                fixpoints[pointType - 1] +=  numericComponent.GetAsInt(pointType);
+                
+                IReadOnlyDictionary<int, int> pointAddAttr = RolePointConvertHelper.GetPointConvertMap( pointType );
+
+                foreach (var pointAddItem in pointAddAttr)
+                {
+                    AddUpdateProDicList(pointAddItem.Key, pointAddItem.Value * fixpoints[pointType - 1], UpdateProDicList);
+                }
+            }
+            
             
             //时装
             List<int> fashionids = unit.GetComponent<BagComponentServer>().FashionActiveIds;
@@ -352,40 +339,7 @@ namespace ET
             }
             
             //--------------------新版属性加点------------------------
-
-            long Power_value_add = 0;
-            long Intellect_value_add = 0;
-            long Agility_value_add = 0;
-            long Stamina_value_add = 0;
-            long Constitution_value_add = 0;
-            int Power_value = 0;
-            int Intellect_value = 0;
-            int Agility_value = 0;
-            int Stamina_value = 0;
-            int Constitution_value = 0;
-
-            //力量加物理穿透
-            int wuliChuanTouLv = (PointLiLiang + (int)Power_value + (int)Power_value_add) * 5;
-            float adddWuLiChuanTou = LvProChange(wuliChuanTouLv, roleLv);
-            AddUpdateProDicList((int)NumericType.PATK_Max, (int)(adddWuLiChuanTou * 10000), UpdateProDicList);
-
-            //智力加魔法穿透
-            int mageChuanTouLv = (PointZhiLi + (int)Intellect_value + (int)Intellect_value_add) * 5;
-            float adddMageChuanTou = LvProChange(mageChuanTouLv, roleLv);
             
-            //敏捷冷却时间
-            int cdTimeLv = (PointMinJie + (int)Agility_value + (int)Agility_value_add) * 2;
-            float addMinJie = LvProChange(cdTimeLv, roleLv);
-            
-            //耐力
-            int huixueLv = (PointNaiLi + (int)Stamina_value + (int)Stamina_value_add);
-           
-            //体力
-            int damgeProCostLv = (PointTiZhi + (int)Constitution_value + (int)Constitution_value_add) * 2;
-            float damgeProCost = LvProChange(damgeProCostLv, roleLv);
-          
-            //攻击部分
-
             List<int> keys = new List<int>();
 
             //更新属性
@@ -410,11 +364,12 @@ namespace ET
                 }
             }
             
-             PointLiLiang =  numericComponent.GetAsInt(NumericType.Point_Strength);
-             PointZhiLi =  numericComponent.GetAsInt(NumericType.Point_Intelligence);
-             PointTiZhi =   numericComponent.GetAsInt(NumericType.Point_Constitution);
-             PointNaiLi =   numericComponent.GetAsInt(NumericType.Point_Stamina);
-            PointMinJie =  numericComponent.GetAsInt(NumericType.Point_Agility);
+            ////test
+           int  PointLiLiang =  numericComponent.GetAsInt(NumericType.Point_Strength);
+           int  PointZhiLi =  numericComponent.GetAsInt(NumericType.Point_Intelligence);
+           int  PointTiZhi =   numericComponent.GetAsInt(NumericType.Point_Constitution);
+           int  PointNaiLi =   numericComponent.GetAsInt(NumericType.Point_Stamina);
+           int  PointMinJie =  numericComponent.GetAsInt(NumericType.Point_Agility);
 
             if (notice)
             {

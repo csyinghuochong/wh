@@ -87,7 +87,7 @@ namespace ET
 		/// <summary>新场景ID</summary>
 		[ProtoMember(4)]
 		public int Scene_Target { get; set; }
-		/// <summary>目标点</summary>
+		/// <summary>目标位置</summary>
 		[ProtoMember(5)]
 		public int[] Pos_Target { get; set; }
 

@@ -96,9 +96,9 @@ namespace ET
 		/// <summary>品质</summary>
 		[ProtoMember(7)]
 		public int Quality { get; set; }
-		/// <summary>鉴定道具</summary>
+		/// <summary>职业</summary>
 		[ProtoMember(8)]
-		public int AppraisalItem { get; set; }
+		public int[] Occupation { get; set; }
 		/// <summary>套装ID</summary>
 		[ProtoMember(9)]
 		public int EquipSuitID { get; set; }
