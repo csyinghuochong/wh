@@ -1,31 +1,11 @@
-﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
 {
-
-    [ObjectSystem]
-    public class MapComponentAwakeSystem : AwakeSystem<MapComponent>
+    public static class RecastHelper
     {
-		public override void Awake(MapComponent self)
-		{
-
-		}
-    }
-
-    [ObjectSystem]
-    public class MapComponentDestroy : DestroySystem<MapComponent>
-    {
-        public override void Destroy(MapComponent self)
-        {
-        }
-    }
-
-
-    public static class MapComponentSystem
-	{
-#if SERVER
+        
 		public static Vector3 GetCanChongJiPath(this MapComponent self, Unit unit, Vector3 start, Vector3 target)
 		{
            
@@ -53,11 +33,6 @@ namespace ET
                 }
                 tmm = next;
             }
-
-            if (self.SceneId == 6000001 && tmm.x >= 22f)
-            {
-                Console.WriteLine($"角斗场target3.x >= 22f:  start:{start.x} {start.z}    target:{target.x}  {target.z}");
-            }
             return tmm;
         }
 
@@ -81,11 +56,6 @@ namespace ET
                 }
                 target = target + (0.5f * dir);
             }
-
-            if (self.SceneId == 6000001 && target.x >= 22f)
-            {
-                Console.WriteLine($"角斗场target3.x >= 22f:  start:{start.x} {start.z}    target:{target.x}  {target.z}");
-            }
             return target;
         }
 
@@ -101,30 +71,6 @@ namespace ET
 				unit.GetComponent<PathfindingComponent>().Find(unit.Position, target, result);
 			}
 		}
-#endif
 
-		public static void SetMapInfo(this MapComponent self, int sceneTypeEnum, int mapid, int sonMapid)
-		{
-			self.MapTypeEnum = sceneTypeEnum;
-			self.SceneId = mapid;
-			self.SonSceneId = sonMapid;
-		}
-
-		public static void SetSubLevel(this MapComponent self, int sonMapid)
-		{
-			self.SonSceneId = sonMapid;
-		}
-
-		public static int GetMapId(this MapComponent self)
-		{
-			return self.SceneId;
-		}
-
-		public static int GetSubLevelId(this MapComponent self)
-		{
-			return self.SonSceneId;
-		}
-	}
-
-
+    }
 }

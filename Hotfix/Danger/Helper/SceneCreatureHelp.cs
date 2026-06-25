@@ -197,7 +197,7 @@ namespace ET
 				if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TowerDungeon)
 				{
 					Unit mainUnit = scene.GetComponent<TowerComponent>().MainUnit;
-					playerLv = mainUnit.GetComponent<RoleInfoComponent>().RoleInfo.Level;
+					playerLv = mainUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Level;
 				}
                 if (monsterPosition.CreateNum > 100)
                 {
@@ -480,7 +480,7 @@ namespace ET
 						if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TowerDungeon)
 						{
 							Unit mainUnit = scene.GetComponent<TowerComponent>().MainUnit;
-							playerLv = mainUnit.GetComponent<RoleInfoComponent>().RoleInfo.Level;
+							playerLv = mainUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Level;
 						}
 						cmcount = int.Parse(mcount[0]);
 	                    if (cmcount > 100)

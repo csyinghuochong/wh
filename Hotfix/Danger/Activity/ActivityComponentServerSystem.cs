@@ -101,7 +101,7 @@ namespace ET
 #if !SERVER
         public static bool HaveLoginReward(this ActivityComponentServer self)
         {
-            RoleInfoComponent roleInfoComponent = self.ZoneScene().GetComponent<RoleInfoComponent>();
+            RoleInfoComponent roleInfoComponent = self.ZoneScene().GetComponent<RoleInfoComponentServer>();
             if (roleInfoComponent.RoleInfo.Lv < 10)
             {
                 return false;

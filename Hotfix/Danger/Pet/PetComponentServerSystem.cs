@@ -536,7 +536,7 @@ namespace ET
 
             /*if (ItemGetWay.PetExplore == getWay && (ldPetConfig.PetQuality >= 3 || ldPetConfig.Skin[0] != newpet.SkinId))
             {
-                string username = unit.GetComponent<RoleInfoComponent>().RoleInfo.Name;
+                string username = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
                 string petshowname = PetSkinConfigCategory.Instance.Get(newpet.SkinId).Name;
                 string messagecontent = $"恭喜{username} 在宠物探索系统中获得 {petshowname}！";
                 string messagecontentEn = $"Congratulations, {username}  obtained {petshowname} in the Pet Exploration System!";

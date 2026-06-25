@@ -33,7 +33,7 @@ namespace ET
                 }
                 response.MysteryItemInfos = jiayuanList;
             }
-            //unit.GetComponent<RoleInfoComponent>().OnMysteryBuy(mysteryId);
+            //unit.GetComponent<RoleInfoComponentServer>().OnMysteryBuy(mysteryId);
             //扣除货币添加对应道具
             /*
             unit.GetComponent<BagComponentServer>().OnCostItemData($"{mysteryConfig.SellType};{mysteryConfig.SellValue}", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost );

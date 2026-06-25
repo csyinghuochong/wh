@@ -29,7 +29,7 @@ namespace ET
                 default:
                     //if (message.ActivityType == 18  && unit.DomainZone() == 81)
                     //{
-                    //    RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+                    //    RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
                     //    DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
                     //    ChengJiuComponent chengJiuComponent = unit.GetComponent<ChengJiuComponent>();
 

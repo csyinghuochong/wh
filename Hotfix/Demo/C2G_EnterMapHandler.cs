@@ -53,7 +53,7 @@
 //			await DBHelper.AddDataComponent<ActivityComponentServer>(unit, request.UserID, DBHelper.ActivityComponentServer);
 //			//await DBHelper.AddDataComponent<NumericComponent>(unit, request.UserID, DBHelper.NumericComponent);
 //			await DBHelper.AddDataComponent<RechargeComponent>(unit, request.UserID, DBHelper.RechargeComponent);
-//			unit.GetComponent<RoleInfoComponent>().OnLogin().Coroutine();
+//			unit.GetComponent<RoleInfoComponentServer>().OnLogin().Coroutine();
 
 //			StartSceneConfig startSceneConfig = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), "Map1");
 

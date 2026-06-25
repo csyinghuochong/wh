@@ -10,8 +10,8 @@ namespace ET
         {
             //Log.Warning($"RechargeHelp.SendDiamond {unit.Id} {rechargeNumber} {orderInfo}");
             OnRechage(unit, payid, rechargeType, true);
-            //long accountId = unit.GetComponent<RoleInfoComponent>().RoleInfo.AccInfoID;
-            //long userId = unit.GetComponent<RoleInfoComponent>().RoleInfo.UserId;
+            //long accountId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID;
+            //long userId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId;
             //SendToAccountCenter(accountId, userId, payid, orderInfo, rechargeType).Coroutine();
             unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
         }

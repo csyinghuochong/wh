@@ -44,7 +44,7 @@ namespace ET
             roleInfoComponent.RoleInfo.ItemXiLianNumRewardIds.Add(request.RewardId);
             int randomZuanshi = RandomHelper.RandomNumber(int.Parse(diamond[0]), int.Parse(diamond[1]));
             unit.GetComponent<BagComponentServer>().OnAddItemData(reward[0], $"{ItemGetWay.ItemXiLian}_{TimeHelper.ServerNow()}");
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, ItemGetWay.ItemXiLian);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, ItemGetWay.ItemXiLian);
 */
             reply();
             await ETTask.CompletedTask;

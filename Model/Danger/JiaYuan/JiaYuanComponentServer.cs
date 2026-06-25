@@ -56,10 +56,7 @@ namespace ET
         /// </summary>
         public List<KeyValuePair> JiaYuanProList_7 = new List<KeyValuePair>();
 
-        
-        
-        
-#if SERVER
+
         /// <summary>
         /// 家园农场商店
         /// </summary>
@@ -84,9 +81,7 @@ namespace ET
         public List<JiaYuanMonster> JiaYuanMonster_2 = new List<JiaYuanMonster>();
 
         public int NowOpenNpcId;
-
-#else
+        
         public long MasterId = 0;
-#endif
     }
 }

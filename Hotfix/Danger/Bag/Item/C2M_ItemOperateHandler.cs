@@ -342,7 +342,7 @@ namespace ET
                                 LDExp ldExp = LDExpCategory.Instance.Get(userLv);
                                 /*long addCoin = (int)RandomHelper.RandomNumberFloat(float.Parse(jinbiInfos[0]) * exp.Exp_Role, float.Parse(jinbiInfos[1]) * exp.Exp_Role);
                                 addCoin *= costNumber;
-                                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Gold, addCoin.ToString(), true, ItemGetWay.ItemBox_6);*/
+                                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Gold, addCoin.ToString(), true, ItemGetWay.ItemBox_6);*/
                                 break;
                             //经验木桩
                             case 112:
@@ -355,10 +355,10 @@ namespace ET
                                 /*exp = ExpCategory.Instance.Get(userLv);
                                 int addExp = (int)RandomHelper.RandomNumberFloat(float.Parse(paramInfo[0]) * exp.RoseExpPro, float.Parse(paramInfo[1]) * exp.RoseExpPro);
                                 addExp *= costNumber;   
-                                unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd(UserDataType.Exp, addExp.ToString(), true, ItemGetWay.DuiHuan);
+                                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Exp, addExp.ToString(), true, ItemGetWay.DuiHuan);
                                 if (needZuanshi > 0)
                                 {
-                                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneySub(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.DuiHuan);
+                                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.DuiHuan);
                                 }*/
 
                                 //response.OperatePar = addExp.ToString();
@@ -526,7 +526,7 @@ namespace ET
                         return;
                     }
 
-                    //unit.GetComponent<RoleInfoComponent>().UpdateRoleData(ldItem.SellMoneyType, (sellNum * ldItem.SellMoneyValue).ToString());
+                    //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(ldItem.SellMoneyType, (sellNum * ldItem.SellMoneyValue).ToString());
                     unit.GetComponent<BagComponentServer>().OnCostItemData(useBagInfo, locType, sellNum);
                     if (useBagInfo.ItemNum == 0)
                     {

@@ -158,7 +158,7 @@ namespace ET
             if (mapComponent.MapTypeEnum == MapTypeEnum.LocalDungeon)
             {
                 mainUnit = scene.GetComponent<LocalDungeonComponent>().MainUnit;
-                //revetime = mainUnit.GetComponent<RoleInfoComponent>().GetReviveTime(ldMonster.Id);
+                //revetime = mainUnit.GetComponent<RoleInfoComponentServer>().GetReviveTime(ldMonster.Id);
             }
             if (unit.MasterId > 0)
             {

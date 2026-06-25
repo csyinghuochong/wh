@@ -49,7 +49,7 @@ namespace ET
                     continue;
                 }
                 ldItemConf = LDItemCategory.Instance.Get(int.Parse(gemids[i]));
-                //unit.GetComponent<RoleInfoComponent>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
+                //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
             }
 
             useBagInfo.ItemNum -= request.SellNum;

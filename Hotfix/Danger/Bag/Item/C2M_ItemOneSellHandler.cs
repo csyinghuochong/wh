@@ -41,7 +41,7 @@ namespace ET
                     }
                     gemIdList.Add(int.Parse(gemids[gem]));
                     LDItem ldItemConf = LDItemCategory.Instance.Get(int.Parse(gemids[gem]));
-                    //unit.GetComponent<RoleInfoComponent>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
+                    //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
                 }
 
                 //珍宝属性价格提升
@@ -58,7 +58,7 @@ namespace ET
                 }
                 else
                 {
-                    unit.GetComponent<RoleInfoComponent>().UpdateRoleMoneyAdd((int)ldItem.SellMoneyType, (useBagInfo.ItemNum * sellValue).ToString(), true, 39);
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd((int)ldItem.SellMoneyType, (useBagInfo.ItemNum * sellValue).ToString(), true, 39);
                     unit.GetComponent<BagComponentServer>().OnCostItemData(useBagInfo, (ItemLocType)request.OperateType, useBagInfo.ItemNum);
                 }*/
                 if (useBagInfo.ItemNum == 0)

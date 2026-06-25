@@ -12,7 +12,7 @@ namespace ET
             int lingdiExp = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Ling_DiExp);
             /*
             LingDiConfig lingDiConfig = LingDiConfigCategory.Instance.Get(lingdiLv);
-            if (unit.GetComponent<RoleInfoComponent>().RoleInfo.Gold < lingDiConfig.GoldUp)
+            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold < lingDiConfig.GoldUp)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -34,7 +34,7 @@ namespace ET
             //}
             //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Ling_DiExp, addExp + lingdiExp);
             LingDiHelp.OnAddLingDiExp(unit, addExp, true);
-            unit.GetComponent<RoleInfoComponent>().UpdateRoleData( UserDataType.Gold, (needCoin * -1).ToString());
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData( UserDataType.Gold, (needCoin * -1).ToString());
             */
 
             reply();

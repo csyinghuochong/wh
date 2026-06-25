@@ -867,7 +867,7 @@ namespace ET
             //Log.Console($"战力排行buff: {rankId}");
             if (occRankId >= 1 && occRankId <= 3)
             {
-                int occ = unit.GetComponent<RoleInfoComponent>().RoleInfo.Occ;
+                int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
                 BuffData buffData_2 = new BuffData();
                 buffData_2.SkillId = 67000278;
                 buffData_2.BuffId = CommonConfig.GetRankBuff(rankId, occRankId, occ);
@@ -889,7 +889,7 @@ namespace ET
             //self.BuffRemove(99001011);
             self.BuffRemoveList(CommonConfig.BaoShiBuff);
 
-            /*RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponent>();
+            /*RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
             if (roleInfoComponent.RoleInfo.BaoShiDu >= 80)
             {
                 BuffData buffData_2 = new BuffData();

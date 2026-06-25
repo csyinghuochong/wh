@@ -15,13 +15,35 @@ namespace ET
                     .ThenBy(item => item.Id)
                     .Select(item => item.Id)
                     .ToList();
-            
-            Log.ILog.Debug($" this.showIdList:  { this.showIdList.Count}");
         }
 
         public List<int> GetShowIdList()
         {
             return this.showIdList;
+        }
+
+        public const int ValueTypeFixed = 0;
+        public const int ValueTypePerMyriad = 1;
+
+        /// <summary>0=固定值，1=万分比。未配置时默认固定值。</summary>
+        public int GetValueType(int attributeId)
+        {
+            if (!this.Contain(attributeId))
+            {
+                return ValueTypeFixed;
+            }
+
+            return this.Get(attributeId).Type;
+        }
+
+        public bool IsPerMyriad(int attributeId)
+        {
+            return this.GetValueType(attributeId) == ValueTypePerMyriad;
+        }
+
+        public bool IsFixed(int attributeId)
+        {
+            return this.GetValueType(attributeId) == ValueTypeFixed;
         }
     }
 }
