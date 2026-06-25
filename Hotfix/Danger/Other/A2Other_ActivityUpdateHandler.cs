@@ -126,10 +126,7 @@ namespace ET
                     //Log.Console($"{scene.Name}  {scene.DomainZone()}  request.FunctionType: {request.FunctionId} {request.FunctionType}");
                     if (request.FunctionId == 1057 && request.FunctionType == 1)
                     {
-                        for (int npcid = 20099007; npcid <= 20099010; npcid++)
-                        {
-                            UnitFactory.CreateNpc(scene, npcid, new Vector3(-3f, 0f, 3f));
-                        }
+                        
                     }
                     if (request.FunctionId == 1057 && request.FunctionType == 2)
                     {
@@ -140,11 +137,6 @@ namespace ET
                             {
                                 scene.GetComponent<UnitComponent>().Remove(units[i].Id);
                             }
-                        }
-
-                        for (int i = 0; i < CommonConfig.TurtleList.Count; i++)
-                        {
-                            UnitFactory.CreateNpc(scene, CommonConfig.TurtleList[i], Vector3.zero);
                         }
                     }
                     break;

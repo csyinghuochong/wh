@@ -17,8 +17,8 @@ namespace ET
             }
             
             M2C_FubenSettlement m2C_FubenSettlement = new M2C_FubenSettlement();
-            bool allMonsterDead = FubenHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit);
-            int alivedPetNumber = FubenHelp.GetAlivePetNumber(self.DomainScene());
+            bool allMonsterDead = SceneCreatureHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit);
+            int alivedPetNumber = SceneCreatureHelp.GetAlivePetNumber(self.DomainScene());
             int number = 0;
             PetComponentServer petComponentServer = self.MainUnit.GetComponent<PetComponentServer>();
             for (int i = 0; i < petComponentServer.PetFormations.Count; i++)
@@ -69,8 +69,8 @@ namespace ET
 
         public static void OnKillEvent(this PetFubenSceneComponent self)
         {
-            bool allMonsterDead = FubenHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit);
-            int alivedPetNumber = FubenHelp.GetAlivePetNumber(self.DomainScene());
+            bool allMonsterDead = SceneCreatureHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit);
+            int alivedPetNumber = SceneCreatureHelp.GetAlivePetNumber(self.DomainScene());
             if (!allMonsterDead && alivedPetNumber > 0)
             {
                 return;

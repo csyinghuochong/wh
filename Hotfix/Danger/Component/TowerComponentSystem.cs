@@ -36,7 +36,7 @@ namespace ET
             {
                 return;
             }
-            if (FubenHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit))
+            if (SceneCreatureHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit))
             {
                 self.OnTimer();
                 return;

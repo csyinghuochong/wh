@@ -842,6 +842,9 @@ namespace ET
 		[ProtoMember(4)]
 		public int RoleCamp { get; set; }
 
+		[ProtoMember(5)]
+		public int Scene_Creature { get; set; }
+
 		[ProtoMember(6)]
 		public float X { get; set; }
 
@@ -6321,109 +6324,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public RolePetInfo RolePetInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_EnergyReceiveResponse))]
-	[Message(OuterOpcode.C2M_EnergyReceiveRequest)]
-	[ProtoContract]
-	public partial class C2M_EnergyReceiveRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RewardType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_EnergyReceiveResponse)]
-	[ProtoContract]
-	public partial class M2C_EnergyReceiveResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//答题
-	[ResponseType(nameof(M2C_EnergyAnswerResponse))]
-	[Message(OuterOpcode.C2M_EnergyAnswerRequest)]
-	[ProtoContract]
-	public partial class C2M_EnergyAnswerRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int AnswerIndex { get; set; }
-
-		[ProtoMember(2)]
-		public int QuestionId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_EnergyAnswerResponse)]
-	[ProtoContract]
-	public partial class M2C_EnergyAnswerResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_EnergyInfoResponse))]
-	[Message(OuterOpcode.C2M_EnergyInfoRequest)]
-	[ProtoContract]
-	public partial class C2M_EnergyInfoRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_EnergyInfoResponse)]
-	[ProtoContract]
-	public partial class M2C_EnergyInfoResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<int> GetRewards = new List<int>();
-
-		[ProtoMember(2)]
-		public List<int> QuestionList = new List<int>();
-
-		[ProtoMember(3)]
-		public int QuestionIndex { get; set; }
 
 	}
 

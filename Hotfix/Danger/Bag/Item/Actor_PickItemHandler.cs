@@ -59,7 +59,7 @@ namespace ET
                     continue;
                 }
 
-                FubenHelp.SendFubenPickMessage(unit, drops[i]);
+                SceneCreatureHelp.SendFubenPickMessage(unit, drops[i]);
                 if (drops[i].DropType != 1)
                 {
                     //移除非私有掉落  移除掉落ID
@@ -153,7 +153,7 @@ namespace ET
                 }
 
                 //普通道具直接随机分配
-                M2C_SyncChatInfo m2C_SyncChatInfo = FubenHelp.m2C_SyncChatInfo;
+                M2C_SyncChatInfo m2C_SyncChatInfo = SceneCreatureHelp.m2C_SyncChatInfo;
                 m2C_SyncChatInfo.ChatInfo = new ChatInfo();
                 m2C_SyncChatInfo.ChatInfo.PlayerLevel = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
                 m2C_SyncChatInfo.ChatInfo.Occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;

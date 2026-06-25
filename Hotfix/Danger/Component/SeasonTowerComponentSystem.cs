@@ -21,7 +21,7 @@ namespace ET
                 MessageHelper.SendToClient(players[0], m2C_FubenSettlement);
                 return;
             }
-            if (FubenHelp.IsAllMonsterDead(self.DomainScene(), players[0]))
+            if (SceneCreatureHelp.IsAllMonsterDead(self.DomainScene(), players[0]))
             {
                 M2C_FubenSettlement m2C_FubenSettlement = new M2C_FubenSettlement();
                 m2C_FubenSettlement.BattleResult = CombatResultEnum.Win;

@@ -117,7 +117,7 @@ namespace ET
             return unit;
         }
 
-        public static Unit CreateMonster(Scene scene, int monsterID, Vector3 vector3, CreateMonsterInfo createMonsterInfo)
+        public static Unit CreateMonster(Scene scene,  int monsterID, Vector3 vector3, CreateMonsterInfo createMonsterInfo)
         {
             int openDay = ServerHelper.GetOpenServerDay( false, scene.DomainZone()) ;
          
@@ -139,6 +139,7 @@ namespace ET
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unitInfoComponent.EnergySkillId = createMonsterInfo.SkillId;
             unitInfoComponent.UnitName = ldMonster.Name.ToString();
+            unitInfoComponent.Scene_Creature = createMonsterInfo.SceneCreateId;
             unit.Type = UnitType.Monster;
             unit.Position = vector3;
             unit.ConfigId = ldMonster.Id;
@@ -215,14 +216,14 @@ namespace ET
             return unit;
         }
 
-        public static Unit CreateNpc(Scene scene, int npcId, Vector3 vector3)
+        public static Unit CreateNpc(Scene scene, int createid,  int npcId, Vector3 vector3)
         {
             LDNPC ldNpc = LDNPCCategory.Instance.Get(npcId);
 
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), npcId);
             scene.GetComponent<UnitComponent>().Add(unit);
 
-            unit.AddComponent<UnitInfoComponent>();
+            unit.AddComponent<UnitInfoComponent>().Scene_Creature = createid;
             unit.ConfigId = npcId;
             unit.Position = vector3;
             //unit.Position = new Vector3(npcConfig.Position[0] * 0.01f, npcConfig.Position[1] * 0.01f, npcConfig.Position[2] * 0.01f);

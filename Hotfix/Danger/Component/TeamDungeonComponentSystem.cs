@@ -134,7 +134,7 @@ namespace ET
                     //Log.Warning($"TeamDungeonComponent.DropInfo：{ret}  {unit.Id} {teamDropItem.DropInfo.ItemID} {teamDropItem.DropInfo.ItemNum}");
                     if (ret)
                     {
-                        FubenHelp.SendTeamPickMessage(unit, teamDropItem.DropInfo, needIds, randomNumbers);
+                        SceneCreatureHelp.SendTeamPickMessage(unit, teamDropItem.DropInfo, needIds, randomNumbers);
                         self.DomainScene().GetComponent<UnitComponent>().Remove(teamDropItem.DropInfo.UnitId);       //移除掉落ID
                         continue;
                     }

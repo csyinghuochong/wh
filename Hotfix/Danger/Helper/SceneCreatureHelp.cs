@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ET
 { 
-    public static class FubenHelp
+    public static class SceneCreatureHelp
 	{
 
 		public static M2C_SyncChatInfo m2C_SyncChatInfo = new M2C_SyncChatInfo();
@@ -93,46 +93,47 @@ namespace ET
 		public static void CreateSceneRole(Scene scene, int sceneid)
 		{
 			LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
-			List<int> monsterlist = LDScene_CreatureCategory.Instance.GetSceneCreatureList(sceneid);
-			CreateSceneRoleById(scene, monsterlist);
+			List<int> creatureList = LDScene_CreatureCategory.Instance.GetSceneCreatureList(sceneid);
+			CreateSceneRoleById(scene, creatureList);
 		}
 
-		public static void CreateSceneRoleById(Scene scene, List<int> monsterPos)
+		public static void CreateSceneRoleById(Scene scene, List<int> creatureList)
 		{
-			if (monsterPos == null || monsterPos.Count == 0)
+			if (creatureList == null || creatureList.Count == 0)
 			{
 				return;
 			}
-			for (int i = 0; i < monsterPos.Count;i++)
+			for (int i = 0; i < creatureList.Count;i++)
 			{
-				int monsterId = monsterPos[i];
+				int monsterId = creatureList[i];
 				CreateSceneRoleById(scene, monsterId);
 			}
 		}
 
-		public static void CreateSceneRoleById(Scene scene, int monsterPos)
+		public static void CreateSceneRoleById(Scene scene, int createid)
 		{
-			if (monsterPos == 0)
+			if (createid == 0)
 			{
 				return;
 			}
 			
-			LDScene_Creature monsterPosition = LDScene_CreatureCategory.Instance.Get(monsterPos);
+			LDScene_Creature monsterPosition = LDScene_CreatureCategory.Instance.Get(createid);
 			int mtype = monsterPosition.Type;   //1npc  2 怪物
 			int monsterid = monsterPosition.Match_Id;
 			
 			Vector3 initposition = new Vector3((float)monsterPosition.Position[0], (float)monsterPosition.Position[1], (float)monsterPosition.Position[2]);
-
+			Unit unit = null;
 			if (mtype == UnitType.Npc)
 			{
-				UnitFactory.CreateNpc(scene, monsterid, initposition);
+				unit = UnitFactory.CreateNpc(scene,createid, monsterid, initposition);
 			}
 			if (mtype == UnitType.Monster)
 			{
-				UnitFactory.CreateMonster(scene, monsterid, initposition, new CreateMonsterInfo()
+				unit = UnitFactory.CreateMonster(scene,  monsterid, initposition, new CreateMonsterInfo()
 					{
 						Camp = CampEnum.CampMonster1,
 						Rotation = monsterPosition.Rotation,
+						SceneCreateId =   createid,
 					});
 			}
 			

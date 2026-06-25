@@ -440,7 +440,6 @@ namespace ET
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             int sceneTypeEnum = mapComponent.MapTypeEnum;
             long userId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId;
-            unit.GetComponent<UnitInfoComponent>().LastDungeonId = 0;
             //传送回主场景
             long mapInstanceId = DBHelper.GetMainCityServerId(unit.DomainZone());
             //动态删除副本
@@ -504,12 +503,7 @@ namespace ET
         public static async ETTask LocalDungeonTransfer_Old(Unit unit, int sceneId, int transferId, int difficulty)
         {
             //前往神秘之门
-            if (LDSectionCategory.Instance.MysteryDungeonList.Contains(sceneId))
-            {
-                unit.GetComponent<UnitInfoComponent>().LastDungeonId = unit.DomainScene().GetComponent<MapComponent>().SceneId;
-                unit.GetComponent<UnitInfoComponent>().LastDungeonPosition = unit.Position;
-            }
-
+          
             long oldsceneid = unit.DomainScene().Id;
             long fubenid = IdGenerater.Instance.GenerateId();
             long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();

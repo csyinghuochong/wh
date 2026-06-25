@@ -16,7 +16,7 @@ namespace ET
     {
         public static void OnKillEvent(this RandomTowerComponent self, Unit unitdefend)
         {
-            bool allMonsterDead = FubenHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit);
+            bool allMonsterDead = SceneCreatureHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit);
             bool mainUnitDead = unitdefend.Id == self.MainUnit.Id;
             if (!allMonsterDead && !mainUnitDead)
             {

@@ -394,7 +394,7 @@ namespace ET
 
         public static bool IsAllMonsterDead(this CellDungeonComponent self)
         {
-            return FubenHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit);
+            return SceneCreatureHelp.IsAllMonsterDead(self.DomainScene(), self.MainUnit);
         }
     }
 }
