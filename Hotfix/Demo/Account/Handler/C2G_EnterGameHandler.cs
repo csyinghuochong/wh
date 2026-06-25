@@ -222,22 +222,7 @@ namespace ET
 						gateMapComponent.Scene = SceneFactory.Create(gateMapComponent, "GateMap", SceneType.GateMap);
 						
 						Unit unit = await UnitFactory.LoadUnit(player, gateMapComponent.Scene, createRoleInfo, centerAccountInfos[0].Account, request.AccountId);
-						/*await DBHelper.AddDataComponent<RoleInfoComponent>(unit, request.UserID, DBHelper.RoleInfoComponent);
-						await DBHelper.AddDataComponent<NumericComponent>(unit, request.UserID, DBHelper.NumericComponent);
-						await DBHelper.AddDataComponent<TaskComponent>(unit, request.UserID, DBHelper.TaskComponent);
-						await DBHelper.AddDataComponent<ShoujiComponent>(unit, request.UserID, DBHelper.ShoujiComponent);
-						await DBHelper.AddDataComponent<ChengJiuComponent>(unit, request.UserID, DBHelper.ChengJiuComponent);
-						await DBHelper.AddDataComponent<BagComponentServer>(unit, request.UserID, DBHelper.BagComponentServer);
-						await DBHelper.AddDataComponent<PetComponent>(unit, request.UserID, DBHelper.PetComponent);
-						await DBHelper.AddDataComponent<SkillSetComponent>(unit, request.UserID, DBHelper.SkillSetComponent);
-						await DBHelper.AddDataComponent<EnergyComponent>(unit, request.UserID, DBHelper.EnergyComponent);
-						await DBHelper.AddDataComponent<ActivityComponentServer>(unit, request.UserID, DBHelper.ActivityComponentServer);
-						await DBHelper.AddDataComponent<RechargeComponent>(unit, request.UserID, DBHelper.RechargeComponent);
-						await DBHelper.AddDataComponent<ReddotComponent>(unit, request.UserID, DBHelper.ReddotComponent);
-						await DBHelper.AddDataComponent<TitleComponent>(unit, request.UserID, DBHelper.TitleComponent);
-						await DBHelper.AddDataComponent<JiaYuanComponent>(unit, request.UserID, DBHelper.JiaYuanComponent);
-                        await DBHelper.AddDataComponent<DataCollationComponent>(unit, request.UserID, DBHelper.DataCollationComponent);*/
-                        
+						
                         unit.AddComponent<UnitGateComponent, long>(player.InstanceId);
                         unit.AddComponent<MailComponent>();
                         unit.AddComponent<StateComponent>();

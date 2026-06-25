@@ -22,7 +22,6 @@ namespace ET
             
             if (request.OperateType == 3)
             {
-
                 ItemLocType locType = ItemLocType.ItemLocBag;
                 BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, bagInfoID);
                 if (useBagInfo == null)
@@ -31,12 +30,20 @@ namespace ET
                     reply();
                     return;
                 }
+                
                 LDEquip ldItem = LDEquipCategory.Instance.Get(useBagInfo.ItemID);
+
+                bool canWearEquip = ItemNewHelper.CheckCanWearEquip(useBagInfo.ItemID, occ);
+                if (!canWearEquip)
+                {
+                    response.Error = ErrorCode.ERR_Equip_NoMtach;    
+                    reply();
+                    return;
+                }
 
                 //判断等级
                 int roleLv = useInfo.Lv;
                 int equipLv = ldItem.UseLv;
-             
 
                 if (roleLv < equipLv)
                 {
