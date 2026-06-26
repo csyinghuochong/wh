@@ -69,10 +69,14 @@ namespace ET
                 NumericComponent numericComponentServer = unit.AddComponent<NumericComponent>();
                 numericComponentServer.ApplyValue(NumericType.AOI, 15000, false); // 视野15米
             }
-            
+            if (unit.GetComponent<BagComponentServer>() == null)
+            {
+                BagComponentServer bagComponentServer = unit.AddComponent<BagComponentServer>();
+                bagComponentServer.OnInit(createRoleInfo); // 视野15米
+            }
+
             unit.AddDataComponent<TaskComponentServer>();
             unit.AddDataComponent<ChengJiuComponentServer>();
-            unit.AddDataComponent<BagComponentServer>();
             unit.AddDataComponent<PetComponentServer>();
             unit.AddDataComponent<SkillSetComponentServer>();
             unit.AddDataComponent<ActivityComponentServer>();

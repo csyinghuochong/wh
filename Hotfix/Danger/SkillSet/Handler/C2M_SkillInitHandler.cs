@@ -18,10 +18,8 @@ namespace ET
             
             //检测一下初始技能
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(occ);
-
-          
-            skillSetComponentServer.CheckNormalSkill(occ);
-            skillSetComponentServer.CheckWeaponSkill(occ);
+            
+            skillSetComponentServer.CheckOccSkill(occ);
 
             for (int i = skillSetComponentServer.SkillList.Count - 1; i >= 0; i--)
             {

@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDOccupation_TransferCategory : ProtoObject, IMerge
+    public partial class LDSkill_LvCategory : ProtoObject, IMerge
     {
-        public static LDOccupation_TransferCategory Instance;
+        public static LDSkill_LvCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDOccupation_Transfer> dict = new Dictionary<int, LDOccupation_Transfer>();
+        private Dictionary<int, LDSkill_Lv> dict = new Dictionary<int, LDSkill_Lv>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDOccupation_Transfer> list = new List<LDOccupation_Transfer>();
+        private List<LDSkill_Lv> list = new List<LDSkill_Lv>();
 		
-        public LDOccupation_TransferCategory()
+        public LDSkill_LvCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDOccupation_TransferCategory s = o as LDOccupation_TransferCategory;
+            LDSkill_LvCategory s = o as LDSkill_LvCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDOccupation_Transfer config in list)
+            foreach (LDSkill_Lv config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDOccupation_Transfer Get(int id)
+        public LDSkill_Lv Get(int id)
         {
-            this.dict.TryGetValue(id, out LDOccupation_Transfer item);
+            this.dict.TryGetValue(id, out LDSkill_Lv item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDOccupation_Transfer)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDSkill_Lv)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDOccupation_Transfer> GetAll()
+        public Dictionary<int, LDSkill_Lv> GetAll()
         {
             return this.dict;
         }
 
-        public LDOccupation_Transfer GetOne()
+        public LDSkill_Lv GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,17 +73,29 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDOccupation_Transfer: ProtoObject, IConfig
+	public partial class LDSkill_Lv: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>名称</summary>
+		/// <summary>技能 ID</summary>
 		[ProtoMember(2)]
-		public int Name { get; set; }
-		/// <summary>描述</summary>
+		public int Skill_Id { get; set; }
+		/// <summary>等级</summary>
 		[ProtoMember(3)]
+		public int Skill_Lv { get; set; }
+		/// <summary>描述</summary>
+		[ProtoMember(4)]
 		public int Desc { get; set; }
+		/// <summary>学习 等级</summary>
+		[ProtoMember(5)]
+		public int Learn_Lv { get; set; }
+		/// <summary>学习 消耗</summary>
+		[ProtoMember(6)]
+		public string Cost { get; set; }
+		/// <summary>释放消耗</summary>
+		[ProtoMember(7)]
+		public string Consume { get; set; }
 
 	}
 }

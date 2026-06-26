@@ -84,39 +84,27 @@ namespace ET
 		/// <summary>头像</summary>
 		[ProtoMember(3)]
 		public string HeadIcon { get; set; }
-		/// <summary>武器</summary>
-		[ProtoMember(4)]
-		public int[] Weapon_ { get; set; }
-		/// <summary>空武器</summary>
-		[ProtoMember(5)]
-		public int Weapon_Empty { get; set; }
-		/// <summary>护甲</summary>
-		[ProtoMember(6)]
-		public int[] Armor { get; set; }
 		/// <summary>模型</summary>
-		[ProtoMember(7)]
+		[ProtoMember(4)]
 		public string Model { get; set; }
 		/// <summary>初始属性</summary>
-		[ProtoMember(8)]
+		[ProtoMember(5)]
 		public string Attribute_Init { get; set; }
-		/// <summary>普攻</summary>
-		[ProtoMember(9)]
-		public int Skill_Normal { get; set; }
-		/// <summary>武器技能</summary>
-		[ProtoMember(10)]
-		public int[] Skill_Wewapon { get; set; }
-		/// <summary>基础技能</summary>
-		[ProtoMember(11)]
-		public int[] Skill_Base { get; set; }
+		/// <summary>默认普攻</summary>
+		[ProtoMember(6)]
+		public int Skill_Normal_Default { get; set; }
+		/// <summary>技能</summary>
+		[ProtoMember(7)]
+		public int[] Skill { get; set; }
 		/// <summary>默认加点</summary>
-		[ProtoMember(12)]
+		[ProtoMember(8)]
 		public int[] Add_Point_Default { get; set; }
 		/// <summary>转职ID</summary>
-		[ProtoMember(13)]
+		[ProtoMember(9)]
 		public int[] TransferId { get; set; }
-		/// <summary>时装部件</summary>
-		[ProtoMember(14)]
-		public int[] FashionBase { get; set; }
+		/// <summary>初始装备</summary>
+		[ProtoMember(10)]
+		public int[] Equip_Init { get; set; }
 
 	}
 }

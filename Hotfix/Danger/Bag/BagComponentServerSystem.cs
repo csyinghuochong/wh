@@ -10,13 +10,46 @@ namespace ET
 
         public override void Awake(BagComponentServer self)
         {
-          
+                
         }
     }
 
     public static class BagComponentServerSystem
     {
 
+
+        public static void OnInit(this BagComponentServer self,  CreateRoleInfo createRoleInfo)
+        {
+            LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
+            int[] equipIinit = ldOccupation.Equip_Init;
+
+            List<RewardItem> rewardItems = new List<RewardItem>();
+            for (int i = 0; i <equipIinit.Length; i++)
+            {
+                rewardItems.Add(new RewardItem()
+                {
+                    ItemType = ItemBigType.Type_Equip,
+                    ItemID = equipIinit[i],
+                    ItemNum = 1
+                });
+            }
+
+            self.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", false);
+            
+            List<BagInfo> equipList = new List<BagInfo>();
+            equipList.AddRange( self.BagItemList);
+            self.BagItemList.Clear();
+            
+            for (int i = 0; i <equipList.Count; i++)
+            {
+                LDEquip ldEquip = LDEquipCategory.Instance.Get(equipList[i].ItemID);
+                Log.Debug($"槽位： {ldEquip.Sub_Type} {ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID)}");
+                
+                equipList[i].Loc = (int)ItemLocType.ItemLocEquip;
+                self.EquipList.Add(equipList[i]);
+            }
+        }
+        
         /// <summary>
         /// 
         /// </summary>

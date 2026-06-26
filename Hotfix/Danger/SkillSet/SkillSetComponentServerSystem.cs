@@ -348,11 +348,7 @@ namespace ET
 
 			//新增技能
 			LDOccupation_Transfer occupationTransfer = LDOccupation_TransferCategory.Instance.Get(occTwo);
-			int[] addSkills = occupationTransfer.Skill_Reinforce;
-			for (int i = 0; i < addSkills.Length; i++)
-			{
-			}
-
+		
 			if (!unit.IsRobot())
 			{
 				self.UpdateSkillSet();
@@ -557,7 +553,7 @@ namespace ET
 
             for (int k = self.SkillList.Count - 1; k >= 0; k--)
             {
-                if (self.SkillList[k].SkillSource != SkillSourceEnum.TianFu)
+                /*if (self.SkillList[k].SkillSource != SkillSourceEnum.TianFu)
                 {
                     continue;
                 }
@@ -573,7 +569,7 @@ namespace ET
 			
 
 				updateTianFu.Add(self.SkillList[k].ParamId);
-				self.SkillList.RemoveAt(k);
+				self.SkillList.RemoveAt(k);*/
             }
 
 			for (int i = 0; i < updateTianFu.Count; i++)
@@ -595,7 +591,7 @@ namespace ET
 			for (int k = self.SkillList.Count - 1; k >= 0; k--)
 			{
 				////这个要确认一下， 是否检测全部
-				if (self.SkillList[k].SkillSource != SkillSourceEnum.TianFu)
+				/*if (self.SkillList[k].SkillSource != SkillSourceEnum.TianFu)
 				{
 					continue;
 				}
@@ -639,7 +635,7 @@ namespace ET
 						errorcode = 3;
                     }
                 }
-               
+               */
             }
 			return errorcode;
         }
@@ -987,9 +983,7 @@ namespace ET
 		{
 			List<int> skilllist = new List<int>();
 			RoleInfoComponentServer roleInfoComponentServer = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
-			int[] initskill = LDOccupationCategory.Instance.Get(roleInfoComponentServer.RoleInfo.Occ).Skill_Base;
-			int[] baseSkill = LDOccupationCategory.Instance.Get(roleInfoComponentServer.RoleInfo.Occ).Skill_Base;
-			skilllist.AddRange(initskill);
+			int[] baseSkill = LDOccupationCategory.Instance.Get(roleInfoComponentServer.RoleInfo.Occ).Skill;
 			skilllist.AddRange(baseSkill);
 			if (roleInfoComponentServer.RoleInfo.OccTwo != 0)
 			{
@@ -1033,74 +1027,38 @@ namespace ET
                 self.UpdateSkillSet();
             }
 		}
-
-		public static void CheckNormalSkill(this SkillSetComponentServer self, int occ)
-		{
-			bool havenormal = false;
-			LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(occ);
-			//检测基础技能
-			for (int i = self.SkillList.Count - 1; i >= 0; i--)
-			{
-				SkillPro skillPro = self.SkillList[i];
-				if (skillPro.SkillSetType != (int)SkillSetEnum.Skill)
-				{
-					continue;
-				}
-				if (skillPro.SkillSource == SkillSourceEnum.Skill_Normal 
-				    && skillPro.SkillID != ldOccupation.Skill_Normal)
-				{
-					self.SkillList.RemoveAt(i);
-					continue;
-				}
-                
-				if (skillPro.SkillSource == SkillSourceEnum.Skill_Normal 
-				    && skillPro.SkillID == ldOccupation.Skill_Normal)
-				{
-					havenormal = true;
-					break;
-				}
-			}
-			if (!havenormal)
-			{
-				self.AddSkillPro(ldOccupation.Skill_Normal, SkillSetEnum.Skill, SkillSourceEnum.Skill_Normal);
-			}
-		}
 		
-		public static void CheckWeaponSkill(this SkillSetComponentServer self, int occ)
+		
+		public static void CheckOccSkill(this SkillSetComponentServer self, int occ)
 		{
-			
-
 			LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(occ);
 			List<int> occSkilld = new List<int>() {  };
-			occSkilld.AddRange(ldOccupation.Skill_Wewapon );
+			occSkilld.AddRange(ldOccupation.Skill );
 
 			List<int> haveSkillid = new List<int>();
 			//检测基础技能
 			for (int i = self.SkillList.Count - 1; i >= 0; i--)
 			{
 				SkillPro skillPro = self.SkillList[i];
-				if (skillPro.SkillSetType != (int)SkillSetEnum.Skill)
-				{
-					continue;
-				}
-				if (skillPro.SkillSource != SkillSourceEnum.Skill_Weapon)
+				if (skillPro.SkillSource != SkillSourceEnum.Occupation)
 				{
 					continue;
 				}
 
-				int baseSkillid = LDSkillCategory.Instance.GetInitWeaponSkill(skillPro.SkillID);
-				if (!occSkilld.Contains(baseSkillid))
+				if (!occSkilld.Contains(skillPro.SkillID))
 				{
 					self.SkillList.RemoveAt(i);
 					continue;
 				}
 
-				occSkilld.Remove(baseSkillid);
+				occSkilld.Remove(skillPro.SkillID);
 			}
 
 			for (int i = 0; i < occSkilld.Count; i++)
-			{
-				self.AddSkillPro(occSkilld[i], SkillSetEnum.Skill, SkillSourceEnum.Skill_Weapon);
+			{ 
+				SkillPro skillPro = self.AddSkillPro(occSkilld[i], SkillSetEnum.Skill, SkillSourceEnum.Occupation);
+				skillPro.Actived = occSkilld[i] == ldOccupation.Skill_Normal_Default? 1 : 0;
+				skillPro.SkillPosition =  occSkilld[i] == ldOccupation.Skill_Normal_Default? 1 : 0;
 			}
 		}
 

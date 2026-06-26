@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "a6sJaOZ6QfQ=",
+  "dgSpecHash": "hdsgbnoDy7U=",
   "success": true,
-  "projectFilePath": "E:\\GiteeLDYQReSkin\\Server\\App\\Server.App.csproj",
+  "projectFilePath": "E:\\LDYQReSkin\\Server\\App\\Server.App.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LDYQ\\.nuget\\packages\\alibabacloud.endpointutil\\0.1.1\\alibabacloud.endpointutil.0.1.1.nupkg.sha512",
     "C:\\Users\\LDYQ\\.nuget\\packages\\alibabacloud.gatewayspi\\0.0.3\\alibabacloud.gatewayspi.0.0.3.nupkg.sha512",

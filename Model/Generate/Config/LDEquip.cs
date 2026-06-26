@@ -105,9 +105,6 @@ namespace ET
 		/// <summary>属性</summary>
 		[ProtoMember(10)]
 		public string Attribute { get; set; }
-		/// <summary>获取绑定 0-否 1-是</summary>
-		[ProtoMember(11)]
-		public int IfLock { get; set; }
 
 	}
 }

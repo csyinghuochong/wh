@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDOccupation_TransferCategory : ProtoObject, IMerge
+    public partial class LDActivity_Sign_InCategory : ProtoObject, IMerge
     {
-        public static LDOccupation_TransferCategory Instance;
+        public static LDActivity_Sign_InCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDOccupation_Transfer> dict = new Dictionary<int, LDOccupation_Transfer>();
+        private Dictionary<int, LDActivity_Sign_In> dict = new Dictionary<int, LDActivity_Sign_In>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDOccupation_Transfer> list = new List<LDOccupation_Transfer>();
+        private List<LDActivity_Sign_In> list = new List<LDActivity_Sign_In>();
 		
-        public LDOccupation_TransferCategory()
+        public LDActivity_Sign_InCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDOccupation_TransferCategory s = o as LDOccupation_TransferCategory;
+            LDActivity_Sign_InCategory s = o as LDActivity_Sign_InCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDOccupation_Transfer config in list)
+            foreach (LDActivity_Sign_In config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDOccupation_Transfer Get(int id)
+        public LDActivity_Sign_In Get(int id)
         {
-            this.dict.TryGetValue(id, out LDOccupation_Transfer item);
+            this.dict.TryGetValue(id, out LDActivity_Sign_In item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDOccupation_Transfer)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDActivity_Sign_In)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDOccupation_Transfer> GetAll()
+        public Dictionary<int, LDActivity_Sign_In> GetAll()
         {
             return this.dict;
         }
 
-        public LDOccupation_Transfer GetOne()
+        public LDActivity_Sign_In GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,17 +73,20 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDOccupation_Transfer: ProtoObject, IConfig
+	public partial class LDActivity_Sign_In: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>名称</summary>
+		/// <summary>活动Id</summary>
 		[ProtoMember(2)]
-		public int Name { get; set; }
-		/// <summary>描述</summary>
+		public int ActivityId { get; set; }
+		/// <summary>天数</summary>
 		[ProtoMember(3)]
-		public int Desc { get; set; }
+		public int Sign_Day { get; set; }
+		/// <summary>奖励</summary>
+		[ProtoMember(4)]
+		public string Reward { get; set; }
 
 	}
 }
