@@ -98,16 +98,7 @@ namespace ET
         //字典是引用,进来的值会发生改变
         public static void AddUpdateProDicList(int typeID, long typeValue, Dictionary<int, long> dic)
         {
-            //缓存属性
-            if (dic.ContainsKey(typeID))
-            {
-                dic[typeID] += typeValue;
-            }
-            else
-            {
-                dic[typeID] = typeValue;
-            }
-
+            AttrConfigManager.MergeAttributeValue(typeID, typeValue, dic);
         }
 
         //是否是一级属性
@@ -183,393 +174,88 @@ namespace ET
         /// <summary>
         /// 更新基础的属性
         /// </summary>
-        /// <param name="unit"></param>
-        public  static void UnitUpdateProperty_Base(Unit unit, bool notice, bool rank)
+        public static void UnitUpdateProperty_Base(Unit unit, bool notice, bool rank)
         {
             if (unit.SceneType == MapTypeEnum.RunRace)
             {
                 return;
             }
 
-            //基础职业属性
             RoleInfoComponentServer unitInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = unitInfoComponentServer.RoleInfo;
             int roleLv = roleInfo.Lv;
 
-            //初始化属性
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             numericComponent.ResetProperty();
 
-            
-            //缓存列表
-            Dictionary<int, long> UpdateProDicList = new Dictionary<int, long>();
+            Dictionary<int, long> updateProDicList = new Dictionary<int, long>();
 
-            LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(roleInfo.Occ);
-
-            //职业属性
-            List<HideProList> occInitAttributes = LDOccupationCategory.Instance.GetOccInitAttribute(roleInfo.Occ);
-            
+            // 职业初始属性
             List<HideProList> attributeList = new List<HideProList>();
-            attributeList.AddRange(occInitAttributes);
-            
-            //装备属性
+            attributeList.AddRange(LDOccupationCategory.Instance.GetOccInitAttribute(roleInfo.Occ));
+
+            // 装备属性
             unit.GetComponent<BagComponentServer>().GetEquipAttribute(attributeList);
-            
             for (int pro = 0; pro < attributeList.Count; pro++)
             {
-                AddUpdateProDicList(attributeList[pro].HideID, attributeList[pro].HideValue, UpdateProDicList);
-            }
-            
-               
-            int[] fixpoints =   RoleAddPointHelper.GetFixedPointByLevel( roleLv);
-            
-            for (int pointType = NumericType.Point_Strength; pointType <= NumericType.Point_Strength; pointType++)
-            {
-                fixpoints[pointType - 1] +=  numericComponent.GetAsInt(pointType);
-                
-                IReadOnlyDictionary<int, int> pointAddAttr = RolePointConvertHelper.GetPointConvertMap( pointType );
-
-                foreach (var pointAddItem in pointAddAttr)
-                {
-                    AddUpdateProDicList(pointAddItem.Key, pointAddItem.Value * fixpoints[pointType - 1], UpdateProDicList);
-                }
-            }
-            
-            
-            //时装
-            List<int> fashionids = unit.GetComponent<BagComponentServer>().FashionActiveIds;
-            for (int i = 0; i < fashionids.Count; i++)
-            {
-                if (!LDFashionCategory.Instance.Contain(fashionids[i]))
-                {
-                    continue;
-                }
-
-                LDFashion ldFashion = LDFashionCategory.Instance.Get(fashionids[i]);
-               
-            }
-            
-            //史诗宝石数量
-            List<int> ShiShiGemID = new List<int>();
-
-            //生命护盾
-            List<PropertyValue> lifeShieldList = unit.GetComponent<SkillSetComponentServer>().GetShieldProLists();
-            for (int i = 0; i < lifeShieldList.Count; i++)
-            {
-                AddUpdateProDicList(lifeShieldList[i].HideID, lifeShieldList[i].HideValue, UpdateProDicList);
+                AddUpdateProDicList(attributeList[pro].HideID, attributeList[pro].HideValue, updateProDicList);
             }
 
-            //称号属性
-            List<PropertyValue> titlePros = unit.GetComponent<TitleComponentServer>().GetTitlePro();
-            for (int i = 0; i < titlePros.Count; i++)
+            // 属性点：等级固定点 + 已分配点 → 战斗属性
+            int[] fixedPointByLevel = RoleAddPointHelper.GetFixedPointByLevel(roleLv);
+            int[] pointValues = new int[RoleAddPointHelper.PointNumericTypes.Length];
+            for (int i = 0; i < RoleAddPointHelper.PointNumericTypes.Length; i++)
             {
-                AddUpdateProDicList(titlePros[i].HideID, titlePros[i].HideValue, UpdateProDicList);
+                pointValues[i] = fixedPointByLevel[i]
+                    + numericComponent.GetAsInt(RoleAddPointHelper.PointNumericTypes[i]);
             }
 
-            //家园属性
-            List<PropertyValue> jiayuanPros = unit.GetComponent<JiaYuanComponentServer>().GetJianYuanPro();
-            for (int i = 0; i < jiayuanPros.Count; i++)
+            Dictionary<int, int> pointConvertAttrs = RolePointConvertHelper.CalcAllConvertAttributes(pointValues);
+            foreach (KeyValuePair<int, int> kv in pointConvertAttrs)
             {
-                AddUpdateProDicList(jiayuanPros[i].HideID, jiayuanPros[i].HideValue, UpdateProDicList);
+                AddUpdateProDicList(kv.Key, kv.Value, updateProDicList);
             }
 
-            //技能属性
-            List<PropertyValue> skillProList = unit.GetComponent<SkillSetComponentServer>().GetSkillRoleProLists();
-            for (int i = 0; i < skillProList.Count; i++)
-            {
-                //Log.Info("隐藏:" + skillProList[i].HideID + "skillProList[i].HideValue = " + skillProList[i].HideValue);
-                AddUpdateProDicList(skillProList[i].HideID, skillProList[i].HideValue, UpdateProDicList);
-            }
-
-            //坐骑属性
-            List<PropertyValue> zuoqiPros = unit.GetComponent<RoleInfoComponentServer>().GetZuoQiPro();
-            for (int i = 0; i < zuoqiPros.Count; i++)
-            {
-                AddUpdateProDicList(zuoqiPros[i].HideID, zuoqiPros[i].HideValue, UpdateProDicList);
-            }
-
-            //收集属性
-            List<PropertyValue> shoujiProList = unit.GetComponent<ShoujiComponentServer>().GetProList();
-            for (int i = 0; i < shoujiProList.Count; i++)
-            {
-                AddUpdateProDicList(shoujiProList[i].HideID, shoujiProList[i].HideValue, UpdateProDicList);
-            }
-
-            //精灵属性
-            List<PropertyValue> jinglingProList = unit.GetComponent<ChengJiuComponentServer>().GetJingLingProLists();
-            for (int i = 0; i < jinglingProList.Count; i++)
-            {
-                AddUpdateProDicList(jinglingProList[i].HideID, jinglingProList[i].HideValue, UpdateProDicList);
-            }
-
-            List<PropertyValue> magickaProList = unit.GetComponent<ChengJiuComponentServer>().GetMagickaProLists();
-            for (int i = 0; i < magickaProList.Count; i++)
-            {
-                AddUpdateProDicList(magickaProList[i].HideID, magickaProList[i].HideValue, UpdateProDicList);
-            }
-
-            //神兽羁绊属性
-            int shenshouNumber = unit.GetComponent<PetComponentServer>().GetShenShouNumber();
-            List<PropertyValue> shenshoujiban = new List<PropertyValue>();
-            foreach ((int petnumber, List<PropertyValue> prolist) in CommonConfig.ShenShouJiBan)
-            {
-                if (shenshouNumber >= petnumber)
-                {
-                    shenshoujiban.AddRange(prolist);
-                }
-            }
-
-            for (int i = 0; i < shenshoujiban.Count; i++)
-            {
-                AddUpdateProDicList(shenshoujiban[i].HideID, shenshoujiban[i].HideValue, UpdateProDicList);
-            }
-            
-            //家园守护
-            /*List<PropertyValue> shouhuPros = unit.GetComponent<PetComponent>().GetPetShouHuPro();
-            for (int i = 0; i < shouhuPros.Count; i++)
-            {
-                AddUpdateProDicList(shouhuPros[i].HideID, shouhuPros[i].HideValue, UpdateProDicList);
-            }*/
-
-            //天赋系统
-            List<PropertyValue> tianfuProList = unit.GetComponent<SkillSetComponentServer>().GetTianfuRoleProLists();
-            for (int i = 0; i < tianfuProList.Count; i++)
-            {
-                AddUpdateProDicList(tianfuProList[i].HideID, tianfuProList[i].HideValue, UpdateProDicList);
-            }
-            
-            //--------------------新版属性加点------------------------
-            
-            List<int> keys = new List<int>();
-
-            //更新属性
-            foreach (int key in UpdateProDicList.Keys)
-            {
-                //long setValue = numericComponent.GetAsLong(key) + UpdateProDicList[key];
-                long setValue = + UpdateProDicList[key];
-    
-                if (!notice)
-                {
-                    numericComponent.Update(key, setValue, false);
-                    continue;
-                }
-                if (NumericHelp.BroadcastType.Contains(key))
-                {
-                    numericComponent.Update(key, setValue, true);
-                }
-                else
-                {
-                    numericComponent.Update(key, setValue, false);
-                    keys.Add(key);
-                }
-            }
-            
-            ////test
-           int  PointLiLiang =  numericComponent.GetAsInt(NumericType.Point_Strength);
-           int  PointZhiLi =  numericComponent.GetAsInt(NumericType.Point_Intelligence);
-           int  PointTiZhi =   numericComponent.GetAsInt(NumericType.Point_Constitution);
-           int  PointNaiLi =   numericComponent.GetAsInt(NumericType.Point_Stamina);
-           int  PointMinJie =  numericComponent.GetAsInt(NumericType.Point_Agility);
+            // 批量写入分项属性，每个基础属性只重算一次
+            numericComponent.ApplyAttributeDictionary(updateProDicList, false);
 
             if (notice)
             {
-                List<int> ks = new List<int>();
-                List<long> vs = new List<long>();
-
-                for (int i = 0; i < keys.Count; i++)
-                {
-                    int nowValue = (int)keys[i] / 100;
-                    if (!ks.Contains(nowValue))
-                    {
-                        ks.Add(nowValue);
-                        vs.Add(numericComponent.GetAsLong(nowValue));
-                    }
-                }
-
-                //通知自己
-                m2C_UnitNumericListUpdate.UnitID = unit.Id;
-                m2C_UnitNumericListUpdate.Vs = vs;
-                m2C_UnitNumericListUpdate.Ks = ks;
-                MessageHelper.SendToClient(unit, m2C_UnitNumericListUpdate);
+                SendBaseAttributeListUpdate(unit, numericComponent);
             }
 
-            UpdateCombat(unit, numericComponent,notice);
-            
-            //排行榜
+            UpdateCombat(unit, numericComponent, notice);
+
             if (rank)
             {
                 unit.GetComponent<RoleInfoComponentServer>().UpdateRankInfo();
             }
-            
+        }
+
+        /// <summary>
+        /// 同步 ForwardMap 中所有基础属性的最终值到客户端。
+        /// </summary>
+        private static void SendBaseAttributeListUpdate(Unit unit, NumericComponent numericComponent)
+        {
+            List<int> ks = new List<int>();
+            List<long> vs = new List<long>();
+            foreach (int baseAttr in AttrConfigManager.ForwardMap.Keys)
+            {
+                ks.Add(baseAttr);
+                vs.Add(numericComponent.GetAsLong(baseAttr));
+            }
+
+            m2C_UnitNumericListUpdate.UnitID = unit.Id;
+            m2C_UnitNumericListUpdate.Ks = ks;
+            m2C_UnitNumericListUpdate.Vs = vs;
+            MessageHelper.SendToClient(unit, m2C_UnitNumericListUpdate);
         }
         
         public  static void UpdateCombat(Unit unit, NumericComponent numericComponent, bool notice)
         {
             //战力计算
-            long ShiLi_Act = 0;
-            float ShiLi_ActPro = 0f;
-            long ShiLi_Def = 0;
-            float ShiLi_DefPro = 0f;
-            long ShiLi_Hp = 0;
-            float ShiLi_HpPro = 0f;
-            //long proLvAdd = criLv + hitLv + dodgeLv + resLv + skillAddLv;
-            long proLvAdd = 0;
 
-            //传承鉴定特殊属性加成
-            int chuanchengProAdd = 0;
-        
-            //攻击部分
-            foreach (var Item in NumericHelp.ZhanLi_Act)
-            {
-                ShiLi_Act += (int)((float)numericComponent.ReturnGetFightNumLong(Item.Key) * Item.Value);
-            }
-
-            //隐藏技能算在攻击部分
-
-            foreach (var Item in NumericHelp.ZhanLi_ActPro)
-            {
-                ShiLi_ActPro += ((float)numericComponent.ReturnGetFightNumfloat(Item.Key) * Item.Value);
-            }
-
-            //Console.WriteLine("ShiLi_ActPro = " + ShiLi_ActPro);
-
-            //幸运副本附加
-            int luck = numericComponent.GetAsInt(NumericType.Numeric_Error);
-            switch (luck)
-            {
-                case 0:
-                    ShiLi_ActPro += 0.01f;
-                    break;
-                case 1:
-                    ShiLi_ActPro += 0.02f;
-                    break;
-                case 2:
-                    ShiLi_ActPro += 0.04f;
-                    break;
-                case 3:
-                    ShiLi_ActPro += 0.08f;
-                    break;
-                case 4:
-                    ShiLi_ActPro += 0.12f;
-                    break;
-                case 5:
-                    ShiLi_ActPro += 0.2f;
-                    break;
-                case 6:
-                    ShiLi_ActPro += 0.3f;
-                    break;
-                case 7:
-                    ShiLi_ActPro += 0.4f;
-                    break;
-                case 8:
-                    ShiLi_ActPro += 0.5f;
-                    break;
-                case 9:
-                    ShiLi_ActPro += 0.9f;
-                    break;
-
-                default:
-                    ShiLi_ActPro += 1f;
-                    break;
-            }
-
-            //防御部分
-            foreach (var Item in NumericHelp.ZhanLi_Def)
-            {
-                ShiLi_Def += (int)((float)numericComponent.ReturnGetFightNumLong(Item.Key) * Item.Value);
-            }
-
-            foreach (var Item in NumericHelp.ZhanLi_DefPro)
-            {
-                ShiLi_DefPro += ((float)numericComponent.ReturnGetFightNumfloat(Item.Key) * Item.Value);
-            }
-
-            //血量部分
-            foreach (var Item in NumericHelp.ZhanLi_Hp)
-            {
-                ShiLi_Hp += (int)((float)numericComponent.ReturnGetFightNumLong(Item.Key) * Item.Value);
-            }
-
-            foreach (var Item in NumericHelp.ZhanLi_HpPro)
-            {
-                ShiLi_HpPro += ((float)numericComponent.ReturnGetFightNumfloat(Item.Key) * Item.Value);
-            }
-
-            //宠物守护附加战力
-            int fightNum = 0;
-            PetComponentServer petCom = unit.GetComponent<PetComponentServer>();
-            for (int i = 0; i < 4; i++)
-            {
-                if (petCom.PetShouHuList.Count < 4)
-                {
-                    break;
-                }
-
-                RolePetInfo rolePetInfoNow = petCom.GetPetInfo(petCom.PetShouHuList[i]);
-                if (rolePetInfoNow == null)
-                {
-                    continue;
-                }
-                fightNum = fightNum + rolePetInfoNow.PetPingFen;
-            }
-
-            int addShouHuFight = (int)fightNum / 10;
-
-            //其他战力附加
-            int addZhanLi = numericComponent.GetAsInt(NumericType.Numeric_Error);
-
-            //觉醒战力附加
-   
-            List<int> juexingSkillList = unit.GetComponent<SkillSetComponentServer>().GetJueSkillIds(0);
-            int addJueXingZhanLi = 0;
-            if (juexingSkillList.Count >= 1)
-            {
-                addJueXingZhanLi = Math.Min(juexingSkillList.Count, 3) * 300;
-            }
-            if (juexingSkillList.Count >= 4)
-            {
-                addJueXingZhanLi += (Math.Min(juexingSkillList.Count, 7) - 3) * 400;
-            }
-            if (juexingSkillList.Count >= 8)
-            {
-                addJueXingZhanLi += 500;
-            }
-
-            addZhanLi += addJueXingZhanLi;
-            
-            long OneProvalueNaiLi = 0;
-            long OneProvalueZhiLi = 0;
-            long OneProvalueMinJie = 0;
-            long OneProvalueLiLiang =0;
-            long OneProvalueTiZhi = 0;
-            addZhanLi = (int)((OneProvalueNaiLi + OneProvalueZhiLi + OneProvalueMinJie + OneProvalueLiLiang + OneProvalueTiZhi));   //属性点放大系数
-
-            //技能属性点附加战力
-            int skillPointFight = 0;  //剩余属性点
-
-            skillPointFight = skillPointFight * 50;
-            if (skillPointFight < 0)
-            {
-                skillPointFight = 0;
-            }
-            //理论不会超过此值
-            if (skillPointFight >= 5000)
-            {
-                skillPointFight = 5000;
-            }
-
-            //int zhanliValue =(int)(ShiLi_Act * (1 + ShiLi_ActPro) + ShiLi_Def * (1 + ShiLi_DefPro) + (ShiLi_Hp * 0.1f) * (1 + ShiLi_HpPro)) + roleLv * 50 + (int)proLvAdd + addZhanLi + addShouHuFight;
-            int zhanliValue = (int)(ShiLi_Act * (1 + ShiLi_ActPro) + ShiLi_Def * (1 + ShiLi_DefPro) + (ShiLi_Hp * 0.1f) * (1 + ShiLi_HpPro)) + 1 * 100 + (int)proLvAdd + addZhanLi + addShouHuFight + chuanchengProAdd + skillPointFight;
-            //Console.WriteLine("ShiLi_Act = " + ShiLi_Act + " ShiLi_ActPro = " + ShiLi_ActPro + " ShiLi_Def = " + ShiLi_Def + " ShiLi_DefPro = "+ ShiLi_DefPro + " ShiLi_Hp = " + ShiLi_Hp + " ShiLi_HpPro = " + ShiLi_HpPro + " proLvAdd = " + proLvAdd + " addZhanLi = " + addZhanLi);
-
-            //根据属性点整体放大发
-            long oneProSum = 0;
-            int addZhanliValue = (int)(zhanliValue * (oneProSum/30000f));
-            if (addZhanliValue > 0) {
-                zhanliValue = zhanliValue + addZhanliValue;
-                //Console.WriteLine("zhanliValue = " + zhanliValue + " addZhanliValue = " + addZhanliValue + "oneProSum = " + oneProSum);
-            }
-
+            int zhanliValue = RandomHelper.RandomNumber(100, 200);
             //更新战力
             unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Combat, zhanliValue.ToString(), notice);
 
