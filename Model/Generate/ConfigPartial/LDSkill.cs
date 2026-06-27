@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MongoDB.Bson.Serialization.Attributes;
-using ProtoBuf;
 
 namespace ET
 {
@@ -13,31 +11,16 @@ namespace ET
         public long Value;
     }
 
-    public struct LDSkillConsumeItem
-    {
-        public int NumericType;
-        public long Value;
-    }
 
     public partial class LDSkill
     {
-        [ProtoIgnore]
-        [BsonIgnore]
         public List<KeyValuePairInt> ReplaceSkillList = new List<KeyValuePairInt>();
-
-        [ProtoIgnore]
-        [BsonIgnore]
         public List<LDSkillAttributeLimit> SelfAttributeLimits = new List<LDSkillAttributeLimit>();
-
-        [ProtoIgnore]
-        [BsonIgnore]
-        public List<LDSkillConsumeItem> ConsumeList = new List<LDSkillConsumeItem>();
 
         public void ParseRuntimeData()
         {
             this.ReplaceSkillList.Clear();
             this.SelfAttributeLimits.Clear();
-            this.ConsumeList.Clear();
 
             if (!string.IsNullOrEmpty(this.Replace_Skill) && this.Replace_Skill != "0")
             {
@@ -84,44 +67,24 @@ namespace ET
                     });
                 }
             }
-
-            if (!string.IsNullOrEmpty(this.Consume) && this.Consume != "0")
-            {
-                string[] consumeItems = this.Consume.Split('|');
-                for (int i = 0; i < consumeItems.Length; i++)
-                {
-                    string[] parts = consumeItems[i].Split('_');
-                    if (parts.Length != 2)
-                    {
-                        continue;
-                    }
-                    if (!int.TryParse(parts[0], out int numericType) || !long.TryParse(parts[1], out long value))
-                    {
-                        continue;
-                    }
-                    this.ConsumeList.Add(new LDSkillConsumeItem
-                    {
-                        NumericType = numericType,
-                        Value = value,
-                    });
-                }
-            }
         }
     }
 
     public partial class LDSkillCategory
     {
+        
         /// <summary>
-        /// 1003 1002 1001..的基础技能都是1001   
+        /// 69060301 69060302 ..的基础技能都是69060300
         /// </summary>
         public Dictionary<int, int> InitWeaponSkillList = new Dictionary<int, int>();
 
+        
         public Dictionary<int, List<KeyValuePairInt>> EquipSkillList = new Dictionary<int, List<KeyValuePairInt>>();
 
         /// <summary>
         /// 给该buff的玩家触发一个技能
         /// </summary>
-        public Dictionary<int , KeyValuePairLong4> BuffTriggerSkill = new Dictionary<int , KeyValuePairLong4>();
+        public Dictionary<int, KeyValuePairLong4> BuffTriggerSkill = new Dictionary<int, KeyValuePairLong4>();
 
         /// <summary>
         /// 给该buff的玩家触发额外伤害
@@ -133,15 +96,8 @@ namespace ET
         /// </summary>
         public Dictionary<int, KeyValuePairLong4> BuffSecondSkill = new Dictionary<int, KeyValuePairLong4>();
 
-
-        //技能额外属性来自自身
-        public Dictionary<int, List<PropertyValue>> ExtraPropertyFromSelf = new Dictionary<int, List<PropertyValue>>();
-
-
-        public Dictionary<int,List<int>> SkillSpecifiedMonster = new Dictionary<int, List<int>>();  
-
         /// <summary>
-        /// 获取是技能的一级基础技能
+        /// 获取技能链的一级/初始技能 Id
         /// </summary>
         /// <param name="skillid"></param>
         /// <returns></returns>
@@ -156,13 +112,12 @@ namespace ET
 
         public override void AfterEndInit()
         {
-           
+            this.InitWeaponSkillList.Clear();
             foreach (LDSkill skillconfig in this.GetAll().Values)
             {
                 skillconfig.ParseRuntimeData();
             }
 
-            this.InitWeaponSkillList.Clear();
             this.BuildInitWeaponSkillList();
         }
 
@@ -171,44 +126,10 @@ namespace ET
         /// </summary>
         private void BuildInitWeaponSkillList()
         {
-            Dictionary<int, LDSkill> allSkills = this.GetAll();
-            HashSet<int> hasPrevious = new HashSet<int>();
-            foreach (LDSkill skill in allSkills.Values)
-            {
-                if (skill.NextId != 0)
-                {
-                    hasPrevious.Add(skill.NextId);
-                }
-            }
-
-            foreach (LDSkill skill in allSkills.Values)
-            {
-                if (hasPrevious.Contains(skill.Id))
-                {
-                    continue;
-                }
-
-                int baseSkillId = skill.Id;
-                int currentId = skill.Id;
-                HashSet<int> visited = new HashSet<int>();
-                while (currentId != 0 && allSkills.ContainsKey(currentId) && visited.Add(currentId))
-                {
-                    this.InitWeaponSkillList[currentId] = baseSkillId;
-                    currentId = allSkills[currentId].NextId;
-                }
-            }
-
-            foreach (LDSkill skill in allSkills.Values)
-            {
-                if (!this.InitWeaponSkillList.ContainsKey(skill.Id))
-                {
-                    this.InitWeaponSkillList[skill.Id] = skill.Id;
-                }
-            }
+         
         }
 
-
-        public int GetNewSkill(List<SkillPro> skillPros, int oldskiull)
+        public int GetNewSkill(List<SkillPro> skillPros,  int oldskiull)
         {
             if (skillPros == null)
             {

@@ -210,6 +210,12 @@ namespace ET
             }
         }
         
+        public static void ApplyConsume(Unit unit, LDSkill ldSkill)
+        {
+           
+        }
+
+        
         /// <summary>
         /// 服务器释放技能的点
         /// </summary>
@@ -233,7 +239,7 @@ namespace ET
             }
 
             LDSkill baseLdSkill = LDSkillCategory.Instance.Get(skillcmd.SkillID);
-            LDSkillHelper.ApplyConsume(unit, baseLdSkill);
+            //ApplyConsume(unit, baseLdSkill);
 
             SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
             int weaponSkillid = unit.GetWeaponSkill(skillcmd.SkillID, skillSetComponentServer!=null ? skillSetComponentServer.SkillList : null );
@@ -623,11 +629,11 @@ namespace ET
                 return ErrorCode.ERR_CanNotUseSkill_1;
             }
 
-            int castError = LDSkillHelper.CheckCastCondition(unit, ldSkill, targetId);
+           /* int castError = LDSkillHelper.CheckCastCondition(unit, ldSkill, targetId);
             if (castError != ErrorCode.ERR_Success)
             {
                 return castError;
-            }
+            }*/
 
             StateComponent stateComponent = unit.GetComponent<StateComponent>();
 

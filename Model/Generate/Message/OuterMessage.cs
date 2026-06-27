@@ -4893,6 +4893,9 @@ namespace ET
 		[ProtoMember(8)]
 		public long BagInfoId { get; set; }
 
+		[ProtoMember(9)]
+		public int Level { get; set; }
+
 	}
 
 	[Message(OuterOpcode.RechargePro)]

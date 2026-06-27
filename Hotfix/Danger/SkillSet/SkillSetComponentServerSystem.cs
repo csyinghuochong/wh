@@ -859,43 +859,7 @@ namespace ET
 				skilllist.AddRange(twoskill);
 			}
 
-			for (int i = 0; i < skilllist.Count; i++)
-			{
-				int skillId = skilllist[i];
-				int whileNumber = 0;
-
-                while (skillId != 0)
-				{
-                    whileNumber++;
-                    if (whileNumber >= 100)
-                    {
-                        Log.Error("whileNumber >= 100");
-                        break;
-                    }
-
-					try
-					{
-
-						SkillPro skillPro = self.GetBySkillID(skillId);
-						if (skillPro != null)
-						{
-							self.SkillList.Remove(skillPro);
-							break;
-						}
-						LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
-						int nextId = ldSkill.NextId;
-						if (nextId != 0)
-						{
-							sp += ldSkill.CostSP;
-						}
-						skillId = nextId;
-					}
-					catch (Exception ex)
-					{
-						Log.Error(ex.ToString());
-					}
-				}
-			}
+		
 			roleInfoComponentServer.RoleInfo.OccTwo = 0;
 
 			self.UpdateSkillSet();
@@ -993,33 +957,6 @@ namespace ET
 			for (int i = 0; i < skilllist.Count; i++)
 			{
 				int skillId = skilllist[i];
-				int whileNumber = 0;
-
-                while (skillId != 0)
-                {
-                    whileNumber++;
-                    if (whileNumber >= 100)
-                    {
-                        Log.Error("whileNumber >= 100");
-                        break;
-                    }
-
-					try
-					{
-                        SkillPro skillPro = self.GetBySkillID(skillId);
-                        if (skillPro != null)
-                        {
-                            skillPro.SkillID = skilllist[i];
-                            skillPro.SkillPosition = 0;
-                            break;
-                        }
-                        skillId = LDSkillCategory.Instance.Get(skillId).NextId;
-                    }
-                    catch (Exception ex)
-					{
-						Log.Error(ex.ToString());
-					}
-				}
 			}
 
 			if (notice)

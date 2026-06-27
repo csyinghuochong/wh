@@ -20,43 +20,20 @@ namespace ET
 
 			List<SkillPro> SkillList = skillSetComponentServer.SkillList;
 			LDSkill skillconf = LDSkillCategory.Instance.Get(request.SkillID);
-			int nextSkillID = skillconf.NextId;
-			if (nextSkillID == 0)
-			{
-				response.Error = ErrorCode.ERR_GoldNotEnoughError;     //错误码:技能达到最大等级
-				reply();
-				return;
-			}
-
-            if (skillSetComponentServer.GetBySkillID(nextSkillID) != null)
-            {
-                response.Error = ErrorCode.ERR_AlreadyLearn;
-                reply();
-                return;
-            }
+			
 
             RoleInfoComponentServer unitInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-			string costGoldValue = skillconf.Cost;
-			int costSPValue = 1;
-			int RoseSP = unitInfoComponentServer.RoleInfo.Sp;
-			if (/*unitInfoComponent.RoleInfo.Gold < costGoldValue || */RoseSP < costSPValue)
-			{
-				response.Error = ErrorCode.ERR_GoldNotEnoughError;     //错误码:升级所需金币或者能量值不足
-				reply();
-				return;
-			}
 
-			//替换原有技能
+		            
 			for (int i = SkillList.Count - 1; i >= 0; i--)
 			{
 				if (SkillList[i].SkillID == request.SkillID)
 				{
-					SkillList[i].SkillID = nextSkillID;
+					SkillList[i].Level++;
 					break;
 				}
 			}
-	
-			response.NewSkillID = nextSkillID;
+			
 			//unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (costGoldValue*-1).ToString(), true, ItemGetWay.CostItem);
 			//unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Sp, (costSPValue * -1).ToString());
 
