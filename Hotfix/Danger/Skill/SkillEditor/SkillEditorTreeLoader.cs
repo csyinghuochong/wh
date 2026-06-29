@@ -66,11 +66,24 @@ namespace ET
                 return null;
             }
 
-            string functionType = rootNode.Params.Count > 0 ? rootNode.Params[0] : string.Empty;
+            string functionType = string.Empty;
             int skillId = 0;
-            if (rootNode.Params.Count > 1)
+
+            // Legacy: params[0]=函数类型, params[1]=技能ID
+            // Slim v1:  only params[0]=技能ID (界面配置.xml 只有一个 ID 参数)
+            if (rootNode.Params.Count >= 2)
             {
+                functionType = rootNode.Params[0] ?? string.Empty;
                 int.TryParse(rootNode.Params[1], out skillId);
+            }
+            else if (rootNode.Params.Count == 1)
+            {
+                int.TryParse(rootNode.Params[0], out skillId);
+            }
+
+            if (skillId <= 0 && !string.IsNullOrEmpty(rootNode.Desc))
+            {
+                int.TryParse(rootNode.Desc, out skillId);
             }
 
             return new SkillEditorSkillLogic

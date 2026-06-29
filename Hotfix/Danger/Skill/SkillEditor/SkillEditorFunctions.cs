@@ -3,119 +3,182 @@ using System;
 namespace ET
 {
     /// <summary>
-    /// Hand-written helper functions referenced from TreeSave function nodes.
+    /// Auto-generated from SkillEditor_v1/bin/Debug/DocEditor界面配置.xml function_list.
+    /// Regenerate: tools/generate_skill_editor_functions.ps1
     /// </summary>
     public static class SkillEditorFunctions
     {
         public static void RegisterAll()
         {
-            SkillEditorFunctionRegistry.Register("function.test_1", Test1);
-            SkillEditorFunctionRegistry.Register("function.contion_1", Contion1);
-        }
-
-        private static void Test1(SkillEditorFunctionContext ctx)
-        {
-            string p0 = ctx.Node.Params.Count > 0 ? ctx.ResolveParam(ctx.Node.Params[0]) : "0";
-            string p1 = ctx.Node.Params.Count > 1 ? ctx.ResolveParam(ctx.Node.Params[1]) : "0";
-            string p2 = ctx.Node.Params.Count > 2 ? ctx.ResolveParam(ctx.Node.Params[2]) : "0";
-
-            Log.Debug($"SkillEditor function.test_1 skill={ctx.SkillId} params=({p0},{p1},{p2}) desc={ctx.Node.Desc}");
-            Console.WriteLine($"Test1: {p0} {p1}  {p2}");
+            SkillEditorFunctionRegistry.Register("DEFINE_VARIABLE", DefineVariable);
+            SkillEditorFunctionRegistry.Register("SET_VARIABLE_VALUE", SetVariableValue);
+            SkillEditorFunctionRegistry.Register("DEFINE_VARIABLE_RAMDOM_VALUE", DefineVariableRamdomValue);
+            SkillEditorFunctionRegistry.Register("CHANCE_TRIGGER", ChanceTrigger);
+            SkillEditorFunctionRegistry.Register("BREAK", BreakLoop);
+            SkillEditorFunctionRegistry.Register("RETURN_TRUE", ReturnTrue);
+            SkillEditorFunctionRegistry.Register("INFORM_CLIENT_HIT_SUCCESS", InformClientHitSuccess);
+            SkillEditorFunctionRegistry.Register("ADD_BUFF", AddBuff);
+            SkillEditorFunctionRegistry.Register("ADD_BUFF_CONTROL", AddBuffControl);
         }
 
         /// <summary>
-        /// function.contion_1 �� direct hit condition (legacy: battle_skill_utility.phyDirectRes).
-        /// Params:
-        /// 0 rs, 1 caster, 2 target, 3 skillid, 4 sType,
-        /// 5 canCrit, 6 canImmune, 7 canDodge, 8 critRateAdd, 9 hitRateAdd,
-        /// 10 level, 11 hateInit(91), 12 hateGrowth(92), 13 sendHitMsg
+        /// 定义变量 (DEFINE_VARIABLE)
+        /// Params: 变量名, 初始值
         /// </summary>
-        private static void Contion1(SkillEditorFunctionContext ctx)
+        private static void DefineVariable(SkillEditorFunctionContext ctx)
         {
-            string rsVar = ctx.ResolveVarName(ctx.GetParamRaw(0), "rs");
-            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(1));
-            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(2));
-            int skillId = ctx.GetParamInt(3, ctx.SkillId);
-            string sTypeVar = ctx.ResolveVarName(ctx.GetParamRaw(4), "sType");
-            bool canCrit = ctx.GetParamBool(5, true);
-            bool canImmune = ctx.GetParamBool(6, true);
-            bool canDodge = ctx.GetParamBool(7, true);
-            int critRateAdd = ctx.GetParamInt(8, 0);
-            int hitRateAdd = ctx.GetParamInt(9, 0);
-            int skillLevel = ctx.GetParamInt(10, ctx.SkillLevel);
-            float hateInit = ResolveTableFloat(ctx, 11, 0f);
-            float hateGrowth = ResolveTableFloat(ctx, 12, 0f);
-            bool sendHitMsg = ctx.GetParamBool(13, true);
+            Log.Debug($"SkillEditor DEFINE_VARIABLE skill={ctx.SkillId} desc={ctx.Node.Desc}");
 
-            ctx.SetVariable(sTypeVar, ParseEffectType(ctx.GetParamRaw(4)));
-
-            long rs = SkillEditorContionHelper.EvaluateDirectHit(
-                ctx,
-                caster,
-                target,
-                skillId,
-                canCrit,
-                canImmune,
-                canDodge,
-                critRateAdd,
-                hitRateAdd,
-                skillLevel,
-                hateInit,
-                hateGrowth,
-                sendHitMsg);
-
-            ctx.SetVariable(rsVar, rs);
-            ctx.LastConditionResult = rs == SkillEditorHitResult.Hit || rs > SkillEditorHitResult.Hit;
-
-            Log.Debug(
-                $"SkillEditor function.contion_1 skill={skillId} rs={rsVar}:{rs} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)} sType={sTypeVar} level={skillLevel}");
+            string varName = ctx.ResolveVarName(ctx.GetParamRaw(0));
+            if (string.IsNullOrEmpty(varName)) { return; }
+            long initValue = ParseLong(ctx.ResolveParam(ctx.GetParamRaw(1)), 0);
+            ctx.SetVariable(varName, initValue);
         }
 
-        private static float ResolveTableFloat(SkillEditorFunctionContext ctx, int paramIndex, float defaultValue)
+        /// <summary>
+        /// 变量赋值 (SET_VARIABLE_VALUE)
+        /// Params: 变量名, 值
+        /// </summary>
+        private static void SetVariableValue(SkillEditorFunctionContext ctx)
         {
-            string raw = ctx.GetParamRaw(paramIndex);
-            if (!string.IsNullOrWhiteSpace(raw))
-            {
-                if (float.TryParse(ctx.ResolveParam(raw), out float explicitValue))
-                {
-                    return explicitValue;
-                }
-            }
+            Log.Debug($"SkillEditor SET_VARIABLE_VALUE skill={ctx.SkillId} desc={ctx.Node.Desc}");
 
-            string column = ctx.GetParamSkillIdColumn(paramIndex);
-            if (string.IsNullOrEmpty(column))
-            {
-                return defaultValue;
-            }
+            string varName = ctx.ResolveVarName(ctx.GetParamRaw(0));
+            if (string.IsNullOrEmpty(varName)) { return; }
+            long value = ParseLong(ctx.ResolveParam(ctx.GetParamRaw(1)), 0);
+            ctx.SetVariable(varName, value);
+        }
 
-            // skillID column is filled from skill logic sheet in editor; runtime fallback uses param text only for now
+        /// <summary>
+        /// 定义变量-随机值 (DEFINE_VARIABLE_RAMDOM_VALUE)
+        /// Params: 变量名, 随机值
+        /// </summary>
+        private static void DefineVariableRamdomValue(SkillEditorFunctionContext ctx)
+        {
+            Log.Debug($"SkillEditor DEFINE_VARIABLE_RAMDOM_VALUE skill={ctx.SkillId} desc={ctx.Node.Desc}");
+
+            string varName = ctx.ResolveVarName(ctx.GetParamRaw(0));
+            if (string.IsNullOrEmpty(varName)) { return; }
+            int maxExclusive = ctx.GetParamInt(1, 10000);
+            if (maxExclusive <= 0) { maxExclusive = 10000; }
+            long randomValue = RandomHelper.RandomNumber(0, maxExclusive);
+            ctx.SetVariable(varName, randomValue);
+        }
+
+        /// <summary>
+        /// 概率触发 (CHANCE_TRIGGER)
+        /// Params: 概率 0.01%
+        /// </summary>
+        private static void ChanceTrigger(SkillEditorFunctionContext ctx)
+        {
+            Log.Debug($"SkillEditor CHANCE_TRIGGER skill={ctx.SkillId} desc={ctx.Node.Desc}");
+
+            int rate = ctx.GetParamInt(0, 10000);
+            if (rate < 0) { rate = 0; }
+            if (rate > 10000) { rate = 10000; }
+            bool hit = rate >= 10000 || RandomHelper.RandomNumber(0, 10000) < rate;
+            ctx.LastConditionResult = hit;
+            ctx.SetVariable("rs", hit ? 1 : 0);
+        }
+
+        /// <summary>
+        /// 跳出循环 (BREAK)
+        /// Params: (none)
+        /// </summary>
+        private static void BreakLoop(SkillEditorFunctionContext ctx)
+        {
+            Log.Debug($"SkillEditor BREAK skill={ctx.SkillId} desc={ctx.Node.Desc}");
+
+            ctx.SetVariable("__break", 1);
+        }
+
+        /// <summary>
+        /// 返回成功值 (RETURN_TRUE)
+        /// Params: (none)
+        /// </summary>
+        private static void ReturnTrue(SkillEditorFunctionContext ctx)
+        {
+            Log.Debug($"SkillEditor RETURN_TRUE skill={ctx.SkillId} desc={ctx.Node.Desc}");
+
+            ctx.LastConditionResult = true;
+            ctx.SetVariable("rs", 1);
+        }
+
+        /// <summary>
+        /// 通知客户端命中 (INFORM_CLIENT_HIT_SUCCESS)
+        /// Params: 施法者, 目标, 技能ID, 技能等级
+        /// </summary>
+        private static void InformClientHitSuccess(SkillEditorFunctionContext ctx)
+        {
+            Log.Debug($"SkillEditor INFORM_CLIENT_HIT_SUCCESS skill={ctx.SkillId} desc={ctx.Node.Desc}");
+
+            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            int skillId = ctx.GetParamInt(2, ctx.SkillId);
+            int level = ctx.GetParamInt(3, ctx.SkillLevel);
+            Log.Debug($"INFORM_CLIENT_HIT_SUCCESS caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)} skill={skillId} level={level}");
+        }
+
+        /// <summary>
+        /// 添加BUFF (ADD_BUFF)
+        /// Params: 施法者, 目标, BUFF_ID, 作用间隔-ms, 作用次数, 无视免疫, BUFF等级
+        /// </summary>
+        private static void AddBuff(SkillEditorFunctionContext ctx)
+        {
+            Log.Debug($"SkillEditor ADD_BUFF skill={ctx.SkillId} desc={ctx.Node.Desc}");
+
+            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            int buffId = ctx.GetParamInt(2, 0);
+            int intervalMs = ctx.GetParamInt(3, 0);
+            int tickCount = ctx.GetParamInt(4, 1);
+            bool ignoreImmune = ctx.GetParamBool(5, false);
+            int buffLevel = ctx.GetParamInt(6, ctx.SkillLevel);
+            ApplyBuff(ctx, caster, target, buffId, intervalMs, tickCount, ignoreImmune, buffLevel, null);
+        }
+
+        /// <summary>
+        /// 添加控制BUFF (ADD_BUFF_CONTROL)
+        /// Params: 施法者, 目标, BUFF_ID, 作用间隔-ms, 作用次数, 控制类型, 无视免疫, BUFF等级
+        /// </summary>
+        private static void AddBuffControl(SkillEditorFunctionContext ctx)
+        {
+            Log.Debug($"SkillEditor ADD_BUFF_CONTROL skill={ctx.SkillId} desc={ctx.Node.Desc}");
+
+            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            int buffId = ctx.GetParamInt(2, 0);
+            int intervalMs = ctx.GetParamInt(3, 0);
+            int tickCount = ctx.GetParamInt(4, 1);
+            string controlType = ctx.ResolveParam(ctx.GetParamRaw(5));
+            bool ignoreImmune = ctx.GetParamBool(6, false);
+            int buffLevel = ctx.GetParamInt(7, ctx.SkillLevel);
+            ApplyBuff(ctx, caster, target, buffId, intervalMs, tickCount, ignoreImmune, buffLevel, controlType);
+        }
+
+        private static long ParseLong(string raw, long defaultValue)
+        {
+            if (long.TryParse(raw, out long value)) { return value; }
+            if (int.TryParse(raw, out int intValue)) { return intValue; }
             return defaultValue;
         }
 
-        private static long ParseEffectType(string raw)
+        private static void ApplyBuff(
+            SkillEditorFunctionContext ctx,
+            Unit caster,
+            Unit target,
+            int buffId,
+            int intervalMs,
+            int tickCount,
+            bool ignoreImmune,
+            int buffLevel,
+            string controlType)
         {
-            string token = raw?.Trim() ?? string.Empty;
-            if (token.Equals("sType", StringComparison.OrdinalIgnoreCase))
-            {
-                return 0;
-            }
-
-            if (token.Contains("SKILL_EFFECT_PHY", StringComparison.OrdinalIgnoreCase))
-            {
-                return 1;
-            }
-
-            if (token.Contains("SKILL_EFFECT_MAGIC", StringComparison.OrdinalIgnoreCase))
-            {
-                return 2;
-            }
-
-            if (token.Contains("SKILL_EFFECT_ASSIST", StringComparison.OrdinalIgnoreCase))
-            {
-                return 3;
-            }
-
-            return 0;
+            if (target == null || buffId <= 0) { return; }
+            BuffManagerComponent buffMgr = target.GetComponent<BuffManagerComponent>();
+            if (buffMgr == null) { return; }
+            if (!ignoreImmune && buffMgr.IsSkillImmune(ctx.SkillId)) { return; }
+            Log.Debug($"ApplyBuff target={target.Id} buffId={buffId} interval={intervalMs} ticks={tickCount} level={buffLevel} control={controlType ?? string.Empty}");
         }
     }
 }
