@@ -99,8 +99,6 @@ namespace ET
         //宠物兑换次数
         public int PetDuiHuanTimes;
 
-        //当前身上橙色装备数量
-        public int ChengZhuangNumber;
 
         //洗炼经验
         public int XiLianExp;

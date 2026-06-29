@@ -104,20 +104,6 @@ namespace ET
             }
         }
 
-        public static async ETTask OnContinueSkill(this SkillManagerComponent self, C2M_SkillCmd skillcmd)
-        {
-            long instanceid = self.InstanceId;
-            await TimerComponent.Instance.WaitAsync(1000);
-            if (instanceid != self.InstanceId)
-            {
-                return;
-            }
-            for (int i = 0; i < 1; i++)
-            {
-                self.OnUseSkill(skillcmd, false);
-            }
-        }
-
         public static void InterruptSkill(this SkillManagerComponent self, int skillId)
         {
             int skillcnt = self.Skills.Count;
@@ -325,17 +311,6 @@ namespace ET
                 unit.GetComponent<AttackRecordComponent>().AttackingId = skillcmd.TargetID;
             }
 
-            float now_ZhuanZhuPro = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
-            if (zhudong && RandomHelper.RandFloat01() < now_ZhuanZhuPro
-                && TimeHelper.ServerFrameTime() - self.LastLianJiTime >= 4000)
-            {
-                if (unit.Type == UnitType.Player)
-                {
-                    m2C_Skill.Message = "双重施法,触发法术连击!";
-                }
-                self.LastLianJiTime = TimeHelper.ServerFrameTime();
-                self.OnContinueSkill(skillcmd).Coroutine();
-            }
 
             self.TriggerAddSkill(skillcmd, weaponLdSkill.Id).Coroutine();
             self.AddSkillTimer();

@@ -32,6 +32,7 @@ namespace ET
                 return false;
             }
 
+            ctx.LastConditionResult = false;
             handler(ctx);
             return true;
         }

@@ -68,13 +68,41 @@ namespace ET
 
         private static bool EvaluateCondition(SkillEditorFunctionContext ctx, SkillEditorTreeNode conditionNode)
         {
-            if (conditionNode.Operators == null || conditionNode.Operators.Count == 0)
+            bool hasFunctionChild = false;
+            for (int i = 0; i < conditionNode.Children.Count; i++)
             {
-                return true;
+                SkillEditorTreeNode child = conditionNode.Children[i];
+                if (child.NodeType == SkillEditorNodeType.Function)
+                {
+                    hasFunctionChild = true;
+                    ctx.Node = child;
+                    SkillEditorFunctionRegistry.TryInvoke(child.Name, ctx);
+                }
             }
 
-            // TODO: evaluate condition expressions from child function nodes / params
-            return true;
+            if (conditionNode.Operators == null || conditionNode.Operators.Count == 0)
+            {
+                return hasFunctionChild ? ctx.LastConditionResult : true;
+            }
+
+            long rs = ctx.GetVariable("rs", 0);
+            bool result = rs > 0;
+            for (int i = 0; i < conditionNode.Operators.Count; i++)
+            {
+                switch (conditionNode.Operators[i])
+                {
+                    case SkillEditorCompareOp.And:
+                        result = result && rs > 0;
+                        break;
+                    case SkillEditorCompareOp.Or:
+                        result = result || rs > 0;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return result;
         }
     }
 }

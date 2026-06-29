@@ -40,6 +40,8 @@ namespace ET
         public string FrontText;
         public string BackText;
         public List<string> Params = new List<string>();
+        /// <summary>Parallel to Params: skill table column id from XML param skillID attribute.</summary>
+        public List<string> ParamSkillIds = new List<string>();
         public List<SkillEditorCompareOp> Operators = new List<SkillEditorCompareOp>();
         public List<SkillEditorTreeNode> Children = new List<SkillEditorTreeNode>();
     }

@@ -433,10 +433,6 @@ namespace ET
 
             self.TrialFubenId = numericComponent.GetAsInt( NumericType.TrialDungeonId );
 
-            //self.ChouKaTimes 
-            //self.PetChouKaTimes
-            self.ChengZhuangNumber = ItemHelper.GetNumberByQulity(bagComponentServer.EquipList, 5);
-
             self.XiLianExp = numericComponent.GetAsInt( NumericType.ItemXiLianDu);
 
             self.LastSealTowerId = numericComponent.GetAsInt( NumericType.TowerOfSealArrived);

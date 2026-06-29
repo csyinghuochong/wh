@@ -107,7 +107,7 @@ namespace ET
                         node.BackText = childElem.InnerText ?? string.Empty;
                         break;
                     case "params":
-                        ParseParams(childElem, node.Params);
+                        ParseParams(childElem, node.Params, node.ParamSkillIds);
                         break;
                     case "operators":
                         ParseOperators(childElem, node.Operators);
@@ -121,13 +121,15 @@ namespace ET
             return node;
         }
 
-        private static void ParseParams(XmlElement paramsElem, List<string> output)
+        private static void ParseParams(XmlElement paramsElem, List<string> output, List<string> skillIdOutput)
         {
             foreach (XmlNode child in paramsElem.ChildNodes)
             {
                 if (child is XmlElement paramElem && paramElem.Name == "param")
                 {
                     output.Add(paramElem.InnerText ?? string.Empty);
+                    string skillIdAttr = paramElem.GetAttribute("skillID");
+                    skillIdOutput.Add(skillIdAttr ?? string.Empty);
                 }
             }
         }

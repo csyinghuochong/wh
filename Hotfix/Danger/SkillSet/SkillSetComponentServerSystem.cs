@@ -996,7 +996,9 @@ namespace ET
 				SkillPro skillPro = self.AddSkillPro(occSkilld[i], SkillSetEnum.Skill, SkillSourceEnum.Occupation);
 				skillPro.Actived = occSkilld[i] == ldOccupation.Skill_Normal_Default? 1 : 0;
 				skillPro.SkillPosition =  occSkilld[i] == ldOccupation.Skill_Normal_Default? 1 : 0;
-			}
+				skillPro.Level = 1;
+
+            }
 		}
 
 		public static void UpdateSkillSet(this SkillSetComponentServer self)

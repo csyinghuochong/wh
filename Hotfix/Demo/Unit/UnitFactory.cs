@@ -183,7 +183,7 @@ namespace ET
             numericComponent.Set(NumericType.UnionId_0, master != null ? master.GetUnionId() : 0, false);
             numericComponent.Set(NumericType.PetSkin, createMonsterInfo.SkinId, false);
             numericComponent.Set(NumericType.MasterId, createMonsterInfo.MasterID, false);
-            numericComponent.Set(NumericType.HP_Current, numericComponent.GetAsLong(NumericType.HP_Max));
+            numericComponent.Set(NumericType.HP_Current, numericComponent.GetAsLong(NumericType.HP_Max), false);
 
             int ai = createMonsterInfo.AI > 0 ? createMonsterInfo.AI : 1;
             unit.AI = ai;
