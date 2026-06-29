@@ -68,6 +68,7 @@
   <ItemGroup>
     <Folder Include="Danger\ActivityServer\" />
     <Folder Include="Danger\Handler\Map\" />
+    <Folder Include="Danger\Skill\SkillEditor\" />
     <Folder Include="Module\Function\" />
   </ItemGroup>
   <ItemGroup>
