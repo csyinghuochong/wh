@@ -10,32 +10,7 @@ namespace ET
     {
 
         public  static M2C_UnitNumericListUpdate m2C_UnitNumericListUpdate = new M2C_UnitNumericListUpdate();
-
-     
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="attackUnit"></param>
-        /// <param name="defendUnit"></param>
-        /// <param name="skillHandler"></param>
-        /// <param name="hurtMode">0 默认 1持续伤害</param>
-        /// <returns></returns>
-        public  static bool Fight(Unit attackUnit, Unit defendUnit, Skill_TreeEditor skillHandler, int hurtMode)
-        {
-            if (defendUnit.IsDisposed)
-            {
-                return false;
-            }
-
-            LDSkill skillconfig = skillHandler.LdSkillConf;
-            long damge = -1;
-            
-            NumericComponent defendNumber = defendUnit.GetComponent<NumericComponent>();
-            defendNumber.ApplyChange(attackUnit, NumericType.HP_Current, damge, 0);
-                
-            return true;
-        }
-
+        
         //暴击等级等属性转换成实际暴击率的方法
         public static float LvProChange(long value, int lv)
         {

@@ -774,6 +774,8 @@ namespace ET
                 damage = (long)(damage * 1.5f);
             }
 
+            damage = RandomHelper.RandomNumber(1,3);
+            
             NumericComponent defendNumeric = target.GetComponent<NumericComponent>();
             if (defendNumeric != null)
             {
