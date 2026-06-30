@@ -68,6 +68,7 @@ namespace ET
             switch (token.ToLowerInvariant())
             {
                 case "skillid":
+                case "skill_id":
                     return this.SkillId.ToString();
                 case "level":
                     return this.SkillLevel.ToString();
