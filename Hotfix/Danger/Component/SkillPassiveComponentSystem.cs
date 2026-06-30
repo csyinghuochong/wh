@@ -22,23 +22,6 @@ namespace ET
     }
 
 
-    [Timer(TimerType.MonsterSingingTimer)]
-    public class MonsterSingingTimer : ATimer<SkillPassiveComponent>
-    {
-        public override void Run(SkillPassiveComponent self)
-        {
-            try
-            {
-                self.OnSingOver();
-            }
-            catch (Exception e)
-            {
-                Log.Error($"move timer error: {self.Id}\n{e}");
-            }
-        }
-    }
-
-
     [ObjectSystem]
     public class SkillPassiveComponentAwakeSystem : AwakeSystem<SkillPassiveComponent>
     {
@@ -402,11 +385,7 @@ namespace ET
 
         public static void StateTypeAdd(this SkillPassiveComponent self, long nowStateType)
         {
-            if (self.SingTimer > 0  && (nowStateType == StateTypeEnum.Silence || nowStateType == StateTypeEnum.Dizziness))
-            {
-                TimerComponent.Instance.Remove( ref self.SingTimer );
-                self.StateComponent.StateTypeRemove(StateTypeEnum.Singing);
-            }
+           
         }
 
         public static void ImmediateUseSkill(this SkillPassiveComponent self,SkillPassiveInfo skillIfo, long targetId = 0)
