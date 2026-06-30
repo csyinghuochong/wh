@@ -94,8 +94,6 @@ namespace ET
                 }
 
                 int equipId = unit.GetWuqiItemID();
-                self.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.WandBuff_8, equipId);
-                self.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.EquipIndex_15 );
             }
 
             bool xueliangcheck = false;
@@ -108,11 +106,7 @@ namespace ET
             {
                 for (int i = 0; i < self.SkillPassiveInfos.Count; i++)
                 {
-                    if (self.SkillPassiveInfos[i].SkillPassiveTypeEnum.Contains( SkillPassiveTypeEnum.XueLiang_2))
-                    {
-                        xueliangcheck = true;
-                        break;
-                    }
+                   
                 }
             }
             if (xueliangcheck)
@@ -187,8 +181,6 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             self.CheckHuiXue();
-            self.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.XueLiang_2, unit.Id);
-            self.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.IdleStill_14, unit.Id);
             self.CheckSkillUseMP(unit);
             //self.CheckActGailvTime(unit);
         }
@@ -407,38 +399,6 @@ namespace ET
             //self.SkillPassiveInfos.Add(skillPassiveInfo);
         }
 
-        public static void UpdateMagicQulity(this SkillPassiveComponent self, int skillid, int magicqulity)
-        {
-            for (int i = 0; i < self.SkillPassiveInfos.Count; i++)
-            {
-                if (self.SkillPassiveInfos[i].SkillId == skillid)
-                {
-                    self.SkillPassiveInfos[i].MagicQulity = magicqulity;
-                }
-            }
-        }
-
-        public static  void BeginSingSkill(this SkillPassiveComponent self, SkillPassiveInfo skillIfo, long targetId = 0)
-        {
-            self.SingSkillIfo = skillIfo;
-            self.SingTargetId = targetId;   
-            TimerComponent.Instance.Remove(ref self.SingTimer);
-
-            Unit unit = self.GetParent<Unit>();
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillIfo.SkillId);
-            int angle = (int)Quaternion.QuaternionToEuler(unit.Rotation).y;
-            self.StateComponent.StateTypeAdd(StateTypeEnum.Singing, $"{skillIfo.SkillId}_{angle}");
-            //self.SingTimer = TimerComponent.Instance.NewOnceTimer(TimeHelper.ServerNow() + (long)(ldSkill.SkillFrontSingTime * 1000), TimerType.MonsterSingingTimer, self);
-        }
-
-        public static void OnSingOver(this SkillPassiveComponent self)
-        {
-            self.StateComponent.StateTypeRemove(StateTypeEnum.Singing);
-            if (self.SingSkillIfo != null)
-            {
-                self.ImmediateUseSkill(self.SingSkillIfo, self.SingTargetId);
-            }
-        }
 
         public static void StateTypeAdd(this SkillPassiveComponent self, long nowStateType)
         {
@@ -530,75 +490,7 @@ namespace ET
 
         public static void OnPlayerMove(this SkillPassiveComponent self)
         {
-            for (int i = 0; i < self.SkillPassiveInfos.Count; i++)
-            {
-                if (self.SkillPassiveInfos[i].SkillPassiveTypeEnum .Contains( SkillPassiveTypeEnum.IdleStill_14) )
-                {
-                    self.SkillPassiveInfos[i].LastTriggerTime = TimeHelper.ServerNow(); 
-                }
-            }
-        }
 
-        public static int IsTrigegerPassiveTypeEnum_21(this SkillPassiveComponent self)
-        {
-            for (int i = 0; i < self.SkillPassiveInfos.Count; i++)
-            {
-                SkillPassiveInfo skillIfo = self.SkillPassiveInfos[i];
-
-                if (!skillIfo.SkillPassiveTypeEnum.Contains(SkillPassiveTypeEnum.PassiveTypeEnum_21))
-                {
-                    continue;
-                }
-
-                float skillproValue = skillIfo.SkillPro[skillIfo.SkillPassiveTypeEnum.IndexOf(SkillPassiveTypeEnum.PassiveTypeEnum_21)];
-                bool trigger = skillproValue >= RandomHelper.RandFloat01();
-                if (trigger)
-                {
-                    return skillIfo.SkillId;
-                }
-            }
-
-            return 0;
-        }
-
-        public static List<int> IsTrigegerPassiveTypeEnum_22(this SkillPassiveComponent self)
-        {
-            Unit unit = self.GetParent<Unit>();
-
-            if (unit.Type != UnitType.Player)
-            {
-                return null;
-            }
-            List<int> listskills = new List<int>();
-            using ListComponent<SkillPassiveInfo> skillPassiveInfos = ListComponent<SkillPassiveInfo>.Create();
-            for (int i = 0; i < self.SkillPassiveInfos.Count; i++)
-            {
-                if (!self.SkillPassiveInfos[i].SkillPassiveTypeEnum.Contains(SkillPassiveTypeEnum.PassiveTypeEnum_22))
-                {
-                    continue;
-                }
-
-                skillPassiveInfos.Add(self.SkillPassiveInfos[i]);
-            }
-            if (skillPassiveInfos.Count == 0)
-            {
-                return listskills;
-            }
-
-            for (int s = 0; s < skillPassiveInfos.Count; s++)
-            {
-                SkillPassiveInfo skillIfo = skillPassiveInfos[s];
-
-                float skillproValue = skillIfo.SkillPro[skillIfo.SkillPassiveTypeEnum.IndexOf(SkillPassiveTypeEnum.PassiveTypeEnum_22)];
-
-                bool trigger = skillproValue >= RandomHelper.RandFloat01();
-
-                if (trigger)
-                {
-                    listskills.Add(skillIfo.SkillId);
-                }
-            }
-            return listskills;
         }
 
         public static void OnTrigegerPassiveSkill(this SkillPassiveComponent self, int skillPassiveTypeEnum, long targetId = 0, int skillid = 0, List<int> passiveTypeEnum_22 = null)
@@ -619,16 +511,10 @@ namespace ET
             using ListComponent<SkillPassiveInfo> skillPassiveInfos = ListComponent<SkillPassiveInfo>.Create();
             for (int i = 0; i < self.SkillPassiveInfos.Count; i++)
             {
-                if (!self.SkillPassiveInfos[i].SkillPassiveTypeEnum.Contains(skillPassiveTypeEnum) )
+                if (self.SkillPassiveInfos[i].SkillPassiveTypeEnum == (skillPassiveTypeEnum) )
                 {
                     continue;
                 }
-
-                if (self.SkillPassiveInfos[i].SkillPassiveTypeEnum.Contains(SkillPassiveTypeEnum.AckNumber_16))
-                {
-                    self.SkillPassiveInfos[i].TriggerNumber++;
-                }
-
                 skillPassiveInfos.Add(self.SkillPassiveInfos[i]);
             }
             if (skillPassiveInfos.Count == 0)
@@ -642,123 +528,18 @@ namespace ET
             {
                 SkillPassiveInfo skillIfo = skillPassiveInfos[s];
 
-                float skillproValue = skillIfo.SkillPro[skillIfo.SkillPassiveTypeEnum.IndexOf(skillPassiveTypeEnum)];
-                if (skillPassiveTypeEnum == SkillPassiveTypeEnum.WandBuff_8)
-                {
-                    int weapontype = Convert.ToInt32(skillproValue);
-                    int buffId = 0;//LDSkillCategory.Instance.Get(skillIfo.SkillId).InitBuffID[0];
-                    int equipType = ItemHelper.GetNewEquipType(ItemBigType.Type_Item, (int)targetId);
-                    int weaponType = targetId == 0 ? ItemEquipType.Common : equipType;
-                    if (weaponType != weapontype)
-                    {
-                        unit.GetComponent<BuffManagerComponent>().BuffRemoveByUnit(0, buffId);
-                    }
-                    if (weaponType == weapontype && buffId!=0)
-                    {
-                        BuffData buffData_1 = new BuffData();
-                        buffData_1.SkillId = skillIfo.SkillId;
-                        buffData_1.BuffId = buffId;
-                        unit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_1, unit, null);
-                    }
-                    continue;
-                }
-                //只触发一次
-                if (skillIfo.LastTriggerTime > 0 && skillIfo.TriggerOnce == 1)
-                {
-                    continue;
-                }
-                //触发限制
-                if (skillIfo.TriggerInterval > 0 && serverTime - skillIfo.LastTriggerTime < skillIfo.TriggerInterval)
-                {
-                    continue;
-                }
-                bool trigger = false;
 
-                switch (skillPassiveTypeEnum)
-                {
-                    case SkillPassiveTypeEnum.AckGaiLv_1:
-                        trigger = skillproValue >= RandomHelper.RandFloat01();
-                        //self.LastAckGaiLv_1Time = serverTime;
-                        break;
-                    case SkillPassiveTypeEnum.XueLiang_2:
-                        NumericComponent numCom = unit.GetComponent<NumericComponent>();
-                        if (unit.Type == UnitType.JingLing)
-                        {
-                            Unit master = unit.GetParent<UnitComponent>().Get(unit.MasterId);
-                            numCom = (master != null && !master.IsDisposed) ? master.GetComponent<NumericComponent>() : numCom;
-                        }
-
-                        long nowHp = numCom.GetAsLong((int)NumericType.Numeric_Error);
-                        long maxHp = numCom.GetAsLong((int)NumericType.Numeric_Error);
-                        float hpPro = (float)nowHp / (float)maxHp;
-                        trigger = hpPro <= skillproValue;
-                        break;
-                    case SkillPassiveTypeEnum.BeHurt_3:
-                    case SkillPassiveTypeEnum.Critical_4:
-                    case SkillPassiveTypeEnum.ShanBi_5:
-                    case SkillPassiveTypeEnum.WillDead_6:
-                    case SkillPassiveTypeEnum.SkillGaiLv_7:
-                    case SkillPassiveTypeEnum.AckDistance_9:
-                    case SkillPassiveTypeEnum.AckDistance_10:
-                    case SkillPassiveTypeEnum.IdleStill_14:
-                    case SkillPassiveTypeEnum.EquipIndex_15:
-                    case SkillPassiveTypeEnum.AllSkill_17:
-                    case SkillPassiveTypeEnum.PetBattleBegin_18:
-                    case SkillPassiveTypeEnum.AckCritical_19:
-                    case SkillPassiveTypeEnum.FanGunCD_20:
-                        if (skillIfo.MagicQulity > 0)
-                        {
-                            //Console.WriteLine($"skillIfo.MagicQulity > 0:  {skillIfo.MagicQulity}");
-                            //skillproValue为SkillConfig的 PassiveSkillPro（被动技能触发参数）
-                            //实际触发概率=(原始触发概率/2)+((原始触发概率/2)*(品质/80))
-                            skillproValue = (skillproValue / 2f) + ((skillproValue / 2f) * (skillIfo.MagicQulity / 100f));
-                        }
-                        trigger = skillproValue >= RandomHelper.RandFloat01();
-
-                        break;
-                    case SkillPassiveTypeEnum.PassiveTypeEnum_22:
-                        trigger = passiveTypeEnum_22.Contains(skillIfo.SkillId ); 
-                        break;
-                    case SkillPassiveTypeEnum.TeamerEnter_12:
-                        trigger = true;
-                        break;
-                    case SkillPassiveTypeEnum.AckNumber_16:
-                        trigger = skillIfo.TriggerNumber >= skillproValue;
-                        if (trigger)
-                        {
-                            skillIfo.TriggerNumber = 0;
-                        }
-                        break;
-                }
-                if (!trigger)
-                {
-                    continue;
-                }
-                
                 if (skillid == skillIfo.SkillId)
                 {
                     Log.Debug($"SkillPassiveComponent: {skillIfo.SkillId}");
                     continue;
                 }
 
-                SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();   
-                if (skillManagerComponent.IsCanUseSkill(skillIfo.SkillId, false, skillPassiveTypeEnum != SkillPassiveTypeEnum.WillDead_6) != ErrorCode.ERR_Success)
-                {
-                    continue;
-                }
+                SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
 
                 //int weaponSkill = unit.GetWeaponSkill(skillIfo.SkillId);
                 //SkillConfig skillConfig = SkillConfigCategory.Instance.Get(weaponSkill);
-                LDSkill ldSkill = LDSkillCategory.Instance.Get(skillIfo.SkillId);
-                if (ldSkill.Skill_Time > 0f)
-                {
-                    self.BeginSingSkill(skillIfo, targetId);
-                }
-                else
-                {
-                    self.ImmediateUseSkill(skillIfo, targetId);
-                }
-                skillIfo.LastTriggerTime = serverTime;
+                self.ImmediateUseSkill(skillIfo, targetId);
             }
         }
     }

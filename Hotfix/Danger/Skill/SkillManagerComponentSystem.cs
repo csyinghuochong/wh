@@ -250,8 +250,6 @@ namespace ET
 
             self.InterruptSing(skillcmd.SkillID, false);
 
-
-            List<int> passiveTypeEnum_22 = null;
             SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
             if (skillPassiveComponent == null)
             {
@@ -291,13 +289,7 @@ namespace ET
             }
             if (zhudong)
             {
-                
-                //skillPassiveComponent?.OnTrigegerPassiveSkill(weaponLdSkill.SkillActType == 0 ? SkillPassiveTypeEnum.AckGaiLv_1 : SkillPassiveTypeEnum.SkillGaiLv_7, skillcmd.TargetID, skillcmd.SkillID);
-                //skillPassiveComponent?.OnTrigegerPassiveSkill(weaponLdSkill.SkillRangeSize <= 4 ? SkillPassiveTypeEnum.AckDistance_9 : SkillPassiveTypeEnum.AckDistance_10, skillcmd.TargetID, skillcmd.SkillID);
-                skillPassiveComponent?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AllSkill_17, skillcmd.TargetID, skillcmd.SkillID);
-                skillPassiveComponent?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.PassiveTypeEnum_22, skillcmd.TargetID, skillcmd.SkillID, passiveTypeEnum_22);
             }
-
 
             Unit unitTarget = unit.GetParent<UnitComponent>().Get(skillcmd.TargetID);
             if (weaponLdSkill.Type == SkillTypeEnum.SkillTypeInstant_1 &&  unitTarget !=null) 
@@ -559,8 +551,6 @@ namespace ET
                 skillcd.SkillID = fangunskill;
                 skillcd.CDEndTime = newTime + 10000;
                 self.SkillCDs.Add(fangunskill, skillcd);
-
-                self.GetParent<Unit>().GetComponent<SkillPassiveComponent>().OnTrigegerPassiveSkill( SkillPassiveTypeEnum.FanGunCD_20, 0, 0 );
                 //Unit unit = self.GetParent<Unit>();
                 //BuffData buffData_2 = new BuffData();
                 //buffData_2.BuffConfig = SkillBuffConfigCategory.Instance.Get(90106003);

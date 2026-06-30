@@ -5,28 +5,17 @@ namespace ET
     public class SkillPassiveInfo
     {
         public int SkillId;
-        public List<int> SkillPassiveTypeEnum;
-        public List<float> SkillPro;                  //触发概率或者血量百分比
-        public int TriggerOnce;                 //是否触发一次
-        public long TriggerInterval;           //触发间隔
-        public long LastTriggerTime;            //上次触发时间
-        public int TriggerNumber;
-        public int MagicQulity;                //魔能品质 会影响魔能技能触发概率
+        public  int SkillPassiveTypeEnum;
 
-        public SkillPassiveInfo(int skillId, List<int> skillPassiveTypeEnum, List<float> skillPro, int triggerOnce, double triggerTime)
+        public SkillPassiveInfo(int skillId, int skillPassiveTypeEnum)
         {
             this.SkillId = skillId;
             this.SkillPassiveTypeEnum = skillPassiveTypeEnum;
-            this.SkillPro = skillPro;
-            this.TriggerOnce = triggerOnce;
-            this.TriggerInterval = (long)(1000 * triggerTime);
-            this.LastTriggerTime = 0;
         }
 
         public void Reset()
         {
 
-            this.LastTriggerTime = 0;
         }
     }
 

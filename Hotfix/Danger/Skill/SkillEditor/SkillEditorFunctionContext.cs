@@ -18,6 +18,9 @@ namespace ET
         /// <summary>Tree variables (rs, hasTarget, _hpPct, ...). Values kept as string.</summary>
         public readonly Dictionary<string, string> Variables = new Dictionary<string, string>(StringComparer.Ordinal);
 
+        /// <summary>Per-unit buff custom values: key = "{unitId}_{buffId}", length 5 for VALUE1..5.</summary>
+        public readonly Dictionary<string, string[]> BuffCustomData = new Dictionary<string, string[]>(StringComparer.Ordinal);
+
         /// <summary>Set by condition functions; used when IF node has no operators.</summary>
         public bool LastConditionResult;
 
@@ -86,7 +89,85 @@ namespace ET
 
         public Unit ResolveUnit(string raw)
         {
-            string token = ExtractToken(raw).ToLowerInvariant();
+            return ResolveUnitByToken(ExtractUnitToken(raw));
+        }
+
+        public float ResolvePositionComponent(string raw, char axis)
+        {
+            string unitToken = ExtractUnitToken(raw);
+            int dot = unitToken.LastIndexOf('.');
+            if (dot >= 0)
+            {
+                axis = unitToken[dot + 1];
+                unitToken = unitToken.Substring(0, dot);
+            }
+
+            Unit unit = ResolveUnitByToken(unitToken);
+            if (unit == null)
+            {
+                return 0f;
+            }
+
+            return axis == 'z' ? unit.Position.z : unit.Position.x;
+        }
+
+        public long ResolveNumericAttribute(Unit unit, string raw, long defaultValue = 0)
+        {
+            if (unit == null)
+            {
+                return defaultValue;
+            }
+
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            if (numeric == null)
+            {
+                return defaultValue;
+            }
+
+            string token = raw?.Trim() ?? string.Empty;
+            if (token.Contains("最小物理攻击"))
+            {
+                return numeric.GetAsLong(NumericType.PATK_Min);
+            }
+
+            if (token.Contains("最大物理攻击"))
+            {
+                return numeric.GetAsLong(NumericType.PATK_Max);
+            }
+
+            if (token.Contains("最小法术攻击"))
+            {
+                return numeric.GetAsLong(NumericType.MATK_Min);
+            }
+
+            if (token.Contains("最大法术攻击"))
+            {
+                return numeric.GetAsLong(NumericType.MATK_Max);
+            }
+
+            return ParseLong(this.ResolveParam(raw), defaultValue);
+        }
+
+        public string GetBuffDataKey(Unit owner, int buffId)
+        {
+            return owner == null ? $"0_{buffId}" : $"{owner.Id}_{buffId}";
+        }
+
+        public string[] GetOrCreateBuffDataValues(Unit owner, int buffId)
+        {
+            string key = GetBuffDataKey(owner, buffId);
+            if (!this.BuffCustomData.TryGetValue(key, out string[] values))
+            {
+                values = new string[5];
+                this.BuffCustomData[key] = values;
+            }
+
+            return values;
+        }
+
+        private Unit ResolveUnitByToken(string token)
+        {
+            token = token?.Trim().ToLowerInvariant() ?? string.Empty;
             switch (token)
             {
                 case "caster":
@@ -94,16 +175,32 @@ namespace ET
                 case "target":
                     return this.Handler?.TheUnitTarget;
                 case "buffcaster":
+                case "buff.parent":
                     return this.Handler?.TheUnitFrom;
                 case "caster.parent":
                     return this.Handler?.TheUnitFrom?.Parent as Unit;
+                case "targets":
+                    return this.Handler?.TheUnitTarget;
                 default:
                     if (this.Variables.ContainsKey(token))
                     {
                         return this.Handler?.TheUnitFrom;
                     }
+
                     return null;
             }
+        }
+
+        private static string ExtractUnitToken(string raw)
+        {
+            string token = ExtractToken(raw);
+            int dot = token.LastIndexOf('.');
+            if (dot > 0 && (token.EndsWith(".x", StringComparison.Ordinal) || token.EndsWith(".z", StringComparison.Ordinal)))
+            {
+                return token;
+            }
+
+            return token;
         }
 
         public bool GetParamBool(int index, bool defaultValue = true)

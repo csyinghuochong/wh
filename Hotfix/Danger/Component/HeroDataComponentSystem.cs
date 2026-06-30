@@ -371,10 +371,6 @@ namespace ET
 
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(unit.ConfigId);
             }
-            if (unit.Type == UnitType.Pet )
-            {
-                unit.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.WillDead_6, attack.Id);
-            }
         }
 
         public static void OnRevive(this HeroDataComponent self, bool bornPostion = false)
