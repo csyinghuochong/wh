@@ -47,7 +47,7 @@ namespace ET
     }
 
     /// <summary>
-    /// Root action node for one skill (params[1] = skill id).
+    /// Root action node for one skill (params[0]=skill id, or legacy params[1]=skill id).
     /// </summary>
     public class SkillEditorSkillLogic
     {

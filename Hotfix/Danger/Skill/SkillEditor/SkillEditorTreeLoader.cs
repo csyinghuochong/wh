@@ -66,11 +66,18 @@ namespace ET
                 return null;
             }
 
-            string functionType = rootNode.Params.Count > 0 ? rootNode.Params[0] : string.Empty;
+            string functionType = string.Empty;
             int skillId = 0;
-            if (rootNode.Params.Count > 1)
+            if (rootNode.Params.Count >= 2)
             {
+                // Legacy: params[0]=function type, params[1]=skill id
+                functionType = rootNode.Params[0];
                 int.TryParse(rootNode.Params[1], out skillId);
+            }
+            else if (rootNode.Params.Count == 1)
+            {
+                // Current editor: params[0]=skill id only
+                int.TryParse(rootNode.Params[0], out skillId);
             }
 
             return new SkillEditorSkillLogic
