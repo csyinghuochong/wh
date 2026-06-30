@@ -104,11 +104,6 @@ namespace ET
                 WorldSayConfig worldSayConfig = self.WordSayList[0];
                 self.WordSayList.RemoveAt(0);
 
-                if (!ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_NewYearMonster)
-                    && worldSayConfig.Conent.Contains("年兽")) 
-                {
-                    return;
-                }
 
                 ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(self.DomainZone()),
                 NoticeType.Notice, worldSayConfig.Conent).Coroutine();

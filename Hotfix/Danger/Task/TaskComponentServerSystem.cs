@@ -1277,11 +1277,7 @@ namespace ET
 
         public static void InitActivityWeekTask(this TaskComponentServer self, bool notice)
         {
-            if (!ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_WeeklyTask))
-            {
-                return;
-            }
-
+          
          
         }
 

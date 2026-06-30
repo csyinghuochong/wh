@@ -545,9 +545,6 @@ namespace ET
                 {
                     if (dropID[i] == 0)
                         continue;
-                    if (dropID[i] == 60700201)
-                        continue;
-
                     LDDrop ldDrop = LDDropCategory.Instance.Get(dropID[i]);
                     List<RewardItem> dropItemList_2 = new List<RewardItem>();
                     DropHelper.DropIDToDropItem(dropID[i], dropItemList_2, monsterID, dropProValue, all);
@@ -677,40 +674,8 @@ namespace ET
             
 
             List<int> adddropidlist = new List<int>();
-
-            if ((sceneType == MapTypeEnum.LocalDungeon || sceneType == MapTypeEnum.TeamDungeon) && !bekill.IsBoss())
-            {
-                if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_GrowthTree) )
-                {
-                    adddropidlist.Add ( ActivityV1Config.GrowthTreeDropId );
-                }
-                if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_Feed))
-                {
-                    adddropidlist.Add(ActivityV1Config.FeedDropId);
-                }
-                if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_Order))
-                {
-                    adddropidlist.Add(ActivityV1Config.OrderDropId);
-                }
-                if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_NewYearCollectionWord))
-                {
-                    adddropidlist.Add(ActivityV1Config.CollectionWordDropId);
-                }
-            }
-
             List <RewardItem> droplist = AI_MonsterDrop(main, ldMonsterCof.Id, dropAdd_Pro, false);
            
-            List<RewardItem> droplist_2 = null;
-            if (main!=null && !main.IsDisposed)
-            {
-                int playerLv = main.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
-                droplist_2 = DropHelper.AI_DropByPlayerLv(ldMonsterCof.Id, playerLv, dropAdd_Pro, false);
-            }
-            if (droplist_2 != null)
-            {
-                droplist.AddRange(droplist_2);
-            }
-
             if (adddropidlist.Count > 0)
             {
                 for (int i = 0; i < adddropidlist.Count; i++)
@@ -718,16 +683,6 @@ namespace ET
                     DropHelper.DropIDToDropItem(adddropidlist[i], droplist);
                 }
             }
-
-            /*if ((ldMonsterCof.MonsterSonType == 55 || ldMonsterCof.MonsterSonType == 56) && droplist.Count == 0)
-            {
-                Log.Warning($"宝箱掉落为空{ldMonsterCof.Id} {main.Id}");
-            }*/
-            if (ldMonsterCof.Type == (int)MonsterTypeEnum.Boss && droplist.Count == 0)
-            {
-                Log.Warning($"BOSS掉落为空{ldMonsterCof.Id}  {main.Id}");
-            }
-
             if (droplist.Count > 100)
             {
                 Log.Error($"掉落道具数量异常： {ldMonsterCof.Id}  {droplist.Count}");

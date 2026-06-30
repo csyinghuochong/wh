@@ -27,9 +27,6 @@ namespace ET
                     //    Console.WriteLine($" ConfigData.ServerInfoList:  {zone}  {request.ServerInfo.WorldLv}");
                     //}
                     break;
-                case 3:
-                    ConfigData.V1ActivityList = request.V1ActivityList;
-                    break;
                 case 4:
                   
                     break;

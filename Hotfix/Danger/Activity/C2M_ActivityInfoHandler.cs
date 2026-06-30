@@ -19,11 +19,7 @@ namespace ET
             }
 
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();   
-            if (ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_WeeklyTask)
-                && taskComponentServer.GetTaskCountryByType(TaskCountryType.ActivityWeekly).Count == 0)
-            {
-                taskComponentServer.InitActivityWeekTask(true);
-            }
+            
 
             //if (ConfigData.V1ActivityList.Contains(ActivityConfigHelper.ActivityV1_Task)
             //    && taskComponent.GetTaskCountryByType(TaskCountryType.ActivityV1).Count == 0)
@@ -50,7 +46,6 @@ namespace ET
 
             ServerInfo dBServerInfo = ConfigData.ServerInfoList[unit.DomainZone()];
             activityV1Info.ChouKaDropId = dBServerInfo.ChouKaDropId;
-            activityV1Info.V1ActivityList = ConfigData.V1ActivityList;
             activityV1Info.GuessIds.Clear();
 
             long activitySceneid = DBHelper.GetActivityServerId(  unit.DomainZone() );

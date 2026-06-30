@@ -10,12 +10,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ActivityTreeTendRequest request, M2C_ActivityTreeTendResponse response, Action reply)
         {
-            if (!ConfigData.V1ActivityList.Contains(ActivityV1Config.ActivityV1_GrowthTree))
-            {
-                response.Error = ErrorCode.ERR_AlreadyFinish;
-                reply();
-                return;
-            }
+           
 
             int lower = 0;
             int upper = 0;
