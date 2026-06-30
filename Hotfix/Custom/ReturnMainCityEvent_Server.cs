@@ -1,31 +1,34 @@
 ﻿namespace ET
 {
-    public class Player_OnPlayerDisconnect : AEvent<EventType.PlayerDisconnect>
+    public class ReturnMainCityEvent_Server : AEvent<EventType.ReturnMainCity>
     {
-
-        protected override void Run(EventType.PlayerDisconnect args)
+        protected override void Run(EventType.ReturnMainCity args)
         {
             Scene scene = args.DomainScene;
             long userId = args.UnitId;
-            int sceneTypeEnum = args.DomainScene.GetComponent<MapComponent>().MapTypeEnum;
 
+            if (scene.IsDisposed)
+            {
+                Log.Warning($"ReturnMainCity: scene.IsDisposed");
+                return;
+            }
+            int sceneTypeEnum = scene.GetComponent<MapComponent>().MapTypeEnum;
             if (SceneConfigHelper.IsSingleFuben(sceneTypeEnum))
             {
-                //动态删除副本
                 TransferHelper.NoticeFubenCenter(scene, 2).Coroutine();
                 scene.Dispose();
             }
-            if (sceneTypeEnum == (int)MapTypeEnum.TeamDungeon)
+            if (sceneTypeEnum == MapTypeEnum.TeamDungeon)
             {
                 TeamSceneComponent teamSceneComponent = scene.GetParent<TeamSceneComponent>();
-                teamSceneComponent.OnUnitDisconnect(scene, userId);
+                teamSceneComponent.OnUnitReturn(scene, userId);
             }
             if (sceneTypeEnum == (int)MapTypeEnum.Arena)
             {
                 ArenaDungeonComponent areneSceneComponent = scene.GetComponent<ArenaDungeonComponent>();
                 areneSceneComponent.OnUnitDisconnect(userId);
             }
-            if (sceneTypeEnum == (int)MapTypeEnum.JiaYuan)
+            if (sceneTypeEnum == MapTypeEnum.JiaYuan)
             {
                 JiaYuanSceneComponent jiayuanSceneComponent = scene.GetParent<JiaYuanSceneComponent>();
                 jiayuanSceneComponent.OnUnitLeave(scene);
@@ -36,6 +39,5 @@
                 jiayuanSceneComponent.OnUnitLeave(scene);
             }
         }
-
     }
 }

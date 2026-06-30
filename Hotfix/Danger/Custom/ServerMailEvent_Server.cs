@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ET
 {
-    public class ServerMail_OnServerMail : AEvent<EventType.ServerMail>
+    public class ServerMailEvent_Server : AEvent<EventType.ServerMail>
     {
         protected override void Run(EventType.ServerMail args)
         {

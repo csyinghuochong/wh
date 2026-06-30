@@ -3,7 +3,7 @@
 namespace ET
 {
 
-    public class MergeZone_OnMergeZone : AEvent<EventType.MergeZone>
+    public class MergeZoneEvent_Server : AEvent<EventType.MergeZone>
     {
         protected override void Run(EventType.MergeZone args)
         {

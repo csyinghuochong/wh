@@ -1,6 +1,6 @@
 ﻿namespace ET
 {
-    public class GenerateSerials_OnGenerateSerials : AEvent<EventType.GenerateSerials>
+    public class GenerateSerialsEvent_Server : AEvent<EventType.GenerateSerials>
     {
         protected override void Run(EventType.GenerateSerials args)
         {

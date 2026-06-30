@@ -2,7 +2,7 @@
 
 namespace ET
 {
-    public class RealName_OnRealName : AEvent<EventType.RealName>
+    public class RealNameEvent_Server : AEvent<EventType.RealName>
     {
         protected override void Run(EventType.RealName args)
         {

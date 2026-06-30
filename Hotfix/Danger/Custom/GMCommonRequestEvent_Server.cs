@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ET
 {
-    public class GM_OnGMCommon : AEvent<EventType.GMCommonRequest>
+    public class GMCommonRequestEvent_Server : AEvent<EventType.GMCommonRequest>
     {
         protected override async void Run(EventType.GMCommonRequest request)
         {

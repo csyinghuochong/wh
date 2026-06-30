@@ -22,7 +22,7 @@ namespace ET
     }
 
     
-    public class Player_RemoveAccountSessions : AEvent<EventType.RemoveAccountSessions>
+    public class RemoveAccountSessionsEvent_Server : AEvent<EventType.RemoveAccountSessions>
     {
         protected override void Run(EventType.RemoveAccountSessions args)
         {

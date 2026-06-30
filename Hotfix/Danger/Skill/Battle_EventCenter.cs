@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -66,7 +66,7 @@ namespace ET
     }
 
     //[Event]
-    //public class MoveStart_NotifyUnit : AEventClass<EventType.MoveStart>
+    //public class MoveStartEvent_Server : AEventClass<EventType.MoveStart>
     //{
     //    protected override void Run(object cls)
     //    {
@@ -76,7 +76,7 @@ namespace ET
     //}
 
     //[Event]
-    //public class MoveStop_NotifyUnit : AEventClass<EventType.MoveStop>
+    //public class MoveStopEvent_Server : AEventClass<EventType.MoveStop>
     //{
     //    protected override void Run(object cls)
     //    {
@@ -88,7 +88,7 @@ namespace ET
 
     //击杀事件
     [Event]
-    public class KillEvent_NotifyUnit : AEvent<EventType.KillEvent>
+    public class KillEventEvent_Server : AEvent<EventType.KillEvent>
     {
         private async ETTask OnRemoveUnit(EventType.KillEvent args, long waittime)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ET
 {
-    public class Player_OnPlayerReLink : AEvent<EventType.PlayerReLink>
+    public class PlayerReLinkEvent_Server : AEvent<EventType.PlayerReLink>
     {
         protected override void Run(EventType.PlayerReLink args)
         {
