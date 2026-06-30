@@ -11,34 +11,6 @@ namespace ET
 		public static M2C_SyncChatInfo m2C_SyncChatInfo = new M2C_SyncChatInfo();
 
 
-
-		/// <summary>
-		/// 触发BUFF
-		/// </summary>
-		/// <param name="self"></param>
-		/// <param name="sceneType"></param>
-        public static void TriggerTeamBuff(this Unit self, int sceneType)
-        {
-            if (sceneType == MapTypeEnum.MainCityScene)
-            {
-                return;
-            }
-
-            List<Unit> entities = self.DomainScene().GetComponent<UnitComponent>().GetAll();
-            for (int i = entities.Count - 1; i >= 0; i--)
-            {
-                if (entities[i].Type != UnitType.Player)
-                {
-                    continue;
-                }
-                if (self.IsSameTeam(entities[i]))
-                {
-                    entities[i].GetComponent<SkillPassiveComponent>().OnTrigegerPassiveSkill(SkillPassiveTypeEnum.TeamerEnter_12);
-					entities[i].GetComponent<SkillManagerComponent>().TriggerTeamBuff();
-                }
-            }
-        }
-
         /// <summary>
         /// 寻找一个可通行的随机位置
         /// </summary>

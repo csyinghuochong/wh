@@ -1,6 +1,8 @@
-﻿namespace ET
+﻿using System.Collections.Generic;
+
+namespace ET
 {
-    public class RoleBullet6Componnet: Entity, IAwake, IDestroy
+    public class RoleBullet1Componnet :  Entity, IAwake, IDestroy
     {
         public long PassTime;
         public long BuffEndTime;
@@ -8,9 +10,11 @@
         public long DelayTime;
         public float DamageRange;
         public long Masterid;
-        public SkillHandler SkillHandler;
+        public Skill_TreeEditor SkillHandler;
+
         public BuffState BuffState;
         public long Timer;
-        public int IsStop;
+        public long DamgeChiXuLastTime;
     }
+
 }

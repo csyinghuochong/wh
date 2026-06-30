@@ -12,7 +12,7 @@ namespace ET
         /// <param name="theUnitFrom">buff持有者</param>
         /// <param name="theUnitBelongto">施法者</param>
         /// <param name="skillHandler"></param>
-        public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, SkillHandler skillHandler = null)
+        public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null)
         {
             this.OnBaseBuffInit(buffData, theUnitFrom, theUnitBelongto);
             this.BeginTime = TimeHelper.ServerNow();

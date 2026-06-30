@@ -4,7 +4,7 @@ namespace ET
 {
     public class RoleBuff_Shield : BuffHandler
     {
-        public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, SkillHandler skillHandler = null)
+        public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null)
         {
             this.OnBaseBuffInit(buffData,  theUnitFrom,  theUnitBelongto);
 

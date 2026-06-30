@@ -422,7 +422,7 @@ namespace ET
             MessageHelper.Broadcast(unit, m2C_UnitBuffStatus);
         }
 
-        public static void BuffFactory(this BuffManagerComponent self, BuffData buffData, Unit from, SkillHandler skillHandler, bool notice = true)
+        public static void BuffFactory(this BuffManagerComponent self, BuffData buffData, Unit from, Skill_TreeEditor skillHandler, bool notice = true)
         {
             if (buffData.BuffId <= 0)
             {

@@ -41,7 +41,7 @@ namespace ET
     public static class RoleBullet1ComponnetSystem
     {
 
-        public static void OnBaseBulletInit(this RoleBullet1Componnet self,  SkillHandler skillHandler, long masterid)
+        public static void OnBaseBulletInit(this RoleBullet1Componnet self,  Skill_TreeEditor skillHandler, long masterid)
         {
             self.PassTime = 0;
             self.Masterid = masterid;
@@ -55,39 +55,7 @@ namespace ET
             self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.RoleBullet1Timer, self);
         }
 
-        public static void CheckChiXuHurt(this RoleBullet1Componnet self)
-        {
-            /*
-            if (self.SkillHandler.LdSkillConf.DamgeChiXuValue == 0 || self.SkillHandler.TheUnitFrom.IsDisposed)
-            {
-                return;
-            }
-            */
-
-            long servernow = TimeHelper.ServerNow();
-            long interval = (long)self.SkillHandler.LdSkillConf.Time_Interval * 1000;
-            if (servernow - self.SkillHandler.DamgeChiXuLastTime < interval)
-            {
-                return;
-            }
-            self.SkillHandler.DamgeChiXuLastTime = servernow;
-            List<Unit> entities = self.SkillHandler.TheUnitFrom.GetParent<UnitComponent>().GetAll();
-            for (int i = entities.Count - 1; i >= 0; i--)
-            {
-                Unit uu = entities[i];
-                //检测目标是否在技能范围
-                if (self.SkillHandler.CheckMaxAttackNumber(uu.Id))
-                {
-                    continue;
-                }
-                if (!self.SkillHandler.CheckShape(uu.Position))
-                {
-                    continue;
-                }
-                self.SkillHandler.OnChiXuHurtCollision(uu);
-            }
-        }
-
+      
         public static void OnUpdate(this RoleBullet1Componnet self)
         {
             self.PassTime = TimeHelper.ServerNow() - self.BeginTime;
@@ -107,7 +75,6 @@ namespace ET
 
             //获取当前全部的unit进行范围监测
             List<Unit> units = unit.GetParent<UnitComponent>().GetAll();
-            self.SkillHandler.UpdateCheckPoint(unit.Position);
 
             //Log.Debug($"子弹位置： x: {unit.Position.x}  z: {unit.Position.z}");
             for (int i = units.Count - 1; i >= 0; i--)
@@ -119,6 +86,7 @@ namespace ET
                     continue;
                 }
 
+                /*
                 if (self.SkillHandler.IfHaveHurtId(uu.Id))
                 {
                     continue;
@@ -141,6 +109,7 @@ namespace ET
                 //监测到对应碰撞体触发伤害
                 self.SkillHandler.OnAddHurtIds(uu.Id);
                 self.SkillHandler.OnCollisionUnit(uu);
+                */
             }
         }
 

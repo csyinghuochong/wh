@@ -492,7 +492,6 @@ namespace ET
                     unit.GetComponent<SkillPassiveComponent>().Reset();
                     unit.GetComponent<SkillPassiveComponent>().Activeted();
                     unit.OnUpdateHorseRide(0);
-                    unit.TriggerTeamBuff(request.SceneType);
                 }
                 //Function_Fight.UnitUpdateProperty_Base(unit, false, true);
 				response.NewInstanceId = unit.InstanceId;

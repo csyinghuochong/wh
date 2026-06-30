@@ -76,7 +76,7 @@ namespace ET
             int skillcnt = self.Skills.Count;
             for (int i = skillcnt - 1; i >= 0; i--)
             {
-                SkillHandler skillHandler = self.Skills[i];
+                Skill_TreeEditor skillHandler = self.Skills[i];
                 self.Skills.RemoveAt(i);
                 ObjectPool.Instance.Recycle(skillHandler);
             }
@@ -90,7 +90,7 @@ namespace ET
             int skillcnt = self.Skills.Count;
             for (int i = skillcnt - 1; i >= 0; i--)
             {
-                SkillHandler skillHandler = self.Skills[i];
+                Skill_TreeEditor skillHandler = self.Skills[i];
                 self.Skills.RemoveAt(i);
                 skillHandler.OnFinished();
                 ObjectPool.Instance.Recycle(skillHandler);
@@ -109,7 +109,7 @@ namespace ET
             int skillcnt = self.Skills.Count;
             for (int i = skillcnt - 1; i >= 0; i--)
             {
-                SkillHandler skillHandler = self.Skills[i];
+                Skill_TreeEditor skillHandler = self.Skills[i];
                 if (skillHandler.LdSkillConf.Id != skillId)
                 {
                     continue;
@@ -128,7 +128,7 @@ namespace ET
             int skillcnt = self.Skills.Count;
             for (int i = skillcnt - 1; i >= 0; i--)
             {
-                SkillHandler skillHandler = self.Skills[i];
+                Skill_TreeEditor skillHandler = self.Skills[i];
                 self.InterruptSkill(skillHandler.LdSkillConf.Id);
             }
         }
@@ -174,7 +174,7 @@ namespace ET
             Unit unit =self.GetParent<Unit>();
             for (int i = self.Skills.Count - 1; i >= 0; i--)
             {
-                SkillHandler skillHandler = self.Skills[i];
+                Skill_TreeEditor skillHandler = self.Skills[i];
                 if (skillHandler.LdSkillConf.Type != SkillTypeEnum.SkillTypeCast_2)
                 {
                     continue;
@@ -258,13 +258,11 @@ namespace ET
                 Log.Debug($"skillPassiveComponent == null: {unit.Type}");
             }
 
-            List<SkillHandler> handlerList = new List<SkillHandler>();  
+            List<Skill_TreeEditor> handlerList = new List<Skill_TreeEditor>();  
             for (int i = 0; i < skillList.Count; i++)
             {
                 skillList[i].SingValue = skillcmd.SingValue;
-                SkillHandler skillAction = self.SkillFactory(skillList[i], unit);
-                skillAction.OriginalSkill = skillcmd.SkillID;
-                skillAction.PassiveTypeEnum_22 = passiveTypeEnum_22;
+                Skill_TreeEditor skillAction = self.SkillFactory(skillList[i], unit);
                 skillList[i].SkillBeginTime = skillAction.SkillBeginTime;
                 skillList[i].SkillEndTime = skillAction.SkillEndTime;
                 handlerList.Add(skillAction);
@@ -288,7 +286,7 @@ namespace ET
 
             for (int i = 0; i < handlerList.Count; i++)
             {
-                handlerList[i].OnExecute();
+                handlerList[i].OnUpdate();
                 self.Skills.Add(handlerList[i] );
             }
             if (zhudong)
@@ -664,12 +662,12 @@ namespace ET
             return ErrorCode.ERR_Success;
         }
         
-        public static SkillHandler SkillFactory(this SkillManagerComponent self, SkillInfo skillcmd, Unit from)
+        public static Skill_TreeEditor SkillFactory(this SkillManagerComponent self, SkillInfo skillcmd, Unit from)
         {
             LDSkill ldSkill = LDSkillCategory.Instance.Get(skillcmd.WeaponSkillID);
-            SkillHandler skillHandler = null;
+            Skill_TreeEditor skillHandler = null;
 
-            skillHandler = (SkillHandler)ObjectPool.Instance.Fetch(SkillDispatcherComponent.Instance.SkillTypes[ldSkill.GetSkillScript()]);
+            skillHandler = (Skill_TreeEditor)ObjectPool.Instance.Fetch(typeof(Skill_TreeEditor));
             skillHandler.OnInit(skillcmd, from);
             return skillHandler;
         }
@@ -684,24 +682,6 @@ namespace ET
             return skillinfos;
         }
 
-        /// <summary>
-        /// 队友进入地图
-        /// </summary>
-        /// <param name="self"></param>
-        public static void TriggerTeamBuff(this SkillManagerComponent self)
-        {
-            int skillcnt = self.Skills.Count;
-            for (int i = skillcnt - 1; i >= 0; i--)
-            {
-                SkillHandler skillHandler = self.Skills[i];
-                if (skillHandler == null)
-                {
-                    continue;
-                }
-                //self.Skills[i].OnUpdate();
-               
-            }
-        }
 
         /// <summary>
         /// 清除所有技能和Cd
@@ -778,10 +758,9 @@ namespace ET
                 {
                     continue;
                 }
-                
+
                 //Unit from = self.GetParent<Unit>();
-                SkillHandler skillAction = self.SkillFactory(skillInfo, self.SelfUnit);
-                skillAction.OriginalSkill = skillInfo.SkillID;
+                Skill_TreeEditor skillAction = self.SkillFactory(skillInfo, self.SelfUnit);
                 skillInfo.SkillBeginTime = skillAction.SkillBeginTime;
                 skillInfo.SkillEndTime = skillAction.SkillEndTime;
                 self.Skills.Add(skillAction);

@@ -29,7 +29,7 @@ namespace ET
 
         public LDSkillBuff MBuff;
         public LDSkill MLdSkillConf;
-        public SkillHandler mSkillHandler;
+        public Skill_TreeEditor mSkillHandler;
 
         /// <summary>
         /// 来自哪个Unit
@@ -60,7 +60,7 @@ namespace ET
         /// <param name="buffData">Buff数据</param>
         /// <param name="theUnitFrom">来自哪个Unit</param>
         /// <param name="theUnitBelongto">寄生于哪个Unit</param>
-        public abstract void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, SkillHandler skillHandler=null);
+        public abstract void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler=null);
 
         /// <summary>
         /// Buff持续

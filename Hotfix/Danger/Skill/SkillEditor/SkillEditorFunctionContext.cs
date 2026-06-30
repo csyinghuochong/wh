@@ -10,7 +10,8 @@ namespace ET
     /// </summary>
     public class SkillEditorFunctionContext
     {
-        public SkillHandler Handler;
+
+        public Skill_TreeEditor Handler;
         public SkillEditorSkillLogic Logic;
         public SkillEditorTreeNode Node;
 

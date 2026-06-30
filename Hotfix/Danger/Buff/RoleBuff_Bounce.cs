@@ -12,7 +12,7 @@ namespace ET
     /// </summary>
     public class RoleBuff_Bounce : BuffHandler
     {
-        public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, SkillHandler skillHandler = null)
+        public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null)
         {
             this.OnBaseBuffInit(buffData, theUnitFrom, theUnitBelongto);
             theUnitBelongto.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.NoMove);

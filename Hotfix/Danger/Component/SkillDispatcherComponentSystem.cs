@@ -37,12 +37,6 @@ namespace ET
         public static void Load(this SkillDispatcherComponent self)
         {
             self.SkillTypes.Clear();
-
-            var types = Game.EventSystem.GetTypes(typeof(SkillHandlerAttribute));
-            foreach (Type type in types)
-            {
-                self.SkillTypes.Add(type.Name, type);
-            }
         }
     }
 }

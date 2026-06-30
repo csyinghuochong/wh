@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ET
 {
     /// <summary>
@@ -5,7 +7,7 @@ namespace ET
     /// </summary>
     public static class SkillEditorTreeExecutor
     {
-        public static void Execute(SkillHandler handler, SkillEditorSkillLogic logic)
+        public static void Execute(Skill_TreeEditor handler, SkillEditorSkillLogic logic)
         {
             if (handler == null || logic?.Root == null)
             {
@@ -34,9 +36,12 @@ namespace ET
             {
                 case SkillEditorNodeType.Action:
                 case SkillEditorNodeType.IfRoot:
-                case SkillEditorNodeType.ForRoot:
                 case SkillEditorNodeType.IfResult:
                     ExecuteChildren(ctx, node);
+                    break;
+
+                case SkillEditorNodeType.ForRoot:
+                    ExecuteForRoot(ctx, node);
                     break;
 
                 case SkillEditorNodeType.Function:
@@ -64,6 +69,67 @@ namespace ET
             {
                 ExecuteNode(ctx, node.Children[i]);
             }
+        }
+
+        /// <summary>
+        /// v0: VECTOR_LOOP_START(targets, target) - iterate all skill targets, set TheUnitTarget each round.
+        /// </summary>
+        private static void ExecuteForRoot(SkillEditorFunctionContext ctx, SkillEditorTreeNode node)
+        {
+            if (ctx.Handler == null)
+            {
+                return;
+            }
+
+            ctx.SetVariable("__break", "0");
+
+            Unit savedTarget = ctx.Handler.TheUnitTarget;
+            List<long> targetIds = CollectLoopTargetIds(ctx.Handler);
+            UnitComponent unitComponent = ctx.Handler.TheUnitFrom?.GetParent<UnitComponent>();
+            if (unitComponent == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < targetIds.Count; i++)
+            {
+                if (ctx.GetVariable("__break", 0) != 0)
+                {
+                    break;
+                }
+
+                Unit unit = unitComponent.Get(targetIds[i]);
+                if (unit == null || unit.IsDisposed)
+                {
+                    continue;
+                }
+
+                ctx.Handler.TheUnitTarget = unit;
+                ExecuteChildren(ctx, node);
+            }
+
+            ctx.Handler.TheUnitTarget = savedTarget;
+        }
+
+        /// <summary>
+        /// Prefer HurtIds collected at runtime; fall back to SkillInfo.TargetID for single-target skills.
+        /// </summary>
+        private static List<long> CollectLoopTargetIds(Skill_TreeEditor handler)
+        {
+            List<long> targetIds = new List<long>();
+            if (handler?.HurtIds != null && handler.HurtIds.Count > 0)
+            {
+                targetIds.AddRange(handler.HurtIds);
+                return targetIds;
+            }
+
+            long targetId = handler?.SkillInfo?.TargetID ?? 0;
+            if (targetId > 0)
+            {
+                targetIds.Add(targetId);
+            }
+
+            return targetIds;
         }
 
         private static bool EvaluateCondition(SkillEditorFunctionContext ctx, SkillEditorTreeNode conditionNode)

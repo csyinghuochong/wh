@@ -52,7 +52,6 @@ namespace ET
                 unit.GetComponent<HeroDataComponent>().OnRevive();
             }
 
-            unit.TriggerTeamBuff(mapComponent.MapTypeEnum);
             reply();
             await ETTask.CompletedTask;
         }

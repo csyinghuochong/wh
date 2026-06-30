@@ -20,7 +20,7 @@ namespace ET
         /// <param name="skillHandler"></param>
         /// <param name="hurtMode">0 默认 1持续伤害</param>
         /// <returns></returns>
-        public  static bool Fight(Unit attackUnit, Unit defendUnit, SkillHandler skillHandler, int hurtMode)
+        public  static bool Fight(Unit attackUnit, Unit defendUnit, Skill_TreeEditor skillHandler, int hurtMode)
         {
             if (defendUnit.IsDisposed)
             {
