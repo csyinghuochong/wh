@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace ET
 {
@@ -38,9 +40,9 @@ namespace ET
 
             if (string.IsNullOrEmpty(varName)) { return; }
 
-            long initValue = ParseLong(ctx.ResolveParam(ctx.GetParamRaw(1)), 0);
+            // Keep literal as string (false / 0.5 / 100) for LOGIC_RELATION comparisons.
 
-            ctx.SetVariable(varName, initValue);
+            ctx.SetVariable(varName, ctx.GetParamRaw(1).Trim());
 
         }
 
@@ -54,9 +56,7 @@ namespace ET
 
             if (string.IsNullOrEmpty(varName)) { return; }
 
-            long value = ParseLong(ctx.ResolveParam(ctx.GetParamRaw(1)), 0);
-
-            ctx.SetVariable(varName, value);
+            ctx.SetVariable(varName, ctx.ResolveParam(ctx.GetParamRaw(1)));
 
         }
 
@@ -88,7 +88,7 @@ namespace ET
 
             long randomValue = RandomHelper.RandomNumber(minVal, maxVal);
 
-            ctx.SetVariable(varName, randomValue);
+            ctx.SetVariable(varName, randomValue.ToString(CultureInfo.InvariantCulture));
 
         }
 
@@ -120,7 +120,7 @@ namespace ET
 
             string left = ctx.ResolveParam(ctx.GetParamRaw(0));
 
-            string op = ctx.ResolveParam(ctx.GetParamRaw(1)).Trim();
+            string op = ctx.GetParamRaw(1).Trim();
 
             string right = ctx.ResolveParam(ctx.GetParamRaw(2));
 
@@ -460,63 +460,63 @@ namespace ET
 
                 case "&&":
 
-                    return ParseBool(left) && ParseBool(right);
+                    return SkillEditorFunctionContext.ParseBool(left) && SkillEditorFunctionContext.ParseBool(right);
 
                 case "||":
 
-                    return ParseBool(left) || ParseBool(right);
+                    return SkillEditorFunctionContext.ParseBool(left) || SkillEditorFunctionContext.ParseBool(right);
 
                 case "&":
 
-                    return (ParseLong(left, 0) != 0) && (ParseLong(right, 0) != 0);
+                    return SkillEditorFunctionContext.ParseLong(left, 0) != 0 && SkillEditorFunctionContext.ParseLong(right, 0) != 0;
 
                 case "|":
 
-                    return (ParseLong(left, 0) != 0) || (ParseLong(right, 0) != 0);
+                    return SkillEditorFunctionContext.ParseLong(left, 0) != 0 || SkillEditorFunctionContext.ParseLong(right, 0) != 0;
 
                 case "==":
 
-                    if (long.TryParse(left, out long lv) && long.TryParse(right, out long rv))
+                    if (TryParseNumeric(left, out double ldEq) && TryParseNumeric(right, out double rdEq))
 
                     {
 
-                        return lv == rv;
+                        return Math.Abs(ldEq - rdEq) < 1e-9;
 
                     }
 
-                    return ParseBool(left) == ParseBool(right)
+                    return SkillEditorFunctionContext.ParseBool(left) == SkillEditorFunctionContext.ParseBool(right)
 
                         || string.Equals(left?.Trim(), right?.Trim(), StringComparison.OrdinalIgnoreCase);
 
                 case "~=":
 
-                    if (long.TryParse(left, out long lv2) && long.TryParse(right, out long rv2))
+                    if (TryParseNumeric(left, out double ldNe) && TryParseNumeric(right, out double rdNe))
 
                     {
 
-                        return lv2 != rv2;
+                        return Math.Abs(ldNe - rdNe) >= 1e-9;
 
                     }
 
-                    return ParseBool(left) != ParseBool(right)
+                    return SkillEditorFunctionContext.ParseBool(left) != SkillEditorFunctionContext.ParseBool(right)
 
                         && !string.Equals(left?.Trim(), right?.Trim(), StringComparison.OrdinalIgnoreCase);
 
                 case ">":
 
-                    return ParseDouble(left) > ParseDouble(right);
+                    return SkillEditorFunctionContext.ParseDouble(left) > SkillEditorFunctionContext.ParseDouble(right);
 
                 case "<":
 
-                    return ParseDouble(left) < ParseDouble(right);
+                    return SkillEditorFunctionContext.ParseDouble(left) < SkillEditorFunctionContext.ParseDouble(right);
 
                 case ">=":
 
-                    return ParseDouble(left) >= ParseDouble(right);
+                    return SkillEditorFunctionContext.ParseDouble(left) >= SkillEditorFunctionContext.ParseDouble(right);
 
                 case "<=":
 
-                    return ParseDouble(left) <= ParseDouble(right);
+                    return SkillEditorFunctionContext.ParseDouble(left) <= SkillEditorFunctionContext.ParseDouble(right);
 
                 default:
 
@@ -530,41 +530,25 @@ namespace ET
 
 
 
-        private static bool ParseBool(string raw)
+        private static bool TryParseNumeric(string raw, out double value)
 
         {
 
-            if (bool.TryParse(raw, out bool b)) { return b; }
+            value = 0;
 
-            return ParseLong(raw, 0) != 0;
+            if (string.IsNullOrWhiteSpace(raw)) { return false; }
 
-        }
+            raw = raw.Trim();
 
+            if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out value)) { return true; }
 
+            if (double.TryParse(raw, NumberStyles.Float, CultureInfo.CurrentCulture, out value)) { return true; }
 
-        private static long ParseLong(string raw, long defaultValue)
+            if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out long lv)) { value = lv; return true; }
 
-        {
+            if (bool.TryParse(raw, out bool bv)) { value = bv ? 1 : 0; return true; }
 
-            if (long.TryParse(raw, out long value)) { return value; }
-
-            if (int.TryParse(raw, out int intValue)) { return intValue; }
-
-            if (bool.TryParse(raw, out bool boolValue)) { return boolValue ? 1 : 0; }
-
-            return defaultValue;
-
-        }
-
-
-
-        private static double ParseDouble(string raw)
-
-        {
-
-            if (double.TryParse(raw, out double value)) { return value; }
-
-            return ParseLong(raw, 0);
+            return false;
 
         }
 
@@ -672,7 +656,8 @@ namespace ET
 
                 if (buffFromUnitId != 0 && bh.TheUnitFrom?.Id != buffFromUnitId) { continue; }
 
-                if (bh.MBuff.Remove == null || !bh.MBuff.Remove.Contains(buffGroup)) { continue; }
+                //if (bh.MBuff.Remove == null || !bh.MBuff.Remove.Contains(buffGroup)) { continue; }
+                if (bh.MBuff.Remove == null ) { continue; }
 
                 buffMgr.OnRemoveBuffItem(bh);
 

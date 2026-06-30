@@ -73,41 +73,6 @@ namespace ET
         //初始化
         public static void InitSelfBuff(this SkillHandler self)
         {
-            //触发初始化BUFF
-            if (self.LdSkillConf == null)
-            {
-                Log.Error($"self.SkillConf == null {self.SkillInfo.WeaponSkillID}");
-            }
-            if (self.TheUnitFrom.IsDisposed)
-            {
-                Log.Debug($"self.TheUnitFrom.IsDisposed {self.TheUnitFrom.Id}");
-                return;
-            }
-
-            /*
-            if (self.LdSkillConf.InitBuffID != null && self.LdSkillConf.InitBuffID[0] != 0)
-            {
-                for (int y = 0; y < self.LdSkillConf.InitBuffID.Length; y++)
-                {
-                    self.SkillBuff(self.LdSkillConf.InitBuffID[y], self.TheUnitFrom);
-                }
-            }*/
-
-            int[] initBuffIds = LDSkillHelper.GetInitBuffIds(self.LdSkillConf.Id);
-            for (int i = 0; i < initBuffIds.Length; i++)
-            {
-                self.SkillBuff(initBuffIds[i], self.TheUnitFrom);
-            }
-            
-            SkillSetComponentServer skillSetComponentServer = self.TheUnitFrom.GetComponent<SkillSetComponentServer>();
-            List<int> buffInitAdd = skillSetComponentServer != null ? skillSetComponentServer.GetBuffInitIdAdd(self.LdSkillConf.Id) : null;
-            if (buffInitAdd != null)
-            {
-                for (int i = 0; i < buffInitAdd.Count; i++)
-                {
-                    self.SkillBuff(buffInitAdd[i], self.TheUnitFrom);
-                }
-            }
         }
 
         //每帧检测

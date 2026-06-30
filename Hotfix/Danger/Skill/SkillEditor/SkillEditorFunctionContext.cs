@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace ET
 {
     /// <summary>
     /// Runtime context passed to SkillEditor helper functions.
+    /// Variables are stored as strings (like v0/Lua) so bool/int/double literals all work in LOGIC_RELATION.
     /// </summary>
     public class SkillEditorFunctionContext
     {
@@ -12,8 +14,8 @@ namespace ET
         public SkillEditorSkillLogic Logic;
         public SkillEditorTreeNode Node;
 
-        /// <summary>Tree variables (rs, sType, buffCaster, ...).</summary>
-        public readonly Dictionary<string, long> Variables = new Dictionary<string, long>(StringComparer.Ordinal);
+        /// <summary>Tree variables (rs, hasTarget, _hpPct, ...). Values kept as string.</summary>
+        public readonly Dictionary<string, string> Variables = new Dictionary<string, string>(StringComparer.Ordinal);
 
         /// <summary>Set by condition functions; used when IF node has no operators.</summary>
         public bool LastConditionResult;
@@ -60,9 +62,9 @@ namespace ET
                 return raw;
             }
 
-            if (this.Variables.TryGetValue(token, out long value))
+            if (this.Variables.TryGetValue(token, out string value))
             {
-                return value.ToString();
+                return value;
             }
 
             switch (token.ToLowerInvariant())
@@ -73,9 +75,9 @@ namespace ET
                 case "level":
                     return this.SkillLevel.ToString();
                 case "rs":
-                    return this.Variables.TryGetValue("rs", out long rs) ? rs.ToString() : "0";
+                    return this.GetVariableString("rs", "0");
                 case "stype":
-                    return this.Variables.TryGetValue("sType", out long sType) ? sType.ToString() : raw;
+                    return this.Variables.TryGetValue("sType", out string sType) ? sType : raw;
                 default:
                     return raw;
             }
@@ -91,12 +93,11 @@ namespace ET
                 case "target":
                     return this.Handler?.TheUnitTarget;
                 case "buffcaster":
-                    // TODO: bind buff caster when executing from buff context
                     return this.Handler?.TheUnitFrom;
                 case "caster.parent":
                     return this.Handler?.TheUnitFrom?.Parent as Unit;
                 default:
-                    if (this.Variables.TryGetValue(token, out _))
+                    if (this.Variables.ContainsKey(token))
                     {
                         return this.Handler?.TheUnitFrom;
                     }
@@ -106,31 +107,20 @@ namespace ET
 
         public bool GetParamBool(int index, bool defaultValue = true)
         {
-            string raw = this.ResolveParam(this.GetParamRaw(index));
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                return defaultValue;
-            }
-
-            if (bool.TryParse(raw, out bool value))
-            {
-                return value;
-            }
-
-            if (int.TryParse(raw, out int intValue))
-            {
-                return intValue != 0;
-            }
-
-            return defaultValue;
+            return ParseBool(this.ResolveParam(this.GetParamRaw(index)), defaultValue);
         }
 
         public int GetParamInt(int index, int defaultValue = 0)
         {
             string raw = this.ResolveParam(this.GetParamRaw(index));
-            if (int.TryParse(raw, out int value))
+            if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
             {
                 return value;
+            }
+
+            if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out double dValue))
+            {
+                return (int)dValue;
             }
 
             return defaultValue;
@@ -139,7 +129,7 @@ namespace ET
         public float GetParamFloat(int index, float defaultValue = 0f)
         {
             string raw = this.ResolveParam(this.GetParamRaw(index));
-            if (float.TryParse(raw, out float value))
+            if (float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
             {
                 return value;
             }
@@ -147,19 +137,106 @@ namespace ET
             return defaultValue;
         }
 
-        public void SetVariable(string varName, long value)
+        public void SetVariable(string varName, string value)
         {
             if (string.IsNullOrEmpty(varName))
             {
                 return;
             }
 
-            this.Variables[varName] = value;
+            this.Variables[varName] = value ?? string.Empty;
+        }
+
+        public void SetVariable(string varName, long value)
+        {
+            this.SetVariable(varName, value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public string GetVariableString(string varName, string defaultValue = "")
+        {
+            return this.Variables.TryGetValue(varName, out string value) ? value : defaultValue;
         }
 
         public long GetVariable(string varName, long defaultValue = 0)
         {
-            return this.Variables.TryGetValue(varName, out long value) ? value : defaultValue;
+            return ParseLong(this.GetVariableString(varName), defaultValue);
+        }
+
+        public double GetVariableDouble(string varName, double defaultValue = 0d)
+        {
+            return ParseDouble(this.GetVariableString(varName), defaultValue);
+        }
+
+        public static bool ParseBool(string raw, bool defaultValue = false)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return defaultValue;
+            }
+
+            if (bool.TryParse(raw.Trim(), out bool b))
+            {
+                return b;
+            }
+
+            return ParseLong(raw, 0) != 0;
+        }
+
+        public static long ParseLong(string raw, long defaultValue)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return defaultValue;
+            }
+
+            raw = raw.Trim();
+            if (long.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out long value))
+            {
+                return value;
+            }
+
+            if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int intValue))
+            {
+                return intValue;
+            }
+
+            if (bool.TryParse(raw, out bool boolValue))
+            {
+                return boolValue ? 1 : 0;
+            }
+
+            if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out double dValue))
+            {
+                return (long)dValue;
+            }
+
+            return defaultValue;
+        }
+
+        public static double ParseDouble(string raw, double defaultValue = 0d)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return defaultValue;
+            }
+
+            raw = raw.Trim();
+            if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
+            {
+                return value;
+            }
+
+            if (double.TryParse(raw, NumberStyles.Float, CultureInfo.CurrentCulture, out value))
+            {
+                return value;
+            }
+
+            if (bool.TryParse(raw, out bool boolValue))
+            {
+                return boolValue ? 1d : 0d;
+            }
+
+            return ParseLong(raw, (long)defaultValue);
         }
 
         private static string ExtractToken(string raw)

@@ -79,7 +79,7 @@ namespace ET
         public static async ETTask BroadcastWorldLv(this RankSceneComponent self, int updatetype = 0)
         {           
             //延迟刷新，以免有些服务器还没启动
-            await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(5000, 10000));
+            await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(500, 1000));
             long fubenCenterId = DBHelper.GetFubenCenterId(self.DomainZone());
          
             List<StartProcessConfig> listprogress = StartProcessConfigCategory.Instance.GetAll().Values.ToList();

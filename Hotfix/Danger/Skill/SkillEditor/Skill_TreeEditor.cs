@@ -13,15 +13,12 @@ namespace ET
 
         public override void OnExecute()
         {
-            this.InitSelfBuff();
-
             if (this.LdSkillConf != null
                 && SkillEditorTreeRegistry.TryGetTree(this.LdSkillConf.Id, out SkillEditorSkillLogic logic))
             {
+
                 SkillEditorTreeExecutor.Execute(this, logic);
             }
-
-            this.OnUpdate();
         }
 
         public override void OnUpdate()
