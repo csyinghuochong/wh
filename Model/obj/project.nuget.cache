@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "X6Jw/XsgUNo=",
+  "dgSpecHash": "XM8cIPhguf0=",
   "success": true,
   "projectFilePath": "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj",
   "expectedPackageFiles": [
@@ -134,8 +134,8 @@
     "C:\\Users\\LDYQ\\.nuget\\packages\\system.xml.xpath\\4.3.0\\system.xml.xpath.4.3.0.nupkg.sha512",
     "C:\\Users\\LDYQ\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.3.0\\system.xml.xpath.xmldocument.4.3.0.nupkg.sha512",
     "C:\\Users\\LDYQ\\.nuget\\packages\\tea\\1.1.3\\tea.1.1.3.nupkg.sha512",
-    "C:\\Users\\LDYQ\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.36\\microsoft.netcore.app.ref.6.0.36.nupkg.sha512",
     "C:\\Users\\LDYQ\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.36\\microsoft.windowsdesktop.app.ref.6.0.36.nupkg.sha512",
+    "C:\\Users\\LDYQ\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.36\\microsoft.netcore.app.ref.6.0.36.nupkg.sha512",
     "C:\\Users\\LDYQ\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.36\\microsoft.aspnetcore.app.ref.6.0.36.nupkg.sha512"
   ],
   "logs": []

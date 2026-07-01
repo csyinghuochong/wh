@@ -31,25 +31,6 @@ namespace ET
           float hateGrowth,
           bool sendHitMsg)
         {
-            return 1;
-        }
-
-
-        public static long EvaluateDirectHit_Old(
-            SkillEditorFunctionContext ctx,
-            Unit caster,
-            Unit target,
-            int skillId,
-            bool canCrit,
-            bool canImmune,
-            bool canDodge,
-            int critRateAdd,
-            int hitRateAdd,
-            int skillLevel,
-            float hateInit,
-            float hateGrowth,
-            bool sendHitMsg)
-        {
             if (caster == null || target == null || caster.IsDisposed || target.IsDisposed)
             {
                 return SkillEditorHitResult.Miss;

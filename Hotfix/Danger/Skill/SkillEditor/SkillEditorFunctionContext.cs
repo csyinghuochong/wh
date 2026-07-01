@@ -111,6 +111,55 @@ namespace ET
             return axis == 'z' ? unit.Position.z : unit.Position.x;
         }
 
+        public int ResolveNumericType(string raw, int defaultType = 0)
+        {
+            string token = raw?.Trim() ?? string.Empty;
+            if (string.IsNullOrEmpty(token))
+            {
+                return defaultType;
+            }
+
+            int space = token.LastIndexOf(' ');
+            if (space >= 0 && int.TryParse(token.Substring(space + 1).Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int trailingId))
+            {
+                return trailingId;
+            }
+
+            if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out int directId))
+            {
+                return directId;
+            }
+
+            if (token.Contains("生命上限")) { return NumericType.HP_Max; }
+            if (token.Contains("生命")) { return NumericType.HP_Current; }
+            if (token.Contains("最小物理攻击") || token.Contains("最小物攻")) { return NumericType.PATK_Min; }
+            if (token.Contains("最大物理攻击") || token.Contains("最大物攻")) { return NumericType.PATK_Max; }
+            if (token.Contains("最小法术攻击") || token.Contains("最小法攻")) { return NumericType.MATK_Min; }
+            if (token.Contains("最大法术攻击") || token.Contains("最大法攻")) { return NumericType.MATK_Max; }
+            if (token.Contains("最小物防")) { return NumericType.PDEF_Min; }
+            if (token.Contains("最大物防")) { return NumericType.PDEF_Max; }
+            if (token.Contains("最小法防")) { return NumericType.MDEF_Min; }
+            if (token.Contains("最大法防")) { return NumericType.MDEF_Max; }
+            if (token.Contains("力")) { return NumericType.Point_Strength; }
+            if (token.Contains("敏")) { return NumericType.Point_Agility; }
+            if (token.Contains("智")) { return NumericType.Point_Intelligence; }
+            if (token.Contains("体")) { return NumericType.Point_Constitution; }
+            if (token.Contains("耐")) { return NumericType.Point_Stamina; }
+
+            return defaultType;
+        }
+
+        public long GetUnitNumericValue(Unit unit, int numericType, long defaultValue = 0)
+        {
+            if (unit == null)
+            {
+                return defaultValue;
+            }
+
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            return numeric == null ? defaultValue : numeric.GetAsLong(numericType);
+        }
+
         public long ResolveNumericAttribute(Unit unit, string raw, long defaultValue = 0)
         {
             if (unit == null)
@@ -124,25 +173,10 @@ namespace ET
                 return defaultValue;
             }
 
-            string token = raw?.Trim() ?? string.Empty;
-            if (token.Contains("最小物理攻击"))
+            int numericType = this.ResolveNumericType(raw, 0);
+            if (numericType > 0)
             {
-                return numeric.GetAsLong(NumericType.PATK_Min);
-            }
-
-            if (token.Contains("最大物理攻击"))
-            {
-                return numeric.GetAsLong(NumericType.PATK_Max);
-            }
-
-            if (token.Contains("最小法术攻击"))
-            {
-                return numeric.GetAsLong(NumericType.MATK_Min);
-            }
-
-            if (token.Contains("最大法术攻击"))
-            {
-                return numeric.GetAsLong(NumericType.MATK_Max);
+                return numeric.GetAsLong(numericType);
             }
 
             return ParseLong(this.ResolveParam(raw), defaultValue);
@@ -181,7 +215,15 @@ namespace ET
                     return this.Handler?.TheUnitFrom?.Parent as Unit;
                 case "targets":
                     return this.Handler?.TheUnitTarget;
+                case "createsummon":
+                    return this.ResolveUnitByIdVariable("createSummon");
                 default:
+                    Unit unitById = this.ResolveUnitByIdVariable(token);
+                    if (unitById != null)
+                    {
+                        return unitById;
+                    }
+
                     if (this.Variables.ContainsKey(token))
                     {
                         return this.Handler?.TheUnitFrom;
@@ -189,6 +231,21 @@ namespace ET
 
                     return null;
             }
+        }
+
+        private Unit ResolveUnitByIdVariable(string varName)
+        {
+            if (!this.Variables.TryGetValue(varName, out string rawId))
+            {
+                return null;
+            }
+
+            if (!long.TryParse(rawId, NumberStyles.Integer, CultureInfo.InvariantCulture, out long unitId) || unitId <= 0)
+            {
+                return null;
+            }
+
+            return this.Handler?.TheUnitFrom?.GetParent<UnitComponent>()?.Get(unitId);
         }
 
         private static string ExtractUnitToken(string raw)

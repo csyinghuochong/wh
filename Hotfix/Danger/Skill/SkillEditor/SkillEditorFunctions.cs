@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using UnityEngine;
 
 namespace ET
 {
@@ -27,6 +28,8 @@ namespace ET
             SkillEditorFunctionRegistry.Register("SKILL_DAMAGE_CHECK_MAGIC", SkillDamageCheckMagic);        //法术技能判定
             SkillEditorFunctionRegistry.Register("SKILL_DAMAGE_CHECK_HEAL", SkillDamageCheckHeal);        //治疗技能判定
             SkillEditorFunctionRegistry.Register("CALCULATE_PHYSICS_DAMAGE", CalculatePhysicsDamage);        //计算物理伤害
+            SkillEditorFunctionRegistry.Register("CALCULATE_MAGIC_DAMAGE", CalculateMagicDamage);        //计算法术伤害
+            SkillEditorFunctionRegistry.Register("CALCULATE_HEAL_DAMAGE", CalculateHealDamage);        //计算治疗量
             SkillEditorFunctionRegistry.Register("ADD_BUFF", AddBuff);        //添加BUFF
             SkillEditorFunctionRegistry.Register("ADD_BUFF_CONTROL", AddBuffControl);        //添加控制BUFF
             SkillEditorFunctionRegistry.Register("REMOVE_BUFF", RemoveBuff);        //移除BUFF
@@ -37,6 +40,8 @@ namespace ET
             SkillEditorFunctionRegistry.Register("SET_BUFF_DATA", SetBuffDataLegacy);        //旧版 BUFF-数据设置
             SkillEditorFunctionRegistry.Register("GET_BUFF_DATA", GetBuffDataLegacy);        //旧版 BUFF-数据获取
             SkillEditorFunctionRegistry.Register("GET_UNIT_TYPEID", GetUnitTypeId);        //获取对象类型
+            SkillEditorFunctionRegistry.Register("GET_UNIT_ATTRIBUTE", GetUnitAttribute);        //获取单位属性
+            SkillEditorFunctionRegistry.Register("GET_HP_PERCENT", GetHpPercent);        //获取HP百分比
             SkillEditorFunctionRegistry.Register("GET_SKILL_LEVEL", GetSkillLevel);        //获取技能等级
             SkillEditorFunctionRegistry.Register("GET_BUFF_LEVEL", GetBuffLevel);        //获取BUFF层数
             SkillEditorFunctionRegistry.Register("GET_RANDOM_UNIT", GetRandomUnit);        //获取随机目标
@@ -45,14 +50,28 @@ namespace ET
             SkillEditorFunctionRegistry.Register("IS_DEAD", IsDead);        //是否死亡
             SkillEditorFunctionRegistry.Register("IS_DYING", IsDying);        //是否濒死
             SkillEditorFunctionRegistry.Register("OWN_BUFF", OwnBuff);        //是否拥有BUFF
+            SkillEditorFunctionRegistry.Register("HAS_BUFF", HasBuffLegacy);        //旧版是否拥有BUFF
             SkillEditorFunctionRegistry.Register("CHANGE_GLOBAL_CD", ChangeGlobalCd);        //修改公共CD
+            SkillEditorFunctionRegistry.Register("CHANGE_CURRENT_HP", ChangeCurrentHp);        //修改生命值
+            SkillEditorFunctionRegistry.Register("CHANGE_UNIT_ATTRIBUTE_ADD", ChangeUnitAttributeAdd);        //修改属性-固定值
+            SkillEditorFunctionRegistry.Register("CHANGE_UNIT_ATTRIBUTE_PERCENT", ChangeUnitAttributePercent);        //修改属性-比例值
             SkillEditorFunctionRegistry.Register("CHANGE_SKILL_CURRENT_CD", ChangeSkillCurrentCd);        //修改技能当前CD
             SkillEditorFunctionRegistry.Register("CHANGE_SKILL_CURRENT_CD_MULTIPLE", ChangeSkillCurrentCdMultiple);        //修改技能当前CD-批量
             SkillEditorFunctionRegistry.Register("SET_UNIT_CHOOSE_STATUS", SetUnitChooseStatus);        //设置无法选中状态
+            SkillEditorFunctionRegistry.Register("SET_UNIT_MOCK_TARGET", SetUnitMockTarget);        //设置嘲讽目标
+            SkillEditorFunctionRegistry.Register("DEL_UNIT_MOCK_TARGET", DelUnitMockTarget);        //取消嘲讽目标
+            SkillEditorFunctionRegistry.Register("DISPLACEMENT_TO_TARGET", DisplacementToTarget);        //指定目标位移
+            SkillEditorFunctionRegistry.Register("DISPLACEMENT_TO_DIRECTION", DisplacementToDirection);        //指定朝向位移
+            SkillEditorFunctionRegistry.Register("DISPLACEMENT_TO_POINT", DisplacementToPoint);        //指定地点位移
+            SkillEditorFunctionRegistry.Register("SET_UNIT_DIRECTION", SetUnitDirection);        //设置单位朝向
+            SkillEditorFunctionRegistry.Register("SET_DIR", SetUnitDirection);        //旧版设置单位朝向
+            SkillEditorFunctionRegistry.Register("CREATE_SUMMON", CreateSummon);        //创建技能体
+            SkillEditorFunctionRegistry.Register("UNIT_ADD_SUMMON", CreateSummon);        //旧版创建技能体
+            SkillEditorFunctionRegistry.Register("SET_SUMMON_TARGET", SetSummonTarget);        //设置技能体目标
+            SkillEditorFunctionRegistry.Register("SET_UNIT_TARGET", SetSummonTarget);        //旧版设置技能体目标
         }
 
         private static void DefineVariable(SkillEditorFunctionContext ctx)
-
         {
 
             string varName = ctx.ResolveVarName(ctx.GetParamRaw(0));
@@ -163,12 +182,9 @@ namespace ET
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
-            TriggerPassiveEvent(caster, target, SkillPassiveTypeEnum.AttackAll);
-            if (target != null && caster != null)
-            {
-                target.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(
+
+            target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(
                     SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
-            }
 
             Log.Debug($"INFORM_EVENT_ATTACK skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
@@ -178,6 +194,7 @@ namespace ET
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
 
+            //target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.None);
             Log.Debug($"INFORM_EVENT_DEFENSE skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
@@ -188,6 +205,8 @@ namespace ET
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
             int skillId = ctx.GetParamInt(2, ctx.SkillId);
             int level = ctx.GetParamInt(3, ctx.SkillLevel);
+
+
 
             //TriggerPassiveEvent(caster, target, SkillPassiveTypeEnum.AllSkill_17, skillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.AllSkill_17, skillId);
@@ -609,6 +628,8 @@ namespace ET
 
                 if (allowedBenefits.Count > 0 && !allowedBenefits.Contains(bh.MBuff.BuffBenefitType)) { continue; }
 
+                if (excludeNonClearable && !IsBuffClearable(bh.MBuff)) { continue; }
+
                 candidates.Add(bh.MBuff.Id);
 
             }
@@ -649,8 +670,7 @@ namespace ET
 
                 if (buffFromUnitId != 0 && bh.TheUnitFrom?.Id != buffFromUnitId) { continue; }
 
-                //if (bh.MBuff.Remove == null || !bh.MBuff.Remove.Contains(buffGroup)) { continue; }
-                if (bh.MBuff.Remove == null ) { continue; }
+                if (bh.MBuff.Remove == null || !bh.MBuff.Remove.Contains(buffGroup)) { continue; }
 
                 buffMgr.OnRemoveBuffItem(bh);
 
@@ -745,6 +765,21 @@ namespace ET
 
         private static void CalculatePhysicsDamage(SkillEditorFunctionContext ctx)
         {
+            CalculateSkillDamage(ctx, isHeal: false);
+        }
+
+        private static void CalculateMagicDamage(SkillEditorFunctionContext ctx)
+        {
+            CalculateSkillDamage(ctx, isHeal: false);
+        }
+
+        private static void CalculateHealDamage(SkillEditorFunctionContext ctx)
+        {
+            CalculateSkillDamage(ctx, isHeal: true);
+        }
+
+        private static void CalculateSkillDamage(SkillEditorFunctionContext ctx, bool isHeal)
+        {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
             int skillId = ctx.GetParamInt(2, ctx.SkillId);
@@ -767,22 +802,34 @@ namespace ET
             long atk = minAtk == maxAtk
                 ? minAtk
                 : RandomHelper.RandomNumber((int)minAtk, (int)maxAtk);
-            long damage = (long)(atk * power);
+            long amount = (long)(atk * power);
+            if (amount <= 0)
+            {
+                amount = 1;
+            }
+
             long rs = ctx.GetVariable("rs", 1);
             if (rs > 1)
             {
-                damage = (long)(damage * 1.5f);
+                amount = (long)(amount * 1.5f);
             }
 
-            damage = RandomHelper.RandomNumber(1,3);
-            
-            NumericComponent defendNumeric = target.GetComponent<NumericComponent>();
-            if (defendNumeric != null)
+            NumericComponent targetNumeric = target.GetComponent<NumericComponent>();
+            if (targetNumeric == null)
             {
-                defendNumeric.ApplyChange(caster, NumericType.HP_Current, -damage, skillId);
+                return;
             }
 
-            Log.Debug($"CALCULATE_PHYSICS_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} damage={damage}");
+            if (isHeal)
+            {
+                targetNumeric.ApplyChange(caster, NumericType.HP_Current, amount, skillId);
+                Log.Debug($"CALCULATE_HEAL_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} heal={amount}");
+            }
+            else
+            {
+                targetNumeric.ApplyChange(caster, NumericType.HP_Current, -amount, skillId);
+                Log.Debug($"CALCULATE_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} damage={amount}");
+            }
         }
 
         private static void BuffDataSet(SkillEditorFunctionContext ctx)
@@ -823,7 +870,7 @@ namespace ET
 
         private static void SetBuffDataLegacy(SkillEditorFunctionContext ctx)
         {
-            Unit owner = ctx.ResolveUnit(ctx.GetParamRaw(2));
+            Unit owner = ctx.ResolveUnit(ctx.GetParamRaw(0));
             int buffId = ctx.GetParamInt(1, 0);
             if (owner == null || buffId <= 0)
             {
@@ -839,7 +886,7 @@ namespace ET
 
         private static void GetBuffDataLegacy(SkillEditorFunctionContext ctx)
         {
-            Unit owner = ctx.ResolveUnit(ctx.GetParamRaw(2));
+            Unit owner = ctx.ResolveUnit(ctx.GetParamRaw(0));
             int buffId = ctx.GetParamInt(1, 0);
             if (owner == null || buffId <= 0)
             {
@@ -867,8 +914,16 @@ namespace ET
         private static void GetSkillLevel(SkillEditorFunctionContext ctx)
         {
             string varName = ctx.ResolveVarName(ctx.GetParamRaw(0), "nSkillLevel");
+            Unit owner = ctx.ResolveUnit(ctx.GetParamRaw(1));
             int skillId = ctx.GetParamInt(2, ctx.SkillId);
             int level = skillId == ctx.SkillId ? ctx.SkillLevel : 1;
+            SkillSetComponentServer skillSet = owner?.GetComponent<SkillSetComponentServer>();
+            SkillPro skillPro = skillSet?.GetBySkillID(skillId);
+            if (skillPro != null && skillPro.Level > 0)
+            {
+                level = skillPro.Level;
+            }
+
             ctx.SetVariable(varName, level);
         }
 
@@ -890,7 +945,7 @@ namespace ET
         private static void GetRandomUnit(SkillEditorFunctionContext ctx)
         {
             bool usePriority = ctx.GetParamBool(2, true);
-            List<long> targetIds = CollectTargetIds(ctx, usePriority);
+            List<long> targetIds = CollectTargetIds(ctx, usePriority, ctx.GetParamRaw(1));
             if (targetIds.Count == 0)
             {
                 return;
@@ -973,17 +1028,36 @@ namespace ET
             Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(0));
             long buffFromUnitId = ResolveBuffSourceUnitId(ctx.GetParamRaw(1));
             int buffId = ctx.GetParamInt(2, 0);
-            bool owned = false;
-            if (unit != null && buffId > 0)
-            {
-                BuffManagerComponent buffMgr = unit.GetComponent<BuffManagerComponent>();
-                owned = buffFromUnitId == 0
-                    ? buffMgr != null && buffMgr.HaveBuff(buffId)
-                    : buffMgr != null && buffMgr.GetBuffSourceNumber(buffFromUnitId, buffId) > 0;
-            }
-
+            bool owned = EvaluateOwnBuff(unit, buffFromUnitId, buffId);
             ctx.LastConditionResult = owned;
             ctx.SetVariable("rs", owned ? 1 : 0);
+        }
+
+        private static void HasBuffLegacy(SkillEditorFunctionContext ctx)
+        {
+            Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            int buffId = ctx.GetParamInt(1, 0);
+            bool owned = EvaluateOwnBuff(unit, 0, buffId);
+            ctx.LastConditionResult = owned;
+            ctx.SetVariable("rs", owned ? 1 : 0);
+        }
+
+        private static bool EvaluateOwnBuff(Unit unit, long buffFromUnitId, int buffId)
+        {
+            if (unit == null || buffId <= 0)
+            {
+                return false;
+            }
+
+            BuffManagerComponent buffMgr = unit.GetComponent<BuffManagerComponent>();
+            if (buffMgr == null)
+            {
+                return false;
+            }
+
+            return buffFromUnitId == 0
+                ? buffMgr.HaveBuff(buffId)
+                : buffMgr.GetBuffSourceNumber(buffFromUnitId, buffId) > 0;
         }
 
         private static void ChangeGlobalCd(SkillEditorFunctionContext ctx)
@@ -1025,6 +1099,7 @@ namespace ET
         private static void ChangeSkillCurrentCdMultiple(SkillEditorFunctionContext ctx)
         {
             Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            string skillTypeFilter = ctx.ResolveParam(ctx.GetParamRaw(1)).Trim();
             int deltaMs = ctx.GetParamInt(2, 0);
             SkillManagerComponent skillMgr = unit?.GetComponent<SkillManagerComponent>();
             if (skillMgr == null)
@@ -1032,13 +1107,39 @@ namespace ET
                 return;
             }
 
-            foreach (SkillCDItem skillCd in skillMgr.SkillCDs.Values)
+            SkillSetComponentServer skillSet = unit.GetComponent<SkillSetComponentServer>();
+            int changedCount = 0;
+            foreach (KeyValuePair<int, SkillCDItem> pair in skillMgr.SkillCDs.ToList())
             {
-                skillCd.CDEndTime += deltaMs;
-                skillCd.CDPassive += deltaMs;
+                if (!ShouldApplySkillCdFilter(skillSet, pair.Key, skillTypeFilter))
+                {
+                    continue;
+                }
+
+                pair.Value.CDEndTime += deltaMs;
+                pair.Value.CDPassive += deltaMs;
+                changedCount++;
             }
 
-            Log.Debug($"CHANGE_SKILL_CURRENT_CD_MULTIPLE unit={unit.Id} deltaMs={deltaMs} count={skillMgr.SkillCDs.Count}");
+            Log.Debug($"CHANGE_SKILL_CURRENT_CD_MULTIPLE unit={unit.Id} filter={skillTypeFilter} deltaMs={deltaMs} changed={changedCount}");
+        }
+
+        private static bool ShouldApplySkillCdFilter(SkillSetComponentServer skillSet, int skillId, string skillTypeFilter)
+        {
+            if (string.IsNullOrEmpty(skillTypeFilter)
+                || skillTypeFilter.Equals("occupation", StringComparison.OrdinalIgnoreCase)
+                || skillTypeFilter.Contains("职业"))
+            {
+                if (skillSet == null)
+                {
+                    return true;
+                }
+
+                SkillPro skillPro = skillSet.GetBySkillID(skillId);
+                return skillPro == null || skillPro.SkillSource == SkillSourceEnum.Occupation;
+            }
+
+            return true;
         }
 
         private static void SetUnitChooseStatus(SkillEditorFunctionContext ctx)
@@ -1060,6 +1161,327 @@ namespace ET
             {
                 stateComponent.StateTypeAdd(StateTypeEnum.Stealth);
             }
+        }
+
+        private static void GetUnitAttribute(SkillEditorFunctionContext ctx)
+        {
+            string varName = ctx.ResolveVarName(ctx.GetParamRaw(0));
+            Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            int numericType = ctx.ResolveNumericType(ctx.GetParamRaw(2), 0);
+            if (string.IsNullOrEmpty(varName) || unit == null || numericType <= 0)
+            {
+                return;
+            }
+
+            ctx.SetVariable(varName, ctx.GetUnitNumericValue(unit, numericType, 0));
+        }
+
+        private static void GetHpPercent(SkillEditorFunctionContext ctx)
+        {
+            string varName = ctx.ResolveVarName(ctx.GetParamRaw(0), "nHpPct");
+            Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            if (unit == null)
+            {
+                ctx.SetVariable(varName, "0");
+                return;
+            }
+
+            long hpMax = ctx.GetUnitNumericValue(unit, NumericType.HP_Max, 0);
+            long hpCurrent = ctx.GetUnitNumericValue(unit, NumericType.HP_Current, 0);
+            double pct = hpMax <= 0 ? 0d : (double)hpCurrent / hpMax;
+            ctx.SetVariable(varName, pct.ToString(CultureInfo.InvariantCulture));
+        }
+
+        private static void ChangeCurrentHp(SkillEditorFunctionContext ctx)
+        {
+            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            long delta = SkillEditorFunctionContext.ParseLong(ctx.ResolveParam(ctx.GetParamRaw(2)), 0);
+            bool notice = ctx.GetParamBool(3, true);
+            if (target == null || delta == 0)
+            {
+                return;
+            }
+
+            NumericComponent numeric = target.GetComponent<NumericComponent>();
+            numeric?.ApplyChange(caster, NumericType.HP_Current, delta, ctx.SkillId, notice);
+        }
+
+        private static void ChangeUnitAttributeAdd(SkillEditorFunctionContext ctx)
+        {
+            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            int numericType = ctx.ResolveNumericType(ctx.GetParamRaw(2), 0);
+            long delta = SkillEditorFunctionContext.ParseLong(ctx.ResolveParam(ctx.GetParamRaw(3)), 0);
+            if (target == null || numericType <= 0 || delta == 0)
+            {
+                return;
+            }
+
+            target.GetComponent<NumericComponent>()?.ApplyChange(caster, numericType, delta, ctx.SkillId);
+        }
+
+        private static void ChangeUnitAttributePercent(SkillEditorFunctionContext ctx)
+        {
+            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            int numericType = ctx.ResolveNumericType(ctx.GetParamRaw(2), 0);
+            double percent = SkillEditorFunctionContext.ParseDouble(ctx.ResolveParam(ctx.GetParamRaw(3)), 0d);
+            if (target == null || numericType <= 0 || Math.Abs(percent) < 1e-9)
+            {
+                return;
+            }
+
+            NumericComponent numeric = target.GetComponent<NumericComponent>();
+            if (numeric == null)
+            {
+                return;
+            }
+
+            long baseValue = numeric.GetAsLong(numericType);
+            long delta = (long)(baseValue * percent / 100d);
+            if (delta != 0)
+            {
+                numeric.ApplyChange(caster, numericType, delta, ctx.SkillId);
+            }
+        }
+
+        private static void SetUnitMockTarget(SkillEditorFunctionContext ctx)
+        {
+            Unit tauntSource = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit mockedUnit = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            Unit mockTarget = ctx.ResolveUnit(ctx.GetParamRaw(2));
+            if (mockedUnit == null || mockTarget == null)
+            {
+                return;
+            }
+
+            AIComponent ai = mockedUnit.GetComponent<AIComponent>();
+            ai?.ChangeTarget(mockTarget.Id);
+            if (mockedUnit.Type == UnitType.Monster || mockedUnit.Type == UnitType.Pet)
+            {
+                mockedUnit.GetComponent<StateComponent>()?.StateTypeAdd(StateTypeEnum.ChaoFeng);
+            }
+
+            Log.Debug($"SET_UNIT_MOCK_TARGET source={(tauntSource?.Id ?? 0)} mocked={mockedUnit.Id} target={mockTarget.Id}");
+        }
+
+        private static void DelUnitMockTarget(SkillEditorFunctionContext ctx)
+        {
+            Unit mockedUnit = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            if (mockedUnit == null)
+            {
+                return;
+            }
+
+            mockedUnit.GetComponent<StateComponent>()?.StateTypeRemove(StateTypeEnum.ChaoFeng);
+            mockedUnit.GetComponent<AIComponent>()?.ChangeTarget(0);
+        }
+
+        private static void DisplacementToTarget(SkillEditorFunctionContext ctx)
+        {
+            Unit mover = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            Unit destUnit = ctx.ResolveUnit(ctx.GetParamRaw(2));
+            float keepDistance = ctx.GetParamFloat(3, 0f);
+            int moveType = ctx.GetParamInt(5, 0);
+            bool faceTarget = ctx.GetParamBool(10, false);
+            if (mover == null || destUnit == null)
+            {
+                return;
+            }
+
+            Vector3 dest = destUnit.Position;
+            if (keepDistance > 0f)
+            {
+                Vector3 dir = (mover.Position - destUnit.Position);
+                if (dir.sqrMagnitude > 1e-6f)
+                {
+                    dest = destUnit.Position + dir.normalized * keepDistance;
+                }
+            }
+
+            MoveUnitToPosition(mover, dest, moveType);
+            if (faceTarget)
+            {
+                FaceUnitToward(mover, destUnit.Position);
+            }
+        }
+
+        private static void DisplacementToDirection(SkillEditorFunctionContext ctx)
+        {
+            Unit mover = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            float dirX = ctx.GetParamFloat(2, 0f);
+            float dirZ = ctx.GetParamFloat(3, 0f);
+            float distance = ctx.GetParamFloat(4, 0f);
+            int moveType = ctx.GetParamInt(6, 0);
+            if (mover == null || distance <= 0f)
+            {
+                return;
+            }
+
+            Vector3 dir = new Vector3(dirX, 0f, dirZ);
+            if (dir.sqrMagnitude <= 1e-6f)
+            {
+                dir = mover.Rotation * Vector3.forward;
+            }
+            else
+            {
+                dir.Normalize();
+            }
+
+            MoveUnitToPosition(mover, mover.Position + dir * distance, moveType);
+        }
+
+        private static void DisplacementToPoint(SkillEditorFunctionContext ctx)
+        {
+            Unit mover = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            float x = ctx.GetParamFloat(2, mover?.Position.x ?? 0f);
+            float y = ctx.GetParamFloat(3, mover?.Position.y ?? 0f);
+            float keepDistance = ctx.GetParamFloat(4, 0f);
+            int moveType = ctx.GetParamInt(6, 0);
+            if (mover == null)
+            {
+                return;
+            }
+
+            Vector3 dest = new Vector3(x, y, mover.Position.z);
+            if (keepDistance > 0f)
+            {
+                Vector3 dir = mover.Position - dest;
+                if (dir.sqrMagnitude > 1e-6f)
+                {
+                    dest += dir.normalized * keepDistance;
+                }
+            }
+
+            MoveUnitToPosition(mover, dest, moveType);
+        }
+
+        private static void SetUnitDirection(SkillEditorFunctionContext ctx)
+        {
+            Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            float dirX = ctx.GetParamFloat(1, 0f);
+            float dirZ = ctx.GetParamFloat(2, 0f);
+            if (unit == null)
+            {
+                return;
+            }
+
+            Vector3 dir = new Vector3(dirX, 0f, dirZ);
+            if (dir.sqrMagnitude <= 1e-6f)
+            {
+                return;
+            }
+
+            FaceUnitToward(unit, unit.Position + dir.normalized);
+        }
+
+        private static void CreateSummon(SkillEditorFunctionContext ctx)
+        {
+            int summonId = ctx.GetParamInt(0, 0);
+            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            if (summonId <= 0 || caster == null || caster.IsDisposed || ctx.Handler == null)
+            {
+                return;
+            }
+
+            Scene scene = caster.DomainScene();
+            UnitComponent unitComponent = scene?.GetComponent<UnitComponent>();
+            if (unitComponent == null)
+            {
+                return;
+            }
+
+            float x = ResolveScalarParam(ctx, ctx.GetParamRaw(2), 'x', caster.Position.x);
+            float z = ResolveScalarParam(ctx, ctx.GetParamRaw(3), 'z', caster.Position.z);
+            Vector3 position = new Vector3(x, caster.Position.y, z);
+            int startAngle = (int)ctx.GetParamFloat(4, 0f);
+
+            Unit bullet = UnitFactory.CreateBullet(scene, caster.Id, summonId, startAngle, position, new CreateMonsterInfo());
+            RoleBullet1Componnet bulletComponent = bullet.AddComponent<RoleBullet1Componnet>();
+            bulletComponent.OnBaseBulletInit(ctx.Handler, caster.Id);
+
+            ctx.SetVariable("createSummon", bullet.Id.ToString(CultureInfo.InvariantCulture));
+            Log.Debug($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} bullet={bullet.Id} caster={caster.Id}");
+        }
+
+        private static void SetSummonTarget(SkillEditorFunctionContext ctx)
+        {
+            Unit summon = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            if (target == null)
+            {
+                return;
+            }
+
+            if (summon != null)
+            {
+                RoleBullet1Componnet bulletComponent = summon.GetComponent<RoleBullet1Componnet>();
+                if (bulletComponent?.SkillHandler != null)
+                {
+                    bulletComponent.SkillHandler.TheUnitTarget = target;
+                }
+            }
+
+            if (ctx.Handler != null)
+            {
+                ctx.Handler.TheUnitTarget = target;
+            }
+
+            Log.Debug($"SET_SUMMON_TARGET skill={ctx.SkillId} summon={(summon?.Id ?? 0)} target={target.Id}");
+        }
+
+        private static float ResolveScalarParam(SkillEditorFunctionContext ctx, string raw, char axis, float defaultValue)
+        {
+            string token = raw?.Trim() ?? string.Empty;
+            if (token.Length == 0)
+            {
+                return defaultValue;
+            }
+
+            if (token.Contains(".x", StringComparison.Ordinal) || token.Contains(".z", StringComparison.Ordinal))
+            {
+                return ctx.ResolvePositionComponent(raw, axis);
+            }
+
+            string resolved = ctx.ResolveParam(raw);
+            if (float.TryParse(resolved, NumberStyles.Float, CultureInfo.InvariantCulture, out float value))
+            {
+                return value;
+            }
+
+            return defaultValue;
+        }
+
+        private static void MoveUnitToPosition(Unit unit, Vector3 dest, int moveType)
+        {
+            if (unit == null || unit.IsDisposed)
+            {
+                return;
+            }
+
+            MapComponent map = unit.DomainScene()?.GetComponent<MapComponent>();
+            Vector3 finalPos = map == null ? dest : map.GetCanChongJiPath(unit, unit.Position, dest);
+            if (moveType == 0)
+            {
+                unit.Position = finalPos;
+                unit.Stop(-2);
+                return;
+            }
+
+            unit.FindPathMoveToAsync(finalPos, null, false, 100).Coroutine();
+        }
+
+        private static void FaceUnitToward(Unit unit, Vector3 worldPoint)
+        {
+            Vector3 dir = worldPoint - unit.Position;
+            dir.y = 0f;
+            if (dir.sqrMagnitude <= 1e-6f)
+            {
+                return;
+            }
+
+            unit.Rotation = Quaternion.LookRotation(dir.normalized, Vector3.up);
         }
 
         private static void TriggerPassiveEvent(Unit owner, Unit target, int passiveType, int skillId = 0)
@@ -1090,9 +1512,24 @@ namespace ET
                 || numeric.GetAsLong(NumericType.HP_Current) <= 0;
         }
 
-        private static List<long> CollectTargetIds(SkillEditorFunctionContext ctx, bool usePriority)
+        private static bool IsBuffClearable(LDSkillBuff buffConfig)
         {
-            List<long> targetIds = new List<long>();
+            if (buffConfig?.Remove == null || buffConfig.Remove.Length == 0)
+            {
+                return false;
+            }
+
+            return !(buffConfig.Remove.Length == 1 && buffConfig.Remove[0] == 0);
+        }
+
+        private static List<long> CollectTargetIds(SkillEditorFunctionContext ctx, bool usePriority, string targetsParam = null)
+        {
+            List<long> targetIds = ParseTargetIdList(ctx, targetsParam);
+            if (targetIds.Count > 0)
+            {
+                return targetIds;
+            }
+
             if (ctx.Handler?.HurtIds != null && ctx.Handler.HurtIds.Count > 0)
             {
                 targetIds.AddRange(ctx.Handler.HurtIds);
@@ -1106,6 +1543,76 @@ namespace ET
             }
 
             return targetIds;
+        }
+
+        private static List<long> ParseTargetIdList(SkillEditorFunctionContext ctx, string raw)
+        {
+            List<long> targetIds = new List<long>();
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return targetIds;
+            }
+
+            string resolved = ctx.ResolveParam(raw).Trim();
+            string token = ExtractListToken(raw);
+            if (resolved.Equals("targets", StringComparison.OrdinalIgnoreCase)
+                || token.Equals("targets", StringComparison.OrdinalIgnoreCase))
+            {
+                if (ctx.Handler?.HurtIds != null && ctx.Handler.HurtIds.Count > 0)
+                {
+                    targetIds.AddRange(ctx.Handler.HurtIds);
+                }
+
+                return targetIds;
+            }
+
+            if (ctx.Variables.TryGetValue(token, out string variableValue))
+            {
+                AppendParsedIds(variableValue, targetIds);
+                if (targetIds.Count > 0)
+                {
+                    return targetIds;
+                }
+            }
+
+            AppendParsedIds(resolved, targetIds);
+            return targetIds;
+        }
+
+        private static string ExtractListToken(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return string.Empty;
+            }
+
+            string trimmed = raw.Trim();
+            int space = trimmed.LastIndexOf(' ');
+            if (space >= 0 && space < trimmed.Length - 1)
+            {
+                return trimmed.Substring(space + 1).Trim();
+            }
+
+            return trimmed;
+        }
+
+        private static void AppendParsedIds(string raw, List<long> targetIds)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return;
+            }
+
+            string[] parts = raw.Split(new[] { ',', '|', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (long.TryParse(parts[i].Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out long id)
+                    && id > 0
+                    && !targetIds.Contains(id))
+                {
+                    targetIds.Add(id);
+                }
+            }
         }
     }
 }
