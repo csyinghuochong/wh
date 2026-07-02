@@ -130,16 +130,16 @@ namespace ET
                 return directId;
             }
 
-            if (token.Contains("生命上限")) { return NumericType.HP_Max; }
-            if (token.Contains("生命")) { return NumericType.HP_Current; }
-            if (token.Contains("最小物理攻击") || token.Contains("最小物攻")) { return NumericType.PATK_Min; }
-            if (token.Contains("最大物理攻击") || token.Contains("最大物攻")) { return NumericType.PATK_Max; }
-            if (token.Contains("最小法术攻击") || token.Contains("最小法攻")) { return NumericType.MATK_Min; }
-            if (token.Contains("最大法术攻击") || token.Contains("最大法攻")) { return NumericType.MATK_Max; }
-            if (token.Contains("最小物防")) { return NumericType.PDEF_Min; }
-            if (token.Contains("最大物防")) { return NumericType.PDEF_Max; }
-            if (token.Contains("最小法防")) { return NumericType.MDEF_Min; }
-            if (token.Contains("最大法防")) { return NumericType.MDEF_Max; }
+            if (token.Contains("生命上限")) { return NumericType.HP_Max_10; }
+            if (token.Contains("生命")) { return NumericType.HP_Current_8; }
+            if (token.Contains("最小物理攻击") || token.Contains("最小物攻")) { return NumericType.PATK_Min_21; }
+            if (token.Contains("最大物理攻击") || token.Contains("最大物攻")) { return NumericType.PATK_Max_22; }
+            if (token.Contains("最小法术攻击") || token.Contains("最小法攻")) { return NumericType.MATK_Min_31; }
+            if (token.Contains("最大法术攻击") || token.Contains("最大法攻")) { return NumericType.MATK_Max_32; }
+            if (token.Contains("最小物防")) { return NumericType.PDEF_Min_41; }
+            if (token.Contains("最大物防")) { return NumericType.PDEF_Max_42; }
+            if (token.Contains("最小法防")) { return NumericType.MDEF_Min_51; }
+            if (token.Contains("最大法防")) { return NumericType.MDEF_Max_52; }
             if (token.Contains("力")) { return NumericType.Point_Strength; }
             if (token.Contains("敏")) { return NumericType.Point_Agility; }
             if (token.Contains("智")) { return NumericType.Point_Intelligence; }

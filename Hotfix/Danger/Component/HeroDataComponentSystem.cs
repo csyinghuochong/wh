@@ -80,7 +80,7 @@ namespace ET
             numericComponent.Set((int)NumericType.Now_Damage, 0, false);
             numericComponent.Set((int)NumericType.Now_Stall, 0, false);
             numericComponent.Set((int)NumericType.TeamId, 0, false);
-            numericComponent.Set((int)NumericType.HP_Current, numericComponent.GetAsLong((int)NumericType.HP_Max), false);
+            numericComponent.Set((int)NumericType.HP_Current_8, numericComponent.GetAsLong((int)NumericType.HP_Max_10), false);
             numericComponent.Set((int)NumericType.Now_Weapon, unit.GetComponent<BagComponentServer>().GetWuqiItemId(), false);
             numericComponent.Set(NumericType.JueXingAnger, 0, false);
             numericComponent.Set(NumericType.RunRaceRankId, 0, false);
@@ -283,8 +283,8 @@ namespace ET
             numericComponent.SetValueNoSync(NumericType.Now_Shield_DamgeCostPro,0);
             if (unit.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Dead) <= 0)
             {
-                long max_hp = self.Parent.GetComponent<NumericComponent>().GetAsLong(NumericType.HP_Max);
-                unit.GetComponent<NumericComponent>().SetValueNoSync(NumericType.HP_Current, max_hp);
+                long max_hp = self.Parent.GetComponent<NumericComponent>().GetAsLong(NumericType.HP_Max_10);
+                unit.GetComponent<NumericComponent>().SetValueNoSync(NumericType.HP_Current_8, max_hp);
             }
         }
 
@@ -377,11 +377,11 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent  = unit.GetComponent<NumericComponent>();
-            long max_hp = numericComponent.GetAsLong(NumericType.HP_Max);
+            long max_hp = numericComponent.GetAsLong(NumericType.HP_Max_10);
 
             numericComponent.ApplyValue(NumericType.Now_Dead, 0);
-            numericComponent.SetValueNoSync(NumericType.HP_Current, 0);
-            numericComponent.ApplyChange(null, NumericType.HP_Current, max_hp, 0);
+            numericComponent.SetValueNoSync(NumericType.HP_Current_8, 0);
+            numericComponent.ApplyChange(null, NumericType.HP_Current_8, max_hp, 0);
             numericComponent.ApplyValue(NumericType.ReviveTime, 0);
             unit.GetComponent<SkillPassiveComponent>()?.Activeted();
             unit.GetComponent<BuffManagerComponent>()?.OnRevive();
@@ -401,16 +401,16 @@ namespace ET
 
             NumericComponent numericComponentMaster = matster.GetComponent<NumericComponent>();
           
-            numericComponent.Set((int)NumericType.Speed_Current, 5f, false);
+            numericComponent.Set((int)NumericType.Speed_Current_15, 5f, false);
             //设置当前血量
-            numericComponent.SetValueNoSync(NumericType.HP_Current, numericComponent.GetAsInt(NumericType.HP_Current));
+            numericComponent.SetValueNoSync(NumericType.HP_Current_8, numericComponent.GetAsInt(NumericType.HP_Current_8));
         }
 
         public static void InitJiaYuanPet(this HeroDataComponent self,  bool notice)
         {
             NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
-            numericComponent.Set(NumericType.HP_Max, 1, notice);
-            numericComponent.Set(NumericType.HP_Current, 1, notice);
+            numericComponent.Set(NumericType.HP_Max_10, 1, notice);
+            numericComponent.Set(NumericType.HP_Current_8, 1, notice);
         }
 
         public static void InitPet(this HeroDataComponent self, RolePetInfo rolePetInfo, bool notice)
@@ -498,11 +498,11 @@ namespace ET
 
 
             //属性
-            numericComponent.Set((int)NumericType.Speed_Current, 5f, false);
-            numericComponent.Set((int)NumericType.HP_Max, 1, false);
+            numericComponent.Set((int)NumericType.Speed_Current_15, 5f, false);
+            numericComponent.Set((int)NumericType.HP_Max_10, 1, false);
           
             //设置当前血量
-            numericComponent.Set((int)NumericType.HP_Current, numericComponent.GetAsInt(NumericType.HP_Max));
+            numericComponent.Set((int)NumericType.HP_Current_8, numericComponent.GetAsInt(NumericType.HP_Max_10));
             //Log.Debug("初始化当前怪物血量:" + numericComponent.GetAsLong(NumericType.Numeric_Error));
         }
 

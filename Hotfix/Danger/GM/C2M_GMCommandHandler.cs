@@ -94,7 +94,7 @@ namespace ET
 							continue;
 						}
 
-						units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.HP_Current, -1000000000, 0);
+						units[i].GetComponent<NumericComponent>().ApplyChange(unit, NumericType.HP_Current_8, -1000000000, 0);
 					}
 					return;
 				}

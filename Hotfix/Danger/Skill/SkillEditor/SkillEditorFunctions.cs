@@ -822,12 +822,12 @@ namespace ET
 
             if (isHeal)
             {
-                targetNumeric.ApplyChange(caster, NumericType.HP_Current, amount, skillId);
+                targetNumeric.ApplyChange(caster, NumericType.HP_Current_8, amount, skillId);
                 Log.Debug($"CALCULATE_HEAL_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} heal={amount}");
             }
             else
             {
-                targetNumeric.ApplyChange(caster, NumericType.HP_Current, -amount, skillId);
+                targetNumeric.ApplyChange(caster, NumericType.HP_Current_8, -amount, skillId);
                 Log.Debug($"CALCULATE_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} damage={amount}");
             }
         }
@@ -1015,7 +1015,7 @@ namespace ET
                 if (numeric != null)
                 {
                     dying = numeric.GetAsInt(NumericType.Now_Dead) == 0
-                        && numeric.GetAsLong(NumericType.HP_Current) <= 0;
+                        && numeric.GetAsLong(NumericType.HP_Current_8) <= 0;
                 }
             }
 
@@ -1186,8 +1186,8 @@ namespace ET
                 return;
             }
 
-            long hpMax = ctx.GetUnitNumericValue(unit, NumericType.HP_Max, 0);
-            long hpCurrent = ctx.GetUnitNumericValue(unit, NumericType.HP_Current, 0);
+            long hpMax = ctx.GetUnitNumericValue(unit, NumericType.HP_Max_10, 0);
+            long hpCurrent = ctx.GetUnitNumericValue(unit, NumericType.HP_Current_8, 0);
             double pct = hpMax <= 0 ? 0d : (double)hpCurrent / hpMax;
             ctx.SetVariable(varName, pct.ToString(CultureInfo.InvariantCulture));
         }
@@ -1204,7 +1204,7 @@ namespace ET
             }
 
             NumericComponent numeric = target.GetComponent<NumericComponent>();
-            numeric?.ApplyChange(caster, NumericType.HP_Current, delta, ctx.SkillId, notice);
+            numeric?.ApplyChange(caster, NumericType.HP_Current_8, delta, ctx.SkillId, notice);
         }
 
         private static void ChangeUnitAttributeAdd(SkillEditorFunctionContext ctx)
@@ -1509,7 +1509,7 @@ namespace ET
             }
 
             return numeric.GetAsInt(NumericType.Now_Dead) == 1
-                || numeric.GetAsLong(NumericType.HP_Current) <= 0;
+                || numeric.GetAsLong(NumericType.HP_Current_8) <= 0;
         }
 
         private static bool IsBuffClearable(LDSkill_Buff buffConfig)

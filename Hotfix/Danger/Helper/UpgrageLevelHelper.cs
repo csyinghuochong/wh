@@ -30,8 +30,8 @@ namespace ET
                 RoleAddPointHelper.AddPointsOnLevelUp(unit, lv);
             }
 
-            long maxHp = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.HP_Max);
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HP_Current, maxHp, true);
+            long maxHp = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.HP_Max_10);
+            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HP_Current_8, maxHp, true);
 
             unit.GetComponent<TaskComponentServer>().OnUpdateLevel(newLevel);
             unit.GetComponent<ChengJiuComponentServer>().OnUpdateLevel(newLevel);

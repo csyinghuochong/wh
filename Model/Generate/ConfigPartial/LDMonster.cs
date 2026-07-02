@@ -23,9 +23,9 @@ namespace ET
                     monsterInitAttribute.Add(monster.Id, monsterAttrs);
                 }
                 
-                monsterAttrs.Add( new HideProList() { HideID = NumericType.HP_Fixed, HideValue = 10});
-                monsterAttrs.Add( new HideProList() { HideID = NumericType.Speed_Current, HideValue = 5 * 10000});
-                monsterAttrs.Add( new HideProList() { HideID = NumericType.PATK_Max, HideValue = 1});
+                monsterAttrs.Add( new HideProList() { HideID = NumericType.HP_Fixed_11, HideValue = 10});
+                monsterAttrs.Add( new HideProList() { HideID = NumericType.Speed_Current_15, HideValue = 5 * 10000});
+                monsterAttrs.Add( new HideProList() { HideID = NumericType.PATK_Max_22, HideValue = 1});
             }
         }
 

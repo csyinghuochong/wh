@@ -792,9 +792,9 @@ namespace ET
 
             //恢复血量
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            long max_hp = numericComponent.GetAsLong(NumericType.HP_Max);
-            numericComponent.SetValueNoSync(NumericType.HP_Current, 0);
-            numericComponent.ApplyChange(null, NumericType.HP_Current, max_hp, 0);
+            long max_hp = numericComponent.GetAsLong(NumericType.HP_Max_10);
+            numericComponent.SetValueNoSync(NumericType.HP_Current_8, 0);
+            numericComponent.ApplyChange(null, NumericType.HP_Current_8, max_hp, 0);
         }
 
         public static void InitDonationBuff(this BuffManagerComponent self)

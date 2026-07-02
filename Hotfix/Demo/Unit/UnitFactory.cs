@@ -113,7 +113,7 @@ namespace ET
             unit.Position = vector3;
             unit.Type = UnitType.Bullet;            //子弹Unity,根据这个类型会实例化出特效
             LDSkill ldSkill = LDSkillCategory.Instance.Get(skillid);
-            numericComponent.Set(NumericType.Speed_Current, 1, false);
+            numericComponent.Set(NumericType.Speed_Current_15, 1, false);
             numericComponent.Set(NumericType.MasterId, masterid, false);
             numericComponent.Set(NumericType.StartAngle, starangle, false);
             numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
@@ -183,7 +183,7 @@ namespace ET
             numericComponent.Set(NumericType.UnionId_0, master != null ? master.GetUnionId() : 0, false);
             numericComponent.Set(NumericType.PetSkin, createMonsterInfo.SkinId, false);
             numericComponent.Set(NumericType.MasterId, createMonsterInfo.MasterID, false);
-            numericComponent.Set(NumericType.HP_Current, numericComponent.GetAsLong(NumericType.HP_Max), false);
+            numericComponent.Set(NumericType.HP_Current_8, numericComponent.GetAsLong(NumericType.HP_Max_10), false);
 
             int ai = createMonsterInfo.AI > 0 ? createMonsterInfo.AI : 1;
             unit.AI = ai;
@@ -349,7 +349,7 @@ namespace ET
             numericComponent.Set(NumericType.BattleCamp, roleCamp);
             numericComponent.Set(NumericType.MasterId, masterId);
             numericComponent.Set(NumericType.UnitPositon, cell);
-            long max_hp = numericComponent.GetAsLong(NumericType.HP_Max);
+            long max_hp = numericComponent.GetAsLong(NumericType.HP_Max_10);
             numericComponent.SetValueNoSync(NumericType.Numeric_Error, max_hp);
             unit.AddComponent<AOIEntity, int, Vector3>(1 * 1000, unit.Position);
             unit.AddComponent<SkillPassiveComponent>().UpdatePetPassiveSkill(petinfo);
