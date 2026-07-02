@@ -20,9 +20,9 @@ namespace ET
         public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null)
         {
             this.OnBaseBuffInit(buffData, theUnitFrom, theUnitBelongto);
-            int buff_time = this.MBuff.BuffTime;
+            int buff_time = -1;// this.MBuff.BuffTime;
             float oldSpeed = theUnitFrom.GetSpeedNow();
-            float newSpeed = (float)this.MBuff.buffParameterValue;
+            float newSpeed = 0f;// (float)this.MBuff.buffParameterValue;
             float distance = (buff_time * newSpeed) * 0.001f;
             Vector3 dir = (theUnitBelongto.Position - theUnitFrom.Position).normalized;
             if (theUnitBelongto.Id == theUnitFrom.Id)

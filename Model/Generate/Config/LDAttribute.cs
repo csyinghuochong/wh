@@ -81,18 +81,15 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>描述</summary>
+		/// <summary>面板 描述</summary>
 		[ProtoMember(3)]
-		public int Desc { get; set; }
-		/// <summary>类型 0-固定值 1-万分比</summary>
+		public int Desc1 { get; set; }
+		/// <summary>属性 描述</summary>
 		[ProtoMember(4)]
-		public int Type { get; set; }
-		/// <summary>排序</summary>
+		public int Desc2 { get; set; }
+		/// <summary>类型 0-固定值 1-万分比</summary>
 		[ProtoMember(5)]
-		public int Order_SL { get; set; }
-		/// <summary>显示</summary>
-		[ProtoMember(6)]
-		public int IsShow { get; set; }
+		public int Type { get; set; }
 
 	}
 }

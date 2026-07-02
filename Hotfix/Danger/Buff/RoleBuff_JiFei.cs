@@ -16,8 +16,8 @@ namespace ET
         public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null)
         {
             this.OnBaseBuffInit(buffData, theUnitFrom, theUnitBelongto);
-            float speed = (float)this.MBuff.buffParameterValue;
-            float distance = (this.MBuff.buffParameterType * speed) * 0.001f;
+            //float speed = -1f;// (float)this.MBuff.buffParameterValue;
+            float distance = -1f;// (this.MBuff.buffParameterType * speed) * 0.001f;
             Vector3 dir = (theUnitBelongto.Position - theUnitFrom.Position).normalized;
             Vector3 vector3 = theUnitBelongto.Position + dir * distance;
             theUnitBelongto.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.JiTui);

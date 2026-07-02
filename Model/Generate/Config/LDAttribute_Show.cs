@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDRechargeCategory : ProtoObject, IMerge
+    public partial class LDAttribute_ShowCategory : ProtoObject, IMerge
     {
-        public static LDRechargeCategory Instance;
+        public static LDAttribute_ShowCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDRecharge> dict = new Dictionary<int, LDRecharge>();
+        private Dictionary<int, LDAttribute_Show> dict = new Dictionary<int, LDAttribute_Show>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDRecharge> list = new List<LDRecharge>();
+        private List<LDAttribute_Show> list = new List<LDAttribute_Show>();
 		
-        public LDRechargeCategory()
+        public LDAttribute_ShowCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDRechargeCategory s = o as LDRechargeCategory;
+            LDAttribute_ShowCategory s = o as LDAttribute_ShowCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDRecharge config in list)
+            foreach (LDAttribute_Show config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDRecharge Get(int id)
+        public LDAttribute_Show Get(int id)
         {
-            this.dict.TryGetValue(id, out LDRecharge item);
+            this.dict.TryGetValue(id, out LDAttribute_Show item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDRecharge)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDAttribute_Show)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDRecharge> GetAll()
+        public Dictionary<int, LDAttribute_Show> GetAll()
         {
             return this.dict;
         }
 
-        public LDRecharge GetOne()
+        public LDAttribute_Show GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,20 +73,17 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDRecharge: ProtoObject, IConfig
+	public partial class LDAttribute_Show: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>SKU</summary>
+		/// <summary>类型</summary>
 		[ProtoMember(2)]
-		public string Recharge_Sku { get; set; }
-		/// <summary>人民币</summary>
+		public int Type { get; set; }
+		/// <summary>属性ID</summary>
 		[ProtoMember(3)]
-		public int Recharge_CNY { get; set; }
-		/// <summary>美元</summary>
-		[ProtoMember(4)]
-		public int Recharge_USD { get; set; }
+		public int Attribute_Id { get; set; }
 
 	}
 }

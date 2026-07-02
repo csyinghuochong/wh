@@ -242,14 +242,13 @@ namespace ET
             {
                 return;
             }
-            if (!LDSkillBuffCategory.Instance.Contain(buffID))
+            if (!LDSkill_BuffCategory.Instance.Contain(buffID))
             {
                 Log.Warning($"config==null： buffid{buffID}");
                 return;
             }
-            LDSkillBuff ldSkillBuff = LDSkillBuffCategory.Instance.Get(buffID);
-
-
+            LDSkill_Buff ldSkillBuff = LDSkill_BuffCategory.Instance.Get(buffID);
+            /*
             bool teshui = uu.Type == UnitType.JingLing && ldSkillBuff.TargetType == 1;
             if (!uu.IsCanBeAttack() && !teshui)
             {
@@ -264,11 +263,6 @@ namespace ET
             }
 
 
-            //检测类型
-            //if (skillBuffConfig.BuffTargetType != 0 && skillBuffConfig.BuffTargetType != uu.Type)
-            //{
-            //    return;
-            //}
             bool triggerbuff = false;
             int[] buffTargetTypes = ldSkillBuff.BuffTargetType;
             if (buffTargetTypes != null)
@@ -347,7 +341,7 @@ namespace ET
             buffData.SkillId = self.LdSkillConf.Id;
             buffData.BuffId = ldSkillBuff.Id;
             uu.GetComponent<BuffManagerComponent>().BuffFactory(buffData, self.TheUnitFrom, self);
-            //Log.Info("结束释放buff" + buffID);
+            */
         }
 
 

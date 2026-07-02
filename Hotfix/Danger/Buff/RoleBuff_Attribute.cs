@@ -45,18 +45,7 @@ namespace ET
             if (!this.IsTrigger && this.PassTime >= this.DelayTime)
             {
                 ///移动才触发
-                if (this.MBuff.MoveAction == 1)
-                {
-                    MoveComponent moveComponent = this.TheUnitBelongto.GetComponent<MoveComponent>();
-                    if (moveComponent != null && !moveComponent.IsArrived())
-                    {
-                        this.buffSetProperty(heroCom);
-                    }
-                }
-                else
-                {
-                    this.buffSetProperty(heroCom);
-                }
+              
             }
 
             //buff执行结束
@@ -73,20 +62,11 @@ namespace ET
 
             this.IsTrigger = true;
 
-            int buffNumber = 1;
-            int buffindex = 0;
-
+           
             BuffManagerComponent buffManagerComponent = this.TheUnitBelongto.GetComponent<BuffManagerComponent>();
-            if (this.MBuff.BuffAddSync == 1 &&  this.MBuff.buffParameterType == 3001 )
-            {
-                buffNumber = buffManagerComponent.GetBuffSourceNumber(0, this.MBuff.Id);
-                buffindex = buffManagerComponent.GetBuffIndexById(this);
-                if (buffindex > 0)
-                {
-                    return;
-                }
-            }
 
+            /*
+             * int buffNumber = 1; 
             switch (this.MBuff.BuffType)
             {
                 //属性类buff
@@ -224,6 +204,7 @@ namespace ET
                 default: 
                     break; 
             }
+            */
         }
 
         public override void OnFinished()
@@ -233,6 +214,7 @@ namespace ET
                 return;
             }
 
+            /*
             //移除相关属性
             switch (this.MBuff.BuffType)
             {
@@ -280,6 +262,7 @@ namespace ET
                 default:
                     break;
             }
+            */
         }
     }
 }

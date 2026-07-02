@@ -9,12 +9,7 @@ namespace ET
 
         public override void AfterEndInit()
         {
-            this.showIdList = this.GetAll().Values
-                    .Where(item => item.IsShow == 1)
-                    .OrderBy(item => item.Order_SL)
-                    .ThenBy(item => item.Id)
-                    .Select(item => item.Id)
-                    .ToList();
+            this.showIdList = this.GetAll().Keys.ToList();  
         }
 
         public List<int> GetShowIdList()

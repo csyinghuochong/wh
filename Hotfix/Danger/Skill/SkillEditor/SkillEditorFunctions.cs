@@ -626,7 +626,7 @@ namespace ET
 
                 if (buffFromUnitId != 0 && bh.TheUnitFrom?.Id != buffFromUnitId) { continue; }
 
-                if (allowedBenefits.Count > 0 && !allowedBenefits.Contains(bh.MBuff.BuffBenefitType)) { continue; }
+                //if (allowedBenefits.Count > 0 && !allowedBenefits.Contains(bh.MBuff.BuffBenefitType)) { continue; }
 
                 if (excludeNonClearable && !IsBuffClearable(bh.MBuff)) { continue; }
 
@@ -670,7 +670,7 @@ namespace ET
 
                 if (buffFromUnitId != 0 && bh.TheUnitFrom?.Id != buffFromUnitId) { continue; }
 
-                if (bh.MBuff.Remove == null || !bh.MBuff.Remove.Contains(buffGroup)) { continue; }
+                //if (bh.MBuff.Remove == null || !bh.MBuff.Remove.Contains(buffGroup)) { continue; }
 
                 buffMgr.OnRemoveBuffItem(bh);
 
@@ -1512,14 +1512,14 @@ namespace ET
                 || numeric.GetAsLong(NumericType.HP_Current) <= 0;
         }
 
-        private static bool IsBuffClearable(LDSkillBuff buffConfig)
+        private static bool IsBuffClearable(LDSkill_Buff buffConfig)
         {
-            if (buffConfig?.Remove == null || buffConfig.Remove.Length == 0)
+           // if (buffConfig?.Remove == null || buffConfig.Remove.Length == 0)
             {
                 return false;
             }
 
-            return !(buffConfig.Remove.Length == 1 && buffConfig.Remove[0] == 0);
+            //return !(buffConfig.Remove.Length == 1 && buffConfig.Remove[0] == 0);
         }
 
         private static List<long> CollectTargetIds(SkillEditorFunctionContext ctx, bool usePriority, string targetsParam = null)

@@ -20,11 +20,8 @@ namespace ET
             BuffManagerComponent buffManager = theUnitFrom.GetComponent<BuffManagerComponent>();
             for (int i = buffManager.m_Buffs.Count - 1; i >= 0; i--)
             {
-                LDSkillBuff ldSkillBuff = buffManager.m_Buffs[i].MBuff;
-                if (ldSkillBuff.BuffBenefitType == 2)
-                {
-                    buffManager.m_Buffs[i].BuffState = BuffState.Finished;
-                }
+                LDSkill_Buff ldSkillBuff = buffManager.m_Buffs[i].MBuff;
+              
             }
         }
 

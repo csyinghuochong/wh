@@ -118,7 +118,7 @@ namespace ET
         }
 
 
-        public static void BroadcastBuff(Unit unit, IActorMessage message, LDSkillBuff buff, int sceneType)
+        public static void BroadcastBuff(Unit unit, IActorMessage message, LDSkill_Buff buff, int sceneType)
         {
             //主城只给自己广播
             if (unit.Type == UnitType.Player && sceneType == MapTypeEnum.MainCityScene)
@@ -137,14 +137,7 @@ namespace ET
 
                 if (!broadcast)
                 {
-                    if (buff.BroadcastType == 0)
-                    {
-                        broadcast = true;
-                    }
-                    if (buff.BroadcastType == 1)  //队友
-                    {
-                        broadcast = unit.IsSameTeam(u.Unit);
-                    }
+                   
                 }
 
                 if (!broadcast)

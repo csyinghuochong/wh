@@ -93,7 +93,7 @@ namespace ET
 		/// <summary>技能类型 0-无 1-瞬发 2-吟唱 3-引导 9-被动</summary>
 		[ProtoMember(6)]
 		public int Type { get; set; }
-		/// <summary>被动类型 0-无 1-初始化</summary>
+		/// <summary>被动类型</summary>
 		[ProtoMember(7)]
 		public int Type_Passive { get; set; }
 		/// <summary>公共 CD</summary>

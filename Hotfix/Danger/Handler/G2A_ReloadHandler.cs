@@ -13,8 +13,6 @@ namespace ET
             OpcodeHelper.OneTotalNumber = 20000;
             OpcodeHelper.OneTotalLength = 20000000;
 
-            Log.Warning("C2M_Reload_Remove: " + ConfigLoader.RemovePlayer);
-            Log.Warning("C2M_Reload_NoRecovery: " + MongoHelper.NoRecovery);
             DateTime dateTime = TimeInfo.Instance.ToDateTime( TimeHelper.ServerNow() );
 #if SERVER
             ConfigData.LogRechargeNumber = false;
