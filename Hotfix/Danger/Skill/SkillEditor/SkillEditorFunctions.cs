@@ -1431,6 +1431,11 @@ namespace ET
             numeric?.ApplyChange(caster, NumericType.HP_Current_8, delta, ctx.SkillId, notice);
         }
 
+
+        /// <summary>
+        /// 修改战斗属性
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void ChangeUnitAttributeAdd(SkillEditorFunctionContext ctx)
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
