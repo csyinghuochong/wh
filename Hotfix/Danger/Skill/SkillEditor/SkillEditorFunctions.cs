@@ -617,12 +617,30 @@ namespace ET
 
                 hitRateAdd, level, 0f, 0f, true);
 
+
+            /*
+            0   Miss  未命中 / 不能打（目标无效、命中失败等）
+            1 Hit 普通命中
+            2 Immune 免疫该技能
+            3  Dodge 闪避
+            11（暴击）  暴击命中（> 1 表示暴击） */
+
             ctx.SetVariable("rs", rs);
 
+
+            /*定义任意值测试
+            ctx.SetVariable("rsvalue", 500);
+
+            // 读 long（推荐测数字）
+            long v = ctx.GetVariable("rsvalue", 0);        // 得到 500
+                                                           // 读 string
+            string s = ctx.GetVariableString("rsvalue");   // "500"
+                                                           // 参数解析（技能树 param 也会走这套）
+            string resolved = ctx.ResolveParam("rsvalue"); // "500"
+            */
+
             ctx.LastConditionResult = rs > 0;
-
         }
-
 
 
         private static bool CompareLogic(string left, string right, string op)

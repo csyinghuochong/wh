@@ -156,7 +156,7 @@ namespace ET
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt(NumericType.Speed_Current_15) <= 0)
+            if (unit.GetSpeedNow() <= 0)
             {
                 return ErrorCode.ERR_CanNotMove_Speed;
             }

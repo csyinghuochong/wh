@@ -15,6 +15,7 @@ namespace ET
             NumericType.Point_Intelligence,
             NumericType.Point_Constitution,
             NumericType.Point_Stamina,
+            NumericType.Point_Haste,
         };
 
         public static int GetAutoLevel()
