@@ -206,9 +206,9 @@ namespace ET
 			}
 		}
 
-		public static List<PropertyValue> GetTianfuRoleProLists(this SkillSetComponentServer self)
+		public static List<AttributeItem> GetTianfuRoleProLists(this SkillSetComponentServer self)
 		{
-			List<PropertyValue> proList = new List<PropertyValue>();
+			List<AttributeItem> proList = new List<AttributeItem>();
 			List<int> tianfuids = self.TianFuListAll();
 			for (int i = 0; i < tianfuids.Count; i++)
 			{
@@ -218,25 +218,25 @@ namespace ET
 			return proList;
 		}
 
-		public static List<PropertyValue> GetSkillRoleProLists(this SkillSetComponentServer self)
+		public static List<AttributeItem> GetSkillRoleProLists(this SkillSetComponentServer self)
 		{
-			List<PropertyValue> proList = new List<PropertyValue>();
+			List<AttributeItem> proList = new List<AttributeItem>();
 		
 			return proList;
 		}
 
         //和GetSkillRoleProLists方法一致 主要是获取类型为8的被动技能,8的被动技能不加战斗力
-        public static List<PropertyValue> GetSkillRoleProLists_9(this SkillSetComponentServer self, int skillid)
+        public static List<AttributeItem> GetSkillRoleProLists_9(this SkillSetComponentServer self, int skillid)
         {
-            List<PropertyValue> proList = new List<PropertyValue>();
+            List<AttributeItem> proList = new List<AttributeItem>();
            
             return proList;
         }
 
         //和GetSkillRoleProLists方法一致 主要是获取类型为8的被动技能,8的被动技能不加战斗力
-        public static List<PropertyValue> GetSkillRoleProLists_8(this SkillSetComponentServer self)
+        public static List<AttributeItem> GetSkillRoleProLists_8(this SkillSetComponentServer self)
 		{
-			List<PropertyValue> proList = new List<PropertyValue>();
+			List<AttributeItem> proList = new List<AttributeItem>();
 			
 			return proList;
 		}
@@ -866,9 +866,9 @@ namespace ET
 			return sp;
 		}
 		
-		public static List<PropertyValue> GetShieldProLists(this SkillSetComponentServer self)
+		public static List<AttributeItem> GetShieldProLists(this SkillSetComponentServer self)
         {
-			return new List<PropertyValue>();
+			return new List<AttributeItem>();
         }
 
 		public static void OnShieldAddExp(this SkillSetComponentServer self, int shieldType, int addExp) 

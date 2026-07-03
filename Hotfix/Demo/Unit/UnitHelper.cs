@@ -150,7 +150,7 @@ namespace ET
         public static float GetSpeedNow(this Unit self)
         {
             NumericComponent numericComponent = self.GetComponent<NumericComponent>();
-            return numericComponent.GetAsFloat(NumericType.Speed_Current_15) * 100f + numericComponent.GetAsFloat(NumericType.Speed_Haste) * 100f;
+            return numericComponent.GetAsFloat(NumericType.Speed_Current_15) * 10f + numericComponent.GetAsFloat(NumericType.Speed_Haste) * 10f;
         }
         
         public static void GetUnitInfo(Unit sendUnit, M2C_CreateUnits createUnits)
@@ -324,9 +324,9 @@ namespace ET
         public static void SetBornPosition(this Unit self, Vector3 vector3, bool notice)
         {
             NumericComponent numericComponent = self.GetComponent<NumericComponent>();
-            numericComponent.ApplyValue(NumericType.Born_X, (long)(vector3.x * 10000), notice);
-            numericComponent.ApplyValue(NumericType.Born_Y, (long)(vector3.y * 10000), notice);
-            numericComponent.ApplyValue(NumericType.Born_Z, (long)(vector3.z * 10000), notice);
+            numericComponent.ApplyValue(NumericType.Born_X, NumericHelp.ToStoredValue(NumericType.Born_X, vector3.x), notice);
+            numericComponent.ApplyValue(NumericType.Born_Y, NumericHelp.ToStoredValue(NumericType.Born_Y, vector3.y), notice);
+            numericComponent.ApplyValue(NumericType.Born_Z, NumericHelp.ToStoredValue(NumericType.Born_Z, vector3.z), notice);
         }
 
         public static Vector3 GetBornPostion(this Unit self)

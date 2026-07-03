@@ -19,10 +19,10 @@ namespace ET
 
     public static class TitleComponentServerSystem
     {
-#if SERVER
-          public static List<PropertyValue> GetTitlePro(this TitleComponentServer self)
+
+        public static List<AttributeItem> GetTitlePro(this TitleComponentServer self)
         {
-            List<PropertyValue> proList = new List<PropertyValue>();
+            List<AttributeItem> proList = new List<AttributeItem>();
 
             for (int i = self.TitleList.Count - 1; i >= 0; i--)
             {
@@ -36,7 +36,7 @@ namespace ET
                     if (NumericHelp.GetNumericValueType(numericType) == 2)
                     {
                         float fvalue = float.Parse(attributeInfo[1]);
-                        proList.Add(new PropertyValue() { HideID = numericType, HideValue = (long)(fvalue * 10000) });
+                        proList.Add(new AttributeItem() { AttributeID = numericType, AttributeValue = NumericHelp.ToStoredValue(numericType, fvalue) });
                     }
                     else
                     {
@@ -49,7 +49,7 @@ namespace ET
                         {
                             Log.Debug(ex.ToString() + $"报错称号: {self.TitleList[i].KeyId}");
                         }
-                        proList.Add(new PropertyValue() { HideID = numericType, HideValue = lvalue });
+                        proList.Add(new AttributeItem() { AttributeID = numericType, AttributeValue = lvalue });
                     }
                 }
             }
@@ -93,7 +93,6 @@ namespace ET
             }
         }
 
-#endif
         public static bool IsHaveTitle(this TitleComponentServer self, int titleId)
         {
             for (int i = 0; i < self.TitleList.Count; i++)

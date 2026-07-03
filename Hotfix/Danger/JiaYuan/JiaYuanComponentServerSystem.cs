@@ -139,15 +139,15 @@ namespace ET
 #endif
         }
 
-        public static List<PropertyValue> GetJianYuanPro(this JiaYuanComponentServer self)
+        public static List<AttributeItem> GetJianYuanPro(this JiaYuanComponentServer self)
         {
-            List<PropertyValue> proList = new List<PropertyValue>();
+            List<AttributeItem> proList = new List<AttributeItem>();
 
             for (int i = self.JiaYuanProList_7.Count - 1; i >= 0; i--)
             {
                 int numericType = self.JiaYuanProList_7[i].KeyId;
                 long lvalue = long.Parse(self.JiaYuanProList_7[i].Value );
-                proList.Add(new PropertyValue() { HideID = numericType, HideValue = lvalue });
+                proList.Add(new AttributeItem() { AttributeID = numericType, AttributeValue = lvalue });
             }
 
             List<KeyValuePair> jiayuandashi = CommonConfig.JiaYuanDaShiPro;
@@ -164,7 +164,7 @@ namespace ET
                 }
                 if (lvalue > 0)
                 {
-                    proList.Add(new PropertyValue() { HideID = int.Parse(attriInfo[0]), HideValue = lvalue });
+                    proList.Add(new AttributeItem() { AttributeID = int.Parse(attriInfo[0]), AttributeValue = lvalue });
                 }
             }
             return proList;

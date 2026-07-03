@@ -8,9 +8,9 @@ namespace ET
     public static class PetComponentServerSystem
     {
 
-        public static List<PropertyValue> GetPetShouHuPro(this PetComponentServer self)
+        public static List<AttributeItem> GetPetShouHuPro(this PetComponentServer self)
         {
-            List<PropertyValue> proList = new List<PropertyValue>();
+            List<AttributeItem> proList = new List<AttributeItem>();
             if (self.PetShouHuActive == 0)
             {
                 return proList;
@@ -35,9 +35,9 @@ namespace ET
 
             //增加属性
             float addFloat = CommonHelper.GetPetShouHuPro(nowNum, fightNum);
-            PropertyValue hide = new PropertyValue();
-            hide.HideID = int.Parse(CommonConfig.PetShouHuAttri[self.PetShouHuActive - 1].Value2);
-            hide.HideValue = (long)(addFloat * 10000);
+            AttributeItem hide = new AttributeItem();
+            hide.AttributeID = int.Parse(CommonConfig.PetShouHuAttri[self.PetShouHuActive - 1].Value2);
+            hide.AttributeValue = NumericHelp.ToStoredValue(hide.AttributeID, addFloat);
             proList.Add(hide);
 
             return proList;
@@ -939,7 +939,7 @@ namespace ET
             /*
             Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, hp_Now, attriDic);
             Function_Fight.AddUpdateProDicList(NumericType.PetSkin, rolePetInfo.SkinId, attriDic);
-            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, (long)speed * 10000, attriDic);
+            Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, NumericHelp.ToStoredValue(NumericType.Numeric_Error, speed), attriDic);
             Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, hp_Now, attriDic);
             Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, act_Now, attriDic);
             Function_Fight.AddUpdateProDicList(NumericType.Numeric_Error, mage_Now, attriDic);
@@ -977,7 +977,7 @@ namespace ET
                     {
                         string[] attriItem = attriList[a].Split(';');
                         int typeId = int.Parse(attriItem[0]);
-                        Function_Fight.AddUpdateProDicList(typeId, NumericHelp.GetNumericValueType(typeId) == 2 ? (long)(10000 * float.Parse(attriItem[1])) : long.Parse(attriItem[1]), attriDic);
+                        Function_Fight.AddUpdateProDicList(typeId, NumericHelp.ParseConfigToStored(typeId, attriItem[1]), attriDic);
                     }
                     catch (Exception ex)
                     {
@@ -1002,7 +1002,7 @@ namespace ET
                     {
                         string[] attriItem = attriList[a].Split(',');
                         int typeId = int.Parse(attriItem[0]);
-                        Function_Fight.AddUpdateProDicList(typeId, NumericHelp.GetNumericValueType(typeId) == 2 ? (long)(10000 * float.Parse(attriItem[1])) : long.Parse(attriItem[1]), attriDic);
+                        Function_Fight.AddUpdateProDicList(typeId, NumericHelp.ParseConfigToStored(typeId, attriItem[1]), attriDic);
                     }
                     catch (Exception ex)
                     {
@@ -1100,7 +1100,7 @@ namespace ET
 
         public static float GetAsFloat(this PetComponentServer self, int numericType, Dictionary<int, long> attriDic)
         {
-            return (float)self.GetByKey(numericType, attriDic) / 10000;
+            return NumericConvert.ToDisplayFloat(self.GetByKey(numericType, attriDic));
         }
 
         public static long GetByKey(this PetComponentServer self,  int numericType, Dictionary<int, long> attriDic)

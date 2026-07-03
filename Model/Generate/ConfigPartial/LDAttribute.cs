@@ -18,7 +18,7 @@ namespace ET
         }
 
 
-        /// <summary>0=固定值，1=万分比。未配置时默认固定值。</summary>
+        /// <summary>0=固定值，1=千分比。未配置时默认固定值。</summary>
         public int GetValueType(int attributeId)
         {
             if (!this.Contain(attributeId))

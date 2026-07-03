@@ -142,9 +142,9 @@ namespace ET
 #endif
         }
 
-        public static List<PropertyValue> GetTreasurePro(this ShoujiComponentServer self)
+        public static List<AttributeItem> GetTreasurePro(this ShoujiComponentServer self)
         {
-            return new List<PropertyValue>();
+            return new List<AttributeItem>();
             /*
             List<PropertyValue> proList = new List<PropertyValue>();
 
@@ -165,7 +165,7 @@ namespace ET
                     if (NumericHelp.GetNumericValueType(numericType) == 2)
                     {
                         float fvalue = float.Parse(attributeInfo[1]);
-                        proList.Add(new PropertyValue() { HideID = numericType, HideValue = (long)(fvalue * 10000) });
+                        proList.Add(new PropertyValue() { HideID = numericType, HideValue = NumericHelp.ToStoredValue(numericType, fvalue) });
                     }
                     else
                     {
@@ -206,9 +206,9 @@ namespace ET
             */
         }
 
-        public static List<PropertyValue> GetChapterPro(this ShoujiComponentServer self, int chapterid, int level)
+        public static List<AttributeItem> GetChapterPro(this ShoujiComponentServer self, int chapterid, int level)
         {
-            return new List<PropertyValue>();
+            return new List<AttributeItem>();
             /*
             List<PropertyValue> proList = new List<PropertyValue>();
             int star = self.GetChapterStar(chapterid);
@@ -238,9 +238,9 @@ namespace ET
             */
         }
 
-        public static List<PropertyValue> GetProList(this ShoujiComponentServer self)
+        public static List<AttributeItem> GetProList(this ShoujiComponentServer self)
         {
-            List<PropertyValue> proList = new List<PropertyValue>();
+            List<AttributeItem> proList = new List<AttributeItem>();
             foreach (var item in self.ShouJiChapterInfos)
             {
                 proList.AddRange(self.GetChapterPro(item.ChapterId, 1) );

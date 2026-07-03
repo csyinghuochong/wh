@@ -17,9 +17,9 @@ namespace ET
     public static class ChengJiuComponentServerSystem
     {
 
-        public static List<PropertyValue> GetJingLingProLists(this ChengJiuComponentServer self)
+        public static List<AttributeItem> GetJingLingProLists(this ChengJiuComponentServer self)
         {
-            List<PropertyValue> proList = new List<PropertyValue>();
+            List<AttributeItem> proList = new List<AttributeItem>();
            
             for (int i = 0; i < self.JingLingList.Count; i++)
             {
@@ -426,9 +426,9 @@ namespace ET
             self.MagickaSlotIdList.Add(new MagickaSlotInfo() { SlotId = magicid, Exp = 0 });
         }
 
-        public static List<PropertyValue> GetMagickaProLists(this ChengJiuComponentServer self)
+        public static List<AttributeItem> GetMagickaProLists(this ChengJiuComponentServer self)
         {
-            List<PropertyValue> proList = new List<PropertyValue>();
+            List<AttributeItem> proList = new List<AttributeItem>();
             for (int i = self.MagickaSlotIdList.Count - 1; i >= 0; i--)
             {
             }

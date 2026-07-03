@@ -76,9 +76,9 @@ namespace ET
             return false;
         }
 
-        public static List<PropertyValue> GetGemProLists(this BagComponentServer self)
+        public static List<AttributeItem> GetGemProLists(this BagComponentServer self)
         {
-            List<PropertyValue> list = new List<PropertyValue>();
+            List<AttributeItem> list = new List<AttributeItem>();
             for (int i = 0; i < self.GemList.Count; i++)
             {
                 LDItem ldItem = LDItemCategory.Instance.Get(self.GemList[i].ItemID);
@@ -95,13 +95,13 @@ namespace ET
                     long hide_value = 0;
                     if (NumericHelp.GetNumericValueType(hideId) == 2)
                     {
-                        hide_value = (long)(float.Parse(attributeItem[1]) * 10000);
+                        hide_value = NumericHelp.ParseConfigToStored(hideId, attributeItem[1]);
                     }
                     else
                     {
                         hide_value = long.Parse(attributeItem[1]);
                     }
-                    list.Add(new PropertyValue() { HideID = hideId, HideValue = hide_value });
+                    list.Add(new AttributeItem() { AttributeID = hideId, AttributeValue = hide_value });
                 }
             }
 
@@ -1506,20 +1506,7 @@ namespace ET
             List<int> equipSuitIDList = new List<int>();
             List<BagInfo> equipList =  self.GetItemByLoc(ItemLocType.ItemLocEquip);
             //List<BagInfo> equipList_2 = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocEquip_2);
-            
-           // List<BagInfo> equipList = new List<BagInfo>();
-           // equipList.AddRange(equipList_1);
-            //equipList.AddRange(equipList_2);
-
-            for (int i = equipList.Count - 1; i >= 0; i--)
-            {
-                BagInfo userBagInfo = equipList[i];
-                if (!LDEquipCategory.Instance.Contain(userBagInfo.ItemID))
-                {
-                    equipList.RemoveAt(i);
-                    continue;
-                }
-            }
+          
 
             for (int i = equipList.Count - 1; i >= 0; i--)
             {
@@ -1532,27 +1519,7 @@ namespace ET
 
                 //存储装备ID
                 LDEquip itemCof = LDEquipCategory.Instance.Get(userBagInfo.ItemID);
-                int equipType = ItemHelper.GetNewEquipType(userBagInfo);                
-                //生肖装备没激活直接跳出来
-                if (equipType == 101 && ItemHelper.IfShengXiaoActive(itemCof.Id, equipList) == false)
-                {
-                    continue;
-                }
-
-                //赛季晶核装备
-                if (equipType == 201)
-                {
-
-                }
-
-                bool ifAddHidePro = true;
-               
-                if (ifAddHidePro)
-                {
-                    
-                }
-
-         
+     
                 //存储装备ID
                 equipIDList.Add(itemCof.Id);
 
@@ -1626,30 +1593,7 @@ namespace ET
                     {
                         //激活对应套装属性
                         LDEquip_Suit_Property ldEquipSuitProCof = LDEquip_Suit_PropertyCategory.Instance.Get(NeedID);
-                        // return list<hirepro>
-                        //BaseDamgeSubAdd_EquipSuit += ldEquipSuitProCof.Equip_Hp;
-
-                        /*
-                        if (ldEquipSuitProCof.AddPropreListStr != "0")
-                        {
-                            string[] AddPropreList = ldEquipSuitProCof.AddPropreListStr.Split(';');
-                            for (int z = 0; z < AddPropreList.Length; z++)
-                            {
-                                int addProType = int.Parse(AddPropreList[z].Split(',')[0]);
-                                int type = NumericHelp.GetNumericValueType(addProType);
-                                int addProValue = 0;
-                                if (type == 1)
-                                {
-                                    addProValue = int.Parse(AddPropreList[z].Split(',')[1]);
-                                }
-                                else
-                                {
-                                    addProValue = (int)(float.Parse(AddPropreList[z].Split(',')[1]) * 10000);
-                                }
-
-                                AddUpdateProDicList(addProType, addProValue, UpdateProDicList);
-                            }
-                        }*/
+                       
                     }
                 }
             }
@@ -1659,37 +1603,12 @@ namespace ET
                 LDEquip mLdEquipCon = LDEquipCategory.Instance.Get(equipList[i].ItemID);
                 int equipType = ItemHelper.GetNewEquipType(equipList[i]);
 
-                //生肖装备没激活直接跳出来
-             
-                if (equipType > 0 && equipList[i].ItemID == 0)
-                {
-                    /*List<int> itemSkills = ItemHelper.GetItemSkill(itemCof.SkillID);
-                    foreach (int skillid in itemSkills)
-                    {
-                        SkillConfig skillConfig = SkillConfigCategory.Instance.Get(skillid);
-                        skillAddCombat += skillConfig.AddCombat;
-                    }*/
-                    continue;
-                }
-                
-                //职业专精
-                if (occ != 0)
-                {
-                    //if (Occupation_TransferCategory.Instance.Get(roleInfo.OccTwo).ArmorMastery == ItemCategory.Instance.Get(equipIDList[i]).EquipType)
-                    //{
-                    //    //occMastery = 0.2f;
-                    //    occMastery = 0f;
-                    //}
-                }
-
                 //极品属性
                 //强化登录（List长度13， 13个位置）
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID);
                 int qianghuaLv = unit.GetComponent<BagComponentServer>().GetQiangHuaLevel(caowei);
 
-             
-
-                occInitAttribute.AddRange( LDEquipCategory.Instance.GetEquipAttribute(equipList[i].ItemID) );
+                occInitAttribute.AddRange( equipList[i].BaseAttrLists );
 
                 //获取宝石属性
                 if (string.IsNullOrEmpty(equipList[i].GemIDNew))
@@ -1710,8 +1629,7 @@ namespace ET
                     }
 
                     //史诗宝石数量最多4个
-                 
-
+           
                     // "100403;10@100203;60
                     LDItem gemitemCof = LDItemCategory.Instance.Get(gemID);
                     string[] attributeList = null;//gemitemCof.ItemUsePar.Split('@');
@@ -1786,7 +1704,7 @@ namespace ET
                         }
                         else
                         {
-                            AddUpdateProDicList(key, (int)(float.Parse(addPro[1]) * 10000), UpdateProDicList);
+                            AddUpdateProDicList(key, NumericHelp.ParseConfigToStored(key, addPro[1]), UpdateProDicList);
                         }
                     }
                     catch (Exception ex)
