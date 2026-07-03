@@ -1492,28 +1492,6 @@ namespace ET
             return 0;
         }
 
-        public static void OnEquipFuMo(this BagComponentServer self, int itemid, List<HideProList> hideProLists, int index)
-        {
-            LDItem ldItem = LDItemCategory.Instance.Get(itemid);
-            string[] itemparams =  null;//ldItem.ItemUsePar;
-            int weizhi = int.Parse(itemparams[0]);
-            List<BagInfo> bagInfos = self.GetEquipListByWeizhi(ItemLocType.ItemLocEquip, weizhi);
-            if (bagInfos.Count <= index)
-            {
-                return;
-            }
-            //通知客户端背包刷新
-            M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-            m2c_bagUpdate.BagInfoUpdate.Add(bagInfos[index]);
-
-      
-            //通知客户端背包道具发生改变
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
-            Function_Fight.UnitUpdateProperty_Base(self.GetParent<Unit>(), true, true);
-        }
-
-
-
         public static void OnGmGaoJi(this BagComponentServer self, int level)
         {
           

@@ -33,10 +33,9 @@ namespace ET
                 return;
             }
             unit.GetComponent<BagComponentServer>().OnCostItemData(costitem, ItemLocType.ItemLocBag, ItemGetWay.ItemXiLian  );
-          
-          
-            int skillid = XiLianHelper.XiLianChuanChengJianDing(Item, unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ, unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo);
 
+
+            int skillid = 0;
             if (skillid == 0) {
                 response.Error = ErrorCode.ERR_EquipChuanChengFail;
                 reply();

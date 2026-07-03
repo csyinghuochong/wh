@@ -1933,18 +1933,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.HideProList)]
-	[ProtoContract]
-	public partial class HideProList: Object
-	{
-		[ProtoMember(1)]
-		public int HideID { get; set; }
-
-		[ProtoMember(2)]
-		public long HideValue { get; set; }
-
-	}
-
 	[Message(OuterOpcode.AttributeRandom)]
 	[ProtoContract]
 	public partial class AttributeRandom: Object
@@ -9712,14 +9700,8 @@ namespace ET
 	[ProtoContract]
 	public partial class ItemXiLianResult: Object
 	{
-		[ProtoMember(1)]
-		public List<HideProList> XiLianHideProLists = new List<HideProList>();
-
 		[ProtoMember(2)]
 		public List<int> HideSkillLists = new List<int>();
-
-		[ProtoMember(3)]
-		public List<HideProList> XiLianHideTeShuProLists = new List<HideProList>();
 
 	}
 
@@ -12803,9 +12785,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public long OperateBagID { get; set; }
-
-		[ProtoMember(3)]
-		public List<HideProList> FuMoProList = new List<HideProList>();
 
 	}
 

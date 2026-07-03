@@ -252,11 +252,7 @@ namespace ET
                                     //UnitFactory.CreateTempFollower(unit, int.Parse(ldItem.ItemUsePar));
                                 }
                                 break;
-                            case 15:    //附魔道具
-                                List<HideProList> hideProLists = XiLianHelper.GetItemFumoPro(ldItem.Id);
-                                unit.GetComponent<BagComponentServer>().OnEquipFuMo(ldItem.Id, hideProLists, int.Parse(request.OperatePar));
-                                unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.FoMoNumber_213, 0, 1);
-                                break;
+                           
                             case 16: //附魔技能
                                // unit.GetComponent<RoleInfoComponentServer>().RoleInfo.MakeList.Add(int.Parse(ldItem.ItemUsePar));
                                 break;

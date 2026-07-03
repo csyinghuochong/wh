@@ -684,7 +684,7 @@ namespace ET
                 return;
             }
 
-            LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
+            LDEquip ldItem = LDEquipCategory.Instance.Get(bagInfo.ItemID);
             /*List<int> itemSkills = ItemHelper.GetItemSkill(Item.SkillID);
 
             itemSkills.AddRange(bagInfo.HideSkillLists);

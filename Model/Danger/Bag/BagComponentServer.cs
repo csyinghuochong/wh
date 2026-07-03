@@ -63,9 +63,6 @@ namespace ET
         public int FuMoItemId = 0;
 
         [BsonIgnore]
-        public List<HideProList> FuMoProList = new List<HideProList>();
-
-        [BsonIgnore]
         public M2C_RoleBagUpdate message = new M2C_RoleBagUpdate() {  };
 
         [BsonIgnore]

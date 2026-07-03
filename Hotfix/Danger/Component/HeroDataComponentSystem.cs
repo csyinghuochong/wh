@@ -531,14 +531,6 @@ namespace ET
                 fubenDifficulty = mapComponent.FubenDifficulty;
             }
 
-            //判定是否为成长怪物
-
-            List<HideProList> monsterAttri = LDMonsterCategory.Instance.GetMonsterAttri(ldMonster.Id);
-            for (int  i = 0; i < monsterAttri.Count; i++)
-            {
-                numericComponent.Set(monsterAttri[i].HideID,monsterAttri[i].HideValue, false );
-            }
-
             //Log.Debug("初始化当前怪物血量:" + numericComponent.GetAsLong(NumericType.Numeric_Error));
         }
 

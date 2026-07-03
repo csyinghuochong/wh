@@ -15,7 +15,6 @@ namespace ET
                 reply();
                 return;
             }
-            bagComponentServer.OnEquipFuMo(bagComponentServer.FuMoItemId ,  bagComponentServer.FuMoProList, request.Index);
 
             reply();
             await ETTask.CompletedTask;
