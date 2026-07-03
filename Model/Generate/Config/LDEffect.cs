@@ -78,6 +78,18 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
+		/// <summary>资源</summary>
+		[ProtoMember(2)]
+		public string Resource { get; set; }
+		/// <summary>最大数量</summary>
+		[ProtoMember(3)]
+		public int Max_Num { get; set; }
+		/// <summary>缩放值</summary>
+		[ProtoMember(4)]
+		public double Scale { get; set; }
+		/// <summary>绝对</summary>
+		[ProtoMember(5)]
+		public int Absolute { get; set; }
 
 	}
 }

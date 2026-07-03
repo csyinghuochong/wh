@@ -41,11 +41,6 @@ namespace ET
                 return SkillEditorHitResult.Miss;
             }
 
-            BuffManagerComponent buffMgr = target.GetComponent<BuffManagerComponent>();
-            if (canImmune && buffMgr != null && buffMgr.IsSkillImmune(skillId))
-            {
-                return SkillEditorHitResult.Immune;
-            }
 
             float hitRate = 10000 + hitRateAdd;
             if (hitRate < 0)

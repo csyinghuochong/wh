@@ -149,7 +149,8 @@ namespace ET
 
         public static float GetSpeedNow(this Unit self)
         {
-            return self.GetComponent<NumericComponent>().GetAsFloat(NumericType.Speed_Current_15) * 100f;
+            NumericComponent numericComponent = self.GetComponent<NumericComponent>();
+            return numericComponent.GetAsFloat(NumericType.Speed_Current_15) * 100f + numericComponent.GetAsFloat(NumericType.Speed_Haste) * 100f;
         }
         
         public static void GetUnitInfo(Unit sendUnit, M2C_CreateUnits createUnits)

@@ -88,7 +88,7 @@ namespace ET
 
         public static async ETTask FindPathResultToAsync(this Unit unit, List<Vector3> positonsss)
         {
-            float speed = unit.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
+            float speed = unit.GetSpeedNow();
             bool ret = await unit.GetComponent<MoveComponent>().MoveToAsync(positonsss, speed);
             if (ret) // 如果返回false，说明被其它移动取消了，这时候不需要通知客户端stop
             {

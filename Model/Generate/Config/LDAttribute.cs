@@ -87,7 +87,7 @@ namespace ET
 		/// <summary>属性 描述</summary>
 		[ProtoMember(4)]
 		public int Desc2 { get; set; }
-		/// <summary>类型 0-固定值 1-万分比</summary>
+		/// <summary>类型 0-固定值 1-千分比</summary>
 		[ProtoMember(5)]
 		public int Type { get; set; }
 

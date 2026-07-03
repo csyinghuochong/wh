@@ -1,3 +1,4 @@
+using Alipay.AopSdk.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,7 +32,9 @@ namespace ET
             SkillEditorFunctionRegistry.Register("CALCULATE_MAGIC_DAMAGE", CalculateMagicDamage);        //计算法术伤害
             SkillEditorFunctionRegistry.Register("CALCULATE_HEAL_DAMAGE", CalculateHealDamage);        //计算治疗量
             SkillEditorFunctionRegistry.Register("ADD_BUFF", AddBuff);        //添加BUFF
-            SkillEditorFunctionRegistry.Register("ADD_BUFF_CONTROL", AddBuffControl);        //添加控制BUFF
+            SkillEditorFunctionRegistry.Register("ADD_DEBUFF_NO_CONTROL", AddDebuffNoControl);        //添加负面BUFF
+            SkillEditorFunctionRegistry.Register("ADD_DEBUFF_CONTROL", AddDebuffControl);        //添加控制BUFF
+            SkillEditorFunctionRegistry.Register("ADD_BUFF_CONTROL", AddBuffControl);        //旧版添加控制BUFF
             SkillEditorFunctionRegistry.Register("REMOVE_BUFF", RemoveBuff);        //移除BUFF
             SkillEditorFunctionRegistry.Register("REMOVE_BUFF_RANDOM", RemoveBuffRandom);        //移除BUFF-随机
             SkillEditorFunctionRegistry.Register("REMOVE_BUFF_GROUP", RemoveBuffGroup);        //移除BUFF组
@@ -40,11 +43,14 @@ namespace ET
             SkillEditorFunctionRegistry.Register("SET_BUFF_DATA", SetBuffDataLegacy);        //旧版 BUFF-数据设置
             SkillEditorFunctionRegistry.Register("GET_BUFF_DATA", GetBuffDataLegacy);        //旧版 BUFF-数据获取
             SkillEditorFunctionRegistry.Register("GET_UNIT_TYPEID", GetUnitTypeId);        //获取对象类型
+            SkillEditorFunctionRegistry.Register("GET_UNIT_LEVEL", GetUnitLevel);        //获取单位等级
             SkillEditorFunctionRegistry.Register("GET_UNIT_ATTRIBUTE", GetUnitAttribute);        //获取单位属性
             SkillEditorFunctionRegistry.Register("GET_HP_PERCENT", GetHpPercent);        //获取HP百分比
             SkillEditorFunctionRegistry.Register("GET_SKILL_LEVEL", GetSkillLevel);        //获取技能等级
-            SkillEditorFunctionRegistry.Register("GET_BUFF_LEVEL", GetBuffLevel);        //获取BUFF层数
-            SkillEditorFunctionRegistry.Register("GET_RANDOM_UNIT", GetRandomUnit);        //获取随机目标
+            SkillEditorFunctionRegistry.Register("GET_BUFF_LEVEL", GetBuffLevel);        //旧版获取BUFF层数
+            SkillEditorFunctionRegistry.Register("GET_BUFF_STACK", GetBuffLevel);        //获取BUFF层数
+            SkillEditorFunctionRegistry.Register("GET_RANDOM_UNIT", GetRandomUnit);        //旧版获取随机目标
+            SkillEditorFunctionRegistry.Register("GET_RANDOM_TARGET", GetRandomUnit);        //获取随机目标
             SkillEditorFunctionRegistry.Register("GET_POINT_DISTANCE", GetPointDistance);        //获取两点之间距离
             SkillEditorFunctionRegistry.Register("GET_POINT_DIRECTION", GetPointDirection);        //获取两点之间朝向
             SkillEditorFunctionRegistry.Register("IS_DEAD", IsDead);        //是否死亡
@@ -84,8 +90,6 @@ namespace ET
 
         }
 
-
-
         private static void SetVariableValue(SkillEditorFunctionContext ctx)
         {
 
@@ -98,9 +102,7 @@ namespace ET
         }
 
 
-
         private static void DefineVariableRamdomValue(SkillEditorFunctionContext ctx)
-
         {
 
             string varName = ctx.ResolveVarName(ctx.GetParamRaw(0));
@@ -130,7 +132,6 @@ namespace ET
 
         private static void ChanceTrigger(SkillEditorFunctionContext ctx)
         {
-
             int rate = ctx.GetParamInt(0, 10000);
 
             if (rate < 0) { rate = 0; }
@@ -178,6 +179,11 @@ namespace ET
 
         }
 
+
+        /// <summary>
+        /// 通知目标触发攻击事件  。   所有的操作基本都是对目标的
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void InformEventAttack(SkillEditorFunctionContext ctx)
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
@@ -189,6 +195,11 @@ namespace ET
             Log.Debug($"INFORM_EVENT_ATTACK skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
 
+
+        /// <summary>
+        /// 通知目标触发触发防御事件  。   所有的操作基本都是对目标的
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void InformEventDefense(SkillEditorFunctionContext ctx)
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
@@ -199,6 +210,13 @@ namespace ET
             Log.Debug($"INFORM_EVENT_DEFENSE skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
 
+
+        /// <summary>
+        /// 通知客户端命中效果。
+        /// 有以下很多类型、、。
+        /// 比方这个闪避。  
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void InformClientHitSuccess(SkillEditorFunctionContext ctx)
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
@@ -206,6 +224,35 @@ namespace ET
             int skillId = ctx.GetParamInt(2, ctx.SkillId);
             int level = ctx.GetParamInt(3, ctx.SkillLevel);
 
+            //闪避  68
+            //暴击  70
+            //抗暴  74
+            //重击  80
+            //化解  82
+            //格挡  84
+            //穿心  86
+            //抵抗  
+            /*
+            < param desc = "控制类型" type = "string" >
+
+            < option > [眩晕] EFFECT_CONTROL_STUN </ option >
+
+            < option > [冰冻] EFFECT_CONTROL_FREEZE </ option >
+
+            < option > [石化] EFFECT_CONTROL_PETRIFY </ option >
+
+            < option > [缠绕] EFFECT_CONTROL_ENTANGLE </ option >
+
+            < option > [沉睡] EFFECT_CONTROL_SLEEP </ option >
+
+            < option > [定身] EFFECT_CONTROL_ROOT </ option >
+
+            < option > [沉默] EFFECT_CONTROL_SILENCE </ option >
+
+            < option > [减速] EFFECT_CONTROL_SLOW </ option >
+
+            添加负面buff
+            */
 
 
             //TriggerPassiveEvent(caster, target, SkillPassiveTypeEnum.AllSkill_17, skillId);
@@ -215,11 +262,8 @@ namespace ET
 
 
         private static void SkillDamageCheckPhysics(SkillEditorFunctionContext ctx)
-
         {
-
             RunDamageCheck(ctx, canBlockAsImmune: true);
-
         }
 
 
@@ -332,6 +376,120 @@ namespace ET
 
 
 
+        private static void AddDebuffNoControl(SkillEditorFunctionContext ctx)
+        {
+            AddDebuffInternal(ctx, isControl: false);
+        }
+
+        private static void AddDebuffControl(SkillEditorFunctionContext ctx)
+        {
+            AddDebuffInternal(ctx, isControl: true);
+        }
+
+        private static void AddDebuffInternal(SkillEditorFunctionContext ctx, bool isControl)
+        {
+            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            int baseHitRate = ctx.GetParamInt(2, 10000);
+            int buffId = ctx.GetParamInt(3, 0);
+            int intervalMs = ctx.GetParamInt(4, 0);
+            int tickCount = ctx.GetParamInt(5, 1);
+            string effectType = ctx.ResolveParam(ctx.GetParamRaw(6));
+            bool ignoreImmune = ctx.GetParamBool(7, false);
+            bool useAttrHitRate = ctx.GetParamBool(8, true);
+            bool useAttrDuration = ctx.GetParamBool(9, true);
+            int buffLevel = ctx.GetParamInt(10, ctx.SkillLevel);
+
+            if (target == null || buffId <= 0)
+            {
+                ctx.SetVariable("rs", 0);
+                ctx.LastConditionResult = false;
+                return;
+            }
+
+            if (!TryRollDebuffHit(caster, target, baseHitRate, useAttrHitRate))
+            {
+                ctx.SetVariable("rs", 0);
+                ctx.LastConditionResult = false;
+                return;
+            }
+
+            if (useAttrDuration && intervalMs > 0 && tickCount > 0)
+            {
+                int extraTicks = ResolveDebuffDurationBonus(caster, target);
+                if (extraTicks != 0)
+                {
+                    tickCount = Math.Max(1, tickCount + extraTicks);
+                }
+            }
+
+            ApplyBuff(
+                ctx,
+                caster,
+                target,
+                buffId,
+                intervalMs,
+                tickCount,
+                ignoreImmune,
+                buffLevel,
+                isControl ? effectType : null);
+            ctx.SetVariable("rs", 1);
+            ctx.LastConditionResult = true;
+        }
+
+        private static bool TryRollDebuffHit(Unit caster, Unit target, int baseHitRate, bool useAttrHitRate)
+        {
+            int hitRate = baseHitRate;
+            if (hitRate >= 10000)
+            {
+                return true;
+            }
+
+            if (hitRate <= 0)
+            {
+                return false;
+            }
+
+            if (useAttrHitRate && caster != null && target != null)
+            {
+                int casterLevel = ResolveUnitLevel(caster);
+                int targetLevel = ResolveUnitLevel(target);
+                if (casterLevel > targetLevel)
+                {
+                    hitRate += (casterLevel - targetLevel) * 100;
+                }
+                else if (targetLevel > casterLevel)
+                {
+                    hitRate -= (targetLevel - casterLevel) * 100;
+                }
+            }
+
+            if (hitRate >= 10000)
+            {
+                return true;
+            }
+
+            if (hitRate <= 0)
+            {
+                return false;
+            }
+
+            return RandomHelper.RandomNumber(0, 10000) < hitRate;
+        }
+
+        private static int ResolveDebuffDurationBonus(Unit caster, Unit target)
+        {
+            if (caster == null || target == null)
+            {
+                return 0;
+            }
+
+            int levelDelta = ResolveUnitLevel(caster) - ResolveUnitLevel(target);
+            return levelDelta / 5;
+        }
+
+
+
         private static void RemoveBuff(SkillEditorFunctionContext ctx)
 
         {
@@ -368,13 +526,15 @@ namespace ET
 
             int removeCount = ctx.GetParamInt(4, 1);
 
-            bool excludeNonClearable = ctx.GetParamBool(5, true);
+            int clearRate = ctx.GetParamInt(5, 10000);
 
-            bool forceRemove = ctx.GetParamBool(6, false);
+            bool excludeNonClearable = ctx.GetParamBool(6, true);
 
-            bool triggerFadeSkill = ctx.GetParamBool(7, true);
+            bool forceRemove = ctx.GetParamBool(7, false);
 
-            RemoveBuffRandomInternal(target, buffFromUnitId, benefitFilter, removeCount, excludeNonClearable, forceRemove, triggerFadeSkill);
+            bool triggerFadeSkill = ctx.GetParamBool(8, true);
+
+            RemoveBuffRandomInternal(target, buffFromUnitId, benefitFilter, removeCount, clearRate, excludeNonClearable, forceRemove, triggerFadeSkill);
 
         }
 
@@ -402,6 +562,11 @@ namespace ET
 
 
 
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="ctx"></param>
+       /// <param name="canBlockAsImmune"></param>
         private static void RunDamageCheck(SkillEditorFunctionContext ctx, bool canBlockAsImmune)
 
         {
@@ -604,7 +769,7 @@ namespace ET
 
 
 
-        private static void RemoveBuffRandomInternal(Unit target, long buffFromUnitId, string benefitFilter, int removeCount, bool excludeNonClearable, bool forceRemove, bool triggerFadeSkill)
+        private static void RemoveBuffRandomInternal(Unit target, long buffFromUnitId, string benefitFilter, int removeCount, int clearRate, bool excludeNonClearable, bool forceRemove, bool triggerFadeSkill)
 
         {
 
@@ -637,6 +802,11 @@ namespace ET
             for (int n = 0; n < removeCount && candidates.Count > 0; n++)
 
             {
+
+                if (clearRate < 10000 && RandomHelper.RandomNumber(0, 10000) >= clearRate)
+                {
+                    continue;
+                }
 
                 int idx = RandomHelper.RandomNumber(0, candidates.Count - 1);
 
@@ -909,6 +1079,42 @@ namespace ET
             string varName = ctx.ResolveVarName(ctx.GetParamRaw(0), "nUnitTypeId");
             Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(1));
             ctx.SetVariable(varName, unit == null ? 0 : (int)unit.Type);
+        }
+
+        private static void GetUnitLevel(SkillEditorFunctionContext ctx)
+        {
+            string varName = ctx.ResolveVarName(ctx.GetParamRaw(0), "nUnitLevel");
+            Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            ctx.SetVariable(varName, ResolveUnitLevel(unit));
+        }
+
+        private static int ResolveUnitLevel(Unit unit)
+        {
+            if (unit == null || unit.IsDisposed)
+            {
+                return 0;
+            }
+
+            if (unit.Type == UnitType.Player)
+            {
+                return unit.GetComponent<RoleInfoComponentServer>()?.RoleInfo?.Lv ?? 0;
+            }
+
+            if (unit.Type == UnitType.Pet || unit.Type == UnitType.JingLing)
+            {
+                Unit master = unit.GetParent<UnitComponent>()?.Get(unit.MasterId);
+                if (master != null && !master.IsDisposed && master.Type == UnitType.Player)
+                {
+                    return master.GetComponent<RoleInfoComponentServer>()?.RoleInfo?.Lv ?? 1;
+                }
+            }
+
+            if (LDMonsterCategory.Instance.Contain(unit.ConfigId))
+            {
+                return LDMonsterCategory.Instance.Get(unit.ConfigId).Lv;
+            }
+
+            return 1;
         }
 
         private static void GetSkillLevel(SkillEditorFunctionContext ctx)
