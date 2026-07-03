@@ -558,7 +558,6 @@ namespace ET
                     long baginfoId = long.Parse(request.OperatePar);
                     int rolelv = useInfo.Lv;
                     string qulitylv = "";
-                    bool ifItem = false;
                     if (baginfoId == 0 && ldItem != null)
                     {
                         //金币鉴定，扣除金币
@@ -579,7 +578,6 @@ namespace ET
 
                            
                             ifSell = unit.GetComponent<BagComponentServer>().OnCostItemData(baginfoId, 1);
-                            ifItem = true;
                         }
                         else
                         {
@@ -588,46 +586,7 @@ namespace ET
                     }
                     if (ifSell)
                     {
-                        //未鉴定才可以
-                        useBagInfo.IfJianDing = false;
-
-                        int equiptype = ItemHelper.GetNewEquipType(useBagInfo);
-                        if (equiptype != 101)
-                        {
-                            useBagInfo.HideProLists = ItemAddHelper.GetEquipZhuanJingHidePro(useBagInfo.ItemType, ldItem.Id, ldItem.Id, int.Parse(qulitylv), unit, ifItem);
-                        }
-                        m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
-                        //如果当前有隐藏技能一起飘出
-                        if (useBagInfo.HideSkillLists.Count > 0)
-                        {
-                            string skillName = "";
-                            string skillNameEn = "";
-                            for (int i = 0; i < useBagInfo.HideSkillLists.Count; i++)
-                            {
-                                skillName = skillName + $" {LDSkillCategory.Instance.Get(useBagInfo.HideSkillLists[0]).Name}";
-                                skillNameEn = skillNameEn + $" {LDSkillCategory.Instance.Get(useBagInfo.HideSkillLists[0]).Name}";
-                                unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.EquipActiveSkillId_222, useBagInfo.HideSkillLists[i], 1);
-                            }
-
-                            string noticeContent = $"恭喜玩家<color=#B6FF00>{unit.GetComponent<RoleInfoComponentServer>().UserName}</color>在拾取装备时,意外在装备上发现了隐藏技能:<color=#FFA313>{skillName}</color>";
-                            string noticeContentEn = $"Congratulations to the player <color=#B6FF00>{unit.GetComponent<RoleInfoComponentServer>().UserName}</color>When looting the gear, I stumbled upon a hidden skill:<color=#FFA313>{skillName}</color>";
-                            ServerMessageHelper.SendBroadMessage(unit.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
-                        }
-
-                        long totalValue = 0;
-                        if (useBagInfo.HideProLists != null && useBagInfo.HideProLists.Count > 0)
-                        {
-                            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JianDingAttrNumber_43, useBagInfo.HideProLists.Count, 1);
-
-                            for (int pro = 0; pro < useBagInfo.HideProLists.Count; pro++)
-                            {
-                                totalValue += useBagInfo.HideProLists[pro].HideValue;
-                            }
-                        }
-
-                        unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JianDingValue_140, (int)totalValue, 1);
-
-                        unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.JianDingEqipNumber_212, int.Parse(qulitylv), 1);
+                      
                     }
                     else
                     {

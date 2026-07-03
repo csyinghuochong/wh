@@ -20,17 +20,6 @@ namespace ET
             //通知客户端背包刷新
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
 
-            bagInfoJinHe.XiLianHideProLists.Clear();
-            HideProList hideProList = ItemHelper.GetJingHeHidePro(bagInfoJinHe.ItemID, int.Parse(bagInfoJinHe.ItemPar));
-            if (hideProList != null)
-            {
-                bagInfoJinHe.XiLianHideProLists.Add(hideProList);
-            }
-            else
-            {
-                Log.Console($"晶核激活失败: {bagInfoJinHe.ItemID}");
-            }
-            bagInfoJinHe.IfJianDing = false;
             m2c_bagUpdate.BagInfoUpdate.Add(bagInfoJinHe);
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
 

@@ -1898,23 +1898,11 @@ namespace ET
 		[ProtoMember(8)]
 		public int Loc { get; set; }
 
-		[ProtoMember(9)]
-		public bool IfJianDing { get; set; }
-
 		[ProtoMember(10)]
-		public List<HideProList> HideProLists = new List<HideProList>();
-
-		[ProtoMember(11)]
-		public List<HideProList> XiLianHideProLists = new List<HideProList>();
-
-		[ProtoMember(12)]
-		public List<int> HideSkillLists = new List<int>();
+		public List<AttributeItem> BaseAttrLists = new List<AttributeItem>();
 
 		[ProtoMember(13)]
 		public bool isBinging { get; set; }
-
-		[ProtoMember(14)]
-		public List<HideProList> XiLianHideTeShuProLists = new List<HideProList>();
 
 		[ProtoMember(16)]
 		public string GetWay { get; set; }
@@ -1936,12 +1924,6 @@ namespace ET
 
 		[ProtoMember(23)]
 		public bool IsProtect { get; set; }
-
-		[ProtoMember(24)]
-		public List<HideProList> IncreaseProLists = new List<HideProList>();
-
-		[ProtoMember(25)]
-		public List<int> IncreaseSkillLists = new List<int>();
 
 		[ProtoMember(26)]
 		public int EquipPlan { get; set; }
@@ -1966,6 +1948,33 @@ namespace ET
 
 		[ProtoMember(2)]
 		public long HideValue { get; set; }
+
+	}
+
+	[Message(OuterOpcode.AttributeRandom)]
+	[ProtoContract]
+	public partial class AttributeRandom: Object
+	{
+		[ProtoMember(1)]
+		public int AttributeID { get; set; }
+
+		[ProtoMember(2)]
+		public long AttributeValueMin { get; set; }
+
+		[ProtoMember(3)]
+		public long AttributeValueMax { get; set; }
+
+	}
+
+	[Message(OuterOpcode.AttributeItem)]
+	[ProtoContract]
+	public partial class AttributeItem: Object
+	{
+		[ProtoMember(1)]
+		public int AttributeID { get; set; }
+
+		[ProtoMember(2)]
+		public long AttributeValue { get; set; }
 
 	}
 

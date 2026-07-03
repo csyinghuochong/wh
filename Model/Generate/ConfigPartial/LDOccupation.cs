@@ -9,15 +9,15 @@ namespace ET
     public partial class LDOccupationCategory
     {
 
-        private Dictionary<int, List<HideProList>> OccInitAttribute = new Dictionary<int,List<HideProList>> { };
+        private Dictionary<int, List<AttributeItem>> OccInitAttribute = new Dictionary<int,List<AttributeItem>> { };
 
         public override void AfterEndInit()
         {
             foreach (LDOccupation occupation in this.GetAll().Values)
             {
-                if (!OccInitAttribute.TryGetValue(occupation.Id, out List<HideProList> occInitAttris))
+                if (!OccInitAttribute.TryGetValue(occupation.Id, out List<AttributeItem> occInitAttris))
                 {
-                    occInitAttris = new List<HideProList>();
+                    occInitAttris = new List<AttributeItem>();
                     OccInitAttribute.Add(occupation.Id, occInitAttris);
                 }
 
@@ -27,14 +27,14 @@ namespace ET
                     string[] attribute = attributeList[i].Split("_");
                     int key = int.Parse(attribute[0]);
                     int value = int.Parse(attribute[1]);
-                    occInitAttris.Add( new HideProList(){ HideID = key, HideValue = value} );
+                    occInitAttris.Add( new AttributeItem(){ AttributeID = key, AttributeValue = value} );
                 }
             }
         }
 
-        public List<HideProList> GetOccInitAttribute(int occ)
+        public List<AttributeItem> GetOccInitAttribute(int occ)
         {
-            this.OccInitAttribute.TryGetValue(occ, out List<HideProList> hideProLists);
+            this.OccInitAttribute.TryGetValue(occ, out List<AttributeItem> hideProLists);
             return hideProLists;
         }
     }

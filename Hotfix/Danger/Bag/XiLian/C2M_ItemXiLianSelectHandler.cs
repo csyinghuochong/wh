@@ -29,12 +29,7 @@ namespace ET
             */
 
             ItemXiLianResult itemXiLian = request.ItemXiLianResult;
-            if (itemXiLian != null)
-            {
-                bagInfo.XiLianHideProLists = itemXiLian.XiLianHideProLists;              //基础属性洗炼
-                bagInfo.HideSkillLists = itemXiLian.HideSkillLists;                      //隐藏技能
-                bagInfo.XiLianHideTeShuProLists = itemXiLian.XiLianHideTeShuProLists;    //特殊属性洗炼
-            }
+         
 
             if (itemLocType == ItemLocType.ItemLocEquip ) //|| itemLocType == ItemLocType.ItemLocEquip_2)
             {

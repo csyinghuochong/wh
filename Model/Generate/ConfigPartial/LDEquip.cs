@@ -10,24 +10,28 @@ namespace ET
     public partial class LDEquipCategory
     {
 
-        private Dictionary<int, List<HideProList>> EquipAttribute = new Dictionary<int,List<HideProList>> { };
+        private Dictionary<int, List<AttributeRandom>> EquipAttribute = new Dictionary<int,List<AttributeRandom>> { };
 
         public override void AfterEndInit()
         {
             foreach (LDEquip ldEquip in this.GetAll().Values)
             {
-                List<HideProList> equipAttribute = new List<HideProList>();
+                List<AttributeRandom> equipAttribute = new List<AttributeRandom>();
 
                 string[] attributeList = ldEquip.Attribute.Split("|");
 
                 for (int i = 0; i < attributeList.Length; i++)
                 { 
                     string[] attributeInfo = attributeList[i].Split("_");
-                    if (attributeInfo.Length != 2)
+                    if (attributeInfo.Length != 3)
                     {
                         continue;
                     }
-                    equipAttribute.Add( new HideProList(){ HideID = int.Parse(attributeInfo[0]), HideValue = int.Parse(attributeInfo[1])} );
+                    equipAttribute.Add( new AttributeRandom(){
+                        AttributeID = int.Parse(attributeInfo[0]),
+                        AttributeValueMin = int.Parse(attributeInfo[1]),
+                        AttributeValueMax = int.Parse(attributeInfo[2]),
+                    } );
                 }
 
 
@@ -36,11 +40,28 @@ namespace ET
         }
 
         
-        
-        public List<HideProList> GetEquipAttribute(int equipId)
+        public List<AttributeItem> GetEquipAttribute(int equipId)
         {
-            this.EquipAttribute.TryGetValue(equipId, out List<HideProList> hideProLists);
-            return hideProLists;
+            this.EquipAttribute.TryGetValue(equipId, out List<AttributeRandom> hideRandom);
+
+            if (hideRandom == null)
+            {
+                return null;
+             }
+
+            List<AttributeItem>  hideProLists1 = new List<AttributeItem>();
+            for (int i = 0; i < hideRandom.Count; i++)
+            {
+                int getValue = RandomHelper.RandomNumber((int)hideRandom[i].AttributeValueMin, (int)hideRandom[i].AttributeValueMax + 1 );
+                hideProLists1.Add ( new AttributeItem()
+                {
+                    AttributeID = hideRandom[i].AttributeID,
+                    AttributeValue = getValue,   
+                }); 
+            }
+
+
+            return hideProLists1;
         }
     }
 }

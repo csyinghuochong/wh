@@ -78,13 +78,7 @@ namespace ET
 
             try
             {
-                bagInfo_2.XiLianHideTeShuProLists = new List<HideProList>(bagInfo_1.XiLianHideTeShuProLists);
-                bagInfo_2.XiLianHideProLists = new List<HideProList>(bagInfo_1.XiLianHideProLists);
-                bagInfo_2.HideSkillLists = new List<int>(bagInfo_1.HideSkillLists);
-                //XiLianHideTeShuProLists 1012幸运值
-                bagInfo_1.XiLianHideTeShuProLists.Clear();
-                bagInfo_1.XiLianHideProLists.Clear();
-                bagInfo_1.HideSkillLists.Clear();
+             
             }
             catch (Exception ex)
             {

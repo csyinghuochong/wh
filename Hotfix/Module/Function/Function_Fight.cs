@@ -166,14 +166,14 @@ namespace ET
             Dictionary<int, long> updateProDicList = new Dictionary<int, long>();
 
             // 职业初始属性
-            List<HideProList> attributeList = new List<HideProList>();
+            List<AttributeItem> attributeList = new List<AttributeItem>();
             attributeList.AddRange(LDOccupationCategory.Instance.GetOccInitAttribute(roleInfo.Occ));
 
             // 装备属性
             unit.GetComponent<BagComponentServer>().GetEquipAttribute(attributeList);
             for (int pro = 0; pro < attributeList.Count; pro++)
             {
-                AddUpdateProDicList(attributeList[pro].HideID, attributeList[pro].HideValue, updateProDicList);
+                AddUpdateProDicList(attributeList[pro].AttributeID, attributeList[pro].AttributeValue, updateProDicList);
             }
 
             // 属性点：等级固定点 + 已分配点 → 战斗属性
