@@ -566,11 +566,6 @@ namespace ET
                 {
                     return true;
                 }*/
-             
-                if (self.EquipList[i].InheritSkills.Contains(skillId))
-                {
-                    return true;
-                }
             }
             return false;
         }
@@ -1511,11 +1506,7 @@ namespace ET
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             m2c_bagUpdate.BagInfoUpdate.Add(bagInfos[index]);
 
-            //9@200103; 0.03; 0.03
-            bagInfos[index].FumoProLists.Clear();
-            bagInfos[index].FumoProLists.AddRange(hideProLists);
-            //bagInfos[index].FumoProLists.AddRange( ItemHelper.GetItemFumoPro(itemid) );
-
+      
             //通知客户端背包道具发生改变
             MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
             Function_Fight.UnitUpdateProperty_Base(self.GetParent<Unit>(), true, true);

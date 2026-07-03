@@ -1913,14 +1913,8 @@ namespace ET
 		[ProtoMember(18)]
 		public string MakePlayer { get; set; }
 
-		[ProtoMember(20)]
-		public List<HideProList> FumoProLists = new List<HideProList>();
-
 		[ProtoMember(21)]
 		public int InheritTimes { get; set; }
-
-		[ProtoMember(22)]
-		public List<int> InheritSkills = new List<int>();
 
 		[ProtoMember(23)]
 		public bool IsProtect { get; set; }

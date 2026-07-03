@@ -883,16 +883,6 @@ namespace ET
                 //存储装备ID
                 LDItem ldItemCof = LDItemCategory.Instance.Get(userBagInfo.ItemID);
 
-                //存储附魔属性
-                if (userBagInfo.FumoProLists != null)
-                {
-                    for (int y = 0; y < userBagInfo.FumoProLists.Count; y++)
-                    {
-                        HideProList hidePro = userBagInfo.FumoProLists[y];
-                        Function_Fight.AddUpdateProDicList(hidePro.HideID, hidePro.HideValue, attriDic);
-                    }
-                }
-
                 LDEquip mLdEquipCon = LDEquipCategory.Instance.Get(ldItemCof.Id);
 
                 /*

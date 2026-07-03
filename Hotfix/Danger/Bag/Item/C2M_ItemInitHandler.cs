@@ -32,31 +32,12 @@ namespace ET
 			//初始化
 			for (int i = 0; i < bagInfos.Count; i++)
 			{
-				if (bagInfos[i].FumoProLists.Count > 0
-					&& bagInfos[i].FumoProLists[0].HideValue > 10000)
-				{
-					bagInfos[i].FumoProLists.Clear();
-				}
+				
 				if (string.IsNullOrEmpty(bagInfos[i].GemIDNew))
 				{
 					bagInfos[i].GemIDNew = ItemHelper.DefaultGem;
                     bagInfos[i].GemHole = ItemHelper.DefaultGem;
                 }
-
-				//鉴定符错误
-				//Item Item = ItemCategory.Instance.Get(bagInfos[i].ItemID);
-				//if(Item.ItemSubType == 121)
-				//{
-				//	try
-				//	{
-				//		int quality = int.Parse(bagInfos[i].ItemPar);
-				//	}
-				//	catch (Exception ex)
-				//	{
-				//		Log.Debug(ex.ToString()+ "_____" + bagInfos[i].ItemPar);
-				//	}
-				//	bagInfos[i].ItemPar = "99";
-				//}
 			}
 
 
