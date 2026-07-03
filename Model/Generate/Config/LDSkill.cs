@@ -237,6 +237,15 @@ namespace ET
 		/// <summary>受击 震动强度 1-9</summary>
 		[ProtoMember(54)]
 		public int Vibrate_Hit_Intensity { get; set; }
+		/// <summary>子弹 特效</summary>
+		[ProtoMember(55)]
+		public int Bullet_Effect { get; set; }
+		/// <summary>子弹 速度</summary>
+		[ProtoMember(56)]
+		public int Bullet_Speed { get; set; }
+		/// <summary>子弹 时间</summary>
+		[ProtoMember(57)]
+		public int Bullet_Time_Max { get; set; }
 
 	}
 }

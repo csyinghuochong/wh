@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ET
 {
@@ -40,78 +41,346 @@ namespace ET
 
     public static class RoleBullet1ComponnetSystem
     {
-
-        public static void OnBaseBulletInit(this RoleBullet1Componnet self,  Skill_TreeEditor skillHandler, long masterid)
+        public static void OnBaseBulletInit(this RoleBullet1Componnet self, Skill_TreeEditor skillHandler, long masterid)
         {
-            self.PassTime = 0;
-            self.Masterid = masterid;
-            self.BuffState = BuffState.Running;
-            self.SkillHandler = skillHandler;
-            self.BeginTime = TimeHelper.ServerNow();
-            self.DelayTime = 1;// (long)(1000 * skillHandler.LdSkillConf.SkillDelayTime);
-            self.DamageRange = 1f;// skillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddDamageRange) + (float)skillHandler.LdSkillConf.DamgeRange[0];
-            self.BuffEndTime = 1;/// 1000 * (int)skillHandler.GetTianfuProAdd((int)SkillAttributeEnum.AddSkillLiveTime) + skillHandler.LdSkillConf.SkillLiveTime + TimeHelper.ServerNow();
-
-            self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.RoleBullet1Timer, self);
+            InitFromSummon(self, skillHandler, masterid, null, null);
         }
 
-      
+        public static void InitFromSummon(
+            this RoleBullet1Componnet self,
+            Skill_TreeEditor skillHandler,
+            long masterId,
+            LDSummon summonConfig,
+            SummonRuntimeData runtime)
+        {
+            self.PassTime = 0;
+            self.Masterid = masterId;
+            self.BuffState = BuffState.Running;
+            self.SkillHandler = skillHandler;
+            self.SummonConfig = summonConfig;
+            self.Runtime = runtime ?? new SummonRuntimeData();
+            self.BeginTime = TimeHelper.ServerNow();
+            self.LastActionTime = self.BeginTime;
+            self.DamageRange = 1f;
+            self.DelayTime = 0;
+
+            long durationMs = self.Runtime.MaxDurationMs;
+            if (durationMs <= 0)
+            {
+                durationMs = 60000;
+            }
+
+            self.BuffEndTime = self.BeginTime + durationMs;
+            self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.RoleBullet1Timer, self);
+
+            if (self.Runtime.TriggerOnCreate && self.Runtime.ActionSkillId > 0)
+            {
+                TriggerSummonActionSkill(self, 0);
+            }
+        }
+
         public static void OnUpdate(this RoleBullet1Componnet self)
         {
-            self.PassTime = TimeHelper.ServerNow() - self.BeginTime;
-            //if (self.PassTime <= self.DelayTime)
-            //{
-            //    return;
-            //}
-
             Unit unit = self.GetParent<Unit>();
-            if (unit.IsDisposed || self.SkillHandler.TheUnitFrom.IsDisposed || TimeHelper.ServerNow() > self.BuffEndTime || self.SkillHandler.IsFinished())
+            if (unit == null || unit.IsDisposed)
             {
-                //移除Unity
-                unit.GetParent<UnitComponent>().Remove(unit.Id);
                 self.BuffState = BuffState.Finished;
                 return;
             }
 
-            //获取当前全部的unit进行范围监测
-            List<Unit> units = unit.GetParent<UnitComponent>().GetAll();
+            SummonRuntimeData runtime = self.Runtime ?? new SummonRuntimeData();
+            long now = TimeHelper.ServerNow();
+            self.PassTime = now - self.BeginTime;
 
-            //Log.Debug($"子弹位置： x: {unit.Position.x}  z: {unit.Position.z}");
-            for (int i = units.Count - 1; i >= 0; i--)
+            Unit master = unit.GetParent<UnitComponent>()?.Get(self.Masterid);
+            if (ShouldDestroyByMasterDeath(runtime, master))
             {
-                Unit uu = units[i];
-                
-                if (uu.IsDisposed || uu.Id == unit.Id || uu.Id == self.Masterid)
-                {
-                    continue;
-                }
+                DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
+                return;
+            }
 
-                /*
-                if (self.SkillHandler.IfHaveHurtId(uu.Id))
-                {
-                    continue;
-                }
-                if (self.SkillHandler.CheckMaxAttackNumber(uu.Id))
-                {
-                    continue;
-                }
+            if (now >= self.BuffEndTime)
+            {
+                DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
+                return;
+            }
 
-                if (!self.SkillHandler.CheckShape(uu.Position))
-                {
-                    continue;
-                }
+            UpdateSummonMovement(self, unit, runtime, master);
 
-                if (!uu.IsCanBeAttack())
-                {
-                    continue;
-                }
+            if (runtime.ActionType == 0)
+            {
+                TryTriggerIntervalAction(self, unit, runtime, now);
+            }
+            else
+            {
+                TryTriggerCollisionAction(self, unit, runtime, now);
+            }
 
-                //监测到对应碰撞体触发伤害
-                self.SkillHandler.OnAddHurtIds(uu.Id);
-                self.SkillHandler.OnCollisionUnit(uu);
-                */
+            if (runtime.MaxActionCount > 0 && runtime.ActionCount >= runtime.MaxActionCount
+                && (runtime.DestroyMode == 1 || runtime.DestroyMode == 11))
+            {
+                DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
             }
         }
 
+        public static void SetTrackTarget(this RoleBullet1Componnet self, Unit target, bool lockTarget)
+        {
+            if (self.Runtime == null)
+            {
+                self.Runtime = new SummonRuntimeData();
+            }
+
+            self.Runtime.TrackTargetId = target?.Id ?? 0;
+            self.Runtime.LockTarget = lockTarget;
+            if (self.SkillHandler != null && target != null)
+            {
+                self.SkillHandler.TheUnitTarget = target;
+            }
+        }
+
+        private static void UpdateSummonMovement(
+            RoleBullet1Componnet self,
+            Unit unit,
+            SummonRuntimeData runtime,
+            Unit master)
+        {
+            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+            Unit trackTarget = runtime.TrackTargetId > 0 ? unitComponent?.Get(runtime.TrackTargetId) : null;
+            if (trackTarget == null && !runtime.LockTarget)
+            {
+                trackTarget = self.SkillHandler?.TheUnitTarget;
+            }
+
+            if (runtime.MoveType == 0 || trackTarget == null || trackTarget.IsDisposed)
+            {
+                return;
+            }
+
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            float speed = numeric != null ? numeric.GetAsFloat(NumericType.Speed_Current_15) : 1f;
+            if (speed <= 0f)
+            {
+                speed = self.SummonConfig?.Speed > 0 ? self.SummonConfig.Speed : 1f;
+            }
+
+            Vector3 dir;
+            if (runtime.MoveType == 2)
+            {
+                dir = trackTarget.Position - unit.Position;
+                dir.y = 0f;
+                if (dir.sqrMagnitude <= 0.25f)
+                {
+                    if (runtime.DeleteOnTrackReach)
+                    {
+                        DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
+                    }
+                    return;
+                }
+            }
+            else
+            {
+                dir = unit.Rotation * Vector3.forward;
+                dir.y = 0f;
+            }
+
+            if (dir.sqrMagnitude <= 1e-6f)
+            {
+                return;
+            }
+
+            dir.Normalize();
+            float step = speed * 0.033f;
+            Vector3 nextPos = unit.Position + dir * step;
+
+            MapComponent map = unit.DomainScene()?.GetComponent<MapComponent>();
+            if (runtime.DeleteOnBlock && map != null)
+            {
+                Vector3 blocked = map.GetCanChongJiPath(unit, unit.Position, nextPos);
+                if ((blocked - nextPos).sqrMagnitude > 0.01f)
+                {
+                    DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
+                    return;
+                }
+                nextPos = blocked;
+            }
+
+            unit.Position = nextPos;
+            unit.Rotation = Quaternion.LookRotation(dir, Vector3.up);
+        }
+
+        private static void TryTriggerIntervalAction(
+            RoleBullet1Componnet self,
+            Unit unit,
+            SummonRuntimeData runtime,
+            long now)
+        {
+            if (runtime.ActionSkillId <= 0)
+            {
+                return;
+            }
+
+            long intervalMs = runtime.IntervalMs > 0 ? runtime.IntervalMs : 1000;
+            if (now - self.LastActionTime < intervalMs)
+            {
+                return;
+            }
+
+            TriggerSummonActionSkill(self, 0);
+            self.LastActionTime = now;
+        }
+
+        private static void TryTriggerCollisionAction(
+            RoleBullet1Componnet self,
+            Unit unit,
+            SummonRuntimeData runtime,
+            long now)
+        {
+            if (runtime.ActionSkillId <= 0 || self.SkillHandler == null)
+            {
+                return;
+            }
+
+            List<Unit> units = unit.GetParent<UnitComponent>()?.GetAll();
+            if (units == null)
+            {
+                return;
+            }
+
+            for (int i = units.Count - 1; i >= 0; i--)
+            {
+                Unit other = units[i];
+                if (other == null || other.IsDisposed || other.Id == unit.Id || other.Id == self.Masterid)
+                {
+                    continue;
+                }
+
+                if (!self.SkillHandler.SkillCanAttackUnit(other))
+                {
+                    continue;
+                }
+
+                if ((other.Position - unit.Position).sqrMagnitude > self.DamageRange * self.DamageRange)
+                {
+                    continue;
+                }
+
+                TriggerSummonActionSkill(self, other.Id);
+                runtime.ActionCount++;
+                if (runtime.MaxActionCount > 0 && runtime.ActionCount >= runtime.MaxActionCount)
+                {
+                    break;
+                }
+            }
+        }
+
+        private static void TriggerSummonActionSkill(RoleBullet1Componnet self, long targetId)
+        {
+            SummonRuntimeData runtime = self.Runtime;
+            if (runtime == null || runtime.ActionSkillId <= 0)
+            {
+                return;
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            Unit master = unit?.GetParent<UnitComponent>()?.Get(self.Masterid);
+            if (master == null || master.IsDisposed)
+            {
+                return;
+            }
+
+            if (!LDSkillCategory.Instance.Contain(runtime.ActionSkillId))
+            {
+                Log.Warning($"Summon action skill missing: {runtime.ActionSkillId} summon={runtime.SummonId}");
+                return;
+            }
+
+            SkillManagerComponent skillManager = master.GetComponent<SkillManagerComponent>();
+            if (skillManager == null)
+            {
+                return;
+            }
+
+            long resolvedTargetId = targetId;
+            if (resolvedTargetId <= 0)
+            {
+                resolvedTargetId = runtime.TrackTargetId > 0
+                    ? runtime.TrackTargetId
+                    : self.SkillHandler?.TheUnitTarget?.Id ?? 0;
+            }
+
+            SkillInfo skillInfo = new SkillInfo
+            {
+                WeaponSkillID = runtime.ActionSkillId,
+                TargetID = resolvedTargetId,
+                PosX = unit.Position.x,
+                PosY = unit.Position.y,
+                PosZ = unit.Position.z,
+                TargetAngle = (int)unit.Rotation.eulerAngles.y,
+            };
+
+            Skill_TreeEditor handler = skillManager.SkillFactory(skillInfo, master);
+            handler.TheUnitTarget = unit.GetParent<UnitComponent>()?.Get(resolvedTargetId);
+            handler.CollectSkillTargets();
+
+            if (SkillEditorTreeRegistry.TryGetTree(runtime.ActionSkillId, out SkillEditorSkillLogic logic))
+            {
+                SkillEditorTreeExecutor.Execute(handler, logic);
+            }
+
+            handler.SetSkillState(SkillState.Finished);
+            ObjectPool.Instance.Recycle(handler);
+            runtime.ActionCount++;
+        }
+
+        private static bool ShouldDestroyByMasterDeath(SummonRuntimeData runtime, Unit master)
+        {
+            if (runtime.DestroyMode != 10 && runtime.DestroyMode != 11)
+            {
+                return false;
+            }
+
+            return master == null || master.IsDisposed || IsUnitDead(master);
+        }
+
+        private static void DestroySummon(
+            RoleBullet1Componnet self,
+            Unit unit,
+            int destroySkillId,
+            int destroySkillLevel)
+        {
+            if (self.BuffState == BuffState.Finished)
+            {
+                return;
+            }
+
+            self.BuffState = BuffState.Finished;
+            TimerComponent.Instance?.Remove(ref self.Timer);
+
+            if (destroySkillId > 0 && LDSkillCategory.Instance.Contain(destroySkillId))
+            {
+                SummonRuntimeData runtime = self.Runtime;
+                if (runtime != null)
+                {
+                    int oldActionSkill = runtime.ActionSkillId;
+                    runtime.ActionSkillId = destroySkillId;
+                    TriggerSummonActionSkill(self, 0);
+                    runtime.ActionSkillId = oldActionSkill;
+                }
+            }
+
+            unit.GetParent<UnitComponent>()?.Remove(unit.Id);
+        }
+
+        private static bool IsUnitDead(Unit unit)
+        {
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            if (numeric == null)
+            {
+                return false;
+            }
+
+            return numeric.GetAsInt(NumericType.Now_Dead) == 1
+                || numeric.GetAsLong(NumericType.HP_Current_8) <= 0;
+        }
     }
 }

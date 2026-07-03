@@ -71,8 +71,8 @@ namespace ET
             SkillEditorFunctionRegistry.Register("DISPLACEMENT_TO_POINT", DisplacementToPoint);        //指定地点位移
             SkillEditorFunctionRegistry.Register("SET_UNIT_DIRECTION", SetUnitDirection);        //设置单位朝向
             SkillEditorFunctionRegistry.Register("SET_DIR", SetUnitDirection);        //旧版设置单位朝向
-            SkillEditorFunctionRegistry.Register("CREATE_SUMMON", CreateSummon);        //创建技能体
-            SkillEditorFunctionRegistry.Register("UNIT_ADD_SUMMON", CreateSummon);        //旧版创建技能体
+            SkillEditorFunctionRegistry.Register("CREATE_SUMMON", CreateSummon);        //创建技能体（新参数，读 LDSummon）
+            SkillEditorFunctionRegistry.Register("UNIT_ADD_SUMMON", CreateSummonLegacy);        //旧版创建技能体
             SkillEditorFunctionRegistry.Register("SET_SUMMON_TARGET", SetSummonTarget);        //设置技能体目标
             SkillEditorFunctionRegistry.Register("SET_UNIT_TARGET", SetSummonTarget);        //旧版设置技能体目标
         }
@@ -1559,8 +1559,8 @@ namespace ET
         private static void DisplacementToPoint(SkillEditorFunctionContext ctx)
         {
             Unit mover = ctx.ResolveUnit(ctx.GetParamRaw(1));
-            float x = ctx.GetParamFloat(2, mover?.Position.x ?? 0f);
-            float y = ctx.GetParamFloat(3, mover?.Position.y ?? 0f);
+            float x = ResolveScalarParam(ctx, ctx.GetParamRaw(2), 'x', mover?.Position.x ?? 0f);
+            float z = ResolveScalarParam(ctx, ctx.GetParamRaw(3), 'z', mover?.Position.z ?? 0f);
             float keepDistance = ctx.GetParamFloat(4, 0f);
             int moveType = ctx.GetParamInt(6, 0);
             if (mover == null)
@@ -1568,7 +1568,7 @@ namespace ET
                 return;
             }
 
-            Vector3 dest = new Vector3(x, y, mover.Position.z);
+            Vector3 dest = new Vector3(x, mover.Position.y, z);
             if (keepDistance > 0f)
             {
                 Vector3 dir = mover.Position - dest;
@@ -1584,8 +1584,8 @@ namespace ET
         private static void SetUnitDirection(SkillEditorFunctionContext ctx)
         {
             Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(0));
-            float dirX = ctx.GetParamFloat(1, 0f);
-            float dirZ = ctx.GetParamFloat(2, 0f);
+            float dirX = ResolveDirectionParam(ctx, ctx.GetParamRaw(1), 'x');
+            float dirZ = ResolveDirectionParam(ctx, ctx.GetParamRaw(2), 'z');
             if (unit == null)
             {
                 return;
@@ -1602,6 +1602,16 @@ namespace ET
 
         private static void CreateSummon(SkillEditorFunctionContext ctx)
         {
+            CreateSummonInternal(ctx, legacyFormat: false);
+        }
+
+        private static void CreateSummonLegacy(SkillEditorFunctionContext ctx)
+        {
+            CreateSummonInternal(ctx, legacyFormat: true);
+        }
+
+        private static void CreateSummonInternal(SkillEditorFunctionContext ctx, bool legacyFormat)
+        {
             int summonId = ctx.GetParamInt(0, 0);
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(1));
             if (summonId <= 0 || caster == null || caster.IsDisposed || ctx.Handler == null)
@@ -1609,50 +1619,188 @@ namespace ET
                 return;
             }
 
+            if (!LDSummonCategory.Instance.Contain(summonId))
+            {
+                Log.Error($"CREATE_SUMMON 找不到 LDSummon 配置: {summonId} skill={ctx.SkillId}");
+                return;
+            }
+
+            LDSummon summonConfig = LDSummonCategory.Instance.Get(summonId);
             Scene scene = caster.DomainScene();
-            UnitComponent unitComponent = scene?.GetComponent<UnitComponent>();
-            if (unitComponent == null)
+            if (scene?.GetComponent<UnitComponent>() == null)
             {
                 return;
             }
 
             float x = ResolveScalarParam(ctx, ctx.GetParamRaw(2), 'x', caster.Position.x);
             float z = ResolveScalarParam(ctx, ctx.GetParamRaw(3), 'z', caster.Position.z);
+            float dirX = ResolveDirectionParam(ctx, ctx.GetParamRaw(4), 'x');
+            float dirZ = ResolveDirectionParam(ctx, ctx.GetParamRaw(5), 'z');
+
+            SummonRuntimeData runtime = legacyFormat
+                ? ParseLegacySummonRuntime(ctx, summonConfig)
+                : ParseCreateSummonRuntime(ctx, summonConfig);
+
             Vector3 position = new Vector3(x, caster.Position.y, z);
-            int startAngle = (int)ctx.GetParamFloat(4, 0f);
+            Vector3 forward = new Vector3(dirX, 0f, dirZ);
+            if (forward.sqrMagnitude <= 1e-6f)
+            {
+                forward = caster.Rotation * Vector3.forward;
+            }
 
-            Unit bullet = UnitFactory.CreateBullet(scene, caster.Id, summonId, startAngle, position, new CreateMonsterInfo());
-            RoleBullet1Componnet bulletComponent = bullet.AddComponent<RoleBullet1Componnet>();
-            bulletComponent.OnBaseBulletInit(ctx.Handler, caster.Id);
+            Quaternion rotation = Quaternion.LookRotation(forward.normalized, Vector3.up);
+            Unit summonUnit = UnitFactory.CreateSkillEntity(scene, caster.Id, summonId, position, rotation);
+            if (summonUnit == null)
+            {
+                return;
+            }
 
-            ctx.SetVariable("createSummon", bullet.Id.ToString(CultureInfo.InvariantCulture));
-            Log.Debug($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} bullet={bullet.Id} caster={caster.Id}");
+            runtime.SummonId = summonId;
+            if (runtime.TrackTargetId <= 0)
+            {
+                runtime.TrackTargetId = ctx.Handler.TheUnitTarget?.Id ?? 0;
+            }
+
+            RoleBullet1Componnet bulletComponent = summonUnit.AddComponent<RoleBullet1Componnet>();
+            bulletComponent.InitFromSummon(ctx.Handler, caster.Id, summonConfig, runtime);
+
+            ctx.SetVariable("createSummon", summonUnit.Id.ToString(CultureInfo.InvariantCulture));
+            Log.Debug($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} unit={summonUnit.Id} caster={caster.Id} legacy={legacyFormat}");
+        }
+
+        private static SummonRuntimeData ParseCreateSummonRuntime(SkillEditorFunctionContext ctx, LDSummon summonConfig)
+        {
+            SummonRuntimeData runtime = new SummonRuntimeData
+            {
+                ActionType = ctx.GetParamInt(7, 0),
+                MoveType = ctx.GetParamInt(8, 0),
+                DeleteOnBlock = ctx.GetParamBool(10, false),
+                MaxDurationMs = ctx.GetParamInt(11, 0),
+                IntervalMs = ctx.GetParamInt(12, 0),
+                MaxActionCount = ctx.GetParamInt(13, 0),
+                TriggerOnCreate = ctx.GetParamBool(14, false),
+                ActionSkillId = ResolveSummonSkillId(ctx, 15, summonConfig, summonConfig.Skill_1),
+                ActionSkillLevel = ctx.GetParamInt(16, ctx.SkillLevel),
+                DestroyMode = ctx.GetParamInt(17, 1),
+                DestroySkillId = ResolveSummonSkillId(ctx, 18, summonConfig, summonConfig.Skill_2),
+                DestroySkillLevel = ctx.GetParamInt(19, ctx.SkillLevel),
+            };
+
+            Unit trackTarget = ctx.ResolveUnit(ctx.GetParamRaw(9));
+            runtime.TrackTargetId = trackTarget?.Id ?? 0;
+            return runtime;
+        }
+
+        private static SummonRuntimeData ParseLegacySummonRuntime(SkillEditorFunctionContext ctx, LDSummon summonConfig)
+        {
+            float durationSec = ctx.GetParamFloat(9, 0f);
+            float intervalSec = ctx.GetParamFloat(10, 0f);
+            SummonRuntimeData runtime = new SummonRuntimeData
+            {
+                ActionType = ctx.GetParamInt(6, 0),
+                MoveType = ctx.GetParamInt(7, 0),
+                DestroyMode = NormalizeLegacyDestroyMode(ctx.GetParamInt(8, 101)),
+                MaxDurationMs = durationSec > 0f ? (long)(durationSec * 1000f) : 0,
+                IntervalMs = intervalSec > 0f ? (long)(intervalSec * 1000f) : 0,
+                MaxActionCount = ctx.GetParamInt(11, 0),
+                ActionSkillId = ResolveSummonSkillId(ctx, 12, summonConfig, summonConfig.Skill_1),
+                ActionSkillLevel = ctx.GetParamInt(13, ctx.SkillLevel),
+                TriggerOnCreate = ctx.GetParamBool(14, false),
+                DeleteOnTrackReach = ctx.GetParamBool(15, false),
+                DeleteOnBlock = ctx.GetParamBool(16, false),
+                DestroySkillId = ResolveSummonSkillId(ctx, 17, summonConfig, summonConfig.Skill_2),
+                DestroySkillLevel = ctx.GetParamInt(13, ctx.SkillLevel),
+            };
+
+            runtime.TrackTargetId = ctx.Handler?.TheUnitTarget?.Id ?? 0;
+            return runtime;
+        }
+
+        private static int NormalizeLegacyDestroyMode(int destroyMode)
+        {
+            switch (destroyMode)
+            {
+                case 100:
+                    return 10;
+                case 101:
+                    return 11;
+                default:
+                    return destroyMode;
+            }
+        }
+
+        private static int ResolveSummonSkillId(
+            SkillEditorFunctionContext ctx,
+            int paramIndex,
+            LDSummon summonConfig,
+            int fallbackSkillId)
+        {
+            string raw = ctx.GetParamRaw(paramIndex);
+            string skillCol = ctx.GetParamSkillIdColumn(paramIndex);
+            string token = ctx.ResolveParam(string.IsNullOrEmpty(skillCol) ? raw : skillCol).Trim().ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(token) || token == "0")
+            {
+                return fallbackSkillId;
+            }
+
+            switch (token)
+            {
+                case "skill_1":
+                case "skill1":
+                    return summonConfig.Skill_1;
+                case "skill_2":
+                case "skill2":
+                    return summonConfig.Skill_2;
+                case "skillid":
+                case "skill_id":
+                    return ctx.SkillId;
+            }
+
+            return ctx.GetParamInt(paramIndex, fallbackSkillId);
         }
 
         private static void SetSummonTarget(SkillEditorFunctionContext ctx)
         {
             Unit summon = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            if (summon == null)
+            {
+                summon = ctx.ResolveUnit("createSummon");
+            }
+
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            bool lockTarget = ctx.GetParamBool(2, true);
             if (target == null)
             {
                 return;
             }
 
-            if (summon != null)
-            {
-                RoleBullet1Componnet bulletComponent = summon.GetComponent<RoleBullet1Componnet>();
-                if (bulletComponent?.SkillHandler != null)
-                {
-                    bulletComponent.SkillHandler.TheUnitTarget = target;
-                }
-            }
+            RoleBullet1Componnet bulletComponent = summon?.GetComponent<RoleBullet1Componnet>();
+            bulletComponent?.SetTrackTarget(target, lockTarget);
 
             if (ctx.Handler != null)
             {
                 ctx.Handler.TheUnitTarget = target;
             }
 
-            Log.Debug($"SET_SUMMON_TARGET skill={ctx.SkillId} summon={(summon?.Id ?? 0)} target={target.Id}");
+            Log.Debug($"SET_SUMMON_TARGET skill={ctx.SkillId} summon={(summon?.Id ?? 0)} target={target.Id} lock={lockTarget}");
+        }
+
+        private static float ResolveDirectionParam(SkillEditorFunctionContext ctx, string raw, char defaultAxis)
+        {
+            string token = raw?.Trim() ?? string.Empty;
+            if (token.Length == 0)
+            {
+                return 0f;
+            }
+
+            if (token.Contains(".dir_", StringComparison.Ordinal))
+            {
+                return ctx.ResolveDirectionComponent(raw, defaultAxis);
+            }
+
+            string resolved = ctx.ResolveParam(raw);
+            return float.TryParse(resolved, NumberStyles.Float, CultureInfo.InvariantCulture, out float value) ? value : 0f;
         }
 
         private static float ResolveScalarParam(SkillEditorFunctionContext ctx, string raw, char axis, float defaultValue)

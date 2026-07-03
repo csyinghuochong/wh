@@ -111,6 +111,37 @@ namespace ET
             return axis == 'z' ? unit.Position.z : unit.Position.x;
         }
 
+        public float ResolveDirectionComponent(string raw, char defaultAxis)
+        {
+            string token = raw?.Trim() ?? string.Empty;
+            if (token.Length == 0)
+            {
+                return 0f;
+            }
+
+            string unitToken = ExtractUnitToken(raw);
+            char axis = defaultAxis;
+            int dot = unitToken.LastIndexOf('.');
+            if (dot >= 0 && dot < unitToken.Length - 1)
+            {
+                char suffix = unitToken[dot + 1];
+                axis = suffix == 'x' ? 'x' : 'z';
+                unitToken = unitToken.Substring(0, dot);
+            }
+
+            Unit unit = ResolveUnitByToken(unitToken);
+            if (unit == null)
+            {
+                string resolved = ResolveParam(raw);
+                return float.TryParse(resolved, NumberStyles.Float, CultureInfo.InvariantCulture, out float value)
+                    ? value
+                    : 0f;
+            }
+
+            Vector3 forward = unit.Rotation * Vector3.forward;
+            return axis == 'x' ? forward.x : forward.z;
+        }
+
         public int ResolveNumericType(string raw, int defaultType = 0)
         {
             string token = raw?.Trim() ?? string.Empty;

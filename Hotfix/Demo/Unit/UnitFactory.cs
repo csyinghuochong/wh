@@ -98,7 +98,7 @@ namespace ET
             //unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
         }
 
-        //创建一个子弹unit
+        //创建一个子弹unit（旧接口，skillId 为 LDSkill.Id）
         public static Unit CreateBullet(Scene scene, long masterid, int skillid, int starangle, Vector3 vector3, CreateMonsterInfo createMonsterInfo)
         {
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), skillid);  //创建一个Unit
@@ -118,6 +118,39 @@ namespace ET
             numericComponent.Set(NumericType.StartAngle, starangle, false);
             numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);        //添加视野
+            return unit;
+        }
+
+        /// <summary>创建技能体，ConfigId 为 LDSummon.Id。</summary>
+        public static Unit CreateSkillEntity(Scene scene, long masterId, int summonId, Vector3 position, Quaternion rotation)
+        {
+            if (!LDSummonCategory.Instance.Contain(summonId))
+            {
+                Log.Error($"LDSummon 配置不存在: {summonId}");
+                return null;
+            }
+
+            LDSummon summonConfig = LDSummonCategory.Instance.Get(summonId);
+            Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), summonId);
+            scene.GetComponent<UnitComponent>().Add(unit);
+            unit.AddComponent<ObjectWait>();
+            unit.AddComponent<MoveComponent>();
+            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            unit.AddComponent<UnitInfoComponent>();
+
+            NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
+            unit.ConfigId = summonId;
+            unit.Position = position;
+            unit.Rotation = rotation;
+            unit.Type = UnitType.SkillEntity;
+            unit.MasterId = masterId;
+
+            float speed = summonConfig.Speed > 0 ? summonConfig.Speed : 1f;
+            numericComponent.Set(NumericType.Speed_Current_15, speed, false);
+            numericComponent.Set(NumericType.MasterId, masterId, false);
+            numericComponent.Set(NumericType.StartAngle, (int)rotation.eulerAngles.y, false);
+            numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
+            unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             return unit;
         }
 
