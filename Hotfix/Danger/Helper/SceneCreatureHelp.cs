@@ -95,11 +95,11 @@ namespace ET
 			
 			Vector3 initposition = new Vector3((float)monsterPosition.Position[0], (float)monsterPosition.Position[1], (float)monsterPosition.Position[2]);
 			Unit unit = null;
-			if (mtype == UnitType.Npc)
+			if (mtype == 1)
 			{
 				unit = UnitFactory.CreateNpc(scene,createid, monsterid, initposition);
 			}
-			if (mtype == UnitType.Monster)
+			if (mtype == 2)
 			{
 				unit = UnitFactory.CreateMonster(scene,  monsterid, initposition, new CreateMonsterInfo()
 					{
