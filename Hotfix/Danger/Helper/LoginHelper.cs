@@ -8,6 +8,7 @@ namespace ET
 
         public static  void OnLogin(this Unit unit, string remoteip)
         {
+            UnitCombatComponentHelper.EnsurePlayerComponents(unit);
            
             long currentTime = TimeHelper.ServerNow();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
@@ -53,7 +54,7 @@ namespace ET
                     roleInfoComponentServer.OnZeroClockUpdate(false);
                     unit.GetComponent<TaskComponentServer>().CheckWeeklyUpdate(lastLoginTime, currentTime);
                     unit.GetComponent<TaskComponentServer>().OnZeroClockUpdate(false);
-                    unit.GetComponent<HeroDataComponent>().OnZeroClockUpdate(false);
+                    unit.GetComponent<RoleDailyDataComponent>()?.OnZeroClockUpdate(false);
                     unit.GetComponent<ActivityComponentServer>().OnZeroClockUpdate(roleInfo.Lv);
                     unit.GetComponent<ChengJiuComponentServer>().OnZeroClockUpdate();
                     unit.GetComponent<JiaYuanComponentServer>().OnZeroClockUpdate(false);
@@ -93,7 +94,7 @@ namespace ET
 
             unit.GetComponent<BagComponentServer>().OnLogin(roleInfo.RobotId);
             unit.GetComponent<TaskComponentServer>().OnLogin();
-            unit.GetComponent<HeroDataComponent>().OnLogin(roleInfo.RobotId);
+            unit.GetComponent<PlayerSessionComponent>()?.OnLogin(roleInfo.RobotId);
             unit.GetComponent<DBSaveComponent>().OnLogin();
             unit.GetComponent<RechargeComponentServer>().OnLogin();
             unit.GetComponent<PetComponentServer>().OnLogin();

@@ -1447,7 +1447,22 @@ namespace ET
                 return;
             }
 
-            target.GetComponent<NumericComponent>()?.ApplyChange(caster, numericType, delta, ctx.SkillId);
+            NumericComponent numeric = target.GetComponent<NumericComponent>();
+            if (numeric == null)
+            {
+                return;
+            }
+
+            if (!AttrConfigManager.TryGetBaseAttrsForFightChange(numericType, out List<int> baseAttrs))
+            {
+                numeric.ApplyChange(caster, numericType, delta, ctx.SkillId);
+                return;
+            }
+
+            foreach (int baseAttr in baseAttrs)
+            {
+                numeric.ApplyFightFixedChange(caster, baseAttr, delta, ctx.SkillId);
+            }
         }
 
         private static void ChangeUnitAttributePercent(SkillEditorFunctionContext ctx)
@@ -1467,11 +1482,22 @@ namespace ET
                 return;
             }
 
-            long baseValue = numeric.GetAsLong(numericType);
-            long delta = (long)(baseValue * percent / 100d);
-            if (delta != 0)
+            float percentDelta = (float)(percent / 100d);
+            if (!AttrConfigManager.TryGetBaseAttrsForFightChange(numericType, out List<int> baseAttrs))
             {
-                numeric.ApplyChange(caster, numericType, delta, ctx.SkillId);
+                long baseValue = numeric.GetAsLong(numericType);
+                long delta = (long)(baseValue * percent / 100d);
+                if (delta != 0)
+                {
+                    numeric.ApplyChange(caster, numericType, delta, ctx.SkillId);
+                }
+
+                return;
+            }
+
+            foreach (int baseAttr in baseAttrs)
+            {
+                numeric.ApplyFightPercentChange(caster, baseAttr, percentDelta, ctx.SkillId);
             }
         }
 

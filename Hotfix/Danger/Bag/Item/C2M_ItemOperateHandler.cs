@@ -370,7 +370,7 @@ namespace ET
                                // unit.GetComponent<PetComponentServer>().OnUnlockSkin(ldItem.ItemUsePar);
                                 break;
                             case 116:   //角色洗点
-                                unit.GetComponent<HeroDataComponent>().OnResetPoint();
+                                unit.GetComponent<PlayerSessionComponent>()?.OnResetPoint();
                                 break;
                             case 117:   //宠物洗点
                             case 118:   //宠物资质

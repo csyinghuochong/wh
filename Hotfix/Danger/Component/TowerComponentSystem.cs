@@ -104,13 +104,7 @@ namespace ET
         public static void OnTimer(this TowerComponent self)
         {
             //奖励
-            self.TowerId = self.MainUnit.GetComponent<NumericComponent>().GetAsInt(NumericType.TowerId);
-            if (TowerHelper.GetLastTower(self.FubenDifficulty) == self.TowerId)
-            {
-                self.OnTowerOver("PassAll");
-                return;
-            }
-            self.CreateMonster(self.TowerId + 1, false).Coroutine();
+        
         }
 
         public static async ETTask CreateMonster(this TowerComponent self, int towerId, bool init)

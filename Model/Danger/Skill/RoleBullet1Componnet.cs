@@ -42,5 +42,6 @@
         public BuffState BuffState;
         public long Timer;
         public long DamgeChiXuLastTime;
+        public long LastActionTime;
     }
 }

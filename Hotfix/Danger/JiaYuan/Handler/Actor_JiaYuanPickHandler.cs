@@ -33,7 +33,7 @@ namespace ET
                 }
             }
 
-            boxUnit.GetComponent<HeroDataComponent>().OnDead(unit);
+            boxUnit.GetComponent<UnitLifeComponent>()?.OnDead(unit);
 
             if (unit.Id == request.MasterId)
             {

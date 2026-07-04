@@ -18,7 +18,7 @@ namespace ET
                 {
                     return;
                 }
-                self.Parent.GetComponent<HeroDataComponent>().OnRevive();
+                self.Parent.GetComponent<UnitLifeComponent>()?.OnRevive();
             }
             catch (Exception e)
             {

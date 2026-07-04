@@ -83,7 +83,7 @@ namespace ET
                 }
                 if (entity.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead)  == 1)
                 {
-                    entity.GetComponent<HeroDataComponent>().OnRevive();
+                    entity.GetComponent<UnitLifeComponent>()?.OnRevive();
                 }
             }
         }

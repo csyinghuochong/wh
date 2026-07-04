@@ -23,9 +23,9 @@ namespace ET
             return LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Add_Point_Auto_Level);
         }
 
-        public static int GetFreePointPerLevel()
+        public static int GetFreePointByLevel(int level)
         {
-            return LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Add_Point_Level_UP_Free);
+            return LDGlobalValueCategory.Instance.GetFreePointByLevel(level);
         }
 
         public static int[] GetFixedPointPerLevel()
@@ -66,22 +66,27 @@ namespace ET
             return level >= GetAutoLevel();
         }
 
-        /// 每升 1 级增加固定 + 自由部分。</summary>
+        /// <summary>当前等级累计可获得的属性点（固定 + 自由）。</summary>
         public static int GetTotalPointAtLevel(int level)
         {
-            if (level <= 0)
+            if (level <= 1)
             {
                 return 0;
             }
 
-            int levelUpCount = level;
             int fixedSum = 0;
             foreach (int point in GetFixedPointPerLevel())
             {
                 fixedSum += point;
             }
 
-            return levelUpCount * (fixedSum + GetFreePointPerLevel());
+            int total = 0;
+            for (int afterLevel = 2; afterLevel <= level; afterLevel++)
+            {
+                total += fixedSum + GetFreePointByLevel(afterLevel);
+            }
+
+            return total;
         }
 
         public static int GetRemainPoint(int lv, int[] assignedPoints)
@@ -148,7 +153,7 @@ namespace ET
                 numericComponent.ApplyValue(PointNumericTypes[i], numericComponent.GetAsInt(PointNumericTypes[i]) + fixedPoints[i], true);
             }*/
 
-            int freePoints = GetFreePointPerLevel();
+            int freePoints = GetFreePointByLevel(newLevel);
             if (freePoints <= 0)
             {
                 return;
@@ -182,7 +187,6 @@ namespace ET
             int level = roleInfo.Lv;
             int autoLevel = GetAutoLevel();
             int[] fixedPoints = GetFixedPointPerLevel();
-            int freePoints = GetFreePointPerLevel();
             int[] defaultPoints = GetDefaultFreeDistribution(roleInfo);
 
             for (int i = 0; i < PointNumericTypes.Length; i++)
@@ -203,6 +207,7 @@ namespace ET
                     }
                 }
 
+                int freePoints = GetFreePointByLevel(afterLevel);
                 if (freePoints <= 0)
                 {
                     continue;

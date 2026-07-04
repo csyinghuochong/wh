@@ -1134,7 +1134,10 @@ namespace ET
             {
                 return;
             }
-            petUnit.GetComponent<HeroDataComponent>().InitPet(rolePetInfo, true);
+            for (int i = 0; i < rolePetInfo.Ks.Count; i++)
+            {
+                numericComponent.Set(rolePetInfo.Ks[i], rolePetInfo.Vs[i], false);
+            }
             //NumericComponent numericComponent = petUnit.GetComponent<NumericComponent>();
             //numericComponent.ApplyValue(NumericType.Numeric_Error, self.GetByKey(rolePetInfo, NumericType.Numeric_Error), true);
             //numericComponent.ApplyValue(NumericType.Numeric_Error, self.GetByKey(rolePetInfo, NumericType.Numeric_Error), true);

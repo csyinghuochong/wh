@@ -127,13 +127,13 @@ namespace ET
                         //整数
                         if (ValueType == 0)
                         {
-                            this.TheUnitBelongto.GetComponent<HeroDataComponent>().BuffPropertyUpdate_Long(NowBuffParameterType, (long)this.NowBuffValue);
+                            FightBuffNumericHelper.BuffPropertyUpdate_Long(this.TheUnitBelongto, NowBuffParameterType, (long)this.NowBuffValue);
                         }
 
                         //浮点数
                         if (ValueType == 1)
                         {
-                            this.TheUnitBelongto.GetComponent<HeroDataComponent>().BuffPropertyUpdate_Float(NowBuffParameterType, (float)this.NowBuffValue);
+                            FightBuffNumericHelper.BuffPropertyUpdate_Float(this.TheUnitBelongto, NowBuffParameterType, (float)this.NowBuffValue);
                         }
                     }
                     break;
@@ -240,13 +240,13 @@ namespace ET
                         //整数
                         if (ValueType == 0)
                         {
-                            this.TheUnitBelongto.GetComponent<HeroDataComponent>().BuffPropertyUpdate_Long(NowBuffParameterType, (long)this.NowBuffValue * -1);
+                            FightBuffNumericHelper.BuffPropertyUpdate_Long(this.TheUnitBelongto, NowBuffParameterType, (long)this.NowBuffValue * -1);
                         }
 
                         //浮点数
                         if (ValueType == 1)
                         {
-                            this.TheUnitBelongto.GetComponent<HeroDataComponent>().BuffPropertyUpdate_Float(NowBuffParameterType, (float)this.NowBuffValue * -1);
+                            FightBuffNumericHelper.BuffPropertyUpdate_Float(this.TheUnitBelongto, NowBuffParameterType, (float)this.NowBuffValue * -1);
                         }
                     }
                     break;

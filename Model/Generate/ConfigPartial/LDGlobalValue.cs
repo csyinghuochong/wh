@@ -59,6 +59,9 @@ namespace ET
         
         public List<int> Add_Point_Level_UP_Fixed = new List<int>();
 
+        /// <summary>升级自由点：下标=角色等级，值=升到该级获得的自由点。</summary>
+        public int[] Add_Point_Level_UP_Free_ByLevel = Array.Empty<int>();
+
         public override void AfterEndInit()
         {
             this.keyDict.Clear();
@@ -84,6 +87,29 @@ namespace ET
         private void ParseAddPoint()
         {
             Add_Point_Level_UP_Fixed.Clear();
+
+            if (this.ContainKey(GlobalValueKey.Add_Point_Level_UP_Fixed))
+            {
+                Add_Point_Level_UP_Fixed.AddRange(this.GetIntArray(GlobalValueKey.Add_Point_Level_UP_Fixed));
+            }
+
+            if (!this.ContainKey(GlobalValueKey.Add_Point_Level_UP_Free))
+            {
+                Add_Point_Level_UP_Free_ByLevel = Array.Empty<int>();
+                return;
+            }
+
+            string rawValue = this.GetByKey(GlobalValueKey.Add_Point_Level_UP_Free).Value;
+            Add_Point_Level_UP_Free_ByLevel = GlobalValueLevelPointParser.ParseToLevelTable(
+                rawValue,
+                this.MaxLevel,
+                GlobalValueKey.Add_Point_Level_UP_Free);
+        }
+
+        /// <summary>升到指定等级时获得的自由属性点（按等级区间配置）。</summary>
+        public int GetFreePointByLevel(int level)
+        {
+            return GlobalValueLevelPointParser.GetPointsByLevel(Add_Point_Level_UP_Free_ByLevel, level);
         }
 
         public LDGlobalValue GetByKey(string key)

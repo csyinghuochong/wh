@@ -61,7 +61,8 @@ namespace ET
                 unit.SceneType = request.SceneType;
 				unit.ConfigId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
 				unit.GetComponent<RoleInfoComponentServer>().RoleInfo.DemonName = string.Empty;
-                unit.GetComponent<HeroDataComponent>().CheckNumeric();
+                UnitCombatComponentHelper.EnsurePlayerComponents(unit);
+                unit.GetComponent<PlayerSessionComponent>()?.CheckNumeric();
                 Function_Fight.UnitUpdateProperty_Base(unit, false, false);
 
                 long hpmax = numericComponent.GetAsLong(NumericType.HP_Max_10);
@@ -469,7 +470,7 @@ namespace ET
                         }
 						unitComponent.AddPlayer(unit);		
 						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
-						unit.GetComponent<HeroDataComponent>().OnReturn();
+						unit.GetComponent<PlayerSessionComponent>()?.OnReturn();
 						// 通知客户端创建My Unit
 						m2CCreateUnits = new M2C_CreateMyUnit();
 						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);

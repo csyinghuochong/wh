@@ -315,7 +315,7 @@ namespace ET
                 PosX = unit.Position.x,
                 PosY = unit.Position.y,
                 PosZ = unit.Position.z,
-                TargetAngle = (int)unit.Rotation.eulerAngles.y,
+                TargetAngle = AngleHelper.GetQuaternionAngle(unit.Rotation),
             };
 
             Skill_TreeEditor handler = skillManager.SkillFactory(skillInfo, master);

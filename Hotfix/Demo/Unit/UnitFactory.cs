@@ -1,3 +1,4 @@
+using Alipay.AopSdk.F2FPay.Business;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -148,7 +149,7 @@ namespace ET
             float speed = summonConfig.Speed > 0 ? summonConfig.Speed : 1f;
             numericComponent.Set(NumericType.Speed_Current_15, speed, false);
             numericComponent.Set(NumericType.MasterId, masterId, false);
-            numericComponent.Set(NumericType.StartAngle, (int)rotation.eulerAngles.y, false);
+            numericComponent.SetStartAngle(rotation, false);
             numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             return unit;
@@ -172,7 +173,7 @@ namespace ET
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(unitid, 1001);
             unit.AddComponent<AttackRecordComponent>();
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-            HeroDataComponent heroDataComponent = unit.AddComponent<HeroDataComponent>();
+            UnitCombatComponentHelper.EnsureLifeComponent(unit);
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unitInfoComponent.EnergySkillId = createMonsterInfo.SkillId;
             unitInfoComponent.UnitName = ldMonster.Name.ToString();
@@ -208,7 +209,6 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.ReviveTime, revetime, false);
                 numericComponent.ApplyValue(NumericType.Now_Dead, 1, false);
             }
-            heroDataComponent.InitMonsterInfo(ldMonster, createMonsterInfo);
 
             numericComponent.Set(NumericType.BattleCamp, createMonsterInfo.Camp, false);
             numericComponent.Set(NumericType.TeamId, master != null ? master.GetTeamId() : 0, false);
@@ -294,7 +294,7 @@ namespace ET
             scene.GetComponent<UnitComponent>().Add(unit);
             unit.AddComponent<ObjectWait>();
             unit.AddComponent<StateComponent>();            //添加状态组件
-            unit.AddComponent<HeroDataComponent>();
+            UnitCombatComponentHelper.EnsureLifeComponent(unit);
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unitInfoComponent.UnitName = master.GetComponent<RoleInfoComponentServer>().RoleInfo.StallName;
@@ -319,6 +319,7 @@ namespace ET
             unit.AddComponent<SkillManagerComponent>();
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
+            UnitCombatComponentHelper.EnsureLifeComponent(unit);
             unitInfoComponent.UnitName = master.GetComponent<UnitInfoComponent>().UnitName;
             unit.GetComponent<NumericComponent>().Set(NumericType.MasterId, master.Id);
             numericComponent.Set(NumericType.BattleCamp, master.GetBattleCamp());
@@ -331,7 +332,6 @@ namespace ET
             unit.Type = UnitType.Monster;
             unit.Position = new Vector3(master.Position.x + RandomHelper.RandFloat01() * 1f, master.Position.y, master.Position.z + RandomHelper.RandFloat01() * 1f);
             //添加其他组件
-            unit.AddComponent<HeroDataComponent>().InitTempFollower(master, monster);
 
             AIComponent aIComponent = unit.AddComponent<AIComponent, int>(2);     //AI行为树序号
             aIComponent.InitTempFollower(monster);
@@ -378,7 +378,13 @@ namespace ET
             }
 
             //添加其他组件
-            unit.AddComponent<HeroDataComponent>().InitPet(petinfo, false);
+ 
+            for (int i = 0; i < petinfo.Ks.Count; i++)
+            {
+                numericComponent.Set(petinfo.Ks[i], petinfo.Vs[i], false);
+            }
+
+
             numericComponent.Set(NumericType.BattleCamp, roleCamp);
             numericComponent.Set(NumericType.MasterId, masterId);
             numericComponent.Set(NumericType.UnitPositon, cell);
@@ -414,7 +420,7 @@ namespace ET
             aIComponent.InitJiaYuanPet( );
             aIComponent.Begin();
             //添加其他组件
-            unit.AddComponent<HeroDataComponent>().InitJiaYuanPet(false);
+
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
 
             return unit;
@@ -438,6 +444,7 @@ namespace ET
             unit.ConfigId = petinfo.ConfigId;
             unit.MasterId = master.Id;
             unit.AddComponent<StateComponent>();         //添加状态组件
+            UnitCombatComponentHelper.EnsureLifeComponent(unit);
             unit.AddComponent<BuffManagerComponent>();      //添加
             unit.Position = new Vector3(master.Position.x + RandomHelper.RandFloat01() * 1f, master.Position.y, master.Position.z + RandomHelper.RandFloat01() * 1f);
             unit.Type = UnitType.Pet;
@@ -445,7 +452,12 @@ namespace ET
             aIComponent.InitPet(petinfo);
             aIComponent.Begin();
             //添加其他组件
-            unit.AddComponent<HeroDataComponent>().InitPet(petinfo, false);
+      
+            for (int i = 0; i < petinfo.Ks.Count; i++)
+            {
+                numericComponent.Set(petinfo.Ks[i], petinfo.Vs[i], false);
+            }
+
             numericComponent.Set(NumericType.MasterId, master.Id, false);
             numericComponent.Set(NumericType.BattleCamp, master.GetBattleCamp(), false);
             numericComponent.Set(NumericType.AttackMode, master != null ? master.GetAttackMode() : 0);
@@ -485,8 +497,15 @@ namespace ET
             unit.Position = JiaYuanHelper.PlanPositionList[jiaYuanPlant.CellIndex];
             unit.Type = UnitType.Plant;
 
-             //添加其他组件
-            unit.AddComponent<HeroDataComponent>().InitPlan(jiaYuanPlant,false);
+            //添加其他组件
+
+   
+            numericComponent.Set(NumericType.StartTime, jiaYuanPlant.StartTime);
+            numericComponent.Set(NumericType.GatherNumber, jiaYuanPlant.GatherNumber);
+            numericComponent.Set(NumericType.GatherLastTime, jiaYuanPlant.GatherLastTime);
+            numericComponent.Set(NumericType.GatherCellIndex, jiaYuanPlant.CellIndex);
+
+
             numericComponent.Set(NumericType.MasterId, unitid, false);
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             return unit;
@@ -517,7 +536,10 @@ namespace ET
             aIComponent.Begin();
 
             //添加其他组件
-            unit.AddComponent<HeroDataComponent>().InitPasture(jiaYuanPastures, false);
+            numericComponent.Set(NumericType.StartTime, jiaYuanPastures.StartTime, false);
+            numericComponent.Set(NumericType.GatherNumber, jiaYuanPastures.GatherNumber, false);
+            numericComponent.Set(NumericType.GatherLastTime, jiaYuanPastures.GatherLastTime, false);
+
             numericComponent.Set(NumericType.MasterId, unitid, false);
             numericComponent.Set(NumericType.Numeric_Error, 30000, false);
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
@@ -550,8 +572,7 @@ namespace ET
             aIComponent.InitJingLing(jinglingId);
             aIComponent.Begin();
 
-            //添加其他组件
-            unit.AddComponent<HeroDataComponent>().InitJingLing(master, jinglingId, false);
+
             numericComponent.Set(NumericType.MasterId, master.Id, false);
             numericComponent.Set(NumericType.BattleCamp, master.GetBattleCamp(), false);
             numericComponent.Set(NumericType.AttackMode, master != null ? master.GetAttackMode() : 0);

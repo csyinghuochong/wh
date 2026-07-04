@@ -75,7 +75,6 @@ namespace ET
                 {
                     return;
                 }
-
                 int equipId = unit.GetWuqiItemID();
             }
 

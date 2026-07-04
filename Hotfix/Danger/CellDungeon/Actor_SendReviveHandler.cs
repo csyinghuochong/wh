@@ -25,7 +25,7 @@ namespace ET
 
 
                 unit.SetBornPosition(unit.Position, true);
-                unit.GetComponent<HeroDataComponent>().OnRevive();
+                unit.GetComponent<UnitLifeComponent>()?.OnRevive();
                 unit.GetComponent<ChengJiuComponentServer>().OnRevive();
             }
             else
@@ -49,7 +49,7 @@ namespace ET
                     }
                 }
 
-                unit.GetComponent<HeroDataComponent>().OnRevive();
+                unit.GetComponent<UnitLifeComponent>()?.OnRevive();
             }
 
             reply();

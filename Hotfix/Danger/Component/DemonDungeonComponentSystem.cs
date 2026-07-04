@@ -120,7 +120,7 @@ namespace ET
             {
                 string attackName = attack.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
                 defend.SetBornPosition(defend.Position, true);
-                defend.GetComponent<HeroDataComponent>().OnRevive();
+                defend.GetComponent<UnitLifeComponent>()?.OnRevive();
 
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.BattleCamp, CampEnum.CampPlayer_2 );
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, 90000018);
@@ -135,7 +135,7 @@ namespace ET
             if (defend.Type == UnitType.Player && (monsterId == 90000017 || monsterId == 90000018))
             {
                 defend.SetBornPosition(defend.Position, true);
-                defend.GetComponent<HeroDataComponent>().OnRevive();
+                defend.GetComponent<UnitLifeComponent>()?.OnRevive();
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, 90000019);
                 Function_Fight.UnitUpdateProperty_DemonGhost(defend, true);
                 BuffData buffData_1 = new BuffData();

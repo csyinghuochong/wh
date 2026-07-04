@@ -647,7 +647,7 @@ namespace ET
                 unit.GetComponent<DataCollationComponent>()?.UpdateData();
                 unit.GetComponent<SkillPassiveComponent>()?.Stop();
                 unit.GetComponent<BuffManagerComponent>().BeforeTransfer(transfer);
-                unit.GetComponent<HeroDataComponent>().OnKillZhaoHuan(null);
+                unit.GetComponent<UnitLifeComponent>()?.OnKillZhaoHuan(null);
                 RemovePetAndJingLing(unit);
             }
         }

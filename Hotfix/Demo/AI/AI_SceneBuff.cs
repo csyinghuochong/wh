@@ -61,7 +61,7 @@ namespace ET
                 if (remove)
                 {
                     //unit.GetParent<UnitComponent>().Remove(unit.Id);
-                    unit.GetComponent<HeroDataComponent>().OnDead(null);
+                    unit.GetComponent<UnitLifeComponent>()?.OnDead(null);
                     return;
                 }
             }

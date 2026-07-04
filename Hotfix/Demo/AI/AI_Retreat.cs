@@ -71,7 +71,7 @@ namespace ET
             if (unit.IsBoss())
             {
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.BossInCombat, 0);
-                unit.GetComponent<HeroDataComponent>().OnKillZhaoHuan(null);
+                unit.GetComponent<UnitLifeComponent>()?.OnKillZhaoHuan(null);
                 unit.GetComponent<AttackRecordComponent>().ClearBeAttack();
                 haveStealth = AIGetTargetHelp.GetNearestStealth(unit);
             }

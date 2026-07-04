@@ -52,7 +52,7 @@ namespace ET
                 }
             }*/
 
-            boxUnit.GetComponent<HeroDataComponent>().OnDead(unit);
+            boxUnit.GetComponent<UnitLifeComponent>()?.OnDead(unit);
 
             unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.OpenBox_137, 0, 1);
 

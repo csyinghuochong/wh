@@ -22,8 +22,11 @@ namespace ET
         }
     }
 
-    public static class UnitInfoComponentSystem
+    public static class UnitInfoComponentServerSystem
     {
+
+
+
 
         public static void ResetData(this UnitInfoComponent self)
         {

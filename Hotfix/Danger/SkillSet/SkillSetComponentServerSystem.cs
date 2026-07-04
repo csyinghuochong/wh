@@ -166,7 +166,7 @@ namespace ET
 					case TianFuProEnum.BuffInitIdAdd:
 						break;
 					case TianFuProEnum.RolePropertyAdd:
-						self.OnRolePropertyAdd(properInfo, add ? 1 : -1);
+						
 						break;
 					case TianFuProEnum.ReplaceSkillId:
 						break;
@@ -192,19 +192,7 @@ namespace ET
 			
 		}
 
-		public static void OnRolePropertyAdd(this SkillSetComponentServer self, string[] properInfo, int rate)
-		{
-			int numericKey = int.Parse(properInfo[1]);
-			int valueType = NumericHelp.GetNumericValueType(numericKey);
-			if (valueType == 1)
-			{
-				self.GetParent<Unit>().GetComponent<HeroDataComponent>().BuffPropertyUpdate_Long(numericKey, long.Parse(properInfo[2]) * rate);
-			}
-			else
-			{
-				self.GetParent<Unit>().GetComponent<HeroDataComponent>().BuffPropertyUpdate_Float(numericKey, float.Parse(properInfo[2]) * rate);
-			}
-		}
+	
 
 		public static List<AttributeItem> GetTianfuRoleProLists(this SkillSetComponentServer self)
 		{

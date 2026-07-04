@@ -13,7 +13,7 @@ namespace ET
                 case 0:
                     Log.Debug($"OnZeroClockUpdate [零点刷新]: {unit.Id}");
                     RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-                    unit.GetComponent<HeroDataComponent>().OnZeroClockUpdate(true);
+                    unit.GetComponent<RoleDailyDataComponent>()?.OnZeroClockUpdate(true);
                     unit.GetComponent<RoleInfoComponentServer>().OnHourUpdate(0, true);
                     unit.GetComponent<RoleInfoComponentServer>().OnZeroClockUpdate(true);
                     unit.GetComponent<TaskComponentServer>().CheckWeeklyUpdate();

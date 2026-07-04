@@ -62,7 +62,7 @@ namespace ET
                 {
                     Unit uu = haved[0];
                     haved.Remove(uu);
-                    uu.GetComponent<HeroDataComponent>().OnDead(null);
+                    uu.GetComponent<UnitLifeComponent>()?.OnDead(null);
                     unitInfoComponentAttack.ZhaohuanIds.Remove(uu.Id);
                     --de;
                 }
