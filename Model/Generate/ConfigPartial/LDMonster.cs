@@ -22,10 +22,16 @@ namespace ET
                     monsterAttrs = new List<AttributeItem>();
                     monsterInitAttribute.Add(monster.Id, monsterAttrs);
                 }
-                
-                monsterAttrs.Add( new AttributeItem() { AttributeID = NumericType.HP_Fixed_11, AttributeValue = 10});
-                monsterAttrs.Add( new AttributeItem() { AttributeID = NumericType.Speed_Fixed_16, AttributeValue = 300});
-                monsterAttrs.Add( new AttributeItem() { AttributeID = NumericType.PATK_Max_22, AttributeValue = 1});
+
+
+                string[] attributeList = monster.Attribute.Split("|");
+                for (int i = 0; i < attributeList.Length; i++)
+                {
+                    string[] attribute = attributeList[i].Split("_");
+                    int key = int.Parse(attribute[0]);
+                    int value = int.Parse(attribute[1]);
+                    monsterAttrs.Add(new AttributeItem() { AttributeID = key, AttributeValue = value });
+                }
             }
         }
 

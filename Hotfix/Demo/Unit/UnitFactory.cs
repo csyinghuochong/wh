@@ -211,11 +211,7 @@ namespace ET
             }
 
             List<AttributeItem> attributeItems = LDMonsterCategory.Instance.GetMonsterAttri(monsterID);
-
-            foreach (AttributeItem attributeItem in attributeItems)
-            {
-                numericComponent.Set(attributeItem.AttributeID, attributeItem.AttributeValue, false);
-            }
+            NumericInitHelper.ApplyConfigAttributes(numericComponent, attributeItems, false);
 
             numericComponent.Set(NumericType.BattleCamp, createMonsterInfo.Camp, false);
             numericComponent.Set(NumericType.TeamId, master != null ? master.GetTeamId() : 0, false);
@@ -267,6 +263,7 @@ namespace ET
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), npcId);
             scene.GetComponent<UnitComponent>().Add(unit);
 
+            unit.AddComponent<NpcComponent>();
             unit.AddComponent<UnitInfoComponent>().Scene_Creature = createid;
             unit.ConfigId = npcId;
             unit.Position = vector3;

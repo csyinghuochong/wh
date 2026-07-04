@@ -171,10 +171,7 @@ namespace ET
 
             // 装备属性
             unit.GetComponent<BagComponentServer>().GetEquipAttribute(attributeList);
-            for (int pro = 0; pro < attributeList.Count; pro++)
-            {
-                AddUpdateProDicList(attributeList[pro].AttributeID, attributeList[pro].AttributeValue, updateProDicList);
-            }
+            NumericInitHelper.MergeAttributes(attributeList, updateProDicList);
 
             // 属性点：等级固定点 + 已分配点 → 战斗属性
             int[] fixedPointByLevel = RoleAddPointHelper.GetFixedPointByLevel(roleLv);

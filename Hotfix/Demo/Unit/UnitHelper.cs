@@ -125,22 +125,6 @@ namespace ET
         public static void NoticeUnitAdd(Unit unit, Unit sendUnit)
         {
             //非自己击杀的怪物。不同步
-            if (sendUnit.Type == UnitType.DropItem)
-            {
-                DropComponent dropComponent = sendUnit.GetComponent<DropComponent>();
-                if (dropComponent.IfDamgeDrop == 1 && !dropComponent.BeAttackPlayerList.Contains(unit.Id))
-                {
-                    return;
-                }
-            }
-            if (sendUnit.Type == UnitType.Monster && sendUnit.ConfigId == 80002010)
-            {
-                if (sendUnit.MasterId != unit.Id)
-                {
-                    return;
-                }
-            }
-
             M2C_CreateUnits createUnits = new M2C_CreateUnits();
             GetUnitInfo(sendUnit, createUnits);
             MessageHelper.SendToClient(unit, createUnits);
@@ -164,6 +148,8 @@ namespace ET
                 case UnitType.Bullet:
                 case UnitType.Npc:
                 case UnitType.Stall:
+                    createUnits.Units.Add(CreateUnitInfo(sendUnit));
+                    break;
                 case UnitType.Monster:
                     createUnits.Units.Add(CreateUnitInfo(sendUnit));
                     break;

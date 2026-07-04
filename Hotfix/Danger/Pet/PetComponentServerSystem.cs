@@ -1075,8 +1075,8 @@ namespace ET
             int add = nowValue * 100 + 1;
             int mul = nowValue * 100 + 2;
             int finalAdd = nowValue * 100 + 3;
-            int buffAdd = nowValue * 100 + 11;
-            int buffMul = nowValue * 100 + 12;
+            int buffAdd = AttrLayer.FightFixed(nowValue);
+            int buffMul = AttrLayer.FightPercent(nowValue);
             long old = self.GetByKey( nowValue, attriDic);
             long nowPropertyValue = (long)
             (
