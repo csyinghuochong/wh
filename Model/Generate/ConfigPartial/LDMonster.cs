@@ -24,7 +24,7 @@ namespace ET
                 }
                 
                 monsterAttrs.Add( new AttributeItem() { AttributeID = NumericType.HP_Fixed_11, AttributeValue = 10});
-                monsterAttrs.Add( new AttributeItem() { AttributeID = NumericType.Speed_Current_15, AttributeValue = 5 * AttributeValueType.RatioScale});
+                monsterAttrs.Add( new AttributeItem() { AttributeID = NumericType.Speed_Fixed_16, AttributeValue = 300});
                 monsterAttrs.Add( new AttributeItem() { AttributeID = NumericType.PATK_Max_22, AttributeValue = 1});
             }
         }

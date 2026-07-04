@@ -210,6 +210,13 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.Now_Dead, 1, false);
             }
 
+            List<AttributeItem> attributeItems = LDMonsterCategory.Instance.GetMonsterAttri(monsterID);
+
+            foreach (AttributeItem attributeItem in attributeItems)
+            {
+                numericComponent.Set(attributeItem.AttributeID, attributeItem.AttributeValue, false);
+            }
+
             numericComponent.Set(NumericType.BattleCamp, createMonsterInfo.Camp, false);
             numericComponent.Set(NumericType.TeamId, master != null ? master.GetTeamId() : 0, false);
             numericComponent.Set(NumericType.AttackMode, master!=null ?  master.GetAttackMode() : 0, false);
@@ -237,7 +244,7 @@ namespace ET
                 case MapTypeEnum.LocalDungeon:
                     aIComponent.LocalDungeonUnit = mainUnit;
                   
-                    //aIComponent.InitMonster(ldMonster.Id);
+                    aIComponent.InitMonster(ldMonster.Id);
                     break;
                 case MapTypeEnum.PetDungeon:
                     //aIComponent.InitPetFubenMonster(ldMonster.Id);
