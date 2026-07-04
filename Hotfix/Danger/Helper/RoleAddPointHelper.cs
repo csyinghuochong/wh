@@ -28,6 +28,11 @@ namespace ET
             return LDGlobalValueCategory.Instance.GetFreePointByLevel(level);
         }
 
+        public static int GetTotalFreePointByLevel(int level)
+        {
+            return LDGlobalValueCategory.Instance.GetTotalFreePointByLevel(level);
+        }
+
         public static int[] GetFixedPointPerLevel()
         {
             int[] fixedPoints = LDGlobalValueCategory.Instance.GetIntArray(GlobalValueKey.Add_Point_Level_UP_Fixed);
@@ -142,17 +147,7 @@ namespace ET
         public static void AddPointsOnLevelUp(Unit unit, int newLevel)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            /*int[] fixedPoints = GetFixedPointPerLevel();
-            for (int i = 0; i < PointNumericTypes.Length; i++)
-            {
-                if (fixedPoints[i] == 0)
-                {
-                    continue;
-                }
-
-                numericComponent.ApplyValue(PointNumericTypes[i], numericComponent.GetAsInt(PointNumericTypes[i]) + fixedPoints[i], true);
-            }*/
-
+          
             int freePoints = GetFreePointByLevel(newLevel);
             if (freePoints <= 0)
             {
