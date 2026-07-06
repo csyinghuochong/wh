@@ -84,7 +84,8 @@ namespace ET
                 case "stype":
                     return this.Variables.TryGetValue("sType", out string sType) ? sType : raw;
                 default:
-                    return raw;
+                    // Bracketed editor values like "[固定速度] 1" -> token "1".
+                    return token;
             }
         }
 
