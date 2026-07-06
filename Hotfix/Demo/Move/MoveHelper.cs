@@ -9,7 +9,7 @@ namespace ET
     {
 
         // 可以多次调用，多次调用的话会取消上一次的协程
-        public static async ETTask<int> FindPathMoveToAsync(this Unit unit, Vector3 target, ETCancellationToken cancellationToken = null, bool yaogan = false, int speedrate = 100)
+        public static async ETTask<int> FindPathMoveToAsync(this Unit unit, Vector3 target, ETCancellationToken cancellationToken = null, bool yaogan = false, int speedrate = 100, int moveFlags = 0, long faceTargetId = 0)
         {
             ///以防止怪物再引力波的作用下不移动
             if (unit.GetComponent<StateComponent>().ServerCanMove()!= ErrorCode.ERR_Success)
@@ -59,6 +59,8 @@ namespace ET
                     m2CPathfindingResult.Zs.Add(vector3.z);
                 }
                 m2CPathfindingResult.SpeedRate = speedrate;
+                m2CPathfindingResult.MoveFlags = moveFlags;
+                m2CPathfindingResult.FaceTargetId = faceTargetId;
                 if (path.Count < 2)
                 {
                     LogHelper.LogWarning("path.Count < 2");
@@ -78,11 +80,40 @@ namespace ET
                 bool ret = await moveComponent.MoveToAsync(path, speed * (speedrate * 0.01f), 0, cancellationToken);
                 if (ret) // 如果返回false，说明被其它移动取消了，这时候不需要通知客户端stop
                 {
+                    TryFaceTargetOnArrive(unit, moveFlags, faceTargetId);
                     unit.SendStop(0);
                     return 0;
                 }
                 return -1;
             }
+        }
+
+        private static void TryFaceTargetOnArrive(Unit unit, int moveFlags, long faceTargetId)
+        {
+            if ((moveFlags & PathMoveFlags.FaceTargetOnArrive) == 0 || faceTargetId <= 0)
+            {
+                return;
+            }
+
+            Unit faceTarget = unit.GetParent<UnitComponent>()?.Get(faceTargetId);
+            if (faceTarget == null || faceTarget.IsDisposed)
+            {
+                return;
+            }
+
+            FaceUnitToward(unit, faceTarget.Position);
+        }
+
+        private static void FaceUnitToward(Unit unit, Vector3 worldPoint)
+        {
+            Vector3 dir = worldPoint - unit.Position;
+            dir.y = 0f;
+            if (dir.sqrMagnitude <= 1e-6f)
+            {
+                return;
+            }
+
+            unit.Rotation = Quaternion.LookRotation(dir.normalized, Vector3.up);
         }
 
 

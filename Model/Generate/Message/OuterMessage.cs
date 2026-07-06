@@ -1158,8 +1158,14 @@ namespace ET
 		[ProtoMember(7)]
 		public List<float> Zs = new List<float>();
 
+		[ProtoMember(8)]
+		public int MoveFlags { get; set; }
+
 		[ProtoMember(9)]
 		public int SpeedRate { get; set; }
+
+		[ProtoMember(10)]
+		public long FaceTargetId { get; set; }
 
 	}
 

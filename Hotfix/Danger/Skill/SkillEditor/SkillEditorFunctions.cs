@@ -1535,11 +1535,16 @@ namespace ET
 
         private static void DisplacementToTarget(SkillEditorFunctionContext ctx)
         {
+            DisplacementToTargetAsync(ctx).Coroutine();
+        }
+
+        private static async ETTask DisplacementToTargetAsync(SkillEditorFunctionContext ctx)
+        {
             Unit mover = ctx.ResolveUnit(ctx.GetParamRaw(1));
             Unit destUnit = ctx.ResolveUnit(ctx.GetParamRaw(2));
             float keepDistance = ctx.GetParamFloat(3, 0f);
             int moveType = ctx.GetParamInt(5, 0);
-            float moveParam1 = ctx.GetParamInt(6, 0);
+            float moveParam1 = ctx.GetParamFloat(6, 0f);
             bool faceTarget = ctx.GetParamBool(9, false);
             if (mover == null || destUnit == null)
             {
@@ -1553,19 +1558,25 @@ namespace ET
                 dest = destUnit.Position + dir.normalized * keepDistance;
             }
 
-            //固定速度
             int speedRate = 100;
-            if (moveType == 1)
+            if (moveType == 1 && moveParam1 > 0f)
             {
                 float nowSpeed = mover.GetSpeedNow();
-                speedRate = (int)(100 * moveParam1 / nowSpeed);
+                if (nowSpeed > 1e-6f)
+                {
+                    speedRate = (int)(100f * moveParam1 / nowSpeed);
+                }
             }
 
-            MoveUnitToPosition(mover, dest, moveType, speedRate);
+            int moveFlags = PathMoveFlags.NoRunAnim;
+            long faceTargetId = 0;
             if (faceTarget)
             {
-                FaceUnitToward(mover, destUnit.Position);
+                moveFlags |= PathMoveFlags.FaceTargetOnArrive;
+                faceTargetId = destUnit.Id;
             }
+
+            await MoveUnitToPositionAsync(mover, dest, moveType, speedRate, moveFlags, faceTargetId);
         }
 
         private static void DisplacementToDirection(SkillEditorFunctionContext ctx)
@@ -1864,6 +1875,11 @@ namespace ET
 
         private static void MoveUnitToPosition(Unit unit, Vector3 dest, int moveType, int speedRate)
         {
+            MoveUnitToPositionAsync(unit, dest, moveType, speedRate).Coroutine();
+        }
+
+        private static async ETTask MoveUnitToPositionAsync(Unit unit, Vector3 dest, int moveType, int speedRate, int moveFlags = 0, long faceTargetId = 0)
+        {
             if (unit == null || unit.IsDisposed)
             {
                 return;
@@ -1874,11 +1890,20 @@ namespace ET
             if (moveType == 0)
             {
                 unit.Position = finalPos;
+                if ((moveFlags & PathMoveFlags.FaceTargetOnArrive) != 0 && faceTargetId > 0)
+                {
+                    Unit faceTarget = unit.GetParent<UnitComponent>()?.Get(faceTargetId);
+                    if (faceTarget != null && !faceTarget.IsDisposed)
+                    {
+                        FaceUnitToward(unit, faceTarget.Position);
+                    }
+                }
+
                 unit.Stop(-2);
                 return;
             }
 
-            unit.FindPathMoveToAsync(finalPos, null, false, speedRate).Coroutine();
+            await unit.FindPathMoveToAsync(finalPos, null, false, speedRate, moveFlags, faceTargetId);
         }
 
         private static void FaceUnitToward(Unit unit, Vector3 worldPoint)
