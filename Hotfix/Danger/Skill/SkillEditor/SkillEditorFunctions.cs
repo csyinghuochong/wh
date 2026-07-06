@@ -1539,23 +1539,29 @@ namespace ET
             Unit destUnit = ctx.ResolveUnit(ctx.GetParamRaw(2));
             float keepDistance = ctx.GetParamFloat(3, 0f);
             int moveType = ctx.GetParamInt(5, 0);
-            bool faceTarget = ctx.GetParamBool(10, false);
+            float moveParam1 = ctx.GetParamInt(6, 0);
+            bool faceTarget = ctx.GetParamBool(9, false);
             if (mover == null || destUnit == null)
             {
                 return;
             }
 
             Vector3 dest = destUnit.Position;
-            if (keepDistance > 0f)
+            Vector3 dir = (mover.Position - destUnit.Position);
+            if (dir.sqrMagnitude > 1e-6f)
             {
-                Vector3 dir = (mover.Position - destUnit.Position);
-                if (dir.sqrMagnitude > 1e-6f)
-                {
-                    dest = destUnit.Position + dir.normalized * keepDistance;
-                }
+                dest = destUnit.Position + dir.normalized * keepDistance;
             }
 
-            MoveUnitToPosition(mover, dest, moveType);
+            //固定速度
+            int speedRate = 100;
+            if (moveType == 1)
+            {
+                float nowSpeed = mover.GetSpeedNow();
+                speedRate = (int)(100 * moveParam1 / nowSpeed);
+            }
+
+            MoveUnitToPosition(mover, dest, moveType, speedRate);
             if (faceTarget)
             {
                 FaceUnitToward(mover, destUnit.Position);
@@ -1584,7 +1590,7 @@ namespace ET
                 dir.Normalize();
             }
 
-            MoveUnitToPosition(mover, mover.Position + dir * distance, moveType);
+            MoveUnitToPosition(mover, mover.Position + dir * distance, moveType, 100);
         }
 
         private static void DisplacementToPoint(SkillEditorFunctionContext ctx)
@@ -1609,7 +1615,7 @@ namespace ET
                 }
             }
 
-            MoveUnitToPosition(mover, dest, moveType);
+            MoveUnitToPosition(mover, dest, moveType, 100);
         }
 
         private static void SetUnitDirection(SkillEditorFunctionContext ctx)
@@ -1856,7 +1862,7 @@ namespace ET
             return defaultValue;
         }
 
-        private static void MoveUnitToPosition(Unit unit, Vector3 dest, int moveType)
+        private static void MoveUnitToPosition(Unit unit, Vector3 dest, int moveType, int speedRate)
         {
             if (unit == null || unit.IsDisposed)
             {
@@ -1872,7 +1878,7 @@ namespace ET
                 return;
             }
 
-            unit.FindPathMoveToAsync(finalPos, null, false, 100).Coroutine();
+            unit.FindPathMoveToAsync(finalPos, null, false, speedRate).Coroutine();
         }
 
         private static void FaceUnitToward(Unit unit, Vector3 worldPoint)
