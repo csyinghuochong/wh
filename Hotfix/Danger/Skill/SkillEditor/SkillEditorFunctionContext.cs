@@ -178,6 +178,7 @@ namespace ET
             if (token.Contains("智")) { return NumericType.Point_Intelligence; }
             if (token.Contains("体")) { return NumericType.Point_Constitution; }
             if (token.Contains("耐")) { return NumericType.Point_Stamina; }
+            if (token.Contains("速度")) { return NumericType.Speed_Fixed_16; }
 
             return defaultType;
         }
