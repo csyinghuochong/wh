@@ -173,12 +173,14 @@ namespace ET
             unit.GetComponent<BagComponentServer>().GetEquipAttribute(attributeList);
             NumericInitHelper.MergeAttributes(attributeList, updateProDicList);
 
-            // 属性点：等级固定点 + 已分配点 → 战斗属性
-            int[] fixedPointByLevel = RoleAddPointHelper.GetFixedPointByLevel(roleLv);
+            // 属性点：初始点 + 等级固定点 + 已分配自由点 → 战斗属性
+            int[] initPoints = RoleAddPointHelper.GetInitPoints();
+            int[] fixedPointByLevel = RoleAddPointHelper.GetCumulativeFixedPointsByLevel(roleLv);
             int[] pointValues = new int[RoleAddPointHelper.PointNumericTypes.Length];
             for (int i = 0; i < RoleAddPointHelper.PointNumericTypes.Length; i++)
             {
-                pointValues[i] = fixedPointByLevel[i]
+                pointValues[i] = initPoints[i]
+                    + fixedPointByLevel[i]
                     + numericComponent.GetAsInt(RoleAddPointHelper.PointNumericTypes[i]);
             }
 

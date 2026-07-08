@@ -50,14 +50,21 @@ namespace ET
                     return;
                 }
 
-                int[] fixPoints = RoleAddPointHelper.GetFixedPointByLevel(level);
+                int[] initPoints = RoleAddPointHelper.GetInitPoints();
+                int[] fixPoints = RoleAddPointHelper.GetCumulativeFixedPointsByLevel(level);
                 
                 NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
                 for (int i = 0; i < RoleAddPointHelper.PointNumericTypes.Length; i++)
                 {
-                    int oldvalue = numericComponent.GetAsInt(RoleAddPointHelper.PointNumericTypes[i]);
-                    
-                    numericComponent.ApplyValue(RoleAddPointHelper.PointNumericTypes[i], assignedPoints[i] - fixPoints[i]);
+                    int freeOnStat = assignedPoints[i] - initPoints[i] - fixPoints[i];
+                    if (freeOnStat < 0)
+                    {
+                        response.Error = ErrorCode.ERR_ModifyData;
+                        reply();
+                        return;
+                    }
+
+                    numericComponent.ApplyValue(RoleAddPointHelper.PointNumericTypes[i], freeOnStat);
                 }
 
                 numericComponent.ApplyValue(NumericType.PointRemain, remainPoint);

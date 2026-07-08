@@ -20,15 +20,7 @@ namespace ET
                 return;
             }
 
-            int assigned =
-                numericComponent.GetAsInt(NumericType.Point_Strength)
-                + numericComponent.GetAsInt(NumericType.Point_Agility)
-                + numericComponent.GetAsInt(NumericType.Point_Intelligence)
-                + numericComponent.GetAsInt(NumericType.Point_Constitution)
-                + numericComponent.GetAsInt(NumericType.Point_Stamina)
-                + numericComponent.GetAsInt(NumericType.Point_Haste)
-                + numericComponent.GetAsInt(NumericType.PointRemain);
-
+            int assigned = RoleAddPointHelper.SumCurrentFreePoints(numericComponent);
             int totalPoint = RoleAddPointHelper.GetTotalPointAtLevel(roleInfoComponentServer.RoleInfo.Lv);
             if (!unit.IsRobot() && assigned > totalPoint)
             {

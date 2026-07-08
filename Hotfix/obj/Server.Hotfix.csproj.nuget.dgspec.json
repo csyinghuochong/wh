@@ -10,7 +10,7 @@
         "projectUniqueName": "E:\\LDYQReSkin\\Server\\Hotfix\\Server.Hotfix.csproj",
         "projectName": "Server.Hotfix",
         "projectPath": "E:\\LDYQReSkin\\Server\\Hotfix\\Server.Hotfix.csproj",
-        "packagesPath": "C:\\Users\\LDYQ\\AppData\\Local\\Temp\\cursor-sandbox-cache\\23d01538293428082615aa6e8a8c6f0f\\nuget",
+        "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
         "outputPath": "E:\\LDYQReSkin\\Server\\Hotfix\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -108,7 +108,7 @@
         "projectUniqueName": "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj",
         "projectName": "Server.Model",
         "projectPath": "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj",
-        "packagesPath": "C:\\Users\\LDYQ\\AppData\\Local\\Temp\\cursor-sandbox-cache\\23d01538293428082615aa6e8a8c6f0f\\nuget",
+        "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
         "outputPath": "E:\\LDYQReSkin\\Server\\Model\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -212,7 +212,7 @@
         "projectUniqueName": "E:\\LDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj",
         "projectName": "ETTask",
         "projectPath": "E:\\LDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj",
-        "packagesPath": "C:\\Users\\LDYQ\\AppData\\Local\\Temp\\cursor-sandbox-cache\\23d01538293428082615aa6e8a8c6f0f\\nuget",
+        "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
         "outputPath": "E:\\LDYQReSkin\\ThirdParty\\ETTask\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -287,7 +287,7 @@
         "projectUniqueName": "E:\\LDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj",
         "projectName": "ShareLib",
         "projectPath": "E:\\LDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj",
-        "packagesPath": "C:\\Users\\LDYQ\\AppData\\Local\\Temp\\cursor-sandbox-cache\\23d01538293428082615aa6e8a8c6f0f\\nuget",
+        "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
         "outputPath": "E:\\LDYQReSkin\\ThirdParty\\ShareLib\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -404,7 +404,7 @@
         "projectUniqueName": "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
         "projectName": "UnityEngine",
         "projectPath": "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
-        "packagesPath": "C:\\Users\\LDYQ\\AppData\\Local\\Temp\\cursor-sandbox-cache\\23d01538293428082615aa6e8a8c6f0f\\nuget",
+        "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
         "outputPath": "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [

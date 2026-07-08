@@ -3,8 +3,11 @@ using System;
 namespace ET
 {
     /// <summary>
-    /// 角色属性点：固定加点、自由加点、自动分配与洗点。
-    /// 属性顺序：力量|敏捷|智力|体质|耐力，对应 NumericType.Point_Strength ~ Point_Stamina。
+    /// 角色属性点（GlobalValue 驱动，Numeric 只存自由分配部分）：
+    /// 1. Add_Point_Init — 创角初始点（如每属性 10）
+    /// 2. Add_Point_Level_UP_Fixed — 每升 1 级每属性固定 +1，累计 = perLevel × level
+    /// 3. Add_Point_Level_UP_Free — 每升 1 级获得自由点；&lt; AutoLevel 按职业 Add_Point_Default 自动分配，否则进 PointRemain
+    /// 展示/战斗总点 = Init + Fixed(level) + 已分配自由点
     /// </summary>
     public static class RoleAddPointHelper
     {
@@ -33,6 +36,18 @@ namespace ET
             return LDGlobalValueCategory.Instance.GetTotalFreePointByLevel(level);
         }
 
+        /// <summary>创角初始属性点（Add_Point_Init）。</summary>
+        public static int[] GetInitPoints()
+        {
+            int[] initPoints = LDGlobalValueCategory.Instance.GetIntArray(GlobalValueKey.Add_Point_Init);
+            if (initPoints.Length != PointNumericTypes.Length)
+            {
+                throw new Exception($"GlobalValue {GlobalValueKey.Add_Point_Init} 长度应为 {PointNumericTypes.Length}");
+            }
+
+            return initPoints;
+        }
+
         public static int[] GetFixedPointPerLevel()
         {
             int[] fixedPoints = LDGlobalValueCategory.Instance.GetIntArray(GlobalValueKey.Add_Point_Level_UP_Fixed);
@@ -42,6 +57,24 @@ namespace ET
             }
 
             return fixedPoints;
+        }
+
+        /// <summary>当前等级累计固定属性点（0→1、1→2… 各加 perLevel，level 1 = 1 点）。</summary>
+        public static int[] GetCumulativeFixedPointsByLevel(int level)
+        {
+            if (level < 1)
+            {
+                level = 1;
+            }
+
+            int[] perLevel = GetFixedPointPerLevel();
+            int[] cumulative = new int[perLevel.Length];
+            for (int i = 0; i < perLevel.Length; i++)
+            {
+                cumulative[i] = perLevel[i] * level;
+            }
+
+            return cumulative;
         }
 
         public static int GetOccupationId(RoleInfo roleInfo)
@@ -71,34 +104,37 @@ namespace ET
             return level >= GetAutoLevel();
         }
 
-        /// <summary>当前等级累计可获得的属性点（固定 + 自由）。</summary>
+        /// <summary>指定等级累计可获得的自由属性点（不含初始点与固定点）。</summary>
         public static int GetTotalPointAtLevel(int level)
         {
-            if (level <= 1)
-            {
-                return 0;
-            }
-
-            int fixedSum = 0;
-            foreach (int point in GetFixedPointPerLevel())
-            {
-                fixedSum += point;
-            }
-
-            int total = 0;
-            for (int afterLevel = 2; afterLevel <= level; afterLevel++)
-            {
-                total += fixedSum + GetFreePointByLevel(afterLevel);
-            }
-
-            return total;
+            return GetTotalFreePointByLevel(level);
         }
 
-        public static int GetRemainPoint(int lv, int[] assignedPoints)
+        /// <summary>界面/协议用的展示点数 = 初始 + 累计固定 + Numeric 中已分配自由点。</summary>
+        public static int GetDisplayPoint(NumericComponent numericComponent, int level, int statIndex)
         {
-            int gettotalPoint = GetTotalPointAtLevel(lv);
-            int getsumPoints = SumPoints(assignedPoints);
-            return gettotalPoint - getsumPoints;
+            return GetInitPoints()[statIndex]
+                + GetCumulativeFixedPointsByLevel(level)[statIndex]
+                + numericComponent.GetAsInt(PointNumericTypes[statIndex]);
+        }
+
+        /// <summary>根据展示点数反算剩余可分配自由点。</summary>
+        public static int GetRemainPoint(int level, int[] displayPoints)
+        {
+            if (displayPoints == null || displayPoints.Length != PointNumericTypes.Length)
+            {
+                throw new Exception($"displayPoints 长度应为 {PointNumericTypes.Length}");
+            }
+
+            int[] initPoints = GetInitPoints();
+            int[] fixedPoints = GetCumulativeFixedPointsByLevel(level);
+            int assignedFree = 0;
+            for (int i = 0; i < displayPoints.Length; i++)
+            {
+                assignedFree += displayPoints[i] - initPoints[i] - fixedPoints[i];
+            }
+
+            return GetTotalFreePointByLevel(level) - assignedFree;
         }
 
         public static int SumPoints(int[] points)
@@ -112,7 +148,7 @@ namespace ET
             return sum;
         }
 
-        public static int SumCurrentPoints(NumericComponent numericComponent)
+        public static int SumCurrentFreePoints(NumericComponent numericComponent)
         {
             int sum = 0;
             for (int i = 0; i < PointNumericTypes.Length; i++)
@@ -120,6 +156,7 @@ namespace ET
                 sum += numericComponent.GetAsInt(PointNumericTypes[i]);
             }
 
+            sum += numericComponent.GetAsInt(NumericType.PointRemain);
             return sum;
         }
 
@@ -130,24 +167,18 @@ namespace ET
                 points[i] = numericComponent.GetAsInt(PointNumericTypes[i]);
             }
         }
-        
 
-        public static int[] GetFixedPointByLevel(int newLevel)
+        /// <summary>兼容旧调用：累计固定点。</summary>
+        public static int[] GetFixedPointByLevel(int level)
         {
-            int[] fixedPoints = GetFixedPointPerLevel();
-            for (int i = 0;i < fixedPoints.Length; i++)
-            {
-                fixedPoints[i] *= newLevel;
-            }
-
-            return fixedPoints;
+            return GetCumulativeFixedPointsByLevel(level);
         }
 
-        /// <summary>升级时增加 1 级的属性点。</summary>
+        /// <summary>升级时发放 1 级的自由点（固定点由公式实时计算，不入库）。</summary>
         public static void AddPointsOnLevelUp(Unit unit, int newLevel)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-          
+
             int freePoints = GetFreePointByLevel(newLevel);
             if (freePoints <= 0)
             {
@@ -174,14 +205,13 @@ namespace ET
             }
         }
 
-        /// <summary>按当前等级重算全部属性点（洗点 / 数据校验修复）。</summary>
+        /// <summary>按当前等级重算全部自由属性点（洗点 / 数据校验修复）。</summary>
         public static void RecalculateAllPoints(Unit unit)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             int level = roleInfo.Lv;
             int autoLevel = GetAutoLevel();
-            int[] fixedPoints = GetFixedPointPerLevel();
             int[] defaultPoints = GetDefaultFreeDistribution(roleInfo);
 
             for (int i = 0; i < PointNumericTypes.Length; i++)
@@ -194,21 +224,13 @@ namespace ET
             for (int lv = 1; lv < level; lv++)
             {
                 int afterLevel = lv + 1;
-                for (int i = 0; i < PointNumericTypes.Length; i++)
-                {
-                    if (fixedPoints[i] != 0)
-                    {
-                        numericComponent.ApplyValue(PointNumericTypes[i], numericComponent.GetAsInt(PointNumericTypes[i]) + fixedPoints[i], false);
-                    }
-                }
-
                 int freePoints = GetFreePointByLevel(afterLevel);
                 if (freePoints <= 0)
                 {
                     continue;
                 }
 
-                if (afterLevel < autoLevel)
+                if (afterLevel <= autoLevel)
                 {
                     for (int i = 0; i < PointNumericTypes.Length; i++)
                     {
