@@ -1385,8 +1385,8 @@ namespace ET
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
             int numericType = ctx.ResolveNumericType(ctx.GetParamRaw(2), 0);
-            long delta = SkillEditorFunctionContext.ParseLong(ctx.ResolveParam(ctx.GetParamRaw(3)), 0);
-            if (target == null || numericType <= 0 || delta == 0)
+            double deltaDisplay = SkillEditorFunctionContext.ParseDouble(ctx.ResolveParam(ctx.GetParamRaw(3)), 0d);
+            if (target == null || numericType <= 0 || Math.Abs(deltaDisplay) < 1e-9)
             {
                 return;
             }
@@ -1399,13 +1399,17 @@ namespace ET
 
             if (!AttrConfigManager.TryGetBaseAttrsForFightChange(numericType, out List<int> baseAttrs))
             {
+                long delta = NumericConvert.UsesScaledStorage(numericType)
+                    ? NumericConvert.ToStoredValue(deltaDisplay)
+                    : (long)Math.Round(deltaDisplay);
                 numeric.ApplyChange(caster, numericType, delta, ctx.SkillId);
                 return;
             }
 
+            long fightDelta = NumericConvert.ToStoredValue(deltaDisplay);
             foreach (int baseAttr in baseAttrs)
             {
-                numeric.ApplyFightFixedChange(caster, baseAttr, delta, ctx.SkillId);
+                numeric.ApplyFightFixedChange(caster, baseAttr, fightDelta, ctx.SkillId);
             }
         }
 
@@ -1429,13 +1433,17 @@ namespace ET
             float percentDelta = (float)(percent / 100d);
             if (!AttrConfigManager.TryGetBaseAttrsForFightChange(numericType, out List<int> baseAttrs))
             {
-                long baseValue = numeric.GetAsLong(numericType);
-                long delta = (long)(baseValue * percent / 100d);
-                if (delta != 0)
+                double baseValue = numeric.GetAsFloat(numericType);
+                double deltaDisplay = baseValue * percent / 100d;
+                if (Math.Abs(deltaDisplay) < 1e-9)
                 {
-                    numeric.ApplyChange(caster, numericType, delta, ctx.SkillId);
+                    return;
                 }
 
+                long delta = NumericConvert.UsesScaledStorage(numericType)
+                    ? NumericConvert.ToStoredValue(deltaDisplay)
+                    : (long)Math.Round(deltaDisplay);
+                numeric.ApplyChange(caster, numericType, delta, ctx.SkillId);
                 return;
             }
 

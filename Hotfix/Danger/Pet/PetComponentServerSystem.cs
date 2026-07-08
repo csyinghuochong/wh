@@ -977,7 +977,7 @@ namespace ET
                     {
                         string[] attriItem = attriList[a].Split(';');
                         int typeId = int.Parse(attriItem[0]);
-                        Function_Fight.AddUpdateProDicList(typeId, NumericHelp.ParseConfigToStored(typeId, attriItem[1]), attriDic);
+                        Function_Fight.AddUpdateProDicList(typeId, long.Parse(attriItem[1]), attriDic);
                     }
                     catch (Exception ex)
                     {
@@ -1002,7 +1002,7 @@ namespace ET
                     {
                         string[] attriItem = attriList[a].Split(',');
                         int typeId = int.Parse(attriItem[0]);
-                        Function_Fight.AddUpdateProDicList(typeId, NumericHelp.ParseConfigToStored(typeId, attriItem[1]), attriDic);
+                        Function_Fight.AddUpdateProDicList(typeId, long.Parse(attriItem[1]), attriDic);
                     }
                     catch (Exception ex)
                     {

@@ -191,12 +191,18 @@ namespace ET
             // 批量写入分项属性，每个基础属性只重算一次
             numericComponent.ApplyAttributeDictionary(updateProDicList, false);
 
+
+
             if (notice)
             {
                 SendBaseAttributeListUpdate(unit, numericComponent);
             }
 
             UpdateCombat(unit, numericComponent, notice);
+
+
+            float hpcur = numericComponent.GetAsFloat(NumericType.HP_Max_10);
+
 
             if (rank)
             {

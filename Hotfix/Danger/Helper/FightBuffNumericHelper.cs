@@ -30,8 +30,8 @@ namespace ET
                 return;
             }
 
-            long newValue = numericComponent.GetAsLong(numericType) + value;
-            numericComponent.Set(numericType, newValue);
+            long newValue = numericComponent.GetStoredValue(numericType) + value;
+            numericComponent.Update(numericType, newValue);
         }
 
         public static void BuffPropertyUpdate_Float(Unit unit, int numericType, float value)

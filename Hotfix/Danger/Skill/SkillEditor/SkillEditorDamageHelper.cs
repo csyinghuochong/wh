@@ -43,67 +43,65 @@ namespace ET
                 return;
             }
 
-            
-            double physicalPower = GetParamDouble(ctx, 4, 0d);//物理威力
-            double magicPower = GetParamDouble(ctx, 5, 0d);  //法术威力
-            double pdefPower = GetParamDouble(ctx, 6, 0d);  //物防威力
-            double mdefPower = GetParamDouble(ctx, 7, 0d);  //法防威力
-
+            double physicalPower = GetParamDouble(ctx, 4, 0d);
+            double magicPower = GetParamDouble(ctx, 5, 0d);
+            double pdefPower = GetParamDouble(ctx, 6, 0d);
+            double mdefPower = GetParamDouble(ctx, 7, 0d);
             ApplyDefaultPower(kind, ref physicalPower, ref magicPower);
 
-            long minPatk = casterNumeric.GetAsLong(NumericType.PATK_Min_21);  //最小物攻
-            long maxPatk = casterNumeric.GetAsLong(NumericType.PATK_Max_22);  //最大物攻
-            long minMatk = casterNumeric.GetAsLong(NumericType.MATK_Min_31);
-            long maxMatk = casterNumeric.GetAsLong(NumericType.MATK_Max_32);
+            double minPatk = casterNumeric.GetAsFloat(NumericType.PATK_Min_21);
+            double maxPatk = casterNumeric.GetAsFloat(NumericType.PATK_Max_22);
+            double minMatk = casterNumeric.GetAsFloat(NumericType.MATK_Min_31);
+            double maxMatk = casterNumeric.GetAsFloat(NumericType.MATK_Max_32);
 
-            long minBonus = (long)EvalLevelGrowth(
+            double minBonus = EvalLevelGrowth(
                 level,
                 GetParamDouble(ctx, 8, 0d),
                 GetParamDouble(ctx, 9, 0d),
                 GetParamDouble(ctx, 10, 0d));
-            long maxBonus = (long)EvalLevelGrowth(
+            double maxBonus = EvalLevelGrowth(
                 level,
                 GetParamDouble(ctx, 11, 0d),
                 GetParamDouble(ctx, 12, 0d),
                 GetParamDouble(ctx, 13, 0d));
 
-            long extraBonus = ResolveExtraBonus(ctx, caster, 14, 15) + ResolveExtraBonus(ctx, caster, 16, 17);
+            double extraBonus = ResolveExtraBonus(ctx, caster, 14, 15) + ResolveExtraBonus(ctx, caster, 16, 17);
             minPatk += minBonus + extraBonus;
             maxPatk += maxBonus + extraBonus;
             if (minPatk > maxPatk)
             {
-                long tmp = minPatk;
+                double tmp = minPatk;
                 minPatk = maxPatk;
                 maxPatk = tmp;
             }
 
-            long rolledPatk = RollLong(minPatk, maxPatk);
-            long rolledMatk = RollLong(minMatk, maxMatk);
+            double rolledPatk = RollDouble(minPatk, maxPatk);
+            double rolledMatk = RollDouble(minMatk, maxMatk);
             double attack = rolledPatk * physicalPower + rolledMatk * magicPower;
 
             if (Math.Abs(pdefPower) > 1e-9)
             {
-                attack += RollLong(
-                    targetNumeric.GetAsLong(NumericType.PDEF_Min_41),
-                    targetNumeric.GetAsLong(NumericType.PDEF_Max_42)) * pdefPower;
+                attack += RollDouble(
+                    targetNumeric.GetAsFloat(NumericType.PDEF_Min_41),
+                    targetNumeric.GetAsFloat(NumericType.PDEF_Max_42)) * pdefPower;
             }
 
             if (Math.Abs(mdefPower) > 1e-9)
             {
-                attack += RollLong(
-                    targetNumeric.GetAsLong(NumericType.MDEF_Min_51),
-                    targetNumeric.GetAsLong(NumericType.MDEF_Max_52)) * mdefPower;
+                attack += RollDouble(
+                    targetNumeric.GetAsFloat(NumericType.MDEF_Min_51),
+                    targetNumeric.GetAsFloat(NumericType.MDEF_Max_52)) * mdefPower;
             }
 
             double ignoreDefRatio = Clamp01(GetParamDouble(ctx, 18, 0d));
-            long ignoreMinDef = (long)GetParamDouble(ctx, 19, 0d);
-            long ignoreMaxDef = (long)GetParamDouble(ctx, 20, 0d);
-            long defense;
+            double ignoreMinDef = GetParamDouble(ctx, 19, 0d);
+            double ignoreMaxDef = GetParamDouble(ctx, 20, 0d);
+            double defense;
             if (kind == SkillEditorDamageKind.Magic)
             {
                 defense = RollDefense(
-                    targetNumeric.GetAsLong(NumericType.MDEF_Min_51),
-                    targetNumeric.GetAsLong(NumericType.MDEF_Max_52),
+                    targetNumeric.GetAsFloat(NumericType.MDEF_Min_51),
+                    targetNumeric.GetAsFloat(NumericType.MDEF_Max_52),
                     ignoreDefRatio,
                     ignoreMinDef,
                     ignoreMaxDef);
@@ -111,22 +109,22 @@ namespace ET
             else
             {
                 defense = RollDefense(
-                    targetNumeric.GetAsLong(NumericType.PDEF_Min_41),
-                    targetNumeric.GetAsLong(NumericType.PDEF_Max_42),
+                    targetNumeric.GetAsFloat(NumericType.PDEF_Min_41),
+                    targetNumeric.GetAsFloat(NumericType.PDEF_Max_42),
                     ignoreDefRatio,
                     ignoreMinDef,
                     ignoreMaxDef);
             }
 
-            long normalDamage = Math.Max(1L, (long)(attack - defense));
+            long normalDamage = Math.Max(1L, (long)Math.Round(attack - defense));
 
             double critBonus = GetParamDouble(ctx, 21, 0d);
             if (rs > SkillEditorHitResult.Hit)
             {
                 double critMultiplier = DefaultCritMultiplier
                     + critBonus
-                    + casterNumeric.GetAsLong(NumericType.P_CRI_DMG_PerMyriad_72) / 10000d;
-                normalDamage = Math.Max(1L, (long)(normalDamage * critMultiplier));
+                    + casterNumeric.GetAsFloat(NumericType.P_CRI_DMG_PerMyriad_72);
+                normalDamage = Math.Max(1L, (long)Math.Round(normalDamage * critMultiplier));
             }
 
             int normalSplit = Math.Max(1, ctx.GetParamInt(35, 1));
@@ -182,11 +180,11 @@ namespace ET
                 return;
             }
 
-            long minValue = ctx.ResolveNumericAttribute(caster, ctx.GetParamRaw(4), NumericType.PATK_Min_21);
-            long maxValue = ctx.ResolveNumericAttribute(caster, ctx.GetParamRaw(5), minValue);
+            double minValue = ctx.GetUnitNumericDisplayValue(caster, ResolveHealNumericType(ctx, ctx.GetParamRaw(4)), 0d);
+            double maxValue = ctx.GetUnitNumericDisplayValue(caster, ResolveHealNumericType(ctx, ctx.GetParamRaw(5)), minValue);
             if (minValue > maxValue)
             {
-                long tmp = minValue;
+                double tmp = minValue;
                 minValue = maxValue;
                 maxValue = tmp;
             }
@@ -197,9 +195,15 @@ namespace ET
                 power = 1d;
             }
 
-            long amount = Math.Max(1L, (long)(RollLong(minValue, maxValue) * power));
+            long amount = Math.Max(1L, (long)Math.Round(RollDouble(minValue, maxValue) * power));
             targetNumeric.ApplyChange(caster, NumericType.HP_Current_8, amount, skillId);
             Log.Debug($"CALCULATE_HEAL_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} heal={amount}");
+        }
+
+        private static int ResolveHealNumericType(SkillEditorFunctionContext ctx, string raw)
+        {
+            int numericType = ctx.ResolveNumericType(raw, 0);
+            return numericType > 0 ? numericType : NumericType.PATK_Min_21;
         }
 
         private static void ApplyDefaultPower(SkillEditorDamageKind kind, ref double physicalPower, ref double magicPower)
@@ -217,21 +221,21 @@ namespace ET
             }
         }
 
-        private static long ResolveExtraBonus(SkillEditorFunctionContext ctx, Unit unit, int attrIndex, int coefIndex)
+        private static double ResolveExtraBonus(SkillEditorFunctionContext ctx, Unit unit, int attrIndex, int coefIndex)
         {
             int numericType = ctx.ResolveNumericType(ctx.GetParamRaw(attrIndex), 0);
             if (numericType <= 0)
             {
-                return 0;
+                return 0d;
             }
 
             double coef = GetParamDouble(ctx, coefIndex, 0d);
             if (Math.Abs(coef) < 1e-9)
             {
-                return 0;
+                return 0d;
             }
 
-            return (long)(ctx.GetUnitNumericValue(unit, numericType, 0) * coef);
+            return ctx.GetUnitNumericDisplayValue(unit, numericType, 0d) * coef;
         }
 
         private static long ResolveElementalDamage(SkillEditorFunctionContext ctx, int splitParamIndex)
@@ -247,57 +251,57 @@ namespace ET
             }
 
             int split = Math.Max(1, ctx.GetParamInt(splitParamIndex, 1));
-            return Math.Max(0L, (long)(total / split));
+            return Math.Max(0L, (long)Math.Round(total / split));
         }
 
         private static long ResolveHpDamage(
             SkillEditorFunctionContext ctx,
             NumericComponent casterNumeric,
             NumericComponent targetNumeric,
-            long defense,
+            double defense,
             bool useReduction)
         {
-            long casterHpMax = casterNumeric.GetAsLong(NumericType.HP_Max_10);
-            long targetHpMax = targetNumeric.GetAsLong(NumericType.HP_Max_10);
+            double casterHpMax = casterNumeric.GetAsFloat(NumericType.HP_Max_10);
+            double targetHpMax = targetNumeric.GetAsFloat(NumericType.HP_Max_10);
 
             long casterPart = CapPercentDamage(
                 casterHpMax,
                 GetParamDouble(ctx, 27, 0d),
-                (long)GetParamDouble(ctx, 28, 0d));
+                GetParamDouble(ctx, 28, 0d));
             long targetPart = CapPercentDamage(
                 targetHpMax,
                 GetParamDouble(ctx, 29, 0d),
-                (long)GetParamDouble(ctx, 30, 0d));
+                GetParamDouble(ctx, 30, 0d));
 
-            long hpDamage = casterPart + targetPart;
-            if (hpDamage <= 0)
+            double hpDamage = casterPart + targetPart;
+            if (hpDamage <= 0d)
             {
                 return 0;
             }
 
-            if (useReduction && defense > 0)
+            if (useReduction && defense > 0d)
             {
-                hpDamage = Math.Max(0L, hpDamage - defense);
+                hpDamage = Math.Max(0d, hpDamage - defense);
             }
 
             int split = Math.Max(1, ctx.GetParamInt(37, 1));
-            return Math.Max(0L, hpDamage / split);
+            return Math.Max(0L, (long)Math.Round(hpDamage / split));
         }
 
-        private static long CapPercentDamage(long hpMax, double ratio, long cap)
+        private static long CapPercentDamage(double hpMax, double ratio, double cap)
         {
-            if (hpMax <= 0 || ratio <= 0d)
+            if (hpMax <= 0d || ratio <= 0d)
             {
                 return 0;
             }
 
-            long damage = (long)(hpMax * ratio);
-            if (cap > 0 && damage > cap)
+            double damage = hpMax * ratio;
+            if (cap > 0d && damage > cap)
             {
                 damage = cap;
             }
 
-            return Math.Max(0L, damage);
+            return Math.Max(0L, (long)Math.Round(damage));
         }
 
         private static void ApplyDamage(
@@ -312,7 +316,7 @@ namespace ET
             long damageToHp = totalDamage;
             if (!ignoreShield)
             {
-                long shieldHp = targetNumeric.GetAsLong(NumericType.Now_Shield_HP);
+                long shieldHp = targetNumeric.GetStoredValue(NumericType.Now_Shield_HP);
                 if (shieldHp > 0)
                 {
                     long absorbed = Math.Min(shieldHp, damageToHp);
@@ -336,7 +340,7 @@ namespace ET
                 return;
             }
 
-            long heal = (long)(damage * ratio);
+            long heal = (long)Math.Round(damage * ratio);
             if (heal <= 0)
             {
                 return;
@@ -345,28 +349,34 @@ namespace ET
             casterNumeric.ApplyChange(caster, NumericType.HP_Current_8, heal, skillId);
         }
 
-        private static long RollDefense(long minDef, long maxDef, double ignoreRatio, long ignoreMin, long ignoreMax)
+        private static double RollDefense(
+            double minDef,
+            double maxDef,
+            double ignoreRatio,
+            double ignoreMin,
+            double ignoreMax)
         {
-            long adjustedMin = (long)Math.Max(0d, minDef * (1d - ignoreRatio) - ignoreMin);
-            long adjustedMax = (long)Math.Max(0d, maxDef * (1d - ignoreRatio) - ignoreMax);
+            double adjustedMin = Math.Max(0d, minDef * (1d - ignoreRatio) - ignoreMin);
+            double adjustedMax = Math.Max(0d, maxDef * (1d - ignoreRatio) - ignoreMax);
             if (adjustedMin > adjustedMax)
             {
-                long tmp = adjustedMin;
+                double tmp = adjustedMin;
                 adjustedMin = adjustedMax;
                 adjustedMax = tmp;
             }
 
-            return RollLong(adjustedMin, adjustedMax);
+            return RollDouble(adjustedMin, adjustedMax);
         }
 
-        private static long RollLong(long minValue, long maxValue)
+        private static double RollDouble(double minValue, double maxValue)
         {
             if (minValue >= maxValue)
             {
                 return minValue;
             }
 
-            return RandomHelper.RandomNumber((int)minValue, (int)maxValue);
+            double range = maxValue - minValue;
+            return minValue + RandomHelper.RandFloat01() * range;
         }
 
         private static double EvalLevelGrowth(int level, double quad, double linear, double constant)

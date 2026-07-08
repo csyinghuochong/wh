@@ -182,6 +182,17 @@ namespace ET
             return defaultType;
         }
 
+        public double GetUnitNumericDisplayValue(Unit unit, int numericType, double defaultValue = 0d)
+        {
+            if (unit == null)
+            {
+                return defaultValue;
+            }
+
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            return numeric == null ? defaultValue : numeric.GetAsFloat(numericType);
+        }
+
         public long GetUnitNumericValue(Unit unit, int numericType, long defaultValue = 0)
         {
             if (unit == null)
