@@ -87,9 +87,9 @@ namespace ET
 		/// <summary>模型</summary>
 		[ProtoMember(4)]
 		public string Model { get; set; }
-		/// <summary>初始属性</summary>
+		/// <summary>生命系数</summary>
 		[ProtoMember(5)]
-		public string Attribute_Init { get; set; }
+		public double Hp_Param { get; set; }
 		/// <summary>默认普攻</summary>
 		[ProtoMember(6)]
 		public int Skill_Normal_Default { get; set; }

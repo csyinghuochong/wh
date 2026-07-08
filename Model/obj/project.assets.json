@@ -6890,7 +6890,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\LDYQ\\.nuget\\packages\\": {}
+    "C:\\Users\\LDYQ\\AppData\\Local\\Temp\\cursor-sandbox-cache\\23d01538293428082615aa6e8a8c6f0f\\nuget": {}
   },
   "project": {
     "version": "1.0.0",
@@ -6898,7 +6898,7 @@
       "projectUniqueName": "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj",
       "projectName": "Server.Model",
       "projectPath": "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj",
-      "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\LDYQ\\AppData\\Local\\Temp\\cursor-sandbox-cache\\23d01538293428082615aa6e8a8c6f0f\\nuget",
       "outputPath": "E:\\LDYQReSkin\\Server\\Model\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [

@@ -76,19 +76,40 @@ namespace ET
 
         private static bool RollDodge(Unit caster, Unit target)
         {
-            // TODO: read dodge rate from NumericComponent when attribute ids are wired
-            return false;
+            NumericComponent casterNumeric = caster?.GetComponent<NumericComponent>();
+            NumericComponent targetNumeric = target?.GetComponent<NumericComponent>();
+            if (targetNumeric == null)
+            {
+                return false;
+            }
+
+            // 闪避率 = 基础 + 受击方闪避(68) - 攻击方命中(66)，万分率
+            long dodgeRate = 500
+                + NumericRatingHelper.GetRatePoints(targetNumeric, NumericType.P_DODGE_Fixed_68)
+                - NumericRatingHelper.GetRatePoints(casterNumeric, NumericType.P_HIT_Fixed_66);
+            if (dodgeRate <= 0)
+            {
+                return false;
+            }
+
+            return RandomHelper.RandomNumber(0, 10000) < dodgeRate;
         }
 
         private static bool RollCrit(Unit caster, Unit target, int critRateAdd)
         {
-            float critRate = 500 + critRateAdd;
+            NumericComponent casterNumeric = caster?.GetComponent<NumericComponent>();
+            NumericComponent targetNumeric = target?.GetComponent<NumericComponent>();
+            // 暴击率 = 基础 + 攻击方暴击(70) - 受击方抗暴(74) + 技能附加，万分率
+            long critRate = 500
+                + critRateAdd
+                + NumericRatingHelper.GetRatePoints(casterNumeric, NumericType.P_CRI_Fixed_70)
+                - NumericRatingHelper.GetRatePoints(targetNumeric, NumericType.P_CRI_RES_Fixed_74);
             if (critRate <= 0)
             {
                 return false;
             }
 
-            return RandomHelper.RandFloat01() < critRate / 10000f;
+            return RandomHelper.RandomNumber(0, 10000) < critRate;
         }
 
         private static void ApplyHate(Unit caster, Unit target, float hateInit, float hateGrowth, int skillLevel)

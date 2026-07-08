@@ -81,6 +81,9 @@ namespace ET
 		/// <summary>角色升级经验</summary>
 		[ProtoMember(2)]
 		public int Exp_Role { get; set; }
+		/// <summary>角色标准生命</summary>
+		[ProtoMember(3)]
+		public int Hp_Standard { get; set; }
 
 	}
 }
