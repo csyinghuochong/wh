@@ -594,7 +594,6 @@ namespace ET
             int hitRateAdd = ctx.GetParamInt(10, 0);
 
             if (caster == null || target == null)
-
             {
 
                 ctx.SetVariable("rs", SkillEditorHitResult.Miss);
@@ -602,7 +601,6 @@ namespace ET
                 ctx.LastConditionResult = false;
 
                 return;
-
             }
 
             bool canImmune = canBlockAsImmune && canBlock;
@@ -953,71 +951,17 @@ namespace ET
 
         private static void CalculatePhysicsDamage(SkillEditorFunctionContext ctx)
         {
-            CalculateSkillDamage(ctx, isHeal: false);
+            SkillEditorDamageHelper.CalculateDamage(ctx, SkillEditorDamageKind.Physics);
         }
 
         private static void CalculateMagicDamage(SkillEditorFunctionContext ctx)
         {
-            CalculateSkillDamage(ctx, isHeal: false);
+            SkillEditorDamageHelper.CalculateDamage(ctx, SkillEditorDamageKind.Magic);
         }
 
         private static void CalculateHealDamage(SkillEditorFunctionContext ctx)
         {
-            CalculateSkillDamage(ctx, isHeal: true);
-        }
-
-        private static void CalculateSkillDamage(SkillEditorFunctionContext ctx, bool isHeal)
-        {
-            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
-            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
-            int skillId = ctx.GetParamInt(2, ctx.SkillId);
-            int level = ctx.GetParamInt(3, ctx.SkillLevel);
-            if (caster == null || target == null || caster.IsDisposed || target.IsDisposed)
-            {
-                return;
-            }
-
-            long minAtk = ctx.ResolveNumericAttribute(caster, ctx.GetParamRaw(4), 0);
-            long maxAtk = ctx.ResolveNumericAttribute(caster, ctx.GetParamRaw(5), minAtk);
-            if (minAtk > maxAtk)
-            {
-                long tmp = minAtk;
-                minAtk = maxAtk;
-                maxAtk = tmp;
-            }
-
-            float power = ctx.GetParamFloat(6, 1f);
-            long atk = minAtk == maxAtk
-                ? minAtk
-                : RandomHelper.RandomNumber((int)minAtk, (int)maxAtk);
-            long amount = (long)(atk * power);
-            if (amount <= 0)
-            {
-                amount = 1;
-            }
-
-            long rs = ctx.GetVariable("rs", 1);
-            if (rs > 1)
-            {
-                amount = (long)(amount * 1.5f);
-            }
-
-            NumericComponent targetNumeric = target.GetComponent<NumericComponent>();
-            if (targetNumeric == null)
-            {
-                return;
-            }
-
-            if (isHeal)
-            {
-                targetNumeric.ApplyChange(caster, NumericType.HP_Current_8, amount, skillId);
-                Log.Debug($"CALCULATE_HEAL_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} heal={amount}");
-            }
-            else
-            {
-                targetNumeric.ApplyChange(caster, NumericType.HP_Current_8, -amount, skillId);
-                Log.Debug($"CALCULATE_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} damage={amount}");
-            }
+            SkillEditorDamageHelper.CalculateHeal(ctx);
         }
 
         private static void BuffDataSet(SkillEditorFunctionContext ctx)
