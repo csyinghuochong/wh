@@ -104,7 +104,7 @@ namespace ET
                 int dropId = int.Parse(ldGlobalValue.Value);
                 List<RewardItem> rewardItems = new List<RewardItem>();
                 DropHelper.DropIDToDropItem(dropId, rewardItems);
-                DropHelper.zhenglirewardItems(rewardItems);
+                DropHelper.ZhengLiRewardItems(rewardItems);
                 m2C_FubenSettlement.ReardList.AddRange(rewardItems);
                 m2C_FubenSettlement.StarInfos = new List<int> { 1, 1, 1 };
 

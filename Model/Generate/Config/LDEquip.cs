@@ -102,14 +102,17 @@ namespace ET
 		/// <summary>套装ID</summary>
 		[ProtoMember(9)]
 		public int EquipSuitID { get; set; }
-		/// <summary>属性</summary>
+		/// <summary>套装 点数</summary>
 		[ProtoMember(10)]
+		public int EquipSuitParam { get; set; }
+		/// <summary>属性</summary>
+		[ProtoMember(11)]
 		public string Attribute { get; set; }
 		/// <summary>强化 上限</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int Enhance { get; set; }
 		/// <summary>强化属性</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public string Enhance_Attribute { get; set; }
 
 	}

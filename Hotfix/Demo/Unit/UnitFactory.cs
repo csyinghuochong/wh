@@ -595,20 +595,10 @@ namespace ET
             //根据怪物ID获得掉落ID
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(monsterID);
             List<RewardItem> dropItemList = new List<RewardItem>();
-            int[] dropID = null; //ldMonsterCof.DropID;
+            int dropID = 1; //ldMonsterCof.DropID;
 
-            if (dropID != null)
-            {
-                for (int i = 0; i < dropID.Length; i++)
-                {
-                    if (dropID[i] == 0)
-                        continue;
-                    LDDrop ldDrop = LDDropCategory.Instance.Get(dropID[i]);
-                    List<RewardItem> dropItemList_2 = new List<RewardItem>();
-                    DropHelper.DropIDToDropItem(dropID[i], dropItemList_2, monsterID, dropProValue, all);
-                    dropItemList.AddRange(dropItemList_2);
-                }
-            }
+            DropHelper.DropIDToDropItem(dropID, dropItemList, monsterID, dropProValue, all);
+
             return dropItemList;
         }
 

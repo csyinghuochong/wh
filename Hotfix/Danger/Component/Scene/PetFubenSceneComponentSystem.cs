@@ -50,7 +50,7 @@ namespace ET
                 List<RewardItem> rewardItems = new List<RewardItem>();
 
                 DropHelper.DropIDToDropItem(dropId, rewardItems);
-                DropHelper.zhenglirewardItems(rewardItems);
+                DropHelper.ZhengLiRewardItems(rewardItems);
 
                 m2C_FubenSettlement.ReardList.AddRange(rewardItems);
                 self.MainUnit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}");
