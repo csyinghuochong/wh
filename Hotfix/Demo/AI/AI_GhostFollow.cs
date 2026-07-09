@@ -23,13 +23,13 @@ namespace ET
             }
 
             float distance = Vector3.Distance(unit.Position, master.Position);
-            if (distance > aiComponent.ActRange)    //超出追击距离，返回
+            if (distance > aiComponent.LoseAggro)    //超出追击距离，返回
             {
                 aiComponent.TargetID = 0;
                 return true;
             }
 
-            Unit nearest = AIGetTargetHelp.GetNearestEnemyInRange(master, master.Position, aiComponent.ActRange, unit.Position);
+            Unit nearest = AIGetTargetHelp.GetNearestEnemyInRange(master, master.Position, aiComponent.SearchRange, unit.Position);
             if (nearest != null)
             {
                 aiComponent.TargetID = nearest.Id;

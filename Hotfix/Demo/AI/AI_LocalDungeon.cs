@@ -24,7 +24,7 @@ namespace ET
                 Log.Error($"aiComponent.LocalDungeonUnit == null: scenetype:{ aiComponent.SceneTypeEnum}  confidid: {unit.ConfigId}");
                 return true;
             }
-            if (PositionHelper.Distance2D(unit, aiComponent.LocalDungeonUnit) <= aiComponent.ActRange)
+            if (PositionHelper.Distance2D(unit, aiComponent.LocalDungeonUnit) <= aiComponent.SearchRange)
             {
                 nearest = aiComponent.LocalDungeonUnit;
             }

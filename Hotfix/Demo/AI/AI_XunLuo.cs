@@ -24,7 +24,7 @@ namespace ET
             }
             else
             {
-                nearestEnemy = AIGetTargetHelp.GetNearestEnemy(unit, aiComponent.ActRange, true); ;
+                nearestEnemy = AIGetTargetHelp.GetNearestEnemy(unit, aiComponent.SearchRange, true); ;
             } 
             if (nearestEnemy == null)
             {

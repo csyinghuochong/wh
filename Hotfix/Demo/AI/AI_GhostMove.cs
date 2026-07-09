@@ -20,7 +20,7 @@ namespace ET
             Unit master = aiComponent.UnitComponent.Get(masterid);
 
             float distance = Vector3.Distance(unit.Position, master.Position);
-            return aiComponent.TargetID == 0 && distance < aiComponent.ActRange;
+            return aiComponent.TargetID == 0 && distance < aiComponent.ActDistance;
         }
 
         public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
@@ -39,7 +39,7 @@ namespace ET
                 if (master != null && !master.IsDisposed)
                 {
                     //随机坐标
-                    float randomrange = aiComponent.ActRange;
+                    float randomrange = aiComponent.ActDistance;
                     Vector3 targetpos = AIGetTargetHelp.GetRandomPointInRing(master.Position, 2, randomrange);
 
                     aiComponent.LastAttackTime = 0;

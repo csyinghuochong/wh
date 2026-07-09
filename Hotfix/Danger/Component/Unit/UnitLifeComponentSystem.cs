@@ -103,12 +103,6 @@ namespace ET
 
             if (unit.Type == UnitType.Player && attack != null && attack.Type == UnitType.Monster)
             {
-                Unit nearest = AIGetTargetHelp.GetNearestEnemy(attack, attack.GetComponent<AIComponent>().ActRange);
-                if (nearest == null)
-                {
-                    attack.GetComponent<AIComponent>().ChangeTarget(0);
-                    attack.GetComponent<SkillManagerComponent>().OnFinish(true);
-                }
 
                 List<Unit> units = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Monster);
                 for (int i = 0; i < units.Count; i++)

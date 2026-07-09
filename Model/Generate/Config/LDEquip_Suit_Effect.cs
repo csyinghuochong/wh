@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDEquip_SuitCategory : ProtoObject, IMerge
+    public partial class LDEquip_Suit_EffectCategory : ProtoObject, IMerge
     {
-        public static LDEquip_SuitCategory Instance;
+        public static LDEquip_Suit_EffectCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDEquip_Suit> dict = new Dictionary<int, LDEquip_Suit>();
+        private Dictionary<int, LDEquip_Suit_Effect> dict = new Dictionary<int, LDEquip_Suit_Effect>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDEquip_Suit> list = new List<LDEquip_Suit>();
+        private List<LDEquip_Suit_Effect> list = new List<LDEquip_Suit_Effect>();
 		
-        public LDEquip_SuitCategory()
+        public LDEquip_Suit_EffectCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDEquip_SuitCategory s = o as LDEquip_SuitCategory;
+            LDEquip_Suit_EffectCategory s = o as LDEquip_Suit_EffectCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDEquip_Suit config in list)
+            foreach (LDEquip_Suit_Effect config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDEquip_Suit Get(int id)
+        public LDEquip_Suit_Effect Get(int id)
         {
-            this.dict.TryGetValue(id, out LDEquip_Suit item);
+            this.dict.TryGetValue(id, out LDEquip_Suit_Effect item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDEquip_Suit)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDEquip_Suit_Effect)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDEquip_Suit> GetAll()
+        public Dictionary<int, LDEquip_Suit_Effect> GetAll()
         {
             return this.dict;
         }
 
-        public LDEquip_Suit GetOne()
+        public LDEquip_Suit_Effect GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +73,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDEquip_Suit: ProtoObject, IConfig
+	public partial class LDEquip_Suit_Effect: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -81,15 +81,6 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>部位</summary>
-		[ProtoMember(3)]
-		public int[] Type_Id { get; set; }
-		/// <summary>装备ID</summary>
-		[ProtoMember(4)]
-		public int[] Equip_Id { get; set; }
-		/// <summary>效果组</summary>
-		[ProtoMember(5)]
-		public string Effect_Id { get; set; }
 
 	}
 }

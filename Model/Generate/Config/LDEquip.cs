@@ -105,6 +105,12 @@ namespace ET
 		/// <summary>属性</summary>
 		[ProtoMember(10)]
 		public string Attribute { get; set; }
+		/// <summary>强化 上限</summary>
+		[ProtoMember(11)]
+		public int Enhance { get; set; }
+		/// <summary>强化属性</summary>
+		[ProtoMember(12)]
+		public string Enhance_Attribute { get; set; }
 
 	}
 }

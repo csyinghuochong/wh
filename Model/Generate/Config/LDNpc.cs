@@ -99,6 +99,9 @@ namespace ET
 		/// <summary>参数</summary>
 		[ProtoMember(8)]
 		public int[] Param { get; set; }
+		/// <summary>雷达 显示</summary>
+		[ProtoMember(9)]
+		public int Rader { get; set; }
 
 	}
 }

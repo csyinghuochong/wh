@@ -1575,23 +1575,8 @@ namespace ET
                     }
                 }
 
-                string[] equipSuitProList = ldEquipSuitCof.Property.Split('|');
-                for (int y = 0; y < equipSuitProList.Length; y++)
-                {
-                    if(CommonHelper.IfNull(equipSuitProList[y]))
-                    {
-                        continue;
-                    }
-
-                    int NeedNum = int.Parse(equipSuitProList[y].Split('_')[0]);
-                    int NeedID = int.Parse(equipSuitProList[y].Split('_')[1]);
-                    if (num >= NeedNum)
-                    {
-                        //激活对应套装属性
-                        LDEquip_Suit_Property ldEquipSuitProCof = LDEquip_Suit_PropertyCategory.Instance.Get(NeedID);
-                       
-                    }
-                }
+                string[] equipSuitProList = ldEquipSuitCof.Effect_Id.Split('|');
+               
             }
             
             for (int i = 0; i < equipList.Count; i++)
