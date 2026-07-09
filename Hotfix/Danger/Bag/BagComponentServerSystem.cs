@@ -59,7 +59,7 @@ namespace ET
         {
             List<BagInfo> allequiplist = new List<BagInfo>();
             allequiplist.AddRange(self.EquipList);
-            allequiplist.AddRange(self.EquipList_2);
+
 
             for (int i = 0; i < allequiplist.Count; i++)
             {
@@ -291,7 +291,6 @@ namespace ET
                     continue;
                 }
                 
-              
                 if (bagInfos[i].ItemNum <= 0)
                 {
                     Console.WriteLine($"CheckValiedItem22:  {bagInfos[i].ItemID}   {bagInfos[i].ItemNum}");
@@ -303,11 +302,8 @@ namespace ET
             }
         }
 
-        //获取自身所有的道具
-        public static List<BagInfo> GetAllItems(this BagComponentServer self, int occ, int occTwo)
+        public static void CheckAllItem(this BagComponentServer self, int occ, int occTwo)
         {
-            List<BagInfo> bagList = new List<BagInfo>();
-
             self.CheckValiedItem(self.GemList, occ, occTwo);
             self.CheckValiedItem(self.BagItemList, occ, occTwo);
             self.CheckValiedItem(self.EquipList, occ, occTwo);
@@ -317,17 +313,15 @@ namespace ET
             self.CheckValiedItem(self.Warehouse2, occ, occTwo);
             self.CheckValiedItem(self.Warehouse3, occ, occTwo);
             self.CheckValiedItem(self.Warehouse4, occ, occTwo);
-            //self.CheckValiedItem(self.JianYuanWareHouse1, occ, occTwo);
-            //self.CheckValiedItem(self.JianYuanWareHouse2, occ, occTwo);
-            //self.CheckValiedItem(self.JianYuanWareHouse3, occ, occTwo);
-            //self.CheckValiedItem(self.JianYuanWareHouse4, occ, occTwo);
-            //self.CheckValiedItem(self.JianYuanTreasureMapStorage1, occ, occTwo);
-            //self.CheckValiedItem(self.JianYuanTreasureMapStorage2, occ, occTwo);
-            //self.CheckValiedItem(self.ChouKaWarehouse, occ, occTwo);
-            self.CheckValiedItem(self.EquipList_2, occ, occTwo);
-            //self.CheckValiedItem(self.SeasonJingHe, occ, occTwo);
-            //self.CheckValiedItem(self.PetEquipList, occ, occTwo);
-            //self.CheckValiedItem(self.GemWareHouse1, occ, occTwo);
+        }
+
+        //获取自身所有的道具
+        public static List<BagInfo> GetAllItems(this BagComponentServer self, int occ, int occTwo)
+        {
+            List<BagInfo> bagList = new List<BagInfo>();
+
+            self.CheckAllItem(occ, occTwo);
+       
 
             for (int i =  self.EquipList.Count - 1; i >=0; i--)
             {
@@ -350,7 +344,6 @@ namespace ET
             bagList.AddRange(self.JianYuanTreasureMapStorage1);
             bagList.AddRange(self.JianYuanTreasureMapStorage2);
             bagList.AddRange(self.ChouKaWarehouse);
-            bagList.AddRange(self.EquipList_2);
             bagList.AddRange(self.SeasonJingHe);
             bagList.AddRange(self.PetEquipList);
             bagList.AddRange(self.GemWareHouse1);
@@ -627,7 +620,6 @@ namespace ET
             List<int> equiptianfuids = new List<int>(); 
             List<BagInfo> equiplist = new List<BagInfo>();
             equiplist.AddRange(self.EquipList );
-            equiplist.AddRange(self.EquipList_2);
             equiplist.AddRange(self.SeasonJingHe);
 
             for (int i = 0; i < self.EquipList.Count; i++)
@@ -718,13 +710,12 @@ namespace ET
             return null;
         }
 
-        public static void OnLogin(this BagComponentServer self, int robotId)
+        public static void OnLogin(this BagComponentServer self, int robotId, int occ, int occTwo)
         {
 
             Unit unit = self.GetParent<Unit>();
-            int zodiacnumber = self.GetZodiacnumber();
-            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacnumber);
-
+           
+            self.CheckAllItem(occ, occTwo);
 
             ///old
             //int warehourseNumber = (int)ItemLocType.ItemLocMax - 5;

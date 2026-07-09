@@ -18,6 +18,7 @@ namespace ET
                 if (!OccInitAttribute.ContainsKey(occupation.Id))
                 {
                     OccInitAttribute.Add(occupation.Id, new List<AttributeItem>());
+                    OccInitAttribute[occupation.Id].Add(new AttributeItem() { AttributeID = NumericType.Speed_Fixed_16, AttributeValue = occupation.Speed });
                 }
             }
         }
