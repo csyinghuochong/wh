@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver.Linq;
+using MongoDB.Driver.Linq;
 using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
@@ -590,9 +590,9 @@ namespace ET
                     //public const int PointMinJie = 3046;
 
                     levelInfo += $"\t排名:{rank + 1} \t玩家: {RoleInfoComponentlist[0].UserName} \t职业: {RoleInfoComponentlist[0].RoleInfo.Occ} " +
-                        $"\t第二职业: {RoleInfoComponentlist[0].RoleInfo.OccTwo} \t力量: {unumericComponentlist[0].GetAsInt(NumericType.Point_Strength)} " +
-                        $"\t智力: {unumericComponentlist[0].GetAsInt(NumericType.Point_Intelligence)} \t体质: {unumericComponentlist[0].GetAsInt(NumericType.Point_Constitution)} " +
-                        $"\t耐力: {unumericComponentlist[0].GetAsInt(NumericType.Point_Stamina)} \t敏捷: {unumericComponentlist[0].GetAsInt(NumericType.Point_Agility)} ";
+                        $"\t第二职业: {RoleInfoComponentlist[0].RoleInfo.OccTwo} \t力量: {unumericComponentlist[0].GetAsInt(NumericType.Point_Ti_1)} " +
+                        $"\t智力: {unumericComponentlist[0].GetAsInt(NumericType.Point_Zhi_3)} \t体质: {unumericComponentlist[0].GetAsInt(NumericType.Point_Nian_4)} " +
+                        $"\t耐力: {unumericComponentlist[0].GetAsInt(NumericType.Point_Min_5)} \t敏捷: {unumericComponentlist[0].GetAsInt(NumericType.Point_Li_2)} ";
                 }
 
                 LogHelper.GongZuoShi(levelInfo);

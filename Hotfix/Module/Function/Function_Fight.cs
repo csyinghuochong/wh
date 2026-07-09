@@ -184,16 +184,20 @@ namespace ET
                     + numericComponent.GetAsInt(RoleAddPointHelper.PointNumericTypes[i]);
             }
 
-            Dictionary<int, int> pointConvertAttrs = RolePointConvertHelper.CalcAllConvertAttributes(pointValues);
-            foreach (KeyValuePair<int, int> kv in pointConvertAttrs)
+            Dictionary<int, double> pointConvertAttrs = RolePointConvertHelper.CalcAllConvertAttributes(pointValues);
+            foreach (KeyValuePair<int, double> kv in pointConvertAttrs)
             {
-                AddUpdateProDicList(kv.Key, kv.Value, updateProDicList);
+                AttrConfigManager.MergeAttributeValue(kv.Key, kv.Value, updateProDicList);
             }
+
+            // 体（Point_Ti）→ 标准生命 × 职业 Hp_Param → 生命上限
+            int occupationId = RoleAddPointHelper.GetOccupationId(roleInfo);
+            int bodyPoints = RolePointConvertHelper.GetBodyPointCount(pointValues);
+            double roleHpFixed = RolePointConvertHelper.CalcRoleHpFixed(roleLv, bodyPoints, occupationId);
+            AttrConfigManager.MergeAttributeValue(NumericType.HP_Fixed_11, roleHpFixed, updateProDicList);
 
             // 批量写入分项属性，每个基础属性只重算一次
             numericComponent.ApplyAttributeDictionary(updateProDicList, false);
-
-
 
             if (notice)
             {

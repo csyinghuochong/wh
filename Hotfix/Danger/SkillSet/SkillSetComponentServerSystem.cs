@@ -728,7 +728,7 @@ namespace ET
 				SkillPro oldSkill = self.GetByPosition(request.Position);
 				if (oldSkill != null)
 				{
-					oldSkill.SkillPosition = 0;
+					oldSkill.SetSkillPosition ( 0);
 				}
 				newSkill = self.GetBySkillID(request.SkillID);
 
@@ -744,7 +744,7 @@ namespace ET
 				if (oldSkill != null)
 				{
 					oldSkill.SkillID = 0;
-					oldSkill.SkillPosition = 0;
+					oldSkill.SetSkillPosition ( 0);
 				}
 				newSkill = self.GetBySkillID(request.SkillID);
 				if (newSkill == null)
@@ -753,7 +753,7 @@ namespace ET
 				}
 			}
 			newSkill.SkillID = request.SkillID;
-			newSkill.SkillPosition = request.Position;
+			newSkill.SetSkillPosition ( request.Position);
 			newSkill.SkillSetType = request.SkillType;
 
 			for (int i = self.SkillList.Count -1; i >= 0; i--)
@@ -983,9 +983,8 @@ namespace ET
 			{ 
 				SkillPro skillPro = self.AddSkillPro(occSkilld[i], SkillSetEnum.Skill, SkillSourceEnum.Occupation);
 				skillPro.Actived = occSkilld[i] == ldOccupation.Skill_Normal_Default? 1 : 0;
-				skillPro.SkillPosition =  occSkilld[i] == ldOccupation.Skill_Normal_Default? 1 : 0;
+				skillPro.SetSkillPosition( occSkilld[i] == ldOccupation.Skill_Normal_Default? 1 : 0);
 				skillPro.Level = 1;
-
             }
 		}
 

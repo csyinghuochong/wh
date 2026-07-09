@@ -6917,11 +6917,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\LDYQReSkin\\Server\\Hotfix\\Server.Hotfix.csproj",
+      "projectUniqueName": "E:\\LDYQU3DProject\\trunk\\Server\\Hotfix\\Server.Hotfix.csproj",
       "projectName": "Server.Hotfix",
-      "projectPath": "E:\\LDYQReSkin\\Server\\Hotfix\\Server.Hotfix.csproj",
+      "projectPath": "E:\\LDYQU3DProject\\trunk\\Server\\Hotfix\\Server.Hotfix.csproj",
       "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-      "outputPath": "E:\\LDYQReSkin\\Server\\Hotfix\\obj\\",
+      "outputPath": "E:\\LDYQU3DProject\\trunk\\Server\\Hotfix\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -6938,8 +6938,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj": {
-              "projectPath": "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj"
+            "E:\\LDYQU3DProject\\trunk\\Server\\Model\\Server.Model.csproj": {
+              "projectPath": "E:\\LDYQU3DProject\\trunk\\Server\\Model\\Server.Model.csproj"
             }
           }
         }

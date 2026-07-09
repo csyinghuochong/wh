@@ -173,11 +173,11 @@ namespace ET
             if (token.Contains("最大物防")) { return NumericType.PDEF_Max_42; }
             if (token.Contains("最小法防")) { return NumericType.MDEF_Min_51; }
             if (token.Contains("最大法防")) { return NumericType.MDEF_Max_52; }
-            if (token.Contains("力")) { return NumericType.Point_Strength; }
-            if (token.Contains("敏")) { return NumericType.Point_Agility; }
-            if (token.Contains("智")) { return NumericType.Point_Intelligence; }
-            if (token.Contains("体")) { return NumericType.Point_Constitution; }
-            if (token.Contains("耐")) { return NumericType.Point_Stamina; }
+            if (token.Contains("力")) { return NumericType.Point_Ti_1; }
+            if (token.Contains("敏")) { return NumericType.Point_Li_2; }
+            if (token.Contains("智")) { return NumericType.Point_Zhi_3; }
+            if (token.Contains("体")) { return NumericType.Point_Nian_4; }
+            if (token.Contains("耐")) { return NumericType.Point_Min_5; }
             if (token.Contains("速度")) { return NumericType.Speed_Fixed_16; }
 
             return defaultType;

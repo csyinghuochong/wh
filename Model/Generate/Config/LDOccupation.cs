@@ -90,20 +90,23 @@ namespace ET
 		/// <summary>生命系数</summary>
 		[ProtoMember(5)]
 		public double Hp_Param { get; set; }
-		/// <summary>默认普攻</summary>
+		/// <summary>速度</summary>
 		[ProtoMember(6)]
+		public int Speed { get; set; }
+		/// <summary>默认普攻</summary>
+		[ProtoMember(7)]
 		public int Skill_Normal_Default { get; set; }
 		/// <summary>技能</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int[] Skill { get; set; }
 		/// <summary>默认加点</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int[] Add_Point_Default { get; set; }
 		/// <summary>转职ID</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int[] TransferId { get; set; }
 		/// <summary>初始装备</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int[] Equip_Init { get; set; }
 
 	}

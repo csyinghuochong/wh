@@ -13,12 +13,12 @@ namespace ET
     {
         public static readonly int[] PointNumericTypes =
         {
-            NumericType.Point_Strength,
-            NumericType.Point_Agility,
-            NumericType.Point_Intelligence,
-            NumericType.Point_Constitution,
-            NumericType.Point_Stamina,
-            NumericType.Point_Haste,
+            NumericType.Point_Ti_1,      // 体
+            NumericType.Point_Li_2,       // 力
+            NumericType.Point_Zhi_3,  // 智
+            NumericType.Point_Nian_4,  // 念
+            NumericType.Point_Min_5,       // 敏
+            NumericType.Point_Xun_6,         // 迅
         };
 
         public static int GetAutoLevel()

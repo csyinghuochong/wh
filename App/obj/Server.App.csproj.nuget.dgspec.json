@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\LDYQReSkin\\Server\\App\\Server.App.csproj": {}
+    "E:\\LDYQU3DProject\\trunk\\Server\\App\\Server.App.csproj": {}
   },
   "projects": {
-    "E:\\LDYQReSkin\\Server\\App\\Server.App.csproj": {
+    "E:\\LDYQU3DProject\\trunk\\Server\\App\\Server.App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\LDYQReSkin\\Server\\App\\Server.App.csproj",
+        "projectUniqueName": "E:\\LDYQU3DProject\\trunk\\Server\\App\\Server.App.csproj",
         "projectName": "Server",
-        "projectPath": "E:\\LDYQReSkin\\Server\\App\\Server.App.csproj",
+        "projectPath": "E:\\LDYQU3DProject\\trunk\\Server\\App\\Server.App.csproj",
         "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-        "outputPath": "E:\\LDYQReSkin\\Server\\App\\obj\\",
+        "outputPath": "E:\\LDYQU3DProject\\trunk\\Server\\App\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj": {
-                "projectPath": "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj"
+              "E:\\LDYQU3DProject\\trunk\\Server\\Model\\Server.Model.csproj": {
+                "projectPath": "E:\\LDYQU3DProject\\trunk\\Server\\Model\\Server.Model.csproj"
               }
             }
           }
@@ -94,14 +94,14 @@
         }
       }
     },
-    "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj": {
+    "E:\\LDYQU3DProject\\trunk\\Server\\Model\\Server.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj",
+        "projectUniqueName": "E:\\LDYQU3DProject\\trunk\\Server\\Model\\Server.Model.csproj",
         "projectName": "Server.Model",
-        "projectPath": "E:\\LDYQReSkin\\Server\\Model\\Server.Model.csproj",
+        "projectPath": "E:\\LDYQU3DProject\\trunk\\Server\\Model\\Server.Model.csproj",
         "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-        "outputPath": "E:\\LDYQReSkin\\Server\\Model\\obj\\",
+        "outputPath": "E:\\LDYQU3DProject\\trunk\\Server\\Model\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -118,14 +118,14 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "E:\\LDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj": {
-                "projectPath": "E:\\LDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj"
+              "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ETTask\\ETTask.csproj": {
+                "projectPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ETTask\\ETTask.csproj"
               },
-              "E:\\LDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj": {
-                "projectPath": "E:\\LDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj"
+              "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ShareLib\\ShareLib.csproj": {
+                "projectPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ShareLib\\ShareLib.csproj"
               },
-              "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
-                "projectPath": "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
+              "E:\\LDYQU3DProject\\trunk\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
+                "projectPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
               }
             }
           }
@@ -198,14 +198,14 @@
         }
       }
     },
-    "E:\\LDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj": {
+    "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ETTask\\ETTask.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\LDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj",
+        "projectUniqueName": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ETTask\\ETTask.csproj",
         "projectName": "ETTask",
-        "projectPath": "E:\\LDYQReSkin\\ThirdParty\\ETTask\\ETTask.csproj",
+        "projectPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ETTask\\ETTask.csproj",
         "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-        "outputPath": "E:\\LDYQReSkin\\ThirdParty\\ETTask\\obj\\",
+        "outputPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ETTask\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -273,14 +273,14 @@
         }
       }
     },
-    "E:\\LDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj": {
+    "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ShareLib\\ShareLib.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\LDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj",
+        "projectUniqueName": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ShareLib\\ShareLib.csproj",
         "projectName": "ShareLib",
-        "projectPath": "E:\\LDYQReSkin\\ThirdParty\\ShareLib\\ShareLib.csproj",
+        "projectPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ShareLib\\ShareLib.csproj",
         "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-        "outputPath": "E:\\LDYQReSkin\\ThirdParty\\ShareLib\\obj\\",
+        "outputPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\ShareLib\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -297,8 +297,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
-                "projectPath": "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
+              "E:\\LDYQU3DProject\\trunk\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
+                "projectPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\UnityEngine\\UnityEngine.csproj"
               }
             }
           }
@@ -390,14 +390,14 @@
         }
       }
     },
-    "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
+    "E:\\LDYQU3DProject\\trunk\\ThirdParty\\UnityEngine\\UnityEngine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
+        "projectUniqueName": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
         "projectName": "UnityEngine",
-        "projectPath": "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
+        "projectPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\UnityEngine\\UnityEngine.csproj",
         "packagesPath": "C:\\Users\\LDYQ\\.nuget\\packages\\",
-        "outputPath": "E:\\LDYQReSkin\\ThirdParty\\UnityEngine\\obj\\",
+        "outputPath": "E:\\LDYQU3DProject\\trunk\\ThirdParty\\UnityEngine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LDYQ\\AppData\\Roaming\\NuGet\\NuGet.Config",
