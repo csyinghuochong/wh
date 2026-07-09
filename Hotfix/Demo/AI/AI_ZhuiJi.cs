@@ -7,6 +7,8 @@ namespace ET
     [AIHandler]
     public class AI_ZhuiJi : AAIHandler
     {
+        private const float StandArriveDistance = 0.6f;
+
         public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             if (aiComponent.TargetID == 0 || aiComponent.IsRetreat !=0)
@@ -19,15 +21,15 @@ namespace ET
                 aiComponent.TargetID = 0;
                 return false;
             }
-            //获取范敌人是否在攻击范围内
-            float distance = Vector3.Distance(target.Position, aiComponent.GetParent<Unit>().Position);
-            bool zhuiji = distance >= aiComponent.ActDistance && aiComponent.IsCanZhuiJi() == 0;
+            Unit unit = aiComponent.GetParent<Unit>();
+            Vector3 standPos = AIGetTargetHelp.GetChaseStandPosition(unit, target, aiComponent.ActDistance, aiComponent.UnitComponent);
+            float distanceToStand = PositionHelper.Distance2D(unit.Position, standPos);
+            bool zhuiji = distanceToStand > StandArriveDistance && aiComponent.IsCanZhuiJi() == 0;
             return zhuiji;
         }
 
         public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
-            //获取附近最近距离的目标进行追击
             Unit unit = aiComponent.GetParent<Unit>();
             StateComponent stateComponent = unit.GetComponent<StateComponent>();
 
@@ -49,24 +51,21 @@ namespace ET
                 Unit target = aiComponent.UnitComponent.Get(aiComponent.TargetID);
                 if (target != null)
                 {
-                    bool zhuiji =   Vector3.Distance(unit.Position, target.Position) >= aiComponent.ActDistance;
-                    if (!zhuiji)
+                    Vector3 standPos = AIGetTargetHelp.GetChaseStandPosition(unit, target, aiComponent.ActDistance, aiComponent.UnitComponent);
+                    float distanceToTarget = PositionHelper.Distance2D(unit.Position, target.Position);
+                    float distanceToStand = PositionHelper.Distance2D(unit.Position, standPos);
+                    bool inAttackRange = distanceToTarget <= aiComponent.ActDistance;
+                    bool needMove = distanceToStand > StandArriveDistance && !inAttackRange;
+
+                    if (!needMove)
                     {
                         unit.Stop(-2);
                     }
-                    if (zhuiji && checktime == 100 && stateComponent.CanMove() == ErrorCode.ERR_Success)
+
+                    bool shouldUpdatePath = checktime == 100 || (checktime == 200 && i % 5 == 0);
+                    if (needMove && shouldUpdatePath && stateComponent.CanMove() == ErrorCode.ERR_Success)
                     {
-                        unit.FindPathMoveToAsync(target.Position, cancellationToken, false).Coroutine();
-                    }
-                    if (zhuiji && checktime == 200 && stateComponent.CanMove() == ErrorCode.ERR_Success && i % 5 == 0)
-                    {
-                        //Vector3 dir = unit.Position - target.Position;
-                        //float ange = Mathf.Rad2Deg(Mathf.Atan2(dir.x, dir.z));
-                        //float addg = unit.Id % 10 * (unit.Id % 2 == 0 ? 2 : -2);
-                        //Quaternion rotation = Quaternion.Euler(0, ange + addg, 0);
-                        //Vector3 ttt = target.Position + rotation * Vector3.forward * ((float)aiComponent.ActDistance - 0.2f);
-                        //unit.FindPathMoveToAsync(ttt, cancellationToken, false).Coroutine();
-                        unit.FindPathMoveToAsync(target.Position, cancellationToken, false).Coroutine();
+                        unit.FindPathMoveToAsync(standPos, cancellationToken, false).Coroutine();
                     }
                 }
                 bool timeRet = await TimerComponent.Instance.WaitAsync(checktime, cancellationToken);
