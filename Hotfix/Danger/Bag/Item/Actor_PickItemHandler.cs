@@ -51,7 +51,7 @@ namespace ET
                 int addItemID = dropComponent !=null ? dropComponent.ItemID : drops[i].ItemID;
                 int addItemNum = dropComponent != null ? dropComponent.ItemNum : drops[i].ItemNum;
                 List<RewardItem> rewardItems = new List<RewardItem>();
-                rewardItems.Add(new RewardItem() { ItemID = addItemID, ItemNum = addItemNum });
+                rewardItems.Add(new RewardItem() {  ItemType = drops[i].ItemType , ItemID = addItemID, ItemNum = addItemNum });
                 bool success = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
                 if (!success)
                 {

@@ -82,6 +82,12 @@ namespace ET
             }
 
             ParseAddPoint();
+            ParseBaseData();
+        }
+
+        private void ParseBaseData()
+        {
+            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_1).Value, out this.BagInitCapacity);
         }
 
         private void ParseAddPoint()
