@@ -542,46 +542,7 @@ namespace ET
                 //鉴定装备
                 if (request.OperateType == 5)
                 {
-                    //判定材料消耗
-                    bool ifSell = false;     //默认出售全部
-                    long baginfoId = long.Parse(request.OperatePar);
-                    int rolelv = useInfo.Lv;
-                    string qulitylv = "";
-                    if (baginfoId == 0 && ldItem != null)
-                    {
-                        //金币鉴定，扣除金币
-                        qulitylv = ldItem.UseLv.ToString();          
-                    }
-                    else
-                    {
-                        BagInfo baginfoCost = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, baginfoId);
-                        if (baginfoCost != null)
-                        {
-                            //道具鉴定，扣除道具
-                            qulitylv = baginfoCost.ItemPar;
-                            qulitylv = string.IsNullOrEmpty(qulitylv) ? "0" : qulitylv;
-                            LDItem costitemconfig = LDItemCategory.Instance.Get(baginfoCost.ItemID);
-
-                            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JianDingQulity_42, int.Parse(qulitylv), 1);
-
-                           
-                            ifSell = unit.GetComponent<BagComponentServer>().OnCostItemData(baginfoId, 1);
-                        }
-                        else
-                        {
-                            ifSell = false;
-                        }
-                    }
-                    if (ifSell)
-                    {
-                      
-                    }
-                    else
-                    {
-                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                        reply();
-                        return;
-                    }
+                  
                 }
 
                 //放入仓库
