@@ -36,7 +36,6 @@ namespace ET
             if (nearest == null || !nearest.IsCanBeAttack())
             {
                 aiComponent.TargetID = 0;
-                aiComponent.noCheckStatus = true;
                 return true;
             }
 

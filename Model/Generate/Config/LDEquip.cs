@@ -108,14 +108,17 @@ namespace ET
 		/// <summary>属性</summary>
 		[ProtoMember(11)]
 		public string Attribute { get; set; }
-		/// <summary>可否 鉴定</summary>
+		/// <summary>鉴定 等级</summary>
 		[ProtoMember(12)]
-		public int Appraise { get; set; }
-		/// <summary>强化 上限</summary>
+		public int Appraise_Lv { get; set; }
+		/// <summary>可鉴定 属性</summary>
 		[ProtoMember(13)]
+		public int[] Appraise_Attribute { get; set; }
+		/// <summary>强化 上限</summary>
+		[ProtoMember(14)]
 		public int Enhance { get; set; }
 		/// <summary>强化属性</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public string Enhance_Attribute { get; set; }
 
 	}

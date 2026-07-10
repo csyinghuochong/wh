@@ -456,15 +456,26 @@ namespace ET
             }
             Unit unit = self.GetParent<Unit>();
             LDTask ldTask = LDTaskCategory.Instance.Get(taskid);
+            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            List<RewardItem> rewardItems = ItemHelper.GetRewardItems(ldTask.Reward);
+            List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems(roleInfoComponent.RoleInfo.Occ, taskid);
+
+            if (rewardItems.Count == 0)
+            {
+                rewardItems.Add( new RewardItem()
+                {
+                    ItemType = ItemBigType.Type_Item, 
+                    ItemID = 1,
+                    ItemNum = 1
+                });
+            }
+            
             int needcell = ItemHelper.GetNeedCell(rewardItems);
             if (bagComponentServer.GetBagLeftCell() < needcell)
             {
                 return ErrorCode.ERR_BagIsFull;
             }
             
-
             if (bagComponentServer.GetBagLeftCell()  < rewardItems.Count)
             {
                 return ErrorCode.ERR_BagIsFull;

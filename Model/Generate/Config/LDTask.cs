@@ -105,9 +105,30 @@ namespace ET
 		/// <summary>完成NPC</summary>
 		[ProtoMember(10)]
 		public int NPC { get; set; }
-		/// <summary>奖励</summary>
+		/// <summary>奖励选择 0-全拿 1-任选</summary>
 		[ProtoMember(11)]
+		public int Reward_Option { get; set; }
+		/// <summary>共用 奖励</summary>
+		[ProtoMember(12)]
 		public string Reward { get; set; }
+		/// <summary>战士 奖励</summary>
+		[ProtoMember(13)]
+		public string Reward_Occupation_1 { get; set; }
+		/// <summary>猎人 奖励</summary>
+		[ProtoMember(14)]
+		public string Reward_Occupation_2 { get; set; }
+		/// <summary>刺客 奖励</summary>
+		[ProtoMember(15)]
+		public string Reward_Occupation_3 { get; set; }
+		/// <summary>法师 奖励</summary>
+		[ProtoMember(16)]
+		public string Reward_Occupation_4 { get; set; }
+		/// <summary>侠士 奖励</summary>
+		[ProtoMember(17)]
+		public string Reward_Occupation_5 { get; set; }
+		/// <summary>牧师 奖励</summary>
+		[ProtoMember(18)]
+		public string Reward_Occupation_6 { get; set; }
 
 	}
 }

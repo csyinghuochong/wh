@@ -557,8 +557,7 @@ namespace ET
                     if (baginfoId == 0 && ldItem != null)
                     {
                         //金币鉴定，扣除金币
-                        qulitylv = ldItem.UseLv.ToString();
-                        ifSell = unit.GetComponent<BagComponentServer>().OnCostItemData($"1;{ItemHelper.GetJianDingCoin(ldItem.UseLv)}", ItemLocType.ItemLocBag, ItemGetWay.CostItem);
+                        qulitylv = ldItem.UseLv.ToString();          
                     }
                     else
                     {

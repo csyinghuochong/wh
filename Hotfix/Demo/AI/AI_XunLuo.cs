@@ -29,7 +29,6 @@ namespace ET
             if (nearestEnemy == null)
             {
                 aiComponent.TargetID = 0;
-                aiComponent.noCheckStatus = true;
                 return true;
             }
 
