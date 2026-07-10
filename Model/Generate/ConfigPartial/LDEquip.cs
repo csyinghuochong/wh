@@ -23,15 +23,24 @@ namespace ET
                 for (int i = 0; i < attributeList.Length; i++)
                 { 
                     string[] attributeInfo = attributeList[i].Split("_");
-                    if (attributeInfo.Length != 3)
+                    if (attributeInfo.Length == 2)
                     {
-                        continue;
+                        equipAttribute.Add(new AttributeRandom()
+                        {
+                            AttributeID = int.Parse(attributeInfo[0]),
+                            AttributeValueMin = int.Parse(attributeInfo[1]),
+                            AttributeValueMax = int.Parse(attributeInfo[1]),
+                        });
                     }
-                    equipAttribute.Add( new AttributeRandom(){
-                        AttributeID = int.Parse(attributeInfo[0]),
-                        AttributeValueMin = int.Parse(attributeInfo[1]),
-                        AttributeValueMax = int.Parse(attributeInfo[2]),
-                    } );
+                    if (attributeInfo.Length == 3)
+                    {
+                        equipAttribute.Add(new AttributeRandom()
+                        {
+                            AttributeID = int.Parse(attributeInfo[0]),
+                            AttributeValueMin = int.Parse(attributeInfo[1]),
+                            AttributeValueMax = int.Parse(attributeInfo[2]),
+                        });
+                    }
                 }
 
 
