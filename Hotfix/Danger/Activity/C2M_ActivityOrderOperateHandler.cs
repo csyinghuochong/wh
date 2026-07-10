@@ -44,7 +44,7 @@ namespace ET
                         return;
                     }
 
-                    int needcell = ItemHelper.GetNeedCell(activityOrderItem.Get);
+                    int needcell = ItemNewHelper.GetNeedCell(activityOrderItem.Get);
                     if (bagComponentServer.GetBagLeftCell() < needcell + 1)
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;

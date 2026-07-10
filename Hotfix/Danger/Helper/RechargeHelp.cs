@@ -28,7 +28,7 @@ namespace ET
             Log.Debug($"OnRechage: {unit.Id}   {rechargetType}  {playId}  rechargetType:{rechargetType}");
 
             string diamondNumber = CommonConfig.GetDiamondNumber(playId, unit.DomainZone());
-            List<RewardItem> rewardItems = ItemHelper.GetRewardItems(diamondNumber);
+            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(diamondNumber);
             
             //0 砖石  1周卡
             if (rechargetType == 0)

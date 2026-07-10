@@ -272,7 +272,6 @@ namespace ET
             string str = string.Empty;
             for (int i = 0; i < pairInts.Count; i++)
             {
-                str += $"{pairInts[i].KeyId}{ConfigData.DataCollationSpit}{ItemHelper.ItemGetWayName(pairInts[i].KeyId)}{ConfigData.DataCollationSpit}{pairInts[i].Value}_";
             }
             return str;
         }

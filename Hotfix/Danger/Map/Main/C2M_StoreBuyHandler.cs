@@ -31,7 +31,7 @@ namespace ET
                 return;
             }
 
-            int needCell = ItemHelper.GetNeedCell(storeSellConfig.Goods);
+            int needCell = ItemNewHelper.GetNeedCell(storeSellConfig.Goods);
             if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < needCell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -58,7 +58,7 @@ namespace ET
             }
 
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-            List<RewardItem> rewardItems = ItemHelper.GetRewardItems(storeSellConfig.Goods);
+            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(storeSellConfig.Goods);
 
             unit.GetComponent<BagComponentServer>().OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy );
             unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");

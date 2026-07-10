@@ -41,14 +41,9 @@ namespace ET
                             reply();
                             return;
                         }
-                        if (bagInfo.isBinging || ItemHelper.GetGemIdList(bagInfo).Count > 0)
-                        {
-                            response.Error = ErrorCode.ERR_ItemUseError;
-                            reply();
-                            return;
-                        }
+                       
                         LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-                        int equipType = ItemHelper.GetNewEquipType(bagInfo);
+                        int equipType = ItemNewHelper.GetNewEquipType(bagInfo);
                         if (ldItem.ItemType != 3 || equipType > 100)
                         {
                             response.Error = ErrorCode.ERR_ItemNotExist;
@@ -84,7 +79,7 @@ namespace ET
                         bagComponentServer.OnAddItemData(bagInfo, bagInfo.GetWay);
                         break;
                     case 3:
-                        ItemHelper.ItemLitSort(dBAccountBagWarehouse.BagInfoList);
+                        ItemNewHelper.ItemLitSort(dBAccountBagWarehouse.BagInfoList);
                         break;
                     default:
                         break;

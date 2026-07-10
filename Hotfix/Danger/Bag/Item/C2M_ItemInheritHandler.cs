@@ -24,7 +24,7 @@ namespace ET
             }
 
             LDEquip Item = LDEquipCategory.Instance.Get(bagInfo.ItemID);
-            string costitem = ItemHelper.GetInheritCost(bagInfo.InheritTimes);
+            string costitem = null;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             if (!bagComponentServer.CheckNeedItem(costitem))
             {

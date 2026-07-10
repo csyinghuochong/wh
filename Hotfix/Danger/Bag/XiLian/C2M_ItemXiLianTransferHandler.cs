@@ -45,8 +45,8 @@ namespace ET
             //相同部位  只有护甲类型相同的装备才能转移
             if (!all60green)
             {
-                int equipType1 = ItemHelper.GetNewEquipType(bagInfo_1);
-                int equipType2 = ItemHelper.GetNewEquipType(bagInfo_2);
+                int equipType1 = ItemNewHelper.GetNewEquipType(bagInfo_1);
+                int equipType2 = ItemNewHelper.GetNewEquipType(bagInfo_2);
        
                 //相同部位
                 if (equipType1 != equipType2)

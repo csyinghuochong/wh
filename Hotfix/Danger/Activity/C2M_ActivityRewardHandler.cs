@@ -93,7 +93,7 @@ namespace ET
                         return;
                     }
                     rewarditem = ActivityV1Config.PointsRewardList[request.RewardId];
-                    int needcell = ItemHelper.GetNeedCell(rewarditem);
+                    int needcell = ItemNewHelper.GetNeedCell(rewarditem);
                     if (bagComponentServer.GetBagLeftCell() < needcell)
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;
@@ -130,7 +130,7 @@ namespace ET
                         return;
                     }
                     rewarditem = ActivityV1Config.PointsShunXuRewardList[request.RewardId];
-                    needcell = ItemHelper.GetNeedCell(rewarditem);
+                    needcell = ItemNewHelper.GetNeedCell(rewarditem);
                     if (bagComponentServer.GetBagLeftCell() < needcell)
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;

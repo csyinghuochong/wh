@@ -470,7 +470,7 @@ namespace ET
                 });
             }
             
-            int needcell = ItemHelper.GetNeedCell(rewardItems);
+            int needcell = ItemNewHelper.GetNeedCell(rewardItems);
             if (bagComponentServer.GetBagLeftCell() < needcell)
             {
                 return ErrorCode.ERR_BagIsFull;

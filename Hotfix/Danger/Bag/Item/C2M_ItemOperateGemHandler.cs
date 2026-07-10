@@ -63,7 +63,7 @@ namespace ET
                 //判断孔位是否相符
                 string[] equipGeminfos = equipInfo.GemHole.Split('_');
 
-                if (string.IsNullOrEmpty(equipInfo.GemHole) || equipInfo.GemHole.Equals(ItemHelper.DefaultGem))
+                if (string.IsNullOrEmpty(equipInfo.GemHole) || equipInfo.GemHole.Equals(ItemNewHelper.GetDefaultGem()))
                 {
                     response.Error = ErrorCode.ERR_ItemUseError;
                     reply();

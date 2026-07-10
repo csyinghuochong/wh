@@ -468,10 +468,6 @@ namespace ET
                                 break;
                             case 142:
                                 //封印的武器
-                                int useindex = int.Parse(request.OperatePar);
-                                int occ = roleInfoComponentServer.RoleInfo.Occ;
-                                List<int> weaponids = ItemHelper.GetSealWeaponList(occ, ldItem.Id);
-                                unit.GetComponent<BagComponentServer>().OnAddItemData($"{weaponids[useindex]};1", $"{ItemGetWay.ItemBox_8}_{TimeHelper.ServerNow()}");
                                 break;
                             case 143:
                                 //钻石抽奖券

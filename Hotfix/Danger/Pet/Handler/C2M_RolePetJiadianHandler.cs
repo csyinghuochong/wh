@@ -34,7 +34,7 @@ namespace ET
 				|| request.AddPropretyValue[2] > maxPoint
 				|| request.AddPropretyValue[3] > maxPoint)
 			{
-				rolePetInfo.AddPropretyValue = ItemHelper.DefaultGem;
+				rolePetInfo.AddPropretyValue = CommonConfig.DefaultProprety;
                 rolePetInfo.AddPropretyNum = (rolePetInfo.PetLv - 1) * 5;
 			}
 			unit.GetComponent<PetComponentServer>().UpdatePetAttribute(rolePetInfo, true);

@@ -22,7 +22,7 @@ namespace ET
 
 
                 //魔能不出售
-                int equiptype = ItemHelper.GetNewEquipType(useBagInfo);
+                int equiptype = ItemNewHelper.GetNewEquipType(useBagInfo);
                 if (ldItem.ItemType == ItemTypeEnum.Equipment && equiptype == 401)
                 {
                     continue;

@@ -44,7 +44,7 @@ namespace ET
                 weizhi = ldItem.ItemType;
             }
 
-            int equipType = ItemHelper.GetNewEquipType(useBagInfo);
+            int equipType = ItemNewHelper.GetNewEquipType(useBagInfo);
             if (ldItem.ItemType != 3 || equipType != 401)
             {
                 reply();

@@ -220,7 +220,7 @@ namespace ET
 
 			int pet_exp = 0;
 			int addPropertyNum = pet_Lv * 5 + 20;
-			string addPropertyValue = ItemHelper.DefaultGem;
+			string addPropertyValue = ItemNewHelper.GetDefaultGem();
             bool baby = false;
 
 

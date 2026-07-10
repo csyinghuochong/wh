@@ -32,12 +32,7 @@ namespace ET
 			//初始化
 			for (int i = 0; i < bagInfos.Count; i++)
 			{
-				
-				if (string.IsNullOrEmpty(bagInfos[i].GemIDNew))
-				{
-					bagInfos[i].GemIDNew = ItemHelper.DefaultGem;
-                    bagInfos[i].GemHole = ItemHelper.DefaultGem;
-                }
+			
 			}
 
 

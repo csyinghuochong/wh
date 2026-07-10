@@ -33,17 +33,17 @@ namespace ET
             // 家园种子仓库
             if ((ItemLocType)hourseId >= ItemLocType.JianYuanWareHouse1 && (ItemLocType)hourseId <= ItemLocType.JianYuanWareHouse4)
             {
-                itemList = ItemHelper.GetSeedList(bagInfos);
+                itemList = ItemNewHelper.GetSeedList(bagInfos);
             }
             // 家园藏宝图仓库_存藏宝图的
             else if ((ItemLocType)hourseId == ItemLocType.JianYuanTreasureMapStorage1)
             {
-                itemList = ItemHelper.GetTreasureMapList(bagInfos);
+                itemList = ItemNewHelper.GetTreasureMapList(bagInfos);
             } 
             // 家园藏宝图仓库_存生活材料的
             else if ((ItemLocType)hourseId == ItemLocType.JianYuanTreasureMapStorage2)
             {
-                itemList = ItemHelper.GetTreasureMapList2(bagInfos);
+                itemList = ItemNewHelper.GetTreasureMapList2(bagInfos);
             }
             
             for (int i = 0; i < itemList.Count; i++)

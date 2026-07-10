@@ -64,7 +64,7 @@ namespace ET
             for (int i = 0; i < allequiplist.Count; i++)
             {
                 LDItem ldItem = LDItemCategory.Instance.Get(allequiplist[i].ItemID);
-                int equipType = ItemHelper.GetNewEquipType(allequiplist[i]);
+                int equipType = ItemNewHelper.GetNewEquipType(allequiplist[i]);
                 if (ldItem.ItemType == 3
                     && equipType >= 0 && equipType <= 100
                     && ldItem.ItemType >= 0 && ldItem.ItemType <= 12)
@@ -268,7 +268,7 @@ namespace ET
             //通知客户端背包道具发生改变
             MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
 
-            ItemHelper.ItemLitSort(ItemTypeList);
+            ItemNewHelper.ItemLitSort(ItemTypeList);
         }
 
         public static void CheckValiedItem(this BagComponentServer self, List<BagInfo> bagInfos, int occ, int occTwo)
@@ -563,7 +563,7 @@ namespace ET
             for (int i = bagInfos.Count - 1; i >= 0; i--)
             {
                 LDItem ldItem = LDItemCategory.Instance.Get(bagInfos[i].ItemID);
-                int equipType = ItemHelper.GetNewEquipType(bagInfos[i]);
+                int equipType = ItemNewHelper.GetNewEquipType(bagInfos[i]);
                 if (equipType == 201)
                 {
                     bagInfos.RemoveAt(i);
@@ -785,7 +785,7 @@ namespace ET
         //字符串添加道具 
         public static bool OnAddItemData(this BagComponentServer self, string rewardItems, string getType, bool notice = true)
         {
-            List<RewardItem> costItems = ItemHelper.GetRewardItems(rewardItems);
+            List<RewardItem> costItems = ItemNewHelper.GetRewardItems(rewardItems);
             return self.OnAddItemData(costItems, string.Empty, getType, notice);
         }
 
@@ -828,8 +828,6 @@ namespace ET
             useBagInfo.ItemNum = itemnumber;
             useBagInfo.Loc = itemlockType;
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
-            useBagInfo.GemHole = ItemHelper.DefaultGem;
-            useBagInfo.GemIDNew = ItemHelper.DefaultGem;
             useBagInfo.GetWay = getType;
             self.GetItemByLoc((ItemLocType)useBagInfo.Loc).Add(useBagInfo);
 
@@ -848,8 +846,6 @@ namespace ET
             LDItem ldItemCof = LDItemCategory.Instance.Get(itemid);
             useBagInfo.Loc = ldItemCof.ItemType == (int)ItemTypeEnum.PetHeXin ? (int)ItemLocType.ItemPetHeXinBag : (int)ItemLocType.ItemLocBag;
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
-            useBagInfo.GemHole = ItemHelper.DefaultGem;
-            useBagInfo.GemIDNew = ItemHelper.DefaultGem;
             useBagInfo.GetWay = bagInfo.GetWay;
             useBagInfo.isBinging = bagInfo.isBinging;
             self.GetItemByLoc((ItemLocType)useBagInfo.Loc).Add(useBagInfo);
@@ -985,7 +981,7 @@ namespace ET
                 
                 int itemID = rewardItems[i].ItemID;
                 int itemtype = rewardItems[i].ItemType;
-                if (itemID == 0 || !ItemHelper.IsValidItem(rewardItems[i]))
+                if (itemID == 0 || !ItemNewHelper.IsValidItem(rewardItems[i]))
                 {
                     continue;
                 }
@@ -1062,8 +1058,6 @@ namespace ET
                     useBagInfo.ItemNum = (leftNum > maxPileSum) ? maxPileSum : leftNum;
                     useBagInfo.Loc = (int)itemLockType;
                     useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
-                    useBagInfo.GemHole = ItemHelper.DefaultGem;
-                    useBagInfo.GemIDNew = ItemHelper.DefaultGem;
                     useBagInfo.GetWay = getWay;
                     leftNum -= useBagInfo.ItemNum;
 
@@ -1459,7 +1453,7 @@ namespace ET
             for (int i = 0; i < equipList.Count; i++)
             {
                 LDEquip mLdEquipCon = LDEquipCategory.Instance.Get(equipList[i].ItemID);
-                int equipType = ItemHelper.GetNewEquipType(equipList[i]);
+                int equipType = ItemNewHelper.GetNewEquipType(equipList[i]);
 
                 //极品属性
                 //强化登录（List长度13， 13个位置）
@@ -1471,7 +1465,7 @@ namespace ET
                 //获取宝石属性
                 if (string.IsNullOrEmpty(equipList[i].GemIDNew))
                 {
-                    equipList[i].GemIDNew = ItemHelper.DefaultGem;
+                    equipList[i].GemIDNew = ItemNewHelper.GetDefaultGem();
                     //Log.Debug($"GemIDNew==null  unit.Id: {unit.Id} BagInfoID:{equipList[i].BagInfoID}");
                 }
 

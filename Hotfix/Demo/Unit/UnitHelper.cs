@@ -280,9 +280,9 @@ namespace ET
             if (self.Type == UnitType.Player)
             {
                 int itemId = self.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Weapon);
-                return ItemHelper.GetEquipType(self.ConfigId, itemId);
+                return ItemNewHelper.GetEquipType(self.ConfigId, itemId);
             }
-            return ItemEquipType.Common;
+            return 0;
         }
 
         public static int GetWuqiItemID(this Unit self)

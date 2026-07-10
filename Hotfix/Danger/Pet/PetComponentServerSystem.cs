@@ -232,7 +232,7 @@ namespace ET
             newpet.SkinId = 0;/// skinId != 0 ? skinId : ldPetConfig.Skin[0];
             newpet.PetHeXinList = new List<long>() { 0, 0, 0 };
             newpet.AddPropretyNum = 0;
-            newpet.AddPropretyValue = ItemHelper.DefaultGem;
+            newpet.AddPropretyValue = ItemNewHelper.GetDefaultGem();
             newpet.ShouHuPos = RandomHelper.RandomNumber(1, 5);
             //newpet.PetName = PetSkinConfigCategory.Instance.Get(newpet.SkinId).Name;
             newpet.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
@@ -771,7 +771,7 @@ namespace ET
         public static void OnResetPoint(this PetComponentServer self, RolePetInfo rolePetInfo)
         {
             rolePetInfo.AddPropretyNum = (rolePetInfo.PetLv - 1) * 5;
-            rolePetInfo.AddPropretyValue = ItemHelper.DefaultGem;
+            rolePetInfo.AddPropretyValue = CommonConfig.DefaultProprety;
             self.UpdatePetAttribute(rolePetInfo, false);
         }
 
@@ -1345,7 +1345,7 @@ namespace ET
                 if (string.IsNullOrEmpty(rolePetInfo.AddPropretyValue))
                 {
                     rolePetInfo.AddPropretyNum = (rolePetInfo.PetLv - 1) * 5;
-                    rolePetInfo.AddPropretyValue = ItemHelper.DefaultGem;
+                    rolePetInfo.AddPropretyValue = CommonConfig.DefaultProprety;
                 }
             }
             return self.RolePetInfos;

@@ -38,7 +38,7 @@ namespace ET
             if (request.OperateType == 1)
             {
                 LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
-                int equipType = ItemHelper.GetNewEquipType(useBagInfo);
+                int equipType = ItemNewHelper.GetNewEquipType(useBagInfo);
 
                 if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < ldItem.UseLv)
                 {

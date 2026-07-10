@@ -402,7 +402,7 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             float attackSpped = 1f + numericComponent.GetAsFloat(NumericType.Numeric_Error);
             int EquipType = UnitHelper.GetEquipType(unit);
-            List<int> normalskillCDs = EquipType == (int)ItemEquipType.Knife ? new List<int>() { 500, 1000, 1000 } : new List<int>() { 700, 700, 700 };
+            List<int> normalskillCDs =new List<int>() { 700, 700, 700 };
             for (int i = 0; i < normalskillCDs.Count; i++)
             {
                 normalskillCDs[i] = (int)(normalskillCDs[i] / attackSpped);

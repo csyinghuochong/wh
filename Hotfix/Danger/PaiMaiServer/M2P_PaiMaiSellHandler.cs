@@ -10,7 +10,7 @@ namespace ET
 
         protected override async ETTask Run(Scene scene, M2P_PaiMaiSellRequest request, P2M_PaiMaiSellResponse response, Action reply)
         {
-            if (!ItemHelper.IsValidItem(request.PaiMaiItemInfo.BagInfo))
+            if (!ItemNewHelper.IsValidItem(request.PaiMaiItemInfo.BagInfo))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();

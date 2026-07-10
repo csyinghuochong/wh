@@ -44,7 +44,7 @@ namespace ET
             {
                 oldqulity = int.Parse(bagInfoJinHe.ItemPar);
             }
-            List<int> valuerange = ItemHelper.GetJingHeAddQulity(qulitylist);
+            List<int> valuerange = null; 
             int addqulity = RandomHelper.RandomNumber(valuerange[0], valuerange[1] + 1);
             oldqulity += addqulity;
             //做个限制

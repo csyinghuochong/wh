@@ -65,12 +65,7 @@ namespace ET
                 for (int i = 0; i < droplist.Count; i++)
                 {
                     DropComponent dropComponent = droplist[i].GetComponent<DropComponent>();
-                    int qulity = ItemHelper.GetNewQulity(dropComponent.ItemType, dropComponent.ItemID);
-                    if (qulity >= 5)
-                    {
-                        haveorange = true;
-                        break;
-                    }
+                   
                 }
 
                 //遇到橙色道具真实随机率 30%在当前橙色格子
