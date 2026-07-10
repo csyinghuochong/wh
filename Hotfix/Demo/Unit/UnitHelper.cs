@@ -158,8 +158,8 @@ namespace ET
                 case UnitType.DropItem:
                     createUnits.Drops.Add(CreateDropInfo(sendUnit));
                     break;
-                case UnitType.Chuansong:
-                    createUnits.Transfers.Add(CreateTransferInfo(sendUnit));
+                case UnitType.Teleport:
+                    createUnits.Teleports.Add(CreateTeleportInfo(sendUnit));
                     break;
                 //case UnitType.Npc:
                 //    createUnits.Npcs.Add(CreateNpcInfo(sendUnit));
@@ -180,33 +180,17 @@ namespace ET
         
         public static DropInfo CreateDropInfo(Unit unit)
         {
-            DropInfo dropinfo = new DropInfo();
-            dropinfo.UnitId = unit.Id;
-            //DropType == 0 公共掉落 2保护掉落   1私有掉落
-            DropComponent dropComponent = unit.GetComponent<DropComponent>();
-            dropinfo.DropType = dropComponent.OwnerId > 0 ? 2 : 0;
-            dropinfo.ItemID = dropComponent.ItemID;
-            dropinfo.ItemNum = dropComponent.ItemNum;
-            dropinfo.CellIndex = dropComponent.CellIndex;
-            dropinfo.BeKillId = dropComponent.BeKillId;
-            dropinfo.BeKillConfig = dropComponent.BeKillConfig;
-            dropinfo.X = unit.Position.x;
-            dropinfo.Y = unit.Position.y;
-            dropinfo.Z = unit.Position.z;
-            return dropinfo;
+            return unit.GetComponent<DropComponent>().ToDropInfo(unit);
         }
 
-        public static TransferInfo CreateTransferInfo(Unit unit)
+        public static TeleportInfo CreateTeleportInfo(Unit unit)
         {
-            TransferInfo transferinfo = new TransferInfo();
-            ChuansongComponent chuansongComponent = unit.GetComponent<ChuansongComponent>();
-
+            TeleportInfo transferinfo = new TeleportInfo();
+           
             transferinfo.UnitId = unit.Id;
             transferinfo.X = unit.Position.x;
             transferinfo.Y = unit.Position.y;
             transferinfo.Z = unit.Position.z;
-            transferinfo.CellIndex = chuansongComponent.CellIndex;
-            transferinfo.Direction = chuansongComponent.DirectionType;
             transferinfo.TransferId = unit.ConfigId;
             return transferinfo;
         }

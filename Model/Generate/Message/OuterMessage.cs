@@ -912,7 +912,7 @@ namespace ET
 		public List<DropInfo> Drops = new List<DropInfo>();
 
 		[ProtoMember(5)]
-		public List<TransferInfo> Transfers = new List<TransferInfo>();
+		public List<TeleportInfo> Teleports = new List<TeleportInfo>();
 
 		[ProtoMember(8)]
 		public int UpdateAll { get; set; }
@@ -2297,13 +2297,13 @@ namespace ET
 		public long BeKillId { get; set; }
 
 		[ProtoMember(11)]
-		public int BeKillConfig { get; set; }
+		public int ItemType { get; set; }
 
 	}
 
-	[Message(OuterOpcode.TransferInfo)]
+	[Message(OuterOpcode.TeleportInfo)]
 	[ProtoContract]
-	public partial class TransferInfo: Object
+	public partial class TeleportInfo: Object
 	{
 		[ProtoMember(1)]
 		public long UnitId { get; set; }

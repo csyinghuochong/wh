@@ -692,10 +692,9 @@ namespace ET
                     dropitem.AddComponent<UnitInfoComponent>();
                     dropitem.Type = UnitType.DropItem;
                     DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
-                    dropComponent.SetItemInfo(droplist[i].ItemID, droplist[i].ItemNum);
+                    dropComponent.SetDropReward(droplist[i]);
+                    dropComponent.SetBeKillId(bekill.Id);
                     dropComponent.BeAttackPlayerList = beattackIds;
-                    dropComponent.BeKillId = bekill.Id;
-                    dropComponent.BeKillConfig = bekill.ConfigId;
                     dropitem.ConfigId = droplist[i].ItemID;
                     //掉落归属问题 掉落类型为2 原来为： 最后一刀 修改为 第一拾取权限为优先攻击他的人,如果这个人死了，那么拾取权限清空，下一次伤害是谁归属权就是谁。
 
@@ -734,6 +733,7 @@ namespace ET
                     float dropZ = bekill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f);
                     dropitem.Position = new UnityEngine.Vector3(dropX, dropY, dropZ);
                     dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
+                    dropComponent.InitDropInfo(dropitem);
                 }
 
                 /*if (ldMonsterCof.DropType == 3)
@@ -782,7 +782,6 @@ namespace ET
                             Y = bekill.Position.y,
                             Z = bekill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f),
                             UnitId = IdGenerater.Instance.GenerateId(),
-                            BeKillConfig = bekill.ConfigId
                         };
                         m2C_CreateDropItems.Drops.Add(dropInfo);
                         beAttack.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
@@ -848,16 +847,16 @@ namespace ET
                     dropitem.AddComponent<UnitInfoComponent>();
                     dropitem.Type = UnitType.DropItem;
                     DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
-                    dropComponent.SetItemInfo(droplist[i].ItemID, droplist[i].ItemNum);
+                    dropComponent.SetDropReward(droplist[i]);
                     float dropX = beKill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f);
                     float dropY = beKill.Position.y;
                     float dropZ = beKill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f);
                     dropitem.Position = new UnityEngine.Vector3(dropX, dropY, dropZ);
                     dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
-                    dropComponent.DropType = dropType;
-                    dropComponent.BeKillId = beKill.Id;
-                    dropComponent.BeKillConfig = beKill.ConfigId;
+                    dropComponent.SetDropType(dropType);
+                    dropComponent.SetBeKillId(beKill.Id);
                     dropitem.ConfigId = droplist[i].ItemID;
+                    dropComponent.InitDropInfo(dropitem);
                 }
             }
             if (dropType == 1)
@@ -875,14 +874,9 @@ namespace ET
 
                 for (int k = 0; k < droplist.Count; k++)
                 {
-                    if ((droplist[k].ItemID >= 10030011 && droplist[k].ItemID <= 10030019) && sceneType == MapTypeEnum.TeamDungeon)
-                    {
-                        Log.Error($"掉落装备.字: {droplist[k].ItemID}  {par}   {sceneType}");
-                    }
-
                     DropInfo dropInfo = new DropInfo()
                     {
-                        DropType = 1,
+                        DropType = dropType,
                         ItemID = droplist[k].ItemID,
                         ItemNum = droplist[k].ItemNum,
                         X = beKill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f),

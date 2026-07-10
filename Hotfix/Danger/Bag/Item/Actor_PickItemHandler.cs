@@ -29,7 +29,7 @@ namespace ET
                         continue;
                     }
                     dropComponent = unitDrop.GetComponent<DropComponent>();
-                    int dropType = dropComponent.DropType;
+                    int dropType = dropComponent.GetDropType();
 
                     if (dropType == 0 && sceneTypeEnum == MapTypeEnum.Happy && cellindex != dropComponent.CellIndex)
                     {
@@ -106,7 +106,7 @@ namespace ET
                         continue; 
                     }
                     dropComponent = unitDrop.GetComponent<DropComponent>();
-                    int dropType = dropComponent.DropType;
+                    int dropType = dropComponent.GetDropType();
                     if (dropType == 2 && dropComponent.OwnerId != 0 && dropComponent.OwnerId != unit.Id && serverTime < dropComponent.ProtectTime)
                     {
                         errorCode = ErrorCode.ERR_ItemDropProtect;
@@ -168,16 +168,9 @@ namespace ET
                     m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;   //拾取道具的消息，此为玩家id
                     m2C_SyncChatInfo.ChatInfo.ParamId = drops[i].UnitId;//拾取道具的消息，此为道具unitid
 
-                    string bybox = string.Empty;
-                    string byboxen = string.Empty;
-                    if (drops[i].BeKillConfig == 80002010)
-                    {
-                        bybox = "通过钻石宝箱";
-                    }
-                    else
-                    {
-                        byboxen = "By Diamond Chest";
-                    }
+                    string bybox = "通过钻石宝箱";
+                    string byboxen = "By Diamond Chest";
+                   
                     if (ldItem.Id == 1)
                     {
                         numShow = drops[i].ItemNum.ToString();

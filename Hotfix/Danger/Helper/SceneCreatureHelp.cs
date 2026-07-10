@@ -53,10 +53,9 @@ namespace ET
 				//创建传送点Unit
 				Unit chuansong = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), 1);
 				scene.GetComponent<UnitComponent>().Add(chuansong);
-				chuansong.AddComponent<ChuansongComponent>();
 				UnitInfoComponent unitInfoComponent = chuansong.AddComponent<UnitInfoComponent>();
 				chuansong.ConfigId = transferId;
-				chuansong.Type = UnitType.Chuansong;
+				chuansong.Type = UnitType.Teleport;
 				chuansong.Position = vector3;
 				chuansong.AddComponent<AOIEntity, int, Vector3>(9 * 1000, chuansong.Position);
 			}
@@ -568,16 +567,8 @@ namespace ET
 			string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);
 
             string bybox = string.Empty;
-            string byboxen = string.Empty;
-            if (dropInfo.BeKillConfig == 80002010)
-            {
-                bybox = "通过钻石宝箱";
-            }
-            else
-            {
-                byboxen = "By Diamond Chest";
-            }
-
+            string byboxen =  "By Diamond Chest";
+           
             m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} {bybox}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
 
             m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} {byboxen}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>";

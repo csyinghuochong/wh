@@ -134,13 +134,14 @@ namespace ET
                     dropitem.AddComponent<UnitInfoComponent>();
                     dropitem.Type = UnitType.DropItem;
                     DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
-                    dropComponent.SetItemInfo(rewardist[i].ItemID, rewardist[i].ItemNum);
-                    dropComponent.CellIndex = p + 1;
+                    dropComponent.SetDropReward(rewardist[i]);
+                    dropComponent.SetCellIndex(p + 1);
                     dropitem.ConfigId = rewardist[i].ItemID;
                     Vector3 vector3 = HappyFubenConfig.PositionList[p];
                     dropitem.Position = vector3;
                     dropitem.AddComponent<AOIEntity, int, Vector3>(2 * 1000, dropitem.Position);
-                    dropComponent.DropType = 0;
+                    dropComponent.SetDropType(0);
+                    dropComponent.InitDropInfo(dropitem);
                 }
             }
 

@@ -93,7 +93,7 @@ namespace ET
 		 public const ushort M2C_SyncUnitPos = 10090;
 		 public const ushort M2C_CreateDropItems = 10091;
 		 public const ushort DropInfo = 10092;
-		 public const ushort TransferInfo = 10093;
+		 public const ushort TeleportInfo = 10093;
 		 public const ushort NpcInfo = 10094;
 		 public const ushort M2C_CancelAttack = 10095;
 		 public const ushort C2M_TestRobotCase = 10096;
