@@ -81,6 +81,9 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
+		/// <summary>描述</summary>
+		[ProtoMember(3)]
+		public int Desc { get; set; }
 
 	}
 }

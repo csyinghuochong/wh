@@ -1492,12 +1492,8 @@ namespace ET
         public static void GetEquipAttribute(this BagComponentServer self, List<AttributeItem> occInitAttribute)
         {
             Unit unit = self.GetParent<Unit>();
-            int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
-            List<int> equipIDList = new List<int>();
-            List<int> equipSuitIDList = new List<int>();
-            List<BagInfo> equipList =  self.GetItemByLoc(ItemLocType.ItemLocEquip);
-            //List<BagInfo> equipList_2 = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocEquip_2);
-          
+            List<BagInfo> equipList = self.GetItemByLoc(ItemLocType.ItemLocEquip);
+            Dictionary<int, int> suitPointsMap = new Dictionary<int, int>();
 
             for (int i = equipList.Count - 1; i >= 0; i--)
             {
@@ -1508,77 +1504,36 @@ namespace ET
                     continue;
                 }
 
-                //存储装备ID
                 LDEquip itemCof = LDEquipCategory.Instance.Get(userBagInfo.ItemID);
-     
-                //存储装备ID
-                equipIDList.Add(itemCof.Id);
-
-                //存储装备套装
-                if (LDEquipCategory.Instance.Contain(itemCof.Id))
-                {
-                    LDEquip ldEquipCnf = LDEquipCategory.Instance.Get(itemCof.Id);
-                    if (ldEquipCnf.EquipSuitID != 0)
-                    {
-                        if (equipSuitIDList.Contains(ldEquipCnf.EquipSuitID) == false)
-                        {
-                            equipSuitIDList.Add(ldEquipCnf.EquipSuitID);
-                        }
-                    }
-                }
-                else
-                {
-                    //Log.Debug($"无效的装备: {itemCof.Id}");
-                }
-            }
-            
-            
-               ///职业套装
-            List<int> occsuit = new List<int>();
-            /*quipSuitConfigCategory.Instance.OccSuiList.TryGetValue(roleInfo.Occ, out occsuit);
-            if(occsuit!=null)
-            {
-                equipSuitIDList.AddRange(occsuit);
-            }*/
-            
-            //装备套装属性
-            for (int i = 0; i < equipSuitIDList.Count; i++)
-            {
-                if (!LDEquip_SuitCategory.Instance.Contain(equipSuitIDList[i]))
+                if (itemCof.EquipSuitID == 0)
                 {
                     continue;
                 }
-                LDEquip_Suit ldEquipSuitCof = LDEquip_SuitCategory.Instance.Get(equipSuitIDList[i]);
-                int num = 0;
-                /*if (ldEquipSuitCof.SuitType == 0) //默认套装
+
+                if (!suitPointsMap.TryGetValue(itemCof.EquipSuitID, out int suitPoints))
                 {
-                    
-                }
-                else  //时装套装
-                {
-                    int[] needEquipList = ldEquipSuitCof.NeedEquipID;
-                    for (int y = 0; y < needEquipList.Length; y++)
-                    {
-                        if (self.FashionActiveIds.Contains(needEquipList[y]))
-                        {
-                            num++;
-                        }
-                    }
-                }*/
-                int[] needEquipList = ldEquipSuitCof.Equip_Id;
-                for (int y = 0; y < needEquipList.Length; y++)
-                {
-                    int needEquipID = needEquipList[y];
-                    if (equipIDList.Contains(needEquipID))
-                    {
-                        num = num + 1;
-                    }
+                    suitPoints = 0;
                 }
 
-                string[] equipSuitProList = ldEquipSuitCof.Effect_Id.Split('|');
-               
+                suitPointsMap[itemCof.EquipSuitID] = suitPoints + itemCof.EquipSuitParam;
             }
-            
+
+            // 套装效果：按点数获取效果ID，效果表尚未接入
+            foreach (KeyValuePair<int, int> suitPoints in suitPointsMap)
+            {
+                if (!LDEquip_SuitCategory.Instance.Contain(suitPoints.Key))
+                {
+                    continue;
+                }
+
+                LDEquip_Suit ldEquipSuitCof = LDEquip_SuitCategory.Instance.Get(suitPoints.Key);
+                List<int> suitEffectIds = GetActiveEquipSuitEffectIds(suitPoints.Value, ldEquipSuitCof.Effect_Id);
+                if (suitEffectIds.Count > 0)
+                {
+                    // 效果表未配置，暂不写入属性
+                }
+            }
+
             for (int i = 0; i < equipList.Count; i++)
             {
                 LDEquip mLdEquipCon = LDEquipCategory.Instance.Get(equipList[i].ItemID);
@@ -1715,6 +1670,42 @@ namespace ET
             {
                 return false;
             }
+        }
+
+        private static List<int> GetActiveEquipSuitEffectIds(int suitPoints, string effectIdStr)
+        {
+            List<int> effectIds = new List<int>();
+            if (suitPoints <= 0 || string.IsNullOrEmpty(effectIdStr))
+            {
+                return effectIds;
+            }
+
+            string[] effectTiers = effectIdStr.Split('|');
+            for (int i = 0; i < effectTiers.Length; i++)
+            {
+                if (string.IsNullOrEmpty(effectTiers[i]))
+                {
+                    continue;
+                }
+
+                string[] parts = effectTiers[i].Split('_');
+                if (parts.Length != 2)
+                {
+                    continue;
+                }
+
+                if (!int.TryParse(parts[0], out int needPoints) || !int.TryParse(parts[1], out int effectId))
+                {
+                    continue;
+                }
+
+                if (suitPoints >= needPoints && effectId > 0)
+                {
+                    effectIds.Add(effectId);
+                }
+            }
+
+            return effectIds;
         }
     }
 }
