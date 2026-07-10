@@ -69,7 +69,10 @@
     </Compile>
     
     <Compile Remove="Libs\**" />
-    
+    <Compile Remove="..\..\Unity\Assets\Mono\Core\GlobalConfig.cs" />
+    <Compile Remove="..\..\Unity\Assets\Mono\Core\YooAssetsManager.cs" />
+    <Compile Remove="..\..\Unity\Assets\Mono\Core\PatchLogic\**\*.cs" />
+
     <Compile Include="..\..\Unity\Assets\Model\Module\ActorLocation\ActorResponse.cs">
       <Link>Module\ActorLocation\ActorResponse.cs</Link>
     </Compile>
