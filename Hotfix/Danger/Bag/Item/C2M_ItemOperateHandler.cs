@@ -267,13 +267,12 @@ namespace ET
                             //随机宠物蛋
                             case 103:
                                 getway = useBagInfo.GetWay.Split('_');
-                                int petId = 0;// int.Parse(ldItem.ItemUsePar);
+                                //int petId = 0;// int.Parse(ldItem.ItemUsePar);
                                 int skinId = 0;
                                 if(!string.IsNullOrEmpty(useBagInfo.ItemPar))
                                 {
                                     skinId = int.Parse(useBagInfo.ItemPar);
                                 }
-                                unit.GetComponent<PetComponentServer>().OnAddPet(int.Parse(getway[0]), petId, skinId, useBagInfo.FuLing);
                                 break;
                             //随机盒子
                             case 104:
@@ -442,11 +441,9 @@ namespace ET
                             case 136:
                                 break;
                             case 137:
-
                                 //宠物蛋附灵
                                 long chongwudanId = long.Parse(request.OperatePar);
                                 BagInfo chongwudan = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, chongwudanId);
-                                chongwudan.FuLing = 1;
                                 m2c_bagUpdate.BagInfoUpdate.Add(chongwudan);
                                 break;
                             case 138:

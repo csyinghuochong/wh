@@ -626,10 +626,7 @@ namespace ET
             List<BagInfo> bagInfos = self.GetCurJingHeList();
             for (int i = 0; i < bagInfos.Count; i++)
             {
-                if (bagInfos[i].EquipIndex == subType)
-                { 
-                    return bagInfos[i]; 
-                }
+               
             }
             return null;
         }
@@ -677,10 +674,7 @@ namespace ET
             for (int i = 0; i < equipList.Count; i++)
             {
                 LDItem ldItemCof = LDItemCategory.Instance.Get(equipList[i].ItemID);
-                if ((ldItemCof.ItemType == 4001 || ldItemCof.ItemType == 4002) && equipList[i].EquipIndex == position)
-                {
-                    return equipList[i];
-                }
+               
             }
             return null;
         }
@@ -1079,9 +1073,9 @@ namespace ET
                     {
                         LDEquip equipconfig = LDEquipCategory.Instance.Get(itemID);
 
-                        if (useBagInfo.BaseAttrLists.Count <= 0)
+                        if (useBagInfo.BaseAttrList.Count <= 0)
                         {
-                            useBagInfo.BaseAttrLists = LDEquipCategory.Instance.GetEquipAttribute(itemID);
+                            useBagInfo.BaseAttrList = LDEquipCategory.Instance.GetEquipAttribute(itemID);
                         }
                     }
                     
@@ -1120,7 +1114,7 @@ namespace ET
                         {
                             if (getWayInfo.Length >= 3)
                             {
-                                useBagInfo.FuLing = int.Parse(getWayInfo[2]);
+                                //useBagInfo.FuLing = int.Parse(getWayInfo[2]);
                             }
                         }
                         //食物
@@ -1460,7 +1454,7 @@ namespace ET
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID);
                 int qianghuaLv = unit.GetComponent<BagComponentServer>().GetQiangHuaLevel(caowei);
 
-                occInitAttribute.AddRange( equipList[i].BaseAttrLists );
+                occInitAttribute.AddRange( equipList[i].BaseAttrList );
 
                 //获取宝石属性
                 if (string.IsNullOrEmpty(equipList[i].GemIDNew))

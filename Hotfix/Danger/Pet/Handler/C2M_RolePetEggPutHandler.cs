@@ -26,7 +26,7 @@ namespace ET
             
             bagComponentServer.OnCostItemData(request.BagInfoId, 1);
             rolePetEgg.ItemId = useBagInfo.ItemID;
-            rolePetEgg.FuLing = useBagInfo.FuLing;
+            //rolePetEgg.FuLing = useBagInfo.FuLing;
             rolePetEgg.EndTime = 0;
             response.RolePetEgg = rolePetEgg;
             reply();

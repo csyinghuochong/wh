@@ -92,15 +92,13 @@ namespace ET
 
                     unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
                     unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
-                    beforeequip.EquipIndex = -1;
-                    useBagInfo.EquipIndex = equipposition;
                     m2c_bagUpdate.BagInfoUpdate.Add(beforeequip);
                 }
                 else
                 {
                     unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
                     unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
-                    useBagInfo.EquipIndex = equipposition;
+                    //useBagInfo.EquipIndex = equipposition;
                 }
                
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);

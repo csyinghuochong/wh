@@ -1901,11 +1901,20 @@ namespace ET
 		[ProtoMember(6)]
 		public string GemHole { get; set; }
 
+		[ProtoMember(29)]
+		public int ItemType { get; set; }
+
 		[ProtoMember(8)]
 		public int Loc { get; set; }
 
 		[ProtoMember(10)]
-		public List<AttributeItem> BaseAttrLists = new List<AttributeItem>();
+		public List<AttributeItem> BaseAttrList = new List<AttributeItem>();
+
+		[ProtoMember(11)]
+		public List<AttributeItem> AppraiseAttrList = new List<AttributeItem>();
+
+		[ProtoMember(12)]
+		public int EnhanceLevel { get; set; }
 
 		[ProtoMember(13)]
 		public bool isBinging { get; set; }
@@ -1924,18 +1933,6 @@ namespace ET
 
 		[ProtoMember(23)]
 		public bool IsProtect { get; set; }
-
-		[ProtoMember(26)]
-		public int EquipPlan { get; set; }
-
-		[ProtoMember(27)]
-		public int EquipIndex { get; set; }
-
-		[ProtoMember(28)]
-		public int FuLing { get; set; }
-
-		[ProtoMember(29)]
-		public int ItemType { get; set; }
 
 	}
 
@@ -14117,6 +14114,41 @@ namespace ET
 	[Message(OuterOpcode.M2C_EquipWearResponse)]
 	[ProtoContract]
 	public partial class M2C_EquipWearResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public string OperatePar { get; set; }
+
+	}
+
+//装备鉴定
+	[ResponseType(nameof(M2C_EquipAppraiseResponse))]
+	[Message(OuterOpcode.C2M_EquipAppraiseRequest)]
+	[ProtoContract]
+	public partial class C2M_EquipAppraiseRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public long OperateItemID { get; set; }
+
+		[ProtoMember(3)]
+		public long CostItemId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_EquipAppraiseResponse)]
+	[ProtoContract]
+	public partial class M2C_EquipAppraiseResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
