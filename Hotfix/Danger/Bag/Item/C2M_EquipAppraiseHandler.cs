@@ -14,11 +14,10 @@ namespace ET
         {
 
             await ETTask.CompletedTask;
-            long baginfoId = request.OperateItemID;
 
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
 
-            BagInfo baginfoOpera  = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocEquip, baginfoId);
+            BagInfo baginfoOpera  = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocEquip, request.OperateItemID);
             if(baginfoOpera == null)
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
@@ -34,7 +33,7 @@ namespace ET
             }
 
             //道具鉴定，扣除道具
-            unit.GetComponent<BagComponentServer>().OnCostItemData(baginfoId, 1);
+            unit.GetComponent<BagComponentServer>().OnCostItemData(request.CostItemId, 1);
 
 
             //通知客户端背包刷新
@@ -57,6 +56,7 @@ namespace ET
             }
 
             int randomAttri = 56;
+            appraiseLv = 10;
             baginfoOpera.AppraiseAttrList.Clear();
 
             List<LDEquip_Appraise> lDEquip_Appraises = LDEquip_AppraiseCategory.Instance.GetAll().Values.ToList();
