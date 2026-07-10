@@ -10,12 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemFumoProRequest request, M2C_ItemFumoProResponse response, Action reply)
         {
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            if (bagComponentServer.FuMoItemId == 0)
-            {
-                reply();
-                return;
-            }
-
+           
             reply();
             await ETTask.CompletedTask;
         }

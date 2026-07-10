@@ -81,7 +81,6 @@ namespace ET
 			response.WarehouseAddedCell = bagComponentServer.WarehouseAddedCell;
 			response.FashionActiveIds = bagComponentServer.FashionActiveIds;	
 			response.FashionEquipList = bagComponentServer.FashionEquipList;
-            response.SeasonJingHePlan = bagComponentServer.SeasonJingHePlan;
 			response.AdditionalCellNum = bagComponentServer.AdditionalCellNum;	
             reply();
 			await ETTask.CompletedTask;

@@ -9,7 +9,6 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JingHePlanRequest request, M2C_JingHePlanResponse response, Action reply)
         {
-            unit.GetComponent<BagComponentServer>().SeasonJingHePlan = request.JingHePlan;
             reply();
             await ETTask.CompletedTask;
         }

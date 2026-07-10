@@ -14,12 +14,12 @@ namespace ET
     {
         
         /// <summary>
-        /// ItemLocType.ItemWareHouse1 之后的所有仓库（购买格子数量）
+        /// （购买格子数量）
         /// </summary>
         public List<int> WarehouseAddedCell = new List<int>();
 
         /// <summary>
-        /// 附加格子，ItemLocType.ItemBag开始
+        /// 附加格子
         /// </summary>
         public List<int> AdditionalCellNum = new List<int>();
 
@@ -33,10 +33,6 @@ namespace ET
         /// </summary>
         public List<int> FashionEquipList = new List<int>();
 
-        /// <summary>
-        /// 赛季晶核方案
-        /// </summary>
-        public int SeasonJingHePlan = 0;      
 
         public List<BagInfo> BagItemList =new List<BagInfo>();
         public List<BagInfo> BagItemPetHeXin = new List<BagInfo>();
@@ -55,29 +51,13 @@ namespace ET
         public List<BagInfo> JianYuanTreasureMapStorage2 = new List<BagInfo>();
         public List<BagInfo> ChouKaWarehouse = new List<BagInfo>();
 
-        public List<BagInfo> SeasonJingHe = new List<BagInfo>();
-        public List<BagInfo> PetEquipList = new List<BagInfo>();
-        public List<BagInfo> GemWareHouse1 = new List<BagInfo>();   
-
-        [BsonIgnore]
-        public int FuMoItemId = 0;
 
         [BsonIgnore]
         public M2C_RoleBagUpdate message = new M2C_RoleBagUpdate() {  };
 
-        [BsonIgnore]
-        public List<int> InheritSkills = new List<int>() { };
 
-        /// <summary>
-        /// 背包购买格子数量
-        /// </summary>
-        public int BagAddedCell = 0;
         public List<BagInfo>[] AllItemList;
 
-        /// <summary>
-        /// 当前选择的仓库
-        /// </summary>
-        public int CurrentHouse;
 
         public bool RealAddItem;
     }

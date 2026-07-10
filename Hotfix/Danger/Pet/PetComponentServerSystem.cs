@@ -874,7 +874,8 @@ namespace ET
                     continue;
                 }
 
-                BagInfo userBagInfo = bagComponentServer.GetItemByLoc(ItemLocType.PetLocEquip, baginfoId);
+
+                BagInfo userBagInfo = null;// bagComponentServer.GetItemByLoc(ItemLocType.PetLocEquip, baginfoId);
                 if (userBagInfo == null || !LDItemCategory.Instance.Contain(userBagInfo.ItemID))
                 {
                     continue;
@@ -1203,7 +1204,7 @@ namespace ET
 
                     //移除宠物之核
                     bagComponentServer.OnCostItemData(self.RolePetInfos[i].PetHeXinList, ItemLocType.ItemPetHeXinEquip);
-                    bagComponentServer.OnCostItemData(self.RolePetInfos[i].PetEquipList, ItemLocType.PetLocEquip);
+                    //bagComponentServer.OnCostItemData(self.RolePetInfos[i].PetEquipList, ItemLocType.PetLocEquip);
 
                     self.RolePetInfos.RemoveAt(i);
                     break;

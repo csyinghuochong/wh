@@ -21,9 +21,9 @@ namespace ET
                 reply();
                 return;
             }
-            
 
-            ItemLocType locType = request.OperateType == 1 ? ItemLocType.ItemLocBag : ItemLocType.SeasonJingHe;
+
+            ItemLocType locType = ItemLocType.ItemLocBag;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             BagInfo useBagInfo = bagComponentServer.GetItemByLoc(locType, request.OperateBagID);
             if (useBagInfo == null)
@@ -61,27 +61,7 @@ namespace ET
 
                 //穿戴 获取当前位置是否有装备
                 BagInfo beforeequip = bagComponentServer.GetJingHeByWeiZhi(equipIndex);
-                if (beforeequip != null)
-                {
-                    beforeequip.EquipPlan = 0;
-                    beforeequip.EquipIndex = 0;
-                    useBagInfo.EquipPlan = bagComponentServer.SeasonJingHePlan;
-                    useBagInfo.EquipIndex = equipIndex;
-                    unit.GetComponent<BagComponentServer>().OnChangeItemLoc(beforeequip, ItemLocType.ItemLocBag, ItemLocType.SeasonJingHe);
-                    unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.SeasonJingHe, ItemLocType.ItemLocBag);
-
-                    unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.SeasonJingHe, beforeequip);
-                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
-                    m2c_bagUpdate.BagInfoUpdate.Add(beforeequip);
-                }
-                else
-                {
-                    useBagInfo.EquipPlan = bagComponentServer.SeasonJingHePlan;
-                    useBagInfo.EquipIndex = equipIndex;
-                    unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.SeasonJingHe, ItemLocType.ItemLocBag);
-                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
-                }
-
+               
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 useBagInfo.isBinging = true;
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
@@ -89,18 +69,7 @@ namespace ET
             if (request.OperateType == 2)
             {
                 //卸下  判断背包格子是否足够
-                bool full = unit.GetComponent<BagComponentServer>().IsBagFull();
-                if (full)
-                {
-                    response.Error = ErrorCode.ERR_BagIsFull;
-                    reply();
-                    return;
-                }
-                useBagInfo.EquipPlan = 0;
-                unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.SeasonJingHe);
-                unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.SeasonJingHe, useBagInfo);
-                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-                m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
+               
             }
 
             MessageHelper.SendToClient(unit, m2c_bagUpdate);

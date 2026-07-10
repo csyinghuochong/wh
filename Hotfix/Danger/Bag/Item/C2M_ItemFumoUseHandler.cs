@@ -12,7 +12,6 @@ namespace ET
             BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, bagInfoID);
             if (useBagInfo == null)
             {
-                unit.GetComponent<BagComponentServer>().FuMoItemId = 0;
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;

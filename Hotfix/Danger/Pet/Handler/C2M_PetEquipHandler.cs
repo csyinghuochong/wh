@@ -43,6 +43,7 @@ namespace ET
                 }
 
                 int itemSubType = ldItem.ItemType;
+                /*
                 for (int i = rolePetInfo.PetEquipList.Count - 1; i >= 0; i--)
                 { 
                     BagInfo petequipInfo = bagComponentServer.GetItemByLoc(ItemLocType.PetLocEquip, rolePetInfo.PetEquipList[i]);
@@ -56,6 +57,7 @@ namespace ET
                         break;
                     }
                 }
+                */
             }
             if (request.OperateType == 2)
             {
@@ -65,6 +67,7 @@ namespace ET
             //先卸下
             if (takeOffId != 0)
             {
+                /*
                 BagInfo oldBagInfo = bagComponentServer.GetItemByLoc(ItemLocType.PetLocEquip, takeOffId);
                 if (oldBagInfo != null)
                 {
@@ -72,8 +75,8 @@ namespace ET
                     m2c_bagUpdate.BagInfoUpdate.Add(oldBagInfo);
                     rolePetInfo.PetEquipList.Remove(takeOffId);
                 }
-
-                petComponentServer.RemoveEquipSkill(rolePetInfo, oldBagInfo);
+               
+                petComponentServer.RemoveEquipSkill(rolePetInfo, oldBagInfo); */
             }
 
             if (request.OperateType == 1) //穿戴
@@ -81,7 +84,7 @@ namespace ET
                 BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoId);
 
                 //新的装备给宠物
-                bagComponentServer.OnChangeItemLoc(bagInfo, ItemLocType.PetLocEquip, ItemLocType.ItemLocBag);
+                //bagComponentServer.OnChangeItemLoc(bagInfo, ItemLocType.PetLocEquip, ItemLocType.ItemLocBag);
                 m2c_bagUpdate.BagInfoUpdate.Add(bagInfo);
                 rolePetInfo.PetEquipList.Add(request.BagInfoId);
             }

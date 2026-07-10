@@ -164,15 +164,7 @@ namespace ET
                 /*case ItemLocType.ItemLocEquip_2:
                     ItemTypeList = self.EquipList_2;
                     break;*/
-                case ItemLocType.SeasonJingHe:
-                    ItemTypeList = self.SeasonJingHe;
-                    break;
-                case ItemLocType.PetLocEquip:
-                    ItemTypeList = self.PetEquipList;
-                    break;
-                case ItemLocType.GemWareHouse1:
-                    ItemTypeList = self.GemWareHouse1;
-                    break;
+               
             }
             return ItemTypeList;
         }
@@ -344,9 +336,6 @@ namespace ET
             bagList.AddRange(self.JianYuanTreasureMapStorage1);
             bagList.AddRange(self.JianYuanTreasureMapStorage2);
             bagList.AddRange(self.ChouKaWarehouse);
-            bagList.AddRange(self.SeasonJingHe);
-            bagList.AddRange(self.PetEquipList);
-            bagList.AddRange(self.GemWareHouse1);
 
             return bagList;
         }
@@ -506,10 +495,7 @@ namespace ET
         public static int GetHourseTotalCell(this BagComponentServer self, int hourseId)
         {
             int storeCapacity = LDGlobalValueCategory.Instance.HourseInitCapacity;
-            if (hourseId == (int)ItemLocType.GemWareHouse1)
-            {
-                storeCapacity = LDGlobalValueCategory.Instance.GemStoreInitCapacity;
-            }
+            
             return storeCapacity + self.WarehouseAddedCell[hourseId] + self.AdditionalCellNum[hourseId];
         }
 
@@ -565,15 +551,11 @@ namespace ET
 
         public static void OnResetSeason(this BagComponentServer self, bool notice)
         { 
-            self.SeasonJingHePlan = 0;
-            self.SeasonJingHe.Clear();
-
             self.ClearJingHeItem(self.BagItemList);
             self.ClearJingHeItem(self.Warehouse1);
             self.ClearJingHeItem(self.Warehouse2);
             self.ClearJingHeItem(self.Warehouse3);
             self.ClearJingHeItem(self.Warehouse4);
-            self.ClearJingHeItem(self.SeasonJingHe);
         }
 
         public static void ClearJingHeItem(this BagComponentServer self, List<BagInfo> bagInfos)
@@ -592,13 +574,7 @@ namespace ET
         public static List<BagInfo> GetCurJingHeList(this BagComponentServer self)
         {
             List<BagInfo> bagInfos = new List<BagInfo>();
-            for (  int i = 0; i < self.SeasonJingHe.Count; i++ )
-            {
-                if (self.SeasonJingHe[i].EquipPlan == self.SeasonJingHePlan)
-                {
-                    bagInfos.Add(self.SeasonJingHe[i]);
-                }
-            }
+
             return bagInfos;
         }
 
@@ -620,7 +596,6 @@ namespace ET
             List<int> equiptianfuids = new List<int>(); 
             List<BagInfo> equiplist = new List<BagInfo>();
             equiplist.AddRange(self.EquipList );
-            equiplist.AddRange(self.SeasonJingHe);
 
             for (int i = 0; i < self.EquipList.Count; i++)
             {
@@ -727,17 +702,6 @@ namespace ET
             //    }
             //}
 
-            if (self.BagAddedCell >= 0)
-            {
-                //if (self.WarehouseAddedCell.Count > 0 && self.WarehouseAddedCell.Count < (int)ItemLocType.ItemLocMax - 5)
-                if (self.WarehouseAddedCell.Count > 0 )
-                {
-                    List<int> bagaddCell = new List<int>() { self.BagAddedCell, 0,0,0,0 };
-                    self.WarehouseAddedCell.InsertRange(0, bagaddCell);
-                }
-
-                self.BagAddedCell = -1;  //该字段废弃掉
-            }
 
             for (int i = self.WarehouseAddedCell.Count; i < (int)ItemLocType.ItemLocMax; i++)
             {
@@ -894,48 +858,6 @@ namespace ET
             m2c_bagUpdate.BagInfoAdd.Add(useBagInfo);
             //通知客户端背包道具发生改变
             MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
-        }
-
-        /// <summary>
-        /// 暂时只有宝石仓库用到
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="itemId"></param>
-        /// <param name="itemNumber"></param>
-        /// <param name="itemLocType"></param>
-        /// <returns></returns>
-        public static bool CheckCanAddItem(this BagComponentServer self, int itemId , int itemNumber, ItemLocType itemLocType)
-        {
-            if (itemLocType == ItemLocType.GemWareHouse1)
-            {
-                if (self.IsHourseFullByLoc((int)itemLocType))
-                {
-                    List<BagInfo> bagInfoList = self.GetItemByLoc(itemLocType);
-                    for (int i = 0; i <bagInfoList.Count; i++)
-                    {
-                        if (bagInfoList[i].ItemID!= itemId)
-                        {
-                            continue;
-                        }
-                        LDItem ldItem = LDItemCategory.Instance.Get(itemId);
-                        if (bagInfoList[i].ItemNum + itemNumber <= ldItem.ItemPileSum)
-                        {
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-                else 
-                {
-
-                    return true;
-                }
-            }
-            else
-            {
-                return false;
-            }
         }
 
         //添加背包道具道具[支持同时添加多个]

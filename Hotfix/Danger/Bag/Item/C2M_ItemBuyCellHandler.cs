@@ -46,10 +46,6 @@ namespace ET
                 List<RewardItem> rewardItems = new List<RewardItem>() { rewardItem };
                 bagComponentServer.OnAddItemData(rewardItems, String.Empty, $"{ItemGetWay.CostItem}_{TimeHelper.ServerNow()}", true, false, (ItemLocType)request.OperateType);
             }
-            else if (request.OperateType == (int)ItemLocType.GemWareHouse1)
-            {
-                Log.Warning("还没有购买格子的需求！");
-            }
             else
             {
                 int storeindex = request.OperateType;
