@@ -595,9 +595,7 @@ namespace ET
             //根据怪物ID获得掉落ID
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(monsterID);
             List<RewardItem> dropItemList = new List<RewardItem>();
-            int dropID = 1; //ldMonsterCof.DropID;
-
-            DropHelper.DropIDToDropItem(dropID, dropItemList, monsterID, dropProValue, all);
+           
 
             return dropItemList;
         }
@@ -642,95 +640,25 @@ namespace ET
             {
                 return;
             }
-            float dropAdd_Pro = 1;
-            if (bekill.IsBoss() && main != null && bekill.ConfigId != SeasonHelper.SeasonBossId)
-            {
-                int fubenDifficulty = FubenDifficulty.None;
-                dropAdd_Pro += main.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
-                if (sceneType == (int)MapTypeEnum.CellDungeon)
-                {
-                    fubenDifficulty = bekill.DomainScene().GetComponent<CellDungeonComponent>().FubenDifficulty;
-                }
-                if (sceneType == (int)MapTypeEnum.LocalDungeon)
-                {
-                    fubenDifficulty = bekill.DomainScene().GetComponent<LocalDungeonComponent>().FubenDifficulty;
-                }
-                switch (fubenDifficulty)
-                {
-                    case FubenDifficulty.TiaoZhan:
-                        dropAdd_Pro += 0.2f;
-                        break;
-                    case FubenDifficulty.DiYu:
-                        dropAdd_Pro += 0.5f;
-                        break;
-                }
-            }
-
-            if (!bekill.IsBoss() && ConfigData.ShowLieOpen)
-            {
-                dropAdd_Pro += 1f;
-            }
-
-            //1个人掉率降低
-            if (sceneType == MapTypeEnum.TeamDungeon)
-            {
-                if (playerNumer == 1)
-                {
-                    dropAdd_Pro -= 0.25f;
-                }
-                if (playerNumer == 2)
-                {
-                    dropAdd_Pro += 0.8f;
-                }
-                if (playerNumer == 3)
-                {
-                    dropAdd_Pro += 1.5f;
-                }
-
-                MapComponent mapComponent = bekill.DomainScene().GetComponent<MapComponent>();
-                if (mapComponent.FubenDifficulty == TeamFubenType.ShenYuan)
-                {
-                    dropAdd_Pro += 1.5f;
-                }
-            }
-            
-            // 封印之塔提升爆率
-            if (sceneType == MapTypeEnum.TowerOfSeal)
-            {
-                dropAdd_Pro += 1f;
-            }
-
-            //个人副本根据成长来
-            if (sceneType == MapTypeEnum.LocalDungeon && bekill.IsBoss() && bekill.ConfigId != SeasonHelper.SeasonBossId)
-            {
-                int killNumber =  main.GetComponent<RoleInfoComponentServer>().GetMonsterKillNumber(ldMonsterCof.Id);
-                int chpaterid = -1;
-                BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
-                dropAdd_Pro += bossDevelopment.DropAdd;
-            }
-            
-
-            if (bekill.IsBoss())
-            {
-                float dropadd = main.GetComponent<NumericComponent>().GetAsFloat(NumericType.Numeric_Error);
-                if (dropadd > 0f)
-                {
-                    main.GetComponent<BuffManagerComponent>().RemoveBuffByNumericType(NumericType.Numeric_Error);
-                    dropAdd_Pro += dropadd;
-                }
-            }
-            
 
             List<int> adddropidlist = new List<int>();
-            List <RewardItem> droplist = AI_MonsterDrop(main, ldMonsterCof.Id, dropAdd_Pro, false);
-           
-            if (adddropidlist.Count > 0)
+
+            int dropID = 1; //ldMonsterCof.DropID;
+            List<RewardItem> droplist = new List<RewardItem>();
+            DropHelper.DropIDToDropItem(dropID, droplist);
+
+
+            if (droplist.Count == 0)
             {
-                for (int i = 0; i < adddropidlist.Count; i++)
+                Console.WriteLine("测试掉落 ");
+                droplist.Add(new RewardItem()
                 {
-                    DropHelper.DropIDToDropItem(adddropidlist[i], droplist);
-                }
+                    ItemType = ItemBigType.Type_Item,
+                    ItemID = 1,
+                    ItemNum = 1,
+                });
             }
+
             if (droplist.Count > 100)
             {
                 Log.Error($"掉落道具数量异常： {ldMonsterCof.Id}  {droplist.Count}");
