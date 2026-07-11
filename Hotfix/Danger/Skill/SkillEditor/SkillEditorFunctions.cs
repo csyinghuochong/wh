@@ -261,6 +261,7 @@ namespace ET
 
             long rs = ctx.GetVariable("rs", 0);
             long totalDamage = ctx.GetVariable("damageTotal", 0);
+
             SendNumbericChangeHelper.InformClientHit(caster, target, rs, totalDamage);
 
             //TriggerPassiveEvent(caster, target, SkillPassiveTypeEnum.AllSkill_17, skillId);

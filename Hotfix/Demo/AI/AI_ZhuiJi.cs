@@ -22,9 +22,8 @@ namespace ET
                 return false;
             }
             Unit unit = aiComponent.GetParent<Unit>();
-            Vector3 standPos = AIGetTargetHelp.GetChaseStandPosition(unit, target, aiComponent.ActDistance, aiComponent.UnitComponent);
-            float distanceToStand = PositionHelper.Distance2D(unit.Position, standPos);
-            bool zhuiji = distanceToStand > StandArriveDistance && aiComponent.IsCanZhuiJi() == 0;
+            float distanceToStand = PositionHelper.Distance2D(unit.Position, target.Position);
+            bool zhuiji = distanceToStand > aiComponent.ActDistance && aiComponent.IsCanZhuiJi() == 0;
             return zhuiji;
         }
 
@@ -33,18 +32,8 @@ namespace ET
             Unit unit = aiComponent.GetParent<Unit>();
             StateComponent stateComponent = unit.GetComponent<StateComponent>();
 
-            long checktime;
-            switch (aiComponent.SceneTypeEnum)
-            {
-                case MapTypeEnum.PetDungeon:
-                case MapTypeEnum.PetTianTi:
-                case MapTypeEnum.PetMing:
-                    checktime = 100;
-                    break;
-                default:
-                    checktime = 200;
-                    break;
-            }
+            long checktime = 100;
+      
 
             for (int i = 0; i < 10000; i++)
             {
