@@ -19,7 +19,6 @@
                 return;
             }
 
-            /*
             if (hitType == SkillEditorHitResult.Miss)
             {
                 return;
@@ -30,7 +29,6 @@
             {
                 return;
             }
-            */
 
             M2C_InformClientHit.UnitId = target.Id;
             M2C_InformClientHit.HitType = (int)hitType;

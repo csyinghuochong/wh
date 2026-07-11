@@ -200,7 +200,10 @@ namespace ET
 							case ItemBigType.Type_Pet:
 								unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.GM, itemId);
 								break;
-						}
+                            case ItemBigType.Type_Elf:
+                                unit.GetComponent<ChengJiuComponentServer>().OnActiveJingLing(itemId);
+                                break;
+                        }
 
 						break;
                     //70001001  0    71001010    1       70001003     2      70001011    3
