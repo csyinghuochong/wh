@@ -853,7 +853,6 @@ namespace ET
             }
             
             int bagCellNumber = 0;
-            int petHeXinNumber = 0;
             string[] getWayInfo = getWay.Split('_');
             int getType = int.Parse(getWayInfo[0]);
             Unit unit = self.GetParent<Unit>();
@@ -895,16 +894,23 @@ namespace ET
             for (int i = rewardItems.Count - 1; i >= 0; i--)
             {
                 RewardItem rewardItem = rewardItems[i];
-                
-                if (!ItemNewHelper.CheckValiedItem(rewardItem))
+
+                //特殊类型不进背包
+                if (rewardItem.ItemType == ItemBigType.Type_Money)
                 {
                     rewardItems.RemoveAt(i);
                     continue;
                 }
-
-                //获取类型不进背包
-                if (rewardItem.ItemType == ItemBigType.Type_Money)
+                if (rewardItem.ItemType != ItemBigType.Type_Item
+                    && rewardItem.ItemType != ItemBigType.Type_Equip)
                 {
+                    Console.WriteLine($"{rewardItem.ItemType} 类型未处理"); 
+                    continue;
+                }
+
+                if (!ItemNewHelper.CheckValiedItem(rewardItem))
+                {
+                    rewardItems.RemoveAt(i);
                     continue;
                 }
 
@@ -913,12 +919,7 @@ namespace ET
                 {
                     continue;
                 }
-                
-                /*if (itemCof.ItemType == ItemTypeEnum.PetHeXin)
-                {
-                    petHeXinNumber += rewardItems[i].ItemNum;
-                    continue;
-                }*/
+
 
                 if (ItemPileSum == 1)
                 {
@@ -939,19 +940,10 @@ namespace ET
                 return true;
             }
 
-
-            if (getType != ItemGetWay.GemHeCheng)
+            if (bagCellNumber > self.GetBagLeftCell() && UseLocType == ItemLocType.ItemLocBag)
             {
-                if (bagCellNumber > self.GetBagLeftCell() && UseLocType == ItemLocType.ItemLocBag)
-                {
-                    return false;
-                }
-                if (petHeXinNumber > 0 && (petHeXinNumber + self.BagItemPetHeXin.Count > CommonConfig.PetHeXinMax) && UseLocType == ItemLocType.ItemLocBag)
-                {
-                    return false;
-                }
+                return false;
             }
-
 
             //通知客户端背包刷新
             M2C_RoleBagUpdate m2c_bagUpdate = self.message;

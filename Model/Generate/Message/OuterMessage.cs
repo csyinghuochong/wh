@@ -528,34 +528,27 @@ namespace ET
 	[ProtoContract]
 	public partial class RoleInfo: Object
 	{
+//钻石---灵玉
 		[ProtoMember(1)]
-		public long AccInfoID { get; set; }
+		public long Diamond { get; set; }
 
+//钻石---灵玉
 		[ProtoMember(2)]
-		public string Name { get; set; }
+		public long BindDiamond { get; set; }
 
+//钱币
+		[ProtoMember(4)]
+		public long BindGold { get; set; }
+
+//钱币
 		[ProtoMember(3)]
 		public long Gold { get; set; }
 
-//钻石
-		[ProtoMember(4)]
-		public long Diamond { get; set; }
-
-// 等级
-		[ProtoMember(5)]
-		public int Lv { get; set; }
-
-// 经验
 		[ProtoMember(6)]
-		public long Exp { get; set; }
+		public long AccInfoID { get; set; }
 
-// 疲劳
 		[ProtoMember(7)]
-		public long PiLao { get; set; }
-
-//职业
-		[ProtoMember(8)]
-		public int Occ { get; set; }
+		public string Name { get; set; }
 
 //职业
 		[ProtoMember(9)]
@@ -567,8 +560,24 @@ namespace ET
 		[ProtoMember(11)]
 		public int RobotId { get; set; }
 
+// 等级
+		[ProtoMember(12)]
+		public int Lv { get; set; }
+
 		[ProtoMember(13)]
 		public int Sp { get; set; }
+
+// 经验
+		[ProtoMember(14)]
+		public long Exp { get; set; }
+
+// 疲劳
+		[ProtoMember(15)]
+		public long PiLao { get; set; }
+
+//职业
+		[ProtoMember(16)]
+		public int Occ { get; set; }
 
 		[ProtoMember(17)]
 		public string UnionName { get; set; }

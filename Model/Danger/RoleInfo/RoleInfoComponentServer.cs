@@ -22,39 +22,25 @@ namespace ET
           /// </summary>
         public long LastLoginTime;
 
-        /// <summary>
-        /// 领地经验
-        /// </summary>
-        public int LingDiOnLine;
 
         /// <summary>
         /// 今日在线时长
         /// </summary>
         public long TodayOnLine;
 
-        public long LastJiaYuanExpTime = 0;
         public string RemoteAddress;
 
         public string UserName;
 
         public long CreateAccountTime;
 
-        /// <summary>
-        /// 狩猎击杀野怪数量
-        /// </summary>
-        public int ShouLieKill;
-
-        public long ShouLieSendTime;
-
-        public long UpdateRankTime;
+        public long UpdateCombatTime;
 
         [BsonIgnore]
         public readonly M2C_RoleDataBroadcast m2C_RoleDataBroadcast  = new M2C_RoleDataBroadcast();
         [BsonIgnore]
         public readonly M2C_RoleDataUpdate m2C_RoleDataUpdate = new M2C_RoleDataUpdate();
 
-        [BsonIgnore]
-        public long ShouLieUpLoadTimer;
 
         public List<KeyValuePair> Buffs = new List<KeyValuePair>();
 

@@ -6,22 +6,21 @@ using UnityEngine;
 namespace ET
 {
 
-    [Timer(TimerType.ShouLieUpLoadTimer)]
-    public class ShouLieUpLoadTimer : ATimer<RoleInfoComponentServer>
-    {
-        public override void Run(RoleInfoComponentServer self)
-        {
-            try
-            {
-                self.UpdateShowLie().Coroutine();
-            }
-            catch (Exception e)
-            {
-                Log.Error($"move timer error: {self.Id}\n{e}");
-            }
-        }
-    }
-
+    //[Timer(TimerType.ShouLieUpLoadTimer)]
+    //public class ShouLieUpLoadTimer : ATimer<RoleInfoComponentServer>
+    //{
+    //    public override void Run(RoleInfoComponentServer self)
+    //    {
+    //        try
+    //        {
+    //            self.UpdateShowLie().Coroutine();
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            Log.Error($"move timer error: {self.Id}\n{e}");
+    //        }
+    //    }
+    //}
 
     [ObjectSystem]
     public class RoleInfoComponentAwake : AwakeSystem<RoleInfoComponentServer>
@@ -37,7 +36,6 @@ namespace ET
     {
         public override void Destroy(RoleInfoComponentServer self)
         {
-            TimerComponent.Instance.Remove(ref self.ShouLieUpLoadTimer);
         }
     }
 
@@ -83,19 +81,10 @@ namespace ET
         public static void Check(this RoleInfoComponentServer self)
         {
             self.TodayOnLine++;
-            self.LingDiOnLine++;
-
-            //领地和家园都是一小时刷新一次经验
-            if (self.LingDiOnLine > 60)
+           
+            if (self.UpdateCombatTime > 0 )
             {
-                self.LingDiOnLine = 0;
-                //self.OnRongyuChanChu(1, true);
-                self.OnJiaYuanExp(1f);
-            }
-
-            if (self.UpdateRankTime > 0 )
-            {
-                self.UpdateRankTime = 0;
+                self.UpdateCombatTime = 0;
                 self.UploadCombat().Coroutine();
             }
         }
@@ -336,7 +325,6 @@ namespace ET
             
             self.LastLoginTime = TimeHelper.ServerNow();
             self.UserName = self.RoleInfo.Name;
-            self.ShouLieSendTime = 0;
         }
 
         /// <summary>
@@ -415,7 +403,6 @@ namespace ET
             self.ClearDayData();
             self.LastLoginTime = TimeHelper.ServerNow();
             self.TodayOnLine = 0;
-            self.ShouLieKill = 0;
         }
 
         public static RoleInfo GetUserInfo(this RoleInfoComponentServer self)
@@ -425,16 +412,15 @@ namespace ET
 
         public static void OnShowLieKill(this RoleInfoComponentServer self)
         {
-            self.ShouLieKill++;
-
-            if (self.ShouLieUpLoadTimer == 0)
-            {
-                self.ShouLieUpLoadTimer = TimerComponent.Instance.NewOnceTimer(TimeHelper.ServerNow() + 5 * TimeHelper.Second, TimerType.ShouLieUpLoadTimer, self);
-            }
-            else
-            {
-                self.UpdateShowLie().Coroutine();
-            }
+           
+            //if (self.ShouLieUpLoadTimer == 0)
+            //{
+            //    self.ShouLieUpLoadTimer = TimerComponent.Instance.NewOnceTimer(TimeHelper.ServerNow() + 5 * TimeHelper.Second, TimerType.ShouLieUpLoadTimer, self);
+            //}
+            //else
+            //{
+            //    self.UpdateShowLie().Coroutine();
+            //}
         }
 
         public static async ETTask UpdateShowLie(this RoleInfoComponentServer self)
@@ -444,14 +430,12 @@ namespace ET
             {
                 return;
             }
-            self.ShouLieSendTime = TimeHelper.ServerNow();
-            TimerComponent.Instance.Remove(ref self.ShouLieUpLoadTimer);
             RankShouLieInfo rankPetInfo = new RankShouLieInfo();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             rankPetInfo.UnitID = roleInfoComponentServer.RoleInfo.UserId;
             rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
             rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
-            rankPetInfo.KillNumber = self.ShouLieKill;
+            rankPetInfo.KillNumber = 0;/// self.ShouLieKill;
             long mapInstanceId = DBHelper.GetRankServerId(self.DomainZone());
             R2M_RankShowLieResponse Response = (R2M_RankShowLieResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankShowLieRequest()
@@ -750,13 +734,7 @@ namespace ET
             long longValue = 0;
             switch (Type)
             {
-                //case UserDataType.UnionExp:
-                //    int addexp = int.Parse(value);
-                //    self.SendUnionOperate(1, addexp).Coroutine();
-                //    return;
-                //case UserDataType.UnionGold:
-                //    self.SendUnionOperate(5, int.Parse(value)).Coroutine();
-                //    return;
+                
                 case UserDataType.JiaYuanExp:
                     self.RoleInfo.JiaYuanExp += int.Parse(value);
                     saveValue = self.RoleInfo.JiaYuanExp.ToString();
@@ -817,7 +795,10 @@ namespace ET
                     unit.GetComponent<ChengJiuComponentServer>().OnGetGold(int.Parse(value));
                     unit.GetComponent<TaskComponentServer>().OnCostCoin(int.Parse(value));
                     break;
-              
+                case UserDataType.BindGold:
+                    self.RoleInfo.BindGold += long.Parse(value);
+                    saveValue = self.RoleInfo.BindGold.ToString();
+                    break;
                 case UserDataType.Diamond:
                     long addDiamond = long.Parse(value);
                     self.RoleInfo.Diamond += addDiamond;
@@ -832,7 +813,12 @@ namespace ET
                         //累计消耗钻石转换为积分
                     }
                     break;
-               
+                case UserDataType.BindDiamond:
+                    addDiamond = long.Parse(value);
+                    self.RoleInfo.BindDiamond += addDiamond;
+                    self.RoleInfo.BindDiamond = Math.Max(self.RoleInfo.BindDiamond, 0);
+                    saveValue = self.RoleInfo.BindDiamond.ToString();
+                    break;
                 case UserDataType.Occ:
                     break;
               
@@ -933,7 +919,7 @@ namespace ET
             {
                 return;
             }
-            self.UpdateRankTime = TimeHelper.ServerNow();
+            self.UpdateCombatTime = TimeHelper.ServerNow();
         }
 
         //增加经验
