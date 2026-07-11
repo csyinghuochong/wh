@@ -162,6 +162,7 @@ namespace ET
             // 参数 38：是否无视护盾；先扣护盾再扣 HP_Current_8
             bool ignoreShield = GetParamBool(ctx, 38, false);
             int damageType = rs > SkillEditorHitResult.Hit ? 1 : 0;
+            ctx.SetVariable("damageTotal", totalDamage);
             ApplyDamage(caster, target, targetNumeric, totalDamage, skillId, ignoreShield, damageType);
 
             // 参数 32~34：三类伤害的吸血比例

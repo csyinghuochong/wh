@@ -13,7 +13,7 @@ namespace ET
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDWord> dict = new Dictionary<int, LDWord>();
+        private Dictionary<long, LDWord> dict = new Dictionary<long, LDWord>();
 		
         [BsonElement]
         [ProtoMember(1)]
@@ -40,7 +40,7 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDWord Get(int id)
+        public LDWord Get(long id)
         {
             this.dict.TryGetValue(id, out LDWord item);
 
@@ -52,12 +52,12 @@ namespace ET
             return item;
         }
 		
-        public bool Contain(int id)
+        public bool Contain(long id)
         {
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDWord> GetAll()
+        public Dictionary<long, LDWord> GetAll()
         {
             return this.dict;
         }

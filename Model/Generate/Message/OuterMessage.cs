@@ -2038,6 +2038,28 @@ namespace ET
 
 	}
 
+//通知客户端命中
+	[Message(OuterOpcode.M2C_InformClientHit)]
+	[ProtoContract]
+	public partial class M2C_InformClientHit: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int HitType { get; set; }
+
+		[ProtoMember(3)]
+		public int HitValue { get; set; }
+
+	}
+
 //闪电链
 	[Message(OuterOpcode.M2C_ChainLightning)]
 	[ProtoContract]

@@ -254,10 +254,20 @@ namespace ET
             添加负面buff
             */
 
+            if (target == null || target.IsDisposed)
+            {
+                return;
+            }
+
+            long rs = ctx.GetVariable("rs", 0);
+            rs = 1;
+
+            long totalDamage = ctx.GetVariable("damageTotal", 0);
+            SendNumbericChangeHelper.InformClientHit(caster, target, rs, totalDamage*-1);
 
             //TriggerPassiveEvent(caster, target, SkillPassiveTypeEnum.AllSkill_17, skillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.AllSkill_17, skillId);
-            Log.Debug($"INFORM_CLIENT_HIT_SUCCESS caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)} skill={skillId} level={level}");
+            Log.Debug($"INFORM_CLIENT_HIT_SUCCESS caster={(caster?.Id ?? 0)} target={target.Id} skill={skillId} level={level} rs={rs} damage={totalDamage}");
         }
 
 
@@ -265,7 +275,6 @@ namespace ET
         {
             RunDamageCheck(ctx, canBlockAsImmune: true);
         }
-
 
 
         private static void SkillDamageCheckMagic(SkillEditorFunctionContext ctx)
@@ -557,18 +566,14 @@ namespace ET
             bool triggerFadeSkill = ctx.GetParamBool(5, true);
 
             RemoveBuffGroupInternal(target, buffFromUnitId, buffGroup, forceRemove, triggerFadeSkill);
-
         }
 
-
-
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <param name="ctx"></param>
-       /// <param name="canBlockAsImmune"></param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="canBlockAsImmune"></param>
         private static void RunDamageCheck(SkillEditorFunctionContext ctx, bool canBlockAsImmune)
-
         {
 
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
@@ -595,7 +600,6 @@ namespace ET
 
             if (caster == null || target == null)
             {
-
                 ctx.SetVariable("rs", SkillEditorHitResult.Miss);
 
                 ctx.LastConditionResult = false;
