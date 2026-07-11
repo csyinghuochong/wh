@@ -16,12 +16,12 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.WelfareTaskRewards.Contains(request.day))
-            {
-                response.Error = ErrorCode.ERR_AlreadyReceived;
-                reply();
-                return;
-            }
+            //if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.WelfareTaskRewards.Contains(request.day))
+            //{
+            //    response.Error = ErrorCode.ERR_AlreadyReceived;
+            //    reply();
+            //    return;
+            //}
 
             string reward = CommonConfig.WelfareTaskReward[request.day];
             if (!unit.GetComponent<BagComponentServer>().OnAddItemData(reward, $"{ItemGetWay.Welfare}_{TimeHelper.ServerNow()}"))
@@ -30,7 +30,7 @@ namespace ET
                 reply();
                 return;
             }
-            unit.GetComponent<RoleInfoComponentServer>().RoleInfo.WelfareTaskRewards.Add(request.day);
+            //unit.GetComponent<RoleInfoComponentServer>().RoleInfo.WelfareTaskRewards.Add(request.day);
 
             reply();
             await ETTask.CompletedTask;

@@ -124,8 +124,6 @@ namespace ET
 
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.BattleCamp, CampEnum.CampPlayer_2 );
                 defend.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, 90000018);
-                defend.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.DemonName, attackName, true);
-                defend.GetComponent<RoleInfoComponentServer>().UpdateRoleDataBroadcast(UserDataType.DemonName, attackName);
                 Function_Fight.UnitUpdateProperty_DemonBig(defend, true);
 
                 await  self.OnUpdateScore(attack, 50);

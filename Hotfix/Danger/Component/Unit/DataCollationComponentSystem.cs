@@ -421,8 +421,6 @@ namespace ET
 
             self.PiLao = roleInfoComponentServer.RoleInfo.PiLao;
 
-            self.Vitality = roleInfoComponentServer.RoleInfo.Vitality;
-
             int makeType = numericComponent.GetAsInt( NumericType.MakeType_1 );
             self.MakeSkill = MakeHelper.GetMakeTypeName( makeType );
 

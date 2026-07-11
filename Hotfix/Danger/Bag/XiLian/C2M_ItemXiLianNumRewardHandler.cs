@@ -9,12 +9,12 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemXiLianNumReward request, M2C_ItemXiLianNumReward response, Action reply)
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            if (roleInfoComponentServer.RoleInfo.ItemXiLianNumRewardIds.Contains(request.RewardId))
-            {
-                response.Error = ErrorCode.ERR_AlreadyReceived;
-                reply();
-                return;
-            }
+            //if (roleInfoComponentServer.RoleInfo.ItemXiLianNumRewardIds.Contains(request.RewardId))
+            //{
+            //    response.Error = ErrorCode.ERR_AlreadyReceived;
+            //    reply();
+            //    return;
+            //}
 
             if (!CommonConfig.ItemXiLianNumReward.Keys.Contains(request.RewardId))
             {

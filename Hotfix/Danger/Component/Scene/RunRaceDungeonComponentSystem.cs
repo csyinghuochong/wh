@@ -114,8 +114,6 @@ namespace ET
                         (float)ldScene.Pos_Born[1] * 0.01f, 
                         (float)ldScene.Pos_Born[2] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1));
                     unit.Stop(-2);
-
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.PullBack, "1");
                 }
             }
         }

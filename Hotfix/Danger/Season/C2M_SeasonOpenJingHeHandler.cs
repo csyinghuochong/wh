@@ -9,14 +9,14 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_SeasonOpenJingHeRequest request, M2C_SeasonOpenJingHeResponse response, Action reply)
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();   
-            if (roleInfoComponentServer.RoleInfo.OpenJingHeIds.Contains(request.JingHeId))
-            {
-                response.Error = ErrorCode.ERR_AlreadyLearn;
-                reply();
-                return;
-            }
+            //if (roleInfoComponentServer.RoleInfo.OpenJingHeIds.Contains(request.JingHeId))
+            //{
+            //    response.Error = ErrorCode.ERR_AlreadyLearn;
+            //    reply();
+            //    return;
+            //}
 
-            roleInfoComponentServer.RoleInfo.OpenJingHeIds.Add(request.JingHeId);
+            //roleInfoComponentServer.RoleInfo.OpenJingHeIds.Add(request.JingHeId);
 
             reply();
             await ETTask.CompletedTask;

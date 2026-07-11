@@ -65,11 +65,7 @@ namespace ET
             {
                 numericComponent.ApplyValue(NumericType.RechargeSign, 1, notice);
             }
-            // 单笔充值奖励记录
-            if (!unit.GetComponent<RoleInfoComponentServer>().RoleInfo.SingleRechargeIds.Contains(rechargeNumber))
-            {
-                unit.GetComponent<RoleInfoComponentServer>().RoleInfo.SingleRechargeIds.Add(rechargeNumber);
-            }
+          
         }
 
         public static async ETTask SendToAccountCenter(long accountId, long userId, int rechargeNumber, string ordinfo, int rechargeType)

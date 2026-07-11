@@ -13,7 +13,6 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             if (roleInfoComponentServer.RoleInfo.Gold < request.Price)
             {
-                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Message, "金币不足，竞拍失败！");
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
             }
             else

@@ -420,23 +420,12 @@ namespace ET
                 case UserDataType.Diamond:
                     number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond;
                     break;
-                case UserDataType.V1TotalPoints:
-                    number = (long)self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.V1TotalPoints;
-                    break;
-                case UserDataType.RongYu:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.RongYu;
-                    break;
+             
                 case UserDataType.JiaYuanFund:
                     number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.JiaYuanFund;
                     break;
                 case UserDataType.UnionContri:
                     number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.UnionZiJin;
-                    break;
-                case UserDataType.SeasonCoin:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.SeasonCoin;
-                    break;
-                case UserDataType.WeiJingGold:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.WeiJingGold;
                     break;
                 default:
                     break;
@@ -1085,10 +1074,10 @@ namespace ET
                         int subType = LDItemCategory.Instance.Get(itemID).ItemType;
                         
                            //藏宝图
-                        if (subType == ItemNewSubType.CangBaoTu )
-                        {
-                            ItemAddHelper.TreasureItem(unit, useBagInfo);
-                        }
+                        //if (subType == ItemSubTypeEnum.CangBaoTu )
+                        //{
+                        //    ItemAddHelper.TreasureItem(unit, useBagInfo);
+                        //}
                         //鉴定符
                         if (subType == 121)
                         {
@@ -1298,42 +1287,21 @@ namespace ET
                     unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, itemNum.ToString(), true, itemGetWay);
                     continue;
                 }
-                if (itemID == (int)UserDataType.WeiJingGold)
-                {
-                    itemNum = -1 * itemNum;
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.WeiJingGold, itemNum.ToString(), true, itemGetWay);
-                    continue;
-                }
+            
                 if (itemID == (int)UserDataType.Diamond)
                 {
                     itemNum = -1 * itemNum;
                     unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, itemNum.ToString(), true, itemGetWay);
                     continue;
                 }
-                if (itemID == (int)UserDataType.V1TotalPoints)
-                {
-                    itemNum = -1 * itemNum;
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.V1TotalPoints, itemNum.ToString(), true, itemGetWay);
-                    continue;
-                }
-                if (itemID == (int)UserDataType.RongYu)
-                {
-                    itemNum = -1 * itemNum;
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.RongYu, itemNum.ToString());
-                    continue;
-                }
+             
                 if (itemID == (int)UserDataType.JiaYuanFund)
                 {
                     itemNum = -1 * itemNum;
                     unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.JiaYuanFund, itemNum.ToString());
                     continue;
                 }
-                if (itemID == (int)UserDataType.SeasonCoin)
-                {
-                    itemNum = -1 * itemNum;
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.SeasonCoin, itemNum.ToString());
-                    continue;
-                }
+               
                 if (itemID == (int)UserDataType.UnionContri)
                 {
                     itemNum = -1 * itemNum;

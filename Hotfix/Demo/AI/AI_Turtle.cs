@@ -38,13 +38,6 @@ namespace ET
 
                     List<RewardItem> droplist = new List<RewardItem>();
                     DropHelper.DropIDToDropItem_2(dropid, droplist);
-
-                    bool sucess = units[i].GetComponent<BagComponentServer>().OnAddItemData(droplist, string.Empty, $"{ItemGetWay.Turtle}_{TimeHelper.ServerNow()}");
-                    if (!sucess)
-                    {
-                        units[i].GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Message, "背包已满！");
-                    }
-                    rewardName.Add(units[i].GetComponent<RoleInfoComponentServer>().RoleInfo.Name);
                 }
             }
 

@@ -12,7 +12,7 @@ namespace ET
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             if (request.RewardId == 0)
             {
-                response.RewardIds = roleInfo.SingleRechargeIds;
+                //response.RewardIds = roleInfo.SingleRechargeIds;
                 reply();
                 return;
             }
@@ -38,20 +38,7 @@ namespace ET
                 }
             }
 
-            if (!roleInfo.SingleRechargeIds.Contains(request.RewardId))
-            {
-                response.Error = ErrorCode.Pre_Condition_Error;
-                reply();
-                return;
-            }
-
-            if (roleInfo.SingleRewardIds.Contains(request.RewardId))
-            {
-                response.Error = ErrorCode.ERR_AlreadyReceived;
-                reply();
-                return;
-            }
-
+         
             string[] rewarditemlist = null;
             if (ServerHelper.IsGoogleServer(unit.DomainZone()))
             {
@@ -82,8 +69,8 @@ namespace ET
 
             if (ret)
             {
-                roleInfo.SingleRewardIds.Add(request.RewardId);
-                response.RewardIds = roleInfo.SingleRewardIds;
+               // roleInfo.SingleRewardIds.Add(request.RewardId);
+                //response.RewardIds = roleInfo.SingleRewardIds;
             }
             else
             {

@@ -570,12 +570,6 @@ namespace ET
 		[ProtoMember(13)]
 		public int Sp { get; set; }
 
-		[ProtoMember(14)]
-		public int Vitality { get; set; }
-
-		[ProtoMember(16)]
-		public long RongYu { get; set; }
-
 		[ProtoMember(17)]
 		public string UnionName { get; set; }
 
@@ -660,59 +654,11 @@ namespace ET
 		[ProtoMember(42)]
 		public List<int> DiamondGetWay = new List<int>();
 
-		[ProtoMember(43)]
-		public string DemonName { get; set; }
-
-		[ProtoMember(44)]
-		public List<int> PetMingRewards = new List<int>();
-
-		[ProtoMember(45)]
-		public List<int> OpenJingHeIds = new List<int>();
-
-		[ProtoMember(46)]
-		public int SeasonLevel { get; set; }
-
-		[ProtoMember(47)]
-		public int SeasonExp { get; set; }
-
-		[ProtoMember(48)]
-		public long SeasonCoin { get; set; }
-
-		[ProtoMember(49)]
-		public List<int> WelfareTaskRewards = new List<int>();
-
 		[ProtoMember(50)]
 		public long CreateTime { get; set; }
 
-		[ProtoMember(51)]
-		public List<int> WelfareInvestList = new List<int>();
-
-		[ProtoMember(52)]
-		public List<int> RechargeReward = new List<int>();
-
 		[ProtoMember(53)]
 		public List<int> UnionKeJiList = new List<int>();
-
-		[ProtoMember(54)]
-		public List<int> PetExploreRewardIds = new List<int>();
-
-		[ProtoMember(55)]
-		public List<int> PetHeXinExploreRewardIds = new List<int>();
-
-		[ProtoMember(56)]
-		public string StallName { get; set; }
-
-		[ProtoMember(57)]
-		public List<int> SingleRechargeIds = new List<int>();
-
-		[ProtoMember(58)]
-		public List<int> SingleRewardIds = new List<int>();
-
-		[ProtoMember(59)]
-		public List<int> ItemXiLianNumRewardIds = new List<int>();
-
-		[ProtoMember(60)]
-		public List<int> DefeatedBossIds = new List<int>();
 
 		[ProtoMember(61)]
 		public List<int> GoldGetWay = new List<int>();
@@ -736,9 +682,6 @@ namespace ET
 //总共使用次数
 		[ProtoMember(67)]
 		public List<KeyValuePairInt> TotalUseTimes = new List<KeyValuePairInt>();
-
-		[ProtoMember(68)]
-		public float V1TotalPoints { get; set; }
 
 	}
 

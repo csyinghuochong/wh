@@ -301,7 +301,7 @@ namespace ET
             UnitCombatComponentHelper.EnsureLifeComponent(unit);
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
-            unitInfoComponent.UnitName = master.GetComponent<RoleInfoComponentServer>().RoleInfo.StallName;
+            //unitInfoComponent.UnitName = master.GetComponent<RoleInfoComponentServer>().RoleInfo.StallName;
             unit.GetComponent<NumericComponent>().Set(NumericType.MasterId, master.Id);
             unit.MasterId = master.Id;
             unit.Type = UnitType.Stall;
