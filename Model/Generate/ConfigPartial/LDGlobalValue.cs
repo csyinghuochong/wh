@@ -44,7 +44,7 @@ namespace ET
 
         public int AccountBagMax = 0;
 
-        public int MaxLevel = 70;
+        public int MaxLevel = 100;
         
         public int TempValue = 0;
 
@@ -106,6 +106,7 @@ namespace ET
             }
 
             string rawValue = this.GetByKey(GlobalValueKey.Add_Point_Level_UP_Free).Value;
+            
             Add_Point_Level_UP_Free_ByLevel = GlobalValueLevelPointParser.ParseToLevelTable(
                 rawValue,
                 this.MaxLevel,

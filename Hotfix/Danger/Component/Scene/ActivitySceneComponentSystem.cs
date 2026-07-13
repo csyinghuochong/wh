@@ -417,28 +417,8 @@ namespace ET
             await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 30 + self.DomainZone());
             long robotSceneId = DBHelper.GetRobotServerId();
 
-            int robotIndex = 0;
-            while (true)
-            {
-                MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = NoticeType.CreateRobotMainCity, Message = $"12001#{robotIndex}" });
-                robotIndex++;
-
-                if (robotIndex >= 20)
-                {
-                    robotIndex = 0;
-                }
-
-                await TimerComponent.Instance.WaitAsync(TimeHelper.Hour );
-                if (self.IsDisposed)
-                {
-                    break;
-                }
-            }
-
-           
+            MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = NoticeType.CreateRobotMainCity, Message = string.Empty });
         }
-
-
 
         public static async ETTask NoticeActivityUpdate_Hour(this ActivitySceneComponent self, DateTime dateTime)
         {

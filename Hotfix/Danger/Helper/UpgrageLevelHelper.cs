@@ -12,12 +12,14 @@ namespace ET
 
             //没有给默认属性点
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt(NumericType.Point_Ti_1) == 0
-                && numericComponent.GetAsInt(NumericType.Point_Li_2) == 0
-                && numericComponent.GetAsInt(NumericType.Point_Zhi_3) == 0
-                && numericComponent.GetAsInt(NumericType.Point_Nian_4) == 0
-                && numericComponent.GetAsInt(NumericType.Point_Min_5) == 0
-                && numericComponent.GetAsInt(NumericType.Point_Xun_6) == 0)
+            int point_1 = numericComponent.GetAsInt(NumericType.Point_Ti_1);
+            int point_2 = numericComponent.GetAsInt(NumericType.Point_Li_2);
+            int point_3 = numericComponent.GetAsInt(NumericType.Point_Zhi_3);
+            int point_4 = numericComponent.GetAsInt(NumericType.Point_Nian_4);
+            int point_5 = numericComponent.GetAsInt(NumericType.Point_Min_5);
+            int point_6 = numericComponent.GetAsInt(NumericType.Point_Xun_6);
+            if (point_1 == 0  && point_1 == 0  && point_3 == 0
+                && point_4 == 0  && point_5 == 0 && point_6 == 0)
             {
                 RoleAddPointHelper.AddPointsOnLevelUp(unit, 1);
             }

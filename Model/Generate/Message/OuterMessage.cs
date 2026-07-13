@@ -9179,6 +9179,31 @@ namespace ET
 
 	}
 
+	[ResponseType(nameof(M2C_RolePointResetResponse))]
+	[Message(OuterOpcode.C2M_RolePointResetRequest)]
+	[ProtoContract]
+	public partial class C2M_RolePointResetRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RolePointResetResponse)]
+	[ProtoContract]
+	public partial class M2C_RolePointResetResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
 	[ResponseType(nameof(R2C_CampRankListResponse))]
 	[Message(OuterOpcode.C2R_CampRankListRequest)]
 	[ProtoContract]
