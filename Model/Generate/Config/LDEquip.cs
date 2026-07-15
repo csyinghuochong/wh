@@ -99,27 +99,63 @@ namespace ET
 		/// <summary>职业</summary>
 		[ProtoMember(8)]
 		public int[] Occupation { get; set; }
-		/// <summary>套装ID</summary>
+		/// <summary>强化 上限</summary>
 		[ProtoMember(9)]
+		public int Enhance { get; set; }
+		/// <summary>套装ID</summary>
+		[ProtoMember(10)]
 		public int EquipSuitID { get; set; }
 		/// <summary>套装 点数</summary>
-		[ProtoMember(10)]
-		public int EquipSuitParam { get; set; }
-		/// <summary>属性</summary>
 		[ProtoMember(11)]
-		public string Attribute { get; set; }
-		/// <summary>鉴定 等级</summary>
+		public int EquipSuitParam { get; set; }
+		/// <summary>必有属性</summary>
 		[ProtoMember(12)]
+		public string Attribute_1 { get; set; }
+		/// <summary>加入 数量</summary>
+		[ProtoMember(13)]
+		public int Att_Rand_Add_Num { get; set; }
+		/// <summary>属性 加入1</summary>
+		[ProtoMember(14)]
+		public int[] Att_Rand_Add1 { get; set; }
+		/// <summary>属性 加入2</summary>
+		[ProtoMember(15)]
+		public int[] Att_Rand_Add2 { get; set; }
+		/// <summary>属性 加入3</summary>
+		[ProtoMember(16)]
+		public int[] Att_Rand_Add3 { get; set; }
+		/// <summary>属性 加入4</summary>
+		[ProtoMember(17)]
+		public int[] Att_Rand_Add4 { get; set; }
+		/// <summary>属性 加入5</summary>
+		[ProtoMember(18)]
+		public int[] Att_Rand_Add5 { get; set; }
+		/// <summary>属性 加入6</summary>
+		[ProtoMember(19)]
+		public int[] Att_Rand_Add6 { get; set; }
+		/// <summary>属性 必中1</summary>
+		[ProtoMember(20)]
+		public int[] Att_Rand_1 { get; set; }
+		/// <summary>属性 必中2</summary>
+		[ProtoMember(21)]
+		public int[] Att_Rand_2 { get; set; }
+		/// <summary>属性 必中3</summary>
+		[ProtoMember(22)]
+		public int[] Att_Rand_3 { get; set; }
+		/// <summary>属性 必中4</summary>
+		[ProtoMember(23)]
+		public int[] Att_Rand_4 { get; set; }
+		/// <summary>属性 必中5</summary>
+		[ProtoMember(24)]
+		public int[] Att_Rand_5 { get; set; }
+		/// <summary>属性 必中6</summary>
+		[ProtoMember(25)]
+		public int[] Att_Rand_6 { get; set; }
+		/// <summary>鉴定 等级</summary>
+		[ProtoMember(26)]
 		public int Appraise_Lv { get; set; }
 		/// <summary>可鉴定 属性</summary>
-		[ProtoMember(13)]
+		[ProtoMember(27)]
 		public int[] Appraise_Attribute { get; set; }
-		/// <summary>强化 上限</summary>
-		[ProtoMember(14)]
-		public int Enhance { get; set; }
-		/// <summary>强化属性</summary>
-		[ProtoMember(15)]
-		public string Enhance_Attribute { get; set; }
 
 	}
 }
