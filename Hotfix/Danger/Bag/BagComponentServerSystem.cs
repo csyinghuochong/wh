@@ -1056,6 +1056,7 @@ namespace ET
 
                         if (useBagInfo.BaseAttrList.Count <= 0)
                         {
+                            useBagInfo.EnhanceLevel = RandomHelper.RandomNumber(0, LDEquipCategory.Instance.Get(itemID).Enhance);
                             useBagInfo.BaseAttrList = LDEquipCategory.Instance.GetEquipAttribute(itemID);
                         }
                     }
