@@ -9,10 +9,20 @@ namespace ET
     public partial class LDEquipCategory
     {
 
+        public Dictionary<int, Dictionary<int,int>> Enhance_AttributeList = new Dictionary<int, Dictionary<int, int>>();
+
         private Dictionary<int, List<AttributeRandom>> EquipAttribute = new Dictionary<int,List<AttributeRandom>> { };
 
         public override void AfterEndInit()
         {
+            ParseEquipAttri();
+            ParseEnhance_AttributeList();
+        }
+
+        private void ParseEquipAttri()
+        {
+
+            EquipAttribute.Clear(); 
             foreach (LDEquip ldEquip in this.GetAll().Values)
             {
                 List<AttributeRandom> equipAttribute = new List<AttributeRandom>();
@@ -35,7 +45,7 @@ namespace ET
                 {
                     string attributeInfo = attributeList[i];
 
-                    if(attributeInfo.Length < 2)
+                    if (attributeInfo.Length < 2)
                     {
                         continue;
                     }
@@ -53,7 +63,7 @@ namespace ET
                             AttributeValueMin = int.Parse(attributeValue[0]),
                             AttributeValueMax = int.Parse(attributeValue[0]),
                         });
-                    }                 
+                    }
                     if (attributeValue.Length == 2)
                     {
                         equipAttribute.Add(new AttributeRandom()
@@ -71,6 +81,41 @@ namespace ET
         }
 
 
+        private void ParseEnhance_AttributeList()
+        {
+            Enhance_AttributeList.Clear();
+
+
+            foreach (LDEquip ldEquip in this.GetAll().Values)
+            {
+                if (string.IsNullOrEmpty(ldEquip.Enhance_Attribute))
+                {
+                    continue;
+                }
+
+                //23_5|24_10|66_2|67_2|1_1|2_1|3_1|4_1|6_1|132_1|133_1|135_1|136_1
+
+                string[] attributeList = ldEquip.Enhance_Attribute.Split("|");
+
+                Dictionary<int, int> attributeItems = new Dictionary<int, int>();
+
+                for (int i = 0; i < attributeList.Length; i++)
+                {
+                    string[] attributeItem = attributeList[i].Split("_");
+
+
+                    if (attributeItem.Length != 2)
+                    {
+                        continue;
+                    }
+
+                    attributeItems.Add(int.Parse(attributeItem[0]), int.Parse(attributeItem[1]));
+                }
+
+                Enhance_AttributeList.Add(ldEquip.Id, attributeItems);
+
+            }
+        }
 
 
         public List<AttributeItem> GetRandomAttribute(int equipId)
