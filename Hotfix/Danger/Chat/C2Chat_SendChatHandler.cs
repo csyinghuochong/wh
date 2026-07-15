@@ -43,9 +43,10 @@ namespace ET
                 {
                     case (int)ChannelEnum.PaiMai:
                     case (int)ChannelEnum.Word:
+                    case (int)ChannelEnum.WarZone:
                         ChatSceneComponent chatInfoUnitsComponent = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
 
-                        if (request.ChatInfo.ChannelId == ChannelEnum.Word)
+                        if (request.ChatInfo.ChannelId == ChannelEnum.Word || request.ChatInfo.ChannelId == ChannelEnum.WarZone)
                         {
                             BeReportedInfo bePortedNumber = null;
                             chatInfoUnitsComponent.BeReportedNumber.TryGetValue(request.ChatInfo.UserId, out bePortedNumber);
@@ -72,7 +73,7 @@ namespace ET
                             MessageHelper.SendActor(otherUnit.GateSessionActorId, m2C_SyncChatInfo);
                         }
 
-                        if (request.ChatInfo.ChannelId == (int)ChannelEnum.Word)
+                        if (request.ChatInfo.ChannelId == (int)ChannelEnum.Word || request.ChatInfo.ChannelId == (int)ChannelEnum.WarZone)
                         {
                             chatInfoUnitsComponent.WordChatInfos.Add(request.ChatInfo);
                             if (chatInfoUnitsComponent.WordChatInfos.Count > 10)

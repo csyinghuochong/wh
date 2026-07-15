@@ -241,6 +241,7 @@ namespace ET
                         await EnterRankServer(unit);
                         await EnterMailServer(unit);
                         player.ChatInfoInstanceId = await EnterWorldChatServer(unit);   //登录聊天服
+                        player.WarChatInfoInstanceId = await EnterWarChatServer(unit);   //登录战区聊天服
                         unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID = request.AccountId;
                         response.AccInfoID = request.AccountId;
 
@@ -313,6 +314,28 @@ namespace ET
 				Name = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
 				Level = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv,
                 UnionId = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0),
+				GateSessionActorId = unit.GetComponent<UnitGateComponent>().GateSessionActorId
+			});
+			return chat2G_EnterChat.ChatInfoUnitInstanceId;
+		}
+
+		private async ETTask<long> EnterWarChatServer(Unit unit)
+		{
+			long warChatServerId = DBHelper.GetWarChatServerId(unit.DomainZone());
+			if (warChatServerId == 0)
+			{
+				return 0;
+			}
+
+			string roleName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+			ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), unit.DomainZone());
+			string serverName = serverItem != null ? serverItem.ServerName : unit.DomainZone().ToString();
+			Chat2G_EnterChat chat2G_EnterChat = (Chat2G_EnterChat)await MessageHelper.CallActor(warChatServerId, new G2Chat_EnterChat()
+			{
+				UnitId = unit.Id,
+				Name = $"[{serverName}]{roleName}",
+				Level = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv,
+				UnionId = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0),
 				GateSessionActorId = unit.GetComponent<UnitGateComponent>().GateSessionActorId
 			});
 			return chat2G_EnterChat.ChatInfoUnitInstanceId;

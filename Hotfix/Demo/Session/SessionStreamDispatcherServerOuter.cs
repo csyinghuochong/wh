@@ -105,9 +105,21 @@ namespace ET
 							break;
 						}
 
+						long chatActorId = player.ChatInfoInstanceId;
+						if (actorChatInfoRequest is C2C_SendChatRequest sendChatRequest
+						    && sendChatRequest.ChatInfo != null
+						    && sendChatRequest.ChatInfo.ChannelId == ChannelEnum.WarZone)
+						{
+							if (player.WarChatInfoInstanceId == 0)
+							{
+								break;
+							}
+							chatActorId = player.WarChatInfoInstanceId;
+						}
+
 						int rpcId = actorChatInfoRequest.RpcId; // 这里要保存客户端的rpcId
 						long instanceId = session.InstanceId;
-						IResponse response = await ActorMessageSenderComponent.Instance.Call(player.ChatInfoInstanceId, actorChatInfoRequest);
+						IResponse response = await ActorMessageSenderComponent.Instance.Call(chatActorId, actorChatInfoRequest);
 						response.RpcId = rpcId;
 						// session可能已经断开了，所以这里需要判断
 						if (session.InstanceId == instanceId)

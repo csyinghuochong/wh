@@ -85,6 +85,17 @@ namespace ET
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, "Chat").InstanceId;
         }
 
+        /// <summary>战区 Chat ActorId；未入战区返回 0</summary>
+        public static long GetWarChatServerId(int zone)
+        {
+            int warZone = StartZoneConfigCategory.Instance.GetWarZone(zone);
+            if (warZone == 0)
+            {
+                return 0;
+            }
+            return StartSceneConfigCategory.Instance.GetBySceneName(warZone, "Chat").InstanceId;
+        }
+
         public static long GetQueueServerId(int zone)
         {
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Queue)).InstanceId;
@@ -103,6 +114,17 @@ namespace ET
         public static long GetRankServerId(int zone)
         {
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Rank)).InstanceId;
+        }
+
+        /// <summary>战区 Rank ActorId；未入战区返回 0</summary>
+        public static long GetWarRankServerId(int zone)
+        {
+            int warZone = StartZoneConfigCategory.Instance.GetWarZone(zone);
+            if (warZone == 0)
+            {
+                return 0;
+            }
+            return StartSceneConfigCategory.Instance.GetBySceneName(warZone, Enum.GetName(SceneType.Rank)).InstanceId;
         }
 
         public static long GetMainCityServerId(int zone)

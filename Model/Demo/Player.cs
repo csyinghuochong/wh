@@ -28,6 +28,9 @@
 
 		public long ChatInfoInstanceId { get; set; }
 
+		/// <summary>战区聊天 ChatInfoUnit InstanceId；未入战区为 0</summary>
+		public long WarChatInfoInstanceId { get; set; }
+
 		public long MailServerID { get; set; }
 
 		public long ReChargeServerID { get; set; }

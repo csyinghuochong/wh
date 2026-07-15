@@ -8,6 +8,20 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, G2Chat_EnterChat request, Chat2G_EnterChat response, Action reply)
         {
+            //// 战区 Chat 进线时写一条测试数据，用于验证 game_wz200x 落库（测完可删）
+            //if (StartZoneConfigCategory.Instance.IsWarShareZone(scene.DomainZone()))
+            //{
+            //    int warZone = scene.DomainZone();
+            //    DBServerInfo testInfo = await DBHelper.GetComponent<DBServerInfo>(warZone, warZone);
+            //    if (testInfo == null)
+            //    {
+            //        testInfo = new DBServerInfo();
+            //        testInfo.Id = warZone;
+            //    }
+            //    await DBHelper.SaveComponent(warZone, testInfo.Id, testInfo);
+            //    Log.Console($"[WarZoneDBTest] EnterWarChat zone={warZone} unitId={request.UnitId} name={request.Name} saved DBServerInfo → DBName={StartZoneConfigCategory.Instance.Get(warZone).DBName}");
+            //}
+
             ChatSceneComponent chatInfoUnitsComponent = scene.GetComponent<ChatSceneComponent>();
             ChatInfoUnit chatInfoUnit = chatInfoUnitsComponent.Get(request.UnitId);
 
