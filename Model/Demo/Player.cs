@@ -39,6 +39,9 @@
 
 		public long RankServerID { get; set; }
 
+		/// <summary>战区 Rank ActorId；未入战区为 0</summary>
+		public long WarRankServerID { get; set; }
+
 		public long PaiMaiServerID { get; set; }
 
 		public long ActivityServerID { get; set; }

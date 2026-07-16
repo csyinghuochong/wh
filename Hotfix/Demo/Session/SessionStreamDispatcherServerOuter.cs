@@ -158,6 +158,14 @@ namespace ET
 						else if (actorRequest is IRankActorRequest iRankActorRequest)
 						{
 							long rankId = player.RankServerID;
+							if (actorRequest is C2R_RankListRequest rankListRequest && rankListRequest.Scope == 1)
+							{
+								if (player.WarRankServerID == 0)
+								{
+									break;
+								}
+								rankId = player.WarRankServerID;
+							}
 							response = await ActorMessageSenderComponent.Instance.Call(rankId, iRankActorRequest);
 						}
 						else if (actorRequest is IPaiMaiListRequest iPaiMaiRequest)

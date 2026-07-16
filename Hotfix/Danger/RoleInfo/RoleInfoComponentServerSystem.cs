@@ -896,10 +896,11 @@ namespace ET
             rankPetInfo.PlayerLv = roleInfoComponentServer.RoleInfo.Lv;
             rankPetInfo.Combat = roleInfoComponentServer.RoleInfo.Combat;
             rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
+            int campId = numericComponent.GetAsInt(NumericType.AcvitiyCamp);
             R2M_RankUpdateResponse Response = (R2M_RankUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankUpdateRequest()
                      {
-                         CampId = numericComponent.GetAsInt(NumericType.AcvitiyCamp),
+                         CampId = campId,
                          RankingInfo = rankPetInfo
                      });
             if (unit.IsDisposed)
@@ -910,6 +911,40 @@ namespace ET
             numericComponent.ApplyValue(NumericType.OccCombatRankID, Response.OccRankId);
             numericComponent.ApplyValue(NumericType.PetTianTiRankID, Response.PetRankId);
             numericComponent.ApplyValue(NumericType.SoloRankId, Response.SoloRankId);
+
+            // 同步上报战区排行（不影响本服名次）
+            self.UploadWarCombat(campId, rankPetInfo).Coroutine();
+        }
+
+        /// <summary>上报战区战力榜；展示名带服前缀</summary>
+        public static async ETTask UploadWarCombat(this RoleInfoComponentServer self, int campId, RankingInfo homeRankInfo)
+        {
+            Unit unit = self.GetParent<Unit>();
+            if (unit == null || unit.IsDisposed || unit.IsRobot())
+            {
+                return;
+            }
+
+            long warRankServerId = DBHelper.GetWarRankServerId(self.DomainZone());
+            if (warRankServerId == 0)
+            {
+                return;
+            }
+
+            RankingInfo warRankInfo = new RankingInfo();
+            warRankInfo.UserId = homeRankInfo.UserId;
+            warRankInfo.PlayerLv = homeRankInfo.PlayerLv;
+            warRankInfo.Combat = homeRankInfo.Combat;
+            warRankInfo.Occ = homeRankInfo.Occ;
+            ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), self.DomainZone());
+            string serverName = serverItem != null ? serverItem.ServerName : self.DomainZone().ToString();
+            warRankInfo.PlayerName = $"[{serverName}]{homeRankInfo.PlayerName}";
+
+            await ActorMessageSenderComponent.Instance.Call(warRankServerId, new M2R_RankUpdateRequest()
+            {
+                CampId = campId,
+                RankingInfo = warRankInfo
+            });
         }
 
         public static void  UpdateRankInfo(this RoleInfoComponentServer self)

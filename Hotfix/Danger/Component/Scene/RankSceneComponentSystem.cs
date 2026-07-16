@@ -262,10 +262,11 @@ namespace ET
 
         public static async ETTask SaveDB(this RankSceneComponent self)
         {
-            long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
-           
             await DBHelper.SaveComponent(self.DomainZone(), self.DBRankInfo.Id, self.DBRankInfo);
-            await DBHelper.SaveComponent(self.DomainZone(),self.DBServerInfo.Id, self.DBServerInfo);
+            if (self.DBServerInfo != null)
+            {
+                await DBHelper.SaveComponent(self.DomainZone(), self.DBServerInfo.Id, self.DBServerInfo);
+            }
         }
 
         /// <summary>
@@ -397,6 +398,11 @@ namespace ET
         public static async ETTask  UpdateRankNo1(this RankSceneComponent self, long userId, int occ)
         {
             int zone = self.DomainZone();
+            // 战区 Rank 不走单服第一名推送（无 ServerItem / 本服 Gate）
+            if (StartZoneConfigCategory.Instance.IsWarShareZone(zone))
+            {
+                return;
+            }
             if (DBHelper.GetOpenServerDay(zone) < 3)
             {
                 return;
@@ -579,14 +585,21 @@ namespace ET
 
         public static void OnRecvRankUpdate(this RankSceneComponent self, int campId, RankingInfo rankingInfo)
         {
-            self.UpdateWorldLevel(rankingInfo);
+            if (!StartZoneConfigCategory.Instance.IsWarShareZone(self.DomainZone()))
+            {
+                self.UpdateWorldLevel(rankingInfo);
+            }
             self.UpdateRankList(rankingInfo);
             self.UpdateCampRankList(campId, rankingInfo);
         }
 
         public static void UpdateRankPetList(this RankSceneComponent self)
         {
-            //读机器人配置表
+            //读机器人配置表（战区榜不灌本服机器人）
+            if (StartZoneConfigCategory.Instance.IsWarShareZone(self.DomainZone()))
+            {
+                return;
+            }
             if (self.DBRankInfo.rankingPets.Count > 0)
             {
                 return;

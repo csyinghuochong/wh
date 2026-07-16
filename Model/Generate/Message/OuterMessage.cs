@@ -5661,6 +5661,10 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
+		/// <summary>0本服 1战区</summary>
+		[ProtoMember(1)]
+		public int Scope { get; set; }
+
 	}
 
 	[Message(OuterOpcode.R2C_RankListResponse)]
