@@ -85,8 +85,8 @@ namespace ET
 
             // 闪避率 = 基础 + 受击方闪避(68) - 攻击方命中(66)，万分率
             long dodgeRate = 500
-                + NumericRatingHelper.GetRatePoints(targetNumeric, NumericType.P_DODGE_Fixed_68)
-                - NumericRatingHelper.GetRatePoints(casterNumeric, NumericType.P_HIT_Fixed_66);
+                + NumericConvert.GetRatePoints(targetNumeric, NumericType.P_DODGE_Fixed_68)
+                - NumericConvert.GetRatePoints(casterNumeric, NumericType.P_HIT_Fixed_66);
             if (dodgeRate <= 0)
             {
                 return false;
@@ -102,8 +102,8 @@ namespace ET
             // 暴击率 = 基础 + 攻击方暴击(70) - 受击方抗暴(74) + 技能附加，万分率
             long critRate = 500
                 + critRateAdd
-                + NumericRatingHelper.GetRatePoints(casterNumeric, NumericType.P_CRI_Fixed_70)
-                - NumericRatingHelper.GetRatePoints(targetNumeric, NumericType.P_CRI_RES_Fixed_74);
+                + NumericConvert.GetRatePoints(casterNumeric, NumericType.P_CRI_Fixed_70)
+                - NumericConvert.GetRatePoints(targetNumeric, NumericType.P_CRI_RES_Fixed_74);
             if (critRate <= 0)
             {
                 return false;

@@ -976,7 +976,7 @@ namespace ET
                     {
                         string[] attriItem = attriList[a].Split(';');
                         int typeId = int.Parse(attriItem[0]);
-                        Function_Fight.AddUpdateProDicList(typeId, long.Parse(attriItem[1]), attriDic);
+                        AttrConfigManager.MergeAttributeValue(typeId, long.Parse(attriItem[1]), attriDic);
                     }
                     catch (Exception ex)
                     {
@@ -1001,7 +1001,7 @@ namespace ET
                     {
                         string[] attriItem = attriList[a].Split(',');
                         int typeId = int.Parse(attriItem[0]);
-                        Function_Fight.AddUpdateProDicList(typeId, long.Parse(attriItem[1]), attriDic);
+                        AttrConfigManager.MergeAttributeValue(typeId, long.Parse(attriItem[1]), attriDic);
                     }
                     catch (Exception ex)
                     {
@@ -1099,7 +1099,7 @@ namespace ET
 
         public static float GetAsFloat(this PetComponentServer self, int numericType, Dictionary<int, long> attriDic)
         {
-            return NumericConvert.ToDisplayFloat(self.GetByKey(numericType, attriDic));
+            return NumericConvert.StoredToDisplayFloat(numericType, self.GetByKey(numericType, attriDic));
         }
 
         public static long GetByKey(this PetComponentServer self,  int numericType, Dictionary<int, long> attriDic)

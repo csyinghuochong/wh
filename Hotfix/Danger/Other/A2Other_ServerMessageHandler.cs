@@ -48,6 +48,13 @@ namespace ET
                             Log.Debug($"数据落地:  Rank: {scene.DomainZone()}");
                         }
                         break;
+                    case SceneType.WZRank:
+                        if (request.MessageType == NoticeType.StopSever)
+                        {
+                            scene.GetComponent<WZRankSceneComponent>().SaveDB().Coroutine();
+                            Log.Debug($"数据落地:  WZRank: {scene.DomainZone()}");
+                        }
+                        break;
                     case SceneType.PaiMai:
                         if (request.MessageType == NoticeType.StopSever)
                         {
@@ -60,6 +67,17 @@ namespace ET
                         {
                             scene.GetComponent<UnionSceneComponent>().SaveDB();
                             Log.Debug($"数据落地:  Union: {scene.DomainZone()}");
+                        }
+                        break;
+                    case SceneType.WZChat:
+                        WZChatSceneComponent wzChat = scene.GetComponent<WZChatSceneComponent>();
+                        if (request.MessageType == NoticeType.PlayerExit)
+                        {
+                            long wzUnitId = long.Parse(request.MessageValue);
+                            if (wzChat.Get(wzUnitId) != null)
+                            {
+                                wzChat.Remove(wzUnitId);
+                            }
                         }
                         break;
                     case SceneType.Chat:

@@ -127,13 +127,13 @@ namespace ET
                         //整数
                         if (ValueType == 0)
                         {
-                            FightBuffNumericHelper.BuffPropertyUpdate_Long(this.TheUnitBelongto, NowBuffParameterType, (long)this.NowBuffValue);
+                            // FightBuffNumericHelper removed; use NumericComponent.ChangeAttrFixed/Percent. Was: FightBuffNumericHelper.BuffPropertyUpdate_Long(this.TheUnitBelongto, NowBuffParameterType, (long)this.NowBuffValue);
                         }
 
                         //浮点数
                         if (ValueType == 1)
                         {
-                            FightBuffNumericHelper.BuffPropertyUpdate_Float(this.TheUnitBelongto, NowBuffParameterType, (float)this.NowBuffValue);
+                            // FightBuffNumericHelper removed; use NumericComponent.ChangeAttrFixed/Percent. Was: FightBuffNumericHelper.BuffPropertyUpdate_Float(this.TheUnitBelongto, NowBuffParameterType, (float)this.NowBuffValue);
                         }
                     }
                     break;
@@ -240,13 +240,13 @@ namespace ET
                         //整数
                         if (ValueType == 0)
                         {
-                            FightBuffNumericHelper.BuffPropertyUpdate_Long(this.TheUnitBelongto, NowBuffParameterType, (long)this.NowBuffValue * -1);
+                            // FightBuffNumericHelper removed; use NumericComponent.ChangeAttrFixed/Percent. Was: FightBuffNumericHelper.BuffPropertyUpdate_Long(this.TheUnitBelongto, NowBuffParameterType, (long)this.NowBuffValue * -1);
                         }
 
                         //浮点数
                         if (ValueType == 1)
                         {
-                            FightBuffNumericHelper.BuffPropertyUpdate_Float(this.TheUnitBelongto, NowBuffParameterType, (float)this.NowBuffValue * -1);
+                            // FightBuffNumericHelper removed; use NumericComponent.ChangeAttrFixed/Percent. Was: FightBuffNumericHelper.BuffPropertyUpdate_Float(this.TheUnitBelongto, NowBuffParameterType, (float)this.NowBuffValue * -1);
                         }
                     }
                     break;

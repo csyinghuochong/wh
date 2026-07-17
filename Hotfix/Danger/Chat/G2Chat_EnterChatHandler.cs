@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace ET
 {
     [ActorMessageHandler]
@@ -8,46 +7,41 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, G2Chat_EnterChat request, Chat2G_EnterChat response, Action reply)
         {
-            //// 战区 Chat 进线时写一条测试数据，用于验证 game_wz200x 落库（测完可删）
-            //if (StartZoneConfigCategory.Instance.IsWarShareZone(scene.DomainZone()))
-            //{
-            //    int warZone = scene.DomainZone();
-            //    DBServerInfo testInfo = await DBHelper.GetComponent<DBServerInfo>(warZone, warZone);
-            //    if (testInfo == null)
-            //    {
-            //        testInfo = new DBServerInfo();
-            //        testInfo.Id = warZone;
-            //    }
-            //    await DBHelper.SaveComponent(warZone, testInfo.Id, testInfo);
-            //    Log.Console($"[WarZoneDBTest] EnterWarChat zone={warZone} unitId={request.UnitId} name={request.Name} saved DBServerInfo → DBName={StartZoneConfigCategory.Instance.Get(warZone).DBName}");
-            //}
+            if (scene.SceneType == SceneType.WZChat)
+            {
+                WZChatSceneComponent wzChat = scene.GetComponent<WZChatSceneComponent>();
+                ChatInfoUnit chatInfoUnit = wzChat.Enter(request);
+                response.ChatInfoUnitInstanceId = chatInfoUnit.InstanceId;
+                reply();
+                await ETTask.CompletedTask;
+                return;
+            }
 
             ChatSceneComponent chatInfoUnitsComponent = scene.GetComponent<ChatSceneComponent>();
-            ChatInfoUnit chatInfoUnit = chatInfoUnitsComponent.Get(request.UnitId);
+            ChatInfoUnit unit = chatInfoUnitsComponent.Get(request.UnitId);
 
-            if (chatInfoUnit != null && !chatInfoUnit.IsDisposed)
+            if (unit != null && !unit.IsDisposed)
             {
-                chatInfoUnit.Name = request.Name;
-                chatInfoUnit.Level = request.Level; 
-                chatInfoUnit.UnionId = request.UnionId;
-                chatInfoUnit.GateSessionActorId = request.GateSessionActorId;
-                response.ChatInfoUnitInstanceId = chatInfoUnit.InstanceId;
+                unit.Name = request.Name;
+                unit.Level = request.Level;
+                unit.UnionId = request.UnionId;
+                unit.GateSessionActorId = request.GateSessionActorId;
+                response.ChatInfoUnitInstanceId = unit.InstanceId;
                 reply();
                 return;
             }
 
-            ChatInfoUnit chatInfoUnit1 = chatInfoUnitsComponent.GetChild<ChatInfoUnit>(request.UnitId);
-            chatInfoUnit1?.Dispose();
+            ChatInfoUnit old = chatInfoUnitsComponent.GetChild<ChatInfoUnit>(request.UnitId);
+            old?.Dispose();
 
-            chatInfoUnit = chatInfoUnitsComponent.AddChildWithId<ChatInfoUnit>(request.UnitId);
-            chatInfoUnit.AddComponent<MailBoxComponent>();
-
-            chatInfoUnit.Name = request.Name;
-            chatInfoUnit.Level = request.Level;
-            chatInfoUnit.UnionId = request.UnionId;
-            chatInfoUnit.GateSessionActorId = request.GateSessionActorId;
-            response.ChatInfoUnitInstanceId = chatInfoUnit.InstanceId;
-            chatInfoUnitsComponent.Add(chatInfoUnit);
+            unit = chatInfoUnitsComponent.AddChildWithId<ChatInfoUnit>(request.UnitId);
+            unit.AddComponent<MailBoxComponent>();
+            unit.Name = request.Name;
+            unit.Level = request.Level;
+            unit.UnionId = request.UnionId;
+            unit.GateSessionActorId = request.GateSessionActorId;
+            response.ChatInfoUnitInstanceId = unit.InstanceId;
+            chatInfoUnitsComponent.Add(unit);
 
             reply();
             await ETTask.CompletedTask;

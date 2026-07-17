@@ -54,7 +54,7 @@ namespace ET
 
             string item = items[request.Index];
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.LeavlReward, request.LvKey);
-            unit.GetComponent<BagComponentServer>().OnAddItemData(item, $"{ItemGetWay.LeavlReward}_{TimeHelper.ServerNow()}");
+            //unit.GetComponent<BagComponentServer>().OnAddItemData(item, $"{ItemGetWay.LeavlReward}_{TimeHelper.ServerNow()}");
             reply();
             await ETTask.CompletedTask;
         }

@@ -211,7 +211,7 @@ namespace ET
             }
 
             List<AttributeItem> attributeItems = LDMonsterCategory.Instance.GetMonsterAttri(monsterID);
-            NumericInitHelper.ApplyConfigAttributes(numericComponent, attributeItems, false);
+            NumericConvert.ApplyConfigAttributes(numericComponent, attributeItems, false);
 
             numericComponent.Set(NumericType.BattleCamp, createMonsterInfo.Camp, false);
             numericComponent.Set(NumericType.TeamId, master != null ? master.GetTeamId() : 0, false);

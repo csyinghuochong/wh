@@ -205,6 +205,35 @@ namespace ET
             }
         }
 
+        /// <summary>对 (oldLevel, newLevel] 每一级发放自由点。</summary>
+        public static void AddPointsForLevelRange(Unit unit, int oldLevel, int newLevel)
+        {
+            for (int lv = oldLevel + 1; lv <= newLevel; lv++)
+            {
+                AddPointsOnLevelUp(unit, lv);
+            }
+        }
+
+        /// <summary>1 级且六维全 0 时补发一级自由点（登录 CheckData 修复旧号）。</summary>
+        public static void EnsureLevel1InitPoints(Unit unit, int level)
+        {
+            if (level != 1)
+            {
+                return;
+            }
+
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            for (int i = 0; i < PointNumericTypes.Length; i++)
+            {
+                if (numeric.GetAsInt(PointNumericTypes[i]) != 0)
+                {
+                    return;
+                }
+            }
+
+            AddPointsOnLevelUp(unit, 1);
+        }
+
         /// <summary>按当前等级重算全部自由属性点（洗点 / 数据校验修复）。</summary>
         public static void RecalculateAllPoints(Unit unit)
         {

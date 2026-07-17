@@ -170,68 +170,44 @@ namespace ET
         public static async ETTask OnAuctionOver(this PaiMaiSceneComponent self)
         {
             Log.Debug($"拍卖结束: {self.DomainZone()} {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}");
-            long gateServerId = DBHelper.GetGateServerId(self.DomainZone());
 
             if (self.AuctioUnitId != 0)
             {
-                G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                   (gateServerId, new T2G_GateUnitInfoRequest()
-                   {
-                       UserID = self.AuctioUnitId
-                   });
-
                 bool getitem = false;
 
-                //在线
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
+                // 先按在线 Unit 扣款；找不到人 / 扣款失败再走库结算（与原离线分支合并）
+                P2M_PaiMaiAuctionOverRequest p2M_PaiMaiAuctionOverRequest = new P2M_PaiMaiAuctionOverRequest()
                 {
-                    P2M_PaiMaiAuctionOverRequest p2M_PaiMaiAuctionOverRequest = new P2M_PaiMaiAuctionOverRequest()
-                    {
-                        Price = self.AuctionPrice,
-                        ItemID = self.AuctionItem,
-                        ItemNumber = self.AuctionItemNum,
-                    };
+                    Price = self.AuctionPrice,
+                    ItemID = self.AuctionItem,
+                    ItemNumber = self.AuctionItemNum,
+                };
+                M2P_PaiMaiAuctionOverResponse m2G_RechargeResponse = (M2P_PaiMaiAuctionOverResponse)await ActorLocationSenderComponent.Instance.Call(
+                    self.AuctioUnitId, p2M_PaiMaiAuctionOverRequest);
 
+                if (m2G_RechargeResponse.Error == ErrorCode.ERR_Success)
+                {
+                    getitem = true;
                     Log.Warning($"OnAuctionOver[在线]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}");
-
-                    M2P_PaiMaiAuctionOverResponse m2G_RechargeResponse = (M2P_PaiMaiAuctionOverResponse)await ActorLocationSenderComponent.Instance.Call(self.AuctioUnitId, p2M_PaiMaiAuctionOverRequest);
-                    if (m2G_RechargeResponse.Error == ErrorCode.ERR_Success)
-                    {
-                        getitem = true;
-                    }
-                    else
-                    {
-                        //流派则不退还保证金
-                        if (self.AuctionJoinList.Contains(self.AuctioUnitId))
-                        {
-                            self.AuctionJoinList.Remove(self.AuctioUnitId);
-                        }
-                    }
-
-                    Log.Warning($"OnAuctionOver[在线]:  {m2G_RechargeResponse.Error}  {getitem}");
                 }
                 else
                 {
-                    Log.Warning($"OnAuctionOver[离线]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}");
+                    Log.Warning($"OnAuctionOver[离线/失败]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}  Error={m2G_RechargeResponse.Error}");
                     RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(self.DomainZone(), self.AuctioUnitId);
-                    if (roleInfoComponentServer.RoleInfo.Gold >= self.AuctionPrice)
+                    if (roleInfoComponentServer != null && roleInfoComponentServer.RoleInfo.Gold >= self.AuctionPrice)
                     {
                         roleInfoComponentServer.RoleInfo.Gold -= self.AuctionPrice;
                         DBHelper.SaveComponentCache(self.DomainZone(), self.AuctioUnitId, roleInfoComponentServer).Coroutine();
-
-                        //发送道具
                         getitem = true;
                     }
                     else
                     {
-                        //流派则不退还保证金
+                        // 流拍则不退还保证金
                         if (self.AuctionJoinList.Contains(self.AuctioUnitId))
                         {
                             self.AuctionJoinList.Remove(self.AuctioUnitId);
                         }
                     }
-
-                    Log.Warning($"OnAuctionOver[离线]:   {getitem}");
                 }
 
                 if (getitem)

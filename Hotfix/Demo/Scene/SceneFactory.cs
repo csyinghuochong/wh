@@ -67,6 +67,9 @@ namespace ET
                 case SceneType.Chat:
                     scene.AddComponent<ChatSceneComponent>();
                     break;
+                case SceneType.WZChat:
+                    scene.AddComponent<WZChatSceneComponent>();
+                    break;
                 case SceneType.EMail:
                     scene.AddComponent<MailSceneComponent>();
                     break;
@@ -75,6 +78,9 @@ namespace ET
                     break;
                 case SceneType.Rank:
                     scene.AddComponent<RankSceneComponent>();
+                    break;
+                case SceneType.WZRank:
+                    scene.AddComponent<WZRankSceneComponent>();
                     break;
                 case SceneType.PaiMai:
                     scene.AddComponent<PaiMaiSceneComponent>();

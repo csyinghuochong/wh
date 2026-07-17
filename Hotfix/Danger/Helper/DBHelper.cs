@@ -85,7 +85,7 @@ namespace ET
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, "Chat").InstanceId;
         }
 
-        /// <summary>战区 Chat ActorId；未入战区返回 0</summary>
+        /// <summary>战区 WZChat ActorId；未入战区返回 0</summary>
         public static long GetWarChatServerId(int zone)
         {
             int warZone = StartZoneConfigCategory.Instance.GetWarZone(zone);
@@ -93,7 +93,18 @@ namespace ET
             {
                 return 0;
             }
-            return StartSceneConfigCategory.Instance.GetBySceneName(warZone, "Chat").InstanceId;
+            if (StartSceneConfigCategory.Instance.TryGetBySceneName(warZone, "WZChat", out StartSceneConfig config))
+            {
+                return config.InstanceId;
+            }
+            // 兼容未重新导出 bytes 的旧配置（Name 仍为 Chat）
+            if (StartSceneConfigCategory.Instance.TryGetBySceneName(warZone, "Chat", out config))
+            {
+                Log.Warning($"[WarZone] zone={zone} warZone={warZone} 未找到 WZChat，临时回退 Chat。请重新导出 StartSceneConfig");
+                return config.InstanceId;
+            }
+            Log.Error($"[WarZone] zone={zone} warZone={warZone} 未配置 WZChat/Chat 场景");
+            return 0;
         }
 
         public static long GetQueueServerId(int zone)
@@ -116,7 +127,7 @@ namespace ET
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Rank)).InstanceId;
         }
 
-        /// <summary>战区 Rank ActorId；未入战区返回 0</summary>
+        /// <summary>战区 WZRank ActorId；未入战区返回 0</summary>
         public static long GetWarRankServerId(int zone)
         {
             int warZone = StartZoneConfigCategory.Instance.GetWarZone(zone);
@@ -124,7 +135,17 @@ namespace ET
             {
                 return 0;
             }
-            return StartSceneConfigCategory.Instance.GetBySceneName(warZone, Enum.GetName(SceneType.Rank)).InstanceId;
+            if (StartSceneConfigCategory.Instance.TryGetBySceneName(warZone, "WZRank", out StartSceneConfig config))
+            {
+                return config.InstanceId;
+            }
+            if (StartSceneConfigCategory.Instance.TryGetBySceneName(warZone, "Rank", out config))
+            {
+                Log.Warning($"[WarZone] zone={zone} warZone={warZone} 未找到 WZRank，临时回退 Rank。请重新导出 StartSceneConfig");
+                return config.InstanceId;
+            }
+            Log.Error($"[WarZone] zone={zone} warZone={warZone} 未配置 WZRank/Rank 场景");
+            return 0;
         }
 
         public static long GetMainCityServerId(int zone)

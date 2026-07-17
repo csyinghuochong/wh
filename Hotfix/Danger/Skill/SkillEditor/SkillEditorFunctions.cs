@@ -1379,10 +1379,7 @@ namespace ET
         }
 
 
-        /// <summary>
-        /// 修改战斗属性
-        /// </summary>
-        /// <param name="ctx"></param>
+        /// <summary>技能：固定值改属性，配表 ID 直接传（21→100211，27→分项，80→StaticStore）。</summary>
         private static void ChangeUnitAttributeAdd(SkillEditorFunctionContext ctx)
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
@@ -1394,28 +1391,10 @@ namespace ET
                 return;
             }
 
-            NumericComponent numeric = target.GetComponent<NumericComponent>();
-            if (numeric == null)
-            {
-                return;
-            }
-
-            if (!AttrConfigManager.TryGetBaseAttrsForFightChange(numericType, out List<int> baseAttrs))
-            {
-                long delta = NumericConvert.UsesScaledStorage(numericType)
-                    ? NumericConvert.ToStoredValue(deltaDisplay)
-                    : (long)Math.Round(deltaDisplay);
-                numeric.ApplyChange(caster, numericType, delta, ctx.SkillId);
-                return;
-            }
-
-            long fightDelta = NumericConvert.ToStoredValue(deltaDisplay);
-            foreach (int baseAttr in baseAttrs)
-            {
-                numeric.ApplyFightFixedChange(caster, baseAttr, fightDelta, ctx.SkillId);
-            }
+            target.GetComponent<NumericComponent>()?.ChangeAttrFixed(caster, numericType, deltaDisplay, ctx.SkillId);
         }
 
+        /// <summary>技能：百分比改属性，percent=10 表示 +10%（21→100212，80→100802）。</summary>
         private static void ChangeUnitAttributePercent(SkillEditorFunctionContext ctx)
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
@@ -1427,33 +1406,7 @@ namespace ET
                 return;
             }
 
-            NumericComponent numeric = target.GetComponent<NumericComponent>();
-            if (numeric == null)
-            {
-                return;
-            }
-
-            float percentDelta = (float)(percent / 100d);
-            if (!AttrConfigManager.TryGetBaseAttrsForFightChange(numericType, out List<int> baseAttrs))
-            {
-                double baseValue = numeric.GetAsFloat(numericType);
-                double deltaDisplay = baseValue * percent / 100d;
-                if (Math.Abs(deltaDisplay) < 1e-9)
-                {
-                    return;
-                }
-
-                long delta = NumericConvert.UsesScaledStorage(numericType)
-                    ? NumericConvert.ToStoredValue(deltaDisplay)
-                    : (long)Math.Round(deltaDisplay);
-                numeric.ApplyChange(caster, numericType, delta, ctx.SkillId);
-                return;
-            }
-
-            foreach (int baseAttr in baseAttrs)
-            {
-                numeric.ApplyFightPercentChange(caster, baseAttr, percentDelta, ctx.SkillId);
-            }
+            target.GetComponent<NumericComponent>()?.ChangeAttrPercent(caster, numericType, (float)(percent / 100d), ctx.SkillId);
         }
 
         private static void SetUnitMockTarget(SkillEditorFunctionContext ctx)

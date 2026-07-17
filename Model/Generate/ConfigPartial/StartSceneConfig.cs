@@ -40,6 +40,16 @@ namespace ET
             return this.ZoneScenesByName[zone][name];
         }
 
+        public bool TryGetBySceneName(int zone, string name, out StartSceneConfig config)
+        {
+            config = null;
+            if (!this.ZoneScenesByName.TryGetValue(zone, out Dictionary<string, StartSceneConfig> dict))
+            {
+                return false;
+            }
+            return dict.TryGetValue(name, out config);
+        }
+
         public StartSceneConfig GetRandomFubenWork(int zone)
         {
             List<StartSceneConfig> zonelocaldungeons = StartSceneConfigCategory.Instance.FuBenWorkScens[zone];

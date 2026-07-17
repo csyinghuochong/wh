@@ -105,6 +105,12 @@
     <Compile Include="..\..\Unity\Assets\Model\Module\Numeric\NumericWatcherComponent.cs">
       <Link>Module\Numeric\NumericWatcherComponent.cs</Link>
     </Compile>
+    <Compile Include="..\..\Unity\Assets\Model\Module\Numeric\AttrConfig.cs">
+      <Link>Module\Numeric\AttrConfig.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Unity\Assets\Model\Module\Numeric\NumericConvert.cs">
+      <Link>Module\Numeric\NumericConvert.cs</Link>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

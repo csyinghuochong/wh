@@ -28,7 +28,13 @@ namespace ET
             self.InitServerInfo().Coroutine();
             self.InitDBRankInfo().Coroutine();
 
-            self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Minute * 30 + RandomHelper.RandomNumber(1000, 10000), TimerType.RankeTimer, self);
+
+            long dbTime = TimeHelper.Minute * 30 + RandomHelper.RandomNumber(1000, 10000);
+            if (CommonHelper.IsInnerNet())
+            {
+                dbTime = TimeHelper.Minute;
+            }
+            self.Timer = TimerComponent.Instance.NewRepeatedTimer(dbTime, TimerType.RankeTimer, self);
         }
     }
 
@@ -333,64 +339,6 @@ namespace ET
             }
         }
 
-        /// <summary>
-        /// 第一名有变化则通知
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="rankingInfo"></param>
-        public static void UpdateRankList_Old(this RankSceneComponent self, RankingInfo rankingInfo)
-        {
-            bool have = false;
-
-            long oldNo1 = 0;
-            long newNo1 = 0;
-           
-            for (int i = 0; i < self.DBRankInfo.rankingInfos.Count; i++)
-            {
-                RankingInfo rankingInfoTemp = self.DBRankInfo.rankingInfos[i];
-                if (i == 0)
-                {
-                    oldNo1 = rankingInfoTemp.UserId;
-                }
-
-                if (rankingInfoTemp.UserId == rankingInfo.UserId)
-                {
-                    self.DBRankInfo.rankingInfos[i] = rankingInfo;
-                    have = true;
-                    break;
-                }
-            }
-
-            if (!have)
-            {
-                if (self.DBRankInfo.rankingInfos.Count < 500)
-                {
-                    self.DBRankInfo.rankingInfos.Add(rankingInfo);
-                }
-                else
-                {
-                    if (self.DBRankInfo.rankingInfos.LastOrDefault().Combat < rankingInfo.Combat)
-                    {
-                        self.DBRankInfo.rankingInfos[self.DBRankInfo.rankingInfos.Count - 1] = rankingInfo;
-                    }
-                }
-            }
-            self.DBRankInfo.rankingInfos.Sort(delegate (RankingInfo a, RankingInfo b)
-            {
-                return (int)b.Combat - (int)a.Combat;
-            });
-
-            newNo1 = self.DBRankInfo.rankingInfos[0].UserId;
-            if (oldNo1 == newNo1)
-            {
-                //self.UpdateRankNo1(newNo1).Coroutine();
-            }
-            else
-            {
-                //self.UpdateRankNo1(oldNo1).Coroutine();
-                //self.UpdateRankNo1(newNo1).Coroutine();
-            }
-        }
 
         /// <summary>
         /// 通知排行榜第一刷新
@@ -412,23 +360,24 @@ namespace ET
             {
                 return;
             }
-
+            await ETTask.CompletedTask;
             //通知玩家
-            long gateServerId = DBHelper.GetGateServerId(zone);
-            G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-               (gateServerId, new T2G_GateUnitInfoRequest()
-               {
-                   UserID = userId
-               });
-            if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-            {
+            //long gateServerId = DBHelper.GetGateServerId(zone);
+            //G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
+            //   (gateServerId, new T2G_GateUnitInfoRequest()
+            //   {
+            //       UserID = userId
+            //   });
+            //if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
+            //{
+
                 R2M_RankUpdateMessage r2M_RankUpdateMessage = new R2M_RankUpdateMessage();
                 r2M_RankUpdateMessage.RankType = 1;
                 r2M_RankUpdateMessage.RankId = rankId;
                 r2M_RankUpdateMessage.OccRankId = self.GetOccCombatRank(userId, occ);
                 //MessageHelper.SendToLocationActor(g2M_UpdateUnitResponse.UnitId, r2M_RankUpdateMessage);
                 MessageHelper.SendToLocationActor(userId, r2M_RankUpdateMessage);
-            }
+            //}
         }
 
         public static int GetTrialRank(this RankSceneComponent self, long userId)

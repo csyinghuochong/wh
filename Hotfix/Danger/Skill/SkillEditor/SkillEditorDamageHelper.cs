@@ -137,7 +137,7 @@ namespace ET
             {
                 double critMultiplier = DefaultCritMultiplier
                     + critBonus
-                    + NumericRatingHelper.GetRatioBonus(casterNumeric, NumericType.P_CRI_DMG_Fixed_72);
+                    + NumericConvert.GetRatioBonus(casterNumeric, NumericType.P_CRI_DMG_Fixed_72);
                 normalDamage = FloorPositiveDamage(normalDamage * critMultiplier);
             }
 

@@ -261,7 +261,7 @@ namespace ET
                 numericComponent.Set(NumericType.HorseRide, randomid, false);
             }
             
-            UpgrageLevelHelper.CheckInitPoint(self.GetParent<Unit>(),self.RoleInfo.Lv);
+            RoleAddPointHelper.EnsureLevel1InitPoints(self.GetParent<Unit>(), self.RoleInfo.Lv);
             
             PetComponentServer petComponentServer = self.GetParent<Unit>().GetComponent<PetComponentServer>();
             if (self.RoleInfo.RobotId > 0 &&   petComponentServer.RolePetInfos.Count == 0)
@@ -714,16 +714,6 @@ namespace ET
                 UnitId = unit.Id,
                 Level = level,
             });
-
-            if (level == 70)
-            {
-                MailInfo mailInfo = new MailInfo();
-                mailInfo.Status = 0;
-                mailInfo.Context = "完成所有进阶之路后，可以将等级上限突破至75级！";
-                mailInfo.Title = "进阶之路系列任务";
-                mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                MailHelp.SendUserMail(self.DomainZone(), self.Id, mailInfo).Coroutine();
-            }
         }
 
         //需要通知客户端
@@ -772,17 +762,18 @@ namespace ET
                     saveValue = value;
                     break;
                 case UserDataType.Level:
-                    if (self.IsZhuBoLevel16())
-                    {
-                        return;
-                    }
-
                     int addLevel = int.Parse(value);
                     int oldLevel = self.RoleInfo.Lv;
                     self.RoleInfo.Lv += addLevel;
                     saveValue = self.RoleInfo.Lv.ToString();
-                    unit.OnUpgrageLevel(self.RoleInfo.Lv, oldLevel);
-                    Function_Fight.UnitUpdateProperty_Base(unit, true,true );
+                    RoleAddPointHelper.AddPointsForLevelRange(unit, oldLevel, self.RoleInfo.Lv);
+                    unit.GetComponent<TaskComponentServer>().OnUpdateLevel(self.RoleInfo.Lv);
+                    unit.GetComponent<ChengJiuComponentServer>().OnUpdateLevel(self.RoleInfo.Lv);
+                    Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+                    // 升级后按新上限回满（ResetProperty 保留 HP_Current，但 Max 可能变大）
+                    NumericComponent numeric = unit.GetComponent<NumericComponent>();
+                    numeric.Set(NumericType.HP_Current_8, numeric.GetAsLong(NumericType.HP_Max_10), true);
+                    self.UpdateRankInfo();
                     self.BroadcastLevel(self.RoleInfo.Lv).Coroutine();
                     break;
                 case UserDataType.Sp:
@@ -849,8 +840,6 @@ namespace ET
                     saveValue = self.RoleInfo.BaoShiDu.ToString();
                     unit.GetComponent<BuffManagerComponent>()?.InitBaoShiBuff();
                     break;
-               
-               
                 case UserDataType.UnionName:
                     self.RoleInfo.UnionName = value;
                     saveValue = self.RoleInfo.UnionName;

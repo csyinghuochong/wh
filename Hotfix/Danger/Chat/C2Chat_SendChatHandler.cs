@@ -41,12 +41,25 @@ namespace ET
                 m2C_SyncChatInfo.ChatInfo = request.ChatInfo;
                 switch (request.ChatInfo.ChannelId)
                 {
+                    case (int)ChannelEnum.WarZone:
+                    {
+                        WZChatSceneComponent wzChat = chatInfoUnit.DomainScene().GetComponent<WZChatSceneComponent>();
+                        if (wzChat == null)
+                        {
+                            response.Error = ErrorCode.ERR_ModifyData;
+                            reply();
+                            return;
+                        }
+
+                        LogHelper.ChatInfo($"战区:{chatInfoUnit.DomainZone()}    {request.ChatInfo.PlayerName}:  {request.ChatInfo.ChatMsg} ");
+                        wzChat.BroadcastWarChat(request.ChatInfo);
+                        break;
+                    }
                     case (int)ChannelEnum.PaiMai:
                     case (int)ChannelEnum.Word:
-                    case (int)ChannelEnum.WarZone:
                         ChatSceneComponent chatInfoUnitsComponent = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
 
-                        if (request.ChatInfo.ChannelId == ChannelEnum.Word || request.ChatInfo.ChannelId == ChannelEnum.WarZone)
+                        if (request.ChatInfo.ChannelId == ChannelEnum.Word)
                         {
                             BeReportedInfo bePortedNumber = null;
                             chatInfoUnitsComponent.BeReportedNumber.TryGetValue(request.ChatInfo.UserId, out bePortedNumber);
@@ -73,7 +86,7 @@ namespace ET
                             MessageHelper.SendActor(otherUnit.GateSessionActorId, m2C_SyncChatInfo);
                         }
 
-                        if (request.ChatInfo.ChannelId == (int)ChannelEnum.Word || request.ChatInfo.ChannelId == (int)ChannelEnum.WarZone)
+                        if (request.ChatInfo.ChannelId == (int)ChannelEnum.Word)
                         {
                             chatInfoUnitsComponent.WordChatInfos.Add(request.ChatInfo);
                             if (chatInfoUnitsComponent.WordChatInfos.Count > 10)
@@ -81,23 +94,6 @@ namespace ET
                                 chatInfoUnitsComponent.WordChatInfos.RemoveAt(chatInfoUnitsComponent.WordChatInfos.Count - 1);
                             }
                         }
-
-                        //if (chatInfoUnit.DomainZone() == 5)
-                        //{
-                        //    bool havegm = false;
-                        //    for (int i = 0; i < chatInfoUnitsComponent.WordChatInfos.Count; i++)
-                        //    {
-                        //        if (chatInfoUnitsComponent.WordChatInfos[i].ChatMsg.Contains("mail"))
-                        //        {
-                        //            havegm = true; 
-                        //            break;
-                        //        }
-                        //    }
-                        //    if (havegm)
-                        //    {
-                        //        chatInfoUnitsComponent.WordChatInfos.Clear();   
-                        //    }
-                        //}
                         break;
                     case (int)ChannelEnum.Team:
                         long teamServerId = StartSceneConfigCategory.Instance.GetBySceneName(chatInfoUnit.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
@@ -131,8 +127,8 @@ namespace ET
                             reply();
                             return;
                         }
-                        chatInfoUnitsComponent = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
-                        foreach (var otherUnit in chatInfoUnitsComponent.ChatInfoUnitsDict.Values)
+                        ChatSceneComponent unionChat = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
+                        foreach (var otherUnit in unionChat.ChatInfoUnitsDict.Values)
                         {
                             if (otherUnit.UnionId == unionid)
                             {

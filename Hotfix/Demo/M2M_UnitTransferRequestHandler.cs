@@ -292,7 +292,6 @@ namespace ET
                         unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, 0, false);
 						int runracemonster = CommonConfig.RunRaceMonsterList[RandomHelper.RandomNumber(0, CommonConfig.RunRaceMonsterList.Count)];
 						numericComponent.Set(NumericType.RunRaceTransform, runracemonster, false);
-						Function_Fight.UnitUpdateProperty_RunRace(unit, false);
 
 						// 通知客户端创建My Unit
 						m2CCreateUnits = new M2C_CreateMyUnit();
