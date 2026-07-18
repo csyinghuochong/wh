@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -48,7 +48,7 @@ namespace ET
 			//MessageHelper.Broadcast(unit, m2C_HorseNoticeInfo);
 
 			////测试邮件
-			//long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+			//long mailServerId = DBHelper.GetMailServerId(unit);
 			//E2M_EMailSendResponse g_SendChatRequest = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
 			//	(mailServerId, new M2E_EMailSendRequest() {  Id = unit.GetComponent<UnitInfoComponent>().UserID });
 

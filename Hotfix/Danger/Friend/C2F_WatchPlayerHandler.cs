@@ -9,7 +9,8 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_WatchPlayerRequest request, F2C_WatchPlayerResponse response, Action reply)
         {
-            long dbCacheId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), Enum.GetName(SceneType.DBCache)).InstanceId;
+            // 可跨区查看：按被查看玩家 UnitId 归属服取 DBCache，勿用 Friend 场景 DomainZone
+            long dbCacheId = DBHelper.GetUnitCacheConfig(request.UserId);
             D2G_GetComponent d2GGetUnit_1 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.RoleInfoComponent });
             RoleInfoComponentServer userinfo = d2GGetUnit_1.Component as RoleInfoComponentServer;
             if (userinfo == null)
@@ -73,7 +74,7 @@ namespace ET
                     response.Name = userinfo.RoleInfo.Name;
                     break;
                 case 2:
-                    long teamServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
+                    long teamServerId = DBHelper.GetTeamServerId(UnitZoneHelper.GetHomeZone(request.UserId));
                     T2C_GetTeamInfoResponse g_SendChatRequest1 = (T2C_GetTeamInfoResponse)await ActorMessageSenderComponent.Instance.Call
                         (teamServerId, new C2T_GetTeamInfoRequest() { UserID = request.UserId });
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -17,7 +17,7 @@ namespace ET
                 return;
             }
 
-            if (ServerHelper.IsGoogleServer(unit.DomainZone()))
+            if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
             {
                 if (!CommonConfig.SingleRechargeReward_EN.ContainsKey(request.RewardId))
                 {
@@ -40,7 +40,7 @@ namespace ET
 
          
             string[] rewarditemlist = null;
-            if (ServerHelper.IsGoogleServer(unit.DomainZone()))
+            if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
             {
                 rewarditemlist = CommonConfig.SingleRechargeReward_EN[request.RewardId].Split('@');
             }
@@ -58,7 +58,7 @@ namespace ET
 
 
             bool ret = false;
-            if (ServerHelper.IsGoogleServer(unit.DomainZone()))
+            if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
             {
                 ret = unit.GetComponent<BagComponentServer>().OnAddItemData(CommonConfig.SingleRechargeReward_EN[request.RewardId], $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
             }

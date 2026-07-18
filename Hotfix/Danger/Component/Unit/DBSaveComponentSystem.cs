@@ -75,7 +75,7 @@ namespace ET
                     return;
                 }
 
-                long dbCacheId = DBHelper.GetDbCacheId(unit.DomainZone());
+                long dbCacheId = DBHelper.GetUnitCacheConfig(unit.Id);
                 M2D_SaveUnit message = new M2D_SaveUnit() { UnitId = unit.Id };
                 
                 message.EntityTypes.Add(unit.GetType().FullName);
@@ -239,7 +239,7 @@ namespace ET
             if (other)
             {
                 //通知Chat服
-                await ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(unit.DomainZone()), NoticeType.PlayerExit, unit.Id.ToString());
+                await ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(unit), NoticeType.PlayerExit, unit.Id.ToString());
                 //通知其他服
             }
 

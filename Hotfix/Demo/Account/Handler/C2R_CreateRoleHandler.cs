@@ -95,7 +95,6 @@ namespace ET
                             return;
                         }
 						
-                        long userId = IdGenerater.Instance.GenerateUnitId(request.ServerId);
                         /*RoleInfoComponent roleInfoComponent = session.AddChildWithId<RoleInfoComponent>(userId);
 						roleInfoComponent.Account = centerAccountList[0].Account;
                         roleInfoComponent.Password = centerAccountList[0].Password;
@@ -146,9 +145,8 @@ namespace ET
 							robotId = int.Parse(centerAccountList[0].Account.Split('_')[0]);
 						}
 						
-						//存储账号信息
 						CreateRoleInfo createRoleInfo = new CreateRoleInfo();
-						createRoleInfo.UserID = IdGenerater.Instance.GenerateId();
+						createRoleInfo.UserID = IdGenerater.Instance.GenerateUnitId(request.ServerId);
 						createRoleInfo.PlayerLv = 1;
 						createRoleInfo.PlayerOcc = request.CreateOcc;
 						createRoleInfo.PlayerName = request.CreateName;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -40,14 +40,14 @@ namespace ET
                 JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
                 jiaYuanComponentServer.OnRemoveUnit(request.UnitId);
 
-                await DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, jiaYuanComponentServer);
+                await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer);
             }
             else
             {
                 unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.JiaYuanPickOther, 1, 0);
 
-                JiaYuanComponentServer jiaYuanComponentServer2 = await DBHelper.GetComponent<JiaYuanComponentServer>(unit.DomainZone(), request.MasterId);
-                long gateServerId = DBHelper.GetGateServerId(unit.DomainZone());
+                JiaYuanComponentServer jiaYuanComponentServer2 = await DBHelper.GetComponent<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
+                long gateServerId = DBHelper.GetGateServerId(unit);
                 G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
                     (gateServerId, new T2G_GateUnitInfoRequest()
                     {
@@ -72,7 +72,7 @@ namespace ET
                 else
                 {
                     jiaYuanComponentServer2.OnRemoveUnit(request.UnitId);
-                    await DBHelper.SaveComponentCache(unit.DomainZone(), request.MasterId, jiaYuanComponentServer2);
+                    await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId, jiaYuanComponentServer2);
                 }
             }
             

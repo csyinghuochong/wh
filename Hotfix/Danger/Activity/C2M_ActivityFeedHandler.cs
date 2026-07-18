@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -37,7 +37,7 @@ namespace ET
             bagComponentServer.OnCostItemData($"{costItemId};1", ItemLocType.ItemLocBag, ItemGetWay.Activity);
             bagComponentServer.OnAddItemData(droplist, string.Empty, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
 
-            long activitySceneid = DBHelper.GetActivityServerId(unit.DomainZone());
+            long activitySceneid = DBHelper.GetActivityServerId(unit);
             A2M_ActivityFeedResponse r_GameStatusResponse = (A2M_ActivityFeedResponse)await ActorMessageSenderComponent.Instance.Call
                  (activitySceneid, new M2A_ActivityFeedRequest()
                  {

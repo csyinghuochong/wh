@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -9,7 +9,7 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_PaiMaiDuiHuanRequest request, M2C_PaiMaiDuiHuanResponse response, Action reply)
         {
-            long dbCacheId = DBHelper.GetRankServerId(unit.DomainZone());
+            long dbCacheId = DBHelper.GetRankServerId(unit);
             R2M_DBServerInfoResponse d2GGetUnit = (R2M_DBServerInfoResponse)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2R_DBServerInfoRequest() { });
             long diamond = request.DiamondsNumber;
             if (request.DiamondsNumber <= 0)

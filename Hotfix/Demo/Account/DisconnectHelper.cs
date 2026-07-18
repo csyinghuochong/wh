@@ -113,6 +113,25 @@ namespace ET
             };
             mapIdList.AddRange(response.FubenInstanceList);
 
+            // 同战区其它服主城（跨服旅游中的角色）
+            int warZone = StartZoneConfigCategory.Instance.GetWarZone(zone);
+            if (warZone != 0)
+            {
+                List<int> members = StartZoneConfigCategory.Instance.GetWarZoneMembers(warZone);
+                for (int m = 0; m < members.Count; m++)
+                {
+                    int memberZone = members[m];
+                    if (memberZone == zone)
+                    {
+                        continue;
+                    }
+                    if (StartSceneConfigCategory.Instance.TryGetBySceneName(memberZone, $"Map{CommonHelper.MainCityID()}", out StartSceneConfig mapCfg))
+                    {
+                        mapIdList.Add(mapCfg.InstanceId);
+                    }
+                }
+            }
+
             for (int i = mapIdList.Count - 1; i >= 0; i--)
             {
                 ActorMessageSenderComponent.Instance.Send(mapIdList[i], new G2M_KickPlayerRequest() { UnitId = unitid });

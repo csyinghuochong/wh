@@ -22,7 +22,7 @@ namespace ET
                 Occ = roleInfoComponentServer.RoleInfo.Occ,
                 AuctionPlayer = roleInfoComponentServer.RoleInfo.Name,
             };
-            long paimaiserverid = DBHelper.GetPaiMaiServerId(unit.DomainZone());
+            long paimaiserverid = DBHelper.GetPaiMaiServerId(unit);
             P2M_PaiMaiAuctionPriceResponse r_GameStatusResponse = (P2M_PaiMaiAuctionPriceResponse)await ActorMessageSenderComponent.Instance.Call
                     (paimaiserverid, message);
 

@@ -73,7 +73,7 @@ namespace ET
 
             unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JiaYuanDashiNumber_96, 0, 1);
 
-            DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, jiaYuanComponentServer).Coroutine();
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer).Coroutine();
             Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             reply();
             await ETTask.CompletedTask;

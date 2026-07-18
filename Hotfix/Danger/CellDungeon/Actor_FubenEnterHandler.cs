@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +21,7 @@ namespace ET
 				//动态创建副本
 				long fubenid = IdGenerater.Instance.GenerateId();
 				long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-				Scene fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "Fuben" + fubenid.ToString(), SceneType.Map);
+				Scene fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "Fuben" + fubenid.ToString(), SceneType.Map);
 				fubenComponent = fubnescene.AddComponent<CellDungeonComponent>();
 				fubenComponent.MainUnit = unit;
 				fubenComponent.FubenDifficulty = request.Difficulty;

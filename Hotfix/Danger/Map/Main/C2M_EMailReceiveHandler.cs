@@ -14,7 +14,7 @@ namespace ET
             //领取邮件
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
             {
-                long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+                long mailServerId = DBHelper.GetMailServerId(unit);
                 E2M_EMailReceiveResponse g_SendChatRequest = (E2M_EMailReceiveResponse)await ActorMessageSenderComponent.Instance.Call
                     (mailServerId, new M2E_EMailReceiveRequest() { Id = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId, MailId = request.MailId });
 

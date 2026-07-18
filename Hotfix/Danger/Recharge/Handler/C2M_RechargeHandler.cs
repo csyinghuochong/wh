@@ -18,7 +18,7 @@ namespace ET
                     return;
                 }
 
-                if (CommonHelper.IsBanHaoZone(unit.DomainZone()))
+                if (CommonHelper.IsBanHaoZone(UnitZoneHelper.GetHomeZone(unit)))
                 {
                     LogHelper.LogWarning($"充值[版号服]SendDiamondToUnit: {unit.Id}");
                     Console.WriteLine($"充值[版号服]SendDiamondToUnit: {unit.Id}");
@@ -34,7 +34,7 @@ namespace ET
                 //}
 
              
-                string serverName = ServerHelper.GetGetServerItem(false, unit.DomainZone()).ServerName;
+                string serverName = ServerHelper.GetGetServerItem(false, UnitZoneHelper.GetHomeZone(unit)).ServerName;
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 string userName = roleInfoComponentServer.RoleInfo.Name;
 
@@ -83,7 +83,7 @@ namespace ET
               
                 R2M_RechargeResponse r2M_RechargeResponse = (R2M_RechargeResponse)await ActorMessageSenderComponent.Instance.Call(rechareId, new M2R_RechargeRequest()
                 {
-                    Zone = unit.DomainZone(),
+                    Zone = UnitZoneHelper.GetHomeZone(unit),
                     PayType = request.PayType,
                     UnitId = unit.Id,
                     UnitName = userName,

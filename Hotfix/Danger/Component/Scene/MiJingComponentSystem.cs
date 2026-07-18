@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ET
@@ -65,7 +65,7 @@ namespace ET
                 }
                 Log.Warning($"世界Boss排名奖励1: {self.DomainZone()}  {players[i].UserID}");
 
-                // MailHelp.SendUserMail(self.DomainZone(),  players[i].UserID, mailInfo).Coroutine();
+                // MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(players[i].UserID), players[i].UserID, mailInfo).Coroutine();
                 E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                                        (mailServerId, new M2E_EMailSendRequest()
                                        {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -31,7 +31,7 @@ namespace ET
             }
             else
             {
-                JiaYuanComponentServer jiaYuanComponentServer2 = await DBHelper.GetComponentCache<JiaYuanComponentServer>(unit.DomainZone(), request.MasterId);
+                JiaYuanComponentServer jiaYuanComponentServer2 = await DBHelper.GetComponentCache<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
                 JiaYuanPlant jiaYuanPlant_2 = jiaYuanComponentServer2.GetJiaYuanPlant(request.OperateId);
 
                 response.JiaYuanRecord = jiaYuanPlant_2.GatherRecord;

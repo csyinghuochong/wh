@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -42,7 +42,7 @@ namespace ET
             unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.JiaYuanFund, jiaYuanPurchaseItem.BuyZiJin.ToString());
             unit.GetComponent<BagComponentServer>().OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost  );
             response.PurchaseItemList = jiaYuanComponentServer.PurchaseItemList_7;
-            DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, jiaYuanComponentServer).Coroutine();
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer).Coroutine();
             reply();
             await ETTask.CompletedTask;
         }

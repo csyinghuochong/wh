@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -308,7 +308,7 @@ namespace ET
 
         private async ETTask<long> EnterWorldChatServer(Unit unit)
 		{
-			long chatServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Chat)).InstanceId;
+			long chatServerId = DBHelper.GetChatServerId(unit);
 			Chat2G_EnterChat chat2G_EnterChat = (Chat2G_EnterChat)await MessageHelper.CallActor(chatServerId, new G2Chat_EnterChat()
 			{ 
 				UnitId = unit.Id,
@@ -322,15 +322,16 @@ namespace ET
 
 		private async ETTask<long> EnterWarChatServer(Unit unit)
 		{
-			long warChatServerId = DBHelper.GetWarChatServerId(unit.DomainZone());
+			long warChatServerId = DBHelper.GetWarChatServerId(unit);
 			if (warChatServerId == 0)
 			{
 				return 0;
 			}
 
 			string roleName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
-			ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), unit.DomainZone());
-			string serverName = serverItem != null ? serverItem.ServerName : unit.DomainZone().ToString();
+			int homeZone = UnitZoneHelper.GetHomeZone(unit);
+			ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), homeZone);
+			string serverName = serverItem != null ? serverItem.ServerName : homeZone.ToString();
 			Chat2G_EnterChat chat2G_EnterChat = (Chat2G_EnterChat)await MessageHelper.CallActor(warChatServerId, new G2Chat_EnterChat()
 			{
 				UnitId = unit.Id,
@@ -344,7 +345,7 @@ namespace ET
 
 		private async ETTask EnterMailServer(Unit unit)
 		{
-            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            long mailServerId = DBHelper.GetMailServerId(unit);
             Mail2G_EnterMail chat2G_EnterChat = (Mail2G_EnterMail)await MessageHelper.CallActor(mailServerId, new G2Mail_EnterMail()
             {
                 UnitId = unit.Id,
@@ -358,7 +359,7 @@ namespace ET
 
 		private async ETTask EnterRankServer(Unit unit)
 		{
-			long rankServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Rank)).InstanceId;
+			long rankServerId = DBHelper.GetRankServerId(unit);
 			Rank2G_EnterRank chat2G_EnterChat = (Rank2G_EnterRank)await MessageHelper.CallActor(rankServerId, new G2Rank_EnterRank()
 			{
 				UnitId = unit.Id,
@@ -373,7 +374,7 @@ namespace ET
             numericComponent.ApplyValue(NumericType.SoloRankId, chat2G_EnterChat.SoloRankId, false, false);
             numericComponent.ApplyValue(NumericType.TrialRankId, chat2G_EnterChat.TrialRankId, false, false);
 
-            long unionsceneid = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Union)).InstanceId;
+            long unionsceneid = DBHelper.GetUnionServerId(unit);
 			Union2G_EnterUnion union2G_EnterChat = (Union2G_EnterUnion)await MessageHelper.CallActor(unionsceneid, new G2Union_EnterUnion()
 			{
 				UnitId = unit.Id,

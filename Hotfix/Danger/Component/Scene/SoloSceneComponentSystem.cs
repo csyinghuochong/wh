@@ -96,7 +96,7 @@ namespace ET
          
                 LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(soloPlayerList[i].Occ);
                 string occName =  WordHelper.GetShowText(ldOccupationConfig.Name);
-                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(self.DomainZone(), soloPlayerList[i].UnitId);
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(soloPlayerList[i].UnitId), soloPlayerList[i].UnitId);
 
                 if (roleInfoComponentServer.RoleInfo.OccTwo > 0)
                 {
@@ -170,7 +170,7 @@ namespace ET
 
                 mailInfo.Title = "竞技场第" + num + "名";
                 mailInfo.Context = "恭喜你获得竞技场第" + num + "名,奖励如下";
-                MailHelp.SendUserMail(self.DomainZone(), unitId, mailInfo).Coroutine();
+                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unitId), unitId, mailInfo).Coroutine();
 
                 //只发送前100
                 if (num >= 100)

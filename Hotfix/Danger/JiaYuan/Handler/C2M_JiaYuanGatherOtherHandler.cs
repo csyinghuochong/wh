@@ -39,7 +39,7 @@ namespace ET
                     return;
                 }
 
-                JiaYuanComponentServer jiaYuanComponentServer = await DBHelper.GetComponent<JiaYuanComponentServer>(unit.DomainZone(), request.MasterId);
+                JiaYuanComponentServer jiaYuanComponentServer = await DBHelper.GetComponent<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
                 if (jiaYuanComponentServer == null)
                 {
                     reply();
@@ -143,7 +143,7 @@ namespace ET
                 }
 
 
-                long gateServerId = DBHelper.GetGateServerId(unit.DomainZone());
+                long gateServerId = DBHelper.GetGateServerId(unit);
                 G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
                     (gateServerId, new T2G_GateUnitInfoRequest()
                     {
@@ -161,7 +161,7 @@ namespace ET
                 }
                 else
                 {
-                    await DBHelper.SaveComponentCache(unit.DomainZone(), request.MasterId, jiaYuanComponentServer);
+                    await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId, jiaYuanComponentServer);
                 }
                
                 unit.GetComponent<NumericComponent>().ApplyChange( null, NumericType.JiaYuanGatherOther,1, 0 );

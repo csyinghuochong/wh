@@ -73,7 +73,7 @@ namespace ET
                     continue;
                 }
 
-                MailHelp.SendUserMail(self.DomainZone(), sourcelist[i].Id, mailInfo).Coroutine();
+                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(sourcelist[i].Id), sourcelist[i].Id, mailInfo).Coroutine();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -22,7 +22,7 @@ namespace ET
                     petComponentServer.PetMingPosition = request.PetPosition;   
                     break;
             }
-            DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, petComponentServer).Coroutine();
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, petComponentServer).Coroutine();
             reply();
             await ETTask.CompletedTask;
         }

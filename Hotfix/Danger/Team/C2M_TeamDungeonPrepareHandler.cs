@@ -46,7 +46,7 @@ namespace ET
             }
 
 			//判断副本次数
-			long teamServerId = DBHelper.GetTeamServerId(unit.DomainZone());
+			long teamServerId = DBHelper.GetTeamServerId(unit);
 			T2M_TeamDungeonPrepareResponse createResponse = (T2M_TeamDungeonPrepareResponse)await MessageHelper.CallActor(teamServerId, new M2T_TeamDungeonPrepareRequest()
 			{
 				TeamId = request.TeamInfo.TeamId,

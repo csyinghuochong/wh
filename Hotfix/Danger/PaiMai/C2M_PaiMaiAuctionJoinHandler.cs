@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -9,7 +9,7 @@ namespace ET
         {
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
-                long paimaiserverid = DBHelper.GetPaiMaiServerId(unit.DomainZone());
+                long paimaiserverid = DBHelper.GetPaiMaiServerId(unit);
                 P2M_PaiMaiAuctionJoinResponse r_GameStatusResponse = (P2M_PaiMaiAuctionJoinResponse)await ActorMessageSenderComponent.Instance.Call
                         (paimaiserverid, new M2P_PaiMaiAuctionJoinRequest()
                         {

@@ -37,7 +37,7 @@ namespace ET
             PlanOpenList_2.Add(request.CellIndex);
             response.PlanOpenList = PlanOpenList_2;
             unit.GetComponent<BagComponentServer>().OnCostItemData($"13;{costNumber}", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost);
-            DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
             reply();
             await ETTask.CompletedTask;
         }

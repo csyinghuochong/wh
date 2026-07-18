@@ -65,7 +65,7 @@ namespace ET
                     unit.GetComponent<PetComponentServer>().PetAddExp(rolePetInfo, (int)jiaYuanPet.CurExp);
                 }
             }
-            DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
             response.JiaYuanPetList = unit.GetComponent<JiaYuanComponentServer>().JiaYuanPetList_2;
             reply();
             await ETTask.CompletedTask;

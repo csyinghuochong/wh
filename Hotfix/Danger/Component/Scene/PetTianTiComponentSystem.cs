@@ -35,7 +35,7 @@ namespace ET
 
             //先查找真实玩家。再查找
             long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
-            PetComponentServer petComponentServerEnemy = await DBHelper.GetComponent<PetComponentServer>(self.DomainZone(), self.EnemyId);
+            PetComponentServer petComponentServerEnemy = await DBHelper.GetComponent<PetComponentServer>(UnitZoneHelper.GetHomeZone(self.EnemyId), self.EnemyId);
             if (petComponentServerEnemy != null)
             {
                 petComponentServerEnemy.CheckSkin();
@@ -52,8 +52,8 @@ namespace ET
                         continue;
                     }
                     
-                    BagComponentServer bagComponentServer = await DBHelper.GetComponent<BagComponentServer>(self.DomainZone(), self.EnemyId);
-                    NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(self.DomainZone(), self.EnemyId);
+                    BagComponentServer bagComponentServer = await DBHelper.GetComponent<BagComponentServer>(UnitZoneHelper.GetHomeZone(self.EnemyId), self.EnemyId);
+                    NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(UnitZoneHelper.GetHomeZone(self.EnemyId), self.EnemyId);
 
                     petComponentServerEnemy.UpdatePetAttributeWithData(bagComponentServer ,numericComponent, rolePetInfo, false);
                     Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,

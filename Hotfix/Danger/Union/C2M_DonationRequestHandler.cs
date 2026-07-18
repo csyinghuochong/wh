@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -26,7 +26,7 @@ namespace ET
 
             //}
             request.UnitId = unit.Id;
-            long serverid = DBHelper.GetUnionServerId(unit.DomainZone());
+            long serverid = DBHelper.GetUnionServerId(unit);
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             RankingInfo rankingInfo = new RankingInfo()
             {

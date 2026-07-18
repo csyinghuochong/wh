@@ -494,7 +494,7 @@ namespace ET
                 return;
             }
 
-            int openDay = DBHelper.GetOpenServerDay(unit.DomainZone());
+            int openDay = DBHelper.GetOpenServerDay(unit);
             //钻石线
             if (userInfo.RoleInfo.Diamond >= unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber) * 150 + 50000)
             {
@@ -502,7 +502,7 @@ namespace ET
             }
 
             //等级线
-            ServerInfo serverInfo = ConfigData.ServerInfoList[unit.DomainZone()];
+            ServerInfo serverInfo = ConfigData.ServerInfoList[UnitZoneHelper.GetHomeZone(unit)];
             if (userInfo.RoleInfo.Lv > serverInfo.WorldLv) 
             {
                 LogHelper.ZuobiInfo("玩家等级超过服务器等级限制:" + userInfo.RoleInfo.Lv + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.RoleInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));

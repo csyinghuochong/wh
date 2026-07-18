@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -44,11 +44,11 @@ namespace ET
                 activityV1Info.OrderId  = ActivityV1Config.GenerateActivityOrderId();
             }
 
-            ServerInfo dBServerInfo = ConfigData.ServerInfoList[unit.DomainZone()];
+            ServerInfo dBServerInfo = ConfigData.ServerInfoList[UnitZoneHelper.GetHomeZone(unit)];
             activityV1Info.ChouKaDropId = dBServerInfo.ChouKaDropId;
             activityV1Info.GuessIds.Clear();
 
-            long activitySceneid = DBHelper.GetActivityServerId(  unit.DomainZone() );
+            long activitySceneid = DBHelper.GetActivityServerId(unit);
             A2M_ActivitySelfInfo r_GameStatusResponse = (A2M_ActivitySelfInfo)await ActorMessageSenderComponent.Instance.Call
                    (activitySceneid, new M2A_ActivitySelfInfo()
                    {

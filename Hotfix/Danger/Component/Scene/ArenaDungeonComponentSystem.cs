@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -159,7 +159,7 @@ namespace ET
                     int itemNum = int.Parse(itemInfo[1]);
                     mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.ArenaWin}_{serverTime}" });
                 }
-                MailHelp.SendUserMail(self.DomainZone(), players[i].UnitId, mailInfo).Coroutine();
+                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(players[i].UnitId), players[i].UnitId, mailInfo).Coroutine();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -26,7 +26,7 @@ namespace ET
             unit.GetComponent<NumericComponent>().ApplyChange( null,NumericType.V1ChouKaNumber, 1, 0 );
 
             int dropId = ActivityV1Config.ChouKaDropId[0];
-            ServerInfo serverInfo = ConfigData.ServerInfoList[unit.DomainZone()];
+            ServerInfo serverInfo = ConfigData.ServerInfoList[UnitZoneHelper.GetHomeZone(unit)];
             if (serverInfo != null)
             {
                 dropId = serverInfo.ChouKaDropId;

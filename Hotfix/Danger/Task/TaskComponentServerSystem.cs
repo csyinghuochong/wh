@@ -649,7 +649,7 @@ namespace ET
             {
                  RankingInfo = rankingInfo
             };
-            long mapInstanceId = DBHelper.GetRankServerId(self.DomainZone());
+            long mapInstanceId = DBHelper.GetRankServerId(self.GetParent<Unit>());
             R2M_RankUnionRaceResponse Response = (R2M_RankUnionRaceResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, request);
         }

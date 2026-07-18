@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -26,7 +26,7 @@ namespace ET
                 return;
             }
 
-            long dbCacheId = DBHelper.GetUnionServerId(unit.DomainZone());
+            long dbCacheId = DBHelper.GetUnionServerId(unit);
             U2M_UnionCreateResponse d2GGetUnit = (U2M_UnionCreateResponse)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2U_UnionCreateRequest() 
             {
                 UnionName =request.UnionName,

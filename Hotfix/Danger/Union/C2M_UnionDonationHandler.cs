@@ -28,7 +28,7 @@ namespace ET
 
                     long selfgold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
-                        DBHelper.GetUnionServerId(unit.DomainZone()),
+                        DBHelper.GetUnionServerId(unit),
                         new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });
 
 
@@ -62,7 +62,7 @@ namespace ET
 
                     long selfDiamond = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
-                        DBHelper.GetUnionServerId(unit.DomainZone()),
+                        DBHelper.GetUnionServerId(unit),
                         new M2U_UnionOperationRequest() { OperateType = 4, UnitId = unit.Id, UnionId = unionid, Par = selfDiamond.ToString() });
 
                     if (responseUnionEnter.Error != ErrorCode.ERR_Success)

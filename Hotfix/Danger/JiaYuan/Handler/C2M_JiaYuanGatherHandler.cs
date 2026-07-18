@@ -96,7 +96,7 @@ namespace ET
                     break;
             }
 
-            DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, jiaYuanComponentServer).Coroutine();
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer).Coroutine();
             reply();
             await ETTask.CompletedTask;
         #endif

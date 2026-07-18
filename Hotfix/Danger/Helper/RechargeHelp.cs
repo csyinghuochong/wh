@@ -27,7 +27,8 @@ namespace ET
 
             Log.Debug($"OnRechage: {unit.Id}   {rechargetType}  {playId}  rechargetType:{rechargetType}");
 
-            string diamondNumber = CommonConfig.GetDiamondNumber(playId, unit.DomainZone());
+            int homeZone = UnitZoneHelper.GetHomeZone(unit);
+            string diamondNumber = CommonConfig.GetDiamondNumber(playId, homeZone);
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(diamondNumber);
             
             //0 砖石  1周卡
@@ -42,7 +43,7 @@ namespace ET
 
             RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
         
-            int rechargeNumber = CommonConfig.GetRechargeNumber(playId, unit.DomainZone());
+            int rechargeNumber = CommonConfig.GetRechargeNumber(playId, homeZone);
 
             long lastRechargeTime = rechargeComponentServer.RechargePro.LastRechargeTime;
             long serverTime = TimeHelper.ServerNow();

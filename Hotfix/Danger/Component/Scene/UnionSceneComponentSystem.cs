@@ -95,7 +95,7 @@ namespace ET
                 dBUnionInfo.UnionInfo.ApplyList.Remove(unitid);
             }
             //判断玩家是否已经有家族了
-            NumericComponent numericComponent_0 = await DBHelper.GetComponent<NumericComponent>(self.DomainZone(), unitid);
+            NumericComponent numericComponent_0 = await DBHelper.GetComponent<NumericComponent>(UnitZoneHelper.GetHomeZone(unitid), unitid);
             if (numericComponent_0.GetAsLong(NumericType.UnionId_0) > 0)
             {
                 return ErrorCode.ERR_PlayerHaveUnion;
@@ -373,7 +373,7 @@ namespace ET
                         mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = failJiangJin, GetWay = $"{ItemGetWay.UnionRace}_{serverTime}" });
                     }
 
-                    //MailHelp.SendUserMail(self.DomainZone(), unitids[i], mailInfo).Coroutine();
+                    //MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unitids[i]), unitids[i], mailInfo).Coroutine();
                     E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                                          (mailServerId, new M2E_EMailSendRequest()
                                          {
@@ -554,7 +554,7 @@ namespace ET
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
                 mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = 100, GetWay = $"{ItemGetWay.UnionBoss}_{serverTime}" });
-                MailHelp.SendUserMail(self.DomainZone(), players[i].Id, mailInfo).Coroutine();
+                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(players[i].Id), players[i].Id, mailInfo).Coroutine();
             }
         }
 

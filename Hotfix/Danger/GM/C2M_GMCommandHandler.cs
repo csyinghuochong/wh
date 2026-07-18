@@ -47,7 +47,7 @@ namespace ET
                         mailInfo.Context = "如果您遇到支付问题，请联系QQ ： 136087482 处理";
                         mailInfo.Title = "系统通知";
                         mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                        await MailHelp.SendUserMail(unit.DomainZone(), useriid, mailInfo);
+                        await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), useriid, mailInfo);
                     }*/
                 }
                 if (message.GMMsg == "#mianshang")
@@ -255,7 +255,7 @@ namespace ET
 						break;
 					case 7:
 						long userID = long.Parse(commands[1]);
-						long dbCacheId = DBHelper.GetDbCacheId(unit.DomainZone());
+						long dbCacheId = DBHelper.GetUnitCacheConfig(userID);
 
 						List<string> componentList = new List<string>() { DBHelper.BagComponentServer, DBHelper.TaskComponent };
 						D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = DBHelper.RoleInfoComponent });
@@ -277,7 +277,7 @@ namespace ET
 						long robotSceneId = DBHelper.GetRobotServerId();
                         MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest()
                         {
-                            Zone = unit.DomainZone(),
+                            Zone = UnitZoneHelper.GetHomeZone(unit),
                             MessageType = NoticeType.YeWaiBoss,
                             Message = $"{2000002}@{7};{0};{15}@{72000003}@{commands[1]}"
                         });
@@ -285,7 +285,7 @@ namespace ET
 					case 10:
                         Log.Warning("刷新机器人！！");
                         robotSceneId = DBHelper.GetRobotServerId();
-                        MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = unit.DomainZone(), MessageType = 18, Message = $"1001#{commands[1]}" });
+                        MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = UnitZoneHelper.GetHomeZone(unit), MessageType = 18, Message = $"1001#{commands[1]}" });
                         break;
 					case 11: //11#92041030   11#80002003   11#80002005  11#97050403
                         BuffData buffData_2 = new BuffData();
@@ -322,6 +322,14 @@ namespace ET
 						break;
 					case 19:
                         break;
+					case 21: // 跨服旅游 21#目标区号  例：21#2；填本服区号则回本服主城
+						if (commands.Length < 2)
+						{
+							Log.Warning("[WarZoneTour] GM 格式：21#目标区号");
+							break;
+						}
+						await WarZoneTourHelper.TourToZone(unit, int.Parse(commands[1]));
+						break;
 					default:
 						break;
 				}

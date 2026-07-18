@@ -123,7 +123,7 @@ namespace ET
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
-                long paimaiServerId = DBHelper.GetPaiMaiServerId( unit.DomainZone() );
+                long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
                 P2M_PaiMaiBuyResponse r_GameStatusResponse = (P2M_PaiMaiBuyResponse)await ActorMessageSenderComponent.Instance.Call
                     (paimaiServerId, new M2P_PaiMaiBuyRequest()
                     {
@@ -150,7 +150,7 @@ namespace ET
                 }
 
                 //给出售者邮件发送金币
-                MailHelp.SendPaiMaiEmail(unit.DomainZone(), r_GameStatusResponse.PaiMaiItemInfo, r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum, unit.Id).Coroutine();
+                MailHelp.SendPaiMaiEmail(UnitZoneHelper.GetHomeZone(unit), r_GameStatusResponse.PaiMaiItemInfo, r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum, unit.Id).Coroutine();
 
                 //Log.Warning($"拍卖购买者: {unit.Id} 购买 {r_GameStatusResponse.PaiMaiItemInfo.UserId} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
                 Log.Warning($"拍卖被购买: [出售者]{r_GameStatusResponse.PaiMaiItemInfo.UserId}  [购买者]{unit.Id} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
@@ -164,7 +164,7 @@ namespace ET
                     LogHelper.PaiMaiInfo(levelInfo);
                 }
 
-                //long gateServerId = DBHelper.GetGateServerId(unit.DomainZone());
+                //long gateServerId = DBHelper.GetGateServerId(unit);
                 //G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
                 //   (gateServerId, new T2G_GateUnitInfoRequest()
                 //   {
@@ -191,11 +191,11 @@ namespace ET
 
                     if (m2G_RechargeResponse.Error != ErrorCode.ERR_Success)
                     {
-                        DataCollationComponent dataCollationComponent = await DBHelper.GetComponentCache<DataCollationComponent>(unit.DomainZone(), r_GameStatusResponse.PaiMaiItemInfo.UserId);
+                        DataCollationComponent dataCollationComponent = await DBHelper.GetComponentCache<DataCollationComponent>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.PaiMaiItemInfo.UserId), r_GameStatusResponse.PaiMaiItemInfo.UserId);
                         if (dataCollationComponent != null)
                         {
                             dataCollationComponent.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, false);
-                            DBHelper.SaveComponentCache(unit.DomainZone(), r_GameStatusResponse.PaiMaiItemInfo.UserId, dataCollationComponent).Coroutine();
+                            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.PaiMaiItemInfo.UserId), r_GameStatusResponse.PaiMaiItemInfo.UserId, dataCollationComponent).Coroutine();
                         }
                         
                     }
@@ -213,7 +213,7 @@ namespace ET
                 if (needGold >= 500000)
                 {
                     //服务器 道具名称 数量  价格  购买者名称 购买者等级  购买者充值 购买者当前金币 购买者账号 出售者名称   出售者账号  出售者等级 出售者当前金币
-                    string serverName = ServerHelper.GetGetServerItem(false, unit.DomainZone()).ServerName;
+                    string serverName = ServerHelper.GetGetServerItem(false, UnitZoneHelper.GetHomeZone(unit)).ServerName;
                     string itemName = WordHelper.GetShowText(ldItem.Name, 0);
                     int itemNumber = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
                     long price = r_GameStatusResponse.PaiMaiItemInfo.Price;
@@ -227,7 +227,7 @@ namespace ET
                     
                     string sellPlayerName = r_GameStatusResponse.PaiMaiItemInfo.PlayerName;
                     string sellAccoount = r_GameStatusResponse.PaiMaiItemInfo.Account;
-                    RoleInfoComponentServer roleInfoComponentServerSell = await DBHelper.GetComponentCache<RoleInfoComponentServer>(unit.DomainZone(), r_GameStatusResponse.PaiMaiItemInfo.UserId);
+                    RoleInfoComponentServer roleInfoComponentServerSell = await DBHelper.GetComponentCache<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.PaiMaiItemInfo.UserId), r_GameStatusResponse.PaiMaiItemInfo.UserId);
                     if (roleInfoComponentServerSell != null)
                     {
                         int sellPlayerLv = roleInfoComponentServerSell.RoleInfo.Lv;

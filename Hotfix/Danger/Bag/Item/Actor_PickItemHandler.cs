@@ -73,7 +73,7 @@ namespace ET
                     string uername = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
                     string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color>";
                     string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color> from  A blessing from the heavens";
-                    ServerMessageHelper.SendBroadMessage(unit.DomainZone(), NoticeType.Notice, getmessage, getmessageEn);
+                    ServerMessageHelper.SendBroadMessage(UnitZoneHelper.GetHomeZone(unit), NoticeType.Notice, getmessage, getmessageEn);
                 }
             }
             

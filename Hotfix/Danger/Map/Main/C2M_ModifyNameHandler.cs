@@ -43,7 +43,7 @@ namespace ET
                 return;
             }
 
-            List<RoleInfoComponentServer> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(unit.DomainZone(), _account => _account.UserName == request.NewName);
+            List<RoleInfoComponentServer> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(unit), _account => _account.UserName == request.NewName);
             if (result.Count > 0)
             {
                 response.Error = ErrorCode.ERR_RoleNameRepeat;

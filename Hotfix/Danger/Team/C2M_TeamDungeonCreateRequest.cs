@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -13,7 +13,7 @@ namespace ET
                 return;
             }
 
-            long teamServerId = DBHelper.GetTeamServerId(unit.DomainZone());
+            long teamServerId = DBHelper.GetTeamServerId(unit);
             T2M_TeamDungeonCreateResponse createResponse = (T2M_TeamDungeonCreateResponse)await MessageHelper.CallActor(teamServerId, new M2T_TeamDungeonCreateRequest()
             {
                 FubenId = request.FubenId,

@@ -39,7 +39,7 @@ namespace ET
 
         public static async ETTask AddDBComonent<K>(this Unit self, long id) where K : Entity,  new()
         {
-            Entity dbEntity = await DBHelper.GetComponent<K>(self.DomainZone(), self.Id);
+            Entity dbEntity = await DBHelper.GetComponent<K>(UnitZoneHelper.GetHomeZone(self), self.Id);
             if (dbEntity == null)
             {
                 Type type = typeof (K);
@@ -47,7 +47,7 @@ namespace ET
                 Entity component = Activator.CreateInstance(type) as Entity;
                 component.Id = id;
 
-                DBHelper.SaveComponent(self.DomainZone(), id, component).Coroutine();
+                DBHelper.SaveComponent(UnitZoneHelper.GetHomeZone(self), id, component).Coroutine();
             }
         }
 

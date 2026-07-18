@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -46,7 +46,7 @@ namespace ET
                     return;
                 }
 
-                long chargeServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Activity)).InstanceId;
+                long chargeServerId = DBHelper.GetActivityServerId(unit);
                 request.MysteryItemInfo.ItemID = mysteryConfig.SellItemID;
                 request.MysteryItemInfo.ItemNumber = 1;
                 A2M_MysteryBuyResponse r_GameStatusResponse = (A2M_MysteryBuyResponse)await ActorMessageSenderComponent.Instance.Call

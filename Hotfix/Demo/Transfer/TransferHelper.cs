@@ -20,6 +20,12 @@ namespace ET
                     Log.Debug($"LoginTest1  Actor_Transfer unitId{unit.Id} oldScene:{oldScene}  requestscene{request.SceneType}");
                     return ErrorCode.ERR_RequestRepeatedly;
                 }
+                // 跨服旅游中只允许回本服主城；其它玩法须先回本服
+                if (UnitZoneHelper.IsTouring(unit) && request.SceneType != MapTypeEnum.MainCityScene)
+                {
+                    Log.Warning($"[WarZoneTour] 旅游中禁止传送 unit={unit.Id} home={UnitZoneHelper.GetHomeZone(unit)} cur={UnitZoneHelper.GetCurrentZone(unit)} to={request.SceneType}");
+                    return ErrorCode.ERR_RequestRepeatedly;
+                }
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 if (SceneConfigHelper.UseSceneConfig(request.SceneType) && request.SceneId > 0)
                 {
@@ -60,7 +66,7 @@ namespace ET
                         int sceneTypeEnum = mapComponent.MapTypeEnum;
                         long fubenid = IdGenerater.Instance.GenerateId();
                         long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        Scene fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "PetFuben" + fubenid.ToString(), SceneType.Map);
+                        Scene fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "PetFuben" + fubenid.ToString(), SceneType.Map);
                         fubnescene.AddComponent<PetFubenSceneComponent>();
                         fubnescene.GetComponent<MapComponent>().SetMapInfo((int)MapTypeEnum.PetDungeon, request.SceneId, int.Parse(request.paramInfo));
                         TransferHelper.BeforeTransfer(unit);
@@ -87,7 +93,7 @@ namespace ET
                         }
                         fubenid = IdGenerater.Instance.GenerateId();
                         fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "TrialDungeon" + fubenid.ToString(), SceneType.Map);
+                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "TrialDungeon" + fubenid.ToString(), SceneType.Map);
                         fubnescene.AddComponent<TrialDungeonComponent>();
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.TrialDungeon, request.SceneId, int.Parse(request.paramInfo));
@@ -111,7 +117,7 @@ namespace ET
 
                         fubenid = IdGenerater.Instance.GenerateId();
                         fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "SeasonTower" + fubenid.ToString(), SceneType.Map);
+                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "SeasonTower" + fubenid.ToString(), SceneType.Map);
                         fubnescene.AddComponent<SeasonTowerComponent>();
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.SeasonTower, request.SceneId, int.Parse(request.paramInfo));
@@ -130,7 +136,7 @@ namespace ET
 
                         fubenid = IdGenerater.Instance.GenerateId();
                         fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "TowerOfSeal" + fubenid.ToString(), SceneType.Map);
+                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "TowerOfSeal" + fubenid.ToString(), SceneType.Map);
                         fubnescene.AddComponent<TowerOfSealComponent>();
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.TowerOfSeal, request.SceneId, int.Parse(request.paramInfo));
@@ -143,7 +149,7 @@ namespace ET
                         //2200001
                         fubenid = IdGenerater.Instance.GenerateId();
                         fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "RandomTower" + fubenid.ToString(), SceneType.Map);
+                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "RandomTower" + fubenid.ToString(), SceneType.Map);
                         fubnescene.AddComponent<RandomTowerComponent>();
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.RandomTower, request.SceneId, 0);
@@ -158,7 +164,7 @@ namespace ET
                         {
                             return ErrorCode.ERR_Union_Not_Exist;
                         }
-                        long mapInstanceId = DBHelper.GetUnionServerId(unit.DomainZone());
+                        long mapInstanceId = DBHelper.GetUnionServerId(unit);
                         U2M_UnionEnterResponse responseUnionEnter = (U2M_UnionEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2U_UnionEnterRequest() { UnionId = unionid, UnitId = unit.Id, SceneId = request.SceneId });
                         TransferHelper.BeforeTransfer(unit);
@@ -167,13 +173,13 @@ namespace ET
                     case (int)MapTypeEnum.JiaYuan:
                         //动态创建副本
                         Scene scene = unit.DomainScene();
-                        mapInstanceId = DBHelper.GetJiaYuanServerId(unit.DomainZone());
+                        mapInstanceId = DBHelper.GetJiaYuanServerId(unit);
                         ///进入之前先刷新一下
                         if (long.Parse(request.paramInfo) == unit.Id)
                         {
                             JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
                             jiaYuanComponentServer.OnBeforEnter();
-                            await DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, jiaYuanComponentServer);
+                            await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer);
                         }
                         J2M_JiaYuanEnterResponse j2M_JianYuanEnterResponse = (J2M_JiaYuanEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2J_JiaYuanEnterRequest() { MasterId = long.Parse(request.paramInfo), UnitId = unit.Id, SceneId = request.SceneId });
@@ -190,7 +196,7 @@ namespace ET
                         //动态创建副本
                         fubenid = IdGenerater.Instance.GenerateId();
                         fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "Tower" + fubenid.ToString(), SceneType.Map);
+                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "Tower" + fubenid.ToString(), SceneType.Map);
                         fubnescene.AddComponent<TowerComponent>().FubenDifficulty = request.Difficulty;
                         mapComponent = fubnescene.GetComponent<MapComponent>();
                         mapComponent.SetMapInfo((int)MapTypeEnum.TowerDungeon, request.SceneId, 0);
@@ -207,7 +213,7 @@ namespace ET
                         {
                             newdungeon = true;
                             fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                            fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "OneChallenge" + fubenid.ToString(), SceneType.Map);
+                            fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "OneChallenge" + fubenid.ToString(), SceneType.Map);
                             mapComponent = fubnescene.GetComponent<MapComponent>();
                             mapComponent.SetMapInfo((int)MapTypeEnum.OneChallenge, request.SceneId, 0);
                             mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).GetNavMeshId();
@@ -231,7 +237,7 @@ namespace ET
                         string[] praminfos = request.paramInfo.Split('_');
                         fubenid = IdGenerater.Instance.GenerateId();
                         fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "Fuben" + fubenid.ToString(), SceneType.Map);
+                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "Fuben" + fubenid.ToString(), SceneType.Map);
                         PetMingDungeonComponent petMingDungeon = fubnescene.AddComponent<PetMingDungeonComponent>();
                         petMingDungeon.MineType = request.Difficulty;
                         petMingDungeon.Position = int.Parse(praminfos[0]);
@@ -246,7 +252,7 @@ namespace ET
                         long enemyId = long.Parse(request.paramInfo);
                         fubenid = IdGenerater.Instance.GenerateId();
                         fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "Fuben" + fubenid.ToString(), SceneType.Map);
+                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "Fuben" + fubenid.ToString(), SceneType.Map);
                         fubnescene.AddComponent<PetTianTiComponent>().EnemyId = enemyId;
                         fubnescene.GetComponent<MapComponent>().SetMapInfo((int)MapTypeEnum.PetTianTi, request.SceneId, 0);
                         TransferHelper.BeforeTransfer(unit);
@@ -290,7 +296,7 @@ namespace ET
                     case MapTypeEnum.BaoZangZhiDi:
                     case MapTypeEnum.MiJing:
                         F2M_YeWaiSceneIdResponse f2M_YeWaiSceneIdResponse = (F2M_YeWaiSceneIdResponse)await ActorMessageSenderComponent.Instance.Call(
-                        DBHelper.GetFubenCenterId(unit.DomainZone()), new M2F_YeWaiSceneIdRequest() { SceneId = request.SceneId });
+                        DBHelper.GetFubenCenterId(unit), new M2F_YeWaiSceneIdRequest() { SceneId = request.SceneId });
                         if (f2M_YeWaiSceneIdResponse.FubenInstanceId == 0)
                         {
                             return ErrorCode.ERR_MapLimit;
@@ -308,7 +314,7 @@ namespace ET
                     case MapTypeEnum.RunRace:
                     case MapTypeEnum.Demon:
                         f2M_YeWaiSceneIdResponse = (F2M_YeWaiSceneIdResponse)await ActorMessageSenderComponent.Instance.Call(
-                        DBHelper.GetFubenCenterId(unit.DomainZone()), new M2F_YeWaiSceneIdRequest() { SceneId = request.SceneId,UnitId = unit.Id  });
+                        DBHelper.GetFubenCenterId(unit), new M2F_YeWaiSceneIdRequest() { SceneId = request.SceneId,UnitId = unit.Id  });
                         if (f2M_YeWaiSceneIdResponse.FubenInstanceId == 0)
                         {
                             return ErrorCode.ERR_AlreadyFinish;
@@ -318,7 +324,7 @@ namespace ET
                         await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.Scene_Type, request.SceneId, 0, "0");
                         break;
                     case MapTypeEnum.Solo:
-                        long soloServerId = DBHelper.GetSoloServerId(unit.DomainZone());
+                        long soloServerId = DBHelper.GetSoloServerId(unit);
                         S2M_SoloEnterResponse d2GGetUnit = (S2M_SoloEnterResponse)await ActorMessageSenderComponent.Instance.Call(soloServerId, new M2S_SoloEnterRequest()
                         {
                             FubenId = long.Parse(request.paramInfo)
@@ -357,7 +363,7 @@ namespace ET
                         {
                             return ErrorCode.ERR_AlreadyFinish;
                         }
-                        mapInstanceId = DBHelper.GetUnionServerId(unit.DomainZone());
+                        mapInstanceId = DBHelper.GetUnionServerId(unit);
                         responseUnionEnter = (U2M_UnionEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2U_UnionEnterRequest() { OperateType = 1, UnionId = unionid, UnitId = unit.Id, SceneId = request.SceneId });
                         if (responseUnionEnter.FubenInstanceId == 0)
@@ -368,7 +374,7 @@ namespace ET
                         await TransferHelper.Transfer(unit, responseUnionEnter.FubenInstanceId, MapTypeEnum.UnionRace, request.SceneId, 0, "0");
                         break;
                     case MapTypeEnum.Happy:
-                        mapInstanceId = DBHelper.GetHappyServerId(unit.DomainZone());
+                        mapInstanceId = DBHelper.GetHappyServerId(unit);
                         H2M_HapplyEnterResponse happyEnter = (H2M_HapplyEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2H_HapplyEnterRequest() { UnitId = unit.Id, SceneId = request.SceneId });
                         if (happyEnter.FubenInstanceId == 0)
@@ -379,7 +385,7 @@ namespace ET
                         await TransferHelper.Transfer(unit, happyEnter.FubenInstanceId, (int)MapTypeEnum.Happy, request.SceneId, FubenDifficulty.Normal, happyEnter.Position.ToString());
                         break;
                     case MapTypeEnum.Battle:
-                        mapInstanceId = DBHelper.GetFubenCenterId(unit.DomainZone());
+                        mapInstanceId = DBHelper.GetFubenCenterId(unit);
                         FubenCenter2M_BattleEnterResponse battleEnter = (FubenCenter2M_BattleEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2FubenCenter_BattleEnterRequest() { UserID = unit.Id, SceneId = request.SceneId });
                         if (battleEnter.FubenInstanceId == 0)
@@ -398,7 +404,7 @@ namespace ET
                             return ErrorCode.ERR_LevelIsNot;
                         }*/
 
-                        mapInstanceId = DBHelper.GetArenaServerId(unit.DomainZone());
+                        mapInstanceId = DBHelper.GetArenaServerId(unit);
                         Arena2M_ArenaEnterResponse areneEnter = (Arena2M_ArenaEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2Arena_ArenaEnterRequest() { UserID = unit.Id, SceneId = request.SceneId });
                         if (areneEnter.Error != ErrorCode.ERR_Success || areneEnter.FubenInstanceId == 0)
@@ -412,7 +418,7 @@ namespace ET
                         oldscene = unit.DomainScene();
                         mapComponent = oldscene.GetComponent<MapComponent>();
                         sceneTypeEnum = mapComponent.MapTypeEnum;
-                        mapInstanceId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
+                        mapInstanceId = DBHelper.GetTeamServerId(unit);
                         //[创建副本Scene]
                         T2M_TeamDungeonEnterResponse createUnit = (T2M_TeamDungeonEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId });
@@ -440,8 +446,8 @@ namespace ET
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             int sceneTypeEnum = mapComponent.MapTypeEnum;
             long userId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId;
-            //传送回主场景
-            long mapInstanceId = DBHelper.GetMainCityServerId(unit.DomainZone());
+            // 跨服旅游后当前区是目标服，回城用归属服
+            long mapInstanceId = DBHelper.GetMainCityServerId(UnitZoneHelper.GetHomeZone(unit));
             //动态删除副本
             Scene scene = unit.DomainScene();
             TransferHelper.BeforeTransfer(unit);
@@ -458,7 +464,7 @@ namespace ET
             }
             
             long oldsceneid = unit.DomainScene().Id;
-            List<StartSceneConfig> zonelocaldungeons = StartSceneConfigCategory.Instance.FuBenWorkScens[unit.DomainZone()];
+            List<StartSceneConfig> zonelocaldungeons = StartSceneConfigCategory.Instance.FuBenWorkScens[UnitZoneHelper.GetHomeZone(unit)];
             int n = (int)( (unit.Id / 99) % zonelocaldungeons.Count);
 
             //if (ComHelp.IsInnerNet())
@@ -507,7 +513,7 @@ namespace ET
             long oldsceneid = unit.DomainScene().Id;
             long fubenid = IdGenerater.Instance.GenerateId();
             long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-            Scene fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, unit.DomainZone(), "LocalDungeon" + fubenid.ToString(), SceneType.Map);
+            Scene fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "LocalDungeon" + fubenid.ToString(), SceneType.Map);
             fubnescene.AddComponent<YeWaiRefreshComponent>();
             LocalDungeonComponent localDungeon = fubnescene.AddComponent<LocalDungeonComponent>();
             localDungeon.FubenDifficulty = difficulty;

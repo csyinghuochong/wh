@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +17,7 @@ namespace ET
                 return;
             }
 
-            long unitonsceneid = DBHelper.GetUnionServerId( unit.DomainZone() );
+            long unitonsceneid = DBHelper.GetUnionServerId(unit);
             MessageHelper.SendActor(unitonsceneid, new M2U_UnionInviteReplyMessage()
             {
                 UnionId = message.UnionId,

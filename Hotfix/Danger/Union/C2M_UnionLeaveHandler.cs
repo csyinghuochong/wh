@@ -8,7 +8,7 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_UnionLeaveRequest request, M2C_UnionLeaveResponse response, Action reply)
         {
-            long dbCacheId = DBHelper.GetUnionServerId(unit.DomainZone());
+            long dbCacheId = DBHelper.GetUnionServerId(unit);
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();  
             U2M_UnionLeaveResponse d2GGetUnit = (U2M_UnionLeaveResponse)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2U_UnionLeaveRequest()

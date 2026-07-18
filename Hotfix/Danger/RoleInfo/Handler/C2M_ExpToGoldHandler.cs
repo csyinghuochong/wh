@@ -11,7 +11,7 @@ namespace ET
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            ServerInfo serverInfo = ConfigData.ServerInfoList[unit.DomainZone()];
+            ServerInfo serverInfo = ConfigData.ServerInfoList[UnitZoneHelper.GetHomeZone(unit)];
             if (roleInfo.Lv < 70 &&  roleInfo.Lv < serverInfo.WorldLv)
             {
                 response.Error = ErrorCode.ERR_LevelNoEnough;

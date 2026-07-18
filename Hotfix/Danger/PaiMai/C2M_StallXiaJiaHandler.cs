@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -16,7 +16,7 @@ namespace ET
                     return;
                 }
 
-                long chargeServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.PaiMai)).InstanceId;
+                long chargeServerId = DBHelper.GetPaiMaiServerId(unit);
                 P2M_StallXiaJiaResponse p2MStallXiaJiaResponse =
                         (P2M_StallXiaJiaResponse)await ActorMessageSenderComponent.Instance.Call(chargeServerId,
                             new M2P_StallXiaJiaRequest() { PaiMaiItemInfoId = request.PaiMaiItemInfoId });

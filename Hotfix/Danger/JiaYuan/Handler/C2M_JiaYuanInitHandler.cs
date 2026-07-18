@@ -9,12 +9,12 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanInitRequest request, M2C_JiaYuanInitResponse response, Action reply)
         {
-            JiaYuanComponentServer jiaYuanComponentServer = await DBHelper.GetComponentCache<JiaYuanComponentServer>(unit.DomainZone(), request.MasterId);
-            RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(unit.DomainZone(), request.MasterId);
+            JiaYuanComponentServer jiaYuanComponentServer = await DBHelper.GetComponentCache<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
+            RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
             if (unit.Id != request.MasterId)
             {
 
-                long gateServerId = DBHelper.GetGateServerId(unit.DomainZone());
+                long gateServerId = DBHelper.GetGateServerId(unit);
                 G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
                     (gateServerId, new T2G_GateUnitInfoRequest()
                     {
@@ -43,7 +43,7 @@ namespace ET
                         PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
                         Time = TimeHelper.ServerNow(),
                     });
-                    await DBHelper.SaveComponentCache(unit.DomainZone(), request.MasterId, jiaYuanComponentServer);
+                    await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId, jiaYuanComponentServer);
                 }
             }
             else

@@ -7,7 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_StallSellRequest request, M2C_StallSellResponse response, Action reply)
         {
-            if (unit.DomainZone() != 3  &&  !GMHelp.GmAccount.Contains(unit.GetComponent<RoleInfoComponentServer>().Account))
+            if (UnitZoneHelper.GetHomeZone(unit) != 3  &&  !GMHelp.GmAccount.Contains(unit.GetComponent<RoleInfoComponentServer>().Account))
             {
                 response.Error = ErrorCode.ERR_ModifyData;
                 reply();
@@ -74,7 +74,7 @@ namespace ET
                 }
 
                 //发送对应拍卖行信息
-                long paimaiServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.PaiMai)).InstanceId;
+                long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
                 P2M_StallSellResponse p2MStallSellResponse =
                         (P2M_StallSellResponse)await ActorMessageSenderComponent.Instance.Call(paimaiServerId,
                             new M2P_StallSellRequest() { PaiMaiItemInfo = request.PaiMaiItemInfo });

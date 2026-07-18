@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_TurtleRecordRequest request, M2C_TurtleRecordResponse response, Action reply)
         {
-            long activtiyserverid = DBHelper.GetActivityServerId(unit.DomainZone());
+            long activtiyserverid = DBHelper.GetActivityServerId(unit);
             M2A_TurtleRecordRequest m2A_TurtleRecord = new M2A_TurtleRecordRequest()
             {
                 AccountId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID

@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver.Core.Servers;
+using MongoDB.Driver.Core.Servers;
 using System;
 using System.Collections.Generic;
 
@@ -96,7 +96,7 @@ namespace ET
                     int itemNum = int.Parse(itemInfo[1]);
                     mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}" });
                 }
-                MailHelp.SendUserMail(unit.DomainZone(), unit.Id, mailInfo).Coroutine();
+                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo).Coroutine();
             }
 
             response.ActivityV1Info = activityComponentServer.ActivityV1Info; 

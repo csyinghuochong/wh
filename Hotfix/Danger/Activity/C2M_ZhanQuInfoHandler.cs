@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -10,7 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ZhanQuInfoRequest request, M2C_ZhanQuInfoResponse response, Action reply)
         {
 
-            long paimaiServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Activity)).InstanceId;
+            long paimaiServerId = DBHelper.GetActivityServerId(unit);
             A2M_ZhanQuInfoResponse r_GameStatusResponse = (A2M_ZhanQuInfoResponse)await ActorMessageSenderComponent.Instance.Call
                 (paimaiServerId, new M2A_ZhanQuInfoRequest()
                 {

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -169,16 +169,16 @@ namespace ET
 
                 //self.EnemyId = enemyId;
 
-                PetComponentServer petComponentServerEnemy = await DBHelper.GetComponent<PetComponentServer>(self.DomainZone(), enemyId);
+                PetComponentServer petComponentServerEnemy = await DBHelper.GetComponent<PetComponentServer>(UnitZoneHelper.GetHomeZone(enemyId), enemyId);
                 if (petComponentServerEnemy != null)
                 {
-                    BagComponentServer bagComponentServer =  await DBHelper.GetComponent<BagComponentServer>(self.DomainZone(), enemyId);
+                    BagComponentServer bagComponentServer =  await DBHelper.GetComponent<BagComponentServer>(UnitZoneHelper.GetHomeZone(enemyId), enemyId);
                     if (bagComponentServer == null)
                     {
                         return;
                     }
                     
-                    NumericComponent numericComponent =  await DBHelper.GetComponent<NumericComponent>(self.DomainZone(), enemyId);
+                    NumericComponent numericComponent =  await DBHelper.GetComponent<NumericComponent>(UnitZoneHelper.GetHomeZone(enemyId), enemyId);
                     if (numericComponent == null)
                     {
                         return;

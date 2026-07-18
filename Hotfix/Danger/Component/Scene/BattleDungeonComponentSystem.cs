@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -104,7 +104,7 @@ namespace ET
                 }
 
                 Log.Warning($"发送战场邮件奖励: {self.DomainZone()} {winPlayers[i]}");
-                MailHelp.SendUserMail(self.DomainZone(), winPlayers[i], mailInfo).Coroutine();
+                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(winPlayers[i]), winPlayers[i], mailInfo).Coroutine();
             }
         }
 

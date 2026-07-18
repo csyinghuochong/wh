@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -69,7 +69,7 @@ namespace ET
                     break;
             }
 
-            await  DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, jiaYuanComponentServer );
+            await  DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer );
         }
     }
 }

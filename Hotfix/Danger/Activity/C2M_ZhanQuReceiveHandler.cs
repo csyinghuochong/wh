@@ -62,7 +62,7 @@ namespace ET
                             return;
                         }   
 
-                        long paimaiServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Activity)).InstanceId;
+                        long paimaiServerId = DBHelper.GetActivityServerId(unit);
                         A2M_ZhanQuReceiveResponse r_GameStatusResponse = (A2M_ZhanQuReceiveResponse)await ActorMessageSenderComponent.Instance.Call
                             (paimaiServerId, new M2A_ZhanQuReceiveRequest()
                             {

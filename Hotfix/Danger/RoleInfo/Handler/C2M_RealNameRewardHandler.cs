@@ -10,7 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_RealNameRewardRequest request, M2C_RealNameRewardResponse response, Action reply)
         {
             long accid = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID;
-            long dbCacheId = DBHelper.GetDbCacheId(unit.DomainZone());
+            long dbCacheId = DBHelper.GetUnitCacheConfig(unit.Id);
 
             string globalValueConfig = LDGlobalValueCategory.Instance.Get(6).Value;
             string[] itemCost = globalValueConfig.Split('@');

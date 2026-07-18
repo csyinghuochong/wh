@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -289,7 +289,7 @@ namespace ET
                     continue;
                 }
 
-                DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(self.DomainZone(), unit.Id);
+                DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(UnitZoneHelper.GetHomeZone(unit.Id), unit.Id);
                 if (dBFriendInfo == null)
                 {
                     continue;

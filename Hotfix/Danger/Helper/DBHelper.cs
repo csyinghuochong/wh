@@ -85,7 +85,7 @@ namespace ET
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, "Chat").InstanceId;
         }
 
-        /// <summary>战区 WZChat ActorId；未入战区返回 0</summary>
+        /// <summary>战区 WZChat ActorId；未入战区或未配置返回 0</summary>
         public static long GetWarChatServerId(int zone)
         {
             int warZone = StartZoneConfigCategory.Instance.GetWarZone(zone);
@@ -97,13 +97,7 @@ namespace ET
             {
                 return config.InstanceId;
             }
-            // 兼容未重新导出 bytes 的旧配置（Name 仍为 Chat）
-            if (StartSceneConfigCategory.Instance.TryGetBySceneName(warZone, "Chat", out config))
-            {
-                Log.Warning($"[WarZone] zone={zone} warZone={warZone} 未找到 WZChat，临时回退 Chat。请重新导出 StartSceneConfig");
-                return config.InstanceId;
-            }
-            Log.Error($"[WarZone] zone={zone} warZone={warZone} 未配置 WZChat/Chat 场景");
+            Log.Error($"[WarZone] zone={zone} warZone={warZone} 未配置 WZChat");
             return 0;
         }
 
@@ -127,7 +121,7 @@ namespace ET
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Rank)).InstanceId;
         }
 
-        /// <summary>战区 WZRank ActorId；未入战区返回 0</summary>
+        /// <summary>战区 WZRank ActorId；未入战区或未配置返回 0</summary>
         public static long GetWarRankServerId(int zone)
         {
             int warZone = StartZoneConfigCategory.Instance.GetWarZone(zone);
@@ -139,12 +133,7 @@ namespace ET
             {
                 return config.InstanceId;
             }
-            if (StartSceneConfigCategory.Instance.TryGetBySceneName(warZone, "Rank", out config))
-            {
-                Log.Warning($"[WarZone] zone={zone} warZone={warZone} 未找到 WZRank，临时回退 Rank。请重新导出 StartSceneConfig");
-                return config.InstanceId;
-            }
-            Log.Error($"[WarZone] zone={zone} warZone={warZone} 未配置 WZRank/Rank 场景");
+            Log.Error($"[WarZone] zone={zone} warZone={warZone} 未配置 WZRank");
             return 0;
         }
 
@@ -192,6 +181,28 @@ namespace ET
             return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.JiaYuan)).InstanceId;
         }
 
+        // —— Unit 重载：本服 Actor 一律走归属服（跨服旅游后 DomainZone 是对方区）——
+        public static long GetDbCacheId(Unit unit) => GetDbCacheId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetFubenCenterId(Unit unit) => GetFubenCenterId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetSoloServerId(Unit unit) => GetSoloServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetUnionServerId(Unit unit) => GetUnionServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetChatServerId(Unit unit) => GetChatServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetWarChatServerId(Unit unit) => GetWarChatServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetQueueServerId(Unit unit) => GetQueueServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetGateServerId(Unit unit) => GetGateServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetPaiMaiServerId(Unit unit) => GetPaiMaiServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetRankServerId(Unit unit) => GetRankServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetWarRankServerId(Unit unit) => GetWarRankServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetMainCityServerId(Unit unit) => GetMainCityServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetMailServerId(Unit unit) => GetMailServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetActivityServerId(Unit unit) => GetActivityServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetTeamServerId(Unit unit) => GetTeamServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetHappyServerId(Unit unit) => GetHappyServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long MapCityServerId(Unit unit) => MapCityServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetArenaServerId(Unit unit) => GetArenaServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetJiaYuanServerId(Unit unit) => GetJiaYuanServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static int GetOpenServerDay(Unit unit) => GetOpenServerDay(UnitZoneHelper.GetHomeZone(unit));
+
         public static long GetRobotServerId()
         {
             long robotSceneId = StartSceneConfigCategory.Instance.Robots[0].InstanceId;
@@ -222,15 +233,10 @@ namespace ET
             //return openserverDay;
         }
 
-        /// <summary>
-        /// 获取玩家缓存
-        /// </summary>
-        /// <param name="scene"></param>
-        /// <param name="unitId"></param>
-        /// <returns></returns>
+        /// <summary>从归属服 DBCache 拉玩家缓存（UnitId 须为 GenerateUnitId）。</summary>
         public static async ETTask<Unit> GetUnitCache(Scene scene, long unitId)
         {
-            long instanceId = DBHelper.GetDbCacheId(scene.DomainZone());
+            long instanceId = GetUnitCacheConfig(unitId);
             G2D_GetUnit message = new G2D_GetUnit() { UnitId = unitId };
             D2G_GetUnit queryUnit = (D2G_GetUnit)await MessageHelper.CallActor(instanceId, message);
             if (queryUnit.Error != ErrorCode.ERR_Success )
@@ -263,34 +269,25 @@ namespace ET
             return unit;
         }
 
-        /// <summary>
-        /// 删除玩家缓存
-        /// </summary>
-        /// <param name="unitId"></param>
         public static async ETTask DeleteUnitCache(int zone, long unitId)
         {
             M2D_DeleteUnit message = new M2D_DeleteUnit() { UnitId = unitId };
-            long instanceId = DBHelper.GetDbCacheId(zone);
+            long instanceId = GetUnitCacheConfig(unitId);
             await MessageHelper.CallActor(instanceId, message);
         }
         
+        /// <summary>归属服 DBCache ActorId。</summary>
         public static long GetUnitCacheConfig(long unitId)
         {
-            int zone = UnitIdStruct.GetUnitZone(unitId);
-            return GetDbCacheId(zone);
+            return GetDbCacheId(UnitZoneHelper.GetHomeZone(unitId));
         }
 
-        /// <summary>
-        /// 获取玩家组件缓存
-        /// </summary>
-        /// <param name="unitId"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <summary>获取玩家组件缓存（DBCache）。zone 参数忽略，以 UnitId 归属服为准。</summary>
         public static async ETTask<T> GetComponentCache<T>(int zone, long unitId) where T : Entity
         {
             G2D_GetComponent message = new G2D_GetComponent() { UnitId = unitId };
             message.Component = typeof(T).Name;
-            long instanceId = DBHelper.GetDbCacheId(zone);
+            long instanceId = GetUnitCacheConfig(unitId);
             D2G_GetComponent queryUnit = (D2G_GetComponent)await MessageHelper.CallActor(instanceId, message);
             if (queryUnit.Error == ErrorCode.ERR_Success && queryUnit.Component!=null)
             {
@@ -299,16 +296,18 @@ namespace ET
             return null;
         }
         
+        /// <summary>写玩家组件缓存（DBCache）。zone 参数忽略，以 UnitId 归属服为准。</summary>
         public static async ETTask SaveComponentCache(int zone, long unitId, Entity entity)
         {
-            long dbCacheId = DBHelper.GetDbCacheId(zone);
+            long dbCacheId = GetUnitCacheConfig(unitId);
             D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() {
                 UnitId = unitId,
                 EntityByte =MongoHelper.ToBson(entity),
                 ComponentType = entity.GetType().Name
             });
         }
-        
+
+        /// <summary>直连 Mongo 读实体。zone 由调用方指定。</summary>
         public static async ETTask<T> GetComponent<T>(int zone, long unitId) where T : Entity
         {
             List<T> resulets = await Game.Scene.GetComponent<DBComponent>().Query<T>(zone, d => d.Id == unitId);
@@ -320,6 +319,9 @@ namespace ET
             return resulets[0];
         }
         
+        /// <summary>
+        /// 直连 Mongo 写实体。zone 由调用方指定（同上，非角色文档勿套归属服）。
+        /// </summary>
         public static async ETTask SaveComponent(int zone, long unitId, Entity entity)
         {
             await Game.Scene.GetComponent<DBComponent>().Save(zone, entity);

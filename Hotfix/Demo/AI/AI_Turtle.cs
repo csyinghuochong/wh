@@ -49,7 +49,7 @@ namespace ET
            
             //上报胜利
             Unit unit = aiComponent.GetParent<Unit>();
-            long activtiyserverid = DBHelper.GetActivityServerId(unit.DomainZone());
+            long activtiyserverid = DBHelper.GetActivityServerId(unit);
             M2A_TurtleReportRequest request = new M2A_TurtleReportRequest() { TurtleId = unit.ConfigId };
             A2M_TurtleReportResponse a2M_TurtleSupport = (A2M_TurtleReportResponse)await ActorMessageSenderComponent.Instance.Call
                     (activtiyserverid, request);

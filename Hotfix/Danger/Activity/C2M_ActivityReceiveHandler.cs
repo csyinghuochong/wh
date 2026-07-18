@@ -113,7 +113,7 @@ namespace ET
                             return;
                         }
                         int selfRechage = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber);
-                        if (ServerHelper.IsGoogleServer(unit.DomainZone()))
+                        if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
                         {
                             if (request.ReceiveIndex == 3 && selfRechage < 50)
                             {

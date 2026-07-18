@@ -49,7 +49,7 @@ namespace ET
                     jiaYuanComponentServer.JiaYuanFuJinTime_3 = 0;
                 }
 
-                DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(unit.DomainZone(), unit.Id);
+                DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(UnitZoneHelper.GetHomeZone(unit), unit.Id);
 
                 List<long> friendList = new List<long>();
                 if (dBFriendInfo != null)
@@ -61,7 +61,7 @@ namespace ET
                         {
                             continue;
                         }
-                        JiaYuanVisit jiaYuanVisit = await GetJiaYuanVisit(unit.DomainZone(), friendList[i]);
+                        JiaYuanVisit jiaYuanVisit = await GetJiaYuanVisit(UnitZoneHelper.GetHomeZone(unit), friendList[i]);
                         if (jiaYuanVisit != null)
                         {
                             response.JiaYuanVisit_1.Add(jiaYuanVisit);
@@ -73,7 +73,7 @@ namespace ET
                 {
                     jiaYuanComponentServer.JiaYuanFuJins_3.Clear();
 
-                    long mapInstanceId = DBHelper.GetMainCityServerId(unit.DomainZone());
+                    long mapInstanceId = DBHelper.GetMainCityServerId(unit);
                     M2M_AllPlayerListResponse reqEnter = (M2M_AllPlayerListResponse)await ActorMessageSenderComponent.Instance.Call(mapInstanceId, new M2M_AllPlayerListRequest()
                     {
                     });
@@ -105,7 +105,7 @@ namespace ET
 
                 for (int i = 0; i < jiaYuanComponentServer.JiaYuanFuJins_3.Count; i++)
                 {
-                    JiaYuanVisit jiaYuanVisit = await GetJiaYuanVisit(unit.DomainZone(), jiaYuanComponentServer.JiaYuanFuJins_3[i]);
+                    JiaYuanVisit jiaYuanVisit = await GetJiaYuanVisit(UnitZoneHelper.GetHomeZone(unit), jiaYuanComponentServer.JiaYuanFuJins_3[i]);
                     if (jiaYuanVisit != null)
                     {
                         response.JiaYuanVisit_2.Add(jiaYuanVisit);

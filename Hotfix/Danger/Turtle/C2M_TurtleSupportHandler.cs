@@ -21,7 +21,7 @@ namespace ET
                     return;
                 }
 
-                long activtiyserverid = DBHelper.GetActivityServerId(unit.DomainZone());
+                long activtiyserverid = DBHelper.GetActivityServerId(unit);
                 M2A_TurtleSupportRequest m2A_TurtleSupport = new M2A_TurtleSupportRequest()
                 {
                     UnitId = unit.Id,   

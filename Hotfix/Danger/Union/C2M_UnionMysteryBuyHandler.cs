@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -47,7 +47,7 @@ namespace ET
                     return;
                 }
                 request.BuyNumber = 1;
-                long unionServerId = DBHelper.GetUnionServerId(unit.DomainZone());
+                long unionServerId = DBHelper.GetUnionServerId(unit);
                 U2M_UnionMysteryBuyResponse r_GameStatusResponse = (U2M_UnionMysteryBuyResponse)await ActorMessageSenderComponent.Instance.Call
                     (unionServerId, new M2U_UnionMysteryBuyRequest()
                     {

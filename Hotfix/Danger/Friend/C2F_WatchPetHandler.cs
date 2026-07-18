@@ -9,7 +9,8 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_WatchPetRequest request, F2C_WatchPetResponse response, Action reply)
         {
-            long dbCacheId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), Enum.GetName(SceneType.DBCache)).InstanceId;
+            // 可跨区查看：按被查看玩家 UnitId 归属服取 DBCache
+            long dbCacheId = DBHelper.GetUnitCacheConfig(request.UnitID);
             D2G_GetComponent d2GGetUnit_1 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UnitID, Component = DBHelper.PetComponent });
             PetComponentServer petComponentServer = d2GGetUnit_1.Component as PetComponentServer;
             if (petComponentServer == null)

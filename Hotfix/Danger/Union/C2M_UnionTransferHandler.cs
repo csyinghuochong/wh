@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -23,7 +23,7 @@ namespace ET
             //    return;
             //}
 
-            long unionserverid = DBHelper.GetUnionServerId( unit.DomainZone() );
+            long unionserverid = DBHelper.GetUnionServerId(unit);
             M2U_UnionTransferRequest transferRequest = new M2U_UnionTransferRequest() { NewLeader = request.NewLeader, UnionId = unionid, UnitID = unit.Id };
             U2M_UnionTransferResponse responseUnionEnter = (U2M_UnionTransferResponse)await ActorMessageSenderComponent.Instance.Call(unionserverid, transferRequest);
 

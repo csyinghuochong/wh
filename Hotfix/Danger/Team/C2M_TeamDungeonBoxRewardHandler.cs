@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -49,7 +49,7 @@ namespace ET
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
                 mailInfo.ItemList.AddRange(bagInfos);
 
-                MailHelp.SendUserMail( unit.DomainZone(), unit.Id, mailInfo).Coroutine();
+                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo).Coroutine();
             }
             else
             {

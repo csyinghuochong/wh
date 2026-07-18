@@ -13,7 +13,7 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
                 long accountId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID;
-                DBAccountBagInfo dBAccountBagWarehouse = await DBHelper.GetComponent<DBAccountBagInfo>(unit.DomainZone(), accountId);
+                DBAccountBagInfo dBAccountBagWarehouse = await DBHelper.GetComponent<DBAccountBagInfo>(UnitZoneHelper.GetHomeZone(unit), accountId);
                 if (dBAccountBagWarehouse == null)
                 {
                     Log.Error("dBAccountBagWarehouse == null");
@@ -85,9 +85,9 @@ namespace ET
                         break;
                 }
 
-                DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, bagComponentServer).Coroutine();
+                DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, bagComponentServer).Coroutine();
 
-                DBHelper.SaveComponent(unit.DomainZone(), accountId, dBAccountBagWarehouse).Coroutine();
+                DBHelper.SaveComponent(UnitZoneHelper.GetHomeZone(unit), accountId, dBAccountBagWarehouse).Coroutine();
                 reply();
             }
             await ETTask.CompletedTask;

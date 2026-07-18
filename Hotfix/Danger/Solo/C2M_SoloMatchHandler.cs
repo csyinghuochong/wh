@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,7 +22,7 @@ namespace ET
             */
 
             //给匹配服务器发送消息
-            long soloServerId = DBHelper.GetSoloServerId(unit.DomainZone());  //获取solo服务器ID
+            long soloServerId = DBHelper.GetSoloServerId(unit);  //获取solo服务器ID
             SoloPlayerInfo soloPlayerInfo = new SoloPlayerInfo();
             soloPlayerInfo.UnitId = unit.Id;
             soloPlayerInfo.Combat = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Combat;

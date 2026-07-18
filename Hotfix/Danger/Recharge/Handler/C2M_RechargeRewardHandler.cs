@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_RechargeRewardRequest request, M2C_RechargeRewardResponse response, Action reply)
         {
-            if (ServerHelper.IsGoogleServer(unit.DomainZone()))
+            if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
             {
                 if (!CommonConfig.RechargeReward_EN.ContainsKey(request.RechargeNumber))
                 {
@@ -47,7 +47,7 @@ namespace ET
             }
 
             string rewarditem = "";
-            if (ServerHelper.IsGoogleServer(unit.DomainZone()))
+            if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
             {
                 rewarditem = CommonConfig.RechargeReward_EN[request.RechargeNumber];
             }

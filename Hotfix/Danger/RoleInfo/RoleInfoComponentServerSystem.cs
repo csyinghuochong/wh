@@ -304,7 +304,7 @@ namespace ET
 
         private static bool IsZhuBoLevel16(this RoleInfoComponentServer self)
         {
-            if (!CommonHelper.IsZhuBoZone(self.DomainZone()))
+            if (!CommonHelper.IsZhuBoZone(UnitZoneHelper.GetHomeZone(self.GetParent<Unit>())))
             {
                 return false;
 
@@ -436,7 +436,7 @@ namespace ET
             rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
             rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
             rankPetInfo.KillNumber = 0;/// self.ShouLieKill;
-            long mapInstanceId = DBHelper.GetRankServerId(self.DomainZone());
+            long mapInstanceId = DBHelper.GetRankServerId(self.GetParent<Unit>());
             R2M_RankShowLieResponse Response = (R2M_RankShowLieResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankShowLieRequest()
                      {
@@ -482,7 +482,7 @@ namespace ET
                     numericComponent.ApplyValue(NumericType.TiLiKillNumber, 0, false);
 
                     numericComponent.ApplyChange(null, NumericType.CostTiLi, 1, 0);
-                    if ( CommonHelper.IsZhuBoZone(self.DomainZone()) && self.RoleInfo.PiLao < 2)
+                    if ( CommonHelper.IsZhuBoZone(UnitZoneHelper.GetHomeZone(self.GetParent<Unit>())) && self.RoleInfo.PiLao < 2)
                     {
                         self.UpdateRoleData(UserDataType.PiLao, "100", true);
                     }
@@ -700,7 +700,7 @@ namespace ET
                 return;
             }
             string playerName = self.RoleInfo.Name;
-            long serverod = DBHelper.GetUnionServerId(self.DomainZone() );
+            long serverod = DBHelper.GetUnionServerId(self.GetParent<Unit>());
             U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                             serverod, new M2U_UnionOperationRequest() { OperateType = 1, UnionId = unionid, Par = $"{playerName}_{getWay}_{dataType}_{dataValue}" });
         }
@@ -708,7 +708,7 @@ namespace ET
         public static async ETTask BroadcastLevel(this RoleInfoComponentServer self, int level)
         {
             Unit unit = self.GetParent<Unit>();
-            long chatServerId = StartSceneConfigCategory.Instance.GetBySceneName(unit.DomainZone(), Enum.GetName(SceneType.Chat)).InstanceId;
+            long chatServerId = DBHelper.GetChatServerId(unit);
             Chat2M_UpdateLevel chat2G_EnterChat = (Chat2M_UpdateLevel)await MessageHelper.CallActor(chatServerId, new M2Chat_UpdateLevel()
             {
                 UnitId = unit.Id,
@@ -877,7 +877,7 @@ namespace ET
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            long mapInstanceId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Rank)).InstanceId;
+            long mapInstanceId = DBHelper.GetRankServerId(self.GetParent<Unit>());
             RankingInfo rankPetInfo = new RankingInfo();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             rankPetInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
@@ -914,7 +914,7 @@ namespace ET
                 return;
             }
 
-            long warRankServerId = DBHelper.GetWarRankServerId(self.DomainZone());
+            long warRankServerId = DBHelper.GetWarRankServerId(self.GetParent<Unit>());
             if (warRankServerId == 0)
             {
                 return;
@@ -925,8 +925,9 @@ namespace ET
             warRankInfo.PlayerLv = homeRankInfo.PlayerLv;
             warRankInfo.Combat = homeRankInfo.Combat;
             warRankInfo.Occ = homeRankInfo.Occ;
-            ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), self.DomainZone());
-            string serverName = serverItem != null ? serverItem.ServerName : self.DomainZone().ToString();
+            int homeZone = UnitZoneHelper.GetHomeZone(unit);
+            ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), homeZone);
+            string serverName = serverItem != null ? serverItem.ServerName : homeZone.ToString();
             warRankInfo.PlayerName = $"[{serverName}]{homeRankInfo.PlayerName}";
 
             await ActorMessageSenderComponent.Instance.Call(warRankServerId, new M2R_RankUpdateRequest()
@@ -950,10 +951,11 @@ namespace ET
         public static void Role_AddExp(this RoleInfoComponentServer self, long addValue, bool notice)
         {
             Scene scene = self.DomainScene();
-            ServerInfo serverInfo = ConfigData.ServerInfoList[scene.DomainZone()];
-            if (serverInfo == null)
+            Unit unit = self.GetParent<Unit>();
+            int homeZone = UnitZoneHelper.GetHomeZone(unit);
+            if (!ConfigData.ServerInfoList.TryGetValue(homeZone, out ServerInfo serverInfo) || serverInfo == null)
             {
-                Log.Warning($"ServerInfo==null: {scene.GetComponent<MapComponent>().MapTypeEnum} {self.Id}");
+                Log.Warning($"ServerInfo==null: home={homeZone} map={scene.GetComponent<MapComponent>()?.MapTypeEnum} {self.Id}");
                 return;
             }
         

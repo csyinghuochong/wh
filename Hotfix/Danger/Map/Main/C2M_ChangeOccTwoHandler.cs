@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -46,7 +46,7 @@ namespace ET
                 
                 string noticeContent = $"{userName} 在主城转职大师处成功转职:<color=#C4FF00>{occtwoname}</color>";
                 string noticeContentEn = $"{userName} at main city Job Change Master transfer successful:<color=#C4FF00>{occtwonameen}</color>";
-                ServerMessageHelper.SendBroadMessage(unit.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
+                ServerMessageHelper.SendBroadMessage(UnitZoneHelper.GetHomeZone(unit), NoticeType.Notice, noticeContent, noticeContentEn);
             }
 
             reply();

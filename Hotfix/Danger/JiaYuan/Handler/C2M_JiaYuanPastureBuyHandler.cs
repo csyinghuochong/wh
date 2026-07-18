@@ -93,7 +93,7 @@ namespace ET
             List<JiaYuanPastures> JiaYuanPastureList_3 = unit.GetComponent<JiaYuanComponentServer>().JiaYuanPastureList_7;
             JiaYuanPastureList_3.Add(jiaYuanPastures);
 
-            DBHelper.SaveComponentCache( unit.DomainZone(), unit.Id, jiaYuanComponentServer ).Coroutine();
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer ).Coroutine();
             response.JiaYuanPastureList = JiaYuanPastureList_3;
             reply();
             await ETTask.CompletedTask;

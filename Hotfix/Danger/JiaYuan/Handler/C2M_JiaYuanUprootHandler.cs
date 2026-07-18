@@ -34,7 +34,7 @@ namespace ET
 
             unit.GetParent<UnitComponent>().Remove(request.UnitId);
             response.JiaYuanPastureList = unit.GetComponent<JiaYuanComponentServer>().JiaYuanPastureList_7;
-            DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
             reply();
             await ETTask.CompletedTask;
         #endif

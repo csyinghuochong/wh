@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -154,11 +154,11 @@ namespace ET
                         {
                             //存入到离线消息
                             long dbCacheId = DBHelper.GetDbCacheId(chatInfoUnit.DomainZone());
-                            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(chatInfoUnit.DomainZone(), request.ChatInfo.ParamId);
+                            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(UnitZoneHelper.GetHomeZone(request.ChatInfo.ParamId), request.ChatInfo.ParamId);
                             if (dBFriendInfo != null && dBFriendInfo.FriendChats.Count < 10)
                             {
                                 dBFriendInfo.FriendChats.Add(request.ChatInfo);
-                                DBHelper.SaveComponent(chatInfoUnit.DomainZone(), request.ChatInfo.ParamId, dBFriendInfo).Coroutine();
+                                DBHelper.SaveComponent(UnitZoneHelper.GetHomeZone(request.ChatInfo.ParamId), request.ChatInfo.ParamId, dBFriendInfo).Coroutine();
                             }
                         }
 

@@ -120,7 +120,7 @@ namespace ET
                     }
                     if (ldItem.ItemType == 112)   //经验木桩
                     {
-                        int openDay = DBHelper.GetOpenServerDay(unit.DomainZone());
+                        int openDay = DBHelper.GetOpenServerDay(unit);
                         if (openDay <= 1)
                         {
                             response.Error = ErrorCode.ERR_ItemNoUseTime;
@@ -326,7 +326,7 @@ namespace ET
                                 if (createMonsterID != 0)
                                 {
                                     LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(createMonsterID);
-                                    ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(unit.DomainZone()),
+                                    ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(unit),
                                         NoticeType.Notice, "玩家" + unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name + "在宝藏之地召唤出领主怪物:<color=#FF75F0>" + ldMonsterCof.Name + "</color>").Coroutine();
                                 }
                                 break;
@@ -599,7 +599,7 @@ namespace ET
 
                 if (unit.IsRobot())
                 {
-                    DBHelper.SaveComponentCache(unit.DomainZone(), unit.Id, unit.GetComponent<BagComponentServer>()).Coroutine();
+                    DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, unit.GetComponent<BagComponentServer>()).Coroutine();
                 }
 
                 MessageHelper.SendToClient(unit, m2c_bagUpdate);

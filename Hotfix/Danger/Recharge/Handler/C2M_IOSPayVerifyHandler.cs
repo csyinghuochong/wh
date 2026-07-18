@@ -114,7 +114,7 @@ namespace ET
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 R2M_RechargeResponse r2M_RechargeResponse = (R2M_RechargeResponse)await ActorMessageSenderComponent.Instance.Call(rechareId, new M2R_RechargeRequest()
                 {
-                    Zone = unit.DomainZone(),
+                    Zone = UnitZoneHelper.GetHomeZone(unit),
                     PayType = PayTypeEnum.IOSPay,
                     UnitId = unit.Id,
                     payMessage = request.payMessage,

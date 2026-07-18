@@ -189,6 +189,16 @@ namespace ET
         }
 
 
+        /// <summary>
+        /// 获取合区后的新区id.  todo
+        /// </summary>
+        /// <param name="zoneid"></param>
+        /// <returns></returns>
+        public static int GetNewServerId(int zoneid)
+        {
+            return zoneid;
+        }
+
         public static void SetServerList(List<ServerItem> serverItems)
         {
             ServerItems = serverItems;
