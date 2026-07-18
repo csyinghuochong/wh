@@ -60,6 +60,9 @@
 
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="..\..\Unity\Assets\Hotfix\Share\Helper\ZStringHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Demo\AI\AI_Transfer.cs~RF1d944a39.TMP" />
   </ItemGroup>
   <ItemGroup>
