@@ -22,12 +22,10 @@ namespace ET
                 {
                     continue;
                 }
-                if (!CommonConfig.ItemAddShieldExp.ContainsKey(bagInfo.ItemID))
+                if (!CommonConfig.ItemAddShieldExp.TryGetValue(bagInfo.ItemID, out int addValue))
                 {
                     continue;
                 }
-
-                int addValue = CommonConfig.ItemAddShieldExp[bagInfo.ItemID];
                 if (addValue > 10) {
                     addValue = RandomHelper.NextInt((int)(addValue * 0.8f), (int)(addValue * 1.2f));
                 }

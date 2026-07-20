@@ -866,6 +866,7 @@ namespace ET
 				if ((int)self.LifeShieldList[i].ShieldType == shieldType)
 				{
 					keyValuePair = self.LifeShieldList[i];
+					break;
 				}
 			}
 			if (keyValuePair == null)

@@ -10,7 +10,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PetFragmentDuiHuan request, M2C_PetFragmentDuiHuan response, Action reply)
         {
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            if (!PetHelper.IsShenShouFull(unit.GetComponent<PetComponentServer>().RolePetInfos))
+            PetComponentServer pet = unit.GetComponent<PetComponentServer>();
+            if (!PetHelper.IsShenShouFull(pet.RolePetInfos))
             {
                 Log.Error($"C2M_PetFragmentDuiHuan 1");
                 response.Error = ErrorCode.ERR_ModifyData;

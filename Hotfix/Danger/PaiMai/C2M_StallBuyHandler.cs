@@ -8,8 +8,10 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_StallBuyRequest request, M2C_StallBuyResponse response, Action reply)
         {
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             //背包是否有位置
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < 1)
+            if (bag.GetBagLeftCell() < 1)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -25,7 +27,7 @@ namespace ET
 
             LDItem ldItem = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
             int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / ldItem.ItemPileSum);
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < cell)
+            if (bag.GetBagLeftCell() < cell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -41,7 +43,7 @@ namespace ET
             }
 
             //钱是否足够
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold < needGold)
+            if (roleInfo.RoleInfo.Gold < needGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -54,7 +56,7 @@ namespace ET
                 P2M_StallBuyResponse p2MStallBuyResponse = (P2M_StallBuyResponse)await ActorMessageSenderComponent.Instance.Call(paimaiServerId,
                     new M2P_StallBuyRequest()
                     {
-                        PaiMaiItemInfo = request.PaiMaiItemInfo, ActorId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold
+                        PaiMaiItemInfo = request.PaiMaiItemInfo, ActorId = roleInfo.RoleInfo.Gold
                     });
                 if (p2MStallBuyResponse.Error != ErrorCode.ERR_Success)
                 {
@@ -65,10 +67,9 @@ namespace ET
 
                 needGold = (long)p2MStallBuyResponse.PaiMaiItemInfo.Price * p2MStallBuyResponse.PaiMaiItemInfo.BagInfo.ItemNum;
 
-                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.StallBuy);
+                roleInfo.UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.StallBuy);
                 //背包添加道具
-                unit.GetComponent<BagComponentServer>()
-                        .OnAddItemData(p2MStallBuyResponse.PaiMaiItemInfo.BagInfo, $"{ItemGetWay.StallBuy}_{TimeHelper.ServerNow()}");
+                bag.OnAddItemData(p2MStallBuyResponse.PaiMaiItemInfo.BagInfo, $"{ItemGetWay.StallBuy}_{TimeHelper.ServerNow()}");
 
                 //给出售者邮件发送金币
                 MailHelp.SendPaiMaiEmail(UnitZoneHelper.GetHomeZone(unit), p2MStallBuyResponse.PaiMaiItemInfo, p2MStallBuyResponse.PaiMaiItemInfo.BagInfo.ItemNum, unit.Id)

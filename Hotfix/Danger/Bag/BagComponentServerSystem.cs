@@ -417,18 +417,28 @@ namespace ET
                     }
                     break;
                 case UserDataType.Gold:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Gold;
-                    break;
                 case UserDataType.Diamond:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond;
-                    break;
-             
                 case UserDataType.JiaYuanFund:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.JiaYuanFund;
-                    break;
                 case UserDataType.UnionContri:
-                    number = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.UnionZiJin;
+                {
+                    RoleInfoComponentServer roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
+                    switch (userDataType)
+                    {
+                        case UserDataType.Gold:
+                            number = roleInfo.RoleInfo.Gold;
+                            break;
+                        case UserDataType.Diamond:
+                            number = roleInfo.RoleInfo.Diamond;
+                            break;
+                        case UserDataType.JiaYuanFund:
+                            number = roleInfo.RoleInfo.JiaYuanFund;
+                            break;
+                        case UserDataType.UnionContri:
+                            number = roleInfo.RoleInfo.UnionZiJin;
+                            break;
+                    }
                     break;
+                }
                 default:
                     break;
             }

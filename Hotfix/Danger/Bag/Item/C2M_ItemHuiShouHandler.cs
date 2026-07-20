@@ -14,6 +14,8 @@ namespace ET
             {
                 List<long> huishouList = request.OperateBagID;
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+                TaskComponentServer task = unit.GetComponent<TaskComponentServer>();
+                ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
 
                 //回收所得
                 Dictionary<int, RewardItem> huishouGet = new Dictionary<int, RewardItem>();
@@ -72,8 +74,8 @@ namespace ET
                     huishouRewards.Add(rewardItem);
                 }
                 bagComponentServer.OnAddItemData(huishouRewards, string.Empty, $"{ItemGetWay.HuiShou}_{TimeHelper.ServerNow()}");
-                unit.GetComponent<TaskComponentServer>().OnItemHuiShow(bagsList.Count);
-                unit.GetComponent<ChengJiuComponentServer>().OnItemHuiShow(bagsList.Count);
+                task.OnItemHuiShow(bagsList.Count);
+                chengJiu.OnItemHuiShow(bagsList.Count);
 
                 reply();
                 await ETTask.CompletedTask;

@@ -1537,8 +1537,9 @@ namespace ET
             {
                 self.RoleInfo.HorseIds.Add(zuoqiid);
             }
-            self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, self.RoleInfo.HorseIds[0]);
-            self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.HorseFightID, self.RoleInfo.HorseIds[0]);
+            NumericComponent numeric = self.GetParent<Unit>().GetComponent<NumericComponent>();
+            numeric.ApplyValue(NumericType.HorseRide, self.RoleInfo.HorseIds[0]);
+            numeric.ApplyValue(NumericType.HorseFightID, self.RoleInfo.HorseIds[0]);
 
             LDHome maxjiayuan = null;
             Dictionary<int, LDHome> allJiayuan = LDHomeCategory.Instance.GetAll();

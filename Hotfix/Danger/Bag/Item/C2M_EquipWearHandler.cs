@@ -17,6 +17,7 @@ namespace ET
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             SkillSetComponentServer skillSet = unit.GetComponent<SkillSetComponentServer>();
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
             long bagInfoID = request.OperateBagID;
             int occ = useInfo.Occ;
 
@@ -75,7 +76,7 @@ namespace ET
                     skillSet.OnWearEquip(useBagInfo);
                 }
                 int zodiacnumber = bag.GetZodiacnumber();
-                unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacnumber);
+                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacnumber);
 
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 useBagInfo.isBinging = true;

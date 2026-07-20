@@ -38,6 +38,8 @@ namespace ET
 
                 SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
                 BagComponentServer bag = null;
+                ChengJiuComponentServer chengJiu = null;
+                TaskComponentServer task = null;
                 if (request.ItemId > 0)
                 { 
                     bag = unit.GetComponent<BagComponentServer>();
@@ -85,8 +87,10 @@ namespace ET
 
                         if (CommonConfig.ChengJiuLianJin.Contains(request.ItemId))
                         {
-                            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.BattleUseItem_214, 0, 1);
-                            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.BattleUseItem_30, 0, 1);  
+                            chengJiu ??= unit.GetComponent<ChengJiuComponentServer>();
+                            task ??= unit.GetComponent<TaskComponentServer>();
+                            chengJiu.TriggerEvent(ChengJiuTargetEnum.BattleUseItem_214, 0, 1);
+                            task.TriggerTaskEvent(TastConditionType.BattleUseItem_30, 0, 1);  
                         }
                     }
                     if (juexingid == request.SkillID)

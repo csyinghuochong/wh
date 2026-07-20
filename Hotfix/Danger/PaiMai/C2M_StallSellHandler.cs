@@ -7,7 +7,9 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_StallSellRequest request, M2C_StallSellResponse response, Action reply)
         {
-            if (UnitZoneHelper.GetHomeZone(unit) != 3  &&  !GMHelp.GmAccount.Contains(unit.GetComponent<RoleInfoComponentServer>().Account))
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            if (UnitZoneHelper.GetHomeZone(unit) != 3  &&  !GMHelp.GmAccount.Contains(roleInfo.Account))
             {
                 response.Error = ErrorCode.ERR_ModifyData;
                 reply();
@@ -26,8 +28,8 @@ namespace ET
                 long paimaiItemId = IdGenerater.Instance.GenerateId();
                 request.PaiMaiItemInfo.Id = paimaiItemId;
 
-                request.PaiMaiItemInfo.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
-                request.PaiMaiItemInfo.UserId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId;
+                request.PaiMaiItemInfo.PlayerName = roleInfo.RoleInfo.Name;
+                request.PaiMaiItemInfo.UserId = roleInfo.RoleInfo.UserId;
 
                 //获取时间戳
                 long currentTime = TimeHelper.ServerNow();
@@ -35,7 +37,7 @@ namespace ET
 
                 //对比出售数量和道具是否匹配
                 long bagInfoId = request.PaiMaiItemInfo.BagInfo.BagInfoID;
-                BagInfo bagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, bagInfoId);
+                BagInfo bagInfo = bag.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoId);
                 if (bagInfo == null)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError; //道具不足
@@ -82,8 +84,7 @@ namespace ET
                 if (p2MStallSellResponse.Error == ErrorCode.ERR_Success)
                 {
                     //扣除对应道具
-                    unit.GetComponent<BagComponentServer>()
-                            .OnCostItemData(request.PaiMaiItemInfo.BagInfo.BagInfoID, request.PaiMaiItemInfo.BagInfo.ItemNum);
+                    bag.OnCostItemData(request.PaiMaiItemInfo.BagInfo.BagInfoID, request.PaiMaiItemInfo.BagInfo.ItemNum);
                     // unit.GetComponent<TaskComponent>().TriggerTaskCountryEvent(TastConditionType.PaiMaiSell_1015, 0, 1); // 触发对应任务
                     response.PaiMaiItemInfo = request.PaiMaiItemInfo;
                     LogHelper.LogWarning(response.PaiMaiItemInfo.PlayerName + "上架摆摊道具：" + request.PaiMaiItemInfo.BagInfo.ItemID + "数量" +

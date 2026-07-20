@@ -396,10 +396,11 @@ namespace ET
         
         public static int CheckGiveItemTask (this TaskComponentServer self, int TargetType, int[] Target, int[] TargetValue, long BagInfoID, TaskPro taskPro)
         {
+            Unit unit = self.GetParent<Unit>();
             //收集道具的任务
             if (TargetType == (int)TastConditionType.ItemID_Number_2)
             {
-                BagComponentServer bagComponentServer = self.GetParent<Unit>().GetComponent<BagComponentServer>();
+                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 int needid = Target[0];
                 int neednumber = TargetValue[0];
                 int curnumber = (int)bagComponentServer.GetItemNumber(ItemBigType.Type_Item, needid);
@@ -416,7 +417,7 @@ namespace ET
             //给予任务
             if (TargetType == (int)TastConditionType.GiveItem_10)
             {
-                BagComponentServer bagComponentServer = self.GetParent<Unit>().GetComponent<BagComponentServer>();
+                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, BagInfoID);
                 if (bagInfo == null)
                 {
@@ -432,7 +433,7 @@ namespace ET
             //给予宠物
             if (TargetType == (int)TastConditionType.GivePet_25)
             {
-                PetComponentServer petComponentServer = self.GetParent<Unit>().GetComponent<PetComponentServer>();
+                PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
                 RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(BagInfoID);
                 if (rolePetInfo == null)
                 {
@@ -643,18 +644,19 @@ namespace ET
         public static async ETTask UpdateUnionRaceRank(this TaskComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             RankShouLieInfo rankingInfo = new RankShouLieInfo()
             {
                 UnitID = unit.Id,
                 KillNumber = 1,
-                Occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ,
-                PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name
+                Occ = roleInfo.RoleInfo.Occ,
+                PlayerName = roleInfo.RoleInfo.Name
             };
             M2R_RankUnionRaceRequest request = new M2R_RankUnionRaceRequest()
             {
                  RankingInfo = rankingInfo
             };
-            long mapInstanceId = DBHelper.GetRankServerId(self.GetParent<Unit>());
+            long mapInstanceId = DBHelper.GetRankServerId(unit);
             R2M_RankUnionRaceResponse Response = (R2M_RankUnionRaceResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, request);
         }
@@ -769,8 +771,9 @@ namespace ET
         //登录
         public static void OnLogin(this TaskComponentServer self)
         {
-            RoleInfoComponentServer roleInfoComponentServer = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
-            NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
+            Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
            
             for (int i = self.RoleTaskList.Count - 1; i >=0; i--)

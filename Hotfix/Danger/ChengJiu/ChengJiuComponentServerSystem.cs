@@ -43,7 +43,9 @@ namespace ET
 
         public static void OnLogin(this ChengJiuComponentServer self)
         {
-            NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
+            Unit unit = self.GetParent<Unit>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             if (self.DomainZone() <= 48 && numericComponent.GetAsLong(NumericType.RechargeNumber) < 400 && self.JingLingList.Contains(10003))
             {
                 Log.Warning($"充值小于400有精灵龟: {self.Id}");
@@ -52,7 +54,7 @@ namespace ET
                 self.JingLingUnitId = 0;
             }
 
-            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv);
+            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, roleInfo.RoleInfo.Lv);
         }
 
         public static void OnZeroClockUpdate(this ChengJiuComponentServer self)

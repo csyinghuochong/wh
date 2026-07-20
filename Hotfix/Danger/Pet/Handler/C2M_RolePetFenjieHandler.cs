@@ -8,6 +8,7 @@ namespace ET
 	{
 		protected override async ETTask Run(Unit unit, C2M_RolePetFenjie request, M2C_RolePetFenjie response, Action reply)
 		{
+			PetComponentServer pet = unit.GetComponent<PetComponentServer>();
 			//判断背包是否满
 			if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() <= 1)
 			{
@@ -18,12 +19,12 @@ namespace ET
 
 
 			int petType = 1;
-			RolePetInfo rolePetInfo = unit.GetComponent<PetComponentServer>().GetPetInfo(request.PetInfoId);
+			RolePetInfo rolePetInfo = pet.GetPetInfo(request.PetInfoId);
 
 			if (rolePetInfo == null)
 			{
 				petType = 2;
-                rolePetInfo = unit.GetComponent<PetComponentServer>().GetPetInfoByBag(request.PetInfoId);
+                rolePetInfo = pet.GetPetInfoByBag(request.PetInfoId);
             }
 
 			if (rolePetInfo == null)
@@ -49,11 +50,11 @@ namespace ET
 
 			if (petType == 1)
 			{
-                unit.GetComponent<PetComponentServer>().OnRolePetFenjie(request.PetInfoId);
+                pet.OnRolePetFenjie(request.PetInfoId);
             }
 			else
 			{
-                unit.GetComponent<PetComponentServer>().RemovePetBag(request.PetInfoId);
+                pet.RemovePetBag(request.PetInfoId);
             }
 
 			

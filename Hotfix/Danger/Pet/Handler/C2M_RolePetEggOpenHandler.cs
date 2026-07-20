@@ -8,8 +8,10 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_RolePetEggOpen request, M2C_RolePetEggOpen response, Action reply)
         {
-            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
-            RolePetEgg rolePetEgg = petComponentServer.RolePetEggs[request.Index];
+            PetComponentServer pet = unit.GetComponent<PetComponentServer>();
+            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
+            TaskComponentServer task = unit.GetComponent<TaskComponentServer>();
+            RolePetEgg rolePetEgg = pet.RolePetEggs[request.Index];
             if (rolePetEgg.ItemId == 0)
             {
                 reply();
@@ -20,14 +22,14 @@ namespace ET
             string[] petinfos =  null;//gemitemCof.ItemUsePar.Split('@');
             int needCost = CommonHelper.ReturnPetOpenTimeDiamond(rolePetEgg.ItemId,rolePetEgg.EndTime);
 
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+            RoleInfo roleInfo = roleInfoComponent.RoleInfo;
             if (roleInfo.Diamond < needCost)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();
                 return;
             }
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (needCost * -1).ToString(), true,ItemGetWay.PetChouKa);
+            roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (needCost * -1).ToString(), true,ItemGetWay.PetChouKa);
             List<int> weights = new List<int>();
             List<int> petlists = new List<int>();
             for (int i = 2; i < petinfos.Length; i++)
@@ -41,10 +43,10 @@ namespace ET
             {
                 index = 0;
             }
-            response.PetInfo =  unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.PetEggDuiHuan, petlists[index],0, rolePetEgg.FuLing);
-            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent( TastConditionType.PetFuHuaNumber_34, 0, 1 );
+            response.PetInfo = pet.OnAddPet(ItemGetWay.PetEggDuiHuan, petlists[index],0, rolePetEgg.FuLing);
+            task.TriggerTaskEvent( TastConditionType.PetFuHuaNumber_34, 0, 1 );
        
-            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.PetFuHuaId_35, rolePetEgg.ItemId, 1);
+            task.TriggerTaskEvent(TastConditionType.PetFuHuaId_35, rolePetEgg.ItemId, 1);
           
             rolePetEgg.ItemId = 0;
             rolePetEgg.EndTime = 0;

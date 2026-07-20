@@ -10,6 +10,8 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_ModifyNameRequest request, M2C_ModifyNameResponse response, Action reply)
         {
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             Log.Warning($"C2M_ModifyNameRequest:  {unit.DomainZone()} {unit.Id}");
             if (!StringHelper.IsSafeSqlString(request.NewName))
             {
@@ -52,9 +54,9 @@ namespace ET
             }
 
             LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(70);
-            if (unit.GetComponent<BagComponentServer>().OnCostItemData(ldGlobalValue.Value, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
+            if (bag.OnCostItemData(ldGlobalValue.Value, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
             {
-                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Name, request.NewName);
+                roleInfo.UpdateRoleData(UserDataType.Name, request.NewName);
                 M2C_RoleDataBroadcast m2C_BroadcastRoleData = new M2C_RoleDataBroadcast();
                 m2C_BroadcastRoleData.UnitId = unit.Id;
                 m2C_BroadcastRoleData.UpdateType = (int)UserDataType.Name;

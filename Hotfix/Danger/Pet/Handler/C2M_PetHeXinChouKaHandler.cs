@@ -32,8 +32,9 @@ namespace ET
 
             if (request.ChouKaType == 1)
             {
-                string needItems = LDGlobalValueCategory.Instance.Get(110).Value.Split('@')[0];
-                dropId = int.Parse(LDGlobalValueCategory.Instance.Get(110).Value.Split('@')[1]);
+                string[] chouKaConfig = LDGlobalValueCategory.Instance.Get(110).Value.Split('@');
+                string needItems = chouKaConfig[0];
+                dropId = int.Parse(chouKaConfig[1]);
                 bool sucess = bagComponentServer.OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);
                 if (!sucess)
                 {
@@ -46,8 +47,9 @@ namespace ET
             }
             else if (request.ChouKaType == 10)
             {
-                string[] itemInfo10 = LDGlobalValueCategory.Instance.Get(111).Value.Split('@')[0].Split(';');
-                dropId = int.Parse(LDGlobalValueCategory.Instance.Get(111).Value.Split('@')[1]);
+                string[] chouKaConfig = LDGlobalValueCategory.Instance.Get(111).Value.Split('@');
+                string[] itemInfo10 = chouKaConfig[0].Split(';');
+                dropId = int.Parse(chouKaConfig[1]);
                 bool sucess = bagComponentServer.OnCostItemData($"{itemInfo10[0]};{(int)(int.Parse(itemInfo10[1]) * discount)}", ItemLocType.ItemLocBag, ItemGetWay.PetChouKa);
                 if (!sucess)
                 {

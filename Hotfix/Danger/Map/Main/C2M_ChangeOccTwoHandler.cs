@@ -8,15 +8,17 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ChangeOccTwoRequest request, M2C_ChangeOccTwoResponse response, Action reply)
         {
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
+            SkillSetComponentServer skillSet = unit.GetComponent<SkillSetComponentServer>();
             //判断当前角色等级是否达到
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < 18) 
+            if (roleInfo.RoleInfo.Lv < 18) 
             {
                 response.Error = ErrorCode.ERR_Occ_Hint_1;
                 reply();
                 return;
             }
 
-            int OccTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
+            int OccTwo = roleInfo.RoleInfo.OccTwo;
             ////判断当前角色是否已经进行转职
             if (OccTwo != 0 )
             {
@@ -34,13 +36,13 @@ namespace ET
             }
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
 
-            unit.GetComponent<SkillSetComponentServer>().OnChangeJueXing(dataCollationComponent.OccTwoOld, request.OccTwoID);
-            unit.GetComponent<SkillSetComponentServer>().OnChangeOccTwoRequest(request.OccTwoID);
+            skillSet.OnChangeJueXing(dataCollationComponent.OccTwoOld, request.OccTwoID);
+            skillSet.OnChangeOccTwoRequest(request.OccTwoID);
             unit.GetComponent<TaskComponentServer>().OnChangeOccTwo();
 
             if (OccTwo == 0)
             {
-                string userName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+                string userName = roleInfo.RoleInfo.Name;
                 string occtwoname = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 0);
                 string occtwonameen = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 1);
                 
