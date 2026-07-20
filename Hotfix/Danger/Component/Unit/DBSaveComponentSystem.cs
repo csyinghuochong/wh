@@ -104,9 +104,10 @@ namespace ET
         public static void OnRelogin(this DBSaveComponent self, long gateSessionId)
         {
             Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             string offLineInfo = $"{unit.DomainZone()}区： " +
-               $"unit.id: {unit.GetComponent<RoleInfoComponentServer>().Id} : " +
-               $" {unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} : " +
+               $"unit.id: {roleInfo.Id} : " +
+               $" {roleInfo.RoleInfo.Name} : " +
                $"{TimeHelper.DateTimeNow().ToString()}   二次登陆";
 
             if (!unit.IsRobot())
@@ -121,16 +122,16 @@ namespace ET
         public static  void OnOffLine(this DBSaveComponent self)
         {
             Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             string offLineInfo = $"{unit.DomainZone()}区： " +
-               $"unit.id: {unit.GetComponent<RoleInfoComponentServer>().Id} : " +
-               $" {unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} : " +
+               $"unit.id: {roleInfoComponentServer.Id} : " +
+               $" {roleInfoComponentServer.RoleInfo.Name} : " +
                $"{TimeHelper.DateTimeNow().ToString()}   离线";
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-
-            if (numericComponent.GetAsLong(NumericType.Now_Stall) > 0)
+            long stallId = numericComponent.GetAsLong(NumericType.Now_Stall);
+            if (stallId > 0)
             {
-                long stallId = numericComponent.GetAsLong(NumericType.Now_Stall);
                 Unit unitstall = unit.GetParent<UnitComponent>().Get(stallId);
                 if (unitstall != null)
                 {
@@ -138,9 +139,8 @@ namespace ET
                 }
             }
 
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
-            string oaid = unit.GetComponent<DataCollationComponent>().OAID;
+            string oaid = dataCollationComponent.OAID;
             string lastgametime =   TimeHelper.DateTimeNow().ToString();
             numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
             roleInfoComponentServer.OnOffLine();
@@ -163,9 +163,10 @@ namespace ET
         public static void OnLogin(this DBSaveComponent self)
         {
             Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             string offLineInfo = $"{unit.DomainZone()}区： " +
-               $"unit.id: {unit.GetComponent<RoleInfoComponentServer>().Id} : " +
-               $" {unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} : " +
+               $"unit.id: {roleInfo.Id} : " +
+               $" {roleInfo.RoleInfo.Name} : " +
                $"{  TimeHelper.DateTimeNow().ToString()}   登录";
             if (!unit.IsRobot())
             {
@@ -196,9 +197,10 @@ namespace ET
         public static int OnDisconnect(this DBSaveComponent self)
         {
             Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             string offLineInfo = $"{unit.DomainZone()}区： " +
-              $"unit.id: {unit.GetComponent<RoleInfoComponentServer>().Id} : " +
-              $" {unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} : " +
+              $"unit.id: {roleInfo.Id} : " +
+              $" {roleInfo.RoleInfo.Name} : " +
               $"{  TimeHelper.DateTimeNow().ToString()}  移除";
 
             Scene scene = unit.DomainScene();
@@ -218,11 +220,9 @@ namespace ET
             }
 
             long unitId = unit.Id;
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-            long userId = roleInfo.UserId;
             unit.GetParent<UnitComponent>().Remove(unitId);
 
-            Game.EventSystem.Publish(new EventType.PlayerDisconnect() { DomainScene = scene, UnitId = userId });
+            Game.EventSystem.Publish(new EventType.PlayerDisconnect() { DomainScene = scene, UnitId = unitId });
            
             return ErrorCode.ERR_Success;
         }

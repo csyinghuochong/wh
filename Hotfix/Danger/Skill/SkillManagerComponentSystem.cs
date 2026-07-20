@@ -292,13 +292,16 @@ namespace ET
             }
 
             Unit unitTarget = unit.GetParent<UnitComponent>().Get(skillcmd.TargetID);
-            if (weaponLdSkill.Type == SkillTypeEnum.SkillTypeInstant_1 &&  unitTarget !=null) 
+            if (weaponLdSkill.Type == SkillTypeEnum.SkillTypeInstant_1)
             {
-                unitTarget.GetComponent<AttackRecordComponent>().BeAttackId = unit.Id;  
-            }
-            if (weaponLdSkill.Type == SkillTypeEnum.SkillTypeInstant_1  && skillcmd.TargetID > 0)
-            {
-                unit.GetComponent<AttackRecordComponent>().AttackingId = skillcmd.TargetID;
+                if (unitTarget != null)
+                {
+                    unitTarget.GetComponent<AttackRecordComponent>().BeAttackId = unit.Id;
+                }
+                if (skillcmd.TargetID > 0)
+                {
+                    unit.GetComponent<AttackRecordComponent>().AttackingId = skillcmd.TargetID;
+                }
             }
 
 
@@ -386,10 +389,7 @@ namespace ET
         public static SkillCDItem UpdateNormalCD(this SkillManagerComponent self, int skillId, int weaponSkill, bool zhudong)
         {
             Unit unit = self.GetParent<Unit>();
-            //int equipType = UnitHelper.GetEquipType(unit);
             SkillCDItem skillcd = null;
-
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
           
             self.SkillCDs.TryGetValue(skillId, out skillcd);
             if (skillcd == null)
@@ -399,20 +399,16 @@ namespace ET
             }
             skillcd.SkillID = skillId;
 
+            // 普攻基础 CD 700ms，受攻速缩放；原先 List{700,700,700}+循环但下标恒为 0
+            const int normalSkillBaseCd = 700;
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            float attackSpped = 1f + numericComponent.GetAsFloat(NumericType.Numeric_Error);
-            int EquipType = UnitHelper.GetEquipType(unit);
-            List<int> normalskillCDs =new List<int>() { 700, 700, 700 };
-            for (int i = 0; i < normalskillCDs.Count; i++)
+            float attackSpeed = 1f + numericComponent.GetAsFloat(NumericType.SKILL_CD_192);
+            if (attackSpeed < 0.01f)
             {
-                normalskillCDs[i] = (int)(normalskillCDs[i] / attackSpped);
+                attackSpeed = 0.01f;
             }
 
-            int comindex = 0;
-           
-            comindex = Math.Clamp(comindex, 0, normalskillCDs.Count - 1);
-            skillcd.CDEndTime = TimeHelper.ServerNow() + normalskillCDs[comindex] ;
-            //Console.WriteLine($"add cd {skillId}   {skillcd.CDEndTime}");
+            skillcd.CDEndTime = TimeHelper.ServerNow() + (int)(normalSkillBaseCd / attackSpeed);
             return null;
         }
 
@@ -439,15 +435,15 @@ namespace ET
                 reduceCD = reduceCDlist[0];
             }
 
-            float nocdPro = numericComponent.GetAsFloat(NumericType.Numeric_Error);
-            if (nocdPro > RandomHelper.RandFloat01())
+            float numericError = numericComponent.GetAsFloat(NumericType.SKILL_CD_192);
+            if (numericError > RandomHelper.RandFloat01())
             {
                 skillcdTime = 1;  //1秒冷却CD
                 skillcdTime -= reduceCD;
             }
             else
             {
-                float now_cdpro= numericComponent.GetAsFloat(NumericType.Numeric_Error);
+                float now_cdpro = numericError;
                 //急速削减最多达到75%
                 if (now_cdpro > 0.75f) {
                     now_cdpro = 0.75f;
@@ -459,9 +455,8 @@ namespace ET
             //if (unit.Type != UnitType.Player && unit.MasterId != 0 && skillConfig.SkillActType == 0)
             if (unit.Type != UnitType.Player )
             {
-                //float attackSpped = 1f - numericComponent.GetAsFloat(NumericType.Numeric_Error);
                 //攻击速度调整
-                float attackSpped = 1f / (1 +  numericComponent.GetAsFloat(NumericType.Numeric_Error));
+                float attackSpped = 1f / (1 + numericError);
 
                 //最低是0.25秒触发一次
                 if (attackSpped <= 0.25f)

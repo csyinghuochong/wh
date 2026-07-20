@@ -390,35 +390,18 @@ namespace ET
                 int hurtvalue = 0;
                 hurtList.TryGetValue(unititem.Id, out hurtvalue);
                 int hurtRate = (int)(hurtvalue * 100f / damageTotal);
-                unititem.GetComponent<TaskComponentServer>().TriggerTaskEvent( TastConditionType.TeamDungeonHurt_136, self.TeamInfo.SceneId, hurtRate);
+                TaskComponentServer taskComponent = unititem.GetComponent<TaskComponentServer>();
+                ChengJiuComponentServer chengJiu = unititem.GetComponent<ChengJiuComponentServer>();
+                taskComponent.TriggerTaskEvent( TastConditionType.TeamDungeonHurt_136, self.TeamInfo.SceneId, hurtRate);
              
-                unititem.GetComponent<TaskComponentServer>().OnPassTeamFuben();
-                unititem.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PassTeamFubenNumber_20, 0, 1);
+                taskComponent.OnPassTeamFuben();
+                chengJiu.TriggerEvent(ChengJiuTargetEnum.PassTeamFubenNumber_20, 0, 1);
                 if (self.FubenType == TeamFubenType.ShenYuan)
                 {
-                    unititem.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PassTeamShenYuanNumber_21, 0, 1);
+                    chengJiu.TriggerEvent(ChengJiuTargetEnum.PassTeamShenYuanNumber_21, 0, 1);
                 }
                 if (unititem.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
                 {
-                    BagComponentServer bagComponentServer = unititem.GetComponent<BagComponentServer>();
-                    if (bagComponentServer.GetBagLeftCell() < 1)
-                    {
-                        List<BagInfo> bagInfos = new List<BagInfo>();
-                        RewardItem rewardItem = m2C_FubenSettlement.RewardExtraItem[0];
-                        bagInfos.Add(new BagInfo() { ItemID = rewardItem.ItemID, ItemNum = rewardItem.ItemNum });
-                        MailInfo mailInfo = new MailInfo();
-                        mailInfo.Status = 0;
-                        mailInfo.Context = "副本奖励";
-                        mailInfo.Title = "额外奖励";
-                        mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                        mailInfo.ItemList.AddRange(bagInfos);
-
-                        MailHelp.SendUserMail(unititem.DomainZone(), unititem.Id, mailInfo).Coroutine();
-                    }
-                    else
-                    {
-                        bagComponentServer.OnAddItemData(m2C_FubenSettlement.RewardExtraItem, string.Empty, $"{ItemGetWay.FubenGetReward}_{TimeHelper.ServerNow()}");
-                    }
                 }
                 MessageHelper.SendToClient(unititem, m2C_FubenSettlement);
             }

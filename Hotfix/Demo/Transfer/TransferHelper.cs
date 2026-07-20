@@ -625,17 +625,19 @@ namespace ET
 
         public static void AfterTransfer(Unit unit)
         {
-            RolePetInfo fightId = unit.GetComponent<PetComponentServer>().GetFightPet();
+            PetComponentServer petComponent = unit.GetComponent<PetComponentServer>();
+            RolePetInfo fightId = petComponent.GetFightPet();
             if (fightId != null)
             {
-                unit.GetComponent<PetComponentServer>().UpdatePetAttribute(fightId, false);
+                petComponent.UpdatePetAttribute(fightId, false);
                 UnitFactory.CreatePet(unit, fightId);
             }
-            int jinglingid  = unit.GetComponent<ChengJiuComponentServer>().JingLingId;
+            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
+            int jinglingid  = chengJiu.JingLingId;
             if (jinglingid != 0)
             {
                 long JingLingUnitId = UnitFactory.CreateJingLing(unit, jinglingid).Id;
-                unit.GetComponent<ChengJiuComponentServer>().JingLingUnitId = JingLingUnitId;
+                chengJiu.JingLingUnitId = JingLingUnitId;
             }
         }
 
@@ -678,12 +680,13 @@ namespace ET
             {
                 unitComponent.Remove(fightId.Id);
             }
-            long jinglingUnitId = unit.GetComponent<ChengJiuComponentServer>().JingLingUnitId;
+            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
+            long jinglingUnitId = chengJiu.JingLingUnitId;
             if (jinglingUnitId != 0 && unitComponent.Get(jinglingUnitId) != null)
             {
                 unitComponent.Remove(jinglingUnitId);
             }
-            unit.GetComponent<ChengJiuComponentServer>().JingLingUnitId = 0;
+            chengJiu.JingLingUnitId = 0;
         }
 
         /// <summary>
@@ -696,9 +699,10 @@ namespace ET
         {
             long fubencenterId = DBHelper.GetFubenCenterId(scene.DomainZone());
             int sceneType = 0;
-            if (scene!=null && scene.GetComponent<MapComponent>()!=null)
+            MapComponent mapComponent = scene?.GetComponent<MapComponent>();
+            if (mapComponent != null)
             {
-                sceneType = scene.GetComponent<MapComponent>().MapTypeEnum;
+                sceneType = mapComponent.MapTypeEnum;
             }
             M2F_FubenCenterOperateRequest request = new M2F_FubenCenterOperateRequest()
             {

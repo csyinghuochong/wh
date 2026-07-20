@@ -58,7 +58,7 @@ namespace ET
                             return;
                         }
                         dBAccountBagWarehouse.BagInfoList.Add(bagInfo);
-                        bagComponentServer.OnCostItemData(new List<long>(){ bagInfo.BagInfoID }, ItemLocType.ItemLocBag);
+                        bagComponentServer.OnCostItemData(bagInfo.BagInfoID, ItemLocType.ItemLocBag);
                         break;
                     case 2:
                         if (bagComponentServer.GetBagLeftCell() < 1)

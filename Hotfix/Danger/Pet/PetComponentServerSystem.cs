@@ -280,22 +280,24 @@ namespace ET
         public static void CheckPetPingFen(this PetComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
+            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
             int maxping = self.GetPetMaxPingFen();
 
-            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PegScoreToValue_307, 0, maxping);
+            chengJiu.TriggerEvent(ChengJiuTargetEnum.PegScoreToValue_307, 0, maxping);
 
             int arrayping = self.GetPetArrayPingFen();
-            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PetArrayScoreToValue_308, 0, arrayping);
+            chengJiu.TriggerEvent(ChengJiuTargetEnum.PetArrayScoreToValue_308, 0, arrayping);
         }
 
         public static void CheckPetZiZhi(this PetComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
-            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 1, self.GetPetMaxZiZhi(1));
-            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 2, self.GetPetMaxZiZhi(2));
-            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 3, self.GetPetMaxZiZhi(3));
-            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 4, self.GetPetMaxZiZhi(4));
-            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 5, self.GetPetMaxZiZhi(5));
+            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
+            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 1, self.GetPetMaxZiZhi(1));
+            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 2, self.GetPetMaxZiZhi(2));
+            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 3, self.GetPetMaxZiZhi(3));
+            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 4, self.GetPetMaxZiZhi(4));
+            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 5, self.GetPetMaxZiZhi(5));
         }
 
         public static int GetPetMaxZiZhi(this PetComponentServer self, int zizhiType)
@@ -526,12 +528,18 @@ namespace ET
             unit.GetComponent<ChengJiuComponentServer>().OnGetPet(newpet);
             unit.GetComponent<TaskComponentServer>().OnGetPet(newpet);
 
-            if (PetHelper.IsShenShou(petId) && unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber) < 5000)
+            if (PetHelper.IsShenShou(petId))
             {
-                //充值低于5千的就记录 记录信息 等级 名称 充值额度 当前钻石额
-                LogHelper.GongZuoShi($"神兽作弊: {unit.DomainZone()}   \t名称:{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}  " +
-                    $"\t等级:{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv}" + $"\t钻石:{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond}" +
-                    $"\t充值:{unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber)}");
+                NumericComponent numeric = unit.GetComponent<NumericComponent>();
+                int rechargeNumber = numeric.GetAsInt(NumericType.RechargeNumber);
+                if (rechargeNumber < 5000)
+                {
+                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+                    //充值低于5千的就记录 记录信息 等级 名称 充值额度 当前钻石额
+                    LogHelper.GongZuoShi($"神兽作弊: {unit.DomainZone()}   \t名称:{roleInfo.Name}  " +
+                        $"\t等级:{roleInfo.Lv}" + $"\t钻石:{roleInfo.Diamond}" +
+                        $"\t充值:{rechargeNumber}");
+                }
             }
 
             /*if (ItemGetWay.PetExplore == getWay && (ldPetConfig.PetQuality >= 3 || ldPetConfig.Skin[0] != newpet.SkinId))

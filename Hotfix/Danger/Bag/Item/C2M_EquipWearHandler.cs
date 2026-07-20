@@ -14,6 +14,9 @@ namespace ET
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo useInfo = roleInfoComponentServer.RoleInfo;
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            SkillSetComponentServer skillSet = unit.GetComponent<SkillSetComponentServer>();
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
             long bagInfoID = request.OperateBagID;
             int occ = useInfo.Occ;
 
@@ -23,7 +26,7 @@ namespace ET
             if (request.OperateType == 3)
             {
                 ItemLocType locType = ItemLocType.ItemLocBag;
-                BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, bagInfoID);
+                BagInfo useBagInfo = bag.GetItemByLoc(locType, bagInfoID);
                 if (useBagInfo == null)
                 {
                     response.Error = ErrorCode.ERR_ItemNotExist;    
@@ -55,23 +58,23 @@ namespace ET
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(useBagInfo.ItemID);
               
               //获取之前的位置是否有装备
-                BagInfo beforeequip = unit.GetComponent<BagComponentServer>().GetEquipBySubType(ItemLocType.ItemLocEquip, caowei);
+                BagInfo beforeequip = bag.GetEquipBySubType(ItemLocType.ItemLocEquip, caowei);
 
                 if (beforeequip != null)
                 {
-                    unit.GetComponent<BagComponentServer>().OnChangeItemLoc(beforeequip, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
-                    unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
+                    bag.OnChangeItemLoc(beforeequip, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
+                    bag.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
 
-                    unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
-                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
+                    skillSet.OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
+                    skillSet.OnWearEquip(useBagInfo);
                     m2c_bagUpdate.BagInfoUpdate.Add(beforeequip);
                 }
                 else
                 {
-                    unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
-                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
+                    bag.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
+                    skillSet.OnWearEquip(useBagInfo);
                 }
-                int zodiacnumber = unit.GetComponent<BagComponentServer>().GetZodiacnumber();
+                int zodiacnumber = bag.GetZodiacnumber();
                 unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacnumber);
 
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
@@ -80,13 +83,13 @@ namespace ET
 
                 if (caowei == (int)EquipCaoWeiTypeEnum.Wuqi_1)
                 {
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Weapon, useBagInfo.ItemID);
+                    numeric.ApplyValue(NumericType.Now_Weapon, useBagInfo.ItemID);
                 }
             }
             else
             {
                 //判断背包格子是否足够
-                bool full = unit.GetComponent<BagComponentServer>().IsBagFull();
+                bool full = bag.IsBagFull();
                 if (full)
                 {
                     response.Error = ErrorCode.ERR_BagIsFull;
@@ -95,7 +98,7 @@ namespace ET
                 }
                 
                 ItemLocType locType = ItemLocType.ItemLocEquip;
-                BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, bagInfoID);
+                BagInfo useBagInfo = bag.GetItemByLoc(locType, bagInfoID);
                 if (useBagInfo == null)
                 {
                     response.Error = ErrorCode.ERR_ItemNotExist;    
@@ -104,18 +107,18 @@ namespace ET
                 }
 
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(useBagInfo.ItemID);
-                unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
-                unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
+                bag.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
+                skillSet.OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                 if (caowei == (int)EquipCaoWeiTypeEnum.Wuqi_1)
                 {
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Weapon, 0);
+                    numeric.ApplyValue(NumericType.Now_Weapon, 0);
                 }
             }
 
-            BagInfo equip_0 = unit.GetComponent<BagComponentServer>().GetEquipBySubType(ItemLocType.ItemLocEquip, (int)EquipCaoWeiTypeEnum.Wuqi_1);
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Weapon, equip_0 !=null ? equip_0.ItemID : 0);
+            BagInfo equip_0 = bag.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)EquipCaoWeiTypeEnum.Wuqi_1);
+            numeric.ApplyValue(NumericType.Now_Weapon, equip_0 !=null ? equip_0.ItemID : 0);
 
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
             

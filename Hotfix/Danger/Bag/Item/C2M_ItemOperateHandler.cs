@@ -98,7 +98,7 @@ namespace ET
                                 string[] paramInfo = expInfos[int.Parse(operatePar[0])].Split(';');
                              
                                 //如果当前钻石不足返回错误
-                                if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond < needZuanshi)
+                                if (roleInfoComponentServer.RoleInfo.Diamond < needZuanshi)
                                 {
                                     response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                                     reply();
@@ -190,11 +190,11 @@ namespace ET
                         {
                             //增加金币
                             case 1:
-                              //  unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Gold, ldItem.ItemUsePar, true, ItemGetWay.ItemBox_6);
+                              //  roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, ldItem.ItemUsePar, true, ItemGetWay.ItemBox_6);
                                 break;
                             //增加经验
                             case 2:
-                               // unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Exp, ldItem.ItemUsePar, true, ItemGetWay.ItemBox_6);
+                               // roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Exp, ldItem.ItemUsePar, true, ItemGetWay.ItemBox_6);
                                 break;
                             //回城卷轴[返回另外一个副本场景]
                             case 4:
@@ -239,7 +239,7 @@ namespace ET
                                 break;
                             //冷却时间清空卷轴"
                             case 12:
-                                unit.GetComponent<RoleInfoComponentServer>().OnCleanBossCD();
+                                roleInfoComponentServer.OnCleanBossCD();
                                 if (unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                                 {
                                     unit.DomainScene().GetComponent<LocalDungeonComponent>().OnCleanBossCD();
@@ -254,7 +254,7 @@ namespace ET
                                 break;
                            
                             case 16: //附魔技能
-                               // unit.GetComponent<RoleInfoComponentServer>().RoleInfo.MakeList.Add(int.Parse(ldItem.ItemUsePar));
+                               // roleInfoComponentServer.RoleInfo.MakeList.Add(int.Parse(ldItem.ItemUsePar));
                                 break;
                             //使用技能
                             case 101:
@@ -294,7 +294,7 @@ namespace ET
                             case 110:
                                 //1;20;70010101,70010102@21;70;70020101,70020102
                                 int createMonsterID = 0;
-                                int lv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+                                int lv = roleInfoComponentServer.RoleInfo.Lv;
                                 string[] monsters = null;//ldItem.ItemUsePar;
                                 if (monsters.Length > 100)
                                 {
@@ -327,17 +327,17 @@ namespace ET
                                 {
                                     LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(createMonsterID);
                                     ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(unit),
-                                        NoticeType.Notice, "玩家" + unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name + "在宝藏之地召唤出领主怪物:<color=#FF75F0>" + ldMonsterCof.Name + "</color>").Coroutine();
+                                        NoticeType.Notice, "玩家" + roleInfoComponentServer.RoleInfo.Name + "在宝藏之地召唤出领主怪物:<color=#FF75F0>" + ldMonsterCof.Name + "</color>").Coroutine();
                                 }
                                 break;
                             //金币袋子
                             case 111:
                              //   string[] jinbiInfos =  null;//ldItem.ItemUsePar;
-                                int userLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+                                int userLv = roleInfoComponentServer.RoleInfo.Lv;
                                 LDExp ldExp = LDExpCategory.Instance.Get(userLv);
                                 /*long addCoin = (int)RandomHelper.RandomNumberFloat(float.Parse(jinbiInfos[0]) * exp.Exp_Role, float.Parse(jinbiInfos[1]) * exp.Exp_Role);
                                 addCoin *= costNumber;
-                                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Gold, addCoin.ToString(), true, ItemGetWay.ItemBox_6);*/
+                                roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, addCoin.ToString(), true, ItemGetWay.ItemBox_6);*/
                                 break;
                             //经验木桩
                             case 112:
@@ -345,15 +345,15 @@ namespace ET
                                 string[] operatePar = request.OperatePar.Split(';'); //使用类型;数量
                                 int needZuanshi = operatePar[0] == "1"? int.Parse(expInfos[0]) * costNumber : 0;
                                 string[] paramInfo = expInfos[int.Parse(operatePar[0])].Split(';');
-                                userLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+                                userLv = roleInfoComponentServer.RoleInfo.Lv;
 
                                 /*exp = ExpCategory.Instance.Get(userLv);
                                 int addExp = (int)RandomHelper.RandomNumberFloat(float.Parse(paramInfo[0]) * exp.RoseExpPro, float.Parse(paramInfo[1]) * exp.RoseExpPro);
                                 addExp *= costNumber;   
-                                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Exp, addExp.ToString(), true, ItemGetWay.DuiHuan);
+                                roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Exp, addExp.ToString(), true, ItemGetWay.DuiHuan);
                                 if (needZuanshi > 0)
                                 {
-                                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.DuiHuan);
+                                    roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.DuiHuan);
                                 }*/
 
                                 //response.OperatePar = addExp.ToString();
@@ -421,7 +421,7 @@ namespace ET
                             case 131://增加饱食度
                                 string[] baoshipas = null;//ldItem.ItemUsePar;
                                 int baoshiadd = RandomHelper.RandomNumber(int.Parse(baoshipas[0]), int.Parse(baoshipas[1]) + 1);
-                                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.BaoShiDu, baoshiadd.ToString());
+                                roleInfoComponentServer.UpdateRoleData(UserDataType.BaoShiDu, baoshiadd.ToString());
                                 break;
                             case 132:
                                 long reduceTime = 0;// long.Parse(ldItem.ItemUsePar);
@@ -515,7 +515,7 @@ namespace ET
                         return;
                     }
 
-                    //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(ldItem.SellMoneyType, (sellNum * ldItem.SellMoneyValue).ToString());
+                    //roleInfoComponentServer.UpdateRoleData(ldItem.SellMoneyType, (sellNum * ldItem.SellMoneyValue).ToString());
                     unit.GetComponent<BagComponentServer>().OnCostItemData(useBagInfo, locType, sellNum);
                     if (useBagInfo.ItemNum == 0)
                     {

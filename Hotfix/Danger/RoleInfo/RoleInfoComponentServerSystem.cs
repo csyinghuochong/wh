@@ -797,10 +797,6 @@ namespace ET
                     saveValue = self.RoleInfo.Diamond.ToString();
                     if (addDiamond < 0)
                     {
-                        unit.GetComponent<ChengJiuComponentServer>().OnCostDiamond(addDiamond);
-                        unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.V1DayCostDiamond, addDiamond * - 1, 0);
-                        long costdiamond = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.V1DayCostDiamond);
-
                         //累计消耗钻石转换为积分
                     }
                     break;

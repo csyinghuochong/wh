@@ -1193,6 +1193,24 @@ namespace ET
         }
 
         //删除背包道具道具[支持同时添加多个]
+        public static bool OnCostItemData(this BagComponentServer self, long bagInfoId, ItemLocType itemLocType = ItemLocType.ItemLocBag)
+        {
+            M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
+            List<BagInfo> itemTypeList = self.GetItemByLoc(itemLocType);
+            for (int k = itemTypeList.Count - 1; k >= 0; k--)
+            {
+                if (itemTypeList[k].BagInfoID == bagInfoId)
+                {
+                    m2c_bagUpdate.BagInfoDelete.Add(itemTypeList[k]);
+                    itemTypeList.RemoveAt(k);
+                    break;
+                }
+            }
+
+            MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
+            return true;
+        }
+
         public static bool OnCostItemData(this BagComponentServer self, List<long> costItems, ItemLocType itemLocType = ItemLocType.ItemLocBag)
         {
             //通知客户端背包刷新
@@ -1265,6 +1283,7 @@ namespace ET
 
             //通知客户端背包刷新
             Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             m2c_bagUpdate.BagInfoAdd = new List<BagInfo>();
 
@@ -1277,28 +1296,28 @@ namespace ET
                 if (itemID == (int)UserDataType.Gold)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, itemNum.ToString(), true, itemGetWay);
+                    roleInfo.UpdateRoleMoneySub(UserDataType.Gold, itemNum.ToString(), true, itemGetWay);
                     continue;
                 }
             
                 if (itemID == (int)UserDataType.Diamond)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, itemNum.ToString(), true, itemGetWay);
+                    roleInfo.UpdateRoleMoneySub(UserDataType.Diamond, itemNum.ToString(), true, itemGetWay);
                     continue;
                 }
              
                 if (itemID == (int)UserDataType.JiaYuanFund)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.JiaYuanFund, itemNum.ToString());
+                    roleInfo.UpdateRoleData(UserDataType.JiaYuanFund, itemNum.ToString());
                     continue;
                 }
                
                 if (itemID == (int)UserDataType.UnionContri)
                 {
                     itemNum = -1 * itemNum;
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.UnionContri, itemNum.ToString());
+                    roleInfo.UpdateRoleData(UserDataType.UnionContri, itemNum.ToString());
                     continue;
                 }
                 
@@ -1413,7 +1432,7 @@ namespace ET
                 //极品属性
                 //强化登录（List长度13， 13个位置）
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID);
-                int qianghuaLv = unit.GetComponent<BagComponentServer>().GetQiangHuaLevel(caowei);
+                int qianghuaLv = self.GetQiangHuaLevel(caowei);
 
                 occInitAttribute.AddRange( equipList[i].BaseAttrList );
 

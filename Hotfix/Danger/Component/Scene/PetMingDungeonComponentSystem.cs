@@ -27,7 +27,7 @@ namespace ET
                         Postion = self.Position,
                         UnitID = self.MainUnit.Id,
                         TeamId = self.TeamId,
-                        WinPlayer = self.MainUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
+                        WinPlayer = unitName,
                     });
             }
         }
