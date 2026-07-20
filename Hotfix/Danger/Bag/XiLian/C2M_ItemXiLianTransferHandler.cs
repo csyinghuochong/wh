@@ -12,8 +12,9 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemXiLianTransferRequest request, M2C_ItemXiLianTransferResponse response, Action reply)
         {
-            BagInfo bagInfo_1 = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID_1);
-            BagInfo bagInfo_2 = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID_2);
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            BagInfo bagInfo_1 = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID_1);
+            BagInfo bagInfo_2 = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID_2);
             if (bagInfo_1 == null || bagInfo_2 == null)
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
@@ -69,7 +70,7 @@ namespace ET
             }
 
             string costItem = LDGlobalValueCategory.Instance.Get(51).Value;
-            if (!unit.GetComponent<BagComponentServer>().OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.ItemXiLian))
+            if (!bagComponentServer.OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.ItemXiLian))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
@@ -88,7 +89,6 @@ namespace ET
 
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             //通知客户端背包道具发生改变
-            m2c_bagUpdate.BagInfoUpdate = new List<BagInfo>();
             m2c_bagUpdate.BagInfoUpdate.Add(bagInfo_1);
             m2c_bagUpdate.BagInfoUpdate.Add(bagInfo_2);
             MessageHelper.SendToClient(unit, m2c_bagUpdate);

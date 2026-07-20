@@ -30,7 +30,8 @@ namespace ET
             List<Unit> unitlist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
             for (int i = 0; i < unitlist.Count; i++)
             {
-                unitlist[i].GetComponent<NumericComponent>().ApplyValue(NumericType.ArenaNumber, 1);
+                NumericComponent numericComponent = unitlist[i].GetComponent<NumericComponent>();
+                numericComponent.ApplyValue(NumericType.ArenaNumber, 1);
             }
 
             self.OnUpdateRank();

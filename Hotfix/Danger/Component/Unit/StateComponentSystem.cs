@@ -175,7 +175,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             self.CurrentStateType = self.CurrentStateType | nowStateType;
-#if SERVER
+
             //眩晕状态停止当前移动(服务器代码)
             if ( ErrorCode.ERR_Success!=self.CanMove())
             {
@@ -199,20 +199,6 @@ namespace ET
                     MessageHelper.SendToClient(self.GetParent<Unit>(), new M2C_UnitStateUpdate() { UnitId = self.Parent.Id, StateType = (long)nowStateType, StateValue = stateValue, StateOperateType = 1, StateTime = 0 });
                 }   
             }  */
-#else
-            if (unit.MainHero)
-            {
-                if (ErrorCode.ERR_Success != self.CanMove())
-                {
-                    self.SilenceCheckTime = TimeHelper.ServerNow();
-                }
-                if (nowStateType == StateTypeEnum.Dizziness || nowStateType == StateTypeEnum.Shackle)
-                {
-                    self.ZoneScene().GetComponent<AttackComponent>().RemoveTimer();
-                }
-                unit.GetComponent<SingingComponent>().StateTypeAdd(nowStateType);
-            }
-#endif
         }
 
         public static bool IsBroadcastType(this StateComponent self, long nowStateType)

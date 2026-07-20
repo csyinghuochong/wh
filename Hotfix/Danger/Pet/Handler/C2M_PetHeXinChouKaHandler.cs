@@ -8,7 +8,9 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_PetHeXinChouKaRequest request, M2C_PetHeXinChouKaResponse response, Action reply)
         {
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < request.ChouKaType)
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            if (bagComponentServer.GetBagLeftCell() < request.ChouKaType)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -16,7 +18,7 @@ namespace ET
             }
 
             int dropId = 0;
-            int exlporeNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PetHeXinExploreNumber);
+            int exlporeNumber = numericComponent.GetAsInt(NumericType.PetHeXinExploreNumber);
             string[] set = LDGlobalValueCategory.Instance.Get(112).Value.Split(';');
             float discount;
             if (exlporeNumber < int.Parse(set[0])) // 超过300次打8折
@@ -32,7 +34,7 @@ namespace ET
             {
                 string needItems = LDGlobalValueCategory.Instance.Get(110).Value.Split('@')[0];
                 dropId = int.Parse(LDGlobalValueCategory.Instance.Get(110).Value.Split('@')[1]);
-                bool sucess = unit.GetComponent<BagComponentServer>().OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);
+                bool sucess = bagComponentServer.OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);
                 if (!sucess)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -46,17 +48,14 @@ namespace ET
             {
                 string[] itemInfo10 = LDGlobalValueCategory.Instance.Get(111).Value.Split('@')[0].Split(';');
                 dropId = int.Parse(LDGlobalValueCategory.Instance.Get(111).Value.Split('@')[1]);
-                bool sucess = unit.GetComponent<BagComponentServer>().OnCostItemData(new List<RewardItem>()
-                {
-                    new RewardItem() { ItemID = int.Parse(itemInfo10[0]), ItemNum = (int)(int.Parse(itemInfo10[1]) * discount) }
-                }, ItemLocType.ItemLocBag, ItemGetWay.PetChouKa);
+                bool sucess = bagComponentServer.OnCostItemData($"{itemInfo10[0]};{(int)(int.Parse(itemInfo10[1]) * discount)}", ItemLocType.ItemLocBag, ItemGetWay.PetChouKa);
                 if (!sucess)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     reply();
                     return;
                 }
-                unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetHeXinExploreNumber, 10, 0);
+                numericComponent.ApplyChange(null, NumericType.PetHeXinExploreNumber, 10, 0);
             }
             else
             {
@@ -72,7 +71,7 @@ namespace ET
                 DropHelper.DropIDToDropItem_2(dropId, rewardItems);
             }
             
-            unit.GetComponent<BagComponentServer>()
+            bagComponentServer
                     .OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetExplore}_{TimeHelper.ServerNow()}");
             response.ReardList = rewardItems;
             reply();

@@ -360,7 +360,7 @@ namespace ET
                     m2C_UnitBuffStatus.FlyType = 11;
                     m2C_UnitBuffStatus.BuffID = buffData.BuffId;
                     //全部广播
-                    MessageHelper.Broadcast(self.GetParent<Unit>(), m2C_UnitBuffStatus);
+                    MessageHelper.Broadcast(unit, m2C_UnitBuffStatus);
                     return;
                 }
             }
@@ -376,7 +376,7 @@ namespace ET
                     m2C_UnitBuffStatus.FlyType = 12;
                     m2C_UnitBuffStatus.BuffID = buffData.BuffId;
                     //当前场景内的玩家全部广播
-                    MessageHelper.Broadcast(self.GetParent<Unit>(), m2C_UnitBuffStatus);
+                    MessageHelper.Broadcast(unit, m2C_UnitBuffStatus);
                     return;
                 }
             }

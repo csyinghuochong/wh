@@ -445,15 +445,14 @@ namespace ET
 
                 //DateTime dateTime =  TimeHelper.DateTimeNow();
                 //根据refreshMonster.Time可以纠正时间
-                self.CreateMonsters(refreshMonster).Coroutine();
+                self.CreateMonsters(refreshMonster, mapComponent).Coroutine();
             }
         }
 
-        public static  async ETTask CreateMonsters(this YeWaiRefreshComponent self, RefreshMonster refreshMonster)
+        public static  async ETTask CreateMonsters(this YeWaiRefreshComponent self, RefreshMonster refreshMonster, MapComponent mapComponent)
         {
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(refreshMonster.MonsterId);
             Vector3 form = new Vector3(refreshMonster.PositionX, refreshMonster.PositionY, refreshMonster.PositionZ);
-            MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
 
             if (mapComponent.MapTypeEnum == MapTypeEnum.UnionRace)
             {

@@ -31,6 +31,8 @@ namespace ET
             }
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             //if (roleInfoComponentServer.RoleInfo.RechargeReward.Contains(request.RechargeNumber))
             //{
             //    response.Error = ErrorCode.ERR_AlreadyReceived;
@@ -38,7 +40,7 @@ namespace ET
             //    return;
             //}
 
-            long rechargeTotal = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber);
+            long rechargeTotal = numericComponent.GetAsLong(NumericType.RechargeNumber);
             if (rechargeTotal < request.RechargeNumber)
             {
                 response.Error = ErrorCode.Pre_Condition_Error;
@@ -57,14 +59,14 @@ namespace ET
             }
             
             string[] rewardList = rewarditem.Split('@');
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < rewardList.Length)
+            if (bagComponentServer.GetBagLeftCell() < rewardList.Length)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
                 return;
             }
 
-            unit.GetComponent<BagComponentServer>().OnAddItemData(rewarditem, $"{93}_{TimeHelper.ServerNow()}");
+            bagComponentServer.OnAddItemData(rewarditem, $"{93}_{TimeHelper.ServerNow()}");
             reply();
             await ETTask.CompletedTask;
         }

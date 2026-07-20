@@ -503,7 +503,9 @@ namespace ET
 		/// <param name="skillid"></param>
 		public static void OnJueXing(this SkillSetComponentServer self, int skillid)
 		{
-			self.OnAddItemSkill( new List<int>() { skillid } );
+			using ListComponent<int> skills = ListComponent<int>.Create();
+			skills.Add(skillid);
+			self.OnAddItemSkill(skills);
         }
 
 		public static void OnLogin(this SkillSetComponentServer self, int occ)

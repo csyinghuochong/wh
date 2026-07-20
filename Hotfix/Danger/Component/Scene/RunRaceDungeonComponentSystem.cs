@@ -201,9 +201,8 @@ namespace ET
                     ServerMessageHelper.SendBroadMessage( self.DomainZone(), NoticeType.Notice, messagecontent, messagecontentEn);
                 }
 
-                List<Unit> unitlist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
                 M2C_RankRunRaceMessage m2C_RankRun = new M2C_RankRunRaceMessage() { RankList = Response.RankList };
-                MessageHelper.SendToClient(unitlist, m2C_RankRun);
+                MessageHelper.SendToClient(units, m2C_RankRun);
 
                 if (!unit.IsDisposed)
                 {
@@ -263,8 +262,6 @@ namespace ET
 
             if (!self.HaveArrived)
             {
-                units = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
-
                 List<RankingInfo> rankList = new List<RankingInfo>();
                 for (int i = 0; i < units.Count; i++)
                 {

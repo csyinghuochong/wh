@@ -81,7 +81,8 @@ namespace ET
                 {
                     continue;
                 }
-                if (entity.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead)  == 1)
+                NumericComponent numericComponent = entity.GetComponent<NumericComponent>();
+                if (numericComponent.GetAsInt(NumericType.Now_Dead)  == 1)
                 {
                     entity.GetComponent<UnitLifeComponent>()?.OnRevive();
                 }

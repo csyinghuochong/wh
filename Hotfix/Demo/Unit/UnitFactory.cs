@@ -325,7 +325,7 @@ namespace ET
             unit.AddComponent<AttackRecordComponent>();
             UnitCombatComponentHelper.EnsureLifeComponent(unit);
             unitInfoComponent.UnitName = master.GetComponent<UnitInfoComponent>().UnitName;
-            unit.GetComponent<NumericComponent>().Set(NumericType.MasterId, master.Id);
+            numericComponent.Set(NumericType.MasterId, master.Id);
             numericComponent.Set(NumericType.BattleCamp, master.GetBattleCamp());
             numericComponent.Set(NumericType.AttackMode, master != null ? master.GetAttackMode() : 0);
             numericComponent.Set(NumericType.TeamId, master.GetTeamId());
@@ -342,8 +342,9 @@ namespace ET
             aIComponent.Begin();
 
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
-            unit.AddComponent<SkillPassiveComponent>().UpdateMonsterPassiveSkill();
-            unit.GetComponent<SkillPassiveComponent>().Activeted();
+            SkillPassiveComponent skillPassiveComponent = unit.AddComponent<SkillPassiveComponent>();
+            skillPassiveComponent.UpdateMonsterPassiveSkill();
+            skillPassiveComponent.Activeted();
             return unit;
         }
 
@@ -356,7 +357,8 @@ namespace ET
             unit.AddComponent<MoveComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unit.AddComponent<SkillManagerComponent>();
-            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            MapComponent mapComponent = scene.GetComponent<MapComponent>();
+            unit.AddComponent<PathfindingComponent, int>(mapComponent.NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             unit.ConfigId = petinfo.ConfigId;
             unit.MasterId = masterId;
@@ -368,7 +370,6 @@ namespace ET
             unit.Type = UnitType.Pet;
             unit.Rotation = Quaternion.Euler(0f, rotation, 0f);
             AIComponent aIComponent = unit.AddComponent<AIComponent, int>(1);     //AI行为树序号
-            MapComponent mapComponent = scene.GetComponent<MapComponent>();
             switch (mapComponent.MapTypeEnum)
             {
                 case (int)MapTypeEnum.PetDungeon:
@@ -395,8 +396,9 @@ namespace ET
             long max_hp = numericComponent.GetAsLong(NumericType.HP_Max_10);
             numericComponent.SetValueNoSync(NumericType.Numeric_Error, max_hp);
             unit.AddComponent<AOIEntity, int, Vector3>(1 * 1000, unit.Position);
-            unit.AddComponent<SkillPassiveComponent>().UpdatePetPassiveSkill(petinfo);
-            unit.GetComponent<SkillPassiveComponent>().Activeted();
+            SkillPassiveComponent skillPassiveComponent = unit.AddComponent<SkillPassiveComponent>();
+            skillPassiveComponent.UpdatePetPassiveSkill(petinfo);
+            skillPassiveComponent.Activeted();
             return unit;
         }
 
@@ -587,8 +589,9 @@ namespace ET
             //numericComponent.Set(NumericType.Numeric_Error, 50000, false);
 
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
-            unit.AddComponent<SkillPassiveComponent>().UpdateJingLingSkill(jinglingId);
-            unit.GetComponent<SkillPassiveComponent>().Activeted();
+            SkillPassiveComponent skillPassiveComponent = unit.AddComponent<SkillPassiveComponent>();
+            skillPassiveComponent.UpdateJingLingSkill(jinglingId);
+            skillPassiveComponent.Activeted();
             return unit;
         }
 

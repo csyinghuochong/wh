@@ -39,7 +39,8 @@ namespace ET
             }
 
             //背包已满
-            if (unit.GetComponent<BagComponentServer>().IsBagFull()) {
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            if (bagComponentServer.IsBagFull()) {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
                 return;
@@ -72,7 +73,7 @@ namespace ET
                     int dropid = int.Parse(droplist[0]);
                     List<RewardItem> rewardItems = new List<RewardItem>();
                     DropHelper.DropIDToDropItem_2(dropid, rewardItems);
-                    unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, String.Empty, $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
+                    bagComponentServer.OnAddItemData(rewardItems, String.Empty, $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
                     break;
                 case 0:
                     List<int> weights = ListComponent<int>.Create();
@@ -81,7 +82,7 @@ namespace ET
                         weights.Add(CommonConfig.ExpToItemList[i].KeyId);
                     }
                     int index = RandomHelper.RandomByWeight(weights);
-                    unit.GetComponent<BagComponentServer>().OnAddItemData(CommonConfig.ExpToItemList[index].Value,  $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
+                    bagComponentServer.OnAddItemData(CommonConfig.ExpToItemList[index].Value,  $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
                     break;
                 default:
                     break;

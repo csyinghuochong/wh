@@ -42,16 +42,17 @@ namespace ET
                 return;
             }
 
-            JiaYuanPet jiaYuanPet = unit.GetComponent<JiaYuanComponentServer>().GetJiaYuanPet(request.PetId);
+            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
+            JiaYuanPet jiaYuanPet = jiaYuanComponentServer.GetJiaYuanPet(request.PetId);
           
             unit.GetComponent<PetComponentServer>().OnPetWalk(request.PetId, request.PetStatus);
-            unit.GetComponent<JiaYuanComponentServer>().OnJiaYuanPetWalk(rolePetInfo, request.PetStatus, request.Position);
+            jiaYuanComponentServer.OnJiaYuanPetWalk(rolePetInfo, request.PetStatus, request.Position);
             UnitComponent unitComponent = unit.GetParent<UnitComponent>();
             if (request.PetStatus == 2)
             {
                 if (unitComponent.Get(request.PetId) == null)
                 {
-                    UnitFactory.CreateJiaYuanPet(unit.DomainScene(), unit.Id, unit.GetComponent<JiaYuanComponentServer>().GetJiaYuanPet(request.PetId) );
+                    UnitFactory.CreateJiaYuanPet(unit.DomainScene(), unit.Id, jiaYuanPet);
                 }
             }
             if (request.PetStatus == 0)
@@ -65,8 +66,8 @@ namespace ET
                     unit.GetComponent<PetComponentServer>().PetAddExp(rolePetInfo, (int)jiaYuanPet.CurExp);
                 }
             }
-            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
-            response.JiaYuanPetList = unit.GetComponent<JiaYuanComponentServer>().JiaYuanPetList_2;
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer).Coroutine();
+            response.JiaYuanPetList = jiaYuanComponentServer.JiaYuanPetList_2;
             reply();
             await ETTask.CompletedTask;
         }

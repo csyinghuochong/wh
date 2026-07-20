@@ -84,11 +84,12 @@ namespace ET
             }
             if (update)
             {
-                Unit unit = self.GetParent<Unit>(); 
-                int title = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TitleID);
+                Unit unit = self.GetParent<Unit>();
+                NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+                int title = numericComponent.GetAsInt(NumericType.TitleID);
                 if (title > 0 && !self.IsHaveTitle(title))
                 {
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TitleID, 0, notice);
+                    numericComponent.ApplyValue(NumericType.TitleID, 0, notice);
                 }
             }
         }

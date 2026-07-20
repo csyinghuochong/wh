@@ -873,14 +873,13 @@ namespace ET
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            long mapInstanceId = DBHelper.GetRankServerId(self.GetParent<Unit>());
+            long mapInstanceId = DBHelper.GetRankServerId(unit);
             RankingInfo rankPetInfo = new RankingInfo();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            rankPetInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
-            rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
-            rankPetInfo.PlayerLv = roleInfoComponentServer.RoleInfo.Lv;
-            rankPetInfo.Combat = roleInfoComponentServer.RoleInfo.Combat;
-            rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
+            rankPetInfo.UserId = self.RoleInfo.UserId;
+            rankPetInfo.PlayerName = self.RoleInfo.Name;
+            rankPetInfo.PlayerLv = self.RoleInfo.Lv;
+            rankPetInfo.Combat = self.RoleInfo.Combat;
+            rankPetInfo.Occ = self.RoleInfo.Occ;
             int campId = numericComponent.GetAsInt(NumericType.AcvitiyCamp);
             R2M_RankUpdateResponse Response = (R2M_RankUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankUpdateRequest()

@@ -400,7 +400,8 @@ namespace ET
                 {
                     chengJiu.TriggerEvent(ChengJiuTargetEnum.PassTeamShenYuanNumber_21, 0, 1);
                 }
-                if (unititem.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
+                RoleInfoComponentServer roleInfoComponentServer = unititem.GetComponent<RoleInfoComponentServer>();
+                if (roleInfoComponentServer.RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
                 {
                 }
                 MessageHelper.SendToClient(unititem, m2C_FubenSettlement);

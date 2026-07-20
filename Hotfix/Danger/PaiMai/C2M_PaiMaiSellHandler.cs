@@ -34,6 +34,9 @@ namespace ET
     //                return;
     //            }
 
+                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+
                 //获取时间戳
                 long currentTime = TimeHelper.ServerNow();
 
@@ -41,14 +44,14 @@ namespace ET
                 long paimaiItemId = IdGenerater.Instance.GenerateId();
 				request.PaiMaiItemInfo.Id = paimaiItemId;
 
-                request.PaiMaiItemInfo.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
-				request.PaiMaiItemInfo.UserId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId;
-                request.PaiMaiItemInfo.Account = unit.GetComponent<RoleInfoComponentServer>().Account;
+                request.PaiMaiItemInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
+				request.PaiMaiItemInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
+                request.PaiMaiItemInfo.Account = roleInfoComponentServer.Account;
 				request.PaiMaiItemInfo.SellTime = currentTime;
 
 				//对比出售数量和道具是否匹配
 				long bagInfoId = request.PaiMaiItemInfo.BagInfo.BagInfoID;
-				BagInfo bagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, bagInfoId);
+				BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoId);
 				if (bagInfo == null)
 				{
 					response.Error = ErrorCode.ERR_ItemNotEnoughError;      //道具不足
@@ -99,7 +102,7 @@ namespace ET
 				if (r_GameStatusResponse.Error == ErrorCode.ERR_Success)
 				{
 					//扣除对应道具
-					unit.GetComponent<BagComponentServer>().OnCostItemData(request.PaiMaiItemInfo.BagInfo.BagInfoID, request.PaiMaiItemInfo.BagInfo.ItemNum);
+					bagComponentServer.OnCostItemData(request.PaiMaiItemInfo.BagInfo.BagInfoID, request.PaiMaiItemInfo.BagInfo.ItemNum);
 					response.PaiMaiItemInfo = request.PaiMaiItemInfo;
 					LogHelper.LogWarning(response.PaiMaiItemInfo.PlayerName + "上架道具：" + request.PaiMaiItemInfo.BagInfo.ItemID + "数量" + request.PaiMaiItemInfo.BagInfo.ItemNum + "时间戳:" + currentTime.ToString(), true);
                 }

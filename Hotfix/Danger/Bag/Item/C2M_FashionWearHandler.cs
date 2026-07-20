@@ -10,6 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_FashionWearRequest request, M2C_FashionWearResponse response, Action reply)
         {
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             if (!bagComponentServer.FashionActiveIds.Contains(request.FashionId))
             {
                 Log.Error($"C2M_FashionWearRequest.1");
@@ -18,7 +19,7 @@ namespace ET
                 return;
             }
 
-            int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
+            int occ = roleInfoComponentServer.RoleInfo.Occ;
             LDFashion ldFashion = LDFashionCategory.Instance.Get(request.FashionId);
 
             bool canwear = false;
