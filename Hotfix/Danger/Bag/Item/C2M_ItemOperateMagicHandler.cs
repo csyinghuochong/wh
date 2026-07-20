@@ -11,6 +11,8 @@ namespace ET
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo useInfo = roleInfoComponentServer.RoleInfo;
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
             long bagInfoID = request.OperateBagID;
 
             ItemLocType locType = ItemLocType.ItemLocBag;
@@ -29,7 +31,7 @@ namespace ET
             }
             
           
-            BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, bagInfoID);
+            BagInfo useBagInfo = bagComponentServer.GetItemByLoc(locType, bagInfoID);
             if (useBagInfo == null )
             {
                 reply();
@@ -84,20 +86,20 @@ namespace ET
                 }
 
                 //获取之前的位置是否有装备
-                BagInfo beforeequip = unit.GetComponent<BagComponentServer>().GetMagicEquipBySubType(ItemLocType.ItemLocEquip,  equipposition);
+                BagInfo beforeequip = bagComponentServer.GetMagicEquipBySubType(ItemLocType.ItemLocEquip,  equipposition);
                 if (beforeequip != null)
                 {
-                    unit.GetComponent<BagComponentServer>().OnChangeItemLoc(beforeequip, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
-                    unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
+                    bagComponentServer.OnChangeItemLoc(beforeequip, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
+                    bagComponentServer.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
 
-                    unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
-                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
+                    skillSetComponentServer.OnTakeOffEquip(ItemLocType.ItemLocEquip, beforeequip);
+                    skillSetComponentServer.OnWearEquip(useBagInfo);
                     m2c_bagUpdate.BagInfoUpdate.Add(beforeequip);
                 }
                 else
                 {
-                    unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
-                    unit.GetComponent<SkillSetComponentServer>().OnWearEquip(useBagInfo);
+                    bagComponentServer.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
+                    skillSetComponentServer.OnWearEquip(useBagInfo);
                     //useBagInfo.EquipIndex = equipposition;
                 }
                
@@ -116,7 +118,7 @@ namespace ET
             if (request.OperateType == 4)
             {
                 //判断背包格子是否足够
-                bool full = unit.GetComponent<BagComponentServer>().IsBagFull();
+                bool full = bagComponentServer.IsBagFull();
                 if (full)
                 {
                     response.Error = ErrorCode.ERR_BagIsFull;
@@ -124,8 +126,8 @@ namespace ET
                     return;
                 }
                
-                unit.GetComponent<BagComponentServer>().OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
-                unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
+                bagComponentServer.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
+                skillSetComponentServer.OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }

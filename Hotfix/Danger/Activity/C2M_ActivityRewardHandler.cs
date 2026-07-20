@@ -10,6 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ActivityRewardRequest request, M2C_ActivityRewardResponse response, Action reply)
         {
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (bagComponentServer.GetBagLeftCell() < 1)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -23,7 +24,7 @@ namespace ET
             switch (request.ActivityType)
             {
                 case ActivityV1Config.ActivityV1_ChouKa:
-                    if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1ChouKaNumber) < request.RewardId)
+                    if (numericComponent.GetAsInt(NumericType.V1ChouKaNumber) < request.RewardId)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();
@@ -44,7 +45,7 @@ namespace ET
                         return;
                     }
                     rewarditem = ActivityV1Config.ChouKaNumberReward[request.RewardId];
-                    unit.GetComponent<BagComponentServer>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
+                    bagComponentServer.OnAddItemData(rewarditem, $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
                     activityComponentServer.ActivityV1Info.ChouKaNumberReward.Add(request.RewardId);
                     break;
                 case ActivityV1Config.ActivityV1_Consume:
@@ -61,14 +62,14 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (unit.GetComponent<NumericComponent>().GetAsLong(NumericType.V1DayCostDiamond) < request.RewardId)
+                    if (numericComponent.GetAsLong(NumericType.V1DayCostDiamond) < request.RewardId)
                     {
                         response.Error = ErrorCode.Pre_Condition_Error;
                         reply();
                         return;
                     }
                     rewarditem = ActivityV1Config.ConsumeDiamondReward[request.RewardId];
-                    unit.GetComponent<BagComponentServer>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
+                    bagComponentServer.OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponentServer.ActivityV1Info.ConsumeDiamondReward.Add(request.RewardId);
                     break;
                 case ActivityV1Config.ActivityV1_Points:
@@ -96,7 +97,7 @@ namespace ET
                         return;
                     }
 
-                    unit.GetComponent<BagComponentServer>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
+                    bagComponentServer.OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponentServer.ActivityV1Info.PointsReward.Add(request.RewardId);
                     break;
 
@@ -131,7 +132,7 @@ namespace ET
                         return;
                     }
 
-                    unit.GetComponent<BagComponentServer>().OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
+                    bagComponentServer.OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponentServer.ActivityV1Info.PointsShuxuReward = request.RewardId;
                     break;
                 case ActivityV1Config.ActivityV1_PointsChouKa:
@@ -145,8 +146,8 @@ namespace ET
                
                     break;
                 case ActivityV1Config.ActivityV1_HongBao:
-                    int hongbaoNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1HongBaoNumber);
-                    long v1rechargeNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.V1RechageNumber);
+                    int hongbaoNumber = numericComponent.GetAsInt(NumericType.V1HongBaoNumber);
+                    long v1rechargeNumber = numericComponent.GetAsInt(NumericType.V1RechageNumber);
                     int totalHongBa0 = (int)(v1rechargeNumber / 98);
                     if (hongbaoNumber >= totalHongBa0)
                     {
@@ -162,8 +163,8 @@ namespace ET
                         reply();
                         return;
                     }
-                    unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.ItemBox_9}_{TimeHelper.ServerNow()}");
-                    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.V1HongBaoNumber, 1, 0);
+                    bagComponentServer.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.ItemBox_9}_{TimeHelper.ServerNow()}");
+                    numericComponent.ApplyChange(null, NumericType.V1HongBaoNumber, 1, 0);
                     break;
                 case ActivityV1Config.ActivityV1_DuiHuanWord:
                     if (bagComponentServer.GetBagLeftCell() < 1)

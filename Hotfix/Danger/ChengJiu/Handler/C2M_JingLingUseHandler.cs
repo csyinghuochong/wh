@@ -9,9 +9,10 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_JingLingUseRequest request, M2C_JingLingUseResponse response, Action reply)
         {
             ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
-            if (unit.GetParent<UnitComponent>().Get(chengJiuComponentServer.JingLingUnitId) != null)
+            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+            if (unitComponent.Get(chengJiuComponentServer.JingLingUnitId) != null)
             {
-                unit.GetParent<UnitComponent>().Remove(chengJiuComponentServer.JingLingUnitId);
+                unitComponent.Remove(chengJiuComponentServer.JingLingUnitId);
             }
             if (chengJiuComponentServer.JingLingId != 0)
             {

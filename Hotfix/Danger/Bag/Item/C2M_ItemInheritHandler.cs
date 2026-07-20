@@ -9,7 +9,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemInheritRequest request, M2C_ItemInheritResponse response, Action reply)
         {
-            BagInfo bagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID);
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID);
             if (bagInfo == null)
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
@@ -25,14 +26,13 @@ namespace ET
 
             LDEquip Item = LDEquipCategory.Instance.Get(bagInfo.ItemID);
             string costitem = null;
-            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             if (!bagComponentServer.CheckNeedItem(costitem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;
             }
-            unit.GetComponent<BagComponentServer>().OnCostItemData(costitem, ItemLocType.ItemLocBag, ItemGetWay.ItemXiLian  );
+            bagComponentServer.OnCostItemData(costitem, ItemLocType.ItemLocBag, ItemGetWay.ItemXiLian  );
 
 
             int skillid = 0;

@@ -49,9 +49,10 @@ namespace ET
             ArenaInfo arenaInfo = self.DomainScene().GetComponent<ArenaInfo>();
             for (int i = 0; i < unitlist.Count; i++)
             {
-                ArenaPlayerStatu arenaPlayerStatu = arenaInfo.PlayerList[unitlist[i].Id];
+                long id = unitlist[i].Id;
+                ArenaPlayerStatu arenaPlayerStatu = arenaInfo.PlayerList[id];
                 arenaPlayerStatu.RankId = unitlist.Count;
-                arenaInfo.PlayerList[unitlist[i].Id] = arenaPlayerStatu;
+                arenaInfo.PlayerList[id] = arenaPlayerStatu;
             }
 
             List<Unit>  unitlist_1 = UnitHelper.GetAliveUnitList(self.DomainScene(), UnitType.Monster);

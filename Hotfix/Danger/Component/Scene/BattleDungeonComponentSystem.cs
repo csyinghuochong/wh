@@ -34,6 +34,8 @@ namespace ET
             List<Unit> units = self.DomainScene().GetComponent<UnitComponent>().GetAll();
             M2C_BattleInfoResult m2C_Battle = self.m2C_BattleInfoResult;
             m2C_Battle.SceneType = MapTypeEnum.Battle;
+            m2C_Battle.CampKill_1 = self.CampKillNumber_1;
+            m2C_Battle.CampKill_2 = self.CampKillNumber_2;
             for (int i = 0; i < units.Count; i++)
             {
                 if (units[i].Type != UnitType.Player)
@@ -41,8 +43,6 @@ namespace ET
                     continue;
                 }
 
-                m2C_Battle.CampKill_1 = self.CampKillNumber_1;
-                m2C_Battle.CampKill_2 = self.CampKillNumber_2;
                 MessageHelper.SendToClient(units[i], m2C_Battle);
             }
 

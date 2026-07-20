@@ -193,9 +193,7 @@ namespace ET
 						{
 							case ItemBigType.Type_Item:
 							case ItemBigType.Type_Equip:
-								List<RewardItem> rewardItems = new List<RewardItem>();
-								rewardItems.Add(new RewardItem() {  ItemType =itemType,  ItemID = itemId, ItemNum = itemNumber });
-								unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", true, true);
+								unit.GetComponent<BagComponentServer>().OnAddItemData($"{itemId};{itemNumber}", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", true);
 								break;
 							case ItemBigType.Type_Pet:
 								unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.GM, itemId);

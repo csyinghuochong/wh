@@ -33,8 +33,6 @@ namespace ET
 
             // 通知客户端背包刷新
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-            //通知客户端背包道具发生改变
-            m2c_bagUpdate.BagInfoUpdate = new List<BagInfo>();
 
             LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
 
@@ -46,12 +44,12 @@ namespace ET
                 long equipid = long.Parse(geminfos[0]);
                 int gemIndex = int.Parse(geminfos[1]);
 
-                BagInfo equipInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocEquip, equipid);
+                BagInfo equipInfo = bagcComponentServer.GetItemByLoc(ItemLocType.ItemLocEquip, equipid);
 
                 //获取装备baginfo
                 if (equipInfo == null)
                 {
-                    equipInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, equipid);
+                    equipInfo = bagcComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, equipid);
                 }
                 if (equipInfo == null)
                 {
@@ -82,7 +80,7 @@ namespace ET
                 {
                     int equipShiShiGemNum = 0;
                     bool isTihuan = false;
-                    List<BagInfo> EquipList = unit.GetComponent<BagComponentServer>().EquipList;
+                    List<BagInfo> EquipList = bagcComponentServer.EquipList;
                     for (int i = 0; i < EquipList.Count; i++)
                     {
                         string[] gemList = EquipList[i].GemIDNew.Split('_');
@@ -124,14 +122,14 @@ namespace ET
                 equipInfo.isBinging = true;
                 m2c_bagUpdate.BagInfoUpdate.Add(equipInfo);
                 //消耗宝石
-                unit.GetComponent<BagComponentServer>().OnCostItemData(useBagInfo.BagInfoID, 1);
+                bagcComponentServer.OnCostItemData(useBagInfo.BagInfoID, 1);
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             }
 
             //卸下宝石
             if (request.OperateType == 10)
             {
-                if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < 1)
+                if (bagcComponentServer.GetBagLeftCell() < 1)
                 {
                     response.Error = ErrorCode.ERR_BagIsFull;
                     reply();
@@ -169,7 +167,7 @@ namespace ET
                 //回收宝石
                 if (gemItemId != 0)
                 {
-                    bool ret =   unit.GetComponent<BagComponentServer>().OnAddItemData($"{gemItemId};1", $"{ItemGetWay.GemHuiShou}_{TimeHelper.ServerNow()}");
+                    bool ret =   bagcComponentServer.OnAddItemData($"{gemItemId};1", $"{ItemGetWay.GemHuiShou}_{TimeHelper.ServerNow()}");
                     Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
                     if (!ret)

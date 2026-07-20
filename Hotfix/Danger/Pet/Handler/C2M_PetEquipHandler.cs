@@ -21,13 +21,12 @@ namespace ET
 
             //通知客户端背包刷新
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-            //通知客户端背包道具发生改变
-            m2c_bagUpdate.BagInfoUpdate = new List<BagInfo>();
 
             long takeOffId = 0;
+            BagInfo bagInfo = null;
             if (request.OperateType == 1) //穿戴
             {
-                BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoId);
+                bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoId);
                 if (bagInfo == null)
                 {
                     response.Error = ErrorCode.ERR_ItemNotExist;
@@ -81,8 +80,6 @@ namespace ET
 
             if (request.OperateType == 1) //穿戴
             {
-                BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoId);
-
                 //新的装备给宠物
                 //bagComponentServer.OnChangeItemLoc(bagInfo, ItemLocType.PetLocEquip, ItemLocType.ItemLocBag);
                 m2c_bagUpdate.BagInfoUpdate.Add(bagInfo);

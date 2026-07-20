@@ -9,7 +9,12 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_PetEggChouKaRequest request, M2C_PetEggChouKaResponse response, Action reply)
         {
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < request.ChouKaType)
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+
+            if (bagComponentServer.GetBagLeftCell() < request.ChouKaType)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -24,7 +29,7 @@ namespace ET
             }
 
             int dropId = 0;
-            int exlporeNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PetExploreNumber);
+            int exlporeNumber = numericComponent.GetAsInt(NumericType.PetExploreNumber);
             string[] set = LDGlobalValueCategory.Instance.Get(107).Value.Split(';');
             float discount;
             if (exlporeNumber < int.Parse(set[0])) // 超过300次打8折
@@ -40,7 +45,7 @@ namespace ET
             {
                 string needItems = LDGlobalValueCategory.Instance.Get(39).Value.Split('@')[0];
                 dropId = int.Parse(LDGlobalValueCategory.Instance.Get(39).Value.Split('@')[1]);
-                bool sucess = unit.GetComponent<BagComponentServer>().OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
+                bool sucess = bagComponentServer.OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
                 if (!sucess)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -48,17 +53,15 @@ namespace ET
                     return;
                 }
 
-                unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetExploreNumber, 1, 0);
+                numericComponent.ApplyChange(null, NumericType.PetExploreNumber, 1, 0);
             }
             else if (request.ChouKaType == 10)
             {
-                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
                 int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(40).Value.Split('@')[0]);
                 dropId = int.Parse(LDGlobalValueCategory.Instance.Get(40).Value.Split('@')[1]);
 
                 if (request.CostType == 2)
                 {
-                    BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                     if (bagComponentServer.GetItemNumber(ItemBigType.Type_Item, CommonConfig.ZuanShiTenChoukaItem) < 1)
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -67,7 +70,7 @@ namespace ET
                     }
 
                     bagComponentServer.OnCostItemData($"{CommonConfig.ZuanShiTenChoukaItem};1", ItemLocType.ItemLocBag, ItemGetWay.ChouKa);
-                    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetExploreNumber, 10, 0);
+                    numericComponent.ApplyChange(null, NumericType.PetExploreNumber, 10, 0);
                 }
                 else
                 {
@@ -77,8 +80,8 @@ namespace ET
                         reply();
                         return;
                     }
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (-1 * (int)(needDimanond * discount)).ToString(), true, ItemGetWay.PetChouKa);
-                    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetExploreNumber, 10, 0);
+                    roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * (int)(needDimanond * discount)).ToString(), true, ItemGetWay.PetChouKa);
+                    numericComponent.ApplyChange(null, NumericType.PetExploreNumber, 10, 0);
                 }
             }
 
@@ -87,15 +90,15 @@ namespace ET
 
             if (newValue > oldValue)
             {
-                unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetExploreLuckly, RandomHelper.RandomNumber(5,16), 0);
+                numericComponent.ApplyChange(null, NumericType.PetExploreLuckly, RandomHelper.RandomNumber(5,16), 0);
             }
-            int exploreLuck = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PetExploreLuckly);
+            int exploreLuck = numericComponent.GetAsInt(NumericType.PetExploreLuckly);
             List <RewardItem> rewardItems = new List<RewardItem>();
             for (int i = 0; i < request.ChouKaType; i++)
             {
                 DropHelper.DropIDToDropItem_2(dropId, rewardItems);
             }
-            unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetExplore}_{TimeHelper.ServerNow()}_{exploreLuck}");
+            bagComponentServer.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetExplore}_{TimeHelper.ServerNow()}_{exploreLuck}");
             response.ReardList = rewardItems;
             reply();
             await ETTask.CompletedTask;

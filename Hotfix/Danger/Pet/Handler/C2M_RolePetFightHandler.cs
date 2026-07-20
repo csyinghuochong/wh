@@ -9,7 +9,9 @@ namespace ET
 	{
 		protected override async ETTask Run(Unit unit, C2M_RolePetFight request, M2C_RolePetFight response, Action reply)
 		{
-			RolePetInfo petinfo = unit.GetComponent<PetComponentServer>().GetPetInfo(request.PetInfoId);
+			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+			UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+			RolePetInfo petinfo = petComponentServer.GetPetInfo(request.PetInfoId);
 			if (petinfo == null)
 			{
                 response.Error = ErrorCode.ERR_Pet_NoExist;
@@ -22,7 +24,6 @@ namespace ET
                 return;
             }
 
-            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             if (request.PetStatus == 1)
             {
                 //出战要清掉之前的
@@ -30,9 +31,9 @@ namespace ET
                 if (fightpet != null)
                 {
                     fightpet.PetStatus = 0;
-                    unit.GetParent<UnitComponent>().Remove(fightpet.Id);
+                    unitComponent.Remove(fightpet.Id);
                 }
-                if (unit.GetParent<UnitComponent>().Get(petinfo.Id) == null)
+                if (unitComponent.Get(petinfo.Id) == null)
                 {
                     petComponentServer.UpdatePetAttribute(petinfo, false);
                     UnitFactory.CreatePet(unit, petinfo);
@@ -46,7 +47,7 @@ namespace ET
                 //休息
                 petinfo.PetStatus = request.PetStatus;
                 petComponentServer.FightPetId = 0;
-                unit.GetParent<UnitComponent>().Remove(petinfo.Id);
+                unitComponent.Remove(petinfo.Id);
             }
 
             ///移除有问题的宠物

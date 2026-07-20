@@ -10,10 +10,11 @@ namespace ET
         {
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             long sellGold = 0;
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
 
             for (int i = 0; i < request.BagInfoIds.Count; i++)
             {
-                BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc((ItemLocType)request.OperateType, request.BagInfoIds[i]);
+                BagInfo useBagInfo = bagComponentServer.GetItemByLoc((ItemLocType)request.OperateType, request.BagInfoIds[i]);
                 if (useBagInfo == null)
                 {
                     continue;

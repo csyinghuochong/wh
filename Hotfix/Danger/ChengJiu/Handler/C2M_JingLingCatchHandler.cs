@@ -9,14 +9,16 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_JingLingCatchRequest request, M2C_JingLingCatchResponse response, Action reply)
         {
 
-            Unit zhupuUnit = unit.GetParent<UnitComponent>().Get(request.JingLingId);
+            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+            Unit zhupuUnit = unitComponent.Get(request.JingLingId);
             if (zhupuUnit == null)
             {
                 reply();
                 return;
             }
 
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < 1)
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            if (bagComponentServer.GetBagLeftCell() < 1)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -25,7 +27,7 @@ namespace ET
 
             if (request.ItemId != 0)
             {
-                bool costresult =  unit.GetComponent<BagComponentServer>().OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.JingLing);
+                bool costresult =  bagComponentServer.OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.JingLing);
                 if (costresult == false)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -42,9 +44,9 @@ namespace ET
 
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(zhupuUnit.ConfigId);
                 int getItemid = -1;///ldMonster.Parameter[1];
-                unit.GetComponent<BagComponentServer>().OnAddItemData($"{getItemid};1",$"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
+                bagComponentServer.OnAddItemData($"{getItemid};1",$"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
 
-                List<BagInfo> bagInfolist = unit.GetComponent<BagComponentServer>().GetIdItemList(getItemid);
+                List<BagInfo> bagInfolist = bagComponentServer.GetIdItemList(getItemid);
                 if (bagInfolist.Count > 0)
                 {
                     bagInfolist[bagInfolist.Count - 1].ItemPar = skinId.ToString();
@@ -55,7 +57,7 @@ namespace ET
                 response.Error = ErrorCode.ERR_ZhuaBuFail;
             }
 
-            unit.GetParent<UnitComponent>().Remove(request.JingLingId);
+            unitComponent.Remove(request.JingLingId);
             reply();
             await ETTask.CompletedTask;
         }

@@ -60,11 +60,11 @@ namespace ET
             bool ret = false;
             if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
             {
-                ret = unit.GetComponent<BagComponentServer>().OnAddItemData(CommonConfig.SingleRechargeReward_EN[request.RewardId], $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
+                ret = bagComponentServer.OnAddItemData(CommonConfig.SingleRechargeReward_EN[request.RewardId], $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
             }
             else
             {
-                ret = unit.GetComponent<BagComponentServer>().OnAddItemData(CommonConfig.SingleRechargeReward[request.RewardId], $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
+                ret = bagComponentServer.OnAddItemData(CommonConfig.SingleRechargeReward[request.RewardId], $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
             }
 
             if (ret)

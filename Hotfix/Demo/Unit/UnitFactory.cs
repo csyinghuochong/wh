@@ -302,7 +302,7 @@ namespace ET
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             //unitInfoComponent.UnitName = master.GetComponent<RoleInfoComponentServer>().RoleInfo.StallName;
-            unit.GetComponent<NumericComponent>().Set(NumericType.MasterId, master.Id);
+            numericComponent.Set(NumericType.MasterId, master.Id);
             unit.MasterId = master.Id;
             unit.Type = UnitType.Stall;
             unit.Position = master.Position;
@@ -467,15 +467,17 @@ namespace ET
             numericComponent.Set(NumericType.AttackMode, master != null ? master.GetAttackMode() : 0);
             numericComponent.Set(NumericType.TeamId, master.GetTeamId(), false); ;
             numericComponent.Set(NumericType.UnionId_0, master.GetUnionId(), false);
+            NumericComponent masterNumeric = master.GetComponent<NumericComponent>();
             long max_hp = numericComponent.GetAsLong(NumericType.Numeric_Error);
             numericComponent.SetValueNoSync(NumericType.Numeric_Error, max_hp);
-            numericComponent.Set(NumericType.Numeric_Error, master.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error), false); 
+            numericComponent.Set(NumericType.Numeric_Error, masterNumeric.GetAsLong(NumericType.Numeric_Error), false); 
 
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             if (scene.GetComponent<MapComponent>().MapTypeEnum != (int)MapTypeEnum.MainCityScene)
             {
-                unit.AddComponent<SkillPassiveComponent>().UpdatePetPassiveSkill(petinfo);
-                unit.GetComponent<SkillPassiveComponent>().Activeted();
+                SkillPassiveComponent skillPassiveComponent = unit.AddComponent<SkillPassiveComponent>();
+                skillPassiveComponent.UpdatePetPassiveSkill(petinfo);
+                skillPassiveComponent.Activeted();
             }
 
             return unit;

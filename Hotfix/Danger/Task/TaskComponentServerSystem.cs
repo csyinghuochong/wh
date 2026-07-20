@@ -246,6 +246,11 @@ namespace ET
         public static TaskPro CreateTask(this TaskComponentServer self, int taskid)
         {
             Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             LDTask ldTask = LDTaskCategory.Instance.Get(taskid);
             TaskPro taskPro = new TaskPro();
             taskPro.taskID = taskid;
@@ -253,44 +258,44 @@ namespace ET
             switch (ldTask.Condition_Type)
             {
                 case (int)(int)TastConditionType.PlayerLv_1:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+                    taskPro.taskTargetNum_1 = roleInfo.Lv;
                     break;
                 /*case (int)TastConditionType.KillMonsterID_1:
                     taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().GetReviveTime(ldTask.Param1) > 0?1 : 0;
                     break;*/
                 case (int)TastConditionType.ItemID_Number_2:
-                    taskPro.taskTargetNum_1 = (int)unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, ldTask.Param1);
+                    taskPro.taskTargetNum_1 = (int)bagComponentServer.GetItemNumber(ItemBigType.Type_Item, ldTask.Param1);
                     break;
                 case(int)TastConditionType.LookingFor_3:
                     taskPro.taskTargetNum_1 = 1;
                     break;
               
                 case (int)TastConditionType.ChangeOcc_8:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo > 0 ? 1 : 0;
+                    taskPro.taskTargetNum_1 = roleInfo.OccTwo > 0 ? 1 : 0;
                     break;
                 case (int)TastConditionType.JoinUnion_9:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0) > 0? 1 : 0;
+                    taskPro.taskTargetNum_1 = numericComponent.GetAsLong(NumericType.UnionId_0) > 0? 1 : 0;
                     break;
                 case (int)TastConditionType.PetNumber1_11:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<PetComponentServer>().GetAllPets().Count;
+                    taskPro.taskTargetNum_1 = petComponentServer.GetAllPets().Count;
                     break;
                 case (int)TastConditionType.QiangHuaLevel_17:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<BagComponentServer>().GetMaxQiangHuaLevel();
+                    taskPro.taskTargetNum_1 = bagComponentServer.GetMaxQiangHuaLevel();
                     break;
                 case (int)TastConditionType.PetNSkill_18:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<PetComponentServer>().GetMaxSkillNumber();
+                    taskPro.taskTargetNum_1 = petComponentServer.GetMaxSkillNumber();
                     break;
                 case (int)TastConditionType.PetFubenId_19:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<PetComponentServer>().GetPassMaxFubenId();
+                    taskPro.taskTargetNum_1 = petComponentServer.GetPassMaxFubenId();
                     break;
                 case (int)TastConditionType.JiaYuanLevel_22:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.JiaYuanLv;
+                    taskPro.taskTargetNum_1 = roleInfo.JiaYuanLv;
                     break;
                 case (int)TastConditionType.CombatToValue_133:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Combat;
+                    taskPro.taskTargetNum_1 = roleInfo.Combat;
                     break;
                 case (int)TastConditionType.TrialTowerCeng_134:
-                    int curtrialid = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TrialDungeonId);
+                    int curtrialid = numericComponent.GetAsInt(NumericType.TrialDungeonId);
                     if (curtrialid > ldTask.Param1)
                     {
                         taskPro.taskTargetNum_1 = 1;

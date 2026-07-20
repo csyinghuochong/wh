@@ -105,6 +105,7 @@ namespace ET
             int openDay = ServerHelper.GetOpenServerDay(false, self.DomainZone());
             int dropid = self.GetDropId(openDay);
 
+            List<RewardItem> rewardist = new List<RewardItem>();
             for (int p = 0; p < HappyFubenConfig.PositionList.Count; p++)
             {
                 //空格子的概率
@@ -118,7 +119,7 @@ namespace ET
                     continue;
                 }
 
-                List<RewardItem> rewardist = new List<RewardItem>();
+                rewardist.Clear();
                 DropHelper.DropIDToDropItem(dropid, rewardist);
                 if (rewardist.Count > 100)
                 {
