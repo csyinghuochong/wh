@@ -93,32 +93,35 @@ namespace ET
 		/// <summary>人数 限制</summary>
 		[ProtoMember(6)]
 		public int Limit_Player { get; set; }
-		/// <summary>次数 限制</summary>
+		/// <summary>每日次数</summary>
 		[ProtoMember(7)]
-		public int Limit_Times { get; set; }
-		/// <summary>类型</summary>
+		public int Limit_Times_Day { get; set; }
+		/// <summary>每周次数</summary>
 		[ProtoMember(8)]
+		public int Limit_Times_Week { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(9)]
 		public int Scene_Type { get; set; }
 		/// <summary>出生点</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public double[] Pos_Born { get; set; }
 		/// <summary>传送ID</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int[] Teleport_Id { get; set; }
 		/// <summary>禁用 小地图</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int MiniMap_Close { get; set; }
 		/// <summary>允许坐骑 0-否 1-是</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int If_Mount { get; set; }
 		/// <summary>摄像机</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public double[] CameraPos { get; set; }
 		/// <summary>Loading</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public int[] LoadingRes { get; set; }
 		/// <summary>音乐</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public string Music { get; set; }
 
 	}
