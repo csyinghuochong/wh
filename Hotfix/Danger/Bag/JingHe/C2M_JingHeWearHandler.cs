@@ -25,6 +25,7 @@ namespace ET
 
             ItemLocType locType = ItemLocType.ItemLocBag;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             BagInfo useBagInfo = bagComponentServer.GetItemByLoc(locType, request.OperateBagID);
             if (useBagInfo == null)
             {
@@ -40,7 +41,7 @@ namespace ET
                 LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
                 int equipType = ItemNewHelper.GetNewEquipType(useBagInfo);
 
-                if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < ldItem.UseLv)
+                if (roleInfo.Lv < ldItem.UseLv)
                 {
                     response.Error = ErrorCode.ERR_EquipLvLimit;
                     reply();

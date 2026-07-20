@@ -104,19 +104,20 @@ namespace ET
                 RewardItem reward = new RewardItem();
 
                 int goldValue = 12500;
+                int attackLv = attackUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
 
-                if (attackUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv >= 30) 
+                if (attackLv >= 30) 
                 {
 
                     goldValue = 15000;
                 }
 
-                if (attackUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv >= 40)
+                if (attackLv >= 40)
                 {
                     goldValue = 17500;
                 }
 
-                if (attackUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv >= 50)
+                if (attackLv >= 50)
                 {
                     goldValue = 20000;
                 }
@@ -140,18 +141,19 @@ namespace ET
                 RewardItem rewardFail = new RewardItem();
                 rewardFail.ItemID = 1;
                 rewardFail.ItemNum = 7500;
+                int defendLv = defendUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
 
-                if (defendUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv >= 30)
+                if (defendLv >= 30)
                 {
                     rewardFail.ItemNum = 10000;
                 }
 
-                if (defendUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv >= 40)
+                if (defendLv >= 40)
                 {
                     rewardFail.ItemNum = 12500;
                 }
 
-                if (defendUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv >= 50)
+                if (defendLv >= 50)
                 {
                     rewardFail.ItemNum = 15000;
                 }

@@ -34,17 +34,10 @@ namespace ET
                 }
 
 
-                string[] iteminfo = buyCellCost.Get.Split(';');
                 response.GetItem = buyCellCost.Get;
                 bagComponentServer.WarehouseAddedCell[0] += 1;
 
-                RewardItem rewardItem = new RewardItem()
-                {
-                    ItemID = int.Parse(iteminfo[0]),
-                    ItemNum = int.Parse(iteminfo[1]),
-                };
-                List<RewardItem> rewardItems = new List<RewardItem>() { rewardItem };
-                bagComponentServer.OnAddItemData(rewardItems, String.Empty, $"{ItemGetWay.CostItem}_{TimeHelper.ServerNow()}", true, false, (ItemLocType)request.OperateType);
+                bagComponentServer.OnAddItemData(buyCellCost.Get, $"{ItemGetWay.CostItem}_{TimeHelper.ServerNow()}", true);
             }
             else
             {
@@ -74,17 +67,16 @@ namespace ET
                     return;
                 }
 
-                string[] iteminfo = buyCellCost.Get.Split(';');
                 response.GetItem = buyCellCost.Get;
                 bagComponentServer.WarehouseAddedCell[storeindex] += 1;
 
-                RewardItem rewardItem = new RewardItem()
-                {
-                    ItemID = int.Parse(iteminfo[0]),
-                    ItemNum = int.Parse(iteminfo[1]),
-                };
-                List<RewardItem> rewardItems = new List<RewardItem>() { rewardItem };
-                bagComponentServer.OnAddItemData(rewardItems, String.Empty, $"{ItemGetWay.CostItem}_{TimeHelper.ServerNow()}", true, false, (ItemLocType)request.OperateType);
+                bagComponentServer.OnAddItemData(
+                    ItemNewHelper.GetRewardItems(buyCellCost.Get),
+                    String.Empty,
+                    $"{ItemGetWay.CostItem}_{TimeHelper.ServerNow()}",
+                    true,
+                    false,
+                    (ItemLocType)request.OperateType);
             }
 
             response.WarehouseAddedCell = bagComponentServer.WarehouseAddedCell;

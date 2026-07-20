@@ -33,7 +33,7 @@ namespace ET
             }
 
             //道具鉴定，扣除道具
-            unit.GetComponent<BagComponentServer>().OnCostItemData(request.CostItemId, 1);
+            bagComponentServer.OnCostItemData(request.CostItemId, 1);
 
 
             //通知客户端背包刷新

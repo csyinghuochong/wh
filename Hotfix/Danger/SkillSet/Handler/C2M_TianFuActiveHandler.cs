@@ -16,7 +16,7 @@ namespace ET
              
             }
 
-            unit.GetComponent<SkillSetComponentServer>().OnActiveTianfu(request);
+            skillSetComponentServer.OnActiveTianfu(request);
             reply();
             await ETTask.CompletedTask;
         }

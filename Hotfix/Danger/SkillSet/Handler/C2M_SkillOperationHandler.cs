@@ -11,6 +11,7 @@ namespace ET
             //request.OperationType  = 1 重置技能点
             //request.OperationType  = 2 重置职业
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
             int level = roleInfoComponentServer.RoleInfo.Lv;
 			int sp = roleInfoComponentServer.RoleInfo.Sp;
 			switch (request.OperationType)
@@ -18,7 +19,6 @@ namespace ET
 				case 1:
                     LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(20);
                     int needGold = int.Parse(ldGlobalValue.Value);
-                    roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                     if (roleInfoComponentServer.RoleInfo.Gold < needGold)
                     {
                         response.Error = ErrorCode.ERR_GoldNotEnoughError;
@@ -28,7 +28,7 @@ namespace ET
 
                     roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString());
 					roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, (level - sp).ToString());
-					unit.GetComponent<SkillSetComponentServer>().OnSkillReset(true);
+					skillSetComponentServer.OnSkillReset(true);
 					break;
 				case 2:
 
@@ -65,16 +65,16 @@ namespace ET
 
                     if (roleInfoComponentServer.RoleInfo.OccTwo != 0)
                     {
-                        unit.GetComponent<SkillSetComponentServer>().OnChangeJueXing(roleInfoComponentServer.RoleInfo.OccTwo, toOcc);
+                        skillSetComponentServer.OnChangeJueXing(roleInfoComponentServer.RoleInfo.OccTwo, toOcc);
                         roleInfoComponentServer.RoleInfo.OccTwoOld.Add(roleInfoComponentServer.RoleInfo.OccTwo);
                     }
 
-                    sp = unit.GetComponent<SkillSetComponentServer>().OnOccReset();
+                    sp = skillSetComponentServer.OnOccReset();
 					roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, sp.ToString());
                     bagComponentServer.OnCostItemData(ChangeOccItem, ItemLocType.ItemLocBag, ItemGetWay.SkillMake);
                     
-                    unit.GetComponent<SkillSetComponentServer>().OnChangeOccTwoRequest(toOcc);
-                    unit.GetComponent<SkillSetComponentServer>().AsyncUpdateSkillSet().Coroutine();
+                    skillSetComponentServer.OnChangeOccTwoRequest(toOcc);
+                    skillSetComponentServer.AsyncUpdateSkillSet().Coroutine();
                     break;
                 case 3:
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.SkillMakePlan2, 1);

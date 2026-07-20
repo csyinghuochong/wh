@@ -65,9 +65,7 @@ namespace ET
                         response.Vs.Add(value);
                     }
 
-                    D2G_GetComponent d2GGetUnit_5 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.BagComponentServer });
-                    BagComponentServer bagComponentServer = d2GGetUnit_5.Component as BagComponentServer;
-                    response.FashionIds = bagComponentServer.FashionEquipList;
+                    response.FashionIds = bagComponentsServer.FashionEquipList;
                     break;
                 //只返回名字
                 case 1:

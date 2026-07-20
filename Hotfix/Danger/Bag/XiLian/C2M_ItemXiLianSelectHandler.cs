@@ -9,10 +9,11 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemXiLianSelectRequest request, M2C_ItemXiLianSelectResponse response, Action reply)
         {
             ItemLocType itemLocType = ItemLocType.ItemLocBag;
-            BagInfo bagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID);
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            BagInfo bagInfo = bag.GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID);
             if (bagInfo == null)
             {
-                bagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocEquip, request.OperateBagID);
+                bagInfo = bag.GetItemByLoc(ItemLocType.ItemLocEquip, request.OperateBagID);
                 itemLocType = ItemLocType.ItemLocEquip;
             }
             /*

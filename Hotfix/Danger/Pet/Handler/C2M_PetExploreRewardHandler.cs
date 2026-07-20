@@ -9,6 +9,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PetExploreReward request, M2C_PetExploreReward response, Action reply)
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             //if (roleInfoComponentServer.RoleInfo.PetExploreRewardIds.Contains(request.RewardId))
             //{
             //    response.Error = ErrorCode.ERR_AlreadyReceived;
@@ -24,7 +26,7 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PetExploreNumber) < request.RewardId)
+            if (numeric.GetAsInt(NumericType.PetExploreNumber) < request.RewardId)
             {
                 response.Error = ErrorCode.Pre_Condition_Error;
                 reply();
@@ -34,15 +36,15 @@ namespace ET
             string[] reward = CommonConfig.PetExploreReward[request.RewardId].Split('$');
             string[] items = reward[0].Split('@');
             string[] diamond = reward[1].Split(';')[1].Split(',');
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < items.Length)
+            if (bag.GetBagLeftCell() < items.Length)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
                 return;
             }
             int randomZuanshi = RandomHelper.RandomNumber(int.Parse(diamond[0]), int.Parse(diamond[1]));
-            unit.GetComponent<BagComponentServer>().OnAddItemData(reward[0], $"{95}_{TimeHelper.ServerNow()}");
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 95);
+            bag.OnAddItemData(reward[0], $"{95}_{TimeHelper.ServerNow()}");
+            roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 95);
 
             reply();
             await ETTask.CompletedTask;

@@ -226,13 +226,13 @@ namespace ET
             unit.AddComponent<ObjectWait>();
             unit.AddComponent<MoveComponent>();
             unit.AddComponent<SkillManagerComponent>();
-            unit.AddComponent<SkillPassiveComponent>();
-            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            SkillPassiveComponent skillPassive = unit.AddComponent<SkillPassiveComponent>();
+            unit.AddComponent<PathfindingComponent, int>(mapComponent.NavMeshId);
             //添加其他组件
             unit.AddComponent<StateComponent>();         //添加状态组件
             unit.AddComponent<BuffManagerComponent>();      //添加Buff管理器
-            unit.GetComponent<SkillPassiveComponent>().UpdateMonsterPassiveSkill();
-            unit.GetComponent<SkillPassiveComponent>().Activeted();
+            skillPassive.UpdateMonsterPassiveSkill();
+            skillPassive.Activeted();
         
             AIComponent aIComponent = unit.AddComponent<AIComponent, int>(ai);
             switch (mapComponent.MapTypeEnum)
