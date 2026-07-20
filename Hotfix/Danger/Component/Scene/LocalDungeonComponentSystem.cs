@@ -56,14 +56,16 @@ namespace ET
             {
                 int shenminId = 40000003;
                 List<Unit> npclist = self.MainUnit.GetParent<UnitComponent>().GetAll();
+                bool hasShenminNpc = false;
                 for (int i = 0; i < npclist.Count; i++)
                 {
                     if (npclist[i].Type == UnitType.Npc && npclist[i].ConfigId == shenminId)
                     {
-                        shenminId = 0;
+                        hasShenminNpc = true;
+                        break;
                     }
                 }
-                if (shenminId != 0)
+                if (!hasShenminNpc)
                 {
                     UnitFactory.CreateNpcByPosition(self.DomainScene(), shenminId, unit.Position);
                 }

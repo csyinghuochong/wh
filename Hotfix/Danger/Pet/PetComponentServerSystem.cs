@@ -1063,10 +1063,9 @@ namespace ET
 
         public static void UpdatePetNumeric(this PetComponentServer self, Dictionary<int, long> attriDic)
         {
-            List<int> keylist = attriDic.Keys.ToList();
-            for (int i = 0; i < keylist.Count; i++)
+            foreach (KeyValuePair<int, long> kv in attriDic)
             {
-                self.Update(keylist[i], attriDic);
+                self.Update(kv.Key, attriDic);
             }
         }
 

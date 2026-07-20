@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ET
 {
@@ -31,20 +30,20 @@ namespace ET
                 {
                     continue;
                 }
-                if (!CommonConfig.MagicAddShieldExp.ContainsKey(bagInfo.ItemID))
+                if (!CommonConfig.MagicAddShieldExp.TryGetValue(bagInfo.ItemID, out int addValue))
                 {
                     continue;
                 }
 
-                int addValue = CommonConfig.MagicAddShieldExp[bagInfo.ItemID];
                 if (addValue > 10)
                 {
                     addValue = RandomHelper.NextInt((int)(addValue * 0.8f), (int)(addValue * 1.2f));
                 }
                 addExp += addValue * bagInfo.ItemNum;
                 bagidList.Add(request.OperateBagID[i]);
-                response.AddExp = addExp;
             }
+
+            response.AddExp = addExp;
 
             chengJiuComponentServer.OnAddMagickaExpByPosition( request.Position, addExp);
 

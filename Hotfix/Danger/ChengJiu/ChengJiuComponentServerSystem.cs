@@ -76,15 +76,16 @@ namespace ET
                 int unitconfigId = defend.ConfigId;
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
                 bool isBoss = ldMonster.Type == (int)MonsterTypeEnum.Boss;
-                MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
+                Scene domainScene = self.DomainScene();
+                MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
                 int fubenDifficulty = (int)FubenDifficulty.None;
                 if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
                 {
-                    fubenDifficulty = (int)self.GetParent<Unit>().DomainScene().GetComponent<CellDungeonComponent>().FubenDifficulty;
+                    fubenDifficulty = (int)domainScene.GetComponent<CellDungeonComponent>().FubenDifficulty;
                 }
                 if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                 {
-                    fubenDifficulty = (int)self.GetParent<Unit>().DomainScene().GetComponent<LocalDungeonComponent>().FubenDifficulty;
+                    fubenDifficulty = (int)domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
                 }
 
                 self.TriggerEvent(ChengJiuTargetEnum.KillIDMonster_1, unitconfigId, 1);

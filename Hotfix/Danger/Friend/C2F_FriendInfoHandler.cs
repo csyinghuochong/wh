@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -22,15 +23,15 @@ namespace ET
             response.Blacklist = await FriendHelper.GetFriendInfos(dbCacheId, gateServerId, dBFriendInfo.Blacklist);
 
 
-            ListComponent<long> friendids = ListComponent<long>.Create();
+            HashSet<long> friendIdSet = new HashSet<long>();
             for (int k = 0; k < response.FriendList.Count; k++)
             {
-                friendids.Add(response.FriendList[k].UserId);
+                friendIdSet.Add(response.FriendList[k].UserId);
             }
 
             for (int i = dBFriendInfo.FriendChats.Count - 1;i >= 0; i-- )
             {
-                if (!friendids.Contains(dBFriendInfo.FriendChats[i].UserId))
+                if (!friendIdSet.Contains(dBFriendInfo.FriendChats[i].UserId))
                 {
                     dBFriendInfo.FriendChats.RemoveAt(i);   
                 }

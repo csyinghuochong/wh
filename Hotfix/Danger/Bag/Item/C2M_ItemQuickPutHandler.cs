@@ -36,6 +36,7 @@ namespace ET
             for (int w = 0; w < warehourselist.Count; w++)
             {
                 BagInfo warehourseInfo = warehourselist[w];
+                LDItem ldItemCof = LDItemCategory.Instance.Get(warehourseInfo.ItemID);
 
                 for (int b = bagList.Count - 1; b >= 0; b-- )
                 {
@@ -45,8 +46,6 @@ namespace ET
                     {
                         continue;
                     }
-
-                    LDItem ldItemCof = LDItemCategory.Instance.Get(bagInfo.ItemID);
                     if ( (warehourseInfo.ItemNum + bagInfo.ItemNum) > ldItemCof.ItemPileSum)
                     {
                         continue;

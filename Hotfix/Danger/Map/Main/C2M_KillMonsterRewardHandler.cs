@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_KillMonsterRewardRequest request, M2C_KillMonsterRewardResponse response, Action reply)
         {
-            if (!CommonConfig.KillMonsterReward.Keys.Contains(request.Key))
+            if (!CommonConfig.KillMonsterReward.ContainsKey(request.Key))
             {
                 Log.Error($"C2M_KillMonsterRewardRequest 1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -17,14 +17,15 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.KillMonsterReward) >= request.Key)
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            if (numericComponent.GetAsInt(NumericType.KillMonsterReward) >= request.Key)
             {
                 response.Error = ErrorCode.ERR_Parameter;
                 reply();
                 return;
             }
 
-            if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.KillMonsterNumber) < request.Key)
+            if (numericComponent.GetAsInt(NumericType.KillMonsterNumber) < request.Key)
             {
                 Log.Error($"C2M_KillMonsterRewardRequest 3");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -53,7 +54,7 @@ namespace ET
             }
 
             string item = items[request.Index];
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.KillMonsterReward, request.Key);
+            numericComponent.ApplyValue(NumericType.KillMonsterReward, request.Key);
             unit.GetComponent<BagComponentServer>().OnAddItemData(item, $"{ItemGetWay.KillMonsterReward}_{TimeHelper.ServerNow()}");
             reply();
             await ETTask.CompletedTask;

@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_LeavlRewardRequest request, M2C_LeavlRewardResponse response, Action reply)
         {
-            if (!CommonConfig.LevelRewardItem.Keys.Contains(request.LvKey))
+            if (!CommonConfig.LevelRewardItem.ContainsKey(request.LvKey))
             {
                 Log.Error($"C2M_LeavlRewardRequest 1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -17,7 +17,8 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.LeavlReward) >= request.LvKey)
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            if (numericComponent.GetAsInt(NumericType.LeavlReward) >= request.LvKey)
             {
                 response.Error = ErrorCode.ERR_Parameter;
                 reply();
@@ -53,7 +54,7 @@ namespace ET
             }
 
             string item = items[request.Index];
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.LeavlReward, request.LvKey);
+            numericComponent.ApplyValue(NumericType.LeavlReward, request.LvKey);
             //unit.GetComponent<BagComponentServer>().OnAddItemData(item, $"{ItemGetWay.LeavlReward}_{TimeHelper.ServerNow()}");
             reply();
             await ETTask.CompletedTask;

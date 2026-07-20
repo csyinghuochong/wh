@@ -27,6 +27,7 @@ namespace ET
                 return;
             }
 
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             EquipMakeConfig equipMakeConfig = EquipMakeConfigCategory.Instance.Get(request.MakeId);
             ItemLocType locType = ItemLocType.ItemLocBag;
             int costItemId = 0;
@@ -45,14 +46,14 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold < equipMakeConfig.MakeNeedGold)
+            if (roleInfoComponentServer.RoleInfo.Gold < equipMakeConfig.MakeNeedGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
                 return;
             }
 
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Vitality < equipMakeConfig.CostVitality)
+            if (roleInfoComponentServer.RoleInfo.Vitality < equipMakeConfig.CostVitality)
             {
                 response.Error = ErrorCode.ERR_VitalityNotEnoughError;
                 reply();
@@ -88,18 +89,18 @@ namespace ET
                 return;
             }
 
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (equipMakeConfig.MakeNeedGold * -1).ToString(), true, ItemGetWay.SkillMake);
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Vitality, (equipMakeConfig.CostVitality * -1).ToString());
+            roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (equipMakeConfig.MakeNeedGold * -1).ToString(), true, ItemGetWay.SkillMake);
+            roleInfoComponentServer.UpdateRoleData(UserDataType.Vitality, (equipMakeConfig.CostVitality * -1).ToString());
             if (request.BagInfoID == 0)
             {
-                unit.GetComponent<RoleInfoComponentServer>().OnMakeItem(equipMakeConfig.Id);
+                roleInfoComponentServer.OnMakeItem(equipMakeConfig.Id);
             }
             float rate = RandomHelper.RandFloat01();
             if (equipMakeConfig.MakeSuccesPro >= rate)
             {
                 List<RewardItem> rewardItems = new List<RewardItem>();
                 rewardItems.Add(new RewardItem() { ItemID = equipMakeConfig.MakeItemID, ItemNum = equipMakeConfig.MakeEquipNum });
-                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name, $"{ItemGetWay.SkillMake}_{request.Plan}_{TimeHelper.ServerNow()}");       //传入制造装备和制造玩家的ID
+                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, roleInfoComponentServer.RoleInfo.Name, $"{ItemGetWay.SkillMake}_{request.Plan}_{TimeHelper.ServerNow()}");       //传入制造装备和制造玩家的ID
                 unit.GetComponent<TaskComponentServer>().OnMakeItem();
                 response.ItemId = equipMakeConfig.MakeItemID;
             }
@@ -111,11 +112,11 @@ namespace ET
             //制作的过程中有一定概率可以领悟当前等级可以学习的配方
             int makeType = unit.GetComponent<NumericComponent>().GetAsInt(request.Plan == 1 ?  NumericType.MakeType_1 : NumericType.MakeType_2);
             int newMakeId = MakeHelper.GetNewMakeID(makeType, request.MakeId,
-                unit.GetComponent<RoleInfoComponentServer>().RoleInfo.MakeList);
+                roleInfoComponentServer.RoleInfo.MakeList);
             //宝石不领悟
             if (equipMakeConfig.ProficiencyType != 4 && equipMakeConfig.ProficiencyType != 5 && newMakeId != 0)
             {
-                unit.GetComponent<RoleInfoComponentServer>().RoleInfo.MakeList.Add(newMakeId);
+                roleInfoComponentServer.RoleInfo.MakeList.Add(newMakeId);
                 response.NewMakeId = newMakeId;
             }
 

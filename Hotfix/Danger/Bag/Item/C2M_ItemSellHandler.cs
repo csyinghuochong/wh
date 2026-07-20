@@ -16,8 +16,6 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemSellRequest request, M2C_ItemSellResponse response, Action reply)
         {
 
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            RoleInfo useInfo = roleInfoComponentServer.RoleInfo;
             long bagInfoID = request.OperateBagID;
 
             ItemLocType locType = ItemLocType.ItemLocBag;
@@ -39,19 +37,6 @@ namespace ET
                 return;
             }
             
-            
-            string[] gemids = useBagInfo.GemIDNew.Split('_');
-            LDItem ldItemConf = null;
-            for (int i = 0; i < gemids.Length; i++)
-            {
-                if (gemids[i] == "0")
-                {
-                    continue;
-                }
-                ldItemConf = LDItemCategory.Instance.Get(int.Parse(gemids[i]));
-                //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
-            }
-
             useBagInfo.ItemNum -= request.SellNum;
             
             //通知客户端背包刷新

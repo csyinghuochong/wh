@@ -36,7 +36,7 @@ namespace ET
 
                 chatInfoUnit.LastSendChat = serverTime;
                 M2C_SyncChatInfo m2C_SyncChatInfo = new M2C_SyncChatInfo();
-                request.ChatInfo.Time = TimeHelper.ServerNow();
+                request.ChatInfo.Time = serverTime;
                 request.ChatInfo.PlayerName = chatInfoUnit.Name;
                 m2C_SyncChatInfo.ChatInfo = request.ChatInfo;
                 switch (request.ChatInfo.ChannelId)
@@ -63,9 +63,9 @@ namespace ET
                         {
                             BeReportedInfo bePortedNumber = null;
                             chatInfoUnitsComponent.BeReportedNumber.TryGetValue(request.ChatInfo.UserId, out bePortedNumber);
-                            if (bePortedNumber != null && bePortedNumber.JinYanTime > TimeHelper.ServerNow())
+                            if (bePortedNumber != null && bePortedNumber.JinYanTime > serverTime)
                             {
-                                long leftTime = bePortedNumber.JinYanTime - TimeHelper.ServerNow();
+                                long leftTime = bePortedNumber.JinYanTime - serverTime;
                                 int hour = (int)(leftTime * 1f / TimeHelper.Hour);
                                 hour = Math.Max(hour, 1);
                                 response.Error = ErrorCode.ERR_Chat_JinYan_3;
@@ -73,7 +73,7 @@ namespace ET
                                 reply();
                                 return;
                             }
-                            if (bePortedNumber != null && bePortedNumber.JinYanTime != 0 && bePortedNumber.JinYanTime <= TimeHelper.ServerNow())
+                            if (bePortedNumber != null && bePortedNumber.JinYanTime != 0 && bePortedNumber.JinYanTime <= serverTime)
                             {
                                 chatInfoUnitsComponent.BeReportedNumber.Remove(request.ChatInfo.UserId);
                             }

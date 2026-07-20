@@ -11,28 +11,15 @@ namespace ET
 		protected override async ETTask Run(Unit unit, C2M_SkillUp request, M2C_SkillUp response, Action reply)
 		{
 			SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
-			if (skillSetComponentServer.GetBySkillID(request.SkillID) == null)
+			SkillPro skillPro = skillSetComponentServer.GetBySkillID(request.SkillID);
+			if (skillPro == null)
             {
                 response.Error = ErrorCode.ERR_Parameter;
                 reply();
                 return;
             }
 
-			List<SkillPro> SkillList = skillSetComponentServer.SkillList;
-			LDSkill skillconf = LDSkillCategory.Instance.Get(request.SkillID);
-			
-
-            RoleInfoComponentServer unitInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-
-		            
-			for (int i = SkillList.Count - 1; i >= 0; i--)
-			{
-				if (SkillList[i].SkillID == request.SkillID)
-				{
-					SkillList[i].Level++;
-					break;
-				}
-			}
+			skillPro.Level++;
 			
 			//unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (costGoldValue*-1).ToString(), true, ItemGetWay.CostItem);
 			//unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Sp, (costSPValue * -1).ToString());

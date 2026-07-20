@@ -253,9 +253,19 @@ namespace ET
 
             if (self.RoleInfo.RobotId > 0 &&    self.RoleInfo.HorseIds.Count == 0)
             {
-                List<LDMount> mounts = LDMountCategory.Instance.GetAll().Values.ToList();
-                int intdexxx =  RandomHelper.RandomNumber(0, mounts.Count);
-                int randomid = mounts[intdexxx].Id;
+                Dictionary<int, LDMount> allMounts = LDMountCategory.Instance.GetAll();
+                int randomIndex = RandomHelper.RandomNumber(0, allMounts.Count);
+                int index = 0;
+                int randomid = 0;
+                foreach (LDMount mount in allMounts.Values)
+                {
+                    if (index == randomIndex)
+                    {
+                        randomid = mount.Id;
+                        break;
+                    }
+                    index++;
+                }
                 self.OnHorseActive(randomid, true);
                 numericComponent.Set(NumericType.HorseFightID, randomid, false);
                 numericComponent.Set(NumericType.HorseRide, randomid, false);
@@ -266,10 +276,21 @@ namespace ET
             PetComponentServer petComponentServer = self.GetParent<Unit>().GetComponent<PetComponentServer>();
             if (self.RoleInfo.RobotId > 0 &&   petComponentServer.RolePetInfos.Count == 0)
             {
-                List<int> petids = LDPetCategory.Instance.GetAll().Keys.ToList();
-                int randomindex = RandomHelper.RandomNumber(0, petids.Count);
+                Dictionary<int, LDPet> allPets = LDPetCategory.Instance.GetAll();
+                int randomindex = RandomHelper.RandomNumber(0, allPets.Count);
+                int index = 0;
+                int randomPetId = 0;
+                foreach (int petId in allPets.Keys)
+                {
+                    if (index == randomindex)
+                    {
+                        randomPetId = petId;
+                        break;
+                    }
+                    index++;
+                }
                 
-                petComponentServer.OnGmAddPet(petids[randomindex]);
+                petComponentServer.OnGmAddPet(randomPetId);
                 petComponentServer.RolePetInfos[0].PetStatus = 1;
                 petComponentServer.FightPetId = petComponentServer.RolePetInfos[0].Id;
             }

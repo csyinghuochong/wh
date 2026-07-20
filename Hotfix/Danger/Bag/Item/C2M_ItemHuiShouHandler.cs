@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ET
 {
@@ -53,9 +52,9 @@ namespace ET
                         string[] itemInfo = itemList[k].Split(',');
                         int itemId = int.Parse(itemInfo[0]);
 
-                        if (huishouGet.ContainsKey(itemId))
+                        if (huishouGet.TryGetValue(itemId, out RewardItem rewardItem))
                         {
-                            huishouGet[itemId].ItemNum += int.Parse(itemInfo[1]) * bagInfo.ItemNum;
+                            rewardItem.ItemNum += int.Parse(itemInfo[1]) * bagInfo.ItemNum;
                         }
                         else
                         {
@@ -67,7 +66,12 @@ namespace ET
                 //扣除装备
                 bagComponentServer.OnCostItemData(petHexin, ItemLocType.ItemPetHeXinBag);
                 bagComponentServer.OnCostItemData(bagsList, ItemLocType.ItemLocBag);
-                bagComponentServer.OnAddItemData(huishouGet.Values.ToList(), string.Empty, $"{ItemGetWay.HuiShou}_{TimeHelper.ServerNow()}");
+                List<RewardItem> huishouRewards = new List<RewardItem>(huishouGet.Count);
+                foreach (RewardItem rewardItem in huishouGet.Values)
+                {
+                    huishouRewards.Add(rewardItem);
+                }
+                bagComponentServer.OnAddItemData(huishouRewards, string.Empty, $"{ItemGetWay.HuiShou}_{TimeHelper.ServerNow()}");
                 unit.GetComponent<TaskComponentServer>().OnItemHuiShow(bagsList.Count);
                 unit.GetComponent<ChengJiuComponentServer>().OnItemHuiShow(bagsList.Count);
 

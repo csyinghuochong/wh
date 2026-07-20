@@ -516,14 +516,7 @@ namespace ET
             Unit unitMonster = UnitFactory.CreateMonster(scene, monsterID, initPosi, new CreateMonsterInfo()
             { Camp = CampEnum.CampMonster1, MasterID = 0, AttributeParams = String.Empty });
 
-            if (self.UnionBossList.ContainsKey(unionid))
-            {
-                self.UnionBossList[unionid] = serverTime;
-            }
-            else
-            {
-                self.UnionBossList.Add(unionid, serverTime);
-            }
+            self.UnionBossList[unionid] = serverTime;
         }
         
         /// <summary>

@@ -25,6 +25,7 @@ namespace ET
                     return;
                 }
 
+                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 for (int i = mailInfo.ItemList.Count - 1; i >= 0; i--)
                 {
                     if (mailInfo.ItemList[i].ItemID == 110000164)
@@ -34,7 +35,7 @@ namespace ET
                     }
                     if (!string.IsNullOrEmpty(mailInfo.ItemList[i].GetWay))
                     {
-                        unit.GetComponent<BagComponentServer>().OnAddItemData(mailInfo.ItemList[i], mailInfo.ItemList[i].GetWay);
+                        bagComponentServer.OnAddItemData(mailInfo.ItemList[i], mailInfo.ItemList[i].GetWay);
                         //string[] getwayInfo = mailInfo.ItemList[i].GetWay.Split('_');
                         //if (getwayInfo.Length >= 2 && mailInfo.ItemList[i].ItemID == 1 && int.Parse(getwayInfo[0]) == ItemGetWay.PaiMaiSell)
                         //{
@@ -43,7 +44,7 @@ namespace ET
                     }
                     else
                     {
-                        unit.GetComponent<BagComponentServer>().OnAddItemData(mailInfo.ItemList[i], $"{ItemGetWay.ReceieMail}_{TimeHelper.ServerNow()}");
+                        bagComponentServer.OnAddItemData(mailInfo.ItemList[i], $"{ItemGetWay.ReceieMail}_{TimeHelper.ServerNow()}");
                     }
                 }
                 

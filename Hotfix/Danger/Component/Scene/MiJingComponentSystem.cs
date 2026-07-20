@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ET
 {
@@ -15,7 +14,11 @@ namespace ET
             }
 
             List<TeamPlayerInfo> players = new List<TeamPlayerInfo>();
-            players.AddRange(self.PlayerDamageList.Take(5));
+            int topCount = self.PlayerDamageList.Count < 5 ? self.PlayerDamageList.Count : 5;
+            for (int i = 0; i < topCount; i++)
+            {
+                players.Add(self.PlayerDamageList[i]);
+            }
 
             self.SendReward(players, 0, 0, "1;150000@10010085;100").Coroutine();
             self.SendReward(players, 1, 1, "1;100000@10010085;75").Coroutine(); ;
@@ -94,6 +97,7 @@ namespace ET
                 {
                     teamPlayerInfo = self.PlayerDamageList[i];
                     teamPlayerInfo.Damage += (int)damage;
+                    break;
                 }
             }
             if (teamPlayerInfo == null)
@@ -106,21 +110,27 @@ namespace ET
                 teamPlayerInfo.PlayerLv = roleInfo.Lv;
                 self.PlayerDamageList.Add(teamPlayerInfo);
             }
-            if (TimeHelper.ServerNow() - self.LastTime < 1000)
+            long serverNow = TimeHelper.ServerNow();
+            if (serverNow - self.LastTime < 1000)
             {
                 return;
             }
-            self.LastTime = TimeHelper.ServerNow();
+            self.LastTime = serverNow;
             self.PlayerDamageList.Sort(delegate (TeamPlayerInfo a, TeamPlayerInfo b)
             {
                 return (int)b.Damage - (int)a.Damage;
             });
 
+            self.M2C_SyncMiJingDamage.DamageList.Clear();
+            int topCount = self.PlayerDamageList.Count < 5 ? self.PlayerDamageList.Count : 5;
+            for (int i = 0; i < topCount; i++)
+            {
+                self.M2C_SyncMiJingDamage.DamageList.Add(self.PlayerDamageList[i]);
+            }
+
             List<Unit> allPlayer = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
             for (int i = 0; i < allPlayer.Count; i++)
             {
-                self.M2C_SyncMiJingDamage.DamageList.Clear();
-                self.M2C_SyncMiJingDamage.DamageList.AddRange(self.PlayerDamageList.Take(5));
                 MessageHelper.SendToClient(allPlayer[i], self.M2C_SyncMiJingDamage);
             }
         }
