@@ -755,13 +755,6 @@ namespace ET
                 skillInfo.SkillEndTime = skillAction.SkillEndTime;
                 self.Skills.Add(skillAction);
 
-                //M2C_UnitUseSkill useSkill = new M2C_UnitUseSkill();
-                //{
-                //    UnitId = self.SelfUnit.Id,
-                //    SkillID = 0,
-                //    TargetAngle = 0,
-                //    SkillInfos = new List<SkillInfo>() { skillInfo }
-                //};
                 M2C_UnitUseSkill useSkill = MessageHelper.m2C_UnitUseSkill;
                 useSkill.UnitId = self.SelfUnit.Id;
                 useSkill.SkillID = 0;
@@ -803,10 +796,14 @@ namespace ET
             }
         }
 
-        //技能广播
+        //技能广播：施法者必收（BeSeePlayers 不含自己）；主城只给自己，其他场景再广播给视野内玩家
         public static void BroadcastSkill(this SkillManagerComponent self, Unit unit, IActorMessage message)
         {
-            //主城不广播技能
+            if (unit.Type == UnitType.Player)
+            {
+                MessageHelper.SendToClient(unit, message);
+            }
+
             if (unit.SceneType != MapTypeEnum.MainCityScene)
             {
                 MessageHelper.Broadcast(unit, message);

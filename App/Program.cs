@@ -10,6 +10,9 @@ namespace ET
 	{
 		private static void Main(string[] args)
 		{
+			// 关闭 Quick Edit，避免点控制台窗口卡住进程
+			WindowsConsoleHelper.DisableQuickEdit();
+
 			AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
 			{
 				Log.Error(e.ExceptionObject.ToString());
