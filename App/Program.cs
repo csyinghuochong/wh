@@ -2,6 +2,7 @@
 using NLog;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 
 namespace ET
@@ -49,6 +50,9 @@ namespace ET
 
 				Options.Instance = options;
 
+				// 仅内网/版号：StartConfig 含 Localhost 或 BanHao 时清理旧 Server 日志
+				ClearServerLogFilesIfInner();
+
 				Log.ILog = new NLogger(Game.Options.AppType.ToString());
 
 				LogManager.Configuration.Variables["appIdFormat"] = $"{Game.Options.Process:000000}";
@@ -78,6 +82,44 @@ namespace ET
 			catch (Exception e)
 			{
 				Log.Error(e);
+			}
+		}
+
+		/// <summary>
+		/// 仅 Localhost / BanHao 环境清理 Server. 日志（此时 CommonHelper.IsInnerNet 配置尚未加载）。
+		/// </summary>
+		private static void ClearServerLogFilesIfInner()
+		{
+			string startConfig = Options.Instance?.StartConfig ?? string.Empty;
+			if (startConfig.IndexOf("Localhost", StringComparison.OrdinalIgnoreCase) < 0
+			    && startConfig.IndexOf("BanHao", StringComparison.OrdinalIgnoreCase) < 0)
+			{
+				return;
+			}
+
+			try
+			{
+				string logsDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "Logs"));
+				if (!Directory.Exists(logsDir))
+				{
+					return;
+				}
+
+				foreach (string file in Directory.GetFiles(logsDir, "Server.*"))
+				{
+					try
+					{
+						File.Delete(file);
+					}
+					catch
+					{
+						// 单个文件占用则跳过，不影响启动
+					}
+				}
+			}
+			catch
+			{
+				// 清理失败不影响启动
 			}
 		}
 	}
