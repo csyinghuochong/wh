@@ -14,9 +14,11 @@ namespace ET
             //领取邮件
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
             {
+                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
                 long mailServerId = DBHelper.GetMailServerId(unit);
                 E2M_EMailReceiveResponse g_SendChatRequest = (E2M_EMailReceiveResponse)await ActorMessageSenderComponent.Instance.Call
-                    (mailServerId, new M2E_EMailReceiveRequest() { Id = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId, MailId = request.MailId });
+                    (mailServerId, new M2E_EMailReceiveRequest() { Id = roleInfoComponentServer.RoleInfo.UserId, MailId = request.MailId });
 
                 MailInfo mailInfo = g_SendChatRequest.MailInfo;
                 if (mailInfo == null)
@@ -53,7 +55,7 @@ namespace ET
                     LDItem ldItem = LDItemCategory.Instance.Get(mailInfo.ItemSell.ItemID);
                     if (ldItem.ItemType == 3)
                     {
-                        unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PaiMaiSellNumber_218, 0, 1);
+                        chengJiuComponentServer.TriggerEvent(ChengJiuTargetEnum.PaiMaiSellNumber_218, 0, 1);
                     }
                 }
             }

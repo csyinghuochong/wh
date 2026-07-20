@@ -8,8 +8,9 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_UnionDonationRequest request, M2C_UnionDonationResponse response, Action reply)
         {
-            //获取家族等级
-            long unionid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0);
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            long unionid = numericComponent.GetAsLong(NumericType.UnionId_0);
             if (unionid == 0)
             {
                 return;
@@ -19,14 +20,14 @@ namespace ET
             {
                 if (request.Type == 0) // 金币捐献
                 {
-                    if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.UnionDonationNumber) >= 5)
+                    if (numericComponent.GetAsInt(NumericType.UnionDonationNumber) >= 5)
                     {
                         response.Error = ErrorCode.ERR_TimesIsNot;
                         reply();
                         return;
                     }
 
-                    long selfgold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold;
+                    long selfgold = roleInfoComponentServer.RoleInfo.Gold;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit),
                         new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });
@@ -41,7 +42,7 @@ namespace ET
 
                     int unionID = int.Parse(responseUnionEnter.Par);
                     LDUnion ldUnionCof = LDUnionCategory.Instance.Get(unionID);
-                    unit.GetComponent<NumericComponent>().ApplyChange(unit, NumericType.UnionDonationNumber, 1, 0);
+                    numericComponent.ApplyChange(unit, NumericType.UnionDonationNumber, 1, 0);
                   
                     /*roleInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (ldUnionCof.DonateGold * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);
@@ -53,14 +54,14 @@ namespace ET
                 }
                 else if (request.Type == 1) // 钻石捐献
                 {
-                    if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.UnionDiamondDonationNumber) >= 10)
+                    if (numericComponent.GetAsInt(NumericType.UnionDiamondDonationNumber) >= 10)
                     {
                         response.Error = ErrorCode.ERR_TimesIsNot;
                         reply();
                         return;
                     }
 
-                    long selfDiamond = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond;
+                    long selfDiamond = roleInfoComponentServer.RoleInfo.Diamond;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit),
                         new M2U_UnionOperationRequest() { OperateType = 4, UnitId = unit.Id, UnionId = unionid, Par = selfDiamond.ToString() });
@@ -74,9 +75,8 @@ namespace ET
 
                     int unionID = int.Parse(responseUnionEnter.Par);
                     LDUnion ldUnionCof = LDUnionCategory.Instance.Get(unionID);
-                    unit.GetComponent<NumericComponent>().ApplyChange(unit, NumericType.UnionDiamondDonationNumber, 1, 0);
+                    numericComponent.ApplyChange(unit, NumericType.UnionDiamondDonationNumber, 1, 0);
                     // 花费250钻石，暂时写死，M2U_UnionOperationRequest也是
-                    RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 
                     /*roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (ldUnionCof.DonateDiamond * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);

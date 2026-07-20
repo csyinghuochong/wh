@@ -36,8 +36,8 @@ namespace ET
 
             if (d2GGetUnit.Error == ErrorCode.ERR_Success)
             {
-                unit.GetComponent<NumericComponent>().ApplyValue( NumericType.UnionLeader, 1, true);
-                unit.GetComponent<NumericComponent>().ApplyValue( NumericType.UnionId_0, d2GGetUnit.UnionId, true);
+                numericComponent.ApplyValue( NumericType.UnionLeader, 1, true);
+                numericComponent.ApplyValue( NumericType.UnionId_0, d2GGetUnit.UnionId, true);
                 unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.UnionName, request.UnionName);
                 unit.GetComponent<RoleInfoComponentServer>().UpdateRoleDataBroadcast(UserDataType.UnionName, request.UnionName);
                 unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JoinUnion_9, 0, 1);

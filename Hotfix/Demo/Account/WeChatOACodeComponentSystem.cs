@@ -32,17 +32,23 @@ namespace ET
 
             if (CommonHelper.IsInnerNet())
             {
-                code = self.WeChatOACodeDict.Values.ToList()[^1];
+                string lastCode = null;
+                foreach (string value in self.WeChatOACodeDict.Values)
+                {
+                    lastCode = value;
+                }
+                code = lastCode;
             }
 
-            if (!self.WeChatOACodeDict.Values.ToList().Contains(code))
+            long unitId = 0;
+            foreach (KeyValuePair<long, string> kvp in self.WeChatOACodeDict)
             {
-                return "验证码错误";
+                if (kvp.Value == code)
+                {
+                    unitId = kvp.Key;
+                    break;
+                }
             }
-
-            // 获取第一个匹配的键（可能为0，需注意字典未包含目标值的情况）
-            //3055377010755960832  先锋1区  飞鸟依纳
-            long unitId = self.WeChatOACodeDict.FirstOrDefault(kvp => kvp.Value == code).Key;
             if (unitId == 0)
             {
                 return "验证码错误";
@@ -96,7 +102,16 @@ namespace ET
             while (!self.WeChatOACodeDict.ContainsKey(unitId))
             {
                 string newcode = GenerateSecureFourDigitNumber().ToString();
-                if (!self.WeChatOACodeDict.Values.ToList().Contains(newcode))
+                bool codeExists = false;
+                foreach (string existingCode in self.WeChatOACodeDict.Values)
+                {
+                    if (existingCode == newcode)
+                    {
+                        codeExists = true;
+                        break;
+                    }
+                }
+                if (!codeExists)
                 {
                     self.WeChatOACodeDict.Add(unitId, newcode);
                 }

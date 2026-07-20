@@ -259,10 +259,11 @@ namespace ET
         public static void BuffRemoveList(this BuffManagerComponent self, List<int> buffIist)
         {
             //判断玩家身上是否有相同的buff,如果有就注销此Buff
+            HashSet<int> buffIdSet = new HashSet<int>(buffIist);
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
-                if (buffIist.Contains(self.m_Buffs[i].MBuff.Id))
+                if (buffIdSet.Contains(self.m_Buffs[i].MBuff.Id))
                 {
                     self.OnRemoveBuffItem(self.m_Buffs[i]);
                     self.m_Buffs.RemoveAt(i);

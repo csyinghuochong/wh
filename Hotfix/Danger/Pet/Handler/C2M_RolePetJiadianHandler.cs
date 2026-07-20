@@ -9,8 +9,9 @@ namespace ET
 	{
 		protected override async ETTask Run(Unit unit, C2M_RolePetJiadian request, M2C_RolePetJiadian response, Action reply)
 		{
+			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
 			//读取数据库
-			RolePetInfo rolePetInfo = unit.GetComponent<PetComponentServer>().GetPetInfo(request.PetInfoId);
+			RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
 			if (rolePetInfo == null)
 			{
 				reply();
@@ -37,7 +38,7 @@ namespace ET
 				rolePetInfo.AddPropretyValue = CommonConfig.DefaultProprety;
                 rolePetInfo.AddPropretyNum = (rolePetInfo.PetLv - 1) * 5;
 			}
-			unit.GetComponent<PetComponentServer>().UpdatePetAttribute(rolePetInfo, true);
+			petComponentServer.UpdatePetAttribute(rolePetInfo, true);
 			response.RolePetInfo = rolePetInfo;	
 
 			reply();

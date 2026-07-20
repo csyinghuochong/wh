@@ -7,12 +7,13 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_UserInfoRequest request, M2C_UserInfoInitResponse response, Action reply)
         {
-            unit.GetComponent<ShoujiComponentServer>().UpdateShouJIStar();
+            ShoujiComponentServer shoujiComponentServer = unit.GetComponent<ShoujiComponentServer>();
+            shoujiComponentServer.UpdateShouJIStar();
 
             response.RoleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             response.ReddontList =  unit.GetComponent<ReddotComponentServer>().ReddontList;
-            response.TreasureInfo = unit.GetComponent<ShoujiComponentServer>().TreasureInfo;
-            response.ShouJiChapterInfos = unit.GetComponent<ShoujiComponentServer>().ShouJiChapterInfos;
+            response.TreasureInfo = shoujiComponentServer.TreasureInfo;
+            response.ShouJiChapterInfos = shoujiComponentServer.ShouJiChapterInfos;
             response.TitleList = unit.GetComponent<TitleComponentServer>().TitleList;
 
             reply();

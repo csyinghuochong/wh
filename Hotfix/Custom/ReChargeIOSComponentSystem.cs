@@ -53,7 +53,8 @@ namespace ET
             }
 
             string payLoad = request.payMessage;
-            if (self.PayLoadList.Contains(payLoad))
+            HashSet<string> payLoadSet = new HashSet<string>(self.PayLoadList);
+            if (payLoadSet.Contains(payLoad))
             {
                 return ErrorCode.ERR_IOSVerify;
             }
@@ -147,8 +148,10 @@ namespace ET
                 }
 
                 self.PayLoadList.Add(payLoad);
+                payLoadSet.Add(payLoad);
                 if (self.PayLoadList.Count >= 100)
                 {
+                    payLoadSet.Remove(self.PayLoadList[0]);
                     self.PayLoadList.RemoveAt(0);
                 }
                 string serverName = ServerHelper.GetGetServerItem(false, request.Zone).ServerName;

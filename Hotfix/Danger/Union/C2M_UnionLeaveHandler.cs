@@ -24,11 +24,11 @@ namespace ET
                 return;
             }
 
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.UnionLeader, 0);
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.UnionId_0, 0);
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.UnionIdLeaveTime, TimeHelper.ServerNow());
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.UnionName, "");
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleDataBroadcast(UserDataType.UnionName, "");
+            numericComponent.ApplyValue(NumericType.UnionLeader, 0);
+            numericComponent.ApplyValue(NumericType.UnionId_0, 0);
+            numericComponent.ApplyValue(NumericType.UnionIdLeaveTime, TimeHelper.ServerNow());
+            roleInfoComponentServer.UpdateRoleData(UserDataType.UnionName, "");
+            roleInfoComponentServer.UpdateRoleDataBroadcast(UserDataType.UnionName, "");
             unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
 
             unit.UpdateUnionToChat().Coroutine();

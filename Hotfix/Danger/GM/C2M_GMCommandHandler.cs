@@ -246,7 +246,7 @@ namespace ET
                         //if (newLevel <= roleInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList))
 						if(newLevel <= LDGlobalValueCategory.Instance.MaxLevel)
 						{
-							int level = newLevel - unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+							int level = newLevel - roleInfoComponentServer.RoleInfo.Lv;
                             roleInfoComponentServer.UpdateRoleData(UserDataType.Level, level.ToString());
 						}
 						break;

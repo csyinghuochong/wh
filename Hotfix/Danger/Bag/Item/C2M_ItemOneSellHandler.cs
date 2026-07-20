@@ -40,8 +40,9 @@ namespace ET
                     {
                         continue;
                     }
-                    gemIdList.Add(int.Parse(gemids[gem]));
-                    LDItem ldItemConf = LDItemCategory.Instance.Get(int.Parse(gemids[gem]));
+                    int gemId = int.Parse(gemids[gem]);
+                    gemIdList.Add(gemId);
+                    LDItem ldItemConf = LDItemCategory.Instance.Get(gemId);
                     //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());
                 }
 

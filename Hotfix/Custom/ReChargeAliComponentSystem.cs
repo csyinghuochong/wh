@@ -77,15 +77,17 @@ namespace ET
 
             string userInfo = self.OrderDic[orderId];
             // $"{request.UnitId}_{request.UnitName}_{request.RechargeType}"
-            long userId = long.Parse(userInfo.Split('_')[0]);
-            int rechargeType = int.Parse(userInfo.Split('_')[2]);
+            string[] userInfoParts = userInfo.Split('_');
+            long userId = long.Parse(userInfoParts[0]);
+            int rechargeType = int.Parse(userInfoParts[2]);
 
-            Log.Warning($"支付成功[支付宝]  {userId}  {int.Parse(orderId.Split('_')[2])}");
+            string[] orderParts = orderId.Split('_');
+            Log.Warning($"支付成功[支付宝]  {userId}  {int.Parse(orderParts[2])}");
 
-            int zone = int.Parse(orderId.Split('_')[1]);
-            int amount = int.Parse(orderId.Split('_')[2]);
+            int zone = int.Parse(orderParts[1]);
+            int amount = int.Parse(orderParts[2]);
             string serverName = ServerHelper.GetGetServerItem(false, zone).ServerName;
-            Console.WriteLine($"支付成功[支付宝]: 区：{serverName}   玩家名字：{userInfo.Split('_')[1]}   充值额度：{amount}  时间:{TimeHelper.DateTimeNow().ToString()}");
+            Console.WriteLine($"支付成功[支付宝]: 区：{serverName}   玩家名字：{userInfoParts[1]}   充值额度：{amount}  时间:{TimeHelper.DateTimeNow().ToString()}");
 
             RechargeHelp.OnPaySucessToGate(zone, userId, amount, orderId, PayTypeEnum.AliPay, rechargeType).Coroutine();
             self.OrderDic.Remove(orderId);

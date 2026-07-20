@@ -309,13 +309,16 @@ namespace ET
         private async ETTask<long> EnterWorldChatServer(Unit unit)
 		{
 			long chatServerId = DBHelper.GetChatServerId(unit);
+			RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+			NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+			long gateSessionActorId = unit.GetComponent<UnitGateComponent>().GateSessionActorId;
 			Chat2G_EnterChat chat2G_EnterChat = (Chat2G_EnterChat)await MessageHelper.CallActor(chatServerId, new G2Chat_EnterChat()
 			{ 
 				UnitId = unit.Id,
-				Name = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
-				Level = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv,
-                UnionId = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0),
-				GateSessionActorId = unit.GetComponent<UnitGateComponent>().GateSessionActorId
+				Name = roleInfo.Name,
+				Level = roleInfo.Lv,
+                UnionId = numericComponent.GetAsLong(NumericType.UnionId_0),
+				GateSessionActorId = gateSessionActorId
 			});
 			return chat2G_EnterChat.ChatInfoUnitInstanceId;
 		}

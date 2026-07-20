@@ -827,8 +827,8 @@ namespace ET
 		 public const ushort M2C_JingHeWearResponse = 10824;
 		 public const ushort C2M_TaskOnLoginRequest = 10825;
 		 public const ushort M2C_TaskOnLoginResponse = 10826;
-		 public const ushort C2M_LeavlRewardRequest = 10827;
-		 public const ushort M2C_LeavlRewardResponse = 10828;
+		 public const ushort C2M_LevelRewardRequest = 10827;
+		 public const ushort M2C_LevelRewardResponse = 10828;
 		 public const ushort C2M_KillMonsterRewardRequest = 10829;
 		 public const ushort M2C_KillMonsterRewardResponse = 10830;
 		 public const ushort C2P_StallListRequest = 10831;

@@ -24,7 +24,8 @@ namespace ET
                     return;
                 }
 
-                string token = session.DomainScene().GetComponent<TokenComponent>().Get(request.AccountId);
+                TokenComponent tokenComponent = domainScene.GetComponent<TokenComponent>();
+                string token = tokenComponent.Get(request.AccountId);
 
                 if (token == null || token != request.RealmTokenKey)
                 {
@@ -34,7 +35,7 @@ namespace ET
                     return;
                 }
 
-                domainScene.GetComponent<TokenComponent>().Remove(request.AccountId);
+                tokenComponent.Remove(request.AccountId);
                 using (session.AddComponent<SessionLockingComponent>())
                 using (await CoroutineLockComponent.Instance.Wait((int)CoroutineLockType.LoginRealm, request.AccountId))
                 {

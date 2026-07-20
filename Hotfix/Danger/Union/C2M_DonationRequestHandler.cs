@@ -8,13 +8,15 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_DonationRequest request, M2C_DonationResponse response, Action reply)
         {
-         
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+
             if (request.Price < 100000)
             {
                 reply();
                 return;
             }
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold < request.Price)
+            if (roleInfo.Gold < request.Price)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -27,7 +29,6 @@ namespace ET
             //}
             request.UnitId = unit.Id;
             long serverid = DBHelper.GetUnionServerId(unit);
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             RankingInfo rankingInfo = new RankingInfo()
             {
                 Combat = request.Price,
@@ -47,7 +48,7 @@ namespace ET
                 return;
             }
             unit.GetComponent<NumericComponent>().ApplyChange(unit, NumericType.RaceDonationNumber, request.Price, 0);
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub( UserDataType.Gold,  (request.Price * -1).ToString(),true, ItemGetWay.Donation );
+            roleInfoComponentServer.UpdateRoleMoneySub( UserDataType.Gold,  (request.Price * -1).ToString(),true, ItemGetWay.Donation );
             reply();
             await ETTask.CompletedTask;
         }

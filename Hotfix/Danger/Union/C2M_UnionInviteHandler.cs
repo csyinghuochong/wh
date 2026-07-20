@@ -9,11 +9,12 @@
             Unit beinvite = unit.GetParent<UnitComponent>().Get(message.InviteId);
 
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (string.IsNullOrEmpty(roleInfo.UnionName))
             {
                 return;
             }
-            long unionid = unit.GetComponent<NumericComponent>().GetAsLong( NumericType.UnionId_0 );
+            long unionid = numericComponent.GetAsLong( NumericType.UnionId_0 );
             if (unionid == 0)
             {
                 return;

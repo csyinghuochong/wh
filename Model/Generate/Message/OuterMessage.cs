@@ -5661,7 +5661,6 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
-		/// <summary>0本服 1战区</summary>
 		[ProtoMember(1)]
 		public int Scope { get; set; }
 
@@ -15225,10 +15224,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_LeavlRewardResponse))]
-	[Message(OuterOpcode.C2M_LeavlRewardRequest)]
+	[ResponseType(nameof(M2C_LevelRewardResponse))]
+	[Message(OuterOpcode.C2M_LevelRewardRequest)]
 	[ProtoContract]
-	public partial class C2M_LeavlRewardRequest: Object, IActorLocationRequest
+	public partial class C2M_LevelRewardRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -15241,9 +15240,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_LeavlRewardResponse)]
+	[Message(OuterOpcode.M2C_LevelRewardResponse)]
 	[ProtoContract]
-	public partial class M2C_LeavlRewardResponse: Object, IActorLocationResponse
+	public partial class M2C_LevelRewardResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

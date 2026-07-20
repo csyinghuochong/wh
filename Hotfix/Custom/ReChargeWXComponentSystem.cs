@@ -95,12 +95,13 @@ namespace ET
             //向客户端发送道具
             //   self.orderDic.Add(dingDanID, $"{request.Zone}_{request.UnitId}_{request.UnitName}_{request.RechargeType}");
             string[] userparams = userinfo.Split('_');
+            string[] dingdanParts = dingdanStr.Split('_');
 
             int zone = int.Parse(userparams[0]);
             long userId = long.Parse(userparams[1]);
             int rechargetype = int.Parse(userparams[3]);
 
-            int amount = int.Parse(dingdanStr.Split('_')[1]);
+            int amount = int.Parse(dingdanParts[1]);
             amount /= 100;
 
             string serverName = ServerHelper.GetGetServerItem(false, zone).ServerName;

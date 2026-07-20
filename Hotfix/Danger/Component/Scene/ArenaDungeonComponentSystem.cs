@@ -270,12 +270,11 @@ namespace ET
             }
 
             ArenaInfo arenaInfo = self.DomainScene().GetComponent<ArenaInfo>();
-            if (!arenaInfo.PlayerList.ContainsKey(attack.Id))
+            if (!arenaInfo.PlayerList.TryGetValue(attack.Id, out ArenaPlayerStatu arenaPlayerStatu))
             {
                 LogHelper.LogDebug($"ArenaDungeon:  {attack.Id}not found");
                 return;
             }
-            ArenaPlayerStatu arenaPlayerStatu = arenaInfo.PlayerList[attack.Id];
             arenaPlayerStatu.KillNumber = arenaPlayerStatu.KillNumber + 1;
             arenaInfo.PlayerList[attack.Id] = arenaPlayerStatu;
 

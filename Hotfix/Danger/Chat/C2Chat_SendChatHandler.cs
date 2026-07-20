@@ -138,9 +138,9 @@ namespace ET
                         break;
 
                     case (int)ChannelEnum.Friend:
-                        gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(chatInfoUnit.DomainZone(), "Gate1").InstanceId;
+                        long friendGateServerId = StartSceneConfigCategory.Instance.GetBySceneName(chatInfoUnit.DomainZone(), "Gate1").InstanceId;
                         g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                              (gateServerId, new T2G_GateUnitInfoRequest()
+                              (friendGateServerId, new T2G_GateUnitInfoRequest()
                               {
                                   UserID = request.ChatInfo.ParamId
                               });
@@ -164,7 +164,7 @@ namespace ET
 
                         //发给自己
                         g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                              (gateServerId, new T2G_GateUnitInfoRequest()
+                              (friendGateServerId, new T2G_GateUnitInfoRequest()
                               {
                                   UserID = request.ChatInfo.UserId
                               });
