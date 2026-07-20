@@ -258,12 +258,16 @@ namespace ET
         public static void RemoveAllNoSelf(Unit unit)
         {
             UnitComponent unitComponent = unit.DomainScene().GetComponent<UnitComponent>();
-            List<Entity> allunits = unitComponent.Children.Values.ToList();
-            for (int i= allunits.Count - 1; i>= 0; i--)
+            List<long> removeIds = new List<long>();
+            foreach (Entity child in unitComponent.Children.Values)
             {
-                if (unit.Id == allunits[i].Id)
+                if (unit.Id == child.Id)
                     continue;
-                unitComponent.Remove(allunits[i].Id);
+                removeIds.Add(child.Id);
+            }
+            for (int i = removeIds.Count - 1; i >= 0; i--)
+            {
+                unitComponent.Remove(removeIds[i]);
             }
         }
 

@@ -10,9 +10,10 @@ namespace ET
         //拍卖行购买道具
         protected override async ETTask Run(Unit unit, C2M_PaiMaiBuyRequest request, M2C_PaiMaiBuyResponse response, Action reply)
         {
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
 
             //背包是否有位置
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < 1)
+            if (bag.GetBagLeftCell() < 1)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -54,7 +55,7 @@ namespace ET
 
             LDItem ldItem = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
             int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / ldItem.ItemPileSum);
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < cell)
+            if (bag.GetBagLeftCell() < cell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -142,11 +143,11 @@ namespace ET
                
                 unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.PaiMaiBuy);
                 //背包添加道具
-                bool ret = unit.GetComponent<BagComponentServer>().OnAddItemData(r_GameStatusResponse.PaiMaiItemInfo.BagInfo, $"{ItemGetWay.PaiMaiBuy}_{TimeHelper.ServerNow()}");
+                bool ret = bag.OnAddItemData(r_GameStatusResponse.PaiMaiItemInfo.BagInfo, $"{ItemGetWay.PaiMaiBuy}_{TimeHelper.ServerNow()}");
 
                 if (!ret)
                 {
-                    Log.Warning($"拍卖购买出错: {unit.Id} {unit.GetComponent<BagComponentServer>().GetBagLeftCell()}  {paiMaiItemInfo.BagInfo.ItemID}  {paiMaiItemInfo.BagInfo.ItemNum}");
+                    Log.Warning($"拍卖购买出错: {unit.Id} {bag.GetBagLeftCell()}  {paiMaiItemInfo.BagInfo.ItemID}  {paiMaiItemInfo.BagInfo.ItemNum}");
                 }
 
                 //给出售者邮件发送金币

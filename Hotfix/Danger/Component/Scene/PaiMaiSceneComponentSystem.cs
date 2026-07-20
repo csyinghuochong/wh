@@ -720,16 +720,16 @@ namespace ET
             //检测超时的道具
             long currentTime = TimeHelper.ServerNow();
 
-            List<long> removeIds = new List<long>();
+            HashSet<long> removeIdSet = new HashSet<long>();
             for (int i = 1600; i < dBPaiMainInfo.PaiMaiItemInfos.Count; i++ )
             {
-                removeIds.Add(dBPaiMainInfo.PaiMaiItemInfos[i].Id);
+                removeIdSet.Add(dBPaiMainInfo.PaiMaiItemInfos[i].Id);
             }
 
             for (int i = dBPaiMainInfo.PaiMaiItemInfos.Count - 1; i >= 0; i--)
             {
                 PaiMaiItemInfo paiMaiItemInfo = dBPaiMainInfo.PaiMaiItemInfos[i];
-                if (currentTime - paiMaiItemInfo.SellTime >= TimeHelper.OneDay || removeIds.Contains(dBPaiMainInfo.PaiMaiItemInfos[i].Id))
+                if (currentTime - paiMaiItemInfo.SellTime >= TimeHelper.OneDay || removeIdSet.Contains(paiMaiItemInfo.Id))
                 {
                     long emaiId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
                     E2P_PaiMaiOverTimeResponse g_SendChatRequest = (E2P_PaiMaiOverTimeResponse)await ActorMessageSenderComponent.Instance.Call

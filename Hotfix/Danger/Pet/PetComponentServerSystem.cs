@@ -136,13 +136,12 @@ namespace ET
             {
                 self.PetShouHuActive = 1;
             }
-            List<LDPet> petConfigs = LDPetCategory.Instance.GetAll().Values.ToList();
-            for (int i = 0; i < petConfigs.Count; i++)
+            foreach (LDPet petConfig in LDPetCategory.Instance.GetAll().Values)
             {
                 bool havepet = false;
                 for (int p = 0; p < self.PetSkinList.Count; p++)
                 {
-                    if (self.PetSkinList[p].KeyId == petConfigs[i].Id)
+                    if (self.PetSkinList[p].KeyId == petConfig.Id)
                     {
                         havepet = true;
                         break;
@@ -150,7 +149,7 @@ namespace ET
                 }
                 if (!havepet)
                 {
-                    self.PetSkinList.Add(new KeyValuePair() { KeyId = petConfigs[i].Id, Value = String.Empty });
+                    self.PetSkinList.Add(new KeyValuePair() { KeyId = petConfig.Id, Value = String.Empty });
                 }
             }
 

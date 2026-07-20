@@ -20,13 +20,12 @@ namespace ET
 				}
 				if (message.GMMsg == "#allmonster")
 				{
-					List<LDMonster> monsterConfigs = LDMonsterCategory.Instance.GetAll().Values.ToList();
-					for (int i = 0; i < monsterConfigs.Count; i++)
+					foreach (LDMonster monsterConfig in LDMonsterCategory.Instance.GetAll().Values)
 					{
 						await TimerComponent.Instance.WaitAsync(1);
 						Vector3 pos = unit.Position;
 						Vector3 vector3 = new Vector3(pos.x + RandomHelper.RandFloat01() * 1, pos.y, pos.z + RandomHelper.RandFloat01() * 1);
-						Unit monster = UnitFactory.CreateMonster(unit.DomainScene(), monsterConfigs[i].Id, vector3,  new CreateMonsterInfo()
+						Unit monster = UnitFactory.CreateMonster(unit.DomainScene(), monsterConfig.Id, vector3,  new CreateMonsterInfo()
 						{ 
 							Camp  = CampEnum.CampMonster1
 						});

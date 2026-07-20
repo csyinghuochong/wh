@@ -1117,11 +1117,12 @@ namespace ET
         public static bool IsCheskOpen(this RoleInfoComponentServer self, int fubenId, int monsterId)
         {
             List<KeyValuePair> chestList = self.RoleInfo.OpenChestList;
+            string monsterIdStr = monsterId.ToString();
             for (int i = 0; i < chestList.Count; i++)
             {
                 if (chestList[i].KeyId == fubenId)
                 {
-                    return chestList[i].Value.Contains(monsterId.ToString());
+                    return chestList[i].Value.Contains(monsterIdStr);
                 }
             }
             return false;
@@ -1267,6 +1268,7 @@ namespace ET
                 if (self.RoleInfo.FubenPassList[i].FubenId == levelid)
                 {
                     fubenPassInfo = self.RoleInfo.FubenPassList[i];
+                    break;
                 }
             }
             if (fubenPassInfo == null)

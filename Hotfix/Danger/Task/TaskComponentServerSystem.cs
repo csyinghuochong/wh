@@ -746,7 +746,7 @@ namespace ET
                 self.OnAcceptedTask(1);
             }
                     
-            if (self.RoleTaskList.Count() == 1)
+            if (self.RoleTaskList.Count == 1)
             {
                 self.RoleTaskList[0].TrackStatus = 1;
             }
@@ -758,7 +758,7 @@ namespace ET
         {
             self.OnAcceptedTask(taskid + 1);
 
-            if (self.RoleTaskList.Count() == 1)
+            if (self.RoleTaskList.Count == 1)
             {
                 self.RoleTaskList[0].TrackStatus = 1;
             }
@@ -1117,6 +1117,7 @@ namespace ET
             {
                 taskids.AddRange(CommonConfig.WelfareTaskList[i]);
             }
+            HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList);
             for (int i = 0; i < taskids.Count; i++)
             {
                 
@@ -1124,7 +1125,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (self.RoleComoleteTaskList.Contains(taskids[i]))
+                if (completedTaskIds.Contains(taskids[i]))
                 {
                     continue;
                 }

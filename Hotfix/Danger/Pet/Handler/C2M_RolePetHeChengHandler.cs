@@ -124,14 +124,16 @@ namespace ET
 			skillpro = skillpro + addPro;
 
 			List<int> savePetSkillID = new List<int>();
+			HashSet<int> savePetSkillIDSet = new HashSet<int>();
 			List<int> deletPetSkillID = new List<int>();
 
 			for (int i = 0; i < petSkillList_1.Count; i++)
 			{
-				if (!savePetSkillID.Contains(petSkillList_1[i]))
+				if (!savePetSkillIDSet.Contains(petSkillList_1[i]))
 				{
-					if (savePetSkillID.Contains(petSkillList_1[i]) == false && RandomHelper.RandFloat01() <= skillpro && savePetSkillID.Count <= 12)
+					if (RandomHelper.RandFloat01() <= skillpro && savePetSkillIDSet.Count <= 12)
 					{
+						savePetSkillIDSet.Add(petSkillList_1[i]);
 						savePetSkillID.Add(petSkillList_1[i]);
 					}
 					else {
@@ -144,10 +146,11 @@ namespace ET
 			{
 				for (int i = 0; i < petSkillList_2.Count; i++)
 				{
-					if (!savePetSkillID.Contains(petSkillList_2[i]))
+					if (!savePetSkillIDSet.Contains(petSkillList_2[i]))
 					{
-						if (savePetSkillID.Contains(petSkillList_2[i]) == false && RandomHelper.RandFloat01() <= skillpro && savePetSkillID.Count <= 12)
+						if (RandomHelper.RandFloat01() <= skillpro && savePetSkillIDSet.Count <= 12)
 						{
+							savePetSkillIDSet.Add(petSkillList_2[i]);
 							savePetSkillID.Add(petSkillList_2[i]);
 						}
 						else
@@ -164,7 +167,8 @@ namespace ET
 						if (savePetSkillID.Count < (int)((float)sumValue / 2f)) {
 							//额外补一个技能
 							if (deletPetSkillID.Count >= 1) {
-								if (savePetSkillID.Contains(deletPetSkillID[0]) == false) {
+								if (!savePetSkillIDSet.Contains(deletPetSkillID[0])) {
+									savePetSkillIDSet.Add(deletPetSkillID[0]);
 									savePetSkillID.Add(deletPetSkillID[0]);
 								}
 							}
@@ -198,8 +202,10 @@ namespace ET
             LDPet bidaiLdPet = LDPetCategory.Instance.Get(petID);
             string[] baseSkillID = null;// bidaiLdPet.BaseSkillID.Split(';');
 			for (int i = 0; i < baseSkillID.Length;i++) {
-				if (savePetSkillID.Contains(int.Parse(baseSkillID[i])) == false) {
-					savePetSkillID.Add(int.Parse(baseSkillID[i]));
+				int baseSkill = int.Parse(baseSkillID[i]);
+				if (!savePetSkillIDSet.Contains(baseSkill)) {
+					savePetSkillIDSet.Add(baseSkill);
+					savePetSkillID.Add(baseSkill);
 				}
 			}
 

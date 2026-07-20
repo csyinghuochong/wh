@@ -43,8 +43,9 @@ namespace ET
 
             if (request.ChouKaType == 1)
             {
-                string needItems = LDGlobalValueCategory.Instance.Get(39).Value.Split('@')[0];
-                dropId = int.Parse(LDGlobalValueCategory.Instance.Get(39).Value.Split('@')[1]);
+                string[] chouKaConfig = LDGlobalValueCategory.Instance.Get(39).Value.Split('@');
+                string needItems = chouKaConfig[0];
+                dropId = int.Parse(chouKaConfig[1]);
                 bool sucess = bagComponentServer.OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
                 if (!sucess)
                 {
@@ -57,8 +58,9 @@ namespace ET
             }
             else if (request.ChouKaType == 10)
             {
-                int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(40).Value.Split('@')[0]);
-                dropId = int.Parse(LDGlobalValueCategory.Instance.Get(40).Value.Split('@')[1]);
+                string[] tenChouKaConfig = LDGlobalValueCategory.Instance.Get(40).Value.Split('@');
+                int needDimanond = int.Parse(tenChouKaConfig[0]);
+                dropId = int.Parse(tenChouKaConfig[1]);
 
                 if (request.CostType == 2)
                 {

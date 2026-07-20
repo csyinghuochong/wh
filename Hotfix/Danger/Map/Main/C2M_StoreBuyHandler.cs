@@ -9,6 +9,9 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_StoreBuyRequest request, M2C_StoreBuyResponse response, Action reply)
         {
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+
             if (!LDShop_GoodsCategory.Instance.Contain(request.SellItemID))
             {
                 reply();
@@ -23,7 +26,7 @@ namespace ET
                 return;
             }
 
-            int buynumber =  unit.GetComponent<RoleInfoComponentServer>().GetStoreBuy(storeSellConfig.Id);
+            int buynumber = roleInfoComponentServer.GetStoreBuy(storeSellConfig.Id);
             if (storeSellConfig.Buy_Limit_Num >0 && request.SellItemNum +  buynumber > storeSellConfig.Buy_Limit_Num)
             {
                 response.Error = ErrorCode.ERR_BuyMaxLimit;
@@ -32,7 +35,7 @@ namespace ET
             }
 
             int needCell = ItemNewHelper.GetNeedCell(storeSellConfig.Goods);
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < needCell)
+            if (bag.GetBagLeftCell() < needCell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -50,22 +53,22 @@ namespace ET
             }
 
             string costItem = $"{storeSellConfig.Consume_Type}_{storeSellConfig.Consume_Id}_{storeSellConfig.Consume_Value}";
-            if (!unit.GetComponent<BagComponentServer>().CheckNeedItem(costItem))
+            if (!bag.CheckNeedItem(costItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;
             }
 
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(storeSellConfig.Goods);
 
-            unit.GetComponent<BagComponentServer>().OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy );
-            unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
+            bag.OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy );
+            bag.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
             
             if (response.Error == ErrorCode.ERR_Success && storeSellConfig.Buy_Limit_Num > 0)
             {
-                unit.GetComponent<RoleInfoComponentServer>().OnStoreBuy( storeSellConfig.Id );
+                roleInfoComponentServer.OnStoreBuy( storeSellConfig.Id );
             }
             reply();
 

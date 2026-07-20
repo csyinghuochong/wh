@@ -293,11 +293,10 @@ namespace ET
         {
             await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(0, 1000));
            
-            List<LDScene> sceneConfigs =  LDSceneCategory.Instance.GetAll().Values.ToList();
-            for (int i = 0; i < sceneConfigs.Count; i++)
+            foreach (LDScene sceneConfig in LDSceneCategory.Instance.GetAll().Values)
             {
-                if (sceneConfigs[i].Scene_Type != MapTypeEnum.BaoZangZhiDi 
-                && sceneConfigs[i].Scene_Type != MapTypeEnum.MiJing )
+                if (sceneConfig.Scene_Type != MapTypeEnum.BaoZangZhiDi 
+                && sceneConfig.Scene_Type != MapTypeEnum.MiJing )
                 {
                     continue;
                 }
@@ -307,16 +306,16 @@ namespace ET
                 long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
 
                 self.FubenInstanceList.Add(fubenInstanceId);
-                self.YeWaiFubenList.Add(sceneConfigs[i].Id, fubenInstanceId);
+                self.YeWaiFubenList.Add(sceneConfig.Id, fubenInstanceId);
 
-                Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "YeWai" + sceneConfigs[i].Id.ToString(), SceneType.Map);
+                Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "YeWai" + sceneConfig.Id.ToString(), SceneType.Map);
                 MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-                mapComponent.SetMapInfo(sceneConfigs[i].Scene_Type, sceneConfigs[i].Id, 0);
-                mapComponent.NavMeshId = sceneConfigs[i].GetNavMeshId(); 
+                mapComponent.SetMapInfo(sceneConfig.Scene_Type, sceneConfig.Id, 0);
+                mapComponent.NavMeshId = sceneConfig.GetNavMeshId(); 
                 YeWaiRefreshComponent yeWaiRefreshComponen = fubnescene.AddComponent<YeWaiRefreshComponent>();
-                yeWaiRefreshComponen.SceneId = sceneConfigs[i].Id;
+                yeWaiRefreshComponen.SceneId = sceneConfig.Id;
                 
-                switch (sceneConfigs[i].Scene_Type)
+                switch (sceneConfig.Scene_Type)
                 {
                     case MapTypeEnum.MiJing:
                         fubnescene.AddComponent<MiJingComponent>();

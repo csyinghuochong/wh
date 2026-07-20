@@ -252,21 +252,16 @@ namespace ET
                 return;
             }
 
+            HashSet<int> progressIds = new HashSet<int>();
+            for (int k = 0; k < self.ChengJiuProgessList.Count; k++)
+            {
+                progressIds.Add(self.ChengJiuProgessList[k].ChengJiuID);
+            }
+            HashSet<int> completeIds = new HashSet<int>(self.ChengJiuCompleteList);
+
             for (int i = 0;i < chengjiuList.Count;i ++)
             {
-                bool exist = false;
-                for (int k = 0; k < self.ChengJiuProgessList.Count; k++ )
-                {
-                    if (self.ChengJiuProgessList[k].ChengJiuID == chengjiuList[i])
-                    {
-                        exist = true;
-                    }
-                    if (exist)
-                    {
-                        break;
-                    }
-                }
-                if (exist || self.ChengJiuCompleteList.Contains(chengjiuList[i]))
+                if (progressIds.Contains(chengjiuList[i]) || completeIds.Contains(chengjiuList[i]))
                 {
                     continue;
                 }

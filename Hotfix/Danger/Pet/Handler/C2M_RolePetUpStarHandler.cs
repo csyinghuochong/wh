@@ -50,8 +50,9 @@ namespace ET
             //判断是否符合宠物条件
             for (int i = 0; i < request.CostPetInfoIds.Count; i++)
             {
+                RolePetInfo costPetInfo = petComponentServer.GetPetInfo(request.CostPetInfoIds[i]);
                 //判断星数是否符合
-                if (petComponentServer.GetPetInfo(request.CostPetInfoIds[i]).Star < rolePetInfo.Star) 
+                if (costPetInfo.Star < rolePetInfo.Star) 
                 {
                     
                     starError = true;

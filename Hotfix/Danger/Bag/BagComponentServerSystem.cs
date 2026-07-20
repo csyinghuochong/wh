@@ -238,19 +238,21 @@ namespace ET
 
                 if (bagInfo.isBinging)
                 {
-                    if (!ItemSameList_1.ContainsKey(bagInfo.ItemID))
+                    if (!ItemSameList_1.TryGetValue(bagInfo.ItemID, out List<BagInfo> sameList_1))
                     {
-                        ItemSameList_1[bagInfo.ItemID] = new List<BagInfo>();
+                        sameList_1 = new List<BagInfo>();
+                        ItemSameList_1[bagInfo.ItemID] = sameList_1;
                     }
-                    ItemSameList_1[bagInfo.ItemID].Add(bagInfo);
+                    sameList_1.Add(bagInfo);
                 }
                 else
                 {
-                    if (!ItemSameList_2.ContainsKey(bagInfo.ItemID))
+                    if (!ItemSameList_2.TryGetValue(bagInfo.ItemID, out List<BagInfo> sameList_2))
                     {
-                        ItemSameList_2[bagInfo.ItemID] = new List<BagInfo>();
+                        sameList_2 = new List<BagInfo>();
+                        ItemSameList_2[bagInfo.ItemID] = sameList_2;
                     }
-                    ItemSameList_2[bagInfo.ItemID].Add(bagInfo);
+                    sameList_2.Add(bagInfo);
                 }
             }
 
