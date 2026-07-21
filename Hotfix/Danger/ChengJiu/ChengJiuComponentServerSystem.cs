@@ -10,6 +10,9 @@ namespace ET
         public override void Awake(ChengJiuComponentServer self)
         {
             self.RandomDrop = 0;
+            self.ChengJiuEventBatchDepth = 0;
+            self.ChengJiuEventCoalesceAdd?.Clear();
+            self.ChengJiuEventCoalesceSet?.Clear();
             Unit unit = self.GetParent<Unit>();
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, roleInfo.Lv);
@@ -70,62 +73,78 @@ namespace ET
             if (defend == null || defend.IsDisposed)
                 return;
 
-            if (defend.Type == UnitType.Player)
+            self.BeginChengJiuEventBatch();
+            try
             {
-                Unit unit = self.GetParent<Unit>();
-                self.TriggerEvent(ChengJiuTargetEnum.KillPlayerNumber_209, 0, 1);
-                LogHelper.KillPlayerInfo(unit, defend);
+                if (defend.Type == UnitType.Player)
+                {
+                    Unit unit = self.GetParent<Unit>();
+                    self.TriggerEvent(ChengJiuTargetEnum.KillPlayerNumber_209, 0, 1);
+                    LogHelper.KillPlayerInfo(unit, defend);
+                }
+                if (defend.Type == UnitType.Monster)
+                {
+                    int unitconfigId = defend.ConfigId;
+                    LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
+                    bool isBoss = ldMonster.Type == (int)MonsterTypeEnum.Boss;
+                    Scene domainScene = self.DomainScene();
+                    MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
+                    int fubenDifficulty = (int)FubenDifficulty.None;
+                    if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
+                    {
+                        fubenDifficulty = (int)domainScene.GetComponent<CellDungeonComponent>().FubenDifficulty;
+                    }
+                    if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
+                    {
+                        fubenDifficulty = (int)domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
+                    }
+
+                    self.TriggerEvent(ChengJiuTargetEnum.KillIDMonster_1, unitconfigId, 1);
+                    self.TriggerEvent(ChengJiuTargetEnum.KillTotalMonster_2, 0, 1);
+
+                    if (isBoss)
+                    {
+                        self.TriggerEvent(ChengJiuTargetEnum.KillTotalBoss_3, 0, 1);
+                        self.TriggerEvent(ChengJiuTargetEnum.KillNormalBoss_4, unitconfigId, 1);
+                    }
+                    if (fubenDifficulty >= (int)FubenDifficulty.TiaoZhan && isBoss) //挑战
+                    {
+                        self.TriggerEvent(ChengJiuTargetEnum.KillChallengeBoss_5, unitconfigId, 1);
+                    }
+                    if (fubenDifficulty == (int)FubenDifficulty.DiYu && isBoss) //地狱
+                    {
+                        self.TriggerEvent(ChengJiuTargetEnum.KillInfernalBoss_6, unitconfigId, 1);
+                    }
+                }
             }
-            if (defend.Type == UnitType.Monster)
+            finally
             {
-                int unitconfigId = defend.ConfigId;
-                LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
-                bool isBoss = ldMonster.Type == (int)MonsterTypeEnum.Boss;
-                Scene domainScene = self.DomainScene();
-                MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
-                int fubenDifficulty = (int)FubenDifficulty.None;
-                if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
-                {
-                    fubenDifficulty = (int)domainScene.GetComponent<CellDungeonComponent>().FubenDifficulty;
-                }
-                if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
-                {
-                    fubenDifficulty = (int)domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
-                }
-
-                self.TriggerEvent(ChengJiuTargetEnum.KillIDMonster_1, unitconfigId, 1);
-                self.TriggerEvent(ChengJiuTargetEnum.KillTotalMonster_2, 0, 1);
-
-                if (isBoss)
-                {
-                    self.TriggerEvent(ChengJiuTargetEnum.KillTotalBoss_3, 0, 1);
-                    self.TriggerEvent(ChengJiuTargetEnum.KillNormalBoss_4, unitconfigId, 1);
-                }
-                if (fubenDifficulty >= (int)FubenDifficulty.TiaoZhan && isBoss) //挑战
-                {
-                    self.TriggerEvent(ChengJiuTargetEnum.KillChallengeBoss_5, unitconfigId, 1);
-                }
-                if (fubenDifficulty == (int)FubenDifficulty.DiYu && isBoss) //地狱
-                {
-                    self.TriggerEvent(ChengJiuTargetEnum.KillInfernalBoss_6, unitconfigId, 1);
-                }
+                self.EndChengJiuEventBatch();
             }
         }
 
         public static void OnPassFuben(this ChengJiuComponentServer self, int difficulty, int chapterid, int star)
         {
-            self.TriggerEvent(ChengJiuTargetEnum.PassNormalFubenID_11, chapterid, 1);
-            if ((int)difficulty >= (int)FubenDifficulty.TiaoZhan)  //挑战
+            self.BeginChengJiuEventBatch();
+            try
             {
-                self.TriggerEvent(ChengJiuTargetEnum.PassChallengeFubenID_12, chapterid, 1);
+                self.TriggerEvent(ChengJiuTargetEnum.PassNormalFubenID_11, chapterid, 1);
+                if ((int)difficulty >= (int)FubenDifficulty.TiaoZhan)  //挑战
+                {
+                    self.TriggerEvent(ChengJiuTargetEnum.PassChallengeFubenID_12, chapterid, 1);
+                }
+                if ((int)difficulty == (int)FubenDifficulty.DiYu)  //地狱
+                {
+                    self.TriggerEvent(ChengJiuTargetEnum.PassInfernalFubenID_13, chapterid, 1);
+                }
+                if (star == 3 && (int)difficulty == (int)FubenDifficulty.DiYu)
+                {
+                    self.TriggerEvent(ChengJiuTargetEnum.PerfectPassInfernalFubenID_14, chapterid, 1);
+                }
             }
-            if ((int)difficulty == (int)FubenDifficulty.DiYu)  //地狱
+            finally
             {
-                self.TriggerEvent(ChengJiuTargetEnum.PassInfernalFubenID_13, chapterid, 1);
-            }
-            if (star == 3 && (int)difficulty == (int)FubenDifficulty.DiYu)
-            {
-                self.TriggerEvent(ChengJiuTargetEnum.PerfectPassInfernalFubenID_14, chapterid, 1);
+                self.EndChengJiuEventBatch();
             }
         }
 
@@ -163,21 +182,45 @@ namespace ET
 
         public static void OnGetPet(this ChengJiuComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.TriggerEvent(ChengJiuTargetEnum.PetIdNumber_301, rolePetInfo.ConfigId, 1);
-            self.TriggerEvent(ChengJiuTargetEnum.TotalPetNumber_302, 0, 1);
-            self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
+            self.BeginChengJiuEventBatch();
+            try
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.PetIdNumber_301, rolePetInfo.ConfigId, 1);
+                self.TriggerEvent(ChengJiuTargetEnum.TotalPetNumber_302, 0, 1);
+                self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
+            }
+            finally
+            {
+                self.EndChengJiuEventBatch();
+            }
         }
 
         public static void OnPetHeCheng(this ChengJiuComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.TriggerEvent(ChengJiuTargetEnum.TotalPetHeCheng_303, 0, 1);
-            self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
+            self.BeginChengJiuEventBatch();
+            try
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.TotalPetHeCheng_303, 0, 1);
+                self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
+            }
+            finally
+            {
+                self.EndChengJiuEventBatch();
+            }
         }
 
         public static void OnPetXiLian(this ChengJiuComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.TriggerEvent(ChengJiuTargetEnum.TotalPetXiLian_304, 0, 1);
-            self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
+            self.BeginChengJiuEventBatch();
+            try
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.TotalPetXiLian_304, 0, 1);
+                self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
+            }
+            finally
+            {
+                self.EndChengJiuEventBatch();
+            }
         }
 
         public static void OnItemHuiShow(this ChengJiuComponentServer self, int itemNumber)
@@ -247,7 +290,80 @@ namespace ET
             }
         }
 
+        public static void BeginChengJiuEventBatch(this ChengJiuComponentServer self)
+        {
+            self.ChengJiuEventBatchDepth++;
+        }
+
+        public static void EndChengJiuEventBatch(this ChengJiuComponentServer self)
+        {
+            if (self.ChengJiuEventBatchDepth <= 0)
+            {
+                return;
+            }
+            self.ChengJiuEventBatchDepth--;
+            if (self.ChengJiuEventBatchDepth == 0)
+            {
+                self.FlushChengJiuEventBatch();
+            }
+        }
+
+        private static bool IsChengJiuSetValue(ChengJiuTargetEnum chengJiuTarget)
+        {
+            switch (chengJiuTarget)
+            {
+                case ChengJiuTargetEnum.PlayerLevel_205:
+                case ChengJiuTargetEnum.SkillShuLianDu_208:
+                case ChengJiuTargetEnum.CombatToValue_211:
+                case ChengJiuTargetEnum.ZodiacEquipNumber_215:
+                case ChengJiuTargetEnum.PetNSkill_305:
+                case ChengJiuTargetEnum.PegScoreToValue_307:
+                case ChengJiuTargetEnum.PetArrayScoreToValue_308:
+                case ChengJiuTargetEnum.PetTianTiRank_309:
+                case ChengJiuTargetEnum.ZiZhiToValue_311:
+                case ChengJiuTargetEnum.ZiZhiUpValue_312:
+                case ChengJiuTargetEnum.JiaYuanLevel_404:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public static void TriggerEvent(this ChengJiuComponentServer self, ChengJiuTargetEnum chengJiuTarget, int target_id, int target_value=1)
+        {
+            if (self.ChengJiuEventBatchDepth > 0)
+            {
+                var key = ((int)chengJiuTarget, target_id);
+                if (IsChengJiuSetValue(chengJiuTarget))
+                {
+                    self.ChengJiuEventCoalesceSet[key] = target_value;
+                }
+                else
+                {
+                    self.ChengJiuEventCoalesceAdd.TryGetValue(key, out int sum);
+                    self.ChengJiuEventCoalesceAdd[key] = sum + target_value;
+                }
+                return;
+            }
+
+            self.ApplyChengJiuEvent(chengJiuTarget, target_id, target_value);
+        }
+
+        private static void FlushChengJiuEventBatch(this ChengJiuComponentServer self)
+        {
+            foreach (var kv in self.ChengJiuEventCoalesceSet)
+            {
+                self.ApplyChengJiuEvent((ChengJiuTargetEnum)kv.Key.Item1, kv.Key.Item2, kv.Value);
+            }
+            foreach (var kv in self.ChengJiuEventCoalesceAdd)
+            {
+                self.ApplyChengJiuEvent((ChengJiuTargetEnum)kv.Key.Item1, kv.Key.Item2, kv.Value);
+            }
+            self.ChengJiuEventCoalesceSet.Clear();
+            self.ChengJiuEventCoalesceAdd.Clear();
+        }
+
+        private static void ApplyChengJiuEvent(this ChengJiuComponentServer self, ChengJiuTargetEnum chengJiuTarget, int target_id, int target_value=1)
         {
             int chengJiuTargetInt = (int)chengJiuTarget;
             List<int> chengjiuList = null;

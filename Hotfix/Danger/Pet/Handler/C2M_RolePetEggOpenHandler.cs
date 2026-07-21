@@ -44,10 +44,17 @@ namespace ET
                 index = 0;
             }
             response.PetInfo = pet.OnAddPet(ItemGetWay.PetEggDuiHuan, petlists[index],0, rolePetEgg.FuLing);
-            task.TriggerTaskEvent( TastConditionType.PetFuHuaNumber_34, 0, 1 );
-       
-            task.TriggerTaskEvent(TastConditionType.PetFuHuaId_35, rolePetEgg.ItemId, 1);
-          
+            task.BeginTaskEventBatch();
+            try
+            {
+                task.TriggerTaskEvent(TastConditionType.PetFuHuaNumber_34, 0, 1);
+                task.TriggerTaskEvent(TastConditionType.PetFuHuaId_35, rolePetEgg.ItemId, 1);
+            }
+            finally
+            {
+                task.EndTaskEventBatch();
+            }
+
             rolePetEgg.ItemId = 0;
             rolePetEgg.EndTime = 0;
             rolePetEgg.FuLing = 0;

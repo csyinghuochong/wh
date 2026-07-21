@@ -639,17 +639,23 @@ namespace ET
         /// <param name="star"></param>
         public static void OnPassFuben(this TaskComponentServer self, int difficulty, int chapterid, int star)
         {
-            self.TriggerTaskEvent(TastConditionType.PassFubenID_7, chapterid, 1);
-   
-            if ((int)difficulty >= (int)FubenDifficulty.TiaoZhan)  //挑战
+            self.BeginTaskEventBatch();
+            try
             {
-                self.TriggerTaskEvent(TastConditionType.PassTianZhanFubenID_111, chapterid, 1);
-       
+                self.TriggerTaskEvent(TastConditionType.PassFubenID_7, chapterid, 1);
+
+                if ((int)difficulty >= (int)FubenDifficulty.TiaoZhan)  //挑战
+                {
+                    self.TriggerTaskEvent(TastConditionType.PassTianZhanFubenID_111, chapterid, 1);
+                }
+                if ((int)difficulty >= (int)FubenDifficulty.DiYu)  //地狱
+                {
+                    self.TriggerTaskEvent(TastConditionType.PassDiYuFubenID_112, chapterid, 1);
+                }
             }
-            if ((int)difficulty >= (int)FubenDifficulty.DiYu)  //地狱
+            finally
             {
-                self.TriggerTaskEvent(TastConditionType.PassDiYuFubenID_112, chapterid, 1);
-              
+                self.EndTaskEventBatch();
             }
         }
 

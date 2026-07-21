@@ -280,23 +280,38 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-            int maxping = self.GetPetMaxPingFen();
+            chengJiu.BeginChengJiuEventBatch();
+            try
+            {
+                int maxping = self.GetPetMaxPingFen();
+                chengJiu.TriggerEvent(ChengJiuTargetEnum.PegScoreToValue_307, 0, maxping);
 
-            chengJiu.TriggerEvent(ChengJiuTargetEnum.PegScoreToValue_307, 0, maxping);
-
-            int arrayping = self.GetPetArrayPingFen();
-            chengJiu.TriggerEvent(ChengJiuTargetEnum.PetArrayScoreToValue_308, 0, arrayping);
+                int arrayping = self.GetPetArrayPingFen();
+                chengJiu.TriggerEvent(ChengJiuTargetEnum.PetArrayScoreToValue_308, 0, arrayping);
+            }
+            finally
+            {
+                chengJiu.EndChengJiuEventBatch();
+            }
         }
 
         public static void CheckPetZiZhi(this PetComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
             ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 1, self.GetPetMaxZiZhi(1));
-            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 2, self.GetPetMaxZiZhi(2));
-            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 3, self.GetPetMaxZiZhi(3));
-            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 4, self.GetPetMaxZiZhi(4));
-            chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 5, self.GetPetMaxZiZhi(5));
+            chengJiu.BeginChengJiuEventBatch();
+            try
+            {
+                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 1, self.GetPetMaxZiZhi(1));
+                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 2, self.GetPetMaxZiZhi(2));
+                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 3, self.GetPetMaxZiZhi(3));
+                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 4, self.GetPetMaxZiZhi(4));
+                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 5, self.GetPetMaxZiZhi(5));
+            }
+            finally
+            {
+                chengJiu.EndChengJiuEventBatch();
+            }
         }
 
         public static int GetPetMaxZiZhi(this PetComponentServer self, int zizhiType)

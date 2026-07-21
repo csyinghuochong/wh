@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+#if SERVER
+using MongoDB.Bson.Serialization.Attributes;
+#endif
 
 namespace ET
 {
@@ -161,7 +164,16 @@ namespace ET
     {
 #if SERVER
         public long JingLingUnitId = 0;
-        public List<ChengJiuInfo> ChengJiuProgessList = new List<ChengJiuInfo>();                                      
+        public List<ChengJiuInfo> ChengJiuProgessList = new List<ChengJiuInfo>();
+
+        [BsonIgnore]
+        public int ChengJiuEventBatchDepth;
+
+        [BsonIgnore]
+        public Dictionary<(int, int), int> ChengJiuEventCoalesceAdd = new Dictionary<(int, int), int>();
+
+        [BsonIgnore]
+        public Dictionary<(int, int), int> ChengJiuEventCoalesceSet = new Dictionary<(int, int), int>();
 #else
         public Dictionary<int, ChengJiuInfo> ChengJiuProgessList = new Dictionary<int, ChengJiuInfo>();
 #endif

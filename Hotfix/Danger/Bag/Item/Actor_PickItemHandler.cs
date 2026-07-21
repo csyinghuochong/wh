@@ -155,9 +155,11 @@ namespace ET
             //DropType ==  0 公共掉落 2保护掉落   1私有掉落
             TeamDungeonComponent teamDungeonComponent = unit.DomainScene().GetComponent<TeamDungeonComponent>();
             UnitComponent unitComponent = unit.GetParent<UnitComponent>();
-            List<RewardItem> rewardItems = new List<RewardItem>(1);
             List<Unit> players = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Player);
             string pickGetWay = $"{ItemGetWay.PickItem}_{serverTime}";
+            // 按归属玩家聚合后再批量入包，避免同一次拾取多次 OnAddItemData
+            Dictionary<long, List<RewardItem>> pendingByOwner = new Dictionary<long, List<RewardItem>>();
+            List<(long ownerId, int dropType, long dropUnitId, ChatInfo chatInfo)> pendingMeta = new List<(long, int, long, ChatInfo)>();
             for (int i = drops.Count - 1; i >= 0; i--)
             {
                 Unit unitDrop = unitComponent.Get(drops[i].UnitId);
@@ -320,20 +322,81 @@ namespace ET
 
                 if (owner != null)
                 {
-                    rewardItems.Clear();
-                    rewardItems.Add(new RewardItem() { ItemID = addItemID, ItemNum = addItemNum });
-
-                    bool success = owner.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, pickGetWay);
-                    if (!success)
+                    if (!pendingByOwner.TryGetValue(owner.Id, out List<RewardItem> ownerRewards))
                     {
-                        errorCode = owner.Id == unit.Id ? ErrorCode.ERR_BagIsFull : ErrorCode.ERR_ItemBelongOther;
-                        continue;
+                        ownerRewards = new List<RewardItem>();
+                        pendingByOwner[owner.Id] = ownerRewards;
+                    }
+                    ownerRewards.Add(new RewardItem() { ItemID = addItemID, ItemNum = addItemNum });
+                    ChatInfo chatCopy = m2C_SyncChatInfo.ChatInfo;
+                    pendingMeta.Add((owner.Id, drops[i].DropType, drops[i].UnitId, chatCopy));
+                    // ChatInfo 已挂到 pending，下一轮新建，避免单例被覆盖
+                    m2C_SyncChatInfo.ChatInfo = null;
+                }
+                else
+                {
+                    MessageHelper.SendToClient(players, m2C_SyncChatInfo);
+                    if (drops[i].DropType != 1)
+                    {
+                        unitComponent.Remove(unitDrop.Id);
                     }
                 }
-                MessageHelper.SendToClient(players, m2C_SyncChatInfo);
-                if (drops[i].DropType != 1)
+            }
+
+            foreach (var kv in pendingByOwner)
+            {
+                long ownerId = kv.Key;
+                List<RewardItem> ownerRewards = kv.Value;
+                Unit owner = unitComponent.Get(ownerId);
+                if (owner == null)
                 {
-                    unitComponent.Remove(unitDrop.Id);
+                    continue;
+                }
+
+                BagComponentServer ownerBag = owner.GetComponent<BagComponentServer>();
+                bool batchOk = ownerBag.OnAddItemData(ownerRewards, string.Empty, pickGetWay);
+                if (!batchOk)
+                {
+                    // 背包空间不足时回退逐个添加，保留部分成功语义
+                    int rewardIndex = 0;
+                    for (int p = 0; p < pendingMeta.Count; p++)
+                    {
+                        if (pendingMeta[p].ownerId != ownerId)
+                        {
+                            continue;
+                        }
+                        List<RewardItem> one = new List<RewardItem> { ownerRewards[rewardIndex] };
+                        rewardIndex++;
+                        if (!ownerBag.OnAddItemData(one, string.Empty, pickGetWay))
+                        {
+                            errorCode = ownerId == unit.Id ? ErrorCode.ERR_BagIsFull : ErrorCode.ERR_ItemBelongOther;
+                            continue;
+                        }
+                        M2C_SyncChatInfo chatMsg = SceneCreatureHelp.m2C_SyncChatInfo;
+                        chatMsg.ChatInfo = pendingMeta[p].chatInfo;
+                        MessageHelper.SendToClient(players, chatMsg);
+                        if (pendingMeta[p].dropType != 1)
+                        {
+                            unitComponent.Remove(pendingMeta[p].dropUnitId);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int p = 0; p < pendingMeta.Count; p++)
+                    {
+                        if (pendingMeta[p].ownerId != ownerId)
+                        {
+                            continue;
+                        }
+                        M2C_SyncChatInfo chatMsg = SceneCreatureHelp.m2C_SyncChatInfo;
+                        chatMsg.ChatInfo = pendingMeta[p].chatInfo;
+                        MessageHelper.SendToClient(players, chatMsg);
+                        if (pendingMeta[p].dropType != 1)
+                        {
+                            unitComponent.Remove(pendingMeta[p].dropUnitId);
+                        }
+                    }
                 }
             }
 
