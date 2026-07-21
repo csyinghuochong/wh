@@ -19,14 +19,15 @@ namespace ET
                 reply();
                 return;
             }
-            if (dBFriendInfo.FriendList.Contains(request.RoleInfo.UserId))
+            long applyUserId = request.RoleInfo.UserId;
+            if (dBFriendInfo.FriendList.Contains(applyUserId))
             {
                 reply();
                 return;
             }
-            if (!dBFriendInfo.ApplyList.Contains(request.RoleInfo.UserId))
+            if (!dBFriendInfo.ApplyList.Contains(applyUserId))
             {
-                dBFriendInfo.ApplyList.Add(request.RoleInfo.UserId);
+                dBFriendInfo.ApplyList.Add(applyUserId);
                 DBHelper.SaveComponent(scene.DomainZone(), dBFriendInfo.Id, dBFriendInfo).Coroutine();
                 
                 long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), "Gate1").InstanceId;

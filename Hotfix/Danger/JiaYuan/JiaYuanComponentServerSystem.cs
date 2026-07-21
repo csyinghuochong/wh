@@ -155,7 +155,8 @@ namespace ET
             List<KeyValuePair> jiayuandashi = CommonConfig.JiaYuanDaShiPro;
             for (int i = 0; i < jiayuandashi.Count; i++)
             {
-                string[] infolist = jiayuandashi[i].Value2.Split('@');
+                string dashiValue2 = jiayuandashi[i].Value2;
+                string[] infolist = dashiValue2.Split('@');
                 int need_time = int.Parse(infolist[0]);
                 string[] attriInfo = infolist[1].Split(',');
                 int attributeId = int.Parse(attriInfo[0]);

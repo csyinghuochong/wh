@@ -18,11 +18,12 @@ namespace ET
             for (int i = 0; i < allPetHeXin.Count; i++)
             {
                 BagInfo bagInfo = allPetHeXin[i];   
-                if (!keyValuePairs.ContainsKey(bagInfo.ItemID))
+                if (!keyValuePairs.TryGetValue(bagInfo.ItemID, out List<BagInfo> bagInfoList))
                 {
-                    keyValuePairs.Add(bagInfo.ItemID, new List<BagInfo>());
+                    bagInfoList = new List<BagInfo>();
+                    keyValuePairs[bagInfo.ItemID] = bagInfoList;
                 }
-                keyValuePairs[bagInfo.ItemID].Add(bagInfo);
+                bagInfoList.Add(bagInfo);
             }
 
 

@@ -74,11 +74,13 @@ namespace ET
                 switch (request.SceneType)
 				{
 					case (int)MapTypeEnum.CellDungeon:
-						int sonid = scene.GetComponent<CellDungeonComponent>().CurrentFubenCell.sonid;
+						MapComponent mapComponent = scene.GetComponent<MapComponent>();
+						CellDungeonComponent cellDungeonComponent = scene.GetComponent<CellDungeonComponent>();
+						int sonid = cellDungeonComponent.CurrentFubenCell.sonid;
 						//ChapterSonConfig chapterSon = ChapterSonConfigCategory.Instance.Get(sonid);
-						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
-						Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
-						scene.GetComponent<CellDungeonComponent>().MainUnit = unit;
+						unit.AddComponent<PathfindingComponent, int>(mapComponent.NavMeshId);
+						Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
+						cellDungeonComponent.MainUnit = unit;
 						//更新unit坐标
 						//unit.Position = new Vector3(chapterSon.BornPosLeft[0] * 0.01f, chapterSon.BornPosLeft[1] * 0.01f, chapterSon.BornPosLeft[2] * 0.01f);
 						//unit.Rotation = Quaternion.identity;
@@ -89,7 +91,7 @@ namespace ET
 						MessageHelper.SendToClient(unit, m2CCreateUnits);
 						// 加入aoi
 						unit.AddComponent<AOIEntity, int, Vector3>(4 * 1000, unit.Position);
-						scene.GetComponent<CellDungeonComponent>().GenerateFubenScene(false);
+						cellDungeonComponent.GenerateFubenScene(false);
 						TransferHelper.AfterTransfer(unit);
 						break;
 					case (int)MapTypeEnum.PetMing:

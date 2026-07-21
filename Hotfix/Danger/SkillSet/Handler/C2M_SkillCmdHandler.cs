@@ -11,8 +11,11 @@ namespace ET
             try
             {
                 int juexingid = 0;
-                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
                 NumericComponent numeric = unit.GetComponent<NumericComponent>();
+                SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
+                DBSaveComponent dbSaveComponent = unit.GetComponent<DBSaveComponent>();
                 int occtwo = roleInfo.OccTwo;
                 if (occtwo != 0)
                 {
@@ -36,7 +39,6 @@ namespace ET
                     return;
                 }
 
-                SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
                 BagComponentServer bag = null;
                 ChengJiuComponentServer chengJiu = null;
                 TaskComponentServer task = null;
@@ -74,7 +76,7 @@ namespace ET
                 if (mapComponent.MapTypeEnum != MapTypeEnum.RunRace && !CommonHelper.IsInnerNet())
                 {
                 }
-                unit.GetComponent<DBSaveComponent>().NoFindPath = 0;
+                dbSaveComponent.NoFindPath = 0;
                 numeric.ApplyValue(NumericType.HorseRide, 0, true, true);
 
                 M2C_SkillCmd m2C_SkillCmd = skillManagerComponent.OnUseSkill(request, true);

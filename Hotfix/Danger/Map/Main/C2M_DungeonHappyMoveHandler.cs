@@ -74,7 +74,8 @@ namespace ET
                 List<Unit> droplist = UnitHelper.GetUnitList(domainScene, UnitType.DropItem);
                 for (int i = 0; i < droplist.Count; i++)
                 {
-                    int itemid = droplist[i].GetComponent<DropComponent>().ItemID;
+                    DropComponent dropComponent = droplist[i].GetComponent<DropComponent>();
+                    int itemid = dropComponent.ItemID;
                     if (LDItemCategory.Instance.Get(itemid).Quality >= 5)
                     {
                         haveorange = true;

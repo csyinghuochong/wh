@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace ET
@@ -59,14 +58,10 @@ namespace ET
             appraiseLv = 10;
             baginfoOpera.AppraiseAttrList.Clear();
 
-            List<LDEquip_Appraise> lDEquip_Appraises = LDEquip_AppraiseCategory.Instance.GetAll().Values.ToList();
-
-            for (int i = 0; i < lDEquip_Appraises.Count; i++)
+            foreach (LDEquip_Appraise lDEquip_Appraise in LDEquip_AppraiseCategory.Instance.GetAll().Values)
             {
-                LDEquip_Appraise lDEquip_Appraise = lDEquip_Appraises[i];
-
-                if (lDEquip_Appraises[i].Attribute_Type == randomAttri 
-                    && lDEquip_Appraises[i].Appraise_Lv == appraiseLv)
+                if (lDEquip_Appraise.Attribute_Type == randomAttri 
+                    && lDEquip_Appraise.Appraise_Lv == appraiseLv)
                 {
                     int randomAttriValue = RandomHelper.RandomNumber(lDEquip_Appraise.Attribute_Min, lDEquip_Appraise.Attribute_Max);
                     baginfoOpera.AppraiseAttrList.Add( new AttributeItem()

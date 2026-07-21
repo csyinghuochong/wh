@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -10,7 +11,8 @@ namespace ET
         {
 
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-            if (taskComponentServer.ReceiveHuoYueIds.Contains(request.HuoYueId))
+            HashSet<int> receivedHuoYueIds = new HashSet<int>(taskComponentServer.ReceiveHuoYueIds);
+            if (receivedHuoYueIds.Contains(request.HuoYueId))
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();

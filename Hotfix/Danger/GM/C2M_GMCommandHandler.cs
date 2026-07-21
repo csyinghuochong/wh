@@ -145,7 +145,8 @@ namespace ET
 				}
                 if (message.GMMsg == "#resettower")
                 {
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.SeasonTowerId, 0);
+                    NumericComponent numeric = unit.GetComponent<NumericComponent>();
+                    numeric.ApplyValue(NumericType.SeasonTowerId, 0);
                     return;
                 }
                 if (message.GMMsg == "#ceshi1203")

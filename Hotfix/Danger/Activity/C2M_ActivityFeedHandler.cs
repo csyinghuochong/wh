@@ -17,6 +17,7 @@ namespace ET
                 return;
             }
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
             if (bagComponentServer.GetBagLeftCell() < 1)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -45,7 +46,7 @@ namespace ET
                      ItemID = request.ItemID,
                  });
 
-            response.ActivityV1Info = unit.GetComponent<ActivityComponentServer>().ActivityV1Info;
+            response.ActivityV1Info = activityComponentServer.ActivityV1Info;
             response.ActivityV1Info.BaoShiDu = r_GameStatusResponse.BaoShiDu;
             reply();
             await ETTask.CompletedTask;

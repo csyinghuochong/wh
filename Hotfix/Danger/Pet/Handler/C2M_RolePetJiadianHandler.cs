@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ET
 {
@@ -20,13 +21,15 @@ namespace ET
 
 			int allValue = 0;
 			int maxPoint = (rolePetInfo.PetLv - 1) * 5;
-			rolePetInfo.AddPropretyValue = request.AddPropretyValue[0].ToString();
+			StringBuilder addPropretyValueBuilder = new StringBuilder();
+			addPropretyValueBuilder.Append(request.AddPropretyValue[0]);
 			allValue += request.AddPropretyValue[0];
 			for (int i = 1; i < request.AddPropretyValue.Count; i++)
 			{
 				allValue += request.AddPropretyValue[i];
-				rolePetInfo.AddPropretyValue += ("_" + request.AddPropretyValue[i]);
+				addPropretyValueBuilder.Append('_').Append(request.AddPropretyValue[i]);
 			}
+			rolePetInfo.AddPropretyValue = addPropretyValueBuilder.ToString();
 			rolePetInfo.AddPropretyNum = maxPoint - allValue;
 			if (allValue > maxPoint 
 				|| rolePetInfo.AddPropretyNum < 0 

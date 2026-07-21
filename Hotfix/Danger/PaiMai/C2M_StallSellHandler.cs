@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -9,7 +10,8 @@ namespace ET
         {
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            if (UnitZoneHelper.GetHomeZone(unit) != 3  &&  !GMHelp.GmAccount.Contains(roleInfo.Account))
+            HashSet<string> gmAccounts = new HashSet<string>(GMHelp.GmAccount);
+            if (UnitZoneHelper.GetHomeZone(unit) != 3  &&  !gmAccounts.Contains(roleInfo.Account))
             {
                 response.Error = ErrorCode.ERR_ModifyData;
                 reply();

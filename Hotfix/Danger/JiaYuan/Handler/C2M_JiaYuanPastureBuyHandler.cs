@@ -36,7 +36,9 @@ namespace ET
                 jiagerate = CommonHelper.JiaYuanPastureBuy();
             }
 
-            if (!unit.GetComponent<BagComponentServer>().CheckNeedItem($"13;{(int)(jiaYuanPastureConfig.BuyGold * jiagerate)}"))
+            string costItem = $"13;{(int)(jiaYuanPastureConfig.BuyGold * jiagerate)}";
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            if (!bagComponentServer.CheckNeedItem(costItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
@@ -80,7 +82,7 @@ namespace ET
             }
 
             roleInfoComponentServer.OnMysteryBuy(mysteryId);
-            unit.GetComponent<BagComponentServer>().OnCostItemData($"13;{(int)(jiaYuanPastureConfig.BuyGold * jiagerate)}", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost);
+            bagComponentServer.OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost);
             unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JiaYuanPastureNumber_94, 0, 1);
 
             JiaYuanPastures jiaYuanPastures = new JiaYuanPastures()

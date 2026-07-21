@@ -10,6 +10,7 @@ namespace ET
 		{
 			PetComponentServer pet = unit.GetComponent<PetComponentServer>();
 			BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+			JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
 			UnitComponent unitComponent = unit.GetParent<UnitComponent>();
 			//判断背包是否满
 			if (bagComponentServer.GetBagLeftCell() <= 1)
@@ -60,7 +61,7 @@ namespace ET
             }
 
 			
-			unit.GetComponent<JiaYuanComponentServer>().OnJiaYuanPetWalk(rolePetInfo, 0, -1);
+			jiaYuanComponentServer.OnJiaYuanPetWalk(rolePetInfo, 0, -1);
 
 			if (unitComponent.Get(rolePetInfo.Id) != null)
 			{

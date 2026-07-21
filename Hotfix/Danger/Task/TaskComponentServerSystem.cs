@@ -333,6 +333,7 @@ namespace ET
             int lv = roleInfoComponentServer.RoleInfo.Lv;
 
             List<int> openfubenids = new List<int>();
+            HashSet<int> mysteryDungeonSet = new HashSet<int>(LDSectionCategory.Instance.MysteryDungeonList);
             Dictionary<int, LDScene> allfuben =  LDSceneCategory.Instance.GetAll();
             foreach (( int fubenid, LDScene config) in allfuben)
             {
@@ -340,7 +341,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (LDSectionCategory.Instance.MysteryDungeonList.Contains(config.Id))
+                if (mysteryDungeonSet.Contains(config.Id))
                 {
                     continue;
                 }
@@ -358,12 +359,15 @@ namespace ET
         
         public static void OnGMGetTask(this TaskComponentServer self, int taskid)
         {
+            HashSet<int> existingTaskIds = new HashSet<int>(self.RoleTaskList.Count);
             for (int i = 0; i < self.RoleTaskList.Count; i++)
             {
-                if (self.RoleTaskList[i].taskID == taskid)
-                {
-                    return;
-                }
+                existingTaskIds.Add(self.RoleTaskList[i].taskID);
+            }
+
+            if (existingTaskIds.Contains(taskid))
+            {
+                return;
             }
 
             self.CreateTask(taskid);
@@ -1139,14 +1143,16 @@ namespace ET
 
         public static void ClearTypeTask(this TaskComponentServer self, int taskType)
         {
+            HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList);
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
                 LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
                 if (self.RoleTaskList[i].TaskType == taskType)
                 {
-                    if (self.RoleComoleteTaskList.Contains(ldTask.Id))
+                    if (completedTaskIds.Contains(ldTask.Id))
                     {
                         self.RoleComoleteTaskList.Remove(ldTask.Id);
+                        completedTaskIds.Remove(ldTask.Id);
                     }
                     self.RoleTaskList.RemoveAt(i);
                     continue;
@@ -1160,6 +1166,7 @@ namespace ET
             //清空每日任务
             Unit unit = self.GetParent<Unit>();
             System.DateTime dateTime = TimeHelper.DateTimeNow();
+            HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList);
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
                 
@@ -1174,9 +1181,10 @@ namespace ET
                 if (self.RoleTaskList[i].TaskType == TaskTypeEnum.Daily
                     || self.RoleTaskList[i].TaskType == TaskTypeEnum.Union)
                 {
-                    if (self.RoleComoleteTaskList.Contains(ldTask.Id))
+                    if (completedTaskIds.Contains(ldTask.Id))
                     {
                         self.RoleComoleteTaskList.Remove(ldTask.Id);
+                        completedTaskIds.Remove(ldTask.Id);
                     }
                     self.RoleTaskList.RemoveAt(i);
                     continue;
@@ -1228,6 +1236,7 @@ namespace ET
 
         public static void ResetWeeklyTask(this TaskComponentServer self, bool notice)
         {
+            HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList);
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
                 if (!LDTaskCategory.Instance.Contain(self.RoleTaskList[i].taskID))
@@ -1240,9 +1249,10 @@ namespace ET
                 if (self.RoleTaskList[i].TaskType == TaskTypeEnum.Weekly
                     || self.RoleTaskList[i].TaskType == TaskTypeEnum.Ring)
                 {
-                    if (self.RoleComoleteTaskList.Contains(ldTask.Id))
+                    if (completedTaskIds.Contains(ldTask.Id))
                     {
                         self.RoleComoleteTaskList.Remove(ldTask.Id);
+                        completedTaskIds.Remove(ldTask.Id);
                     }
                     self.RoleTaskList.RemoveAt(i);
                     continue;

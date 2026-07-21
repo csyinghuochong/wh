@@ -219,7 +219,7 @@ namespace ET
                             mapComponent = fubnescene.GetComponent<MapComponent>();
                             mapComponent.SetMapInfo((int)MapTypeEnum.OneChallenge, request.SceneId, 0);
                             mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).GetNavMeshId();
-                            Game.Scene.GetComponent<RecastPathComponent>().Update(fubnescene.GetComponent<MapComponent>().NavMeshId);
+                            Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
                         }
                         fubenInstanceId = fubnescene.InstanceId;
                         TransferHelper.BeforeTransfer(unit);
@@ -423,7 +423,7 @@ namespace ET
                         mapInstanceId = DBHelper.GetTeamServerId(unit);
                         //[创建副本Scene]
                         T2M_TeamDungeonEnterResponse createUnit = (T2M_TeamDungeonEnterResponse)await ActorMessageSenderComponent.Instance.Call(
-                        mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId });
+                        mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = roleInfoComponentServer.RoleInfo.UserId });
                         if (createUnit.Error != ErrorCode.ERR_Success)
                         {
                             return ErrorCode.ERR_TransferFailError;

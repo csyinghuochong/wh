@@ -63,8 +63,9 @@ namespace ET
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(storeSellConfig.Goods);
 
+            long storeBuyTime = TimeHelper.ServerNow();
             bag.OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy );
-            bag.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
+            bag.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{storeBuyTime}");
             
             if (response.Error == ErrorCode.ERR_Success && storeSellConfig.Buy_Limit_Num > 0)
             {

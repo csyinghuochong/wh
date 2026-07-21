@@ -6,8 +6,25 @@ namespace ET
     [ActorMessageHandler]
     public class C2M_UnionCreateHandler : AMActorLocationRpcHandler<Unit, C2M_UnionCreateRequest, M2C_UnionCreateResponse>
     {
+        private static int unionCreateNeedLevel;
+        private static int unionCreateNeedDiamond;
+        private static bool unionCreateCacheInit;
+
+        private static void EnsureUnionCreateCache()
+        {
+            if (unionCreateCacheInit)
+            {
+                return;
+            }
+
+            unionCreateNeedLevel = int.Parse(LDGlobalValueCategory.Instance.Get(21).Value);
+            unionCreateNeedDiamond = int.Parse(LDGlobalValueCategory.Instance.Get(22).Value);
+            unionCreateCacheInit = true;
+        }
+
         protected override async ETTask Run(Unit unit, C2M_UnionCreateRequest request, M2C_UnionCreateResponse response, Action reply)
         {
+            EnsureUnionCreateCache();
             //判断等级、钻石
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (numericComponent.GetAsLong(NumericType.UnionId_0) != 0)
@@ -18,9 +35,7 @@ namespace ET
             }
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            int needLevel = int.Parse(LDGlobalValueCategory.Instance.Get(21).Value);
-            int needDiamond = int.Parse(LDGlobalValueCategory.Instance.Get(22).Value);
-            if (roleInfo.Lv < needLevel || roleInfo.Diamond < needDiamond)
+            if (roleInfo.Lv < unionCreateNeedLevel || roleInfo.Diamond < unionCreateNeedDiamond)
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();

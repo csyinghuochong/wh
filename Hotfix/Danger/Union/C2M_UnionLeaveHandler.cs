@@ -10,11 +10,13 @@ namespace ET
         {
             long dbCacheId = DBHelper.GetUnionServerId(unit);
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();  
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            DBSaveComponent dbSaveComponent = unit.GetComponent<DBSaveComponent>();
             U2M_UnionLeaveResponse d2GGetUnit = (U2M_UnionLeaveResponse)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2U_UnionLeaveRequest()
             {
                 UnionId = numericComponent.GetAsLong(NumericType.UnionId_0),
-                UserId = roleInfoComponentServer.RoleInfo.UserId,
+                UserId = roleInfo.UserId,
             });
 
             if (d2GGetUnit.Error != ErrorCode.ERR_Success)
@@ -29,7 +31,7 @@ namespace ET
             numericComponent.ApplyValue(NumericType.UnionIdLeaveTime, TimeHelper.ServerNow());
             roleInfoComponentServer.UpdateRoleData(UserDataType.UnionName, "");
             roleInfoComponentServer.UpdateRoleDataBroadcast(UserDataType.UnionName, "");
-            unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
+            dbSaveComponent.UpdateCacheDB();
 
             unit.UpdateUnionToChat().Coroutine();
 

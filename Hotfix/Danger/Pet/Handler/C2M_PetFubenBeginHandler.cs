@@ -10,14 +10,16 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PetFubenBeginRequest request, M2C_PetFubenBeginResponse response, Action reply)
         {
             Scene domainScene = unit.DomainScene();
-            List<Unit> allunits = domainScene.GetComponent<UnitComponent>().GetAll();
+            UnitComponent unitComponent = domainScene.GetComponent<UnitComponent>();
+            List<Unit> allunits = unitComponent.GetAll();
             for (int i = 0; i < allunits.Count; i++)
             {
-                if (allunits[i].Type!= UnitType.Pet && allunits[i].Type!= UnitType.Monster)
+                Unit sceneUnit = allunits[i];
+                if (sceneUnit.Type!= UnitType.Pet && sceneUnit.Type!= UnitType.Monster)
                 {
                     continue;
                 }
-                allunits[i].GetComponent<AIComponent>().Begin();
+                sceneUnit.GetComponent<AIComponent>().Begin();
             }
             reply();
             await ETTask.CompletedTask;

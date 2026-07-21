@@ -8,9 +8,11 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, A2M_PetMingRecordRequest request, M2A_PetMingRecordResponse response, Action reply)
         {
-            unit.GetComponent<PetComponentServer>().OnPetMingRecord( request.PetMingRecord );
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+            petComponentServer.OnPetMingRecord( request.PetMingRecord );
 
-            unit.GetComponent<NumericComponent>().ApplyValue( NumericType.PetMineCDTime, 0 );
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            numericComponent.ApplyValue( NumericType.PetMineCDTime, 0 );
 
             ///红点
             //unit.GetComponent<ReddotComponent>().AddReddont(BelongReddot.PetMine);

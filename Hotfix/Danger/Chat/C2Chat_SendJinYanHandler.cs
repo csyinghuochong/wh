@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -12,16 +13,14 @@ namespace ET
 
             ChatSceneComponent chatInfoUnitsComponent = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
 
-            BeReportedInfo bePortedNumber;
-            chatInfoUnitsComponent.BeReportedNumber.TryGetValue(request.JinYanId, out bePortedNumber);
-
-            if (bePortedNumber == null)
+            if (!chatInfoUnitsComponent.BeReportedNumber.TryGetValue(request.JinYanId, out BeReportedInfo bePortedNumber))
             {
                 bePortedNumber = new BeReportedInfo();
                 chatInfoUnitsComponent.BeReportedNumber.Add(request.JinYanId, bePortedNumber);
             }
 
-            if (bePortedNumber.ReportedList.Contains(request.UnitId))
+            HashSet<long> reportedSet = new HashSet<long>(bePortedNumber.ReportedList);
+            if (reportedSet.Contains(request.UnitId))
             {
                 reply();
                 return;

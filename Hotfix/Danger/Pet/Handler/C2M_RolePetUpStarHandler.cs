@@ -20,6 +20,14 @@ namespace ET
             //获取当前操作宠物星数
             float upStartLvPro = 0;
             RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
+            if (rolePetInfo == null)
+            {
+                response.Error = ErrorCode.ERR_Pet_NoExist;
+                reply();
+                return;
+            }
+
+            int costPetCount = request.CostPetInfoIds.Count;
             switch (rolePetInfo.Star) {
 
                 case 0:
@@ -45,12 +53,17 @@ namespace ET
             }
 
             //设置概率              
-            upStartLvPro = upStartLvPro * request.CostPetInfoIds.Count;
+            upStartLvPro = upStartLvPro * costPetCount;
             bool starError = false;
             //判断是否符合宠物条件
-            for (int i = 0; i < request.CostPetInfoIds.Count; i++)
+            for (int i = 0; i < costPetCount; i++)
             {
                 RolePetInfo costPetInfo = petComponentServer.GetPetInfo(request.CostPetInfoIds[i]);
+                if (costPetInfo == null)
+                {
+                    starError = true;
+                    continue;
+                }
                 //判断星数是否符合
                 if (costPetInfo.Star < rolePetInfo.Star) 
                 {
@@ -75,7 +88,7 @@ namespace ET
             }
 
             rolePetInfo.Star++;
-            for (int i = 0; i < request.CostPetInfoIds.Count; i++)
+            for (int i = 0; i < costPetCount; i++)
             {
                 petComponentServer.RemovePet(request.CostPetInfoIds[i], 3);
             }

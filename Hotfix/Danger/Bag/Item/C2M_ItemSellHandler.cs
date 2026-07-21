@@ -19,8 +19,8 @@ namespace ET
             long bagInfoID = request.OperateBagID;
 
             ItemLocType locType = ItemLocType.ItemLocBag;
-          
-            BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, bagInfoID);
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            BagInfo useBagInfo = bag.GetItemByLoc(locType, bagInfoID);
             if (useBagInfo == null )
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;

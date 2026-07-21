@@ -8,20 +8,26 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, G2M_ActivityUpdate message)
         {
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             switch (message.ActivityType)
             {
                 case 0:
                     Log.Debug($"OnZeroClockUpdate [零点刷新]: {unit.Id}");
-                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+                    RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
                     unit.GetComponent<RoleDailyDataComponent>()?.OnZeroClockUpdate(true);
-                    unit.GetComponent<RoleInfoComponentServer>().OnHourUpdate(0, true);
-                    unit.GetComponent<RoleInfoComponentServer>().OnZeroClockUpdate(true);
-                    unit.GetComponent<TaskComponentServer>().CheckWeeklyUpdate();
-                    unit.GetComponent<TaskComponentServer>().OnZeroClockUpdate(true);
-                    unit.GetComponent<ActivityComponentServer>().OnZeroClockUpdate(roleInfo.Lv);
-                    unit.GetComponent<ChengJiuComponentServer>().OnZeroClockUpdate();
-                    unit.GetComponent<JiaYuanComponentServer>().OnZeroClockUpdate(true);
-                    unit.GetComponent<DataCollationComponent>().OnZeroClockUpdate(true);
+                    roleInfoComponentServer.OnHourUpdate(0, true);
+                    roleInfoComponentServer.OnZeroClockUpdate(true);
+                    TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+                    taskComponentServer.CheckWeeklyUpdate();
+                    taskComponentServer.OnZeroClockUpdate(true);
+                    ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
+                    activityComponentServer.OnZeroClockUpdate(roleInfo.Lv);
+                    ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
+                    chengJiuComponentServer.OnZeroClockUpdate();
+                    JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
+                    jiaYuanComponentServer.OnZeroClockUpdate(true);
+                    DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
+                    dataCollationComponent.OnZeroClockUpdate(true);
                     break;
                 case -1:
                     LocationProxyComponent.Instance.Remove(unit.Id).Coroutine();
@@ -59,7 +65,7 @@ namespace ET
                     //    LogHelper.OnLineInfo(gongzuoshiInfo);    
                     //}
 
-                    unit.GetComponent<RoleInfoComponentServer>().OnHourUpdate(message.ActivityType, true);
+                    roleInfoComponentServer.OnHourUpdate(message.ActivityType, true);
                     break;
             }
    

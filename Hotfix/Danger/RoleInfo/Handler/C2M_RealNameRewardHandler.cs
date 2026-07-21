@@ -9,12 +9,10 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_RealNameRewardRequest request, M2C_RealNameRewardResponse response, Action reply)
         {
-            long accid = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID;
-            long dbCacheId = DBHelper.GetUnitCacheConfig(unit.Id);
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
 
-            string globalValueConfig = LDGlobalValueCategory.Instance.Get(6).Value;
-            string[] itemCost = globalValueConfig.Split('@');
-            List<RewardItem> rewardItems = new List<RewardItem>();
+            string[] itemCost = LDGlobalValueCategory.Instance.Get(6).Value.Split('@');
+            List<RewardItem> rewardItems = new List<RewardItem>(itemCost.Length);
             for (int i = 0; i < itemCost.Length; i++)
             {
                 string[] itemInfo = itemCost[i].Split(';');
@@ -23,7 +21,7 @@ namespace ET
                 rewardItems.Add(new RewardItem() { ItemID = itemId, ItemNum = itemNum });
             }
 
-            bool sucess = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, string.Empty);
+            bool sucess = bagComponentServer.OnAddItemData(rewardItems, string.Empty, string.Empty);
             response.Error = sucess ? ErrorCode.ERR_Success : ErrorCode.ERR_BagIsFull;
 
             reply();

@@ -15,22 +15,15 @@ namespace ET
             SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
             long bagInfoID = request.OperateBagID;
 
-            ItemLocType locType = ItemLocType.ItemLocBag;
-            if (request.OperateType == 3)
-            {
-                locType = ItemLocType.ItemLocBag;
-            }
-            else if (request.OperateType == 4)
-            {
-                locType = ItemLocType.ItemLocEquip;
-            }
-            else
+            if (request.OperateType != 3 && request.OperateType != 4)
             {
                 reply();
                 return;
             }
-            
-          
+
+            ItemLocType locType = request.OperateType == 4 ? ItemLocType.ItemLocEquip : ItemLocType.ItemLocBag;
+            int equipposition = int.Parse(request.OperatePar);
+
             BagInfo useBagInfo = bagComponentServer.GetItemByLoc(locType, bagInfoID);
             if (useBagInfo == null )
             {
@@ -38,22 +31,13 @@ namespace ET
                 return;
             }
 
-            int weizhi = -1;
-            LDItem ldItem = null;
-            if (useBagInfo != null)
-            {
-                ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
-                weizhi = ldItem.ItemType;
-            }
-
+            LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
             int equipType = ItemNewHelper.GetNewEquipType(useBagInfo);
             if (ldItem.ItemType != 3 || equipType != 401)
             {
                 reply();
                 return;
             }
-
-            int equipposition = int.Parse(request.OperatePar);
             if (equipposition >= 9)
             {
                 reply();

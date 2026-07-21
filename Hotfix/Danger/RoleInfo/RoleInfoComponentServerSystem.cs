@@ -1121,7 +1121,13 @@ namespace ET
             {
                 if (chestList[i].KeyId == fubenId)
                 {
-                    return chestList[i].Value.Contains(monsterIdStr);
+                    if (string.IsNullOrEmpty(chestList[i].Value))
+                    {
+                        return false;
+                    }
+
+                    HashSet<string> openedMonsters = new HashSet<string>(chestList[i].Value.Split('_'));
+                    return openedMonsters.Contains(monsterIdStr);
                 }
             }
             return false;
@@ -1143,7 +1149,8 @@ namespace ET
             {
                 return ErrorCode.ERR_NetWorkError;
             }
-            if (keyValuePair1.Value2.Contains(difficulty.ToString()))
+            HashSet<string> receivedDifficulties = new HashSet<string>(keyValuePair1.Value2.Split('_'));
+            if (receivedDifficulties.Contains(difficulty.ToString()))
             {
                 return ErrorCode.ERR_AlreadyReceived;
             }

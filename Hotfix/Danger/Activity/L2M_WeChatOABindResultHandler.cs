@@ -12,6 +12,7 @@ namespace ET
             Console.WriteLine($"L2M_WeChatOABindResult:  {unit.Id}");
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            int weChatOABind = numericComponent.GetAsInt(NumericType.WeChatOABind);
             //numericComponent.ApplyValue(NumericType.WeChatOABind, 1);
 
             reply();    

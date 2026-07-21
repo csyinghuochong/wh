@@ -57,14 +57,11 @@ namespace ET
         /// <returns></returns>
         public static bool HaveOccEquip(this BagComponentServer self)
         {
-            List<BagInfo> allequiplist = new List<BagInfo>();
-            allequiplist.AddRange(self.EquipList);
-
-
-            for (int i = 0; i < allequiplist.Count; i++)
+            for (int i = 0; i < self.EquipList.Count; i++)
             {
-                LDItem ldItem = LDItemCategory.Instance.Get(allequiplist[i].ItemID);
-                int equipType = ItemNewHelper.GetNewEquipType(allequiplist[i]);
+                BagInfo equip = self.EquipList[i];
+                LDItem ldItem = LDItemCategory.Instance.Get(equip.ItemID);
+                int equipType = ItemNewHelper.GetNewEquipType(equip);
                 if (ldItem.ItemType == 3
                     && equipType >= 0 && equipType <= 100
                     && ldItem.ItemType >= 0 && ldItem.ItemType <= 12)
@@ -81,8 +78,7 @@ namespace ET
             List<AttributeItem> list = new List<AttributeItem>();
             for (int i = 0; i < self.GemList.Count; i++)
             {
-                LDItem ldItem = LDItemCategory.Instance.Get(self.GemList[i].ItemID);
-                string itemUsePar = null;//ldItem.ItemUsePar;
+                string itemUsePar = LDItemCategory.Instance.Get(self.GemList[i].ItemID).ItemUsePar;
                 if (string.IsNullOrEmpty(itemUsePar) || itemUsePar == "0")
                 {
                     continue;
@@ -90,16 +86,21 @@ namespace ET
                 string[] attributes = itemUsePar.Split('@');
                 for (int a = 0; a < attributes.Length; a++)
                 {
-                    string[] attributeItem = attributes[a].Split(';');
-                    int hideId = int.Parse(attributeItem[0]);
+                    int sep = attributes[a].IndexOf(';');
+                    if (sep <= 0 || sep >= attributes[a].Length - 1)
+                    {
+                        continue;
+                    }
+                    int hideId = int.Parse(attributes[a].Substring(0, sep));
+                    string valueStr = attributes[a].Substring(sep + 1);
                     long hide_value = 0;
                     if (NumericHelp.GetNumericValueType(hideId) == 2)
                     {
-                        hide_value = NumericHelp.ParseConfigToStored(hideId, attributeItem[1]);
+                        hide_value = NumericHelp.ParseConfigToStored(hideId, valueStr);
                     }
                     else
                     {
-                        hide_value = long.Parse(attributeItem[1]);
+                        hide_value = long.Parse(valueStr);
                     }
                     list.Add(new AttributeItem() { AttributeID = hideId, AttributeValue = hide_value });
                 }
@@ -315,12 +316,6 @@ namespace ET
             List<BagInfo> bagList = new List<BagInfo>();
 
             self.CheckAllItem(occ, occTwo);
-       
-
-            for (int i =  self.EquipList.Count - 1; i >=0; i--)
-            {
-                LDEquip ldItem = LDEquipCategory.Instance.Get(self.EquipList[i].ItemID);
-            }
 
             bagList.AddRange(self.GemList);
             bagList.AddRange(self.BagItemList);
@@ -737,20 +732,21 @@ namespace ET
                     {
                         continue;
                     }
-                    if (self.GetIdItemList(equipList[i]).Count > 0)
+                    List<BagInfo> existingItems = self.GetIdItemList(equipList[i]);
+                    if (existingItems.Count > 0)
                     {
                         continue;
                     }
 
                     self.OnAddItemData($"{equipList[i]};1", $"{ItemGetWay.System}_0", false);
-                    List<BagInfo> bagInfo = self.GetIdItemList(equipList[i]);
-                    if (bagInfo.Count == 0)
+                    existingItems = self.GetIdItemList(equipList[i]);
+                    if (existingItems.Count == 0)
                     {
                         Log.Warning("机器人装备 bagInfo.Count == 0");
                         continue;
                     }
 
-                    self.OnChangeItemLoc(bagInfo[0], ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
+                    self.OnChangeItemLoc(existingItems[0], ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
                 }
             }
         }
@@ -784,6 +780,12 @@ namespace ET
             return self.OnAddItemData(costItems, string.Empty, getType, notice);
         }
 
+        public static bool OnAddItemData(this BagComponentServer self, string rewardItems, string getType, bool notice, ItemLocType useLocType)
+        {
+            List<RewardItem> costItems = ItemNewHelper.GetRewardItems(rewardItems);
+            return self.OnAddItemData(costItems, string.Empty, getType, notice, false, useLocType);
+        }
+
         public static void OnAddItemData(this BagComponentServer self, List<BagInfo> bagInfos, string getType)
         {
             for (int i = 0; i < bagInfos.Count; i++)
@@ -811,7 +813,8 @@ namespace ET
                 MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
 
                 //检测任务需求道具
-                int getTypeValue = int.Parse(getType.Split('_')[0]);
+                string[] getWayParts = getType.Split('_');
+                int getTypeValue = int.Parse(getWayParts[0]);
                 ItemAddHelper.OnGetItem(self.GetParent<Unit>(), getTypeValue, bagInfo);
                 return true;
             }
@@ -880,30 +883,27 @@ namespace ET
             }
 
             List<RewardItem> rewardItems = new List<RewardItem>();
-            for (int i = rewardItems_init.Count - 1; i >= 0; i--)
+            Dictionary<long, RewardItem> rewardItemMap = new Dictionary<long, RewardItem>();
+            for (int i = 0; i < rewardItems_init.Count; i++)
             {
-                bool have = false;
-                for (int bb = rewardItems.Count - 1; bb >= 0; bb--)
+                long key = ((long)rewardItems_init[i].ItemType << 32) | (uint)rewardItems_init[i].ItemID;
+                if (rewardItemMap.TryGetValue(key, out RewardItem merged))
                 {
-                    if (rewardItems[bb].ItemID == rewardItems_init[i].ItemID
-                        && rewardItems[bb].ItemType == rewardItems_init[i].ItemType)
-                    {
-                        rewardItems[bb].ItemNum += rewardItems_init[i].ItemNum;
-                        have = true;
-                        break;
-                    }
+                    merged.ItemNum += rewardItems_init[i].ItemNum;
                 }
-
-                if (!have)
+                else
                 {
-                    RewardItem item = new RewardItem();
-                    item.ItemType =  rewardItems_init[i].ItemType;
-                    item.ItemID = rewardItems_init[i].ItemID;
-                    item.ItemNum = rewardItems_init[i].ItemNum;
-                    rewardItems.Add(item);
+                    rewardItemMap[key] = new RewardItem()
+                    {
+                        ItemType = rewardItems_init[i].ItemType,
+                        ItemID = rewardItems_init[i].ItemID,
+                        ItemNum = rewardItems_init[i].ItemNum
+                    };
                 }
             }
+            rewardItems.AddRange(rewardItemMap.Values);
 
+            Dictionary<long, long> pileSumCache = new Dictionary<long, long>();
             for (int i = rewardItems.Count - 1; i >= 0; i--)
             {
                 RewardItem rewardItem = rewardItems[i];
@@ -927,7 +927,12 @@ namespace ET
                     continue;
                 }
 
-                long ItemPileSum = ItemNewHelper.GetNewItemPileSum(rewardItem);
+                long itemKey = ((long)rewardItem.ItemType << 32) | (uint)rewardItem.ItemID;
+                if (!pileSumCache.TryGetValue(itemKey, out long ItemPileSum))
+                {
+                    ItemPileSum = ItemNewHelper.GetNewItemPileSum(rewardItem);
+                    pileSumCache[itemKey] = ItemPileSum;
+                }
                 if (UseLocType >= ItemLocType.ItemWareHouse1)
                 {
                     continue;
@@ -967,14 +972,14 @@ namespace ET
             {
                 RewardItem rewardItem = rewardItems[i];
                 
-                int itemID = rewardItems[i].ItemID;
-                int itemtype = rewardItems[i].ItemType;
-                if (itemID == 0 || !ItemNewHelper.IsValidItem(rewardItems[i]))
+                int itemID = rewardItem.ItemID;
+                int itemtype = rewardItem.ItemType;
+                if (itemID == 0 || !ItemNewHelper.IsValidItem(rewardItem))
                 {
                     continue;
                 }
 
-                int leftNum = rewardItems[i].ItemNum;
+                int leftNum = rewardItem.ItemNum;
                 int userDataType = ItemNewHelper.GetItemToUserDataType(rewardItem);
                 if (userDataType == UserDataType.PiLao)
                 {
@@ -989,7 +994,13 @@ namespace ET
                 }
 
 
-                int maxPileSum = ItemNewHelper.GetNewItemPileSum(rewardItem);
+                long itemKey = ((long)rewardItem.ItemType << 32) | (uint)rewardItem.ItemID;
+                if (!pileSumCache.TryGetValue(itemKey, out long cachedPileSum))
+                {
+                    cachedPileSum = ItemNewHelper.GetNewItemPileSum(rewardItem);
+                    pileSumCache[itemKey] = cachedPileSum;
+                }
+                int maxPileSum = (int)cachedPileSum;
                 
                 ItemLocType itemLockType = ItemLocType.ItemLocBag;
                 List<BagInfo> itemlist = null;
@@ -1155,17 +1166,11 @@ namespace ET
 
         public static bool CheckNeedItem(this BagComponentServer self, string rewardItems)
         {
-            string[] needList = rewardItems.Split('@');
-            for (int i = 0; i < needList.Length; i++)
+            List<RewardItem> needItems = ParseSemicolonRewardItems(rewardItems);
+            for (int i = 0; i < needItems.Count; i++)
             {
-                string[] itemInfo = needList[i].Split(';');
-                if (itemInfo.Length < 2)
-                {
-                    continue;
-                }
-                int itemId = int.Parse(itemInfo[0]);
-                int itemNum = int.Parse(itemInfo[1]);
-                if (self.GetItemNumber(ItemBigType.Type_Item, itemId) < itemNum)
+                RewardItem itemInfo = needItems[i];
+                if (self.GetItemNumber(ItemBigType.Type_Item, itemInfo.ItemID) < itemInfo.ItemNum)
                 {
                     return false;
                 }
@@ -1189,19 +1194,7 @@ namespace ET
         //字符串删除道具
         public static bool OnCostItemData(this BagComponentServer self, string rewardItems, ItemLocType itemLocType, int itemGetWay)
         {
-            List<RewardItem> costItems = new List<RewardItem>();
-            string[] needList = rewardItems.Split('@');
-            for (int i = 0; i < needList.Length; i++)
-            {
-                string[] itemInfo = needList[i].Split(';');
-                if (itemInfo.Length < 2)
-                {
-                    continue;
-                }
-                int itemId = int.Parse(itemInfo[0]);
-                int itemNum = int.Parse(itemInfo[1]);
-                costItems.Add(new RewardItem() { ItemID = itemId, ItemNum = itemNum });
-            }
+            List<RewardItem> costItems = ParseSemicolonRewardItems(rewardItems);
             return self.OnCostItemData(costItems, itemLocType, itemGetWay);
         }
 
@@ -1577,6 +1570,26 @@ namespace ET
             }
         }
 
+        private static List<RewardItem> ParseSemicolonRewardItems(string rewardItems)
+        {
+            List<RewardItem> costItems = new List<RewardItem>();
+            string[] needList = rewardItems.Split('@');
+            for (int i = 0; i < needList.Length; i++)
+            {
+                string[] itemInfo = needList[i].Split(';');
+                if (itemInfo.Length < 2)
+                {
+                    continue;
+                }
+                costItems.Add(new RewardItem()
+                {
+                    ItemID = int.Parse(itemInfo[0]),
+                    ItemNum = int.Parse(itemInfo[1])
+                });
+            }
+            return costItems;
+        }
+
         private static List<int> GetActiveEquipSuitEffectIds(int suitPoints, string effectIdStr)
         {
             List<int> effectIds = new List<int>();
@@ -1588,18 +1601,19 @@ namespace ET
             string[] effectTiers = effectIdStr.Split('|');
             for (int i = 0; i < effectTiers.Length; i++)
             {
-                if (string.IsNullOrEmpty(effectTiers[i]))
+                string tier = effectTiers[i];
+                if (string.IsNullOrEmpty(tier))
                 {
                     continue;
                 }
 
-                string[] parts = effectTiers[i].Split('_');
-                if (parts.Length != 2)
+                int sep = tier.IndexOf('_');
+                if (sep <= 0 || sep >= tier.Length - 1)
                 {
                     continue;
                 }
 
-                if (!int.TryParse(parts[0], out int needPoints) || !int.TryParse(parts[1], out int effectId))
+                if (!int.TryParse(tier.Substring(0, sep), out int needPoints) || !int.TryParse(tier.Substring(sep + 1), out int effectId))
                 {
                     continue;
                 }

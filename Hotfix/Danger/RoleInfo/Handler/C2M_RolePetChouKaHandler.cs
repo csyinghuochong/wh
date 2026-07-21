@@ -10,10 +10,14 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_RolePetChouKaRequest request, M2C_RolePetChouKaResponse response, Action reply)
         {
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             if (request.ChouKaType == 1)
             {
                 string needItems = LDGlobalValueCategory.Instance.Get(16).Value;
-                bool  sucess = unit.GetComponent<BagComponentServer>().OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetChouKa);
+                bool  sucess = bagComponentServer.OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetChouKa);
                 if (!sucess)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -31,7 +35,7 @@ namespace ET
                     return;
                 }
                 */
-                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+                RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
                 int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(17).Value);
                 if (roleInfo.Diamond < needDimanond)
                 {
@@ -39,8 +43,8 @@ namespace ET
                     reply();
                     return;
                 }
-                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needDimanond).ToString(), true,ItemGetWay.PetChouKa);
-                unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetChouKa, 1, 0);
+                roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needDimanond).ToString(), true,ItemGetWay.PetChouKa);
+                numericComponent.ApplyChange(null, NumericType.PetChouKa, 1, 0);
                 unit.GetComponent<DataCollationComponent>().OnPetChouKa(1);
             }
 
@@ -79,7 +83,7 @@ namespace ET
             List<int> weight = new List<int>();
             int index = RandomHelper.RandomByWeight(weight);
             int skinId = 0;//ldPetConfig.Skin[index];
-            response.RolePetInfo = unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.PetExplore, petId, skinId);
+            response.RolePetInfo = petComponentServer.OnAddPet(ItemGetWay.PetExplore, petId, skinId);
             reply();
             await ETTask.CompletedTask;
         }

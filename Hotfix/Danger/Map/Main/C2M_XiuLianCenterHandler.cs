@@ -6,8 +6,25 @@ namespace ET
     [ActorMessageHandler]
     public class C2M_XiuLianCenterHandler : AMActorLocationRpcHandler<Unit, C2M_XiuLianCenterRequest, M2C_XiuLianCenterResponse>
     {
+        private static float xiuLianExpCoefficient;
+        private static float xiuLianCoinCoefficient;
+        private static bool xiuLianCacheInit;
+
+        private static void EnsureXiuLianCache()
+        {
+            if (xiuLianCacheInit)
+            {
+                return;
+            }
+
+            xiuLianExpCoefficient = float.Parse(LDGlobalValueCategory.Instance.Get(29).Value);
+            xiuLianCoinCoefficient = float.Parse(LDGlobalValueCategory.Instance.Get(30).Value);
+            xiuLianCacheInit = true;
+        }
+
         protected override async ETTask Run(Unit unit, C2M_XiuLianCenterRequest request, M2C_XiuLianCenterResponse response, Action reply)
         {
+            EnsureXiuLianCache();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             int level = roleInfoComponentServer.RoleInfo.Lv;
@@ -23,8 +40,7 @@ namespace ET
             
                 numericComponent.ApplyValue(NumericType.XiuLian_ExpNumber, xiulianNumber+1);
                 numericComponent.ApplyValue(NumericType.XiuLian_ExpTime, TimeHelper.ServerNow());
-                float coefficient = float.Parse(LDGlobalValueCategory.Instance.Get(29).Value);
-                int addValue = Mathf.CeilToInt(coefficient * level);
+                int addValue = Mathf.CeilToInt(xiuLianExpCoefficient * level);
                 roleInfoComponentServer.UpdateRoleMoneyAdd( UserDataType.Exp, addValue.ToString(), true, ItemGetWay.XiuLian);
             }
             if (request.XiuLianType == 2)
@@ -37,8 +53,7 @@ namespace ET
                 }
                 numericComponent.ApplyValue(NumericType.XiuLian_CoinNumber, xiulianNumber + 1);
                 numericComponent.ApplyValue(NumericType.XiuLian_CoinTime, TimeHelper.ServerNow());
-                float coefficient = float.Parse(LDGlobalValueCategory.Instance.Get(30).Value);
-                int addValue = Mathf.CeilToInt(coefficient * level);
+                int addValue = Mathf.CeilToInt(xiuLianCoinCoefficient * level);
                 roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, addValue.ToString(), true, 37);// ItemGetWay.XiuLian);
             }
             reply();

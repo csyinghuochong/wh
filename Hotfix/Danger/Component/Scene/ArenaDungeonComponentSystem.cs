@@ -48,11 +48,15 @@ namespace ET
             await TimerComponent.Instance.WaitAsync(TimeHelper.Minute);
             List<Unit> unitlist = UnitHelper.GetAliveUnitList(self.DomainScene(), UnitType.Player);
             ArenaInfo arenaInfo = self.DomainScene().GetComponent<ArenaInfo>();
+            int playerCount = unitlist.Count;
             for (int i = 0; i < unitlist.Count; i++)
             {
                 long id = unitlist[i].Id;
-                ArenaPlayerStatu arenaPlayerStatu = arenaInfo.PlayerList[id];
-                arenaPlayerStatu.RankId = unitlist.Count;
+                if (!arenaInfo.PlayerList.TryGetValue(id, out ArenaPlayerStatu arenaPlayerStatu))
+                {
+                    continue;
+                }
+                arenaPlayerStatu.RankId = playerCount;
                 arenaInfo.PlayerList[id] = arenaPlayerStatu;
             }
 
@@ -105,11 +109,15 @@ namespace ET
             if (self.ArenaClose)
             {
                 ArenaInfo arenaInfo = self.DomainScene().GetComponent<ArenaInfo>();
+                int playerCount = unitlist.Count;
                 for (int i = 0; i < unitlist.Count; i++)
                 {
                     long playerId = unitlist[i].Id;
-                    ArenaPlayerStatu arenaPlayerStatu = arenaInfo.PlayerList[playerId];
-                    arenaPlayerStatu.RankId = unitlist.Count;
+                    if (!arenaInfo.PlayerList.TryGetValue(playerId, out ArenaPlayerStatu arenaPlayerStatu))
+                    {
+                        continue;
+                    }
+                    arenaPlayerStatu.RankId = playerCount;
                     arenaInfo.PlayerList[playerId] = arenaPlayerStatu;
                 }
 

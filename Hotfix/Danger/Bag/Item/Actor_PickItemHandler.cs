@@ -16,6 +16,7 @@ namespace ET
             //DropType ==  0 公共掉落 2保护掉落   1私有掉落 3 归属掉落
 
             int cellindex = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.HappyCellIndex);
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
 
             for (int i = drops.Count - 1; i >= 0; i--)
             {
@@ -52,7 +53,7 @@ namespace ET
                 int addItemNum = dropComponent != null ? dropComponent.ItemNum : drops[i].ItemNum;
                 List<RewardItem> rewardItems = new List<RewardItem>();
                 rewardItems.Add(new RewardItem() {  ItemType = drops[i].ItemType , ItemID = addItemID, ItemNum = addItemNum });
-                bool success = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
+                bool success = bag.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
                 if (!success)
                 {
                     errorCode = ErrorCode.ERR_BagIsFull;

@@ -80,8 +80,7 @@ namespace ET
 					return;
 				}
 
-				long gold = (long)request.PaiMaiItemInfo.BagInfo.ItemNum * request.PaiMaiItemInfo.Price;
-				if (gold < 0)
+				if (allprice < 0)
                 {
                     Log.Error($"C2M_PaiMaiSellRequest 3");
                     response.Error = ErrorCode.ERR_ModifyData;

@@ -1125,8 +1125,9 @@ namespace ET
 
         public static void UpdatePetAttribute(this PetComponentServer self, RolePetInfo rolePetInfo, bool updateUnit)
         {
-            BagComponentServer bagComponentServer = self.GetParent<Unit>().GetComponent<BagComponentServer>();
-            NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
+            Unit unit = self.GetParent<Unit>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             self.UpdatePetAttributeWithData(bagComponentServer, numericComponent, rolePetInfo, updateUnit);
 
             //如果是出战的宠物。再广播一下属性
@@ -1134,7 +1135,7 @@ namespace ET
             {
                 return;
             }
-            Unit petUnit = self.GetParent<Unit>().GetParent<UnitComponent>().Get(rolePetInfo.Id);
+            Unit petUnit = unit.GetParent<UnitComponent>().Get(rolePetInfo.Id);
             if (petUnit == null)
             {
                 return;

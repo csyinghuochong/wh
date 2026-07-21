@@ -14,7 +14,7 @@ namespace ET
         /// <param name="accountId"></param>
         public static void Remove(this AccountSessionsComponent self, long accountId)
         {
-            if (self.AccountSessionsDictionary.ContainsKey(accountId))
+            if (self.AccountSessionsDictionary.TryGetValue(accountId, out _))
             {
                 self.AccountSessionsDictionary.Remove(accountId);
             }

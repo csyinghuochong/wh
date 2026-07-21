@@ -31,30 +31,34 @@ namespace ET
             if (dBMailInfos != null)
             {
                 long serverTime = TimeHelper.ServerNow();
+                DBComponent dbComponent = Game.Scene.GetComponent<DBComponent>();
+                string[] needList = request.Itemlist.Split('@');
                 for (int i = 0; i < dBMailInfos.Count; i++)
                 {
-                    List<NumericComponent> numericInfoList = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(scene.DomainZone(), d => d.Id == dBMailInfos[i].Id);
+                    long mailOwnerId = dBMailInfos[i].Id;
+                    List<NumericComponent> numericInfoList = await dbComponent.Query<NumericComponent>(scene.DomainZone(), d => d.Id == mailOwnerId);
                     if (numericInfoList.Count == 0)
                     {
                         continue;
                     }
-                    List<RoleInfoComponentServer> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(scene.DomainZone(), d => d.Id == dBMailInfos[i].Id);
+                    List<RoleInfoComponentServer> RoleInfoComponents = await dbComponent.Query<RoleInfoComponentServer>(scene.DomainZone(), d => d.Id == mailOwnerId);
                     if (RoleInfoComponents.Count == 0)
                     {
                         continue;
                     }
-                    if (RoleInfoComponents[0].RoleInfo.RobotId > 0)
+                    RoleInfoComponentServer roleInfoComponent = RoleInfoComponents[0];
+                    if (roleInfoComponent.RoleInfo.RobotId > 0)
                     {
                         continue;
                     }
 
-                    List<BagComponentServer> bagInfoList = await Game.Scene.GetComponent<DBComponent>().Query<BagComponentServer>(scene.DomainZone(), d => d.Id == dBMailInfos[i].Id);
+                    List<BagComponentServer> bagInfoList = await dbComponent.Query<BagComponentServer>(scene.DomainZone(), d => d.Id == mailOwnerId);
                     if (bagInfoList.Count == 0)
                     {
                         continue;
                     }
 
-                    bool cansendMail = MailHelp.CheckSendMail(request.MailType, request.Title, numericInfoList[0], RoleInfoComponents[0], bagInfoList[0]);
+                    bool cansendMail = MailHelp.CheckSendMail(request.MailType, request.Title, numericInfoList[0], roleInfoComponent, bagInfoList[0]);
                     if (cansendMail == false)
                     {
                         continue;
@@ -65,7 +69,6 @@ namespace ET
                     mailInfo.Context = "福利发放";
                     mailInfo.Title = "福利发放";
                     mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    string[] needList = request.Itemlist.Split('@');
                     for (int k = 0; k < needList.Length; k++)
                     {
                         string[] itemInfo = needList[k].Split(';');
@@ -78,7 +81,7 @@ namespace ET
                         mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.ReceieMail}_{serverTime}" });
                     }
 
-                    await MailHelp.SendUserMail((int)request.ActorId, dBMailInfos[i].Id, mailInfo);
+                    await MailHelp.SendUserMail((int)request.ActorId, mailOwnerId, mailInfo);
                 }
             }
             else 

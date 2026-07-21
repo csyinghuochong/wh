@@ -8,8 +8,8 @@ namespace ET
 	{
 		protected override async ETTask Run(Unit unit, C2M_RolePetRName request, M2C_RolePetRName response, Action reply)
 		{
-			//读取数据库
-			RolePetInfo petinfo = unit.GetComponent<PetComponentServer>().GetPetInfo(request.PetInfoId);
+			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+			RolePetInfo petinfo = petComponentServer.GetPetInfo(request.PetInfoId);
 			if (petinfo==null)
 			{
 				reply();

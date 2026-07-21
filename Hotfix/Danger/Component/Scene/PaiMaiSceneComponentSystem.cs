@@ -154,11 +154,12 @@ namespace ET
             DateTime dateTime = TimeInfo.Instance.ToDateTime( TimeHelper.ServerNow() );
             int curTime = dateTime.Hour * 60 + dateTime.Minute;
             int maxTime = 23 * 60 + 58;
+            long serverNow = TimeHelper.ServerNow();
 
-            if (curTime <= maxTime &&  self.AuctionStatus - TimeHelper.ServerNow() < TimeHelper.Minute)
+            if (curTime <= maxTime &&  self.AuctionStatus - serverNow < TimeHelper.Minute)
             {
                 //Console.WriteLine($"有人加价 延迟时间！   {self.DomainZone()}");
-                self.AuctionStatus = TimeHelper.ServerNow() + TimeHelper.Minute;
+                self.AuctionStatus = serverNow + TimeHelper.Minute;
                 TimerComponent.Instance.Remove(ref self.AuctionOverTimer);
                 self.AuctionOverTimer = TimerComponent.Instance.NewOnceTimer(self.AuctionStatus, TimerType.AuctionOverTimer, self);
             }
@@ -354,9 +355,10 @@ namespace ET
 
             for (int i = 0; i < oldPaiMaiAl.Count; i++)
             {
-                if (useriD != 9 && oldPaiMaiAl[i].UserId == useriD)
+                PaiMaiItemInfo item = oldPaiMaiAl[i];
+                if (useriD != 9 && item.UserId == useriD)
                 {
-                    paiMaiType.Add(oldPaiMaiAl[i]);
+                    paiMaiType.Add(item);
                 }
             }
 
@@ -369,10 +371,11 @@ namespace ET
 
             for (int i = 0;  i < oldPaiMaiAl.Count; i++)
             {
-                LDItem ldItem = LDItemCategory.Instance.Get(oldPaiMaiAl[i].BagInfo.ItemID);
+                PaiMaiItemInfo item = oldPaiMaiAl[i];
+                LDItem ldItem = LDItemCategory.Instance.Get(item.BagInfo.ItemID);
                 if (ldItem.ItemType == itemType)
                 {
-                    paiMaiType.Add(oldPaiMaiAl[i]);
+                    paiMaiType.Add(item);
                 }
             }
 
@@ -583,8 +586,10 @@ namespace ET
                 PaiMaiItemInfo paiMaiItem = paimaiItems[i];
 
                 //int price = 0;
-                PaiMaiShopItemInfo shopInfo = self.GetPaiMaiShopInfo(paiMaiItem.BagInfo.ItemID);
-                if (shopInfo != null && shopInfo.Price <= 500000 && LDItemCategory.Instance.Get(paiMaiItem.BagInfo.ItemID).ItemType != 3)
+                long itemId = paiMaiItem.BagInfo.ItemID;
+                PaiMaiShopItemInfo shopInfo = self.GetPaiMaiShopInfo(itemId);
+                LDItem ldItemCof = LDItemCategory.Instance.Get(itemId);
+                if (shopInfo != null && shopInfo.Price <= 500000 && ldItemCof.ItemType != 3)
                 {
                     //int singPro = (int)(paiMaiItem.Price / paiMaiItem.BagInfo.ItemNum);  //单价
                     float pro = paiMaiItem.Price / shopInfo.Price;
@@ -610,8 +615,6 @@ namespace ET
                     {
                         buyPro = 0.025f;
                     }
-
-                    LDItem ldItemCof = LDItemCategory.Instance.Get(paiMaiItem.BagInfo.ItemID);
                     int costNum = 0;
                     switch (ldItemCof.Quality)
                     {

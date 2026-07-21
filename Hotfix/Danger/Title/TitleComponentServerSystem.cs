@@ -28,7 +28,8 @@ namespace ET
             {
                 KeyValuePairInt titleEntry = self.TitleList[i];
                 LDElf ldElf = LDElfCategory.Instance.Get(titleEntry.KeyId);
-                string[] attributeInfoList = ldElf.AddProperty.Split('@');
+                string addProperty = ldElf.AddProperty;
+                string[] attributeInfoList = addProperty.Split('@');
                 for (int a = 0; a < attributeInfoList.Length; a++)
                 {
                     string[] attributeInfo = attributeInfoList[a].Split(';');

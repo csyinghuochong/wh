@@ -71,11 +71,9 @@ namespace ET
                 bagComponentServer.WarehouseAddedCell[storeindex] += 1;
 
                 bagComponentServer.OnAddItemData(
-                    ItemNewHelper.GetRewardItems(buyCellCost.Get),
-                    String.Empty,
+                    buyCellCost.Get,
                     $"{ItemGetWay.CostItem}_{TimeHelper.ServerNow()}",
                     true,
-                    false,
                     (ItemLocType)request.OperateType);
             }
 

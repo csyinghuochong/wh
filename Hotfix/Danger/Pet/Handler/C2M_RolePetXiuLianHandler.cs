@@ -8,7 +8,8 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_RolePetXiuLian request, M2C_RolePetXiuLian response, Action reply)
         {
-            RolePetInfo petinfo = unit.GetComponent<PetComponentServer>().GetPetInfo(request.PetInfoId);
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+            RolePetInfo petinfo = petComponentServer.GetPetInfo(request.PetInfoId);
             if (petinfo == null)
             {
                 response.Error = ErrorCode.ERR_Pet_NoExist;
@@ -32,7 +33,8 @@ namespace ET
             }*/
 
             //List<ComponentWithId> resultuserinfo = await dbProxy.Query<RoleInfo>(_userInfo => _userInfo.Id == player.UserId);
-            RoleInfo userinfo = unit.GetComponent<RoleInfoComponentServer>().GetUserInfo();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo userinfo = roleInfoComponentServer.GetUserInfo();
 
             //判定消耗
             /*string[] costItemList = costItemNum.Split(',');

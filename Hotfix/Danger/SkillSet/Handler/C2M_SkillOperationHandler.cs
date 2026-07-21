@@ -13,14 +13,14 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
-            int level = roleInfoComponentServer.RoleInfo.Lv;
-			int sp = roleInfoComponentServer.RoleInfo.Sp;
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+            int level = roleInfo.Lv;
+			int sp = roleInfo.Sp;
 			switch (request.OperationType)
 			{
 				case 1:
-                    LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(20);
-                    int needGold = int.Parse(ldGlobalValue.Value);
-                    if (roleInfoComponentServer.RoleInfo.Gold < needGold)
+                    int needGold = int.Parse(LDGlobalValueCategory.Instance.Get(20).Value);
+                    if (roleInfo.Gold < needGold)
                     {
                         response.Error = ErrorCode.ERR_GoldNotEnoughError;
                         reply();
@@ -64,10 +64,10 @@ namespace ET
                         return;
                     }
 
-                    if (roleInfoComponentServer.RoleInfo.OccTwo != 0)
+                    if (roleInfo.OccTwo != 0)
                     {
-                        skillSetComponentServer.OnChangeJueXing(roleInfoComponentServer.RoleInfo.OccTwo, toOcc);
-                        roleInfoComponentServer.RoleInfo.OccTwoOld.Add(roleInfoComponentServer.RoleInfo.OccTwo);
+                        skillSetComponentServer.OnChangeJueXing(roleInfo.OccTwo, toOcc);
+                        roleInfo.OccTwoOld.Add(roleInfo.OccTwo);
                     }
 
                     sp = skillSetComponentServer.OnOccReset();

@@ -131,7 +131,9 @@ namespace ET
 				self.AddTianFuAttribute(newtianfus[i], true);
 			}
 
-			self.GetParent<Unit>().GetComponent<SkillPassiveComponent>().UpdatePassiveSkill();
+			Unit unit = self.GetParent<Unit>();
+			SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
+			skillPassiveComponent.UpdatePassiveSkill();
 			self.UpdateSkillSet();
 		}
 
@@ -638,12 +640,14 @@ namespace ET
 				self.SkillListRemove = new List<SkillPro>();
             }
 
+			HashSet<int> seen = new HashSet<int>(self.SkillListRemove.Count);
 			for (int i = 0; i < self.SkillListRemove.Count;i++)
 			{
-				if (self.SkillListRemove[i].SkillID == skillPro.SkillID)
-				{
-					return;
-				}
+				seen.Add(self.SkillListRemove[i].SkillID);
+			}
+			if (seen.Contains(skillPro.SkillID))
+			{
+				return;
 			}
 
             self.SkillListRemove.Add(skillPro);
@@ -651,9 +655,11 @@ namespace ET
 
         public static void OnChangeEquipIndex(this SkillSetComponentServer self,  int equipIndex)
 		{
-			RoleInfoComponentServer roleInfoComponentServer = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
+			Unit unit = self.GetParent<Unit>();
+			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+			RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
 
-            if (roleInfoComponentServer.RoleInfo.Occ == 3)
+            if (roleInfo.Occ == 3)
 			{
                 self.OnRmItemSkill(CommonConfig.HunterFarSkill, 0);
                 self.OnRmItemSkill(CommonConfig.HunterNearSkill, 0);
@@ -723,9 +729,9 @@ namespace ET
 		public static int SetSkillIdByPosition(this SkillSetComponentServer self, C2M_SkillSet request)
 		{
             SkillPro newSkill = null;
+			SkillPro oldSkill = self.GetByPosition(request.Position);
 			if (request.SkillType == 1)	//技能
 			{
-				SkillPro oldSkill = self.GetByPosition(request.Position);
 				if (oldSkill != null)
 				{
 					oldSkill.SetSkillPosition ( 0);
@@ -740,7 +746,6 @@ namespace ET
 			}
 			else	//药剂
 			{
-				SkillPro oldSkill = self.GetByPosition(request.Position);
 				if (oldSkill != null)
 				{
 					oldSkill.SkillID = 0;

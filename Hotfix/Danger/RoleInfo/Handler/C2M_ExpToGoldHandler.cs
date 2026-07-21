@@ -7,10 +7,32 @@ namespace ET
     [ActorMessageHandler]
     public class C2M_ExpToGoldHandler : AMActorLocationRpcHandler<Unit, C2M_ExpToGoldRequest, M2C_ExpToGoldResponse>
     {
+        private static int expToGoldDropId;
+        private static List<int> expToItemWeights;
+        private static bool expToGoldCacheInit;
+
+        private static void EnsureExpToGoldCache()
+        {
+            if (expToGoldCacheInit)
+            {
+                return;
+            }
+
+            expToGoldDropId = int.Parse(LDGlobalValueCategory.Instance.Get(81).Value.Split(';')[0]);
+            expToItemWeights = new List<int>(CommonConfig.ExpToItemList.Count);
+            for (int i = 0; i < CommonConfig.ExpToItemList.Count; i++)
+            {
+                expToItemWeights.Add(CommonConfig.ExpToItemList[i].KeyId);
+            }
+
+            expToGoldCacheInit = true;
+        }
+
         protected override async ETTask Run(Unit unit, C2M_ExpToGoldRequest request, M2C_ExpToGoldResponse response, Action reply)
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             ServerInfo serverInfo = ConfigData.ServerInfoList[UnitZoneHelper.GetHomeZone(unit)];
             if (roleInfo.Lv < 70 &&  roleInfo.Lv < serverInfo.WorldLv)
             {
@@ -69,26 +91,21 @@ namespace ET
                      //Log.Debug($"Gold:  {roleInfoComponent.Id} {sendGold} excharge");
                     break;
                 case 2:
-                    string[] droplist = LDGlobalValueCategory.Instance.Get(81).Value.Split(';');
-                    int dropid = int.Parse(droplist[0]);
+                    EnsureExpToGoldCache();
                     List<RewardItem> rewardItems = new List<RewardItem>();
-                    DropHelper.DropIDToDropItem_2(dropid, rewardItems);
+                    DropHelper.DropIDToDropItem_2(expToGoldDropId, rewardItems);
                     bagComponentServer.OnAddItemData(rewardItems, String.Empty, $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
                     break;
                 case 0:
-                    List<int> weights = ListComponent<int>.Create();
-                    for (int i = 0; i < CommonConfig.ExpToItemList.Count; i++)
-                    {
-                        weights.Add(CommonConfig.ExpToItemList[i].KeyId);
-                    }
-                    int index = RandomHelper.RandomByWeight(weights);
+                    EnsureExpToGoldCache();
+                    int index = RandomHelper.RandomByWeight(expToItemWeights);
                     bagComponentServer.OnAddItemData(CommonConfig.ExpToItemList[index].Value,  $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
                     break;
                 default:
                     break;
             }
             roleInfoComponentServer.UpdateRoleData(UserDataType.Exp, (costExp * -1).ToString());
-            unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.ExpToGoldTimes, 1, 0);
+            numericComponent.ApplyChange(null, NumericType.ExpToGoldTimes, 1, 0);
             reply();
             await ETTask.CompletedTask;
         }

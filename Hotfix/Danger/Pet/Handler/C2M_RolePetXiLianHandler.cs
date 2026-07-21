@@ -57,7 +57,7 @@ namespace ET
 					}
 					
 					//重置资质系数
-					petInfo = pet.PetXiLian(petInfo, 0, 2, bagInfo.ItemID, 0);
+					pet.PetXiLian(petInfo, 0, 2, bagInfo.ItemID, 0);
                     pet.UpdatePetAttribute(petInfo, true);
                     petInfo.LockSkill.Clear();
                     response.rolePetInfo = petInfo;
@@ -123,7 +123,7 @@ namespace ET
 					//}
 
 					//重置资质系数
-					petInfo = pet.PetXiLian(petInfo,0, 2, bagInfo.ItemID, 0);
+					pet.PetXiLian(petInfo, 0, 2, bagInfo.ItemID, 0);
                     pet.UpdatePetAttribute(petInfo, true);
 					response.rolePetInfo = petInfo;
 					break;
@@ -158,7 +158,7 @@ namespace ET
 			}
 
 			//扣除相关道具
-			if (bagInfo != null && ifCost)
+			if (ifCost)
 			{
 				//扣除道具
 				bag.OnCostItemData($"{bagInfo.ItemID};1", ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);		

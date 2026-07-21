@@ -10,6 +10,7 @@ namespace ET
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             long unionid = numericComponent.GetAsLong(NumericType.UnionId_0);
             if (unionid == 0)
             {
@@ -27,7 +28,7 @@ namespace ET
                         return;
                     }
 
-                    long selfgold = roleInfoComponentServer.RoleInfo.Gold;
+                    long selfgold = roleInfo.Gold;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit),
                         new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });
@@ -61,7 +62,7 @@ namespace ET
                         return;
                     }
 
-                    long selfDiamond = roleInfoComponentServer.RoleInfo.Diamond;
+                    long selfDiamond = roleInfo.Diamond;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit),
                         new M2U_UnionOperationRequest() { OperateType = 4, UnitId = unit.Id, UnionId = unionid, Par = selfDiamond.ToString() });

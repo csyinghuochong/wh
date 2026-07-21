@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -10,11 +11,12 @@ namespace ET
         {
             long serverTime = TimeHelper.ServerNow();
             ChatSceneComponent chatInfoUnitsComponent = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
-
-            for (int i = 0; i < chatInfoUnitsComponent.WordChatInfos.Count; i++)
+            long cutoff = serverTime - TimeHelper.OneDay;
+            List<ChatInfo> wordChats = chatInfoUnitsComponent.WordChatInfos;
+            for (int i = 0; i < wordChats.Count; i++)
             {
-                ChatInfo chatInfo = chatInfoUnitsComponent.WordChatInfos[i];
-                if (serverTime - chatInfo.Time < TimeHelper.OneDay)
+                ChatInfo chatInfo = wordChats[i];
+                if (chatInfo.Time >= cutoff)
                 {
                     response.ChatInfos.Add(chatInfo);
                 }

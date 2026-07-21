@@ -9,14 +9,15 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_PetShouHuRequest request, M2C_PetShouHuResponse response, Action reply)
         {
-            RolePetInfo rolePetInfo = unit.GetComponent<PetComponentServer>().GetPetInfo(request.PetInfoId);
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+            RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
             if (rolePetInfo == null || rolePetInfo.ShouHuPos == 0)
             {
                 reply();
                 return;
             }
 
-            List<long> shouhulist = unit.GetComponent<PetComponentServer>().PetShouHuList;
+            List<long> shouhulist = petComponentServer.PetShouHuList;
             if (PetHelper.IsShenShou(rolePetInfo.ConfigId))
             {
                 shouhulist[request.Position] = request.PetInfoId;

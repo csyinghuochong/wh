@@ -6,10 +6,11 @@
     {
         protected override async ETTask Run(Unit unit, C2M_UnionInviteRequest message)
         {
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             Unit beinvite = unit.GetParent<UnitComponent>().Get(message.InviteId);
 
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (string.IsNullOrEmpty(roleInfo.UnionName))
             {
                 return;

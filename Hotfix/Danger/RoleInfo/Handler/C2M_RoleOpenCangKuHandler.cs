@@ -7,7 +7,9 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_RoleOpenCangKuRequest request, M2C_RoleOpenCangKuResponse response, Action reply)
         {
-            int cangkuNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.CangKuNumber);
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            int cangkuNumber = numericComponent.GetAsInt(NumericType.CangKuNumber);
             if (cangkuNumber >= 4)
             {
                 response.Error = ErrorCode.ERR_Error;
@@ -16,14 +18,14 @@ namespace ET
             }
 
             string costItems = LDGlobalValueCategory.Instance.Get(38).Value;
-            if (!unit.GetComponent<BagComponentServer>().OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
+            if (!bagComponentServer.OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;
             }
 
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.CangKuNumber, cangkuNumber+1);
+            numericComponent.ApplyValue(NumericType.CangKuNumber, cangkuNumber+1);
             reply();
             await ETTask.CompletedTask;
         }

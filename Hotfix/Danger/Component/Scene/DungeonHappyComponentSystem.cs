@@ -42,7 +42,8 @@ namespace ET
             List<Unit> droplist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.DropItem);
             for (int i = 0; i < droplist.Count; i++)
             {
-                dropcells.Add(droplist[i].GetComponent<DropComponent>().CellIndex);
+                DropComponent dropComponent = droplist[i].GetComponent<DropComponent>();
+                dropcells.Add(dropComponent.CellIndex);
             }
 
             int openDay = ServerHelper.GetOpenServerDay(false, self.DomainZone());

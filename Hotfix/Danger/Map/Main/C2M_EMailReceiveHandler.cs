@@ -31,14 +31,15 @@ namespace ET
                 long receiveMailTime = TimeHelper.ServerNow();
                 for (int i = mailInfo.ItemList.Count - 1; i >= 0; i--)
                 {
-                    if (mailInfo.ItemList[i].ItemID == 110000164)
+                    BagInfo item = mailInfo.ItemList[i];
+                    if (item.ItemID == 110000164)
 
                     {
-                        mailInfo.ItemList[i].ItemID = 10000164;
+                        item.ItemID = 10000164;
                     }
-                    if (!string.IsNullOrEmpty(mailInfo.ItemList[i].GetWay))
+                    if (!string.IsNullOrEmpty(item.GetWay))
                     {
-                        bagComponentServer.OnAddItemData(mailInfo.ItemList[i], mailInfo.ItemList[i].GetWay);
+                        bagComponentServer.OnAddItemData(item, item.GetWay);
                         //string[] getwayInfo = mailInfo.ItemList[i].GetWay.Split('_');
                         //if (getwayInfo.Length >= 2 && mailInfo.ItemList[i].ItemID == 1 && int.Parse(getwayInfo[0]) == ItemGetWay.PaiMaiSell)
                         //{
@@ -47,7 +48,7 @@ namespace ET
                     }
                     else
                     {
-                        bagComponentServer.OnAddItemData(mailInfo.ItemList[i], $"{ItemGetWay.ReceieMail}_{receiveMailTime}");
+                        bagComponentServer.OnAddItemData(item, $"{ItemGetWay.ReceieMail}_{receiveMailTime}");
                     }
                 }
                 

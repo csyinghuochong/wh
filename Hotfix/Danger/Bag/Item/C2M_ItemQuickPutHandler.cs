@@ -32,29 +32,35 @@ namespace ET
             List<BagInfo> warehourselist = bagComponentServer.GetItemByLoc((ItemLocType)hourseId);
 
             List<BagInfo> bagList = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag);
+            HashSet<long> processedBagIds = new HashSet<long>();
 
             for (int w = 0; w < warehourselist.Count; w++)
             {
                 BagInfo warehourseInfo = warehourselist[w];
                 LDItem ldItemCof = LDItemCategory.Instance.Get(warehourseInfo.ItemID);
+                int pileSum = ldItemCof.ItemPileSum;
 
                 for (int b = bagList.Count - 1; b >= 0; b-- )
                 {
                     BagInfo bagInfo = bagList[b];
+                    if (processedBagIds.Contains(bagInfo.BagInfoID))
+                    {
+                        continue;
+                    }
 
                     if (warehourseInfo.ItemID != bagInfo.ItemID)
                     {
                         continue;
                     }
-                    if ( (warehourseInfo.ItemNum + bagInfo.ItemNum) > ldItemCof.ItemPileSum)
+                    if ( (warehourseInfo.ItemNum + bagInfo.ItemNum) > pileSum)
                     {
                         continue;
                     }
 
-
                     warehourseInfo.ItemNum = warehourseInfo.ItemNum + bagInfo.ItemNum;
                     m2c_bagUpdate.BagInfoUpdate.Add(warehourseInfo);
                     m2c_bagUpdate.BagInfoDelete.Add(bagInfo);
+                    processedBagIds.Add(bagInfo.BagInfoID);
                     bagList.RemoveAt(b);
                 }
             }

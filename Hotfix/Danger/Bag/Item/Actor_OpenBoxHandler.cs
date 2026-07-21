@@ -25,8 +25,9 @@ namespace ET
             int monsterid = boxUnit.ConfigId;
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
             string itemneeds = "";
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
           
-            if (itemneeds.Length >2 && !unit.GetComponent<BagComponentServer>().OnCostItemData(itemneeds, ItemLocType.ItemLocBag, ItemGetWay.ItemBox_6))
+            if (itemneeds.Length >2 && !bag.OnCostItemData(itemneeds, ItemLocType.ItemLocBag, ItemGetWay.ItemBox_6))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();

@@ -10,13 +10,14 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemDestoryRequest request, M2C_ItemDestoryResponse response, Action reply)
         {
             long bagInfoID = request.OperateBagID;
-            BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, bagInfoID);
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            BagInfo useBagInfo = bag.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoID);
             if (useBagInfo == null)
             {
                 reply();
                 return;
             }
-            unit.GetComponent<BagComponentServer>().OnCostItemData(bagInfoID, 1);
+            bag.OnCostItemData(bagInfoID, 1);
 
             reply();
             await ETTask.CompletedTask;

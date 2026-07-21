@@ -10,6 +10,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_JiaYuanPurchaseRequest request, M2C_JiaYuanPurchaseResponse response, Action reply)
         {
             JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             List<JiaYuanPurchaseItem> purchaselist = jiaYuanComponentServer.PurchaseItemList_7;
             JiaYuanPurchaseItem jiaYuanPurchaseItem = null;
             long serverTime = TimeHelper.ServerNow();
@@ -32,15 +34,15 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, request.ItemId) < 1)
+            if (bagComponentServer.GetItemNumber(ItemBigType.Type_Item, request.ItemId) < 1)
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;
             }
 
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.JiaYuanFund, jiaYuanPurchaseItem.BuyZiJin.ToString());
-            unit.GetComponent<BagComponentServer>().OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost  );
+            roleInfoComponentServer.UpdateRoleData(UserDataType.JiaYuanFund, jiaYuanPurchaseItem.BuyZiJin.ToString());
+            bagComponentServer.OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost  );
             response.PurchaseItemList = jiaYuanComponentServer.PurchaseItemList_7;
             DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer).Coroutine();
             reply();

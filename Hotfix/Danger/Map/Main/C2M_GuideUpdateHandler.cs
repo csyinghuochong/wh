@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -9,7 +10,12 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_GuideUpdateRequest request, M2C_GuideUpdateResponse response, Action reply)
         { 
             await ETTask.CompletedTask;
-            unit.GetComponent<RoleInfoComponentServer>().RoleInfo.CompleteGuideIds.Add(request.GuideId);
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            List<int> completeGuideIds = roleInfoComponentServer.RoleInfo.CompleteGuideIds;
+            if (!completeGuideIds.Contains(request.GuideId))
+            {
+                completeGuideIds.Add(request.GuideId);
+            }
             reply();
         }
     }

@@ -34,7 +34,8 @@ namespace ET
 
             string[] reward = rewardConfig.Split('$');
             string[] items = reward[0].Split('@');
-            string[] diamond = reward[1].Split(';')[1].Split(',');
+            string[] diamondParts = reward[1].Split(';');
+            string[] diamond = diamondParts[1].Split(',');
             if (bag.GetBagLeftCell() < items.Length)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;

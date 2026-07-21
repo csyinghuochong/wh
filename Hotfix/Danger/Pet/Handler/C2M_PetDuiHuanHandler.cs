@@ -8,7 +8,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PetDuiHuanRequest request, M2C_PetDuiHuanResponse response, Action reply)
         {
             PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
-            int userLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            int userLv = roleInfoComponentServer.RoleInfo.Lv;
             if (PetHelper.GetBagPetNum(petComponentServer.RolePetInfos) >= PetHelper.GetPetMaxNumber(unit, userLv))
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -35,7 +36,8 @@ namespace ET
                 return;
             }
             response.RolePetInfo = petComponentServer.OnAddPet(ItemGetWay.PetEggDuiHuan, int.Parse(configInfo[1]));
-            unit.GetComponent<DataCollationComponent>().OnPetDuiHuan();
+            DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
+            dataCollationComponent.OnPetDuiHuan();
             reply();
             await ETTask.CompletedTask;
         }
