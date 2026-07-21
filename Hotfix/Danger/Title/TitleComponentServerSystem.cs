@@ -19,6 +19,45 @@ namespace ET
 
     public static class TitleComponentServerSystem
     {
+        private static readonly Dictionary<int, List<AttributeItem>> TitleProCache = new Dictionary<int, List<AttributeItem>>();
+
+        private static List<AttributeItem> GetCachedTitlePro(int titleId, string addProperty)
+        {
+            if (TitleProCache.TryGetValue(titleId, out List<AttributeItem> cached))
+            {
+                return cached;
+            }
+
+            List<AttributeItem> proList = new List<AttributeItem>();
+            string[] attributeInfoList = addProperty.Split('@');
+            for (int a = 0; a < attributeInfoList.Length; a++)
+            {
+                string[] attributeInfo = attributeInfoList[a].Split(';');
+                int numericType = int.Parse(attributeInfo[0]);
+
+                if (NumericHelp.GetNumericValueType(numericType) == 2)
+                {
+                    float fvalue = float.Parse(attributeInfo[1]);
+                    proList.Add(new AttributeItem() { AttributeID = numericType, AttributeValue = NumericHelp.ToStoredValue(numericType, fvalue) });
+                }
+                else
+                {
+                    long lvalue = 0;
+                    try
+                    {
+                        lvalue = long.Parse(attributeInfo[1]);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Debug(ex.ToString() + $"报错称号: {titleId}");
+                    }
+                    proList.Add(new AttributeItem() { AttributeID = numericType, AttributeValue = lvalue });
+                }
+            }
+
+            TitleProCache[titleId] = proList;
+            return proList;
+        }
 
         public static List<AttributeItem> GetTitlePro(this TitleComponentServer self)
         {
@@ -28,32 +67,7 @@ namespace ET
             {
                 KeyValuePairInt titleEntry = self.TitleList[i];
                 LDElf ldElf = LDElfCategory.Instance.Get(titleEntry.KeyId);
-                string addProperty = ldElf.AddProperty;
-                string[] attributeInfoList = addProperty.Split('@');
-                for (int a = 0; a < attributeInfoList.Length; a++)
-                {
-                    string[] attributeInfo = attributeInfoList[a].Split(';');
-                    int numericType = int.Parse(attributeInfo[0]);
-
-                    if (NumericHelp.GetNumericValueType(numericType) == 2)
-                    {
-                        float fvalue = float.Parse(attributeInfo[1]);
-                        proList.Add(new AttributeItem() { AttributeID = numericType, AttributeValue = NumericHelp.ToStoredValue(numericType, fvalue) });
-                    }
-                    else
-                    {
-                        long lvalue = 0;
-                        try
-                        {
-                            lvalue = long.Parse(attributeInfo[1]);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Debug(ex.ToString() + $"报错称号: {titleEntry.KeyId}");
-                        }
-                        proList.Add(new AttributeItem() { AttributeID = numericType, AttributeValue = lvalue });
-                    }
-                }
+                proList.AddRange(GetCachedTitlePro(titleEntry.KeyId, ldElf.AddProperty));
             }
             return proList;
         }

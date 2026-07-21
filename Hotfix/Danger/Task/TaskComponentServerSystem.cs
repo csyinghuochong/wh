@@ -1146,17 +1146,17 @@ namespace ET
             HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList);
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
-                LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
-                if (self.RoleTaskList[i].TaskType == taskType)
+                if (self.RoleTaskList[i].TaskType != taskType)
                 {
-                    if (completedTaskIds.Contains(ldTask.Id))
-                    {
-                        self.RoleComoleteTaskList.Remove(ldTask.Id);
-                        completedTaskIds.Remove(ldTask.Id);
-                    }
-                    self.RoleTaskList.RemoveAt(i);
                     continue;
                 }
+                LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
+                if (completedTaskIds.Contains(ldTask.Id))
+                {
+                    self.RoleComoleteTaskList.Remove(ldTask.Id);
+                    completedTaskIds.Remove(ldTask.Id);
+                }
+                self.RoleTaskList.RemoveAt(i);
             }
         }
 
@@ -1165,6 +1165,8 @@ namespace ET
 
             //清空每日任务
             Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
+            int roleLv = roleInfoComponent.RoleInfo.Lv;
             System.DateTime dateTime = TimeHelper.DateTimeNow();
             HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList);
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
@@ -1192,7 +1194,6 @@ namespace ET
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            int roleLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
            
             /*
             numericComponent.ApplyValue(NumericType.DailyTaskNumber, 0, notice);
@@ -1208,18 +1209,22 @@ namespace ET
 
         public static TaskPro GetTreasureMonster(this TaskComponentServer self, int fubenid)
         {
-            List<TaskPro> taskPros = self.GetTaskList(TaskTypeEnum.Treasure);
-            for (int i = 0; i < taskPros.Count; i++)
+            for (int i = 0; i < self.RoleTaskList.Count; i++)
             {
-                if (taskPros[i].taskStatus >= (int)TaskStatuEnum.Completed)
+                TaskPro taskPro = self.RoleTaskList[i];
+                if (taskPro.TaskType != TaskTypeEnum.Treasure)
                 {
                     continue;
                 }
-                if (taskPros[i].FubenId != fubenid)
+                if (taskPro.taskStatus >= (int)TaskStatuEnum.Completed)
                 {
                     continue;
                 }
-                return taskPros[i];
+                if (taskPro.FubenId != fubenid)
+                {
+                    continue;
+                }
+                return taskPro;
             }
             return null;
         }

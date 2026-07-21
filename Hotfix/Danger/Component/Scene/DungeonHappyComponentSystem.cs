@@ -21,6 +21,7 @@ namespace ET
         {
             string dropinfo = LDGlobalValueCategory.Instance.Get(102).Value;
             string[] dropList = dropinfo.Split('@');
+            string[] firstDrop = dropList[0].Split(';');
 
             for (int i = dropList.Length - 1; i >= 0; i--)
             {
@@ -33,7 +34,7 @@ namespace ET
                     return dropid;
                 }
             }
-            return int.Parse(dropList[0].Split(';')[1]);
+            return int.Parse(firstDrop[1]);
         }
 
         public static void OnTimer(this DungeonHappyComponent self)

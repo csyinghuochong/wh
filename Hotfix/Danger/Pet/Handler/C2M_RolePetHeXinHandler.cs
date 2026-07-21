@@ -11,11 +11,6 @@ namespace ET
         {
             try
             {
-                //通知客户端背包刷新
-                M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-                //通知客户端背包道具发生改变
-                m2c_bagUpdate.BagInfoUpdate = new List<BagInfo>();
-
                 PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
@@ -25,6 +20,11 @@ namespace ET
                     reply();
                     return;
                 }
+
+                //通知客户端背包刷新
+                M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
+                //通知客户端背包道具发生改变
+                m2c_bagUpdate.BagInfoUpdate = new List<BagInfo>();
 
                 //旧的返回到背包
                 long oldItemId = rolePetInfo.PetHeXinList[request.Position];
@@ -40,8 +40,7 @@ namespace ET
                 }
                 if (request.OperateType == 1) //1 装备  2卸下[前面已经处理过了]
                 {
-                    ItemLocType itemLocType = request.OperateType == 1 ? ItemLocType.ItemPetHeXinBag : ItemLocType.ItemPetHeXinEquip;
-                    BagInfo bagInfo = bagComponentServer.GetItemByLoc(itemLocType, request.BagInfoId);
+                    BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemPetHeXinBag, request.BagInfoId);
                     if (bagInfo == null)
                     {
                         reply();

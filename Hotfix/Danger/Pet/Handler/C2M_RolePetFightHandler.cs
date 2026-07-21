@@ -33,7 +33,8 @@ namespace ET
                     fightpet.PetStatus = 0;
                     unitComponent.Remove(fightpet.Id);
                 }
-                if (unitComponent.Get(petinfo.Id) == null)
+                Unit existingPetUnit = unitComponent.Get(petinfo.Id);
+                if (existingPetUnit == null)
                 {
                     petComponentServer.UpdatePetAttribute(petinfo, false);
                     UnitFactory.CreatePet(unit, petinfo);

@@ -34,15 +34,16 @@ namespace ET
 
             string[] reward = rewardConfig.Split('$');
             string[] items = reward[0].Split('@');
-            string[] diamondParts = reward[1].Split(';');
-            string[] diamond = diamondParts[1].Split(',');
             if (bag.GetBagLeftCell() < items.Length)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
                 return;
             }
-            int randomZuanshi = RandomHelper.RandomNumber(int.Parse(diamond[0]), int.Parse(diamond[1]));
+            string[] diamond = reward[1].Split(';')[1].Split(',');
+            int diamondMin = int.Parse(diamond[0]);
+            int diamondMax = int.Parse(diamond[1]);
+            int randomZuanshi = RandomHelper.RandomNumber(diamondMin, diamondMax);
             bag.OnAddItemData(reward[0], $"{95}_{TimeHelper.ServerNow()}");
             roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 95);
 

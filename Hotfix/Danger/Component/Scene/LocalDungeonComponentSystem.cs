@@ -75,7 +75,8 @@ namespace ET
 
         public static void OnCleanBossCD(this LocalDungeonComponent self)
         {
-            List<Unit> entities = self.DomainScene().GetComponent<UnitComponent>().GetAll();
+            UnitComponent unitComponent = self.DomainScene().GetComponent<UnitComponent>();
+            List<Unit> entities = unitComponent.GetAll();
             for (int i = 0; i < entities.Count; i++)
             {
                 Unit entity = entities[i];

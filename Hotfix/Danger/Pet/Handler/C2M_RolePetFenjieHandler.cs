@@ -63,7 +63,9 @@ namespace ET
 			
 			jiaYuanComponentServer.OnJiaYuanPetWalk(rolePetInfo, 0, -1);
 
-			if (unitComponent.Get(rolePetInfo.Id) != null)
+			UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+			Unit existingPetUnit = unitComponent.Get(rolePetInfo.Id);
+			if (existingPetUnit != null)
 			{
 				Log.Warning($"宠物还在出战中！！");
 				unitComponent.Remove(rolePetInfo.Id);

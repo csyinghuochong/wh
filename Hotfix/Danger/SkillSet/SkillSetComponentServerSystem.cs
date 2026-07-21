@@ -55,11 +55,7 @@ namespace ET
 			List<int> list = new List<int>();
 
 			List<int> tianfulist = self.TianFuPlan == 0 ? self.TianFuList : self.TianFuList1;
-			for (int i = 0; i < tianfulist.Count; i++)
-			{
-				list.Add(tianfulist[i]);
-			}
-
+			list.AddRange(tianfulist);
 			list.AddRange(self.TianFuAddition);
 			return list;
 		}
@@ -659,7 +655,8 @@ namespace ET
 			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 			RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
 
-            if (roleInfo.Occ == 3)
+            int occ = roleInfo.Occ;
+            if (occ == 3)
 			{
                 self.OnRmItemSkill(CommonConfig.HunterFarSkill, 0);
                 self.OnRmItemSkill(CommonConfig.HunterNearSkill, 0);

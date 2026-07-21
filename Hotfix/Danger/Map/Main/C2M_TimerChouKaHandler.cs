@@ -27,8 +27,9 @@ namespace ET
                 return;
             }
 
+            var rewardEntry = CommonConfig.TimerChouKaRewardList[receNum];
             long passtime = activityComponentServer.LastTimerChouKaPassTime;
-            long validTime =  CommonConfig.TimerChouKaRewardList[receNum].Interval * TimeHelper.Minute;
+            long validTime = rewardEntry.Interval * TimeHelper.Minute;
 
             if (passtime < validTime)
             {
@@ -50,9 +51,10 @@ namespace ET
             //int index = RandomHelper.RandomByWeight(weights);
             //int recvid = validids[index];
 
-            int recvid = activityComponentServer.TimerChouKaReceiveIndex;
-            string getitem = CommonConfig.TimerChouKaRewardList[recvid].ItemInfo;
-            bagComponentServer.OnAddItemData(getitem, $"{ItemGetWay.ChouKa}_{TimeHelper.ServerNow()}");
+            int recvid = receNum;
+            string getitem = rewardEntry.ItemInfo;
+            long now = TimeHelper.ServerNow();
+            bagComponentServer.OnAddItemData(getitem, $"{ItemGetWay.ChouKa}_{now}");
             activityComponentServer.TimerChouKaReceiveIndex++;
             activityComponentServer.LastTimerChouKaPassTime = 0;
 

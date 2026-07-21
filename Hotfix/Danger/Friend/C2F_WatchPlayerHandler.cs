@@ -19,14 +19,15 @@ namespace ET
                 reply();
                 return;
             }
+            RoleInfo roleInfo = userinfo.RoleInfo;
             //根据类型返回不同的值
             switch (request.WatchType) 
             {
                 //全部
                 case 0:
                     D2G_GetComponent d2GGetUnit_2 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.BagComponentServer });
-                    response.Lv = userinfo.RoleInfo.Lv;
-                    response.Name = userinfo.RoleInfo.Name;
+                    response.Lv = roleInfo.Lv;
+                    response.Name = roleInfo.Name;
                     BagComponentServer bagComponentsServer = d2GGetUnit_2.Component as BagComponentServer;
                     if (bagComponentsServer == null)
                     {
@@ -37,7 +38,7 @@ namespace ET
 
                     response.EquipList = bagComponentsServer.EquipList;
                     response.PetHeXinList = bagComponentsServer.PetHeXinList;
-                    response.Occ = userinfo.RoleInfo.Occ;
+                    response.Occ = roleInfo.Occ;
                     D2G_GetComponent d2GGetUnit_3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.PetComponent });
                     PetComponentServer petComponentServer = d2GGetUnit_3.Component as PetComponentServer;
                     List<RolePetInfo> rolePetInfos = petComponentServer.RolePetInfos;
@@ -55,6 +56,12 @@ namespace ET
 
                     D2G_GetComponent d2GGetUnit_4 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.NumericComponent });
                     NumericComponent numericComponent = d2GGetUnit_4.Component as NumericComponent;
+                    if (numericComponent == null)
+                    {
+                        response.Error = ErrorCode.ERR_Error;
+                        reply();
+                        return;
+                    }
                     foreach ((int key, long value) in numericComponent.NumericDic)
                     {
                         if (key >= (int)NumericType.Max)
@@ -69,7 +76,7 @@ namespace ET
                     break;
                 //只返回名字
                 case 1:
-                    response.Name = userinfo.RoleInfo.Name;
+                    response.Name = roleInfo.Name;
                     break;
                 case 2:
                     long teamServerId = DBHelper.GetTeamServerId(UnitZoneHelper.GetHomeZone(request.UserId));

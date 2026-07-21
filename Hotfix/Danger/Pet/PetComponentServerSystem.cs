@@ -400,6 +400,7 @@ namespace ET
         public static RolePetInfo PetXiLian(this PetComponentServer self, RolePetInfo rolePetInfo, int getWay, int XiLianType, int itemId, int fuling)
         {
             Unit unit = self.GetParent<Unit>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             LDPet ldPetConfig = LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
 
             bool fulingStatus = false;
@@ -429,7 +430,7 @@ namespace ET
                 rolePetInfo.Star = RandomHelper.RandomNumber(minStart, maxStart);
             }
 
-            int petluckly = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PetExploreLuckly);
+            int petluckly = numericComponent.GetAsInt(NumericType.PetExploreLuckly);
 
             //运气值100 百分变异
             if (XiLianType == 1 && getWay == ItemGetWay.PetExplore && petluckly >= 100  ) //&&ldPetConfig.Skin.Length >= 2)
@@ -438,7 +439,7 @@ namespace ET
                 int skinId = 0;//ldPetConfig.Skin[RandomHelper.RandomNumber(1, ldPetConfig.Skin.Length)];
                 rolePetInfo.SkinId = skinId;
                 //rolePetInfo.PetName = PetSkinConfigCategory.Instance.Get(rolePetInfo.SkinId).Name;
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.PetExploreLuckly, 0);
+                numericComponent.ApplyValue(NumericType.PetExploreLuckly, 0);
             }
 
             rolePetInfo.Luckly = 0;   //1为运气加倍 
@@ -507,6 +508,10 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             LDPet ldPetConfig =LDPetCategory.Instance.Get(petId);
+            ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             List<int> weight = new List<int>();
 
             if (skinId == 0)
@@ -524,16 +529,15 @@ namespace ET
             self.CheckPetPingFen();
             self.CheckPetZiZhi();
 
-            unit.GetComponent<ChengJiuComponentServer>().OnGetPet(newpet);
-            unit.GetComponent<TaskComponentServer>().OnGetPet(newpet);
+            chengJiuComponentServer.OnGetPet(newpet);
+            taskComponentServer.OnGetPet(newpet);
 
             if (PetHelper.IsShenShou(petId))
             {
-                NumericComponent numeric = unit.GetComponent<NumericComponent>();
-                int rechargeNumber = numeric.GetAsInt(NumericType.RechargeNumber);
+                int rechargeNumber = numericComponent.GetAsInt(NumericType.RechargeNumber);
                 if (rechargeNumber < 5000)
                 {
-                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+                    RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
                     //充值低于5千的就记录 记录信息 等级 名称 充值额度 当前钻石额
                     LogHelper.GongZuoShi($"神兽作弊: {unit.DomainZone()}   \t名称:{roleInfo.Name}  " +
                         $"\t等级:{roleInfo.Lv}" + $"\t钻石:{roleInfo.Diamond}" +
@@ -556,7 +560,7 @@ namespace ET
                 M2C_RolePetBagUpdate m2C_RolePetBag = new M2C_RolePetBagUpdate();
                 m2C_RolePetBag.RolePetBag = self.RolePetBag;
                 m2C_RolePetBag.UpdateMode = 1;
-                MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_RolePetBag);
+                MessageHelper.SendToClient(unit, m2C_RolePetBag);
 
                 Log.Debug($"AddPet: unitid:{unit.Id}  petconfigid:{newpet.Id}  {newpet.IfBaby}  RolePetBag");
             }
@@ -566,13 +570,13 @@ namespace ET
                 M2C_RolePetUpdate m2C_RolePetUpdate = new M2C_RolePetUpdate();
                 m2C_RolePetUpdate.PetInfoAdd = new List<RolePetInfo>();
                 m2C_RolePetUpdate.PetInfoAdd.Add(newpet);
-                MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_RolePetUpdate);
+                MessageHelper.SendToClient(unit, m2C_RolePetUpdate);
 
                 Log.Debug($"AddPet: unitid:{unit.Id}  petconfigid:{newpet.Id}  {newpet.IfBaby}  RolePetInfos {getWay}");
             }
 
             //如果有皮肤的话更新一次角色属性
-            Function_Fight.UnitUpdateProperty_Base(self.GetParent<Unit>(), true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             return newpet;
         }
 
@@ -1135,7 +1139,8 @@ namespace ET
             {
                 return;
             }
-            Unit petUnit = unit.GetParent<UnitComponent>().Get(rolePetInfo.Id);
+            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+            Unit petUnit = unitComponent.Get(rolePetInfo.Id);
             if (petUnit == null)
             {
                 return;
@@ -1316,6 +1321,7 @@ namespace ET
 
         public static void OnRolePetFenjie(this PetComponentServer self, long petId)
         {
+            Unit unit = self.GetParent<Unit>();
             self.RemovePet(petId, 4);
 
             for (int i = self.RolePetInfos.Count - 1; i >= 0; i--)
@@ -1326,7 +1332,7 @@ namespace ET
             M2C_PetListMessage m2C_PetListMessage = new M2C_PetListMessage();
             m2C_PetListMessage.PetList = self.RolePetInfos;
             m2C_PetListMessage.RemovePetId = petId;
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_PetListMessage);
+            MessageHelper.SendToClient(unit, m2C_PetListMessage);
         }
 
         public static int GetMaxSkillNumber(this PetComponentServer self)

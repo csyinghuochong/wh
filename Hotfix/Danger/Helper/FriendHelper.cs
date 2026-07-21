@@ -19,6 +19,7 @@ namespace ET
                 {
                     continue;
                 }
+                RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
 
                 G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
                    (gateServerId, new T2G_GateUnitInfoRequest()
@@ -29,10 +30,10 @@ namespace ET
                 friendInfos.Add(new FriendInfo()
                 {
                     UserId = friendId,
-                    PlayerLevel = roleInfoComponentServer.RoleInfo.Lv,
+                    PlayerLevel = roleInfo.Lv,
                     OnLineTime = g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0  ? 1 : 0,
-                    PlayerName = roleInfoComponentServer.RoleInfo.Name,
-                    Occ = roleInfoComponentServer.RoleInfo.Occ
+                    PlayerName = roleInfo.Name,
+                    Occ = roleInfo.Occ
                 });
             }
 

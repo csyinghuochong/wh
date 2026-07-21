@@ -12,16 +12,9 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
 
-            if (!LDShop_GoodsCategory.Instance.Contain(request.SellItemID))
-            {
-                reply();
-                return;
-            }
-
             LDShop_Goods storeSellConfig = LDShop_GoodsCategory.Instance.Get(request.SellItemID);
             if (storeSellConfig == null)
             {
-                response.Error = ErrorCode.ERR_NetWorkError;
                 reply();
                 return;
             }

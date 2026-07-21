@@ -272,8 +272,9 @@ namespace ET
 						}
 						break;
 					case 8:
-						unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Ling_DiLv, int.Parse(commands[1]));
-						unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Ling_DiExp, 0);
+						NumericComponent numericComponentGm = unit.GetComponent<NumericComponent>();
+						numericComponentGm.ApplyValue(NumericType.Ling_DiLv, int.Parse(commands[1]));
+						numericComponentGm.ApplyValue(NumericType.Ling_DiExp, 0);
 						break;
 					case 9:
 						long robotSceneId = DBHelper.GetRobotServerId();

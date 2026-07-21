@@ -17,10 +17,14 @@ namespace ET
 
             int cellindex = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.HappyCellIndex);
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
+            List<RewardItem> rewardItems = new List<RewardItem>(1);
+            string pickGetWay = $"{ItemGetWay.PickItem}_{serverTime}";
 
             for (int i = drops.Count - 1; i >= 0; i--)
             {
-                Unit unitDrop = unit.GetParent<UnitComponent>().Get(drops[i].UnitId);
+                Unit unitDrop = unitComponent.Get(drops[i].UnitId);
                 DropComponent dropComponent = null;
                 if (drops[i].DropType != 1)
                 {
@@ -51,9 +55,9 @@ namespace ET
                 }
                 int addItemID = dropComponent !=null ? dropComponent.ItemID : drops[i].ItemID;
                 int addItemNum = dropComponent != null ? dropComponent.ItemNum : drops[i].ItemNum;
-                List<RewardItem> rewardItems = new List<RewardItem>();
+                rewardItems.Clear();
                 rewardItems.Add(new RewardItem() {  ItemType = drops[i].ItemType , ItemID = addItemID, ItemNum = addItemNum });
-                bool success = bag.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
+                bool success = bag.OnAddItemData(rewardItems, string.Empty, pickGetWay);
                 if (!success)
                 {
                     errorCode = ErrorCode.ERR_BagIsFull;
@@ -64,14 +68,14 @@ namespace ET
                 if (drops[i].DropType != 1)
                 {
                     //移除非私有掉落  移除掉落ID
-                    unit.GetParent<UnitComponent>().Remove(unitDrop.Id);       
+                    unitComponent.Remove(unitDrop.Id);       
                     removeIds.Add(drops[i].UnitId);
                 }
         
                 LDItem ldItem = LDItemCategory.Instance.Get(addItemID);
                 if (sceneTypeEnum == MapTypeEnum.Happy && ldItem.Quality >= 5)
                 {
-                    string uername = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+                    string uername = roleInfoComponent.RoleInfo.Name;
                     string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color>";
                     string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color> from  A blessing from the heavens";
                     ServerMessageHelper.SendBroadMessage(UnitZoneHelper.GetHomeZone(unit), NoticeType.Notice, getmessage, getmessageEn);
@@ -84,9 +88,10 @@ namespace ET
         private int OnTeamPick(Unit unit, Actor_PickItemRequest request, int sceneTypeEnum, List<long> removeIds)
         {
             long debugId = 1231456;
+            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
             if (unit.Id == debugId)
             {
-                LogHelper.LogDebug($"OnTeamPick1: {debugId} {unit.GetComponent<RoleInfoComponentServer>().UserName}");
+                LogHelper.LogDebug($"OnTeamPick1: {debugId} {roleInfoComponent.UserName}");
             }
 
             List<DropInfo> drops = request.ItemIds;
@@ -95,9 +100,13 @@ namespace ET
 
             //DropType ==  0 公共掉落 2保护掉落   1私有掉落
             TeamDungeonComponent teamDungeonComponent = unit.DomainScene().GetComponent<TeamDungeonComponent>();
+            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+            List<RewardItem> rewardItems = new List<RewardItem>(1);
+            List<Unit> players = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Player);
+            string pickGetWay = $"{ItemGetWay.PickItem}_{serverTime}";
             for (int i = drops.Count - 1; i >= 0; i--)
             {
-                Unit unitDrop = unit.GetParent<UnitComponent>().Get(drops[i].UnitId);
+                Unit unitDrop = unitComponent.Get(drops[i].UnitId);
                 DropComponent dropComponent = null;
                 if (drops[i].DropType != 1)
                 {
@@ -136,18 +145,18 @@ namespace ET
                 //        Console.WriteLine($"teamDropItem:  {teamDropItem}");
                 //    }
                 //}
-                if (drops[i].DropType != 1 && teamDungeonComponent.IsAllGiveDrop(unitDrop.Id)
-                    && !teamDungeonComponent.ItemFlags.ContainsKey(unitDrop.Id))
+                bool hasItemFlag = drops[i].DropType != 1 && teamDungeonComponent.ItemFlags.TryGetValue(unitDrop.Id, out long itemFlagOwnerId);
+                if (drops[i].DropType != 1 && teamDungeonComponent.IsAllGiveDrop(unitDrop.Id) && !hasItemFlag)
                 {
                     teamDungeonComponent.ItemFlags[unitDrop.Id] = unit.Id;
+                    hasItemFlag = true;
+                    itemFlagOwnerId = unit.Id;
                 }
-                if (drops[i].DropType != 1 && teamDungeonComponent.IsInTeamDrop(unitDrop.Id)
-                    && !teamDungeonComponent.ItemFlags.ContainsKey(unitDrop.Id))
+                if (drops[i].DropType != 1 && teamDungeonComponent.IsInTeamDrop(unitDrop.Id) && !hasItemFlag)
                 {
                     errorCode = ErrorCode.Error_PickWaitSelect;
                 }
-                if (drops[i].DropType == 0 && ldItem.Quality >= 4  && !teshuItem
-                    && !teamDungeonComponent.ItemFlags.ContainsKey(unitDrop.Id))
+                if (drops[i].DropType == 0 && ldItem.Quality >= 4  && !teshuItem && !hasItemFlag)
                 {
                     teamDungeonComponent.AddTeamDropItem( drops[i]);   //这个地方通知客户端弹窗需求还是放弃
                     continue;
@@ -156,10 +165,10 @@ namespace ET
                 //普通道具直接随机分配
                 M2C_SyncChatInfo m2C_SyncChatInfo = SceneCreatureHelp.m2C_SyncChatInfo;
                 m2C_SyncChatInfo.ChatInfo = new ChatInfo();
-                m2C_SyncChatInfo.ChatInfo.PlayerLevel = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
-                m2C_SyncChatInfo.ChatInfo.Occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
+                m2C_SyncChatInfo.ChatInfo.PlayerLevel = roleInfoComponent.RoleInfo.Lv;
+                m2C_SyncChatInfo.ChatInfo.Occ = roleInfoComponent.RoleInfo.Occ;
                 m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
-                m2C_SyncChatInfo.ChatInfo.Time = TimeHelper.ServerNow();
+                m2C_SyncChatInfo.ChatInfo.Time = serverTime;
                 string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);
                 string numShow = "";
                 Unit owner = null;
@@ -190,17 +199,17 @@ namespace ET
                 {
                     if (ldItem.Id == 1)
                     {
-                        numShow = unitDrop.GetComponent<DropComponent>().ItemNum.ToString();
+                        numShow = addItemNum.ToString();
                     }
                     //已经分配过的
-                    if (teamDungeonComponent.ItemFlags.ContainsKey(unitDrop.Id))
+                    if (hasItemFlag)
                     {
-                        long ownderid = teamDungeonComponent.ItemFlags[unitDrop.Id];
+                        long ownderid = itemFlagOwnerId;
 
                         m2C_SyncChatInfo.ChatInfo.UserId = ownderid;   //拾取道具的消息，此为玩家id
                         m2C_SyncChatInfo.ChatInfo.ParamId = drops[i].UnitId;//拾取道具的消息，此为道具unitid
 
-                        owner = unit.GetParent<UnitComponent>().Get(ownderid);
+                        owner = unitComponent.Get(ownderid);
 
                         string pick_name = teamDungeonComponent.TeamPlayers[ownderid].PlayerName;
                         pick_name += (owner == null ? "(未在副本中)" : string.Empty);
@@ -243,7 +252,7 @@ namespace ET
                         m2C_SyncChatInfo.ChatInfo.ParamId = drops[i].UnitId;//拾取道具的消息，此为道具unitid
 
                         teamDungeonComponent.ItemFlags.Add(unitDrop.Id, maxPlayerId);
-                        owner = unit.GetParent<UnitComponent>().Get(maxPlayerId);
+                        owner = unitComponent.Get(maxPlayerId);
                         string pick_name = teamDungeonComponent.TeamPlayers[maxPlayerId].PlayerName;
                         pick_name += (owner == null ? "(未在副本中)" : string.Empty);
                         m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{pick_name}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>({m2C_SyncChatInfo.ChatInfo.ChatMsg})";
@@ -256,20 +265,20 @@ namespace ET
 
                 if (owner != null)
                 {
-                    List<RewardItem> rewardItems = new List<RewardItem>();
+                    rewardItems.Clear();
                     rewardItems.Add(new RewardItem() { ItemID = addItemID, ItemNum = addItemNum });
 
-                    bool success = owner.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
+                    bool success = owner.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, pickGetWay);
                     if (!success)
                     {
                         errorCode = owner.Id == unit.Id ? ErrorCode.ERR_BagIsFull : ErrorCode.ERR_ItemBelongOther;
                         continue;
                     }
                 }
-                MessageHelper.SendToClient(UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Player), m2C_SyncChatInfo);
+                MessageHelper.SendToClient(players, m2C_SyncChatInfo);
                 if (drops[i].DropType != 1)
                 {
-                    unit.GetParent<UnitComponent>().Remove(unitDrop.Id);
+                    unitComponent.Remove(unitDrop.Id);
                 }
             }
 
@@ -281,25 +290,39 @@ namespace ET
             UnitInfoComponent unitInfoComponent = unit.GetComponent<UnitInfoComponent>();
 
             //DropType ==  0 公共掉落 2保护掉落   1私有掉落
+            Dictionary<(int itemId, int itemNum), int> privateDropDict = null;
             for (int i = request.ItemIds.Count - 1; i >= 0; i--) 
             {
                 if (request.ItemIds[i].DropType != 1)
                 {
                     continue;
                 }
-                bool have = false;
-                for (int d = unitInfoComponent.Drops.Count - 1; d >= 0; d--)
+                if (privateDropDict == null)
                 {
-                    DropInfo dropInfo = unitInfoComponent.Drops[d]; 
-                    if (dropInfo.ItemID == request.ItemIds[i].ItemID
-                      && dropInfo.ItemNum == request.ItemIds[i].ItemNum)
+                    privateDropDict = new Dictionary<(int, int), int>();
+                    for (int d = 0; d < unitInfoComponent.Drops.Count; d++)
                     {
-                        have = true;
-                        unitInfoComponent.Drops.RemoveAt(d);
-                        break;
+                        DropInfo dropInfo = unitInfoComponent.Drops[d];
+                        var key = (dropInfo.ItemID, dropInfo.ItemNum);
+                        privateDropDict.TryGetValue(key, out int count);
+                        privateDropDict[key] = count + 1;
                     }
                 }
-                if (!have)
+                var lookupKey = (request.ItemIds[i].ItemID, request.ItemIds[i].ItemNum);
+                if (privateDropDict.TryGetValue(lookupKey, out int remain) && remain > 0)
+                {
+                    privateDropDict[lookupKey] = remain - 1;
+                    for (int d = unitInfoComponent.Drops.Count - 1; d >= 0; d--)
+                    {
+                        DropInfo dropInfo = unitInfoComponent.Drops[d]; 
+                        if (dropInfo.ItemID == lookupKey.Item1 && dropInfo.ItemNum == lookupKey.Item2)
+                        {
+                            unitInfoComponent.Drops.RemoveAt(d);
+                            break;
+                        }
+                    }
+                }
+                else
                 {
                     Log.Warning($"无效的私人掉落: {unit.DomainZone()}   {unit.Id}   {request.ItemIds[i].ItemID}   {request.ItemIds[i].ItemNum}");
                     request.ItemIds.RemoveAt(i);
@@ -314,7 +337,8 @@ namespace ET
             }
 
             List<long> removeIds = new List<long>();
-            int sceneTypeEnum = unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum;
+            MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
+            int sceneTypeEnum = mapComponent.MapTypeEnum;
             if (sceneTypeEnum == MapTypeEnum.TeamDungeon)
             {
                 response.Error = OnTeamPick(unit, request, sceneTypeEnum, removeIds);

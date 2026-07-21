@@ -16,7 +16,8 @@ namespace ET
                 reply();
                 return;
             }
-            if (boxUnit.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) == 1)
+            NumericComponent boxNumeric = boxUnit.GetComponent<NumericComponent>();
+            if (boxNumeric.GetAsInt(NumericType.Now_Dead) == 1)
             {
                 response.Error = ErrorCode.ERR_Success;
                 reply();
@@ -27,7 +28,7 @@ namespace ET
             string itemneeds = "";
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
           
-            if (itemneeds.Length >2 && !bag.OnCostItemData(itemneeds, ItemLocType.ItemLocBag, ItemGetWay.ItemBox_6))
+            if (!string.IsNullOrEmpty(itemneeds) && itemneeds.Length > 2 && !bag.OnCostItemData(itemneeds, ItemLocType.ItemLocBag, ItemGetWay.ItemBox_6))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
@@ -55,7 +56,9 @@ namespace ET
 
             boxUnit.GetComponent<UnitLifeComponent>()?.OnDead(unit);
 
-            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.OpenBox_137, 0, 1);
+            TaskComponentServer taskComponent = unit.GetComponent<TaskComponentServer>();
+            taskComponent.TriggerTaskEvent(TastConditionType.OpenBox_137, 0, 1);
+
 
             response.Error = ErrorCode.ERR_Success;
 

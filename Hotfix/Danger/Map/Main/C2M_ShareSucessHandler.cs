@@ -8,15 +8,17 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ShareSucessRequest request, M2C_ShareSucessResponse response, Action reply)
         {
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+            ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+
             if (request.ShareType != 1 && request.ShareType != 2 && request.ShareType != 8)
             {
                 reply();
                 return;
             }
 
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-            ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             if (roleInfo.Lv < 10)
             {
@@ -38,7 +40,6 @@ namespace ET
                 return;
             }
 
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             long shareSet = numericComponent.GetAsLong(NumericType.FenShangSet);
             if ((shareSet & request.ShareType) > 0)
             {

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ET
 {
@@ -15,8 +11,7 @@ namespace ET
         public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null)
         {
             this.OnBaseBuffInit(buffData, theUnitFrom, theUnitBelongto);
-            StateComponent stateComponent = theUnitBelongto.GetComponent<StateComponent>();
-            stateComponent.StateTypeAdd(StateTypeEnum.NoMove);
+            theUnitBelongto.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.NoMove);
         }
 
         public override void OnUpdate()
@@ -34,4 +29,3 @@ namespace ET
         }
     }
 }
-

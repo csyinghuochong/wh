@@ -10,7 +10,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, Popularize2M_RewardRequest request, M2Popularize_RewardResponse response, Action reply)
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            bag.OnAddItemData( request.ReardList, string.Empty, $"{ItemGetWay.Popularize}_{TimeHelper.ServerNow()}" );
+            long now = TimeHelper.ServerNow();
+            bag.OnAddItemData( request.ReardList, string.Empty, $"{ItemGetWay.Popularize}_{now}" );
 
             reply();
             await ETTask.CompletedTask;

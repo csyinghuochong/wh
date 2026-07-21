@@ -9,6 +9,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PetHeXinExploreReward request, M2C_PetHeXinExploreReward response, Action reply)
         {
             RoleInfoComponentServer userInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             //if (userInfoComponentServer.RoleInfo.PetHeXinExploreRewardIds.Contains(request.RewardId))
             //{
             //    response.Error = ErrorCode.ERR_AlreadyReceived;
@@ -24,7 +26,6 @@ namespace ET
                 return;
             }
 
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (numericComponent.GetAsInt(NumericType.PetHeXinExploreNumber) < request.RewardId)
             {
                 response.Error = ErrorCode.Pre_Condition_Error;
@@ -34,9 +35,6 @@ namespace ET
 
             string[] reward = rewardConfig.Split('$');
             string[] items = reward[0].Split('@');
-            string[] diamondParts = reward[1].Split(';');
-            string[] diamond = diamondParts[1].Split(',');
-            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             if (bagComponentServer.GetBagLeftCell() < items.Length)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -45,7 +43,10 @@ namespace ET
             }
 
            // userInfoComponentServer.RoleInfo.PetHeXinExploreRewardIds.Add(request.RewardId);
-            int randomZuanshi = RandomHelper.RandomNumber(int.Parse(diamond[0]), int.Parse(diamond[1]));
+            string[] diamond = reward[1].Split(';')[1].Split(',');
+            int diamondMin = int.Parse(diamond[0]);
+            int diamondMax = int.Parse(diamond[1]);
+            int randomZuanshi = RandomHelper.RandomNumber(diamondMin, diamondMax);
             bagComponentServer.OnAddItemData(reward[0], $"{96}_{TimeHelper.ServerNow()}");
             userInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 96);
 

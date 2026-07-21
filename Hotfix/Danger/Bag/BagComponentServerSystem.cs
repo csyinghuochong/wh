@@ -807,15 +807,16 @@ namespace ET
             {
                 self.BagItemList.Add(bagInfo);
 
+                Unit parentUnit = self.GetParent<Unit>();
                 M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
                 m2c_bagUpdate.BagInfoAdd.Add(bagInfo);
                 //通知客户端背包道具发生改变
-                MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
+                MessageHelper.SendToClient(parentUnit, m2c_bagUpdate);
 
                 //检测任务需求道具
                 string[] getWayParts = getType.Split('_');
                 int getTypeValue = int.Parse(getWayParts[0]);
-                ItemAddHelper.OnGetItem(self.GetParent<Unit>(), getTypeValue, bagInfo);
+                ItemAddHelper.OnGetItem(parentUnit, getTypeValue, bagInfo);
                 return true;
             }
         }
@@ -830,10 +831,11 @@ namespace ET
             useBagInfo.GetWay = getType;
             self.GetItemByLoc((ItemLocType)useBagInfo.Loc).Add(useBagInfo);
 
+            Unit parentUnit = self.GetParent<Unit>();
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             m2c_bagUpdate.BagInfoAdd.Add(useBagInfo);
             //通知客户端背包道具发生改变
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
+            MessageHelper.SendToClient(parentUnit, m2c_bagUpdate);
         }
 
         public static void OnAddItemDataNewCell(this BagComponentServer self, BagInfo bagInfo, int itemnumber)
@@ -849,10 +851,11 @@ namespace ET
             useBagInfo.isBinging = bagInfo.isBinging;
             self.GetItemByLoc((ItemLocType)useBagInfo.Loc).Add(useBagInfo);
 
+            Unit parentUnit = self.GetParent<Unit>();
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             m2c_bagUpdate.BagInfoAdd.Add(useBagInfo);
             //通知客户端背包道具发生改变
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
+            MessageHelper.SendToClient(parentUnit, m2c_bagUpdate);
         }
 
         //添加背包道具道具[支持同时添加多个]

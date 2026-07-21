@@ -42,6 +42,7 @@ namespace ET
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             int minNum = 0;
             int minMax = 0;
+            bool anyValidItem = false;
 
             for (int i = 0; i < huishouIdList.Count; i++)
             {
@@ -52,6 +53,7 @@ namespace ET
                     continue;
                 }
 
+                anyValidItem = true;
 
                 //to do
                 minNum = 0;
@@ -85,13 +87,16 @@ namespace ET
                     }
                 }
 
-                getNumber += RandomHelper.NextInt(minNum, minMax);
+                if (minMax > minNum)
+                {
+                    getNumber += RandomHelper.NextInt(minNum, minMax);
+                }
             }
 
             //扣除装备
             bagComponentServer.OnCostItemData(huishouIdList);
 
-            if (minMax == 0)
+            if (!anyValidItem || minMax == 0)
             {
                 response.Error = ErrorCode.ERR_Parameter;
             }

@@ -116,7 +116,8 @@ namespace ET
                 //需要通知其他服务器吗？
                 Log.Debug(offLineInfo);
             }
-            unit.GetComponent<UnitGateComponent>().PlayerState = PlayerState.Game;
+            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
+            unitGateComponent.PlayerState = PlayerState.Game;
         }
 
         public static  void OnOffLine(this DBSaveComponent self)
@@ -145,7 +146,8 @@ namespace ET
             numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
             roleInfoComponentServer.OnOffLine();
             dataCollationComponent.OnOffLine(lastgametime);
-            unit.GetComponent<UnitGateComponent>().PlayerState = PlayerState.None;
+            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
+            unitGateComponent.PlayerState = PlayerState.None;
             if (!unit.IsRobot())
             {
                 LogHelper.LoginInfo(offLineInfo);
@@ -180,7 +182,8 @@ namespace ET
             //    numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
             //}
             numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
-            unit.GetComponent<UnitGateComponent>().PlayerState = PlayerState.Game;
+            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
+            unitGateComponent.PlayerState = PlayerState.Game;
         }
 
         public static void LogTest(this DBSaveComponent self)
@@ -284,7 +287,8 @@ namespace ET
             }
 
             Unit unit = self.GetParent<Unit>();
-            if (unit.GetComponent<UnitGateComponent>().PlayerState!= PlayerState.None)
+            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
+            if (unitGateComponent.PlayerState!= PlayerState.None)
             {
                 unit.GetComponent<ActivityComponentServer>().Check();
             }
@@ -312,10 +316,14 @@ namespace ET
             }
             self.DBInterval++;
             self.OnLineTime++;
-            unit.GetComponent<TaskComponentServer>().Check();
-            unit.GetComponent<RoleInfoComponentServer>().Check();
-            unit.GetComponent<DataCollationComponent>().Check();
-            unit.GetComponent<TitleComponentServer>().OnCheckTitle(true);
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
+            TitleComponentServer titleComponentServer = unit.GetComponent<TitleComponentServer>();
+            taskComponentServer.Check();
+            roleInfoComponentServer.Check();
+            dataCollationComponent.Check();
+            titleComponentServer.OnCheckTitle(true);
             return false;
         }
     }

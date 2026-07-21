@@ -46,6 +46,17 @@ namespace ET
 
     public static class TeamDungeonComponentSystem
     {
+        private static TeamDropItem FindTeamDropItem(this TeamDungeonComponent self, long dropId)
+        {
+            for (int i = self.TeamDropItems.Count - 1; i >= 0; i--)
+            {
+                if (self.TeamDropItems[i].DropInfo.UnitId == dropId)
+                {
+                    return self.TeamDropItems[i];
+                }
+            }
+            return null;
+        }
 
         public static void InitPlayerList(this TeamDungeonComponent self)
         {
@@ -78,6 +89,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<Unit> allunits = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
             int playerCount = allunits.Count;
+            UnitComponent unitComponent = self.DomainScene().GetComponent<UnitComponent>();
             for (int i = self.TeamDropItems.Count - 1; i >= 0; i--)
             {
                 TeamDropItem teamDropItem = self.TeamDropItems[i];
@@ -123,17 +135,17 @@ namespace ET
                 }
                 int onwerIndex = randomNumbers.IndexOf(maxNumber);
                 long unitid =  teamDropItem.NeedPlayers[onwerIndex];
-                Unit unit = self.DomainScene().GetComponent<UnitComponent>().Get(unitid);
+                Unit unit = unitComponent.Get(unitid);
                 if (unit != null)
                 {
                     List<RewardItem> rewardItems = new List<RewardItem>();
                     rewardItems.Add(new RewardItem() { ItemID = teamDropItem.DropInfo.ItemID, ItemNum = teamDropItem.DropInfo.ItemNum });
-                    bool ret = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
+                    bool ret = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{serverTime}");
                     //Log.Warning($"TeamDungeonComponent.DropInfo：{ret}  {unit.Id} {teamDropItem.DropInfo.ItemID} {teamDropItem.DropInfo.ItemNum}");
                     if (ret)
                     {
                         SceneCreatureHelp.SendTeamPickMessage(unit, teamDropItem.DropInfo, needIds, randomNumbers);
-                        self.DomainScene().GetComponent<UnitComponent>().Remove(teamDropItem.DropInfo.UnitId);       //移除掉落ID
+                        unitComponent.Remove(teamDropItem.DropInfo.UnitId);       //移除掉落ID
                         continue;
                     }
 
@@ -149,38 +161,18 @@ namespace ET
 
         public static bool IsAllGiveDrop(this TeamDungeonComponent self, long dropId)
         {
-            for (int i = self.TeamDropItems.Count - 1; i >= 0; i--)
-            {
-                if (self.TeamDropItems[i].DropInfo.UnitId == dropId)
-                {
-                    return self.TeamDropItems[i].EndTime == -1;
-                }
-            }
-            return false;
+            TeamDropItem teamDropItem = self.FindTeamDropItem(dropId);
+            return teamDropItem != null && teamDropItem.EndTime == -1;
         }
 
         public static bool IsInTeamDrop(this TeamDungeonComponent self, long dropId)
         {
-            for (int i = self.TeamDropItems.Count - 1; i >= 0; i--)
-            {
-                if (self.TeamDropItems[i].DropInfo.UnitId == dropId)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return self.FindTeamDropItem(dropId) != null;
         }
 
         public static TeamDropItem GetTeamDropItem(this TeamDungeonComponent self, long dropId)
         {
-            for (int i = self.TeamDropItems.Count - 1; i >= 0; i--)
-            {
-                if (self.TeamDropItems[i].DropInfo.UnitId == dropId)
-                {
-                    return self.TeamDropItems[i];
-                }
-            }
-            return null;
+            return self.FindTeamDropItem(dropId);
         }
 
         public static TeamDropItem AddTeamDropItem(this TeamDungeonComponent self,  DropInfo dropInfo)
@@ -229,7 +221,8 @@ namespace ET
 
         public static bool IsHavePlayer(this TeamDungeonComponent self)
         {
-            foreach (Entity entity in self.DomainScene().GetComponent<UnitComponent>().Children.Values)
+            UnitComponent unitComponent = self.DomainScene().GetComponent<UnitComponent>();
+            foreach (Entity entity in unitComponent.Children.Values)
             {
                 if (entity is Unit unit && unit.Type == UnitType.Player)
                 {

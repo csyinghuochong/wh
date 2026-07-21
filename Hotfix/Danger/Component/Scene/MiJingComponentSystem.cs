@@ -43,6 +43,16 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             long mailServerId = DBHelper.GetMailServerId(self.DomainZone());
             string[] needList = rewardList.Split('@');
+            List<BagInfo> rewardItems = new List<BagInfo>(needList.Length);
+            for (int k = 0; k < needList.Length; k++)
+            {
+                string[] itemInfo = needList[k].Split(';');
+                if (itemInfo.Length < 2)
+                {
+                    continue;
+                }
+                rewardItems.Add(new BagInfo() { ItemID = int.Parse(itemInfo[0]), ItemNum = int.Parse(itemInfo[1]), GetWay = $"{ItemGetWay.MiJingBoss}_{serverTime}" });
+            }
             for (int i = start; i <= end; i++)
             {
                 if (i >= players.Count || players[i].RobotId > 0)
@@ -55,17 +65,7 @@ namespace ET
                 mailInfo.Context = $"恭喜你在秘境中获得第{num}名,获得如下奖励";
                 mailInfo.Title = "秘境领主排名奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.MiJingBoss}_{serverTime}" });
-                }
+                mailInfo.ItemList.AddRange(rewardItems);
                 Log.Warning($"世界Boss排名奖励1: {self.DomainZone()}  {players[i].UserID}");
 
                 // MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(players[i].UserID), players[i].UserID, mailInfo).Coroutine();
@@ -90,10 +90,11 @@ namespace ET
                 return;
             }
 
+            long attackId = attack.Id;
             TeamPlayerInfo teamPlayerInfo = null;
             for (int i = 0; i < self.PlayerDamageList.Count; i++)
             {
-                if (self.PlayerDamageList[i].UserID == attack.Id)
+                if (self.PlayerDamageList[i].UserID == attackId)
                 {
                     teamPlayerInfo = self.PlayerDamageList[i];
                     teamPlayerInfo.Damage += (int)damage;
@@ -102,10 +103,9 @@ namespace ET
             }
             if (teamPlayerInfo == null)
             {
-                RoleInfoComponentServer roleInfoComponentServer = attack.GetComponent<RoleInfoComponentServer>();
-                RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+                RoleInfo roleInfo = attack.GetComponent<RoleInfoComponentServer>().RoleInfo;
                 teamPlayerInfo = new TeamPlayerInfo();
-                teamPlayerInfo.UserID = attack.Id;
+                teamPlayerInfo.UserID = attackId;
                 teamPlayerInfo.PlayerName = roleInfo.Name;
                 teamPlayerInfo.Damage = (int)damage;
                 teamPlayerInfo.PlayerLv = roleInfo.Lv;
@@ -124,15 +124,16 @@ namespace ET
 
             self.M2C_SyncMiJingDamage.DamageList.Clear();
             int topCount = self.PlayerDamageList.Count < 5 ? self.PlayerDamageList.Count : 5;
+            M2C_SyncMiJingDamage syncMessage = self.M2C_SyncMiJingDamage;
             for (int i = 0; i < topCount; i++)
             {
-                self.M2C_SyncMiJingDamage.DamageList.Add(self.PlayerDamageList[i]);
+                syncMessage.DamageList.Add(self.PlayerDamageList[i]);
             }
 
             List<Unit> allPlayer = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
             for (int i = 0; i < allPlayer.Count; i++)
             {
-                MessageHelper.SendToClient(allPlayer[i], self.M2C_SyncMiJingDamage);
+                MessageHelper.SendToClient(allPlayer[i], syncMessage);
             }
         }
     }

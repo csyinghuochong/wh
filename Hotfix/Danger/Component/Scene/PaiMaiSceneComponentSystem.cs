@@ -72,57 +72,13 @@ namespace ET
             self.AuctionPlayer = String.Empty;
 
             int openDay = DBHelper.GetOpenServerDay(self.DomainZone());
-            //第1天
-            if (openDay == 1)
+            int[] dayAuctionItems = { 0, 14060005, 15207003, 15306003, 15302007, 15406003, 15407003, 15506003 };
+            if (openDay >= 1 && openDay <= 7)
             {
-                self.AuctionItem = 14060005;
+                self.AuctionItem = dayAuctionItems[openDay];
                 self.AuctionItemNum = 1;
             }
-
-            //第2天
-            if (openDay == 2)
-            {
-                self.AuctionItem = 15207003;
-                self.AuctionItemNum = 1;
-            }
-
-            //第3天
-            if (openDay == 3)
-            {
-                self.AuctionItem = 15306003;
-                self.AuctionItemNum = 1;
-            }
-
-            //第4天
-            if (openDay == 4)
-            {
-                self.AuctionItem = 15302007;
-                self.AuctionItemNum = 1;
-            }
-
-            //第5天
-            if (openDay == 5)
-            {
-                self.AuctionItem = 15406003;
-                self.AuctionItemNum = 1;
-            }
-
-            //第6天
-            if (openDay == 6)
-            {
-                self.AuctionItem = 15407003;
-                self.AuctionItemNum = 1;
-            }
-
-            //第7天
-            if (openDay == 7)
-            {
-                self.AuctionItem = 15506003;
-                self.AuctionItemNum = 1;
-            }
-
-            //进入循环随机
-            if (openDay > 7)
+            else if (openDay > 7)
             {
                 int[] weights = new int[] { 10, 10, 10, 10, 10, 10, 10, 20, 5 };
                 string[] weightsItem = new string[] { "10000143,10", "10000141,1", "10000152,3", "10000150,1", "10000165,1", "10010053,1", "10010040,1", "10045108,1", "10010094,1" };
@@ -171,11 +127,13 @@ namespace ET
 
         public static async ETTask OnAuctionOver(this PaiMaiSceneComponent self)
         {
-            Log.Debug($"拍卖结束: {self.DomainZone()} {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}");
+            long serverNow = TimeHelper.ServerNow();
+            Log.Debug($"拍卖结束: {self.DomainZone()} {TimeInfo.Instance.ToDateTime(serverNow)}");
 
             if (self.AuctioUnitId != 0)
             {
-                bool getitem = false;
+                long auctionHomeZone = UnitZoneHelper.GetHomeZone(self.AuctioUnitId);
+                string auctionGetWay = $"{ItemGetWay.Auction}_{serverNow}";
 
                 // 先按在线 Unit 扣款；找不到人 / 扣款失败再走库结算（与原离线分支合并）
                 P2M_PaiMaiAuctionOverRequest p2M_PaiMaiAuctionOverRequest = new P2M_PaiMaiAuctionOverRequest()
@@ -189,18 +147,30 @@ namespace ET
 
                 if (m2G_RechargeResponse.Error == ErrorCode.ERR_Success)
                 {
-                    getitem = true;
                     Log.Warning($"OnAuctionOver[在线]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}");
+                    MailInfo mailInfo = new MailInfo();
+                    mailInfo.Status = 0;
+                    mailInfo.Context = "竞拍道具";
+                    mailInfo.Title = "竞拍道具";
+                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                    mailInfo.ItemList.Add(new BagInfo() { ItemID = self.AuctionItem, ItemNum = self.AuctionItemNum, GetWay = auctionGetWay });
+                    await MailHelp.SendUserMail(auctionHomeZone, self.AuctioUnitId, mailInfo);
                 }
                 else
                 {
                     Log.Warning($"OnAuctionOver[离线/失败]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}  Error={m2G_RechargeResponse.Error}");
-                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(self.AuctioUnitId), self.AuctioUnitId);
+                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(auctionHomeZone, self.AuctioUnitId);
                     if (roleInfoComponentServer != null && roleInfoComponentServer.RoleInfo.Gold >= self.AuctionPrice)
                     {
                         roleInfoComponentServer.RoleInfo.Gold -= self.AuctionPrice;
-                        DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(self.AuctioUnitId), self.AuctioUnitId, roleInfoComponentServer).Coroutine();
-                        getitem = true;
+                        DBHelper.SaveComponentCache(auctionHomeZone, self.AuctioUnitId, roleInfoComponentServer).Coroutine();
+                        MailInfo mailInfo = new MailInfo();
+                        mailInfo.Status = 0;
+                        mailInfo.Context = "竞拍道具";
+                        mailInfo.Title = "竞拍道具";
+                        mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                        mailInfo.ItemList.Add(new BagInfo() { ItemID = self.AuctionItem, ItemNum = self.AuctionItemNum, GetWay = auctionGetWay });
+                        await MailHelp.SendUserMail(auctionHomeZone, self.AuctioUnitId, mailInfo);
                     }
                     else
                     {
@@ -209,27 +179,13 @@ namespace ET
                         {
                             self.AuctionJoinList.Remove(self.AuctioUnitId);
                         }
+                        MailInfo mailInfo = new MailInfo();
+                        mailInfo.Status = 0;
+                        mailInfo.Context = "竞拍失败";
+                        mailInfo.Title = $"金币小于{self.AuctionPrice},竞拍失败";
+                        mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                        await MailHelp.SendUserMail(auctionHomeZone, self.AuctioUnitId, mailInfo);
                     }
-                }
-
-                if (getitem)
-                {
-                    MailInfo mailInfo = new MailInfo();
-                    mailInfo.Status = 0;
-                    mailInfo.Context = "竞拍道具";
-                    mailInfo.Title = "竞拍道具";
-                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = self.AuctionItem, ItemNum = self.AuctionItemNum, GetWay = $"{ItemGetWay.Auction}_{TimeHelper.ServerNow()}" });
-                    await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(self.AuctioUnitId), self.AuctioUnitId, mailInfo);
-                }
-                else
-                {
-                    MailInfo mailInfo = new MailInfo();
-                    mailInfo.Status = 0;
-                    mailInfo.Context = "竞拍失败";
-                    mailInfo.Title = $"金币小于{self.AuctionPrice},竞拍失败";
-                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(self.AuctioUnitId), self.AuctioUnitId, mailInfo);
                 }
             }
 
@@ -237,14 +193,15 @@ namespace ET
             int returnggold = (int)( self.AuctionStart * 0.1f);
             for (int i = 0; i < self.AuctionJoinList.Count; i++)
             {
+                long joinPlayerId = self.AuctionJoinList[i];
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.Status = 0;
                 mailInfo.Context = "退还保证金";
                 mailInfo.Title = "退还保证金";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = returnggold, GetWay = $"{ItemGetWay.Auction}_{TimeHelper.ServerNow()}" });
+                mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = returnggold, GetWay = $"{ItemGetWay.Auction}_{serverNow}" });
 
-                await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(self.AuctionJoinList[i]), self.AuctionJoinList[i], mailInfo);
+                await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(joinPlayerId), joinPlayerId, mailInfo);
             }
 
             //其他玩家退还保证金

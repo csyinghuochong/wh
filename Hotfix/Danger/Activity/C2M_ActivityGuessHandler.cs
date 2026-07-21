@@ -8,7 +8,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ActivityGuessRequest request, M2C_ActivityGuessResponse response, Action reply)
         {
             long activitySceneid = DBHelper.GetActivityServerId(unit);
-            ActivityV1Info activityV1Info = unit.GetComponent<ActivityComponentServer>().ActivityV1Info;
+            ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
+            ActivityV1Info activityV1Info = activityComponentServer.ActivityV1Info;
             if (activityV1Info.GuessIds.Contains(request.GuessId))
             {
                 response.Error = ErrorCode.ERR_Already_Guess;

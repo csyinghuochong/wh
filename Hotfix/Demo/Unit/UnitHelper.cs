@@ -8,14 +8,15 @@ namespace ET
         public static int GetFubenDifficulty(Unit unit)
         {
             int fubenDifficulty = FubenDifficulty.None;
-            MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
+            Scene domainScene = unit.DomainScene();
+            MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
             if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
             {
-                fubenDifficulty = unit.DomainScene().GetComponent<CellDungeonComponent>().FubenDifficulty;
+                fubenDifficulty = domainScene.GetComponent<CellDungeonComponent>().FubenDifficulty;
             }
-            if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
+            else if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
             {
-                fubenDifficulty = unit.DomainScene().GetComponent<LocalDungeonComponent>().FubenDifficulty;
+                fubenDifficulty = domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
             }
             return fubenDifficulty;
         }
@@ -94,10 +95,10 @@ namespace ET
                     unitInfo.UnitName = unitInfoComponent.UnitName;
                     break;
                 case UnitType.Bullet:
-                    unitInfo.UnitName = unit.GetComponent<UnitInfoComponent>().UnitName;
+                    unitInfo.UnitName = unitInfoComponent.UnitName;
                     break;
                 case UnitType.Stall:
-                    unitInfo.UnitName = unit.GetComponent<UnitInfoComponent>().UnitName;
+                    unitInfo.UnitName = unitInfoComponent.UnitName;
                     break;
                 case UnitType.Npc:
                     break;

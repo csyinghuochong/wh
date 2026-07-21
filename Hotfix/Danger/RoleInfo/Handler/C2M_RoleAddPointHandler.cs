@@ -13,7 +13,8 @@ namespace ET
             try
             {
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-                int level = roleInfoComponentServer.RoleInfo.Lv;
+                RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+                int level = roleInfo.Lv;
                 if (!RoleAddPointHelper.CanManualAddPoint(level))
                 {
                     response.Error = ErrorCode.ERR_ModifyData;

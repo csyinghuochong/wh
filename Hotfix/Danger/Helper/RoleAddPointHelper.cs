@@ -21,6 +21,9 @@ namespace ET
             NumericType.Point_Xun_6,         // 迅
         };
 
+        private static int[] initPointsCache;
+        private static int[] fixedPointPerLevelCache;
+
         public static int GetAutoLevel()
         {
             return LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Add_Point_Auto_Level);
@@ -39,24 +42,36 @@ namespace ET
         /// <summary>创角初始属性点（Add_Point_Init）。</summary>
         public static int[] GetInitPoints()
         {
+            if (initPointsCache != null)
+            {
+                return initPointsCache;
+            }
+
             int[] initPoints = LDGlobalValueCategory.Instance.GetIntArray(GlobalValueKey.Add_Point_Init);
             if (initPoints.Length != PointNumericTypes.Length)
             {
                 throw new Exception($"GlobalValue {GlobalValueKey.Add_Point_Init} 长度应为 {PointNumericTypes.Length}");
             }
 
-            return initPoints;
+            initPointsCache = initPoints;
+            return initPointsCache;
         }
 
         public static int[] GetFixedPointPerLevel()
         {
+            if (fixedPointPerLevelCache != null)
+            {
+                return fixedPointPerLevelCache;
+            }
+
             int[] fixedPoints = LDGlobalValueCategory.Instance.GetIntArray(GlobalValueKey.Add_Point_Level_UP_Fixed);
             if (fixedPoints.Length != PointNumericTypes.Length)
             {
                 throw new Exception($"GlobalValue {GlobalValueKey.Add_Point_Level_UP_Fixed} 长度应为 {PointNumericTypes.Length}");
             }
 
-            return fixedPoints;
+            fixedPointPerLevelCache = fixedPoints;
+            return fixedPointPerLevelCache;
         }
 
         /// <summary>当前等级累计固定属性点（0→1、1→2… 各加 perLevel，level 1 = 1 点）。</summary>

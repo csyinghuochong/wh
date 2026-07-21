@@ -15,17 +15,18 @@ namespace ET
                 reply();
                 return;
             }
-            if (boxUnit.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) == 1)
+            NumericComponent boxNumeric = boxUnit.GetComponent<NumericComponent>();
+            if (boxNumeric.GetAsInt(NumericType.Now_Dead) == 1)
             {
                 response.Error = ErrorCode.ERR_PlantNotExist;
                 reply();
                 return;
             }
-          
+
+            NumericComponent unitNumeric = unit.GetComponent<NumericComponent>();
             if (unit.Id != request.MasterId)
             {
-                NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-                if (numericComponent.GetAsInt(NumericType.JiaYuanPickOther) >= 5)
+                if (unitNumeric.GetAsInt(NumericType.JiaYuanPickOther) >= 5)
                 {
                     response.Error = ErrorCode.ERR_TimesIsNot;
                     reply();
@@ -44,7 +45,7 @@ namespace ET
             }
             else
             {
-                unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.JiaYuanPickOther, 1, 0);
+                unitNumeric.ApplyChange(null, NumericType.JiaYuanPickOther, 1, 0);
 
                 JiaYuanComponentServer jiaYuanComponentServer2 = await DBHelper.GetComponent<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
                 long gateServerId = DBHelper.GetGateServerId(unit);
@@ -57,11 +58,11 @@ namespace ET
                 //玩家在线
                 if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
                 {
+                    RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
                     JiaYuanOperate jiaYuanOperate = new JiaYuanOperate();
-                    jiaYuanOperate = new JiaYuanOperate();
                     jiaYuanOperate.OperateType = JiaYuanOperateType.Pick;
                     jiaYuanOperate.UnitId = request.UnitId;
-                    jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+                    jiaYuanOperate.PlayerName = roleInfoComponent.RoleInfo.Name;
                     jiaYuanOperate.OperateId = boxUnit.ConfigId;
                     M2M_JiaYuanOperateMessage opmessage = new M2M_JiaYuanOperateMessage()
                     {

@@ -11,10 +11,8 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_RolePointResetRequest request, M2C_RolePointResetResponse response, Action reply)
         {
-            await ETTask.CompletedTask;
-
-
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             if (roleInfo.Lv < RoleAddPointHelper.GetAutoLevel())
             {
                 response.Error = ErrorCode.ERR_LevelNoEnough;

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace ET
-{
+namespace ET{
     //设置技能位置
     [ActorMessageHandler]
     public class C2M_SkillInitHandler : AMActorLocationRpcHandler<Unit, C2M_SkillInitRequest, M2C_SkillInitResponse>
@@ -10,38 +8,22 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_SkillInitRequest request, M2C_SkillInitResponse response, Action reply)
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            int occ = roleInfo.Occ;
-            int occTwo = roleInfo.OccTwo;
             SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
+            int occ = roleInfoComponentServer.RoleInfo.Occ;
             response.SkillSetInfo = new SkillSetInfo();
             
-            List<int> allskill = new List<int>();
-            
             //检测一下初始技能
-            LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(occ);
-            
             skillSetComponentServer.CheckOccSkill(occ);
 
             for (int i = skillSetComponentServer.SkillList.Count - 1; i >= 0; i--)
             {
                 SkillPro skillPro = skillSetComponentServer.SkillList[i];
-                
-                if (skillPro.SkillSetType == (int)SkillSetEnum.Item)
+                bool shouldRemove = skillPro.SkillSetType == (int)SkillSetEnum.Item
+                    ? !LDItemCategory.Instance.Contain(skillPro.SkillID)
+                    : !LDSkillCategory.Instance.Contain(skillPro.SkillID);
+                if (shouldRemove)
                 {
-                    if (!LDItemCategory.Instance.Contain(skillPro.SkillID))
-                    {
-                        skillSetComponentServer.SkillList.RemoveAt(i);
-                    }
-                    continue;
-                }
-                else
-                {
-                    if (!LDSkillCategory.Instance.Contain(skillPro.SkillID))
-                    {
-                        skillSetComponentServer.SkillList.RemoveAt(i);
-                    }
-                    continue;
+                    skillSetComponentServer.SkillList.RemoveAt(i);
                 }
             }
            

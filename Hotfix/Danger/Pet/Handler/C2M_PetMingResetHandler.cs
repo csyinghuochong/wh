@@ -17,8 +17,9 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();   
-            if (roleInfoComponentServer.RoleInfo.Diamond < 350)
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+            if (roleInfo.Diamond < 350)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();

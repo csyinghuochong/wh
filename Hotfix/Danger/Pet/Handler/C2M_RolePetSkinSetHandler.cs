@@ -11,6 +11,12 @@ namespace ET
         {
             PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
+            if (rolePetInfo == null)
+            {
+                response.Error = ErrorCode.ERR_Pet_NoExist;
+                reply();
+                return;
+            }
             rolePetInfo.SkinId = request.SkinId;
 
             petComponentServer.UpdatePetAttribute(rolePetInfo, true);

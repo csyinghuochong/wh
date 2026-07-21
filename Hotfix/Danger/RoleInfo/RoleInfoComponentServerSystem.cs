@@ -257,19 +257,16 @@ namespace ET
                 Dictionary<int, LDMount> allMounts = LDMountCategory.Instance.GetAll();
                 int randomIndex = RandomHelper.RandomNumber(0, allMounts.Count);
                 int index = 0;
-                int randomid = 0;
                 foreach (LDMount mount in allMounts.Values)
                 {
-                    if (index == randomIndex)
+                    if (index++ == randomIndex)
                     {
-                        randomid = mount.Id;
+                        self.OnHorseActive(mount.Id, true);
+                        numericComponent.Set(NumericType.HorseFightID, mount.Id, false);
+                        numericComponent.Set(NumericType.HorseRide, mount.Id, false);
                         break;
                     }
-                    index++;
                 }
-                self.OnHorseActive(randomid, true);
-                numericComponent.Set(NumericType.HorseFightID, randomid, false);
-                numericComponent.Set(NumericType.HorseRide, randomid, false);
             }
             
             RoleAddPointHelper.EnsureLevel1InitPoints(unit, self.RoleInfo.Lv);
@@ -280,18 +277,15 @@ namespace ET
                 Dictionary<int, LDPet> allPets = LDPetCategory.Instance.GetAll();
                 int randomindex = RandomHelper.RandomNumber(0, allPets.Count);
                 int index = 0;
-                int randomPetId = 0;
-                foreach (int petId in allPets.Keys)
+                foreach (LDPet pet in allPets.Values)
                 {
-                    if (index == randomindex)
+                    if (index++ == randomindex)
                     {
-                        randomPetId = petId;
+                        petComponentServer.OnGmAddPet(pet.Id);
                         break;
                     }
-                    index++;
                 }
                 
-                petComponentServer.OnGmAddPet(randomPetId);
                 petComponentServer.RolePetInfos[0].PetStatus = 1;
                 petComponentServer.FightPetId = petComponentServer.RolePetInfos[0].Id;
             }

@@ -27,7 +27,8 @@ namespace ET
             EnsureXiuLianCache();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            int level = roleInfoComponentServer.RoleInfo.Lv;
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+            int level = roleInfo.Lv;
             //1 经验  2金币
             if (request.XiuLianType == 1)
             {
@@ -43,7 +44,7 @@ namespace ET
                 int addValue = Mathf.CeilToInt(xiuLianExpCoefficient * level);
                 roleInfoComponentServer.UpdateRoleMoneyAdd( UserDataType.Exp, addValue.ToString(), true, ItemGetWay.XiuLian);
             }
-            if (request.XiuLianType == 2)
+            else if (request.XiuLianType == 2)
             {
                 int xiulianNumber = numericComponent.GetAsInt(NumericType.XiuLian_CoinNumber);
                 if (xiulianNumber >= 3)

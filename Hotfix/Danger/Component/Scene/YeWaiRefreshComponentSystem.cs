@@ -411,8 +411,9 @@ namespace ET
         {
             long time = TimeHelper.ServerNow() + self.RandomTime;
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
+            MapTypeEnum mapType = mapComponent.MapTypeEnum;
 
-            if (!self.LogTest && mapComponent.MapTypeEnum == MapTypeEnum.BaoZangZhiDi)
+            if (!self.LogTest && mapType == MapTypeEnum.BaoZangZhiDi)
             {
                 self.LogTest = true;
                 //self.BaozangzhiRefresh();
@@ -432,7 +433,7 @@ namespace ET
                 {
                     self.RefreshMonsters.RemoveAt(i);
 
-                    if (mapComponent.MapTypeEnum == MapTypeEnum.BaoZangZhiDi)
+                    if (mapType == MapTypeEnum.BaoZangZhiDi)
                     {
                         Log.Debug($" self.RefreshMonsters.RemoveAt : {i}");
                     }

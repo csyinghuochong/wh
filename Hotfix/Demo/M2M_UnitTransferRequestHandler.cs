@@ -133,8 +133,10 @@ namespace ET
 						numericComponent.ApplyValue(NumericType.TaskDungeonId, request.ChapterId, false);
 						LDScene dungeonConfig = LDSceneCategory.Instance.Get(request.ChapterId);
 					
-						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
-						Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
+						MapComponent localMapComponent = scene.GetComponent<MapComponent>();
+						RecastPathComponent recastPathComponent = Game.Scene.GetComponent<RecastPathComponent>();
+						unit.AddComponent<PathfindingComponent, int>(localMapComponent.NavMeshId);
+						recastPathComponent.Update(localMapComponent.NavMeshId);
                         scene.GetComponent<LocalDungeonComponent>().MainUnit = unit;
 
                         //更新unit坐标
@@ -404,31 +406,37 @@ namespace ET
                         }
 						if (request.SceneType == (int)MapTypeEnum.TowerDungeon)
 						{
-							Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
+							MapComponent towerMapComponent = scene.GetComponent<MapComponent>();
+							Game.Scene.GetComponent<RecastPathComponent>().Update(towerMapComponent.NavMeshId);
 						
 							scene.GetComponent<TowerComponent>().MainUnit = unit;
 						}
 						if (request.SceneType == MapTypeEnum.RandomTower)
 						{
-							Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
+							MapComponent randomTowerMapComponent = scene.GetComponent<MapComponent>();
+							Game.Scene.GetComponent<RecastPathComponent>().Update(randomTowerMapComponent.NavMeshId);
 							scene.GetComponent<RandomTowerComponent>().MainUnit = unit;
 						}
 						if (request.SceneType == MapTypeEnum.TrialDungeon)
 						{
-							Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
+							MapComponent trialMapComponent = scene.GetComponent<MapComponent>();
+							Game.Scene.GetComponent<RecastPathComponent>().Update(trialMapComponent.NavMeshId);
 							scene.GetComponent<TrialDungeonComponent>().GenerateFuben(int.Parse(request.ParamInfo));
 						
 						}
 						if(request.SceneType == MapTypeEnum.SeasonTower)
 						{
-                            Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
+                            MapComponent seasonTowerMapComponent = scene.GetComponent<MapComponent>();
+                            Game.Scene.GetComponent<RecastPathComponent>().Update(seasonTowerMapComponent.NavMeshId);
 							scene.GetComponent<SeasonTowerComponent>().TowerId = int.Parse(request.ParamInfo);
                         }
 						
                         TransferHelper.AfterTransfer(unit);
                         break;
                     case MapTypeEnum.TowerOfSeal:
-	                    unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+	                    MapComponent towerOfSealMapComponent = scene.GetComponent<MapComponent>();
+	                    RecastPathComponent towerOfSealRecastPath = Game.Scene.GetComponent<RecastPathComponent>();
+	                    unit.AddComponent<PathfindingComponent, int>(towerOfSealMapComponent.NavMeshId);
 	                    ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
 	                    unit.Position = ldScene.GetBornPos();
 	                    unit.Rotation = Quaternion.identity;
@@ -440,11 +448,11 @@ namespace ET
 	                    // 加入aoi
 	                    unit.AddComponent<AOIEntity, int, Vector3>(4 * 1000, unit.Position);
 
-	                    Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
+	                    towerOfSealRecastPath.Update(towerOfSealMapComponent.NavMeshId);
 	                    scene.GetComponent<TowerOfSealComponent>().MyUnit = unit;
 	                    scene.GetComponent<TowerOfSealComponent>()
-			                    .GenerateFuben(unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TowerOfSealArrived),
-				                    unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TowerOfSealFinished));
+			                    .GenerateFuben(numericComponent.GetAsInt(NumericType.TowerOfSealArrived),
+				                    numericComponent.GetAsInt(NumericType.TowerOfSealFinished));
 
                         TransferHelper.AfterTransfer(unit);
                         break;

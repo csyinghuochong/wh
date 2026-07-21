@@ -22,7 +22,8 @@ namespace ET
         {
             self.TotalOnLine++;
 
-            self.TodayOnLine = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().TodayOnLine;
+            Unit unit = self.GetParent<Unit>();
+            self.TodayOnLine = unit.GetComponent<RoleInfoComponentServer>().TodayOnLine;
         }
 
         public static void OnXiLian(this DataCollationComponent self, int times)

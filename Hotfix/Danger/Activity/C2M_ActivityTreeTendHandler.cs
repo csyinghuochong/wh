@@ -1,4 +1,3 @@
-using MongoDB.Driver.Core.Servers;
 using System;
 using System.Collections.Generic;
 
@@ -15,6 +14,7 @@ namespace ET
             int lower = 0;
             int upper = 0;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
             for (int i = request.CostList.Count - 1; i >= 0; i--)
             {
                 int itemid = request.CostList[i].ItemID;
@@ -66,7 +66,6 @@ namespace ET
 
             bagComponentServer.OnAddItemData(droplist, string.Empty, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
 
-            ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
             long oldtreevalue = activityComponentServer.ActivityV1Info.GrowthTreeValue;
             int oldstage = ActivityV1Config.GetActivityTreeStageItem(oldtreevalue);
             activityComponentServer.ActivityV1Info.GrowthTreeValue += addscore;
