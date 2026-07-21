@@ -184,7 +184,11 @@ namespace ET
 
         public static bool CheckMd5Sign(this ReChargeQDComponent self, string pay_notice)
         {
-            string[] pay_value1 = pay_notice.Split('&');
+            return self.CheckMd5Sign(pay_notice.Split('&'));
+        }
+
+        public static bool CheckMd5Sign(this ReChargeQDComponent self, string[] pay_value1)
+        {
             string nt_data = pay_value1[0].Split('=')[1];
             string sign = pay_value1[1].Split('=')[1];
             string md5Sign = pay_value1[2].Split('=')[1];
@@ -252,25 +256,23 @@ namespace ET
                     //Console.WriteLine($"{TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow()).ToString()}   payResultsxxx:    " + payvalueee.Key + "   " + payvalueee.Value);
                 }
 
-                if (payResults.ContainsKey("game_order"))
+                if (payResults.TryGetValue("game_order", out string dingdanid))
                 {
-                    string dingdanid = payResults["game_order"];
                     float amout = 0f;
 
-                    if (payResults.ContainsKey("amount"))
+                    if (payResults.TryGetValue("amount", out string amountStr))
                     {
-                        amout = float.Parse(payResults["amount"]);
+                        amout = float.Parse(amountStr);
                     }
 
-                    QudaoOrderInfo orderinfo = null;
-                    self.orderDic.TryGetValue(dingdanid, out orderinfo);
+                    self.orderDic.TryGetValue(dingdanid, out QudaoOrderInfo orderinfo);
 
-                    if (Math.Abs(amout - orderinfo.amount) > 1)
+                    if (orderinfo != null && Math.Abs(amout - orderinfo.amount) > 1)
                     {
                         Console.WriteLine(dingdanid + $"XXXXXXXXXXXXXXX:Math.Abs(amout - orderinfo.amount) > 1！:{amout} {orderinfo.amount}");
                     }
 
-                    if (orderinfo != null && self.CheckMd5Sign(pay_notice) && payResults["status"] == "0")
+                    if (orderinfo != null && self.CheckMd5Sign(pay_value1) && payResults["status"] == "0")
                     {
                         Console.WriteLine(dingdanid + ":支付成功！" + orderinfo.userId);
 

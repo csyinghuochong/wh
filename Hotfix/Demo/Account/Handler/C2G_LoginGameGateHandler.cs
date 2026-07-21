@@ -70,7 +70,8 @@ namespace ET
                     }
                     SessionStateComponent.State = SessionState.Normal;
                     //游戏客户端在Gate上的一个映射
-                    Player player = scene.GetComponent<PlayerComponent>().Get(request.Account);
+                    PlayerComponent playerComponent = scene.GetComponent<PlayerComponent>();
+                    Player player = playerComponent.Get(request.Account);
                     if (player != null && player.Id != request.RoleId)
                     {
                         Log.Debug($"LoginTest C2G_LoginGameGate  player.Id:{player.Id}  request.RoleId: {request.RoleId}");
@@ -78,8 +79,8 @@ namespace ET
                     if (player == null)
                     {
                         // 添加一个新的GateUnit
-                        player = scene.GetComponent<PlayerComponent>().AddChildWithId<Player, long, long>(request.RoleId, request.Account, request.RoleId);
-                        scene.GetComponent<PlayerComponent>().Add(player);
+                        player = playerComponent.AddChildWithId<Player, long, long>(request.RoleId, request.Account, request.RoleId);
+                        playerComponent.Add(player);
                         session.AddComponent<MailBoxComponent, MailboxType>(MailboxType.GateSession);
                         player.AddComponent<MailBoxComponent, MailboxType>(MailboxType.GateSession);                    //ET-UWA
                         player.PlayerState = PlayerState.Gate;

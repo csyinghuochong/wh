@@ -404,9 +404,9 @@ namespace ET
 				}
 
                 int magicqulity = 0;
-                if (magicskills != null && magicskills.ContainsKey(skillId))
+                if (magicskills != null)
                 {
-                    magicqulity = magicskills[skillId];
+                    magicskills.TryGetValue(skillId, out magicqulity);
                 }
                 
                 SkillPro skillPro = self.AddSkillPro(skillId, SkillSetEnum.Skill, SkillSourceEnum.Equip);

@@ -7,6 +7,7 @@ namespace ET
     {
         public AndroidPublisherService AndroidPublisherService;
         public List<string> PayLoadList = new List<string>();
+        public HashSet<string> PayLoadSet = new HashSet<string>();
     }
 
     // https://docs.unity3d.com/2022.3/Documentation/Manual/UnityIAPPurchaseReceipts.html

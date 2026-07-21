@@ -12,6 +12,7 @@ namespace ET
             Log.Error($"C2M_BuChangeRequest: {unit.Id}  {request.BuChangId}");
             long accountZone = DBHelper.GetRealmCenter();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
             R2M_BuChangeResponse centerAccount = (R2M_BuChangeResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2R_BuChangeRequest()
             { 
                 BuChangId = request.BuChangId,
@@ -19,8 +20,8 @@ namespace ET
                 AccountId = roleInfoComponentServer.RoleInfo.AccInfoID
             });
  
-            unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.RechargeNumber, centerAccount.BuChangRecharge, 0,true);
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd( UserDataType.Diamond, centerAccount.BuChangDiamond.ToString(), true, ItemGetWay.BuChang);
+            numeric.ApplyChange(null, NumericType.RechargeNumber, centerAccount.BuChangRecharge, 0,true);
+            roleInfoComponentServer.UpdateRoleMoneyAdd( UserDataType.Diamond, centerAccount.BuChangDiamond.ToString(), true, ItemGetWay.BuChang);
             response.PlayerInfo = centerAccount.PlayerInfo;
             reply();
             await ETTask.CompletedTask;

@@ -57,6 +57,7 @@ namespace ET
             });
             
             self.PayLoadList.Clear();
+            self.PayLoadSet.Clear();
         }
     }
 
@@ -74,7 +75,7 @@ namespace ET
                 Payload_Google payloadGoogle = JsonHelper.FromJson<Payload_Google>(payLoad);
                 Payload_Google_json payloadGoogleJson = JsonHelper.FromJson<Payload_Google_json>(payloadGoogle.json);
 
-                if (self.PayLoadList.Contains(payloadGoogleJson.purchaseToken))
+                if (self.PayLoadSet.Contains(payloadGoogleJson.purchaseToken))
                 {
                     return ErrorCode.ERR_GoogleVerify;
                 }
@@ -102,8 +103,10 @@ namespace ET
                 int rechargeNumber = int.Parse(payloadGoogleJson.productId.Substring(prefix.Length));
 
                 self.PayLoadList.Add(payloadGoogleJson.purchaseToken);
+                self.PayLoadSet.Add(payloadGoogleJson.purchaseToken);
                 if (self.PayLoadList.Count >= 100)
                 {
+                    self.PayLoadSet.Remove(self.PayLoadList[0]);
                     self.PayLoadList.RemoveAt(0);
                 }
 

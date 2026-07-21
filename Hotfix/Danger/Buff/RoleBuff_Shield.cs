@@ -33,9 +33,8 @@ namespace ET
 
         public override void OnUpdate()
         {
-            NumericComponent numericComponent = this.TheUnitBelongto.GetComponent<NumericComponent>();
-
             /*
+            NumericComponent numericComponent = this.TheUnitBelongto.GetComponent<NumericComponent>();
             if (numericComponent.GetAsLong(NumericType.Now_Shield_HP) <= 0)
             {
                 this.BuffState = BuffState.Finished;

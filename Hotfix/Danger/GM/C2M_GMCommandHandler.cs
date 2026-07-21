@@ -135,8 +135,9 @@ namespace ET
 				}
 				if (message.GMMsg == "#resetfuben")
 				{
-					unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonTimes, 0);
-					unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonXieZhu, 0);
+					NumericComponent numeric = unit.GetComponent<NumericComponent>();
+					numeric.ApplyValue(NumericType.TeamDungeonTimes, 0);
+					numeric.ApplyValue(NumericType.TeamDungeonXieZhu, 0);
 					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.DayFubenTimes.Clear();
 					return;
 				}
@@ -301,14 +302,21 @@ namespace ET
 						break;
 					case 13:
 						List<Unit> players = unit.GetParent<UnitComponent>().GetAll();
+						int buffCount = int.Parse(commands[1]);
+						int buffId = int.Parse(commands[2]);
 						for (int player = 0; player < players.Count; player++)
 						{
-                            for (int i = 0; i < long.Parse(commands[1]); i++)
+							BuffManagerComponent buffMgr = players[player].GetComponent<BuffManagerComponent>();
+							if (buffMgr == null)
+							{
+								continue;
+							}
+                            for (int i = 0; i < buffCount; i++)
                             {
                                 buffData_2 = new BuffData();
                                 buffData_2.SkillId = 67000278;
-                                buffData_2.BuffId = int.Parse(commands[2]);
-                                players[player].GetComponent<BuffManagerComponent>()?.BuffFactory(buffData_2, unit, null);
+                                buffData_2.BuffId = buffId;
+                                buffMgr.BuffFactory(buffData_2, unit, null);
                             }
                         }
 						break;

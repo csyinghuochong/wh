@@ -550,6 +550,10 @@ namespace ET
 		[ProtoMember(7)]
 		public string Name { get; set; }
 
+//头像id
+		[ProtoMember(8)]
+		public int HeadIconId { get; set; }
+
 //职业
 		[ProtoMember(9)]
 		public int OccTwo { get; set; }

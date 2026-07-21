@@ -195,23 +195,22 @@ namespace ET
            
             Log.Debug($"增加积分 {winUnitId}");
             SoloSceneComponent soloSceneComponent = self.DomainScene().GetParent<SoloSceneComponent>();
-            if (soloSceneComponent.PlayerIntegralList.ContainsKey(winUnitId))
+            if (soloSceneComponent.PlayerIntegralList.TryGetValue(winUnitId, out int value))
             {
-                int value = soloSceneComponent.PlayerIntegralList[winUnitId];
-                soloSceneComponent.PlayerIntegralList[winUnitId] += 3;          //每次胜利获得3点积分
+                soloSceneComponent.PlayerIntegralList[winUnitId] = value + 3;          //每次胜利获得3点积分
             }
 
             //记录战绩和积分
-            if (soloSceneComponent.AllPlayerDateList.ContainsKey(winUnitId)) 
+            if (soloSceneComponent.AllPlayerDateList.TryGetValue(winUnitId, out var winDate)) 
             {
-                soloSceneComponent.AllPlayerDateList[winUnitId].WinNum += 1;
-                soloSceneComponent.AllPlayerDateList[winUnitId].Combat = soloSceneComponent.PlayerIntegralList[winUnitId];
+                winDate.WinNum += 1;
+                winDate.Combat = soloSceneComponent.PlayerIntegralList[winUnitId];
             }
             if (failUnitId != 0) 
             {
-                if (soloSceneComponent.AllPlayerDateList.ContainsKey(failUnitId))
+                if (soloSceneComponent.AllPlayerDateList.TryGetValue(failUnitId, out var failDate))
                 {
-                    soloSceneComponent.AllPlayerDateList[failUnitId].FailNum += 1;
+                    failDate.FailNum += 1;
                 }
             }
         }

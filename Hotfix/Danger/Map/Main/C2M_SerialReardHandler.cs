@@ -12,7 +12,9 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_SerialReardRequest request, M2C_SerialReardResponse response, Action reply)
         {
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < 5)
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
+            if (bag.GetBagLeftCell() < 5)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -55,7 +57,7 @@ namespace ET
                 }
 
                
-                if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.SerialRewards.Contains(serialIndex))
+                if (roleInfo.RoleInfo.SerialRewards.Contains(serialIndex))
                 {
                     response.Error = ErrorCode.ERR_AlreadyReceived2;
                     reply();
@@ -74,11 +76,11 @@ namespace ET
                 }
 
                 string reward = CommonConfig.SerialReward[serialIndex];
-                unit.GetComponent<BagComponentServer>().OnAddItemData(reward, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}");
+                bag.OnAddItemData(reward, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}");
                 numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
                 if (serialIndex >= 8 && serialIndex <= 11)
                 {
-                    unit.GetComponent<RoleInfoComponentServer>().RoleInfo.SerialRewards.Add(serialIndex);
+                    roleInfo.RoleInfo.SerialRewards.Add(serialIndex);
                 }
             }
 

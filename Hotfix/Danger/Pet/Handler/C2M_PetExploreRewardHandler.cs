@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace ET
 {
@@ -18,7 +17,7 @@ namespace ET
             //    return;
             //}
 
-            if (!CommonConfig.PetExploreReward.Keys.Contains(request.RewardId))
+            if (!CommonConfig.PetExploreReward.TryGetValue(request.RewardId, out string rewardConfig))
             {
                 Log.Error($"C2M_PetExploreReward 1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -33,7 +32,7 @@ namespace ET
                 return;
             }
 
-            string[] reward = CommonConfig.PetExploreReward[request.RewardId].Split('$');
+            string[] reward = rewardConfig.Split('$');
             string[] items = reward[0].Split('@');
             string[] diamond = reward[1].Split(';')[1].Split(',');
             if (bag.GetBagLeftCell() < items.Length)

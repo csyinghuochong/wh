@@ -12,6 +12,7 @@ namespace ET
             //request.OperationType  = 2 重置职业
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
             int level = roleInfoComponentServer.RoleInfo.Lv;
 			int sp = roleInfoComponentServer.RoleInfo.Sp;
 			switch (request.OperationType)
@@ -77,7 +78,7 @@ namespace ET
                     skillSetComponentServer.AsyncUpdateSkillSet().Coroutine();
                     break;
                 case 3:
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.SkillMakePlan2, 1);
+                    numeric.ApplyValue(NumericType.SkillMakePlan2, 1);
                     break;
                 case 4:
                     //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.GemWarehouseOpen, 1);

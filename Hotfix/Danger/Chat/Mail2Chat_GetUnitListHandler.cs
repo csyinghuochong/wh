@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ET
 {
@@ -11,8 +10,7 @@ namespace ET
         protected override async ETTask Run(Scene scene, Mail2Chat_GetUnitList request, Chat2Mail_GetUnitList response, Action reply)
         {
             ChatSceneComponent chatInfoUnitsComponent = scene.GetComponent<ChatSceneComponent>();
-            List<long> onlineunitids = chatInfoUnitsComponent.ChatInfoUnitsDict.Keys.ToList();
-            response.OnlineUnitIdList = onlineunitids;
+            response.OnlineUnitIdList = new List<long>(chatInfoUnitsComponent.ChatInfoUnitsDict.Keys);
             reply();
             await ETTask.CompletedTask;
         }

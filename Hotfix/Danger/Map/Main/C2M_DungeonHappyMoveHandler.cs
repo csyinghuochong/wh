@@ -19,9 +19,10 @@ namespace ET
                 return;
             }
 
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
             if (request.OperatateType == 1)
             {
-                if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.HappyMoveNumber) >= 5)
+                if (numeric.GetAsInt(NumericType.HappyMoveNumber) >= 5)
                 {
                     response.Error = ErrorCode.ERR_TimesIsNot;
                     reply();
@@ -29,7 +30,7 @@ namespace ET
                 }
 
                 //非免费时间则返回
-                long happmoveTime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.HappyMoveTime);
+                long happmoveTime = numeric.GetAsLong(NumericType.HappyMoveTime);
                 if (TimeHelper.ServerNow() < happmoveTime)
                 {
                     response.Error = ErrorCode.ERR_HappyMove_CD;
@@ -38,8 +39,8 @@ namespace ET
                 }
 
                 long mianfeicd = TimeHelper.Second * 5 ;
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HappyMoveTime, TimeHelper.ServerNow() + mianfeicd);
-                unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.HappyMoveNumber,1, 0);
+                numeric.ApplyValue(NumericType.HappyMoveTime, TimeHelper.ServerNow() + mianfeicd);
+                numeric.ApplyChange(null, NumericType.HappyMoveNumber,1, 0);
             }
             if (request.OperatateType == 2)
             {
@@ -86,7 +87,7 @@ namespace ET
                     continue;
                 }
 
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HappyCellIndex, newCell + 1);
+                numeric.ApplyValue(NumericType.HappyCellIndex, newCell + 1);
                 Vector3 vector3 = HappyFubenConfig.PositionList[newCell];
                 unit.Position = vector3;
                 break;

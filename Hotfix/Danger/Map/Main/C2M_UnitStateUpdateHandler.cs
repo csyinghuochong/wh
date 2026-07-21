@@ -11,7 +11,8 @@
 			{
                 //"StateValue":"61022102_0
                 int buffid = 0;
-                int skillid = int.Parse(message.StateValue.Split('_')[0]);
+                string[] stateParts = message.StateValue.Split('_');
+                int skillid = int.Parse(stateParts[0]);
 			
 				CommonConfig.SingingBuffList.TryGetValue(skillid, out buffid);
 				if (buffid != 0)
@@ -23,15 +24,16 @@
                 }
             }
 
+            StateComponent stateComponent = unit.GetComponent<StateComponent>();
             if (message.StateOperateType == 1)
 			{
 				//增加
-				unit.GetComponent<StateComponent>().StateTypeAdd(message.StateType, message.StateValue);
+				stateComponent.StateTypeAdd(message.StateType, message.StateValue);
 			}
 			else
 			{
 				//移除
-				unit.GetComponent<StateComponent>().StateTypeRemove(message.StateType);
+				stateComponent.StateTypeRemove(message.StateType);
 			}
 			
 			await ETTask.CompletedTask;

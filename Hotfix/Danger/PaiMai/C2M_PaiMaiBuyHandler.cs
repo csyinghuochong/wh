@@ -87,8 +87,9 @@ namespace ET
                 return;
             }
 
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             //钱是否足够
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold < needGold)
+            if (roleInfoComponentServer.RoleInfo.Gold < needGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -100,7 +101,6 @@ namespace ET
 
             if (openPaiMai == 0)
             {
-                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 int createDay = roleInfoComponentServer.GetCrateDay();
 
                 //firstDay = createDay <= 1 && roleInfoComponent.RoleInfo.Level <= 10;
@@ -129,7 +129,7 @@ namespace ET
                     (paimaiServerId, new M2P_PaiMaiBuyRequest()
                     {
                         PaiMaiItemInfo = request.PaiMaiItemInfo,
-                        Gold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold,
+                        Gold = roleInfoComponentServer.RoleInfo.Gold,
                         BuyNum = buyNum
                     });
                 if (r_GameStatusResponse.Error != ErrorCode.ERR_Success)
@@ -141,7 +141,7 @@ namespace ET
 
                 needGold = (long)r_GameStatusResponse.PaiMaiItemInfo.Price * r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
                
-                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.PaiMaiBuy);
+                roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.PaiMaiBuy);
                 //背包添加道具
                 bool ret = bag.OnAddItemData(r_GameStatusResponse.PaiMaiItemInfo.BagInfo, $"{ItemGetWay.PaiMaiBuy}_{TimeHelper.ServerNow()}");
 
@@ -156,11 +156,11 @@ namespace ET
                 //Log.Warning($"拍卖购买者: {unit.Id} 购买 {r_GameStatusResponse.PaiMaiItemInfo.UserId} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
                 Log.Warning($"拍卖被购买: [出售者]{r_GameStatusResponse.PaiMaiItemInfo.UserId}  [购买者]{unit.Id} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
 
-                unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday += needGold;
-                if (unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday >= 50000000)
+                DataCollationComponent dataCollation = unit.GetComponent<DataCollationComponent>();
+                dataCollation.PaiMaiCostGoldToday += needGold;
+                if (dataCollation.PaiMaiCostGoldToday >= 50000000)
                 {
-                    RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-                    string levelInfo = $"区： {unit.DomainZone()}  {roleInfoComponentServer.RoleInfo.Name}   \t拍卖消耗金币:{unit.GetComponent<DataCollationComponent>().PaiMaiCostGoldToday}  " +
+                    string levelInfo = $"区： {unit.DomainZone()}  {roleInfoComponentServer.RoleInfo.Name}   \t拍卖消耗金币:{dataCollation.PaiMaiCostGoldToday}  " +
                         $" \t账号:{roleInfoComponentServer.Account}   \t钻石:{roleInfoComponentServer.RoleInfo.Diamond}  \t金币:{roleInfoComponentServer.RoleInfo.Gold} \n";
                     LogHelper.PaiMaiInfo(levelInfo);
                 }
@@ -219,7 +219,6 @@ namespace ET
                     int itemNumber = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
                     long price = r_GameStatusResponse.PaiMaiItemInfo.Price;
 
-                    RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                     string buyPlayerName = roleInfoComponentServer.RoleInfo.Name;
                     int buyPlayerLv = roleInfoComponentServer.RoleInfo.Lv;
                     int buyPlayerRecharge = request.IsRecharge;
