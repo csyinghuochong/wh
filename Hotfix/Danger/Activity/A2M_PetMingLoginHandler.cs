@@ -20,6 +20,7 @@ namespace ET
             taskComponentServer.OnPetMineLogin(request.PetMineList, request.PetMingExtend);
 
             reply();
+            await ETTask.CompletedTask;
         }
     }
 }

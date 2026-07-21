@@ -58,7 +58,6 @@ namespace ET
             int mainTaskNumber = 0;
             for (int i = 0; i < self.RoleComoleteTaskList.Count; i++)
             {
-                LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleComoleteTaskList[i]);
                 /*if (ldTask.TaskType == TaskTypeEnum.Main)
                 {
                     mainTaskNumber++;
@@ -189,7 +188,6 @@ namespace ET
             for (int i = 0; i < self.RoleTaskList.Count; i++)
             {
                 TaskPro taskPro = self.RoleTaskList[i];
-                LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
                 if (taskPro.TaskType!= (int)taskType)
                 {
                     continue;
@@ -482,12 +480,13 @@ namespace ET
             }
             
             int needcell = ItemNewHelper.GetNeedCell(rewardItems);
-            if (bagComponentServer.GetBagLeftCell() < needcell)
+            int bagLeftCell = bagComponentServer.GetBagLeftCell();
+            if (bagLeftCell < needcell)
             {
                 return ErrorCode.ERR_BagIsFull;
             }
             
-            if (bagComponentServer.GetBagLeftCell()  < rewardItems.Count)
+            if (bagLeftCell < rewardItems.Count)
             {
                 return ErrorCode.ERR_BagIsFull;
             }
@@ -672,6 +671,7 @@ namespace ET
             if (bekill == null || bekill.IsDisposed)
                 return;
 
+            Unit unit = self.GetParent<Unit>();
             if (bekill.Type == UnitType.Player && sceneType == MapTypeEnum.Battle)
             {
            
@@ -691,7 +691,7 @@ namespace ET
                 int unitconfigId = bekill.ConfigId;
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
                 bool isBoss = ldMonster.Type == (int)MonsterTypeEnum.Boss;
-                Scene domainScene = self.GetParent<Unit>().DomainScene();
+                Scene domainScene = unit.DomainScene();
                 MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
                 int fubenDifficulty = FubenDifficulty.None;
                 if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
@@ -887,10 +887,13 @@ namespace ET
                 self.TriggerTaskEvent(TastConditionType.GetItemNumber_142, itemId, itemNumber);
             }
 
-            LDItem ldItem = LDItemCategory.Instance.Get(itemId);
-            if (ldItem.ItemType == ItemTypeEnum.Equipment && ldItem.Quality >= 5)
+            if (itemId != 1)
             {
-                self.TriggerTaskEvent(TastConditionType.GetOrangeEquip_139, ldItem.UseLv, 1);
+                LDItem ldItem = LDItemCategory.Instance.Get(itemId);
+                if (ldItem.ItemType == ItemTypeEnum.Equipment && ldItem.Quality >= 5)
+                {
+                    self.TriggerTaskEvent(TastConditionType.GetOrangeEquip_139, ldItem.UseLv, 1);
+                }
             }
         }
 
@@ -902,6 +905,7 @@ namespace ET
 
         public static void GMCompletCurrentTask(this TaskComponentServer self)
         {
+            Unit unit = self.GetParent<Unit>();
             for (int i = 0; i < self.RoleTaskList.Count; i++)
             {
                 TaskPro taskPro = self.RoleTaskList[i];
@@ -918,7 +922,7 @@ namespace ET
 
             M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
             m2C_TaskUpdate.RoleTaskList = self.RoleTaskList;
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_TaskUpdate);
+            MessageHelper.SendToClient(unit, m2C_TaskUpdate);
         }
 
         public static void OnPetMineLogin(this TaskComponentServer self, List<PetMingPlayerInfo> petMingPlayers, List<KeyValuePairInt> extends)
@@ -979,6 +983,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             /*if (numericComponent.GetAsInt(NumericType.DailyTaskID) != 0)
             {
                 return;
@@ -990,7 +995,7 @@ namespace ET
             }
             */
 
-            int roleLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+            int roleLv = roleInfoComponentServer.RoleInfo.Lv;
            // numericComponent.ApplyValue(NumericType.DailyTaskID, TaskHelper.GetTaskIdByType(TaskTypeEnum.Daily, roleLv), notice);
         }
 
@@ -1068,7 +1073,6 @@ namespace ET
         {
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
-                LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
                 if (self.RoleTaskList[i].TaskType == TaskTypeEnum.Season)
                 {
                     self.RoleTaskList.RemoveAt(i);  
@@ -1082,7 +1086,6 @@ namespace ET
             bool have = false;
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
-                LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
                 if (self.RoleTaskList[i].TaskType == TaskTypeEnum.Season)
                 {
                     have = true;
@@ -1112,7 +1115,9 @@ namespace ET
 
         public static void UpdateTargetTask(this TaskComponentServer self, bool notice)
         {
-            int createDay = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().GetCrateDay();
+            Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            int createDay = roleInfoComponentServer.GetCrateDay();
             if (createDay == 0 || createDay > CommonConfig.WelfareTaskList.Count)
             {
                 return;
@@ -1150,11 +1155,11 @@ namespace ET
                 {
                     continue;
                 }
-                LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
-                if (completedTaskIds.Contains(ldTask.Id))
+                int taskId = self.RoleTaskList[i].taskID;
+                if (completedTaskIds.Contains(taskId))
                 {
-                    self.RoleComoleteTaskList.Remove(ldTask.Id);
-                    completedTaskIds.Remove(ldTask.Id);
+                    self.RoleComoleteTaskList.Remove(taskId);
+                    completedTaskIds.Remove(taskId);
                 }
                 self.RoleTaskList.RemoveAt(i);
             }
@@ -1250,14 +1255,14 @@ namespace ET
                     continue;
                 }
 
-                LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
                 if (self.RoleTaskList[i].TaskType == TaskTypeEnum.Weekly
                     || self.RoleTaskList[i].TaskType == TaskTypeEnum.Ring)
                 {
-                    if (completedTaskIds.Contains(ldTask.Id))
+                    int taskId = self.RoleTaskList[i].taskID;
+                    if (completedTaskIds.Contains(taskId))
                     {
-                        self.RoleComoleteTaskList.Remove(ldTask.Id);
-                        completedTaskIds.Remove(ldTask.Id);
+                        self.RoleComoleteTaskList.Remove(taskId);
+                        completedTaskIds.Remove(taskId);
                     }
                     self.RoleTaskList.RemoveAt(i);
                     continue;
@@ -1270,7 +1275,6 @@ namespace ET
                     continue;
                 }
 
-                LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleComoleteTaskList[i]);
                 /*if (ldTask.TaskType == TaskTypeEnum.Weekly)
                 {
                     self.RoleComoleteTaskList.RemoveAt(i);
@@ -1300,7 +1304,8 @@ namespace ET
             //    return;
             //}
             
-            List<int> taskCountryList = TaskHelper.GetActivityV1Task(self.GetParent<Unit>(), 120) ;
+            Unit unit = self.GetParent<Unit>();
+            List<int> taskCountryList = TaskHelper.GetActivityV1Task(unit, 120) ;
         }
 
         public static List<TaskPro> GetTaskCountryByType(this TaskComponentServer self, int tasktype)
@@ -1325,10 +1330,11 @@ namespace ET
 
             List<int> taskCountryList = TaskHelper.GetActivityV1Task(unit, 120);
 
-            bool isduihuan = unit.GetComponent<ActivityComponentServer>().ActivityV1Info.PointsReward.Count > 0;
+            ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
+            bool isduihuan = activityComponentServer.ActivityV1Info.PointsReward.Count > 0;
 
             //每次活动扣除100积分， 对话任意积分可免扣除
-            unit.GetComponent<ActivityComponentServer>().ActivityV1Reset(notice);
+            activityComponentServer.ActivityV1Reset(notice);
         }
 
         public static void UpdateSeasonWeekTask(this TaskComponentServer self, bool notice)

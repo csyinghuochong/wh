@@ -145,6 +145,7 @@ namespace ET
                 //        Console.WriteLine($"teamDropItem:  {teamDropItem}");
                 //    }
                 //}
+               
                 bool hasItemFlag = drops[i].DropType != 1 && teamDungeonComponent.ItemFlags.TryGetValue(unitDrop.Id, out long itemFlagOwnerId);
                 if (drops[i].DropType != 1 && teamDungeonComponent.IsAllGiveDrop(unitDrop.Id) && !hasItemFlag)
                 {
@@ -204,7 +205,7 @@ namespace ET
                     //已经分配过的
                     if (hasItemFlag)
                     {
-                        long ownderid = itemFlagOwnerId;
+                        long ownderid = unit.Id;
 
                         m2C_SyncChatInfo.ChatInfo.UserId = ownderid;   //拾取道具的消息，此为玩家id
                         m2C_SyncChatInfo.ChatInfo.ParamId = drops[i].UnitId;//拾取道具的消息，此为道具unitid

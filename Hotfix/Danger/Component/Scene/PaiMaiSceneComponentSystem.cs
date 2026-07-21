@@ -132,7 +132,7 @@ namespace ET
 
             if (self.AuctioUnitId != 0)
             {
-                long auctionHomeZone = UnitZoneHelper.GetHomeZone(self.AuctioUnitId);
+                int auctionHomeZone = UnitZoneHelper.GetHomeZone(self.AuctioUnitId);
                 string auctionGetWay = $"{ItemGetWay.Auction}_{serverNow}";
 
                 // 先按在线 Unit 扣款；找不到人 / 扣款失败再走库结算（与原离线分支合并）
@@ -543,7 +543,7 @@ namespace ET
                 PaiMaiItemInfo paiMaiItem = paimaiItems[i];
 
                 //int price = 0;
-                long itemId = paiMaiItem.BagInfo.ItemID;
+                int itemId = paiMaiItem.BagInfo.ItemID;
                 PaiMaiShopItemInfo shopInfo = self.GetPaiMaiShopInfo(itemId);
                 LDItem ldItemCof = LDItemCategory.Instance.Get(itemId);
                 if (shopInfo != null && shopInfo.Price <= 500000 && ldItemCof.ItemType != 3)

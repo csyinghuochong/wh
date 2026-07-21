@@ -411,14 +411,7 @@ namespace ET
         {
             long time = TimeHelper.ServerNow() + self.RandomTime;
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
-            MapTypeEnum mapType = mapComponent.MapTypeEnum;
-
-            if (!self.LogTest && mapType == MapTypeEnum.BaoZangZhiDi)
-            {
-                self.LogTest = true;
-                //self.BaozangzhiRefresh();
-                //Log.Console($"野外定时怪[数量]：{self.DomainZone()} {self.RefreshMonsters.Count}");
-            }
+           
 
             for (int i = self.RefreshMonsters.Count - 1; i >= 0; i--)
             {
@@ -433,10 +426,6 @@ namespace ET
                 {
                     self.RefreshMonsters.RemoveAt(i);
 
-                    if (mapType == MapTypeEnum.BaoZangZhiDi)
-                    {
-                        Log.Debug($" self.RefreshMonsters.RemoveAt : {i}");
-                    }
                 }
                 else
                 {

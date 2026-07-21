@@ -592,8 +592,9 @@ namespace ET
             {
                 return;
             }
-            LDMonster mCof = LDMonsterCategory.Instance.Get(beKill.ConfigId);
-            int playerLv = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+            Unit unit = self.GetParent<Unit>();
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+            int playerLv = roleInfo.Lv;
 
             //超过5级不能获得经验
             if (rolePetInfo.PetLv >= playerLv + 5)
@@ -651,8 +652,6 @@ namespace ET
         //宠物进化
         public static void UpdatePetStage(this PetComponentServer self, RolePetInfo rolePetInfo, int pingfen)
         {
-            LDPet ldPetConfig = LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
-
             int maxZiZhi = 20;
             int minZiZhi = 10;
 
@@ -800,15 +799,12 @@ namespace ET
             rolePetInfo.AddPropretyNum += (newLevel - rolePetInfo.PetLv) * 5;
             rolePetInfo.PetLv = newLevel;
 
-            // 非神宠每次升级有概率进化状态
-            LDPet ldPetConfig =LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
-          
             //刷新属性
             self.UpdatePetAttribute(rolePetInfo, true);
 
             //通知客户端
-            MessageHelper.SendToClient(self.GetParent<Unit>(), new M2C_PetDataUpdate() { UpdateType = (int)UserDataType.Level, PetId = rolePetInfo.Id, UpdateTypeValue = rolePetInfo.PetLv.ToString() });
-            MessageHelper.Broadcast(self.GetParent<Unit>(), new M2C_PetDataBroadcast() { UnitId = self.GetParent<Unit>().Id, UpdateType = (int)UserDataType.Level, PetId = rolePetInfo.Id, UpdateTypeValue = rolePetInfo.PetLv.ToString() });
+            MessageHelper.SendToClient(unit, new M2C_PetDataUpdate() { UpdateType = (int)UserDataType.Level, PetId = rolePetInfo.Id, UpdateTypeValue = rolePetInfo.PetLv.ToString() });
+            MessageHelper.Broadcast(unit, new M2C_PetDataBroadcast() { UnitId = unit.Id, UpdateType = (int)UserDataType.Level, PetId = rolePetInfo.Id, UpdateTypeValue = rolePetInfo.PetLv.ToString() });
 
         }
 
@@ -836,6 +832,7 @@ namespace ET
             {
                 return;
             }
+            Unit unit = self.GetParent<Unit>();
 
             int maxLv = LDGlobalValueCategory.Instance.TempValue;
             int newExp = rolePetInfo.PetExp + exp;
@@ -849,7 +846,7 @@ namespace ET
             rolePetInfo.PetExp = newExp;
 
             //通知客户端
-            MessageHelper.SendToClient(self.GetParent<Unit>(), new M2C_PetDataUpdate() { UpdateType = (int)UserDataType.Exp, PetId = rolePetInfo.Id, UpdateTypeValue = rolePetInfo.PetExp.ToString() });
+            MessageHelper.SendToClient(unit, new M2C_PetDataUpdate() { UpdateType = (int)UserDataType.Exp, PetId = rolePetInfo.Id, UpdateTypeValue = rolePetInfo.PetExp.ToString() });
         }
 
        
@@ -970,13 +967,16 @@ namespace ET
                 }
 
                 BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemPetHeXinEquip, baginfoId);
-                if (bagInfo == null || !LDItemCategory.Instance.Contain(bagInfo.ItemID))
+                if (bagInfo == null)
+                {
+                    continue;
+                }
+                if (!LDItemCategory.Instance.GetAll().TryGetValue(bagInfo.ItemID, out LDItem ldItem))
                 {
                     continue;
                 }
 
                 //100203;790
-                LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
                 petheXinLv.Add(ldItem.UseLv);
 
                 string attriStr = null;//ldItem.ItemUsePar;
@@ -1289,6 +1289,7 @@ namespace ET
             {
                 return;
             }
+            Unit unit = self.GetParent<Unit>();
 
             self.RemovePetBag(petId);
 
@@ -1297,7 +1298,7 @@ namespace ET
             m2C_RolePetUpdate.PetInfoAdd = new List<RolePetInfo>();
             m2C_RolePetUpdate.PetInfoAdd.Add(rolePetInfo);
             m2C_RolePetUpdate.GetWay = 2;
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_RolePetUpdate);
+            MessageHelper.SendToClient(unit, m2C_RolePetUpdate);
         }
 
         public static void RemovePetBag(this PetComponentServer self, long petId)
@@ -1311,10 +1312,11 @@ namespace ET
                 }
             }
 
+            Unit unit = self.GetParent<Unit>();
             M2C_RolePetBagUpdate m2C_RolePetBag = new M2C_RolePetBagUpdate();
             m2C_RolePetBag.RolePetBag = self.RolePetBag;
             m2C_RolePetBag.UpdateMode = 2;
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_RolePetBag);
+            MessageHelper.SendToClient(unit, m2C_RolePetBag);
         }
 
 
@@ -1517,6 +1519,9 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
             LDPet ldPetConfig = LDPetCategory.Instance.Get(petId);
+            ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             List<int> weight = new List<int>();
 
             int index = RandomHelper.RandomByWeight(weight);
@@ -1527,15 +1532,15 @@ namespace ET
             RolePetInfo newpet = self.GenerateNewPet(petId, skinId);
 
             newpet = self.PetXiLian(newpet, ItemGetWay.GM, 1, 0, 0);
-            newpet.PetLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+            newpet.PetLv = roleInfoComponentServer.RoleInfo.Lv;
             newpet.AddPropretyValue = $"{newpet.PetLv}_{newpet.PetLv}_{newpet.PetLv}_{newpet.PetLv}";
             newpet.UpStageStatus = 2;
             self.UpdatePetAttribute(newpet, false);
             self.CheckPetPingFen();
             self.CheckPetZiZhi();
 
-            unit.GetComponent<ChengJiuComponentServer>().OnGetPet(newpet);
-            unit.GetComponent<TaskComponentServer>().OnGetPet(newpet);
+            chengJiuComponentServer.OnGetPet(newpet);
+            taskComponentServer.OnGetPet(newpet);
 
             self.OnGmPetEquip(10060230, newpet);
             self.OnGmPetEquip(10060430, newpet);
@@ -1547,7 +1552,8 @@ namespace ET
 
         public static void OnGmPetEquip(this PetComponentServer self, int itemid, RolePetInfo rolePetInfo)
         {
-            BagComponentServer bagComponentServer = self.GetParent<Unit>().GetComponent<BagComponentServer>();
+            Unit unit = self.GetParent<Unit>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             bagComponentServer.OnAddItemData($"{itemid};1", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
             List<BagInfo> bagitemList = bagComponentServer.GetIdItemListByLoc(itemid, ItemLocType.ItemPetHeXinBag);
             if (bagitemList.Count == 0)

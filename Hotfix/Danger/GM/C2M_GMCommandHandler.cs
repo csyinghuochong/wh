@@ -49,20 +49,13 @@ namespace ET
                         await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), useriid, mailInfo);
                     }*/
                 }
-                if (message.GMMsg == "#mianshang")
+                if (message.GMMsg == "#mianshang" || message.GMMsg == "#wudi")
 				{
-					BuffData buffData_1 = new BuffData();
-					buffData_1.SkillId = 67000278;
-					buffData_1.BuffId = 90106002;
-					unit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_1, unit, null);
-					return;
-				}
-				if (message.GMMsg == "#wudi")
-				{
-                    BuffData buffData_2 = new BuffData();
-					buffData_2.SkillId = 67000278;
-					buffData_2.BuffId = 90106003;
-					unit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_2, unit, null);
+					BuffManagerComponent buffManager = unit.GetComponent<BuffManagerComponent>();
+					BuffData buffData = new BuffData();
+					buffData.SkillId = 67000278;
+					buffData.BuffId = message.GMMsg == "#mianshang" ? 90106002 : 90106003;
+					buffManager.BuffFactory(buffData, unit, null);
 					return;
 				}
 				if (message.GMMsg == "#openall")
@@ -291,18 +284,24 @@ namespace ET
                         MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = UnitZoneHelper.GetHomeZone(unit), MessageType = 18, Message = $"1001#{commands[1]}" });
                         break;
 					case 11: //11#92041030   11#80002003   11#80002005  11#97050403
-                        BuffData buffData_2 = new BuffData();
-                        buffData_2.SkillId = 67000278;
-                        buffData_2.BuffId = int.Parse(commands[1]); 
-                        unit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_2, unit, null);
+                        {
+                            BuffManagerComponent buffManager = unit.GetComponent<BuffManagerComponent>();
+                            BuffData buffData_2 = new BuffData();
+                            buffData_2.SkillId = 67000278;
+                            buffData_2.BuffId = int.Parse(commands[1]); 
+                            buffManager.BuffFactory(buffData_2, unit, null);
+                        }
                         break;
 					case 12:
-						for (int i = 0; i < long.Parse(commands[1]); i++)
-						{
-                            buffData_2 = new BuffData();
-                            buffData_2.SkillId = 67000278;
-                            buffData_2.BuffId = int.Parse(commands[2]);
-                            unit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_2, unit, null);
+                        {
+                            BuffManagerComponent buffManager = unit.GetComponent<BuffManagerComponent>();
+                            for (int i = 0; i < long.Parse(commands[1]); i++)
+                            {
+                                BuffData buffData_2 = new BuffData();
+                                buffData_2.SkillId = 67000278;
+                                buffData_2.BuffId = int.Parse(commands[2]);
+                                buffManager.BuffFactory(buffData_2, unit, null);
+                            }
                         }
 						break;
 					case 13:
@@ -318,7 +317,7 @@ namespace ET
 							}
                             for (int i = 0; i < buffCount; i++)
                             {
-                                buffData_2 = new BuffData();
+                                BuffData buffData_2 = new BuffData();
                                 buffData_2.SkillId = 67000278;
                                 buffData_2.BuffId = buffId;
                                 buffMgr.BuffFactory(buffData_2, unit, null);

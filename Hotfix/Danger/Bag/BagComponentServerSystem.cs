@@ -73,42 +73,6 @@ namespace ET
             return false;
         }
 
-        public static List<AttributeItem> GetGemProLists(this BagComponentServer self)
-        {
-            List<AttributeItem> list = new List<AttributeItem>();
-            for (int i = 0; i < self.GemList.Count; i++)
-            {
-                string itemUsePar = LDItemCategory.Instance.Get(self.GemList[i].ItemID).ItemUsePar;
-                if (string.IsNullOrEmpty(itemUsePar) || itemUsePar == "0")
-                {
-                    continue;
-                }
-                string[] attributes = itemUsePar.Split('@');
-                for (int a = 0; a < attributes.Length; a++)
-                {
-                    int sep = attributes[a].IndexOf(';');
-                    if (sep <= 0 || sep >= attributes[a].Length - 1)
-                    {
-                        continue;
-                    }
-                    int hideId = int.Parse(attributes[a].Substring(0, sep));
-                    string valueStr = attributes[a].Substring(sep + 1);
-                    long hide_value = 0;
-                    if (NumericHelp.GetNumericValueType(hideId) == 2)
-                    {
-                        hide_value = NumericHelp.ParseConfigToStored(hideId, valueStr);
-                    }
-                    else
-                    {
-                        hide_value = long.Parse(valueStr);
-                    }
-                    list.Add(new AttributeItem() { AttributeID = hideId, AttributeValue = hide_value });
-                }
-            }
-
-            return list;
-        }
-        
         public static List<BagInfo> GetItemByLoc(this BagComponentServer self, ItemLocType itemEquipType)
         {
             List<BagInfo> ItemTypeList = null;
@@ -172,6 +136,7 @@ namespace ET
 
         public static void ZhengLiItemList(this BagComponentServer self, Dictionary<int, List<BagInfo>> ItemSameList, M2C_RoleBagUpdate m2c_bagUpdate)
         {
+            long unitId = self.GetParent<Unit>().Id;
             foreach (var item in ItemSameList)
             {
                 List<BagInfo> bagInfos = item.Value;
@@ -194,7 +159,7 @@ namespace ET
 
                 if (needGrid <= 0 || needGrid > bagInfos.Count)
                 {
-                    Console.WriteLine($"RecvItemSortError: {self.GetParent<Unit>().Id} {bagInfos[0].ItemID}   {totalNum}   {needGrid}  {bagInfos.Count}");
+                    Console.WriteLine($"RecvItemSortError: {unitId} {bagInfos[0].ItemID}   {totalNum}   {needGrid}  {bagInfos.Count}");
                     continue;
                 }
                 bagInfos[needGrid - 1].ItemNum = finalNum;
@@ -276,8 +241,6 @@ namespace ET
 
         public static void CheckValiedItem(this BagComponentServer self, List<BagInfo> bagInfos, int occ, int occTwo)
         {
-            Unit unit = self.GetParent<Unit>();
-           
             for (int i = bagInfos.Count - 1; i >= 0; i--)
             {
                 if( !ItemNewHelper.CheckValiedItem(bagInfos[i]))
@@ -416,20 +379,21 @@ namespace ET
                 case UserDataType.JiaYuanFund:
                 case UserDataType.UnionContri:
                 {
-                    RoleInfoComponentServer roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
+                    Unit unit = self.GetParent<Unit>();
+                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
                     switch (userDataType)
                     {
                         case UserDataType.Gold:
-                            number = roleInfo.RoleInfo.Gold;
+                            number = roleInfo.Gold;
                             break;
                         case UserDataType.Diamond:
-                            number = roleInfo.RoleInfo.Diamond;
+                            number = roleInfo.Diamond;
                             break;
                         case UserDataType.JiaYuanFund:
-                            number = roleInfo.RoleInfo.JiaYuanFund;
+                            number = roleInfo.JiaYuanFund;
                             break;
                         case UserDataType.UnionContri:
-                            number = roleInfo.RoleInfo.UnionZiJin;
+                            number = roleInfo.UnionZiJin;
                             break;
                     }
                     break;
@@ -875,6 +839,8 @@ namespace ET
             string[] getWayInfo = getWay.Split('_');
             int getType = int.Parse(getWayInfo[0]);
             Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (unit.IsRobot() && getType == ItemGetWay.PickItem)
             {
                 return true;
@@ -991,7 +957,7 @@ namespace ET
                 if (userDataType != UserDataType.None)
                 {
                     //检测任务需求道具
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(userDataType, leftNum.ToString(), true, getType);
+                    roleInfoComponent.UpdateRoleMoneyAdd(userDataType, leftNum.ToString(), true, getType);
                     ItemAddHelper.OnGetItem(unit, getType, rewardItem);
                     continue;
                 }
@@ -1083,7 +1049,7 @@ namespace ET
 
                         if (useBagInfo.BaseAttrList.Count <= 0)
                         {
-                            useBagInfo.EnhanceLevel = RandomHelper.RandomNumber(0, LDEquipCategory.Instance.Get(itemID).Enhance);
+                            useBagInfo.EnhanceLevel = RandomHelper.RandomNumber(0, equipconfig.Enhance);
                             useBagInfo.BaseAttrList = LDEquipCategory.Instance.GetEquipAttribute(itemID);
                         }
                     }
@@ -1111,7 +1077,7 @@ namespace ET
                                 makePlan = 1;
                             }
                             int shulianduNumeric = makePlan == 1 ? NumericType.MakeShuLianDu_1 : NumericType.MakeShuLianDu_2;
-                            int shuliandu = unit.GetComponent<NumericComponent>().GetAsInt(shulianduNumeric);
+                            int shuliandu = numericComponent.GetAsInt(shulianduNumeric);
                             ItemAddHelper.JianDingFuItem(useBagInfo, shuliandu, getType);
 
                             if (getType == ItemGetWay.GM)
@@ -1435,7 +1401,6 @@ namespace ET
 
             for (int i = 0; i < equipList.Count; i++)
             {
-                LDEquip mLdEquipCon = LDEquipCategory.Instance.Get(equipList[i].ItemID);
                 int equipType = ItemNewHelper.GetNewEquipType(equipList[i]);
 
                 //极品属性
@@ -1555,6 +1520,7 @@ namespace ET
         public static bool OnCostItemData(this BagComponentServer self, BagInfo bagInfo, ItemLocType locType, int number)
         {
             List<BagInfo> bagInfos = self.GetItemByLoc(locType);
+            Unit unit = self.GetParent<Unit>();
 
             if (bagInfo.ItemNum >= number)
             {
@@ -1564,7 +1530,7 @@ namespace ET
                 {
                     bagInfos.Remove(bagInfo);
                 }
-                LogHelper.LogWarning($"消耗道具: {self.GetParent<Unit>().Id} {bagInfo.ItemID} {number}", false);
+                LogHelper.LogWarning($"消耗道具: {unit.Id} {bagInfo.ItemID} {number}", false);
                 return true;
             }
             else

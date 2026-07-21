@@ -110,8 +110,6 @@ namespace ET
             {
                 return;
             }
-            Unit unit = self.GetParent<Unit>();
-            int lingdiLv = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Ling_DiLv);
           //  LingDiConfig lingDiConfig = LingDiConfigCategory.Instance.Get(lingdiLv);
 
             //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Exp, (coefficient *lingDiConfig.HoureExp).ToString(), notice).Coroutine();
@@ -181,12 +179,13 @@ namespace ET
         {
             int totalTili = 0;
             int totalindex = indexids.Count;
-            if (totalindex >= 1 && indexids.Contains(6))
+            HashSet<int> indexIdSet = new HashSet<int>(indexids);
+            if (totalindex >= 1 && indexIdSet.Contains(6))
             {
                 totalTili += 50;
                 totalindex--;
             }
-            if (totalindex >= 1 && indexids.Contains(20))
+            if (totalindex >= 1 && indexIdSet.Contains(20))
             {
                 totalTili += 50;
                 totalindex--;
@@ -389,15 +388,16 @@ namespace ET
                 self.RecoverPiLao(50, notice);
             }
 
-            self.GetParent<Unit>().GetComponent<JiaYuanComponentServer>().OnHourUpdate(hour, notice);
-            LogHelper.CheckZuoBi(self.GetParent<Unit>());
+            Unit unit = self.GetParent<Unit>();
+            unit.GetComponent<JiaYuanComponentServer>().OnHourUpdate(hour, notice);
+            LogHelper.CheckZuoBi(unit);
             //LogHelper.CheckBlackRoom(self.GetParent<Unit>());
         }
 
         public static void RecoverPiLao(this RoleInfoComponentServer self, int addValue, bool notice)
         {
             Unit unit = self.GetParent<Unit>();
-            long recoverPiLao = self.GetParent<Unit>().GetMaxPiLao() - self.RoleInfo.PiLao;
+            long recoverPiLao = unit.GetMaxPiLao() - self.RoleInfo.PiLao;
             recoverPiLao = Math.Min(recoverPiLao, addValue);
 
             Log.Warning($"[增加体力] {unit.DomainZone()}    {unit.Id}    {recoverPiLao}");
@@ -447,12 +447,11 @@ namespace ET
                 return;
             }
             RankShouLieInfo rankPetInfo = new RankShouLieInfo();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            rankPetInfo.UnitID = roleInfoComponentServer.RoleInfo.UserId;
-            rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
-            rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
+            rankPetInfo.UnitID = self.RoleInfo.UserId;
+            rankPetInfo.PlayerName = self.RoleInfo.Name;
+            rankPetInfo.Occ = self.RoleInfo.Occ;
             rankPetInfo.KillNumber = 0;/// self.ShouLieKill;
-            long mapInstanceId = DBHelper.GetRankServerId(self.GetParent<Unit>());
+            long mapInstanceId = DBHelper.GetRankServerId(unit);
             R2M_RankShowLieResponse Response = (R2M_RankShowLieResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankShowLieRequest()
                      {
@@ -498,7 +497,7 @@ namespace ET
                     numericComponent.ApplyValue(NumericType.TiLiKillNumber, 0, false);
 
                     numericComponent.ApplyChange(null, NumericType.CostTiLi, 1, 0);
-                    if ( CommonHelper.IsZhuBoZone(UnitZoneHelper.GetHomeZone(self.GetParent<Unit>())) && self.RoleInfo.PiLao < 2)
+                    if ( CommonHelper.IsZhuBoZone(UnitZoneHelper.GetHomeZone(main)) && self.RoleInfo.PiLao < 2)
                     {
                         self.UpdateRoleData(UserDataType.PiLao, "100", true);
                     }
@@ -520,11 +519,10 @@ namespace ET
             }
             if (drop)
             {
-                LDMonster mCof = LDMonsterCategory.Instance.Get(beKill.ConfigId);
                 float expcoefficient = 1f;
                 if (sceneType == MapTypeEnum.LocalDungeon && beKill.IsBoss())
                 {
-                    int killNumber = main.GetComponent<RoleInfoComponentServer>().GetMonsterKillNumber(mCof.Id);
+                    int killNumber = self.GetMonsterKillNumber(ldMonster.Id);
                     int chpaterid = -1;////LDSceneCategory.Instance.GetChapterByDungeon(sceneId);
                     BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
                     expcoefficient *= bossDevelopment.ExpAdd;
@@ -714,7 +712,7 @@ namespace ET
                 return;
             }
             string playerName = self.RoleInfo.Name;
-            long serverod = DBHelper.GetUnionServerId(self.GetParent<Unit>());
+            long serverod = DBHelper.GetUnionServerId(unit);
             U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                             serverod, new M2U_UnionOperationRequest() { OperateType = 1, UnionId = unionid, Par = $"{playerName}_{getWay}_{dataType}_{dataValue}" });
         }
@@ -734,6 +732,9 @@ namespace ET
         public static void UpdateRoleData(this RoleInfoComponentServer self, int Type, string value, bool notice = true)
         {
             Unit unit = self.GetParent<Unit>();
+            TaskComponentServer taskComponentServer = null;
+            ChengJiuComponentServer chengJiuComponentServer = null;
+            NumericComponent numericComponent = null;
             string saveValue = "";
             long longValue = 0;
             switch (Type)
@@ -755,8 +756,10 @@ namespace ET
                 case UserDataType.JiaYuanLv:
                     self.RoleInfo.JiaYuanLv += int.Parse(value);
                     saveValue = self.RoleInfo.JiaYuanLv.ToString();
-                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, self.RoleInfo.JiaYuanLv - 10000);
-                    unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, self.RoleInfo.JiaYuanLv - 10000);
+                    taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
+                    chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
+                    taskComponentServer.TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, self.RoleInfo.JiaYuanLv - 10000);
+                    chengJiuComponentServer.TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, self.RoleInfo.JiaYuanLv - 10000);
                     break;
                 
                 //名字应该在改名的协议处理
@@ -781,12 +784,14 @@ namespace ET
                     self.RoleInfo.Lv += addLevel;
                     saveValue = self.RoleInfo.Lv.ToString();
                     RoleAddPointHelper.AddPointsForLevelRange(unit, oldLevel, self.RoleInfo.Lv);
-                    unit.GetComponent<TaskComponentServer>().OnUpdateLevel(self.RoleInfo.Lv);
-                    unit.GetComponent<ChengJiuComponentServer>().OnUpdateLevel(self.RoleInfo.Lv);
+                    taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
+                    chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
+                    numericComponent ??= unit.GetComponent<NumericComponent>();
+                    taskComponentServer.OnUpdateLevel(self.RoleInfo.Lv);
+                    chengJiuComponentServer.OnUpdateLevel(self.RoleInfo.Lv);
                     Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                     // 升级后按新上限回满（ResetProperty 保留 HP_Current，但 Max 可能变大）
-                    NumericComponent numeric = unit.GetComponent<NumericComponent>();
-                    numeric.Set(NumericType.HP_Current_8, numeric.GetAsLong(NumericType.HP_Max_10), true);
+                    numericComponent.Set(NumericType.HP_Current_8, numericComponent.GetAsLong(NumericType.HP_Max_10), true);
                     self.UpdateRankInfo();
                     self.BroadcastLevel(self.RoleInfo.Lv).Coroutine();
                     break;
@@ -795,10 +800,13 @@ namespace ET
                     saveValue = self.RoleInfo.Sp.ToString();
                     break;
                 case UserDataType.Gold:
-                    self.RoleInfo.Gold += long.Parse(value);
+                    long goldChange = long.Parse(value);
+                    self.RoleInfo.Gold += goldChange;
                     saveValue = self.RoleInfo.Gold.ToString();
-                    unit.GetComponent<ChengJiuComponentServer>().OnGetGold(int.Parse(value));
-                    unit.GetComponent<TaskComponentServer>().OnCostCoin(int.Parse(value));
+                    taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
+                    chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
+                    chengJiuComponentServer.OnGetGold((int)goldChange);
+                    taskComponentServer.OnCostCoin((int)goldChange);
                     break;
                 case UserDataType.BindGold:
                     self.RoleInfo.BindGold += long.Parse(value);
@@ -824,7 +832,8 @@ namespace ET
                     break;
               
                 case UserDataType.JueXingExp:
-                    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.JueXingExp, long.Parse(value), 0);
+                    numericComponent ??= unit.GetComponent<NumericComponent>();
+                    numericComponent.ApplyChange(null, NumericType.JueXingExp, long.Parse(value), 0);
                     break;
                
                 case UserDataType.Recharge:
@@ -858,8 +867,10 @@ namespace ET
                 case UserDataType.Combat:
                     self.RoleInfo.Combat = int.Parse(value);
                     saveValue = self.RoleInfo.Combat.ToString();
-                    unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, self.RoleInfo.Combat);
-                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, self.RoleInfo.Combat);
+                    taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
+                    chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
+                    chengJiuComponentServer.TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, self.RoleInfo.Combat);
+                    taskComponentServer.TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, self.RoleInfo.Combat);
                     break;
               
                 default:
@@ -874,7 +885,7 @@ namespace ET
                 m2C_RoleDataUpdate1.UpdateType = (int)Type;
                 m2C_RoleDataUpdate1.UpdateTypeValue = saveValue;
                 m2C_RoleDataUpdate1.UpdateValueLong = longValue;
-                MessageHelper.SendToClient(self.GetParent<Unit>(), m2C_RoleDataUpdate1);
+                MessageHelper.SendToClient(unit, m2C_RoleDataUpdate1);
             }
         }
 
@@ -923,7 +934,7 @@ namespace ET
                 return;
             }
 
-            long warRankServerId = DBHelper.GetWarRankServerId(self.GetParent<Unit>());
+            long warRankServerId = DBHelper.GetWarRankServerId(unit);
             if (warRankServerId == 0)
             {
                 return;
@@ -973,7 +984,7 @@ namespace ET
             LDExp xiulianconf1 = LDExpCategory.Instance.Get(self.RoleInfo.Lv);
             long upNeedExp = xiulianconf1.Exp_Role;
 
-            TaskComponentServer taskComponentServer = self.GetParent<Unit>().GetComponent<TaskComponentServer>();
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
             //等级达到上限,则无法获得经验. 经验最多200%
             int maxlevel = self.GetMaxLevel(taskComponentServer.RoleComoleteTaskList);
@@ -1115,12 +1126,13 @@ namespace ET
             {
                 if (chestList[i].KeyId == fubenId)
                 {
-                    if (string.IsNullOrEmpty(chestList[i].Value))
+                    string chestValue = chestList[i].Value;
+                    if (string.IsNullOrEmpty(chestValue))
                     {
                         return false;
                     }
 
-                    HashSet<string> openedMonsters = new HashSet<string>(chestList[i].Value.Split('_'));
+                    HashSet<string> openedMonsters = new HashSet<string>(chestValue.Split('_'));
                     return openedMonsters.Contains(monsterIdStr);
                 }
             }

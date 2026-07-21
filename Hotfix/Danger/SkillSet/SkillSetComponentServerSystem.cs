@@ -491,8 +491,9 @@ namespace ET
 		
         public static void OnActiveTianfu(this SkillSetComponentServer self, C2M_TianFuActiveRequest request)
         {
-         
-            self.GetParent<Unit>().GetComponent<SkillPassiveComponent>().UpdatePassiveSkill();
+            Unit unit = self.GetParent<Unit>();
+            SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
+            skillPassiveComponent.UpdatePassiveSkill();
         }
 
 		/// <summary>
@@ -842,7 +843,8 @@ namespace ET
 		{
 			int sp = 0;
 			List<int> skilllist = new List<int>();
-			RoleInfoComponentServer roleInfoComponentServer = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
+			Unit unit = self.GetParent<Unit>();
+			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 			if (roleInfoComponentServer.RoleInfo.OccTwo != 0)
 			{
 				int[] twoskill = null;
@@ -937,7 +939,8 @@ namespace ET
 		public static void OnSkillReset(this SkillSetComponentServer self, bool notice)
 		{
 			List<int> skilllist = new List<int>();
-			RoleInfoComponentServer roleInfoComponentServer = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>();
+			Unit unit = self.GetParent<Unit>();
+			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 			int[] baseSkill = LDOccupationCategory.Instance.Get(roleInfoComponentServer.RoleInfo.Occ).Skill;
 			skilllist.AddRange(baseSkill);
 			if (roleInfoComponentServer.RoleInfo.OccTwo != 0)

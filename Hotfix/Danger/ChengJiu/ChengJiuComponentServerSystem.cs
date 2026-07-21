@@ -10,7 +10,8 @@ namespace ET
         public override void Awake(ChengJiuComponentServer self)
         {
             self.RandomDrop = 0;
-            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
+            Unit unit = self.GetParent<Unit>();
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, roleInfo.Lv);
         }
     }
@@ -71,8 +72,9 @@ namespace ET
 
             if (defend.Type == UnitType.Player)
             {
+                Unit unit = self.GetParent<Unit>();
                 self.TriggerEvent(ChengJiuTargetEnum.KillPlayerNumber_209, 0, 1);
-                LogHelper.KillPlayerInfo(self.GetParent<Unit>(),  defend);
+                LogHelper.KillPlayerInfo(unit, defend);
             }
             if (defend.Type == UnitType.Monster)
             {

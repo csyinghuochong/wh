@@ -43,6 +43,7 @@ namespace ET
 
             response.Error = ErrorCode.ERR_Success;
             reply();
+            await ETTask.CompletedTask;
         }
     }
 }
