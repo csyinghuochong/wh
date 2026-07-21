@@ -11,6 +11,8 @@ namespace ET
         {
            
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            int roleLv = roleInfoComponentServer.RoleInfo.Lv;
             /*
                         if (!PublicQiangHuaConfigCategory.Instance.Contain(numericComponent.GetAsInt(request.QiangHuaType)))
                         {
@@ -29,14 +31,14 @@ namespace ET
                             return;
                         }
 
-                        if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < 60)
+                        if (roleLv < 60)
                         {
                             response.Error = ErrorCode.ERR_LevelIsNot;
                             reply();
                             return;
                         }
 
-                        if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv < publicQiangHuaConfig.UpLvLimit)
+                        if (roleLv < publicQiangHuaConfig.UpLvLimit)
                         {
                             response.Error = ErrorCode.ERR_LvNoHigh;
                             reply();

@@ -329,9 +329,10 @@ namespace ET
         public static void GetRandomFubenId(this TaskComponentServer self, TaskPro taskPro)
         {
             Unit unit = self.GetParent<Unit>();
-            List<int> openfubenids = new List<int>();
-            int lv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            int lv = roleInfoComponentServer.RoleInfo.Lv;
 
+            List<int> openfubenids = new List<int>();
             Dictionary<int, LDScene> allfuben =  LDSceneCategory.Instance.GetAll();
             foreach (( int fubenid, LDScene config) in allfuben)
             {
@@ -456,15 +457,14 @@ namespace ET
         public static int OnCommitTask(this TaskComponentServer self, C2M_TaskCommitRequest request)
         {
             int taskid = request.TaskId;
+            Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             TaskPro taskPro = self.GetTaskById(taskid);
             if (taskPro == null)
             {
                 return ErrorCode.ERR_TaskCommited;
             }
-            Unit unit = self.GetParent<Unit>();
-            LDTask ldTask = LDTaskCategory.Instance.Get(taskid);
-            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
-            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems(roleInfoComponent.RoleInfo.Occ, taskid);
 
             if (rewardItems.Count == 0)
@@ -687,12 +687,12 @@ namespace ET
                 int unitconfigId = bekill.ConfigId;
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
                 bool isBoss = ldMonster.Type == (int)MonsterTypeEnum.Boss;
-                MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
+                Scene domainScene = self.GetParent<Unit>().DomainScene();
+                MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
                 int fubenDifficulty = FubenDifficulty.None;
-                Scene DomainScene = self.GetParent<Unit>().DomainScene();
                 if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                 {
-                    fubenDifficulty = DomainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
+                    fubenDifficulty = domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
                 }
 
                 self.TriggerTaskEvent(TastConditionType.KillMonsterByNumber_210, 1, 0);
@@ -785,7 +785,6 @@ namespace ET
                     continue;
                 }
 
-                LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
                 if (self.RoleTaskList[i].TaskType == TaskTypeEnum.System)
                 {
                     self.RoleTaskList[i].TrackStatus = 0;
@@ -795,6 +794,8 @@ namespace ET
             self.OnTeskGetTask();
     
 
+            long unionid = numericComponent.GetAsLong(NumericType.UnionId_0);
+            int trialid = numericComponent.GetAsInt(NumericType.TrialDungeonId);
             //触发一下搜集道具类型的任务
             for (int i = 0; i < self.RoleTaskList.Count; i++)
             {
@@ -813,7 +814,6 @@ namespace ET
                 }
                 if (ldTask.Condition_Type == TastConditionType.JoinUnion_9)
                 {
-                    long unionid = numericComponent.GetAsLong(NumericType.UnionId_0);
                     self.TriggerTaskEvent(TastConditionType.JoinUnion_9, ldTask.Param1, unionid > 0 ? 1 : 0);
                     continue;
                 }
@@ -825,8 +825,6 @@ namespace ET
                 }
                 if (ldTask.Condition_Type == TastConditionType.TrialTowerCeng_134)
                 {
-                    //试炼副本
-                    int trialid = numericComponent.GetAsInt(NumericType.TrialDungeonId);
                     if (trialid >= ldTask.Param1)
                     {
                         self.TriggerTaskEvent(TastConditionType.TrialTowerCeng_134, ldTask.Param1, 1);
@@ -975,7 +973,8 @@ namespace ET
 
         public static void CheckDailyTask(this TaskComponentServer self, bool notice)
         {
-            NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
+            Unit unit = self.GetParent<Unit>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             /*if (numericComponent.GetAsInt(NumericType.DailyTaskID) != 0)
             {
                 return;
@@ -987,7 +986,7 @@ namespace ET
             }
             */
 
-            int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+            int roleLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
            // numericComponent.ApplyValue(NumericType.DailyTaskID, TaskHelper.GetTaskIdByType(TaskTypeEnum.Daily, roleLv), notice);
         }
 

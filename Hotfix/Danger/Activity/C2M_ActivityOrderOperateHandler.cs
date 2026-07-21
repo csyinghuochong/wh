@@ -11,6 +11,7 @@ namespace ET
         {
             BagComponentServer bagComponentServer  = unit.GetComponent<BagComponentServer>(); 
             ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
+            ActivityV1Info activityV1Info = activityComponentServer.ActivityV1Info;
             
             switch (request.OperatateType)
             {
@@ -23,12 +24,12 @@ namespace ET
                     }
 
                     bagComponentServer.OnCostItemData(ActivityV1Config.ActivityOrderRefreshItem, ItemLocType.ItemLocBag, ItemGetWay.Activity);
-                    activityComponentServer.ActivityV1Info.OrderId = ActivityV1Config.GenerateActivityOrderId();
-                    activityComponentServer.ActivityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
+                    activityV1Info.OrderId = ActivityV1Config.GenerateActivityOrderId();
+                    activityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
 
                     break;
                 case 2:
-                    int orderId = activityComponentServer.ActivityV1Info.OrderId;
+                    int orderId = activityV1Info.OrderId;
                     if (orderId < 0 || orderId >= ActivityV1Config.ActivityOrderItemList.Count)
                     {
                         response.Error = ErrorCode.ERR_Parameter;
@@ -63,12 +64,12 @@ namespace ET
                     //activityComponentServer.ActivityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
                     break;
                 case 3:  //自动刷新
-                    activityComponentServer.ActivityV1Info.OrderId = ActivityV1Config.GenerateActivityOrderId();
-                    activityComponentServer.ActivityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
+                    activityV1Info.OrderId = ActivityV1Config.GenerateActivityOrderId();
+                    activityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
                     break;
             }
 
-            response.ActivityV1Info = activityComponentServer.ActivityV1Info;
+            response.ActivityV1Info = activityV1Info;
             reply();
             await ETTask.CompletedTask;
         }

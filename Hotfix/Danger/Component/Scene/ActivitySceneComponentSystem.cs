@@ -449,7 +449,7 @@ namespace ET
                 self.CreateRobot(openServerDay).Coroutine();
             }
 
-            if (ActivityV1Config.GuessRewardList.ContainsKey(hour))
+            if (ActivityV1Config.GuessRewardList.TryGetValue(hour, out string guessReward))
             {
                 int guessIndex = RandomHelper.RandomNumber(0, ActivityV1Config.GuessNumber);
                 List<long> playerIds = null;
@@ -460,7 +460,7 @@ namespace ET
                 }
 
                 List<BagInfo> itemList = new List<BagInfo>();
-                string[] rewardItem = ActivityV1Config.GuessRewardList[hour].Split('@');
+                string[] rewardItem = guessReward.Split('@');
                 for (int i = 0; i < rewardItem.Length; i++)
                 {
                     string[] itemInfo = rewardItem[i].Split(';');
@@ -491,16 +491,8 @@ namespace ET
                     self.DBDayActivityInfo.GuessRewardList.Clear();
                     self.DBDayActivityInfo.OpenGuessIds.Clear();
                 }
-                if (self.DBDayActivityInfo.GuessRewardList.ContainsKey(hour))
-                {
-                    self.DBDayActivityInfo.GuessRewardList[hour] = playerIds;
-                    self.DBDayActivityInfo.OpenGuessIds.Add(guessIndex);
-                }
-                else
-                {
-                    self.DBDayActivityInfo.GuessRewardList.Add(hour, playerIds);
-                    self.DBDayActivityInfo.OpenGuessIds.Add(guessIndex);
-                }
+                self.DBDayActivityInfo.GuessRewardList[hour] = playerIds;
+                self.DBDayActivityInfo.OpenGuessIds.Add(guessIndex);
 
                 self.DBDayActivityInfo.GuessPlayerList.Clear();
             }

@@ -338,9 +338,10 @@ namespace ET
 		
 			if (!unit.IsRobot())
 			{
+				SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
 				self.UpdateSkillSet();
 				Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-				unit.GetComponent<SkillPassiveComponent>().UpdatePassiveSkill();
+				skillPassiveComponent.UpdatePassiveSkill();
 			}
 		}
 
@@ -957,8 +958,11 @@ namespace ET
 		public static void CheckOccSkill(this SkillSetComponentServer self, int occ)
 		{
 			LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(occ);
-			List<int> occSkilld = new List<int>() {  };
-			occSkilld.AddRange(ldOccupation.Skill );
+			HashSet<int> occSkilld = new HashSet<int>();
+			for (int s = 0; s < ldOccupation.Skill.Length; s++)
+			{
+				occSkilld.Add(ldOccupation.Skill[s]);
+			}
 
 			List<int> haveSkillid = new List<int>();
 			//检测基础技能
@@ -979,11 +983,11 @@ namespace ET
 				occSkilld.Remove(skillPro.SkillID);
 			}
 
-			for (int i = 0; i < occSkilld.Count; i++)
+			foreach (int skillId in occSkilld)
 			{ 
-				SkillPro skillPro = self.AddSkillPro(occSkilld[i], SkillSetEnum.Skill, SkillSourceEnum.Occupation);
-				skillPro.Actived = occSkilld[i] == ldOccupation.Skill_Normal_Default? 1 : 0;
-				skillPro.SetSkillPosition( occSkilld[i] == ldOccupation.Skill_Normal_Default? 1 : 0);
+				SkillPro skillPro = self.AddSkillPro(skillId, SkillSetEnum.Skill, SkillSourceEnum.Occupation);
+				skillPro.Actived = skillId == ldOccupation.Skill_Normal_Default? 1 : 0;
+				skillPro.SetSkillPosition( skillId == ldOccupation.Skill_Normal_Default? 1 : 0);
 				skillPro.Level = 1;
             }
 		}

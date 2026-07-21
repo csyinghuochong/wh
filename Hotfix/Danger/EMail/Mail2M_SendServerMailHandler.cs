@@ -10,9 +10,10 @@ namespace ET
         protected override async ETTask Run(Unit unit, Mail2M_SendServerMailItem message)
         {
             //Log.Console($"asdsadada : 全服邮件{message.ServerMailItem.ServerMailIId}");
-            if (message.ServerMailItem.ServerMailIId > unit.GetComponent<RoleInfoComponentServer>().RoleInfo.ServerMailIdCur)
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            if (message.ServerMailItem.ServerMailIId > roleInfoComponentServer.RoleInfo.ServerMailIdCur)
             {
-                unit.GetComponent<RoleInfoComponentServer>().RoleInfo.ServerMailIdCur = message.ServerMailItem.ServerMailIId;
+                roleInfoComponentServer.RoleInfo.ServerMailIdCur = message.ServerMailItem.ServerMailIId;
             }
             await ETTask.CompletedTask;
         }

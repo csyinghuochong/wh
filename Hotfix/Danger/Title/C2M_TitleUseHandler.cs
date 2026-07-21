@@ -8,14 +8,16 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_TitleUseRequest request, M2C_TitleUseResponse response, Action reply)
         {
-            if (!unit.GetComponent<TitleComponentServer>().IsHaveTitle(request.TitleId))
+            TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            if (!titleComponent.IsHaveTitle(request.TitleId))
             {
                 response.Error = ErrorCode.ERR_TitleNoActived;
                 reply();
                 return;
             }
 
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TitleID, request.TitleId);
+            numericComponent.ApplyValue(NumericType.TitleID, request.TitleId);
             Function_Fight.UnitUpdateProperty_Base(unit,true, true);
 
             reply();

@@ -12,7 +12,9 @@ namespace ET
             await ETTask.CompletedTask;
 #if false // TODO: migrate to LD config
 
-            int rewardId = unit.GetComponent<PetComponentServer>().GetCanRewardId();
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            int rewardId = petComponentServer.GetCanRewardId();
             if (rewardId == 0)
             {
                 response.Error = ErrorCode.ERR_AlreadyFinish;
@@ -22,7 +24,7 @@ namespace ET
             /*
             PetFubenRewardConfig rewardConfig = PetFubenRewardConfigCategory.Instance.Get(rewardId);
             int needCell =   ItemHelper.GetNeedCell(rewardConfig.RewardItems);
-            if ( unit.GetComponent<BagComponentServer>().GetBagLeftCell() < needCell)
+            if ( bagComponentServer.GetBagLeftCell() < needCell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -30,12 +32,12 @@ namespace ET
             }
            
 
-            bool ret =  unit.GetComponent<BagComponentServer>().OnAddItemData(rewardConfig.RewardItems, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}");
+            bool ret =  bagComponentServer.OnAddItemData(rewardConfig.RewardItems, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}");
             if (!ret)
             {
                 Log.Debug($"C2M_PetFubenRewardHandler false : {unit.Id}");
             }
-            unit.GetComponent<PetComponentServer>().PetFubeRewardId = rewardId;
+            petComponentServer.PetFubeRewardId = rewardId;
  */
             reply();
             await ETTask.CompletedTask;

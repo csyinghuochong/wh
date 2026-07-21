@@ -22,8 +22,9 @@ namespace ET
 
             int dropId = 0;
             int exlporeNumber = numericComponent.GetAsInt(NumericType.PetHeXinExploreNumber);
+            int exploreDiscountThreshold = int.Parse(exploreDiscountSet[0]);
             float discount;
-            if (exlporeNumber < int.Parse(exploreDiscountSet[0])) // 超过300次打8折
+            if (exlporeNumber < exploreDiscountThreshold) // 超过300次打8折
             {
                 discount = 1;
             }

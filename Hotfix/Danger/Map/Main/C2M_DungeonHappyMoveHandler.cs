@@ -65,12 +65,13 @@ namespace ET
                 roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (globalValue.Value2 * -1).ToString(), true, ItemGetWay.HappyMove);*/
             }
 
+            Scene domainScene = unit.DomainScene();
             for (int r = 10; r > 0; r--)
             {
                 int newCell = RandomHelper.RandomNumber(0, HappyFubenConfig.PositionList.Count);
 
                 bool haveorange = false;
-                List<Unit> droplist = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.DropItem);
+                List<Unit> droplist = UnitHelper.GetUnitList(domainScene, UnitType.DropItem);
                 for (int i = 0; i < droplist.Count; i++)
                 {
                     int itemid = droplist[i].GetComponent<DropComponent>().ItemID;

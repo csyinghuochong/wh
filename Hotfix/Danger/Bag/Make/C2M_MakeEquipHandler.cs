@@ -13,7 +13,9 @@ namespace ET
             await ETTask.CompletedTask;
 #if false // TODO: migrate to LD config
 
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() == 0)
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            if (bagComponentServer.GetBagLeftCell() == 0)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -33,7 +35,7 @@ namespace ET
             int costItemId = 0;
             if (request.BagInfoID != 0)
             {
-                BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, request.BagInfoID);
+                BagInfo useBagInfo = bagComponentServer.GetItemByLoc(locType, request.BagInfoID);
                 if (useBagInfo != null)
                 {
                     costItemId = useBagInfo.ItemID;
@@ -81,7 +83,7 @@ namespace ET
             {
                 costItems.Add(new RewardItem() { ItemID = costItemId, ItemNum = 1 });
             }
-            bool success = unit.GetComponent<BagComponentServer>().OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.SkillMake);
+            bool success = bagComponentServer.OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.SkillMake);
             if (!success)
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -100,7 +102,7 @@ namespace ET
             {
                 List<RewardItem> rewardItems = new List<RewardItem>();
                 rewardItems.Add(new RewardItem() { ItemID = equipMakeConfig.MakeItemID, ItemNum = equipMakeConfig.MakeEquipNum });
-                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, roleInfoComponentServer.RoleInfo.Name, $"{ItemGetWay.SkillMake}_{request.Plan}_{TimeHelper.ServerNow()}");       //传入制造装备和制造玩家的ID
+                bagComponentServer.OnAddItemData(rewardItems, roleInfoComponentServer.RoleInfo.Name, $"{ItemGetWay.SkillMake}_{request.Plan}_{TimeHelper.ServerNow()}");       //传入制造装备和制造玩家的ID
                 unit.GetComponent<TaskComponentServer>().OnMakeItem();
                 response.ItemId = equipMakeConfig.MakeItemID;
             }
@@ -110,7 +112,7 @@ namespace ET
             }
             
             //制作的过程中有一定概率可以领悟当前等级可以学习的配方
-            int makeType = unit.GetComponent<NumericComponent>().GetAsInt(request.Plan == 1 ?  NumericType.MakeType_1 : NumericType.MakeType_2);
+            int makeType = numericComponent.GetAsInt(request.Plan == 1 ?  NumericType.MakeType_1 : NumericType.MakeType_2);
             int newMakeId = MakeHelper.GetNewMakeID(makeType, request.MakeId,
                 roleInfoComponentServer.RoleInfo.MakeList);
             //宝石不领悟
@@ -128,11 +130,11 @@ namespace ET
                 && equipMakeConfig.ProficiencyValue.Length > 1)
             {
                 int shulianduNumeric = request.Plan == 1 ? NumericType.MakeShuLianDu_1 : NumericType.MakeShuLianDu_2;
-                int curShuLian = unit.GetComponent<NumericComponent>().GetAsInt(shulianduNumeric);
+                int curShuLian = numericComponent.GetAsInt(shulianduNumeric);
                 int addShuLian = RandomHelper.RandomNumber(equipMakeConfig.ProficiencyValue[0], equipMakeConfig.ProficiencyValue[1]);
                 curShuLian += addShuLian;
                 curShuLian = Math.Min(CommonHelper.MaxShuLianDu(), curShuLian);
-                unit.GetComponent<NumericComponent>().ApplyValue(shulianduNumeric, curShuLian);
+                numericComponent.ApplyValue(shulianduNumeric, curShuLian);
                 unit.GetComponent<ChengJiuComponentServer>().OnSkillShuLianDu(curShuLian);
 
             }

@@ -72,8 +72,9 @@ namespace ET
 				}
 				if (message.GMMsg == "#resetlv")
 				{
-					int level = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv - 1;
-					unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData( UserDataType.Level, (level*-1).ToString());
+					RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+					int level = roleInfoComponentServer.RoleInfo.Lv - 1;
+					roleInfoComponentServer.UpdateRoleData( UserDataType.Level, (level*-1).ToString());
 					return;
 				}
                 if (message.GMMsg == "#jiandian")
@@ -136,9 +137,10 @@ namespace ET
 				if (message.GMMsg == "#resetfuben")
 				{
 					NumericComponent numeric = unit.GetComponent<NumericComponent>();
+					RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
 					numeric.ApplyValue(NumericType.TeamDungeonTimes, 0);
 					numeric.ApplyValue(NumericType.TeamDungeonXieZhu, 0);
-					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.DayFubenTimes.Clear();
+					roleInfo.RoleInfo.DayFubenTimes.Clear();
 					return;
 				}
                 if (message.GMMsg == "#resettower")
@@ -148,9 +150,10 @@ namespace ET
                 }
                 if (message.GMMsg == "#ceshi1203")
                 {
-                    int level = 70 - unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+                    RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
+                    int level = 70 - roleInfo.RoleInfo.Lv;
                     level = level > 0 ? level : 0;		
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Level, level.ToString());
+                    roleInfo.UpdateRoleData(UserDataType.Level, level.ToString());
                     return;
                 }
                 if (message.GMMsg == "#completetask")

@@ -52,9 +52,11 @@ namespace ET
                 DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(UnitZoneHelper.GetHomeZone(unit), unit.Id);
 
                 List<long> friendList = new List<long>();
+                HashSet<long> friendSet = new HashSet<long>();
                 if (dBFriendInfo != null)
                 {
                     friendList = dBFriendInfo.FriendList;
+                    friendSet = new HashSet<long>(friendList);
                     for (int i = 0; i < friendList.Count; i++)
                     {
                         if (friendList[i] == unit.Id)
@@ -90,7 +92,7 @@ namespace ET
                             allPlayers.RemoveAt(i);
                             continue;
                         }
-                        if (friendList.Contains(allPlayers[i]))
+                        if (friendSet.Contains(allPlayers[i]))
                         {
                             allPlayers.RemoveAt(i);
                             continue;

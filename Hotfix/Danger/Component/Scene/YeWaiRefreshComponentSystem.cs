@@ -461,7 +461,8 @@ namespace ET
 
             if (mapComponent.MapTypeEnum == MapTypeEnum.MiJing && ldMonster.Type == MonsterTypeEnum.Boss)
             {
-                self.DomainScene().GetComponent<MiJingComponent>().BossId = refreshMonster.MonsterId;
+                MiJingComponent miJingComponent = self.DomainScene().GetComponent<MiJingComponent>();
+                miJingComponent.BossId = refreshMonster.MonsterId;
 
                 if (!CommonHelper.IsBanHaoZone(self.DomainZone()) && DBHelper.GetOpenServerDay(self.DomainZone()) > 0)
                 {

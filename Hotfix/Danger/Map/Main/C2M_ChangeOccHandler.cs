@@ -24,7 +24,7 @@ namespace ET
             }
 
             int equip1number = 0;
-            List<int> equiplist = new List<int>();  
+            HashSet<int> equiplist = new HashSet<int>();  
             for (int equip = 0; equip < bagComponentServer.EquipList.Count; equip++)
             {
                 BagInfo equipInfo = bagComponentServer.EquipList[equip];
@@ -35,10 +35,7 @@ namespace ET
                     equip1number++;
                 }
 
-                if (!equiplist.Contains(equipType))
-                {
-                    equiplist.Add(equipType);
-                }
+                equiplist.Add(equipType);
             }
 
             foreach (int equiptype in equiplist)
@@ -64,6 +61,7 @@ namespace ET
             }
 
             //装备(强制脱下)
+            SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
             long[] equipids = bagComponentServer.EquipList.Select(p=>p.BagInfoID).ToArray();
             foreach (long equipid in equipids)   
             { 
@@ -81,8 +79,8 @@ namespace ET
                     continue;
                 }
 
-                unit.GetComponent<BagComponentServer>().OnChangeItemLoc(equipInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
-                unit.GetComponent<SkillSetComponentServer>().OnTakeOffEquip(ItemLocType.ItemLocEquip, equipInfo);
+                bagComponentServer.OnChangeItemLoc(equipInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
+                skillSetComponentServer.OnTakeOffEquip(ItemLocType.ItemLocEquip, equipInfo);
             }
 
             /*long[] equipids_2 = bagComponentServer.EquipList_2.Select(p => p.BagInfoID).ToArray();
@@ -109,7 +107,6 @@ namespace ET
             roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, (level - sp).ToString());
 
             
-            SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
             skillSetComponentServer.TianFuList.Clear();
             skillSetComponentServer.TianFuList1.Clear();
             skillSetComponentServer.TianFuPlan = 0;

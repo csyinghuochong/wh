@@ -26,7 +26,8 @@ namespace ET
 
             for (int i = self.TitleList.Count - 1; i >= 0; i--)
             {
-                LDElf ldElf = LDElfCategory.Instance.Get(self.TitleList[i].KeyId);
+                KeyValuePairInt titleEntry = self.TitleList[i];
+                LDElf ldElf = LDElfCategory.Instance.Get(titleEntry.KeyId);
                 string[] attributeInfoList = ldElf.AddProperty.Split('@');
                 for (int a = 0; a < attributeInfoList.Length; a++)
                 {
@@ -47,7 +48,7 @@ namespace ET
                         }
                         catch (Exception ex)
                         {
-                            Log.Debug(ex.ToString() + $"报错称号: {self.TitleList[i].KeyId}");
+                            Log.Debug(ex.ToString() + $"报错称号: {titleEntry.KeyId}");
                         }
                         proList.Add(new AttributeItem() { AttributeID = numericType, AttributeValue = lvalue });
                     }

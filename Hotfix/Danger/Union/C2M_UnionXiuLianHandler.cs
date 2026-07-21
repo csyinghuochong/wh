@@ -19,14 +19,15 @@ namespace ET
                 return;
             }
 
-            long unionid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0);
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            long unionid = numericComponent.GetAsLong(NumericType.UnionId_0);
             if (unionid == 0)
             {
                 reply();
                 return;
             }
 
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             int xiulianid = numericComponent.GetAsInt(numerType);
 
             int position = request.Position;
@@ -43,7 +44,7 @@ namespace ET
             }
             /*
             UnionQiangHuaConfig unionQiangHuaConfig = UnionQiangHuaConfigCategory.Instance.Get(xiulianid);
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UnionZiJin < unionQiangHuaConfig.CostGold)
+            if (roleInfoComponentServer.RoleInfo.UnionZiJin < unionQiangHuaConfig.CostGold)
             {
                 response.Error = ErrorCode.ERR_HouBiNotEnough;
                 reply();
@@ -57,7 +58,7 @@ namespace ET
                 return;
             }
            
-            long selfgold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold;
+            long selfgold = roleInfoComponentServer.RoleInfo.Gold;
             U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                        DBHelper.GetUnionServerId(unit),
                        new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });

@@ -15,6 +15,8 @@ namespace ET
             await ETTask.CompletedTask;
 #if false // TODO: migrate to LD config
 
+			BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+			RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
 			await ETTask.CompletedTask;
 			//if(!PaiMaiSellConfigCategory.Instance.Contain(request.PaiMaiId))
 			{
@@ -34,7 +36,7 @@ namespace ET
 
 			LDItem ldItem = null;/// LDItemCategory.Instance.Get(paiMaiSellConfig.ItemID);
 			int cell = Mathf.CeilToInt(request.BuyNum * 1f / ldItem.ItemPileSum);
-			if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < cell)
+			if (bag.GetBagLeftCell() < cell)
 			{
 				response.Error = ErrorCode.ERR_BagIsFull;
 				reply();
@@ -56,7 +58,7 @@ namespace ET
 					ItemID = -1,// paiMaiSellConfig.ItemID,
 					BuyNum = request.BuyNum,
 					//Price = r_PaiMaiShopResponse.PaiMaiShopItemInfo.Price,
-					ActorId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold,
+					ActorId = roleInfo.RoleInfo.Gold,
 				};
 
 				long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
@@ -71,10 +73,10 @@ namespace ET
 
 				//消耗金币
 				long costGold = (long)r_PaiMaiShopResponse.PaiMaiShopItemInfo.Price * request.BuyNum;
-				if (costGold > 0 && unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold >= costGold)
+				if (costGold > 0 && roleInfo.RoleInfo.Gold >= costGold)
 				{
 					//发送金币
-					unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (costGold * -1).ToString(), true, ItemGetWay.PaiMaiShop);
+					roleInfo.UpdateRoleMoneySub(UserDataType.Gold, (costGold * -1).ToString(), true, ItemGetWay.PaiMaiShop);
 
 					//添加道具
 					List<RewardItem> rewardItems = new List<RewardItem>();

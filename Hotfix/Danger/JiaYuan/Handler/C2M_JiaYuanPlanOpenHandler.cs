@@ -26,7 +26,8 @@ namespace ET
             }*/
 
             int costNumber = CommonConfig.JiaYuanFarmOpen[request.CellIndex];
-            if (!unit.GetComponent<BagComponentServer>().CheckNeedItem($"13;{costNumber}"))
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            if (!bagComponentServer.CheckNeedItem($"13;{costNumber}"))
             {
                 response.PlanOpenList = PlanOpenList_2;
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -36,8 +37,8 @@ namespace ET
 
             PlanOpenList_2.Add(request.CellIndex);
             response.PlanOpenList = PlanOpenList_2;
-            unit.GetComponent<BagComponentServer>().OnCostItemData($"13;{costNumber}", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost);
-            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
+            bagComponentServer.OnCostItemData($"13;{costNumber}", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost);
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer).Coroutine();
             reply();
             await ETTask.CompletedTask;
         }

@@ -29,7 +29,8 @@ namespace ET
 
         public override void OnFinished()
         {
-            this.TheUnitBelongto.GetComponent<StateComponent>().StateTypeRemove(StateTypeEnum.NoMove);
+            StateComponent stateComponent = this.TheUnitBelongto.GetComponent<StateComponent>();
+            stateComponent.StateTypeRemove(StateTypeEnum.NoMove);
         }
     }
 }

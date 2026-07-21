@@ -151,8 +151,9 @@ namespace ET
 					}
 
 					//同一个session不能重复进
-					if (session.GetComponent<SessionStateComponent>() != null
-						&& session.GetComponent<SessionStateComponent>().State == SessionState.Game)
+					SessionStateComponent sessionStateComponent = session.GetComponent<SessionStateComponent>();
+					if (sessionStateComponent != null
+						&& sessionStateComponent.State == SessionState.Game)
 					{
 						Log.Debug("LoginTest C2G_EnterGameHandler: SessionStateComponent.State == SessionState.Game");
 						response.Error = ErrorCode.ERR_SessionStateError;
@@ -228,13 +229,15 @@ namespace ET
                         unit.AddComponent<StateComponent>();
                         UnitCombatComponentHelper.EnsurePlayerComponents(unit);
                         unit.AddComponent<DBSaveComponent>();
-						unit.GetComponent<UnitInfoComponent>().UnitName = unit.GetComponent<RoleInfoComponentServer>().UserName;
+                        RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                        DBSaveComponent dbSaveComponent = unit.GetComponent<DBSaveComponent>();
+						unit.GetComponent<UnitInfoComponent>().UnitName = roleInfoComponentServer.UserName;
 						DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
 						dataCollationComponent.CorrectData();
                         dataCollationComponent.UpdatePlatName(request.Platform, request.PlatformTwo, request.Simulator, request.Root, request.DeviceID, request.UnityVersion, request.BigVersion, request.DeviceName, request.OAID);
                         unit.AddComponent<SkillPassiveComponent>().UpdatePassiveSkill();
 						//unit.GetComponent<DBSaveComponent>().LastDBTime = TimeHelper.ServerNow();
-                        unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
+                        dbSaveComponent.UpdateCacheDB();
                         unit.OnLogin(session.RemoteAddress.ToString());
 
                         long unitId = unit.Id;
@@ -242,7 +245,7 @@ namespace ET
                         await EnterMailServer(unit);
                         player.ChatInfoInstanceId = await EnterWorldChatServer(unit);   //登录聊天服
                         player.WarChatInfoInstanceId = await EnterWarChatServer(unit);   //登录战区聊天服
-                        unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID = request.AccountId;
+                        roleInfoComponentServer.RoleInfo.AccInfoID = request.AccountId;
                         response.AccInfoID = request.AccountId;
 
                         if (session.DomainZone() == 0)
@@ -267,7 +270,7 @@ namespace ET
 						player.PopularizeServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Popularize)).InstanceId;
 						player.ReChargeServerID = StartSceneConfigCategory.Instance.RechargeConfig.InstanceId;
 						response.MyId = unitId;
-						long accountId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID;
+						long accountId = roleInfoComponentServer.RoleInfo.AccInfoID;
 						response.IsPopUp = GMHelp.PopUpPlayer.ContainsKey(accountId) ? 1 : 0;
 						if (response.IsPopUp == 1)
 						{
@@ -331,45 +334,51 @@ namespace ET
 				return 0;
 			}
 
-			string roleName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+			RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+			string roleName = roleInfo.Name;
 			int homeZone = UnitZoneHelper.GetHomeZone(unit);
 			ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), homeZone);
 			string serverName = serverItem != null ? serverItem.ServerName : homeZone.ToString();
+			NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+			UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
 			Chat2G_EnterChat chat2G_EnterChat = (Chat2G_EnterChat)await MessageHelper.CallActor(warChatServerId, new G2Chat_EnterChat()
 			{
 				UnitId = unit.Id,
 				Name = $"[{serverName}]{roleName}",
-				Level = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv,
-				UnionId = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0),
-				GateSessionActorId = unit.GetComponent<UnitGateComponent>().GateSessionActorId
+				Level = roleInfo.Lv,
+				UnionId = numericComponent.GetAsLong(NumericType.UnionId_0),
+				GateSessionActorId = unitGateComponent.GateSessionActorId
 			});
 			return chat2G_EnterChat.ChatInfoUnitInstanceId;
 		}
 
 		private async ETTask EnterMailServer(Unit unit)
 		{
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             long mailServerId = DBHelper.GetMailServerId(unit);
             Mail2G_EnterMail chat2G_EnterChat = (Mail2G_EnterMail)await MessageHelper.CallActor(mailServerId, new G2Mail_EnterMail()
             {
                 UnitId = unit.Id,
-				ServerMailIdCur = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.ServerMailIdCur,
+				ServerMailIdCur = roleInfoComponentServer.RoleInfo.ServerMailIdCur,
             });
 			if (chat2G_EnterChat.Error == ErrorCode.ERR_Success)
 			{
-                unit.GetComponent<RoleInfoComponentServer>().RoleInfo.ServerMailIdCur  = chat2G_EnterChat.ServerMailIdMax;
+                roleInfoComponentServer.RoleInfo.ServerMailIdCur  = chat2G_EnterChat.ServerMailIdMax;
             }
 		}
 
 		private async ETTask EnterRankServer(Unit unit)
 		{
+			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+			NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 			long rankServerId = DBHelper.GetRankServerId(unit);
 			Rank2G_EnterRank chat2G_EnterChat = (Rank2G_EnterRank)await MessageHelper.CallActor(rankServerId, new G2Rank_EnterRank()
 			{
 				UnitId = unit.Id,
-				Occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ
+				Occ = roleInfoComponentServer.RoleInfo.Occ
 			});
 
-			NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 			long unionid = unit.GetUnionId();
 			numericComponent.ApplyValue(NumericType.CombatRankID, chat2G_EnterChat.RankId, false,false);
             numericComponent.ApplyValue(NumericType.OccCombatRankID, chat2G_EnterChat.OccRankId, false, false);

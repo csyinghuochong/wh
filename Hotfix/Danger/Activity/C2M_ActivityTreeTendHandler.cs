@@ -77,6 +77,7 @@ namespace ET
             {
                 //发送邮件奖励
                 ActivityTreeStageItem activityTreeStageItem = ActivityV1Config.ActivityTreeStageDesc[oldstage];
+                string[] needList = activityTreeStageItem.Reward.Split('@');
 
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.Status = 0;
@@ -84,7 +85,6 @@ namespace ET
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
                 mailInfo.Context = $"成长树达到 {activityTreeStageItem.Name},获得如下奖励";
-                string[] needList = activityTreeStageItem.Reward.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');

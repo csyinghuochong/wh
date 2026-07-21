@@ -230,11 +230,11 @@ namespace ET
                 }
                 long unionId = units[i].GetUnionId();
 
-                if (!map.ContainsKey(unionId))
+                if (!map.TryGetValue(unionId, out int unionCount))
                 {
-                    map.Add(unionId, 0);
+                    unionCount = 0;
                 }
-                map[unionId] += 1;
+                map[unionId] = unionCount + 1;
             }
 
             long winunionid = 0;
@@ -574,9 +574,9 @@ namespace ET
         public static long GetUnionFubenId(this UnionSceneComponent self, long unionid, long unitid)
         {
             //需要判读一下unitid 是否属于这个家族！
-            if (self.UnionFubens.ContainsKey(unionid))
+            if (self.UnionFubens.TryGetValue(unionid, out long fubenId))
             {
-                return self.UnionFubens[unionid];
+                return fubenId;
             }
             int unionsceneid = 2000009;
             long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
@@ -587,7 +587,7 @@ namespace ET
             mapComponent.NavMeshId = LDSceneCategory.Instance.Get(unionsceneid).GetNavMeshId();
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
-            self.UnionFubens.Add(unionid, fubenInstanceId);
+            self.UnionFubens.TryAdd(unionid, fubenInstanceId);
 
             if (!self.UnionBossList.ContainsKey(unionid))
             {

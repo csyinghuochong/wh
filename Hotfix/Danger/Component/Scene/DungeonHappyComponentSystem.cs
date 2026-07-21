@@ -38,20 +38,17 @@ namespace ET
 
         public static void OnTimer(this DungeonHappyComponent self)
         {
-            List<int> dropcells = new List<int>();
+            HashSet<int> dropcells = new HashSet<int>();
             List<Unit> droplist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.DropItem);
             for (int i = 0; i < droplist.Count; i++)
             {
-                int dropindex = droplist[i].GetComponent<DropComponent>().CellIndex;
-                if (!dropcells.Contains(dropindex))
-                {
-                    dropcells.Add(dropindex);
-                }
+                dropcells.Add(droplist[i].GetComponent<DropComponent>().CellIndex);
             }
 
             int openDay = ServerHelper.GetOpenServerDay(false, self.DomainZone());
             int dropid = self.GetDropId(openDay);
 
+            UnitComponent unitComponent = self.DomainScene().GetComponent<UnitComponent>();
             for (int p = 0; p < HappyFubenConfig.PositionList.Count; p++)
             {
                 //空格子的概率
@@ -75,7 +72,6 @@ namespace ET
 
                 for (int i = 0; i < rewardist.Count; i++)
                 {
-                    UnitComponent unitComponent = self.DomainScene().GetComponent<UnitComponent>();
                     Unit dropitem = unitComponent.AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), 1);
                     unitComponent.Add(dropitem);
                     dropitem.AddComponent<UnitInfoComponent>();

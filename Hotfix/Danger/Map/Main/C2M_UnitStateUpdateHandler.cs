@@ -20,7 +20,8 @@
                     BuffData buffData_1 = new BuffData();
                     buffData_1.SkillId = 67000278;
                     buffData_1.BuffId = buffid;
-                    unit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_1, unit, null);
+                    BuffManagerComponent buffManagerComponent = unit.GetComponent<BuffManagerComponent>();
+                    buffManagerComponent.BuffFactory(buffData_1, unit, null);
                 }
             }
 

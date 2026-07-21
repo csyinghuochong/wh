@@ -811,7 +811,8 @@ namespace ET
                 MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
 
                 //检测任务需求道具
-                ItemAddHelper.OnGetItem(self.GetParent<Unit>(), int.Parse(getType.Split('_')[0]), bagInfo);
+                int getTypeValue = int.Parse(getType.Split('_')[0]);
+                ItemAddHelper.OnGetItem(self.GetParent<Unit>(), getTypeValue, bagInfo);
                 return true;
             }
         }
@@ -1449,13 +1450,15 @@ namespace ET
                 occInitAttribute.AddRange( equipList[i].BaseAttrList );
 
                 //获取宝石属性
-                if (string.IsNullOrEmpty(equipList[i].GemIDNew))
+                string gemIdNew = equipList[i].GemIDNew;
+                if (string.IsNullOrEmpty(gemIdNew))
                 {
-                    equipList[i].GemIDNew = ItemNewHelper.GetDefaultGem();
+                    gemIdNew = ItemNewHelper.GetDefaultGem();
+                    equipList[i].GemIDNew = gemIdNew;
                     //Log.Debug($"GemIDNew==null  unit.Id: {unit.Id} BagInfoID:{equipList[i].BagInfoID}");
                 }
 
-                string[] gemList = equipList[i].GemIDNew.Split('_');
+                string[] gemList = gemIdNew.Split('_');
 
                 for (int z = 0; z < gemList.Length; z++)
                 {

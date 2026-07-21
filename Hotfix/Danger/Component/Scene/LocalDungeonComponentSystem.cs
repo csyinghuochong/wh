@@ -84,7 +84,7 @@ namespace ET
                     continue;
                 }
                 NumericComponent numericComponent = entity.GetComponent<NumericComponent>();
-                if (numericComponent.GetAsInt(NumericType.Now_Dead)  == 1)
+                if (numericComponent.GetAsInt(NumericType.Now_Dead) == 1)
                 {
                     entity.GetComponent<UnitLifeComponent>()?.OnRevive();
                 }

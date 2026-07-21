@@ -12,12 +12,14 @@ namespace ET
         public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null)
         {
             this.OnBaseBuffInit(buffData, theUnitFrom, theUnitBelongto);
-            this.TheUnitBelongto.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.Fear);
+            StateComponent stateComponent = this.TheUnitBelongto.GetComponent<StateComponent>();
+            stateComponent.StateTypeAdd(StateTypeEnum.Fear);
             
             this.TargetPosition.x = this.TheUnitBelongto.Position.x + RandomHelper.RandomNumberFloat(-10, 10);
             this.TargetPosition.y = this.TheUnitBelongto.Position.y;
             this.TargetPosition.z = this.TheUnitBelongto.Position.z + RandomHelper.RandomNumberFloat(-10, 10);
-            this.TargetPosition = this.TheUnitBelongto.DomainScene().GetComponent<MapComponent>()
+            MapComponent mapComponent = this.TheUnitBelongto.DomainScene().GetComponent<MapComponent>();
+            this.TargetPosition = mapComponent
                     .GetCanChongJiPath(theUnitBelongto, this.TheUnitBelongto.Position, TargetPosition);
             this.TheUnitBelongto.FindPathMoveToAsync(this.TargetPosition).Coroutine();
         }
@@ -45,7 +47,8 @@ namespace ET
 
         public override void OnFinished()
         {
-            this.TheUnitBelongto.GetComponent<StateComponent>().StateTypeRemove(StateTypeEnum.Fear);
+            StateComponent stateComponent = this.TheUnitBelongto.GetComponent<StateComponent>();
+            stateComponent.StateTypeRemove(StateTypeEnum.Fear);
         }
     }
 }

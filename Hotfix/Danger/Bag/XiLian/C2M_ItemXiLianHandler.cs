@@ -15,6 +15,9 @@ namespace ET
 
             try
             {
+                string[] xiLianDiscountSet = LDGlobalValueCategory.Instance.Get(116).Value.Split(';');
+                string[] xiLianDiamondSet = LDGlobalValueCategory.Instance.Get(73).Value.Split('@');
+                string[] xiLianDuSet = LDGlobalValueCategory.Instance.Get(49).Value.Split(";");
                 //ItemLocType itemLocType = ItemLocType.ItemLocBag;
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID);
@@ -65,7 +68,7 @@ namespace ET
                     //钻石洗炼
                     RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
                     int itemXiLianNumber = 0;//unit.GetComponent<NumericComponent>().GetAsInt(NumericType.ItemXiLianNumber);
-                    string[] set = LDGlobalValueCategory.Instance.Get(116).Value.Split(';');
+                    string[] set = xiLianDiscountSet;
                     double discount;
                     if (itemXiLianNumber < int.Parse(set[0]))
                     {
@@ -75,7 +78,7 @@ namespace ET
                     {
                         discount = double.Parse(set[1]);
                     }
-                    int needDimanond = int.Parse(LDGlobalValueCategory.Instance.Get(73).Value.Split('@')[0]);
+                    int needDimanond = int.Parse(xiLianDiamondSet[0]);
                     needDimanond = (int)(needDimanond * discount);
                     if (roleInfo.Diamond < needDimanond)
                     {
@@ -152,7 +155,7 @@ namespace ET
                 Function_Fight.UnitUpdateProperty_Base( unit, true, true );
 
 
-                string[] xiliandu = LDGlobalValueCategory.Instance.Get(49).Value.Split(";");
+                string[] xiliandu = xiLianDuSet;
                 int addXilian = RandomHelper.RandomNumber(int.Parse(xiliandu[0]), int.Parse(xiliandu[1]));
                 if (ifZuanShi)
                 {

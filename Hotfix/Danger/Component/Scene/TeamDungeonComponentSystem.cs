@@ -51,12 +51,10 @@ namespace ET
         {
             for (int i = 0; i < self.TeamInfo.PlayerList.Count; i++)
             {
-                if (self.TeamPlayers.ContainsKey(self.TeamInfo.PlayerList[i].UserID))
+                if (!self.TeamPlayers.TryAdd(self.TeamInfo.PlayerList[i].UserID, self.TeamInfo.PlayerList[i]))
                 {
                     Log.Warning($"InitPlayerList.Error: {self.TeamInfo.PlayerList[i].UserID}");
-                    continue;
                 }
-                self.TeamPlayers.Add(self.TeamInfo.PlayerList[i].UserID, self.TeamInfo.PlayerList[i]);
             }
         }
 
@@ -139,10 +137,7 @@ namespace ET
                         continue;
                     }
 
-                    if (!self.ItemFlags.ContainsKey(teamDropItem.DropInfo.UnitId))
-                    {
-                        self.ItemFlags.Add(teamDropItem.DropInfo.UnitId, unitid);
-                    }
+                    self.ItemFlags.TryAdd(teamDropItem.DropInfo.UnitId, unitid);
                 }
                 else
                 {
@@ -364,17 +359,15 @@ namespace ET
                     idExtra = teamPlayerInfo.UserID;
                 }
                 damageTotal += teamPlayerInfo.Damage;
-                if(!hurtList.ContainsKey(teamPlayerInfo.UserID))
-                {
-                    hurtList.Add(teamPlayerInfo.UserID, teamPlayerInfo.Damage);
-                }
+                hurtList.TryAdd(teamPlayerInfo.UserID, teamPlayerInfo.Damage);
             }
 
 
             self.CheckFriend(hurtList).Coroutine();
 
             //TeamDungeonHurt_136
-            List<Unit> units = unit.GetParent<UnitComponent>().GetAll();
+            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+            List<Unit> units = unitComponent.GetAll();
             for (int i = 0; i < units.Count; i++)
             {
                 Unit unititem = units[i] as Unit;
@@ -383,8 +376,7 @@ namespace ET
                     continue;
                 }
 
-                int hurtvalue = 0;
-                hurtList.TryGetValue(unititem.Id, out hurtvalue);
+                hurtList.TryGetValue(unititem.Id, out int hurtvalue);
                 int hurtRate = (int)(hurtvalue * 100f / damageTotal);
                 TaskComponentServer taskComponent = unititem.GetComponent<TaskComponentServer>();
                 ChengJiuComponentServer chengJiu = unititem.GetComponent<ChengJiuComponentServer>();

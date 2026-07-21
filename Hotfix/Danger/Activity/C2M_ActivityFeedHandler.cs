@@ -10,7 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ActivityFeedRequest request, M2C_ActivityFeedResponse response, Action reply)
         {
             int costItemId = request.ItemID;
-            if (!ActivityV1Config.FeedItemReward.ContainsKey(costItemId))
+            if (!ActivityV1Config.FeedItemReward.TryGetValue(costItemId, out KeyValuePairLong feedReward))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
@@ -31,7 +31,7 @@ namespace ET
             }
 
             List<RewardItem> droplist = new List<RewardItem>();
-            int dropid = (int)ActivityV1Config.FeedItemReward[costItemId].KeyId;
+            int dropid = (int)feedReward.KeyId;
             DropHelper.DropIDToDropItem_2(dropid, droplist);
 
             bagComponentServer.OnCostItemData($"{costItemId};1", ItemLocType.ItemLocBag, ItemGetWay.Activity);

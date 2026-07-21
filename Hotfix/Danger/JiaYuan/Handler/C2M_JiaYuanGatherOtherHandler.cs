@@ -31,7 +31,9 @@ namespace ET
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.JiaYuan, unit.Id))
             {
+                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+                string playerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
                 if (numericComponent.GetAsInt(NumericType.JiaYuanGatherOther) >= 5)
                 {
                     response.Error = ErrorCode.ERR_TimesIsNot;
@@ -72,7 +74,7 @@ namespace ET
                         }
 
                         LDHome_Farm ldHomeFarm = LDHome_FarmCategory.Instance.Get(unitplan.ConfigId);
-                        unit.GetComponent<BagComponentServer>().OnAddItemData(ldHomeFarm.Reward, $"{ItemGetWay.JiaYuanGather}_{TimeHelper.ServerNow()}");
+                        bagComponentServer.OnAddItemData(ldHomeFarm.Reward, $"{ItemGetWay.JiaYuanGather}_{TimeHelper.ServerNow()}");
 
                         unitplan.GetComponent<NumericComponent>().ApplyValue(NumericType.GatherLastTime, TimeHelper.ServerNow());
                         unitplan.GetComponent<NumericComponent>().ApplyChange(null, NumericType.GatherNumber, 1, 0);
@@ -86,13 +88,13 @@ namespace ET
                         jiaYuanOperate.OperateType = JiaYuanOperateType.GatherPlant;
                         jiaYuanOperate.UnitId = request.UnitId;
                         jiaYuanOperate.PlayerId = unit.Id;
-                        jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+                        jiaYuanOperate.PlayerName = playerName;
 
                         JiaYuanRecord jiaYuanRecord = new JiaYuanRecord()
                         {
                             OperateType = JiaYuanOperateType.GatherPlant,
                             OperateId = jiaYuanPlan.ItemId,
-                            PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
+                            PlayerName = playerName,
                             Time = TimeHelper.ServerNow(),
                             PlayerId = unit.Id,
                         };
@@ -116,7 +118,7 @@ namespace ET
                         }
 
                         JiaYuanPastureConfig jiaYuanPastureConfig = JiaYuanPastureConfigCategory.Instance.Get(jiaYuanPasture.ConfigId);
-                        unit.GetComponent<BagComponentServer>().OnAddItemData($"{jiaYuanPastureConfig.GetItemID};1", $"{ItemGetWay.JiaYuanGather}_{TimeHelper.ServerNow()}");
+                        bagComponentServer.OnAddItemData($"{jiaYuanPastureConfig.GetItemID};1", $"{ItemGetWay.JiaYuanGather}_{TimeHelper.ServerNow()}");
 
                         unitplan.GetComponent<NumericComponent>().ApplyValue(NumericType.GatherLastTime, TimeHelper.ServerNow());
                         unitplan.GetComponent<NumericComponent>().ApplyChange(null, NumericType.GatherNumber, 1, 0);
@@ -130,12 +132,12 @@ namespace ET
                         jiaYuanOperate = new JiaYuanOperate();
                         jiaYuanOperate.OperateType = JiaYuanOperateType.GatherPasture;
                         jiaYuanOperate.UnitId = request.UnitId;
-                        jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+                        jiaYuanOperate.PlayerName = playerName;
                         JiaYuanRecord jiaYuanRecord_1 = new JiaYuanRecord()
                         {
                             OperateType = JiaYuanOperateType.GatherPasture,
                             OperateId = jiaYuanPasture.ConfigId,
-                            PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
+                            PlayerName = playerName,
                             Time = TimeHelper.ServerNow(),
                         };
                         jiaYuanComponentServer.AddJiaYuanRecord(jiaYuanRecord_1);
@@ -164,7 +166,7 @@ namespace ET
                     await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId, jiaYuanComponentServer);
                 }
                
-                unit.GetComponent<NumericComponent>().ApplyChange( null, NumericType.JiaYuanGatherOther,1, 0 );
+                numericComponent.ApplyChange( null, NumericType.JiaYuanGatherOther,1, 0 );
             }
 
             reply();

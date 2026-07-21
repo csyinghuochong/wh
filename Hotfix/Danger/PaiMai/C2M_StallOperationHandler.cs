@@ -8,9 +8,10 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_StallOperationRequest request, M2C_StallOperationResponse response, Action reply)
         {
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
             if (request.StallType == 0) //收摊
             {
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Stall, 0);
+                numeric.ApplyValue(NumericType.Now_Stall, 0);
 
                 TransferHelper.RemoveStall(unit );
             }
@@ -25,14 +26,14 @@ namespace ET
                 TransferHelper.RemovePetAndJingLing(unit );
                 long stallId = UnitFactory.CreateStall( unit.DomainScene(), unit ).Id;
 
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, 0);
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_Stall, stallId);
+                numeric.ApplyValue(NumericType.HorseRide, 0);
+                numeric.ApplyValue(NumericType.Now_Stall, stallId);
             }
             if (request.StallType == 2 && request.Value != "" && StringHelper.IsSafeSqlString(request.Value)) //修改名字
             {
                 //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.StallName, request.Value);
 
-                long stallId = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.Now_Stall);
+                long stallId = numeric.GetAsLong(NumericType.Now_Stall);
                 Unit unitstall = unit.GetParent<UnitComponent>().Get(stallId);
                 unitstall.GetComponent<UnitInfoComponent>().UnitName = request.Value;   
                 M2C_RoleDataBroadcast m2C_BroadcastRoleData = new M2C_RoleDataBroadcast();

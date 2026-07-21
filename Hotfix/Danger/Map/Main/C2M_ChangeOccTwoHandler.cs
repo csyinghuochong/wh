@@ -10,15 +10,16 @@ namespace ET
         {
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             SkillSetComponentServer skillSet = unit.GetComponent<SkillSetComponentServer>();
+            RoleInfo roleInfoData = roleInfo.RoleInfo;
             //判断当前角色等级是否达到
-            if (roleInfo.RoleInfo.Lv < 18) 
+            if (roleInfoData.Lv < 18) 
             {
                 response.Error = ErrorCode.ERR_Occ_Hint_1;
                 reply();
                 return;
             }
 
-            int OccTwo = roleInfo.RoleInfo.OccTwo;
+            int OccTwo = roleInfoData.OccTwo;
             ////判断当前角色是否已经进行转职
             if (OccTwo != 0 )
             {
@@ -43,9 +44,10 @@ namespace ET
 
             if (OccTwo == 0)
             {
-                string userName = roleInfo.RoleInfo.Name;
-                string occtwoname = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 0);
-                string occtwonameen = WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(request.OccTwoID).Name, 1);
+                string userName = roleInfoData.Name;
+                LDOccupation_Transfer occTransfer = LDOccupation_TransferCategory.Instance.Get(request.OccTwoID);
+                string occtwoname = WordHelper.GetShowText(occTransfer.Name, 0);
+                string occtwonameen = WordHelper.GetShowText(occTransfer.Name, 1);
                 
                 string noticeContent = $"{userName} 在主城转职大师处成功转职:<color=#C4FF00>{occtwoname}</color>";
                 string noticeContentEn = $"{userName} at main city Job Change Master transfer successful:<color=#C4FF00>{occtwonameen}</color>";

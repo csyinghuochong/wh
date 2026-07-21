@@ -16,7 +16,7 @@ namespace ET
             //    return;
             //}
 
-            if (!CommonConfig.PetHeXinExploreReward.ContainsKey(request.RewardId))
+            if (!CommonConfig.PetHeXinExploreReward.TryGetValue(request.RewardId, out string rewardConfig))
             {
                 Log.Error($"C2M_PetHeXinExploreReward 1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -32,9 +32,10 @@ namespace ET
                 return;
             }
 
-            string[] reward = CommonConfig.PetHeXinExploreReward[request.RewardId].Split('$');
+            string[] reward = rewardConfig.Split('$');
             string[] items = reward[0].Split('@');
-            string[] diamond = reward[1].Split(';')[1].Split(',');
+            string[] diamondParts = reward[1].Split(';');
+            string[] diamond = diamondParts[1].Split(',');
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             if (bagComponentServer.GetBagLeftCell() < items.Length)
             {

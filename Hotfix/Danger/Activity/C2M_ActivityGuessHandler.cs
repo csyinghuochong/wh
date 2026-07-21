@@ -16,7 +16,8 @@ namespace ET
                 return;
             }
             string costItem = ActivityV1Config.GetGuessCostItem(activityV1Info.GuessIds.Count);
-            if (!unit.GetComponent<BagComponentServer>().CheckNeedItem(costItem))
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            if (!bag.CheckNeedItem(costItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
@@ -29,14 +30,14 @@ namespace ET
                        UnitId = unit.Id,
                        GuessId = request.GuessId,   
                    });
-            if (activityV1Info.GuessIds.Contains(request.GuessId))
+            if (r_GameStatusResponse.Error != ErrorCode.ERR_Success)
             {
-                response.Error = ErrorCode.ERR_Already_Guess;
+                response.Error = r_GameStatusResponse.Error;
                 reply();
                 return;
             }
             activityV1Info.GuessIds.Add(request.GuessId);
-            unit.GetComponent<BagComponentServer>().OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.Activity );
+            bag.OnCostItemData(costItem, ItemLocType.ItemLocBag, ItemGetWay.Activity );
             reply();
             await ETTask.CompletedTask;
         }

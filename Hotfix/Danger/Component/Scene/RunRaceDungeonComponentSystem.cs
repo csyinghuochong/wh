@@ -102,6 +102,9 @@ namespace ET
         {
             int sceneid = self.DomainScene().GetComponent<MapComponent>().SceneId;
             LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
+            float bornX = (float)ldScene.Pos_Born[0];
+            float bornY = (float)ldScene.Pos_Born[1] * 0.01f;
+            float bornZ = (float)ldScene.Pos_Born[2] * 0.01f;
             List<Unit> unitlist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
             for (int i = 0; i < unitlist.Count; i++)
             {
@@ -110,9 +113,9 @@ namespace ET
                 if (unit.Position.z >= -38.36f)
                 {
                     unit.GetComponent<MoveComponent>().Clear();
-                    unit.Position = new Vector3((float)ldScene.Pos_Born[0]  + RandomHelper.RandomNumberFloat(-1, 1), 
-                        (float)ldScene.Pos_Born[1] * 0.01f, 
-                        (float)ldScene.Pos_Born[2] * 0.01f + RandomHelper.RandomNumberFloat(-1, 1));
+                    unit.Position = new Vector3(bornX + RandomHelper.RandomNumberFloat(-1, 1), 
+                        bornY, 
+                        bornZ + RandomHelper.RandomNumberFloat(-1, 1));
                     unit.Stop(-2);
                 }
             }
@@ -168,7 +171,7 @@ namespace ET
                     continue;
                 }
 
-                if (Vector3.Distance(units[i].Position, vector3) > 2f)
+                if (Vector3.Distance(unit.Position, vector3) > 2f)
                 {
                     continue;
                 }
@@ -266,7 +269,7 @@ namespace ET
                 for (int i = 0; i < units.Count; i++)
                 {
                     Unit unit = units[i];
-                    float distance = Vector3.Distance(units[i].Position, vector3);
+                    float distance = Vector3.Distance(unit.Position, vector3);
 
                     RankingInfo rankPetInfo = new RankingInfo();
                     RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();

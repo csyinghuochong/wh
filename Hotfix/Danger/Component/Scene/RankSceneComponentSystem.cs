@@ -103,11 +103,10 @@ namespace ET
             await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(500, 1000));
             long fubenCenterId = DBHelper.GetFubenCenterId(self.DomainZone());
          
-            List<StartProcessConfig> listprogress = StartProcessConfigCategory.Instance.GetAll().Values.ToList();
-            for (int i = 0; i < listprogress.Count; i++)
+            foreach (StartProcessConfig listprogress in StartProcessConfigCategory.Instance.GetAll().Values)
             {
-                List<StartSceneConfig> processScenes = StartSceneConfigCategory.Instance.GetByProcess(listprogress[i].Id);
-                if (processScenes.Count == 0 || listprogress[i].Id == CommonConfig.RobotProgress)  //机器人进程
+                List<StartSceneConfig> processScenes = StartSceneConfigCategory.Instance.GetByProcess(listprogress.Id);
+                if (processScenes.Count == 0 || listprogress.Id == CommonConfig.RobotProgress)  //机器人进程
                 {
                     continue;
                 }
@@ -288,13 +287,9 @@ namespace ET
             for (int i = 0; i < self.DBRankInfo.rankingInfos.Count; i++)
             {
                 RankingInfo rankingInfoTemp = self.DBRankInfo.rankingInfos[i];
-                if (oldRankList.ContainsKey(rankingInfoTemp.UserId))
+                if (!oldRankList.TryAdd(rankingInfoTemp.UserId, i))
                 {
                     Log.Error($"oldRankList.ContainsKey(rankingInfoTemp.UserId): {rankingInfoTemp.UserId}");
-                }
-                else
-                {
-                    oldRankList.Add(rankingInfoTemp.UserId, i);
                 }
 
                 if (rankingInfoTemp.UserId == rankingInfo.UserId)
@@ -327,7 +322,7 @@ namespace ET
             for (int i = 0; i < self.DBRankInfo.rankingInfos.Count; i++)
             {
                 RankingInfo rankingInfoTemp = self.DBRankInfo.rankingInfos[i];
-                if(!oldRankList.ContainsKey(rankingInfoTemp.UserId) || oldRankList[rankingInfoTemp.UserId] != i)
+                if (!oldRankList.TryGetValue(rankingInfoTemp.UserId, out int oldIndex) || oldIndex != i)
                 {
                     updateRankList.Add(rankingInfoTemp.UserId);
                 }
@@ -616,7 +611,7 @@ namespace ET
         public static List<RankPetInfo> GetRankPetList(this RankSceneComponent self, int rankNumber)
         {
             List<RankPetInfo> rankPetInfos = new List<RankPetInfo>();
-            List<int> indexList = new List<int>();
+            HashSet<int> indexList = new HashSet<int>();
 
             //前四名只找1-10名
             if (rankNumber >= 1 && rankNumber <= 4)
@@ -660,19 +655,17 @@ namespace ET
                         }
                     }
 
-                    if (!indexList.Contains(index))
-                    {
-                        indexList.Add(index);
-                    }
+                    indexList.Add(index);
 
                     randomNumber++;
                 }
             }
-            indexList.Sort();
+            List<int> sortedIndexes = new List<int>(indexList);
+            sortedIndexes.Sort();
 
-            for (int i = 0; i < indexList.Count; i++)
+            for (int i = 0; i < sortedIndexes.Count; i++)
             {
-                rankPetInfos.Add(self.DBRankInfo.rankingPets[indexList[i]]);
+                rankPetInfos.Add(self.DBRankInfo.rankingPets[sortedIndexes[i]]);
             }
 
             return rankPetInfos;
@@ -727,11 +720,10 @@ namespace ET
             {
                 Log.Debug($"BroadcastShowLie:  {self.DomainZone()}");
                 Log.Console($"BroadcastShowLie value:  {self.DomainZone()} {loadvalue}");
-                List<StartProcessConfig> listprogress = StartProcessConfigCategory.Instance.GetAll().Values.ToList();
-                for (int i = 0; i < listprogress.Count; i++)
+                foreach (StartProcessConfig listprogress in StartProcessConfigCategory.Instance.GetAll().Values)
                 {
-                    List<StartSceneConfig> processScenes = StartSceneConfigCategory.Instance.GetByProcess(listprogress[i].Id);
-                    if (processScenes.Count == 0 || listprogress[i].Id == CommonConfig.RobotProgress)  //机器人进程
+                    List<StartSceneConfig> processScenes = StartSceneConfigCategory.Instance.GetByProcess(listprogress.Id);
+                    if (processScenes.Count == 0 || listprogress.Id == CommonConfig.RobotProgress)  //机器人进程
                     {
                         continue;
                     }
@@ -752,6 +744,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankingInfo> rankingInfos = self.DBRankInfo.rankingDemon;
             long mailServerId = DBHelper.GetMailServerId( self.DomainZone() );
+            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 5);
@@ -768,7 +761,11 @@ namespace ET
                 mailInfo.Title = "恶魔排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                string[] needList = rankRewardConfig.Reward.Split('@');
+                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
+                {
+                    needList = rankRewardConfig.Reward.Split('@');
+                    rewardSplits.Add(rankRewardConfig.Reward, needList);
+                }
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -798,6 +795,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankShouLieInfo> rankingInfos = self.DBRankInfo.rankUnionRace;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 4);
@@ -814,7 +812,11 @@ namespace ET
                 mailInfo.Title = "家族战排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                string[] needList = rankRewardConfig.Reward.Split('@');
+                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
+                {
+                    needList = rankRewardConfig.Reward.Split('@');
+                    rewardSplits.Add(rankRewardConfig.Reward, needList);
+                }
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -846,6 +848,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankShouLieInfo> rankingInfos = self.DBRankInfo.rankShowLie;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 3);
@@ -860,7 +863,11 @@ namespace ET
                 mailInfo.Title = "狩猎排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
                 Log.Debug($"发放狩猎排行榜奖励：zone. {zone} rankid.{i + 1}  unitid.{rankingInfos[i].UnitID}  {rankingInfos[i].PlayerName}  {rankingInfos[i].KillNumber}");
-                string[] needList = rankRewardConfig.Reward.Split('@');
+                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
+                {
+                    needList = rankRewardConfig.Reward.Split('@');
+                    rewardSplits.Add(rankRewardConfig.Reward, needList);
+                }
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -900,6 +907,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<KeyValuePairLong> rankingInfos = self.DBRankInfo.rankingTrial;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 6);
@@ -918,7 +926,11 @@ namespace ET
                 {
                     Log.Warning($"试炼奖励: {self.DomainZone()} {rankingInfos[i].KeyId}");
                 }
-                string[] needList = rankRewardConfig.Reward.Split('@');
+                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
+                {
+                    needList = rankRewardConfig.Reward.Split('@');
+                    rewardSplits.Add(rankRewardConfig.Reward, needList);
+                }
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -957,6 +969,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<KeyValuePairLong> rankingInfos = self.DBRankInfo.rankSeasonTower;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 7);
@@ -975,7 +988,11 @@ namespace ET
                 {
                     Log.Warning($"赛季之塔奖励: {self.DomainZone()} {rankingInfos[i].KeyId}");
                 }
-                string[] needList = rankRewardConfig.Reward.Split('@');
+                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
+                {
+                    needList = rankRewardConfig.Reward.Split('@');
+                    rewardSplits.Add(rankRewardConfig.Reward, needList);
+                }
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -1017,6 +1034,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankingInfo> rankingInfos = self.DBRankInfo.rankingInfos;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i+1, 1);
@@ -1035,7 +1053,11 @@ namespace ET
                 {
                     Log.Warning($"战力奖励: {self.DomainZone()} {rankingInfos[i].UserId}   {i}");
                 }
-                string[] needList = rankRewardConfig.Reward.Split('@');
+                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
+                {
+                    needList = rankRewardConfig.Reward.Split('@');
+                    rewardSplits.Add(rankRewardConfig.Reward, needList);
+                }
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');
@@ -1068,6 +1090,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankPetInfo> rankingInfos = self.DBRankInfo.rankingPets;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 bool havePetUId = false;
@@ -1097,7 +1120,11 @@ namespace ET
                 mailInfo.Title = "排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                string[] needList = rankRewardConfig.Reward.Split('@');
+                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
+                {
+                    needList = rankRewardConfig.Reward.Split('@');
+                    rewardSplits.Add(rankRewardConfig.Reward, needList);
+                }
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');

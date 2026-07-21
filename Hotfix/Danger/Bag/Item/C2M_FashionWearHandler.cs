@@ -41,23 +41,16 @@ namespace ET
                     return;
                 }
 
-                for (int  i = bagComponentServer.FashionEquipList.Count - 1; i >= 0 ; i--)
-                {
-                    LDFashion fashion2 = LDFashionCategory.Instance.Get(bagComponentServer.FashionEquipList[i]);
-                 
-                }
-
                 bagComponentServer.FashionEquipList.Add(request.FashionId);
             }
             else
             {
-                if (!bagComponentServer.FashionEquipList.Contains(request.FashionId))
+                if (!bagComponentServer.FashionEquipList.Remove(request.FashionId))
                 {
                     response.Error = ErrorCode.ERR_NetWorkError;
                     reply();
                     return;
                 }
-                bagComponentServer.FashionEquipList.Remove(request.FashionId);
             }
 
             M2C_FashionUpdate m2C_FashionUpdate = new M2C_FashionUpdate();

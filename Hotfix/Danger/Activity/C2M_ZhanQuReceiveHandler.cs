@@ -32,6 +32,7 @@ namespace ET
 
                 ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(request.ActivityId);
                 RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
 
                 if (request.ActivityType != activityConfig.ActivityType)
                 {
@@ -55,7 +56,7 @@ namespace ET
                     case 21:    //战区等级
                     case 22:    //战区战力
                         string[] itemlist = activityConfig.Par_3.Split('@');
-                        if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < itemlist.Length)
+                        if (bagComponentServer.GetBagLeftCell() < itemlist.Length)
                         {
                             response.Error = ErrorCode.ERR_BagIsFull;
                             reply();
@@ -78,7 +79,7 @@ namespace ET
                         }
 
                         activityComponentServer.ZhanQuReceiveIds.Add(request.ActivityId);
-                        unit.GetComponent<BagComponentServer>().OnAddItemData(activityConfig.Par_3, $"{ItemGetWay.Activity_ZhanQu}_{TimeHelper.ServerNow()}");
+                        bagComponentServer.OnAddItemData(activityConfig.Par_3, $"{ItemGetWay.Activity_ZhanQu}_{TimeHelper.ServerNow()}");
                         break;
                     default:
                         break;

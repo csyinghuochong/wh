@@ -10,7 +10,8 @@ namespace ET
         {
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.XiaJia, unit.Id))
             {
-                if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < 1)
+                BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+                if (bag.GetBagLeftCell() < 1)
                 {
                     reply();
                     return;
@@ -23,7 +24,7 @@ namespace ET
 
                 if (p2MStallXiaJiaResponse.Error == ErrorCode.ERR_Success && p2MStallXiaJiaResponse.PaiMaiItemInfo != null)
                 {
-                    unit.GetComponent<BagComponentServer>().OnAddItemData(p2MStallXiaJiaResponse.PaiMaiItemInfo.BagInfo,
+                    bag.OnAddItemData(p2MStallXiaJiaResponse.PaiMaiItemInfo.BagInfo,
                         $"{ItemGetWay.XiaJia}_{TimeHelper.ServerNow()}");
                 }
                 else

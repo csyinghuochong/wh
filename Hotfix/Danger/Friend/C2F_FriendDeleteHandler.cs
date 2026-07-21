@@ -8,19 +8,17 @@ namespace ET
         protected override async ETTask Run(Scene scene, C2F_FriendDeleteRequest request, F2C_FriendDeleteResponse response, Action reply)
         {
             DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
-            if (dBFriendInfo == null || !dBFriendInfo.FriendList.Contains(request.FriendID))
+            if (dBFriendInfo == null || !dBFriendInfo.FriendList.Remove(request.FriendID))
             {
                 reply();
                 return;
             }
 
-            dBFriendInfo.FriendList.Remove(request.FriendID);
             DBHelper.SaveComponent(scene.DomainZone(), request.UserID, dBFriendInfo).Coroutine();
 
             DBFriendInfo dBFriendInfo_2 = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.FriendID);
-            if (dBFriendInfo_2!=null &&  dBFriendInfo_2.FriendList.Contains(request.UserID))
+            if (dBFriendInfo_2 != null && dBFriendInfo_2.FriendList.Remove(request.UserID))
             {
-                dBFriendInfo_2.FriendList.Remove(request.UserID);
                 DBHelper.SaveComponent(scene.DomainZone(), request.FriendID, dBFriendInfo_2).Coroutine();
             }
 

@@ -10,6 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ActivityChouKaRequest request, M2C_ActivityChouKaResponse response, Action reply)
         {
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (bagComponentServer.GetBagLeftCell() < 1)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -23,7 +24,7 @@ namespace ET
                 return;
             }
 
-            unit.GetComponent<NumericComponent>().ApplyChange( null,NumericType.V1ChouKaNumber, 1, 0 );
+            numericComponent.ApplyChange( null,NumericType.V1ChouKaNumber, 1, 0 );
 
             int dropId = ActivityV1Config.ChouKaDropId[0];
             ServerInfo serverInfo = ConfigData.ServerInfoList[UnitZoneHelper.GetHomeZone(unit)];

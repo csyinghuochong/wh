@@ -11,6 +11,9 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PaiMaiBuyRequest request, M2C_PaiMaiBuyResponse response, Action reply)
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            DataCollationComponent dataCollation = unit.GetComponent<DataCollationComponent>();
 
             //背包是否有位置
             if (bag.GetBagLeftCell() < 1)
@@ -30,9 +33,9 @@ namespace ET
                     List<Unit> monsterid = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Monster);
                     for (int i = 0; i < monsterid.Count; i++)
                     {
-                        NumericComponent numericComponent = monsterid[i].GetComponent<NumericComponent>();
+                        NumericComponent monsterNumeric = monsterid[i].GetComponent<NumericComponent>();
 
-                        if (numericComponent.GetAsInt(NumericType.Now_Dead) == 1
+                        if (monsterNumeric.GetAsInt(NumericType.Now_Dead) == 1
                             && (monsterid[i].ConfigId == 70005012 || monsterid[i].ConfigId == 70005013))
                         {
                             removeIds.Add(monsterid[i].Id);
@@ -87,7 +90,6 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             //钱是否足够
             if (roleInfoComponentServer.RoleInfo.Gold < needGold)
             {
@@ -104,7 +106,7 @@ namespace ET
                 int createDay = roleInfoComponentServer.GetCrateDay();
 
                 //firstDay = createDay <= 1 && roleInfoComponent.RoleInfo.Level <= 10;
-                request.IsRecharge = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber);
+                request.IsRecharge = numericComponent.GetAsInt(NumericType.RechargeNumber);
 
                 if (request.IsRecharge > 0
                     || CommonHelper.IsCanPaiMai_KillBoss(roleInfoComponentServer.RoleInfo.MonsterRevives, roleInfoComponentServer.RoleInfo.Lv)
@@ -156,7 +158,6 @@ namespace ET
                 //Log.Warning($"拍卖购买者: {unit.Id} 购买 {r_GameStatusResponse.PaiMaiItemInfo.UserId} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
                 Log.Warning($"拍卖被购买: [出售者]{r_GameStatusResponse.PaiMaiItemInfo.UserId}  [购买者]{unit.Id} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
 
-                DataCollationComponent dataCollation = unit.GetComponent<DataCollationComponent>();
                 dataCollation.PaiMaiCostGoldToday += needGold;
                 if (dataCollation.PaiMaiCostGoldToday >= 50000000)
                 {
@@ -203,9 +204,7 @@ namespace ET
                 }
                 else
                 {
-                    DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
-                    NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-                    dataCollationComponent.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, true);
+                    dataCollation.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, true);
                 }
                 
                 //每天更新文本。

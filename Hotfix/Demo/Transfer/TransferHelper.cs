@@ -14,7 +14,9 @@ namespace ET
                 {
                     return ErrorCode.ERR_RequestRepeatedly;
                 }
-                int oldScene = unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum;
+                Scene unitScene = unit.DomainScene();
+                MapComponent unitMapComponent = unitScene.GetComponent<MapComponent>();
+                int oldScene = unitMapComponent.MapTypeEnum;
                 if (!SceneConfigHelper.CanTransfer(oldScene, request.SceneType))
                 {
                     Log.Debug($"LoginTest1  Actor_Transfer unitId{unit.Id} oldScene:{oldScene}  requestscene{request.SceneType}");
@@ -61,14 +63,14 @@ namespace ET
                     case (int)MapTypeEnum.PetDungeon:
                         int petfubenid = int.Parse(request.paramInfo);
                         
-                        Scene oldscene = unit.DomainScene();
-                        MapComponent mapComponent = oldscene.GetComponent<MapComponent>();
+                        Scene oldscene = unitScene;
+                        MapComponent mapComponent = unitMapComponent;
                         int sceneTypeEnum = mapComponent.MapTypeEnum;
                         long fubenid = IdGenerater.Instance.GenerateId();
                         long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
                         Scene fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "PetFuben" + fubenid.ToString(), SceneType.Map);
                         fubnescene.AddComponent<PetFubenSceneComponent>();
-                        fubnescene.GetComponent<MapComponent>().SetMapInfo((int)MapTypeEnum.PetDungeon, request.SceneId, int.Parse(request.paramInfo));
+                        fubnescene.GetComponent<MapComponent>().SetMapInfo((int)MapTypeEnum.PetDungeon, request.SceneId, petfubenid);
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.PetDungeon, request.SceneId, FubenDifficulty.None, request.paramInfo);
                         TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
@@ -443,14 +445,14 @@ namespace ET
 
         public static async ETTask MainCityTransfer(Unit unit)
         {
-            MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
+            Scene scene = unit.DomainScene();
+            MapComponent mapComponent = scene.GetComponent<MapComponent>();
             int sceneTypeEnum = mapComponent.MapTypeEnum;
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             long userId = roleInfoComponentServer.RoleInfo.UserId;
             // 跨服旅游后当前区是目标服，回城用归属服
             long mapInstanceId = DBHelper.GetMainCityServerId(UnitZoneHelper.GetHomeZone(unit));
             //动态删除副本
-            Scene scene = unit.DomainScene();
             TransferHelper.BeforeTransfer(unit);
             await TransferHelper.Transfer(unit, mapInstanceId, (int)MapTypeEnum.MainCityScene, CommonHelper.MainCityID(), 0, "0");
 

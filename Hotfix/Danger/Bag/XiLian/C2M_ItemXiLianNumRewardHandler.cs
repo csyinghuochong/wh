@@ -16,7 +16,7 @@ namespace ET
             //    return;
             //}
 
-            if (!CommonConfig.ItemXiLianNumReward.ContainsKey(request.RewardId))
+            if (!CommonConfig.ItemXiLianNumReward.TryGetValue(request.RewardId, out _))
             {
                 Log.Error($"C2M_ItemXiLianNumReward 1");
                 response.Error = ErrorCode.ERR_ModifyData;

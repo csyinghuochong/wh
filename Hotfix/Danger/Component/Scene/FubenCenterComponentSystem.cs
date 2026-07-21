@@ -245,21 +245,16 @@ namespace ET
                     continue;
                 }
                
-                if (!playerList.ContainsKey(  Entity.Id) )
+                if (!playerList.Remove(Entity.Id))
                 {
                     continue;
                 }
 
-                if (playerList.ContainsKey(Entity.Id))
-                {
-                    playerList.Remove(Entity.Id);
-                    Log.Warning($"DisposeFubenId; {functionId} {Entity.Id}");
-                }
+                Log.Warning($"DisposeFubenId; {functionId} {Entity.Id}");
 
                 long instanceid = Entity.InstanceId;
-                if (self.FubenInstanceList.Contains(instanceid))
+                if (self.FubenInstanceList.Remove(instanceid))
                 {
-                    self.FubenInstanceList.Remove(instanceid);
                     Log.Warning($"DisposeFubenInstance; {functionId}  {instanceid}");
                 }
               

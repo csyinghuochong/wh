@@ -9,8 +9,10 @@ namespace ET
 		protected override async ETTask Run(Unit unit, C2M_RolePetFenjie request, M2C_RolePetFenjie response, Action reply)
 		{
 			PetComponentServer pet = unit.GetComponent<PetComponentServer>();
+			BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+			UnitComponent unitComponent = unit.GetParent<UnitComponent>();
 			//判断背包是否满
-			if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() <= 1)
+			if (bagComponentServer.GetBagLeftCell() <= 1)
 			{
 				response.Error = ErrorCode.ERR_BagIsFull;       //提示背包已满
 				reply();
@@ -60,10 +62,10 @@ namespace ET
 			
 			unit.GetComponent<JiaYuanComponentServer>().OnJiaYuanPetWalk(rolePetInfo, 0, -1);
 
-			if (unit.GetParent<UnitComponent>().Get(rolePetInfo.Id) != null)
+			if (unitComponent.Get(rolePetInfo.Id) != null)
 			{
 				Log.Warning($"宠物还在出战中！！");
-				unit.GetParent<UnitComponent>().Remove(rolePetInfo.Id);
+				unitComponent.Remove(rolePetInfo.Id);
 			}
 
 			Function_Fight.UnitUpdateProperty_Base( unit, true, true );

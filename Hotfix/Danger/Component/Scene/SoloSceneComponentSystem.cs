@@ -198,19 +198,24 @@ namespace ET
             }
 
             //销毁所有场景
-            List<long> childids = self.Children.Keys.ToList();  
-            //foreach ((long id, Entity entity) in self.Children)
-            for(int i = 0; i < childids.Count; i++)
+            while (self.Children.Count > 0)
             {
-                Entity entity = self.GetChild<Entity>(childids[i]);
+                Entity entity = null;
+                foreach ((long id, Entity child) in self.Children)
+                {
+                    entity = child;
+                    break;
+                }
+
                 if (entity == null)
                 {
-                    continue;
+                    break;
                 }
+
                 Scene scene = entity as Scene;
                 if (scene == null)
                 {
-                    continue;
+                    break;
                 }
 
                 scene.GetComponent<SoloDungeonComponent>().KickOutPlayer();
@@ -251,9 +256,9 @@ namespace ET
             }
 
             //获取次数
-            if (self.AllPlayerDateList.ContainsKey(teamPlayerInfo.UnitId))
+            if (self.AllPlayerDateList.TryGetValue(teamPlayerInfo.UnitId, out SoloPlayerInfo playerDate))
             {
-                int joinNum = self.AllPlayerDateList[teamPlayerInfo.UnitId].WinNum + self.AllPlayerDateList[teamPlayerInfo.UnitId].FailNum;
+                int joinNum = playerDate.WinNum + playerDate.FailNum;
                 if (joinNum > 50) 
                 {
                     return ErrorCode.ERR_SoloNumMax;
@@ -268,9 +273,7 @@ namespace ET
             }
 
             //添加积分列表
-            if (!self.PlayerIntegralList.ContainsKey(teamPlayerInfo.UnitId)) {
-                self.PlayerIntegralList.Add(teamPlayerInfo.UnitId,0);
-            }
+            self.PlayerIntegralList.TryAdd(teamPlayerInfo.UnitId, 0);
 
             return ErrorCode.ERR_Success;
         }
@@ -278,13 +281,10 @@ namespace ET
         //添加玩家缓存
         public static void OnAddSoloDateList(this SoloSceneComponent self, long unitID , string name,int occ)
         {
-            if (!self.AllPlayerDateList.ContainsKey(unitID)) 
-            {
-                SoloPlayerInfo soloPlayerInfo = new SoloPlayerInfo();
-                soloPlayerInfo.Name = name;
-                soloPlayerInfo.Occ = occ;
-                self.AllPlayerDateList.Add(unitID,soloPlayerInfo);
-            }
+            SoloPlayerInfo soloPlayerInfo = new SoloPlayerInfo();
+            soloPlayerInfo.Name = name;
+            soloPlayerInfo.Occ = occ;
+            self.AllPlayerDateList.TryAdd(unitID, soloPlayerInfo);
         }
 
         //匹配监测机制
@@ -442,13 +442,13 @@ namespace ET
 
                 SoloPlayerResultInfo soloPlayerRes = new SoloPlayerResultInfo();
                 soloPlayerRes.Combat = self.PlayerIntegralList[unitId];
-                if (self.AllPlayerDateList.ContainsKey(unitId))
+                if (self.AllPlayerDateList.TryGetValue(unitId, out SoloPlayerInfo playerDate))
                 {
                     soloPlayerRes.UnitId = unitId;  
-                    soloPlayerRes.Name = self.AllPlayerDateList[unitId].Name;
-                    soloPlayerRes.Occ = self.AllPlayerDateList[unitId].Occ;
-                    soloPlayerRes.WinNum = self.AllPlayerDateList[unitId].WinNum;
-                    soloPlayerRes.FailNum = self.AllPlayerDateList[unitId].FailNum;
+                    soloPlayerRes.Name = playerDate.Name;
+                    soloPlayerRes.Occ = playerDate.Occ;
+                    soloPlayerRes.WinNum = playerDate.WinNum;
+                    soloPlayerRes.FailNum = playerDate.FailNum;
                 }
                 soloResultInfoList.Add(soloPlayerRes);
 

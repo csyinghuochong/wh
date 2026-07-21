@@ -8,22 +8,24 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_PetOpenCangKu request, M2C_PetOpenCangKu response, Action reply)
         {
+            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             string costitem = CommonConfig.PetOpenCangKu[request.OpenIndex - 1];
-            if (!unit.GetComponent<BagComponentServer>().CheckNeedItem(costitem))
+            if (!bagComponentServer.CheckNeedItem(costitem))
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
                 return;
             }
-            if (unit.GetComponent<PetComponentServer>().PetCangKuOpen.Contains(request.OpenIndex - 1)) 
+            if (petComponentServer.PetCangKuOpen.Contains(request.OpenIndex - 1)) 
             {
                 response.Error = ErrorCode.ERR_CangKu_Already;
                 reply();
                 return;
             }
 
-            unit.GetComponent<PetComponentServer>().PetCangKuOpen.Add(request.OpenIndex - 1);
-            unit.GetComponent<BagComponentServer>().OnCostItemData(costitem, ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);
+            petComponentServer.PetCangKuOpen.Add(request.OpenIndex - 1);
+            bagComponentServer.OnCostItemData(costitem, ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);
             reply();
             await ETTask.CompletedTask;
         }

@@ -44,11 +44,12 @@ namespace ET
 
             int magiclevel = 0;
 
-            foreach (int itemid in removeids) 
+            foreach ( ( int key, List<int>  idlist) in CommonConfig.MagicHeChengList)
             {
-                foreach ( ( int key, List<int>  idlist) in CommonConfig.MagicHeChengList)
+                HashSet<int> idSet = new HashSet<int>(idlist);
+                foreach (int itemid in removeids)
                 {
-                    if (!idlist.Contains(itemid))
+                    if (!idSet.Contains(itemid))
                     {
                         continue;
                     }

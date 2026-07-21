@@ -18,23 +18,24 @@ namespace ET
                 reply();
                 return;
             }
-           
+
+            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
             switch (request.OperateType)
             {
                 case 1:
-                    unit.GetComponent<JiaYuanComponentServer>().UprootPlant(request.CellIndex);
+                    jiaYuanComponentServer.UprootPlant(request.CellIndex);
                     break;
                 case 2:
                     JiaYuanPastureConfig jiaYuanPastureConfig = JiaYuanPastureConfigCategory.Instance.Get(unitPlan.ConfigId);
                     unit.GetComponent<BagComponentServer>().OnAddItemData($"13;{jiaYuanPastureConfig.SellGold}", $"{ItemGetWay.JiaYuanGather}_{TimeHelper.ServerFrameTime()}");
-                    unit.GetComponent<JiaYuanComponentServer>().UprootPasture(request.UnitId);
+                    jiaYuanComponentServer.UprootPasture(request.UnitId);
 
                     break;
             }
 
             unit.GetParent<UnitComponent>().Remove(request.UnitId);
-            response.JiaYuanPastureList = unit.GetComponent<JiaYuanComponentServer>().JiaYuanPastureList_7;
-            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, unit.GetComponent<JiaYuanComponentServer>()).Coroutine();
+            response.JiaYuanPastureList = jiaYuanComponentServer.JiaYuanPastureList_7;
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer).Coroutine();
             reply();
             await ETTask.CompletedTask;
         #endif

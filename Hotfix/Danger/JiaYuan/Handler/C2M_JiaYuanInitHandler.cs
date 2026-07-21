@@ -13,6 +13,7 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
             if (unit.Id != request.MasterId)
             {
+                string playerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
 
                 long gateServerId = DBHelper.GetGateServerId(unit);
                 G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
@@ -27,7 +28,7 @@ namespace ET
                     JiaYuanOperate jiaYuanOperate = new JiaYuanOperate();
                     jiaYuanOperate = new JiaYuanOperate();
                     jiaYuanOperate.OperateType = JiaYuanOperateType.Visit;
-                    jiaYuanOperate.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+                    jiaYuanOperate.PlayerName = playerName;
                     M2M_JiaYuanOperateMessage opmessage = new M2M_JiaYuanOperateMessage()
                     {
                         JiaYuanOperate = jiaYuanOperate,
@@ -40,7 +41,7 @@ namespace ET
                     {
                         OperateType = JiaYuanOperateType.Visit,
                         OperateId = 0,
-                        PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name,
+                        PlayerName = playerName,
                         Time = TimeHelper.ServerNow(),
                     });
                     await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId, jiaYuanComponentServer);

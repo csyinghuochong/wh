@@ -53,14 +53,15 @@ namespace ET
                     {
                         string[] itemInfo = itemList[k].Split(',');
                         int itemId = int.Parse(itemInfo[0]);
+                        int itemNum = int.Parse(itemInfo[1]) * bagInfo.ItemNum;
 
                         if (huishouGet.TryGetValue(itemId, out RewardItem rewardItem))
                         {
-                            rewardItem.ItemNum += int.Parse(itemInfo[1]) * bagInfo.ItemNum;
+                            rewardItem.ItemNum += itemNum;
                         }
                         else
                         {
-                            huishouGet.Add(itemId, new RewardItem() { ItemID = itemId, ItemNum = int.Parse(itemInfo[1]) * bagInfo.ItemNum });
+                            huishouGet.Add(itemId, new RewardItem() { ItemID = itemId, ItemNum = itemNum });
                         }
                     }
                 }

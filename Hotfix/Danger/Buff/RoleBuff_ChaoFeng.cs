@@ -13,8 +13,10 @@ namespace ET
 
             if (theUnitBelongto.Type == UnitType.Monster || theUnitBelongto.Type == UnitType.Pet)
             {
-                theUnitBelongto.GetComponent<AIComponent>().ChangeTarget( theUnitFrom.Id);
-                theUnitBelongto.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.ChaoFeng);
+                AIComponent aiComponent = theUnitBelongto.GetComponent<AIComponent>();
+                StateComponent stateComponent = theUnitBelongto.GetComponent<StateComponent>();
+                aiComponent.ChangeTarget(theUnitFrom.Id);
+                stateComponent.StateTypeAdd(StateTypeEnum.ChaoFeng);
             }
         }
 

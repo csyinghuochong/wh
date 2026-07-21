@@ -10,7 +10,10 @@ namespace ET
         {
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
-                long unionid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0);
+                NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+                RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+                long unionid = numericComponent.GetAsLong(NumericType.UnionId_0);
                 if (unionid == 0)
                 {
                     response.Error = ErrorCode.ERR_NetWorkError;
@@ -34,13 +37,13 @@ namespace ET
                     reply();
                     return;
                 }
-                if (unit.GetComponent<RoleInfoComponentServer>().GetMysteryBuy(mysteryId) >= mysteryConfig.BuyNumMax)
+                if (roleInfoComponentServer.GetMysteryBuy(mysteryId) >= mysteryConfig.BuyNumMax)
                 {
                     response.Error = ErrorCode.ERR_MysteryItem_Max;
                     reply();
                     return;
                 }
-                if (!unit.GetComponent<BagComponentServer>().CheckNeedItem($"{mysteryConfig.SellType};{mysteryConfig.SellValue}"))
+                if (!bagComponentServer.CheckNeedItem($"{mysteryConfig.SellType};{mysteryConfig.SellValue}"))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
                     reply();
@@ -64,9 +67,9 @@ namespace ET
                 }
 
                 LogHelper.LogWarning($"家族神秘商人购买道具: {unit.DomainZone()} {unit.Id} {mysteryId}");
-                unit.GetComponent<RoleInfoComponentServer>().OnMysteryBuy(mysteryId);
-                unit.GetComponent<BagComponentServer>().OnCostItemData($"{mysteryConfig.SellType};{mysteryConfig.SellValue}", ItemLocType.ItemLocBag, ItemGetWay.UnionXiuLian );
-                unit.GetComponent<BagComponentServer>().OnAddItemData($"{mysteryConfig.SellItemID};{1}",
+                roleInfoComponentServer.OnMysteryBuy(mysteryId);
+                bagComponentServer.OnCostItemData($"{mysteryConfig.SellType};{mysteryConfig.SellValue}", ItemLocType.ItemLocBag, ItemGetWay.UnionXiuLian );
+                bagComponentServer.OnAddItemData($"{mysteryConfig.SellItemID};{1}",
                     $"{ItemGetWay.UnionMysteryBuy}_{TimeHelper.ServerNow()}");*/
                 reply();
             }

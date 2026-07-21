@@ -222,6 +222,7 @@ namespace ET
 
         public static void CheckData(this RoleInfoComponentServer self)
         {
+            Unit unit = self.GetParent<Unit>();
             if (!LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv))
             {
                 self.RoleInfo.JiaYuanLv = 1;
@@ -241,7 +242,7 @@ namespace ET
             {
                 maxTowerId = self.RoleInfo.TowerRewardIds[self.RoleInfo.TowerRewardIds.Count - 1];
             }
-            NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             for (int  i =  self.RoleInfo.HorseIds.Count - 1; i >= 0; i--)
             {
@@ -271,9 +272,9 @@ namespace ET
                 numericComponent.Set(NumericType.HorseRide, randomid, false);
             }
             
-            RoleAddPointHelper.EnsureLevel1InitPoints(self.GetParent<Unit>(), self.RoleInfo.Lv);
+            RoleAddPointHelper.EnsureLevel1InitPoints(unit, self.RoleInfo.Lv);
             
-            PetComponentServer petComponentServer = self.GetParent<Unit>().GetComponent<PetComponentServer>();
+            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             if (self.RoleInfo.RobotId > 0 &&   petComponentServer.RolePetInfos.Count == 0)
             {
                 Dictionary<int, LDPet> allPets = LDPetCategory.Instance.GetAll();
@@ -300,11 +301,11 @@ namespace ET
                 numericComponent.Set(NumericType.TrialDungeonId, maxTowerId, false);
             }
 
-            DataCollationComponent dataCollationComponent = self.GetParent<Unit>().GetComponent<DataCollationComponent>();
+            DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
             int recharge = numericComponent.GetAsInt(NumericType.RechargeNumber);
             if (recharge!=0 && dataCollationComponent.ChouKaTimes > (recharge * 2) && dataCollationComponent.ChouKaTimes > 100)
             {
-                Log.Warning($"抽卡次数异常:{self.DomainZone()} {self.RoleInfo.Name}   充值:{numericComponent.GetAsInt(NumericType.RechargeNumber)}  抽卡:{dataCollationComponent.ChouKaTimes}");
+                Log.Warning($"抽卡次数异常:{self.DomainZone()} {self.RoleInfo.Name}   充值:{recharge}  抽卡:{dataCollationComponent.ChouKaTimes}");
             }
 
             // 烟雨楼Id: 2466222808943362373   烟雨楼 寸断De法殇 ID: 2466171477355986944
@@ -570,54 +571,52 @@ namespace ET
             MessageHelper.Broadcast(unit, m2C_BroadcastRoleData);
         }
 
-        public static int GetMysteryBuy(this RoleInfoComponentServer self, int mysteryId)
+        private static int FindKeyValuePairIndex(List<KeyValuePairInt> list, int keyId)
         {
-            for (int i = 0; i < self.RoleInfo.MysteryItems.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (self.RoleInfo.MysteryItems[i].KeyId == mysteryId)
+                if (list[i].KeyId == keyId)
                 {
-                    return (int)self.RoleInfo.MysteryItems[i].Value;
+                    return i;
                 }
             }
-            return 0;
+            return -1;
+        }
+
+        public static int GetMysteryBuy(this RoleInfoComponentServer self, int mysteryId)
+        {
+            int index = FindKeyValuePairIndex(self.RoleInfo.MysteryItems, mysteryId);
+            return index >= 0 ? (int)self.RoleInfo.MysteryItems[index].Value : 0;
         }
 
         public static void OnMysteryBuy(this RoleInfoComponentServer self, int mysteryId)
         {
-            for (int i = 0; i < self.RoleInfo.MysteryItems.Count; i++)
+            List<KeyValuePairInt> items = self.RoleInfo.MysteryItems;
+            int index = FindKeyValuePairIndex(items, mysteryId);
+            if (index >= 0)
             {
-                if (self.RoleInfo.MysteryItems[i].KeyId == mysteryId)
-                {
-                    self.RoleInfo.MysteryItems[i].Value += 1;
-                    return;
-                }
+                items[index].Value += 1;
+                return;
             }
-            self.RoleInfo.MysteryItems.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
+            items.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
         }
 
         public static int GetStoreBuy(this RoleInfoComponentServer self, int mysteryId)
         {
-            for (int i = 0; i < self.RoleInfo.BuyStoreItems.Count; i++)
-            {
-                if (self.RoleInfo.BuyStoreItems[i].KeyId == mysteryId)
-                {
-                    return (int)self.RoleInfo.BuyStoreItems[i].Value;
-                }
-            }
-            return 0;
+            int index = FindKeyValuePairIndex(self.RoleInfo.BuyStoreItems, mysteryId);
+            return index >= 0 ? (int)self.RoleInfo.BuyStoreItems[index].Value : 0;
         }
 
         public static void OnStoreBuy(this RoleInfoComponentServer self, int mysteryId)
         {
-            for (int i = 0; i < self.RoleInfo.BuyStoreItems.Count; i++)
+            List<KeyValuePairInt> items = self.RoleInfo.BuyStoreItems;
+            int index = FindKeyValuePairIndex(items, mysteryId);
+            if (index >= 0)
             {
-                if (self.RoleInfo.BuyStoreItems[i].KeyId == mysteryId)
-                {
-                    self.RoleInfo.BuyStoreItems[i].Value += 1;
-                    return;
-                }
+                items[index].Value += 1;
+                return;
             }
-            self.RoleInfo.BuyStoreItems.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
+            items.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
         }
 
         //加金币

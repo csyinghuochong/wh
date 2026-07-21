@@ -8,7 +8,8 @@ namespace ET
     {
 		protected override async ETTask Run(Unit unit, C2M_SkillSet request, M2C_SkillSet response, Action reply)
 		{
-			unit.GetComponent<SkillSetComponentServer>().SetSkillIdByPosition(request);
+			SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
+			skillSetComponentServer.SetSkillIdByPosition(request);
 			reply();
 			await ETTask.CompletedTask;
 		}

@@ -46,7 +46,7 @@ namespace ET
 
         public static void CheckPetList(this PetComponentServer self, List<long> petList)
         {
-            List<long> ids = new List<long>();
+            HashSet<long> ids = new HashSet<long>();
 
             for (int i = petList.Count - 1; i >= 0; i--)
             {

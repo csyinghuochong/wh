@@ -16,6 +16,8 @@ namespace ET
             await ETTask.CompletedTask;
 #if false // TODO: migrate to LD config
 
+			BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+			RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
 			if (!FirstWinConfigCategory.Instance.Contain(request.FirstWinId))
 			{
 				response.Error = ErrorCode.ERR_NetWorkError;
@@ -42,14 +44,14 @@ namespace ET
 					break;
 			}
 			string[] rewarditemlist = rewardlist.Split('@');
-			if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < rewarditemlist.Length)
+			if (bag.GetBagLeftCell() < rewarditemlist.Length)
 			{
 				response.Error = ErrorCode.ERR_BagIsFull;
 				reply();
 				return;
 			}
 
-			int errorcode = unit.GetComponent<RoleInfoComponentServer>().OnGetFirstWinSelf(request.FirstWinId, request.Difficulty);
+			int errorcode = roleInfo.OnGetFirstWinSelf(request.FirstWinId, request.Difficulty);
 			if (errorcode != ErrorCode.ERR_Success)
 			{
 				response.Error = errorcode;
@@ -57,8 +59,8 @@ namespace ET
 				return;
 			}
 
-			unit.GetComponent<BagComponentServer>().OnAddItemData(rewardlist, $"{ItemGetWay.FirstWin}_{TimeHelper.ServerNow()}");
-			response.FirstWinInfos = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.FirstWinSelf;
+			bag.OnAddItemData(rewardlist, $"{ItemGetWay.FirstWin}_{TimeHelper.ServerNow()}");
+			response.FirstWinInfos = roleInfo.RoleInfo.FirstWinSelf;
 			reply();
 			await ETTask.CompletedTask;
 		#endif
