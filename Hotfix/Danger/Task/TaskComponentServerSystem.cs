@@ -539,7 +539,7 @@ namespace ET
                 }
             }
             self.RoleComoleteTaskList.Add(taskid);
-            bagComponentServer.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.TaskReward}_{TimeHelper.ServerNow()}");
+            TaskRewardHelper.GrantTaskCommitRewards(unit, rewardItems);
             
             self.OnTeskAddTask(taskid);
             
@@ -643,16 +643,11 @@ namespace ET
         }
 
         /// <summary>
-        /// 宠物天梯胜利
+        /// 宠物天梯胜利（仅任务进度；发奖走 DungeonSettlementHelper）
         /// </summary>
-        public static void OnPetTianTiWin(this TaskComponentServer self, List<RewardItem> rewardItems, string getWay)
+        public static void OnPetTianTiWin(this TaskComponentServer self)
         {
-            using (self.TaskEventBatch())
-            {
-                Unit unit = self.GetParent<Unit>();
-                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, getWay);
-                self.TriggerTaskEvent(TastConditionType.PetTianDiWin_37, 0, 1);
-            }
+            self.TriggerTaskEvent(TastConditionType.PetTianDiWin_37, 0, 1);
         }
 
         /// <summary>
@@ -664,17 +659,11 @@ namespace ET
         }
 
         /// <summary>
-        /// 宠物副本通关发奖+任务
+        /// 宠物副本通关（仅任务进度；发奖/宠物记录走 DungeonSettlementHelper）
         /// </summary>
-        public static void OnPetFubenWin(this TaskComponentServer self, List<RewardItem> rewardItems, string getWay, int petFubenId, int star)
+        public static void OnPetFubenWin(this TaskComponentServer self, int petFubenId)
         {
-            using (self.TaskEventBatch())
-            {
-                Unit unit = self.GetParent<Unit>();
-                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, getWay);
-                unit.GetComponent<PetComponentServer>().OnPassPetFuben(petFubenId, star);
-                self.TriggerTaskEvent(TastConditionType.PetFubenId_19, 0, petFubenId - 10000);
-            }
+            self.TriggerTaskEvent(TastConditionType.PetFubenId_19, 0, petFubenId - 10000);
         }
 
         /// <summary>

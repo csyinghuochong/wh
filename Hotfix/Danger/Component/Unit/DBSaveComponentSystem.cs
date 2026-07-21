@@ -103,87 +103,17 @@ namespace ET
 
         public static void OnRelogin(this DBSaveComponent self, long gateSessionId)
         {
-            Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-            string offLineInfo = $"{unit.DomainZone()}区： " +
-               $"unit.id: {roleInfo.Id} : " +
-               $" {roleInfo.RoleInfo.Name} : " +
-               $"{TimeHelper.DateTimeNow().ToString()}   二次登陆";
-
-            if (!unit.IsRobot())
-            {
-                LogHelper.LoginInfo(offLineInfo);
-                //需要通知其他服务器吗？
-                Log.Debug(offLineInfo);
-            }
-            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            unitGateComponent.PlayerState = PlayerState.Game;
+            PlayerSessionLifecycleHelper.OnRelogin(self, gateSessionId);
         }
 
         public static  void OnOffLine(this DBSaveComponent self)
         {
-            Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            string offLineInfo = $"{unit.DomainZone()}区： " +
-               $"unit.id: {roleInfoComponentServer.Id} : " +
-               $" {roleInfoComponentServer.RoleInfo.Name} : " +
-               $"{TimeHelper.DateTimeNow().ToString()}   离线";
-
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            long stallId = numericComponent.GetAsLong(NumericType.Now_Stall);
-            if (stallId > 0)
-            {
-                Unit unitstall = unit.GetParent<UnitComponent>().Get(stallId);
-                if (unitstall != null)
-                {
-                    unitstall.AddComponent<DeathTimeComponent, long>(TimeHelper.Hour * 6);
-                }
-            }
-
-            DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
-            string oaid = dataCollationComponent.OAID;
-            string lastgametime =   TimeHelper.DateTimeNow().ToString();
-            numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
-            roleInfoComponentServer.OnOffLine();
-            dataCollationComponent.OnOffLine(lastgametime);
-            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            unitGateComponent.PlayerState = PlayerState.None;
-            if (!unit.IsRobot())
-            {
-                LogHelper.LoginInfo(offLineInfo);
-                Log.Warning(offLineInfo);
-                self.UpdateCacheDB();
-                DBHelper.UpdateLastGameTime(oaid, 
-                    lastgametime,
-                    roleInfoComponentServer.RoleInfo.AccInfoID,
-                    roleInfoComponentServer.RemoteAddress,
-                    roleInfoComponentServer.RoleInfo.Lv,
-                    self.OnLineTime).Coroutine();
-            }
+            PlayerSessionLifecycleHelper.OnOffLine(self);
         }
 
         public static void OnLogin(this DBSaveComponent self)
         {
-            Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-            string offLineInfo = $"{unit.DomainZone()}区： " +
-               $"unit.id: {roleInfo.Id} : " +
-               $" {roleInfo.RoleInfo.Name} : " +
-               $"{  TimeHelper.DateTimeNow().ToString()}   登录";
-            if (!unit.IsRobot())
-            {
-                LogHelper.LoginInfo(offLineInfo);
-                Log.Warning(offLineInfo);
-                self.LogTest();
-            }
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            //if (numericComponent.GetAsLong(NumericType.LastGameTime) == 0)
-            //{
-            //    numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
-            //}
-            numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
-            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            unitGateComponent.PlayerState = PlayerState.Game;
+            PlayerSessionLifecycleHelper.OnLogin(self);
         }
 
         public static void LogTest(this DBSaveComponent self)
@@ -199,35 +129,7 @@ namespace ET
 
         public static int OnDisconnect(this DBSaveComponent self)
         {
-            Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-            string offLineInfo = $"{unit.DomainZone()}区： " +
-              $"unit.id: {roleInfo.Id} : " +
-              $" {roleInfo.RoleInfo.Name} : " +
-              $"{  TimeHelper.DateTimeNow().ToString()}  移除";
-
-            Scene scene = unit.DomainScene();
-            int sceneTypeEnum = scene.GetComponent<MapComponent>().MapTypeEnum;
-            if (sceneTypeEnum == MapTypeEnum.MainCityScene)
-            {
-                unit.RecordPostion(sceneTypeEnum, CommonHelper.MainCityID());
-            }
-
-            TransferHelper.BeforeTransfer(unit, 2);
-            if (!unit.IsRobot())
-            {
-                self.LogTest();
-                self.UpdateCacheDB();
-                LogHelper.LoginInfo(offLineInfo);
-                LogHelper.LogDebug(offLineInfo);
-            }
-
-            long unitId = unit.Id;
-            unit.GetParent<UnitComponent>().Remove(unitId);
-
-            Game.EventSystem.Publish(new EventType.PlayerDisconnect() { DomainScene = scene, UnitId = unitId });
-           
-            return ErrorCode.ERR_Success;
+            return PlayerSessionLifecycleHelper.OnDisconnect(self);
         }
 
         /// <summary>
@@ -286,44 +188,12 @@ namespace ET
                 self.MinuteCheck();
             }
 
-            Unit unit = self.GetParent<Unit>();
-            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            if (unitGateComponent.PlayerState!= PlayerState.None)
-            {
-                unit.GetComponent<ActivityComponentServer>().Check();
-            }
+            PlayerTickOrchestrator.RunSecondTick(self.GetParent<Unit>());
         }
 
         public static bool MinuteCheck(this DBSaveComponent self)
         {
-            //self.LastDBTime = TimeHelper.ServerNow();
-            Unit unit = self.GetParent<Unit>();
-            /*if (self.NoFindPath >= 60)
-            {
-                self.NoFindPath = 0;
-                M2C_KickPlayerMessage m2C_KickPlayer = new M2C_KickPlayerMessage();
-                MessageHelper.SendToClient(unit, m2C_KickPlayer);
-
-                Log.Debug($"MinuteCheck:  {unit.DomainZone()} {unit.Id}");
-                unit.OnKickPlayer(false).Coroutine();
-            }
-            self.NoFindPath++;*/
-            int saveInterval = RandomHelper.RandomNumber(20, 30);
-            if (self.DBInterval == -1 || self.DBInterval >= saveInterval)
-            {
-                self.DBInterval = 0;
-                self.UpdateCacheDB();
-            }
-            self.DBInterval++;
-            self.OnLineTime++;
-            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
-            TitleComponentServer titleComponentServer = unit.GetComponent<TitleComponentServer>();
-            taskComponentServer.Check();
-            roleInfoComponentServer.Check();
-            dataCollationComponent.Check();
-            titleComponentServer.OnCheckTitle(true);
+            PlayerTickOrchestrator.RunMinuteTick(self.GetParent<Unit>(), self);
             return false;
         }
     }

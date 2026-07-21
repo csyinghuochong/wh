@@ -13,21 +13,7 @@ namespace ET
             {
                 case 0:
                     Log.Debug($"OnZeroClockUpdate [零点刷新]: {unit.Id}");
-                    RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-                    unit.GetComponent<RoleDailyDataComponent>()?.OnZeroClockUpdate(true);
-                    roleInfoComponentServer.OnHourUpdate(0, true);
-                    roleInfoComponentServer.OnZeroClockUpdate(true);
-                    TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-                    taskComponentServer.CheckWeeklyUpdate();
-                    taskComponentServer.OnZeroClockUpdate(true);
-                    ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
-                    activityComponentServer.OnZeroClockUpdate(roleInfo.Lv);
-                    ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
-                    chengJiuComponentServer.OnZeroClockUpdate();
-                    JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
-                    jiaYuanComponentServer.OnZeroClockUpdate(true);
-                    DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
-                    dataCollationComponent.OnZeroClockUpdate(true);
+                    PlayerDailyResetHelper.RunZeroClock(unit, true);
                     break;
                 case -1:
                     LocationProxyComponent.Instance.Remove(unit.Id).Coroutine();

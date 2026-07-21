@@ -371,10 +371,8 @@ namespace ET
 
                 hurtList.TryGetValue(unititem.Id, out int hurtvalue);
                 int hurtRate = (int)(hurtvalue * 100f / damageTotal);
-                TaskComponentServer taskComponent = unititem.GetComponent<TaskComponentServer>();
-                ChengJiuComponentServer chengJiu = unititem.GetComponent<ChengJiuComponentServer>();
-                taskComponent.OnTeamDungeonSettle(self.TeamInfo.SceneId, hurtRate);
-                chengJiu.OnTeamDungeonSettle(self.FubenType == TeamFubenType.ShenYuan);
+                DungeonSettlementHelper.SettleTeamDungeon(
+                    unititem, self.TeamInfo.SceneId, hurtRate, self.FubenType == TeamFubenType.ShenYuan);
                 RoleInfoComponentServer roleInfoComponentServer = unititem.GetComponent<RoleInfoComponentServer>();
                 if (roleInfoComponentServer.RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
                 {

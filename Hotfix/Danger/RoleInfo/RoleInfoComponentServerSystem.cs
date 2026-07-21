@@ -390,7 +390,7 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
             unit.GetComponent<JiaYuanComponentServer>().OnHourUpdate(hour, notice);
-            LogHelper.CheckZuoBi(unit);
+            AntiCheatAuditHelper.OnHourTick(unit);
             //LogHelper.CheckBlackRoom(self.GetParent<Unit>());
         }
 
@@ -616,63 +616,9 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             long gold = long.Parse(value);
-            if (gold < 0)
-            {
-                Log.Warning($"增加货币出错:{Type}  {unit.Id} {getWay} {self.RoleInfo.Name}  {value}", true);
-            }
-            else
-            {
-                if (getWay != ItemGetWay.PickItem || gold > 1000)
-                {
-                    LogHelper.LogWarning($"增加货币:{Type} {unit.Id} {getWay} {self.RoleInfo.Name}  {value}", true);
-                }
-            }
-            if (gold > 100000 || gold < -100000)
-            {
-                Log.Warning($"增加货币[大额]:{Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}  {paramsifo}", true);
-            }
-            else if (gold > 1000000 || gold < -1000000)
-            {
-                Log.Warning($"增加货币[超额]:{Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}", true);
-            }
-
-            if (gold > 0 && getWay == ItemGetWay.PaiMaiSell)
-            {
-                unit.GetComponent<ChengJiuComponentServer>().OnPaiMaiGetGold((int)gold);
-            }
-
-            if (Type == UserDataType.Diamond)
-            {
-                self.RoleInfo.DiamondGetWay.Add(getWay);
-                if (self.RoleInfo.DiamondGetWay.Count > 200)
-                {
-                    self.RoleInfo.DiamondGetWay.RemoveAt(0);    
-                }
-            }
-
-            if (Type == UserDataType.Gold)
-            {
-                self.RoleInfo.GoldGetWay.Add(getWay);
-                if (self.RoleInfo.GoldGetWay.Count > 200)
-                {
-                    self.RoleInfo.GoldGetWay.RemoveAt(0);
-                }
-            }
-
-            if (Type == UserDataType.Exp)
-            {
-                self.RoleInfo.ExpGetWay.Add(getWay);
-                if (self.RoleInfo.ExpGetWay.Count > 200)
-                {
-                    self.RoleInfo.ExpGetWay.RemoveAt(0);
-                }
-            }
-
-            if (Type == UserDataType.Diamond)
-            {
-                Log.Warning($"增加钻石: {Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}");
-            }
-
+            AntiCheatAuditHelper.LogMoneyAdd(unit, Type, gold, getWay, self.RoleInfo.Name, paramsifo);
+            PlayerEconomyHelper.NotifyAfterMoneyAdd(unit, gold, getWay);
+            PlayerEconomyHelper.RecordMoneyGetWay(self.RoleInfo, Type, getWay);
             unit.GetComponent<DataCollationComponent>().UpdateRoleMoneyAdd(Type, getWay, gold);
             self.UpdateRoleData(Type, value, notice);
         }
@@ -682,23 +628,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             long gold = long.Parse(value);
-            if (gold > 0)
-            {
-                LogHelper.LogWarning($"扣除货币出错:{Type} {unit.Id} {getWay} {self.RoleInfo.Name}  {value}", true);
-            }
-            else
-            {
-                LogHelper.LogWarning($"扣除货币:{Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}", true);
-            }
-            if (gold > 100000 || gold < -100000)
-            {
-                Log.Warning($"扣除货币[大额]:{Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}");
-            }
-            if (Type == UserDataType.Diamond)
-            {
-                Log.Warning($"扣除钻石: {Type} {unit.Id} {getWay} {self.RoleInfo.Name} {value}");
-            }
-          
+            AntiCheatAuditHelper.LogMoneySub(unit, Type, gold, getWay, self.RoleInfo.Name);
             unit.GetComponent<DataCollationComponent>().UpdateRoleMoneySub(Type, getWay, gold);
             self.UpdateRoleData(Type, value, notice);
         }
@@ -732,8 +662,6 @@ namespace ET
         public static void UpdateRoleData(this RoleInfoComponentServer self, int Type, string value, bool notice = true)
         {
             Unit unit = self.GetParent<Unit>();
-            TaskComponentServer taskComponentServer = null;
-            ChengJiuComponentServer chengJiuComponentServer = null;
             NumericComponent numericComponent = null;
             string saveValue = "";
             long longValue = 0;
@@ -756,11 +684,7 @@ namespace ET
                 case UserDataType.JiaYuanLv:
                     self.RoleInfo.JiaYuanLv += int.Parse(value);
                     saveValue = self.RoleInfo.JiaYuanLv.ToString();
-                    taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
-                    chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
-                    int jiaYuanShowLv = self.RoleInfo.JiaYuanLv - 10000;
-                    taskComponentServer.OnJiaYuanLevel(jiaYuanShowLv);
-                    chengJiuComponentServer.OnJiaYuanLevel(jiaYuanShowLv);
+                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo);
                     break;
                 
                 //名字应该在改名的协议处理
@@ -785,11 +709,8 @@ namespace ET
                     self.RoleInfo.Lv += addLevel;
                     saveValue = self.RoleInfo.Lv.ToString();
                     RoleAddPointHelper.AddPointsForLevelRange(unit, oldLevel, self.RoleInfo.Lv);
-                    taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
-                    chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
                     numericComponent ??= unit.GetComponent<NumericComponent>();
-                    taskComponentServer.OnUpdateLevel(self.RoleInfo.Lv);
-                    chengJiuComponentServer.OnUpdateLevel(self.RoleInfo.Lv);
+                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo);
                     Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                     // 升级后按新上限回满（ResetProperty 保留 HP_Current，但 Max 可能变大）
                     numericComponent.Set(NumericType.HP_Current_8, numericComponent.GetAsLong(NumericType.HP_Max_10), true);
@@ -804,10 +725,7 @@ namespace ET
                     long goldChange = long.Parse(value);
                     self.RoleInfo.Gold += goldChange;
                     saveValue = self.RoleInfo.Gold.ToString();
-                    taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
-                    chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
-                    chengJiuComponentServer.OnGetGold((int)goldChange);
-                    taskComponentServer.OnCostCoin((int)goldChange);
+                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo, goldChange);
                     break;
                 case UserDataType.BindGold:
                     self.RoleInfo.BindGold += long.Parse(value);
@@ -868,10 +786,7 @@ namespace ET
                 case UserDataType.Combat:
                     self.RoleInfo.Combat = int.Parse(value);
                     saveValue = self.RoleInfo.Combat.ToString();
-                    taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
-                    chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
-                    chengJiuComponentServer.OnCombatToValue(self.RoleInfo.Combat);
-                    taskComponentServer.OnCombatToValue(self.RoleInfo.Combat);
+                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo);
                     break;
               
                 default:

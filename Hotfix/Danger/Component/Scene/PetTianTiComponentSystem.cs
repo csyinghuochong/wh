@@ -108,8 +108,8 @@ namespace ET
                 m2C_FubenSettlement.ReardList.AddRange(rewardItems);
                 m2C_FubenSettlement.StarInfos = new List<int> { 1, 1, 1 };
 
-                self.MainUnit.GetComponent<TaskComponentServer>().OnPetTianTiWin(
-                    rewardItems, $"{ItemGetWay.PetTianTiReward}_{TimeHelper.ServerNow()}");
+                DungeonSettlementHelper.SettlePetTianTiWin(
+                    self.MainUnit, rewardItems, $"{ItemGetWay.PetTianTiReward}_{TimeHelper.ServerNow()}");
             }
             else
             {

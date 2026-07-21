@@ -313,10 +313,7 @@ namespace ET
         /// </summary>
         public static void OnPetAdded(this PetComponentServer self, RolePetInfo newpet)
         {
-            Unit unit = self.GetParent<Unit>();
-            self.OnPetScoreChanged();
-            unit.GetComponent<ChengJiuComponentServer>().OnGetPet(newpet);
-            unit.GetComponent<TaskComponentServer>().OnGetPet(newpet);
+            PetProgressionHelper.NotifyPetAcquired(self.GetParent<Unit>(), newpet);
         }
 
         public static int GetPetMaxZiZhi(this PetComponentServer self, int zizhiType)
@@ -552,10 +549,7 @@ namespace ET
                 if (rechargeNumber < 5000)
                 {
                     RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-                    //充值低于5千的就记录 记录信息 等级 名称 充值额度 当前钻石额
-                    LogHelper.GongZuoShi($"神兽作弊: {unit.DomainZone()}   \t名称:{roleInfo.Name}  " +
-                        $"\t等级:{roleInfo.Lv}" + $"\t钻石:{roleInfo.Diamond}" +
-                        $"\t充值:{rechargeNumber}");
+                    AntiCheatAuditHelper.LogShenShouSuspect(unit, roleInfo, rechargeNumber);
                 }
             }
 
@@ -1561,7 +1555,6 @@ namespace ET
                 return false;
             }
         }
-
 
         public static PetHeChengResult TryHeChengPets(this PetComponentServer self, RolePetInfo petinfo_1, RolePetInfo petinfo_2, int petHeChengNumber)
         {

@@ -60,8 +60,8 @@ namespace ET
                 {
                     star += m2C_FubenSettlement.StarInfos[i];
                 }
-                self.MainUnit.GetComponent<TaskComponentServer>().OnPetFubenWin(
-                    rewardItems, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}", petfubeId, star);
+                DungeonSettlementHelper.SettlePetFubenWin(
+                    self.MainUnit, rewardItems, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}", petfubeId, star);
             }
             MessageHelper.SendToClient(self.MainUnit, m2C_FubenSettlement);
         }
