@@ -7,15 +7,29 @@ namespace ET
     [ActorMessageHandler]
     public class C2M_PetEggChouKaHandler : AMActorLocationRpcHandler<Unit, C2M_PetEggChouKaRequest, M2C_PetEggChouKaResponse>
     {
+        private static string[] CachedExploreDiscountSet;
+        private static string[] CachedChouKaConfigParts;
+        private static string[] CachedTenChouKaConfigParts;
+
+        private static void EnsureChouKaConfigCache()
+        {
+            if (CachedExploreDiscountSet != null)
+            {
+                return;
+            }
+            CachedExploreDiscountSet = LDGlobalValueCategory.Instance.Get(107).Value.Split(';');
+            CachedChouKaConfigParts = LDGlobalValueCategory.Instance.Get(39).Value.Split('@');
+            CachedTenChouKaConfigParts = LDGlobalValueCategory.Instance.Get(40).Value.Split('@');
+        }
+
         protected override async ETTask Run(Unit unit, C2M_PetEggChouKaRequest request, M2C_PetEggChouKaResponse response, Action reply)
         {
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            string[] exploreDiscountSet = LDGlobalValueCategory.Instance.Get(107).Value.Split(';');
-            string chouKaConfigValue = LDGlobalValueCategory.Instance.Get(39).Value;
-            string tenChouKaConfigValue = LDGlobalValueCategory.Instance.Get(40).Value;
+            EnsureChouKaConfigCache();
+            string[] exploreDiscountSet = CachedExploreDiscountSet;
 
             if (bagComponentServer.GetBagLeftCell() < request.ChouKaType)
             {
@@ -45,7 +59,7 @@ namespace ET
 
             if (request.ChouKaType == 1)
             {
-                string[] chouKaConfig = chouKaConfigValue.Split('@');
+                string[] chouKaConfig = CachedChouKaConfigParts;
                 string needItems = chouKaConfig[0];
                 dropId = int.Parse(chouKaConfig[1]);
                 bool sucess = bagComponentServer.OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
@@ -60,7 +74,7 @@ namespace ET
             }
             else if (request.ChouKaType == 10)
             {
-                string[] tenChouKaConfig = tenChouKaConfigValue.Split('@');
+                string[] tenChouKaConfig = CachedTenChouKaConfigParts;
                 int needDimanond = int.Parse(tenChouKaConfig[0]);
                 dropId = int.Parse(tenChouKaConfig[1]);
 

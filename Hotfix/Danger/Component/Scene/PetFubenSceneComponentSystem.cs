@@ -53,7 +53,6 @@ namespace ET
                 DropHelper.ZhengLiRewardItems(rewardItems);
 
                 m2C_FubenSettlement.ReardList.AddRange(rewardItems);
-                self.MainUnit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}");
 
                 int petfubeId = self.DomainScene().GetComponent<MapComponent>().SonSceneId;
                 int star = 0;
@@ -61,8 +60,8 @@ namespace ET
                 {
                     star += m2C_FubenSettlement.StarInfos[i];
                 }
-                self.MainUnit.GetComponent<PetComponentServer>().OnPassPetFuben(petfubeId, star);
-                self.MainUnit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.PetFubenId_19, 0, petfubeId - 10000);
+                self.MainUnit.GetComponent<TaskComponentServer>().OnPetFubenWin(
+                    rewardItems, $"{ItemGetWay.PetFubenReward}_{TimeHelper.ServerNow()}", petfubeId, star);
             }
             MessageHelper.SendToClient(self.MainUnit, m2C_FubenSettlement);
         }

@@ -272,46 +272,51 @@ namespace ET
             }
 
             self.CheckSkin();
-            self.CheckPetPingFen();
-            self.CheckPetZiZhi();
+            self.OnPetScoreChanged();
         }
 
         public static void CheckPetPingFen(this PetComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
-            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-            chengJiu.BeginChengJiuEventBatch();
-            try
-            {
-                int maxping = self.GetPetMaxPingFen();
-                chengJiu.TriggerEvent(ChengJiuTargetEnum.PegScoreToValue_307, 0, maxping);
-
-                int arrayping = self.GetPetArrayPingFen();
-                chengJiu.TriggerEvent(ChengJiuTargetEnum.PetArrayScoreToValue_308, 0, arrayping);
-            }
-            finally
-            {
-                chengJiu.EndChengJiuEventBatch();
-            }
+            unit.GetComponent<ChengJiuComponentServer>().OnPetPingFen(
+                self.GetPetMaxPingFen(),
+                self.GetPetArrayPingFen());
         }
 
         public static void CheckPetZiZhi(this PetComponentServer self)
         {
+            int maxHp = 0, maxAct = 0, maxDef = 0, maxAdf = 0, maxMage = 0;
+            for (int i = 0; i < self.RolePetInfos.Count; i++)
+            {
+                RolePetInfo petInfo = self.RolePetInfos[i];
+                if (petInfo.ZiZhi_Hp > maxHp) maxHp = petInfo.ZiZhi_Hp;
+                if (petInfo.ZiZhi_Act > maxAct) maxAct = petInfo.ZiZhi_Act;
+                if (petInfo.ZiZhi_Def > maxDef) maxDef = petInfo.ZiZhi_Def;
+                if (petInfo.ZiZhi_Adf > maxAdf) maxAdf = petInfo.ZiZhi_Adf;
+                if (petInfo.ZiZhi_MageAct > maxMage) maxMage = petInfo.ZiZhi_MageAct;
+            }
+            self.GetParent<Unit>().GetComponent<ChengJiuComponentServer>()
+                .OnPetMaxZiZhi(maxHp, maxAct, maxDef, maxAdf, maxMage);
+        }
+
+        /// <summary>
+        /// 宠物资质/评分变化后刷新成就（洗练、合成、升阶等）
+        /// </summary>
+        public static void OnPetScoreChanged(this PetComponentServer self)
+        {
+            self.CheckPetPingFen();
+            self.CheckPetZiZhi();
+        }
+
+        /// <summary>
+        /// 获得宠物后的任务/成就推进
+        /// </summary>
+        public static void OnPetAdded(this PetComponentServer self, RolePetInfo newpet)
+        {
             Unit unit = self.GetParent<Unit>();
-            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-            chengJiu.BeginChengJiuEventBatch();
-            try
-            {
-                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 1, self.GetPetMaxZiZhi(1));
-                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 2, self.GetPetMaxZiZhi(2));
-                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 3, self.GetPetMaxZiZhi(3));
-                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 4, self.GetPetMaxZiZhi(4));
-                chengJiu.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 5, self.GetPetMaxZiZhi(5));
-            }
-            finally
-            {
-                chengJiu.EndChengJiuEventBatch();
-            }
+            self.OnPetScoreChanged();
+            unit.GetComponent<ChengJiuComponentServer>().OnGetPet(newpet);
+            unit.GetComponent<TaskComponentServer>().OnGetPet(newpet);
         }
 
         public static int GetPetMaxZiZhi(this PetComponentServer self, int zizhiType)
@@ -523,8 +528,6 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             LDPet ldPetConfig =LDPetCategory.Instance.Get(petId);
-            ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
-            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             List<int> weight = new List<int>();
@@ -541,11 +544,7 @@ namespace ET
 
             newpet = self.PetXiLian(newpet,getWay, 1, 0, fuling);
             self.UpdatePetAttribute(newpet, false);
-            self.CheckPetPingFen();
-            self.CheckPetZiZhi();
-
-            chengJiuComponentServer.OnGetPet(newpet);
-            taskComponentServer.OnGetPet(newpet);
+            self.OnPetAdded(newpet);
 
             if (PetHelper.IsShenShou(petId))
             {
@@ -1534,8 +1533,6 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
             LDPet ldPetConfig = LDPetCategory.Instance.Get(petId);
-            ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
-            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             List<int> weight = new List<int>();
 
@@ -1551,11 +1548,7 @@ namespace ET
             newpet.AddPropretyValue = $"{newpet.PetLv}_{newpet.PetLv}_{newpet.PetLv}_{newpet.PetLv}";
             newpet.UpStageStatus = 2;
             self.UpdatePetAttribute(newpet, false);
-            self.CheckPetPingFen();
-            self.CheckPetZiZhi();
-
-            chengJiuComponentServer.OnGetPet(newpet);
-            taskComponentServer.OnGetPet(newpet);
+            self.OnPetAdded(newpet);
 
             self.OnGmPetEquip(10060230, newpet);
             self.OnGmPetEquip(10060430, newpet);

@@ -553,8 +553,7 @@ namespace ET
 
         public static void OnPetHeCheng(this TaskComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.BeginTaskEventBatch();
-            try
+            using (self.TaskEventBatch())
             {
                 self.TriggerTaskEvent(TastConditionType.PetNumber1_11, 0, 1);
                 self.TriggerTaskEvent(TastConditionType.PetHeCheng_23, 0, 1);
@@ -562,10 +561,6 @@ namespace ET
                 self.TriggerTaskEvent(TastConditionType.PetNSkill_18, 0, rolePetInfo.PetSkill.Count);
                 int combat = PetHelper.PetPingJia(rolePetInfo);
                 self.TriggerTaskEvent(TastConditionType.PetHeChengCombat_32, combat, 1);
-            }
-            finally
-            {
-                self.EndTaskEventBatch();
             }
         }
 
@@ -575,28 +570,100 @@ namespace ET
         /// <param name="self"></param>
         public static void OnGetPet(this TaskComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.BeginTaskEventBatch();
-            try
+            using (self.TaskEventBatch())
             {
                 self.TriggerTaskEvent( TastConditionType.PetNumber1_11, 0, 1 );
                 self.TriggerTaskEvent(TastConditionType.PetNumber2_24, 0, 1);
                 self.TriggerTaskEvent( TastConditionType.PetNSkill_18,  0, rolePetInfo.PetSkill.Count);
                 self.TriggerTaskEvent(TastConditionType.PetNumber_31, 0, 1);
             }
-            finally
+        }
+
+        /// <summary>
+        /// 道具洗练（次数）
+        /// </summary>
+        public static void OnEquipXiLian(this TaskComponentServer self, int times)
+        {
+            self.TriggerTaskEvent(TastConditionType.EquipXiLian_13, 0, times);
+        }
+
+        /// <summary>
+        /// 宠物蛋孵化
+        /// </summary>
+        public static void OnPetEggOpen(this TaskComponentServer self, int eggItemId)
+        {
+            using (self.TaskEventBatch())
             {
-                self.EndTaskEventBatch();
+                self.TriggerTaskEvent(TastConditionType.PetFuHuaNumber_34, 0, 1);
+                self.TriggerTaskEvent(TastConditionType.PetFuHuaId_35, eggItemId, 1);
             }
         }
 
         /// <summary>
-        /// 道具洗练
+        /// 打造装备
         /// </summary>
-        /// <param name="self"></param>
-        public static void OnEquipXiLian(this TaskComponentServer self, int times)
+        public static void OnMakeEquip(this TaskComponentServer self, int quality)
         {
-            self.TriggerTaskEvent( TastConditionType.EquipXiLian_13, 0, times);
-          
+            using (self.TaskEventBatch())
+            {
+                self.TriggerTaskEvent(TastConditionType.MakeNumber_12, 0, 1);
+                self.TriggerTaskEvent(TastConditionType.MakeQulityNumber_29, quality, 1);
+            }
+        }
+
+        /// <summary>
+        /// 充值天数任务（入包请走 Bag.OnAddItemData，由其内部自行 batch）
+        /// </summary>
+        public static void OnRechargeDay(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.RechageDayNumber_113, 1, 30);
+        }
+
+        /// <summary>
+        /// 宠物天梯胜利
+        /// </summary>
+        public static void OnPetTianTiWin(this TaskComponentServer self, List<RewardItem> rewardItems, string getWay)
+        {
+            using (self.TaskEventBatch())
+            {
+                Unit unit = self.GetParent<Unit>();
+                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, getWay);
+                self.TriggerTaskEvent(TastConditionType.PetTianDiWin_37, 0, 1);
+            }
+        }
+
+        /// <summary>
+        /// 宠物天梯排名
+        /// </summary>
+        public static void OnPetTianTiRank(this TaskComponentServer self, int rankId)
+        {
+            self.TriggerTaskEvent(TastConditionType.PetTianTiRank_82, 0, rankId);
+        }
+
+        /// <summary>
+        /// 宠物副本通关发奖+任务
+        /// </summary>
+        public static void OnPetFubenWin(this TaskComponentServer self, List<RewardItem> rewardItems, string getWay, int petFubenId, int star)
+        {
+            using (self.TaskEventBatch())
+            {
+                Unit unit = self.GetParent<Unit>();
+                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, getWay);
+                unit.GetComponent<PetComponentServer>().OnPassPetFuben(petFubenId, star);
+                self.TriggerTaskEvent(TastConditionType.PetFubenId_19, 0, petFubenId - 10000);
+            }
+        }
+
+        /// <summary>
+        /// 组队副本结算任务侧
+        /// </summary>
+        public static void OnTeamDungeonSettle(this TaskComponentServer self, int sceneId, int hurtRate)
+        {
+            using (self.TaskEventBatch())
+            {
+                self.TriggerTaskEvent(TastConditionType.TeamDungeonHurt_136, sceneId, hurtRate);
+                self.OnPassTeamFuben();
+            }
         }
 
         /// <summary>
@@ -627,7 +694,16 @@ namespace ET
             if (costCoin >= 0)
                 return;
             self.TriggerTaskEvent(TastConditionType.TotalCostGold_20, 0, costCoin * -1);
-    
+        }
+
+        public static void OnJiaYuanLevel(this TaskComponentServer self, int jiaYuanLv)
+        {
+            self.TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, jiaYuanLv);
+        }
+
+        public static void OnCombatToValue(this TaskComponentServer self, int combat)
+        {
+            self.TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, combat);
         }
 
         /// <summary>
@@ -639,8 +715,7 @@ namespace ET
         /// <param name="star"></param>
         public static void OnPassFuben(this TaskComponentServer self, int difficulty, int chapterid, int star)
         {
-            self.BeginTaskEventBatch();
-            try
+            using (self.TaskEventBatch())
             {
                 self.TriggerTaskEvent(TastConditionType.PassFubenID_7, chapterid, 1);
 
@@ -652,10 +727,6 @@ namespace ET
                 {
                     self.TriggerTaskEvent(TastConditionType.PassDiYuFubenID_112, chapterid, 1);
                 }
-            }
-            finally
-            {
-                self.EndTaskEventBatch();
             }
         }
 
@@ -706,8 +777,7 @@ namespace ET
                 self.UpdateUnionRaceRank().Coroutine();
             }
 
-            self.BeginTaskEventBatch();
-            try
+            using (self.TaskEventBatch())
             {
                 if (bekill.Type == UnitType.Player)
                 {
@@ -754,10 +824,6 @@ namespace ET
                         }
                     }
                 }
-            }
-            finally
-            {
-                self.EndTaskEventBatch();
             }
         }
 
@@ -829,8 +895,7 @@ namespace ET
             long unionid = numericComponent.GetAsLong(NumericType.UnionId_0);
             int trialid = numericComponent.GetAsInt(NumericType.TrialDungeonId);
             //触发一下搜集道具类型的任务
-            self.BeginTaskEventBatch();
-            try
+            using (self.TaskEventBatch())
             {
                 for (int i = 0; i < self.RoleTaskList.Count; i++)
                 {
@@ -867,10 +932,6 @@ namespace ET
                     }
                 }
             }
-            finally
-            {
-                self.EndTaskEventBatch();
-            }
             
             /*if (numericComponent.GetAsInt(NumericType.DailyTaskID) == 0)
             {
@@ -898,16 +959,11 @@ namespace ET
             self.InitActivityV1Task();
             self.InitActivityWeekTask(false);
 
-            self.BeginTaskEventBatch();
-            try
+            using (self.TaskEventBatch())
             {
                 self.TriggerTaskEvent( TastConditionType.TrialRank_81, numericComponent.GetAsInt(NumericType.TrialRankId),1 );
                 self.TriggerTaskEvent(TastConditionType.PetTianTiRank_82, numericComponent.GetAsInt(NumericType.PetTianTiRankID), 1);
                 self.TriggerTaskEvent(TastConditionType.CombatRank_83, numericComponent.GetAsInt(NumericType.CombatRankID), 1);
-            }
-            finally
-            {
-                self.EndTaskEventBatch();
             }
         }
 
@@ -965,8 +1021,7 @@ namespace ET
 
         public static void OnPetMineLogin(this TaskComponentServer self, List<PetMingPlayerInfo> petMingPlayers, List<KeyValuePairInt> extends)
         {
-            self.BeginTaskEventBatch();
-            try
+            using (self.TaskEventBatch())
             {
                 for (int i = 0; i < petMingPlayers.Count; i++)
                 {
@@ -982,14 +1037,19 @@ namespace ET
                     }
                 }
             }
-            finally
-            {
-                self.EndTaskEventBatch();
-            }
+        }
+
+        // Begin → 合并 Trigger；End → Flush。怕漏 End 时请用 using (self.TaskEventBatch()) { ... }
+        /// <summary>
+        /// 任务事件批处理作用域，离开 using 自动 End/Flush。仅限 Component 内部 OnXxx 使用。
+        /// </summary>
+        public static TaskEventBatchScope TaskEventBatch(this TaskComponentServer self)
+        {
+            return new TaskEventBatchScope(self);
         }
 
         /// <summary>
-        /// 开始任务事件批处理：期间多次 TriggerTaskEvent 只合并进度，结束时一次扫描+一次推送。
+        /// 开始任务事件批处理。优先用 TaskEventBatch() + using。
         /// </summary>
         public static void BeginTaskEventBatch(this TaskComponentServer self)
         {
@@ -997,7 +1057,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 结束任务事件批处理（支持嵌套）。
+        /// 结束任务事件批处理（支持嵌套）。优先用 TaskEventBatch() + using。
         /// </summary>
         public static void EndTaskEventBatch(this TaskComponentServer self)
         {

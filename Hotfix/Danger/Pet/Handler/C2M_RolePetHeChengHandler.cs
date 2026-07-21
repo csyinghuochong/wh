@@ -375,8 +375,7 @@ namespace ET
 			taskComponentServer.OnPetHeCheng(petinfo_update);
 			dataCollationComponent.PetHeCheng++;
 
-            petComponentServer.CheckPetPingFen();
-			petComponentServer.CheckPetZiZhi();
+            petComponentServer.OnPetScoreChanged();
             Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             response.DeletePetInfoId = petinfo_delete.Id;
 			response.rolePetInfo = petinfo_update;

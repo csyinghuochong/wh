@@ -47,8 +47,7 @@ namespace ET
                     int pingfen = PetHelper.PetPingJia(rolePetInfoXianJi);
                     petComponentServer.UpdatePetStage(rolePetInfo, pingfen);
 
-                    petComponentServer.CheckPetPingFen();
-                    petComponentServer.CheckPetZiZhi();
+                    petComponentServer.OnPetScoreChanged();
 
                     response.NewPetInfo = rolePetInfo;
                 }

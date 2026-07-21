@@ -30,7 +30,8 @@ namespace ET
             int homeZone = UnitZoneHelper.GetHomeZone(unit);
             string diamondNumber = CommonConfig.GetDiamondNumber(playId, homeZone);
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(diamondNumber);
-            
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+
             //0 砖石  1周卡
             if (rechargetType == 0)
             {
@@ -42,7 +43,7 @@ namespace ET
             }
 
             RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
-        
+
             int rechargeNumber = CommonConfig.GetRechargeNumber(playId, homeZone);
 
             long lastRechargeTime = rechargeComponentServer.RechargePro.LastRechargeTime;
@@ -50,23 +51,19 @@ namespace ET
             bool isSameDay = lastRechargeTime > 0
                     && TimeInfo.Instance.ToDateTime(lastRechargeTime).Date
                     == TimeInfo.Instance.ToDateTime(serverTime).Date;
-            
-            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
            // if (lastRechargeTime == 0 || !isSameDay)
             {
-                taskComponentServer.TriggerTaskEvent(TastConditionType.RechageDayNumber_113, 1, 30);
+                taskComponentServer.OnRechargeDay();
             }
 
-
-            numericComponent.ApplyChange(null, NumericType.RechargeNumber, rechargeNumber, 1, notice);    
-            numericComponent.ApplyChange(null, NumericType.V1RechageNumber, rechargeNumber, 0, notice);    
+            numericComponent.ApplyChange(null, NumericType.RechargeNumber, rechargeNumber, 1, notice);
+            numericComponent.ApplyChange(null, NumericType.V1RechageNumber, rechargeNumber, 0, notice);
             //充值签到标记，已经领取的不充值
             if (numericComponent.GetAsInt(NumericType.RechargeSign) != 2)
             {
                 numericComponent.ApplyValue(NumericType.RechargeSign, 1, notice);
             }
-          
         }
 
         public static async ETTask SendToAccountCenter(long accountId, long userId, int rechargeNumber, string ordinfo, int rechargeType)

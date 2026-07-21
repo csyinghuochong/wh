@@ -73,6 +73,7 @@ namespace ET
             {
                 int realPlayer = 1;
                 List<long> allAttackIds = new List<long>();
+                UnitComponent unitComponent = domainScene.GetComponent<UnitComponent>();
                 if (sceneTypeEnum == MapTypeEnum.TeamDungeon)
                 {
                     List<Unit> units = UnitHelper.GetUnitList(domainScene, UnitType.Player);
@@ -85,7 +86,16 @@ namespace ET
                 else
                 {
                     allAttackIds = defendUnit.GetComponent<AttackRecordComponent>().GetBeAttackPlayerList();
-                    if (!allAttackIds.Contains(mainAttack.Id))
+                    bool hasMainAttack = false;
+                    for (int k = 0; k < allAttackIds.Count; k++)
+                    {
+                        if (allAttackIds[k] == mainAttack.Id)
+                        {
+                            hasMainAttack = true;
+                            break;
+                        }
+                    }
+                    if (!hasMainAttack)
                     {
                         allAttackIds.Add(mainAttack.Id);
                     }
@@ -96,28 +106,30 @@ namespace ET
                     Console.WriteLine($"allAttackIds.Count : {allAttackIds.Count >= 50}  {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow()).ToString()}");
                 }
 
-                for (int i = 0; i < allAttackIds.Count; i++)
+                int attackCount = allAttackIds.Count > 20 ? 20 : allAttackIds.Count;
+                for (int i = 0; i < attackCount; i++)
                 {
-                    if (i >= 20)
-                    {
-                        break;
-                    }
-                    Unit attackUnit = domainScene.GetComponent<UnitComponent>().Get(allAttackIds[i]);
+                    Unit attackUnit = unitComponent.Get(allAttackIds[i]);
                     if (attackUnit == null || attackUnit.Type != UnitType.Player)
                     {
                         continue;
                     }
-                    attackUnit.GetComponent<TaskComponentServer>().OnKillUnit(defendUnit, sceneTypeEnum);
-                    attackUnit.GetComponent<ChengJiuComponentServer>().OnKillUnit(defendUnit);
-                    attackUnit.GetComponent<PetComponentServer>().OnKillUnit(defendUnit);
-                    attackUnit.GetComponent<RoleInfoComponentServer>().OnKillUnit(defendUnit, sceneTypeEnum, sceneId);
+                    TaskComponentServer taskComponent = attackUnit.GetComponent<TaskComponentServer>();
+                    ChengJiuComponentServer chengJiuComponent = attackUnit.GetComponent<ChengJiuComponentServer>();
+                    PetComponentServer petComponent = attackUnit.GetComponent<PetComponentServer>();
+                    RoleInfoComponentServer roleInfoComponent = attackUnit.GetComponent<RoleInfoComponentServer>();
+                    taskComponent.OnKillUnit(defendUnit, sceneTypeEnum);
+                    chengJiuComponent.OnKillUnit(defendUnit);
+                    petComponent.OnKillUnit(defendUnit);
+                    roleInfoComponent.OnKillUnit(defendUnit, sceneTypeEnum, sceneId);
                 }
 
                 UnitFactory.CreateDropItems(defendUnit, mainAttack, sceneTypeEnum, sceneId, realPlayer);
 
                 if (mainAttack.Type == UnitType.Player)
                 {
-                    int jinglingid = mainAttack.GetComponent<ChengJiuComponentServer>().JingLingId;
+                    ChengJiuComponentServer mainChengJiu = mainAttack.GetComponent<ChengJiuComponentServer>();
+                    int jinglingid = mainChengJiu.JingLingId;
                     if (jinglingid != 0)
                     {
                         LDElf ldElf = LDElfCategory.Instance.Get(jinglingid);

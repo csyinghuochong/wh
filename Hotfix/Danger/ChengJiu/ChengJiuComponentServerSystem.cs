@@ -73,8 +73,7 @@ namespace ET
             if (defend == null || defend.IsDisposed)
                 return;
 
-            self.BeginChengJiuEventBatch();
-            try
+            using (self.ChengJiuEventBatch())
             {
                 if (defend.Type == UnitType.Player)
                 {
@@ -117,16 +116,11 @@ namespace ET
                     }
                 }
             }
-            finally
-            {
-                self.EndChengJiuEventBatch();
-            }
         }
 
         public static void OnPassFuben(this ChengJiuComponentServer self, int difficulty, int chapterid, int star)
         {
-            self.BeginChengJiuEventBatch();
-            try
+            using (self.ChengJiuEventBatch())
             {
                 self.TriggerEvent(ChengJiuTargetEnum.PassNormalFubenID_11, chapterid, 1);
                 if ((int)difficulty >= (int)FubenDifficulty.TiaoZhan)  //挑战
@@ -142,10 +136,6 @@ namespace ET
                     self.TriggerEvent(ChengJiuTargetEnum.PerfectPassInfernalFubenID_14, chapterid, 1);
                 }
             }
-            finally
-            {
-                self.EndChengJiuEventBatch();
-            }
         }
 
         public static void OnChouKaTen(this ChengJiuComponentServer self)
@@ -156,6 +146,60 @@ namespace ET
         public static void OnEquipXiLian(this ChengJiuComponentServer self, int times)
         {
             self.TriggerEvent(ChengJiuTargetEnum.TotalEquipXiLian_203, 0, times);
+        }
+
+        /// <summary>
+        /// 洗练结果推进（隐藏技能等），Handler 只调此门面
+        /// </summary>
+        public static void OnEquipXiLianResults(this ChengJiuComponentServer self, List<ItemXiLianResult> results, int times)
+        {
+            using (self.ChengJiuEventBatch())
+            {
+                if (results != null)
+                {
+                    for (int i = 0; i < results.Count; i++)
+                    {
+                        ItemXiLianResult itemXiLianResult = results[i];
+                        for (int skill = 0; skill < itemXiLianResult.HideSkillLists.Count; skill++)
+                        {
+                            self.TriggerEvent(ChengJiuTargetEnum.EquipActiveSkillId_222, itemXiLianResult.HideSkillLists[skill], 1);
+                        }
+                    }
+                }
+                self.OnEquipXiLian(times);
+            }
+        }
+
+        public static void OnMakeEquip(this ChengJiuComponentServer self)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.MakeNumber_216, 0, 1);
+        }
+
+        public static void OnJiaYuanLevel(this ChengJiuComponentServer self, int jiaYuanLv)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, jiaYuanLv);
+        }
+
+        public static void OnCombatToValue(this ChengJiuComponentServer self, int combat)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, combat);
+        }
+
+        public static void OnPetTianTiRank(this ChengJiuComponentServer self, int rankId)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.PetTianTiRank_309, 0, rankId);
+        }
+
+        public static void OnTeamDungeonSettle(this ChengJiuComponentServer self, bool shenYuan)
+        {
+            using (self.ChengJiuEventBatch())
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.PassTeamFubenNumber_20, 0, 1);
+                if (shenYuan)
+                {
+                    self.TriggerEvent(ChengJiuTargetEnum.PassTeamShenYuanNumber_21, 0, 1);
+                }
+            }
         }
 
         public static void OnRevive(this ChengJiuComponentServer self)
@@ -182,44 +226,50 @@ namespace ET
 
         public static void OnGetPet(this ChengJiuComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.BeginChengJiuEventBatch();
-            try
+            using (self.ChengJiuEventBatch())
             {
                 self.TriggerEvent(ChengJiuTargetEnum.PetIdNumber_301, rolePetInfo.ConfigId, 1);
                 self.TriggerEvent(ChengJiuTargetEnum.TotalPetNumber_302, 0, 1);
                 self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
             }
-            finally
+        }
+
+        public static void OnPetPingFen(this ChengJiuComponentServer self, int maxPing, int arrayPing)
+        {
+            using (self.ChengJiuEventBatch())
             {
-                self.EndChengJiuEventBatch();
+                self.TriggerEvent(ChengJiuTargetEnum.PegScoreToValue_307, 0, maxPing);
+                self.TriggerEvent(ChengJiuTargetEnum.PetArrayScoreToValue_308, 0, arrayPing);
+            }
+        }
+
+        public static void OnPetMaxZiZhi(this ChengJiuComponentServer self, int hp, int act, int def, int adf, int mage)
+        {
+            using (self.ChengJiuEventBatch())
+            {
+                self.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 1, hp);
+                self.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 2, act);
+                self.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 3, def);
+                self.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 4, adf);
+                self.TriggerEvent(ChengJiuTargetEnum.ZiZhiToValue_311, 5, mage);
             }
         }
 
         public static void OnPetHeCheng(this ChengJiuComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.BeginChengJiuEventBatch();
-            try
+            using (self.ChengJiuEventBatch())
             {
                 self.TriggerEvent(ChengJiuTargetEnum.TotalPetHeCheng_303, 0, 1);
                 self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
-            }
-            finally
-            {
-                self.EndChengJiuEventBatch();
             }
         }
 
         public static void OnPetXiLian(this ChengJiuComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.BeginChengJiuEventBatch();
-            try
+            using (self.ChengJiuEventBatch())
             {
                 self.TriggerEvent(ChengJiuTargetEnum.TotalPetXiLian_304, 0, 1);
                 self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
-            }
-            finally
-            {
-                self.EndChengJiuEventBatch();
             }
         }
 
@@ -290,11 +340,25 @@ namespace ET
             }
         }
 
+        /// <summary>
+        /// 成就事件批处理作用域，离开 using 自动 End/Flush。仅限 Component 内部 OnXxx 使用。
+        /// </summary>
+        public static ChengJiuEventBatchScope ChengJiuEventBatch(this ChengJiuComponentServer self)
+        {
+            return new ChengJiuEventBatchScope(self);
+        }
+
+        /// <summary>
+        /// 开始成就事件批处理。优先用 ChengJiuEventBatch() + using。
+        /// </summary>
         public static void BeginChengJiuEventBatch(this ChengJiuComponentServer self)
         {
             self.ChengJiuEventBatchDepth++;
         }
 
+        /// <summary>
+        /// 结束成就事件批处理（支持嵌套）。优先用 ChengJiuEventBatch() + using。
+        /// </summary>
         public static void EndChengJiuEventBatch(this ChengJiuComponentServer self)
         {
             if (self.ChengJiuEventBatchDepth <= 0)

@@ -758,43 +758,59 @@ namespace ET
             }
 
             Unit unit = self.GetParent<Unit>();
-            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-            taskComponentServer?.BeginTaskEventBatch();
-
             M2C_RoleBagUpdate uniqueUpdate = new M2C_RoleBagUpdate();
             bool hasUniqueAdd = false;
+            Dictionary<string, List<RewardItem>> stackableByGetWay = null;
 
-            try
+            for (int i = 0; i < bagInfos.Count; i++)
             {
-                for (int i = 0; i < bagInfos.Count; i++)
+                BagInfo bagInfo = bagInfos[i];
+                LDItem ldItemCof = LDItemCategory.Instance.Get(bagInfo.ItemID);
+                int maxPileSum = ldItemCof.ItemPileSum;
+
+                if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
                 {
-                    BagInfo bagInfo = bagInfos[i];
-                    LDItem ldItemCof = LDItemCategory.Instance.Get(bagInfo.ItemID);
-                    int maxPileSum = ldItemCof.ItemPileSum;
-
-                    if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
+                    string way = string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay;
+                    if (stackableByGetWay == null)
                     {
-                        self.OnAddItemData($"{bagInfo.ItemID};{bagInfo.ItemNum}", string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay);
-                        continue;
+                        stackableByGetWay = new Dictionary<string, List<RewardItem>>();
                     }
-
-                    self.BagItemList.Add(bagInfo);
-                    uniqueUpdate.BagInfoAdd.Add(bagInfo);
-                    hasUniqueAdd = true;
-
-                    string[] getWayParts = getType.Split('_');
-                    int getTypeValue = int.Parse(getWayParts[0]);
-                    ItemAddHelper.OnGetItem(unit, getTypeValue, bagInfo);
+                    if (!stackableByGetWay.TryGetValue(way, out List<RewardItem> rewardList))
+                    {
+                        rewardList = new List<RewardItem>();
+                        stackableByGetWay[way] = rewardList;
+                    }
+                    int itemType = bagInfo.ItemType != 0 ? bagInfo.ItemType : ItemBigType.Type_Item;
+                    rewardList.Add(new RewardItem()
+                    {
+                        ItemType = itemType,
+                        ItemID = bagInfo.ItemID,
+                        ItemNum = bagInfo.ItemNum
+                    });
+                    continue;
                 }
 
-                if (hasUniqueAdd)
+                self.BagItemList.Add(bagInfo);
+                uniqueUpdate.BagInfoAdd.Add(bagInfo);
+                hasUniqueAdd = true;
+
+                string[] getWayParts = getType.Split('_');
+                int getTypeValue = int.Parse(getWayParts[0]);
+                ItemAddHelper.OnGetItem(unit, getTypeValue, bagInfo);
+            }
+
+            // 可堆叠按 GetWay 聚合后一次入包
+            if (stackableByGetWay != null)
+            {
+                foreach (KeyValuePair<string, List<RewardItem>> kv in stackableByGetWay)
                 {
-                    MessageHelper.SendToClient(unit, uniqueUpdate);
+                    self.OnAddItemData(kv.Value, string.Empty, kv.Key);
                 }
             }
-            finally
+
+            if (hasUniqueAdd)
             {
-                taskComponentServer?.EndTaskEventBatch();
+                MessageHelper.SendToClient(unit, uniqueUpdate);
             }
         }
 
@@ -978,10 +994,6 @@ namespace ET
             m2c_bagUpdate.BagInfoUpdate.Clear();
             m2c_bagUpdate.BagInfoDelete.Clear();
             Dictionary<int, long> currencyAdds = null;
-            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-            taskComponentServer?.BeginTaskEventBatch();
-            try
-            {
             for (int i = rewardItems.Count - 1; i >= 0; i--)
             {
                 RewardItem rewardItem = rewardItems[i];
@@ -1178,11 +1190,6 @@ namespace ET
                 {
                     roleInfoComponent.UpdateRoleMoneyAdd(kv.Key, kv.Value.ToString(), true, getType);
                 }
-            }
-            }
-            finally
-            {
-                taskComponentServer?.EndTaskEventBatch();
             }
 
             //通知客户端背包道具发生改变
@@ -1602,22 +1609,7 @@ namespace ET
 
         private static List<RewardItem> ParseSemicolonRewardItems(string rewardItems)
         {
-            List<RewardItem> costItems = new List<RewardItem>();
-            string[] needList = rewardItems.Split('@');
-            for (int i = 0; i < needList.Length; i++)
-            {
-                string[] itemInfo = needList[i].Split(';');
-                if (itemInfo.Length < 2)
-                {
-                    continue;
-                }
-                costItems.Add(new RewardItem()
-                {
-                    ItemID = int.Parse(itemInfo[0]),
-                    ItemNum = int.Parse(itemInfo[1])
-                });
-            }
-            return costItems;
+            return ItemNewHelper.GetRewardItemsAtSemicolon(rewardItems);
         }
 
         private static List<int> GetActiveEquipSuitEffectIds(int suitPoints, string effectIdStr)

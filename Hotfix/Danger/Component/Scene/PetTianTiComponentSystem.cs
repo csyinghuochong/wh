@@ -108,8 +108,8 @@ namespace ET
                 m2C_FubenSettlement.ReardList.AddRange(rewardItems);
                 m2C_FubenSettlement.StarInfos = new List<int> { 1, 1, 1 };
 
-                self.MainUnit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetTianTiReward}_{TimeHelper.ServerNow()}");
-                self.MainUnit.GetComponent<TaskComponentServer>().TriggerTaskEvent( TastConditionType.PetTianDiWin_37, 0, 1 );
+                self.MainUnit.GetComponent<TaskComponentServer>().OnPetTianTiWin(
+                    rewardItems, $"{ItemGetWay.PetTianTiReward}_{TimeHelper.ServerNow()}");
             }
             else
             {
@@ -120,9 +120,8 @@ namespace ET
             {
                 if (rankid > 0)
                 {
-                    self.MainUnit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PetTianTiRank_309, 0, rankid);
-                 
-                    self.MainUnit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.PetTianTiRank_82, 0, rankid);
+                    self.MainUnit.GetComponent<ChengJiuComponentServer>().OnPetTianTiRank(rankid);
+                    self.MainUnit.GetComponent<TaskComponentServer>().OnPetTianTiRank(rankid);
                 }
                 MessageHelper.SendToClient(self.MainUnit, m2C_FubenSettlement);
             }

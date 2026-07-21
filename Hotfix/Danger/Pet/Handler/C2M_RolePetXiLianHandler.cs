@@ -171,8 +171,7 @@ namespace ET
               
                 }
             }
-            pet.CheckPetPingFen();
-            pet.CheckPetZiZhi();
+            pet.OnPetScoreChanged();
 
             reply();
 			await ETTask.CompletedTask;

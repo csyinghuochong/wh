@@ -135,34 +135,8 @@ namespace ET
 
                 ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
                 TaskComponentServer taskComponent = unit.GetComponent<TaskComponentServer>();
-                chengJiu.BeginChengJiuEventBatch();
-                taskComponent.BeginTaskEventBatch();
-                try
-                {
-                    for (int i = 0; i < response.ItemXiLianResults.Count; i++)
-                    {
-                        ItemXiLianResult itemXiLianResult = response.ItemXiLianResults[i];
-                        for (int skill = 0; skill < itemXiLianResult.HideSkillLists.Count; skill++)
-                        {
-                            chengJiu.TriggerEvent(ChengJiuTargetEnum.EquipActiveSkillId_222, itemXiLianResult.HideSkillLists[skill], 1);
-                        }
-
-                        for (int attr = 0; attr < itemXiLianResult.XiLianHideProLists.Count; attr++)
-                        {
-                            taskComponent.TriggerTaskEvent(TastConditionType.XiLianAttriId_45, itemXiLianResult.XiLianHideProLists[0].HideID, 1);
-                        }
-
-                        taskComponent.TriggerTaskEvent(TastConditionType.XiLianSkillNumber_44, itemXiLianResult.HideSkillLists.Count, 1);
-                    }
-                }
-                finally
-                {
-                    taskComponent.EndTaskEventBatch();
-                    chengJiu.EndChengJiuEventBatch();
-                }
-
-                chengJiu.OnEquipXiLian(request.Times);
-                taskComponent.OnEquipXiLian(request.Times);
+                chengJiu.OnEquipXiLianResults(response.ItemXiLianResults, request.Times);
+                taskComponent.OnEquipXiLianResults(response.ItemXiLianResults, request.Times);
                 unit.GetComponent<DataCollationComponent>().OnXiLian(request.Times);
                 Function_Fight.UnitUpdateProperty_Base( unit, true, true );
 

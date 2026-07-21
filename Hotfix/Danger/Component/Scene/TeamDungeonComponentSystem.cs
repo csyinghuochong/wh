@@ -373,14 +373,8 @@ namespace ET
                 int hurtRate = (int)(hurtvalue * 100f / damageTotal);
                 TaskComponentServer taskComponent = unititem.GetComponent<TaskComponentServer>();
                 ChengJiuComponentServer chengJiu = unititem.GetComponent<ChengJiuComponentServer>();
-                taskComponent.TriggerTaskEvent( TastConditionType.TeamDungeonHurt_136, self.TeamInfo.SceneId, hurtRate);
-             
-                taskComponent.OnPassTeamFuben();
-                chengJiu.TriggerEvent(ChengJiuTargetEnum.PassTeamFubenNumber_20, 0, 1);
-                if (self.FubenType == TeamFubenType.ShenYuan)
-                {
-                    chengJiu.TriggerEvent(ChengJiuTargetEnum.PassTeamShenYuanNumber_21, 0, 1);
-                }
+                taskComponent.OnTeamDungeonSettle(self.TeamInfo.SceneId, hurtRate);
+                chengJiu.OnTeamDungeonSettle(self.FubenType == TeamFubenType.ShenYuan);
                 RoleInfoComponentServer roleInfoComponentServer = unititem.GetComponent<RoleInfoComponentServer>();
                 if (roleInfoComponentServer.RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
                 {

@@ -758,8 +758,9 @@ namespace ET
                     saveValue = self.RoleInfo.JiaYuanLv.ToString();
                     taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
                     chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
-                    taskComponentServer.TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, self.RoleInfo.JiaYuanLv - 10000);
-                    chengJiuComponentServer.TriggerEvent(ChengJiuTargetEnum.JiaYuanLevel_404, 0, self.RoleInfo.JiaYuanLv - 10000);
+                    int jiaYuanShowLv = self.RoleInfo.JiaYuanLv - 10000;
+                    taskComponentServer.OnJiaYuanLevel(jiaYuanShowLv);
+                    chengJiuComponentServer.OnJiaYuanLevel(jiaYuanShowLv);
                     break;
                 
                 //名字应该在改名的协议处理
@@ -869,8 +870,8 @@ namespace ET
                     saveValue = self.RoleInfo.Combat.ToString();
                     taskComponentServer ??= unit.GetComponent<TaskComponentServer>();
                     chengJiuComponentServer ??= unit.GetComponent<ChengJiuComponentServer>();
-                    chengJiuComponentServer.TriggerEvent(ChengJiuTargetEnum.CombatToValue_211, 0, self.RoleInfo.Combat);
-                    taskComponentServer.TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, self.RoleInfo.Combat);
+                    chengJiuComponentServer.OnCombatToValue(self.RoleInfo.Combat);
+                    taskComponentServer.OnCombatToValue(self.RoleInfo.Combat);
                     break;
               
                 default:

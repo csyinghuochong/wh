@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ET
 {
@@ -78,6 +77,33 @@ namespace ET
             bagInf0.ItemPar = randValue.ToString();
         }
 
+        private static List<LDScene> TreasureDungeonPool;
+        private static HashSet<int> TreasureMysterySet;
+
+        private static void EnsureTreasureDungeonPool()
+        {
+            if (TreasureDungeonPool != null)
+            {
+                return;
+            }
+
+            TreasureMysterySet = new HashSet<int>(LDSectionCategory.Instance.MysteryDungeonList);
+            TreasureDungeonPool = new List<LDScene>();
+            foreach (KeyValuePair<int, LDScene> kv in LDSceneCategory.Instance.GetAll())
+            {
+                LDScene scene = kv.Value;
+                if (TreasureMysterySet.Contains(scene.Id))
+                {
+                    continue;
+                }
+                if (scene.Id >= CommonConfig.GMDungeonId)
+                {
+                    continue;
+                }
+                TreasureDungeonPool.Add(scene);
+            }
+        }
+
         public static void TreasureItem(Unit unit, BagInfo bagInfo)
         {
 
@@ -87,21 +113,23 @@ namespace ET
                 return;
             }
 
+            EnsureTreasureDungeonPool();
             List<LDScene> dungeonConfigs = new List<LDScene>();
-            List<LDScene> dungeonConfigsAll = LDSceneCategory.Instance.GetAll().Values.ToList();
-
             int roleLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
 
-            for (int i = 0; i < dungeonConfigsAll.Count; i++)
+            for (int i = 0; i < TreasureDungeonPool.Count; i++)
             {
-                if(LDSectionCategory.Instance.MysteryDungeonList.Contains(dungeonConfigsAll[i].Id))
+                LDScene scene = TreasureDungeonPool[i];
+                if (scene.GetEnterLv() <= roleLv)
                 {
-                    continue;
+                    dungeonConfigs.Add(scene);
                 }
-                if (dungeonConfigsAll[i].GetEnterLv() <= roleLv && dungeonConfigsAll[i].Id < CommonConfig.GMDungeonId)
-                {
-                    dungeonConfigs.Add(dungeonConfigsAll[i]);
-                }
+            }
+
+            if (dungeonConfigs.Count == 0)
+            {
+                Log.Warning($"TreasureItem no dungeon: lv={roleLv}");
+                return;
             }
 
             int dungeonindex = RandomHelper.RandomNumber(0, dungeonConfigs.Count);
@@ -137,6 +165,12 @@ namespace ET
                 }
 
                 DropHelper.DropIDToDropItem_2(dropID2, rewardList);
+            }
+
+            if (rewardList.Count == 0)
+            {
+                Log.Warning($"TreasureItem empty reward: {bagInfo.ItemID}");
+                return;
             }
 
             bagInfo.ItemPar = $"{dungeonid}@{"TaskMove_6"}@{rewardList[0].ItemID + ";" + rewardList[0].ItemNum}";

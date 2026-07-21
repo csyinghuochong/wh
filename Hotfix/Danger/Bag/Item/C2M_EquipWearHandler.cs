@@ -81,11 +81,6 @@ namespace ET
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 useBagInfo.isBinging = true;
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
-
-                if (caowei == (int)EquipCaoWeiTypeEnum.Wuqi_1)
-                {
-                    numeric.ApplyValue(NumericType.Now_Weapon, useBagInfo.ItemID);
-                }
             }
             else
             {
@@ -107,17 +102,13 @@ namespace ET
                     return;
                 }
 
-                int caowei = ItemNewHelper.GetNewEquipCaoWei(useBagInfo.ItemID);
                 bag.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
                 skillSet.OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
-                if (caowei == (int)EquipCaoWeiTypeEnum.Wuqi_1)
-                {
-                    numeric.ApplyValue(NumericType.Now_Weapon, 0);
-                }
             }
 
+            // 穿脱结束后统一同步当前武器 Numeric，避免分支内重复写
             BagInfo equip_0 = bag.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)EquipCaoWeiTypeEnum.Wuqi_1);
             numeric.ApplyValue(NumericType.Now_Weapon, equip_0 !=null ? equip_0.ItemID : 0);
 
