@@ -12,6 +12,9 @@ namespace ET
 		{
 			//读取数据库
 			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+			DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
+			ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
+			TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
 			RolePetInfo petinfo_1 = petComponentServer.GetPetInfo(request.PetInfoId1);
 			RolePetInfo petinfo_2 = petComponentServer.GetPetInfo(request.PetInfoId2);
@@ -36,7 +39,7 @@ namespace ET
 			//改变第一个宠物的数据	
 
 			//宠物合成次数
-			int petHeChengNumber = unit.GetComponent<DataCollationComponent>().PetHeCheng;
+			int petHeChengNumber = dataCollationComponent.PetHeCheng;
 
             int petLv_1 = petinfo_1.PetLv;
 			int petLv_2 = petinfo_2.PetLv;
@@ -367,9 +370,9 @@ namespace ET
             petinfo_update.LockSkill.Clear();
             petComponentServer.OnResetPoint(petinfo_update);
 			petComponentServer.RemovePet(petinfo_delete.Id, 1);
-			unit.GetComponent<ChengJiuComponentServer>().OnPetHeCheng(petinfo_update);
-			unit.GetComponent<TaskComponentServer>().OnPetHeCheng(petinfo_update);
-			unit.GetComponent<DataCollationComponent>().PetHeCheng++;
+			chengJiuComponentServer.OnPetHeCheng(petinfo_update);
+			taskComponentServer.OnPetHeCheng(petinfo_update);
+			dataCollationComponent.PetHeCheng++;
 
             petComponentServer.CheckPetPingFen();
 			petComponentServer.CheckPetZiZhi();

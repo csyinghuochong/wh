@@ -12,6 +12,7 @@ namespace ET
 			//读取数据库
 			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 			NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+			UnitComponent unitComponent = unit.GetParent<UnitComponent>();
 			RoleInfo roleInfo = roleInfoComponentServer.GetUserInfo();
 
 			Dictionary<int, int> settingIndexMap = new Dictionary<int, int>();
@@ -27,7 +28,7 @@ namespace ET
 					int attackMode = int.Parse(request.GameSettingInfos[i].Value);
 					numericComponent.ApplyValue(NumericType.AttackMode, attackMode);
 
-					List<Unit> unitlist = unit.GetParent<UnitComponent>().GetAll();
+					List<Unit> unitlist = unitComponent.GetAll();
                     for (int u = 0; u < unitlist.Count; u++)
 					{
 						if (unitlist[u].MasterId == unit.Id)

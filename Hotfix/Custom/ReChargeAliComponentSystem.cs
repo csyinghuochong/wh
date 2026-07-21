@@ -75,7 +75,10 @@ namespace ET
         {
             await TimerComponent.Instance.WaitAsync(1000);
 
-            string userInfo = self.OrderDic[orderId];
+            if (!self.OrderDic.TryGetValue(orderId, out string userInfo))
+            {
+                return;
+            }
             // $"{request.UnitId}_{request.UnitName}_{request.RechargeType}"
             string[] userInfoParts = userInfo.Split('_');
             long userId = long.Parse(userInfoParts[0]);
@@ -171,19 +174,20 @@ namespace ET
                 //根据加密算法 验签 API 
                 bool result = AlipaySignature.RSACheckV1(aliPayResultDic, self.AliPay_Public_Key, "UTF-8", "RSA2", false);
                 string orderId = aliPayResultDic["out_trade_no"];
-                if (result  && aliPayResultDic["trade_status"] == "TRADE_SUCCESS" && self.OrderDic.ContainsKey(orderId))
+                if (result  && aliPayResultDic["trade_status"] == "TRADE_SUCCESS" && self.OrderDic.TryGetValue(orderId, out string userInfo))
                 {
-                    string userInfo = self.OrderDic[orderId];
                     // $"{request.UnitId}_{request.UnitName}_{request.RechargeType}"
-                    long userId = long.Parse(userInfo.Split('_')[0]);
-                    int rechargeType = int.Parse(userInfo.Split('_')[2]);
+                    string[] userInfoParts = userInfo.Split('_');
+                    long userId = long.Parse(userInfoParts[0]);
+                    int rechargeType = int.Parse(userInfoParts[2]);
 
-                    Log.Warning($"支付成功[支付宝]  {userId}  {int.Parse(orderId.Split('_')[2])}");
+                    string[] orderParts = orderId.Split('_');
+                    Log.Warning($"支付成功[支付宝]  {userId}  {int.Parse(orderParts[2])}");
 
-                    int zone = int.Parse(orderId.Split('_')[1]);
-                    int amount = int.Parse(orderId.Split('_')[2]);
+                    int zone = int.Parse(orderParts[1]);
+                    int amount = int.Parse(orderParts[2]);
                     string serverName = ServerHelper.GetGetServerItem(false, zone).ServerName;
-                    Log.Warning($"支付成功[支付宝]: 区：{serverName}   玩家名字：{userInfo.Split('_')[1]}   充值额度：{amount}  时间:{TimeHelper.DateTimeNow().ToString()}");
+                    Log.Warning($"支付成功[支付宝]: 区：{serverName}   玩家名字：{userInfoParts[1]}   充值额度：{amount}  时间:{TimeHelper.DateTimeNow().ToString()}");
                    
                     RechargeHelp.OnPaySucessToGate(zone, userId, amount, orderId, PayTypeEnum.AliPay, rechargeType).Coroutine();
                     self.OrderDic.Remove(aliPayResultDic["out_trade_no"]);
@@ -195,9 +199,9 @@ namespace ET
                 //输出验证结果
  
                 //输出当前订单的的信息
-                if (aliPayResultDic.ContainsKey("trade_status"))
+                if (aliPayResultDic.TryGetValue("trade_status", out string tradeStatus))
                 {
-                    switch (aliPayResultDic["trade_status"])
+                    switch (tradeStatus)
                     {
                         case "WAIT_BUYER_PAY":
                             Log.Warning("交易状态:" + "交易创建，等待买家付款");

@@ -11,6 +11,7 @@ namespace ET
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             long sellGold = 0;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 
             for (int i = 0; i < request.BagInfoIds.Count; i++)
             {
@@ -74,7 +75,7 @@ namespace ET
             }
             if (sellGold > 0)
             {
-                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(UserDataType.Gold, sellGold.ToString(), true, 39);
+                roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, sellGold.ToString(), true, 39);
             }
 
             MessageHelper.SendToClient(unit, m2c_bagUpdate);

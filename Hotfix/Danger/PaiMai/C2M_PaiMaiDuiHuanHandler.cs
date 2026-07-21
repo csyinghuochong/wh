@@ -10,6 +10,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PaiMaiDuiHuanRequest request, M2C_PaiMaiDuiHuanResponse response, Action reply)
         {
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
             long dbCacheId = DBHelper.GetRankServerId(unit);
             R2M_DBServerInfoResponse d2GGetUnit = (R2M_DBServerInfoResponse)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2R_DBServerInfoRequest() { });
             long diamond = request.DiamondsNumber;
@@ -19,7 +21,7 @@ namespace ET
                 return;
             }
 
-            if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber) <= 0)
+            if (numericComponent.GetAsInt(NumericType.RechargeNumber) <= 0)
             {
                 reply();
                 return;
@@ -37,7 +39,7 @@ namespace ET
             {
                 roleInfo.UpdateRoleMoneySub(UserDataType.Diamond, (diamond * -1).ToString(), true, ItemGetWay.DuiHuan);
                 roleInfo.UpdateRoleMoneyAdd(UserDataType.Gold, (diamond * d2GGetUnit.ServerInfo.ExChangeGold).ToString(), true, ItemGetWay.DuiHuan);
-                unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.DuiHuanGold_15, 0, (int)(diamond / 100));
+                taskComponentServer.TriggerTaskEvent(TastConditionType.DuiHuanGold_15, 0, (int)(diamond / 100));
             }
             else 
             {

@@ -31,8 +31,8 @@ namespace ET
                 }
                 addExp += addValue * bagInfo.ItemNum;
                 bagidList.Add(request.OperateBagID[i]);
-                response.AddExp = addExp;
             }
+            response.AddExp = addExp;
 
             SkillSetComponentServer skillsetComponentServer = unit.GetComponent<SkillSetComponentServer>();
 

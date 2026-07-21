@@ -25,7 +25,8 @@ namespace ET
 
             ItemLocType locType = ItemLocType.ItemLocBag;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             BagInfo useBagInfo = bagComponentServer.GetItemByLoc(locType, request.OperateBagID);
             if (useBagInfo == null)
             {

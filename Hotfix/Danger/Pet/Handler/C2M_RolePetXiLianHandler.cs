@@ -12,6 +12,8 @@ namespace ET
 			//读取数据库
 			PetComponentServer pet = unit.GetComponent<PetComponentServer>();
 			BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+			ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
+			TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 			RolePetInfo petInfo = pet.GetPetInfo(request.PetInfoId);
 			BagInfo bagInfo = bag.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoID);
 
@@ -102,7 +104,7 @@ namespace ET
 					if (ifok)
 					{
                         pet.UpdatePetAttribute(petInfo, true);
-                        unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.PetUseSkillBook_36, 0, 1);
+                        taskComponentServer.TriggerTaskEvent(TastConditionType.PetUseSkillBook_36, 0, 1);
                    
                         petInfo.LockSkill.Clear();
 
@@ -160,13 +162,12 @@ namespace ET
 			{
 				//扣除道具
 				bag.OnCostItemData($"{bagInfo.ItemID};1", ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);		
-				unit.GetComponent<ChengJiuComponentServer>().OnPetXiLian(petInfo);		//激活成就
-				TaskComponentServer taskComponent = unit.GetComponent<TaskComponentServer>();
-				taskComponent.OnPetXiLian(petInfo);                    //激活任务
+				chengJiuComponentServer.OnPetXiLian(petInfo);		//激活成就
+				taskComponentServer.OnPetXiLian(petInfo);                    //激活任务
 
-				if (itemSubType == 105 || itemSubType == 133)
+                if (itemSubType == 105 || itemSubType == 133)
                 {
-                    taskComponent.TriggerTaskEvent(TastConditionType.PetXiLian10010086_33, 0, 1);
+                    taskComponentServer.TriggerTaskEvent(TastConditionType.PetXiLian10010086_33, 0, 1);
               
                 }
             }

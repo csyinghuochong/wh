@@ -445,7 +445,8 @@ namespace ET
         {
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             int sceneTypeEnum = mapComponent.MapTypeEnum;
-            long userId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            long userId = roleInfoComponentServer.RoleInfo.UserId;
             // 跨服旅游后当前区是目标服，回城用归属服
             long mapInstanceId = DBHelper.GetMainCityServerId(UnitZoneHelper.GetHomeZone(unit));
             //动态删除副本
@@ -675,7 +676,8 @@ namespace ET
         public static void RemovePetAndJingLing(Unit unit)
         {
             UnitComponent unitComponent = unit.DomainScene().GetComponent<UnitComponent>();
-            RolePetInfo fightId = unit.GetComponent<PetComponentServer>().GetFightPet();
+            PetComponentServer petComponent = unit.GetComponent<PetComponentServer>();
+            RolePetInfo fightId = petComponent.GetFightPet();
             if (fightId != null)
             {
                 unitComponent.Remove(fightId.Id);

@@ -234,18 +234,14 @@ namespace ET
 
         public static bool IsHavePlayer(this TeamDungeonComponent self)
         {
-            bool haveplayer = false;
-            List<Entity> units = self.DomainScene().GetComponent<UnitComponent>().Children.Values.ToList() ;
-            for (int i = 0; i < units.Count; i++)
+            foreach (Entity entity in self.DomainScene().GetComponent<UnitComponent>().Children.Values)
             {
-                Unit unit = units[i] as Unit;
-                if (unit.Type == UnitType.Player)
+                if (entity is Unit unit && unit.Type == UnitType.Player)
                 {
-                    haveplayer = true;
-                    break;
+                    return true;
                 }
             }
-            return haveplayer;
+            return false;
         }
 
         public static void OnUpdateDamage(this TeamDungeonComponent self, Unit attack, Unit defend, long damage)

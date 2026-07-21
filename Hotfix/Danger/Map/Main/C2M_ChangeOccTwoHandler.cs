@@ -35,10 +35,11 @@ namespace ET
                 return;
             }
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
             skillSet.OnChangeJueXing(dataCollationComponent.OccTwoOld, request.OccTwoID);
             skillSet.OnChangeOccTwoRequest(request.OccTwoID);
-            unit.GetComponent<TaskComponentServer>().OnChangeOccTwo();
+            taskComponentServer.OnChangeOccTwo();
 
             if (OccTwo == 0)
             {

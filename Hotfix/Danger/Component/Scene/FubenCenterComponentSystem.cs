@@ -130,13 +130,12 @@ namespace ET
             switch (ldScene.Scene_Type)
             {
                 case MapTypeEnum.RunRace:
-                    fubnescene.AddComponent<RunRaceDungeonComponent>();
-
-                    fubnescene.GetComponent<RunRaceDungeonComponent>().OnBegin();
+                    RunRaceDungeonComponent runRaceDungeon = fubnescene.AddComponent<RunRaceDungeonComponent>();
+                    runRaceDungeon.OnBegin();
                     break;
                 case MapTypeEnum.Demon:
-                    fubnescene.AddComponent<DemonDungeonComponent>();
-                    fubnescene.GetComponent<DemonDungeonComponent>().OnBegin();
+                    DemonDungeonComponent demonDungeon = fubnescene.AddComponent<DemonDungeonComponent>();
+                    demonDungeon.OnBegin();
                     break;
                 default:
                     break;

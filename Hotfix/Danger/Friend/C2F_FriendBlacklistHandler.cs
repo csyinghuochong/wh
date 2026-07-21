@@ -7,8 +7,6 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_FriendBlacklistRequest request, F2C_FriendBlacklistResponse response, Action reply)
         {
-            long dbCacheId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), Enum.GetName(SceneType.DBCache)).InstanceId;
- 
             DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
             if (dBFriendInfo.FriendList.Contains(request.FriendId))
             {
@@ -28,12 +26,11 @@ namespace ET
             }
             if (request.OperateType == 2)
             {
-                if (!dBFriendInfo.Blacklist.Contains(request.FriendId))
+                if (!dBFriendInfo.Blacklist.Remove(request.FriendId))
                 {
                     reply();
                     return;
                 }
-                dBFriendInfo.Blacklist.Remove(request.FriendId);
             }
             
             await DBHelper.SaveComponent(scene.DomainZone(), request.UserID,dBFriendInfo );

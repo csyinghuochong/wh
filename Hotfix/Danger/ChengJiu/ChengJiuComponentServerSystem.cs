@@ -10,7 +10,8 @@ namespace ET
         public override void Awake(ChengJiuComponentServer self)
         {
             self.RandomDrop = 0;
-            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv);
+            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
+            self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, roleInfo.Lv);
         }
     }
 

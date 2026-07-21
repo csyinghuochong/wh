@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ET
 {
@@ -31,34 +30,33 @@ namespace ET
                         return;
                     }
 
-                    if (!ActivityV1Config.ChouKaNumberReward.ContainsKey(request.RewardId))
-                    {
-                        Log.Error($"C2M_ActivityReceiveRequest.4");
-                        response.Error = ErrorCode.ERR_ModifyData;
-                        reply();
-                        return;
-                    }
                     if (activityComponentServer.ActivityV1Info.ChouKaNumberReward.Contains(request.RewardId))
                     {
                         response.Error = ErrorCode.ERR_AlreadyReceived;
                         reply();
                         return;
                     }
-                    rewarditem = ActivityV1Config.ChouKaNumberReward[request.RewardId];
-                    bagComponentServer.OnAddItemData(rewarditem, $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
-                    activityComponentServer.ActivityV1Info.ChouKaNumberReward.Add(request.RewardId);
-                    break;
-                case ActivityV1Config.ActivityV1_Consume:
-                    if (!ActivityV1Config.ConsumeDiamondReward.ContainsKey(request.RewardId))
+                    if (!ActivityV1Config.ChouKaNumberReward.TryGetValue(request.RewardId, out rewarditem))
                     {
-                        Log.Error($"C2M_ActivityReceiveRequest.5");
+                        Log.Error($"C2M_ActivityReceiveRequest.4");
                         response.Error = ErrorCode.ERR_ModifyData;
                         reply();
                         return;
                     }
+                    bagComponentServer.OnAddItemData(rewarditem, $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
+                    activityComponentServer.ActivityV1Info.ChouKaNumberReward.Add(request.RewardId);
+                    break;
+                case ActivityV1Config.ActivityV1_Consume:
                     if (activityComponentServer.ActivityV1Info.ConsumeDiamondReward.Contains(request.RewardId))
                     {
                         response.Error = ErrorCode.ERR_AlreadyReceived;
+                        reply();
+                        return;
+                    }
+                    if (!ActivityV1Config.ConsumeDiamondReward.TryGetValue(request.RewardId, out rewarditem))
+                    {
+                        Log.Error($"C2M_ActivityReceiveRequest.5");
+                        response.Error = ErrorCode.ERR_ModifyData;
                         reply();
                         return;
                     }
@@ -68,7 +66,6 @@ namespace ET
                         reply();
                         return;
                     }
-                    rewarditem = ActivityV1Config.ConsumeDiamondReward[request.RewardId];
                     bagComponentServer.OnAddItemData(rewarditem, $"{ItemGetWay.ActivityConsume}_{TimeHelper.ServerNow()}");
                     activityComponentServer.ActivityV1Info.ConsumeDiamondReward.Add(request.RewardId);
                     break;
@@ -147,7 +144,7 @@ namespace ET
                     break;
                 case ActivityV1Config.ActivityV1_HongBao:
                     int hongbaoNumber = numericComponent.GetAsInt(NumericType.V1HongBaoNumber);
-                    long v1rechargeNumber = numericComponent.GetAsInt(NumericType.V1RechageNumber);
+                    int v1rechargeNumber = numericComponent.GetAsInt(NumericType.V1RechageNumber);
                     int totalHongBa0 = (int)(v1rechargeNumber / 98);
                     if (hongbaoNumber >= totalHongBa0)
                     {
@@ -184,10 +181,9 @@ namespace ET
                     string rewardItem = string.Empty;
                     if (request.RewardId == 0)
                     {
-                        List<int> allword = ActivityV1Config.DuiHuanWordReward.Keys.ToList();
-                        for (int i = 0; i < allword.Count; i++)
+                        foreach (int wordId in ActivityV1Config.DuiHuanWordReward.Keys)
                         {
-                            costItemList.Add( new RewardItem() { ItemID = allword[i], ItemNum = 1 } );
+                            costItemList.Add( new RewardItem() { ItemID = wordId, ItemNum = 1 } );
                         }
                         rewardItem = ActivityV1Config.GroupsWordReward;
                     }

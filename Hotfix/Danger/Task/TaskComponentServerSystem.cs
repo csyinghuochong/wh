@@ -328,8 +328,9 @@ namespace ET
 
         public static void GetRandomFubenId(this TaskComponentServer self, TaskPro taskPro)
         {
+            Unit unit = self.GetParent<Unit>();
             List<int> openfubenids = new List<int>();
-            int lv = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+            int lv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
 
             Dictionary<int, LDScene> allfuben =  LDSceneCategory.Instance.GetAll();
             foreach (( int fubenid, LDScene config) in allfuben)
@@ -351,7 +352,7 @@ namespace ET
             string[] monsters =  SceneConfigHelper.GetLocalDungeonMonsters_2(dungeonid).Split('@');
             taskPro.FubenId = dungeonid;
             taskPro.WaveId = RandomHelper.RandomNumber(0, monsters.Length);
-            Log.Warning($"生成藏宝图任务怪: {self.GetParent<Unit>().Id} {dungeonid} {taskPro.WaveId}");
+            Log.Warning($"生成藏宝图任务怪: {unit.Id} {dungeonid} {taskPro.WaveId}");
         }
         
         public static void OnGMGetTask(this TaskComponentServer self, int taskid)

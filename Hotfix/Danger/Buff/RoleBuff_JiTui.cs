@@ -32,10 +32,12 @@ namespace ET
             Vector3 vector3 = theUnitBelongto.Position + dir * distance;
             this.BeginTime = TimeHelper.ServerNow();
             this.StartPosition = theUnitBelongto.Position;
-            this.TargetPosition = theUnitBelongto.DomainScene().GetComponent<MapComponent>().GetCanChongJiPath(theUnitBelongto,theUnitBelongto.Position, vector3);
+            MapComponent map = theUnitBelongto.DomainScene().GetComponent<MapComponent>();
+            this.TargetPosition = map.GetCanChongJiPath(theUnitBelongto,theUnitBelongto.Position, vector3);
 
             theUnitBelongto.Stop(-2);
-            theUnitBelongto.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.JiTui);
+            StateComponent stateComponent = theUnitBelongto.GetComponent<StateComponent>();
+            stateComponent.StateTypeAdd(StateTypeEnum.JiTui);
             theUnitBelongto.FindPathMoveToAsync(this.TargetPosition, null, false, Math.Max(100, (int)(newSpeed * 100f / oldSpeed))).Coroutine();
         }
 

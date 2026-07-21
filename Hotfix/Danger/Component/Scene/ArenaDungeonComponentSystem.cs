@@ -107,9 +107,10 @@ namespace ET
                 ArenaInfo arenaInfo = self.DomainScene().GetComponent<ArenaInfo>();
                 for (int i = 0; i < unitlist.Count; i++)
                 {
-                    ArenaPlayerStatu arenaPlayerStatu = arenaInfo.PlayerList[unitlist[i].Id];
+                    long playerId = unitlist[i].Id;
+                    ArenaPlayerStatu arenaPlayerStatu = arenaInfo.PlayerList[playerId];
                     arenaPlayerStatu.RankId = unitlist.Count;
-                    arenaInfo.PlayerList[unitlist[i].Id] = arenaPlayerStatu;
+                    arenaInfo.PlayerList[playerId] = arenaPlayerStatu;
                 }
 
                 if (unitlist.Count == 1)

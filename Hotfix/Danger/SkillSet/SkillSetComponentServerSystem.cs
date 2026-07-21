@@ -79,37 +79,36 @@ namespace ET
 
 		public static void TianFuRemove(this SkillSetComponentServer self, int tianFuid)
 		{
-			List<int> tianfuIds = self.TianFuList;
-			if (tianFuid > 0 && tianfuIds.Contains(tianFuid))
+			if (tianFuid > 0 && self.TianFuList.Remove(tianFuid))
 			{
-				tianfuIds.Remove(tianFuid);
 				self.AddTianFuAttribute(tianFuid, false);
 			}
-			tianfuIds = self.TianFuList1;
-			if (tianFuid > 0 && tianfuIds.Contains(tianFuid))
+			if (tianFuid > 0 && self.TianFuList1.Remove(tianFuid))
 			{
-				tianfuIds.Remove(tianFuid);
 				self.AddTianFuAttribute(tianFuid, false);
 			}
 		}
 
 		public static void TianFuAdd(this SkillSetComponentServer self, int tianFuid)
 		{
-			if (tianFuid > 0 && !self.TianFuList().Contains(tianFuid))
+			List<int> list = self.TianFuList();
+			if (tianFuid > 0 && !list.Contains(tianFuid))
 			{
-				self.TianFuList().Add(tianFuid);
+				list.Add(tianFuid);
 				self.AddTianFuAttribute(tianFuid, true);
 			}
 		}
 
 		public static void AddiontTianFu(this SkillSetComponentServer self, int tianFuid, bool active)
 		{
-			if (self.TianFuAddition.Contains(tianFuid) && !active)
+			if (!active)
 			{
-				self.TianFuAddition.Remove(tianFuid);
-				self.AddTianFuAttribute(tianFuid, true);
+				if (self.TianFuAddition.Remove(tianFuid))
+				{
+					self.AddTianFuAttribute(tianFuid, true);
+				}
 			}
-			if (!self.TianFuAddition.Contains(tianFuid) && active)
+			else if (!self.TianFuAddition.Contains(tianFuid))
 			{
 				self.TianFuAddition.Add(tianFuid);
 				self.AddTianFuAttribute(tianFuid, false);
@@ -391,6 +390,7 @@ namespace ET
 		public static void OnAddItemSkill(this SkillSetComponentServer self, List<int> itemSkills,  Dictionary<int, int> magicskills = null, long baginfoid = 0)
 		{
 			Unit unit = self.GetParent<Unit>();
+			SkillPassiveComponent passive = unit.GetComponent<SkillPassiveComponent>();
             for (int i = 0; i < itemSkills.Count; i++)
 			{
 				int skillId = itemSkills[i];
@@ -412,7 +412,7 @@ namespace ET
                 SkillPro skillPro = self.AddSkillPro(skillId, SkillSetEnum.Skill, SkillSourceEnum.Equip);
 				skillPro.MagicQulity = magicqulity;
 				skillPro.BagInfoId = baginfoid;
-                unit.GetComponent<SkillPassiveComponent>().AddPassiveSkill(skillId, magicskills);
+                passive.AddPassiveSkill(skillId, magicskills);
                 self.CheckSkillTianFu(skillId, true);
             }
 			for (int i = 0; i < itemSkills.Count; i++)

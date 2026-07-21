@@ -16,7 +16,8 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum != MapTypeEnum.MainCityScene)
+            MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
+            if (mapComponent.MapTypeEnum != MapTypeEnum.MainCityScene)
             {
                 response.Error = ErrorCode.ERR_OtherNotExist;
                 reply();
@@ -25,10 +26,11 @@ namespace ET
 
             if (request.Operatate == 1)  //发起挑战
             {
+                RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
                 M2C_OneChallenge m2CCreateUnits = new M2C_OneChallenge();
                 m2CCreateUnits.Operatate = 1;
                 m2CCreateUnits.OtherId = unit.Id;
-                m2CCreateUnits.OtherName = unit.GetComponent<RoleInfoComponentServer>().UserName;
+                m2CCreateUnits.OtherName = roleInfo.UserName;
                 MessageHelper.SendToClient(other, m2CCreateUnits);
             }
             if (request.Operatate == 2) //迎接挑战

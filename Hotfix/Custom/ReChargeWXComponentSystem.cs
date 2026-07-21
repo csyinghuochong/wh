@@ -184,12 +184,13 @@ namespace ET
         public static string GetParamToXml(this ReChargeWXComponent self, Dictionary<string, string> dic)
         {
             StringBuilder str = new StringBuilder();
-            var param1 = dic.OrderBy(x => x.Key).ToDictionary(x => x.Key, y => y.Value);
+            // materialize once — OrderBy is deferred; avoid re-sorting on second foreach
+            var ordered = dic.OrderBy(x => x.Key).ToList();
 
             //再从字典中 获取各个元素 拼接为XML的格式 键跟值之间 用"="连接起来
-            foreach (string dic1 in param1.Keys)
+            foreach (var kv in ordered)
             {
-                str.Append(dic1 + "=" + dic[dic1] + "&");
+                str.Append(kv.Key + "=" + kv.Value + "&");
             }
             //-----------------第二步:拼接商户密钥 获取签名sign-----------------------------//
             str.Append("key=" + self.miyao);
@@ -202,9 +203,9 @@ namespace ET
             //------------------第三步 返回XML格式的字符串--------------------------//
             StringBuilder xmlStr = new StringBuilder();
             xmlStr.Append("<xml>");
-            foreach (string dic1 in param1.Keys)
+            foreach (var kv in ordered)
             {
-                xmlStr.Append("<" + dic1 + ">" + dic[dic1] + "</" + dic1 + ">");
+                xmlStr.Append("<" + kv.Key + ">" + kv.Value + "</" + kv.Key + ">");
             }
             //追加到XML尾部
             xmlStr.Append("<sign>" + sign + "</sign></xml>");
@@ -255,23 +256,18 @@ namespace ET
                     return;
                 }
                 //新建一个订单类,里面包含订单的所有参数
-                string userinfo = string.Empty;
                 //获取微信支付单号
                 string dingdanStr = xml["out_trade_no"].InnerText;
                 //判断此订单是否存在 out_trade_no 是商户订单号
-                if (self.orderDic.ContainsKey(dingdanStr))
-                {
-                    userinfo = self.orderDic[dingdanStr];
-                }
-                //如果订单真实存在则继续执行
-                if (userinfo != string.Empty)
+                if (self.orderDic.TryGetValue(dingdanStr, out string userinfo))
                 {
                     //存储数据库订单数据
                     //out_trade_no 商户订单号
                     //打印订单成功信息
                     //安全验证 单号对应的金额 
                     //验证单号上的金额和xml中的金额是否一致
-                    int amount = int.Parse(dingdanStr.Split('_')[1]);
+                    string[] dingdanParts = dingdanStr.Split('_');
+                    int amount = int.Parse(dingdanParts[1]);
                     Log.Warning($"单号金额: {xml["total_fee"].InnerText}  {amount} ");
                     if (int.Parse(xml["total_fee"].InnerText) == amount)
                     {

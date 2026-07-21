@@ -15,6 +15,8 @@ namespace ET
             }
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+            ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             if (roleInfo.Lv < 10)
             {
@@ -23,7 +25,6 @@ namespace ET
                 return;
             }
             
-            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
             if (taskComponentServer.OnLineTime < 30)
             {
                 response.Error = ErrorCode.Err_OnLineTimeNot;
@@ -72,7 +73,7 @@ namespace ET
                 roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Diamond, "120", true, ItemGetWay.Share);
             }
 
-            unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.ShareTotalNumber_220, 0, 1);
+            chengJiuComponentServer.TriggerEvent(ChengJiuTargetEnum.ShareTotalNumber_220, 0, 1);
             reply();
             await ETTask.CompletedTask;
         }

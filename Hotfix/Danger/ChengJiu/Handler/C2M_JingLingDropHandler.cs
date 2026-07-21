@@ -28,13 +28,14 @@ namespace ET
             }
             List<RewardItem> droplist = new List<RewardItem>();
             DropHelper.DropIDToDropItem_2(dropId, droplist);
-            if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < droplist.Count)
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            if (bag.GetBagLeftCell() < droplist.Count)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
                 return;
             }
-            unit.GetComponent<BagComponentServer>().OnAddItemData(droplist, string.Empty, $"{ItemGetWay.JingLing}_{TimeHelper.ServerNow()}", false);
+            bag.OnAddItemData(droplist, string.Empty, $"{ItemGetWay.JingLing}_{TimeHelper.ServerNow()}", false);
 
             chengJiuComponentServer.RandomDrop = 1;
             reply();

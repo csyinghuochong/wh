@@ -42,6 +42,7 @@ namespace ET
         {
             long serverTime = TimeHelper.ServerNow();
             long mailServerId = DBHelper.GetMailServerId(self.DomainZone());
+            string[] needList = rewardList.Split('@');
             for (int i = start; i <= end; i++)
             {
                 if (i >= players.Count || players[i].RobotId > 0)
@@ -54,7 +55,6 @@ namespace ET
                 mailInfo.Context = $"恭喜你在秘境中获得第{num}名,获得如下奖励";
                 mailInfo.Title = "秘境领主排名奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                string[] needList = rewardList.Split('@');
                 for (int k = 0; k < needList.Length; k++)
                 {
                     string[] itemInfo = needList[k].Split(';');

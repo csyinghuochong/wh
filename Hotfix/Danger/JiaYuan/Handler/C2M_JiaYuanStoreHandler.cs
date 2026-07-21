@@ -17,7 +17,8 @@ namespace ET
                 reply();
                 return;
             }
-            int leftCell = unit.GetComponent<BagComponentServer>().GetHourseLeftCell(hourseId);
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            int leftCell = bag.GetHourseLeftCell(hourseId);
             if (leftCell<= 0)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;     //错误码:仓库已满
@@ -26,7 +27,7 @@ namespace ET
             }
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
 
-            List <BagInfo> bagInfos = unit.GetComponent<BagComponentServer>().BagItemList;
+            List <BagInfo> bagInfos = bag.BagItemList;
 
             List<BagInfo> itemList = new List<BagInfo>();
             
@@ -48,7 +49,7 @@ namespace ET
             
             for (int i = 0; i < itemList.Count; i++)
             {
-                unit.GetComponent<BagComponentServer>().OnChangeItemLoc(itemList[i], (ItemLocType)hourseId, ItemLocType.ItemLocBag);
+                bag.OnChangeItemLoc(itemList[i], (ItemLocType)hourseId, ItemLocType.ItemLocBag);
                 m2c_bagUpdate.BagInfoUpdate.Add(itemList[i]);
                 leftCell--;
                 if (leftCell <= 0)

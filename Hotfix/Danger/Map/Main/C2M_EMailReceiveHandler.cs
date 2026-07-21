@@ -28,6 +28,7 @@ namespace ET
                 }
 
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+                long receiveMailTime = TimeHelper.ServerNow();
                 for (int i = mailInfo.ItemList.Count - 1; i >= 0; i--)
                 {
                     if (mailInfo.ItemList[i].ItemID == 110000164)
@@ -46,11 +47,11 @@ namespace ET
                     }
                     else
                     {
-                        bagComponentServer.OnAddItemData(mailInfo.ItemList[i], $"{ItemGetWay.ReceieMail}_{TimeHelper.ServerNow()}");
+                        bagComponentServer.OnAddItemData(mailInfo.ItemList[i], $"{ItemGetWay.ReceieMail}_{receiveMailTime}");
                     }
                 }
                 
-                if (mailInfo != null && mailInfo.ItemSell != null)
+                if (mailInfo.ItemSell != null)
                 {
                     LDItem ldItem = LDItemCategory.Instance.Get(mailInfo.ItemSell.ItemID);
                     if (ldItem.ItemType == 3)

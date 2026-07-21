@@ -76,21 +76,21 @@ namespace ET
                     self.TitleList.RemoveAt(i);
                 }
             }
-            if (update && notice)
+            if (!update)
             {
-                Unit unit = self.GetParent<Unit>();
+                return;
+            }
+            Unit unit = self.GetParent<Unit>();
+            if (notice)
+            {
                 self.TitleUpdateResult.TitleList = self.TitleList;
                 MessageHelper.SendToClient(unit, self.TitleUpdateResult);
             }
-            if (update)
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            int title = numericComponent.GetAsInt(NumericType.TitleID);
+            if (title > 0 && !self.IsHaveTitle(title))
             {
-                Unit unit = self.GetParent<Unit>();
-                NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-                int title = numericComponent.GetAsInt(NumericType.TitleID);
-                if (title > 0 && !self.IsHaveTitle(title))
-                {
-                    numericComponent.ApplyValue(NumericType.TitleID, 0, notice);
-                }
+                numericComponent.ApplyValue(NumericType.TitleID, 0, notice);
             }
         }
 

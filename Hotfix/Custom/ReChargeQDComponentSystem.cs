@@ -189,9 +189,11 @@ namespace ET
 
         public static bool CheckMd5Sign(this ReChargeQDComponent self, string[] pay_value1)
         {
-            string nt_data = pay_value1[0].Split('=')[1];
-            string sign = pay_value1[1].Split('=')[1];
-            string md5Sign = pay_value1[2].Split('=')[1];
+            string ValueAfterEq(string s) { int i = s.IndexOf('='); return i >= 0 ? s.Substring(i + 1) : s; }
+
+            string nt_data = ValueAfterEq(pay_value1[0]);
+            string sign = ValueAfterEq(pay_value1[1]);
+            string md5Sign = ValueAfterEq(pay_value1[2]);
             string newsign1 = self.GetMD5WithString_2(nt_data + sign + self.md5Key);
 
             bool value = md5Sign.Equals(newsign1);

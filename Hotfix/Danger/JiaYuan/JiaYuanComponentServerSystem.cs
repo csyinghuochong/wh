@@ -109,8 +109,10 @@ namespace ET
             {
                 int numericType = self.JiaYuanProList_7[i].KeyId;
                 int lvalue = int.Parse(self.JiaYuanProList_7[i].Value);
-                int maxvlue = 0;
-                promaxvalue.TryGetValue(numericType, out maxvlue);
+                if (!promaxvalue.TryGetValue(numericType, out int maxvlue))
+                {
+                    maxvlue = 0;
+                }
                 int oldmaxvlue = maxvlue;
                 maxvlue = (int)(maxvlue * 0.8f);
                 
@@ -156,6 +158,7 @@ namespace ET
                 string[] infolist = jiayuandashi[i].Value2.Split('@');
                 int need_time = int.Parse(infolist[0]);
                 string[] attriInfo = infolist[1].Split(',');
+                int attributeId = int.Parse(attriInfo[0]);
 
                 int lvalue = 0;
                 if (self.JiaYuanDaShiTime_1 >= need_time)
@@ -164,7 +167,7 @@ namespace ET
                 }
                 if (lvalue > 0)
                 {
-                    proList.Add(new AttributeItem() { AttributeID = int.Parse(attriInfo[0]), AttributeValue = lvalue });
+                    proList.Add(new AttributeItem() { AttributeID = attributeId, AttributeValue = lvalue });
                 }
             }
             return proList;

@@ -13,6 +13,9 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+            string[] exploreDiscountSet = LDGlobalValueCategory.Instance.Get(107).Value.Split(';');
+            string chouKaConfigValue = LDGlobalValueCategory.Instance.Get(39).Value;
+            string tenChouKaConfigValue = LDGlobalValueCategory.Instance.Get(40).Value;
 
             if (bagComponentServer.GetBagLeftCell() < request.ChouKaType)
             {
@@ -30,20 +33,19 @@ namespace ET
 
             int dropId = 0;
             int exlporeNumber = numericComponent.GetAsInt(NumericType.PetExploreNumber);
-            string[] set = LDGlobalValueCategory.Instance.Get(107).Value.Split(';');
             float discount;
-            if (exlporeNumber < int.Parse(set[0])) // 超过300次打8折
+            if (exlporeNumber < int.Parse(exploreDiscountSet[0])) // 超过300次打8折
             {
                 discount = 1;
             }
             else
             {
-                discount = float.Parse(set[1]);
+                discount = float.Parse(exploreDiscountSet[1]);
             }
 
             if (request.ChouKaType == 1)
             {
-                string[] chouKaConfig = LDGlobalValueCategory.Instance.Get(39).Value.Split('@');
+                string[] chouKaConfig = chouKaConfigValue.Split('@');
                 string needItems = chouKaConfig[0];
                 dropId = int.Parse(chouKaConfig[1]);
                 bool sucess = bagComponentServer.OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
@@ -58,7 +60,7 @@ namespace ET
             }
             else if (request.ChouKaType == 10)
             {
-                string[] tenChouKaConfig = LDGlobalValueCategory.Instance.Get(40).Value.Split('@');
+                string[] tenChouKaConfig = tenChouKaConfigValue.Split('@');
                 int needDimanond = int.Parse(tenChouKaConfig[0]);
                 dropId = int.Parse(tenChouKaConfig[1]);
 

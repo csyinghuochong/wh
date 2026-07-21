@@ -128,8 +128,9 @@ namespace ET
                 string[] weightsItem = new string[] { "10000143,10", "10000141,1", "10000152,3", "10000150,1", "10000165,1", "10010053,1", "10010040,1", "10045108,1", "10010094,1" };
                 int id = RandomHelper.RandomByWeight(weights);
 
-                self.AuctionItem = int.Parse(weightsItem[id].Split(',')[0]);
-                self.AuctionItemNum = int.Parse(weightsItem[id].Split(',')[1]);
+                string[] weightItemParts = weightsItem[id].Split(',');
+                self.AuctionItem = int.Parse(weightItemParts[0]);
+                self.AuctionItemNum = int.Parse(weightItemParts[1]);
             }
 
             //拍卖会开始

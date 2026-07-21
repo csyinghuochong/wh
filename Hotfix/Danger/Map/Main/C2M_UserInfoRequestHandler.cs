@@ -10,11 +10,14 @@ namespace ET
             ShoujiComponentServer shoujiComponentServer = unit.GetComponent<ShoujiComponentServer>();
             shoujiComponentServer.UpdateShouJIStar();
 
-            response.RoleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-            response.ReddontList =  unit.GetComponent<ReddotComponentServer>().ReddontList;
+            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            ReddotComponentServer reddotComponentServer = unit.GetComponent<ReddotComponentServer>();
+            TitleComponentServer titleComponentServer = unit.GetComponent<TitleComponentServer>();
+            response.RoleInfo = roleInfoComponentServer.RoleInfo;
+            response.ReddontList = reddotComponentServer.ReddontList;
             response.TreasureInfo = shoujiComponentServer.TreasureInfo;
             response.ShouJiChapterInfos = shoujiComponentServer.ShouJiChapterInfos;
-            response.TitleList = unit.GetComponent<TitleComponentServer>().TitleList;
+            response.TitleList = titleComponentServer.TitleList;
 
             reply();
             await ETTask.CompletedTask;

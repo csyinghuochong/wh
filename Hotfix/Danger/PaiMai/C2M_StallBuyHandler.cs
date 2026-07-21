@@ -10,8 +10,9 @@ namespace ET
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
+            int bagLeftCell = bag.GetBagLeftCell();
             //背包是否有位置
-            if (bag.GetBagLeftCell() < 1)
+            if (bagLeftCell < 1)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -27,7 +28,7 @@ namespace ET
 
             LDItem ldItem = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
             int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / ldItem.ItemPileSum);
-            if (bag.GetBagLeftCell() < cell)
+            if (bagLeftCell < cell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
