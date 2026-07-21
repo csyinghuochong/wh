@@ -715,17 +715,6 @@ namespace ET
             }
         }
 
-        public static int GetZodiacnumber(this BagComponentServer self)
-        {
-            int number = 0;
-            for (int i = 0; i < self.EquipList.Count; i++)
-            {
-               
-            }
-
-            return number;
-        }
-
         public static int GetWuqiItemId(this BagComponentServer self)
         {
             BagInfo bagInfo = self.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)EquipCaoWeiTypeEnum.Wuqi_1);

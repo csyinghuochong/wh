@@ -46,12 +46,7 @@ namespace ET
             self.MainUnit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.PetMineBattle,1,0  );
             self.MainUnit.GetComponent<NumericComponent>().ApplyValue(null, NumericType.PetMineCDTime, TimeHelper.ServerNow() + cdTime, 0);
 
-            self.MainUnit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.MineBattleNumber_402, 0, 1);
-            
-            if (result == CombatResultEnum.Win)
-            {
-                self.MainUnit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.MineWinNumber_403, 0, 1);
-            }
+            self.MainUnit.GetComponent<TaskComponentServer>().OnPetMineBattle(result);
 
             await ETTask.CompletedTask;
         }

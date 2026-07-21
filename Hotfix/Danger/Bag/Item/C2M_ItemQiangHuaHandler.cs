@@ -12,7 +12,7 @@ namespace ET
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
           
-            taskComponentServer.TriggerTaskEvent(TastConditionType.QiangHuaLevel_17, 0, response.QiangHuaLevel);
+            taskComponentServer.OnQiangHua(response.QiangHuaLevel);
             Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             reply();
             await ETTask.CompletedTask;

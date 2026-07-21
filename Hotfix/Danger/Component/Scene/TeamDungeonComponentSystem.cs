@@ -295,7 +295,7 @@ namespace ET
 
                 if (haveFriend)
                 {
-                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.FriendPassFuben_138, 0, 1);
+                    unit.GetComponent<TaskComponentServer>().OnFriendPassFuben();
                 
                 }
             }

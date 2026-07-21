@@ -56,7 +56,7 @@ namespace ET
                 numericComponent.ApplyValue( NumericType.UnionId_0, d2GGetUnit.UnionId, true);
                 roleInfoComponentServer.UpdateRoleData(UserDataType.UnionName, request.UnionName);
                 roleInfoComponentServer.UpdateRoleDataBroadcast(UserDataType.UnionName, request.UnionName);
-                unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JoinUnion_9, 0, 1);
+                unit.GetComponent<TaskComponentServer>().OnJoinUnion();
                
                 unit.UpdateUnionToChat().Coroutine();
             }

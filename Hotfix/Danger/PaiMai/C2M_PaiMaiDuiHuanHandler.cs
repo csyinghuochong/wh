@@ -39,7 +39,7 @@ namespace ET
             {
                 roleInfo.UpdateRoleMoneySub(UserDataType.Diamond, (diamond * -1).ToString(), true, ItemGetWay.DuiHuan);
                 roleInfo.UpdateRoleMoneyAdd(UserDataType.Gold, (diamond * d2GGetUnit.ServerInfo.ExChangeGold).ToString(), true, ItemGetWay.DuiHuan);
-                taskComponentServer.TriggerTaskEvent(TastConditionType.DuiHuanGold_15, 0, (int)(diamond / 100));
+                taskComponentServer.OnDuiHuanGold((int)diamond);
             }
             else 
             {

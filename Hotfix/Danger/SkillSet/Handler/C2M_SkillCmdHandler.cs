@@ -91,8 +91,8 @@ namespace ET
                         {
                             chengJiu ??= unit.GetComponent<ChengJiuComponentServer>();
                             task ??= unit.GetComponent<TaskComponentServer>();
-                            chengJiu.TriggerEvent(ChengJiuTargetEnum.BattleUseItem_214, 0, 1);
-                            task.TriggerTaskEvent(TastConditionType.BattleUseItem_30, 0, 1);  
+                            chengJiu.OnBattleUseItem();
+                            task.OnBattleUseItem();
                         }
                     }
                     if (juexingid == request.SkillID)

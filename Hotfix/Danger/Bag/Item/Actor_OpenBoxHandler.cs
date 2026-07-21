@@ -57,7 +57,7 @@ namespace ET
             boxUnit.GetComponent<UnitLifeComponent>()?.OnDead(unit);
 
             TaskComponentServer taskComponent = unit.GetComponent<TaskComponentServer>();
-            taskComponent.TriggerTaskEvent(TastConditionType.OpenBox_137, 0, 1);
+            taskComponent.OnOpenBox();
 
 
             response.Error = ErrorCode.ERR_Success;

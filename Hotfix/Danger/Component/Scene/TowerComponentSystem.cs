@@ -24,6 +24,16 @@ namespace ET
 
     public  static class TowerComponentSystem
     {
+        private static string[] CachedTowerStartIds;
+
+        private static void EnsureTowerStartIdsCache()
+        {
+            if (CachedTowerStartIds != null)
+            {
+                return;
+            }
+            CachedTowerStartIds = LDGlobalValueCategory.Instance.Get(65).Value.Split(';');
+        }
 
         public static void OnKillEvent(this TowerComponent self, Unit defend)
         {
@@ -60,7 +70,8 @@ namespace ET
             }
             TimerComponent.Instance.Remove(ref self.Timer);
 
-            string[] ids = LDGlobalValueCategory.Instance.Get(65).Value.Split(';');
+            EnsureTowerStartIdsCache();
+            string[] ids = CachedTowerStartIds;
             int startTowerId = int.Parse(ids[self.FubenDifficulty - 1]); //起始波
             int endId =  self.TowerId; //当前波
 
@@ -133,7 +144,8 @@ namespace ET
 
         public static void BeginTower(this TowerComponent self)
         {
-            string[] ids = LDGlobalValueCategory.Instance.Get(65).Value.Split(';');
+            EnsureTowerStartIdsCache();
+            string[] ids = CachedTowerStartIds;
             int index = self.FubenDifficulty - 1;
 
             if (index < 0)

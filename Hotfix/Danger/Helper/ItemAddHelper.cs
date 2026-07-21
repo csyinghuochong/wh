@@ -21,23 +21,31 @@ namespace ET
         
         public static void OnGetItem(this Unit self, int getWay, BagInfo bagInfo)
         {
-            /*self.GetComponent<TaskComponent>().OnGetItem_2(itemId);
-            self.GetComponent<TaskComponent>().OnGetItemNumber( getWay, itemId, itemNum);
-            self.GetComponent<ShoujiComponent>().OnGetItem(itemId);*/
+            if (bagInfo == null)
+            {
+                return;
+            }
+            TaskComponentServer task = self.GetComponent<TaskComponentServer>();
+            task.OnGetItem_2(bagInfo.ItemID);
+            task.OnGetItemNumber(getWay, bagInfo.ItemID, bagInfo.ItemNum);
         }
         
         public static void OnGetItem(this Unit self, int getWay, int itemType, int itemId, long itemNumber)
         {
-            /*self.GetComponent<TaskComponent>().OnGetItem_2(itemId);
-            self.GetComponent<TaskComponent>().OnGetItemNumber( getWay, itemId, itemNum);
-            self.GetComponent<ShoujiComponent>().OnGetItem(itemId);*/
+            TaskComponentServer task = self.GetComponent<TaskComponentServer>();
+            task.OnGetItem_2(itemId);
+            task.OnGetItemNumber(getWay, itemId, (int)itemNumber);
         }
         
         public static void OnGetItem(this Unit self, int getWay, RewardItem rewardItem)
         {
-            /*self.GetComponent<TaskComponent>().OnGetItem_2(itemId);
-            self.GetComponent<TaskComponent>().OnGetItemNumber( getWay, itemId, itemNum);       
-            self.GetComponent<ShoujiComponent>().OnGetItem(itemId);*/
+            if (rewardItem == null)
+            {
+                return;
+            }
+            TaskComponentServer task = self.GetComponent<TaskComponentServer>();
+            task.OnGetItem_2(rewardItem.ItemID);
+            task.OnGetItemNumber(getWay, rewardItem.ItemID, rewardItem.ItemNum);
         }
 
         /// <summary>

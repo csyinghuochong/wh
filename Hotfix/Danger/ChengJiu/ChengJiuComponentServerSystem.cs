@@ -288,6 +288,36 @@ namespace ET
             self.TriggerEvent(ChengJiuTargetEnum.SkillShuLianDu_208, 0, shuLianDu);
         }
 
+        public static void OnZodiacEquipNumber(this ChengJiuComponentServer self, int zodiacNumber)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.ZodiacEquipNumber_215, 0, zodiacNumber);
+        }
+
+        public static void OnFuMo(this ChengJiuComponentServer self)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.FoMoNumber_213, 0, 1);
+        }
+
+        public static void OnShare(this ChengJiuComponentServer self)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.ShareTotalNumber_220, 0, 1);
+        }
+
+        public static void OnPaiMaiSell(this ChengJiuComponentServer self)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.PaiMaiSellNumber_218, 0, 1);
+        }
+
+        public static void OnPaiMaiGetGold(this ChengJiuComponentServer self, int gold)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.PaiMaiGetGoldNumber_217, 0, gold);
+        }
+
+        public static void OnBattleUseItem(this ChengJiuComponentServer self)
+        {
+            self.TriggerEvent(ChengJiuTargetEnum.BattleUseItem_214, 0, 1);
+        }
+
         public static int ReceivedReward(this ChengJiuComponentServer self, int rewardId)
         {
             return ErrorCode.ERR_ModifyData;

@@ -51,6 +51,30 @@ namespace ET
 
     public static class RankSceneComponentSystem
     {
+        private static void AddRankMailRewardItems(MailInfo mailInfo, string reward, string getWay, Dictionary<string, List<RewardItem>> rewardCache)
+        {
+            if (string.IsNullOrEmpty(reward))
+            {
+                return;
+            }
+
+            if (!rewardCache.TryGetValue(reward, out List<RewardItem> rewardItems))
+            {
+                rewardItems = ItemNewHelper.GetRewardItemsAtSemicolon(reward);
+                rewardCache.Add(reward, rewardItems);
+            }
+
+            for (int i = 0; i < rewardItems.Count; i++)
+            {
+                RewardItem rewardItem = rewardItems[i];
+                mailInfo.ItemList.Add(new BagInfo()
+                {
+                    ItemID = rewardItem.ItemID,
+                    ItemNum = rewardItem.ItemNum,
+                    GetWay = getWay
+                });
+            }
+        }
 
         public static async ETTask InitServerInfo(this RankSceneComponent self)
         {
@@ -744,7 +768,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankingInfo> rankingInfos = self.DBRankInfo.rankingDemon;
             long mailServerId = DBHelper.GetMailServerId( self.DomainZone() );
-            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
+            Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 5);
@@ -761,22 +785,7 @@ namespace ET
                 mailInfo.Title = "恶魔排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
-                {
-                    needList = rankRewardConfig.Reward.Split('@');
-                    rewardSplits.Add(rankRewardConfig.Reward, needList);
-                }
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.Demon}_{serverTime}" });
-                }
+                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.Demon}_{serverTime}", rewardCache);
                 E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                       (mailServerId, new M2E_EMailSendRequest()
                       {
@@ -795,7 +804,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankShouLieInfo> rankingInfos = self.DBRankInfo.rankUnionRace;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
-            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
+            Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 4);
@@ -812,22 +821,7 @@ namespace ET
                 mailInfo.Title = "家族战排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
-                {
-                    needList = rankRewardConfig.Reward.Split('@');
-                    rewardSplits.Add(rankRewardConfig.Reward, needList);
-                }
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.ShowLie}_{serverTime}" });
-                }
+                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.ShowLie}_{serverTime}", rewardCache);
                 E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                       (mailServerId, new M2E_EMailSendRequest()
                       {
@@ -848,7 +842,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankShouLieInfo> rankingInfos = self.DBRankInfo.rankShowLie;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
-            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
+            Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 3);
@@ -863,22 +857,7 @@ namespace ET
                 mailInfo.Title = "狩猎排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
                 Log.Debug($"发放狩猎排行榜奖励：zone. {zone} rankid.{i + 1}  unitid.{rankingInfos[i].UnitID}  {rankingInfos[i].PlayerName}  {rankingInfos[i].KillNumber}");
-                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
-                {
-                    needList = rankRewardConfig.Reward.Split('@');
-                    rewardSplits.Add(rankRewardConfig.Reward, needList);
-                }
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.RankReward}_{serverTime}" });
-                }
+                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
                 E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                       (mailServerId, new M2E_EMailSendRequest()
                       {
@@ -907,7 +886,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<KeyValuePairLong> rankingInfos = self.DBRankInfo.rankingTrial;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
-            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
+            Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 6);
@@ -926,22 +905,7 @@ namespace ET
                 {
                     Log.Warning($"试炼奖励: {self.DomainZone()} {rankingInfos[i].KeyId}");
                 }
-                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
-                {
-                    needList = rankRewardConfig.Reward.Split('@');
-                    rewardSplits.Add(rankRewardConfig.Reward, needList);
-                }
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.RankReward}_{serverTime}" });
-                }
+                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
                 E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                       (mailServerId, new M2E_EMailSendRequest()
                       {
@@ -969,7 +933,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<KeyValuePairLong> rankingInfos = self.DBRankInfo.rankSeasonTower;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
-            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
+            Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 7);
@@ -988,22 +952,7 @@ namespace ET
                 {
                     Log.Warning($"赛季之塔奖励: {self.DomainZone()} {rankingInfos[i].KeyId}");
                 }
-                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
-                {
-                    needList = rankRewardConfig.Reward.Split('@');
-                    rewardSplits.Add(rankRewardConfig.Reward, needList);
-                }
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.RankReward}_{serverTime}" });
-                }
+                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
                 E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                       (mailServerId, new M2E_EMailSendRequest()
                       {
@@ -1034,7 +983,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankingInfo> rankingInfos = self.DBRankInfo.rankingInfos;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
-            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
+            Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 LDRankList rankRewardConfig = RankHelper.GetRankReward(i+1, 1);
@@ -1053,22 +1002,7 @@ namespace ET
                 {
                     Log.Warning($"战力奖励: {self.DomainZone()} {rankingInfos[i].UserId}   {i}");
                 }
-                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
-                {
-                    needList = rankRewardConfig.Reward.Split('@');
-                    rewardSplits.Add(rankRewardConfig.Reward, needList);
-                }
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.RankReward}_{serverTime}" });
-                }
+                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
                 E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                       (mailServerId, new M2E_EMailSendRequest() 
                       { 
@@ -1090,7 +1024,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankPetInfo> rankingInfos = self.DBRankInfo.rankingPets;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
-            Dictionary<string, string[]> rewardSplits = new Dictionary<string, string[]>();
+            Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
                 bool havePetUId = false;
@@ -1120,22 +1054,7 @@ namespace ET
                 mailInfo.Title = "排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                if (!rewardSplits.TryGetValue(rankRewardConfig.Reward, out string[] needList))
-                {
-                    needList = rankRewardConfig.Reward.Split('@');
-                    rewardSplits.Add(rankRewardConfig.Reward, needList);
-                }
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.RankReward}_{serverTime}" });
-                }
+                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
                 E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                       (mailServerId, new M2E_EMailSendRequest()
                       {

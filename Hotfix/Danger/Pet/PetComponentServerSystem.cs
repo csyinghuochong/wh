@@ -621,46 +621,8 @@ namespace ET
 
         public static void UpdatePetZiZhi(this PetComponentServer self, RolePetInfo rolePetInfo, int itemId)
         {
-            //10,30;10,30;10,30;10,30;10,30
-            LDPet ldPetConfig =LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
-            LDItem ldItem = LDItemCategory.Instance.Get(itemId);
-            string[] zishiList =  null;//gemitemCof.ItemUsePar.Split('@');
-
-            string[] ZiZhi_Hp = zishiList[0].Split(',');
-            string[] ZiZhi_Act = zishiList[1].Split(',');
-            string[] ZiZhi_Def = zishiList[2].Split(',');
-            string[] ZiZhi_Adf = zishiList[3].Split(',');
-            string[] ZiZhi_MageAct = zishiList[4].Split(',');
-
-            /*if (rolePetInfo.ZiZhi_Hp < ldPetConfig.ZiZhi_Hp_Max)
-            {
-                rolePetInfo.ZiZhi_Hp += RandomHelper.RandomNumber(int.Parse(ZiZhi_Hp[0]), int.Parse(ZiZhi_Hp[1]));
-                rolePetInfo.ZiZhi_Hp = Math.Min(rolePetInfo.ZiZhi_Hp, ldPetConfig.ZiZhi_Hp_Max);
-            }
-
-            if (rolePetInfo.ZiZhi_Act < ldPetConfig.ZiZhi_Act_Max)
-            {
-                rolePetInfo.ZiZhi_Act += RandomHelper.RandomNumber(int.Parse(ZiZhi_Act[0]), int.Parse(ZiZhi_Act[1]));
-                rolePetInfo.ZiZhi_Act = Math.Min(rolePetInfo.ZiZhi_Act, ldPetConfig.ZiZhi_Act_Max);
-            }
-
-            if (rolePetInfo.ZiZhi_Def < ldPetConfig.ZiZhi_Def_Max)
-            {
-                rolePetInfo.ZiZhi_Def += RandomHelper.RandomNumber(int.Parse(ZiZhi_Def[0]), int.Parse(ZiZhi_Def[1]));
-                rolePetInfo.ZiZhi_Def = Math.Min(rolePetInfo.ZiZhi_Def, ldPetConfig.ZiZhi_Def_Max);
-            }
-
-            if (rolePetInfo.ZiZhi_Adf < ldPetConfig.ZiZhi_Adf_Max)
-            {
-                rolePetInfo.ZiZhi_Adf += RandomHelper.RandomNumber(int.Parse(ZiZhi_Adf[0]), int.Parse(ZiZhi_Adf[1]));
-                rolePetInfo.ZiZhi_Adf = Math.Min(rolePetInfo.ZiZhi_Adf, ldPetConfig.ZiZhi_Adf_Max);
-            }
-
-            if (rolePetInfo.ZiZhi_MageAct < ldPetConfig.ZiZhi_MageAct_Max)
-            {
-                rolePetInfo.ZiZhi_MageAct += RandomHelper.RandomNumber(int.Parse(ZiZhi_MageAct[0]), int.Parse(ZiZhi_MageAct[1]));
-                rolePetInfo.ZiZhi_MageAct = Math.Min(rolePetInfo.ZiZhi_MageAct, ldPetConfig.ZiZhi_MageAct_Max);
-            }*/
+            // LD 尚未提供资质丹使用参数串，安全跳过，避免 NRE
+            Log.Warning($"UpdatePetZiZhi skip until LD ItemUsePar ready: itemId={itemId} pet={rolePetInfo?.ConfigId}");
         }
 
         //宠物进化
@@ -782,13 +744,23 @@ namespace ET
 
         public static void UpdatePetChengZhang(this PetComponentServer self, RolePetInfo rolePetInfo, int itemId)
         {
-            LDPet ldPetConfig =LDPetCategory.Instance.Get(rolePetInfo.ConfigId);
             LDItem ldItem = LDItemCategory.Instance.Get(itemId);
-            string[] addinfo = null;
-            ;//ldItem.ItemUsePar.Split(',');
-            float addChengZhang = RandomHelper.RandomNumberFloat(float.Parse(addinfo[0]), float.Parse(addinfo[1]));
+            // LD 未迁 ItemUsePar：用 ItemTypeParam1/2 作成长区间下限/上限（万分比或整数值由配置约定）
+            if (ldItem.ItemTypeParam1 <= 0 && ldItem.ItemTypeParam2 <= 0)
+            {
+                Log.Warning($"UpdatePetChengZhang skip: no param itemId={itemId}");
+                return;
+            }
+            float minV = ldItem.ItemTypeParam1 / 10000f;
+            float maxV = ldItem.ItemTypeParam2 / 10000f;
+            if (maxV < minV)
+            {
+                float tmp = minV;
+                minV = maxV;
+                maxV = tmp;
+            }
+            float addChengZhang = RandomHelper.RandomNumberFloat(minV, maxV);
             rolePetInfo.ZiZhi_ChengZhang += addChengZhang;
-            //rolePetInfo.ZiZhi_ChengZhang = Math.Min(rolePetInfo.ZiZhi_ChengZhang, (float)ldPetConfig.ZiZhi_ChengZhang_Max);
         }
 
         //重置属性点
@@ -1588,6 +1560,172 @@ namespace ET
             {
                 return false;
             }
+        }
+
+
+        public static PetHeChengResult TryHeChengPets(this PetComponentServer self, RolePetInfo petinfo_1, RolePetInfo petinfo_2, int petHeChengNumber)
+        {
+            int petLv_1 = petinfo_1.PetLv;
+            int petLv_2 = petinfo_2.PetLv;
+            int petID_1 = petinfo_1.ConfigId;
+            int petID_2 = petinfo_2.ConfigId;
+            List<int> petSkillList_1 = petinfo_1.PetSkill;
+            List<int> petSkillList_2 = petinfo_2.PetSkill;
+
+            float skillpro = 0.4f;
+            int sumValue = petSkillList_1.Count + petSkillList_2.Count;
+            if (sumValue < 8)
+            {
+                skillpro = 0.5f;
+            }
+            if (sumValue < 6)
+            {
+                skillpro = 0.6f;
+            }
+            if (sumValue < 4)
+            {
+                skillpro = 0.7f;
+            }
+
+            float addPro = 0;
+            if (petHeChengNumber <= 10 && sumValue <= 6)
+            {
+                addPro = 0.05f;
+            }
+            if (petHeChengNumber <= 5 && sumValue <= 6)
+            {
+                addPro = 0.1f;
+            }
+            if (petHeChengNumber <= 1 && sumValue <= 6)
+            {
+                addPro = 0.15f;
+            }
+            skillpro += addPro;
+
+            List<int> savePetSkillID = new List<int>();
+            HashSet<int> savePetSkillIDSet = new HashSet<int>();
+            List<int> deletPetSkillID = new List<int>();
+
+            for (int i = 0; i < petSkillList_1.Count; i++)
+            {
+                if (!savePetSkillIDSet.Contains(petSkillList_1[i]))
+                {
+                    if (RandomHelper.RandFloat01() <= skillpro && savePetSkillIDSet.Count <= 12)
+                    {
+                        savePetSkillIDSet.Add(petSkillList_1[i]);
+                        savePetSkillID.Add(petSkillList_1[i]);
+                    }
+                    else
+                    {
+                        deletPetSkillID.Add(petSkillList_1[i]);
+                    }
+                }
+            }
+
+            try
+            {
+                for (int i = 0; i < petSkillList_2.Count; i++)
+                {
+                    if (!savePetSkillIDSet.Contains(petSkillList_2[i]))
+                    {
+                        if (RandomHelper.RandFloat01() <= skillpro && savePetSkillIDSet.Count <= 12)
+                        {
+                            savePetSkillIDSet.Add(petSkillList_2[i]);
+                            savePetSkillID.Add(petSkillList_2[i]);
+                        }
+                        else
+                        {
+                            deletPetSkillID.Add(petSkillList_2[i]);
+                        }
+                    }
+                }
+
+                if (sumValue <= 12 && savePetSkillID.Count < (int)((float)sumValue / 2f))
+                {
+                    if (deletPetSkillID.Count >= 1 && !savePetSkillIDSet.Contains(deletPetSkillID[0]))
+                    {
+                        savePetSkillIDSet.Add(deletPetSkillID[0]);
+                        savePetSkillID.Add(deletPetSkillID[0]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Console("PetComponentServer.TryHeChengPets: " + ex.ToString());
+            }
+
+            int petID = RandomHelper.RandFloat01() <= 0.5f ? petID_2 : petID_1;
+
+            LDPet bidaiLdPet = LDPetCategory.Instance.Get(petID);
+            string[] baseSkillID = null;// bidaiLdPet.BaseSkillID.Split(';');
+            if (baseSkillID != null)
+            {
+                for (int i = 0; i < baseSkillID.Length; i++)
+                {
+                    int baseSkill = int.Parse(baseSkillID[i]);
+                    if (!savePetSkillIDSet.Contains(baseSkill))
+                    {
+                        savePetSkillIDSet.Add(baseSkill);
+                        savePetSkillID.Add(baseSkill);
+                    }
+                }
+            }
+
+            int zizhiNow_Hp = (int)HeChengZiZhi(petinfo_1.ZiZhi_Hp, petinfo_2.ZiZhi_Hp, 3000);
+            int zizhiNow_Act = (int)HeChengZiZhi(petinfo_1.ZiZhi_Act, petinfo_2.ZiZhi_Act, 1600);
+            int zizhiNow_MageAct = (int)HeChengZiZhi(petinfo_1.ZiZhi_MageAct, petinfo_2.ZiZhi_MageAct, 1600);
+            int zizhiNow_Def = (int)HeChengZiZhi(petinfo_1.ZiZhi_Def, petinfo_2.ZiZhi_Def, 1600);
+            int zizhiNow_Adf = (int)HeChengZiZhi(petinfo_1.ZiZhi_Adf, petinfo_2.ZiZhi_Adf, 1600);
+            int zizhiNow_ActSpeed = (int)HeChengZiZhi(petinfo_1.ZiZhi_ActSpeed, petinfo_2.ZiZhi_ActSpeed, 3000);
+            float zizhiNow_ChengZhang = HeChengZiZhi(petinfo_1.ZiZhi_ChengZhang, petinfo_2.ZiZhi_ChengZhang, 1.3f);
+            zizhiNow_ActSpeed = 3000;
+
+            int pet_Lv = (int)(Math.Min(petLv_1, petLv_2) * 0.75f + (Math.Max(petLv_1, petLv_2) - Math.Min(petLv_1, petLv_2)) * HeChengRandomZeroToOne());
+            int pet_exp = (int)(10000 * HeChengRandomZeroToOne());
+            if (pet_Lv < 1)
+            {
+                pet_Lv = 1;
+            }
+
+            RolePetInfo petinfo_update = petID == petID_1 ? petinfo_1 : petinfo_2;
+            RolePetInfo petinfo_delete = petID == petID_1 ? petinfo_2 : petinfo_1;
+
+            return new PetHeChengResult()
+            {
+                UpdatePet = petinfo_update,
+                DeletePet = petinfo_delete,
+                PetID = petID,
+                PetLv = pet_Lv,
+                PetExp = pet_exp,
+                AddPropretyNum = pet_Lv * 5 + 20,
+                AddPropretyValue = ItemNewHelper.GetDefaultGem(),
+                IfBaby = false,
+                ZiZhi_Hp = zizhiNow_Hp,
+                ZiZhi_Act = zizhiNow_Act,
+                ZiZhi_MageAct = zizhiNow_MageAct,
+                ZiZhi_Def = zizhiNow_Def,
+                ZiZhi_Adf = zizhiNow_Adf,
+                ZiZhi_ActSpeed = zizhiNow_ActSpeed,
+                ZiZhi_ChengZhang = zizhiNow_ChengZhang,
+                SavePetSkillID = savePetSkillID,
+            };
+        }
+
+        private static float HeChengRandomZeroToOne()
+        {
+            return RandomHelper.RandomNumber(0, 10) * 0.1f;
+        }
+
+        private static float HeChengZiZhi(float zizhiValue_1, float zizhiValue_2, float maxZiZhi)
+        {
+            float ziZhiMin = Math.Min(zizhiValue_1, zizhiValue_2) * 0.95f;
+            float ziZhiMax = Math.Max(zizhiValue_1, zizhiValue_2) * 1.05f;
+            float zhizhiValue = ziZhiMin + (ziZhiMax - ziZhiMin) * RandomHelper.RandFloat01();
+            if (zhizhiValue > maxZiZhi)
+            {
+                zhizhiValue = maxZiZhi;
+            }
+            return (float)Math.Round(zhizhiValue, 2);
         }
     }
 }

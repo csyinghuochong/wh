@@ -104,7 +104,7 @@ namespace ET
 					if (ifok)
 					{
                         pet.UpdatePetAttribute(petInfo, true);
-                        taskComponentServer.TriggerTaskEvent(TastConditionType.PetUseSkillBook_36, 0, 1);
+                        taskComponentServer.OnPetUseSkillBook();
                    
                         petInfo.LockSkill.Clear();
 
@@ -167,7 +167,7 @@ namespace ET
 
                 if (itemSubType == 105 || itemSubType == 133)
                 {
-                    taskComponentServer.TriggerTaskEvent(TastConditionType.PetXiLian10010086_33, 0, 1);
+                    taskComponentServer.OnPetXiLianCrystal();
               
                 }
             }

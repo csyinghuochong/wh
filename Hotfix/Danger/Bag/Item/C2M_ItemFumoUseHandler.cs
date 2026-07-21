@@ -20,11 +20,9 @@ namespace ET
                 return;
             }
             bag.OnCostItemData(bagInfoID, 1);
-            chengJiu.TriggerEvent(ChengJiuTargetEnum.FoMoNumber_213, 0, 1);
-
+            chengJiu.OnFuMo();
             LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
-
-            task.TriggerTaskEvent( TastConditionType.FuMoQulity_41, ldItem.Quality, 1 );
+            task.OnFuMo(ldItem.Quality);
             
             reply();
             await ETTask.CompletedTask;

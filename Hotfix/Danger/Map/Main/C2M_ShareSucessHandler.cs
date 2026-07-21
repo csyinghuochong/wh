@@ -74,7 +74,7 @@ namespace ET
                 roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Diamond, "120", true, ItemGetWay.Share);
             }
 
-            chengJiuComponentServer.TriggerEvent(ChengJiuTargetEnum.ShareTotalNumber_220, 0, 1);
+            chengJiuComponentServer.OnShare();
             reply();
             await ETTask.CompletedTask;
         }

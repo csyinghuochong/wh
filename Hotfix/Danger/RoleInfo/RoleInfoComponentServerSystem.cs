@@ -638,7 +638,7 @@ namespace ET
 
             if (gold > 0 && getWay == ItemGetWay.PaiMaiSell)
             {
-                unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PaiMaiGetGoldNumber_217, 0, (int)gold);
+                unit.GetComponent<ChengJiuComponentServer>().OnPaiMaiGetGold((int)gold);
             }
 
             if (Type == UserDataType.Diamond)

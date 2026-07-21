@@ -79,8 +79,31 @@ namespace ET
 
         public static int GetHuoYueDu(this TaskComponentServer self)
         {
+            const int pointsPerTask = 10;
             int huoYueDu = 0;
-           
+            for (int i = 0; i < self.RoleTaskList.Count; i++)
+            {
+                TaskPro taskPro = self.RoleTaskList[i];
+                if (taskPro.taskStatus < (int)TaskStatuEnum.Completed)
+                {
+                    continue;
+                }
+                if (taskPro.TaskType == TaskTypeEnum.Daily)
+                {
+                    huoYueDu += pointsPerTask;
+                    continue;
+                }
+                if (!LDTaskCategory.Instance.Contain(taskPro.taskID))
+                {
+                    continue;
+                }
+                LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
+                if (ldTask.Condition_Type == TastConditionType.EveryDayTask_1019
+                    || ldTask.Condition_Type == TastConditionType.DailyTask_1014)
+                {
+                    huoYueDu += pointsPerTask;
+                }
+            }
             return huoYueDu;
         }
 
@@ -637,7 +660,7 @@ namespace ET
         /// </summary>
         public static void OnPetTianTiRank(this TaskComponentServer self, int rankId)
         {
-            self.TriggerTaskEvent(TastConditionType.PetTianTiRank_82, 0, rankId);
+            self.TriggerTaskEvent(TastConditionType.PetTianTiRank_82, rankId, 1);
         }
 
         /// <summary>
@@ -672,7 +695,7 @@ namespace ET
         /// <param name="self"></param>
         public static void OnLineTime(this TaskComponentServer self, int time)
         {
-           
+            self.TriggerTaskEvent(TastConditionType.OnLineTime_1010, 0, time);
         }
 
         /// <summary>
@@ -732,12 +755,74 @@ namespace ET
 
         public static void OnWinCampBattle(this TaskComponentServer self)
         {
-           
+            self.TriggerTaskEvent(TastConditionType.BattleWin_1101, 0, 1);
         }
 
         public static void OnPassTeamFuben(this TaskComponentServer self)
         {
-            
+            self.TriggerTaskEvent(TastConditionType.PassTeamFuben_1004, 0, 1);
+        }
+
+        public static void OnOpenBox(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.OpenBox_137, 0, 1);
+        }
+
+        public static void OnFuMo(this TaskComponentServer self, int quality)
+        {
+            self.TriggerTaskEvent(TastConditionType.FuMoQulity_41, quality, 1);
+        }
+
+        public static void OnQiangHua(this TaskComponentServer self, int qiangHuaLevel)
+        {
+            self.TriggerTaskEvent(TastConditionType.QiangHuaLevel_17, 0, qiangHuaLevel);
+        }
+
+        public static void OnJoinUnion(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.JoinUnion_9, 0, 1);
+        }
+
+        public static void OnFriendPassFuben(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.FriendPassFuben_138, 0, 1);
+        }
+
+        public static void OnPetMineBattle(this TaskComponentServer self, int result)
+        {
+            using (self.TaskEventBatch())
+            {
+                self.TriggerTaskEvent(TastConditionType.MineBattleNumber_402, 0, 1);
+                if (result == CombatResultEnum.Win)
+                {
+                    self.TriggerTaskEvent(TastConditionType.MineWinNumber_403, 0, 1);
+                }
+            }
+        }
+
+        public static void OnDuiHuanGold(this TaskComponentServer self, int diamond)
+        {
+            self.TriggerTaskEvent(TastConditionType.DuiHuanGold_15, 0, diamond / 100);
+        }
+
+        public static void OnCombatRank(this TaskComponentServer self, int rankId)
+        {
+            self.TriggerTaskEvent(TastConditionType.CombatRank_83, rankId, 1);
+        }
+
+        public static void OnBattleUseItem(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.BattleUseItem_30, 0, 1);
+        }
+
+        public static void OnPetUseSkillBook(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.PetUseSkillBook_36, 0, 1);
+        }
+
+        public static void OnPetXiLianCrystal(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.PetXiLian10010086_33, 0, 1);
         }
 
         public static async ETTask UpdateUnionRaceRank(this TaskComponentServer self)
