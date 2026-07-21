@@ -9,6 +9,8 @@ namespace ET
     {
         public override void Awake(TaskComponentServer self)
         {
+            self.TaskEventBatchDepth = 0;
+            self.TaskEventCoalesce?.Clear();
             if (self.RoleTaskList.Count == 0)
             {
                 
@@ -29,6 +31,15 @@ namespace ET
     {
         public override void Deserialize(TaskComponentServer self)
         {
+            self.TaskEventBatchDepth = 0;
+            if (self.TaskEventCoalesce == null)
+            {
+                self.TaskEventCoalesce = new Dictionary<(int, int), int>();
+            }
+            else
+            {
+                self.TaskEventCoalesce.Clear();
+            }
         }
     }
 
@@ -542,17 +553,20 @@ namespace ET
 
         public static void OnPetHeCheng(this TaskComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.TriggerTaskEvent(TastConditionType.PetNumber1_11, 0, 1);
-          
-            self.TriggerTaskEvent(TastConditionType.PetHeCheng_23, 0, 1);
-           
-            self.TriggerTaskEvent(TastConditionType.PetNumber2_24, 0, 1);
-           
-            self.TriggerTaskEvent(TastConditionType.PetNSkill_18, 0, rolePetInfo.PetSkill.Count);
-           
-            int combat = PetHelper.PetPingJia(rolePetInfo);
-            self.TriggerTaskEvent(TastConditionType.PetHeChengCombat_32, combat, 1);
-        
+            self.BeginTaskEventBatch();
+            try
+            {
+                self.TriggerTaskEvent(TastConditionType.PetNumber1_11, 0, 1);
+                self.TriggerTaskEvent(TastConditionType.PetHeCheng_23, 0, 1);
+                self.TriggerTaskEvent(TastConditionType.PetNumber2_24, 0, 1);
+                self.TriggerTaskEvent(TastConditionType.PetNSkill_18, 0, rolePetInfo.PetSkill.Count);
+                int combat = PetHelper.PetPingJia(rolePetInfo);
+                self.TriggerTaskEvent(TastConditionType.PetHeChengCombat_32, combat, 1);
+            }
+            finally
+            {
+                self.EndTaskEventBatch();
+            }
         }
 
         /// <summary>
@@ -561,14 +575,18 @@ namespace ET
         /// <param name="self"></param>
         public static void OnGetPet(this TaskComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.TriggerTaskEvent( TastConditionType.PetNumber1_11, 0, 1 );
-          
-            self.TriggerTaskEvent(TastConditionType.PetNumber2_24, 0, 1);
-          
-            self.TriggerTaskEvent( TastConditionType.PetNSkill_18,  0, rolePetInfo.PetSkill.Count);
-          
-            self.TriggerTaskEvent(TastConditionType.PetNumber_31, 0, 1);
-           
+            self.BeginTaskEventBatch();
+            try
+            {
+                self.TriggerTaskEvent( TastConditionType.PetNumber1_11, 0, 1 );
+                self.TriggerTaskEvent(TastConditionType.PetNumber2_24, 0, 1);
+                self.TriggerTaskEvent( TastConditionType.PetNSkill_18,  0, rolePetInfo.PetSkill.Count);
+                self.TriggerTaskEvent(TastConditionType.PetNumber_31, 0, 1);
+            }
+            finally
+            {
+                self.EndTaskEventBatch();
+            }
         }
 
         /// <summary>
@@ -681,55 +699,59 @@ namespace ET
             
                 self.UpdateUnionRaceRank().Coroutine();
             }
-            if (bekill.Type == UnitType.Player)
+
+            self.BeginTaskEventBatch();
+            try
             {
-                self.TriggerTaskEvent( TastConditionType.KillPlayer_21,0, 1 );
-             
+                if (bekill.Type == UnitType.Player)
+                {
+                    self.TriggerTaskEvent( TastConditionType.KillPlayer_21,0, 1 );
+                }
+                if (bekill.Type == UnitType.Monster)
+                {
+                    int unitconfigId = bekill.ConfigId;
+                    LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
+                    bool isBoss = ldMonster.Type == (int)MonsterTypeEnum.Boss;
+                    Scene domainScene = unit.DomainScene();
+                    MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
+                    int fubenDifficulty = FubenDifficulty.None;
+                    if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
+                    {
+                        fubenDifficulty = domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
+                    }
+
+                    self.TriggerTaskEvent(TastConditionType.KillMonsterByNumber_210, 1, 0);
+                  
+                    if (isBoss)
+                    {
+                        self.TriggerTaskEvent(TastConditionType.KillBOSS_6, 0, 1);
+                    }
+
+                    if ((int)fubenDifficulty >= (int)FubenDifficulty.TiaoZhan) //挑战
+                    {
+                        self.TriggerTaskEvent(TastConditionType.KillTiaoZhanMonsterID_101, unitconfigId, 1);
+                        self.TriggerTaskEvent(TastConditionType.KillTianZhanMonsterNumber_121, 0, 1);
+                        if (isBoss)
+                        {
+                            self.TriggerTaskEvent(TastConditionType.KillTianZhanBossNumber_131, 0, 1);
+                        }
+                    }
+
+                    if ((int)fubenDifficulty == (int)FubenDifficulty.DiYu)  //地狱
+                    {
+                        self.TriggerTaskEvent(TastConditionType.KillDiYuMonsterID_102, unitconfigId, 1);
+                        self.TriggerTaskEvent(TastConditionType.KillDiYuMonsterNumber_122, 0, 1);
+                        if (isBoss)
+                        {
+                            self.TriggerTaskEvent(TastConditionType.KillDiYuBossNumber_132, 0, 1);
+                            self.TriggerTaskEvent(TastConditionType.KillDiYuBoss_141, ldMonster.Lv, 1);
+                        }
+                    }
+                }
             }
-            if (bekill.Type == UnitType.Monster)
+            finally
             {
-                int unitconfigId = bekill.ConfigId;
-                LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
-                bool isBoss = ldMonster.Type == (int)MonsterTypeEnum.Boss;
-                Scene domainScene = unit.DomainScene();
-                MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
-                int fubenDifficulty = FubenDifficulty.None;
-                if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
-                {
-                    fubenDifficulty = domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
-                }
-
-                self.TriggerTaskEvent(TastConditionType.KillMonsterByNumber_210, 1, 0);
-              
-                if (isBoss)
-                {
-                    self.TriggerTaskEvent(TastConditionType.KillBOSS_6, 0, 1);
-                }
-
-                if ((int)fubenDifficulty >= (int)FubenDifficulty.TiaoZhan) //挑战
-                {
-                    self.TriggerTaskEvent(TastConditionType.KillTiaoZhanMonsterID_101, unitconfigId, 1);
-
-                    self.TriggerTaskEvent(TastConditionType.KillTianZhanMonsterNumber_121, 0, 1);
-                    if (isBoss)
-                    {
-                        self.TriggerTaskEvent(TastConditionType.KillTianZhanBossNumber_131, 0, 1);
-                    }
-                }
-
-                if ((int)fubenDifficulty == (int)FubenDifficulty.DiYu)  //地狱
-                {
-                    self.TriggerTaskEvent(TastConditionType.KillDiYuMonsterID_102, unitconfigId, 1);
-
-                    self.TriggerTaskEvent(TastConditionType.KillDiYuMonsterNumber_122, 0, 1);
-                    if (isBoss)
-                    {
-                        self.TriggerTaskEvent(TastConditionType.KillDiYuBossNumber_132, 0, 1);
-
-                        self.TriggerTaskEvent(TastConditionType.KillDiYuBoss_141, ldMonster.Lv, 1);
-                    }
-                }
-                
+                self.EndTaskEventBatch();
             }
         }
 
@@ -801,39 +823,47 @@ namespace ET
             long unionid = numericComponent.GetAsLong(NumericType.UnionId_0);
             int trialid = numericComponent.GetAsInt(NumericType.TrialDungeonId);
             //触发一下搜集道具类型的任务
-            for (int i = 0; i < self.RoleTaskList.Count; i++)
+            self.BeginTaskEventBatch();
+            try
             {
-                TaskPro taskPro = self.RoleTaskList[i];
-                LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
-                if (ldTask.Condition_Type == TastConditionType.ItemID_Number_2)
+                for (int i = 0; i < self.RoleTaskList.Count; i++)
                 {
-                    self.TriggerTaskEvent(TastConditionType.ItemID_Number_2, ldTask.Param1, 0);
-                    continue;
-                }
-                if (ldTask.Condition_Type == TastConditionType.PlayerLv_1)
-                {
-                    int roleLv = roleInfoComponentServer.RoleInfo.Lv;
-                    self.TriggerTaskEvent(TastConditionType.PlayerLv_1, ldTask.Param1, roleLv);
-                    continue;
-                }
-                if (ldTask.Condition_Type == TastConditionType.JoinUnion_9)
-                {
-                    self.TriggerTaskEvent(TastConditionType.JoinUnion_9, ldTask.Param1, unionid > 0 ? 1 : 0);
-                    continue;
-                }
-                if (ldTask.Condition_Type == TastConditionType.CombatToValue_133)
-                {
-                    int combat = roleInfoComponentServer.RoleInfo.Combat;
-                    self.TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, combat);
-                    continue;
-                }
-                if (ldTask.Condition_Type == TastConditionType.TrialTowerCeng_134)
-                {
-                    if (trialid >= ldTask.Param1)
+                    TaskPro taskPro = self.RoleTaskList[i];
+                    LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
+                    if (ldTask.Condition_Type == TastConditionType.ItemID_Number_2)
                     {
-                        self.TriggerTaskEvent(TastConditionType.TrialTowerCeng_134, ldTask.Param1, 1);
+                        self.TriggerTaskEvent(TastConditionType.ItemID_Number_2, ldTask.Param1, 0);
+                        continue;
                     }
-                } 
+                    if (ldTask.Condition_Type == TastConditionType.PlayerLv_1)
+                    {
+                        int roleLv = roleInfoComponentServer.RoleInfo.Lv;
+                        self.TriggerTaskEvent(TastConditionType.PlayerLv_1, ldTask.Param1, roleLv);
+                        continue;
+                    }
+                    if (ldTask.Condition_Type == TastConditionType.JoinUnion_9)
+                    {
+                        self.TriggerTaskEvent(TastConditionType.JoinUnion_9, ldTask.Param1, unionid > 0 ? 1 : 0);
+                        continue;
+                    }
+                    if (ldTask.Condition_Type == TastConditionType.CombatToValue_133)
+                    {
+                        int combat = roleInfoComponentServer.RoleInfo.Combat;
+                        self.TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, combat);
+                        continue;
+                    }
+                    if (ldTask.Condition_Type == TastConditionType.TrialTowerCeng_134)
+                    {
+                        if (trialid >= ldTask.Param1)
+                        {
+                            self.TriggerTaskEvent(TastConditionType.TrialTowerCeng_134, ldTask.Param1, 1);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                self.EndTaskEventBatch();
             }
             
             /*if (numericComponent.GetAsInt(NumericType.DailyTaskID) == 0)
@@ -862,15 +892,17 @@ namespace ET
             self.InitActivityV1Task();
             self.InitActivityWeekTask(false);
 
-            //numericComponent.ApplyValue(NumericType.Numeric_Error, chat2G_EnterChat.RankId, false, false);
-            //numericComponent.ApplyValue(NumericType.Numeric_Error, chat2G_EnterChat.PetRankId, false, false);
-            //numericComponent.ApplyValue(NumericType.SoloRankId, chat2G_EnterChat.SoloRankId, false, false);
-            //numericComponent.ApplyValue(NumericType.TrialRankId, chat2G_EnterChat.TrialRankId, false, false);
-            self.TriggerTaskEvent( TastConditionType.TrialRank_81, numericComponent.GetAsInt(NumericType.TrialRankId),1 );
-
-            self.TriggerTaskEvent(TastConditionType.PetTianTiRank_82, numericComponent.GetAsInt(NumericType.PetTianTiRankID), 1);
-
-            self.TriggerTaskEvent(TastConditionType.CombatRank_83, numericComponent.GetAsInt(NumericType.CombatRankID), 1);
+            self.BeginTaskEventBatch();
+            try
+            {
+                self.TriggerTaskEvent( TastConditionType.TrialRank_81, numericComponent.GetAsInt(NumericType.TrialRankId),1 );
+                self.TriggerTaskEvent(TastConditionType.PetTianTiRank_82, numericComponent.GetAsInt(NumericType.PetTianTiRankID), 1);
+                self.TriggerTaskEvent(TastConditionType.CombatRank_83, numericComponent.GetAsInt(NumericType.CombatRankID), 1);
+            }
+            finally
+            {
+                self.EndTaskEventBatch();
+            }
         }
 
         //收集道具
@@ -927,24 +959,102 @@ namespace ET
 
         public static void OnPetMineLogin(this TaskComponentServer self, List<PetMingPlayerInfo> petMingPlayers, List<KeyValuePairInt> extends)
         {
-            for (int i = 0; i < petMingPlayers.Count; i++)
+            self.BeginTaskEventBatch();
+            try
             {
-                for (int mineid = petMingPlayers[i].MineType; mineid <= 10003; mineid++)
+                for (int i = 0; i < petMingPlayers.Count; i++)
                 {
-                    self.TriggerTaskEvent(TastConditionType.MineHaveNumber_401, mineid, 1);
-                }
+                    for (int mineid = petMingPlayers[i].MineType; mineid <= 10003; mineid++)
+                    {
+                        self.TriggerTaskEvent(TastConditionType.MineHaveNumber_401, mineid, 1);
+                    }
 
-                bool hexin = CommonHelper.IsHexinMine(petMingPlayers[i].MineType, petMingPlayers[i].Postion, extends);
-                if (hexin)
-                {
-                    self.TriggerTaskEvent(TastConditionType.MineHaveNumber_401, 0, 1);
+                    bool hexin = CommonHelper.IsHexinMine(petMingPlayers[i].MineType, petMingPlayers[i].Postion, extends);
+                    if (hexin)
+                    {
+                        self.TriggerTaskEvent(TastConditionType.MineHaveNumber_401, 0, 1);
+                    }
                 }
+            }
+            finally
+            {
+                self.EndTaskEventBatch();
             }
         }
 
-        
-        
+        /// <summary>
+        /// 开始任务事件批处理：期间多次 TriggerTaskEvent 只合并进度，结束时一次扫描+一次推送。
+        /// </summary>
+        public static void BeginTaskEventBatch(this TaskComponentServer self)
+        {
+            self.TaskEventBatchDepth++;
+        }
+
+        /// <summary>
+        /// 结束任务事件批处理（支持嵌套）。
+        /// </summary>
+        public static void EndTaskEventBatch(this TaskComponentServer self)
+        {
+            if (self.TaskEventBatchDepth <= 0)
+            {
+                return;
+            }
+            self.TaskEventBatchDepth--;
+            if (self.TaskEventBatchDepth == 0)
+            {
+                self.FlushTaskEventBatch();
+            }
+        }
+
         public static void TriggerTaskEvent(this TaskComponentServer self, int conditionType, int param1, int param2)
+        {
+            if (self.TaskEventBatchDepth > 0)
+            {
+                var key = (conditionType, param2);
+                self.TaskEventCoalesce.TryGetValue(key, out int sum);
+                self.TaskEventCoalesce[key] = sum + param1;
+                return;
+            }
+
+            self.ApplyTaskEvent(conditionType, param1, param2);
+        }
+
+        private static void FlushTaskEventBatch(this TaskComponentServer self)
+        {
+            if (self.TaskEventCoalesce.Count == 0)
+            {
+                return;
+            }
+
+            bool updateTask = false;
+            for (int i = 0; i < self.RoleTaskList.Count; i++)
+            {
+                TaskPro taskPro = self.RoleTaskList[i];
+                if (taskPro.taskStatus == (int)TaskStatuEnum.Completed)
+                {
+                    continue;
+                }
+
+                LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
+                if (!self.TaskEventCoalesce.TryGetValue((ldTask.Condition_Type, ldTask.Param2), out int delta))
+                {
+                    continue;
+                }
+
+                updateTask = true;
+                taskPro.taskTargetNum_1 += delta;
+                bool completed = taskPro.taskTargetNum_1 >= ldTask.Param1;
+                taskPro.taskStatus = completed ? (int)TaskStatuEnum.Completed : (int)TaskStatuEnum.Accepted;
+            }
+
+            self.TaskEventCoalesce.Clear();
+            if (updateTask)
+            {
+                self.SendToUpdateTask();
+            }
+        }
+
+        private static void ApplyTaskEvent(this TaskComponentServer self, int conditionType, int param1, int param2)
         {
             bool updateTask = false;
 

@@ -19,7 +19,8 @@ namespace ET
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             UnitComponent unitComponent = unit.GetParent<UnitComponent>();
             RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
-            List<RewardItem> rewardItems = new List<RewardItem>(1);
+            List<RewardItem> pendingRewards = new List<RewardItem>();
+            List<(int itemId, long unitId, int dropType)> pendingMeta = new List<(int, long, int)>();
             string pickGetWay = $"{ItemGetWay.PickItem}_{serverTime}";
 
             for (int i = drops.Count - 1; i >= 0; i--)
@@ -55,30 +56,83 @@ namespace ET
                 }
                 int addItemID = dropComponent !=null ? dropComponent.ItemID : drops[i].ItemID;
                 int addItemNum = dropComponent != null ? dropComponent.ItemNum : drops[i].ItemNum;
-                rewardItems.Clear();
-                rewardItems.Add(new RewardItem() {  ItemType = drops[i].ItemType , ItemID = addItemID, ItemNum = addItemNum });
-                bool success = bag.OnAddItemData(rewardItems, string.Empty, pickGetWay);
-                if (!success)
-                {
-                    errorCode = ErrorCode.ERR_BagIsFull;
-                    continue;
-                }
+                pendingRewards.Add(new RewardItem() {  ItemType = drops[i].ItemType , ItemID = addItemID, ItemNum = addItemNum });
+                pendingMeta.Add((addItemID, drops[i].UnitId, drops[i].DropType));
+            }
 
-                SceneCreatureHelp.SendFubenPickMessage(unit, drops[i]);
-                if (drops[i].DropType != 1)
+            if (pendingRewards.Count > 0)
+            {
+                bool batchOk = bag.OnAddItemData(pendingRewards, string.Empty, pickGetWay);
+                if (!batchOk)
                 {
-                    //移除非私有掉落  移除掉落ID
-                    unitComponent.Remove(unitDrop.Id);       
-                    removeIds.Add(drops[i].UnitId);
+                    // 背包空间不足时回退逐个添加，保留部分成功语义
+                    for (int i = 0; i < pendingRewards.Count; i++)
+                    {
+                        List<RewardItem> one = new List<RewardItem> { pendingRewards[i] };
+                        if (!bag.OnAddItemData(one, string.Empty, pickGetWay))
+                        {
+                            errorCode = ErrorCode.ERR_BagIsFull;
+                            continue;
+                        }
+                        DropInfo dropInfo = null;
+                        for (int d = 0; d < drops.Count; d++)
+                        {
+                            if (drops[d].UnitId == pendingMeta[i].unitId)
+                            {
+                                dropInfo = drops[d];
+                                break;
+                            }
+                        }
+                        if (dropInfo != null)
+                        {
+                            SceneCreatureHelp.SendFubenPickMessage(unit, dropInfo);
+                        }
+                        if (pendingMeta[i].dropType != 1)
+                        {
+                            unitComponent.Remove(pendingMeta[i].unitId);
+                            removeIds.Add(pendingMeta[i].unitId);
+                        }
+                        LDItem ldItemOne = LDItemCategory.Instance.Get(pendingMeta[i].itemId);
+                        if (sceneTypeEnum == MapTypeEnum.Happy && ldItemOne.Quality >= 5)
+                        {
+                            string uername = roleInfoComponent.RoleInfo.Name;
+                            string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItemOne.Name}</color>";
+                            string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItemOne.Name}</color> from  A blessing from the heavens";
+                            ServerMessageHelper.SendBroadMessage(UnitZoneHelper.GetHomeZone(unit), NoticeType.Notice, getmessage, getmessageEn);
+                        }
+                    }
                 }
-        
-                LDItem ldItem = LDItemCategory.Instance.Get(addItemID);
-                if (sceneTypeEnum == MapTypeEnum.Happy && ldItem.Quality >= 5)
+                else
                 {
-                    string uername = roleInfoComponent.RoleInfo.Name;
-                    string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color>";
-                    string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color> from  A blessing from the heavens";
-                    ServerMessageHelper.SendBroadMessage(UnitZoneHelper.GetHomeZone(unit), NoticeType.Notice, getmessage, getmessageEn);
+                    for (int i = 0; i < pendingMeta.Count; i++)
+                    {
+                        DropInfo dropInfo = null;
+                        for (int d = 0; d < drops.Count; d++)
+                        {
+                            if (drops[d].UnitId == pendingMeta[i].unitId)
+                            {
+                                dropInfo = drops[d];
+                                break;
+                            }
+                        }
+                        if (dropInfo != null)
+                        {
+                            SceneCreatureHelp.SendFubenPickMessage(unit, dropInfo);
+                        }
+                        if (pendingMeta[i].dropType != 1)
+                        {
+                            unitComponent.Remove(pendingMeta[i].unitId);
+                            removeIds.Add(pendingMeta[i].unitId);
+                        }
+                        LDItem ldItem = LDItemCategory.Instance.Get(pendingMeta[i].itemId);
+                        if (sceneTypeEnum == MapTypeEnum.Happy && ldItem.Quality >= 5)
+                        {
+                            string uername = roleInfoComponent.RoleInfo.Name;
+                            string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color>";
+                            string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color> from  A blessing from the heavens";
+                            ServerMessageHelper.SendBroadMessage(UnitZoneHelper.GetHomeZone(unit), NoticeType.Notice, getmessage, getmessageEn);
+                        }
+                    }
                 }
             }
             

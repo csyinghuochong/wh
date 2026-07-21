@@ -752,9 +752,49 @@ namespace ET
 
         public static void OnAddItemData(this BagComponentServer self, List<BagInfo> bagInfos, string getType)
         {
-            for (int i = 0; i < bagInfos.Count; i++)
+            if (bagInfos == null || bagInfos.Count == 0)
             {
-                self.OnAddItemData(bagInfos[i], getType);
+                return;
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+            taskComponentServer?.BeginTaskEventBatch();
+
+            M2C_RoleBagUpdate uniqueUpdate = new M2C_RoleBagUpdate();
+            bool hasUniqueAdd = false;
+
+            try
+            {
+                for (int i = 0; i < bagInfos.Count; i++)
+                {
+                    BagInfo bagInfo = bagInfos[i];
+                    LDItem ldItemCof = LDItemCategory.Instance.Get(bagInfo.ItemID);
+                    int maxPileSum = ldItemCof.ItemPileSum;
+
+                    if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
+                    {
+                        self.OnAddItemData($"{bagInfo.ItemID};{bagInfo.ItemNum}", string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay);
+                        continue;
+                    }
+
+                    self.BagItemList.Add(bagInfo);
+                    uniqueUpdate.BagInfoAdd.Add(bagInfo);
+                    hasUniqueAdd = true;
+
+                    string[] getWayParts = getType.Split('_');
+                    int getTypeValue = int.Parse(getWayParts[0]);
+                    ItemAddHelper.OnGetItem(unit, getTypeValue, bagInfo);
+                }
+
+                if (hasUniqueAdd)
+                {
+                    MessageHelper.SendToClient(unit, uniqueUpdate);
+                }
+            }
+            finally
+            {
+                taskComponentServer?.EndTaskEventBatch();
             }
         }
 
@@ -937,6 +977,11 @@ namespace ET
             m2c_bagUpdate.BagInfoAdd.Clear();
             m2c_bagUpdate.BagInfoUpdate.Clear();
             m2c_bagUpdate.BagInfoDelete.Clear();
+            Dictionary<int, long> currencyAdds = null;
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+            taskComponentServer?.BeginTaskEventBatch();
+            try
+            {
             for (int i = rewardItems.Count - 1; i >= 0; i--)
             {
                 RewardItem rewardItem = rewardItems[i];
@@ -956,9 +1001,12 @@ namespace ET
                 }
                 if (userDataType != UserDataType.None)
                 {
-                    //检测任务需求道具
-                    roleInfoComponent.UpdateRoleMoneyAdd(userDataType, leftNum.ToString(), true, getType);
-                    ItemAddHelper.OnGetItem(unit, getType, rewardItem);
+                    if (currencyAdds == null)
+                    {
+                        currencyAdds = new Dictionary<int, long>();
+                    }
+                    currencyAdds.TryGetValue(userDataType, out long currencySum);
+                    currencyAdds[userDataType] = currencySum + leftNum;
                     continue;
                 }
 
@@ -1120,8 +1168,21 @@ namespace ET
                     self.GetItemByLoc((ItemLocType)useBagInfo.Loc).Add(useBagInfo);
                     m2c_bagUpdate.BagInfoAdd.Add(useBagInfo);
                 }
-                //检测任务需求道具
-                ItemAddHelper.OnGetItem(unit, getType, itemtype, itemID, leftNum);
+                //检测任务需求道具（用原始数量，避免 leftNum 已扣完为 0）
+                ItemAddHelper.OnGetItem(unit, getType, itemtype, itemID, rewardItem.ItemNum);
+            }
+
+            if (currencyAdds != null)
+            {
+                foreach (KeyValuePair<int, long> kv in currencyAdds)
+                {
+                    roleInfoComponent.UpdateRoleMoneyAdd(kv.Key, kv.Value.ToString(), true, getType);
+                }
+            }
+            }
+            finally
+            {
+                taskComponentServer?.EndTaskEventBatch();
             }
 
             //通知客户端背包道具发生改变

@@ -30,26 +30,50 @@ namespace ET
 
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 long receiveMailTime = TimeHelper.ServerNow();
-                for (int i = mailInfo.ItemList.Count - 1; i >= 0; i--)
+                List<BagInfo> mailItems = mailInfo.ItemList;
+                if (mailItems != null && mailItems.Count > 0)
                 {
-                    BagInfo item = mailInfo.ItemList[i];
-                    if (item.ItemID == 110000164)
-
+                    // 统一 GetWay 的邮件走批量；混用 GetWay 时仍逐个加，避免绑错来源
+                    string sharedGetWay = null;
+                    bool sameGetWay = true;
+                    for (int i = 0; i < mailItems.Count; i++)
                     {
-                        item.ItemID = 10000164;
+                        BagInfo item = mailItems[i];
+                        if (item.ItemID == 110000164)
+                        {
+                            item.ItemID = 10000164;
+                        }
+                        string itemGetWay = !string.IsNullOrEmpty(item.GetWay)
+                            ? item.GetWay
+                            : $"{ItemGetWay.ReceieMail}_{receiveMailTime}";
+                        if (sharedGetWay == null)
+                        {
+                            sharedGetWay = itemGetWay;
+                        }
+                        else if (sharedGetWay != itemGetWay)
+                        {
+                            sameGetWay = false;
+                        }
                     }
-                    if (!string.IsNullOrEmpty(item.GetWay))
+
+                    if (sameGetWay && mailItems.Count > 1)
                     {
-                        bagComponentServer.OnAddItemData(item, item.GetWay);
-                        //string[] getwayInfo = mailInfo.ItemList[i].GetWay.Split('_');
-                        //if (getwayInfo.Length >= 2 && mailInfo.ItemList[i].ItemID == 1 && int.Parse(getwayInfo[0]) == ItemGetWay.PaiMaiSell)
-                        //{
-                        //    unit.GetComponent<DataCollationComponent>().UpdateBuySelfPlayerList(mailInfo.ItemList[i].ItemNum, mailInfo.BuyPlayerId );
-                        //}
+                        bagComponentServer.OnAddItemData(mailItems, sharedGetWay);
                     }
                     else
                     {
-                        bagComponentServer.OnAddItemData(item, $"{ItemGetWay.ReceieMail}_{receiveMailTime}");
+                        for (int i = mailItems.Count - 1; i >= 0; i--)
+                        {
+                            BagInfo item = mailItems[i];
+                            if (!string.IsNullOrEmpty(item.GetWay))
+                            {
+                                bagComponentServer.OnAddItemData(item, item.GetWay);
+                            }
+                            else
+                            {
+                                bagComponentServer.OnAddItemData(item, $"{ItemGetWay.ReceieMail}_{receiveMailTime}");
+                            }
+                        }
                     }
                 }
                 

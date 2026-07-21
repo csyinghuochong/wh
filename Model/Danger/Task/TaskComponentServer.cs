@@ -20,6 +20,14 @@ namespace ET
 #if SERVER
         [BsonIgnore]
         public M2C_TaskUpdate M2C_TaskUpdate = new M2C_TaskUpdate();
+
+        /// <summary>任务事件批处理深度；&gt;0 时 TriggerTaskEvent 只合并不推送</summary>
+        [BsonIgnore]
+        public int TaskEventBatchDepth;
+
+        /// <summary>批处理合并表：key=(conditionType, param2)，value=累加的 param1</summary>
+        [BsonIgnore]
+        public Dictionary<(int, int), int> TaskEventCoalesce = new Dictionary<(int, int), int>();
         
         /*public const int WeeklyTaskNumber = 3172;
         public const int WeeklyTaskId = 3173;
