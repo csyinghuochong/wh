@@ -1048,25 +1048,16 @@ namespace ET
         }
 
         //累计获得道具数量
-        public static void OnGetItemNumber(this TaskComponentServer self, int getWay, int itemId,int itemNumber)
+        public static void OnGetItemNumber(this TaskComponentServer self, int getWay, int itembigType,  int itemId,int itemNumber)
         {
             if (itemId == 1 || (getWay != ItemGetWay.ReceieMail && getWay != ItemGetWay.PaiMaiSell))
             {
                 self.TriggerTaskEvent(TastConditionType.GetItemNumber_142, itemId, itemNumber);
             }
-
-            if (itemId != 1)
-            {
-                LDItem ldItem = LDItemCategory.Instance.Get(itemId);
-                if (ldItem.ItemType == ItemTypeEnum.Equipment && ldItem.Quality >= 5)
-                {
-                    self.TriggerTaskEvent(TastConditionType.GetOrangeEquip_139, ldItem.UseLv, 1);
-                }
-            }
         }
 
         //收集道具
-        public static void OnGetItem_2(this TaskComponentServer self, int itemId)
+        public static void OnGetItem_2(this TaskComponentServer self, int itemType, int itemId)
         {
             self.TriggerTaskEvent(TastConditionType.ItemID_Number_2, itemId, 0);
         }

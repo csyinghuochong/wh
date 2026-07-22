@@ -1280,7 +1280,7 @@ namespace ET
                         }
                     }
                 }
-                ItemAddHelper.OnCostItem(unit, itemID);
+                ItemAddHelper.OnCostItem(unit, ItemBigType.Type_Item, itemID);
             }
 
             //通知客户端背包道具发生改变

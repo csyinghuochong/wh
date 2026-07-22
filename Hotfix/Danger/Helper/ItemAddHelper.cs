@@ -26,15 +26,15 @@ namespace ET
                 return;
             }
             TaskComponentServer task = self.GetComponent<TaskComponentServer>();
-            task.OnGetItem_2(bagInfo.ItemID);
-            task.OnGetItemNumber(getWay, bagInfo.ItemID, bagInfo.ItemNum);
+            task.OnGetItem_2(bagInfo.ItemType, bagInfo.ItemID);
+            task.OnGetItemNumber(getWay, bagInfo.ItemType, bagInfo.ItemID, bagInfo.ItemNum);
         }
         
         public static void OnGetItem(this Unit self, int getWay, int itemType, int itemId, long itemNumber)
         {
             TaskComponentServer task = self.GetComponent<TaskComponentServer>();
-            task.OnGetItem_2(itemId);
-            task.OnGetItemNumber(getWay, itemId, (int)itemNumber);
+            task.OnGetItem_2(itemType, itemId);
+            task.OnGetItemNumber(getWay, itemType, itemId, (int)itemNumber);
         }
         
         public static void OnGetItem(this Unit self, int getWay, RewardItem rewardItem)
@@ -44,8 +44,8 @@ namespace ET
                 return;
             }
             TaskComponentServer task = self.GetComponent<TaskComponentServer>();
-            task.OnGetItem_2(rewardItem.ItemID);
-            task.OnGetItemNumber(getWay, rewardItem.ItemID, rewardItem.ItemNum);
+            task.OnGetItem_2(rewardItem.ItemType, rewardItem.ItemID);
+            task.OnGetItemNumber(getWay, rewardItem.ItemType, rewardItem.ItemID, rewardItem.ItemNum);
         }
 
         /// <summary>
@@ -53,9 +53,9 @@ namespace ET
         /// </summary>
         /// <param name="self"></param>
         /// <param name="itemId"></param>
-        public static void OnCostItem(this Unit self, int itemId)
+        public static void OnCostItem(this Unit self, int itemType, int itemId)
         {
-            self.GetComponent<TaskComponentServer>().OnGetItem_2(itemId);
+            self.GetComponent<TaskComponentServer>().OnGetItem_2(itemType, itemId);
         }
 
         /// <summary>
