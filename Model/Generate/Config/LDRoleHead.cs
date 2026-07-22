@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDOccupation_TransferCategory : ProtoObject, IMerge
+    public partial class LDRoleHeadCategory : ProtoObject, IMerge
     {
-        public static LDOccupation_TransferCategory Instance;
+        public static LDRoleHeadCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDOccupation_Transfer> dict = new Dictionary<int, LDOccupation_Transfer>();
+        private Dictionary<int, LDRoleHead> dict = new Dictionary<int, LDRoleHead>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDOccupation_Transfer> list = new List<LDOccupation_Transfer>();
+        private List<LDRoleHead> list = new List<LDRoleHead>();
 		
-        public LDOccupation_TransferCategory()
+        public LDRoleHeadCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDOccupation_TransferCategory s = o as LDOccupation_TransferCategory;
+            LDRoleHeadCategory s = o as LDRoleHeadCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDOccupation_Transfer config in list)
+            foreach (LDRoleHead config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDOccupation_Transfer Get(int id)
+        public LDRoleHead Get(int id)
         {
-            this.dict.TryGetValue(id, out LDOccupation_Transfer item);
+            this.dict.TryGetValue(id, out LDRoleHead item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDOccupation_Transfer)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDRoleHead)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDOccupation_Transfer> GetAll()
+        public Dictionary<int, LDRoleHead> GetAll()
         {
             return this.dict;
         }
 
-        public LDOccupation_Transfer GetOne()
+        public LDRoleHead GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,20 +73,17 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDOccupation_Transfer: ProtoObject, IConfig
+	public partial class LDRoleHead: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>名称</summary>
+		/// <summary>类型</summary>
 		[ProtoMember(2)]
-		public int Name { get; set; }
-		/// <summary>描述</summary>
+		public int Type { get; set; }
+		/// <summary>头像</summary>
 		[ProtoMember(3)]
-		public int Desc { get; set; }
-		/// <summary>技能</summary>
-		[ProtoMember(4)]
-		public int[] Skill { get; set; }
+		public string Icon { get; set; }
 
 	}
 }

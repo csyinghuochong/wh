@@ -5,9 +5,9 @@ using System.Linq;
 namespace ET
 {
     [MessageHandler]
-	public class C2R_CreateRoleHandler : AMRpcHandler<C2R_CreateRoleData, R2C_CreateRoleData>
+	public class C2R_CreateRoleHandler : AMRpcHandler<C2R_CreateRoleRequest, R2C_CreateRoleResponse>
 	{
-		protected override async ETTask Run(Session session, C2R_CreateRoleData request, R2C_CreateRoleData response, Action reply)
+		protected override async ETTask Run(Session session, C2R_CreateRoleRequest request, R2C_CreateRoleResponse response, Action reply)
 		{
 			try
 			{
@@ -95,50 +95,6 @@ namespace ET
                             return;
                         }
 						
-                        /*RoleInfoComponent roleInfoComponent = session.AddChildWithId<RoleInfoComponent>(userId);
-						roleInfoComponent.Account = centerAccountList[0].Account;
-                        roleInfoComponent.Password = centerAccountList[0].Password;
-						roleInfoComponent.CreateAccountTime = centerAccountList[0].CreateTime;
-                        RoleInfo roleInfo = roleInfoComponent.RoleInfo;
-						roleInfo.Sp = 1;
-						roleInfo.UserId = userId;
-						roleInfo.BaoShiDu = 100;
-						roleInfo.JiaYuanLv = 10001;
-						roleInfo.JiaYuanFund = 10000;
-						roleInfo.AccInfoID = centerAccountList[0].Id;
-						roleInfo.Name = request.CreateName;
-						roleInfo.ServerMailIdCur = -1;
-                        roleInfo.PiLao = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);        //初始化疲劳
-						roleInfo.Vitality = int.Parse(GlobalValueConfigCategory.Instance.Get(10).Value);
-						roleInfo.MakeList.AddRange(ComHelp.StringArrToIntList(GlobalValueConfigCategory.Instance.Get(18).Value.Split(';')));
-						roleInfo.CreateTime = TimeHelper.ServerNow();
-
-                        if (centerAccountList[0].Password == ComHelp.RobotPassWord)
-						{
-							int robotId = int.Parse(centerAccountList[0].Account.Split('_')[0]);
-							RobotConfig robotConfig = RobotConfigCategory.Instance.Get(robotId);
-							roleInfo.Level = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : robotConfig.Level;
-							roleInfo.Occ = robotConfig.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : robotConfig.Occ;
-                            roleInfo.Gold = 100000;
-                            roleInfo.RobotId = robotId;
-                            //roleInfo.OccTwo = robotConfig.OccTwo;
-                        }
-						else
-						{
-							roleInfo.Level = 1;
-							roleInfo.Gold = 0;
-                            roleInfo.SeasonLevel = 1;
-                            roleInfo.Occ = request.CreateOcc;
-						}*/
-
-						//long dbCacheId = DBHelper.GetDbCacheId(request.ServerId);
-                        //D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = userId, EntityByte = MongoHelper.ToBson(RoleInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
-						//roleInfoComponent.Dispose();
-						//创建角色组件
-						//await DBHelper.AddDataComponent<NumericComponent>(request.ServerId, userId, DBHelper.NumericComponent);
-						//await DBHelper.AddDataComponent<DBFriendInfo>(request.ServerId, userId, DBHelper.DBFriendInfo);
-						//await DBHelper.AddDataComponent<DBMailInfo>(request.ServerId, userId, DBHelper.DBMailInfo);
-
 						int robotId = 0;
 						if(centerAccountList[0].Password == CommonConfig.RobotPassWord)
 						{
@@ -152,7 +108,8 @@ namespace ET
 						createRoleInfo.PlayerName = request.CreateName;
 						createRoleInfo.ServerId = request.ServerId;
 						createRoleInfo.RobotId = robotId;
-						centerAccountList[0].RoleList.Add(createRoleInfo);
+						createRoleInfo.Sex = request.Sex;
+                        centerAccountList[0].RoleList.Add(createRoleInfo);
                         Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(CommonConfig.CenterZoneId, centerAccountList[0]).Coroutine();
                         
                         //返回角色信息

@@ -154,10 +154,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(R2C_CreateRoleData))]
-	[Message(OuterOpcode.C2R_CreateRoleData)]
+	[ResponseType(nameof(R2C_CreateRoleResponse))]
+	[Message(OuterOpcode.C2R_CreateRoleRequest)]
 	[ProtoContract]
-	public partial class C2R_CreateRoleData: Object, IRequest
+	public partial class C2R_CreateRoleRequest: Object, IRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -177,11 +177,14 @@ namespace ET
 		[ProtoMember(6)]
 		public int ServerId { get; set; }
 
+		[ProtoMember(7)]
+		public int Sex { get; set; }
+
 	}
 
-	[Message(OuterOpcode.R2C_CreateRoleData)]
+	[Message(OuterOpcode.R2C_CreateRoleResponse)]
 	[ProtoContract]
-	public partial class R2C_CreateRoleData: Object, IResponse
+	public partial class R2C_CreateRoleResponse: Object, IResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -554,9 +557,8 @@ namespace ET
 		[ProtoMember(8)]
 		public int HeadIconId { get; set; }
 
-//职业
 		[ProtoMember(9)]
-		public int OccTwo { get; set; }
+		public int Sex { get; set; }
 
 		[ProtoMember(10)]
 		public int Combat { get; set; }
@@ -589,8 +591,9 @@ namespace ET
 		[ProtoMember(18)]
 		public long UserId { get; set; }
 
+//职业
 		[ProtoMember(19)]
-		public List<KeyValuePair> GameSettingInfos = new List<KeyValuePair>();
+		public int OccTwo { get; set; }
 
 		[ProtoMember(20)]
 		public List<int> MakeList = new List<int>();
@@ -666,6 +669,9 @@ namespace ET
 
 		[ProtoMember(42)]
 		public List<int> DiamondGetWay = new List<int>();
+
+		[ProtoMember(43)]
+		public List<KeyValuePair> GameSettingInfos = new List<KeyValuePair>();
 
 		[ProtoMember(50)]
 		public long CreateTime { get; set; }
@@ -779,6 +785,9 @@ namespace ET
 
 		[ProtoMember(14)]
 		public int RobotId { get; set; }
+
+		[ProtoMember(15)]
+		public int Sex { get; set; }
 
 	}
 
@@ -2756,38 +2765,6 @@ namespace ET
 
 	}
 
-//物品排序
-	[ResponseType(nameof(M2C_BagSortResponse))]
-	[Message(OuterOpcode.C2M_BagSortRequest)]
-	[ProtoContract]
-	public partial class C2M_BagSortRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ItemLocType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_BagSortResponse)]
-	[ProtoContract]
-	public partial class M2C_BagSortResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_ItemHuiShouResponse))]
 //回收装备
 	[Message(OuterOpcode.C2M_ItemHuiShouRequest)]
@@ -3521,6 +3498,7 @@ namespace ET
 
 	}
 
+//背包道具初始化
 	[ResponseType(nameof(M2C_BagGetAllItemResponse))]
 	[Message(OuterOpcode.C2M_BagGetAllItemRequest)]
 	[ProtoContract]
@@ -3558,6 +3536,38 @@ namespace ET
 
 		[ProtoMember(7)]
 		public List<int> FashionEquipList = new List<int>();
+
+	}
+
+//背包排序
+	[ResponseType(nameof(M2C_BagSortResponse))]
+	[Message(OuterOpcode.C2M_BagSortRequest)]
+	[ProtoContract]
+	public partial class C2M_BagSortRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ItemLocType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_BagSortResponse)]
+	[ProtoContract]
+	public partial class M2C_BagSortResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
 
 	}
 

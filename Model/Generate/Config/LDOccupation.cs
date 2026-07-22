@@ -81,32 +81,35 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>头像</summary>
+		/// <summary>男头</summary>
 		[ProtoMember(3)]
-		public string HeadIcon { get; set; }
-		/// <summary>模型</summary>
+		public int RoleHead_Man { get; set; }
+		/// <summary>女头</summary>
 		[ProtoMember(4)]
+		public int RoleHead_Woman { get; set; }
+		/// <summary>模型</summary>
+		[ProtoMember(5)]
 		public string Model { get; set; }
 		/// <summary>生命系数</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public double Hp_Param { get; set; }
 		/// <summary>速度</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int Speed { get; set; }
 		/// <summary>默认普攻</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int Skill_Normal_Default { get; set; }
 		/// <summary>技能</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int[] Skill { get; set; }
 		/// <summary>默认加点</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int[] Add_Point_Default { get; set; }
 		/// <summary>转职ID</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int[] TransferId { get; set; }
 		/// <summary>初始装备</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int[] Equip_Init { get; set; }
 
 	}
