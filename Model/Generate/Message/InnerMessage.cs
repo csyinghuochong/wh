@@ -3162,15 +3162,34 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.M2M_JiaYuanOperateMessage)]
+	[ResponseType(nameof(M2M_JiaYuanOperateResponse))]
+	[Message(InnerOpcode.M2M_JiaYuanOperateRequest)]
 	[ProtoContract]
-	public partial class M2M_JiaYuanOperateMessage: Object, IActorLocationMessage
+	public partial class M2M_JiaYuanOperateRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
 
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
 		[ProtoMember(1)]
 		public JiaYuanOperate JiaYuanOperate { get; set; }
+
+	}
+
+	[Message(InnerOpcode.M2M_JiaYuanOperateResponse)]
+	[ProtoContract]
+	public partial class M2M_JiaYuanOperateResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
 
 	}
 

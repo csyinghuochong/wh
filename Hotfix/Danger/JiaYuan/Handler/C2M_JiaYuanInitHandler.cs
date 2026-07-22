@@ -15,27 +15,12 @@ namespace ET
             {
                 string playerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
 
-                long gateServerId = DBHelper.GetGateServerId(unit);
-                G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                    (gateServerId, new T2G_GateUnitInfoRequest()
-                    {
-                        UserID = request.MasterId
-                    });
-
-                //玩家在线
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-                {
-                    JiaYuanOperate jiaYuanOperate = new JiaYuanOperate();
-                    jiaYuanOperate = new JiaYuanOperate();
-                    jiaYuanOperate.OperateType = JiaYuanOperateType.Visit;
-                    jiaYuanOperate.PlayerName = playerName;
-                    M2M_JiaYuanOperateMessage opmessage = new M2M_JiaYuanOperateMessage()
-                    {
-                        JiaYuanOperate = jiaYuanOperate,
-                    };
-                    MessageHelper.SendToLocationActor(request.MasterId, opmessage);
-                }
-                else
+                JiaYuanOperate jiaYuanOperate = new JiaYuanOperate();
+                jiaYuanOperate.OperateType = JiaYuanOperateType.Visit;
+                jiaYuanOperate.PlayerName = playerName;
+                M2M_JiaYuanOperateRequest opRequest = new M2M_JiaYuanOperateRequest() { JiaYuanOperate = jiaYuanOperate };
+                M2M_JiaYuanOperateResponse opResponse = (M2M_JiaYuanOperateResponse)await MessageHelper.CallLocationActor(request.MasterId, opRequest);
+                if (opResponse.Error != ErrorCode.ERR_Success)
                 {
                     jiaYuanComponentServer.AddJiaYuanRecord(new JiaYuanRecord()
                     {

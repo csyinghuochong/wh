@@ -59,27 +59,12 @@ namespace ET
                     userlist.Add(dBRankInfo.rankingDonation[i].UserId);
                 }
 
-                long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), "Gate1").InstanceId;
                 for (int i = 0; i < userlist.Count; i++)
                 {
-                    //if (scene.DomainZone() == 5)
-                    //{
-                    //    Console.WriteLine($"通知排名: {userlist[i]}  {rankSceneComponent.GetDonationRank(userlist[i])}");
-                    //}
-
-                    G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                        (gateServerId, new T2G_GateUnitInfoRequest()
-                        {
-                            UserID = userlist[i]
-                        });
-                   
-                    if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-                    {
-                        R2M_RankUpdateMessage r2M_RankUpdateMessage = new R2M_RankUpdateMessage();
-                        r2M_RankUpdateMessage.RankType = 3;
-                        r2M_RankUpdateMessage.RankId = rankSceneComponent.GetDonationRank(userlist[i]);
-                        MessageHelper.SendToLocationActor(userlist[i], r2M_RankUpdateMessage);
-                    }
+                    R2M_RankUpdateMessage r2M_RankUpdateMessage = new R2M_RankUpdateMessage();
+                    r2M_RankUpdateMessage.RankType = 3;
+                    r2M_RankUpdateMessage.RankId = rankSceneComponent.GetDonationRank(userlist[i]);
+                    MessageHelper.SendToLocationActor(userlist[i], r2M_RankUpdateMessage);
                 }
             }
 

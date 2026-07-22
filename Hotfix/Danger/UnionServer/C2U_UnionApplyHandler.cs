@@ -24,12 +24,6 @@ namespace ET
                 M2C_UnionApplyResult m2C_HorseNoticeInfo = new M2C_UnionApplyResult();
                 MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, m2C_HorseNoticeInfo);
             }
-            //暂时离线需要通知到map?
-            if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.None)
-            {
-                long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
-             
-            }
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
             reply();
         }

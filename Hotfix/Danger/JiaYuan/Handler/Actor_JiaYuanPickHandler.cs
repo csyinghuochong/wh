@@ -47,31 +47,18 @@ namespace ET
             {
                 unitNumeric.ApplyChange(null, NumericType.JiaYuanPickOther, 1, 0);
 
-                JiaYuanComponentServer jiaYuanComponentServer2 = await DBHelper.GetComponent<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
-                long gateServerId = DBHelper.GetGateServerId(unit);
-                G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                    (gateServerId, new T2G_GateUnitInfoRequest()
-                    {
-                        UserID = request.MasterId
-                    });
+                RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
+                JiaYuanOperate jiaYuanOperate = new JiaYuanOperate();
+                jiaYuanOperate.OperateType = JiaYuanOperateType.Pick;
+                jiaYuanOperate.UnitId = request.UnitId;
+                jiaYuanOperate.PlayerName = roleInfoComponent.RoleInfo.Name;
+                jiaYuanOperate.OperateId = boxUnit.ConfigId;
 
-                //玩家在线
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
+                M2M_JiaYuanOperateRequest opRequest = new M2M_JiaYuanOperateRequest() { JiaYuanOperate = jiaYuanOperate };
+                M2M_JiaYuanOperateResponse opResponse = (M2M_JiaYuanOperateResponse)await MessageHelper.CallLocationActor(request.MasterId, opRequest);
+                if (opResponse.Error != ErrorCode.ERR_Success)
                 {
-                    RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
-                    JiaYuanOperate jiaYuanOperate = new JiaYuanOperate();
-                    jiaYuanOperate.OperateType = JiaYuanOperateType.Pick;
-                    jiaYuanOperate.UnitId = request.UnitId;
-                    jiaYuanOperate.PlayerName = roleInfoComponent.RoleInfo.Name;
-                    jiaYuanOperate.OperateId = boxUnit.ConfigId;
-                    M2M_JiaYuanOperateMessage opmessage = new M2M_JiaYuanOperateMessage()
-                    {
-                        JiaYuanOperate = jiaYuanOperate,
-                    };
-                    MessageHelper.SendToLocationActor(request.MasterId, opmessage);
-                }
-                else
-                {
+                    JiaYuanComponentServer jiaYuanComponentServer2 = await DBHelper.GetComponent<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
                     jiaYuanComponentServer2.OnRemoveUnit(request.UnitId);
                     await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId, jiaYuanComponentServer2);
                 }

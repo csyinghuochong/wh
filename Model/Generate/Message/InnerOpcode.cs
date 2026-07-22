@@ -174,7 +174,7 @@ namespace ET
 		 public const ushort J2M_JiaYuanEnterResponse = 20171;
 		 public const ushort Popularize2M_RewardRequest = 20172;
 		 public const ushort M2Popularize_RewardResponse = 20173;
-		 public const ushort M2M_JiaYuanOperateMessage = 20174;
+		 public const ushort M2M_JiaYuanOperateRequest = 20174;
 		 public const ushort M2P_PaiMaiAuctionPriceRequest = 20175;
 		 public const ushort P2M_PaiMaiAuctionPriceResponse = 20176;
 		 public const ushort M2P_PaiMaiAuctionJoinRequest = 20177;
@@ -255,5 +255,6 @@ namespace ET
 		 public const ushort L2M_GetWeChatOACode = 20252;
 		 public const ushort L2M_WeChatOABindResult = 20253;
 		 public const ushort M2L_WeChatOABindResult = 20254;
+		 public const ushort M2M_JiaYuanOperateResponse = 20255;
 	}
 }

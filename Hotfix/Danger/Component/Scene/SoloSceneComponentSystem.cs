@@ -25,20 +25,11 @@ namespace ET
 
         public static async ETTask UpdateSoloRank(this SoloSceneComponent self, long unitid, int rankid)
         {
-            long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), "Gate1").InstanceId;
-            G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                    (gateServerId, new T2G_GateUnitInfoRequest()
-                    {
-                        UserID = unitid
-                    });
-
-            if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-            {
-                R2M_RankUpdateMessage r2M_RankUpdateMessage = new R2M_RankUpdateMessage();
-                r2M_RankUpdateMessage.RankType = 4;
-                r2M_RankUpdateMessage.RankId = rankid;
-                MessageHelper.SendToLocationActor(unitid, r2M_RankUpdateMessage);
-            }
+            R2M_RankUpdateMessage r2M_RankUpdateMessage = new R2M_RankUpdateMessage();
+            r2M_RankUpdateMessage.RankType = 4;
+            r2M_RankUpdateMessage.RankId = rankid;
+            MessageHelper.SendToLocationActor(unitid, r2M_RankUpdateMessage);
+            await ETTask.CompletedTask;
         }
 
         public static async ETTask OnSoloBegin(this SoloSceneComponent self)

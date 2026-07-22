@@ -31,19 +31,11 @@ namespace ET
             }
 
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
-            //通知玩家
-            long gateServerId = DBHelper.GetGateServerId(scene.DomainZone());
-            G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-               (gateServerId, new T2G_GateUnitInfoRequest()
-               {
-                   UserID = request.UserId
-               });
-            if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-            {
-                U2M_UnionKickOutRequest r2M_RechargeRequest = new U2M_UnionKickOutRequest() { UserId = request.UserId };
-                M2U_UnionKickOutResponse m2G_RechargeResponse = (M2U_UnionKickOutResponse)await ActorLocationSenderComponent.Instance.Call(request.UserId, r2M_RechargeRequest);
-            }
-            else
+
+            // 在线走 Location；失败（含离线 ERR_NotFoundActor）再改库，无需先 T2G_GateUnitInfo
+            U2M_UnionKickOutRequest kickRequest = new U2M_UnionKickOutRequest() { UserId = request.UserId };
+            M2U_UnionKickOutResponse kickResponse = (M2U_UnionKickOutResponse)await ActorLocationSenderComponent.Instance.Call(request.UserId, kickRequest);
+            if (kickResponse.Error != ErrorCode.ERR_Success)
             {
                 long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
                 D2G_GetComponent d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.NumericComponent });

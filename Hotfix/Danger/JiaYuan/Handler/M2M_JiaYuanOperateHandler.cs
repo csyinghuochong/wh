@@ -3,12 +3,12 @@ using System;
 namespace ET
 {
     [ActorMessageHandler]
-    public class M2M_JiaYuanOperateHandler : AMActorLocationHandler<Unit, M2M_JiaYuanOperateMessage>
+    public class M2M_JiaYuanOperateHandler : AMActorLocationRpcHandler<Unit, M2M_JiaYuanOperateRequest, M2M_JiaYuanOperateResponse>
     {
-        protected override async ETTask Run(Unit unit, M2M_JiaYuanOperateMessage message)
+        protected override async ETTask Run(Unit unit, M2M_JiaYuanOperateRequest request, M2M_JiaYuanOperateResponse response, Action reply)
         {
             JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
-            JiaYuanOperate jiaYuanOperate = message.JiaYuanOperate;
+            JiaYuanOperate jiaYuanOperate = request.JiaYuanOperate;
             switch (jiaYuanOperate.OperateType)
             {
                 case JiaYuanOperateType.Visit:
@@ -24,6 +24,7 @@ namespace ET
                     JiaYuanPlant jiaYuanPlan = jiaYuanComponentServer.GetJiaYuanPlant(jiaYuanOperate.UnitId);
                     if (jiaYuanPlan == null)
                     {
+                        reply();
                         return;
                     }
                     jiaYuanPlan.StealNumber += 1;
@@ -43,7 +44,8 @@ namespace ET
                     JiaYuanPastures jiaYuanPasture = jiaYuanComponentServer.GetJiaYuanPastures(jiaYuanOperate.UnitId);
                     if (jiaYuanPasture == null)
                     {
-                         return;
+                        reply();
+                        return;
                     }
                     jiaYuanPasture.StealNumber += 1;
                     jiaYuanPasture.GatherNumber += 1;
@@ -69,7 +71,8 @@ namespace ET
                     break;
             }
 
-            await  DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer );
+            await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer);
+            reply();
         }
     }
 }
