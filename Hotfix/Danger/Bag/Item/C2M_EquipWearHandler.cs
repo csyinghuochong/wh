@@ -83,7 +83,7 @@ namespace ET
             else
             {
                 //判断背包格子是否足够
-                bool full = bag.IsBagFull();
+                bool full = bag.IsBagFullByLoc((int)ItemLocType.ItemLocBag);
                 if (full)
                 {
                     response.Error = ErrorCode.ERR_BagIsFull;

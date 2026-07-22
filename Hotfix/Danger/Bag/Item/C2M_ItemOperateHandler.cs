@@ -552,7 +552,7 @@ namespace ET
                 if (request.OperateType == 7)
                 {
                     int hourseId = useBagInfo.Loc;
-                    if (bagComponentServer.IsBagFull())
+                    if (bagComponentServer.IsBagFullByLoc((int)ItemLocType.ItemLocBag))
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;     //错误码:仓库已满
                         reply();

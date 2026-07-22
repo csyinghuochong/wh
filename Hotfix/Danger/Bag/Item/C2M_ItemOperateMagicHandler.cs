@@ -102,7 +102,7 @@ namespace ET
             if (request.OperateType == 4)
             {
                 //判断背包格子是否足够
-                bool full = bagComponentServer.IsBagFull();
+                bool full = bagComponentServer.IsBagFullByLoc((int)ItemLocType.ItemLocBag);
                 if (full)
                 {
                     response.Error = ErrorCode.ERR_BagIsFull;
