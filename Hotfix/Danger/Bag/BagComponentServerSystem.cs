@@ -1003,14 +1003,12 @@ namespace ET
                     useBagInfo.MakePlayer = makeUserID;
                     useBagInfo.isBinging = forceBindByGetWay || ItemNewHelper.CheckItemIfLock(rewardItem);
 
-                    if (itemtype == ItemBigType.Type_Equip)
+                    if (itemtype == ItemBigType.Type_Equip && useBagInfo.BaseAttrList.Count <= 0)
                     {
                         LDEquip equipconfig = LDEquipCategory.Instance.Get(itemID);
-                        if (useBagInfo.BaseAttrList.Count <= 0)
-                        {
-                            useBagInfo.EnhanceLevel = RandomHelper.RandomNumber(0, equipconfig.Enhance);
-                            useBagInfo.BaseAttrList = LDEquipCategory.Instance.GetEquipAttribute(itemID);
-                        }
+                        useBagInfo.EnhanceLevel = RandomHelper.RandomNumber(0, equipconfig.Enhance);
+                        useBagInfo.BaseAttrList = (LDEquipCategory.Instance.GetEquipAttribute(itemID));
+                        ItemNewHelper.SortBaseAttrList(useBagInfo.BaseAttrList);
                     }
                     else if (itemtype == ItemBigType.Type_Item)
                     {
