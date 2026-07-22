@@ -74,7 +74,7 @@ namespace ET
                 BagInfo useBagInfo = new BagInfo();
                 useBagInfo.ItemID = bagInfo.ItemID;
                 useBagInfo.ItemNum = request.BuyNum;
-                useBagInfo.Loc = ldItemCof.ItemType == (int)ItemTypeEnum.PetHeXin ? (int)ItemLocType.ItemPetHeXinBag : (int)ItemLocType.ItemLocBag;
+                useBagInfo.Loc =(int)ItemLocType.ItemLocBag;
                 useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
                 useBagInfo.GemHole = ItemNewHelper.GetDefaultGem();
                 useBagInfo.GemIDNew = ItemNewHelper.GetDefaultGem();

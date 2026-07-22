@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace ET
 {
     [ActorMessageHandler]
-    public class C2M_ItemBuyCellHandler : AMActorLocationRpcHandler<Unit, C2M_ItemBuyCellRequest, M2C_ItemBuyCellResponse>
+    public class C2M_BagBuyCellHandler : AMActorLocationRpcHandler<Unit, C2M_BagBuyCellRequest, M2C_BagBuyCellResponse>
     {
-        protected override async ETTask Run(Unit unit, C2M_ItemBuyCellRequest request, M2C_ItemBuyCellResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_BagBuyCellRequest request, M2C_BagBuyCellResponse response, Action reply)
         {
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             //string costitems = GlobalValueConfigCategory.Instance.Get(83).Value;
@@ -19,13 +19,13 @@ namespace ET
 
             if (request.OperateType == (int)ItemLocType.ItemLocBag)
             {
-                if (bagComponentServer.GetBagTotalCell() >= LDGlobalValueCategory.Instance.BagMaxCapacity)
-                {
-                    response.Error = ErrorCode.ERR_AleardyMaxCell;
-                    reply();
-                    return;
-                }
-                BuyCellCost buyCellCost = CommonConfig.BuyBagCellCosts[bagComponentServer.WarehouseAddedCell[0]];
+                //if (bagComponentServer.GetBagTotalCell() >= LDGlobalValueCategory.Instance.BagMaxCapacity[(int)ItemLocType.ItemLocBag])
+                //{
+                //    response.Error = ErrorCode.ERR_AleardyMaxCell;
+                //    reply();
+                //    return;
+                //}
+                BuyCellCost buyCellCost = CommonConfig.BuyBagCellCosts[bagComponentServer.AdditionalCellNum[0]];
                 if (!bagComponentServer.OnCostItemData(buyCellCost.Cost, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -35,7 +35,7 @@ namespace ET
 
 
                 response.GetItem = buyCellCost.Get;
-                bagComponentServer.WarehouseAddedCell[0] += 1;
+                bagComponentServer.AdditionalCellNum[0] += 1;
 
                 bagComponentServer.OnAddItemData(buyCellCost.Get, $"{ItemGetWay.CostItem}_{TimeHelper.ServerNow()}", true);
             }
@@ -51,14 +51,14 @@ namespace ET
                 }
 
 
-                if (bagComponentServer.GetHourseTotalCell(request.OperateType) >= LDGlobalValueCategory.Instance.HourseMaxCapacity)
-                {
-                    response.Error = ErrorCode.ERR_AleardyMaxCell;
-                    reply();
-                    return;
-                }
+                //if (bagComponentServer.GetHourseTotalCell(request.OperateType) >= LDGlobalValueCategory.Instance.BagMaxCapacity[request.OperateType])
+                //{
+                //    response.Error = ErrorCode.ERR_AleardyMaxCell;
+                //    reply();
+                //    return;
+                //}
                 
-                int addcell = bagComponentServer.WarehouseAddedCell[storeindex];
+                int addcell = bagComponentServer.AdditionalCellNum[storeindex];
                 BuyCellCost buyCellCost = CommonConfig.BuyStoreCellCosts[(storeindex - 5) * 10 + addcell];
                 if (!bagComponentServer.OnCostItemData(buyCellCost.Cost,ItemLocType.ItemLocBag, ItemGetWay.CostItem))
                 {
@@ -68,7 +68,7 @@ namespace ET
                 }
 
                 response.GetItem = buyCellCost.Get;
-                bagComponentServer.WarehouseAddedCell[storeindex] += 1;
+                bagComponentServer.AdditionalCellNum[storeindex] += 1;
 
                 bagComponentServer.OnAddItemData(
                     buyCellCost.Get,
@@ -77,7 +77,7 @@ namespace ET
                     (ItemLocType)request.OperateType);
             }
 
-            response.WarehouseAddedCell = bagComponentServer.WarehouseAddedCell;
+            response.AdditionalCellNum = bagComponentServer.AdditionalCellNum;
             //response.BagAddedCell = bagComponentServer.BagAddedCell;
             reply();
             await ETTask.CompletedTask;

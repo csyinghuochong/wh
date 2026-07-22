@@ -62,14 +62,7 @@ namespace ET
                     {
                         return false;
                     }
-                    if (bagComponentServer.WarehouseAddedCell.Count < 10)
-                    {
-                        return false;
-                    }
-                    if (bagComponentServer.WarehouseAddedCell[6] >= 10)
-                    {
-                        return false;
-                    }
+                 
                     break;
                 case 5:
                     // 充值>=6<30元 10011003

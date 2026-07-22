@@ -29,14 +29,9 @@ namespace ET
 
         public int JianDingFuQulity = 0;
 
-        public int FangunSkillId = 0;
 
-        public int BagInitCapacity = 100;
-        public int BagMaxCapacity = 100;
-
-        public int HourseInitCapacity = 0;
-        public int HourseMaxCapacity = 0;
-
+        public int[] BagInitCapacity = new int[(int)ItemLocType.ItemLocMax + 1];
+      
         public int GemStoreInitCapacity = 0;
         public int GemStoreMaxCapacity = 0;
 
@@ -55,7 +50,6 @@ namespace ET
         public Dictionary<int, int> ZhuaPuItem = new Dictionary<int, int>();
         ////上面的全部废弃掉////
 
-        
         
         public List<int> Add_Point_Level_UP_Fixed = new List<int>();
 
@@ -87,7 +81,14 @@ namespace ET
 
         private void ParseBaseData()
         {
-            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_1).Value, out this.BagInitCapacity);
+            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_1).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBag]);
+            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_2).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure]);
+            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_3).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagMaterial]);
+            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_4).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagConsume]);
+            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_51).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagLife]);
+            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_52).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome]);
+
+          
         }
 
         private void ParseAddPoint()

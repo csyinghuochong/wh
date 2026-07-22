@@ -33,7 +33,7 @@ namespace ET
                     ItemNum = 1
                 });
             }
-
+            
             self.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", false);
             
             List<BagInfo> equipList = new List<BagInfo>();
@@ -78,58 +78,33 @@ namespace ET
             List<BagInfo> ItemTypeList = null;
             switch (itemEquipType)
             {
-                case ItemLocType.ItemLocBag:
-                    ItemTypeList = self.BagItemList;
-                    break;
-                case ItemLocType.ItemPetHeXinBag:
-                    ItemTypeList = self.BagItemPetHeXin;
-                    break;
-                case ItemLocType.ItemLocGem:
-                    ItemTypeList = self.GemList;
-                    break;
+
                 case ItemLocType.ItemLocEquip:
                     ItemTypeList = self.EquipList;
                     break;
-                case ItemLocType.ItemPetHeXinEquip:
-                    ItemTypeList = self.PetHeXinList;
+                case ItemLocType.ItemLocBag:
+                    ItemTypeList = self.BagItemList;
                     break;
+                case ItemLocType.ItemLocBagTreasure:
+                    ItemTypeList = self.TreasureList;
+                    break;
+                case ItemLocType.ItemLocBagMaterial:
+                    ItemTypeList = self.MaterialList;
+                    break;
+                case ItemLocType.ItemLocBagConsume:
+                    ItemTypeList = self.ConsumeList;
+                    break;
+                case ItemLocType.ItemLocBagLife:
+                    ItemTypeList = self.LifeList;
+                    break;
+                case ItemLocType.ItemLocBagHome:
+                    ItemTypeList = self.HomeList;
+                    break;
+
                 case ItemLocType.ItemWareHouse1:
                     ItemTypeList = self.Warehouse1;
                     break;
-                case ItemLocType.ItemWareHouse2:
-                    ItemTypeList = self.Warehouse2;
-                    break;
-                case ItemLocType.ItemWareHouse3:
-                    ItemTypeList = self.Warehouse3;
-                    break;
-                case ItemLocType.ItemWareHouse4:
-                    ItemTypeList = self.Warehouse4;
-                    break;
-                case ItemLocType.JianYuanWareHouse1:
-                    ItemTypeList = self.JianYuanWareHouse1;
-                    break;
-                case ItemLocType.JianYuanWareHouse2:
-                    ItemTypeList = self.JianYuanWareHouse2;
-                    break;
-                case ItemLocType.JianYuanWareHouse3:
-                    ItemTypeList = self.JianYuanWareHouse3;
-                    break;
-                case ItemLocType.JianYuanWareHouse4:
-                    ItemTypeList = self.JianYuanWareHouse4;
-                    break;
-                case ItemLocType.JianYuanTreasureMapStorage1:
-                    ItemTypeList = self.JianYuanTreasureMapStorage1;
-                    break;
-                case ItemLocType.JianYuanTreasureMapStorage2:
-                    ItemTypeList = self.JianYuanTreasureMapStorage2;
-                    break;
-                case ItemLocType.ChouKaWarehouse:
-                    ItemTypeList = self.ChouKaWarehouse;
-                    break;
-                /*case ItemLocType.ItemLocEquip_2:
-                    ItemTypeList = self.EquipList_2;
-                    break;*/
-               
+           
             }
             return ItemTypeList;
         }
@@ -262,15 +237,15 @@ namespace ET
 
         public static void CheckAllItem(this BagComponentServer self, int occ, int occTwo)
         {
-            self.CheckValiedItem(self.GemList, occ, occTwo);
-            self.CheckValiedItem(self.BagItemList, occ, occTwo);
             self.CheckValiedItem(self.EquipList, occ, occTwo);
-            self.CheckValiedItem(self.BagItemPetHeXin, occ, occTwo);
-            self.CheckValiedItem(self.PetHeXinList, occ, occTwo);
+            self.CheckValiedItem(self.BagItemList, occ, occTwo);
+            self.CheckValiedItem(self.TreasureList, occ, occTwo);
+            self.CheckValiedItem(self.MaterialList, occ, occTwo);
+            self.CheckValiedItem(self.ConsumeList, occ, occTwo);
+            self.CheckValiedItem(self.LifeList, occ, occTwo);
+            self.CheckValiedItem(self.HomeList, occ, occTwo);
+
             self.CheckValiedItem(self.Warehouse1, occ, occTwo);
-            self.CheckValiedItem(self.Warehouse2, occ, occTwo);
-            self.CheckValiedItem(self.Warehouse3, occ, occTwo);
-            self.CheckValiedItem(self.Warehouse4, occ, occTwo);
         }
 
         //获取自身所有的道具
@@ -280,23 +255,16 @@ namespace ET
 
             self.CheckAllItem(occ, occTwo);
 
-            bagList.AddRange(self.GemList);
-            bagList.AddRange(self.BagItemList);
-            bagList.AddRange(self.BagItemPetHeXin);
             bagList.AddRange(self.EquipList);
-            bagList.AddRange(self.PetHeXinList);
-            bagList.AddRange(self.Warehouse1);
-            bagList.AddRange(self.Warehouse2);
-            bagList.AddRange(self.Warehouse3);
-            bagList.AddRange(self.Warehouse4);
-            bagList.AddRange(self.JianYuanWareHouse1);
-            bagList.AddRange(self.JianYuanWareHouse2);
-            bagList.AddRange(self.JianYuanWareHouse3);
-            bagList.AddRange(self.JianYuanWareHouse4);
-            bagList.AddRange(self.JianYuanTreasureMapStorage1);
-            bagList.AddRange(self.JianYuanTreasureMapStorage2);
-            bagList.AddRange(self.ChouKaWarehouse);
+            bagList.AddRange(self.BagItemList);
+            bagList.AddRange(self.TreasureList);
+            bagList.AddRange(self.MaterialList);
+            bagList.AddRange(self.ConsumeList);
+            bagList.AddRange(self.LifeList);
+            bagList.AddRange(self.HomeList);
 
+            bagList.AddRange(self.Warehouse1);
+         
             return bagList;
         }
 
@@ -433,41 +401,27 @@ namespace ET
 
         public static int GetBagTotalCell(this BagComponentServer self)
         {
-            if (self.WarehouseAddedCell.Count == 0 || self.AdditionalCellNum.Count == 0)
-            {
-                return LDGlobalValueCategory.Instance.BagInitCapacity;
-            }
-            return self.WarehouseAddedCell[0] + self.AdditionalCellNum[0] + + LDGlobalValueCategory.Instance.BagInitCapacity;
+            return self.AdditionalCellNum[(int)ItemLocType.ItemLocBag] + + LDGlobalValueCategory.Instance.BagInitCapacity[(int)ItemLocType.ItemLocBag];
         }
 
-        public static bool IsHourseFullByLoc(this BagComponentServer self, int hourseId)
+        public static bool IsBagFullByLoc(this BagComponentServer self, int hourseId)
         {
             List<BagInfo> ItemTypeList = self.GetItemByLoc((ItemLocType)hourseId);
-            return ItemTypeList.Count >= self.GetHourseTotalCell(hourseId);
+            return ItemTypeList.Count >= self.GeBagTotalCell(hourseId);
         }
 
-        public static int GetHourseLeftCell(this BagComponentServer self, int hourseId)
+        public static int GetBagLeftCell(this BagComponentServer self, int hourseId)
         {
             List<BagInfo> ItemTypeList = self.GetItemByLoc((ItemLocType)hourseId);
-            return self.GetHourseTotalCell(hourseId) - ItemTypeList.Count;
+            return self.GeBagTotalCell(hourseId) - ItemTypeList.Count;
         }
 
-        public static int GetHourseTotalCell(this BagComponentServer self, int hourseId)
+        public static int GeBagTotalCell(this BagComponentServer self, int hourseId)
         {
-            int storeCapacity = LDGlobalValueCategory.Instance.HourseInitCapacity;
-            
-            return storeCapacity + self.WarehouseAddedCell[hourseId] + self.AdditionalCellNum[hourseId];
+            int storeCapacity = LDGlobalValueCategory.Instance.BagInitCapacity[hourseId];
+            return storeCapacity + self.AdditionalCellNum[hourseId];
         }
 
-        /// <summary>
-        /// 获取抽卡仓库剩余的格数，上限100
-        /// </summary>
-        /// <param name="self"></param>
-        /// <returns></returns>
-        public static int GetChouKaLeftSpace(this BagComponentServer self)
-        {
-            return 100 - self.ChouKaWarehouse.Count;
-        }
 
         public static void OnChangeItemLoc(this BagComponentServer self, BagInfo bagInfo, ItemLocType itemLocTypeTo, ItemLocType itemLocTypeFrom)
         {
@@ -513,9 +467,7 @@ namespace ET
         { 
             self.ClearJingHeItem(self.BagItemList);
             self.ClearJingHeItem(self.Warehouse1);
-            self.ClearJingHeItem(self.Warehouse2);
-            self.ClearJingHeItem(self.Warehouse3);
-            self.ClearJingHeItem(self.Warehouse4);
+          
         }
 
         public static void ClearJingHeItem(this BagComponentServer self, List<BagInfo> bagInfos)
@@ -656,11 +608,6 @@ namespace ET
             //    }
             //}
 
-
-            for (int i = self.WarehouseAddedCell.Count; i < (int)ItemLocType.ItemLocMax; i++)
-            {
-                self.WarehouseAddedCell.Add(0);
-            }
             for (int i = self.AdditionalCellNum.Count; i < (int)ItemLocType.ItemLocMax; i++)
             {
                 self.AdditionalCellNum.Add(0);
@@ -854,7 +801,7 @@ namespace ET
             useBagInfo.ItemID = itemid;
             useBagInfo.ItemNum = itemnumber;
             LDItem ldItemCof = LDItemCategory.Instance.Get(itemid);
-            useBagInfo.Loc = ldItemCof.ItemType == (int)ItemTypeEnum.PetHeXin ? (int)ItemLocType.ItemPetHeXinBag : (int)ItemLocType.ItemLocBag;
+            useBagInfo.Loc = (int)ItemLocType.ItemLocBag;
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
             useBagInfo.GetWay = bagInfo.GetWay;
             useBagInfo.isBinging = bagInfo.isBinging;
@@ -868,7 +815,7 @@ namespace ET
         }
 
         //添加背包道具道具[支持同时添加多个]
-        public static bool OnAddItemData(this BagComponentServer self, List<RewardItem> rewardItems_init, string makeUserID, string getWay, bool notice = true, bool gm = false, ItemLocType UseLocType = ItemLocType.ItemLocBag)
+        public static bool OnAddItemData(this BagComponentServer self, List<RewardItem> rewardItems_init, string makeUserID, string getWay, bool notice = true, bool gm = false, ItemLocType useLocType = ItemLocType.ItemLocBag)
         {
             if (rewardItems_init.Count <= 0)
             {
@@ -880,7 +827,6 @@ namespace ET
                 return false;
             }
             
-            int bagCellNumber = 0;
             string[] getWayInfo = getWay.Split('_');
             int getType = int.Parse(getWayInfo[0]);
             Unit unit = self.GetParent<Unit>();
@@ -947,12 +893,7 @@ namespace ET
                     ItemPileSum = ItemNewHelper.GetNewItemPileSum(rewardItem);
                     pileSumCache[itemKey] = ItemPileSum;
                 }
-                if (UseLocType >= ItemLocType.ItemWareHouse1)
-                {
-                    continue;
-                }
-
-
+                int bagCellNumber = 0;
                 if (ItemPileSum == 1)
                 {
                     bagCellNumber += rewardItems[i].ItemNum;
@@ -966,15 +907,20 @@ namespace ET
                     bagCellNumber += (int)(1f * rewardItems[i].ItemNum / ItemPileSum);
                     bagCellNumber += (rewardItems[i].ItemNum % ItemPileSum > 0 ? 1 : 0);
                 }
+
+                if (useLocType == ItemLocType.ItemLocBag)
+                {
+                    useLocType = ItemNewHelper.GetToItemLocType(rewardItems[0]);
+                }
+
+                if (bagCellNumber > self.GetBagLeftCell((int)useLocType) )
+                {
+                    return false;
+                }
             }
             if (rewardItems.Count == 0)
             {
                 return true;
-            }
-
-            if (bagCellNumber > self.GetBagLeftCell() && UseLocType == ItemLocType.ItemLocBag)
-            {
-                return false;
             }
 
             //通知客户端背包刷新
@@ -1022,15 +968,18 @@ namespace ET
                 
                 ItemLocType itemLockType = ItemLocType.ItemLocBag;
                 List<BagInfo> itemlist = null;
-               
+
                 /*if (itemCof.ItemType == ItemTypeEnum.PetHeXin)
                 {
                     maxPileSum = itemCof.ItemPileSum;
                     itemLockType = ItemLocType.ItemPetHeXinBag;
                     itemlist = self.GetItemByLoc(itemLockType);
                 }*/
-                
-                itemLockType = UseLocType;
+
+                if (useLocType == ItemLocType.ItemLocBag)
+                {
+                    useLocType = ItemNewHelper.GetToItemLocType(rewardItems[0]);
+                }
                 itemlist = self.GetItemByLoc(itemLockType);
                 
                 for (int k = 0; k < itemlist.Count; k++)
@@ -1077,20 +1026,15 @@ namespace ET
                     useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
                     useBagInfo.GetWay = getWay;
                     leftNum -= useBagInfo.ItemNum;
-
-                    useBagInfo.HideID = 0;
-                    
                     //记录制造的玩家
                     useBagInfo.MakePlayer = makeUserID;
 
-                    
                     if (ItemGetWay.ItemGetBing.Contains(getType))
                     {
                         useBagInfo.isBinging = true;
                     }
                     useBagInfo.isBinging = ItemNewHelper.CheckItemIfLock(rewardItem);
-                    
-                    
+
                     ///装备处理
                     if (itemtype == ItemBigType.Type_Equip)
                     {

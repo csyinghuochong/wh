@@ -18,7 +18,7 @@ namespace ET
                 return;
             }
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            int leftCell = bag.GetHourseLeftCell(hourseId);
+            int leftCell = bag.GetBagLeftCell(hourseId);
             if (leftCell<= 0)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;     //错误码:仓库已满
@@ -30,22 +30,6 @@ namespace ET
             List <BagInfo> bagInfos = bag.BagItemList;
 
             List<BagInfo> itemList = new List<BagInfo>();
-            
-            // 家园种子仓库
-            if ((ItemLocType)hourseId >= ItemLocType.JianYuanWareHouse1 && (ItemLocType)hourseId <= ItemLocType.JianYuanWareHouse4)
-            {
-                itemList = ItemNewHelper.GetSeedList(bagInfos);
-            }
-            // 家园藏宝图仓库_存藏宝图的
-            else if ((ItemLocType)hourseId == ItemLocType.JianYuanTreasureMapStorage1)
-            {
-                itemList = ItemNewHelper.GetTreasureMapList(bagInfos);
-            } 
-            // 家园藏宝图仓库_存生活材料的
-            else if ((ItemLocType)hourseId == ItemLocType.JianYuanTreasureMapStorage2)
-            {
-                itemList = ItemNewHelper.GetTreasureMapList2(bagInfos);
-            }
             
             for (int i = 0; i < itemList.Count; i++)
             {

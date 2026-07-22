@@ -37,7 +37,6 @@ namespace ET
                     }
 
                     response.EquipList = bagComponentsServer.EquipList;
-                    response.PetHeXinList = bagComponentsServer.PetHeXinList;
                     response.Occ = roleInfo.Occ;
                     D2G_GetComponent d2GGetUnit_3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.PetComponent });
                     PetComponentServer petComponentServer = d2GGetUnit_3.Component as PetComponentServer;

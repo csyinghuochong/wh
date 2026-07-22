@@ -21,11 +21,7 @@ namespace ET
                 long bagInfoID = request.OperateBagID;
 
                 ItemLocType locType = ItemLocType.ItemLocBag;
-                if (request.OperateType == 2)
-                {
-                    LDItem config = LDItemCategory.Instance.Get(int.Parse(request.OperatePar.Split('_')[0]));
-                    locType = config.ItemType == (int)ItemTypeEnum.PetHeXin ? ItemLocType.ItemPetHeXinBag : locType;
-                }
+              
                 if (request.OperateType == 4)
                 {
                     locType = ItemLocType.ItemLocEquip;
@@ -511,31 +507,6 @@ namespace ET
                     Log.Error("request.OperateType == 222");
                 }
 
-                if (request.OperateType == 2 && locType == ItemLocType.ItemPetHeXinBag)
-                {
-                    //默认出售全部
-                    //给与对应金币或货币奖励
-                    int sellNum = int.Parse(request.OperatePar.Split('_')[1]);
-                    if (sellNum <= 0 || sellNum > useBagInfo.ItemNum)
-                    {
-                        Log.Error($"C2M_ItemOperateHandler 4");
-                        response.Error = ErrorCode.ERR_ModifyData;
-                        reply();
-                        return;
-                    }
-
-                    //roleInfoComponentServer.UpdateRoleData(ldItem.SellMoneyType, (sellNum * ldItem.SellMoneyValue).ToString());
-                    bagComponentServer.OnCostItemData(useBagInfo, locType, sellNum);
-                    if (useBagInfo.ItemNum == 0)
-                    {
-                        m2c_bagUpdate.BagInfoDelete.Add(useBagInfo);
-                    }
-                    else
-                    {
-                        m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
-                    }
-                }
-
                 //穿戴装备
                 if (request.OperateType == 3)
                 {
@@ -558,7 +529,7 @@ namespace ET
                 if (request.OperateType == 6)
                 {
                     int hourseId = int.Parse(request.OperatePar);
-                    if (bagComponentServer.IsHourseFullByLoc(hourseId))
+                    if (bagComponentServer.IsBagFullByLoc(hourseId))
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;     //错误码:仓库已满
                         reply();

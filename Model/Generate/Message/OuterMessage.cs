@@ -1829,69 +1829,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.BagInfo)]
-	[ProtoContract]
-	public partial class BagInfo: Object
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Name { get; set; }
-
-		[ProtoMember(1)]
-		public long BagInfoID { get; set; }
-
-		[ProtoMember(2)]
-		public int ItemID { get; set; }
-
-		[ProtoMember(3)]
-		public int ItemNum { get; set; }
-
-		[ProtoMember(4)]
-		public string ItemPar { get; set; }
-
-		[ProtoMember(5)]
-		public int HideID { get; set; }
-
-		[ProtoMember(6)]
-		public string GemHole { get; set; }
-
-		[ProtoMember(29)]
-		public int ItemType { get; set; }
-
-		[ProtoMember(8)]
-		public int Loc { get; set; }
-
-		[ProtoMember(10)]
-		public List<AttributeItem> BaseAttrList = new List<AttributeItem>();
-
-		[ProtoMember(11)]
-		public List<AttributeItem> AppraiseAttrList = new List<AttributeItem>();
-
-		[ProtoMember(12)]
-		public int EnhanceLevel { get; set; }
-
-		[ProtoMember(13)]
-		public bool isBinging { get; set; }
-
-		[ProtoMember(16)]
-		public string GetWay { get; set; }
-
-		[ProtoMember(17)]
-		public string GemIDNew { get; set; }
-
-		[ProtoMember(18)]
-		public string MakePlayer { get; set; }
-
-		[ProtoMember(21)]
-		public int InheritTimes { get; set; }
-
-		[ProtoMember(23)]
-		public bool IsProtect { get; set; }
-
-	}
-
 	[Message(OuterOpcode.AttributeRandom)]
 	[ProtoContract]
 	public partial class AttributeRandom: Object
@@ -2819,16 +2756,35 @@ namespace ET
 
 	}
 
-//物品排序[通知服务器排序，暂时不需要返回]
-	[Message(OuterOpcode.C2M_ItemSortRequest)]
+//物品排序
+	[ResponseType(nameof(M2C_BagSortResponse))]
+	[Message(OuterOpcode.C2M_BagSortRequest)]
 	[ProtoContract]
-	public partial class C2M_ItemSortRequest: Object, IActorLocationMessage
+	public partial class C2M_BagSortRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
 
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ItemLocType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_BagSortResponse)]
+	[ProtoContract]
+	public partial class M2C_BagSortResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
 
 	}
 
@@ -3501,10 +3457,74 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemInitResponse))]
-	[Message(OuterOpcode.C2M_ItemInitRequest)]
+	[Message(OuterOpcode.BagInfo)]
 	[ProtoContract]
-	public partial class C2M_ItemInitRequest: Object, IActorLocationRequest
+	public partial class BagInfo: Object
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Name { get; set; }
+
+		[ProtoMember(1)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemID { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemNum { get; set; }
+
+		[ProtoMember(5)]
+		public int ItemType { get; set; }
+
+		[ProtoMember(6)]
+		public int Loc { get; set; }
+
+		[ProtoMember(7)]
+		public int Position { get; set; }
+
+		[ProtoMember(8)]
+		public List<AttributeItem> BaseAttrList = new List<AttributeItem>();
+
+		[ProtoMember(9)]
+		public List<AttributeItem> AppraiseAttrList = new List<AttributeItem>();
+
+		[ProtoMember(10)]
+		public int EnhanceLevel { get; set; }
+
+		[ProtoMember(11)]
+		public bool isBinging { get; set; }
+
+////old
+		[ProtoMember(14)]
+		public string ItemPar { get; set; }
+
+		[ProtoMember(15)]
+		public string GetWay { get; set; }
+
+		[ProtoMember(16)]
+		public string GemHole { get; set; }
+
+		[ProtoMember(17)]
+		public string GemIDNew { get; set; }
+
+		[ProtoMember(18)]
+		public string MakePlayer { get; set; }
+
+		[ProtoMember(21)]
+		public int InheritTimes { get; set; }
+
+		[ProtoMember(23)]
+		public bool IsProtect { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_BagGetAllItemResponse))]
+	[Message(OuterOpcode.C2M_BagGetAllItemRequest)]
+	[ProtoContract]
+	public partial class C2M_BagGetAllItemRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3514,9 +3534,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_ItemInitResponse)]
+	[Message(OuterOpcode.M2C_BagGetAllItemResponse)]
 	[ProtoContract]
-	public partial class M2C_ItemInitResponse: Object, IActorLocationResponse
+	public partial class M2C_BagGetAllItemResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3530,21 +3550,14 @@ namespace ET
 		[ProtoMember(1)]
 		public List<BagInfo> BagInfos = new List<BagInfo>();
 
-//int32 BagAddedCell = 4;
-		[ProtoMember(5)]
-		public List<int> WarehouseAddedCell = new List<int>();
+		[ProtoMember(2)]
+		public List<int> AdditionalCellNum = new List<int>();
 
 		[ProtoMember(6)]
 		public List<int> FashionActiveIds = new List<int>();
 
 		[ProtoMember(7)]
 		public List<int> FashionEquipList = new List<int>();
-
-		[ProtoMember(8)]
-		public int SeasonJingHePlan { get; set; }
-
-		[ProtoMember(9)]
-		public List<int> AdditionalCellNum = new List<int>();
 
 	}
 
@@ -11077,10 +11090,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemBuyCellResponse))]
-	[Message(OuterOpcode.C2M_ItemBuyCellRequest)]
+	[ResponseType(nameof(M2C_BagBuyCellResponse))]
+	[Message(OuterOpcode.C2M_BagBuyCellRequest)]
 	[ProtoContract]
-	public partial class C2M_ItemBuyCellRequest: Object, IActorLocationRequest
+	public partial class C2M_BagBuyCellRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11090,9 +11103,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_ItemBuyCellResponse)]
+	[Message(OuterOpcode.M2C_BagBuyCellResponse)]
 	[ProtoContract]
-	public partial class M2C_ItemBuyCellResponse: Object, IActorLocationResponse
+	public partial class M2C_BagBuyCellResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11103,9 +11116,8 @@ namespace ET
 		[ProtoMember(92)]
 		public int Error { get; set; }
 
-//int32 BagAddedCell = 1;
 		[ProtoMember(2)]
-		public List<int> WarehouseAddedCell = new List<int>();
+		public List<int> AdditionalCellNum = new List<int>();
 
 		[ProtoMember(3)]
 		public string GetItem { get; set; }

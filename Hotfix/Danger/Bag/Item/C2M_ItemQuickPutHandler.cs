@@ -17,13 +17,13 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemQuickPutRequest request, M2C_ItemQuickPutResponse response, Action reply)
         {
             int hourseId = request.HorseId;
-            if (hourseId < (int)ItemLocType.ItemWareHouse1 || hourseId > (int)ItemLocType.ItemWareHouse4)
-            {
-                Log.Error($"C2M_ItemQuickPutRequest 1");
-                response.Error = ErrorCode.ERR_ModifyData;
-                reply();
-                return;
-            }
+            //if (hourseId < (int)ItemLocType.ItemWareHouse1 || hourseId > (int)ItemLocType.ItemWareHouse4)
+            //{
+            //    Log.Error($"C2M_ItemQuickPutRequest 1");
+            //    response.Error = ErrorCode.ERR_ModifyData;
+            //    reply();
+            //    return;
+            //}
 
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
 

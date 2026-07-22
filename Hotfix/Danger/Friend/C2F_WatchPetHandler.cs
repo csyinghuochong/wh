@@ -29,7 +29,6 @@ namespace ET
                 return;
             }
             response.RolePetInfos = petComponentServer.GetPetInfo( request.PetId );
-            response.PetHeXinList = bagComponentsServer.PetHeXinList;
             
             D2G_GetComponent d2GGetUnit_3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UnitID, Component = DBHelper.NumericComponent });
             NumericComponent numericComponent = d2GGetUnit_3.Component as NumericComponent;

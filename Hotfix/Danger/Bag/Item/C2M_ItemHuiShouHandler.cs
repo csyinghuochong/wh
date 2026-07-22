@@ -25,11 +25,7 @@ namespace ET
                 {
                     bool fromPetHexin = false;
                     BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, huishouList[i]);
-                    if (bagInfo == null)
-                    {
-                        bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemPetHeXinBag, huishouList[i]);
-                        fromPetHexin = bagInfo != null;
-                    }
+                  
                     if (bagInfo == null)
                     {
                         continue;
@@ -75,7 +71,6 @@ namespace ET
                     return;
                 }
 
-                bagComponentServer.OnCostItemData(petHexin, ItemLocType.ItemPetHeXinBag);
                 bagComponentServer.OnCostItemData(bagsList, ItemLocType.ItemLocBag);
                 List<RewardItem> huishouRewards = new List<RewardItem>(huishouGet.Count);
                 foreach (RewardItem rewardItem in huishouGet.Values)

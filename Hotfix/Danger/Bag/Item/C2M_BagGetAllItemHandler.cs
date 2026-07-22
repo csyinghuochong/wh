@@ -5,10 +5,11 @@ namespace ET
 {
 	//游戏背包
 	[ActorMessageHandler]
-	public class C2M_ItemInitHandler : AMActorLocationRpcHandler<Unit, C2M_ItemInitRequest, M2C_ItemInitResponse>
+	public class C2M_BagGetAllItemHandler : AMActorLocationRpcHandler<Unit, C2M_BagGetAllItemRequest, M2C_BagGetAllItemResponse>
 	{
-		protected override async ETTask Run(Unit unit, C2M_ItemInitRequest request, M2C_ItemInitResponse response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_BagGetAllItemRequest request, M2C_BagGetAllItemResponse response, Action reply)
 		{
+
 			BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
 
 			//测试 送一个转职道具
@@ -72,8 +73,6 @@ namespace ET
 			}
 
             response.BagInfos = bagInfos;
-			//response.BagAddedCell = bagComponentServer.BagAddedCell;
-			response.WarehouseAddedCell = bagComponentServer.WarehouseAddedCell;
 			response.FashionActiveIds = bagComponentServer.FashionActiveIds;	
 			response.FashionEquipList = bagComponentServer.FashionEquipList;
 			response.AdditionalCellNum = bagComponentServer.AdditionalCellNum;	

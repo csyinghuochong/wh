@@ -30,27 +30,11 @@ namespace ET
                 long oldItemId = rolePetInfo.PetHeXinList[request.Position];
                 if (oldItemId != 0)
                 {
-                    BagInfo oldBagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemPetHeXinEquip, oldItemId);
-                    if (oldBagInfo != null)
-                    {
-                        bagComponentServer.OnChangeItemLoc(oldBagInfo, ItemLocType.ItemPetHeXinBag, ItemLocType.ItemPetHeXinEquip);
-                        m2c_bagUpdate.BagInfoUpdate.Add(oldBagInfo);
-                        rolePetInfo.PetHeXinList[request.Position] = 0;
-                    }
+                   
                 }
                 if (request.OperateType == 1) //1 装备  2卸下[前面已经处理过了]
                 {
-                    BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemPetHeXinBag, request.BagInfoId);
-                    if (bagInfo == null)
-                    {
-                        reply();
-                        return;
-                    }
-
-                    //新的装备给宠物
-                    bagComponentServer.OnChangeItemLoc(bagInfo, ItemLocType.ItemPetHeXinEquip, ItemLocType.ItemPetHeXinBag);
-                    m2c_bagUpdate.BagInfoUpdate.Add(bagInfo);
-                    rolePetInfo.PetHeXinList[request.Position] = request.BagInfoId;
+                   
                 }
                 petComponentServer.UpdatePetAttribute(rolePetInfo, true);
                 MessageHelper.SendToClient(unit, m2c_bagUpdate);
