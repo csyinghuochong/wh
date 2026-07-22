@@ -10,7 +10,6 @@ namespace ET
 
         public override void Awake(BagComponentServer self)
         {
-                
         }
     }
 
@@ -109,6 +108,105 @@ namespace ET
             return ItemTypeList;
         }
 
+        /// <summary>
+        /// 是否需要背包格子 Position（穿戴栏不用格子号）。Position 从 1 起。
+        /// </summary>
+        public static bool NeedBagGridPosition(ItemLocType loc)
+        {
+            return loc != ItemLocType.ItemLocEquip;
+        }
+
+        /// <summary>
+        /// 登录校验：Position&lt;1 或冲突时补最小空位。
+        /// </summary>
+        public static void EnsureBagPositions(List<BagInfo> itemList)
+        {
+            if (itemList == null || itemList.Count == 0)
+            {
+                return;
+            }
+
+            HashSet<int> used = new HashSet<int>();
+            List<BagInfo> needAssign = new List<BagInfo>();
+            for (int i = 0; i < itemList.Count; i++)
+            {
+                BagInfo info = itemList[i];
+                if (info.Position >= 1 && used.Add(info.Position))
+                {
+                    continue;
+                }
+                needAssign.Add(info);
+            }
+
+            int pos = 1;
+            for (int i = 0; i < needAssign.Count; i++)
+            {
+                while (used.Contains(pos))
+                {
+                    pos++;
+                }
+                needAssign[i].Position = pos;
+                used.Add(pos);
+                pos++;
+            }
+        }
+
+        /// <summary>
+        /// 分配最小空位：1,2,3… 中间卖掉空出后优先填回。
+        /// </summary>
+        public static int AllocBagPosition(List<BagInfo> itemList)
+        {
+            if (itemList == null || itemList.Count == 0)
+            {
+                return 1;
+            }
+
+            HashSet<int> used = new HashSet<int>();
+            for (int i = 0; i < itemList.Count; i++)
+            {
+                int p = itemList[i].Position;
+                if (p >= 1)
+                {
+                    used.Add(p);
+                }
+            }
+
+            int pos = 1;
+            while (used.Contains(pos))
+            {
+                pos++;
+            }
+            return pos;
+        }
+
+        public static int AllocBagPosition(this BagComponentServer self, ItemLocType loc)
+        {
+            List<BagInfo> itemList = self.GetItemByLoc(loc);
+            return AllocBagPosition(itemList);
+        }
+
+        /// <summary>
+        /// 仅按当前顺序压成连续 1..n（不改 ItemID 顺序）。整理请用 BagSortHelper.SortBagItems。
+        /// </summary>
+        public static void RecompactBagPositions(List<BagInfo> itemList, M2C_RoleBagUpdate m2c_bagUpdate = null)
+        {
+            if (itemList == null || itemList.Count == 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < itemList.Count; i++)
+            {
+                int newPos = i + 1;
+                if (itemList[i].Position == newPos)
+                {
+                    continue;
+                }
+                itemList[i].Position = newPos;
+                m2c_bagUpdate?.BagInfoUpdate.Add(itemList[i]);
+            }
+        }
+
         public static void ZhengLiItemList(this BagComponentServer self, Dictionary<int, List<BagInfo>> ItemSameList, M2C_RoleBagUpdate m2c_bagUpdate)
         {
             long unitId = self.GetParent<Unit>().Id;
@@ -157,61 +255,14 @@ namespace ET
         public static void OnRecvItemSort(this BagComponentServer self, ItemLocType itemEquipType)
         {
             List<BagInfo> ItemTypeList = self.GetItemByLoc(itemEquipType);
-
-            M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-
-
-            //绑定的
-            Dictionary<int, List<BagInfo>> ItemSameList_1 = new Dictionary<int, List<BagInfo>>();
-            //未绑定
-            Dictionary<int, List<BagInfo>> ItemSameList_2 = new Dictionary<int, List<BagInfo>>();
-            //找出可以堆叠并且格子未放满的道具
-            for (int i = 0; i < ItemTypeList.Count; i++)
+            if (ItemTypeList == null || ItemTypeList.Count == 0)
             {
-                BagInfo bagInfo = ItemTypeList[i];
-
-                //最大堆叠数量
-                LDItem ldItemCof = LDItemCategory.Instance.Get(bagInfo.ItemID);
-                if (bagInfo.ItemNum >= ldItemCof.ItemPileSum)
-                {
-                    continue;
-                }
-
-                if (bagInfo.isBinging)
-                {
-                    if (!ItemSameList_1.TryGetValue(bagInfo.ItemID, out List<BagInfo> sameList_1))
-                    {
-                        sameList_1 = new List<BagInfo>();
-                        ItemSameList_1[bagInfo.ItemID] = sameList_1;
-                    }
-                    sameList_1.Add(bagInfo);
-                }
-                else
-                {
-                    if (!ItemSameList_2.TryGetValue(bagInfo.ItemID, out List<BagInfo> sameList_2))
-                    {
-                        sameList_2 = new List<BagInfo>();
-                        ItemSameList_2[bagInfo.ItemID] = sameList_2;
-                    }
-                    sameList_2.Add(bagInfo);
-                }
+                return;
             }
 
-            self.ZhengLiItemList(ItemSameList_1, m2c_bagUpdate);
-            self.ZhengLiItemList(ItemSameList_2, m2c_bagUpdate);
-
-            for (int i = ItemTypeList.Count - 1; i >= 0; i--)
-            {
-                if (ItemTypeList[i].ItemNum == 0)
-                {
-                    ItemTypeList.RemoveAt(i);
-                }
-            }
-
-            //通知客户端背包道具发生改变
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
-
-            ItemNewHelper.ItemLitSort(ItemTypeList);
+            // 穿戴栏不占背包格子号；其余 Loc：按 ItemID 排序后 Position 压成 1..n
+            // 不通知客户端，客户端用 BagSortHelper 同一规则自行整理表现
+            BagSortHelper.SortBagItems(ItemTypeList, NeedBagGridPosition(itemEquipType));
         }
 
         public static void CheckValiedItem(this BagComponentServer self, List<BagInfo> bagInfos, int occ, int occTwo)
@@ -244,8 +295,15 @@ namespace ET
             self.CheckValiedItem(self.ConsumeList, occ, occTwo);
             self.CheckValiedItem(self.LifeList, occ, occTwo);
             self.CheckValiedItem(self.HomeList, occ, occTwo);
-
             self.CheckValiedItem(self.Warehouse1, occ, occTwo);
+
+            EnsureBagPositions(self.BagItemList);
+            EnsureBagPositions(self.TreasureList);
+            EnsureBagPositions(self.MaterialList);
+            EnsureBagPositions(self.ConsumeList);
+            EnsureBagPositions(self.LifeList);
+            EnsureBagPositions(self.HomeList);
+            EnsureBagPositions(self.Warehouse1);
         }
 
         //获取自身所有的道具
@@ -436,6 +494,10 @@ namespace ET
 
             List<BagInfo> ItemTypeListDest = self.GetItemByLoc(itemLocTypeTo);
             bagInfo.Loc = (int)itemLocTypeTo;
+            if (NeedBagGridPosition(itemLocTypeTo))
+            {
+                bagInfo.Position = AllocBagPosition(ItemTypeListDest);
+            }
             ItemTypeListDest.Add(bagInfo);
         }
 
@@ -761,6 +823,7 @@ namespace ET
             }
             else
             {
+                bagInfo.Position = self.AllocBagPosition(ItemLocType.ItemLocBag);
                 self.BagItemList.Add(bagInfo);
 
                 Unit parentUnit = self.GetParent<Unit>();
@@ -785,7 +848,13 @@ namespace ET
             useBagInfo.Loc = itemlockType;
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
             useBagInfo.GetWay = getType;
-            self.GetItemByLoc((ItemLocType)useBagInfo.Loc).Add(useBagInfo);
+            ItemLocType storeLoc = (ItemLocType)useBagInfo.Loc;
+            List<BagInfo> storeList = self.GetItemByLoc(storeLoc);
+            if (NeedBagGridPosition(storeLoc))
+            {
+                useBagInfo.Position = AllocBagPosition(storeList);
+            }
+            storeList.Add(useBagInfo);
 
             Unit parentUnit = self.GetParent<Unit>();
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
@@ -805,7 +874,9 @@ namespace ET
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
             useBagInfo.GetWay = bagInfo.GetWay;
             useBagInfo.isBinging = bagInfo.isBinging;
-            self.GetItemByLoc((ItemLocType)useBagInfo.Loc).Add(useBagInfo);
+            List<BagInfo> bagList = self.GetItemByLoc(ItemLocType.ItemLocBag);
+            useBagInfo.Position = AllocBagPosition(bagList);
+            bagList.Add(useBagInfo);
 
             Unit parentUnit = self.GetParent<Unit>();
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
@@ -896,21 +967,21 @@ namespace ET
                 int bagCellNumber = 0;
                 if (ItemPileSum == 1)
                 {
-                    bagCellNumber += rewardItems[i].ItemNum;
+                    bagCellNumber += rewardItem.ItemNum;
                 }
-                else if (rewardItems[i].ItemNum <= ItemPileSum)
+                else if (rewardItem.ItemNum <= ItemPileSum)
                 {
                     bagCellNumber += 1;
                 }
                 else
                 {
-                    bagCellNumber += (int)(1f * rewardItems[i].ItemNum / ItemPileSum);
-                    bagCellNumber += (rewardItems[i].ItemNum % ItemPileSum > 0 ? 1 : 0);
+                    bagCellNumber += (int)(1f * rewardItem.ItemNum / ItemPileSum);
+                    bagCellNumber += (rewardItem.ItemNum % ItemPileSum > 0 ? 1 : 0);
                 }
 
                 if (useLocType == ItemLocType.ItemLocBag)
                 {
-                    useLocType = ItemNewHelper.GetToItemLocType(rewardItems[0]);
+                    useLocType = ItemNewHelper.GetToItemLocType(rewardItem);
                 }
 
                 if (bagCellNumber > self.GetBagLeftCell((int)useLocType) )
@@ -965,22 +1036,12 @@ namespace ET
                     pileSumCache[itemKey] = cachedPileSum;
                 }
                 int maxPileSum = (int)cachedPileSum;
-                
-                ItemLocType itemLockType = ItemLocType.ItemLocBag;
-                List<BagInfo> itemlist = null;
-
-                /*if (itemCof.ItemType == ItemTypeEnum.PetHeXin)
-                {
-                    maxPileSum = itemCof.ItemPileSum;
-                    itemLockType = ItemLocType.ItemPetHeXinBag;
-                    itemlist = self.GetItemByLoc(itemLockType);
-                }*/
 
                 if (useLocType == ItemLocType.ItemLocBag)
                 {
-                    useLocType = ItemNewHelper.GetToItemLocType(rewardItems[0]);
+                    useLocType = ItemNewHelper.GetToItemLocType(rewardItem);
                 }
-                itemlist = self.GetItemByLoc(itemLockType);
+                List<BagInfo> itemlist =  self.GetItemByLoc(useLocType);
                 
                 for (int k = 0; k < itemlist.Count; k++)
                 {
@@ -1022,7 +1083,7 @@ namespace ET
                     useBagInfo.ItemType = itemtype;
                     useBagInfo.ItemID = itemID;
                     useBagInfo.ItemNum = (leftNum > maxPileSum) ? maxPileSum : leftNum;
-                    useBagInfo.Loc = (int)itemLockType;
+                    useBagInfo.Loc = (int)useLocType;
                     useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
                     useBagInfo.GetWay = getWay;
                     leftNum -= useBagInfo.ItemNum;
@@ -1085,23 +1146,6 @@ namespace ET
                                 //useBagInfo.FuLing = int.Parse(getWayInfo[2]);
                             }
                         }
-                        //食物
-                        if (subType == 1 && subType == 131)
-                        {
-                            useBagInfo.ItemPar = RandomHelper.RandomNumber(1, 100).ToString();
-                        }
-                        //家园烹饪
-                        if (getType == ItemGetWay.JiaYuanCook)
-                        {
-                            useBagInfo.ItemPar = RandomHelper.RandomNumber(1, 100).ToString();
-                        }
-                        /*if (subType == 3 && equipType == 401)
-                        {
-                            useBagInfo.IfJianDing = false;
-                            useBagInfo.ItemPar = RandomHelper.RandomNumber(1, 100).ToString();
-                        }*/
-                        
-                
                     }
                     
                     
@@ -1110,7 +1154,9 @@ namespace ET
                         useBagInfo.isBinging = true;    
                     }
 
-                    self.GetItemByLoc((ItemLocType)useBagInfo.Loc).Add(useBagInfo);
+                    List<BagInfo> targetList = self.GetItemByLoc((ItemLocType)useBagInfo.Loc);
+                    useBagInfo.Position = AllocBagPosition(targetList);
+                    targetList.Add(useBagInfo);
                     m2c_bagUpdate.BagInfoAdd.Add(useBagInfo);
                 }
                 //检测任务需求道具（用原始数量，避免 leftNum 已扣完为 0）

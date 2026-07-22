@@ -81,7 +81,7 @@ namespace ET
                         bagComponentServer.OnAddItemData(bagInfo, bagInfo.GetWay);
                         break;
                     case 3:
-                        ItemNewHelper.ItemLitSort(dBAccountBagWarehouse.BagInfoList);
+                        BagSortHelper.SortBagItems(dBAccountBagWarehouse.BagInfoList);
                         break;
                     default:
                         break;

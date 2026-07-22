@@ -571,12 +571,7 @@ namespace ET
                     m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                 }
 
-                //整理背包
-                if (request.OperateType == 8)
-                {
-                    bagComponentServer.OnRecvItemSort((ItemLocType)(int.Parse(request.OperatePar)));
-                }
-
+             
                 if (unit.IsRobot())
                 {
                     DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, bagComponentServer).Coroutine();
