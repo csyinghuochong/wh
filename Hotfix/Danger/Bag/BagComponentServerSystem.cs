@@ -19,6 +19,12 @@ namespace ET
 
         public static void OnInit(this BagComponentServer self,  CreateRoleInfo createRoleInfo)
         {
+            for (int i = self.AdditionalCellNum.Count; i < (int)ItemLocType.ItemLocMax; i++)
+            {
+                self.AdditionalCellNum.Add(0);
+            }
+
+
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
             int[] equipIinit = ldOccupation.Equip_Init;
 
@@ -536,12 +542,6 @@ namespace ET
             //    }
             //}
 
-            for (int i = self.AdditionalCellNum.Count; i < (int)ItemLocType.ItemLocMax; i++)
-            {
-                self.AdditionalCellNum.Add(0);
-            }
-            
-
             if (robotId != 0)
             {
                 int[] equipList = new int[0];
@@ -1057,7 +1057,10 @@ namespace ET
                     m2c_bagUpdate.BagInfoAdd.Add(useBagInfo);
                 }
 
-                ItemAddHelper.OnGetItem(unit, getType, itemtype, itemID, rewardItem.ItemNum);
+                if (notice)
+                {
+                    ItemAddHelper.OnGetItem(unit, getType, itemtype, itemID, rewardItem.ItemNum);
+                }
             }
 
             if (currencyAdds != null)

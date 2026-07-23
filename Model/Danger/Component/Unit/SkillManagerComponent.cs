@@ -8,6 +8,12 @@ namespace ET
     {
         public List<Skill_TreeEditor> Skills = new List<Skill_TreeEditor>();
         public List<SkillInfo> DelaySkillList = new List<SkillInfo>();
+        /// <summary>施法临时 SkillInfo 列表（复用，避免每次 new List）。</summary>
+        public List<SkillInfo> TempSkillInfos = new List<SkillInfo>(4);
+        /// <summary>广播用 SkillInfo 列表（复用）。</summary>
+        public List<SkillInfo> BroadcastSkillInfos = new List<SkillInfo>(4);
+        /// <summary>同步给客户端的当前技能列表（复用）。</summary>
+        public List<SkillInfo> MessageSkillInfos = new List<SkillInfo>(8);
         public Dictionary<int, SkillCDItem> SkillCDs = new Dictionary<int, SkillCDItem>();  //技能CD列表
         public long SkillPublicCDTime;      //公共CD
         public int FangunComboNumber;

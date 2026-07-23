@@ -68,7 +68,7 @@ namespace ET
 
             if (sendHitMsg)
             {
-                Log.Debug($"SkillEditor hit skill={skillId} caster={caster.Id} target={target.Id} rs={result}");
+                if (Log.IsDebugEnabled) Log.Debug($"SkillEditor hit skill={skillId} caster={caster.Id} target={target.Id} rs={result}");
             }
 
             return result;
@@ -126,7 +126,7 @@ namespace ET
             }
 
             // TODO: integrate with monster hate/threat component
-            Log.Debug($"SkillEditor hate caster={caster.Id} target={target.Id} value={hate}");
+            if (Log.IsDebugEnabled) Log.Debug($"SkillEditor hate caster={caster.Id} target={target.Id} value={hate}");
         }
     }
 }

@@ -172,14 +172,17 @@ namespace ET
 
             // 参数 39：仇恨倍率（供仇恨系统读取）
             double hateMultiplier = GetParamDouble(ctx, 39, 1d);
-            if (hateMultiplier > 0d)
+            if (hateMultiplier > 0d && Log.IsDebugEnabled)
             {
                 Log.Debug(
                     $"SkillEditor hate skill={skillId} caster={caster.Id} target={target.Id} damage={totalDamage} multiplier={hateMultiplier.ToString(CultureInfo.InvariantCulture)}");
             }
 
-            Log.Debug(
-                $"CALCULATE_{(kind == SkillEditorDamageKind.Physics ? "PHYSICS" : "MAGIC")}_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} rs={rs} y={effectiveDefenseY.ToString(CultureInfo.InvariantCulture)} reduction={damageReductionRatio.ToString(CultureInfo.InvariantCulture)} normal={normalDamage} elemental={elementalDamage} hp={hpDamage} total={totalDamage}");
+            if (Log.IsDebugEnabled)
+            {
+                Log.Debug(
+                    $"CALCULATE_{(kind == SkillEditorDamageKind.Physics ? "PHYSICS" : "MAGIC")}_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} rs={rs} y={effectiveDefenseY.ToString(CultureInfo.InvariantCulture)} reduction={damageReductionRatio.ToString(CultureInfo.InvariantCulture)} normal={normalDamage} elemental={elementalDamage} hp={hpDamage} total={totalDamage}");
+            }
         }
 
         /// <summary>CALCULATE_HEAL_DAMAGE：在属性区间内随机 × 威力，向下取整后加血。</summary>
@@ -214,7 +217,7 @@ namespace ET
 
             long amount = FloorPositiveDamage(RollDouble(minValue, maxValue) * power);
             targetNumeric.ApplyChange(caster, NumericType.HP_Current_8, amount, skillId);
-            Log.Debug($"CALCULATE_HEAL_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} heal={amount}");
+            if (Log.IsDebugEnabled) Log.Debug($"CALCULATE_HEAL_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} heal={amount}");
         }
 
         /// <summary>

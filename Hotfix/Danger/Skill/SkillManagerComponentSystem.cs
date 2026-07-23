@@ -52,12 +52,14 @@ namespace ET
         public static List<SkillInfo> GetRandomSkills(this SkillManagerComponent self, C2M_SkillCmd skillcmd, int weaponSkill)
         {
             Unit unit = self.GetParent<Unit>();
-            List<SkillInfo> skillInfos = new List<SkillInfo>();
+            List<SkillInfo> skillInfos = self.TempSkillInfos;
+            skillInfos.Clear();
          
             LDSkill ldSkill = LDSkillCategory.Instance.Get(weaponSkill);
             Unit target = unit.GetParent<UnitComponent>().Get(skillcmd.TargetID);
             Vector3 targetPosition = LDSkillHelper.ResolveSkillTargetPosition(unit, ldSkill, skillcmd, target);
 
+            // SkillInfo 需随技能生命周期存活，不能跨次施法复用同一实例
             SkillInfo skillInfo = new SkillInfo();
             skillInfo.SkillID = skillcmd.SkillID;
             skillInfo.WeaponSkillID = weaponSkill;
@@ -659,7 +661,8 @@ namespace ET
 
         public static List<SkillInfo> GetMessageSkill(this SkillManagerComponent self)
         {
-            List<SkillInfo> skillinfos = new List<SkillInfo>();
+            List<SkillInfo> skillinfos = self.MessageSkillInfos;
+            skillinfos.Clear();
             for (int i = 0; i < self.Skills.Count; i++)
             {
                 skillinfos.Add(self.Skills[i].SkillInfo);
@@ -754,7 +757,9 @@ namespace ET
                 useSkill.UnitId = self.SelfUnit.Id;
                 useSkill.SkillID = 0;
                 useSkill.TargetAngle = 0;
-                useSkill.SkillInfos = new List<SkillInfo>() { skillInfo };
+                self.BroadcastSkillInfos.Clear();
+                self.BroadcastSkillInfos.Add(skillInfo);
+                useSkill.SkillInfos = self.BroadcastSkillInfos;
                 useSkill.PublicCDTime = 0;
                 useSkill.CDEndTime = 0;
                 //MessageHelper.Broadcast(self.SelfUnit, useSkill);

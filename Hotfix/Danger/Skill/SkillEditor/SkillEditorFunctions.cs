@@ -192,7 +192,7 @@ namespace ET
             target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(
                     SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
 
-            Log.Debug($"INFORM_EVENT_ATTACK skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
+            if (Log.IsDebugEnabled) Log.Debug($"INFORM_EVENT_ATTACK skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
 
 
@@ -207,7 +207,7 @@ namespace ET
 
             //target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.None);
-            Log.Debug($"INFORM_EVENT_DEFENSE skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
+            if (Log.IsDebugEnabled) Log.Debug($"INFORM_EVENT_DEFENSE skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
 
 
@@ -266,7 +266,7 @@ namespace ET
 
             //TriggerPassiveEvent(caster, target, SkillPassiveTypeEnum.AllSkill_17, skillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.AllSkill_17, skillId);
-            Log.Debug($"INFORM_CLIENT_HIT_SUCCESS caster={(caster?.Id ?? 0)} target={target.Id} skill={skillId} level={level} rs={rs} damage={totalDamage}");
+            if (Log.IsDebugEnabled) Log.Debug($"INFORM_CLIENT_HIT_SUCCESS caster={(caster?.Id ?? 0)} target={target.Id} skill={skillId} level={level} rs={rs} damage={totalDamage}");
         }
 
 
@@ -328,7 +328,7 @@ namespace ET
 
             ctx.LastConditionResult = rs > 0;
 
-            Log.Debug($"SKILL_DAMAGE_CHECK_HEAL skill={skillId} level={level} caster={caster.Id} target={target.Id} rs={rs}");
+            if (Log.IsDebugEnabled) Log.Debug($"SKILL_DAMAGE_CHECK_HEAL skill={skillId} level={level} caster={caster.Id} target={target.Id} rs={rs}");
 
         }
 
@@ -782,7 +782,7 @@ namespace ET
 
             buffMgr.BuffRemoveByUnit(buffFromUnitId, buffId);
 
-            Log.Debug($"REMOVE_BUFF target={target.Id} buffId={buffId} from={buffFromUnitId} force={forceRemove} fade={triggerFadeSkill}");
+            if (Log.IsDebugEnabled) Log.Debug($"REMOVE_BUFF target={target.Id} buffId={buffId} from={buffFromUnitId} force={forceRemove} fade={triggerFadeSkill}");
 
         }
 
@@ -867,7 +867,7 @@ namespace ET
 
             }
 
-            Log.Debug($"REMOVE_BUFF_GROUP target={target.Id} group={buffGroup} force={forceRemove} fade={triggerFadeSkill}");
+            if (Log.IsDebugEnabled) Log.Debug($"REMOVE_BUFF_GROUP target={target.Id} group={buffGroup} force={forceRemove} fade={triggerFadeSkill}");
 
         }
 
@@ -937,7 +937,7 @@ namespace ET
             }
 
             buffMgr.BuffFactory(buffData, caster, ctx.Handler);
-            Log.Debug($"ApplyBuff target={target.Id} buffId={buffId} interval={intervalMs} ticks={tickCount} level={buffLevel} control={controlType ?? string.Empty}");
+            if (Log.IsDebugEnabled) Log.Debug($"ApplyBuff target={target.Id} buffId={buffId} interval={intervalMs} ticks={tickCount} level={buffLevel} control={controlType ?? string.Empty}");
         }
 
         private static void DestroyUnit(SkillEditorFunctionContext ctx)
@@ -949,7 +949,7 @@ namespace ET
             }
 
             unit.GetParent<UnitComponent>()?.Remove(unit.Id);
-            Log.Debug($"DESTROY_UNIT unit={unit.Id}");
+            if (Log.IsDebugEnabled) Log.Debug($"DESTROY_UNIT unit={unit.Id}");
         }
 
         private static void CalculatePhysicsDamage(SkillEditorFunctionContext ctx)
@@ -1242,7 +1242,7 @@ namespace ET
             }
 
             skillMgr.SkillPublicCDTime += deltaMs;
-            Log.Debug($"CHANGE_GLOBAL_CD unit={unit.Id} deltaMs={deltaMs} publicCd={skillMgr.SkillPublicCDTime}");
+            if (Log.IsDebugEnabled) Log.Debug($"CHANGE_GLOBAL_CD unit={unit.Id} deltaMs={deltaMs} publicCd={skillMgr.SkillPublicCDTime}");
         }
 
         private static void ChangeSkillCurrentCd(SkillEditorFunctionContext ctx)
@@ -1264,7 +1264,7 @@ namespace ET
 
             skillCd.CDEndTime += deltaMs;
             skillCd.CDPassive += deltaMs;
-            Log.Debug($"CHANGE_SKILL_CURRENT_CD unit={unit.Id} skill={skillId} deltaMs={deltaMs}");
+            if (Log.IsDebugEnabled) Log.Debug($"CHANGE_SKILL_CURRENT_CD unit={unit.Id} skill={skillId} deltaMs={deltaMs}");
         }
 
         private static void ChangeSkillCurrentCdMultiple(SkillEditorFunctionContext ctx)
@@ -1292,7 +1292,7 @@ namespace ET
                 changedCount++;
             }
 
-            Log.Debug($"CHANGE_SKILL_CURRENT_CD_MULTIPLE unit={unit.Id} filter={skillTypeFilter} deltaMs={deltaMs} changed={changedCount}");
+            if (Log.IsDebugEnabled) Log.Debug($"CHANGE_SKILL_CURRENT_CD_MULTIPLE unit={unit.Id} filter={skillTypeFilter} deltaMs={deltaMs} changed={changedCount}");
         }
 
         private static bool ShouldApplySkillCdFilter(SkillSetComponentServer skillSet, int skillId, string skillTypeFilter)
@@ -1426,7 +1426,7 @@ namespace ET
                 mockedUnit.GetComponent<StateComponent>()?.StateTypeAdd(StateTypeEnum.ChaoFeng);
             }
 
-            Log.Debug($"SET_UNIT_MOCK_TARGET source={(tauntSource?.Id ?? 0)} mocked={mockedUnit.Id} target={mockTarget.Id}");
+            if (Log.IsDebugEnabled) Log.Debug($"SET_UNIT_MOCK_TARGET source={(tauntSource?.Id ?? 0)} mocked={mockedUnit.Id} target={mockTarget.Id}");
         }
 
         private static void DelUnitMockTarget(SkillEditorFunctionContext ctx)
@@ -1621,7 +1621,7 @@ namespace ET
             bulletComponent.InitFromSummon(ctx.Handler, caster.Id, summonConfig, runtime);
 
             ctx.SetVariable("createSummon", summonUnit.Id.ToString(CultureInfo.InvariantCulture));
-            Log.Debug($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} unit={summonUnit.Id} caster={caster.Id} legacy={legacyFormat}");
+            if (Log.IsDebugEnabled) Log.Debug($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} unit={summonUnit.Id} caster={caster.Id} legacy={legacyFormat}");
         }
 
         private static SummonRuntimeData ParseCreateSummonRuntime(SkillEditorFunctionContext ctx, LDSummon summonConfig)
@@ -1739,7 +1739,7 @@ namespace ET
                 ctx.Handler.TheUnitTarget = target;
             }
 
-            Log.Debug($"SET_SUMMON_TARGET skill={ctx.SkillId} summon={(summon?.Id ?? 0)} target={target.Id} lock={lockTarget}");
+            if (Log.IsDebugEnabled) Log.Debug($"SET_SUMMON_TARGET skill={ctx.SkillId} summon={(summon?.Id ?? 0)} target={target.Id} lock={lockTarget}");
         }
 
         private static float ResolveDirectionParam(SkillEditorFunctionContext ctx, string raw, char defaultAxis)

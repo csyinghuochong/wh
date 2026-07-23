@@ -88,7 +88,7 @@ namespace ET
         {
             //战力计算
 
-            int zhanliValue = RandomHelper.RandomNumber(100, 200);
+            int zhanliValue = numericComponent.GetAsInt(NumericType.PATK_Max_22);
             //更新战力
             unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Combat, zhanliValue.ToString(), notice);
 
