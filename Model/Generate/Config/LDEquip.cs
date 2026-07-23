@@ -147,13 +147,13 @@ namespace ET
 		/// <summary>属性 必中6</summary>
 		[ProtoMember(24)]
 		public int[] Att_Rand_6 { get; set; }
-		/// <summary>强化 上限</summary>
+		/// <summary>强化上限 0：无强化 -1：禁强化</summary>
 		[ProtoMember(25)]
 		public int Enhance { get; set; }
 		/// <summary>强化属性</summary>
 		[ProtoMember(26)]
 		public string Enhance_Attribute { get; set; }
-		/// <summary>鉴定 等级</summary>
+		/// <summary>鉴定等级 0：无鉴定 -1：禁鉴定</summary>
 		[ProtoMember(27)]
 		public int Appraise_Lv { get; set; }
 		/// <summary>可鉴定 属性类型</summary>

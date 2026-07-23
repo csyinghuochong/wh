@@ -81,8 +81,11 @@ namespace ET
 		/// <summary>类型</summary>
 		[ProtoMember(2)]
 		public int Type { get; set; }
-		/// <summary>属性ID</summary>
+		/// <summary>位置</summary>
 		[ProtoMember(3)]
+		public int Position { get; set; }
+		/// <summary>属性ID</summary>
+		[ProtoMember(4)]
 		public int Attribute_Id { get; set; }
 
 	}
