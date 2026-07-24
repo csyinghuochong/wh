@@ -911,5 +911,8 @@ namespace ET
 		 public const ushort M2C_ActivityTreeTendResponse = 10908;
 		 public const ushort C2R_QueryAccountRequest = 10909;
 		 public const ushort R2C_QueryAccountResponse = 10910;
+		 public const ushort SkillBarSlot = 10911;
+		 public const ushort C2M_SkillBarPlanRequest = 10912;
+		 public const ushort M2C_SkillBarPlanResponse = 10913;
 	}
 }

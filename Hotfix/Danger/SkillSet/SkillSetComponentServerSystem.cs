@@ -726,46 +726,72 @@ namespace ET
 
 		public static int SetSkillIdByPosition(this SkillSetComponentServer self, C2M_SkillSet request)
 		{
-            SkillPro newSkill = null;
-			SkillPro oldSkill = self.GetByPosition(request.Position);
-			if (request.SkillType == 1)	//技能
+			int check = SkillBarConfig.CheckSetRequest(request.Position, request.Direction, request.SkillType);
+			if (check != ErrorCode.ERR_Success)
 			{
-				if (oldSkill != null)
-				{
-					oldSkill.SetSkillPosition ( 0);
-				}
-				newSkill = self.GetBySkillID(request.SkillID);
+				return check;
+			}
 
-				if (newSkill == null)
-				{
-                    Log.Error($"SkillSetComponent 1 技能设置错误");
-                    return ErrorCode.ERR_ModifyData;
-				}
-			}
-			else	//药剂
-			{
-				if (oldSkill != null)
-				{
-					oldSkill.SkillID = 0;
-					oldSkill.SetSkillPosition ( 0);
-				}
-				newSkill = self.GetBySkillID(request.SkillID);
-				if (newSkill == null)
-				{
-					newSkill = self.AddSkillPro(request.SkillID, SkillSetEnum.Item, SkillSourceEnum.Equip);
-				}
-			}
-			newSkill.SkillID = request.SkillID;
-			newSkill.SetSkillPosition ( request.Position);
-			newSkill.SkillSetType = request.SkillType;
+			List<SkillBarSlot> barList = self.CurrentSkillBarList();
 
-			for (int i = self.SkillList.Count -1; i >= 0; i--)
+			// SkillID=0：只清空该 Position+Direction，不影响其它槽
+			if (request.SkillID == 0)
 			{
-				if (self.SkillList[i].SkillID == 0)
+				self.RemoveBarSlot(request.Position, request.Direction);
+				return ErrorCode.ERR_Success;
+			}
+
+			if (request.SkillType == SkillSetEnum.Skill)
+			{
+				SkillPro ownSkill = self.GetBySkillID(request.SkillID);
+				if (ownSkill == null)
 				{
-					self.SkillList.RemoveAt(i);	
+					Log.Error($"SkillSetComponent 技能不存在 SkillID={request.SkillID}");
+					return ErrorCode.ERR_ModifyData;
 				}
 			}
+
+			// 只替换目标槽，同一技能可继续占用其它槽/其它方向
+			SkillBarSlot slot = self.GetBarSlot(request.Position, request.Direction);
+			if (slot == null)
+			{
+				slot = new SkillBarSlot();
+				barList.Add(slot);
+			}
+
+			slot.Position = request.Position;
+			slot.Direction = request.Direction;
+			slot.SkillID = request.SkillID;
+			slot.SkillType = request.SkillType;
+			slot.BagInfoId = request.BagInfoId;
+
+			return ErrorCode.ERR_Success;
+		}
+
+		public static List<SkillBarSlot> CurrentSkillBarList(this SkillSetComponentServer self)
+		{
+			if (self.SkillBarList == null)
+			{
+				self.SkillBarList = new List<SkillBarSlot>();
+			}
+
+			if (self.SkillBarList1 == null)
+			{
+				self.SkillBarList1 = new List<SkillBarSlot>();
+			}
+
+			return self.SkillBarPlan == 0 ? self.SkillBarList : self.SkillBarList1;
+		}
+
+		public static int UpdateSkillBarPlan(this SkillSetComponentServer self, int plan)
+		{
+			if (plan != 0 && plan != 1)
+			{
+				return ErrorCode.ERR_Parameter;
+			}
+
+			self.SkillBarPlan = plan;
+			self.UpdateSkillSet();
 			return ErrorCode.ERR_Success;
 		}
 
@@ -793,16 +819,59 @@ namespace ET
             return null;
         }
 
-        public static SkillPro GetByPosition(this SkillSetComponentServer self, int pos)
+		public static SkillPro GetByPosition(this SkillSetComponentServer self, int pos)
 		{
-			for (int i = self.SkillList.Count - 1; i >= 0; i--)
+			SkillBarSlot slot = self.GetBarSlot(pos, 0);
+			if (slot == null || slot.SkillID <= 0)
 			{
-				if (self.SkillList[i].SkillPosition == pos)
+				return null;
+			}
+			return self.GetBySkillID(slot.SkillID);
+		}
+
+		public static SkillBarSlot GetBarSlot(this SkillSetComponentServer self, int pos, int direction)
+		{
+			List<SkillBarSlot> barList = self.CurrentSkillBarList();
+			for (int i = 0; i < barList.Count; i++)
+			{
+				SkillBarSlot slot = barList[i];
+				if (slot.Position == pos && slot.Direction == direction)
 				{
-					return self.SkillList[i];
+					return slot;
 				}
 			}
 			return null;
+		}
+
+		public static SkillBarSlot GetBySlot(this SkillSetComponentServer self, int pos, int direction)
+		{
+			return self.GetBarSlot(pos, direction);
+		}
+
+		public static void RemoveBarSlot(this SkillSetComponentServer self, int pos, int direction)
+		{
+			List<SkillBarSlot> barList = self.CurrentSkillBarList();
+			for (int i = barList.Count - 1; i >= 0; i--)
+			{
+				SkillBarSlot slot = barList[i];
+				if (slot.Position == pos && slot.Direction == direction)
+				{
+					barList.RemoveAt(i);
+				}
+			}
+		}
+
+		public static bool IsSkillOnBar(this SkillSetComponentServer self, int skillId)
+		{
+			List<SkillBarSlot> barList = self.CurrentSkillBarList();
+			for (int i = 0; i < barList.Count; i++)
+			{
+				if (barList[i].SkillID == skillId)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 
@@ -992,19 +1061,42 @@ namespace ET
 			{ 
 				SkillPro skillPro = self.AddSkillPro(skillId, SkillSetEnum.Skill, SkillSourceEnum.Occupation);
 				skillPro.Actived = skillId == ldOccupation.Skill_Normal_Default? 1 : 0;
-				skillPro.SetSkillPosition( skillId == ldOccupation.Skill_Normal_Default? 1 : 0);
 				skillPro.Level = 1;
+				if (skillId == ldOccupation.Skill_Normal_Default)
+				{
+					List<SkillBarSlot> barList = self.CurrentSkillBarList();
+					SkillBarSlot barSlot = self.GetBarSlot(1, 0);
+					if (barSlot == null)
+					{
+						barList.Add(new SkillBarSlot
+						{
+							Position = 1,
+							Direction = 0,
+							SkillID = skillId,
+							SkillType = SkillSetEnum.Skill,
+						});
+					}
+					else if (barSlot.SkillID <= 0)
+					{
+						barSlot.SkillID = skillId;
+						barSlot.SkillType = SkillSetEnum.Skill;
+					}
+				}
             }
 		}
 
 		public static void UpdateSkillSet(this SkillSetComponentServer self)
 		{
 			Unit unit = self.GetParent<Unit>();
+			self.CurrentSkillBarList(); // 确保两套列表已初始化
             SkillSetInfo SkillSetInfo = self.M2C_SkillSetMessage.SkillSetInfo;
 			SkillSetInfo.TianFuPlan = self.TianFuPlan;
 			SkillSetInfo.TianFuList = self.TianFuList;
 			SkillSetInfo.TianFuList1 = self.TianFuList1;
 			SkillSetInfo.SkillList = self.SkillList;
+			SkillSetInfo.SkillBarList = self.SkillBarList;
+			SkillSetInfo.SkillBarList1 = self.SkillBarList1;
+			SkillSetInfo.SkillBarPlan = self.SkillBarPlan;
 			SkillSetInfo.LifeShieldList = self.LifeShieldList;
 			MessageHelper.SendToClient(unit, self.M2C_SkillSetMessage);
 		}

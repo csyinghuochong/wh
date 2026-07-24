@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ET{
     //设置技能位置
@@ -30,6 +31,10 @@ namespace ET{
             response.SkillSetInfo.SkillList = skillSetComponentServer.SkillList;
             response.SkillSetInfo.LifeShieldList = skillSetComponentServer.LifeShieldList;
             response.SkillSetInfo.TianFuPlan = skillSetComponentServer.TianFuPlan;
+            skillSetComponentServer.CurrentSkillBarList();
+            response.SkillSetInfo.SkillBarList = skillSetComponentServer.SkillBarList;
+            response.SkillSetInfo.SkillBarList1 = skillSetComponentServer.SkillBarList1;
+            response.SkillSetInfo.SkillBarPlan = skillSetComponentServer.SkillBarPlan;
 
             reply();
             await ETTask.CompletedTask;

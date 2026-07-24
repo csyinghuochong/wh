@@ -33,6 +33,15 @@ namespace ET
 
         public List<SkillPro> SkillListRemove = new List<SkillPro>();   //备份移除的技能
 
+        /// <summary>当前技能方案 0/1</summary>
+        public int SkillBarPlan = 0;
+
+        /// <summary>技能方案0</summary>
+        public List<SkillBarSlot> SkillBarList = new List<SkillBarSlot>();
+
+        /// <summary>技能方案1</summary>
+        public List<SkillBarSlot> SkillBarList1 = new List<SkillBarSlot>();
+
         //生命之盾
         public List<LifeShieldInfo> LifeShieldList = new List<LifeShieldInfo>();
 
