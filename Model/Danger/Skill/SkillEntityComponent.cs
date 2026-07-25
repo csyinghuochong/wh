@@ -49,5 +49,8 @@ namespace ET
         public long LastActionTime;
         /// <summary>上次移动结算时间，用于按真实 dt 飞行（服务端 FrameTimer=100ms）</summary>
         public long LastUpdateTime;
+        /// <summary>出生点（与客户端 StartPosition 对齐，用于时间轴飞行）</summary>
+        public UnityEngine.Vector3 StartPosition;
+        public UnityEngine.Vector3 FlyDirection;
     }
 }

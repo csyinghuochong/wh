@@ -43,8 +43,8 @@ namespace ET
     /// </summary>
     public static class SkillEntityComponentSystem
     {
-        /// <summary>与目标 XZ 贴身判定（米），仅用于「碰到」再放 Skill_1</summary>
-        private const float CollideReach = 1.5f;
+        /// <summary>与目标 XZ 贴身判定（米），仅用于「碰到」再放 Skill_1；与客户端一致</summary>
+        private const float CollideReach = 0.5f;
 
         public static void Init(
             this SkillEntityComponent self,
@@ -64,6 +64,19 @@ namespace ET
             self.BeginTime = now;
             self.LastActionTime = now;
             self.LastUpdateTime = now;
+
+            Unit unit = self.GetParent<Unit>();
+            self.StartPosition = unit != null ? unit.Position : default;
+            self.FlyDirection = unit != null ? (unit.Rotation * UnityEngine.Vector3.forward) : UnityEngine.Vector3.forward;
+            self.FlyDirection.y = 0f;
+            if (self.FlyDirection.sqrMagnitude > 1e-6f)
+            {
+                self.FlyDirection.Normalize();
+            }
+            else
+            {
+                self.FlyDirection = UnityEngine.Vector3.forward;
+            }
 
             // 碰撞后必放表 Skill_1
             if (summonConfig != null && summonConfig.Skill_1 > 0)
@@ -87,10 +100,11 @@ namespace ET
 
             self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.SkillEntityTimer, self);
 
-            Unit unit = self.GetParent<Unit>();
             NumericComponent numeric = unit?.GetComponent<NumericComponent>();
             numeric?.ApplyValue(NumericType.SkillEntity_MoveType, self.Runtime.MoveType, false);
             numeric?.ApplyValue(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
+            // 与客户端共用同一 BeginTime
+            numeric?.ApplyValue(NumericType.StartTime, now, false);
 
             Log.Info(
                 $"SkillEntity Init unit={unit?.Id} summon={self.Runtime.SummonId} skill_1={self.Runtime.ActionSkillId} " +
@@ -145,8 +159,8 @@ namespace ET
             float dt = CalcDt(self, now);
             self.LastUpdateTime = now;
 
-            // —— 飞行 ——
-            Fly(self, unit, rt, trackTarget, dt);
+            // —— 飞行（按 BeginTime 时间轴，与客户端同一公式）——
+            Fly(self, unit, rt, trackTarget);
 
             // —— 碰撞后放 Skill_1 ——
             if (rt.ActionType == SkillEntityActionType.Interval_0)
@@ -168,12 +182,15 @@ namespace ET
 
         // ==================== 飞行 ====================
 
-        private static void Fly(SkillEntityComponent self, Unit unit, SummonRuntimeData rt, Unit trackTarget, float dt)
+        private static void Fly(SkillEntityComponent self, Unit unit, SummonRuntimeData rt, Unit trackTarget)
         {
             if (rt.MoveType == SkillEntityMoveType.Still_0)
             {
                 return;
             }
+
+            float speed = GetFlySpeed(self, unit);
+            float traveled = speed * (self.PassTime * 0.001f);
 
             if (rt.MoveType == SkillEntityMoveType.Track_2)
             {
@@ -182,33 +199,43 @@ namespace ET
                     return;
                 }
 
-                float dx = trackTarget.Position.x - unit.Position.x;
-                float dz = trackTarget.Position.z - unit.Position.z;
-                float distSq = dx * dx + dz * dz;
-                if (distSq <= CollideReach * CollideReach)
+                // 与客户端同一公式：从出生点沿当前目标方向飞 traveled，贴身后停
+                Vector3 start = self.StartPosition;
+                float dx = trackTarget.Position.x - start.x;
+                float dz = trackTarget.Position.z - start.z;
+                float total = (float)Math.Sqrt(dx * dx + dz * dz);
+                if (total <= 1e-4f)
                 {
-                    unit.Position = new Vector3(unit.Position.x, trackTarget.Position.y, unit.Position.z);
+                    unit.Position = new Vector3(trackTarget.Position.x, trackTarget.Position.y, trackTarget.Position.z);
                     return;
                 }
 
-                float len = (float)Math.Sqrt(distSq);
-                Vector3 dir = new Vector3(dx / len, 0f, dz / len);
-                Vector3 next = unit.Position + dir * (GetFlySpeed(self, unit) * dt);
+                Vector3 dir = new Vector3(dx / total, 0f, dz / total);
+                float maxTravel = Math.Max(0f, total - CollideReach);
+                float move = Math.Min(traveled, maxTravel);
+                Vector3 next = start + dir * move;
                 next.y = trackTarget.Position.y;
                 ApplyMove(self, unit, rt, next, dir);
                 return;
             }
 
-            // 直线
+            // 直线：出生点 + 朝向 * traveled
             Vector3 forward = unit.Rotation * Vector3.forward;
             forward.y = 0f;
+            if (forward.sqrMagnitude <= 1e-6f)
+            {
+                forward = self.FlyDirection;
+            }
+
             if (forward.sqrMagnitude <= 1e-6f)
             {
                 return;
             }
 
             forward.Normalize();
-            ApplyMove(self, unit, rt, unit.Position + forward * (GetFlySpeed(self, unit) * dt), forward);
+            Vector3 straight = self.StartPosition + forward * (speed * (self.PassTime * 0.001f));
+            straight.y = unit.Position.y;
+            ApplyMove(self, unit, rt, straight, forward);
         }
 
         private static void ApplyMove(SkillEntityComponent self, Unit unit, SummonRuntimeData rt, Vector3 next, Vector3 dir)

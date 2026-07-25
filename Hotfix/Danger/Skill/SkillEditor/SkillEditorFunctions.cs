@@ -628,19 +628,16 @@ namespace ET
 
             ctx.SetVariable("rs", rs);
 
+            // 仅普通命中/暴击进入 if_result 算伤害；闪避/免疫不进伤害分支，但仍要飘字
+            bool hitOk = rs == SkillEditorHitResult.Hit || rs >= 11;
+            ctx.LastConditionResult = hitOk;
 
-            /*定义任意值测试
-            ctx.SetVariable("rsvalue", 500);
-
-            // 读 long（推荐测数字）
-            long v = ctx.GetVariable("rsvalue", 0);        // 得到 500
-                                                           // 读 string
-            string s = ctx.GetVariableString("rsvalue");   // "500"
-                                                           // 参数解析（技能树 param 也会走这套）
-            string resolved = ctx.ResolveParam("rsvalue"); // "500"
-            */
-
-            ctx.LastConditionResult = rs > 0;
+            if (!hitOk && rs != SkillEditorHitResult.Miss)
+            {
+                Unit hitCaster = caster;
+                Unit hitTarget = target;
+                SendNumbericChangeHelper.InformClientHit(hitCaster, hitTarget, rs, 0);
+            }
         }
 
 

@@ -24,8 +24,8 @@
                 return;
             }
 
-            // 普通命中且伤害已由 M2C_UnitNumericUpdate 推送，跳过避免重复飘字
-            if (hitType == SkillEditorHitResult.Hit && hitValue > 0)
+            // 命中/暴击的伤害瓢字由 M2C_UnitNumericUpdate → UnitHpUpdate 负责，避免重复
+            if (hitValue > 0 && (hitType == SkillEditorHitResult.Hit || hitType >= 11))
             {
                 return;
             }
