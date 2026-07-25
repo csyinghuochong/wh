@@ -10,7 +10,7 @@ namespace ET
     {
         public UnionInfo UnionInfo = new UnionInfo();
 
-        public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+        public List<ShopGoodsItem> MysteryItemInfos = new List<ShopGoodsItem>();
 
         public long MysteryFreshTime = 0;
     }

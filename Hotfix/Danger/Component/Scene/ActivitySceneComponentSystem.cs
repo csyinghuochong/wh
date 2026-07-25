@@ -233,11 +233,11 @@ namespace ET
             self.DBDayActivityInfo.GlobalRandomShops = RandomShopHelper.InitGlobalRandomShops();
         }
 
-        public static List<MysteryItemInfo> GetGlobalRandomShopList(this ActivitySceneComponent self, int shopId)
+        public static List<ShopGoodsItem> GetGlobalRandomShopList(this ActivitySceneComponent self, int shopId)
         {
             if (self.DBDayActivityInfo.GlobalRandomShops == null)
             {
-                self.DBDayActivityInfo.GlobalRandomShops = new Dictionary<int, List<MysteryItemInfo>>();
+                self.DBDayActivityInfo.GlobalRandomShops = new Dictionary<int, List<ShopGoodsItem>>();
             }
 
             if (self.DBDayActivityInfo.GlobalRandomShops.Count == 0)
@@ -245,12 +245,12 @@ namespace ET
                 self.InitGlobalRandomShop();
             }
 
-            if (self.DBDayActivityInfo.GlobalRandomShops.TryGetValue(shopId, out List<MysteryItemInfo> list))
+            if (self.DBDayActivityInfo.GlobalRandomShops.TryGetValue(shopId, out List<ShopGoodsItem> list))
             {
                 return list;
             }
 
-            return new List<MysteryItemInfo>();
+            return new List<ShopGoodsItem>();
         }
 
         public static async ETTask OnCheckFuntionButton(this ActivitySceneComponent self)
@@ -382,7 +382,7 @@ namespace ET
             DBHelper.SaveComponent(self.DomainZone(), self.DomainZone(), self.DBDayActivityInfo).Coroutine();
         }
 
-        public static int OnGlobalShopBuyRequest(this ActivitySceneComponent self, int shopId, MysteryItemInfo mysteryInfo)
+        public static int OnGlobalShopBuyRequest(this ActivitySceneComponent self, int shopId, ShopGoodsItem mysteryInfo)
         {
             if (mysteryInfo == null || self.DBDayActivityInfo.GlobalRandomShops == null)
             {
@@ -390,12 +390,12 @@ namespace ET
             }
 
             if (shopId > 0
-                && self.DBDayActivityInfo.GlobalRandomShops.TryGetValue(shopId, out List<MysteryItemInfo> shopList))
+                && self.DBDayActivityInfo.GlobalRandomShops.TryGetValue(shopId, out List<ShopGoodsItem> shopList))
             {
                 return TryDeductGlobalShopStock(shopList, mysteryInfo);
             }
 
-            foreach (List<MysteryItemInfo> list in self.DBDayActivityInfo.GlobalRandomShops.Values)
+            foreach (List<ShopGoodsItem> list in self.DBDayActivityInfo.GlobalRandomShops.Values)
             {
                 int error = TryDeductGlobalShopStock(list, mysteryInfo);
                 if (error == ErrorCode.ERR_Success)
@@ -406,12 +406,12 @@ namespace ET
             return ErrorCode.ERR_ItemNotEnoughError;
         }
 
-        private static int TryDeductGlobalShopStock(List<MysteryItemInfo> shopList, MysteryItemInfo mysteryInfo)
+        private static int TryDeductGlobalShopStock(List<ShopGoodsItem> shopList, ShopGoodsItem mysteryInfo)
         {
             for (int i = 0; i < shopList.Count; i++)
             {
-                MysteryItemInfo mysteryItemInfo1 = shopList[i];
-                if (mysteryItemInfo1.MysteryId != mysteryInfo.MysteryId)
+                ShopGoodsItem mysteryItemInfo1 = shopList[i];
+                if (mysteryItemInfo1.ShopGoodId != mysteryInfo.ShopGoodId)
                 {
                     continue;
                 }

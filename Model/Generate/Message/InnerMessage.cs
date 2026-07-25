@@ -1530,7 +1530,7 @@ namespace ET
 		public int ShopId { get; set; }
 
 		[ProtoMember(2)]
-		public MysteryItemInfo MysteryItemInfo { get; set; }
+		public ShopGoodsItem ShopGoodsItem { get; set; }
 
 	}
 
@@ -1580,7 +1580,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
-		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
 
 	}
 

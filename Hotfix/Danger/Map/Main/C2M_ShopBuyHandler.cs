@@ -82,9 +82,9 @@ namespace ET
                             new M2A_GlobalShopBuyRequest()
                             {
                                 ShopId = shopId,
-                                MysteryItemInfo = new MysteryItemInfo()
+                                ShopGoodsItem = new ShopGoodsItem()
                                 {
-                                    MysteryId = storeSellConfig.Id,
+                                    ShopGoodId = storeSellConfig.Id,
                                     ItemNumber = buyNumber,
                                 },
                             });

@@ -11,7 +11,7 @@ namespace ET
         public RoleDailyData Data = new RoleDailyData();
 
         /// <summary>个人随机商店货架：Key=ShopId，日清重置后按需重新生成。</summary>
-        public Dictionary<int, List<MysteryItemInfo>> PersonalRandomShops = new Dictionary<int, List<MysteryItemInfo>>();
+        public Dictionary<int, List<ShopGoodsItem>> PersonalRandomShops = new Dictionary<int, List<ShopGoodsItem>>();
 
         public const int ReasonFull = 1;
         public const int ReasonShopLimit = 2;

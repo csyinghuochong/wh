@@ -312,7 +312,7 @@ namespace ET
 		 public const ushort M2C_StallOperationResponse = 10309;
 		 public const ushort C2M_PaiMaiDuiHuanRequest = 10310;
 		 public const ushort M2C_PaiMaiDuiHuanResponse = 10311;
-		 public const ushort MysteryItemInfo = 10312;
+		 public const ushort ShopGoodsItem = 10312;
 		 public const ushort Actor_FubenMoNengRequest = 10313;
 		 public const ushort Actor_FubenMoNengResponse = 10314;
 		 public const ushort C2M_RolePetChouKaRequest = 10315;

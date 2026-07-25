@@ -19,10 +19,10 @@ namespace ET
             }
 
             bool haveItem = false;
-            List<MysteryItemInfo> mysteryItemInfos = dBUnionInfo.MysteryItemInfos;
+            List<ShopGoodsItem> mysteryItemInfos = dBUnionInfo.MysteryItemInfos;
             for (int i = 0; i < mysteryItemInfos.Count; i++)
             {
-                if (mysteryItemInfos[i].MysteryId != request.MysteryId)
+                if (mysteryItemInfos[i].ShopGoodId != request.MysteryId)
                 {
                     continue;
                 }

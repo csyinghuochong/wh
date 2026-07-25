@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Scene scene, M2A_GlobalShopBuyRequest request, A2M_GlobalShopBuyResponse response, Action reply)
         {
             response.Error = scene.GetComponent<ActivitySceneComponent>()
-                    .OnGlobalShopBuyRequest(request.ShopId, request.MysteryItemInfo);
+                    .OnGlobalShopBuyRequest(request.ShopId, request.ShopGoodsItem);
 
             reply();
             await ETTask.CompletedTask;

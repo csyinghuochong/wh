@@ -21,7 +21,7 @@ namespace ET
         /// 全服随机商店货架 Key=ShopId（LDShop.Type==9）
         /// </summary>
         [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
-        public Dictionary<int, List<MysteryItemInfo>> GlobalRandomShops = new Dictionary<int, List<MysteryItemInfo>>();
+        public Dictionary<int, List<ShopGoodsItem>> GlobalRandomShops = new Dictionary<int, List<ShopGoodsItem>>();
 
 		//战区活动
 		public List<ZhanQuReceiveNumber> ZhanQuReveives = new List<ZhanQuReceiveNumber>();

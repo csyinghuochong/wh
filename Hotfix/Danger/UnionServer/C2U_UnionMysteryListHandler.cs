@@ -24,7 +24,7 @@ namespace ET
                 DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
             }
 
-            response.MysteryItemInfos = dBUnionInfo.MysteryItemInfos;
+            response.ShopGoodsItems = dBUnionInfo.MysteryItemInfos;
             reply();
         }
     }

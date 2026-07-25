@@ -63,17 +63,17 @@ namespace ET
         /// <summary>
         /// 家园农场商店
         /// </summary>
-        public List<MysteryItemInfo> PlantGoods_7 = new List<MysteryItemInfo>();
+        public List<ShopGoodsItem> PlantGoods_7 = new List<ShopGoodsItem>();
 
         /// <summary>
         /// 家园牧场商店
         /// </summary>
-        public List<MysteryItemInfo> PastureGoods_7 = new List<MysteryItemInfo>();
+        public List<ShopGoodsItem> PastureGoods_7 = new List<ShopGoodsItem>();
 
         /// <summary>
         /// 家园商店
         /// </summary>
-        public List<MysteryItemInfo> JiaYuanStore = new List<MysteryItemInfo>();
+        public List<ShopGoodsItem> JiaYuanStore = new List<ShopGoodsItem>();
 
         /// <summary>
         /// 家园随机怪

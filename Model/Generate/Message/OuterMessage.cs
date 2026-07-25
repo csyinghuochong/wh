@@ -4923,7 +4923,7 @@ namespace ET
 
 	}
 
-//获取商品列表（Type2/3 个人随机货架在 Map；Type9 全服经 M2A_GoldShopList 到 Activity）
+//获取商品列表（Type1 2/3 个人随机货架在 Map；Type9 全服经 M2A_GoldShopList 到 Activity）
 	[ResponseType(nameof(M2C_ShopListResponse))]
 	[Message(OuterOpcode.C2M_ShopListRequest)]
 	[ProtoContract]
@@ -4954,7 +4954,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
-		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
 
 	}
 
@@ -6260,21 +6260,15 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.MysteryItemInfo)]
+	[Message(OuterOpcode.ShopGoodsItem)]
 	[ProtoContract]
-	public partial class MysteryItemInfo: Object
+	public partial class ShopGoodsItem: Object
 	{
 		[ProtoMember(1)]
-		public int MysteryId { get; set; }
-
-		[ProtoMember(3)]
-		public int ItemID { get; set; }
+		public int ShopGoodId { get; set; }
 
 		[ProtoMember(4)]
 		public int ItemNumber { get; set; }
-
-		[ProtoMember(5)]
-		public int ProductId { get; set; }
 
 	}
 
@@ -6305,7 +6299,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
-		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
 
 	}
 
@@ -11427,7 +11421,7 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(1)]
-		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
 
 	}
 
@@ -11461,7 +11455,7 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(1)]
-		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
 
 	}
 
@@ -11489,7 +11483,7 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(1)]
-		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
 
 	}
 
@@ -11526,7 +11520,7 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(1)]
-		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
 
 		[ProtoMember(4)]
 		public List<JiaYuanPastures> JiaYuanPastureList = new List<JiaYuanPastures>();
@@ -13684,7 +13678,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
-		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
 
 	}
 

@@ -442,48 +442,12 @@ namespace ET
 
         public static int OnPastureBuyRequest(this JiaYuanComponentServer self, int ProductId)
         {
-#if SERVER
-            for (int i = 0; i < self.PastureGoods_7.Count; i++)
-            {
-                MysteryItemInfo mysteryItemInfo1 = self.PastureGoods_7[i];
 
-                if (mysteryItemInfo1.ProductId != ProductId)
-                {
-                    continue;
-                }
-                if (mysteryItemInfo1.ItemNumber < 1)
-                {
-                    return ErrorCode.ERR_ItemNotEnoughError;
-                }
-
-                self.PastureGoods_7.RemoveAt(i);
-                return ErrorCode.ERR_Success;
-            }
-#endif
             return ErrorCode.ERR_ItemNotEnoughError;
         }
 
-        public static int OnMysteryBuyRequest(this JiaYuanComponentServer self, int ProductId, List<MysteryItemInfo> jiayuanMysterylist)
+        public static int OnMysteryBuyRequest(this JiaYuanComponentServer self, int ProductId, List<ShopGoodsItem> jiayuanMysterylist)
         {
-#if SERVER
-
-            for (int i = 0; i < jiayuanMysterylist.Count; i++)
-            {
-                MysteryItemInfo mysteryItemInfo1 = jiayuanMysterylist[i];
-
-                if (mysteryItemInfo1.ProductId != ProductId)
-                {
-                    continue;
-                }
-                if (mysteryItemInfo1.ItemNumber < 1)
-                {
-                    return ErrorCode.ERR_ItemNotEnoughError;
-                }
-
-                jiayuanMysterylist.RemoveAt(i);    
-                return ErrorCode.ERR_Success;
-            }
-#endif
             return ErrorCode.ERR_ItemNotEnoughError;
         }
 

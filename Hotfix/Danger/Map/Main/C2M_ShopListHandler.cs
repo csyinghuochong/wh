@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ShopListRequest request, M2C_ShopListResponse response, Action reply)
         {
             int shopId = request.ShopId;
-            if (!LDShopCategory.Instance.Contain(shopId))
+            if (!LDShopCategory.Instance.Contain(1))
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();
@@ -18,9 +18,11 @@ namespace ET
             }
 
             LDShop shop = LDShopCategory.Instance.Get(shopId);
+
+            // Type1 固定：服务端按配置生成货架
             if (shop.Type == ShopType.Fixed)
             {
-                // Type1 固定：客户端读表
+                response.ShopGoodsItems = RandomShopHelper.InitShopItemInfos(shopId);
                 response.Error = ErrorCode.ERR_Success;
                 reply();
                 await ETTask.CompletedTask;
@@ -44,7 +46,7 @@ namespace ET
                     return;
                 }
 
-                response.MysteryItemInfos = a2MResponse.MysteryItemInfos ?? new List<MysteryItemInfo>();
+                response.ShopGoodsItems = a2MResponse.ShopGoodsItems ?? new List<ShopGoodsItem>();
                 response.Error = ErrorCode.ERR_Success;
                 reply();
                 await ETTask.CompletedTask;
@@ -66,7 +68,7 @@ namespace ET
                 daily = unit.AddComponent<RoleDailyDataComponentServer>();
             }
 
-            response.MysteryItemInfos = daily.GetOrInitPersonalRandomShop(shopId);
+            response.ShopGoodsItems = daily.GetOrInitPersonalRandomShop(shopId);
             response.Error = ErrorCode.ERR_Success;
             reply();
             await ETTask.CompletedTask;

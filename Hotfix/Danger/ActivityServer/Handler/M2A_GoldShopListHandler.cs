@@ -20,7 +20,7 @@ namespace ET
                 return;
             }
 
-            List<MysteryItemInfo> shopList = activitySceneComponent.GetGlobalRandomShopList(shopId);
+            List<ShopGoodsItem> shopList = activitySceneComponent.GetGlobalRandomShopList(shopId);
             if (shopList.Count == 0)
             {
                 LogHelper.LogDebug($"全服随机商店为空: zone={scene.DomainZone()} shopId={shopId}");
@@ -29,7 +29,7 @@ namespace ET
                 shopList = activitySceneComponent.GetGlobalRandomShopList(shopId);
             }
 
-            response.MysteryItemInfos = shopList;
+            response.ShopGoodsItems = shopList;
             response.Error = ErrorCode.ERR_Success;
             reply();
             await ETTask.CompletedTask;

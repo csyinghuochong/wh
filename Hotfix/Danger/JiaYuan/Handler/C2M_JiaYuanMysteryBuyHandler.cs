@@ -13,7 +13,7 @@ namespace ET
 
             if (request.ProductId != -1)
             {
-                List<MysteryItemInfo> jiayuanList = new List<MysteryItemInfo>();
+                List<ShopGoodsItem> jiayuanList = new List<ShopGoodsItem>();
                 if (unit.GetComponent<JiaYuanComponentServer>().NowOpenNpcId == 30000001)
                 {
                     jiayuanList = unit.GetComponent<JiaYuanComponentServer>().PlantGoods_7;
@@ -31,7 +31,7 @@ namespace ET
                     reply();
                     return;
                 }
-                response.MysteryItemInfos = jiayuanList;
+                response.ShopGoodsItems = jiayuanList;
             }
             //unit.GetComponent<RoleInfoComponentServer>().OnMysteryBuy(mysteryId);
             //扣除货币添加对应道具

@@ -77,7 +77,7 @@ namespace ET
             data.DayMonsters ??= new List<KeyValuePairInt>();
             data.DayJingLing ??= new List<int>();
             data.BuyStoreItems ??= new List<KeyValuePairInt>();
-            self.PersonalRandomShops ??= new Dictionary<int, List<MysteryItemInfo>>();
+            self.PersonalRandomShops ??= new Dictionary<int, List<ShopGoodsItem>>();
         }
 
         public static void TryMigrateFromRoleInfo(this RoleDailyDataComponentServer self)
@@ -135,10 +135,10 @@ namespace ET
         /// <summary>
         /// 个人随机商店（Type 2/3）货架：当日首次打开时生成，零点 Clear 后重新生成。
         /// </summary>
-        public static List<MysteryItemInfo> GetOrInitPersonalRandomShop(this RoleDailyDataComponentServer self, int shopId)
+        public static List<ShopGoodsItem> GetOrInitPersonalRandomShop(this RoleDailyDataComponentServer self, int shopId)
         {
             self.EnsureLists();
-            if (self.PersonalRandomShops.TryGetValue(shopId, out List<MysteryItemInfo> list)
+            if (self.PersonalRandomShops.TryGetValue(shopId, out List<ShopGoodsItem> list)
                 && list != null
                 && list.Count > 0)
             {
