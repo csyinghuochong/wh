@@ -1098,7 +1098,8 @@ namespace ET
             for (int i = 0; i < rewardItems.Count; i++)
             {
                 RewardItem itemInfo = rewardItems[i];
-                if (self.GetItemNumber(ItemBigType.Type_Item, itemInfo.ItemID) < itemInfo.ItemNum)
+                int itemType = itemInfo.ItemType > 0 ? itemInfo.ItemType : ItemBigType.Type_Item;
+                if (self.GetItemNumber(itemType, itemInfo.ItemID) < itemInfo.ItemNum)
                 {
                     return false;
                 }
@@ -1192,11 +1193,12 @@ namespace ET
         {
             for (int i = costItems.Count - 1; i >= 0; i--)
             {
+                int itemType = costItems[i].ItemType > 0 ? costItems[i].ItemType : ItemBigType.Type_Item;
                 int itemID = costItems[i].ItemID;
                 int itemNum = costItems[i].ItemNum;
 
                 //获取背包内的道具是否足够
-                if (self.GetItemNumber(ItemBigType.Type_Item, itemID, itemLocType) < itemNum)
+                if (self.GetItemNumber(itemType, itemID, itemLocType) < itemNum)
                 {
                     return false;
                 }

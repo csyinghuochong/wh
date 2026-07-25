@@ -168,7 +168,7 @@ namespace ET
 				if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TowerDungeon)
 				{
 					Unit mainUnit = scene.GetComponent<TowerComponent>().MainUnit;
-					playerLv = mainUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Level;
+					playerLv = mainUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
 				}
                 if (monsterPosition.CreateNum > 100)
                 {
@@ -259,30 +259,6 @@ namespace ET
 				if (numericComponent.GetAsInt(NumericType.LocalDungeonTime) >= 30)
 				{
 					break;
-				}
-
-				int randomid = roleInfoComponentServer.GetRandomMonsterId();
-				if (randomid > 0)
-				{
-					localDungeonComponent.RandomMonster = randomid;
-                    KeyValuePairInt keyValuePairInt = new KeyValuePairInt();
-                    keyValuePairInt.KeyId = i;
-					keyValuePairInt.Value = randomid;
-
-                    randomMonsterList.Add( keyValuePairInt );	
-                    break;
-				}
-
-				randomid = roleInfoComponentServer.GetRandomJingLingId();
-				if (randomid > 0)
-				{
-					localDungeonComponent.RandomJingLing = randomid;
-                    KeyValuePairInt keyValuePairInt = new KeyValuePairInt();
-                    keyValuePairInt.KeyId = i;
-					keyValuePairInt.Value = randomid;
-
-                    randomMonsterList.Add(keyValuePairInt);
-                    break;
 				}
 			}
 
@@ -451,7 +427,7 @@ namespace ET
 						if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TowerDungeon)
 						{
 							Unit mainUnit = scene.GetComponent<TowerComponent>().MainUnit;
-							playerLv = mainUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Level;
+							playerLv = mainUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
 						}
 						cmcount = int.Parse(mcount[0]);
 	                    if (cmcount > 100)

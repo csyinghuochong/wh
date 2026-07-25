@@ -130,10 +130,9 @@ namespace ET
 				if (message.GMMsg == "#resetfuben")
 				{
 					NumericComponent numeric = unit.GetComponent<NumericComponent>();
-					RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
 					numeric.ApplyValue(NumericType.TeamDungeonTimes, 0);
 					numeric.ApplyValue(NumericType.TeamDungeonXieZhu, 0);
-					roleInfo.RoleInfo.DayFubenTimes.Clear();
+					unit.GetComponent<RoleDailyDataComponentServer>()?.GetDailyData().DayFubenTimes.Clear();
 					return;
 				}
                 if (message.GMMsg == "#resettower")

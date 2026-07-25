@@ -1515,10 +1515,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2M_MysteryBuyResponse))]
-	[Message(InnerOpcode.M2A_MysteryBuyRequest)]
+	[ResponseType(nameof(A2M_GlobalShopBuyResponse))]
+	[Message(InnerOpcode.M2A_GlobalShopBuyRequest)]
 	[ProtoContract]
-	public partial class M2A_MysteryBuyRequest: Object, IActorRequest
+	public partial class M2A_GlobalShopBuyRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1526,14 +1526,17 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
+		[ProtoMember(1)]
+		public int ShopId { get; set; }
+
 		[ProtoMember(2)]
 		public MysteryItemInfo MysteryItemInfo { get; set; }
 
 	}
 
-	[Message(InnerOpcode.A2M_MysteryBuyResponse)]
+	[Message(InnerOpcode.A2M_GlobalShopBuyResponse)]
 	[ProtoContract]
-	public partial class A2M_MysteryBuyResponse: Object, IActorResponse
+	public partial class A2M_GlobalShopBuyResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1543,6 +1546,41 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(A2M_GoldShopListResponse))]
+// Map 拉全服随机商店货架
+	[Message(InnerOpcode.M2A_GoldShopListRequest)]
+	[ProtoContract]
+	public partial class M2A_GoldShopListRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ShopId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.A2M_GoldShopListResponse)]
+	[ProtoContract]
+	public partial class A2M_GoldShopListResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
 
 	}
 

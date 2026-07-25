@@ -60,7 +60,7 @@ namespace ET
                 unit.Type = UnitType.Player;
                 unit.SceneType = request.SceneType;
 				unit.ConfigId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
-                UnitCombatComponentHelper.EnsurePlayerComponents(unit);
+                UnitComponentEnsureHelper.EnsurePlayerComponents(unit);
                 unit.GetComponent<PlayerSessionComponent>()?.CheckNumeric();
                 Function_Fight.UnitUpdateProperty_Base(unit, false, false);
 

@@ -55,12 +55,7 @@ namespace ET
                 return;
             }
 
-            if (roleInfoComponentServer.RoleInfo.Vitality < equipMakeConfig.CostVitality)
-            {
-                response.Error = ErrorCode.ERR_VitalityNotEnoughError;
-                reply();
-                return;
-            }
+            // Vitality 已从 RoleInfo 移除
 
             //制造图纸查看当前背包是否已经有图纸了
 
@@ -92,7 +87,6 @@ namespace ET
             }
 
             roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (equipMakeConfig.MakeNeedGold * -1).ToString(), true, ItemGetWay.SkillMake);
-            roleInfoComponentServer.UpdateRoleData(UserDataType.Vitality, (equipMakeConfig.CostVitality * -1).ToString());
             if (request.BagInfoID == 0)
             {
                 roleInfoComponentServer.OnMakeItem(equipMakeConfig.Id);

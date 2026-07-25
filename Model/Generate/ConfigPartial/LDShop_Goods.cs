@@ -19,7 +19,7 @@ namespace ET
                 if (!ShopGoodsList.TryGetValue(Item.ShopId, out List<LDShop_Goods> goodlist))
                 {
                     goodlist = new List<LDShop_Goods>();
-                    ShopGoodsList.Add(Item.ShopId, new List<LDShop_Goods>());
+                    ShopGoodsList.Add(Item.ShopId, goodlist);
                 }
                 
                 goodlist.Add(Item);

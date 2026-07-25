@@ -109,7 +109,6 @@ namespace ET
                 request.IsRecharge = numericComponent.GetAsInt(NumericType.RechargeNumber);
 
                 if (request.IsRecharge > 0
-                    || CommonHelper.IsCanPaiMai_KillBoss(roleInfoComponentServer.RoleInfo.MonsterRevives, roleInfoComponentServer.RoleInfo.Lv)
                     || CommonHelper.IsCanPaiMai_Level(createDay, roleInfoComponentServer.RoleInfo.Lv) == 0)
                 {
                     openPaiMai = 1;

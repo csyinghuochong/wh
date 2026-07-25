@@ -119,7 +119,6 @@ namespace ET
 
         public static void OpenAll(this RoleInfoComponentServer self)
         {
-            self.RoleInfo.FubenPassList.Clear();
 
             /*Dictionary<int, ChapterConfig> keyValuePairs = ChapterConfigCategory.Instance.GetAll();
             foreach (var item in keyValuePairs)
@@ -237,10 +236,7 @@ namespace ET
             }
 
             int maxTowerId = 0;
-            if (self.RoleInfo.TowerRewardIds.Count > 0)
-            {
-                maxTowerId = self.RoleInfo.TowerRewardIds[self.RoleInfo.TowerRewardIds.Count - 1];
-            }
+            
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             for (int  i =  self.RoleInfo.HorseIds.Count - 1; i >= 0; i--)
@@ -412,11 +408,9 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             int skillNumber = 1 + numericComponent.GetAsInt(NumericType.MakeType_2) > 0 ? 1 : 0;
-            //int updatevalue = 0;/// unit.GetMaxHuoLi(skillNumber) - self.RoleInfo.Vitality;
-            //updatevalue = ComHelp.GetMaxBaoShiDu() - self.RoleInfo.BaoShiDu;
-            //self.UpdateRoleData(UserDataType.BaoShiDu, updatevalue.ToString(), notice);
             numericComponent.ApplyValue(NumericType.ZeroClock, 1, notice);
-            self.ClearDayData();
+            // 日清列表由 RoleDailyDataComponent 统一 Clear（含 BuyStoreItems 本次限购）
+            unit.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists();
             self.LastLoginTime = TimeHelper.ServerNow();
             self.TodayOnLine = 0;
         }
@@ -577,38 +571,28 @@ namespace ET
 
         public static int GetMysteryBuy(this RoleInfoComponentServer self, int mysteryId)
         {
-            int index = FindKeyValuePairIndex(self.RoleInfo.MysteryItems, mysteryId);
-            return index >= 0 ? (int)self.RoleInfo.MysteryItems[index].Value : 0;
+            return self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.GetMysteryBuy(mysteryId) ?? 0;
         }
 
         public static void OnMysteryBuy(this RoleInfoComponentServer self, int mysteryId)
         {
-            List<KeyValuePairInt> items = self.RoleInfo.MysteryItems;
-            int index = FindKeyValuePairIndex(items, mysteryId);
-            if (index >= 0)
-            {
-                items[index].Value += 1;
-                return;
-            }
-            items.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
+            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.OnMysteryBuy(mysteryId);
         }
 
         public static int GetStoreBuy(this RoleInfoComponentServer self, int mysteryId)
         {
-            int index = FindKeyValuePairIndex(self.RoleInfo.BuyStoreItems, mysteryId);
-            return index >= 0 ? (int)self.RoleInfo.BuyStoreItems[index].Value : 0;
+            return self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.GetBuyStorePeriod(mysteryId) ?? 0;
         }
 
-        public static void OnStoreBuy(this RoleInfoComponentServer self, int mysteryId)
+        public static void OnShopBuy(this RoleInfoComponentServer self, int mysteryId)
         {
-            List<KeyValuePairInt> items = self.RoleInfo.BuyStoreItems;
-            int index = FindKeyValuePairIndex(items, mysteryId);
-            if (index >= 0)
-            {
-                items[index].Value += 1;
-                return;
-            }
-            items.Add(new KeyValuePairInt() { KeyId = mysteryId, Value = 1 });
+            self.OnShopBuy(mysteryId, 1);
+        }
+
+        public static void OnShopBuy(this RoleInfoComponentServer self, int mysteryId, int buyNumber)
+        {
+            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()
+                    ?.AddShopBuy(mysteryId, buyNumber, true, false);
         }
 
         //加金币
@@ -929,72 +913,6 @@ namespace ET
             }
         }
 
-        public static int GetRandomMonsterId(this RoleInfoComponentServer self)
-        {
-            List<KeyValuePairInt> dayMonster = self.RoleInfo.DayMonsters;
-            List<DayMonsters> dayMonsterConfig = LDGlobalValueCategory.Instance.DayMonsterList;
-
-            for (int i = 0; i < dayMonsterConfig.Count; i++)
-            {
-                if (RandomHelper.RandFloat01() > dayMonsterConfig[i].GaiLv)
-                {
-                    continue;
-                }
-
-                KeyValuePairInt keyValuePairInt = null;
-                for (int d = 0; d < dayMonster.Count; d++)
-                {
-                    if (dayMonster[d].KeyId != dayMonsterConfig[i].MonsterId)
-                    {
-                        continue;
-                    }
-                    keyValuePairInt = dayMonster[d];
-                }
-                if (keyValuePairInt == null)
-                {
-                    keyValuePairInt = new KeyValuePairInt() { KeyId = dayMonsterConfig[i].MonsterId, Value = 0 };
-                    dayMonster.Add(keyValuePairInt);
-                }
-                if (keyValuePairInt.Value < dayMonsterConfig[i].TotalNumber)
-                {
-                    keyValuePairInt.Value++;
-                    return dayMonsterConfig[i].MonsterId;
-                }
-            }
-
-            return 0;
-        }
-
-        public static int GetRandomJingLingId(this RoleInfoComponentServer self)
-        {
-            List<DayJingLing> dayMonsterConfig = LDGlobalValueCategory.Instance.DayJingLingList;
-            List<int> dayMonster = self.RoleInfo.DayJingLing;
-            for(int i = 0; i < dayMonsterConfig.Count; i++)
-            {
-                if (RandomHelper.RandFloat01() > dayMonsterConfig[i].GaiLv)
-                {
-                    continue;
-                }
-                if (dayMonster.Count <= i)
-                {
-                    for (int d = dayMonster.Count; d < i+1; d++)
-                    {
-                        dayMonster.Add(0);
-                    }
-                }
-                if (dayMonster[i] >= dayMonsterConfig[i].TotalNumber)
-                {
-                    continue;
-                }
-
-                dayMonster[i]++;
-                int randomIndex = RandomHelper.RandomByWeight(dayMonsterConfig[i].Weights);
-                return dayMonsterConfig[i].MonsterId[randomIndex];
-            }
-
-            return 0;
-        }
-
         public static void OnMakeItem(this RoleInfoComponentServer self, int makeId)
         {
             LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
@@ -1018,41 +936,31 @@ namespace ET
 
         public static void OnAddChests(this RoleInfoComponentServer self, int fubenId, int monsterId)
         {
-            bool have = false;
-            List<KeyValuePair> chestList = self.RoleInfo.OpenChestList;
-            for (int i = 0; i < chestList.Count; i++)
-            {
-                if (chestList[i].KeyId == fubenId)
-                {
-                    chestList[i].Value += ($"_{monsterId}");
-                    have = true;
-                }
-            }
-            if (!have)
-            {
-                self.RoleInfo.OpenChestList.Add(new KeyValuePair() { KeyId = fubenId, Value = monsterId.ToString() });
-            }
+            // OpenChestList 已从 RoleInfo 移除
         }
 
         public static bool IsCheskOpen(this RoleInfoComponentServer self, int fubenId, int monsterId)
         {
-            List<KeyValuePair> chestList = self.RoleInfo.OpenChestList;
-            string monsterIdStr = monsterId.ToString();
-            for (int i = 0; i < chestList.Count; i++)
-            {
-                if (chestList[i].KeyId == fubenId)
-                {
-                    string chestValue = chestList[i].Value;
-                    if (string.IsNullOrEmpty(chestValue))
-                    {
-                        return false;
-                    }
-
-                    HashSet<string> openedMonsters = new HashSet<string>(chestValue.Split('_'));
-                    return openedMonsters.Contains(monsterIdStr);
-                }
-            }
             return false;
+        }
+
+        public static int GetRandomMonsterId(this RoleInfoComponentServer self)
+        {
+            return 0;
+        }
+
+        public static int GetRandomJingLingId(this RoleInfoComponentServer self)
+        {
+            return 0;
+        }
+
+        public static int GetTotalUseTimes(this RoleInfoComponentServer self, int itemId)
+        {
+            return 0;
+        }
+
+        public static void OnTotalUseTimes(this RoleInfoComponentServer self, int itemId)
+        {
         }
 
         public static int OnGetFirstWinSelf(this RoleInfoComponentServer self, int firstwinid, int difficulty)
@@ -1129,40 +1037,12 @@ namespace ET
 
         public static void OnCleanBossCD(this RoleInfoComponentServer self)
         {
-            for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
-            {
-                self.RoleInfo.MonsterRevives[i].Value = "0";
-            }
+            // MonsterRevives 已从 RoleInfo 移除
         }
 
         public static void OnAddRevive(this RoleInfoComponentServer self, int monsterId, long reviveTime)
         {
-            bool have = false;  
-            for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
-            {
-                KeyValuePair keyValuePair = self.RoleInfo.MonsterRevives[i];
-                if (keyValuePair.KeyId != monsterId)
-                {
-                    continue;
-                }
-                if (string.IsNullOrEmpty(keyValuePair.Value2))
-                {
-                    keyValuePair.Value2 = "1";
-                }
-
-                keyValuePair.Value = reviveTime.ToString();
-                keyValuePair.Value2 = (int.Parse(keyValuePair.Value2) + 1).ToString();  
-                have = true;
-                break;
-            }
-            if (!have)
-            {
-                self.RoleInfo.MonsterRevives.Add(new KeyValuePair() { KeyId = monsterId, Value = reviveTime.ToString(), Value2 = "1" });
-            }
-
-            M2C_UpdateUserInfoMessage m2C_UpdateUserInfo = new M2C_UpdateUserInfoMessage();
-            m2C_UpdateUserInfo.RoleInfo = self.RoleInfo;
-            MessageHelper.SendToClient( self.GetParent<Unit>(), m2C_UpdateUserInfo );
+            // MonsterRevives 已从 RoleInfo 移除
         }
 
         public static string GetGameSettingValue(this RoleInfoComponentServer self, GameSettingEnum gameSettingEnum)
@@ -1186,38 +1066,6 @@ namespace ET
                 default:
                     return "0";
             }
-        }
-
-        public static void OnFubenSettlement(this RoleInfoComponentServer self, int levelid, int difficulty)
-        {
-            FubenPassInfo fubenPassInfo = null;
-            for (int i = 0; i < self.RoleInfo.FubenPassList.Count; i++)
-            {
-                if (self.RoleInfo.FubenPassList[i].FubenId == levelid)
-                {
-                    fubenPassInfo = self.RoleInfo.FubenPassList[i];
-                    break;
-                }
-            }
-            if (fubenPassInfo == null)
-            {
-                fubenPassInfo = new FubenPassInfo();
-                fubenPassInfo.FubenId = levelid;
-                self.RoleInfo.FubenPassList.Add(fubenPassInfo);
-            }
-            fubenPassInfo.Difficulty = (difficulty > fubenPassInfo.Difficulty) ? difficulty : fubenPassInfo.Difficulty;
-        }
-
-        public static bool IsLevelPassed(this RoleInfoComponentServer self, int levelid)
-        {
-            for (int i = 0; i < self.RoleInfo.FubenPassList.Count; i++)
-            {
-                if (self.RoleInfo.FubenPassList[i].FubenId == levelid)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
          public static List<int> GetMakeListByType(this RoleInfoComponentServer self, int makeType)
@@ -1271,123 +1119,27 @@ namespace ET
 
         public static int GetMonsterKillNumber(this RoleInfoComponentServer self, int monsterId)
         {
-            for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
-            {
-                KeyValuePair keyValuePair = self.RoleInfo.MonsterRevives[i];
-                if (keyValuePair.KeyId != monsterId)
-                {
-                    continue;
-                }
-                if (!string.IsNullOrEmpty(keyValuePair.Value2))
-                {
-                    return int.Parse(keyValuePair.Value2);
-                }
-                else
-                {
-                    return 1;
-                }
-            }
             return 0;
         }
 
         public static long GetReviveTime(this RoleInfoComponentServer self, int monsterId)
         {
-            for (int i = 0; i < self.RoleInfo.MonsterRevives.Count; i++)
-            {
-                if (self.RoleInfo.MonsterRevives[i].KeyId == monsterId)
-                {
-                    return long.Parse(self.RoleInfo.MonsterRevives[i].Value);
-                }
-            }
             return 0;
         }
        
         public static long GetSceneFubenTimes(this RoleInfoComponentServer self, int sceneId)
         {
-            for (int i = 0; i < self.RoleInfo.DayFubenTimes.Count; i++)
-            {
-                if (self.RoleInfo.DayFubenTimes[i].KeyId == sceneId)
-                {
-                    return self.RoleInfo.DayFubenTimes[i].Value;
-                }
-            }
-            return 0;
-        }
-       
-        public static int GetDayItemUse(this RoleInfoComponentServer self, int mysteryId)
-        {
-            for (int i = 0; i < self.RoleInfo.DayItemUse.Count; i++)
-            {
-                if (self.RoleInfo.DayItemUse[i].KeyId == mysteryId)
-                {
-                    return (int)self.RoleInfo.DayItemUse[i].Value;
-                }
-            }
-            return 0;
-        }
-
-
-        public static void OnDayItemUse(this RoleInfoComponentServer self, int itemId)
-        {
-            for (int i = 0; i < self.RoleInfo.DayItemUse.Count; i++)
-            {
-                if (self.RoleInfo.DayItemUse[i].KeyId == itemId)
-                {
-                    self.RoleInfo.DayItemUse[i].Value += 1;
-                    return;
-                }
-            }
-            self.RoleInfo.DayItemUse.Add(new KeyValuePairInt() { KeyId = itemId, Value = 1 });
-        }
-
-        public static int GetTotalUseTimes(this RoleInfoComponentServer self, int mysteryId)
-        {
-            for (int i = 0; i < self.RoleInfo.TotalUseTimes.Count; i++)
-            {
-                if (self.RoleInfo.TotalUseTimes[i].KeyId == mysteryId)
-                {
-                    return (int)self.RoleInfo.TotalUseTimes[i].Value;
-                }
-            }
-            return 0;
-        }
-
-        public static void OnTotalUseTimes(this RoleInfoComponentServer self, int itemId, int useNumber = 1)
-        {
-            for (int i = 0; i < self.RoleInfo.TotalUseTimes.Count; i++)
-            {
-                if (self.RoleInfo.TotalUseTimes[i].KeyId == itemId)
-                {
-                    self.RoleInfo.TotalUseTimes[i].Value += useNumber;
-                    return;
-                }
-            }
-            self.RoleInfo.TotalUseTimes.Add(new KeyValuePairInt() { KeyId = itemId, Value = useNumber });
+            return self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.GetSceneFubenTimes(sceneId) ?? 0;
         }
 
         public static void AddSceneFubenTimes(this RoleInfoComponentServer self, int sceneId)
         {
-            for (int i = 0; i < self.RoleInfo.DayFubenTimes.Count; i++)
-            {
-                if (self.RoleInfo.DayFubenTimes[i].KeyId == sceneId)
-                {
-                    self.RoleInfo.DayFubenTimes[i].Value++;
-                    return;
-                }
-            }
-            self.RoleInfo.DayFubenTimes.Add(new KeyValuePairInt() { KeyId = sceneId, Value = 1 });
+            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.AddSceneFubenTimes(sceneId);
         }
 
         public static void ClearFubenTimes(this RoleInfoComponentServer self, int sceneId)
         {
-            for (int i = 0; i < self.RoleInfo.DayFubenTimes.Count; i++)
-            {
-                if (self.RoleInfo.DayFubenTimes[i].KeyId == sceneId)
-                {
-                    self.RoleInfo.DayFubenTimes[i].Value = 0;
-                    break;
-                }
-            }
+            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.ClearFubenTimes(sceneId);
         }
 
         public static int GetMaxLevel(this RoleInfoComponentServer self, List<int> compeltetask)
@@ -1404,19 +1156,7 @@ namespace ET
 
         public static void AddFubenTimes(this RoleInfoComponentServer self, int sceneId, int times)
         {
-            for (int i = 0; i < self.RoleInfo.DayFubenTimes.Count; i++)
-            {
-                if (self.RoleInfo.DayFubenTimes[i].KeyId == sceneId)
-                {
-                    long curTimes = self.RoleInfo.DayFubenTimes[i].Value -= times;
-                    if (curTimes < 0)
-                    {
-                        curTimes = 0;
-                    }
-                    self.RoleInfo.DayFubenTimes[i].Value = curTimes;
-                    break;
-                }
-            }
+            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.AddFubenTimes(sceneId, times);
         }
 
         
@@ -1491,15 +1231,7 @@ namespace ET
 
         public static void ClearDayData(this RoleInfoComponentServer self)
         {
-            self.RoleInfo.DayFubenTimes.Clear();
-            self.RoleInfo.ChouKaRewardIds.Clear();
-            self.RoleInfo.MysteryItems.Clear();
-            self.RoleInfo.DayItemUse.Clear();
-            self.RoleInfo.DayMonsters.Clear();
-            self.RoleInfo.DayJingLing.Clear();
-            //self.RoleInfo.PetExploreRewardIds.Clear();  
-            //self.RoleInfo.PetHeXinExploreRewardIds.Clear();
-            //self.RoleInfo.ItemXiLianNumRewardIds.Clear();
+            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists();
         }
 
     }

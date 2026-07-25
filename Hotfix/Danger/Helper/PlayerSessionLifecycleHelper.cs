@@ -13,7 +13,7 @@ namespace ET
         /// </summary>
         public static void OnLogin(this Unit unit, string remoteip)
         {
-            UnitCombatComponentHelper.EnsurePlayerComponents(unit);
+            UnitComponentEnsureHelper.EnsurePlayerComponents(unit);
 
             long currentTime = TimeHelper.ServerNow();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
@@ -33,6 +33,8 @@ namespace ET
             unit.GetComponent<ChengJiuComponentServer>().OnLogin();
             unit.GetComponent<JiaYuanComponentServer>().OnLogin();
             unit.GetComponent<SkillSetComponentServer>().OnLogin(roleInfo.Occ);
+            // RoleDailyData 全量由客户端 LoginHelper 请求，此处只做迁移准备
+            unit.GetComponent<RoleDailyDataComponentServer>()?.OnLogin();
         }
 
         public static void OnLogin(DBSaveComponent self)

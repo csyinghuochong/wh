@@ -87,44 +87,83 @@ namespace ET
 		/// <summary>编号</summary>
 		[ProtoMember(4)]
 		public int Number { get; set; }
-		/// <summary>角色等级</summary>
+		/// <summary>等级 min</summary>
 		[ProtoMember(5)]
 		public int Lv_Min { get; set; }
-		/// <summary>角色等级</summary>
+		/// <summary>等级 max</summary>
 		[ProtoMember(6)]
 		public int Lv_Max { get; set; }
 		/// <summary>权重</summary>
 		[ProtoMember(7)]
 		public int weight { get; set; }
-		/// <summary>限购条件</summary>
+		/// <summary>购买限制 角色等级</summary>
 		[ProtoMember(8)]
-		public string Buy_Limit_Condition { get; set; }
-		/// <summary>限购</summary>
+		public int Limit_Condition_1 { get; set; }
+		/// <summary>购买限制</summary>
 		[ProtoMember(9)]
-		public int Buy_Limit_Num { get; set; }
-		/// <summary>消耗 类型</summary>
+		public int Limit_Condition_2 { get; set; }
+		/// <summary>购买限制</summary>
 		[ProtoMember(10)]
-		public int Consume_Type { get; set; }
-		/// <summary>消耗 ID</summary>
+		public int Limit_Condition_3 { get; set; }
+		/// <summary>本次 限购</summary>
 		[ProtoMember(11)]
-		public int Consume_Id { get; set; }
-		/// <summary>现价</summary>
+		public int Limit_Num { get; set; }
+		/// <summary>终身 限购</summary>
 		[ProtoMember(12)]
-		public int Consume_Value { get; set; }
-		/// <summary>原价</summary>
-		[ProtoMember(13)]
-		public int Consume_Original { get; set; }
+		public int Limit_Num_Forever { get; set; }
 		/// <summary>折扣</summary>
+		[ProtoMember(13)]
+		public double Discount { get; set; }
+		/// <summary>支付 ID</summary>
 		[ProtoMember(14)]
-		public double discount { get; set; }
-		/// <summary>商品</summary>
+		public int Pay_Id { get; set; }
+		/// <summary>主消耗 类型</summary>
 		[ProtoMember(15)]
+		public int Consume_Type_1 { get; set; }
+		/// <summary>主消耗 ID</summary>
+		[ProtoMember(16)]
+		public int Consume_Id_1 { get; set; }
+		/// <summary>主消耗 现价</summary>
+		[ProtoMember(17)]
+		public int Consume_Value_1 { get; set; }
+		/// <summary>主消耗 原价</summary>
+		[ProtoMember(18)]
+		public int Consume_Original_1 { get; set; }
+		/// <summary>副消耗 类型</summary>
+		[ProtoMember(19)]
+		public int Consume_Type_2 { get; set; }
+		/// <summary>副消耗 ID</summary>
+		[ProtoMember(20)]
+		public int Consume_Id_2 { get; set; }
+		/// <summary>副消耗 现价</summary>
+		[ProtoMember(21)]
+		public int Consume_Value_2 { get; set; }
+		/// <summary>副消耗 原价</summary>
+		[ProtoMember(22)]
+		public int Consume_Original_2 { get; set; }
+		/// <summary>副消耗 类型</summary>
+		[ProtoMember(23)]
+		public int Consume_Type_3 { get; set; }
+		/// <summary>副消耗 ID</summary>
+		[ProtoMember(24)]
+		public int Consume_Id_3 { get; set; }
+		/// <summary>副消耗 现价</summary>
+		[ProtoMember(25)]
+		public int Consume_Value_3 { get; set; }
+		/// <summary>副消耗 原价</summary>
+		[ProtoMember(26)]
+		public int Consume_Original_3 { get; set; }
+		/// <summary>标签</summary>
+		[ProtoMember(27)]
+		public int Tag { get; set; }
+		/// <summary>商品</summary>
+		[ProtoMember(28)]
 		public string Goods { get; set; }
 		/// <summary>排序</summary>
-		[ProtoMember(16)]
+		[ProtoMember(29)]
 		public int Order_LS { get; set; }
 		/// <summary>禁用</summary>
-		[ProtoMember(17)]
+		[ProtoMember(30)]
 		public int Is_Close { get; set; }
 
 	}

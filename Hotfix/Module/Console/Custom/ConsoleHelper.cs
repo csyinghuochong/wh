@@ -957,9 +957,8 @@ namespace ET
                         continue;
                     }
 
-                    //击败boss>3返回
-                    //击败boss>3返回
-                    int killmonsterNumber = CommonHelper.KillBoss_Lv_Number(roleInfoComponentServer.RoleInfo.MonsterRevives, roleInfoComponentServer.RoleInfo.Lv);
+                    //击败boss>3返回（MonsterRevives 已移除）
+                    int killmonsterNumber = 0;
                     //if (killmonsterNumber >= 3)
                     //{
                     //    continue;

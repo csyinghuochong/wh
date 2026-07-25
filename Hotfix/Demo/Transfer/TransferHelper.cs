@@ -41,7 +41,7 @@ namespace ET
                     {
                         return ErrorCode.ERR_TimesIsNot;
                     }
-                    if (ldScene.EnterLv > roleInfoComponent.RoleInfo.Level)
+                    if (ldScene.EnterLv > roleInfoComponent.RoleInfo.Lv)
                     {
                         return ErrorCode.ERR_LevelIsNot;
                     }*/
@@ -401,7 +401,7 @@ namespace ET
                     case MapTypeEnum.Arena:
                         roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                         ldScene = LDSceneCategory.Instance.Get(request.SceneId);
-                        /*if (roleInfoComponent.RoleInfo.Level < ldScene.EnterLv)
+                        /*if (roleInfoComponent.RoleInfo.Lv < ldScene.EnterLv)
                         {
                             return ErrorCode.ERR_LevelIsNot;
                         }*/

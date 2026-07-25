@@ -227,7 +227,7 @@ namespace ET
                         unit.AddComponent<UnitGateComponent, long>(player.InstanceId);
                         unit.AddComponent<MailComponent>();
                         unit.AddComponent<StateComponent>();
-                        UnitCombatComponentHelper.EnsurePlayerComponents(unit);
+                        UnitComponentEnsureHelper.EnsurePlayerComponents(unit);
                         unit.AddComponent<DBSaveComponent>();
                         RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                         DBSaveComponent dbSaveComponent = unit.GetComponent<DBSaveComponent>();

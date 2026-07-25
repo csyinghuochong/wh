@@ -1,6 +1,6 @@
 namespace ET
 {
-    public static class UnitCombatComponentHelper
+    public static class UnitComponentEnsureHelper
     {
         public static UnitLifeComponent EnsureLifeComponent(Unit unit)
         {
@@ -21,9 +21,9 @@ namespace ET
                 unit.AddComponent<PlayerSessionComponent>();
             }
 
-            if (unit.GetComponent<RoleDailyDataComponent>() == null)
+            if (unit.GetComponent<RoleDailyDataComponentServer>() == null)
             {
-                unit.AddComponent<RoleDailyDataComponent>();
+                unit.AddComponent<RoleDailyDataComponentServer>();
             }
         }
     }

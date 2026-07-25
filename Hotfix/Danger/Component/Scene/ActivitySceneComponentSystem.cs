@@ -210,7 +210,11 @@ namespace ET
             }
             int openServerDay = DBHelper.GetOpenServerDay(zone);
             LogHelper.LogDebug($"InitDayActivity: {zone}  {openServerDay}");
-            self.DBDayActivityInfo.MysteryItemInfos = RandomShopHelper.InitMysteryItemInfos(openServerDay);
+          
+            if (self.DBDayActivityInfo.GlobalRandomShops == null || self.DBDayActivityInfo.GlobalRandomShops.Count == 0)
+            {
+                self.InitGlobalRandomShop();
+            }
 
             if (self.DBDayActivityInfo.PetMingHexinList.Count == 0)
             {
@@ -222,6 +226,31 @@ namespace ET
 
             //每日活动
             self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Second, TimerType.ActivitySceneTimer, self);
+        }
+
+        public static void InitGlobalRandomShop(this ActivitySceneComponent self)
+        {
+            self.DBDayActivityInfo.GlobalRandomShops = RandomShopHelper.InitGlobalRandomShops();
+        }
+
+        public static List<MysteryItemInfo> GetGlobalRandomShopList(this ActivitySceneComponent self, int shopId)
+        {
+            if (self.DBDayActivityInfo.GlobalRandomShops == null)
+            {
+                self.DBDayActivityInfo.GlobalRandomShops = new Dictionary<int, List<MysteryItemInfo>>();
+            }
+
+            if (self.DBDayActivityInfo.GlobalRandomShops.Count == 0)
+            {
+                self.InitGlobalRandomShop();
+            }
+
+            if (self.DBDayActivityInfo.GlobalRandomShops.TryGetValue(shopId, out List<MysteryItemInfo> list))
+            {
+                return list;
+            }
+
+            return new List<MysteryItemInfo>();
         }
 
         public static async ETTask OnCheckFuntionButton(this ActivitySceneComponent self)
@@ -353,22 +382,48 @@ namespace ET
             DBHelper.SaveComponent(self.DomainZone(), self.DomainZone(), self.DBDayActivityInfo).Coroutine();
         }
 
-        public static int OnMysteryBuyRequest(this ActivitySceneComponent self, MysteryItemInfo mysteryInfo)
+        public static int OnGlobalShopBuyRequest(this ActivitySceneComponent self, int shopId, MysteryItemInfo mysteryInfo)
         {
-            for (int i = 0; i < self.DBDayActivityInfo.MysteryItemInfos.Count; i++)
+            if (mysteryInfo == null || self.DBDayActivityInfo.GlobalRandomShops == null)
             {
-                MysteryItemInfo mysteryItemInfo1 = self.DBDayActivityInfo.MysteryItemInfos[i];
+                return ErrorCode.ERR_ItemNotEnoughError;
+            }
 
+            if (shopId > 0
+                && self.DBDayActivityInfo.GlobalRandomShops.TryGetValue(shopId, out List<MysteryItemInfo> shopList))
+            {
+                return TryDeductGlobalShopStock(shopList, mysteryInfo);
+            }
+
+            foreach (List<MysteryItemInfo> list in self.DBDayActivityInfo.GlobalRandomShops.Values)
+            {
+                int error = TryDeductGlobalShopStock(list, mysteryInfo);
+                if (error == ErrorCode.ERR_Success)
+                {
+                    return ErrorCode.ERR_Success;
+                }
+            }
+            return ErrorCode.ERR_ItemNotEnoughError;
+        }
+
+        private static int TryDeductGlobalShopStock(List<MysteryItemInfo> shopList, MysteryItemInfo mysteryInfo)
+        {
+            for (int i = 0; i < shopList.Count; i++)
+            {
+                MysteryItemInfo mysteryItemInfo1 = shopList[i];
                 if (mysteryItemInfo1.MysteryId != mysteryInfo.MysteryId)
                 {
                     continue;
                 }
-                if (mysteryItemInfo1.ItemNumber < mysteryInfo.ItemNumber)
+                // ItemNumber>0 时扣全服库存；0 表示不限
+                if (mysteryItemInfo1.ItemNumber > 0)
                 {
-                    return ErrorCode.ERR_ItemNotEnoughError;
+                    if (mysteryItemInfo1.ItemNumber < mysteryInfo.ItemNumber)
+                    {
+                        return ErrorCode.ERR_ItemNotEnoughError;
+                    }
+                    mysteryItemInfo1.ItemNumber -= mysteryInfo.ItemNumber;
                 }
-
-                mysteryItemInfo1.ItemNumber -= mysteryInfo.ItemNumber;
                 return ErrorCode.ERR_Success;
             }
             return ErrorCode.ERR_ItemNotEnoughError;
@@ -435,8 +490,8 @@ namespace ET
 
             if (hour == 0)
             {
-                LogHelper.LogWarning($"神秘商品刷新: {self.DomainZone()}", true);
-                self.DBDayActivityInfo.MysteryItemInfos = RandomShopHelper.InitMysteryItemInfos(openServerDay);
+                LogHelper.LogWarning($"全服随机商店刷新: {self.DomainZone()}", true);
+                self.InitGlobalRandomShop();
                 self.DBDayActivityInfo.PetMingHexinList.Clear();
 
                 self.InitPetMineExtend();

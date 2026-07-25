@@ -57,12 +57,7 @@ namespace ET
                 }
 
                
-                if (roleInfo.RoleInfo.SerialRewards.Contains(serialIndex))
-                {
-                    response.Error = ErrorCode.ERR_AlreadyReceived2;
-                    reply();
-                    return;
-                }
+                // SerialRewards 已从 RoleInfo 移除，重复领取由中心服 IsRewarded 校验
 
                 M2R_SerialReardRequest m2Center_Serial = new M2R_SerialReardRequest() { SerialNumber = request.SerialNumber };
                 R2M_SerialReardResponse m2m_TrasferUnitResponse = (R2M_SerialReardResponse)await ActorMessageSenderComponent.Instance.Call
@@ -78,10 +73,6 @@ namespace ET
                 string reward = CommonConfig.SerialReward[serialIndex];
                 bag.OnAddItemData(reward, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}");
                 numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
-                if (serialIndex >= 8 && serialIndex <= 11)
-                {
-                    roleInfo.RoleInfo.SerialRewards.Add(serialIndex);
-                }
             }
 
             reply();

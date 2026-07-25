@@ -15,6 +15,7 @@ namespace ET
             {
                 //获取UserID及User数据
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
                 RoleInfo useInfo = roleInfoComponentServer.RoleInfo;
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
@@ -58,7 +59,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (ldItem.DayUseNum > 0 && roleInfoComponentServer.GetDayItemUse(ldItem.Id) >= ldItem.DayUseNum)
+                    if (ldItem.DayUseNum > 0 && (daily?.GetDayItemUse(ldItem.Id) ?? 0) >= ldItem.DayUseNum)
                     {
                         response.Error = ErrorCode.ERR_ItemNoUseTime;
                         reply();
@@ -492,7 +493,7 @@ namespace ET
                         }
                         if (ldItem.DayUseNum > 0)
                         {
-                            roleInfoComponentServer.OnDayItemUse(ldItem.Id);
+                            daily?.OnDayItemUse(ldItem.Id);
                         }
                         if (ldItem.SumUseNum > 0)
                         {

@@ -67,7 +67,6 @@ namespace ET
                     if (roleInfo.OccTwo != 0)
                     {
                         skillSetComponentServer.OnChangeJueXing(roleInfo.OccTwo, toOcc);
-                        roleInfo.OccTwoOld.Add(roleInfo.OccTwo);
                     }
 
                     sp = skillSetComponentServer.OnOccReset();

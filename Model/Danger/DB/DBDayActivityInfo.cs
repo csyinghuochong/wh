@@ -17,8 +17,11 @@ namespace ET
 		/// </summary>
 		public List<int> TurtleWinTimes = new List<int>() { }; 
 
-        //神秘商品
-        public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+        /// <summary>
+        /// 全服随机商店货架 Key=ShopId（LDShop.Type==9）
+        /// </summary>
+        [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
+        public Dictionary<int, List<MysteryItemInfo>> GlobalRandomShops = new Dictionary<int, List<MysteryItemInfo>>();
 
 		//战区活动
 		public List<ZhanQuReceiveNumber> ZhanQuReveives = new List<ZhanQuReceiveNumber>();

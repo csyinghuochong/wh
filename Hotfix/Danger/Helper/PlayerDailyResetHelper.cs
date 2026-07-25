@@ -21,11 +21,12 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
 
-            unit.GetComponent<RoleDailyDataComponent>()?.OnZeroClockUpdate(notice);
+            unit.GetComponent<RoleDailyDataComponentServer>()?.OnZeroClockUpdate(notice);
             if (notice)
             {
                 roleInfoComponentServer.OnHourUpdate(0, true);
             }
+            // 日清列表已在 RoleDailyData.OnZeroClockUpdate 清过；这里只做 RoleInfo 其它跨天逻辑
             roleInfoComponentServer.OnZeroClockUpdate(notice);
 
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();

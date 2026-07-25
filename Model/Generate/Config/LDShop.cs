@@ -99,9 +99,15 @@ namespace ET
 		/// <summary>自动刷新 1-日 2-周 3-月 9-特殊</summary>
 		[ProtoMember(8)]
 		public int Auto_Refresh { get; set; }
-		/// <summary>资源条 0-默认</summary>
+		/// <summary>资源条 其他</summary>
 		[ProtoMember(9)]
 		public int[] Resource_Bar { get; set; }
+		/// <summary>资源条 金币 0-无 1-所有 2-非绑</summary>
+		[ProtoMember(10)]
+		public int Resource_Bar_2 { get; set; }
+		/// <summary>资源条 钻石 0-无 1-所有 2-非绑</summary>
+		[ProtoMember(11)]
+		public int Resource_Bar_1 { get; set; }
 
 	}
 }

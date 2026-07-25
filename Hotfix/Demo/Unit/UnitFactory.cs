@@ -87,7 +87,8 @@ namespace ET
             unit.AddDataComponent<JiaYuanComponentServer>();
             unit.AddDataComponent<ShoujiComponentServer>();
             unit.AddDataComponent<DataCollationComponent>();
-            
+            unit.AddDataComponent<RoleDailyDataComponentServer>();
+
             await unit.AddDBComonent<DBFriendInfo>(unit.Id);
             await unit.AddDBComonent<DBMailInfo>(unit.Id);
             
@@ -174,7 +175,7 @@ namespace ET
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(unitid, 1001);
             unit.AddComponent<AttackRecordComponent>();
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-            UnitCombatComponentHelper.EnsureLifeComponent(unit);
+            UnitComponentEnsureHelper.EnsureLifeComponent(unit);
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unitInfoComponent.EnergySkillId = createMonsterInfo.SkillId;
             unitInfoComponent.UnitName = ldMonster.Name.ToString();
@@ -299,7 +300,7 @@ namespace ET
             scene.GetComponent<UnitComponent>().Add(unit);
             unit.AddComponent<ObjectWait>();
             unit.AddComponent<StateComponent>();            //添加状态组件
-            UnitCombatComponentHelper.EnsureLifeComponent(unit);
+            UnitComponentEnsureHelper.EnsureLifeComponent(unit);
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             //unitInfoComponent.UnitName = master.GetComponent<RoleInfoComponentServer>().RoleInfo.StallName;
@@ -324,7 +325,7 @@ namespace ET
             unit.AddComponent<SkillManagerComponent>();
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
-            UnitCombatComponentHelper.EnsureLifeComponent(unit);
+            UnitComponentEnsureHelper.EnsureLifeComponent(unit);
             unitInfoComponent.UnitName = master.GetComponent<UnitInfoComponent>().UnitName;
             numericComponent.Set(NumericType.MasterId, master.Id);
             numericComponent.Set(NumericType.BattleCamp, master.GetBattleCamp());
@@ -451,7 +452,7 @@ namespace ET
             unit.ConfigId = petinfo.ConfigId;
             unit.MasterId = master.Id;
             unit.AddComponent<StateComponent>();         //添加状态组件
-            UnitCombatComponentHelper.EnsureLifeComponent(unit);
+            UnitComponentEnsureHelper.EnsureLifeComponent(unit);
             unit.AddComponent<BuffManagerComponent>();      //添加
             unit.Position = new Vector3(master.Position.x + RandomHelper.RandFloat01() * 1f, master.Position.y, master.Position.z + RandomHelper.RandFloat01() * 1f);
             unit.Type = UnitType.Pet;

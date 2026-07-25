@@ -601,50 +601,11 @@ namespace ET
 		[ProtoMember(21)]
 		public List<int> CompleteGuideIds = new List<int>();
 
-		[ProtoMember(22)]
-		public List<KeyValuePairInt> DayFubenTimes = new List<KeyValuePairInt>();
-
-		[ProtoMember(23)]
-		public List<KeyValuePair> MonsterRevives = new List<KeyValuePair>();
-
-		[ProtoMember(24)]
-		public List<int> TowerRewardIds = new List<int>();
-
-		[ProtoMember(25)]
-		public List<int> ChouKaRewardIds = new List<int>();
-
-		[ProtoMember(26)]
-		public List<int> XiuLianRewardIds = new List<int>();
-
-//购买过的神秘商品
-		[ProtoMember(27)]
-		public List<KeyValuePairInt> MysteryItems = new List<KeyValuePairInt>();
-
-//已开启的宝箱记录
-		[ProtoMember(28)]
-		public List<KeyValuePair> OpenChestList = new List<KeyValuePair>();
-
 		[ProtoMember(29)]
 		public List<KeyValuePairInt> MakeIdList = new List<KeyValuePairInt>();
 
-//已通关的副本列表
-		[ProtoMember(30)]
-		public List<FubenPassInfo> FubenPassList = new List<FubenPassInfo>();
-
-//每日道具使用限制
-		[ProtoMember(31)]
-		public List<KeyValuePairInt> DayItemUse = new List<KeyValuePairInt>();
-
 		[ProtoMember(32)]
 		public List<int> HorseIds = new List<int>();
-
-//剧情副本每日刷新 global79
-		[ProtoMember(33)]
-		public List<KeyValuePairInt> DayMonsters = new List<KeyValuePairInt>();
-
-//随机精灵每日刷新 global80
-		[ProtoMember(34)]
-		public List<int> DayJingLing = new List<int>();
 
 		[ProtoMember(35)]
 		public long JiaYuanFund { get; set; }
@@ -685,22 +646,9 @@ namespace ET
 		[ProtoMember(62)]
 		public List<int> ExpGetWay = new List<int>();
 
-		[ProtoMember(63)]
-		public long WeiJingGold { get; set; }
-
-//购买过的神秘商品
-		[ProtoMember(64)]
-		public List<KeyValuePairInt> BuyStoreItems = new List<KeyValuePairInt>();
-
-		[ProtoMember(65)]
-		public List<int> OccTwoOld = new List<int>();
-
-		[ProtoMember(66)]
-		public List<int> SerialRewards = new List<int>();
-
-//总共使用次数
-		[ProtoMember(67)]
-		public List<KeyValuePairInt> TotalUseTimes = new List<KeyValuePairInt>();
+//商店终身限购次数 Key=LDShop_Goods.Id
+		[ProtoMember(68)]
+		public List<KeyValuePairInt> BuyStoreItemsForever = new List<KeyValuePairInt>();
 
 	}
 
@@ -4975,11 +4923,11 @@ namespace ET
 
 	}
 
-//获取商品列表
-	[ResponseType(nameof(A2C_MysteryListResponse))]
-	[Message(OuterOpcode.C2A_MysteryListRequest)]
+//获取商品列表（Type2/3 个人随机货架在 Map；Type9 全服经 M2A_GoldShopList 到 Activity）
+	[ResponseType(nameof(M2C_ShopListResponse))]
+	[Message(OuterOpcode.C2M_ShopListRequest)]
 	[ProtoContract]
-	public partial class C2A_MysteryListRequest: Object, IActivityActorRequest
+	public partial class C2M_ShopListRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -4988,16 +4936,13 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-		[ProtoMember(2)]
 		public int ShopId { get; set; }
 
 	}
 
-	[Message(OuterOpcode.A2C_MysteryListResponse)]
+	[Message(OuterOpcode.M2C_ShopListResponse)]
 	[ProtoContract]
-	public partial class A2C_MysteryListResponse: Object, IActivityActorResponse
+	public partial class M2C_ShopListResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -16627,6 +16572,90 @@ namespace ET
 
 		[ProtoMember(8)]
 		public ActivityV1Info ActivityV1Info { get; set; }
+
+	}
+
+/// <summary>角色日清/本次周期数据（零点清空；不含终身）</summary>
+	[Message(OuterOpcode.RoleDailyData)]
+	[ProtoContract]
+	public partial class RoleDailyData: Object
+	{
+		[ProtoMember(1)]
+		public List<KeyValuePairInt> DayFubenTimes = new List<KeyValuePairInt>();
+
+		[ProtoMember(2)]
+		public List<int> ChouKaRewardIds = new List<int>();
+
+		[ProtoMember(3)]
+		public List<KeyValuePairInt> MysteryItems = new List<KeyValuePairInt>();
+
+		[ProtoMember(4)]
+		public List<KeyValuePairInt> DayItemUse = new List<KeyValuePairInt>();
+
+		[ProtoMember(5)]
+		public List<KeyValuePairInt> DayMonsters = new List<KeyValuePairInt>();
+
+		[ProtoMember(6)]
+		public List<int> DayJingLing = new List<int>();
+
+// 商店本次限购 Key=LDShop_Goods.Id
+		[ProtoMember(7)]
+		public List<KeyValuePairInt> BuyStoreItems = new List<KeyValuePairInt>();
+
+	}
+
+	[ResponseType(nameof(M2C_RoleDailyDataInit))]
+	[Message(OuterOpcode.C2M_RoleDailyDataRequest)]
+	[ProtoContract]
+	public partial class C2M_RoleDailyDataRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+/// <summary>登录后客户端主动请求的日清全量初始化</summary>
+	[Message(OuterOpcode.M2C_RoleDailyDataInit)]
+	[ProtoContract]
+	public partial class M2C_RoleDailyDataInit: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public RoleDailyData Data { get; set; }
+
+		[ProtoMember(2)]
+		public List<KeyValuePairInt> BuyStoreItemsForever = new List<KeyValuePairInt>();
+
+	}
+
+/// <summary>日清或限购变更后主动推送</summary>
+	[Message(OuterOpcode.M2C_RoleDailyDataUpdate)]
+	[ProtoContract]
+	public partial class M2C_RoleDailyDataUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public RoleDailyData Data { get; set; }
+
+		[ProtoMember(2)]
+		public List<KeyValuePairInt> BuyStoreItemsForever = new List<KeyValuePairInt>();
+
+// 1=全量 2=仅商店限购 3=零点清空后全量
+		[ProtoMember(3)]
+		public int Reason { get; set; }
 
 	}
 

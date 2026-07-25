@@ -88,12 +88,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (roleInfo.Vitality < costvitality)
-            {
-                response.Error = ErrorCode.ERR_VitalityNotEnoughError;
-                reply();
-                return;
-            }
+            // Vitality 已从 RoleInfo 移除
 
 
             List<RewardItem> rewardItems = new List<RewardItem>();
@@ -155,7 +150,6 @@ namespace ET
             }
            
             unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (costgold * -1).ToString(), true, ItemGetWay.SkillMake);
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Vitality, (costvitality * -1).ToString());
 
             reply();
             await ETTask.CompletedTask;

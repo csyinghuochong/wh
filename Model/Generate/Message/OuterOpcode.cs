@@ -236,8 +236,8 @@ namespace ET
 		 public const ushort RewardItem = 10233;
 		 public const ushort C2M_ChangeOccTwoRequest = 10234;
 		 public const ushort M2C_ChangeOccTwoResponse = 10235;
-		 public const ushort C2A_MysteryListRequest = 10236;
-		 public const ushort A2C_MysteryListResponse = 10237;
+		 public const ushort C2M_ShopListRequest = 10236;
+		 public const ushort M2C_ShopListResponse = 10237;
 		 public const ushort C2M_ShopBuyRequest = 10238;
 		 public const ushort M2C_ShopBuyResponse = 10239;
 		 public const ushort C2M_GameSettingRequest = 10240;
@@ -908,7 +908,11 @@ namespace ET
 		 public const ushort M2C_ActivityOrderOperateResponse = 10905;
 		 public const ushort C2M_ActivityTreeTendRequest = 10906;
 		 public const ushort M2C_ActivityTreeTendResponse = 10907;
-		 public const ushort C2R_QueryAccountRequest = 10908;
-		 public const ushort R2C_QueryAccountResponse = 10909;
+		 public const ushort RoleDailyData = 10908;
+		 public const ushort C2M_RoleDailyDataRequest = 10909;
+		 public const ushort M2C_RoleDailyDataInit = 10910;
+		 public const ushort M2C_RoleDailyDataUpdate = 10911;
+		 public const ushort C2R_QueryAccountRequest = 10912;
+		 public const ushort R2C_QueryAccountResponse = 10913;
 	}
 }
