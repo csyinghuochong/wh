@@ -4801,19 +4801,15 @@ namespace ET
 		[ProtoMember(1)]
 		public int SkillID { get; set; }
 
-		/// <summary>技能栏位置ID（见 SkillBarConfig）</summary>
 		[ProtoMember(2)]
 		public int Position { get; set; }
 
-		/// <summary>1技能 2道具</summary>
 		[ProtoMember(3)]
 		public int SkillType { get; set; }
 
-		/// <summary>方向 0/1/2；单方向槽位固定传 0</summary>
 		[ProtoMember(4)]
 		public int Direction { get; set; }
 
-		/// <summary>道具实例（可选）</summary>
 		[ProtoMember(5)]
 		public long BagInfoId { get; set; }
 
@@ -4869,7 +4865,7 @@ namespace ET
 
 	}
 
-//技能列表
+//技能列表（拥有的技能；栏位占用见 SkillBarSlot）
 	[Message(OuterOpcode.SkillPro)]
 	[ProtoContract]
 	public partial class SkillPro: Object
@@ -4900,7 +4896,7 @@ namespace ET
 
 	}
 
-	/// <summary>技能栏装配槽（同一技能可占用多个 Position/Direction）</summary>
+//技能栏装配槽（天下3：同一技能可占用多个 Position/Direction）
 	[Message(OuterOpcode.SkillBarSlot)]
 	[ProtoContract]
 	public partial class SkillBarSlot: Object
@@ -4919,6 +4915,7 @@ namespace ET
 
 		[ProtoMember(5)]
 		public long BagInfoId { get; set; }
+
 	}
 
 	[Message(OuterOpcode.RechargePro)]
@@ -4978,26 +4975,67 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_StoreBuyResponse))]
-//商店购买
-	[Message(OuterOpcode.C2M_StoreBuyRequest)]
+//获取商品列表
+	[ResponseType(nameof(A2C_MysteryListResponse))]
+	[Message(OuterOpcode.C2A_MysteryListRequest)]
 	[ProtoContract]
-	public partial class C2M_StoreBuyRequest: Object, IActorLocationRequest
+	public partial class C2A_MysteryListRequest: Object, IActivityActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+		[ProtoMember(2)]
+		public int ShopId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.A2C_MysteryListResponse)]
+	[ProtoContract]
+	public partial class A2C_MysteryListResponse: Object, IActivityActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
+
+	}
+
+	[ResponseType(nameof(M2C_ShopBuyResponse))]
+//商店购买
+	[Message(OuterOpcode.C2M_ShopBuyRequest)]
+	[ProtoContract]
+	public partial class C2M_ShopBuyRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
 
 		[ProtoMember(1)]
-		public int SellItemID { get; set; }
+		public int ShopId { get; set; }
 
 		[ProtoMember(2)]
-		public int SellItemNum { get; set; }
+		public int ShopGoodsID { get; set; }
+
+		[ProtoMember(3)]
+		public int BuyNumber { get; set; }
 
 	}
 
-	[Message(OuterOpcode.M2C_StoreBuyResponse)]
+	[Message(OuterOpcode.M2C_ShopBuyResponse)]
 	[ProtoContract]
-	public partial class M2C_StoreBuyResponse: Object, IActorLocationResponse
+	public partial class M2C_ShopBuyResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -6295,40 +6333,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_MysteryBuyResponse))]
-	[Message(OuterOpcode.C2M_MysteryBuyRequest)]
-	[ProtoContract]
-	public partial class C2M_MysteryBuyRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public MysteryItemInfo MysteryItemInfo { get; set; }
-
-		[ProtoMember(2)]
-		public int NpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_MysteryBuyResponse)]
-	[ProtoContract]
-	public partial class M2C_MysteryBuyResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(Actor_FubenMoNengResponse))]
 	[Message(OuterOpcode.Actor_FubenMoNengRequest)]
 	[ProtoContract]
@@ -6559,40 +6563,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public ServerInfo ServerInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(A2C_MysteryListResponse))]
-	[Message(OuterOpcode.C2A_MysteryListRequest)]
-	[ProtoContract]
-	public partial class C2A_MysteryListRequest: Object, IActivityActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.A2C_MysteryListResponse)]
-	[ProtoContract]
-	public partial class A2C_MysteryListResponse: Object, IActivityActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<MysteryItemInfo> MysteryItemInfos = new List<MysteryItemInfo>();
 
 	}
 
@@ -11116,21 +11086,19 @@ namespace ET
 		[ProtoMember(5)]
 		public int TianFuPlan { get; set; }
 
-		/// <summary>技能方案0</summary>
 		[ProtoMember(6)]
 		public List<SkillBarSlot> SkillBarList = new List<SkillBarSlot>();
 
-		/// <summary>技能方案1</summary>
 		[ProtoMember(7)]
 		public List<SkillBarSlot> SkillBarList1 = new List<SkillBarSlot>();
 
-		/// <summary>当前技能方案 0/1</summary>
 		[ProtoMember(8)]
 		public int SkillBarPlan { get; set; }
 
 	}
 
 	[ResponseType(nameof(M2C_SkillBarPlanResponse))]
+//切换技能栏方案
 	[Message(OuterOpcode.C2M_SkillBarPlanRequest)]
 	[ProtoContract]
 	public partial class C2M_SkillBarPlanRequest: Object, IActorLocationRequest
@@ -11140,6 +11108,7 @@ namespace ET
 
 		[ProtoMember(1)]
 		public int SkillBarPlan { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_SkillBarPlanResponse)]
@@ -11154,6 +11123,7 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
 	}
 
 //技能天赋更新
@@ -11383,35 +11353,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public List<JiaYuanRecord> JiaYuanRecord = new List<JiaYuanRecord>();
-
-	}
-
-//一键放入
-	[ResponseType(nameof(M2C_JiaYuanStoreResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanStoreRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanStoreRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int HorseId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanStoreResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanStoreResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
 
 	}
 

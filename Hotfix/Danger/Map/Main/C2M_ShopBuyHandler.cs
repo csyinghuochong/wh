@@ -5,14 +5,14 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class C2M_StoreBuyHandler : AMActorLocationRpcHandler<Unit, C2M_StoreBuyRequest, M2C_StoreBuyResponse>
+    public class C2M_ShopBuyHandler : AMActorLocationRpcHandler<Unit, C2M_ShopBuyRequest, M2C_ShopBuyResponse>
     {
-        protected override async ETTask Run(Unit unit, C2M_StoreBuyRequest request, M2C_StoreBuyResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_ShopBuyRequest request, M2C_ShopBuyResponse response, Action reply)
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
 
-            LDShop_Goods storeSellConfig = LDShop_GoodsCategory.Instance.Get(request.SellItemID);
+            LDShop_Goods storeSellConfig = LDShop_GoodsCategory.Instance.Get(request.ShopGoodsID);
             if (storeSellConfig == null)
             {
                 reply();
@@ -20,7 +20,7 @@ namespace ET
             }
 
             int buynumber = roleInfoComponentServer.GetStoreBuy(storeSellConfig.Id);
-            if (storeSellConfig.Buy_Limit_Num >0 && request.SellItemNum +  buynumber > storeSellConfig.Buy_Limit_Num)
+            if (storeSellConfig.Buy_Limit_Num >0 && request.BuyNumber +  buynumber > storeSellConfig.Buy_Limit_Num)
             {
                 response.Error = ErrorCode.ERR_BuyMaxLimit;
                 reply();
@@ -36,13 +36,13 @@ namespace ET
             }
 
             //购买限制
-            if (request.SellItemNum <= 0) {
-                request.SellItemNum = 1;
+            if (request.BuyNumber <= 0) {
+                request.BuyNumber = 1;
             }
 
-            if (request.SellItemNum >= 100)
+            if (request.BuyNumber >= 100)
             {
-                request.SellItemNum = 100;
+                request.BuyNumber = 100;
             }
 
             string costItem = $"{storeSellConfig.Consume_Type}_{storeSellConfig.Consume_Id}_{storeSellConfig.Consume_Value}";
