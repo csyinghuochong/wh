@@ -147,10 +147,11 @@ namespace ET
             unit.MasterId = masterId;
 
             float speed = summonConfig.Speed > 0 ? summonConfig.Speed / 1000f : 1f;
-            numericComponent.Set(NumericType.Speed_Current_15, speed, false);
-            numericComponent.Set(NumericType.MasterId, masterId, false);
+            // Speed_Current 是复合属性，Set 会失败；自定义字段与速度一律 ApplyValue
+            numericComponent.ApplyValue(NumericType.Speed_Current_15, NumericConvert.DisplayToStored(NumericType.Speed_Current_15, speed), false);
+            numericComponent.ApplyValue(NumericType.MasterId, masterId, false);
             numericComponent.SetStartAngle(rotation, false);
-            numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
+            numericComponent.ApplyValue(NumericType.StartTime, TimeHelper.ServerNow(), false);
             // AOI 由 CreateSummon 在 SkillEntityComponent.Init 写完 MoveType/TrackTarget 后再挂，避免客户端缺参数
             return unit;
         }

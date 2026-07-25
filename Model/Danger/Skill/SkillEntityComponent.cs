@@ -4,9 +4,9 @@ namespace ET
     public class SummonRuntimeData
     {
         public int SummonId;
-        /// <summary>0=计时触发，1=碰撞生效</summary>
+        /// <summary><see cref="SkillEntityActionType"/></summary>
         public int ActionType;
-        /// <summary>0=静止，1=直线，2=追踪</summary>
+        /// <summary><see cref="SkillEntityMoveType"/></summary>
         public int MoveType;
         public long TrackTargetId;
         public bool DeleteOnBlock;
@@ -17,7 +17,7 @@ namespace ET
         public bool TriggerOnCreate;
         public int ActionSkillId;
         public int ActionSkillLevel;
-        /// <summary>1=次数，10=主人死亡，11=次数+主人死亡</summary>
+        /// <summary><see cref="SkillEntityDestroyMode"/></summary>
         public int DestroyMode;
         public int DestroySkillId;
         public int DestroySkillLevel;
@@ -47,5 +47,7 @@ namespace ET
         public long Timer;
         public long DamgeChiXuLastTime;
         public long LastActionTime;
+        /// <summary>上次移动结算时间，用于按真实 dt 飞行（服务端 FrameTimer=100ms）</summary>
+        public long LastUpdateTime;
     }
 }

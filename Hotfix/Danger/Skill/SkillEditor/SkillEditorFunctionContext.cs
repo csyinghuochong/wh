@@ -257,7 +257,21 @@ namespace ET
                 case "buff.parent":
                     return this.Handler?.TheUnitFrom;
                 case "caster.parent":
-                    return this.Handler?.TheUnitFrom?.Parent as Unit;
+                    // 编辑器「技能体施法者」：取技能体 MasterId，不是 Entity.Parent（那是 UnitComponent）
+                    {
+                        Unit from = this.Handler?.TheUnitFrom;
+                        if (from == null)
+                        {
+                            return null;
+                        }
+
+                        if (from.MasterId > 0)
+                        {
+                            return from.GetParent<UnitComponent>()?.Get(from.MasterId);
+                        }
+
+                        return null;
+                    }
                 case "targets":
                     return this.Handler?.TheUnitTarget;
                 case "createsummon":

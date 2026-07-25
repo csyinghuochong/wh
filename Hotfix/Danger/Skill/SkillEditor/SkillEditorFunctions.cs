@@ -1622,12 +1622,18 @@ namespace ET
                 runtime.TrackTargetId = ctx.Handler.TheUnitTarget?.Id ?? 0;
             }
 
+            // 碰撞作用技能固定用表 Skill_1
+            if (summonConfig.Skill_1 > 0)
+            {
+                runtime.ActionSkillId = summonConfig.Skill_1;
+            }
+
             SkillEntityComponent skillEntity = summonUnit.AddComponent<SkillEntityComponent>();
             skillEntity.Init(ctx.Handler, caster.Id, summonConfig, runtime);
             summonUnit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, summonUnit.Position);
 
             ctx.SetVariable("createSummon", summonUnit.Id.ToString(CultureInfo.InvariantCulture));
-            if (Log.IsDebugEnabled) Log.Debug($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} unit={summonUnit.Id} caster={caster.Id} legacy={legacyFormat}");
+            Log.Info($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} unit={summonUnit.Id} skill_1={runtime.ActionSkillId} move={runtime.MoveType} track={runtime.TrackTargetId}");
         }
 
         private static SummonRuntimeData ParseCreateSummonRuntime(SkillEditorFunctionContext ctx, LDSummon summonConfig)
@@ -1655,23 +1661,28 @@ namespace ET
             bool destroyOnCasterDead = ctx.GetParamBool(17, false);
             if (destroyOnCount && destroyOnCasterDead)
             {
-                runtime.DestroyMode = 11;
+                runtime.DestroyMode = SkillEntityDestroyMode.OnActionCountOrMasterDead_11;
             }
             else if (destroyOnCasterDead)
             {
-                runtime.DestroyMode = 10;
+                runtime.DestroyMode = SkillEntityDestroyMode.OnMasterDead_10;
             }
             else if (destroyOnCount)
             {
-                runtime.DestroyMode = 1;
+                runtime.DestroyMode = SkillEntityDestroyMode.OnActionCount_1;
             }
             else
             {
-                runtime.DestroyMode = 0;
+                runtime.DestroyMode = SkillEntityDestroyMode.None_0;
             }
 
             Unit trackTarget = ctx.ResolveUnit(ctx.GetParamRaw(8));
             runtime.TrackTargetId = trackTarget?.Id ?? 0;
+            if (runtime.ActionSkillId <= 0)
+            {
+                runtime.ActionSkillId = summonConfig.Skill_1;
+            }
+
             return runtime;
         }
 
@@ -1705,9 +1716,9 @@ namespace ET
             switch (destroyMode)
             {
                 case 100:
-                    return 10;
+                    return SkillEntityDestroyMode.OnMasterDead_10;
                 case 101:
-                    return 11;
+                    return SkillEntityDestroyMode.OnActionCountOrMasterDead_11;
                 default:
                     return destroyMode;
             }

@@ -37,8 +37,15 @@ namespace ET
         }
     }
 
+    /// <summary>
+    /// 技能体：按 Summon.Speed 飞向 1535 指定目标 → 碰撞后释放 Summon.Skill_1 →
+    /// Skill_1 以目标为圆心（Base_Position=1）按 Range_Type_Param1 范围造成伤害。
+    /// </summary>
     public static class SkillEntityComponentSystem
     {
+        /// <summary>与目标 XZ 贴身判定（米），仅用于「碰到」再放 Skill_1</summary>
+        private const float CollideReach = 1.5f;
+
         public static void Init(
             this SkillEntityComponent self,
             Skill_TreeEditor skillHandler,
@@ -46,34 +53,29 @@ namespace ET
             LDSummon summonConfig,
             SummonRuntimeData runtime)
         {
+            long now = TimeHelper.ServerNow();
             self.PassTime = 0;
             self.Masterid = masterId;
             self.BuffState = BuffState.Running;
             self.SkillHandler = skillHandler;
             self.SummonConfig = summonConfig;
             self.Runtime = runtime ?? new SummonRuntimeData();
-            self.BeginTime = TimeHelper.ServerNow();
-            self.LastActionTime = self.BeginTime;
-            self.DamageRange = 1f;
             self.DelayTime = 0;
+            self.BeginTime = now;
+            self.LastActionTime = now;
+            self.LastUpdateTime = now;
 
-            long durationMs = self.Runtime.MaxDurationMs;
-            if (durationMs <= 0)
+            // 碰撞后必放表 Skill_1
+            if (summonConfig != null && summonConfig.Skill_1 > 0)
             {
-                durationMs = 60000;
+                self.Runtime.ActionSkillId = summonConfig.Skill_1;
             }
 
-            self.BuffEndTime = self.BeginTime + durationMs;
-            self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.SkillEntityTimer, self);
+            long durationMs = self.Runtime.MaxDurationMs > 0 ? self.Runtime.MaxDurationMs : 60000;
+            self.BuffEndTime = now + durationMs;
 
-            Unit unit = self.GetParent<Unit>();
-            NumericComponent numeric = unit.GetComponent<NumericComponent>();
-            if (numeric != null)
-            {
-                numeric.Set(NumericType.SkillEntity_MoveType, self.Runtime.MoveType, false);
-                numeric.Set(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
-            }
-
+            // 伤害范围仅作非追踪兜底；真正 AOE 半径读 Skill_1.Range_Type_Param1
+            self.DamageRange = CollideReach;
             if (self.Runtime.ActionSkillId > 0 && LDSkillCategory.Instance.Contain(self.Runtime.ActionSkillId))
             {
                 LDSkill actionSkill = LDSkillCategory.Instance.Get(self.Runtime.ActionSkillId);
@@ -83,54 +85,16 @@ namespace ET
                 }
             }
 
-            if (self.Runtime.TriggerOnCreate && self.Runtime.ActionSkillId > 0)
-            {
-                TriggerActionSkill(self, 0);
-            }
-        }
+            self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.SkillEntityTimer, self);
 
-        public static void OnUpdate(this SkillEntityComponent self)
-        {
             Unit unit = self.GetParent<Unit>();
-            if (unit == null || unit.IsDisposed)
-            {
-                self.BuffState = BuffState.Finished;
-                return;
-            }
+            NumericComponent numeric = unit?.GetComponent<NumericComponent>();
+            numeric?.ApplyValue(NumericType.SkillEntity_MoveType, self.Runtime.MoveType, false);
+            numeric?.ApplyValue(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
 
-            SummonRuntimeData runtime = self.Runtime ?? new SummonRuntimeData();
-            long now = TimeHelper.ServerNow();
-            self.PassTime = now - self.BeginTime;
-
-            Unit master = unit.GetParent<UnitComponent>()?.Get(self.Masterid);
-            if (ShouldDestroyByMasterDeath(runtime, master))
-            {
-                DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
-                return;
-            }
-
-            if (now >= self.BuffEndTime)
-            {
-                DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
-                return;
-            }
-
-            UpdateMovement(self, unit, runtime, master);
-
-            if (runtime.ActionType == 0)
-            {
-                TryTriggerIntervalAction(self, unit, runtime, now);
-            }
-            else
-            {
-                TryTriggerCollisionAction(self, unit, runtime, now);
-            }
-
-            if (runtime.MaxActionCount > 0 && runtime.ActionCount >= runtime.MaxActionCount
-                && (runtime.DestroyMode == 1 || runtime.DestroyMode == 11))
-            {
-                DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
-            }
+            Log.Info(
+                $"SkillEntity Init unit={unit?.Id} summon={self.Runtime.SummonId} skill_1={self.Runtime.ActionSkillId} " +
+                $"move={self.Runtime.MoveType} track={self.Runtime.TrackTargetId} speed={summonConfig?.Speed}");
         }
 
         public static void SetTrackTarget(this SkillEntityComponent self, Unit target, bool lockTarget)
@@ -142,167 +106,264 @@ namespace ET
 
             self.Runtime.TrackTargetId = target?.Id ?? 0;
             self.Runtime.LockTarget = lockTarget;
-            NumericComponent numeric = self.GetParent<Unit>()?.GetComponent<NumericComponent>();
-            numeric?.Set(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
-            if (self.SkillHandler != null && target != null)
-            {
-                self.SkillHandler.TheUnitTarget = target;
-            }
+            self.GetParent<Unit>()?.GetComponent<NumericComponent>()
+                ?.ApplyValue(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
         }
 
-        private static void UpdateMovement(
-            SkillEntityComponent self,
-            Unit unit,
-            SummonRuntimeData runtime,
-            Unit master)
+        public static void OnUpdate(this SkillEntityComponent self)
         {
-            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
-            Unit trackTarget = runtime.TrackTargetId > 0 ? unitComponent?.Get(runtime.TrackTargetId) : null;
-            if (trackTarget == null && !runtime.LockTarget)
-            {
-                trackTarget = self.SkillHandler?.TheUnitTarget;
-            }
-
-            if (runtime.MoveType == 0 || trackTarget == null || trackTarget.IsDisposed)
+            if (self.BuffState == BuffState.Finished)
             {
                 return;
             }
 
-            NumericComponent numeric = unit.GetComponent<NumericComponent>();
-            float speed = numeric != null ? numeric.GetAsFloat(NumericType.Speed_Current_15) : 0f;
-            if (speed <= 0f)
+            Unit unit = self.GetParent<Unit>();
+            SummonRuntimeData rt = self.Runtime;
+            if (unit == null || unit.IsDisposed || rt == null)
             {
-                // LDSummon.Speed：1000 = 1 米/秒
-                speed = self.SummonConfig?.Speed > 0 ? self.SummonConfig.Speed / 1000f : 1f;
+                self.BuffState = BuffState.Finished;
+                return;
             }
 
-            Vector3 dir;
-            if (runtime.MoveType == 2)
+            if (rt.ActionSkillId <= 0 && self.SummonConfig != null && self.SummonConfig.Skill_1 > 0)
             {
-                dir = trackTarget.Position - unit.Position;
-                dir.y = 0f;
-                if (dir.sqrMagnitude <= 0.25f)
-                {
-                    if (runtime.DeleteOnTrackReach)
-                    {
-                        DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
-                    }
-                    return;
-                }
+                rt.ActionSkillId = self.SummonConfig.Skill_1;
+            }
+
+            long now = TimeHelper.ServerNow();
+            self.PassTime = now - self.BeginTime;
+            UnitComponent uc = unit.GetParent<UnitComponent>();
+            Unit master = uc?.Get(self.Masterid);
+            Unit trackTarget = ResolveTrackTarget(self, uc, rt);
+
+            if (NeedDestroyByMasterDead(rt, master) || now >= self.BuffEndTime)
+            {
+                FinishAndRemove(self, unit, rt.DestroySkillId);
+                return;
+            }
+
+            float dt = CalcDt(self, now);
+            self.LastUpdateTime = now;
+
+            // —— 飞行 ——
+            Fly(self, unit, rt, trackTarget, dt);
+
+            // —— 碰撞后放 Skill_1 ——
+            if (rt.ActionType == SkillEntityActionType.Interval_0)
+            {
+                TryIntervalFire(self, rt, now);
             }
             else
             {
-                dir = unit.Rotation * Vector3.forward;
-                dir.y = 0f;
+                TryCollideFire(self, unit, rt, trackTarget, master, uc);
             }
 
-            if (dir.sqrMagnitude <= 1e-6f)
+            if (rt.MaxActionCount > 0 && rt.ActionCount >= rt.MaxActionCount
+                && (rt.DestroyMode == SkillEntityDestroyMode.OnActionCount_1
+                    || rt.DestroyMode == SkillEntityDestroyMode.OnActionCountOrMasterDead_11))
+            {
+                FinishAndRemove(self, unit, rt.DestroySkillId);
+            }
+        }
+
+        // ==================== 飞行 ====================
+
+        private static void Fly(SkillEntityComponent self, Unit unit, SummonRuntimeData rt, Unit trackTarget, float dt)
+        {
+            if (rt.MoveType == SkillEntityMoveType.Still_0)
             {
                 return;
             }
 
-            dir.Normalize();
-            float step = speed * 0.033f;
-            Vector3 nextPos = unit.Position + dir * step;
-
-            MapComponent map = unit.DomainScene()?.GetComponent<MapComponent>();
-            if (runtime.DeleteOnBlock && map != null)
+            if (rt.MoveType == SkillEntityMoveType.Track_2)
             {
-                Vector3 blocked = map.GetCanChongJiPath(unit, unit.Position, nextPos);
-                if ((blocked - nextPos).sqrMagnitude > 0.01f)
+                if (trackTarget == null || trackTarget.IsDisposed)
                 {
-                    DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
                     return;
                 }
-                nextPos = blocked;
+
+                float dx = trackTarget.Position.x - unit.Position.x;
+                float dz = trackTarget.Position.z - unit.Position.z;
+                float distSq = dx * dx + dz * dz;
+                if (distSq <= CollideReach * CollideReach)
+                {
+                    unit.Position = new Vector3(unit.Position.x, trackTarget.Position.y, unit.Position.z);
+                    return;
+                }
+
+                float len = (float)Math.Sqrt(distSq);
+                Vector3 dir = new Vector3(dx / len, 0f, dz / len);
+                Vector3 next = unit.Position + dir * (GetFlySpeed(self, unit) * dt);
+                next.y = trackTarget.Position.y;
+                ApplyMove(self, unit, rt, next, dir);
+                return;
             }
 
-            unit.Position = nextPos;
+            // 直线
+            Vector3 forward = unit.Rotation * Vector3.forward;
+            forward.y = 0f;
+            if (forward.sqrMagnitude <= 1e-6f)
+            {
+                return;
+            }
+
+            forward.Normalize();
+            ApplyMove(self, unit, rt, unit.Position + forward * (GetFlySpeed(self, unit) * dt), forward);
+        }
+
+        private static void ApplyMove(SkillEntityComponent self, Unit unit, SummonRuntimeData rt, Vector3 next, Vector3 dir)
+        {
+            if (rt.DeleteOnBlock)
+            {
+                MapComponent map = unit.DomainScene()?.GetComponent<MapComponent>();
+                if (map != null)
+                {
+                    Vector3 blocked = map.GetCanChongJiPath(unit, unit.Position, next);
+                    if ((blocked - next).sqrMagnitude > 0.01f)
+                    {
+                        FinishAndRemove(self, unit, rt.DestroySkillId);
+                        return;
+                    }
+
+                    next = blocked;
+                }
+            }
+
+            unit.Position = next;
             unit.Rotation = Quaternion.LookRotation(dir, Vector3.up);
         }
 
-        private static void TryTriggerIntervalAction(
-            SkillEntityComponent self,
-            Unit unit,
-            SummonRuntimeData runtime,
-            long now)
+        private static float GetFlySpeed(SkillEntityComponent self, Unit unit)
         {
-            if (runtime.ActionSkillId <= 0)
+            // 优先 LDSummon.Speed（1000=1m/s），与表一致
+            if (self.SummonConfig != null && self.SummonConfig.Speed > 0)
+            {
+                return self.SummonConfig.Speed / 1000f;
+            }
+
+            float speed = unit.GetComponent<NumericComponent>()?.GetAsFloat(NumericType.Speed_Current_15) ?? 0f;
+            return speed > 0f ? speed : 1f;
+        }
+
+        private static float CalcDt(SkillEntityComponent self, long now)
+        {
+            float dt = (now - self.LastUpdateTime) * 0.001f;
+            if (dt <= 0f)
+            {
+                return 0.1f;
+            }
+
+            return dt > 0.25f ? 0.25f : dt;
+        }
+
+        // ==================== 触发 Skill_1 ====================
+
+        private static void TryIntervalFire(SkillEntityComponent self, SummonRuntimeData rt, long now)
+        {
+            if (rt.ActionSkillId <= 0)
             {
                 return;
             }
 
-            long intervalMs = runtime.IntervalMs > 0 ? runtime.IntervalMs : 1000;
-            if (now - self.LastActionTime < intervalMs)
+            long interval = rt.IntervalMs > 0 ? rt.IntervalMs : 1000;
+            if (now - self.LastActionTime < interval)
             {
                 return;
             }
 
-            TriggerActionSkill(self, 0);
+            FireSkill1(self, rt.TrackTargetId);
             self.LastActionTime = now;
         }
 
-        private static void TryTriggerCollisionAction(
+        private static void TryCollideFire(
             SkillEntityComponent self,
             Unit unit,
-            SummonRuntimeData runtime,
-            long now)
+            SummonRuntimeData rt,
+            Unit trackTarget,
+            Unit master,
+            UnitComponent uc)
         {
-            if (runtime.ActionSkillId <= 0 || self.SkillHandler == null)
+            if (rt.ActionSkillId <= 0)
             {
                 return;
             }
 
-            List<Unit> units = unit.GetParent<UnitComponent>()?.GetAll();
-            if (units == null)
+            // 追踪：必须碰到指定目标
+            if (rt.MoveType == SkillEntityMoveType.Track_2)
+            {
+                if (trackTarget == null || trackTarget.IsDisposed || trackTarget.Id == self.Masterid)
+                {
+                    return;
+                }
+
+                if (XZSqr(unit.Position, trackTarget.Position) > CollideReach * CollideReach)
+                {
+                    return;
+                }
+
+                FireSkill1(self, trackTarget.Id);
+                return;
+            }
+
+            // 非追踪：碰到任意可攻击单位
+            List<Unit> all = uc?.GetAll();
+            if (all == null || master == null)
             {
                 return;
             }
 
-            for (int i = units.Count - 1; i >= 0; i--)
+            float rangeSq = CollideReach * CollideReach;
+            for (int i = all.Count - 1; i >= 0; i--)
             {
-                Unit other = units[i];
+                Unit other = all[i];
                 if (other == null || other.IsDisposed || other.Id == unit.Id || other.Id == self.Masterid)
                 {
                     continue;
                 }
 
-                if (!self.SkillHandler.SkillCanAttackUnit(other))
+                if (XZSqr(unit.Position, other.Position) > rangeSq)
                 {
                     continue;
                 }
 
-                if ((other.Position - unit.Position).sqrMagnitude > self.DamageRange * self.DamageRange)
+                if (!master.IsCanAttackUnit(other, false, false))
                 {
                     continue;
                 }
 
-                TriggerActionSkill(self, other.Id);
-                if (runtime.MaxActionCount > 0 && runtime.ActionCount >= runtime.MaxActionCount)
+                FireSkill1(self, other.Id);
+                if (rt.MaxActionCount > 0 && rt.ActionCount >= rt.MaxActionCount)
                 {
                     break;
                 }
             }
         }
 
-        private static void TriggerActionSkill(SkillEntityComponent self, long targetId)
+        /// <summary>
+        /// 释放 Summon.Skill_1：圆心=碰撞目标，半径=Skill.Range_Type_Param1（153501 为 3）。
+        /// </summary>
+        public static void FireSkill1(this SkillEntityComponent self, long hitTargetId)
         {
-            SummonRuntimeData runtime = self.Runtime;
-            if (runtime == null || runtime.ActionSkillId <= 0)
+            SummonRuntimeData rt = self.Runtime;
+            Unit skillEntity = self.GetParent<Unit>();
+            UnitComponent uc = skillEntity?.GetParent<UnitComponent>();
+            Unit master = uc?.Get(self.Masterid);
+
+            if (rt == null || skillEntity == null || master == null || master.IsDisposed)
             {
+                Log.Error($"FireSkill1 abort master/unit missing masterId={self.Masterid}");
                 return;
             }
 
-            Unit unit = self.GetParent<Unit>();
-            Unit master = unit?.GetParent<UnitComponent>()?.Get(self.Masterid);
-            if (master == null || master.IsDisposed)
+            if (rt.ActionSkillId <= 0 && self.SummonConfig != null)
             {
-                return;
+                rt.ActionSkillId = self.SummonConfig.Skill_1;
             }
 
-            if (!LDSkillCategory.Instance.Contain(runtime.ActionSkillId))
+            int skill1 = rt.ActionSkillId;
+            if (skill1 <= 0 || !LDSkillCategory.Instance.Contain(skill1))
             {
-                Log.Warning($"SkillEntity action skill missing: {runtime.ActionSkillId} summon={runtime.SummonId}");
+                Log.Error($"FireSkill1 abort skill_1 invalid={skill1} summon={rt.SummonId}");
                 return;
             }
 
@@ -312,54 +373,137 @@ namespace ET
                 return;
             }
 
-            long resolvedTargetId = targetId;
-            if (resolvedTargetId <= 0)
-            {
-                resolvedTargetId = runtime.TrackTargetId > 0
-                    ? runtime.TrackTargetId
-                    : self.SkillHandler?.TheUnitTarget?.Id ?? 0;
-            }
+            long tid = hitTargetId > 0 ? hitTargetId : rt.TrackTargetId;
+            Unit hitTarget = tid > 0 ? uc.Get(tid) : null;
+            // Base_Position=1：范围圆心在目标
+            Vector3 center = hitTarget != null ? hitTarget.Position : skillEntity.Position;
+            LDSkill actionSkill = LDSkillCategory.Instance.Get(skill1);
+            float aoeRadius = actionSkill.Range_Type_Param1 > 0 ? (float)actionSkill.Range_Type_Param1 : 3f;
 
             SkillInfo skillInfo = new SkillInfo
             {
-                WeaponSkillID = runtime.ActionSkillId,
-                TargetID = resolvedTargetId,
-                PosX = unit.Position.x,
-                PosY = unit.Position.y,
-                PosZ = unit.Position.z,
-                TargetAngle = AngleHelper.GetQuaternionAngle(unit.Rotation),
+                SkillID = skill1,
+                WeaponSkillID = skill1,
+                TargetID = tid,
+                PosX = center.x,
+                PosY = center.y,
+                PosZ = center.z,
+                TargetAngle = AngleHelper.GetQuaternionAngle(skillEntity.Rotation),
             };
 
-            Skill_TreeEditor handler = skillManager.SkillFactory(skillInfo, master);
-            handler.TheUnitTarget = unit.GetParent<UnitComponent>()?.Get(resolvedTargetId);
-            handler.CollectSkillTargets();
+            // TheUnitFrom=技能体 → 树里 caster.parent = 主人
+            Skill_TreeEditor handler = skillManager.SkillFactory(skillInfo, skillEntity);
+            handler.TheUnitTarget = hitTarget;
+            handler.TargetPosition = center;
+            handler.ICheckShape.Clear();
+            handler.ICheckShape.Add(handler.CreateCheckShape(skillInfo.TargetAngle));
+            handler.HurtIds.Clear();
 
-            if (SkillEditorTreeRegistry.TryGetTree(runtime.ActionSkillId, out SkillEditorSkillLogic logic))
+            // 收集目标：圆心=碰撞目标，半径=Skill_1 范围参数1（3）
+            CollectAoeTargets(handler, master, uc, actionSkill, center, aoeRadius, tid);
+
+            if (SkillEditorTreeRegistry.TryGetTree(skill1, out SkillEditorSkillLogic logic))
             {
                 SkillEditorTreeExecutor.Execute(handler, logic);
             }
+            else
+            {
+                Log.Error($"FireSkill1 tree missing skill_1={skill1}");
+            }
 
+            int hurtCount = handler.HurtIds?.Count ?? 0;
             handler.SetSkillState(SkillState.Finished);
             handler.OnFinished();
             ObjectPool.Instance.Recycle(handler);
-            runtime.ActionCount++;
+            rt.ActionCount++;
+
+            Log.Info(
+                $"FireSkill1 ok entity={skillEntity.Id} skill_1={skill1} hit={tid} " +
+                $"aoeR={aoeRadius} hurtCount={hurtCount} actionCount={rt.ActionCount}");
         }
 
-        private static bool ShouldDestroyByMasterDeath(SummonRuntimeData runtime, Unit master)
+        /// <summary>以 center 为圆心、radius 为半径（XZ），用主人阵营筛敌，填入 HurtIds 供 for_root 遍历。</summary>
+        private static void CollectAoeTargets(
+            Skill_TreeEditor handler,
+            Unit master,
+            UnitComponent uc,
+            LDSkill actionSkill,
+            Vector3 center,
+            float radius,
+            long primaryTargetId)
         {
-            if (runtime.DestroyMode != 10 && runtime.DestroyMode != 11)
+            float radiusSq = radius * radius;
+            List<Unit> all = uc.GetAll();
+            for (int i = 0; i < all.Count; i++)
+            {
+                Unit u = all[i];
+                if (u == null || u.IsDisposed || u.Id == master.Id)
+                {
+                    continue;
+                }
+
+                if (XZSqr(center, u.Position) > radiusSq)
+                {
+                    continue;
+                }
+
+                if (!LDSkillHelper.IsValidTarget(master, u, actionSkill))
+                {
+                    continue;
+                }
+
+                handler.OnAddHurtIds(u.Id);
+            }
+
+            // 保证主目标一定进列表
+            if (primaryTargetId > 0 && !handler.HurtIds.Contains(primaryTargetId))
+            {
+                handler.OnAddHurtIds(primaryTargetId);
+            }
+        }
+
+        // ==================== 工具 ====================
+
+        private static Unit ResolveTrackTarget(SkillEntityComponent self, UnitComponent uc, SummonRuntimeData rt)
+        {
+            if (rt.TrackTargetId > 0)
+            {
+                Unit t = uc?.Get(rt.TrackTargetId);
+                if (t != null && !t.IsDisposed)
+                {
+                    return t;
+                }
+            }
+
+            Unit fallback = self.SkillHandler?.TheUnitTarget;
+            return fallback != null && !fallback.IsDisposed ? fallback : null;
+        }
+
+        private static float XZSqr(Vector3 a, Vector3 b)
+        {
+            float dx = a.x - b.x;
+            float dz = a.z - b.z;
+            return dx * dx + dz * dz;
+        }
+
+        private static bool NeedDestroyByMasterDead(SummonRuntimeData rt, Unit master)
+        {
+            if (rt.DestroyMode != SkillEntityDestroyMode.OnMasterDead_10
+                && rt.DestroyMode != SkillEntityDestroyMode.OnActionCountOrMasterDead_11)
             {
                 return false;
             }
 
-            return master == null || master.IsDisposed || IsUnitDead(master);
+            if (master == null || master.IsDisposed)
+            {
+                return true;
+            }
+
+            NumericComponent n = master.GetComponent<NumericComponent>();
+            return n != null && (n.GetAsInt(NumericType.Now_Dead) == 1 || n.GetAsLong(NumericType.HP_Current_8) <= 0);
         }
 
-        private static void DestroySkillEntity(
-            SkillEntityComponent self,
-            Unit unit,
-            int destroySkillId,
-            int destroySkillLevel)
+        private static void FinishAndRemove(SkillEntityComponent self, Unit unit, int destroySkillId)
         {
             if (self.BuffState == BuffState.Finished)
             {
@@ -371,29 +515,13 @@ namespace ET
 
             if (destroySkillId > 0 && LDSkillCategory.Instance.Contain(destroySkillId))
             {
-                SummonRuntimeData runtime = self.Runtime;
-                if (runtime != null)
-                {
-                    int oldActionSkill = runtime.ActionSkillId;
-                    runtime.ActionSkillId = destroySkillId;
-                    TriggerActionSkill(self, 0);
-                    runtime.ActionSkillId = oldActionSkill;
-                }
+                int old = self.Runtime.ActionSkillId;
+                self.Runtime.ActionSkillId = destroySkillId;
+                FireSkill1(self, self.Runtime.TrackTargetId);
+                self.Runtime.ActionSkillId = old;
             }
 
             unit.GetParent<UnitComponent>()?.Remove(unit.Id);
-        }
-
-        private static bool IsUnitDead(Unit unit)
-        {
-            NumericComponent numeric = unit.GetComponent<NumericComponent>();
-            if (numeric == null)
-            {
-                return false;
-            }
-
-            return numeric.GetAsInt(NumericType.Now_Dead) == 1
-                || numeric.GetAsLong(NumericType.HP_Current_8) <= 0;
         }
     }
 }
