@@ -1,3 +1,4 @@
+using Alipay.AopSdk.Core.Domain;
 using System;
 using System.Collections.Generic;
 
@@ -6,13 +7,9 @@ namespace ET
     public static class RechargeHelp
     {
 
-        public static void  SendDiamondToUnit(Unit unit, int payid, string orderInfo, int rechargeType)
+        public static void  SendDiamondToUnit(Unit unit, int payid, int rechargeType, string orderInfo)
         {
-            //Log.Warning($"RechargeHelp.SendDiamond {unit.Id} {rechargeNumber} {orderInfo}");
             OnRechage(unit, payid, rechargeType, true);
-            //long accountId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID;
-            //long userId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.UserId;
-            //SendToAccountCenter(accountId, userId, payid, orderInfo, rechargeType).Coroutine();
             unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
         }
 
@@ -22,40 +19,54 @@ namespace ET
             { 
                 return; 
             }
+
+            if (!LDPayCategory.Instance.Contain(playId))
+            {
+                Log.Error($"OnRechage Pay配置不存在: {unit.Id} payId:{playId}");
+                return;
+            }
         
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
+            rechargeComponentServer.EnsureRechargePro();
 
-            Log.Debug($"OnRechage: {unit.Id}   {rechargetType}  {playId}  rechargetType:{rechargetType}");
+            if (Log.IsDebugEnabled)
+            {
+                Log.Debug($"OnRechage: {unit.Id}   {rechargetType}  {playId}  rechargetType:{rechargetType}");
+            }
 
             int homeZone = UnitZoneHelper.GetHomeZone(unit);
-            string diamondNumber = CommonConfig.GetDiamondNumber(playId, homeZone);
+            bool canFirstBuy = false;
+            if (LDActivity_1Category.Instance.Contain(playId))
+            {
+                LDActivity_1 activity1 = LDActivity_1Category.Instance.Get(playId);
+                canFirstBuy = activity1.Is_First > 0 && !rechargeComponentServer.HasFirstBuy(playId);
+            }
+
+            string diamondNumber = CommonConfig.GetDiamondNumber(playId, homeZone, canFirstBuy);
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(diamondNumber);
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
-            //0 砖石  1周卡
-            if (rechargetType == 0)
+            //0 钻石  1周卡
+            if (rechargetType == RechargeBizTypeEnum.Diamond)
             {
                 unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.Recharge}_{TimeHelper.ServerNow()}");
+                if (canFirstBuy)
+                {
+                    rechargeComponentServer.AddFirstBuy(playId);
+                }
             }
             else
             {
                 Console.WriteLine($"OnRechage: {unit.Id}   {rechargetType}  {playId}");
             }
 
-            RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
-
             int rechargeNumber = CommonConfig.GetRechargeNumber(playId, homeZone);
-
-            long lastRechargeTime = rechargeComponentServer.RechargePro.LastRechargeTime;
             long serverTime = TimeHelper.ServerNow();
-            bool isSameDay = lastRechargeTime > 0
-                    && TimeInfo.Instance.ToDateTime(lastRechargeTime).Date
-                    == TimeInfo.Instance.ToDateTime(serverTime).Date;
+            rechargeComponentServer.RechargePro.LastRechargeTime = serverTime;
+            rechargeComponentServer.RechargePro.TotalRechargeNum += rechargeNumber;
 
-           // if (lastRechargeTime == 0 || !isSameDay)
-            {
-                taskComponentServer.OnRechargeDay();
-            }
+            taskComponentServer.OnRechargeDay();
 
             numericComponent.ApplyChange(null, NumericType.RechargeNumber, rechargeNumber, 1, notice);
             numericComponent.ApplyChange(null, NumericType.V1RechageNumber, rechargeNumber, 0, notice);
@@ -64,6 +75,8 @@ namespace ET
             {
                 numericComponent.ApplyValue(NumericType.RechargeSign, 1, notice);
             }
+
+            rechargeComponentServer.NotifyClient();
         }
 
         public static async ETTask SendToAccountCenter(long accountId, long userId, int rechargeNumber, string ordinfo, int rechargeType)
@@ -95,15 +108,12 @@ namespace ET
         /// <returns></returns>
         public static async ETTask OnPaySucessToUnit(Scene scene,  long userId, int rechargeNumber, string orderInfo, int rechargeType)
         {
-            Player gateUnitInfo = scene.GetComponent<PlayerComponent>().GetByUserId(userId);
-            //&& gateUnitInfo.ClientSession!=null
-            if (gateUnitInfo != null  && gateUnitInfo.PlayerState == PlayerState.Game && gateUnitInfo.InstanceId > 0)
-            {
-                Log.Warning($"充值OnPaySucess PlayerState.Game: {scene.DomainZone()}   {userId}  rechargeNumber:{rechargeNumber}  rechargeType:{rechargeType}", true);
-                G2M_RechargeResultRequest r2M_RechargeRequest = new G2M_RechargeResultRequest() { RechargeNumber = rechargeNumber , OrderInfo = orderInfo, RechargeType = rechargeType};
-                M2G_RechargeResultResponse m2G_RechargeResponse = (M2G_RechargeResultResponse)await ActorLocationSenderComponent.Instance.Call(gateUnitInfo.UnitId, r2M_RechargeRequest);
-            }
-            else
+            Log.Warning($"充值OnPaySucess PlayerState.Game: {scene.DomainZone()}   {userId}  rechargeNumber:{rechargeNumber}  rechargeType:{rechargeType}", true);
+            G2M_RechargeResultRequest r2M_RechargeRequest = new G2M_RechargeResultRequest() { RechargeNumber = rechargeNumber, OrderInfo = orderInfo, RechargeType = rechargeType };
+          
+            M2G_RechargeResultResponse m2G_RechargeResponse = (M2G_RechargeResultResponse)await ActorLocationSenderComponent.Instance.Call(userId, r2M_RechargeRequest);
+
+            if (m2G_RechargeResponse.Error != ErrorCode.ERR_Success)
             {
                 Log.Warning($"充值OnPaySucess PlayerState.None: {scene.DomainZone()}   {userId}  rechargeNumber:{rechargeNumber}  rechargeType:{rechargeType}");
                 //直接存数据库
@@ -121,7 +131,7 @@ namespace ET
 
                 d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.RoleInfoComponent });
                 RoleInfoComponentServer roleInfoComponentServer = (d2GGetUnit.Component as RoleInfoComponentServer);
-                
+
                 long accountId = roleInfoComponentServer.RoleInfo.AccInfoID;
                 SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType).Coroutine();
                 await ETTask.CompletedTask;
@@ -129,27 +139,29 @@ namespace ET
         }
 
 
+
         /// <summary>
-        /// 
+        /// /
         /// </summary>
-        /// <param name="scene"></param>
+        /// <param name="zone"></param>
         /// <param name="userId"></param>
         /// <param name="rechargeNumber"></param>
         /// <param name="orderInfo"></param>
-        /// <param name="rechargeType">//0充值钻石   1购买周卡</param>
+        /// <param name="paytype"></param>
+        /// <param name="rechargeType">0充值钻石 1购买周卡</param>
         /// <returns></returns>
-        public static async ETTask OnPaySucessToUnit_2(Scene scene, long userId, int rechargeNumber, string orderInfo, int rechargeType)
+        public static async ETTask OnPaySucessToUnit( int zone, long userId, int rechargeNumber, string orderInfo, int paytype,  int rechargeType)
         {
-            Log.Warning($"充值OnPaySucess PlayerState.Game: {scene.DomainZone()}   {userId}  rechargeNumber:{rechargeNumber}", true);
+            Log.Warning($"充值OnPaySucess PlayerState.Game: {zone}   {userId}  rechargeNumber:{rechargeNumber}", true);
             G2M_RechargeResultRequest r2M_RechargeRequest = new G2M_RechargeResultRequest() { RechargeNumber = rechargeNumber, OrderInfo = orderInfo, RechargeType = rechargeType };
             M2G_RechargeResultResponse m2G_RechargeResponse = (M2G_RechargeResultResponse)await ActorLocationSenderComponent.Instance.Call(userId, r2M_RechargeRequest);
 
             if (m2G_RechargeResponse.Error != ErrorCode.ERR_Success)
             {
-                Log.Warning($"充值OnPaySucess PlayerState.None: {scene.DomainZone()}   {userId}  rechargeNumber:{rechargeNumber}");
+                Log.Warning($"充值OnPaySucess PlayerState.None: {zone}   {userId}  rechargeNumber:{rechargeNumber}");
                 //直接存数据库
                 //int number = ComHelp.GetDiamondNumber(rechargeNumber);
-                long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
+                long dbCacheId = DBHelper.GetDbCacheId(zone);
                 D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userId, Component = DBHelper.NumericComponent });
                 NumericComponent numericComponent = (d2GGetUnit.Component as NumericComponent);
                 numericComponent.ApplyChange(null, NumericType.RechargeBuChang, rechargeNumber, 1, false);
@@ -164,34 +176,12 @@ namespace ET
                 RoleInfoComponentServer roleInfoComponentServer = (d2GGetUnit.Component as RoleInfoComponentServer);
 
                 long accountId = roleInfoComponentServer.RoleInfo.AccInfoID;
-                SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType  ).Coroutine();
+                SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType).Coroutine();
             }
 
             //&& gateUnitInfo.ClientSession!=null
             await ETTask.CompletedTask;
-        }
 
-
-        /// <summary>
-        /// /
-        /// </summary>
-        /// <param name="zone"></param>
-        /// <param name="userId"></param>
-        /// <param name="rechargeNumber"></param>
-        /// <param name="orderInfo"></param>
-        /// <param name="paytype"></param>
-        /// <param name="rechargeType">0充值钻石 1购买周卡</param>
-        /// <returns></returns>
-        public static async ETTask OnPaySucessToGate( int zone, long userId, int rechargeNumber, string orderInfo, int paytype,  int rechargeType)
-        {
-            long gateServerId = DBHelper.GetGateServerId(zone);
-            R2G_RechargeResultRequest r2M_RechargeRequest = new R2G_RechargeResultRequest() {
-                RechargeNumber = rechargeNumber,
-                UserID = userId ,
-                OrderInfo = orderInfo, 
-                PayType = paytype,
-                RechargeType = rechargeType};
-            G2R_RechargeResultResponse m2G_RechargeResponse = (G2R_RechargeResultResponse)await ActorMessageSenderComponent.Instance.Call(gateServerId, r2M_RechargeRequest);
         }
     }
 }

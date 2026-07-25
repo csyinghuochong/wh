@@ -283,7 +283,7 @@ namespace ET
 
                         //修改数据库订单描述
                         string toClientMsg = "SendPay," + "1" + "@" + "1" + "@" + orderinfo.objID + "@" + dingdanid + "@" + "服务器支付";
-                        RechargeHelp.OnPaySucessToGate(orderinfo.zone, orderinfo.userId, orderinfo.amount, dingdanid, PayTypeEnum.QuDaoPay, orderinfo.RechargeType).Coroutine();
+                        RechargeHelp.OnPaySucessToUnit(orderinfo.zone, orderinfo.userId, orderinfo.amount, dingdanid, PayWayEnum.QuDaoPay, orderinfo.RechargeType).Coroutine();
                     }
                     else
                     {

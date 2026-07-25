@@ -115,7 +115,7 @@ namespace ET
                 R2M_RechargeResponse r2M_RechargeResponse = (R2M_RechargeResponse)await ActorMessageSenderComponent.Instance.Call(rechareId, new M2R_RechargeRequest()
                 {
                     Zone = UnitZoneHelper.GetHomeZone(unit),
-                    PayType = PayTypeEnum.IOSPay,
+                    PayType = PayWayEnum.IOSPay,
                     UnitId = unit.Id,
                     payMessage = request.payMessage,
                     UnitName = roleInfoComponentServer.RoleInfo.Name,

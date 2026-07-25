@@ -738,10 +738,6 @@ namespace ET
                     numericComponent ??= unit.GetComponent<NumericComponent>();
                     numericComponent.ApplyChange(null, NumericType.JueXingExp, long.Parse(value), 0);
                     break;
-               
-                case UserDataType.Recharge:
-                    RechargeHelp.SendDiamondToUnit(unit, int.Parse(value), "道具", 0);
-                    break;
                 case UserDataType.PiLao:
                     if (value == "0")
                     {

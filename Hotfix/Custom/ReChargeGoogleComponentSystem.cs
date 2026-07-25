@@ -113,7 +113,7 @@ namespace ET
                 string serverName = ServerHelper.GetGetServerItem(false, request.Zone).ServerName;
                 Log.Warning($"支付订单[Google]支付成功: 区：{serverName}    玩家名字：{request.UnitName}     充值额度：{rechargeNumber}");
                 Log.Console($"支付订单[Google]支付成功: 区：{serverName}    玩家名字：{request.UnitName}     充值额度：{rechargeNumber}  时间:{TimeHelper.DateTimeNow().ToString()}");
-                await RechargeHelp.OnPaySucessToGate(request.Zone, request.UnitId, rechargeNumber, payLoad, PayTypeEnum.Google, request.RechargeType);
+                await RechargeHelp.OnPaySucessToUnit(request.Zone, request.UnitId, rechargeNumber, payLoad, PayWayEnum.Google, request.RechargeType);
             }
             catch (Exception ex)
             {

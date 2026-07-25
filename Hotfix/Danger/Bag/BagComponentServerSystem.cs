@@ -287,7 +287,9 @@ namespace ET
                     }
                     break;
                 case UserDataType.Gold:
+                case UserDataType.BindGold:
                 case UserDataType.Diamond:
+                case UserDataType.BindDiamond:
                 case UserDataType.JiaYuanFund:
                 case UserDataType.UnionContri:
                 {
@@ -298,8 +300,14 @@ namespace ET
                         case UserDataType.Gold:
                             number = roleInfo.Gold;
                             break;
+                        case UserDataType.BindGold:
+                            number = roleInfo.BindGold;
+                            break;
                         case UserDataType.Diamond:
                             number = roleInfo.Diamond;
+                            break;
+                        case UserDataType.BindDiamond:
+                            number = roleInfo.BindDiamond;
                             break;
                         case UserDataType.JiaYuanFund:
                             number = roleInfo.JiaYuanFund;
@@ -854,10 +862,20 @@ namespace ET
 
             foreach (RewardItem rewardItem in rewardItemMap.Values)
             {
-                if (rewardItem.ItemType == ItemBigType.Type_Money)
+                // 货币大类 / 道具里映射为货币的：不占背包格，但仍进入发奖列表
+                int userDataType = ItemNewHelper.GetItemToUserDataType(rewardItem);
+                if (userDataType != UserDataType.None)
                 {
+                    rewardItems.Add(rewardItem);
                     continue;
                 }
+
+                if (rewardItem.ItemType == ItemBigType.Type_Money)
+                {
+                    // Type_Money 但 ItemID 非法：丢弃
+                    continue;
+                }
+
                 if (rewardItem.ItemType != ItemBigType.Type_Item
                     && rewardItem.ItemType != ItemBigType.Type_Equip)
                 {
@@ -912,11 +930,7 @@ namespace ET
             m2c_bagUpdate.BagInfoDelete.Clear();
             Dictionary<int, long> currencyAdds = null;
             Dictionary<int, HashSet<int>> usedPosByLoc = null;
-            bool forceBindByGetWay = ItemGetWay.ItemGetBing.Contains(getType)
-                                    || getType == ItemGetWay.PaiMaiShop
-                                    || getType == ItemGetWay.StoreBuy
-                                    || getType == ItemGetWay.RandomTowerReward
-                                    || getType == 97;
+            bool forceBindByGetWay = false;
 
             for (int i = 0; i < rewardItems.Count; i++)
             {
@@ -1010,29 +1024,9 @@ namespace ET
                         useBagInfo.BaseAttrList = (LDEquipCategory.Instance.GetEquipAttribute(itemID));
                         ItemNewHelper.SortBaseAttrList(useBagInfo.BaseAttrList);
                     }
-                    else if (itemtype == ItemBigType.Type_Item)
+                    if (itemtype == ItemBigType.Type_Item)
                     {
                         int subType = LDItemCategory.Instance.Get(itemID).ItemType;
-                        if (subType == 121)
-                        {
-                            int makePlan = 1;
-                            if (getType == ItemGetWay.SkillMake && getWayInfo.Length >= 3)
-                            {
-                                makePlan = int.Parse(getWayInfo[1]);
-                            }
-                            if (makePlan != 1 && makePlan != 2)
-                            {
-                                makePlan = 1;
-                            }
-                            int shulianduNumeric = makePlan == 1 ? NumericType.MakeShuLianDu_1 : NumericType.MakeShuLianDu_2;
-                            int shuliandu = numericComponent.GetAsInt(shulianduNumeric);
-                            ItemAddHelper.JianDingFuItem(useBagInfo, shuliandu, getType);
-
-                            if (getType == ItemGetWay.GM)
-                            {
-                                useBagInfo.ItemPar = "100";
-                            }
-                        }
                     }
 
                     if (NeedBagGridPosition(toLocType))

@@ -52,7 +52,7 @@ namespace ET
                 {
                     return;
                 }
-                RechargeHelp.OnPaySucessToGate(int.Parse(mailInfo[1]), long.Parse(mailInfo[2]), int.Parse(mailInfo[3]), "补偿", 0, 0).Coroutine();
+                RechargeHelp.OnPaySucessToUnit(int.Parse(mailInfo[1]), long.Parse(mailInfo[2]), int.Parse(mailInfo[3]), "补偿", 0, 0).Coroutine();
 #endif
             }
             if (infoList[0] == "enphone")

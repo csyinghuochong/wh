@@ -92,7 +92,7 @@ namespace ET
             string serverName = ServerHelper.GetGetServerItem(false, zone).ServerName;
             Console.WriteLine($"支付成功[支付宝]: 区：{serverName}   玩家名字：{userInfoParts[1]}   充值额度：{amount}  时间:{TimeHelper.DateTimeNow().ToString()}");
 
-            RechargeHelp.OnPaySucessToGate(zone, userId, amount, orderId, PayTypeEnum.AliPay, rechargeType).Coroutine();
+            RechargeHelp.OnPaySucessToUnit(zone, userId, amount, orderId, PayWayEnum.AliPay, rechargeType).Coroutine();
             self.OrderDic.Remove(orderId);
         }
 
@@ -189,7 +189,7 @@ namespace ET
                     string serverName = ServerHelper.GetGetServerItem(false, zone).ServerName;
                     Log.Warning($"支付成功[支付宝]: 区：{serverName}   玩家名字：{userInfoParts[1]}   充值额度：{amount}  时间:{TimeHelper.DateTimeNow().ToString()}");
                    
-                    RechargeHelp.OnPaySucessToGate(zone, userId, amount, orderId, PayTypeEnum.AliPay, rechargeType).Coroutine();
+                    RechargeHelp.OnPaySucessToUnit(zone, userId, amount, orderId, PayWayEnum.AliPay, rechargeType).Coroutine();
                     self.OrderDic.Remove(aliPayResultDic["out_trade_no"]);
                 }
                 else

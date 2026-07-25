@@ -2649,13 +2649,13 @@ namespace ET
 		public int PayID { get; set; }
 
 		[ProtoMember(2)]
-		public long PayType { get; set; }
+		public long PayWay { get; set; }
 
 		[ProtoMember(3)]
 		public string RiskControlInfo { get; set; }
 
 		[ProtoMember(4)]
-		public int RechargeType { get; set; }
+		public int RechargeBizType { get; set; }
 
 	}
 
@@ -4875,6 +4875,10 @@ namespace ET
 
 		[ProtoMember(2)]
 		public long TotalRechargeNum { get; set; }
+
+// 已领取过首购额外奖励的 PayId（Activity_1 / LDPay.Id）
+		[ProtoMember(3)]
+		public List<int> FirstBuyPayIds = new List<int>();
 
 	}
 

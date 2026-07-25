@@ -106,7 +106,7 @@ namespace ET
 
             string serverName = ServerHelper.GetGetServerItem(false, zone).ServerName;
             Console.WriteLine($"支付成功[微信]:  区：{serverName}     玩家名字：{userparams[2]}   充值额度：{amount}  时间:{TimeHelper.DateTimeNow().ToString()}");
-            RechargeHelp.OnPaySucessToGate(zone, userId, amount, dingdanStr, PayTypeEnum.WeiXinPay, rechargetype).Coroutine();
+            RechargeHelp.OnPaySucessToUnit(zone, userId, amount, dingdanStr, PayWayEnum.WeiXinPay, rechargetype).Coroutine();
             //删除本地缓存的订单
             self.orderDic.Remove(dingdanStr);
         }
@@ -284,7 +284,7 @@ namespace ET
 
                         string serverName = ServerHelper.GetGetServerItem(false, zone).ServerName;
                         Log.Warning($"支付成功[微信]:  区：{serverName}     玩家名字：{userparams[2]}   充值额度：{amount}  时间:{TimeHelper.DateTimeNow().ToString()}");
-                        RechargeHelp.OnPaySucessToGate( zone, userId, amount, dingdanStr, PayTypeEnum.WeiXinPay, rechargetype).Coroutine();
+                        RechargeHelp.OnPaySucessToUnit( zone, userId, amount, dingdanStr, PayWayEnum.WeiXinPay, rechargetype).Coroutine();
                         //删除本地缓存的订单
                         self.orderDic.Remove(dingdanStr);
                     }

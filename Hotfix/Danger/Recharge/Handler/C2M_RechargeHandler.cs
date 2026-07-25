@@ -22,23 +22,24 @@ namespace ET
                 {
                     LogHelper.LogWarning($"充值[版号服]SendDiamondToUnit: {unit.Id}");
                     Console.WriteLine($"充值[版号服]SendDiamondToUnit: {unit.Id}");
-                    RechargeHelp.SendDiamondToUnit(unit, request.PayID, "版号服", 0);
+                    RechargeHelp.SendDiamondToUnit(unit, request.PayID, request.RechargeBizType, "版号服");
                     reply();
                     return;
                 }
-                //if (ComHelp.IsInnerNet())
-                //{
-                //    //RechargeHelp.SendDiamondToUnit(unit, request.RechargeNumber, "内测服");
-                //    reply();
-                //    return;
-                //}
+
+                if (CommonHelper.IsInnerNet())
+                {
+                    RechargeHelp.SendDiamondToUnit(unit, request.PayID, request.RechargeBizType, "内测服");
+                    reply();
+                    return;
+                }
 
              
                 string serverName = ServerHelper.GetGetServerItem(false, UnitZoneHelper.GetHomeZone(unit)).ServerName;
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 string userName = roleInfoComponentServer.RoleInfo.Name;
 
-                if (request.PayType == PayTypeEnum.IOSPay)
+                if (request.PayWay == PayWayEnum.IOSPay)
                 {
                     ///IOS仅用来打印日志
                     Log.Warning($"支付订单[IOS]拉起: 服务器:{serverName} 玩家:{userName}  充值金额:{request.PayID}");
@@ -47,7 +48,7 @@ namespace ET
                     return;
                 }
                 
-                if (request.PayType == PayTypeEnum.Google)
+                if (request.PayWay == PayWayEnum.Google)
                 {
                     Log.Warning($"支付订单[Google]拉起: 服务器:{serverName} 玩家:{userName}  充值金额:{request.PayID}");
                     Log.Console($"支付订单[Google]拉起: 服务器:{serverName} 玩家:{userName}  充值金额:{request.PayID}  时间:{TimeHelper.DateTimeNow().ToString()}");
@@ -55,25 +56,25 @@ namespace ET
                     return;
                 }
 
-                if (request.PayType == PayTypeEnum.WeiXinPay)
+                if (request.PayWay == PayWayEnum.WeiXinPay)
                 {
                     Log.Warning($"支付订单[微信支付]拉起:服务器:{serverName} 玩家:{userName}   充值金额:{request.PayID}");
                     Log.Console($"支付订单[微信支付]拉起:服务器:{serverName} 玩家:{userName}   充值金额:{request.PayID}  时间:{TimeHelper.DateTimeNow().ToString()}");
                 }
 
-                if (request.PayType == PayTypeEnum.AliPay)
+                if (request.PayWay == PayWayEnum.AliPay)
                 {
                     Log.Warning($"支付订单[支付宝]拉起: 服务器:{serverName} 玩家:{userName}   充值金额:{request.PayID}");
                     Log.Console($"支付订单[支付宝]拉起: 服务器:{serverName} 玩家:{userName}   充值金额:{request.PayID}  时间:{TimeHelper.DateTimeNow().ToString()}");
                 }
 
-                if (request.PayType == PayTypeEnum.TikTok)
+                if (request.PayWay == PayWayEnum.TikTok)
                 {
                     Log.Warning($"支付订单[TikTok]拉起: 服务器:{serverName} 玩家:{userName}   充值金额:{request.PayID}");
                     Log.Console($"支付订单[TikTok]拉起: 服务器:{serverName} 玩家:{userName}   充值金额:{request.PayID}  时间:{TimeHelper.DateTimeNow().ToString()}");
                 }
 
-                if (request.PayType == PayTypeEnum.QuDaoPay)
+                if (request.PayWay == PayWayEnum.QuDaoPay)
                 {
                     Log.Warning($"支付订单[QuDaoPay]拉起: 服务器:{serverName} 玩家:{userName}   充值金额:{request.PayID}");
                     Log.Console($"支付订单[QuDaoPay]拉起: 服务器:{serverName} 玩家:{userName}   充值金额:{request.PayID}  时间:{TimeHelper.DateTimeNow().ToString()}");
@@ -84,14 +85,14 @@ namespace ET
                 R2M_RechargeResponse r2M_RechargeResponse = (R2M_RechargeResponse)await ActorMessageSenderComponent.Instance.Call(rechareId, new M2R_RechargeRequest()
                 {
                     Zone = UnitZoneHelper.GetHomeZone(unit),
-                    PayType = request.PayType,
+                    PayType = request.PayWay,
                     UnitId = unit.Id,
                     UnitName = userName,
                     RechargeNumber = request.PayID,
                     Account = roleInfoComponentServer.Account,
                     payMessage = request.RiskControlInfo,
                     ClientIp = roleInfoComponentServer.RemoteAddress,
-                    RechargeType = request.RechargeType,    
+                    RechargeType = request.RechargeBizType,    
                 });
 
                 response.Message = r2M_RechargeResponse.Message;

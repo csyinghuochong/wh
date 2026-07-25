@@ -10,24 +10,24 @@ namespace ET
         {
             switch (request.PayType)
             {
-                case PayTypeEnum.WeiXinPay:
+                case PayWayEnum.WeiXinPay:
                     response.Message = await scene.GetComponent<ReChargeWXComponent>().WeChatPay(request);
                     break;
-                case PayTypeEnum.AliPay:
+                case PayWayEnum.AliPay:
                     response.Message =  scene.GetComponent<ReChargeAliComponent>().AliPay(request);
                     break;
-                case PayTypeEnum.QuDaoPay:
+                case PayWayEnum.QuDaoPay:
                     response.Message = scene.GetComponent<ReChargeQDComponent>().QudaoPay(request);
                     break;
-                case PayTypeEnum.IOSPay:
+                case PayWayEnum.IOSPay:
                     response.Error = await scene.GetComponent<ReChargeIOSComponent>().OnIOSPayVerify(request);
                     break;
-                case PayTypeEnum.Google:
+                case PayWayEnum.Google:
                     Console.WriteLine($"C2R_GooglePayVerifyRequest C2R_GooglePayVerifyRequest yyy {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}");
 
                     response.Error = await scene.GetComponent<ReChargeGoogleComponent>().OnGooglePayVerify2(request);
                     break;
-                case PayTypeEnum.TikTok:
+                case PayWayEnum.TikTok:
                     response.Message = scene.GetComponent<ReChargeTikTokComponent>().TikTokPay(request);
                     break;
             }

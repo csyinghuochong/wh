@@ -183,55 +183,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(G2R_RechargeResultResponse))]
-	[Message(InnerOpcode.R2G_RechargeResultRequest)]
-	[ProtoContract]
-	public partial class R2G_RechargeResultRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long Id { get; set; }
-
-		[ProtoMember(2)]
-		public int RechargeNumber { get; set; }
-
-		[ProtoMember(3)]
-		public long UserID { get; set; }
-
-		[ProtoMember(4)]
-		public string OrderInfo { get; set; }
-
-		[ProtoMember(5)]
-		public string CpOrder { get; set; }
-
-		[ProtoMember(6)]
-		public int PayType { get; set; }
-
-		[ProtoMember(7)]
-		public int RechargeType { get; set; }
-
-	}
-
-	[Message(InnerOpcode.G2R_RechargeResultResponse)]
-	[ProtoContract]
-	public partial class G2R_RechargeResultResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2G_RechargeResultResponse))]
 	[Message(InnerOpcode.G2M_RechargeResultRequest)]
 	[ProtoContract]
