@@ -1,4 +1,4 @@
-﻿namespace ET
+namespace ET
 {
     /// <summary>CREATE_SUMMON / UNIT_ADD_SUMMON 运行时参数。</summary>
     public class SummonRuntimeData
@@ -27,7 +27,11 @@
         public long LastActionTime;
     }
 
-    public class RoleBullet1Componnet : Entity, IAwake, IDestroy
+    /// <summary>
+    /// 技能体（UnitType.SkillEntity）服务端运行时：移动 / 碰撞 / 作用技能 / 消亡。
+    /// 客户端表现见 Unity SkillEntityComponent（本地飞行）。
+    /// </summary>
+    public class SkillEntityComponent : Entity, IAwake, IDestroy
     {
         public long PassTime;
         public long BuffEndTime;

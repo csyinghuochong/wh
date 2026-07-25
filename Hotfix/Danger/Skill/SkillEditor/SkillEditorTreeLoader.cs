@@ -66,24 +66,17 @@ namespace ET
                 return null;
             }
 
-            string functionType = string.Empty;
+            // 行为参数 ID 即技能 Id（编辑器 params[0]）
             int skillId = 0;
-            if (rootNode.Params.Count >= 2)
+            if (rootNode.Params.Count > 0)
             {
-                // Legacy: params[0]=function type, params[1]=skill id
-                functionType = rootNode.Params[0];
-                int.TryParse(rootNode.Params[1], out skillId);
-            }
-            else if (rootNode.Params.Count == 1)
-            {
-                // Current editor: params[0]=skill id only
                 int.TryParse(rootNode.Params[0], out skillId);
             }
 
             return new SkillEditorSkillLogic
             {
                 SkillId = skillId,
-                FunctionType = functionType,
+                FunctionType = string.Empty,
                 Desc = rootNode.Desc,
                 Root = rootNode,
             };

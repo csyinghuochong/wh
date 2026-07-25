@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
 {
-
-    [Timer(TimerType.RoleBullet1Timer)]
-    public class RoleBullet1Timer : ATimer<RoleBullet1Componnet>
+    [Timer(TimerType.SkillEntityTimer)]
+    public class SkillEntityTimer : ATimer<SkillEntityComponent>
     {
-        public override void Run(RoleBullet1Componnet self)
+        public override void Run(SkillEntityComponent self)
         {
             try
             {
@@ -16,38 +15,32 @@ namespace ET
             }
             catch (Exception e)
             {
-                Log.Error($"move timer error: {self.Id}\n{e}");
+                Log.Error($"SkillEntity timer error: {self.Id}\n{e}");
             }
         }
     }
 
     [ObjectSystem]
-    public class RoleBullet1ComponnetAwake : AwakeSystem<RoleBullet1Componnet>
+    public class SkillEntityComponentAwake : AwakeSystem<SkillEntityComponent>
     {
-        public override void Awake(RoleBullet1Componnet self)
+        public override void Awake(SkillEntityComponent self)
         {
-
         }
     }
 
     [ObjectSystem]
-    public class RoleBullet1ComponnetDestroy : DestroySystem<RoleBullet1Componnet>
+    public class SkillEntityComponentDestroy : DestroySystem<SkillEntityComponent>
     {
-        public override void Destroy(RoleBullet1Componnet self)
+        public override void Destroy(SkillEntityComponent self)
         {
             TimerComponent.Instance?.Remove(ref self.Timer);
         }
     }
 
-    public static class RoleBullet1ComponnetSystem
+    public static class SkillEntityComponentSystem
     {
-        public static void OnBaseBulletInit(this RoleBullet1Componnet self, Skill_TreeEditor skillHandler, long masterid)
-        {
-            InitFromSummon(self, skillHandler, masterid, null, null);
-        }
-
-        public static void InitFromSummon(
-            this RoleBullet1Componnet self,
+        public static void Init(
+            this SkillEntityComponent self,
             Skill_TreeEditor skillHandler,
             long masterId,
             LDSummon summonConfig,
@@ -71,15 +64,32 @@ namespace ET
             }
 
             self.BuffEndTime = self.BeginTime + durationMs;
-            self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.RoleBullet1Timer, self);
+            self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.SkillEntityTimer, self);
+
+            Unit unit = self.GetParent<Unit>();
+            NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            if (numeric != null)
+            {
+                numeric.Set(NumericType.SkillEntity_MoveType, self.Runtime.MoveType, false);
+                numeric.Set(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
+            }
+
+            if (self.Runtime.ActionSkillId > 0 && LDSkillCategory.Instance.Contain(self.Runtime.ActionSkillId))
+            {
+                LDSkill actionSkill = LDSkillCategory.Instance.Get(self.Runtime.ActionSkillId);
+                if (actionSkill.Range_Type_Param1 > 0)
+                {
+                    self.DamageRange = (float)actionSkill.Range_Type_Param1;
+                }
+            }
 
             if (self.Runtime.TriggerOnCreate && self.Runtime.ActionSkillId > 0)
             {
-                TriggerSummonActionSkill(self, 0);
+                TriggerActionSkill(self, 0);
             }
         }
 
-        public static void OnUpdate(this RoleBullet1Componnet self)
+        public static void OnUpdate(this SkillEntityComponent self)
         {
             Unit unit = self.GetParent<Unit>();
             if (unit == null || unit.IsDisposed)
@@ -95,17 +105,17 @@ namespace ET
             Unit master = unit.GetParent<UnitComponent>()?.Get(self.Masterid);
             if (ShouldDestroyByMasterDeath(runtime, master))
             {
-                DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
+                DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
                 return;
             }
 
             if (now >= self.BuffEndTime)
             {
-                DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
+                DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
                 return;
             }
 
-            UpdateSummonMovement(self, unit, runtime, master);
+            UpdateMovement(self, unit, runtime, master);
 
             if (runtime.ActionType == 0)
             {
@@ -119,11 +129,11 @@ namespace ET
             if (runtime.MaxActionCount > 0 && runtime.ActionCount >= runtime.MaxActionCount
                 && (runtime.DestroyMode == 1 || runtime.DestroyMode == 11))
             {
-                DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
+                DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
             }
         }
 
-        public static void SetTrackTarget(this RoleBullet1Componnet self, Unit target, bool lockTarget)
+        public static void SetTrackTarget(this SkillEntityComponent self, Unit target, bool lockTarget)
         {
             if (self.Runtime == null)
             {
@@ -132,14 +142,16 @@ namespace ET
 
             self.Runtime.TrackTargetId = target?.Id ?? 0;
             self.Runtime.LockTarget = lockTarget;
+            NumericComponent numeric = self.GetParent<Unit>()?.GetComponent<NumericComponent>();
+            numeric?.Set(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
             if (self.SkillHandler != null && target != null)
             {
                 self.SkillHandler.TheUnitTarget = target;
             }
         }
 
-        private static void UpdateSummonMovement(
-            RoleBullet1Componnet self,
+        private static void UpdateMovement(
+            SkillEntityComponent self,
             Unit unit,
             SummonRuntimeData runtime,
             Unit master)
@@ -157,10 +169,11 @@ namespace ET
             }
 
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
-            float speed = numeric != null ? numeric.GetAsFloat(NumericType.Speed_Current_15) : 1f;
+            float speed = numeric != null ? numeric.GetAsFloat(NumericType.Speed_Current_15) : 0f;
             if (speed <= 0f)
             {
-                speed = self.SummonConfig?.Speed > 0 ? self.SummonConfig.Speed : 1f;
+                // LDSummon.Speed：1000 = 1 米/秒
+                speed = self.SummonConfig?.Speed > 0 ? self.SummonConfig.Speed / 1000f : 1f;
             }
 
             Vector3 dir;
@@ -172,7 +185,7 @@ namespace ET
                 {
                     if (runtime.DeleteOnTrackReach)
                     {
-                        DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
+                        DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
                     }
                     return;
                 }
@@ -198,7 +211,7 @@ namespace ET
                 Vector3 blocked = map.GetCanChongJiPath(unit, unit.Position, nextPos);
                 if ((blocked - nextPos).sqrMagnitude > 0.01f)
                 {
-                    DestroySummon(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
+                    DestroySkillEntity(self, unit, runtime.DestroySkillId, runtime.DestroySkillLevel);
                     return;
                 }
                 nextPos = blocked;
@@ -209,7 +222,7 @@ namespace ET
         }
 
         private static void TryTriggerIntervalAction(
-            RoleBullet1Componnet self,
+            SkillEntityComponent self,
             Unit unit,
             SummonRuntimeData runtime,
             long now)
@@ -225,12 +238,12 @@ namespace ET
                 return;
             }
 
-            TriggerSummonActionSkill(self, 0);
+            TriggerActionSkill(self, 0);
             self.LastActionTime = now;
         }
 
         private static void TryTriggerCollisionAction(
-            RoleBullet1Componnet self,
+            SkillEntityComponent self,
             Unit unit,
             SummonRuntimeData runtime,
             long now)
@@ -264,8 +277,7 @@ namespace ET
                     continue;
                 }
 
-                TriggerSummonActionSkill(self, other.Id);
-                runtime.ActionCount++;
+                TriggerActionSkill(self, other.Id);
                 if (runtime.MaxActionCount > 0 && runtime.ActionCount >= runtime.MaxActionCount)
                 {
                     break;
@@ -273,7 +285,7 @@ namespace ET
             }
         }
 
-        private static void TriggerSummonActionSkill(RoleBullet1Componnet self, long targetId)
+        private static void TriggerActionSkill(SkillEntityComponent self, long targetId)
         {
             SummonRuntimeData runtime = self.Runtime;
             if (runtime == null || runtime.ActionSkillId <= 0)
@@ -290,7 +302,7 @@ namespace ET
 
             if (!LDSkillCategory.Instance.Contain(runtime.ActionSkillId))
             {
-                Log.Warning($"Summon action skill missing: {runtime.ActionSkillId} summon={runtime.SummonId}");
+                Log.Warning($"SkillEntity action skill missing: {runtime.ActionSkillId} summon={runtime.SummonId}");
                 return;
             }
 
@@ -328,6 +340,7 @@ namespace ET
             }
 
             handler.SetSkillState(SkillState.Finished);
+            handler.OnFinished();
             ObjectPool.Instance.Recycle(handler);
             runtime.ActionCount++;
         }
@@ -342,8 +355,8 @@ namespace ET
             return master == null || master.IsDisposed || IsUnitDead(master);
         }
 
-        private static void DestroySummon(
-            RoleBullet1Componnet self,
+        private static void DestroySkillEntity(
+            SkillEntityComponent self,
             Unit unit,
             int destroySkillId,
             int destroySkillLevel)
@@ -363,7 +376,7 @@ namespace ET
                 {
                     int oldActionSkill = runtime.ActionSkillId;
                     runtime.ActionSkillId = destroySkillId;
-                    TriggerSummonActionSkill(self, 0);
+                    TriggerActionSkill(self, 0);
                     runtime.ActionSkillId = oldActionSkill;
                 }
             }

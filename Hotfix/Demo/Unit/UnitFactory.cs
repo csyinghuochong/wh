@@ -99,7 +99,7 @@ namespace ET
             //unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
         }
 
-        //创建一个子弹unit（旧接口，skillId 为 LDSkill.Id）
+        //创建一个子弹unit（旧接口，UnitType.Bullet；ConfigId=LDSkill.Id。技能体请用 CreateSkillEntity）
         public static Unit CreateBullet(Scene scene, long masterid, int skillid, int starangle, Vector3 vector3, CreateMonsterInfo createMonsterInfo)
         {
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), skillid);  //创建一个Unit
@@ -122,7 +122,7 @@ namespace ET
             return unit;
         }
 
-        /// <summary>创建技能体，ConfigId 为 LDSummon.Id。</summary>
+        /// <summary>创建技能体 UnitType.SkillEntity，ConfigId=LDSummon.Id；行为挂 SkillEntityComponent。</summary>
         public static Unit CreateSkillEntity(Scene scene, long masterId, int summonId, Vector3 position, Quaternion rotation)
         {
             if (!LDSummonCategory.Instance.Contain(summonId))
@@ -146,12 +146,12 @@ namespace ET
             unit.Type = UnitType.SkillEntity;
             unit.MasterId = masterId;
 
-            float speed = summonConfig.Speed > 0 ? summonConfig.Speed : 1f;
+            float speed = summonConfig.Speed > 0 ? summonConfig.Speed / 1000f : 1f;
             numericComponent.Set(NumericType.Speed_Current_15, speed, false);
             numericComponent.Set(NumericType.MasterId, masterId, false);
             numericComponent.SetStartAngle(rotation, false);
             numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
-            unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
+            // AOI 由 CreateSummon 在 SkillEntityComponent.Init 写完 MoveType/TrackTarget 后再挂，避免客户端缺参数
             return unit;
         }
 

@@ -149,6 +149,7 @@ namespace ET
                 case UnitType.Plant:
                 case UnitType.Pet:
                 case UnitType.Bullet:
+                case UnitType.SkillEntity:
                 case UnitType.Npc:
                 case UnitType.Stall:
                     createUnits.Units.Add(CreateUnitInfo(sendUnit));

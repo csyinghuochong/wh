@@ -80,6 +80,7 @@ namespace ET
             {
                 Skill_TreeEditor skillHandler = self.Skills[i];
                 self.Skills.RemoveAt(i);
+                skillHandler.OnFinished();
                 ObjectPool.Instance.Recycle(skillHandler);
             }
             self.SkillCDs.Clear();
@@ -182,11 +183,7 @@ namespace ET
                     continue;
                 }
                 
-                if (skillHandler.LdSkillConf.Name.Equals(SkillHelp.Skill_XuanZhuan_Attack_2))
-                {
-                    ifStop = true;
-                }
-
+         
                 //打断
                 if (ifStop)
                 {
@@ -712,63 +709,20 @@ namespace ET
                     return;
                 }
 
-                if (i >= self.Skills.Count)
-                {
-                    Unit unit = self.GetParent<Unit>();
-                    Log.Warning($"SkillManagerComponentError11:  {unit.Type} {unit.ConfigId} {unit.InstanceId}");
-                    break;
-                }
+                Skill_TreeEditor skill_TreeEditor = self.Skills[i];
+                skill_TreeEditor.OnUpdate();
 
-                self.Skills[i].OnUpdate();
-
-                if ( i >= self.Skills.Count)
+                if (skill_TreeEditor.GetSkillState() == SkillState.Finished)
                 {
-                    Unit unit = self.GetParent<Unit>();
-                    Log.Warning($"SkillManagerComponentError22:  {unit.Type} {unit.ConfigId} {unit.InstanceId}");
-                    break;
+                    // 与 OnFinish 一致：先收尾再还池，避免漏 Recycle 导致对象池泄漏
+                    skill_TreeEditor.OnFinished();
+                    self.Skills.RemoveAt(i);
+                    ObjectPool.Instance.Recycle(skill_TreeEditor);
                 }
-                
             }
 
-            int dalaycnt = self.DelaySkillList.Count;
-            for (int i = dalaycnt - 1; i >= 0; i--)
-            {
-                SkillInfo skillInfo = self.DelaySkillList[i];
-                
-                Unit target = self.SelfUnitComponent.Get(skillInfo.TargetID);
-                if (target != null && !target.IsDisposed)
-                {
-                    skillInfo.PosX = target.Position.x;
-                    skillInfo.PosY = target.Position.y;
-                    skillInfo.PosZ = target.Position.z;
-                }
-                if (TimeHelper.ServerNow() < skillInfo.SkillBeginTime)
-                {
-                    continue;
-                }
-
-                //Unit from = self.GetParent<Unit>();
-                Skill_TreeEditor skillAction = self.SkillFactory(skillInfo, self.SelfUnit);
-                skillInfo.SkillBeginTime = skillAction.SkillBeginTime;
-                skillInfo.SkillEndTime = skillAction.SkillEndTime;
-                self.Skills.Add(skillAction);
-
-                M2C_UnitUseSkill useSkill = MessageHelper.m2C_UnitUseSkill;
-                useSkill.UnitId = self.SelfUnit.Id;
-                useSkill.SkillID = 0;
-                useSkill.TargetAngle = 0;
-                self.BroadcastSkillInfos.Clear();
-                self.BroadcastSkillInfos.Add(skillInfo);
-                useSkill.SkillInfos = self.BroadcastSkillInfos;
-                useSkill.PublicCDTime = 0;
-                useSkill.CDEndTime = 0;
-                //MessageHelper.Broadcast(self.SelfUnit, useSkill);
-                self.BroadcastSkill(self.SelfUnit, useSkill);
-                self.DelaySkillList.RemoveAt(i);
-            }
 
             //循环检查冷却CD的技能
-            /*
             if (self.SkillCDs.Count >= 1)
             {
                 long nowTime = TimeHelper.ServerNow();
@@ -788,7 +742,6 @@ namespace ET
                     self.SkillCDs.Remove(removeID);
                 }
             }
-            */
             
             if (self.Skills.Count == 0 && self.DelaySkillList.Count == 0)
             {

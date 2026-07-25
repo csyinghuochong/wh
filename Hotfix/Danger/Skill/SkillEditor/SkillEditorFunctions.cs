@@ -1556,6 +1556,11 @@ namespace ET
             FaceUnitToward(unit, unit.Position + dir.normalized);
         }
 
+
+        /// <summary>
+        /// 创建技能体
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void CreateSummon(SkillEditorFunctionContext ctx)
         {
             CreateSummonInternal(ctx, legacyFormat: false);
@@ -1617,8 +1622,9 @@ namespace ET
                 runtime.TrackTargetId = ctx.Handler.TheUnitTarget?.Id ?? 0;
             }
 
-            RoleBullet1Componnet bulletComponent = summonUnit.AddComponent<RoleBullet1Componnet>();
-            bulletComponent.InitFromSummon(ctx.Handler, caster.Id, summonConfig, runtime);
+            SkillEntityComponent skillEntity = summonUnit.AddComponent<SkillEntityComponent>();
+            skillEntity.Init(ctx.Handler, caster.Id, summonConfig, runtime);
+            summonUnit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, summonUnit.Position);
 
             ctx.SetVariable("createSummon", summonUnit.Id.ToString(CultureInfo.InvariantCulture));
             if (Log.IsDebugEnabled) Log.Debug($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} unit={summonUnit.Id} caster={caster.Id} legacy={legacyFormat}");
@@ -1626,23 +1632,45 @@ namespace ET
 
         private static SummonRuntimeData ParseCreateSummonRuntime(SkillEditorFunctionContext ctx, LDSummon summonConfig)
         {
+            // 与 DocEditor「创建技能体」参数顺序一致（从 0 起）：
+            // 0技能体ID 1施法者 2x 3z 4dirX 5dirZ 6作用类型 7运动类型 8追踪目标
+            // 9碰到阻挡删除 10最大持续时间ms 11作用间隔ms 12作用次数 13创建时触发
+            // 14作用技能 15作用等级 16消亡-次数 17消亡-施法者死亡 18消亡-目标死亡 19消亡技能 20消亡等级
             SummonRuntimeData runtime = new SummonRuntimeData
             {
-                ActionType = ctx.GetParamInt(7, 0),
-                MoveType = ctx.GetParamInt(8, 0),
-                DeleteOnBlock = ctx.GetParamBool(10, false),
-                MaxDurationMs = ctx.GetParamInt(11, 0),
-                IntervalMs = ctx.GetParamInt(12, 0),
-                MaxActionCount = ctx.GetParamInt(13, 0),
-                TriggerOnCreate = ctx.GetParamBool(14, false),
-                ActionSkillId = ResolveSummonSkillId(ctx, 15, summonConfig, summonConfig.Skill_1),
-                ActionSkillLevel = ctx.GetParamInt(16, ctx.SkillLevel),
-                DestroyMode = ctx.GetParamInt(17, 1),
-                DestroySkillId = ResolveSummonSkillId(ctx, 18, summonConfig, summonConfig.Skill_2),
-                DestroySkillLevel = ctx.GetParamInt(19, ctx.SkillLevel),
+                ActionType = ctx.GetParamInt(6, 0),
+                MoveType = ctx.GetParamInt(7, 0),
+                DeleteOnBlock = ctx.GetParamBool(9, false),
+                MaxDurationMs = ctx.GetParamInt(10, 0),
+                IntervalMs = ctx.GetParamInt(11, 0),
+                MaxActionCount = ctx.GetParamInt(12, 0),
+                TriggerOnCreate = ctx.GetParamBool(13, false),
+                ActionSkillId = ResolveSummonSkillId(ctx, 14, summonConfig, summonConfig.Skill_1),
+                ActionSkillLevel = ctx.GetParamInt(15, ctx.SkillLevel),
+                DestroySkillId = ResolveSummonSkillId(ctx, 19, summonConfig, summonConfig.Skill_2),
+                DestroySkillLevel = ctx.GetParamInt(20, ctx.SkillLevel),
             };
 
-            Unit trackTarget = ctx.ResolveUnit(ctx.GetParamRaw(9));
+            bool destroyOnCount = ctx.GetParamBool(16, true);
+            bool destroyOnCasterDead = ctx.GetParamBool(17, false);
+            if (destroyOnCount && destroyOnCasterDead)
+            {
+                runtime.DestroyMode = 11;
+            }
+            else if (destroyOnCasterDead)
+            {
+                runtime.DestroyMode = 10;
+            }
+            else if (destroyOnCount)
+            {
+                runtime.DestroyMode = 1;
+            }
+            else
+            {
+                runtime.DestroyMode = 0;
+            }
+
+            Unit trackTarget = ctx.ResolveUnit(ctx.GetParamRaw(8));
             runtime.TrackTargetId = trackTarget?.Id ?? 0;
             return runtime;
         }
@@ -1731,8 +1759,8 @@ namespace ET
                 return;
             }
 
-            RoleBullet1Componnet bulletComponent = summon?.GetComponent<RoleBullet1Componnet>();
-            bulletComponent?.SetTrackTarget(target, lockTarget);
+            SkillEntityComponent skillEntity = summon?.GetComponent<SkillEntityComponent>();
+            skillEntity?.SetTrackTarget(target, lockTarget);
 
             if (ctx.Handler != null)
             {
