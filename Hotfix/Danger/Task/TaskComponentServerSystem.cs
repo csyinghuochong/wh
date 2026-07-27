@@ -78,36 +78,6 @@ namespace ET
             return mainTaskNumber;
         }
 
-        public static int GetHuoYueDu(this TaskComponentServer self)
-        {
-            const int pointsPerTask = 10;
-            int huoYueDu = 0;
-            for (int i = 0; i < self.RoleTaskList.Count; i++)
-            {
-                TaskPro taskPro = self.RoleTaskList[i];
-                if (taskPro.taskStatus < (int)TaskStatuEnum.Completed)
-                {
-                    continue;
-                }
-                if (taskPro.TaskType == TaskTypeEnum.Daily)
-                {
-                    huoYueDu += pointsPerTask;
-                    continue;
-                }
-                if (!LDTaskCategory.Instance.Contain(taskPro.taskID))
-                {
-                    continue;
-                }
-                LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
-                if (ldTask.Condition_Type == TastConditionType.EveryDayTask_1019
-                    || ldTask.Condition_Type == TastConditionType.DailyTask_1014)
-                {
-                    huoYueDu += pointsPerTask;
-                }
-            }
-            return huoYueDu;
-        }
-
         public static void Check(this TaskComponentServer self)
         {
             self.OnLineTime++;
@@ -223,7 +193,7 @@ namespace ET
             for (int i = 0; i < self.RoleTaskList.Count; i++)
             {
                 TaskPro taskPro = self.RoleTaskList[i];
-                if (taskPro.TaskType!= (int)taskType)
+                if (taskPro.GetTaskGroupType() != (int)taskType)
                 {
                     continue;
                 }
@@ -287,7 +257,6 @@ namespace ET
             LDTask ldTask = LDTaskCategory.Instance.Get(taskid);
             TaskPro taskPro = new TaskPro();
             taskPro.taskID = taskid;
-            taskPro.TaskType = ldTask.Group;
 
             switch (ldTask.Condition_Type)
             {
@@ -344,6 +313,12 @@ namespace ET
             
            // self.IsCompleted(taskPro, ldTask.TargetType, ldTask.Target, ldTask.TargetValue);
             taskPro.taskStatus = completed ? (int)TaskStatuEnum.Completed : (int)TaskStatuEnum.Accepted;
+
+            // 日/周活跃档位任务：按当前活跃点初始化进度
+            if (ldTask.Group == TaskTypeEnum.DailyActivity || ldTask.Group == TaskTypeEnum.WeeklyActivity)
+            {
+                self.ApplyActivePointToActivityTask(taskPro, ldTask);
+            }
             
             self.RoleTaskList.Add(taskPro);
             /*if (ldTask.TaskType == TaskTypeEnum.Treasure)
@@ -433,6 +408,74 @@ namespace ET
             }
             return null;
         }
+
+        /// <summary>按当前日/周活跃刷新 DailyActivity / WeeklyActivity 任务进度与完成态</summary>
+        public static void RefreshActivityTasksByActivePoint(this TaskComponentServer self, int userDataType, bool notice = true)
+        {
+            int taskGroup = userDataType == UserDataType.WeeklyActive
+                    ? TaskTypeEnum.WeeklyActivity
+                    : TaskTypeEnum.DailyActivity;
+            Unit unit = self.GetParent<Unit>();
+            RoleDailyDataComponentServer dailyData = unit?.GetComponent<RoleDailyDataComponentServer>();
+            if (dailyData == null)
+            {
+                return;
+            }
+
+            int curPoint = userDataType == UserDataType.WeeklyActive
+                    ? dailyData.GetWeeklyActivePoint()
+                    : dailyData.GetDailyActivePoint();
+
+            bool changed = false;
+            for (int i = 0; i < self.RoleTaskList.Count; i++)
+            {
+                TaskPro taskPro = self.RoleTaskList[i];
+                if (!LDTaskCategory.Instance.Contain(taskPro.taskID))
+                {
+                    continue;
+                }
+
+                LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
+                if (ldTask.Group != taskGroup)
+                {
+                    continue;
+                }
+
+                if (self.ApplyActivePointToActivityTask(taskPro, ldTask, curPoint))
+                {
+                    changed = true;
+                }
+            }
+
+            if (changed && notice)
+            {
+                self.SendToUpdateTask();
+            }
+        }
+
+        /// <summary>用活跃点数写入档位任务进度；返回是否有变更</summary>
+        public static bool ApplyActivePointToActivityTask(this TaskComponentServer self, TaskPro taskPro, LDTask ldTask, int curPoint = -1)
+        {
+            if (curPoint < 0)
+            {
+                RoleDailyDataComponentServer dailyData = self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>();
+                if (dailyData == null)
+                {
+                    return false;
+                }
+
+                curPoint = ldTask.Group == TaskTypeEnum.WeeklyActivity
+                        ? dailyData.GetWeeklyActivePoint()
+                        : dailyData.GetDailyActivePoint();
+            }
+
+            int oldNum = taskPro.taskTargetNum_1;
+            int oldStatus = taskPro.taskStatus;
+            taskPro.taskTargetNum_1 = curPoint;
+            bool completed = curPoint >= ldTask.Param1;
+            taskPro.taskStatus = completed ? (int)TaskStatuEnum.Completed : (int)TaskStatuEnum.Accepted;
+            return oldNum != taskPro.taskTargetNum_1 || oldStatus != taskPro.taskStatus;
+        }
         
         public static int CheckGiveItemTask (this TaskComponentServer self, int TargetType, int[] Target, int[] TargetValue, long BagInfoID, TaskPro taskPro)
         {
@@ -503,6 +546,24 @@ namespace ET
             {
                 return ErrorCode.ERR_TaskCommited;
             }
+
+            LDTask commitLdTask = LDTaskCategory.Instance.Get(taskid);
+            if (commitLdTask.Group == TaskTypeEnum.DailyActivity || commitLdTask.Group == TaskTypeEnum.WeeklyActivity)
+            {
+                RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+                int curPoint = commitLdTask.Group == TaskTypeEnum.WeeklyActivity
+                        ? dailyData.GetWeeklyActivePoint()
+                        : dailyData.GetDailyActivePoint();
+                if (curPoint < commitLdTask.Param1)
+                {
+                    return ErrorCode.ERR_Error;
+                }
+            }
+            else if (taskPro.taskStatus != (int)TaskStatuEnum.Completed)
+            {
+                return ErrorCode.Pre_Condition_Error;
+            }
+
             List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems(roleInfoComponent.RoleInfo.Occ, taskid);
 
             if (rewardItems.Count == 0)
@@ -1183,20 +1244,9 @@ namespace ET
             }
 
             self.InitTasksByType(TaskTypeEnum.Daily);
+            self.InitTasksByType(TaskTypeEnum.DailyActivity);
         }
 
-        public static void CheckRingTask(this TaskComponentServer self)
-        {
-            NumericComponent numericComponent = self.GetParent<Unit>().GetComponent<NumericComponent>();
-            /*if (numericComponent.GetAsInt(NumericType.RingTaskId) == 0 && numericComponent.GetAsInt(NumericType.RingTaskNumber) < 1)
-            {
-                //self.ClearTypeTask(TaskTypeEnum.Ring);
-
-                int roleLv = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
-                int ringTaskId = TaskHelper.GetTaskIdByType(TaskTypeEnum.Ring, roleLv);
-                numericComponent.ApplyValue(NumericType.RingTaskId, ringTaskId, false);
-            }*/
-        }
 
         public static void CheckWeeklyTask(this TaskComponentServer self, bool notice)
         {
@@ -1206,6 +1256,7 @@ namespace ET
             }
 
             self.InitTasksByType(TaskTypeEnum.Weekly);
+            self.InitTasksByType(TaskTypeEnum.WeeklyActivity);
         }
 
         /// <summary>
@@ -1216,7 +1267,7 @@ namespace ET
             for (int i = 0; i < self.RoleTaskList.Count; i++)
             {
                 TaskPro taskPro = self.RoleTaskList[i];
-                if (taskPro.TaskType == taskGroup)
+                if (taskPro.GetTaskGroupType() == taskGroup)
                 {
                     return true;
                 }
@@ -1276,7 +1327,7 @@ namespace ET
             HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList);
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
-                if (self.RoleTaskList[i].TaskType != taskType)
+                if (self.RoleTaskList[i].GetTaskGroupType() != taskType)
                 {
                     continue;
                 }
@@ -1292,22 +1343,18 @@ namespace ET
 
         public static void UpdateDayTask(this TaskComponentServer self, bool notice)
         {
-            //清空每日任务
-            Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
-            int roleLv = roleInfoComponent.RoleInfo.Lv;
-            System.DateTime dateTime = TimeHelper.DateTimeNow();
+            // 清空日常任务 + 日活跃档位任务（已领记录一并清）
             HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList);
             for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
-                if(!LDTaskCategory.Instance.Contain(self.RoleTaskList[i].taskID))
+                if (!LDTaskCategory.Instance.Contain(self.RoleTaskList[i].taskID))
                 {
                     self.RoleTaskList.RemoveAt(i);
                     continue;
                 }
 
                 LDTask ldTask = LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID);
-                if (self.RoleTaskList[i].TaskType == TaskTypeEnum.Daily || ldTask.Group == TaskTypeEnum.Daily)
+                if (ldTask.Group == TaskTypeEnum.Daily || ldTask.Group == TaskTypeEnum.DailyActivity)
                 {
                     if (completedTaskIds.Contains(ldTask.Id))
                     {
@@ -1315,18 +1362,26 @@ namespace ET
                         completedTaskIds.Remove(ldTask.Id);
                     }
                     self.RoleTaskList.RemoveAt(i);
-                    continue;
                 }
             }
 
-            List<int> taskCountryList = TaskHelper.GenerateTaskListByType(TaskTypeEnum.Daily);
-            for (int i = 0; i < taskCountryList.Count; i++)
+            for (int i = self.RoleComoleteTaskList.Count - 1; i >= 0; i--)
             {
-                self.CreateTask(taskCountryList[i]);
+                int taskId = self.RoleComoleteTaskList[i];
+                if (!LDTaskCategory.Instance.Contain(taskId))
+                {
+                    continue;
+                }
+
+                int group = LDTaskCategory.Instance.Get(taskId).Group;
+                if (group == TaskTypeEnum.Daily || group == TaskTypeEnum.DailyActivity)
+                {
+                    self.RoleComoleteTaskList.RemoveAt(i);
+                }
             }
 
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-       
+            self.InitTasksByType(TaskTypeEnum.Daily);
+            self.InitTasksByType(TaskTypeEnum.DailyActivity);
         }
 
 
@@ -1341,8 +1396,8 @@ namespace ET
                     continue;
                 }
 
-                if (self.RoleTaskList[i].TaskType == TaskTypeEnum.Weekly
-                    || LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID).Group == TaskTypeEnum.Weekly)
+                if (LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID).Group == TaskTypeEnum.Weekly
+                    || LDTaskCategory.Instance.Get(self.RoleTaskList[i].taskID).Group == TaskTypeEnum.WeeklyActivity)
                 {
                     int taskId = self.RoleTaskList[i].taskID;
                     if (completedTaskIds.Contains(taskId))
@@ -1368,10 +1423,26 @@ namespace ET
                 }*/
             }
 
+            RoleDailyDataComponentServer dailyData = self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>();
+            if (dailyData != null)
+            {
+                dailyData.ClearDayLists(RoleDailyClearType.Week);
+                if (notice)
+                {
+                    dailyData.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+                }
+            }
+
             List<int> weeklyTaskList = TaskHelper.GenerateTaskListByType(TaskTypeEnum.Weekly);
             for (int i = 0; i < weeklyTaskList.Count; i++)
             {
                 self.CreateTask(weeklyTaskList[i]);
+            }
+
+            List<int> weeklyActivityList = TaskHelper.GenerateTaskListByType(TaskTypeEnum.WeeklyActivity);
+            for (int i = 0; i < weeklyActivityList.Count; i++)
+            {
+                self.CreateTask(weeklyActivityList[i]);
             }
 
             if (notice)
@@ -1436,7 +1507,6 @@ namespace ET
         public static void OnZeroClockUpdate(this TaskComponentServer self, bool notice)
         {
             self.OnLineTime = 0;
-         
             self.UpdateDayTask(notice);
            
             if (notice)

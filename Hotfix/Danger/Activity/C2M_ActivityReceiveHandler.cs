@@ -8,20 +8,13 @@ namespace ET
     {
 
         protected override async ETTask Run(Unit unit, C2M_ActivityReceiveRequest request, M2C_ActivityReceiveResponse response, Action reply)
-        {            response.Error = ErrorCode.ERR_ModifyData;
+        {
+            response.Error = ErrorCode.ERR_ModifyData;
             reply();
             await ETTask.CompletedTask;
-#if false // TODO: migrate to LD config
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
             {
-                if (!ActivityConfigCategory.Instance.Contain(request.ActivityId))
-                {
-                    Log.Error($"C2M_ActivityReceiveRequest.1");
-                    response.Error = ErrorCode.ERR_ModifyData;
-                    reply();
-                    return;
-                }
 
                 ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
                 if (!ActivityHelper.HaveReceiveTimes(activityComponentServer.ActivityReceiveIds, request.ActivityId))
@@ -30,16 +23,11 @@ namespace ET
                     reply();
                     return;
                 }
-                LogHelper.LogWarning($"C2M_ActivityReceive:  {unit.Id} {request.ActivityId} {request.ReceiveIndex} {TimeHelper.ServerNow().ToString()}", true);
-                ActivityConfig activityConfig = ActivityConfigCategory.Instance.Get(request.ActivityId);
-                if (activityConfig.ActivityType!= request.ActivityType)
-                {
-                    Log.Error($"C2M_ActivityReceiveRequest.2");
-                    response.Error = ErrorCode.ERR_ModifyData;
-                    reply();
-                    return;
-                }
 
+                LogHelper.LogWarning($"C2M_ActivityReceive:  {unit.Id} {request.ActivityId} {request.ReceiveIndex} {TimeHelper.ServerNow().ToString()}", true);
+
+
+                /*
                 switch (activityConfig.ActivityType)
                 {
                     case 2: //每日特惠
@@ -307,10 +295,11 @@ namespace ET
                         break;
                 }
             }
-            LogHelper.LogWarning($"C2M_ActivityReceive[成功]:  {unit.Id} {request.ActivityId} {request.ReceiveIndex} {TimeHelper.ServerNow().ToString()}", true);
-            reply();
-            await ETTask.CompletedTask;
-        #endif
-}
+                */
+                LogHelper.LogWarning($"C2M_ActivityReceive[成功]:  {unit.Id} {request.ActivityId} {request.ReceiveIndex} {TimeHelper.ServerNow().ToString()}", true);
+                reply();
+                await ETTask.CompletedTask;
+            }
+        }
     }
 }

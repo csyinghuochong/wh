@@ -410,7 +410,7 @@ namespace ET
             int skillNumber = 1 + numericComponent.GetAsInt(NumericType.MakeType_2) > 0 ? 1 : 0;
             numericComponent.ApplyValue(NumericType.ZeroClock, 1, notice);
             // 日清列表由 RoleDailyDataComponent 统一 Clear（含 BuyStoreItems 本次限购）
-            unit.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists();
+            unit.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists(RoleDailyClearType.Day);
             self.LastLoginTime = TimeHelper.ServerNow();
             self.TodayOnLine = 0;
         }
@@ -1227,7 +1227,7 @@ namespace ET
 
         public static void ClearDayData(this RoleInfoComponentServer self)
         {
-            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists();
+            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists(RoleDailyClearType.Day);
         }
 
     }

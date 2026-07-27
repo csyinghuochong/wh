@@ -318,6 +318,16 @@ namespace ET
                     }
                     break;
                 }
+                case UserDataType.DailyActive:
+                {
+                    number = self.GetParent<Unit>().GetComponent<RoleDailyDataComponentServer>()?.GetDailyActivePoint() ?? 0;
+                    break;
+                }
+                case UserDataType.WeeklyActive:
+                {
+                    number = self.GetParent<Unit>().GetComponent<RoleDailyDataComponentServer>()?.GetWeeklyActivePoint() ?? 0;
+                    break;
+                }
                 default:
                     break;
             }
@@ -1059,8 +1069,15 @@ namespace ET
 
             if (currencyAdds != null)
             {
+                RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
                 foreach (KeyValuePair<int, long> kv in currencyAdds)
                 {
+                    if (kv.Key == UserDataType.DailyActive || kv.Key == UserDataType.WeeklyActive)
+                    {
+                        dailyData?.AddActivePoint(kv.Key, (int)kv.Value, notice);
+                        continue;
+                    }
+
                     roleInfoComponent.UpdateRoleMoneyAdd(kv.Key, kv.Value.ToString(), true, getType);
                 }
             }

@@ -3519,35 +3519,6 @@ namespace ET
 
 	}
 
-//活跃宝箱
-	[ResponseType(nameof(M2C_TaskHuoYueRewardResponse))]
-	[Message(OuterOpcode.C2M_TaskHuoYueRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_TaskHuoYueRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int HuoYueId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TaskHuoYueRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_TaskHuoYueRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //任务列表
 	[ResponseType(nameof(M2C_TaskInitResponse))]
 	[Message(OuterOpcode.C2M_TaskInitRequest)]
@@ -3577,9 +3548,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public List<int> RoleComoleteTaskList = new List<int>();
-
-		[ProtoMember(4)]
-		public List<int> ReceiveHuoYueIds = new List<int>();
 
 	}
 
@@ -3821,9 +3789,6 @@ namespace ET
 
 		[ProtoMember(8)]
 		public int WaveId { get; set; }
-
-		[ProtoMember(9)]
-		public int TaskType { get; set; }
 
 	}
 
@@ -16593,6 +16558,14 @@ namespace ET
 // 商店本次限购 Key=LDShop_Goods.Id
 		[ProtoMember(7)]
 		public List<KeyValuePairInt> BuyStoreItems = new List<KeyValuePairInt>();
+
+// 日活跃点数（Item/UserDataType=11），零点清零
+		[ProtoMember(8)]
+		public int DailyActivePoint { get; set; }
+
+// 周活跃点数（Item/UserDataType=12），周刷新清零
+		[ProtoMember(9)]
+		public int WeeklyActivePoint { get; set; }
 
 	}
 

@@ -13,7 +13,6 @@ namespace ET
 
             response.RoleTaskList = taskComponentServer.RoleTaskList;
             response.RoleComoleteTaskList = taskComponentServer.RoleComoleteTaskList;
-            response.ReceiveHuoYueIds = taskComponentServer.ReceiveHuoYueIds;
 
 
             reply();

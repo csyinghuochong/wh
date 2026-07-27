@@ -33,7 +33,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (taskComponentServer.GetHuoYueDu() < 30)
+            if ((unit.GetComponent<RoleDailyDataComponentServer>()?.GetDailyActivePoint() ?? 0) < 30)
             {
                 response.Error = ErrorCode.ERR_HuoYueNot;
                 reply();

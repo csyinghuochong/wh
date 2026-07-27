@@ -94,7 +94,7 @@ namespace ET
                 return;
             }
 
-            self.ClearDayLists();
+            self.ClearDayLists(RoleDailyClearType.Day);
             self.NotifyUpdate(RoleDailyDataComponentServer.ReasonZeroClock);
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
@@ -118,10 +118,21 @@ namespace ET
                 notice);
         }
 
-        public static void ClearDayLists(this RoleDailyDataComponentServer self)
+        /// <summary>
+        /// 按类型清理：Day=日清字段+日活跃；Week=周活跃。
+        /// </summary>
+        public static void ClearDayLists(this RoleDailyDataComponentServer self, int clearType = RoleDailyClearType.Day)
         {
             self.EnsureLists();
             RoleDailyData data = self.Data;
+
+            if (clearType == RoleDailyClearType.Week)
+            {
+                data.WeeklyActivePoint = 0;
+                return;
+            }
+
+            // 默认日清：不含周活跃
             data.DayFubenTimes.Clear();
             data.ChouKaRewardIds.Clear();
             data.MysteryItems.Clear();
@@ -129,7 +140,51 @@ namespace ET
             data.DayMonsters.Clear();
             data.DayJingLing.Clear();
             data.BuyStoreItems.Clear();
+            data.DailyActivePoint = 0;
             self.PersonalRandomShops.Clear();
+        }
+
+        /// <summary>增加日/周活跃点数并推送</summary>
+        public static void AddActivePoint(this RoleDailyDataComponentServer self, int userDataType, int add, bool notice = true)
+        {
+            if (add <= 0)
+            {
+                return;
+            }
+
+            self.EnsureLists();
+            if (userDataType == UserDataType.DailyActive)
+            {
+                self.Data.DailyActivePoint += add;
+            }
+            else if (userDataType == UserDataType.WeeklyActive)
+            {
+                self.Data.WeeklyActivePoint += add;
+            }
+            else
+            {
+                return;
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            unit?.GetComponent<TaskComponentServer>()?.RefreshActivityTasksByActivePoint(userDataType, notice);
+
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        public static int GetDailyActivePoint(this RoleDailyDataComponentServer self)
+        {
+            self.EnsureLists();
+            return self.Data.DailyActivePoint;
+        }
+
+        public static int GetWeeklyActivePoint(this RoleDailyDataComponentServer self)
+        {
+            self.EnsureLists();
+            return self.Data.WeeklyActivePoint;
         }
 
         /// <summary>
@@ -387,6 +442,8 @@ namespace ET
                 DayMonsters = CloneKvList(src.DayMonsters),
                 DayJingLing = src.DayJingLing != null ? new List<int>(src.DayJingLing) : new List<int>(),
                 BuyStoreItems = CloneKvList(src.BuyStoreItems),
+                DailyActivePoint = src.DailyActivePoint,
+                WeeklyActivePoint = src.WeeklyActivePoint,
             };
         }
 
