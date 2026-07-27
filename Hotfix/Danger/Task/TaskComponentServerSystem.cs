@@ -594,13 +594,13 @@ namespace ET
                 return checkError;
             }
             
-            for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
-            {
-                if (self.RoleTaskList[i].taskID == taskid)
-                {
-                    self.RoleTaskList.RemoveAt(i);
-                }
-            }
+            //for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
+            //{
+            //    if (self.RoleTaskList[i].taskID == taskid)
+            //    {
+            //        self.RoleTaskList.RemoveAt(i);
+            //    }
+            //}
             self.RoleComoleteTaskList.Add(taskid);
             TaskRewardHelper.GrantTaskCommitRewards(unit, rewardItems);
             

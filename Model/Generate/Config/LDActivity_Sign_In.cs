@@ -87,6 +87,9 @@ namespace ET
 		/// <summary>奖励</summary>
 		[ProtoMember(4)]
 		public string Reward { get; set; }
+		/// <summary>周期组（1=第1个28天，2=第2个…；超出最大组后沿用最大组）</summary>
+		[ProtoMember(5)]
+		public int Group { get; set; }
 
 	}
 }

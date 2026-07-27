@@ -56,14 +56,14 @@ namespace ET
                         
                         break;
                     case 23:    //签到
-                        if (activityComponentServer.TotalSignNumber == 30)
+                        if (activityComponentServer.ActivityInfo.TotalSignNumber == 30)
                         {
                             response.Error = ErrorCode.ERR_AlreadyReceived;
                             reply();
                             return;
                         }
                         long serverNow = TimeHelper.ServerNow();
-                        if (CommonHelper.GetDayByTime(serverNow) == CommonHelper.GetDayByTime(activityComponentServer.LastSignTime))
+                        if (CommonHelper.GetDayByTime(serverNow) == CommonHelper.GetDayByTime(activityComponentServer.ActivityInfo.LastSignTime))
                         {
                             response.Error = ErrorCode.ERR_AlreadyReceived;
                             reply();
@@ -77,8 +77,8 @@ namespace ET
                             return;
                         }
 
-                        activityComponentServer.TotalSignNumber++;
-                        activityComponentServer.LastSignTime = TimeHelper.ServerNow();
+                        activityComponentServer.ActivityInfo.TotalSignNumber++;
+                        activityComponentServer.ActivityInfo.LastSignTime = TimeHelper.ServerNow();
                         activityComponentServer.ActivityReceiveIds.Add(request.ActivityId);
                         unit.GetComponent<BagComponentServer>().OnAddItemData(activityConfig.Par_3, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                         break;
@@ -153,7 +153,7 @@ namespace ET
                             return;
                         }
                         serverNow = TimeHelper.ServerNow();
-                        if (CommonHelper.GetDayByTime(serverNow) == CommonHelper.GetDayByTime(activityComponentServer.LastLoginTime))
+                        if (CommonHelper.GetDayByTime(serverNow) == CommonHelper.GetDayByTime(activityComponentServer.ActivityInfo.LastLoginTime))
                         {
                             response.Error = ErrorCode.ERR_AlreadyReceived;
                             reply();
@@ -168,7 +168,7 @@ namespace ET
                             return;
                         }
 
-                        activityComponentServer.LastLoginTime = serverNow;
+                        activityComponentServer.ActivityInfo.LastLoginTime = serverNow;
                         unit.GetComponent<ActivityComponentServer>().ActivityReceiveIds.Add(request.ActivityId);
                         unit.GetComponent<BagComponentServer>().OnAddItemData(activityConfig.Par_3, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
                         break;

@@ -2,23 +2,10 @@
 
 namespace ET
 {
-
-    
     public class ActivityComponentServer : Entity , IAwake, ITransfer, IUnitCache, IDestroy
     {
-        /// <summary>
-        /// 上次签到时间
-        /// </summary>
-        public long LastSignTime = 0;
-        /// <summary>
-        /// 已经签到次数
-        /// </summary>
-        public int TotalSignNumber = 0;
-
-        public long LastLoginTime = 0;
-
-        //每日特惠
-        public List<int> DayTeHui = new List<int>();
+        /// <summary>签到 / 登录奖励 / 每日特惠</summary>
+        public ActivityInfo ActivityInfo = new ActivityInfo();
 
         //定时抽奖[距离上次抽奖过去的时候]
         public long LastTimerChouKaPassTime = 0;

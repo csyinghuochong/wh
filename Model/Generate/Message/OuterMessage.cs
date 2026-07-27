@@ -16625,6 +16625,87 @@ namespace ET
 	}
 
 ////////////////////////////////////////////////
+	[ResponseType(nameof(M2C_ActivitySignInListResponse))]
+	[Message(OuterOpcode.C2M_ActivitySignInListRequest)]
+	[ProtoContract]
+	public partial class C2M_ActivitySignInListRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ActivityId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ActivitySignInListResponse)]
+	[ProtoContract]
+	public partial class M2C_ActivitySignInListResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<int> SignInIds { get; set; } = new List<int>();
+
+		[ProtoMember(2)]
+		public int ReceiveId { get; set; }
+
+		[ProtoMember(3)]
+		public int TodayId { get; set; }
+
+		[ProtoMember(4)]
+		public int Group { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ActivitySignInReceiveResponse))]
+	[Message(OuterOpcode.C2M_ActivitySignInReceiveRequest)]
+	[ProtoContract]
+	public partial class C2M_ActivitySignInReceiveRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ActivityId { get; set; }
+
+		[ProtoMember(2)]
+		public int SignInId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ActivitySignInReceiveResponse)]
+	[ProtoContract]
+	public partial class M2C_ActivitySignInReceiveResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int ReceiveId { get; set; }
+
+	}
+
+////////////////////////////////////////////////
 //#################一定要放在最后
 	[ResponseType(nameof(R2C_QueryAccountResponse))]
 	[Message(OuterOpcode.C2R_QueryAccountRequest)]

@@ -44,9 +44,9 @@ namespace ET
 
         public static void OnLogin(this ActivityComponentServer self, int level)
         {
-            if (self.DayTeHui.Count == 0)
+            if (self.ActivityInfo.DayTeHui.Count == 0)
             {
-                self.DayTeHui = DayTeHuiHelper.GetDayTeHuiList(2, level);
+                self.ActivityInfo.DayTeHui = DayTeHuiHelper.GetDayTeHuiList(2, level);
             }
             if (self.ActivityV1Info.LiBaoAllIds.Count == 0)
             {
@@ -73,7 +73,7 @@ namespace ET
 
         public static void OnZeroClockUpdate(this ActivityComponentServer self, int level)
         {
-            self.DayTeHui = DayTeHuiHelper.GetDayTeHuiList(2, level);
+            self.ActivityInfo.DayTeHui = DayTeHuiHelper.GetDayTeHuiList(2, level);
 
             //重置每日特惠 和 新春活动
             for (int i = self.ActivityReceiveIds.Count - 1; i >= 0; i--)
@@ -81,9 +81,9 @@ namespace ET
 
             }
 
-            if (self.TotalSignNumber >= 30)
+            if (self.ActivityInfo.TotalSignNumber >= 30)
             {
-                self.TotalSignNumber = 0;
+                self.ActivityInfo.TotalSignNumber = 0;
 
             }
 
