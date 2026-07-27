@@ -75,15 +75,12 @@ namespace ET
     [ProtoContract]
 	public partial class LDExp: ProtoObject, IConfig
 	{
-		/// <summary>等级</summary>
+		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>角色升级经验</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public int Exp_Role { get; set; }
-		/// <summary>角色标准生命</summary>
-		[ProtoMember(3)]
-		public int Hp_Standard { get; set; }
+		public int Name { get; set; }
 
 	}
 }

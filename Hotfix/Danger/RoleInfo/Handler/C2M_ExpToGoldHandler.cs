@@ -74,7 +74,7 @@ namespace ET
             if (request.OperateType == 2) {
                 costPro = 0.3f;
             }
-            LDExp ldExpCof = LDExpCategory.Instance.Get(roleInfo.Lv);
+            LDExp_Lv ldExpCof = LDExp_LvCategory.Instance.Get(roleInfo.Lv);
             int costExp = (int)(ldExpCof.Exp_Role * costPro);
             if (roleInfo.Exp < costExp||costExp <= 0)
             {

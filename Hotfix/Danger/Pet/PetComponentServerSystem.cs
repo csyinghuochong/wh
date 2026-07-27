@@ -816,7 +816,7 @@ namespace ET
 
             int maxLv = LDGlobalValueCategory.Instance.TempValue;
             int newExp = rolePetInfo.PetExp + exp;
-            LDExp xiulianconf1 = LDExpCategory.Instance.Get(rolePetInfo.PetLv);
+            LDExp_Lv xiulianconf1 = LDExp_LvCategory.Instance.Get(rolePetInfo.PetLv);
             if (newExp >= xiulianconf1.Exp_Role && rolePetInfo.PetLv < maxLv)
             {
                 self.PetAddLv(rolePetInfo, 1);

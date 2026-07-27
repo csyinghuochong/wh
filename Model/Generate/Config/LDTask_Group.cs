@@ -78,17 +78,20 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>页码</summary>
+		/// <summary>隶属</summary>
 		[ProtoMember(2)]
+		public int Belong { get; set; }
+		/// <summary>页码</summary>
+		[ProtoMember(3)]
 		public int Group { get; set; }
 		/// <summary>名称</summary>
-		[ProtoMember(3)]
+		[ProtoMember(4)]
 		public int Name { get; set; }
 		/// <summary>资源</summary>
-		[ProtoMember(4)]
+		[ProtoMember(5)]
 		public string Resources { get; set; }
 		/// <summary>类型 1-日 2-周 3-月</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public int Type { get; set; }
 
 	}

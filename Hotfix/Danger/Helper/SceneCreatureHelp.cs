@@ -215,17 +215,7 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = mainUnit.GetComponent<RoleInfoComponentServer>();
 			NumericComponent numericComponent = mainUnit.GetComponent<NumericComponent>();
 			
-			
-			TaskPro taskPro = mainUnit.GetComponent<TaskComponentServer>().GetTreasureMonster(mapComponent.SceneId);
-			if (taskPro!=null)
-			{
-				LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
-                KeyValuePairInt keyValuePairInt = new KeyValuePairInt();
-                keyValuePairInt.KeyId = taskPro.WaveId;
-				keyValuePairInt.Value = ldTask.Param1;
-                randomMonsterList.Add( keyValuePairInt );
-			}
-
+		
             string[] monsters = createMonster.Split('@');
             if (SeasonHelper.GetOpenSeason(roleInfoComponentServer.RoleInfo.Lv)!= null)
 			{

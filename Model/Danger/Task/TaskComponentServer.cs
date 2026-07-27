@@ -6,18 +6,16 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ET
 {
-#if SERVER
+
      public  class TaskComponentServer: Entity, IAwake, ITransfer, IDestroy, IUnitCache, IDeserialize
-#else
-    public class TaskComponent : Entity, IAwake
-#endif
     {
         public int OnLineTime = 0;
+
+
         public List<int> ReceiveHuoYueIds = new List<int>();
         public List<TaskPro> RoleTaskList = new List<TaskPro>();
         public List<int> RoleComoleteTaskList = new List<int>();
 
-#if SERVER
         [BsonIgnore]
         public M2C_TaskUpdate M2C_TaskUpdate = new M2C_TaskUpdate();
 
@@ -40,6 +38,6 @@ namespace ET
         public const int UnionTaskNumber = 3111;
                 public const int SystemTask = 3182;                    
                                      //系统任务*/
-#endif
+
     }
 }

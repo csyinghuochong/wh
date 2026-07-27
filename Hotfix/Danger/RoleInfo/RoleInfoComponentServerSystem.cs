@@ -877,7 +877,7 @@ namespace ET
         
             float expAdd = CommonHelper.GetExpAdd(self.RoleInfo.Lv, serverInfo);
 
-            LDExp xiulianconf1 = LDExpCategory.Instance.Get(self.RoleInfo.Lv);
+            LDExp_Lv xiulianconf1 = LDExp_LvCategory.Instance.Get(self.RoleInfo.Lv);
             long upNeedExp = xiulianconf1.Exp_Role;
 
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();

@@ -78,9 +78,9 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>页码</summary>
+		/// <summary>组</summary>
 		[ProtoMember(2)]
-		public int Page { get; set; }
+		public int Group { get; set; }
 		/// <summary>排序</summary>
 		[ProtoMember(3)]
 		public int Order_SL { get; set; }
@@ -105,29 +105,35 @@ namespace ET
 		/// <summary>完成NPC</summary>
 		[ProtoMember(10)]
 		public int NPC { get; set; }
-		/// <summary>奖励选择 0-全拿 1-任选</summary>
+		/// <summary>角色经验 类型 0-固定 1-公式</summary>
 		[ProtoMember(11)]
+		public int Exp_1_Type { get; set; }
+		/// <summary>角色 经验</summary>
+		[ProtoMember(12)]
+		public int Exp_1 { get; set; }
+		/// <summary>奖励选择 0-全拿 1-任选</summary>
+		[ProtoMember(13)]
 		public int Reward_Option { get; set; }
 		/// <summary>共用 奖励</summary>
-		[ProtoMember(12)]
+		[ProtoMember(14)]
 		public string Reward { get; set; }
 		/// <summary>战士 奖励</summary>
-		[ProtoMember(13)]
+		[ProtoMember(15)]
 		public string Reward_Occupation_1 { get; set; }
 		/// <summary>猎人 奖励</summary>
-		[ProtoMember(14)]
+		[ProtoMember(16)]
 		public string Reward_Occupation_2 { get; set; }
 		/// <summary>刺客 奖励</summary>
-		[ProtoMember(15)]
+		[ProtoMember(17)]
 		public string Reward_Occupation_3 { get; set; }
 		/// <summary>法师 奖励</summary>
-		[ProtoMember(16)]
+		[ProtoMember(18)]
 		public string Reward_Occupation_4 { get; set; }
 		/// <summary>侠士 奖励</summary>
-		[ProtoMember(17)]
+		[ProtoMember(19)]
 		public string Reward_Occupation_5 { get; set; }
 		/// <summary>牧师 奖励</summary>
-		[ProtoMember(18)]
+		[ProtoMember(20)]
 		public string Reward_Occupation_6 { get; set; }
 
 	}

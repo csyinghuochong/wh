@@ -156,7 +156,7 @@ namespace ET
 				}
                 if (message.GMMsg == "#resetweek")
                 {
-                    unit.GetComponent<TaskComponentServer>().ResetWeeklyTask(true);
+                    unit.GetComponent<TaskComponentServer>().UpdateWeeklyTask(true);
                     return;
                 }
                 if (message.GMMsg.Contains("#addack"))  //#addack#400000

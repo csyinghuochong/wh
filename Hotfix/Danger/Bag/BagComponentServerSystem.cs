@@ -870,7 +870,7 @@ namespace ET
                     continue;
                 }
 
-                if (rewardItem.ItemType == ItemBigType.Type_Money)
+                if (rewardItem.ItemType == ItemBigType.Type_Exp)
                 {
                     // Type_Money 但 ItemID 非法：丢弃
                     continue;

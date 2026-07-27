@@ -7,32 +7,32 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDPayCategory : ProtoObject, IMerge
+    public partial class LDExp_LvCategory : ProtoObject, IMerge
     {
-        public static LDPayCategory Instance;
+        public static LDExp_LvCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDPay> dict = new Dictionary<int, LDPay>();
+        private Dictionary<int, LDExp_Lv> dict = new Dictionary<int, LDExp_Lv>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDPay> list = new List<LDPay>();
+        private List<LDExp_Lv> list = new List<LDExp_Lv>();
 		
-        public LDPayCategory()
+        public LDExp_LvCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDPayCategory s = o as LDPayCategory;
+            LDExp_LvCategory s = o as LDExp_LvCategory;
             this.list.AddRange(s.list);
         }
 		
         public override void EndInit()
         {
-            foreach (LDPay config in list)
+            foreach (LDExp_Lv config in list)
             {
                 config.EndInit();
                 this.dict.Add(config.Id, config);
@@ -40,13 +40,13 @@ namespace ET
             this.AfterEndInit();
         }
 		
-        public LDPay Get(int id)
+        public LDExp_Lv Get(int id)
         {
-            this.dict.TryGetValue(id, out LDPay item);
+            this.dict.TryGetValue(id, out LDExp_Lv item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDPay)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDExp_Lv)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +57,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDPay> GetAll()
+        public Dictionary<int, LDExp_Lv> GetAll()
         {
             return this.dict;
         }
 
-        public LDPay GetOne()
+        public LDExp_Lv GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,29 +73,17 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDPay: ProtoObject, IConfig
+	public partial class LDExp_Lv: ProtoObject, IConfig
 	{
-		/// <summary>Id</summary>
+		/// <summary>等级</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>名称</summary>
+		/// <summary>角色升级经验</summary>
 		[ProtoMember(2)]
-		public int Name { get; set; }
-		/// <summary>描述</summary>
+		public int Exp_Role { get; set; }
+		/// <summary>角色标准生命</summary>
 		[ProtoMember(3)]
-		public int Desc { get; set; }
-		/// <summary>限购</summary>
-		[ProtoMember(4)]
-		public int Buy_Limit { get; set; }
-		/// <summary>价格</summary>
-		[ProtoMember(5)]
-		public int Tier_Id { get; set; }
-		/// <summary>原价</summary>
-		[ProtoMember(6)]
-		public int Tier_Original_Id { get; set; }
-		/// <summary>奖励</summary>
-		[ProtoMember(7)]
-		public string Reward { get; set; }
+		public int Hp_Standard { get; set; }
 
 	}
 }

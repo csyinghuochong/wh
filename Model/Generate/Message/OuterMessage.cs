@@ -3810,12 +3810,6 @@ namespace ET
 		[ProtoMember(2)]
 		public int taskTargetNum_1 { get; set; }
 
-		[ProtoMember(5)]
-		public int taskTargetNum_2 { get; set; }
-
-		[ProtoMember(6)]
-		public int taskTargetNum_3 { get; set; }
-
 		[ProtoMember(3)]
 		public int taskStatus { get; set; }
 
