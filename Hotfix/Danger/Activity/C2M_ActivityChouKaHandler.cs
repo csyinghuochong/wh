@@ -9,6 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ActivityChouKaRequest request, M2C_ActivityChouKaResponse response, Action reply)
         {
+
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (bagComponentServer.GetBagLeftCell() < 1)
