@@ -532,13 +532,6 @@ namespace ET
                     mailInfo.MailId = IdGenerater.Instance.GenerateId();
                     mailInfo.ItemList.AddRange(itemList);
 
-                    E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                                       (mailServerId, new M2E_EMailSendRequest()
-                                       {
-                                           Id = playerIds[i],
-                                           MailInfo = mailInfo,
-                                           GetWay = ItemGetWay.Activity,
-                                       });
                 }
 
                 if (hour == 0)

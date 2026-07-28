@@ -246,10 +246,10 @@ namespace ET
 		 public const ushort MailInfo = 10243;
 		 public const ushort C2M_ReceiveMailRequest = 10244;
 		 public const ushort M2C_ReceiveMailResponse = 10245;
-		 public const ushort C2E_ReceiveMailRequest = 10246;
-		 public const ushort E2C_ReceiveMailResponse = 10247;
-		 public const ushort C2E_GetAllMailRequest = 10248;
-		 public const ushort E2C_GetAllMailResponse = 10249;
+		 public const ushort C2Mail_ReceiveMailRequest = 10246;
+		 public const ushort Mail2C_ReceiveMailResponse = 10247;
+		 public const ushort C2Mail_GetAllMailRequest = 10248;
+		 public const ushort Mail2C_GetAllMailResponse = 10249;
 		 public const ushort C2M_MakeEquipRequest = 10250;
 		 public const ushort M2C_MakeEquipResponse = 10251;
 		 public const ushort C2M_MakeLearnRequest = 10252;

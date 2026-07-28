@@ -246,14 +246,14 @@ namespace ET
                         int zone = self.DomainZone();
                         Log.Console($"发放赛跑大赛排行榜奖励： {zone}");
                         Log.Warning($"发放赛跑大赛排行榜奖励： {zone}");
-                        long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+                        long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
 
                         mailInfo.Status = 0;
                         mailInfo.Context = $"恭喜您获得赛跑大赛排行榜第{Response.RankId}名奖励";
                         mailInfo.Title = "赛跑大赛排行榜奖励";
                         mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                        E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call(mailServerId,
-                            new M2E_EMailSendRequest() { Id = roleInfo.UserId, MailInfo = mailInfo });
+                        //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call(mailServerId,
+                        //    new M2E_EMailSendRequest() { Id = roleInfo.UserId, MailInfo = mailInfo });
 
                     }
 

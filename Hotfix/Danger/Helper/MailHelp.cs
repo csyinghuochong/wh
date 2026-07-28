@@ -8,6 +8,7 @@ namespace ET
 
         public static async ETTask SendPaiMaiEmail(int zone, PaiMaiItemInfo paiMaiItemInfo,int costNum, long unitid)
         {
+            await ETTask.CompletedTask;
             MailInfo mailInfo = new MailInfo();
             LDItem ldItemCof = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
             mailInfo.Status = 0;
@@ -25,8 +26,8 @@ namespace ET
 
             //发送到邮件服
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(zone, "EMail").InstanceId;      //获取邮件消息ID
-            E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                (mailServerId, new M2E_EMailSendRequest() { Id = paiMaiItemInfo.UserId, MailInfo = mailInfo });
+            //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
+            //    (mailServerId, new M2E_EMailSendRequest() { Id = paiMaiItemInfo.UserId, MailInfo = mailInfo });
         }
 
         public static void  SendServerMail(int zone, long userID, ServerMailItem serverMailItem)

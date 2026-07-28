@@ -5,10 +5,10 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class M2E_EMailReceiveHandler : AMActorRpcHandler<Scene, M2E_EMailReceiveRequest, E2M_EMailReceiveResponse>
+    public class M2Mail_ReceiveMailandler : AMActorRpcHandler<Scene, M2Mail_ReceiveMailRequest, Mail2M_ReceiveMailResponse>
     {
 
-        protected override async ETTask Run(Scene scene, M2E_EMailReceiveRequest request, E2M_EMailReceiveResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, M2Mail_ReceiveMailRequest request, Mail2M_ReceiveMailResponse response, Action reply)
         {
             long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
            

@@ -5087,10 +5087,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(E2C_ReceiveMailResponse))]
-	[Message(OuterOpcode.C2E_ReceiveMailRequest)]
+	[ResponseType(nameof(Mail2C_ReceiveMailResponse))]
+	[Message(OuterOpcode.C2Mail_ReceiveMailRequest)]
 	[ProtoContract]
-	public partial class C2E_ReceiveMailRequest: Object, IMailActorRequest
+	public partial class C2Mail_ReceiveMailRequest: Object, IMailActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -5103,9 +5103,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.E2C_ReceiveMailResponse)]
+	[Message(OuterOpcode.Mail2C_ReceiveMailResponse)]
 	[ProtoContract]
-	public partial class E2C_ReceiveMailResponse: Object, IMailActorResponse
+	public partial class Mail2C_ReceiveMailResponse: Object, IMailActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -5118,10 +5118,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(E2C_GetAllMailResponse))]
-	[Message(OuterOpcode.C2E_GetAllMailRequest)]
+	[ResponseType(nameof(Mail2C_GetAllMailResponse))]
+	[Message(OuterOpcode.C2Mail_GetAllMailRequest)]
 	[ProtoContract]
-	public partial class C2E_GetAllMailRequest: Object, IMailActorRequest
+	public partial class C2Mail_GetAllMailRequest: Object, IMailActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -5131,9 +5131,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.E2C_GetAllMailResponse)]
+	[Message(OuterOpcode.Mail2C_GetAllMailResponse)]
 	[ProtoContract]
-	public partial class E2C_GetAllMailResponse: Object, IMailActorResponse
+	public partial class Mail2C_GetAllMailResponse: Object, IMailActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -16625,6 +16625,42 @@ namespace ET
 	}
 
 ////////////////////////////////////////////////
+//#################一定要放在最后
+	[ResponseType(nameof(R2C_QueryAccountResponse))]
+	[Message(OuterOpcode.C2R_QueryAccountRequest)]
+	[ProtoContract]
+	public partial class C2R_QueryAccountRequest: Object, IRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public string UserName { get; set; }
+
+	}
+
+	[Message(OuterOpcode.R2C_QueryAccountResponse)]
+	[ProtoContract]
+	public partial class R2C_QueryAccountResponse: Object, IResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public string Account { get; set; }
+
+		[ProtoMember(2)]
+		public string Password { get; set; }
+
+	}
+
+// ========== 每日签到 Activity_Sign_In（ActivityId=101）==========
 	[ResponseType(nameof(M2C_ActivitySignInListResponse))]
 	[Message(OuterOpcode.C2M_ActivitySignInListRequest)]
 	[ProtoContract]
@@ -16655,7 +16691,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
-		public List<int> SignInIds { get; set; } = new List<int>();
+		public List<int> SignInIds = new List<int>();
 
 		[ProtoMember(2)]
 		public int ReceiveId { get; set; }
@@ -16702,42 +16738,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public int ReceiveId { get; set; }
-
-	}
-
-////////////////////////////////////////////////
-//#################一定要放在最后
-	[ResponseType(nameof(R2C_QueryAccountResponse))]
-	[Message(OuterOpcode.C2R_QueryAccountRequest)]
-	[ProtoContract]
-	public partial class C2R_QueryAccountRequest: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string UserName { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_QueryAccountResponse)]
-	[ProtoContract]
-	public partial class R2C_QueryAccountResponse: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public string Account { get; set; }
-
-		[ProtoMember(2)]
-		public string Password { get; set; }
 
 	}
 

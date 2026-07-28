@@ -18,8 +18,8 @@ namespace ET
                 ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
                 long userId = roleInfoComponentServer.RoleInfo.UserId;
                 long mailServerId = DBHelper.GetMailServerId(unit);
-                E2M_EMailReceiveResponse g_SendChatRequest = (E2M_EMailReceiveResponse)await ActorMessageSenderComponent.Instance.Call
-                    (mailServerId, new M2E_EMailReceiveRequest() { Id = userId, MailId = request.MailId });
+                Mail2M_ReceiveMailResponse g_SendChatRequest = (Mail2M_ReceiveMailResponse)await ActorMessageSenderComponent.Instance.Call
+                    (mailServerId, new M2Mail_ReceiveMailRequest() { Id = userId, MailId = request.MailId });
 
                 MailInfo mailInfo = g_SendChatRequest.MailInfo;
                 if (mailInfo == null)

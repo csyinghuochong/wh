@@ -933,10 +933,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(E2M_EMailSendResponse))]
-	[Message(InnerOpcode.M2E_EMailSendRequest)]
+	[ResponseType(nameof(Mail2M_SendMailResponse))]
+	[Message(InnerOpcode.M2Mail_SendMailRequest)]
 	[ProtoContract]
-	public partial class M2E_EMailSendRequest: Object, IActorRequest
+	public partial class M2Mail_SendMailRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -955,9 +955,9 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.E2M_EMailSendResponse)]
+	[Message(InnerOpcode.Mail2M_SendMailResponse)]
 	[ProtoContract]
-	public partial class E2M_EMailSendResponse: Object, IActorResponse
+	public partial class Mail2M_SendMailResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -970,10 +970,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(E2M_EMailReceiveResponse))]
-	[Message(InnerOpcode.M2E_EMailReceiveRequest)]
+	[ResponseType(nameof(Mail2M_ReceiveMailResponse))]
+	[Message(InnerOpcode.M2Mail_ReceiveMailRequest)]
 	[ProtoContract]
-	public partial class M2E_EMailReceiveRequest: Object, IActorRequest
+	public partial class M2Mail_ReceiveMailRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -989,9 +989,9 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.E2M_EMailReceiveResponse)]
+	[Message(InnerOpcode.Mail2M_ReceiveMailResponse)]
 	[ProtoContract]
-	public partial class E2M_EMailReceiveResponse: Object, IActorResponse
+	public partial class Mail2M_ReceiveMailResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

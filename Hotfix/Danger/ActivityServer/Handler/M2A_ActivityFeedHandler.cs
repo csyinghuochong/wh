@@ -50,8 +50,8 @@ namespace ET
                     mailInfo.MailId = IdGenerater.Instance.GenerateId();
                     mailInfo.ItemList.AddRange(itemList);
 
-                    E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                                       (mailServerId, new M2E_EMailSendRequest()
+                    Mail2M_SendMailResponse g_EMailSendResponse = (Mail2M_SendMailResponse)await ActorMessageSenderComponent.Instance.Call
+                                       (mailServerId, new M2Mail_SendMailRequest()
                                        {
                                            Id = unitid,
                                            MailInfo = mailInfo,

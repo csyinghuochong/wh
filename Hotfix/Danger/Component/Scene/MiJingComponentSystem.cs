@@ -40,6 +40,7 @@ namespace ET
         /// <param name="rewardList"></param>
         public static async ETTask SendReward(this MiJingComponent self, List<TeamPlayerInfo> players, int start, int end,  string rewardList)
         {
+            await ETTask.CompletedTask;
             long serverTime = TimeHelper.ServerNow();
             long mailServerId = DBHelper.GetMailServerId(self.DomainZone());
             string[] needList = rewardList.Split('@');
@@ -69,17 +70,7 @@ namespace ET
                 Log.Warning($"世界Boss排名奖励1: {self.DomainZone()}  {players[i].UserID}");
 
                 // MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(players[i].UserID), players[i].UserID, mailInfo).Coroutine();
-                E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                                       (mailServerId, new M2E_EMailSendRequest()
-                                       {
-                                           Id = players[i].UserID,
-                                           MailInfo = mailInfo,
-                                           GetWay = ItemGetWay.MiJingBoss,
-                                       });
-                if (g_EMailSendResponse.Error != ErrorCode.ERR_Success)
-                {
-                    Log.Warning($"世界Boss排名奖励失败: {players[i].UserID}");
-                }
+
             }
         }
 

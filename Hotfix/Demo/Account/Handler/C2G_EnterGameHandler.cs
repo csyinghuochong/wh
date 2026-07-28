@@ -258,7 +258,7 @@ namespace ET
 
                         Log.Debug($"LoginTest C2G_EnterGame TransferHelper.Transfer; unitid: {request.UserID} player.Id {player.Id} player.InstanceId: {player.InstanceId} {session.DomainZone()}");
                         player.DBCacheId = DBHelper.GetDbCacheId(session.DomainZone());
-						player.MailServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+						player.MailServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
 						player.RankServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Rank)).InstanceId;
 						player.WarRankServerID = DBHelper.GetWarRankServerId(session.DomainZone());
 						player.PaiMaiServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.PaiMai)).InstanceId;

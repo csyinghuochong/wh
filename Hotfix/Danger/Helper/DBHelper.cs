@@ -144,7 +144,7 @@ namespace ET
 
         public static long GetMailServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.EMail)).InstanceId;
+            return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Mail)).InstanceId;
         }
 
         public static long GetActivityServerId(int zone)

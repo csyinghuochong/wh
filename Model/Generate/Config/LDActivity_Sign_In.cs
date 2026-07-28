@@ -81,15 +81,15 @@ namespace ET
 		/// <summary>活动Id</summary>
 		[ProtoMember(2)]
 		public int ActivityId { get; set; }
-		/// <summary>天数</summary>
+		/// <summary>组</summary>
 		[ProtoMember(3)]
+		public int Group { get; set; }
+		/// <summary>天数</summary>
+		[ProtoMember(4)]
 		public int Sign_Day { get; set; }
 		/// <summary>奖励</summary>
-		[ProtoMember(4)]
-		public string Reward { get; set; }
-		/// <summary>周期组（1=第1个28天，2=第2个…；超出最大组后沿用最大组）</summary>
 		[ProtoMember(5)]
-		public int Group { get; set; }
+		public string Reward { get; set; }
 
 	}
 }

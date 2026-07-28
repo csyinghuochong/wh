@@ -70,7 +70,7 @@ namespace ET
                 case SceneType.WZChat:
                     scene.AddComponent<WZChatSceneComponent>();
                     break;
-                case SceneType.EMail:
+                case SceneType.Mail:
                     scene.AddComponent<MailSceneComponent>();
                     break;
                 case SceneType.Activity:

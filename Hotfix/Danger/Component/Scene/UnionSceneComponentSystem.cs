@@ -374,17 +374,7 @@ namespace ET
                     }
 
                     //MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unitids[i]), unitids[i], mailInfo).Coroutine();
-                    E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                                         (mailServerId, new M2E_EMailSendRequest()
-                                         {
-                                             Id = unitids[i],
-                                             MailInfo = mailInfo,
-                                             GetWay = ItemGetWay.UnionRace,
-                                         });
-                    if (g_EMailSendResponse.Error != ErrorCode.ERR_Success)
-                    {
-                        Log.Warning($"家族战发送奖励失败: {unitids[i]}");
-                    }
+              
                 }
             }
 

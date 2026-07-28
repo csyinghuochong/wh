@@ -3,9 +3,9 @@
 namespace ET
 {
     [ActorMessageHandler]
-    public class M2E_EMailSendHandler: AMActorRpcHandler<Scene, M2E_EMailSendRequest, E2M_EMailSendResponse>
+    public class M2Mail_SendMailHandler: AMActorRpcHandler<Scene, M2Mail_SendMailRequest, Mail2M_SendMailResponse>
     {
-        protected override async ETTask Run(Scene scene, M2E_EMailSendRequest request, E2M_EMailSendResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, M2Mail_SendMailRequest request, Mail2M_SendMailResponse response, Action reply)
         {
    
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.EMail, request.Id))

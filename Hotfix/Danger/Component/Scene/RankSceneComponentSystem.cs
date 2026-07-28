@@ -762,6 +762,7 @@ namespace ET
 
         public static async ETTask OnDemonOver(this RankSceneComponent self)
         {
+            await ETTask.CompletedTask;
             int zone = self.DomainZone();
 
             Log.Warning($"发放恶魔排行榜奖励： {zone}");
@@ -786,24 +787,20 @@ namespace ET
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.Demon}_{serverTime}", rewardCache);
-                E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                      (mailServerId, new M2E_EMailSendRequest()
-                      {
-                          Id = rankingInfos[i].UserId,
-                          MailInfo = mailInfo
-                      });
+            
             }
         }
 
         //家族战结束
         public static async ETTask OnUnionRaceOver(this RankSceneComponent self)
         {
+            await ETTask.CompletedTask;
             int zone = self.DomainZone();
           
             Log.Warning($"发放家族战排行榜奖励： {zone}");
             long serverTime = TimeHelper.ServerNow();
             List<RankShouLieInfo> rankingInfos = self.DBRankInfo.rankUnionRace;
-            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
             Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
@@ -822,18 +819,19 @@ namespace ET
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.ShowLie}_{serverTime}", rewardCache);
-                E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                      (mailServerId, new M2E_EMailSendRequest()
-                      {
-                          Id = rankingInfos[i].UnitID,
-                          MailInfo = mailInfo
-                      });
+                //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
+                //      (mailServerId, new M2E_EMailSendRequest()
+                //      {
+                //          Id = rankingInfos[i].UnitID,
+                //          MailInfo = mailInfo
+                //      });
             }
         }
 
         //发送狩猎排行奖励
         public static async ETTask OnShowLieOver(this RankSceneComponent self)
         {
+            await ETTask.CompletedTask;
             int zone = self.DomainZone();
             self.BroadcastShowLie("0").Coroutine();
 
@@ -841,7 +839,7 @@ namespace ET
             Log.Debug($"发放狩猎排行榜奖励： {zone}");
             long serverTime = TimeHelper.ServerNow();
             List<RankShouLieInfo> rankingInfos = self.DBRankInfo.rankShowLie;
-            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
             Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
@@ -858,12 +856,12 @@ namespace ET
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
                 Log.Debug($"发放狩猎排行榜奖励：zone. {zone} rankid.{i + 1}  unitid.{rankingInfos[i].UnitID}  {rankingInfos[i].PlayerName}  {rankingInfos[i].KillNumber}");
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
-                E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                      (mailServerId, new M2E_EMailSendRequest()
-                      {
-                          Id = rankingInfos[i].UnitID,
-                          MailInfo = mailInfo
-                      });
+                //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
+                //      (mailServerId, new M2E_EMailSendRequest()
+                //      {
+                //          Id = rankingInfos[i].UnitID,
+                //          MailInfo = mailInfo
+                //      });
             }
         }
 
@@ -885,7 +883,7 @@ namespace ET
             //Log.Console($"发放试炼排行榜奖励： {zone}");
             long serverTime = TimeHelper.ServerNow();
             List<KeyValuePairLong> rankingInfos = self.DBRankInfo.rankingTrial;
-            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
             Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
@@ -906,12 +904,12 @@ namespace ET
                     Log.Warning($"试炼奖励: {self.DomainZone()} {rankingInfos[i].KeyId}");
                 }
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
-                E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                      (mailServerId, new M2E_EMailSendRequest()
-                      {
-                          Id = rankingInfos[i].KeyId,
-                          MailInfo = mailInfo
-                      });
+                //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
+                //      (mailServerId, new M2E_EMailSendRequest()
+                //      {
+                //          Id = rankingInfos[i].KeyId,
+                //          MailInfo = mailInfo
+                //      });
             }
 
             self.DBRankInfo.rankingTrial.Clear();
@@ -932,7 +930,7 @@ namespace ET
 
             long serverTime = TimeHelper.ServerNow();
             List<KeyValuePairLong> rankingInfos = self.DBRankInfo.rankSeasonTower;
-            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
             Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
@@ -953,12 +951,12 @@ namespace ET
                     Log.Warning($"赛季之塔奖励: {self.DomainZone()} {rankingInfos[i].KeyId}");
                 }
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
-                E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                      (mailServerId, new M2E_EMailSendRequest()
-                      {
-                          Id = rankingInfos[i].KeyId,
-                          MailInfo = mailInfo
-                      });
+                //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
+                //      (mailServerId, new M2E_EMailSendRequest()
+                //      {
+                //          Id = rankingInfos[i].KeyId,
+                //          MailInfo = mailInfo
+                //      });
             }
 
             self.DBRankInfo.rankSeasonTower.Clear();
@@ -982,7 +980,7 @@ namespace ET
             Log.Debug($"发放战力排行榜奖励： {zone}");
             long serverTime = TimeHelper.ServerNow();
             List<RankingInfo> rankingInfos = self.DBRankInfo.rankingInfos;
-            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
             Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
@@ -1003,11 +1001,11 @@ namespace ET
                     Log.Warning($"战力奖励: {self.DomainZone()} {rankingInfos[i].UserId}   {i}");
                 }
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
-                E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                      (mailServerId, new M2E_EMailSendRequest() 
-                      { 
-                          Id = rankingInfos[i].UserId,
-                          MailInfo = mailInfo });
+                //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
+                //      (mailServerId, new M2E_EMailSendRequest() 
+                //      { 
+                //          Id = rankingInfos[i].UserId,
+                //          MailInfo = mailInfo });
             }
         }
 
@@ -1023,7 +1021,7 @@ namespace ET
             Log.Debug($"发放宠物排行榜奖励： {zone}");
             long serverTime = TimeHelper.ServerNow();
             List<RankPetInfo> rankingInfos = self.DBRankInfo.rankingPets;
-            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
             Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
@@ -1055,12 +1053,12 @@ namespace ET
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
-                E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                      (mailServerId, new M2E_EMailSendRequest()
-                      {
-                          Id = rankingInfos[i].UserId,
-                          MailInfo = mailInfo
-                      });
+                //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
+                //      (mailServerId, new M2E_EMailSendRequest()
+                //      {
+                //          Id = rankingInfos[i].UserId,
+                //          MailInfo = mailInfo
+                //      });
             }
         }
     }

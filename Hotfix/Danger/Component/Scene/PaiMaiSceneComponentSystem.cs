@@ -692,7 +692,7 @@ namespace ET
                 PaiMaiItemInfo paiMaiItemInfo = dBPaiMainInfo.PaiMaiItemInfos[i];
                 if (currentTime - paiMaiItemInfo.SellTime >= TimeHelper.OneDay || removeIdSet.Contains(paiMaiItemInfo.Id))
                 {
-                    long emaiId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.EMail)).InstanceId;
+                    long emaiId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
                     E2P_PaiMaiOverTimeResponse g_SendChatRequest = (E2P_PaiMaiOverTimeResponse)await ActorMessageSenderComponent.Instance.Call
                         (emaiId, new P2E_PaiMaiOverTimeRequest()
                         {

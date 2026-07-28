@@ -55,10 +55,10 @@ namespace ET
 		 public const ushort G2R_GetLoginGateKey = 20052;
 		 public const ushort G2M_SessionDisconnect = 20053;
 		 public const ushort G2M_ActivityUpdate = 20054;
-		 public const ushort M2E_EMailSendRequest = 20055;
-		 public const ushort E2M_EMailSendResponse = 20056;
-		 public const ushort M2E_EMailReceiveRequest = 20057;
-		 public const ushort E2M_EMailReceiveResponse = 20058;
+		 public const ushort M2Mail_SendMailRequest = 20055;
+		 public const ushort Mail2M_SendMailResponse = 20056;
+		 public const ushort M2Mail_ReceiveMailRequest = 20057;
+		 public const ushort Mail2M_ReceiveMailResponse = 20058;
 		 public const ushort A2Other_ActivityUpdateRequest = 20059;
 		 public const ushort Other2A_ActivityUpdateResponse = 20060;
 		 public const ushort A2Other_ServerMessageRequest = 20061;
