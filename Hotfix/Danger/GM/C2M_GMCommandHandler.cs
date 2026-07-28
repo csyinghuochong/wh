@@ -34,20 +34,17 @@ namespace ET
 				}
 				if (message.GMMsg == "#testmail")
 				{
-                    /*List<long> userList = new List<long>();
-					userList.Add(3411435712975798272);
-                    userList.Add(3411452497707991040);
-                    userList.Add(3413181050245939200);
-
-                    foreach (long useriid in userList) 
+                    for(int i = 0; i < 120; i++)
 					{
                         MailInfo mailInfo = new MailInfo();
                         mailInfo.Status = 0;
-                        mailInfo.Context = "如果您遇到支付问题，请联系QQ ： 136087482 处理";
+						mailInfo.Context = i + "_________" + i;
                         mailInfo.Title = "系统通知";
                         mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                        await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), useriid, mailInfo);
-                    }*/
+						mailInfo.Form = "官方xxx";
+						mailInfo.ValidTime = TimeHelper.ServerNow() + RandomHelper.RandInt64();
+                        await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo);
+                    }
                 }
                 if (message.GMMsg == "#mianshang" || message.GMMsg == "#wudi")
 				{

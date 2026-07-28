@@ -76,15 +76,7 @@ namespace ET
                         }
                     }
                 }
-                
-                if (mailInfo.ItemSell != null)
-                {
-                    LDItem ldItem = LDItemCategory.Instance.Get(mailInfo.ItemSell.ItemID);
-                    if (ldItem.ItemType == 3)
-                    {
-                        chengJiuComponentServer.OnPaiMaiSell();
-                    }
-                }
+              
             }
 
             reply();

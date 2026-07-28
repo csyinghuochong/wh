@@ -5049,10 +5049,10 @@ namespace ET
 		public List<BagInfo> ItemList = new List<BagInfo>();
 
 		[ProtoMember(8)]
-		public BagInfo ItemSell { get; set; }
+		public long ValidTime { get; set; }
 
 		[ProtoMember(9)]
-		public long BuyPlayerId { get; set; }
+		public string Form { get; set; }
 
 	}
 

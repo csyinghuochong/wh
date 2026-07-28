@@ -21,9 +21,7 @@ namespace ET
             reward.ItemNum = sellPrice;
             reward.GetWay = $"{ItemGetWay.PaiMaiSell}_{TimeHelper.ServerNow()}";
             mailInfo.ItemList.Add(reward);
-            mailInfo.ItemSell = paiMaiItemInfo.BagInfo;
-            mailInfo.BuyPlayerId = unitid;
-
+           
             //发送到邮件服
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(zone, "EMail").InstanceId;      //获取邮件消息ID
             //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
@@ -122,33 +120,30 @@ namespace ET
         //指定玩家发送邮件
         public static async ETTask<int> SendUserMail(int zone,long userID, MailInfo mailInfo )
         {
-           
+            long dbCacheId = DBHelper.GetDbCacheId(zone);
+            DBMailInfo dBMainInfo = await DBHelper.GetComponent<DBMailInfo>(zone, userID);
+            if (dBMainInfo == null)
             {
-                long dbCacheId = DBHelper.GetDbCacheId(zone);
-                DBMailInfo dBMainInfo = await DBHelper.GetComponent<DBMailInfo>(zone, userID);
-                if (dBMainInfo == null)
-                {
-                    //有可能玩家自己删除角色了。。还收到邮件。。列如：道具被拍卖。。。。=====
-                    //dBMainInfo = (DBMailInfo)await DBHelper.AddDataComponent<DBMailInfo>(zone, userID, DBHelper.DBMailInfo);
-                    Console.WriteLine($"AddDataComponent.DBMailInfo  {userID}");
-                }
-                if (dBMainInfo == null)
-                {
-                    return ErrorCode.ERR_NotFindAccount;
-                }
-
-                List<MailInfo> mailinfolist = dBMainInfo.MailInfoList;
-
-                //存储邮件
-                if (mailinfolist.Count > 100)
-                {
-                    mailinfolist.RemoveAt(0);
-                }
-                mailinfolist.Add(mailInfo);
-
-                D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = userID, EntityByte = MongoHelper.ToBson(dBMainInfo), ComponentType = DBHelper.DBMailInfo });
-                return d2GSave.Error;
+                //有可能玩家自己删除角色了。。还收到邮件。。列如：道具被拍卖。。。。=====
+                //dBMainInfo = (DBMailInfo)await DBHelper.AddDataComponent<DBMailInfo>(zone, userID, DBHelper.DBMailInfo);
+                Console.WriteLine($"AddDataComponent.DBMailInfo  {userID}");
             }
+            if (dBMainInfo == null)
+            {
+                return ErrorCode.ERR_NotFindAccount;
+            }
+
+            List<MailInfo> mailinfolist = dBMainInfo.MailInfoList;
+
+            //存储邮件
+            if (mailinfolist.Count > 150)
+            {
+                mailinfolist.RemoveAt(0);
+            }
+            mailinfolist.Add(mailInfo);
+
+            DBHelper.SaveComponent(zone, userID, dBMainInfo).Coroutine();
+            return ErrorCode.ERR_Success;
         }
     }
 }

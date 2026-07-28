@@ -49,10 +49,6 @@ namespace ET
                         UnitCacheKeyList.Add(type.Name);
                     }
                 }
-
-                UnitCacheKeyList.Add(DBMailInfo);
-                UnitCacheKeyList.Add(DBFriendInfo);
-                UnitCacheKeyList.Add(DBPopularizeInfo);
             }
             return UnitCacheKeyList;
         }
