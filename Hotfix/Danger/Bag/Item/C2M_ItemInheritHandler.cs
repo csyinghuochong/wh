@@ -42,7 +42,7 @@ namespace ET
             }
 
             response.InheritSkills.Add(skillid);
-            bagInfo.isBinging = true;   
+            bagInfo.IsBinging = true;   
             bagInfo.InheritTimes += 1;
             //通知客户端背包道具发生改变
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();;

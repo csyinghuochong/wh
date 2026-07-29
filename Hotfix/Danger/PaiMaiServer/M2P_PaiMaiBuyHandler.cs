@@ -79,7 +79,7 @@ namespace ET
                 useBagInfo.GemHole = ItemNewHelper.GetDefaultGem();
                 useBagInfo.GemIDNew = ItemNewHelper.GetDefaultGem();
                 useBagInfo.GetWay = bagInfo.GetWay;
-                useBagInfo.isBinging = bagInfo.isBinging;
+                useBagInfo.IsBinging = bagInfo.IsBinging;
                 
                 paiMaiItemInfo2.Id = IdGenerater.Instance.GenerateId();
                 paiMaiItemInfo2.BagInfo = useBagInfo;

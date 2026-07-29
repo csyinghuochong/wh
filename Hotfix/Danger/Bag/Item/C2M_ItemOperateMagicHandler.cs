@@ -88,7 +88,7 @@ namespace ET
                 }
                
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-                useBagInfo.isBinging = true;
+                useBagInfo.IsBinging = true;
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                 //if (weizhi == (int)EquipCaoWeiTypeEnum.Wuqi)
                 //{

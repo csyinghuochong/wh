@@ -65,7 +65,7 @@ namespace ET
                 BagInfo beforeequip = bagComponentServer.GetJingHeByWeiZhi(equipIndex);
                
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-                useBagInfo.isBinging = true;
+                useBagInfo.IsBinging = true;
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
             if (request.OperateType == 2)

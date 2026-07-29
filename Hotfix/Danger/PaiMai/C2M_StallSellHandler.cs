@@ -63,7 +63,7 @@ namespace ET
                     return;
                 }
 
-                if (bagInfo.isBinging)
+                if (bagInfo.IsBinging)
                 {
                     response.Error = ErrorCode.ERR_ItemBing; //道具绑定
                     reply();

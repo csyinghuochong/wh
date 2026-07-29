@@ -20,7 +20,6 @@ namespace ET
             ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
             long bagInfoID = request.OperateBagID;
             int occ = useInfo.Occ;
-
             //通知客户端背包刷新
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
             
@@ -77,7 +76,7 @@ namespace ET
                 }
                
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-                useBagInfo.isBinging = true;
+                useBagInfo.IsBinging = true;
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
             else

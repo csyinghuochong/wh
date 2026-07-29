@@ -3420,7 +3420,10 @@ namespace ET
 		public int EnhanceLevel { get; set; }
 
 		[ProtoMember(11)]
-		public bool isBinging { get; set; }
+		public bool IsBinging { get; set; }
+
+		[ProtoMember(12)]
+		public bool IsNonTradable { get; set; }
 
 ////old
 		[ProtoMember(14)]

@@ -81,14 +81,12 @@ namespace ET
 
         private void ParseBaseData()
         {
-            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_1).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBag]);
-            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_2).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure]);
-            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_3).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagMaterial]);
-            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_4).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagConsume]);
-            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_51).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagLife]);
-            int.TryParse(this.GetByKey(GlobalValueKey.Bag_Capacity_52).Value, out this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome]);
-
-          
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Bag_Capacity_1);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure] = this.GetInt(GlobalValueKey.Bag_Capacity_2);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagMaterial] = this.GetInt(GlobalValueKey.Bag_Capacity_3);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagConsume] = this.GetInt(GlobalValueKey.Bag_Capacity_4);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagLife] = this.GetInt(GlobalValueKey.Bag_Capacity_51);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome] = this.GetInt(GlobalValueKey.Bag_Capacity_52);
         }
 
         private void ParseAddPoint()
@@ -143,10 +141,10 @@ namespace ET
 
         public int GetInt(string key)
         {
-            string value = this.GetByKey(key).Value;
+            string value = NormalizeGlobalValue(this.GetByKey(key).Value);
             if (!int.TryParse(value, out int result))
             {
-                throw new Exception($"LDGlobalValue GetInt 解析失败，Key: {key}, Value: {value}");
+                throw new Exception($"LDGlobalValue GetInt 解析失败，Key: {key}, Value: {this.GetByKey(key).Value}");
             }
 
             return result;
@@ -159,13 +157,30 @@ namespace ET
             int[] result = new int[parts.Length];
             for (int i = 0; i < parts.Length; i++)
             {
-                if (!int.TryParse(parts[i], out result[i]))
+                if (!int.TryParse(NormalizeGlobalValue(parts[i]), out result[i]))
                 {
                     throw new Exception($"LDGlobalValue GetIntArray 解析失败，Key: {key}, Value: {value}");
                 }
             }
 
             return result;
+        }
+
+        /// <summary>导表单值常带花括号，如 {100}。</summary>
+        private static string NormalizeGlobalValue(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+
+            value = value.Trim();
+            if (value.Length >= 2 && value[0] == '{' && value[value.Length - 1] == '}')
+            {
+                return value.Substring(1, value.Length - 2).Trim();
+            }
+
+            return value;
         }
     }
 }

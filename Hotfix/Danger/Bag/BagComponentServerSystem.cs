@@ -757,7 +757,7 @@ namespace ET
             useBagInfo.Loc = (int)ItemLocType.ItemLocBag;
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
             useBagInfo.GetWay = bagInfo.GetWay;
-            useBagInfo.isBinging = bagInfo.isBinging;
+            useBagInfo.IsBinging = bagInfo.IsBinging;
             List<BagInfo> bagList = self.GetItemByLoc(ItemLocType.ItemLocBag);
             useBagInfo.Position = AllocBagPosition(bagList);
             bagList.Add(useBagInfo);
@@ -940,8 +940,7 @@ namespace ET
             m2c_bagUpdate.BagInfoDelete.Clear();
             Dictionary<int, long> currencyAdds = null;
             Dictionary<int, HashSet<int>> usedPosByLoc = null;
-            bool forceBindByGetWay = false;
-
+         
             for (int i = 0; i < rewardItems.Count; i++)
             {
                 RewardItem rewardItem = rewardItems[i];
@@ -1025,7 +1024,7 @@ namespace ET
                     useBagInfo.GetWay = getWay;
                     leftNum -= useBagInfo.ItemNum;
                     useBagInfo.MakePlayer = makeUserID;
-                    useBagInfo.isBinging = forceBindByGetWay || ItemNewHelper.CheckItemIfLock(rewardItem);
+                    useBagInfo.IsBinging = ItemNewHelper.CheckItemIfBound(rewardItem);
 
                     if (itemtype == ItemBigType.Type_Equip && useBagInfo.BaseAttrList.Count <= 0)
                     {
