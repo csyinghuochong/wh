@@ -210,7 +210,7 @@ namespace ET
                 skill8Number = Math.Min(5, skill8Number);
                 if (skill8Number > 0)
                 {
-                    unit.GetComponent<BagComponentServer>().OnAddItemData($"10010097;{skill8Number}", $"{ItemGetWay.PetFenjie}_{TimeHelper.ServerNow()}");
+                    //unit.GetComponent<BagComponentServer>().OnAddItemData($"10010097;{skill8Number}", $"{ItemGetWay.PetFenjie}_{TimeHelper.ServerNow()}");
                 }
             }
         }
@@ -1527,7 +1527,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            bagComponentServer.OnAddItemData($"{itemid};1", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
+            //bagComponentServer.OnAddItemData($"{itemid};1", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}");
             List<BagInfo> bagitemList = null;
             if (bagitemList.Count == 0)
             {

@@ -148,16 +148,16 @@ namespace ET
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
 
                 //回收宝石
-                if (gemItemId != 0)
-                {
-                    bool ret =   bagcComponentServer.OnAddItemData($"{gemItemId};1", $"{ItemGetWay.GemHuiShou}_{TimeHelper.ServerNow()}");
-                    Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+                //if (gemItemId != 0)
+                //{
+                //    bool ret =   bagcComponentServer.OnAddItemData($"{gemItemId};1", $"{ItemGetWay.GemHuiShou}_{TimeHelper.ServerNow()}");
+                //    Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
-                    if (!ret)
-                    {
-                        Log.Error($"回收宝石出错: {unit.Id} {gemItemId}");
-                    }
-                }
+                //    if (!ret)
+                //    {
+                //        Log.Error($"回收宝石出错: {unit.Id} {gemItemId}");
+                //    }
+                //}
             }
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
             reply();

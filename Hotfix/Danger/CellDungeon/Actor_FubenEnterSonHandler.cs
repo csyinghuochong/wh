@@ -16,10 +16,10 @@ namespace ET
             fubenCellInfoCurt.pass = true;
             CellDungeonInfo fubenCellInfoNext = fubenComponent.GetNextSonCell(request.CurrentCell, request.DirectionType);
             fubenComponent.CurrentFubenCell = fubenCellInfoNext;
-            if (!fubenCellInfoNext.pass)
-            {
-                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.PiLao, "-1");
-            }
+            //if (!fubenCellInfoNext.pass)
+            //{
+            //    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.PiLao, "-1");
+            //}
 
             SonFubenInfo enterFubenInfo = new SonFubenInfo();
             enterFubenInfo.SonSceneId = fubenCellInfoNext.sonid;

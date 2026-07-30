@@ -54,7 +54,7 @@ namespace ET
                     }
 
                     bagComponentServer.OnCostItemData(activityOrderItem.Give, ItemLocType.ItemLocBag, ItemGetWay.Activity);
-                    bagComponentServer.OnAddItemData(activityOrderItem.Get, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
+                    //bagComponentServer.OnAddItemData(activityOrderItem.Get, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
 
                     List<RewardItem> droplist = new List<RewardItem>();
                     int dropid = int.Parse(activityOrderItem.DropID);

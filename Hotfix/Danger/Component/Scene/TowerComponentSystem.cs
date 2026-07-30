@@ -101,7 +101,7 @@ namespace ET
                 }
            
                 int itemNum = (int)(cengNum / 5f);
-                self.MainUnit.GetComponent<BagComponentServer>().OnAddItemData("10000148;" + itemNum, $"{ItemGetWay.TiaoZhan}_{TimeHelper.ServerNow()}");
+                //.MainUnit.GetComponent<BagComponentServer>().OnAddItemData("10000148;" + itemNum, $"{ItemGetWay.TiaoZhan}_{TimeHelper.ServerNow()}");
             }
             Log.Warning($"挑战奖励:  {self.MainUnit.Id}  {way}");
             MessageHelper.SendToClient(self.MainUnit, message);

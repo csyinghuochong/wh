@@ -102,6 +102,9 @@ namespace ET
 		/// <summary>雷达 显示</summary>
 		[ProtoMember(9)]
 		public int Rader { get; set; }
+		/// <summary>禁用</summary>
+		[ProtoMember(10)]
+		public int Is_Close { get; set; }
 
 	}
 }

@@ -233,8 +233,8 @@ namespace ET
                                 int neednum = int.Parse(duihuanparams[0]);
                                 int newItem = int.Parse(duihuanparams[1]);
 
-                                bagComponentServer.OnCostItemData($"{ldItem.Id};{neednum - 1}", ItemLocType.ItemLocBag, ItemGetWay.DuiHuan);
-                                bagComponentServer.OnAddItemData($"{newItem};1", $"{ItemGetWay.ItemBox_8}_{TimeHelper.ServerNow()}");
+                                //bagComponentServer.OnCostItemData($"{ldItem.Id};{neednum - 1}", ItemLocType.ItemLocBag, ItemGetWay.DuiHuan);
+                                //bagComponentServer.OnAddItemData($"{newItem};1", $"{ItemGetWay.ItemBox_8}_{TimeHelper.ServerNow()}");
                                 break;
                             case 9:
                                 bagComponentServer.OnAddItemData(droplist, string.Empty, $"{ItemGetWay.ActivityHongBao}_{TimeHelper.ServerNow()}");
@@ -406,15 +406,6 @@ namespace ET
                                 bagComponentServer.OnAddItemData(rewardItem, $"{ItemGetWay.TreasureMap}_{TimeHelper.ServerNow()}");
                                 unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.TreasureMapNumber_210, 0, 1);
 
-                                //普通
-                                if (ldItem.Quality == 4)
-                                {
-                                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.TreasureMapNormal_26, 0, 1);
-                                }
-                                if (ldItem.Quality == 5)
-                                {
-                                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.TreasureMapHigh_27, 0, 1);
-                                }
 
                                 break;
                             case 128://激活称号

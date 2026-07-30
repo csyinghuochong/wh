@@ -29,8 +29,8 @@ namespace ET
 
             unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (cost * -1).ToString(), true, ItemGetWay.CostItem);
 
-            long addPilao = int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) - int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.PiLao, addPilao.ToString());
+            //long addPilao = int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) - int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
+            //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.PiLao, addPilao.ToString());
             //Log.Warning($"[增加疲劳] {unit.DomainZone()}  {unit.Id}   {0}  {addPilao}");
             reply();
             await ETTask.CompletedTask;

@@ -595,7 +595,7 @@ namespace ET
                         continue;
                     }
 
-                    self.OnAddItemData($"{equipList[i]};1", $"{ItemGetWay.System}_0", false);
+                    self.OnAddItemData($"{ItemBigType.Type_Equip}_{equipList[i]}_1", $"{ItemGetWay.System}_0", false);
                     existingItems = self.GetIdItemList(equipList[i]);
                     if (existingItems.Count == 0)
                     {
@@ -616,7 +616,7 @@ namespace ET
 
         public static void OnAddJianDing(this BagComponentServer self)
         {
-            self.OnAddItemData( $"11200001;1@11200002;1@11200003;1", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}" );
+
         }
 
         //字符串添加道具 
@@ -703,7 +703,7 @@ namespace ET
 
             if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
             {
-                return self.OnAddItemData($"{bagInfo.ItemID};{bagInfo.ItemNum}", string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay);
+                return self.OnAddItemData($"{bagInfo.ItemType}_{bagInfo.ItemID}_{bagInfo.ItemNum}", string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay);
             }
             else
             {

@@ -120,7 +120,6 @@ namespace ET
 						{
 							scene.GetComponent<PetTianTiComponent>().MainUnit = unit;
 							scene.GetComponent<PetTianTiComponent>().GeneratePetFuben().Coroutine();
-							unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.PetTianTiNumber_14,0, 1 );
                             unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.PetTianTiNumber_310, 0, 1);
 						}
 						if (request.SceneType == (int)MapTypeEnum.PetMing)
@@ -396,11 +395,6 @@ namespace ET
                                 if (fubenType == TeamFubenType.ShenYuan && unit.Id == teamDungeonComponent.TeamInfo.TeamId)
                                 {
                                     unit.GetComponent<BagComponentServer>().OnCostItemData($"{CommonConfig.ShenYuanCostId};1", ItemLocType.ItemLocBag, ItemGetWay.FubenGetReward);
-                                }
-                                if (fubenType == TeamFubenType.ShenYuan)
-                                {
-                                    unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.ShenYuanNumber_135, 0, 1);
-                                
                                 }
                             }
                         }

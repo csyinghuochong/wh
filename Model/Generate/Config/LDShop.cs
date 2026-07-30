@@ -78,7 +78,7 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>类型 1-固定 2-随机可重复 3-随机不可重复 9-全服</summary>
+		/// <summary>类型 1-固定 2-随机可重复 3-随机不重复 9-全服</summary>
 		[ProtoMember(2)]
 		public int Type { get; set; }
 		/// <summary>商品数量 -1为全部</summary>
@@ -108,6 +108,9 @@ namespace ET
 		/// <summary>资源条 钻石 0-无 1-所有 2-非绑</summary>
 		[ProtoMember(11)]
 		public int Resource_Bar_1 { get; set; }
+		/// <summary>对应 隶属</summary>
+		[ProtoMember(12)]
+		public int Belong_Id { get; set; }
 
 	}
 }

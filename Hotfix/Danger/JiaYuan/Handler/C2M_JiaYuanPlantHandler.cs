@@ -32,8 +32,6 @@ namespace ET
                 UnitId = IdGenerater.Instance.GenerateId(),
             };
 
-            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.JiaYuanPlantNumber_92, 0, 1);
-
             jianYuanComponentServer.JianYuanPlantList_7.Add(jiaYuanPlant);
             Unit plan = UnitFactory.CreatePlan( unit.DomainScene(), jiaYuanPlant, unit.Id);
             jiaYuanPlant.UnitId = plan.Id;

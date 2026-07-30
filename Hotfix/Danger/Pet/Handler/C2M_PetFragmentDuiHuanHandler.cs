@@ -26,8 +26,8 @@ namespace ET
                 return;
             }
 
-            bagComponentServer.OnCostItemData("10000136;1", ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
-            bagComponentServer.OnAddItemData($"{CommonConfig.PetFramgeItemId};1", $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
+            //bagComponentServer.OnCostItemData("10000136;1", ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
+            //bagComponentServer.OnAddItemData($"{CommonConfig.PetFramgeItemId};1", $"{ItemGetWay.DuiHuan}_{TimeHelper.ServerNow()}");
             Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             reply();
             await ETTask.CompletedTask;

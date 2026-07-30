@@ -263,47 +263,6 @@ namespace ET
                 case (int)(int)TastConditionType.PlayerLv_1:
                     taskPro.taskTargetNum_1 = roleInfo.Lv;
                     break;
-                /*case (int)TastConditionType.KillMonsterID_1:
-                    taskPro.taskTargetNum_1 = unit.GetComponent<RoleInfoComponentServer>().GetReviveTime(ldTask.Param1) > 0?1 : 0;
-                    break;*/
-                case (int)TastConditionType.ItemID_Number_2:
-                    taskPro.taskTargetNum_1 = (int)bagComponentServer.GetItemNumber(ItemBigType.Type_Item, ldTask.Param1);
-                    break;
-                case(int)TastConditionType.LookingFor_3:
-                    taskPro.taskTargetNum_1 = 1;
-                    break;
-              
-                case (int)TastConditionType.ChangeOcc_8:
-                    taskPro.taskTargetNum_1 = roleInfo.OccTwo > 0 ? 1 : 0;
-                    break;
-                case (int)TastConditionType.JoinUnion_9:
-                    taskPro.taskTargetNum_1 = numericComponent.GetAsLong(NumericType.UnionId_0) > 0? 1 : 0;
-                    break;
-                case (int)TastConditionType.PetNumber1_11:
-                    taskPro.taskTargetNum_1 = petComponentServer.GetAllPets().Count;
-                    break;
-                case (int)TastConditionType.QiangHuaLevel_17:
-                    taskPro.taskTargetNum_1 = bagComponentServer.GetMaxQiangHuaLevel();
-                    break;
-                case (int)TastConditionType.PetNSkill_18:
-                    taskPro.taskTargetNum_1 = petComponentServer.GetMaxSkillNumber();
-                    break;
-                case (int)TastConditionType.PetFubenId_19:
-                    taskPro.taskTargetNum_1 = petComponentServer.GetPassMaxFubenId();
-                    break;
-                case (int)TastConditionType.JiaYuanLevel_22:
-                    taskPro.taskTargetNum_1 = roleInfo.JiaYuanLv;
-                    break;
-                case (int)TastConditionType.CombatToValue_133:
-                    taskPro.taskTargetNum_1 = roleInfo.Combat;
-                    break;
-                case (int)TastConditionType.TrialTowerCeng_134:
-                    int curtrialid = numericComponent.GetAsInt(NumericType.TrialDungeonId);
-                    if (curtrialid > ldTask.Param1)
-                    {
-                        taskPro.taskTargetNum_1 = 1;
-                    }
-                    break;
                 default:
                     taskPro.taskTargetNum_1 = 0;
                     break;
@@ -480,56 +439,21 @@ namespace ET
         public static int CheckGiveItemTask (this TaskComponentServer self, int TargetType, int[] Target, int[] TargetValue, long BagInfoID, TaskPro taskPro)
         {
             Unit unit = self.GetParent<Unit>();
-            //收集道具的任务
-            if (TargetType == (int)TastConditionType.ItemID_Number_2)
-            {
-                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-                int needid = Target[0];
-                int neednumber = TargetValue[0];
-                int curnumber = (int)bagComponentServer.GetItemNumber(ItemBigType.Type_Item, needid);
-                if (curnumber < neednumber)
-                {
-                    self.TriggerTaskEvent(TastConditionType.ItemID_Number_2, needid, 0);
-                 
-                    return ErrorCode.ERR_ItemNotEnoughError;
-                }
+            ////收集道具的任务
+            //if (TargetType == (int)TastConditionType.ItemID_Number_2)
+            //{
+            //    BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            //    int needid = Target[0];
+            //    int neednumber = TargetValue[0];
+            //    int curnumber = (int)bagComponentServer.GetItemNumber(ItemBigType.Type_Item, needid);
+            //    if (curnumber < neednumber)
+            //    {
+            //        return ErrorCode.ERR_ItemNotEnoughError;
+            //    }
 
-                bagComponentServer.OnCostItemData($"{needid};{neednumber}", ItemLocType.ItemLocBag, ItemGetWay.TaskCountry  );
-                return ErrorCode.ERR_Success;
-            }
-            //给予任务
-            if (TargetType == (int)TastConditionType.GiveItem_10)
-            {
-                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-                BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, BagInfoID);
-                if (bagInfo == null)
-                {
-                    return ErrorCode.ERR_ItemNotExist;
-                }
-                if (!TaskHelper.IsTaskGiveItem(TargetType, Target, TargetValue, bagInfo))
-                {
-                    return ErrorCode.ERR_ItemNotEnoughError;
-                }
-                bagComponentServer.OnCostItemData(BagInfoID, 1);
-                return ErrorCode.ERR_Success;
-            }
-            //给予宠物
-            if (TargetType == (int)TastConditionType.GivePet_25)
-            {
-                PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
-                RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(BagInfoID);
-                if (rolePetInfo == null)
-                {
-                    return ErrorCode.ERR_ItemNotExist;
-                }
-                if (!TaskHelper.IsTaskGivePet(TargetType, Target, TargetValue, rolePetInfo))
-                {
-                    return ErrorCode.ERR_ItemNotEnoughError;
-                }
-
-                petComponentServer.OnRolePetFenjie(BagInfoID);
-                return ErrorCode.ERR_Success;
-            }
+            //    bagComponentServer.OnCostItemData($"{needid};{neednumber}", ItemLocType.ItemLocBag, ItemGetWay.TaskCountry  );
+            //    return ErrorCode.ERR_Success;
+            //}
             return taskPro.taskStatus == (int)(TaskStatuEnum.Completed)? ErrorCode.ERR_Success : ErrorCode.Pre_Condition_Error;
             //return ErrorCode.ERR_Success; 
         }
@@ -615,8 +539,6 @@ namespace ET
         /// <param name="self"></param>
         public static void OnChangeOccTwo(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.ChangeOcc_8, 0, 1);
-          
         }
 
         /// <summary>
@@ -633,7 +555,6 @@ namespace ET
         /// <param name="self"></param>
         public static void OnPetXiLian(this TaskComponentServer self, RolePetInfo rolePetInfo)
         {
-            self.TriggerTaskEvent(TastConditionType.PetNSkill_18, 0, rolePetInfo.PetSkill.Count);
            
         }
 
@@ -641,12 +562,7 @@ namespace ET
         {
             using (self.TaskEventBatch())
             {
-                self.TriggerTaskEvent(TastConditionType.PetNumber1_11, 0, 1);
-                self.TriggerTaskEvent(TastConditionType.PetHeCheng_23, 0, 1);
-                self.TriggerTaskEvent(TastConditionType.PetNumber2_24, 0, 1);
-                self.TriggerTaskEvent(TastConditionType.PetNSkill_18, 0, rolePetInfo.PetSkill.Count);
                 int combat = PetHelper.PetPingJia(rolePetInfo);
-                self.TriggerTaskEvent(TastConditionType.PetHeChengCombat_32, combat, 1);
             }
         }
 
@@ -658,10 +574,7 @@ namespace ET
         {
             using (self.TaskEventBatch())
             {
-                self.TriggerTaskEvent( TastConditionType.PetNumber1_11, 0, 1 );
-                self.TriggerTaskEvent(TastConditionType.PetNumber2_24, 0, 1);
-                self.TriggerTaskEvent( TastConditionType.PetNSkill_18,  0, rolePetInfo.PetSkill.Count);
-                self.TriggerTaskEvent(TastConditionType.PetNumber_31, 0, 1);
+               
             }
         }
 
@@ -670,7 +583,6 @@ namespace ET
         /// </summary>
         public static void OnEquipXiLian(this TaskComponentServer self, int times)
         {
-            self.TriggerTaskEvent(TastConditionType.EquipXiLian_13, 0, times);
         }
 
         /// <summary>
@@ -680,8 +592,7 @@ namespace ET
         {
             using (self.TaskEventBatch())
             {
-                self.TriggerTaskEvent(TastConditionType.PetFuHuaNumber_34, 0, 1);
-                self.TriggerTaskEvent(TastConditionType.PetFuHuaId_35, eggItemId, 1);
+              
             }
         }
 
@@ -692,8 +603,7 @@ namespace ET
         {
             using (self.TaskEventBatch())
             {
-                self.TriggerTaskEvent(TastConditionType.MakeNumber_12, 0, 1);
-                self.TriggerTaskEvent(TastConditionType.MakeQulityNumber_29, quality, 1);
+            
             }
         }
 
@@ -710,7 +620,6 @@ namespace ET
         /// </summary>
         public static void OnPetTianTiWin(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.PetTianDiWin_37, 0, 1);
         }
 
         /// <summary>
@@ -718,7 +627,6 @@ namespace ET
         /// </summary>
         public static void OnPetTianTiRank(this TaskComponentServer self, int rankId)
         {
-            self.TriggerTaskEvent(TastConditionType.PetTianTiRank_82, rankId, 1);
         }
 
         /// <summary>
@@ -726,7 +634,6 @@ namespace ET
         /// </summary>
         public static void OnPetFubenWin(this TaskComponentServer self, int petFubenId)
         {
-            self.TriggerTaskEvent(TastConditionType.PetFubenId_19, 0, petFubenId - 10000);
         }
 
         /// <summary>
@@ -736,7 +643,6 @@ namespace ET
         {
             using (self.TaskEventBatch())
             {
-                self.TriggerTaskEvent(TastConditionType.TeamDungeonHurt_136, sceneId, hurtRate);
                 self.OnPassTeamFuben();
             }
         }
@@ -747,7 +653,6 @@ namespace ET
         /// <param name="self"></param>
         public static void OnLineTime(this TaskComponentServer self, int time)
         {
-            self.TriggerTaskEvent(TastConditionType.OnLineTime_1010, 0, time);
         }
 
         /// <summary>
@@ -756,8 +661,6 @@ namespace ET
         /// <param name="self"></param>
         public static void OnItemHuiShow(this TaskComponentServer self, int itemNumber)
         {
-            self.TriggerTaskEvent(TastConditionType.EquipHuiShou_16, 0, itemNumber);
-         
         }
 
         /// <summary>
@@ -768,17 +671,14 @@ namespace ET
         {
             if (costCoin >= 0)
                 return;
-            self.TriggerTaskEvent(TastConditionType.TotalCostGold_20, 0, costCoin * -1);
         }
 
         public static void OnJiaYuanLevel(this TaskComponentServer self, int jiaYuanLv)
         {
-            self.TriggerTaskEvent(TastConditionType.JiaYuanLevel_22, 0, jiaYuanLv);
         }
 
         public static void OnCombatToValue(this TaskComponentServer self, int combat)
         {
-            self.TriggerTaskEvent(TastConditionType.CombatToValue_133, 0, combat);
         }
 
         /// <summary>
@@ -792,89 +692,71 @@ namespace ET
         {
             using (self.TaskEventBatch())
             {
-                self.TriggerTaskEvent(TastConditionType.PassFubenID_7, chapterid, 1);
-
-                if ((int)difficulty >= (int)FubenDifficulty.TiaoZhan)  //挑战
-                {
-                    self.TriggerTaskEvent(TastConditionType.PassTianZhanFubenID_111, chapterid, 1);
-                }
-                if ((int)difficulty >= (int)FubenDifficulty.DiYu)  //地狱
-                {
-                    self.TriggerTaskEvent(TastConditionType.PassDiYuFubenID_112, chapterid, 1);
-                }
+                
             }
         }
 
         public static void OnWinCampBattle(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.BattleWin_1101, 0, 1);
         }
 
         public static void OnPassTeamFuben(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.PassTeamFuben_1004, 0, 1);
         }
 
         public static void OnOpenBox(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.OpenBox_137, 0, 1);
         }
 
         public static void OnFuMo(this TaskComponentServer self, int quality)
         {
-            self.TriggerTaskEvent(TastConditionType.FuMoQulity_41, quality, 1);
         }
 
         public static void OnQiangHua(this TaskComponentServer self, int qiangHuaLevel)
         {
-            self.TriggerTaskEvent(TastConditionType.QiangHuaLevel_17, 0, qiangHuaLevel);
         }
 
         public static void OnJoinUnion(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.JoinUnion_9, 0, 1);
+            
         }
 
         public static void OnFriendPassFuben(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.FriendPassFuben_138, 0, 1);
+            
         }
 
         public static void OnPetMineBattle(this TaskComponentServer self, int result)
         {
             using (self.TaskEventBatch())
             {
-                self.TriggerTaskEvent(TastConditionType.MineBattleNumber_402, 0, 1);
-                if (result == CombatResultEnum.Win)
-                {
-                    self.TriggerTaskEvent(TastConditionType.MineWinNumber_403, 0, 1);
-                }
+                
             }
         }
 
         public static void OnDuiHuanGold(this TaskComponentServer self, int diamond)
         {
-            self.TriggerTaskEvent(TastConditionType.DuiHuanGold_15, 0, diamond / 100);
+           
         }
 
         public static void OnCombatRank(this TaskComponentServer self, int rankId)
         {
-            self.TriggerTaskEvent(TastConditionType.CombatRank_83, rankId, 1);
+            
         }
 
         public static void OnBattleUseItem(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.BattleUseItem_30, 0, 1);
+           
         }
 
         public static void OnPetUseSkillBook(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.PetUseSkillBook_36, 0, 1);
+          
         }
 
         public static void OnPetXiLianCrystal(this TaskComponentServer self)
         {
-            self.TriggerTaskEvent(TastConditionType.PetXiLian10010086_33, 0, 1);
+           
         }
 
         public static async ETTask UpdateUnionRaceRank(this TaskComponentServer self)
@@ -916,10 +798,6 @@ namespace ET
 
             using (self.TaskEventBatch())
             {
-                if (bekill.Type == UnitType.Player)
-                {
-                    self.TriggerTaskEvent( TastConditionType.KillPlayer_21,0, 1 );
-                }
                 if (bekill.Type == UnitType.Monster)
                 {
                     int unitconfigId = bekill.ConfigId;
@@ -934,32 +812,7 @@ namespace ET
                     }
 
                     self.TriggerTaskEvent(TastConditionType.KillMonsterByNumber_210, 1, 0);
-                  
-                    if (isBoss)
-                    {
-                        self.TriggerTaskEvent(TastConditionType.KillBOSS_6, 0, 1);
-                    }
 
-                    if ((int)fubenDifficulty >= (int)FubenDifficulty.TiaoZhan) //挑战
-                    {
-                        self.TriggerTaskEvent(TastConditionType.KillTiaoZhanMonsterID_101, unitconfigId, 1);
-                        self.TriggerTaskEvent(TastConditionType.KillTianZhanMonsterNumber_121, 0, 1);
-                        if (isBoss)
-                        {
-                            self.TriggerTaskEvent(TastConditionType.KillTianZhanBossNumber_131, 0, 1);
-                        }
-                    }
-
-                    if ((int)fubenDifficulty == (int)FubenDifficulty.DiYu)  //地狱
-                    {
-                        self.TriggerTaskEvent(TastConditionType.KillDiYuMonsterID_102, unitconfigId, 1);
-                        self.TriggerTaskEvent(TastConditionType.KillDiYuMonsterNumber_122, 0, 1);
-                        if (isBoss)
-                        {
-                            self.TriggerTaskEvent(TastConditionType.KillDiYuBossNumber_132, 0, 1);
-                            self.TriggerTaskEvent(TastConditionType.KillDiYuBoss_141, ldMonster.Lv, 1);
-                        }
-                    }
                 }
             }
         }
@@ -1029,11 +882,7 @@ namespace ET
                 {
                     TaskPro taskPro = self.RoleTaskList[i];
                     LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
-                    if (ldTask.Condition_Type == TastConditionType.ItemID_Number_2)
-                    {
-                        self.TriggerTaskEvent(TastConditionType.ItemID_Number_2, ldTask.Param1, 0);
-                        continue;
-                    }
+                   
                     if (ldTask.Condition_Type == TastConditionType.PlayerLv_1)
                     {
                         int roleLv = roleInfoComponentServer.RoleInfo.Lv;
@@ -1048,9 +897,6 @@ namespace ET
             {
                 self.TriggerTaskEvent(TastConditionType.LoginDayNymber_101, 1, 0);
                 self.TriggerTaskEvent(TastConditionType.LoginToday_102, 1, 0);
-                self.TriggerTaskEvent( TastConditionType.TrialRank_81, numericComponent.GetAsInt(NumericType.TrialRankId),1 );
-                self.TriggerTaskEvent(TastConditionType.PetTianTiRank_82, numericComponent.GetAsInt(NumericType.PetTianTiRankID), 1);
-                self.TriggerTaskEvent(TastConditionType.CombatRank_83, numericComponent.GetAsInt(NumericType.CombatRankID), 1);
             }
 
             self.CheckWeeklyTask(false);
@@ -1060,7 +906,6 @@ namespace ET
         //收集道具
         public static void OnGetItemForWarehouse(this TaskComponentServer self, int itemId)
         {
-            self.TriggerTaskEvent(TastConditionType.ItemID_Number_2, itemId, 0);
         }
 
         //累计获得道具数量
@@ -1068,14 +913,12 @@ namespace ET
         {
             if (itemId == 1 || (getWay != ItemGetWay.ReceieMail && getWay != ItemGetWay.PaiMaiSell))
             {
-                self.TriggerTaskEvent(TastConditionType.GetItemNumber_142, itemId, itemNumber);
             }
         }
 
         //收集道具
         public static void OnGetItem_2(this TaskComponentServer self, int itemType, int itemId)
         {
-            self.TriggerTaskEvent(TastConditionType.ItemID_Number_2, itemId, 0);
         }
 
         public static void GMCompletCurrentTask(this TaskComponentServer self)
@@ -1106,16 +949,6 @@ namespace ET
             {
                 for (int i = 0; i < petMingPlayers.Count; i++)
                 {
-                    for (int mineid = petMingPlayers[i].MineType; mineid <= 10003; mineid++)
-                    {
-                        self.TriggerTaskEvent(TastConditionType.MineHaveNumber_401, mineid, 1);
-                    }
-
-                    bool hexin = CommonHelper.IsHexinMine(petMingPlayers[i].MineType, petMingPlayers[i].Postion, extends);
-                    if (hexin)
-                    {
-                        self.TriggerTaskEvent(TastConditionType.MineHaveNumber_401, 0, 1);
-                    }
                 }
             }
         }

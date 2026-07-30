@@ -397,7 +397,7 @@ namespace ET
             recoverPiLao = Math.Min(recoverPiLao, addValue);
 
             Log.Warning($"[增加体力] {unit.DomainZone()}    {unit.Id}    {recoverPiLao}");
-            self.UpdateRoleData(UserDataType.PiLao, recoverPiLao.ToString(), notice);
+            //self.UpdateRoleData(UserDataType.PiLao, recoverPiLao.ToString(), notice);
             self.LastLoginTime = TimeHelper.ServerNow();
         }
 
@@ -491,14 +491,14 @@ namespace ET
                     numericComponent.ApplyValue(NumericType.TiLiKillNumber, 0, false);
 
                     numericComponent.ApplyChange(null, NumericType.CostTiLi, 1, 0);
-                    if ( CommonHelper.IsZhuBoZone(UnitZoneHelper.GetHomeZone(main)) && self.RoleInfo.PiLao < 2)
-                    {
-                        self.UpdateRoleData(UserDataType.PiLao, "100", true);
-                    }
-                    else
-                    {
-                        self.UpdateRoleData(UserDataType.PiLao, "-1", true);
-                    }
+                    //if ( CommonHelper.IsZhuBoZone(UnitZoneHelper.GetHomeZone(main)) && self.RoleInfo.PiLao < 2)
+                    //{
+                    //    self.UpdateRoleData(UserDataType.PiLao, "100", true);
+                    //}
+                    //else
+                    //{
+                    //    self.UpdateRoleData(UserDataType.PiLao, "-1", true);
+                    //}
                 }
                 else
                 {
@@ -738,21 +738,21 @@ namespace ET
                     numericComponent ??= unit.GetComponent<NumericComponent>();
                     numericComponent.ApplyChange(null, NumericType.JueXingExp, long.Parse(value), 0);
                     break;
-                case UserDataType.PiLao:
-                    if (value == "0")
-                    {
-                        return;
-                    }
+                //case UserDataType.PiLao:
+                //    if (value == "0")
+                //    {
+                //        return;
+                //    }
 
-                    int maxValue = 100;///unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
-                    long newValue = long.Parse(value) + self.RoleInfo.PiLao;
-                    newValue = Math.Min(Math.Max(0, newValue), maxValue);
-                    self.RoleInfo.PiLao = newValue;
-                    saveValue = self.RoleInfo.PiLao.ToString();
-                    break;
+                //    int maxValue = 100;///unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
+                //    long newValue = long.Parse(value) + self.RoleInfo.PiLao;
+                //    newValue = Math.Min(Math.Max(0, newValue), maxValue);
+                //    self.RoleInfo.PiLao = newValue;
+                //    saveValue = self.RoleInfo.PiLao.ToString();
+                //    break;
                 case UserDataType.BaoShiDu:
                     long addValue = long.Parse(value);
-                    newValue = self.RoleInfo.BaoShiDu + (int)addValue;
+                    long newValue = self.RoleInfo.BaoShiDu + (int)addValue;
                     newValue = Math.Min(Math.Max(0, newValue), CommonHelper.GetMaxBaoShiDu());
                     self.RoleInfo.BaoShiDu = (int)newValue;
                     saveValue = self.RoleInfo.BaoShiDu.ToString();

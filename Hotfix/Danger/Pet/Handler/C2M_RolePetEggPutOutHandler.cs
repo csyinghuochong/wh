@@ -19,7 +19,7 @@ namespace ET
             PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             RolePetEgg rolePetEgg = petComponentServer.RolePetEggs[request.Index];
             
-            bagComponentServer.OnAddItemData($"{rolePetEgg.ItemId};1", $"{ItemGetWay.PetEggPutOut}_{TimeHelper.ServerNow()}_{rolePetEgg.FuLing}");
+            //bagComponentServer.OnAddItemData($"{rolePetEgg.ItemId};1", $"{ItemGetWay.PetEggPutOut}_{TimeHelper.ServerNow()}_{rolePetEgg.FuLing}");
             rolePetEgg.ItemId = 0;
             rolePetEgg.EndTime = 0;
             rolePetEgg.FuLing = 0;

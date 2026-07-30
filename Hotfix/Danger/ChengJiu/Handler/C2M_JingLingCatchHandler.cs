@@ -44,7 +44,7 @@ namespace ET
 
                 LDMonster ldMonster = LDMonsterCategory.Instance.Get(zhupuUnit.ConfigId);
                 int getItemid = -1;///ldMonster.Parameter[1];
-                bagComponentServer.OnAddItemData($"{getItemid};1",$"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
+                //bagComponentServer.OnAddItemData($"{getItemid};1",$"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
 
                 List<BagInfo> bagInfolist = bagComponentServer.GetIdItemList(getItemid);
                 if (bagInfolist.Count > 0)

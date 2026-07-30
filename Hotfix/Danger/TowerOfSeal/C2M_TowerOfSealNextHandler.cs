@@ -135,8 +135,7 @@ namespace ET
             towerOfSealComponent.GenerateFuben(numericComponent.GetAsInt(NumericType.TowerOfSealArrived),
                 numericComponent.GetAsInt(NumericType.TowerOfSealFinished));
 
-            unit.GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.TowerOfSeal_28, 0, 1);
-          
+       
             reply();
             await ETTask.CompletedTask;
         }

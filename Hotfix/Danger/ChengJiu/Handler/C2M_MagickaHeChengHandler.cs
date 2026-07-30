@@ -91,8 +91,8 @@ namespace ET
             int idindex =  RandomHelper.RandomNumber(0, newmagicids.Count);
             int newmagid = newmagicids[idindex];
 
-            bagComponentServer.OnCostItemData(request.OperateBagID, ItemLocType.ItemLocBag);
-            bagComponentServer.OnAddItemData($"{newmagid};1", $"{ItemGetWay.GemHeCheng}_{TimeHelper.ServerNow()}");
+            //bagComponentServer.OnCostItemData(request.OperateBagID, ItemLocType.ItemLocBag);
+            //bagComponentServer.OnAddItemData($"{newmagid};1", $"{ItemGetWay.GemHeCheng}_{TimeHelper.ServerNow()}");
 
             List<BagInfo> bagInfos =  bagComponentServer.GetIdItemList(newmagid);
             if (bagInfos.Count > 0)

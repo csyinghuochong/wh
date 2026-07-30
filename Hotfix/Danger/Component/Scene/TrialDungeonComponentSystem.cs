@@ -92,8 +92,7 @@ namespace ET
                      });
             if (Response.Error == ErrorCode.ERR_Success && Response.RankId != 0)
             {
-                players[0].GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.TrialRank_81, Response.RankId, 1);
-              
+                //players[0].GetComponent<TaskComponentServer>().TriggerTaskEvent(TastConditionType.TrialRank_81, Response.RankId, 1);
             }
             self.HurtValue = 0;
             await ETTask.CompletedTask;
