@@ -261,6 +261,10 @@ namespace ET
         public static Unit CreateNpc(Scene scene, int createid,  int npcId, Vector3 vector3)
         {
             LDNPC ldNpc = LDNPCCategory.Instance.Get(npcId);
+            if (ldNpc.Is_Close >= 1)
+            {
+                return null;
+            }
 
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), npcId);
             scene.GetComponent<UnitComponent>().Add(unit);

@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ShopListRequest request, M2C_ShopListResponse response, Action reply)
         {
             int shopId = request.ShopId;
-            if (!LDShopCategory.Instance.Contain(1))
+            if (!LDShopCategory.Instance.Contain(shopId))
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();
