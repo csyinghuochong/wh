@@ -27,6 +27,10 @@ namespace ET
 
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
             int[] equipIinit = ldOccupation.Equip_Init;
+            if (equipIinit == null || equipIinit.Length == 0)
+            {
+                return;
+            }
 
             List<RewardItem> rewardItems = new List<RewardItem>();
             for (int i = 0; i <equipIinit.Length; i++)

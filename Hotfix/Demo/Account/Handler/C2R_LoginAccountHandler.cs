@@ -93,6 +93,19 @@ namespace ET
                         {
                             dbcenterAccountInfo = centerAccountInfoList[0];
                         }
+                        if (dbcenterAccountInfo != null)
+                        {
+                            for (int i = dbcenterAccountInfo.RoleList.Count- 1; i >= 0; i--)
+                            {
+                                if (!LDOccupationCategory.Instance.Contain(dbcenterAccountInfo.RoleList[i].PlayerOcc))
+                                {
+                                    dbcenterAccountInfo.RoleList.RemoveAt(i);   
+                                }
+                            }
+
+                            await Game.Scene.GetComponent<DBComponent>().Save(CommonConfig.CenterZoneId, dbcenterAccountInfo);
+                        }
+
                         
                         //没有则注册
                         if (dbcenterAccountInfo == null)
@@ -222,6 +235,11 @@ namespace ET
                             {
                                 continue;
                             }
+                            if (!LDOccupationCategory.Instance.Contain(createRoleInfo.PlayerOcc))
+                            {
+                                continue;
+                            }
+
                             CreateRoleInfo roleList = CommonHelper.DeepCopy(createRoleInfo);
 
                             RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(createRoleInfo.ServerId,createRoleInfo.UserID);
