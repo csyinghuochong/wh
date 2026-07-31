@@ -87,33 +87,33 @@ namespace ET
 		/// <summary>编号</summary>
 		[ProtoMember(4)]
 		public int Number { get; set; }
-		/// <summary>等级 min</summary>
+		/// <summary>权重</summary>
 		[ProtoMember(5)]
+		public int weight { get; set; }
+		/// <summary>等级 min</summary>
+		[ProtoMember(6)]
 		public int Lv_Min { get; set; }
 		/// <summary>等级 max</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int Lv_Max { get; set; }
 		/// <summary>购买限制 角色等级</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int Limit_Condition_1 { get; set; }
 		/// <summary>购买限制</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int Limit_Condition_2 { get; set; }
 		/// <summary>购买限制</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int Limit_Condition_3 { get; set; }
 		/// <summary>本次 限购</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int Limit_Num { get; set; }
 		/// <summary>终身 限购</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int Limit_Num_Forever { get; set; }
 		/// <summary>商品</summary>
-		[ProtoMember(12)]
-		public string Goods { get; set; }
-		/// <summary>权重</summary>
 		[ProtoMember(13)]
-		public int weight { get; set; }
+		public string Goods { get; set; }
 		/// <summary>折扣</summary>
 		[ProtoMember(14)]
 		public double Discount { get; set; }
