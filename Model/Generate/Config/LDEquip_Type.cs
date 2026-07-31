@@ -30,15 +30,19 @@ namespace ET
             this.list.AddRange(s.list);
         }
 		
-        public override void EndInit()
-        {
-            foreach (LDEquip_Type config in list)
-            {
-                config.EndInit();
-                this.dict.Add(config.Id, config);
-            }            
-            this.AfterEndInit();
-        }
+		public override void EndInit()
+		{
+			foreach (LDEquip_Type config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDEquip_Type)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
 		
         public LDEquip_Type Get(int id)
         {

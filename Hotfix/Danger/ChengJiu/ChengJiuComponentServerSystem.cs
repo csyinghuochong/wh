@@ -29,7 +29,7 @@ namespace ET
             for (int i = 0; i < self.JingLingList.Count; i++)
             {
                 LDElf jinglingCof = LDElfCategory.Instance.Get(self.JingLingList[i]);
-                NumericHelp.GetProList(jinglingCof.AddProperty, proList);
+                //NumericHelp.GetProList(jinglingCof.AddProperty, proList);
             }
 
             if (self.JingLingId == 0)
@@ -38,10 +38,10 @@ namespace ET
             }
             LDElf lifeShieldConfig = LDElfCategory.Instance.Get(self.JingLingId);
            // NumericHelp.GetProList(lifeShieldConfig.AddProperty, proList);
-            if (lifeShieldConfig.FunctionType == JingLingFunctionType.AddProperty)
-            {
-                NumericHelp.GetProList(lifeShieldConfig.FunctionValue, proList);
-            }
+            //if (lifeShieldConfig.FunctionType == JingLingFunctionType.AddProperty)
+            //{
+            //    NumericHelp.GetProList(lifeShieldConfig.FunctionValue, proList);
+            //}
             
             return proList;
         }

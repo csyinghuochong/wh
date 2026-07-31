@@ -30,15 +30,19 @@ namespace ET
             this.list.AddRange(s.list);
         }
 		
-        public override void EndInit()
-        {
-            foreach (LDScene_Creature config in list)
-            {
-                config.EndInit();
-                this.dict.Add(config.Id, config);
-            }            
-            this.AfterEndInit();
-        }
+		public override void EndInit()
+		{
+			foreach (LDScene_Creature config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDScene_Creature)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
 		
         public LDScene_Creature Get(int id)
         {

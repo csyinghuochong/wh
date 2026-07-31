@@ -30,15 +30,19 @@ namespace ET
             this.list.AddRange(s.list);
         }
 		
-        public override void EndInit()
-        {
-            foreach (LDFund config in list)
-            {
-                config.EndInit();
-                this.dict.Add(config.Id, config);
-            }            
-            this.AfterEndInit();
-        }
+		public override void EndInit()
+		{
+			foreach (LDFund config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDFund)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
 		
         public LDFund Get(int id)
         {
@@ -78,6 +82,27 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(2)]
+		public int Type { get; set; }
+		/// <summary>支付1</summary>
+		[ProtoMember(3)]
+		public int Pay_1 { get; set; }
+		/// <summary>价值1</summary>
+		[ProtoMember(4)]
+		public int Value_1 { get; set; }
+		/// <summary>支付2</summary>
+		[ProtoMember(5)]
+		public int Pay_2 { get; set; }
+		/// <summary>价值2</summary>
+		[ProtoMember(6)]
+		public int Value_2 { get; set; }
+		/// <summary>支付3</summary>
+		[ProtoMember(7)]
+		public int Pay_3 { get; set; }
+		/// <summary>价值3</summary>
+		[ProtoMember(8)]
+		public int Value_3 { get; set; }
 
 	}
 }

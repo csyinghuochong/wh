@@ -30,15 +30,19 @@ namespace ET
             this.list.AddRange(s.list);
         }
 		
-        public override void EndInit()
-        {
-            foreach (LDOccupation config in list)
-            {
-                config.EndInit();
-                this.dict.Add(config.Id, config);
-            }            
-            this.AfterEndInit();
-        }
+		public override void EndInit()
+		{
+			foreach (LDOccupation config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDOccupation)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
 		
         public LDOccupation Get(int id)
         {
@@ -87,29 +91,32 @@ namespace ET
 		/// <summary>女头</summary>
 		[ProtoMember(4)]
 		public int RoleHead_Woman { get; set; }
-		/// <summary>模型</summary>
+		/// <summary>男模部件</summary>
 		[ProtoMember(5)]
-		public string Model { get; set; }
-		/// <summary>生命系数</summary>
+		public int[] Model_Man { get; set; }
+		/// <summary>女模部件</summary>
 		[ProtoMember(6)]
+		public int[] Model_Woman { get; set; }
+		/// <summary>生命系数</summary>
+		[ProtoMember(7)]
 		public double Hp_Param { get; set; }
 		/// <summary>速度</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int Speed { get; set; }
 		/// <summary>默认普攻</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int Skill_Normal_Default { get; set; }
 		/// <summary>技能</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int[] Skill { get; set; }
 		/// <summary>默认加点</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int[] Add_Point_Default { get; set; }
 		/// <summary>转职ID</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int[] TransferId { get; set; }
 		/// <summary>初始装备</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int[] Equip_Init { get; set; }
 
 	}

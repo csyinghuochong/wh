@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace ET
@@ -37,25 +38,45 @@ namespace ET
                 DefenderResistAttrId = defenderResistAttrId;
             }
 
-            /// <summary>技能编辑器参数 22~26（水/火/风/雷/毒附伤）。</summary>
+            /// <summary>技能编辑器参数 22~26（水/火/风/雷/毒附伤）；无技能参数的系为 -1。</summary>
             public int SkillParamIndex { get; }
 
-            /// <summary>攻击方 Numeric 附伤属性（如 142 水系附伤）。</summary>
+            /// <summary>攻击方 Numeric 附伤属性（Attribute 130~139，如 132 水系附伤）。</summary>
             public int AttackerAttrId { get; }
 
-            /// <summary>防御方 Numeric 抵抗属性（如 152 水系抵抗）。</summary>
+            /// <summary>防御方 Numeric 减免属性（Attribute 140~149，如 142 水伤减免）。</summary>
             public int DefenderResistAttrId { get; }
         }
 
-        // 文档示例：攻击方附伤 + 技能附伤/五系分摊数 - 防御方抵抗，五系分别计算后相加
+        // Attribute 表：130~139 系附伤，140~149 系伤减免。
+        // 技能参数 22~26 仅有水/火/风/雷/毒；金木土光暗无装备附伤（SkillParamIndex=-1）。
         private static readonly ElementalDamageConfig[] ElementalConfigs =
         {
-            new ElementalDamageConfig(22, NumericType.Attr_142, NumericType.Attr_152), // 水
-            new ElementalDamageConfig(23, NumericType.Attr_143, NumericType.Attr_153), // 火
-            new ElementalDamageConfig(24, NumericType.Attr_145, NumericType.Attr_155), // 风
-            new ElementalDamageConfig(25, NumericType.Attr_146, NumericType.Attr_156), // 雷
-            new ElementalDamageConfig(26, NumericType.Attr_147, NumericType.Attr_157), // 毒
+            new ElementalDamageConfig(-1, NumericType.Attr_130, NumericType.Attr_140), // 金
+            new ElementalDamageConfig(-1, NumericType.Attr_131, NumericType.Attr_141), // 木
+            new ElementalDamageConfig(22, NumericType.Attr_132, NumericType.Attr_142), // 水
+            new ElementalDamageConfig(23, NumericType.Attr_133, NumericType.Attr_143), // 火
+            new ElementalDamageConfig(-1, NumericType.Attr_134, NumericType.Attr_144), // 土
+            new ElementalDamageConfig(24, NumericType.Attr_135, NumericType.Attr_145), // 风
+            new ElementalDamageConfig(25, NumericType.Attr_136, NumericType.Attr_146), // 雷
+            new ElementalDamageConfig(26, NumericType.Attr_137, NumericType.Attr_147), // 毒
+            new ElementalDamageConfig(-1, NumericType.Attr_138, NumericType.Attr_148), // 光
+            new ElementalDamageConfig(-1, NumericType.Attr_139, NumericType.Attr_149), // 暗
         };
+
+        /// <summary>
+        /// 职业 Id → (对职业伤害属性, 减免该职业伤害属性)。与 LDOccupation / LDAttribute 表对齐。
+        /// </summary>
+        private static readonly Dictionary<int, (int BonusAttrId, int ResistAttrId)> OccupationDamageAttrs =
+            new Dictionary<int, (int, int)>
+            {
+                { 10, (NumericType.Attr_150, NumericType.Attr_160) }, // 镇岳
+                { 11, (NumericType.Attr_151, NumericType.Attr_161) }, // 云狩
+                { 12, (NumericType.Attr_152, NumericType.Attr_162) }, // 影煞
+                { 15, (NumericType.Attr_155, NumericType.Attr_165) }, // 玄灵
+                { 16, (NumericType.Attr_156, NumericType.Attr_166) }, // 惊尘
+                { 17, (NumericType.Attr_157, NumericType.Attr_167) }, // 清汐
+            };
 
         /// <summary>计算物理/法术伤害主入口。</summary>
         public static void CalculateDamage(SkillEditorFunctionContext ctx, SkillEditorDamageKind kind)
@@ -154,6 +175,8 @@ namespace ET
 
             // 总伤害 = 常规 + 五系 + 生命
             long totalDamage = normalDamage + elementalDamage + hpDamage;
+            // 职业克制：攻击方对目标职业加成 − 目标对攻击方职业减免（千分比）
+            totalDamage = ApplyOccupationDamageModifier(caster, target, casterNumeric, targetNumeric, totalDamage);
             if (totalDamage <= 0)
             {
                 return;
@@ -303,13 +326,15 @@ namespace ET
             double total = 0d;
             foreach (ElementalDamageConfig config in ElementalConfigs)
             {
-                // 攻击方该系附伤属性（文档：水10、火5、风20…）
+                // 攻击方该系附伤（Attribute 130~139）
                 double attackerValue = ctx.GetUnitNumericDisplayValue(caster, config.AttackerAttrId, 0d);
-                // 技能该系附伤（文档：水200、风400…，参数 22~26）
-                double skillValue = GetParamDouble(ctx, config.SkillParamIndex, 0d);
-                // 防御方该系抵抗（文档：水60、火30、风100…）
+                // 技能该系附伤：仅水/火/风/雷/毒有参数 22~26
+                double skillValue = config.SkillParamIndex >= 0
+                    ? GetParamDouble(ctx, config.SkillParamIndex, 0d)
+                    : 0d;
+                // 防御方该系减免（Attribute 140~149）
                 double resistValue = ctx.GetUnitNumericDisplayValue(target, config.DefenderResistAttrId, 0d);
-                // max(0, 攻击附伤 + 技能附伤/分摊 - 抵抗)
+                // max(0, 攻击附伤 + 技能附伤/分摊 - 减免)
                 total += Math.Max(0d, attackerValue + skillValue / split - resistValue);
             }
 
@@ -479,6 +504,82 @@ namespace ET
             }
 
             return Math.Max(0d, rawDamage * (1d - Clamp01(damageReductionRatio)));
+        }
+
+        /// <summary>
+        /// 职业克制（Attribute 150~167，千分比）。
+        /// 攻击方读「对目标职业伤害」；目标读「减免攻击方职业伤害」。
+        /// 最终：damage × max(0, 1 + 加成 − 减免)。
+        /// </summary>
+        private static long ApplyOccupationDamageModifier(
+            Unit caster,
+            Unit target,
+            NumericComponent casterNumeric,
+            NumericComponent targetNumeric,
+            long totalDamage)
+        {
+            if (totalDamage <= 0)
+            {
+                return totalDamage;
+            }
+
+            int targetOcc = ResolveUnitOccupation(target);
+            int casterOcc = ResolveUnitOccupation(caster);
+            double bonus = 0d;
+            double resist = 0d;
+
+            if (OccupationDamageAttrs.TryGetValue(targetOcc, out var vsTarget) && vsTarget.BonusAttrId > 0)
+            {
+                bonus = NumericConvert.GetRatioBonus(casterNumeric, vsTarget.BonusAttrId);
+            }
+
+            if (OccupationDamageAttrs.TryGetValue(casterOcc, out var vsCaster) && vsCaster.ResistAttrId > 0)
+            {
+                resist = NumericConvert.GetRatioBonus(targetNumeric, vsCaster.ResistAttrId);
+            }
+
+            if (bonus == 0d && resist == 0d)
+            {
+                return totalDamage;
+            }
+
+            double factor = 1d + bonus - resist;
+            if (factor <= 0d)
+            {
+                return 0;
+            }
+
+            return FloorPositiveDamage(totalDamage * factor);
+        }
+
+        /// <summary>单位职业：玩家取 RoleInfo.Occ；宠物取主人；怪物取 LDMonster.Occupation。</summary>
+        private static int ResolveUnitOccupation(Unit unit)
+        {
+            if (unit == null || unit.IsDisposed)
+            {
+                return 0;
+            }
+
+            if (unit.Type == UnitType.Player)
+            {
+                return unit.GetComponent<RoleInfoComponentServer>()?.RoleInfo?.Occ ?? 0;
+            }
+
+            if (unit.Type == UnitType.Pet || unit.Type == UnitType.JingLing)
+            {
+                Unit master = unit.GetParent<UnitComponent>()?.Get(unit.MasterId);
+                if (master != null && !master.IsDisposed && master.Type == UnitType.Player)
+                {
+                    return master.GetComponent<RoleInfoComponentServer>()?.RoleInfo?.Occ ?? 0;
+                }
+            }
+
+            if (LDMonsterCategory.Instance.Contain(unit.ConfigId))
+            {
+                return LDMonsterCategory.Instance.Get(unit.ConfigId).Occupation;
+            }
+
+            return 0;
         }
 
         /// <summary>攻击方等级：玩家/宠物取主人等级，怪物取配置等级。</summary>

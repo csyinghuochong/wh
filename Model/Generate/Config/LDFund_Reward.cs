@@ -7,46 +7,50 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDActivity_Fund_RewardCategory : ProtoObject, IMerge
+    public partial class LDFund_RewardCategory : ProtoObject, IMerge
     {
-        public static LDActivity_Fund_RewardCategory Instance;
+        public static LDFund_RewardCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDActivity_Fund_Reward> dict = new Dictionary<int, LDActivity_Fund_Reward>();
+        private Dictionary<int, LDFund_Reward> dict = new Dictionary<int, LDFund_Reward>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDActivity_Fund_Reward> list = new List<LDActivity_Fund_Reward>();
+        private List<LDFund_Reward> list = new List<LDFund_Reward>();
 		
-        public LDActivity_Fund_RewardCategory()
+        public LDFund_RewardCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDActivity_Fund_RewardCategory s = o as LDActivity_Fund_RewardCategory;
+            LDFund_RewardCategory s = o as LDFund_RewardCategory;
             this.list.AddRange(s.list);
         }
 		
-        public override void EndInit()
-        {
-            foreach (LDActivity_Fund_Reward config in list)
-            {
-                config.EndInit();
-                this.dict.Add(config.Id, config);
-            }            
-            this.AfterEndInit();
-        }
+		public override void EndInit()
+		{
+			foreach (LDFund_Reward config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDFund_Reward)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
 		
-        public LDActivity_Fund_Reward Get(int id)
+        public LDFund_Reward Get(int id)
         {
-            this.dict.TryGetValue(id, out LDActivity_Fund_Reward item);
+            this.dict.TryGetValue(id, out LDFund_Reward item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDActivity_Fund_Reward)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDFund_Reward)}，配置id: {id}");
             }
 
             return item;
@@ -57,12 +61,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDActivity_Fund_Reward> GetAll()
+        public Dictionary<int, LDFund_Reward> GetAll()
         {
             return this.dict;
         }
 
-        public LDActivity_Fund_Reward GetOne()
+        public LDFund_Reward GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -73,7 +77,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDActivity_Fund_Reward: ProtoObject, IConfig
+	public partial class LDFund_Reward: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

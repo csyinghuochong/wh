@@ -30,15 +30,19 @@ namespace ET
             this.list.AddRange(s.list);
         }
 		
-        public override void EndInit()
-        {
-            foreach (LDElf config in list)
-            {
-                config.EndInit();
-                this.dict.Add(config.Id, config);
-            }            
-            this.AfterEndInit();
-        }
+		public override void EndInit()
+		{
+			foreach (LDElf config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDElf)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
 		
         public LDElf Get(int id)
         {
@@ -90,42 +94,6 @@ namespace ET
 		/// <summary>获取描述</summary>
 		[ProtoMember(5)]
 		public int Desc_Get { get; set; }
-		/// <summary>图标显示</summary>
-		[ProtoMember(6)]
-		public string Icon { get; set; }
-		/// <summary>模型</summary>
-		[ProtoMember(7)]
-		public string Assets { get; set; }
-		/// <summary>额外属性</summary>
-		[ProtoMember(8)]
-		public string AddProperty { get; set; }
-		/// <summary>序列帧动画</summary>
-		[ProtoMember(9)]
-		public string AnimatorAsset { get; set; }
-		/// <summary>序列帧动画数量</summary>
-		[ProtoMember(10)]
-		public int AnimatorNumber { get; set; }
-		/// <summary>有效期(秒)</summary>
-		[ProtoMember(11)]
-		public int ValidityTime { get; set; }
-		/// <summary>缩放大小</summary>
-		[ProtoMember(12)]
-		public double size { get; set; }
-		/// <summary>X偏移</summary>
-		[ProtoMember(13)]
-		public double MoveX { get; set; }
-		/// <summary>Y便宜</summary>
-		[ProtoMember(14)]
-		public double MoveY { get; set; }
-		/// <summary>功能类型</summary>
-		[ProtoMember(15)]
-		public int FunctionType { get; set; }
-		/// <summary>功能参数</summary>
-		[ProtoMember(16)]
-		public string FunctionValue { get; set; }
-		/// <summary>自动拾取</summary>
-		[ProtoMember(17)]
-		public int AutoPick { get; set; }
 
 	}
 }

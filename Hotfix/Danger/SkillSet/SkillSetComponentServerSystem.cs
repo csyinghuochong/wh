@@ -770,9 +770,9 @@ namespace ET
 
 		public static List<SkillBarSlot> CurrentSkillBarList(this SkillSetComponentServer self)
 		{
-			if (self.SkillBarList == null)
+			if (self.SkillBarList0 == null)
 			{
-				self.SkillBarList = new List<SkillBarSlot>();
+				self.SkillBarList0 = new List<SkillBarSlot>();
 			}
 
 			if (self.SkillBarList1 == null)
@@ -780,7 +780,7 @@ namespace ET
 				self.SkillBarList1 = new List<SkillBarSlot>();
 			}
 
-			return self.SkillBarPlan == 0 ? self.SkillBarList : self.SkillBarList1;
+			return self.SkillBarPlan == 0 ? self.SkillBarList0 : self.SkillBarList1;
 		}
 
 		public static int UpdateSkillBarPlan(this SkillSetComponentServer self, int plan)
@@ -1058,7 +1058,12 @@ namespace ET
 			}
 
 			foreach (int skillId in occSkilld)
-			{ 
+			{
+				if (!LDSkillCategory.Instance.Contain(skillId))
+				{
+					continue;
+				}
+
 				SkillPro skillPro = self.AddSkillPro(skillId, SkillSetEnum.Skill, SkillSourceEnum.Occupation);
 				skillPro.Actived = skillId == ldOccupation.Skill_Normal_Default? 1 : 0;
 				skillPro.Level = 1;
@@ -1094,7 +1099,7 @@ namespace ET
 			SkillSetInfo.TianFuList = self.TianFuList;
 			SkillSetInfo.TianFuList1 = self.TianFuList1;
 			SkillSetInfo.SkillList = self.SkillList;
-			SkillSetInfo.SkillBarList = self.SkillBarList;
+			SkillSetInfo.SkillBarList = self.SkillBarList0;
 			SkillSetInfo.SkillBarList1 = self.SkillBarList1;
 			SkillSetInfo.SkillBarPlan = self.SkillBarPlan;
 			SkillSetInfo.LifeShieldList = self.LifeShieldList;

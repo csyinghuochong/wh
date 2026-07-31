@@ -17,12 +17,12 @@ namespace ET
             if (chengJiuComponentServer.JingLingId != 0)
             {
                 LDElf ldElf = LDElfCategory.Instance.Get(chengJiuComponentServer.JingLingId);
-                if (ldElf.FunctionType == JingLingFunctionType.AddSkill)
-                {
-                    int skillid = int.Parse(ldElf.FunctionValue);
-                    BuffManagerComponent buffManagerComponent = unit.GetComponent<BuffManagerComponent>();
-                    buffManagerComponent.BuffRemoveBySkillid(skillid);
-                }
+                //if (ldElf.FunctionType == JingLingFunctionType.AddSkill)
+                //{
+                //    int skillid = int.Parse(ldElf.FunctionValue);
+                //    BuffManagerComponent buffManagerComponent = unit.GetComponent<BuffManagerComponent>();
+                //    buffManagerComponent.BuffRemoveBySkillid(skillid);
+                //}
             }
 
             if (chengJiuComponentServer.JingLingId == request.JingLingId)

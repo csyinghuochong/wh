@@ -67,7 +67,7 @@ namespace ET
             {
                 KeyValuePairInt titleEntry = self.TitleList[i];
                 LDElf ldElf = LDElfCategory.Instance.Get(titleEntry.KeyId);
-                proList.AddRange(GetCachedTitlePro(titleEntry.KeyId, ldElf.AddProperty));
+                //proList.AddRange(GetCachedTitlePro(titleEntry.KeyId, ldElf.AddProperty));
             }
             return proList;
         }

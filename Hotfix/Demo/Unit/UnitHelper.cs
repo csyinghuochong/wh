@@ -273,19 +273,11 @@ namespace ET
 
         public static int GetWeaponSkill(this Unit self, int skillId, List<SkillPro> skillPros)
         {
-            int EquipType = self.GetEquipType();
-            return SkillHelp.GetWeaponSkill(skillId, EquipType, skillPros);
+            //int EquipType = self.GetEquipType();
+            //return SkillHelp.GetWeaponSkill(skillId, EquipType, skillPros);
+            return skillId;
         }
 
-        public static int GetEquipType(this Unit self)
-        {
-            if (self.Type == UnitType.Player)
-            {
-                int itemId = self.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Weapon);
-                return ItemNewHelper.GetEquipType(self.ConfigId, itemId);
-            }
-            return 0;
-        }
 
         public static int GetWuqiItemID(this Unit self)
         {

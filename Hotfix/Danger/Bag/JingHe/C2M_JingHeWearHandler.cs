@@ -40,15 +40,14 @@ namespace ET
             if (request.OperateType == 1)
             {
                 LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
-                int equipType = ItemNewHelper.GetNewEquipType(useBagInfo);
-
+             
                 if (roleInfo.Lv < ldItem.UseLv)
                 {
                     response.Error = ErrorCode.ERR_EquipLvLimit;
                     reply();
                     return;
                 }
-                if (ldItem.ItemType != ItemTypeEnum.Equipment || equipType != 201)
+                if (ldItem.ItemType != ItemTypeEnum.Equipment )
                 {
                     response.Error = ErrorCode.ERR_EquipType;
                     reply();

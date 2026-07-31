@@ -63,8 +63,8 @@ namespace ET
             {
                 int robotId = int.Parse(account.Split('_')[0]);
                 LDRobot ldRobot = LDRobotCategory.Instance.Get(robotId);
-                roleInfo.Lv = ldRobot.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : ldRobot.Level;
-                roleInfo.Occ = ldRobot.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : ldRobot.Occ;
+                //roleInfo.Lv = ldRobot.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : ldRobot.Level;
+                //roleInfo.Occ = ldRobot.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : ldRobot.Occ;
                 roleInfo.Gold = 100000;
                 roleInfo.RobotId = robotId;
                 //roleInfo.OccTwo = robotConfig.OccTwo;

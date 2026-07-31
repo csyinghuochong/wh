@@ -32,8 +32,8 @@ namespace ET
             }
 
             LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
-            int equipType = ItemNewHelper.GetNewEquipType(useBagInfo);
-            if (ldItem.ItemType != 3 || equipType != 401)
+          
+            if (ldItem.ItemType != 3 )
             {
                 reply();
                 return;

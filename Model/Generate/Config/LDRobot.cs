@@ -30,15 +30,19 @@ namespace ET
             this.list.AddRange(s.list);
         }
 		
-        public override void EndInit()
-        {
-            foreach (LDRobot config in list)
-            {
-                config.EndInit();
-                this.dict.Add(config.Id, config);
-            }            
-            this.AfterEndInit();
-        }
+		public override void EndInit()
+		{
+			foreach (LDRobot config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDRobot)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
 		
         public LDRobot Get(int id)
         {
@@ -78,30 +82,6 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>等级</summary>
-		[ProtoMember(2)]
-		public int Level { get; set; }
-		/// <summary>第一职业</summary>
-		[ProtoMember(3)]
-		public int Occ { get; set; }
-		/// <summary>第二职业</summary>
-		[ProtoMember(4)]
-		public int OccTwo { get; set; }
-		/// <summary>装备</summary>
-		[ProtoMember(5)]
-		public int[] EquipList { get; set; }
-		/// <summary>属性点</summary>
-		[ProtoMember(6)]
-		public int[] PointList { get; set; }
-		/// <summary>行为</summary>
-		[ProtoMember(7)]
-		public int Behaviour { get; set; }
-		/// <summary>行为ID</summary>
-		[ProtoMember(8)]
-		public int BehaviourID { get; set; }
-		/// <summary>参数</summary>
-		[ProtoMember(9)]
-		public string AIParameter { get; set; }
 
 	}
 }

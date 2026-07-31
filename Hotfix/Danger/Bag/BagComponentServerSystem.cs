@@ -26,36 +26,50 @@ namespace ET
 
 
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
-            int[] equipIinit = ldOccupation.Equip_Init;
-            if (equipIinit == null || equipIinit.Length == 0)
+            int[] equipInit = ldOccupation.Equip_Init;
+            if (equipInit == null || equipInit.Length == 0)
             {
                 return;
             }
 
-            List<RewardItem> rewardItems = new List<RewardItem>();
-            for (int i = 0; i <equipIinit.Length; i++)
+            // 装备栏无格子容量，先入背包（走属性/绑定等生成），再 OnChangeItemLoc 穿上
+            string getWay = $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}";
+            List<RewardItem> rewardItems = new List<RewardItem>(equipInit.Length);
+            for (int i = 0; i < equipInit.Length; i++)
             {
+                int equipId = equipInit[i];
+                if (equipId <= 0)
+                {
+                    continue;
+                }
+
                 rewardItems.Add(new RewardItem()
                 {
                     ItemType = ItemBigType.Type_Equip,
-                    ItemID = equipIinit[i],
+                    ItemID = equipId,
                     ItemNum = 1
                 });
             }
-            
-            self.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", false);
-            
-            List<BagInfo> equipList = new List<BagInfo>();
-            equipList.AddRange( self.BagItemList);
-            self.BagItemList.Clear();
-            
-            for (int i = 0; i <equipList.Count; i++)
+
+            if (rewardItems.Count == 0)
             {
-                LDEquip ldEquip = LDEquipCategory.Instance.Get(equipList[i].ItemID);
-                Log.Debug($"槽位： {ldEquip.Sub_Type} {ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID)}");
-                
-                equipList[i].Loc = (int)ItemLocType.ItemLocEquip;
-                self.EquipList.Add(equipList[i]);
+                return;
+            }
+
+            if (!self.OnAddItemData(rewardItems, string.Empty, getWay, false))
+            {
+                return;
+            }
+
+            for (int i = 0; i < rewardItems.Count; i++)
+            {
+                List<BagInfo> bagInfos = self.GetIdItemList(rewardItems[i].ItemID);
+                if (bagInfos.Count == 0)
+                {
+                    continue;
+                }
+
+                self.OnChangeItemLoc(bagInfos[0], ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
             }
         }
 
@@ -431,11 +445,7 @@ namespace ET
             for (int i = bagInfos.Count - 1; i >= 0; i--)
             {
                 LDItem ldItem = LDItemCategory.Instance.Get(bagInfos[i].ItemID);
-                int equipType = ItemNewHelper.GetNewEquipType(bagInfos[i]);
-                if (equipType == 201)
-                {
-                    bagInfos.RemoveAt(i);
-                }
+               
             }
         }
 
@@ -570,18 +580,6 @@ namespace ET
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 LDRobot ldRobot = LDRobotCategory.Instance.Get(robotId);
 
-                if (ldRobot.Behaviour != 1 && ldRobot.Level > roleInfoComponentServer.RoleInfo.Lv)
-                {
-                    roleInfoComponentServer.RoleInfo.Lv = ldRobot.Level;
-                }
-                if (ldRobot.EquipList != null)
-                {
-                    equipList = ldRobot.EquipList != null ? ldRobot.EquipList : equipList;
-                }
-                else
-                {
-                    equipList = LDItemCategory.Instance.GetRandomEquipList(roleInfoComponentServer.RoleInfo.Occ, roleInfoComponentServer.RoleInfo.Lv);
-                }
                 for (int i = 0; i < equipList.Length; i++)
                 {
                     if (equipList[i] == 0)
@@ -1363,8 +1361,7 @@ namespace ET
 
             for (int i = 0; i < equipList.Count; i++)
             {
-                int equipType = ItemNewHelper.GetNewEquipType(equipList[i]);
-
+                
                 //极品属性
                 //强化登录（List长度13， 13个位置）
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID);

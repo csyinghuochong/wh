@@ -30,15 +30,19 @@ namespace ET
             this.list.AddRange(s.list);
         }
 		
-        public override void EndInit()
-        {
-            foreach (LDTask config in list)
-            {
-                config.EndInit();
-                this.dict.Add(config.Id, config);
-            }            
-            this.AfterEndInit();
-        }
+		public override void EndInit()
+		{
+			foreach (LDTask config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDTask)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
 		
         public LDTask Get(int id)
         {
@@ -119,22 +123,22 @@ namespace ET
 		public string Reward { get; set; }
 		/// <summary>战士 奖励</summary>
 		[ProtoMember(15)]
-		public string Reward_Occupation_1 { get; set; }
+		public string Reward_Occupation_10 { get; set; }
 		/// <summary>猎人 奖励</summary>
 		[ProtoMember(16)]
-		public string Reward_Occupation_2 { get; set; }
+		public string Reward_Occupation_11 { get; set; }
 		/// <summary>刺客 奖励</summary>
 		[ProtoMember(17)]
-		public string Reward_Occupation_3 { get; set; }
+		public string Reward_Occupation_12 { get; set; }
 		/// <summary>法师 奖励</summary>
 		[ProtoMember(18)]
-		public string Reward_Occupation_4 { get; set; }
+		public string Reward_Occupation_15 { get; set; }
 		/// <summary>侠士 奖励</summary>
 		[ProtoMember(19)]
-		public string Reward_Occupation_5 { get; set; }
+		public string Reward_Occupation_16 { get; set; }
 		/// <summary>牧师 奖励</summary>
 		[ProtoMember(20)]
-		public string Reward_Occupation_6 { get; set; }
+		public string Reward_Occupation_17 { get; set; }
 
 	}
 }

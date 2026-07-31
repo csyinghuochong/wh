@@ -27,7 +27,7 @@ namespace ET
                 string[] attributeList = monster.Attribute.Split("|");
                 for (int i = 0; i < attributeList.Length; i++)
                 {
-                    string[] attribute = attributeList[i].Split("_");
+                    string[] attribute = attributeList[i].Split("~");
                     int key = int.Parse(attribute[0]);
                     int value = int.Parse(attribute[1]);
                     monsterAttrs.Add(new AttributeItem() { AttributeID = key, AttributeValue = value });

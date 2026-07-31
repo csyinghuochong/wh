@@ -16,28 +16,7 @@ namespace ET
                 return;
             }
             LDElf ldElf = LDElfCategory.Instance.Get(jinglingid);
-            if (ldElf.FunctionType!= JingLingFunctionType.RandomDrop)
-            {
-                reply();
-                return;
-            }
-            int dropId = int.Parse(ldElf.FunctionValue);
-            if (dropId == 0)
-            {
-                Log.Warning($"C2M_JingLingDropRequest.dropId == 0");
-            }
-            List<RewardItem> droplist = new List<RewardItem>();
-            DropHelper.DropIDToDropItem_2(dropId, droplist);
-            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            if (bag.GetBagLeftCell() < droplist.Count)
-            {
-                response.Error = ErrorCode.ERR_BagIsFull;
-                reply();
-                return;
-            }
-            bag.OnAddItemData(droplist, string.Empty, $"{ItemGetWay.JingLing}_{TimeHelper.ServerNow()}", false);
-
-            chengJiuComponentServer.RandomDrop = 1;
+          
             reply();
             await ETTask.CompletedTask;
         }

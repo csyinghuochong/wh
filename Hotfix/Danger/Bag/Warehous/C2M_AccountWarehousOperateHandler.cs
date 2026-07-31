@@ -45,8 +45,8 @@ namespace ET
                         }
                        
                         LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-                        int equipType = ItemNewHelper.GetNewEquipType(bagInfo);
-                        if (ldItem.ItemType != 3 || equipType > 100)
+                      
+                        if (ldItem.ItemType != 3 )
                         {
                             response.Error = ErrorCode.ERR_ItemNotExist;
                             reply();

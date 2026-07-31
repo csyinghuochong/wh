@@ -30,15 +30,19 @@ namespace ET
             this.list.AddRange(s.list);
         }
 		
-        public override void EndInit()
-        {
-            foreach (LDActivity_1 config in list)
-            {
-                config.EndInit();
-                this.dict.Add(config.Id, config);
-            }            
-            this.AfterEndInit();
-        }
+		public override void EndInit()
+		{
+			foreach (LDActivity_1 config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDActivity_1)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
 		
         public LDActivity_1 Get(int id)
         {
@@ -86,7 +90,7 @@ namespace ET
 		public string First_Reward { get; set; }
 		/// <summary>非首购额外奖励</summary>
 		[ProtoMember(4)]
-		public int Extra_Reward { get; set; }
+		public string Extra_Reward { get; set; }
 
 	}
 }

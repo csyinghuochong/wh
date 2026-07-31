@@ -283,13 +283,13 @@ namespace ET
         public static void UpdateJingLingSkill(this SkillPassiveComponent self, int jinglingid)
         {
             LDElf ldElf = LDElfCategory.Instance.Get(jinglingid);
-            if (ldElf.FunctionType != JingLingFunctionType.AddSkill)
-            {
-                return;
-            }
+            //if (ldElf.FunctionType != JingLingFunctionType.AddSkill)
+            //{
+            //    return;
+            //}
 
-             LDSkill ldSkill = LDSkillCategory.Instance.Get(int.Parse(ldElf.FunctionValue));
-            self.AddPassiveSkillByType(ldSkill);
+            // LDSkill ldSkill = LDSkillCategory.Instance.Get(int.Parse(ldElf.FunctionValue));
+            //self.AddPassiveSkillByType(ldSkill);
         }
 
         public static bool HaveSkillId(this SkillPassiveComponent self, int skillId)

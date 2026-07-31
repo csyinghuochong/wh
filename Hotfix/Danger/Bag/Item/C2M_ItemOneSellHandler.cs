@@ -23,14 +23,6 @@ namespace ET
                 LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
 
 
-                //魔能不出售
-                int equiptype = ItemNewHelper.GetNewEquipType(useBagInfo);
-                if (ldItem.ItemType == ItemTypeEnum.Equipment && equiptype == 401)
-                {
-                    continue;
-                }
-
-
                 //默认出售全部
                 //给与对应金币或货币奖励
                 string[] gemids = useBagInfo.GemIDNew.Split('_');

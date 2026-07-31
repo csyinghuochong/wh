@@ -32,7 +32,7 @@ namespace ET{
             response.SkillSetInfo.LifeShieldList = skillSetComponentServer.LifeShieldList;
             response.SkillSetInfo.TianFuPlan = skillSetComponentServer.TianFuPlan;
             skillSetComponentServer.CurrentSkillBarList();
-            response.SkillSetInfo.SkillBarList = skillSetComponentServer.SkillBarList;
+            response.SkillSetInfo.SkillBarList = skillSetComponentServer.SkillBarList0;
             response.SkillSetInfo.SkillBarList1 = skillSetComponentServer.SkillBarList1;
             response.SkillSetInfo.SkillBarPlan = skillSetComponentServer.SkillBarPlan;
 

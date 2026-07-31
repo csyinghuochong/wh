@@ -133,11 +133,6 @@ namespace ET
                     if (jinglingid != 0)
                     {
                         LDElf ldElf = LDElfCategory.Instance.Get(jinglingid);
-                        if (ldElf.FunctionType == JingLingFunctionType.ExtraDrop)
-                        {
-                            int dropid = int.Parse(ldElf.FunctionValue);
-                            UnitFactory.CreateDropItems(mainAttack, defendUnit, 1, dropid, "1");
-                        }
                     }
                 }
 

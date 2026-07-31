@@ -19,7 +19,7 @@ namespace ET
             unit.Stop(0);
             unit.SetBornPosition(unit.Position, true);
             aiComponent.IsRetreat = 0;
-            aiComponent.AIConfigId = int.Parse(ldai.NodeParams);
+           // aiComponent.AIConfigId = int.Parse(ldai.NodeParams);
         }
     }
 }

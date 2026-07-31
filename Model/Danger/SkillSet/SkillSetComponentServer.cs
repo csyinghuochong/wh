@@ -37,7 +37,7 @@ namespace ET
         public int SkillBarPlan = 0;
 
         /// <summary>技能方案0</summary>
-        public List<SkillBarSlot> SkillBarList = new List<SkillBarSlot>();
+        public List<SkillBarSlot> SkillBarList0 = new List<SkillBarSlot>();
 
         /// <summary>技能方案1</summary>
         public List<SkillBarSlot> SkillBarList1 = new List<SkillBarSlot>();
