@@ -1,17 +1,6 @@
 namespace ET
 {
     /// <summary>
-    /// Hit result codes written to rs (aligned with legacy battle_skill_utility.*DirectRes).
-    /// </summary>
-    public static class SkillEditorHitResult
-    {
-        public const long Miss = 0;
-        public const long Hit = 1;
-        public const long Immune = 2;
-        public const long Dodge = 3;
-    }
-
-    /// <summary>
     /// Direct hit / condition evaluation for function.contion_1 (phyDirectRes-like).
     /// </summary>
     public static class SkillEditorContionHelper
@@ -33,12 +22,12 @@ namespace ET
         {
             if (caster == null || target == null || caster.IsDisposed || target.IsDisposed)
             {
-                return SkillEditorHitResult.Miss;
+                return (long)SkillEditorHitResult.Miss;
             }
 
             if (!caster.IsCanAttackUnit(target, false, false))
             {
-                return SkillEditorHitResult.Miss;
+                return (long)SkillEditorHitResult.Miss;
             }
 
 
@@ -50,18 +39,18 @@ namespace ET
 
             if (hitRate < 10000f && RandomHelper.RandFloat01() > hitRate / 10000f)
             {
-                return SkillEditorHitResult.Miss;
+                return (long)SkillEditorHitResult.Miss;
             }
 
             if (canDodge && RollDodge(caster, target))
             {
-                return SkillEditorHitResult.Dodge;
+                return (long)SkillEditorHitResult.Dodge;
             }
 
-            long result = SkillEditorHitResult.Hit;
+            long result = (long)SkillEditorHitResult.Hit;
             if (canCrit && RollCrit(caster, target, critRateAdd))
             {
-                result = 11; // legacy: crit hit flag (>1 means crit in many trees)
+                result = (long)SkillEditorHitResult.Crit;
             }
 
             ApplyHate(caster, target, hateInit, hateGrowth, skillLevel);

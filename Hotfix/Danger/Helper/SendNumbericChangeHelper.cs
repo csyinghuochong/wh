@@ -19,17 +19,12 @@
                 return;
             }
 
-            if (hitType == SkillEditorHitResult.Miss)
+            if (hitType == (long)SkillEditorHitResult.Miss)
             {
                 return;
             }
 
-            // 命中/暴击的伤害瓢字由 M2C_UnitNumericUpdate → UnitHpUpdate 负责，避免重复
-            if (hitValue > 0 && (hitType == SkillEditorHitResult.Hit || hitType >= 11))
-            {
-                return;
-            }
-
+            // 全部瓢字（命中/暴击/闪避/免疫等）走本消息；UnitHpUpdate 不再飘字
             M2C_InformClientHit.UnitId = target.Id;
             M2C_InformClientHit.HitType = (int)hitType;
             M2C_InformClientHit.HitValue = hitValue > int.MaxValue ? int.MaxValue : (int)hitValue;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -150,19 +150,13 @@ namespace ET
             Unit master = uc?.Get(self.Masterid);
             Unit trackTarget = ResolveTrackTarget(self, uc, rt);
 
-            if (NeedDestroyByMasterDead(rt, master) || now >= self.BuffEndTime)
-            {
-                FinishAndRemove(self, unit, rt.DestroySkillId);
-                return;
-            }
-
             float dt = CalcDt(self, now);
             self.LastUpdateTime = now;
 
             // —— 飞行（按 BeginTime 时间轴，与客户端同一公式）——
             Fly(self, unit, rt, trackTarget);
 
-            // —— 碰撞后放 Skill_1 ——
+            // —— 碰撞 / 间隔放 Skill_1（须在超时销毁前再判一次，避免最后一帧飞到却不结算）——
             if (rt.ActionType == SkillEntityActionType.Interval_0)
             {
                 TryIntervalFire(self, rt, now);
@@ -172,12 +166,18 @@ namespace ET
                 TryCollideFire(self, unit, rt, trackTarget, master, uc);
             }
 
-            if (rt.MaxActionCount > 0 && rt.ActionCount >= rt.MaxActionCount
+            bool expired = NeedDestroyByMasterDead(rt, master) || now >= self.BuffEndTime;
+            bool countDone = rt.MaxActionCount > 0 && rt.ActionCount >= rt.MaxActionCount
                 && (rt.DestroyMode == SkillEntityDestroyMode.OnActionCount_1
-                    || rt.DestroyMode == SkillEntityDestroyMode.OnActionCountOrMasterDead_11))
+                    || rt.DestroyMode == SkillEntityDestroyMode.OnActionCountOrMasterDead_11);
+
+            if (!expired && !countDone)
             {
-                FinishAndRemove(self, unit, rt.DestroySkillId);
+                return;
             }
+
+            // 超时/次数满：直接移除（不再超时补放 Skill_1）；客户端随 Unit Remove 同步消失
+            FinishAndRemove(self, unit, rt.DestroySkillId);
         }
 
         // ==================== 飞行 ====================

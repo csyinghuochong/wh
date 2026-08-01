@@ -92,10 +92,10 @@ namespace ET
             }
 
             // 未命中 / 免疫 / 闪避时不计算伤害
-            long rs = ctx.GetVariable("rs", SkillEditorHitResult.Hit);
-            if (rs == SkillEditorHitResult.Miss
-                || rs == SkillEditorHitResult.Immune
-                || rs == SkillEditorHitResult.Dodge)
+            long rs = ctx.GetVariable("rs", (long)SkillEditorHitResult.Hit);
+            if (rs == (long)SkillEditorHitResult.Miss
+                || rs == (long)SkillEditorHitResult.Immune
+                || rs == (long)SkillEditorHitResult.Dodge)
             {
                 return;
             }
@@ -154,7 +154,7 @@ namespace ET
 
             // 暴击（技能参数 21 + 攻击方爆伤属性 72）
             double critBonus = GetParamDouble(ctx, 21, 0d);
-            if (rs > SkillEditorHitResult.Hit)
+            if (rs >= (long)SkillEditorHitResult.Crit)
             {
                 double critMultiplier = DefaultCritMultiplier
                     + critBonus
@@ -184,7 +184,7 @@ namespace ET
 
             // 参数 38：是否无视护盾；先扣护盾再扣 HP_Current_8
             bool ignoreShield = GetParamBool(ctx, 38, false);
-            int damageType = rs > SkillEditorHitResult.Hit ? 1 : 0;
+            int damageType = rs >= (long)SkillEditorHitResult.Crit ? 1 : 0;
             ctx.SetVariable("damageTotal", totalDamage);
             ApplyDamage(caster, target, targetNumeric, totalDamage, skillId, ignoreShield, damageType);
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ET
 {
@@ -7,6 +7,9 @@ namespace ET
     /// </summary>
     public static class SkillEditorTreeExecutor
     {
+        /// <summary>已提示过「缺少 IF结果」的技能，避免热路径刷屏。</summary>
+        private static readonly HashSet<int> MissingIfResultWarnedSkills = new HashSet<int>();
+
         public static void Execute(Skill_TreeEditor handler, SkillEditorSkillLogic logic)
         {
             if (handler == null || logic?.Root == null)
@@ -35,8 +38,12 @@ namespace ET
             switch (node.NodeType)
             {
                 case SkillEditorNodeType.Action:
-                case SkillEditorNodeType.IfRoot:
                 case SkillEditorNodeType.IfResult:
+                    ExecuteChildren(ctx, node);
+                    break;
+
+                case SkillEditorNodeType.IfRoot:
+                    WarnMissingIfResultOnce(ctx, node);
                     ExecuteChildren(ctx, node);
                     break;
 
@@ -69,6 +76,43 @@ namespace ET
             {
                 ExecuteNode(ctx, node.Children[i]);
             }
+        }
+
+        private static void WarnMissingIfResultOnce(SkillEditorFunctionContext ctx, SkillEditorTreeNode ifRoot)
+        {
+            if (ifRoot == null || ifRoot.Children == null)
+            {
+                return;
+            }
+
+            bool hasCondition = false;
+            bool hasResult = false;
+            for (int i = 0; i < ifRoot.Children.Count; i++)
+            {
+                SkillEditorNodeType childType = ifRoot.Children[i].NodeType;
+                if (childType == SkillEditorNodeType.IfCondition)
+                {
+                    hasCondition = true;
+                }
+                else if (childType == SkillEditorNodeType.IfResult)
+                {
+                    hasResult = true;
+                }
+            }
+
+            if (!hasCondition || hasResult)
+            {
+                return;
+            }
+
+            int skillId = ctx.Logic != null ? ctx.Logic.SkillId : 0;
+            if (!MissingIfResultWarnedSkills.Add(skillId))
+            {
+                return;
+            }
+
+            string skillDesc = ctx.Logic != null ? ctx.Logic.Desc : string.Empty;
+            Log.Warning($"SkillEditor skill={skillId}({skillDesc}) IF根缺少IF结果节点，结果分支不会执行");
         }
 
         /// <summary>

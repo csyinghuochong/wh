@@ -306,7 +306,7 @@ namespace ET
 
             {
 
-                ctx.SetVariable("rs", SkillEditorHitResult.Miss);
+                ctx.SetVariable("rs", (long)SkillEditorHitResult.Miss);
 
                 ctx.LastConditionResult = false;
 
@@ -314,13 +314,13 @@ namespace ET
 
             }
 
-            long rs = SkillEditorHitResult.Hit;
+            long rs = (long)SkillEditorHitResult.Hit;
 
             if (canCrit && RandomHelper.RandomNumber(0, 10000) < 500 + critRateAdd)
 
             {
 
-                rs = 11;
+                rs = (long)SkillEditorHitResult.Crit;
 
             }
 
@@ -599,7 +599,7 @@ namespace ET
 
             if (caster == null || target == null)
             {
-                ctx.SetVariable("rs", SkillEditorHitResult.Miss);
+                ctx.SetVariable("rs", (long)SkillEditorHitResult.Miss);
 
                 ctx.LastConditionResult = false;
 
@@ -618,26 +618,12 @@ namespace ET
 
                 hitRateAdd, level, 0f, 0f, true);
 
-
-            /*
-            0   Miss  未命中 / 不能打（目标无效、命中失败等）
-            1 Hit 普通命中
-            2 Immune 免疫该技能
-            3  Dodge 闪避
-            11（暴击）  暴击命中（> 1 表示暴击） */
-
+            // Miss=0 Hit=1 Immune=2 Dodge=3 Crit=11
             ctx.SetVariable("rs", rs);
 
-            // 仅普通命中/暴击进入 if_result 算伤害；闪避/免疫不进伤害分支，但仍要飘字
-            bool hitOk = rs == SkillEditorHitResult.Hit || rs >= 11;
+            // 仅写判定结果；瓢字由技能树 INFORM_CLIENT_HIT_SUCCESS 负责，判定节点不通知客户端
+            bool hitOk = rs == (long)SkillEditorHitResult.Hit || rs >= (long)SkillEditorHitResult.Crit;
             ctx.LastConditionResult = hitOk;
-
-            if (!hitOk && rs != SkillEditorHitResult.Miss)
-            {
-                Unit hitCaster = caster;
-                Unit hitTarget = target;
-                SendNumbericChangeHelper.InformClientHit(hitCaster, hitTarget, rs, 0);
-            }
         }
 
 
