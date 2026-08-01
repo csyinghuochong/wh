@@ -41,7 +41,7 @@ namespace ET
             {
                 LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
              
-                if (roleInfo.Lv < ldItem.UseLv)
+                if (roleInfo.Lv < ldItem.UseLv_Min)
                 {
                     response.Error = ErrorCode.ERR_EquipLvLimit;
                     reply();

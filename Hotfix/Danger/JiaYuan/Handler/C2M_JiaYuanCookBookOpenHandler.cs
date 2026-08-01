@@ -13,7 +13,7 @@ namespace ET
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             LDItem ldItemCof = LDItemCategory.Instance.Get(request.LearnMakeId);
-            long needzijin = JiaYuanHelper.GetCookBookCost(ldItemCof.UseLv);
+            long needzijin = JiaYuanHelper.GetCookBookCost(ldItemCof.UseLv_Min);
 
             if (roleInfoComponentServer.RoleInfo.JiaYuanFund < needzijin)
             {

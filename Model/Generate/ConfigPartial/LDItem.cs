@@ -14,26 +14,7 @@ namespace ET
         {
             foreach (LDItem Item in this.GetAll().Values)
             {
-                if (Item.ItemType== 1 && Item.ItemType== 131)
-                {
-                    List<int> foodlist = null;
-                    FoodLevelList.TryGetValue(Item.UseLv, out foodlist);
-                    if (foodlist == null)
-                    {
-                        foodlist = new List<int>();
-                        FoodLevelList.Add(Item.UseLv, foodlist);
-                    }
-                    foodlist.Add(Item.Id);
-                }
-               
-            }
-
-            foreach (LDItem Item in this.GetAll().Values)
-            {
-                if (Item.ItemType == 1 && Item.ItemType == 131 && Item.Quality > 2)
-                {
-                    FoodList.Add(Item.Id);
-                }
+          
             }
         }
 
@@ -48,11 +29,6 @@ namespace ET
             List<int> canequiplist = new List<int>();
             for (int i = 0; i < equiplist.Count; i++)
             {
-                LDItem ldItem = LDItemCategory.Instance.Get(equiplist[i]);
-                if (ldItem.ItemType != subType ||  ldItem.UseLv > lv)
-                {
-                    continue;
-                }
                 /*if ((Item.EquipType == 1|| Item.EquipType == 2))
                 {
                     if (occ == 1)
@@ -67,10 +43,6 @@ namespace ET
                         canequiplist.Add(equiplist[i]);
                     }
                 }*/
-                else
-                {
-                    canequiplist.Add(equiplist[i]);
-                }
             }
             if (canequiplist.Count == 0)
             {

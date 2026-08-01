@@ -957,7 +957,7 @@ namespace ET
                 }
 
                 //100203;790
-                petheXinLv.Add(ldItem.UseLv);
+                petheXinLv.Add(ldItem.UseLv_Min);
 
                 string attriStr = null;//ldItem.ItemUsePar;
                 string[] attriList = attriStr.Split('@');

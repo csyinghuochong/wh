@@ -68,14 +68,14 @@
             }
 
             //主城不广播任何血量相关数值
-            if (args.Defend.SceneType == MapTypeEnum.MainCityScene)
-            {
-                if (args.NumericType == NumericType.HP_Current_8
-                    || args.NumericType == NumericType.HP_Max_10)
-                {
-                    return;
-                }
-            }
+            //if (args.Defend.SceneType == MapTypeEnum.MainCityScene)
+            //{
+            //    if (args.NumericType == NumericType.HP_Current_8
+            //        || args.NumericType == NumericType.HP_Max_10)
+            //    {
+            //        return;
+            //    }
+            //}
 
             m2C_UnitNumericUpdate.UnitId = args.Defend.Id;
             m2C_UnitNumericUpdate.NumericType = args.NumericType;

@@ -60,7 +60,7 @@ namespace ET
             {
                 //判断等级
                 int roleLv = useInfo.Lv;
-                int equipLv = ldItem.UseLv;
+                int equipLv = ldItem.UseLv_Min;
                
                 if (roleLv < equipLv)
                 {

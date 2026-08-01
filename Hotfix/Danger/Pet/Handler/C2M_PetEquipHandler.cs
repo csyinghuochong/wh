@@ -34,29 +34,6 @@ namespace ET
                     return;
                 }
                 LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-                if (rolePetInfo.PetLv < ldItem.UseLv)
-                {
-                    response.Error = ErrorCode.ERR_LevelIsNot;
-                    reply();
-                    return;
-                }
-
-                int itemSubType = ldItem.ItemType;
-                /*
-                for (int i = rolePetInfo.PetEquipList.Count - 1; i >= 0; i--)
-                { 
-                    BagInfo petequipInfo = bagComponentServer.GetItemByLoc(ItemLocType.PetLocEquip, rolePetInfo.PetEquipList[i]);
-                    if (petequipInfo == null)
-                    {
-                        rolePetInfo.PetEquipList.RemoveAt(i);   
-                    }
-                    if(LDItemCategory.Instance.Get(petequipInfo.ItemID).ItemType == itemSubType)
-                    {
-                        takeOffId = rolePetInfo.PetEquipList[i];
-                        break;
-                    }
-                }
-                */
             }
             if (request.OperateType == 2)
             {

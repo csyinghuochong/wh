@@ -162,9 +162,46 @@ namespace ET
         public static void Check(this SkillPassiveComponent self)
         {
             Unit unit = self.GetParent<Unit>();
-            self.CheckHuiXue();
+           
             self.CheckSkillUseMP(unit);
+
+            //self.CheckHuiXue();
+            self.TestCouXue();
             //self.CheckActGailvTime(unit);
+        }
+
+        public static void TestCouXue(this SkillPassiveComponent self)
+        {
+            if (!CommonHelper.IsInnerNet())
+            {
+                return;
+            }
+
+            if (self.UnitType != UnitType.Player)
+            {
+                return;
+            }
+
+            self.HuixueTimeNum = self.HuixueTimeNum + 1;
+            //10秒触发一次回血
+            if (self.HuixueTimeNum >= 10)
+            {
+                self.HuixueTimeNum = 0;
+            }
+            else
+            {
+                return;
+            }
+
+            //血量<10不扣血
+            int hpCurrent = self.NumericComponent.GetAsInt((int)NumericType.HP_Current_8);
+            if (hpCurrent <= 20)
+                return;
+
+            //int hpMax = self.NumericComponent.GetAsInt(NumericType.HP_Max_10);
+            int couXue = hpCurrent - 20;
+
+            self.NumericComponent.ApplyChange(null, NumericType.HP_Current_8, -1 * couXue, 0, true);
         }
 
         public static void CheckActGailvTime(this SkillPassiveComponent self, Unit unit)

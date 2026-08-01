@@ -85,6 +85,9 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
+		/// <summary>可装配</summary>
+		[ProtoMember(3)]
+		public int Is_Configure { get; set; }
 
 	}
 }

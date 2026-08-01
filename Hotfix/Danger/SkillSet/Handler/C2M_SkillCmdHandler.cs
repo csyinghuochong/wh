@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -10,7 +10,6 @@ namespace ET
         {
             try
             {
-                int juexingid = 0;
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
                 NumericComponent numeric = unit.GetComponent<NumericComponent>();
@@ -21,16 +20,7 @@ namespace ET
                 {
                    
                 }
-                if (juexingid == request.SkillID)
-                {
-                    if (numeric.GetAsLong(NumericType.JueXingAnger) < 500 && !CommonHelper.IsInnerNet())
-                    {
-                        response.Error = ErrorCode.Error_AngleNotEnough;
-                        reply();
-                        return;
-                    }
-                }
-
+              
                 if (!LDSkillCategory.Instance.Contain(request.SkillID))
                 {
                     Log.Error($"C2M_SkillCmd 1");
@@ -40,17 +30,10 @@ namespace ET
                 }
 
                 BagComponentServer bag = null;
-                ChengJiuComponentServer chengJiu = null;
-                TaskComponentServer task = null;
+                ItemLocType itemLoc = ItemLocType.ItemLocBag;
                 if (request.ItemId > 0)
                 { 
                     bag = unit.GetComponent<BagComponentServer>();
-                    if(bag.GetItemNumber(ItemBigType.Type_Item, request.ItemId) <= 0)
-                    {
-                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                        reply();
-                        return;
-                    }
                     if (!LDItemCategory.Instance.Contain(request.ItemId))
                     {
                         Console.WriteLine($"request.SkillID item:  {request.ItemId}");
@@ -60,12 +43,36 @@ namespace ET
                         return;
                     }
 
-                    LDItem ldItem =LDItemCategory.Instance.Get(request.ItemId);
-                    if (ldItem.ItemType != 101 && ldItem.ItemType != 110)
+                    LDItem ldItem = LDItemCategory.Instance.Get(request.ItemId);
+                    // 60=药水(Param1=技能ID
+                    bool skillCastItem = ldItem.ItemType == ItemSubTypeEnum.SubType_Potion_60;
+                    if (!skillCastItem)
                     {
                         Console.WriteLine($"request.SkillID error:  {request.SkillID}");
                         Log.Error($"C2M_SkillCmd 3");
                         response.Error = ErrorCode.ERR_ModifyData;
+                        reply();
+                        return;
+                    }
+
+                    if (ldItem.ItemType == ItemSubTypeEnum.SubType_Potion_60
+                        && ldItem.ItemTypeParam1 != request.SkillID)
+                    {
+                        Log.Error($"C2M_SkillCmd potion skill mismatch item={request.ItemId} skill={request.SkillID} param1={ldItem.ItemTypeParam1}");
+                        response.Error = ErrorCode.ERR_ModifyData;
+                        reply();
+                        return;
+                    }
+
+                    itemLoc = ItemNewHelper.GetToItemLocType(new RewardItem
+                    {
+                        ItemType = ItemBigType.Type_Item,
+                        ItemID = request.ItemId,
+                        ItemNum = 1,
+                    });
+                    if (bag.GetItemNumber(ItemBigType.Type_Item, request.ItemId, itemLoc) <= 0)
+                    {
+                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();
                         return;
                     }
@@ -85,19 +92,7 @@ namespace ET
                 {
                     if (request.ItemId > 0)
                     {
-                        bag.OnCostItemData($"{request.ItemId};1",ItemLocType.ItemLocBag, ItemGetWay.GM);
-
-                        if (CommonConfig.ChengJiuLianJin.Contains(request.ItemId))
-                        {
-                            chengJiu ??= unit.GetComponent<ChengJiuComponentServer>();
-                            task ??= unit.GetComponent<TaskComponentServer>();
-                            chengJiu.OnBattleUseItem();
-                            task.OnBattleUseItem();
-                        }
-                    }
-                    if (juexingid == request.SkillID)
-                    {
-                        numeric.ApplyValue(NumericType.JueXingAnger, 0);
+                        bag.OnCostItemData($"{request.ItemId};1", itemLoc, ItemGetWay.GM);
                     }
                 }
                 

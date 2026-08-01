@@ -82,7 +82,7 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>Id</summary>
+		/// <summary>相同 Id</summary>
 		[ProtoMember(2)]
 		public int Same_Id { get; set; }
 		/// <summary>名称</summary>
@@ -97,49 +97,49 @@ namespace ET
 		/// <summary>品质</summary>
 		[ProtoMember(6)]
 		public int Quality { get; set; }
-		/// <summary>使用等级</summary>
+		/// <summary>最小 使用 等级</summary>
 		[ProtoMember(7)]
-		public int UseLv { get; set; }
-		/// <summary>子类</summary>
+		public int UseLv_Min { get; set; }
+		/// <summary>最大 使用 等级</summary>
 		[ProtoMember(8)]
+		public int UseLv_Max { get; set; }
+		/// <summary>子 类</summary>
+		[ProtoMember(9)]
 		public int ItemType { get; set; }
 		/// <summary>参数1</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int ItemTypeParam1 { get; set; }
 		/// <summary>参数2</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int ItemTypeParam2 { get; set; }
 		/// <summary>奖励</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int Drop_Id { get; set; }
 		/// <summary>堆叠</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int ItemPileSum { get; set; }
 		/// <summary>出售ID</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public int Sell_ID { get; set; }
 		/// <summary>出售值</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public int Sell_Num { get; set; }
 		/// <summary>进背包 0-否 1-是</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int IfBag { get; set; }
 		/// <summary>背包类型 1-装备 2-奇珍 3-材料 4-消耗</summary>
-		[ProtoMember(16)]
-		public int BagType { get; set; }
-		/// <summary>自动使用 0-否 1-是</summary>
 		[ProtoMember(17)]
-		public int IfAutoUse { get; set; }
-		/// <summary>拍卖上架 0-禁止 1-允许</summary>
+		public int BagType { get; set; }
+		/// <summary>自动 使用 0-否 1-是</summary>
 		[ProtoMember(18)]
-		public int IfStopPaiMai { get; set; }
-		/// <summary>获取绑定 0-否 1-是</summary>
+		public int IfAutoUse { get; set; }
+		/// <summary>获取 绑定 0-否 1-是</summary>
 		[ProtoMember(19)]
 		public int IfLock { get; set; }
-		/// <summary>每天 使用次数</summary>
+		/// <summary>每天 使用 次数</summary>
 		[ProtoMember(20)]
 		public int DayUseNum { get; set; }
-		/// <summary>总共 使用次数</summary>
+		/// <summary>总共 使用 次数</summary>
 		[ProtoMember(21)]
 		public int SumUseNum { get; set; }
 		/// <summary>显示特效</summary>

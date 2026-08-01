@@ -187,7 +187,7 @@ namespace ET
 							case ItemBigType.Type_Exp:
 							case ItemBigType.Type_Item:
 							case ItemBigType.Type_Equip:
-								unit.GetComponent<BagComponentServer>().OnAddItemData($"{itemType}_{itemId}_{itemNumber}", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", true);
+								unit.GetComponent<BagComponentServer>().OnAddItemData($"{itemType}~{itemId}~{itemNumber}", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", true);
 								break;
 							case ItemBigType.Type_Pet:
 								unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.GM, itemId);

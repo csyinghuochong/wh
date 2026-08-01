@@ -26,7 +26,7 @@ namespace ET
             LDItem ldItemConfig0 = LDItemCategory.Instance.Get(bagInfo_1.ItemID);
             LDItem ldItemConfig1 = LDItemCategory.Instance.Get(bagInfo_2.ItemID);
 
-            bool all60green = ldItemConfig0.UseLv >= 60 && ldItemConfig0.Quality >= 5 && ldItemConfig1.UseLv >= 60 && ldItemConfig1.Quality >= 5;
+            bool all60green = ldItemConfig0.UseLv_Min >= 60 && ldItemConfig0.Quality >= 5 && ldItemConfig1.UseLv_Min >= 60 && ldItemConfig1.Quality >= 5;
 
 
             //绑定装备无法转移(客户端已经给出对应提示)
