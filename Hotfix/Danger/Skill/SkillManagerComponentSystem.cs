@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -136,6 +136,32 @@ namespace ET
             }
         }
 
+        /// <summary>
+        /// 新技能 Interrupt_1=1 时，打断当前所有 Interrupt_2=1 的进行中技能。
+        /// </summary>
+        public static void InterruptSkillsByNewCast(this SkillManagerComponent self, LDSkill newSkill)
+        {
+            if (!LDSkillHelper.CanInterruptOtherSkills(newSkill))
+            {
+                return;
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            for (int i = self.Skills.Count - 1; i >= 0; i--)
+            {
+                Skill_TreeEditor skillHandler = self.Skills[i];
+                LDSkill running = skillHandler.LdSkillConf;
+                if (!LDSkillHelper.CanBeInterrupted(running))
+                {
+                    continue;
+                }
+
+                skillHandler.SetSkillState(SkillState.Finished);
+                M2C_SkillInterruptResult msg = new M2C_SkillInterruptResult() { UnitId = unit.Id, SkillId = running.Id };
+                MessageHelper.Broadcast(unit, msg);
+            }
+        }
+
         public static bool HaveSkillType(this SkillManagerComponent self, string skilltype)
         {
             int skillcnt = self.Skills.Count;
@@ -168,30 +194,39 @@ namespace ET
         }
 
         /// <summary>
-        /// 打断吟唱中， 吟唱前客户端处理
+        /// 打断吟唱中， 吟唱前客户端处理。
+        /// ifStop=true 时仅打断 Interrupt_2=1 的施法类技能（移动/受控等）。
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="skillId"></param>
         public static void InterruptSing(this SkillManagerComponent self,int skillId,bool ifStop)
         {
+            if (!ifStop)
+            {
+                return;
+            }
+
             Unit unit =self.GetParent<Unit>();
             for (int i = self.Skills.Count - 1; i >= 0; i--)
             {
                 Skill_TreeEditor skillHandler = self.Skills[i];
-                if (skillHandler.LdSkillConf.Type != SkillTypeEnum.SkillTypeCast_2)
+                LDSkill running = skillHandler.LdSkillConf;
+                if (running == null || running.Type != SkillTypeEnum.SkillTypeCast_2)
                 {
                     continue;
                 }
-                
-         
-                //打断
-                if (ifStop)
+
+                if (!LDSkillHelper.CanBeInterrupted(running))
                 {
-                    skillHandler.SetSkillState(SkillState.Finished);
-                    M2C_SkillInterruptResult m2C_SkillInterruptResult = new M2C_SkillInterruptResult() { UnitId = unit.Id, SkillId = skillHandler.LdSkillConf.Id };
-                    //MessageHelper.Broadcast(unit, m2C_SkillInterruptResult);
-                    self.BroadcastSkill(unit, m2C_SkillInterruptResult);
+                    continue;
                 }
+
+                if (skillId != 0 && running.Id != skillId)
+                {
+                    continue;
+                }
+
+                skillHandler.SetSkillState(SkillState.Finished);
+                M2C_SkillInterruptResult m2C_SkillInterruptResult = new M2C_SkillInterruptResult() { UnitId = unit.Id, SkillId = running.Id };
+                self.BroadcastSkill(unit, m2C_SkillInterruptResult);
             }
         }
         
@@ -247,7 +282,8 @@ namespace ET
                 unit.Stop(weaponSkillid);
             }
 
-            self.InterruptSing(skillcmd.SkillID, false);
+            // Interrupt_1 / Interrupt_2：新技能可打断其它可被打断的进行中技能
+            self.InterruptSkillsByNewCast(weaponLdSkill);
 
             SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
             if (skillPassiveComponent == null)

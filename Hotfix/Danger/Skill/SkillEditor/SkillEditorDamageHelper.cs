@@ -1,3 +1,4 @@
+﻿using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -208,9 +209,16 @@ namespace ET
             }
         }
 
-        /// <summary>CALCULATE_HEAL_DAMAGE：在属性区间内随机 × 威力，向下取整后加血。</summary>
+        /// <summary>
+        /// CALCULATE_HEAL_DAMAGE。
+        /// 参数表来源：SkillEditor_v1/bin/Debug/DocEditor界面配置.xml → function name=CALCULATE_HEAL_DAMAGE 的 param_format（共 26 项，下标 0 起）。
+        /// 常规段复用 ResolveBaseDamageRange（与 CALCULATE_PHYSICS/MAGIC_DAMAGE 参数 4~17 同布局）；
+        /// 生命比例段对齐伤害侧 ResolveHpDamage 的 min(HP_Max×比例,上限) 写法（伤害用参数 27~30/37，治疗用 19~22/24）。
+        /// 治疗不做破防/减伤。威力全 0 时可靠 8~13 常数项出固定治疗（如初级生命药剂常数 1000）。
+        /// </summary>
         public static void CalculateHeal(SkillEditorFunctionContext ctx)
         {
+            // —— 参数 0~3：施法者 / 目标 / 技能ID / 技能等级（界面配置.xml）——
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
             int skillId = ctx.GetParamInt(2, ctx.SkillId);
@@ -220,29 +228,126 @@ namespace ET
                 return;
             }
 
-            NumericComponent targetNumeric = target.GetComponent<NumericComponent>();
-            if (targetNumeric == null)
+            // rs 来自 SKILL_DAMAGE_CHECK_HEAL；未命中等不结算治疗
+            long rs = ctx.GetVariable("rs", (long)SkillEditorHitResult.Hit);
+            if (rs == (long)SkillEditorHitResult.Miss
+                || rs == (long)SkillEditorHitResult.Immune
+                || rs == (long)SkillEditorHitResult.Dodge)
             {
                 return;
             }
 
-            // 参数 4~5：治疗取值属性最小/最大（浮点显示值）
-            double minValue = ctx.GetUnitNumericDisplayValue(caster, ResolveHealNumericType(ctx, ctx.GetParamRaw(4)), 0d);
-            double maxValue = ctx.GetUnitNumericDisplayValue(caster, ResolveHealNumericType(ctx, ctx.GetParamRaw(5)), minValue);
-            NormalizeRange(ref minValue, ref maxValue);
-
-            // 参数 6：治疗威力，默认 1
-            double power = GetParamDouble(ctx, 6, 1d);
-            if (power <= 0d)
+            NumericComponent casterNumeric = caster.GetComponent<NumericComponent>();
+            NumericComponent targetNumeric = target.GetComponent<NumericComponent>();
+            if (casterNumeric == null || targetNumeric == null)
             {
-                power = 1d;
+                return;
             }
 
-            long amount = FloorPositiveDamage(RollDouble(minValue, maxValue) * power);
-            targetNumeric.ApplyChange(caster, NumericType.HP_Current_8, amount, skillId);
-            if (Log.IsDebugEnabled) Log.Debug($"CALCULATE_HEAL_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} heal={amount}");
+            // —— 参数 4~7：物理/法术/物防/法防威力（界面 desc「xxx威力 1=100%」）——
+            // 不调用 ApplyDefaultPower：治疗允许全 0，仅靠等级附加常数项（药剂）
+            double physicalPower = GetParamDouble(ctx, 4, 0d);
+            double magicPower = GetParamDouble(ctx, 5, 0d);
+            double pdefPower = GetParamDouble(ctx, 6, 0d);
+            double mdefPower = GetParamDouble(ctx, 7, 0d);
+
+            // —— 参数 8~17：最小/最大攻击附加二次·一次·常数 + 额外加成属性/系数 ——
+            // 来源：与伤害函数同一套 ResolveBaseDamageRange（见本文件 CalculateDamage / 属性公式注释）
+            ResolveBaseDamageRange(
+                ctx,
+                caster,
+                target,
+                casterNumeric,
+                targetNumeric,
+                level,
+                physicalPower,
+                magicPower,
+                pdefPower,
+                mdefPower,
+                out double normalMin,
+                out double normalMax);
+
+            //用两个 out 吐出区间： 还没随机、没分摊、没破防。
+            //baseMin：常规伤害/治疗下限
+            //baseMax：常规伤害 / 治疗上限
+
+            // —— 参数 23：常规治疗分摊数（界面「常规治疗分摊数」，默认 1）——
+            // 对照伤害 CalculateDamage 参数 35「常规分摊数」：区间先除分摊再随机
+            int normalSplit = Math.Max(1, ctx.GetParamInt(23, 1));
+            normalMin /= normalSplit;
+            normalMax /= normalSplit;
+            NormalizeRange(ref normalMin, ref normalMax);
+
+            long normalHeal = FloorPositiveDamage(RollDouble(normalMin, normalMax));
+
+            // —— 参数 18：暴击治疗加成 1=100%（界面「暴击治疗加成」）——
+            // 对照伤害参数 21 暴击加成；治疗侧无爆伤属性 72，仅用默认 1.5 + 本参数
+            double critHealBonus = GetParamDouble(ctx, 18, 0d);
+            if (rs >= (long)SkillEditorHitResult.Crit)
+            {
+                double critMultiplier = DefaultCritMultiplier + critHealBonus;
+                normalHeal = FloorPositiveDamage(normalHeal * critMultiplier);
+            }
+
+            // ========== 生命比例治疗段 ==========
+            // 参数来源：DocEditor界面配置.xml
+            //   19 施法者最大生命比例治疗 1=100%
+            //   20 施法者生命治疗最大值
+            //   21 目标最大生命比例治疗 1=100%
+            //   22 目标生命治疗最大值
+            //   24 生命治疗分摊数（默认 1）
+            // 算法来源：本文件 ResolveHpDamage（伤害参数 27/28 施法者、29/30 目标、37 生命分摊）
+            //   单端 = CapPercentDamage(HP_Max, 比例, 上限) = min(HP_Max×比例, 上限>0?上限:不封顶)
+            //   施法者部分再 / 生命分摊数；目标部分不分摊（与伤害文档一致）
+            // 治疗差异：不做参数 31 那种「是否套减伤」；治疗直接加血
+            int lifeSplit = Math.Max(1, ctx.GetParamInt(24, 1));
+            double casterHpPart = CapPercentDamage(
+                casterNumeric.GetAsFloat(NumericType.HP_Max_10),
+                GetParamDouble(ctx, 19, 0d),
+                GetParamDouble(ctx, 20, 0d)) / lifeSplit;
+            double targetHpPart = CapPercentDamage(
+                targetNumeric.GetAsFloat(NumericType.HP_Max_10),
+                GetParamDouble(ctx, 21, 0d),
+                GetParamDouble(ctx, 22, 0d));
+            long hpHeal = FloorPositiveDamage(casterHpPart + targetHpPart);
+
+            // 总量 = 常规治疗 + 生命比例治疗（对照伤害：常规 + 五系 + 生命；治疗无五系）
+            long totalHeal = normalHeal + hpHeal;
+            if (totalHeal <= 0)
+            {
+                ctx.SetVariable("damageTotal", 0);
+                ctx.SetVariable("healTotal", 0);
+                return;
+            }
+
+            targetNumeric.ApplyChange(caster, NumericType.HP_Current_8, totalHeal, skillId);
+            // damageTotal：兼容 INFORM_CLIENT_HIT_SUCCESS；healTotal：给 INFORM_EVENT_HEAL
+            ctx.SetVariable("damageTotal", totalHeal);
+            ctx.SetVariable("healTotal", totalHeal);
+
+            // —— 参数 25：仇恨倍率（界面「仇恨倍率」，默认 1；当前仅日志，对照伤害参数 39）——
+            double hateMultiplier = GetParamDouble(ctx, 25, 1d);
+            if (hateMultiplier > 0d && Log.IsDebugEnabled)
+            {
+                Log.Debug(
+                    $"SkillEditor heal hate skill={skillId} caster={caster.Id} target={target.Id} heal={totalHeal} multiplier={hateMultiplier.ToString(CultureInfo.InvariantCulture)}");
+            }
+
+            if (Log.IsDebugEnabled)
+            {
+                Log.Debug(
+                    $"CALCULATE_HEAL_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} rs={rs} normal={normalHeal} hp={hpHeal} total={totalHeal}");
+            }
         }
 
+        //怎么算出来的（三部分相加）
+        //威力段
+        //物攻/法攻/物防/法防 × 对应威力 → powerMin / powerMax
+
+        //等级附加（参数 8~13）
+        //a* level² + b* level + c → minGrowth / maxGrowth
+        //额外加成（参数 14~17）
+        //属性×系数（Min/Max 同一份）→ extraBonus
         /// <summary>
         /// 【文档】三部分相加得到常规伤害区间：
         /// 威力部分(152~289) + 二次项(90~180) + 额外加成(200~200) = 442~669
@@ -610,13 +715,6 @@ namespace ET
             }
 
             return 1;
-        }
-
-        /// <summary>解析治疗函数使用的 Numeric 属性 ID。</summary>
-        private static int ResolveHealNumericType(SkillEditorFunctionContext ctx, string raw)
-        {
-            int numericType = ctx.ResolveNumericType(raw, 0);
-            return numericType > 0 ? numericType : NumericType.PATK_Min_21;
         }
 
         /// <summary>物理/法术伤害未配置任何威力时，给默认主威力=1。</summary>

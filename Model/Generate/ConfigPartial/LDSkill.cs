@@ -48,7 +48,8 @@ namespace ET
                 string[] limitItems = this.Self_Attribute_Limit.Split('|');
                 for (int i = 0; i < limitItems.Length; i++)
                 {
-                    string[] parts = limitItems[i].Split('_');
+                    // 表里可能是 4_14_1 或 4`14`1
+                    string[] parts = limitItems[i].Split(new[] { '_', '`' });
                     if (parts.Length != 3)
                     {
                         continue;

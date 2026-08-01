@@ -1,4 +1,4 @@
-using Alipay.AopSdk.Core.Domain;
+﻿using Alipay.AopSdk.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,6 +24,7 @@ namespace ET
             SkillEditorFunctionRegistry.Register("DESTROY_UNIT", DestroyUnit);        //销毁单位
             SkillEditorFunctionRegistry.Register("INFORM_EVENT_ATTACK", InformEventAttack);        //通知攻击事件
             SkillEditorFunctionRegistry.Register("INFORM_EVENT_DEFENSE", InformEventDefense);        //通知防御事件
+            SkillEditorFunctionRegistry.Register("INFORM_EVENT_HEAL", InformEventHeal);        //通知治疗事件
             SkillEditorFunctionRegistry.Register("INFORM_CLIENT_HIT_SUCCESS", InformClientHitSuccess);        //通知客户端命中
             SkillEditorFunctionRegistry.Register("SKILL_DAMAGE_CHECK_PHYSICS", SkillDamageCheckPhysics);        //物理技能判定
             SkillEditorFunctionRegistry.Register("SKILL_DAMAGE_CHECK_MAGIC", SkillDamageCheckMagic);        //法术技能判定
@@ -208,6 +209,36 @@ namespace ET
             //target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.None);
             if (Log.IsDebugEnabled) Log.Debug($"INFORM_EVENT_DEFENSE skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
+        }
+
+        /// <summary>
+        /// 通知治疗事件：瓢字用 CALCULATE_HEAL_DAMAGE 写入的 healTotal/damageTotal。
+        /// </summary>
+        private static void InformEventHeal(SkillEditorFunctionContext ctx)
+        {
+            Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
+            Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            if (target == null || target.IsDisposed)
+            {
+                return;
+            }
+
+            long rs = ctx.GetVariable("rs", (long)SkillEditorHitResult.Hit);
+            long healTotal = ctx.GetVariable("healTotal", 0);
+            if (healTotal <= 0)
+            {
+                healTotal = ctx.GetVariable("damageTotal", 0);
+            }
+
+            if (healTotal > 0)
+            {
+                SendNumbericChangeHelper.InformClientHit(caster, target, rs, healTotal);
+            }
+
+            if (Log.IsDebugEnabled)
+            {
+                Log.Debug($"INFORM_EVENT_HEAL skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={target.Id} heal={healTotal} rs={rs}");
+            }
         }
 
 
