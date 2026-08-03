@@ -12,9 +12,6 @@ namespace ET
         {
             RankSceneComponent rankScene = scene.GetComponent<RankSceneComponent>();
             rankScene.OnDeleteRole(rankScene.DBRankInfo.rankingInfos, request.DeleUserID);
-            rankScene.OnDeleteRole(rankScene.DBRankInfo.rankingCamp1, request.DeleUserID);
-            rankScene.OnDeleteRole(rankScene.DBRankInfo.rankingCamp2, request.DeleUserID);
-
             rankScene.OnDeleteRole(rankScene.DBRankInfo.rankingPets, request.DeleUserID);
 
             reply();

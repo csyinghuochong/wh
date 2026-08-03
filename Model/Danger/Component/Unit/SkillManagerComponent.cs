@@ -15,7 +15,10 @@ namespace ET
         /// <summary>同步给客户端的当前技能列表（复用）。</summary>
         public List<SkillInfo> MessageSkillInfos = new List<SkillInfo>(8);
         public Dictionary<int, SkillCDItem> SkillCDs = new Dictionary<int, SkillCDItem>();  //技能CD列表
-        public long SkillPublicCDTime;      //公共CD
+        /// <summary>普通技能公共 CD 结束时间</summary>
+        public long SkillPublicCDTime;
+        /// <summary>道具/药水技能公共 CD 结束时间（与技能公共 CD 互不影响）</summary>
+        public long ItemPublicCDTime;
         public int FangunComboNumber;
         public long FangunLastTime;
         public int FangunSkillId;

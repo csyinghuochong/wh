@@ -305,7 +305,8 @@ namespace ET
             SkillCDItem skillCd = self.AddSkillCD(skillcmd.ItemId, skillcmd.SkillID,  weaponLdSkill, zhudong);
             m2C_Skill.Error = ErrorCode.ERR_Success;
             m2C_Skill.CDEndTime = skillCd != null ? skillCd.CDEndTime : 0;
-            m2C_Skill.PublicCDTime = self.SkillPublicCDTime;
+            // ItemId>0：下发道具公共CD；否则下发技能公共CD（复用 PublicCDTime 字段）
+            m2C_Skill.PublicCDTime = skillcmd.ItemId > 0 ? self.ItemPublicCDTime : self.SkillPublicCDTime;
             
             M2C_UnitUseSkill useSkill = MessageHelper.m2C_UnitUseSkill;
             useSkill.UnitId = unit.Id;
@@ -314,7 +315,7 @@ namespace ET
             useSkill.TargetAngle = skillcmd.TargetAngle;
             useSkill.SkillInfos = skillList;
             useSkill.CDEndTime = skillCd != null ? skillCd.CDEndTime : 0;
-            useSkill.PublicCDTime = self.SkillPublicCDTime;
+            useSkill.PublicCDTime = skillcmd.ItemId > 0 ? self.ItemPublicCDTime : self.SkillPublicCDTime;
             self.BroadcastSkill(unit, useSkill);
 
             for (int i = 0; i < handlerList.Count; i++)
@@ -368,6 +369,8 @@ namespace ET
                 if (unit.Type == UnitType.Player)
                 {
                     skillCd = self.UpdateNormalCD(skillid, weapon.Id, zhudong);
+                    // 玩家个人CD仍走 UpdateNormalCD；公共CD按道具/技能分流
+                    self.ApplyPublicCD(itemid, weapon, zhudong);
                 }
                 else
                 {
@@ -375,6 +378,27 @@ namespace ET
                 }
             }
             return skillCd;
+        }
+
+        /// <summary>
+        /// 公共CD：道具技能写 ItemPublicCDTime，普通技能写 SkillPublicCDTime。
+        /// </summary>
+        public static void ApplyPublicCD(this SkillManagerComponent self, int itemId, LDSkill ldSkill, bool zhudong)
+        {
+            if (!zhudong || ldSkill == null || ldSkill.PublicCD <= 0f)
+            {
+                return;
+            }
+
+            long endTime = TimeHelper.ServerNow() + 500; // 与原逻辑一致：表 PublicCD>0 时加 500ms
+            if (itemId > 0)
+            {
+                self.ItemPublicCDTime = endTime;
+            }
+            else
+            {
+                self.SkillPublicCDTime = endTime;
+            }
         }
 
         public static async ETTask TriggerBuffSkill(this SkillManagerComponent self, KeyValuePairLong4 keyValuePair, long targetId, int buffNum)
@@ -543,11 +567,7 @@ namespace ET
                 skillcd.CDPassive = TimeHelper.ServerNow() + (int)(1000 * skillcdTime);
             }
 
-            if (zhudong && ldSkill.PublicCD  > 0f)
-            {
-                //添加技能公共CD
-                self.SkillPublicCDTime = TimeHelper.ServerNow() + 500;  //公共1秒CD  
-            }
+            self.ApplyPublicCD(itemid, ldSkill, zhudong);
             return skillcd;
         }
 

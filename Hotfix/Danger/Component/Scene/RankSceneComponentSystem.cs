@@ -189,8 +189,6 @@ namespace ET
 
             self.DBRankInfo.rankShowLie.Clear();
             self.DBRankInfo.rankUnionRace.Clear();
-            self.DBRankInfo.rankRunRace.Clear();
-            self.DBRankInfo.rankingDemon.Clear();
         }
 
         //更新兑换金币
@@ -270,8 +268,7 @@ namespace ET
             {
                 self.DBRankInfo = dbRankInfo;
             }
-            self.DBRankInfo.rankRunRace.Clear();
-            self.DBRankInfo.rankingDemon.Clear();
+
             self.UpdateRankPetList();
         }
 
@@ -481,56 +478,7 @@ namespace ET
             return 0;
         }
 
-        public static void UpdateCampRankList(this RankSceneComponent self, int campId, RankingInfo rankingInfo)
-        {
-            if (campId == 0)
-            {
-                return;
-            }
-
-            //清除在其他阵营的排名
-            List<RankingInfo> rankList = campId == 1 ? self.DBRankInfo.rankingCamp2 : self.DBRankInfo.rankingCamp1;
-            for (int i = rankList.Count - 1; i >= 0; i--)
-            {
-                if (rankList[i].UserId == rankingInfo.UserId)
-                {
-                    rankList.RemoveAt(i);
-                    break;
-                }
-            }
-
-            bool have = false;
-            rankList = campId == 1 ? self.DBRankInfo.rankingCamp1 : self.DBRankInfo.rankingCamp2;
-            for (int i = 0; i < rankList.Count; i++)
-            {
-                if (rankList[i].UserId == rankingInfo.UserId)
-                {
-                    rankList[i] = rankingInfo;
-                    have = true;
-                    break;
-                }
-            }
-
-            if (!have)
-            {
-                if (rankList.Count < CommonConfig.CampRankNumber)
-                {
-                    rankList.Add(rankingInfo);
-                }
-                else
-                {
-                    if (rankList.LastOrDefault().Combat < rankingInfo.Combat)
-                    {
-                        rankList[rankList.Count - 1] = rankingInfo;
-                    }
-                }
-            }
-            rankList.Sort(delegate (RankingInfo a, RankingInfo b)
-            {
-                return (int)b.Combat - (int)a.Combat;
-            });
-        }
-
+     
         public static void UpdateWorldLevel(this RankSceneComponent self, RankingInfo rankingInfo)
         {
             ServerInfo serverInfo = self.DBServerInfo.ServerInfo;
