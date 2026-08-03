@@ -82,6 +82,18 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
+		/// <summary>int</summary>
+		[ProtoMember(2)]
+		public string Key { get; set; }
+		/// <summary>标题</summary>
+		[ProtoMember(3)]
+		public int Title { get; set; }
+		/// <summary>发件人</summary>
+		[ProtoMember(4)]
+		public int Sender { get; set; }
+		/// <summary>内容</summary>
+		[ProtoMember(5)]
+		public int Content { get; set; }
 
 	}
 }
