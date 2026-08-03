@@ -240,21 +240,22 @@ namespace ET
 
         private static void ApplyMove(SkillEntityComponent self, Unit unit, SummonRuntimeData rt, Vector3 next, Vector3 dir)
         {
-            if (rt.DeleteOnBlock)
-            {
-                MapComponent map = unit.DomainScene()?.GetComponent<MapComponent>();
-                if (map != null)
-                {
-                    Vector3 blocked = map.GetCanChongJiPath(unit, unit.Position, next);
-                    if ((blocked - next).sqrMagnitude > 0.01f)
-                    {
-                        FinishAndRemove(self, unit, rt.DestroySkillId);
-                        return;
-                    }
+            //碰到阻挡物删除 先不处理
+            //if (rt.DeleteOnBlock)
+            //{
+            //    MapComponent map = unit.DomainScene()?.GetComponent<MapComponent>();
+            //    if (map != null)
+            //    {
+            //        Vector3 blocked = map.GetCanChongJiPath(unit, unit.Position, next);
+            //        if ((blocked - next).sqrMagnitude > 0.01f)
+            //        {
+            //            FinishAndRemove(self, unit, rt.DestroySkillId);
+            //            return;
+            //        }
 
-                    next = blocked;
-                }
-            }
+            //        next = blocked;
+            //    }
+            //}
 
             unit.Position = next;
             unit.Rotation = Quaternion.LookRotation(dir, Vector3.up);

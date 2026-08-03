@@ -358,30 +358,14 @@ namespace ET
 
         public static SkillCDItem AddSkillCD(this SkillManagerComponent self, int itemid, int skillid, LDSkill weapon, bool zhudong)
         {
-            SkillCDItem skillCd = null;
-            if (skillid == self.FangunSkillId)
-            {
-                skillCd = self.UpdateFangunSkillCD();
-            }
-            else
-            {
-                Unit unit = self.GetParent<Unit>();
-                if (unit.Type == UnitType.Player)
-                {
-                    skillCd = self.UpdateNormalCD(skillid, weapon.Id, zhudong);
-                    // 玩家个人CD仍走 UpdateNormalCD；公共CD按道具/技能分流
-                    self.ApplyPublicCD(itemid, weapon, zhudong);
-                }
-                else
-                {
-                    skillCd = self.UpdateSkillCD(itemid, skillid, weapon.Id, zhudong);
-                }
-            }
+            self.ApplyPublicCD(itemid, weapon, zhudong);
+            SkillCDItem skillCd = self.UpdateSkillCD(itemid, skillid, weapon.Id, zhudong);
             return skillCd;
         }
 
         /// <summary>
-        /// 公共CD：道具技能写 ItemPublicCDTime，普通技能写 SkillPublicCDTime。
+        /// 公共CD：按表 PublicCD（秒）写入结束时间。
+        /// 道具技能 → ItemPublicCDTime；普通技能 → SkillPublicCDTime。
         /// </summary>
         public static void ApplyPublicCD(this SkillManagerComponent self, int itemId, LDSkill ldSkill, bool zhudong)
         {
@@ -390,7 +374,7 @@ namespace ET
                 return;
             }
 
-            long endTime = TimeHelper.ServerNow() + 500; // 与原逻辑一致：表 PublicCD>0 时加 500ms
+            long endTime = TimeHelper.ServerNow() + (long)(ldSkill.PublicCD * 1000d);
             if (itemId > 0)
             {
                 self.ItemPublicCDTime = endTime;
@@ -439,116 +423,24 @@ namespace ET
             await ETTask.CompletedTask;
         }
 
-        private static int GetFirstComSkill(this SkillManagerComponent self, int skillId, int comskill)
-        {
-
-            return skillId;
-        }
-
-        public static SkillCDItem UpdateNormalCD(this SkillManagerComponent self, int skillId, int weaponSkill, bool zhudong)
-        {
-            Unit unit = self.GetParent<Unit>();
-            SkillCDItem skillcd = null;
-          
-            self.SkillCDs.TryGetValue(skillId, out skillcd);
-            if (skillcd == null)
-            {
-                skillcd = new SkillCDItem();
-                self.SkillCDs.Add(skillId, skillcd);
-            }
-            skillcd.SkillID = skillId;
-
-            // 普攻基础 CD 700ms，受攻速缩放；原先 List{700,700,700}+循环但下标恒为 0
-            const int normalSkillBaseCd = 700;
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            float attackSpeed = 1f + numericComponent.GetAsFloat(NumericType.SKILL_CD_192);
-            if (attackSpeed < 0.01f)
-            {
-                attackSpeed = 0.01f;
-            }
-
-            skillcd.CDEndTime = TimeHelper.ServerNow() + (int)(normalSkillBaseCd / attackSpeed);
-            return null;
-        }
-
         public static SkillCDItem UpdateSkillCD(this SkillManagerComponent self, int itemid, int skillId, int weaponSkill, bool zhudong)
         {
             Unit unit = self.GetParent<Unit>();
             SkillCDItem skillcd = null;
             LDSkill ldSkill = LDSkillCategory.Instance.Get(weaponSkill);
+
+            // 表未配个人CD：不上个人CD（公共CD由 AddSkillCD 统一 ApplyPublicCD）
+            if (ldSkill.SkillCD <= 0)
+            {
+                return null;
+            }
+
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             double skillcdTime = ldSkill.SkillCD;
 
-            //减少的技能CD
-            float reduceCD = 0f;
-            List<float> reduceCDlist = null;
-            SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
-
-            Dictionary<int, List<float>> keyValuePairs = skillSetComponentServer != null ? skillSetComponentServer.GetSkillPropertyAdd(weaponSkill) : null;
-            if (keyValuePairs != null)
-            {
-                keyValuePairs.TryGetValue((int)SkillAttributeEnum.ReduceSkillCD, out reduceCDlist);
-            }
-            if (reduceCDlist != null && reduceCDlist.Count > 0)
-            {
-                reduceCD = reduceCDlist[0];
-            }
-
-            float numericError = numericComponent.GetAsFloat(NumericType.SKILL_CD_192);
-            if (numericError > RandomHelper.RandFloat01())
-            {
-                skillcdTime = 1;  //1秒冷却CD
-                skillcdTime -= reduceCD;
-            }
-            else
-            {
-                float now_cdpro = numericError;
-                //急速削减最多达到75%
-                if (now_cdpro > 0.75f) {
-                    now_cdpro = 0.75f;
-                }
-                skillcdTime -= reduceCD;
-                skillcdTime *= ( 1f - now_cdpro);
-            }
-
-            //if (unit.Type != UnitType.Player && unit.MasterId != 0 && skillConfig.SkillActType == 0)
-            if (unit.Type != UnitType.Player )
-            {
-                //攻击速度调整
-                float attackSpped = 1f / (1 + numericError);
-
-                //最低是0.25秒触发一次
-                if (attackSpped <= 0.25f)
-                {
-                    attackSpped = 0.25f;
-                }
-                skillcdTime = skillcdTime * attackSpped;
-                skillcdTime -= reduceCD;
-            }
-
-            int cdRate = 1;
-            if (itemid > 0 && unit.Type == UnitType.Player)
-            {
-                int sceneType = unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum;
-                cdRate = CommonHelper.GetSkillCdRate(sceneType); 
-            }
-
-            float nocdgailv = 0;
-            List<float> noCdList = null;
-            if (keyValuePairs != null)
-            {
-                keyValuePairs.TryGetValue((int)SkillAttributeEnum.NoSkillCD, out noCdList);
-            }
-            if (noCdList != null && noCdList.Count > 0)
-            {
-                nocdgailv = noCdList[0];
-            }
-
-            if (nocdgailv > 0f && nocdgailv >= RandomHelper.RandFloat01())
-            {
-                //无cD
-                skillcdTime = -1;
-            }
+            //减少技能CD
+            float now_cdpro = numericComponent.GetAsFloat(NumericType.SKILL_CD_192);
+            skillcdTime *= (1f - now_cdpro);
 
             self.SkillCDs.TryGetValue(skillId, out skillcd);
             if (skillcd == null)
@@ -559,7 +451,7 @@ namespace ET
             if (zhudong)
             {
                 skillcd.SkillID = skillId;
-                skillcd.CDEndTime = TimeHelper.ServerNow() +  (int)(1000 *  skillcdTime* cdRate);
+                skillcd.CDEndTime = TimeHelper.ServerNow() +  (int)(1000 *  skillcdTime);
             }
             else
             {
@@ -567,7 +459,6 @@ namespace ET
                 skillcd.CDPassive = TimeHelper.ServerNow() + (int)(1000 * skillcdTime);
             }
 
-            self.ApplyPublicCD(itemid, ldSkill, zhudong);
             return skillcd;
         }
 
@@ -657,14 +548,14 @@ namespace ET
             //被动技能触发冷却CD
             if (!zhudong && skillCDItem != null && serverNow < skillCDItem.CDPassive)
             {
-                return ErrorCode.ERR_UseSkillInCD4;
+                return ErrorCode.Prompt_Battle_Skill_CD;
             }
 
             //主动技能触发冷却CD
             if (zhudong && skillCDItem != null && serverNow < skillCDItem.CDEndTime)
             {
                 //Console.WriteLine($"check cd {nowSkillID}   {skillCDItem.CDEndTime}  {serverNow}   false");
-                return ErrorCode.ERR_UseSkillInCD3;
+                return ErrorCode.Prompt_Battle_Skill_CD;
             }
 
             //if (skillCDItem == null)
@@ -696,7 +587,7 @@ namespace ET
                 //判定是否再公共冷却时间
                 if (serverNow < self.SkillPublicCDTime)
                 {
-                    return ErrorCode.ERR_UseSkillInCD2;
+                    return ErrorCode.Prompt_Battle_Skill_CD;
                 }
             }
             return ErrorCode.ERR_Success;
