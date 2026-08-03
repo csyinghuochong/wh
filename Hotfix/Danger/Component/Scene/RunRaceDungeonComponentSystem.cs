@@ -142,6 +142,7 @@ namespace ET
 
         public static async ETTask Check(this RunRaceDungeonComponent self)
         {
+            await ETTask.CompletedTask;
             if (!self.Close)
             {
                 if (self.CheckTime >= 10)
@@ -187,79 +188,79 @@ namespace ET
                 //rankPetInfo.Combat = roleInfoComponent.RoleInfo.Combat;
                 rankPetInfo.Combat = TimeHelper.ServerNow();
                 rankPetInfo.Occ = roleInfo.Occ;
-                R2M_RankRunRaceResponse Response = (R2M_RankRunRaceResponse)await ActorMessageSenderComponent.Instance.Call
-                         (mapInstanceId, new M2R_RankRunRaceRequest()
-                         {
-                             RankingInfo = rankPetInfo
-                         });
-                if ( Response.Error != ErrorCode.ERR_Success)
-                {
-                    continue;
-                }
+                //R2M_RankRunRaceResponse Response = (R2M_RankRunRaceResponse)await ActorMessageSenderComponent.Instance.Call
+                //         (mapInstanceId, new M2R_RankRunRaceRequest()
+                //         {
+                //             RankingInfo = rankPetInfo
+                //         });
+                //if ( Response.Error != ErrorCode.ERR_Success)
+                //{
+                //    continue;
+                //}
 
-                if (Response.RankId <= 3)
-                {
-                    string messagecontent = $"恭喜{roleInfo.Name} 获得奔跑大赛第{Response.RankId}名";
-                    string messagecontentEn = $"Congratulations{roleInfo.Name} Achieved Rank {Response.RankId} in the running race";
-                    ServerMessageHelper.SendBroadMessage( self.DomainZone(), NoticeType.Notice, messagecontent, messagecontentEn);
-                }
+                //if (Response.RankId <= 3)
+                //{
+                //    string messagecontent = $"恭喜{roleInfo.Name} 获得奔跑大赛第{Response.RankId}名";
+                //    string messagecontentEn = $"Congratulations{roleInfo.Name} Achieved Rank {Response.RankId} in the running race";
+                //    ServerMessageHelper.SendBroadMessage( self.DomainZone(), NoticeType.Notice, messagecontent, messagecontentEn);
+                //}
 
-                M2C_RankRunRaceMessage m2C_RankRun = new M2C_RankRunRaceMessage() { RankList = Response.RankList };
-                MessageHelper.SendToClient(units, m2C_RankRun);
+                //M2C_RankRunRaceMessage m2C_RankRun = new M2C_RankRunRaceMessage() { RankList = Response.RankList };
+                //MessageHelper.SendToClient(units, m2C_RankRun);
 
-                if (!unit.IsDisposed)
-                {
-                    numericComponent.ApplyValue(NumericType.RunRaceRankId, Response.RankId);
+                //if (!unit.IsDisposed)
+                //{
+                //    numericComponent.ApplyValue(NumericType.RunRaceRankId, Response.RankId);
 
-                    // 领取奖励
-                    LDRankList rankRewardConfig = RankHelper.GetRankReward(Response.RankId, 5);
-                    if (rankRewardConfig == null)
-                    {
-                        continue;
-                    }
-                    BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+                //    // 领取奖励
+                //    LDRankList rankRewardConfig = RankHelper.GetRankReward(Response.RankId, 5);
+                //    if (rankRewardConfig == null)
+                //    {
+                //        continue;
+                //    }
+                //    BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
 
-                    string[] itemList = rankRewardConfig.Reward.Split('|');
-                    List<RewardItem> rewardItems = new List<RewardItem>();
-                    MailInfo mailInfo = new MailInfo();
-                    for (int k = 0; k < itemList.Length; k++)
-                    {
-                        string[] itemInfo = itemList[k].Split('&');
-                        if (itemInfo.Length < 2)
-                        {
-                            continue;
-                        }
+                //    string[] itemList = rankRewardConfig.Reward.Split('|');
+                //    List<RewardItem> rewardItems = new List<RewardItem>();
+                //    MailInfo mailInfo = new MailInfo();
+                //    for (int k = 0; k < itemList.Length; k++)
+                //    {
+                //        string[] itemInfo = itemList[k].Split('&');
+                //        if (itemInfo.Length < 2)
+                //        {
+                //            continue;
+                //        }
 
-                        int itemId = int.Parse(itemInfo[0]);
-                        int itemNum = int.Parse(itemInfo[1]);
-                        rewardItems.Add(new RewardItem() { ItemID = itemId, ItemNum = itemNum });
-                        mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.ShowLie}_{serverTime}" });
-                    }
+                //        int itemId = int.Parse(itemInfo[0]);
+                //        int itemNum = int.Parse(itemInfo[1]);
+                //        rewardItems.Add(new RewardItem() { ItemID = itemId, ItemNum = itemNum });
+                //        mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.ShowLie}_{serverTime}" });
+                //    }
 
-                    if (itemList.Length <= bagComponentServer.GetBagLeftCell())
-                    {
-                        bagComponentServer.OnAddItemData(rankRewardConfig.Reward, $"{ItemGetWay.RunRace}_{serverTime}");
-                    }
-                    else
-                    {
-                        // 发送邮箱
-                        int zone = self.DomainZone();
-                        Log.Console($"发放赛跑大赛排行榜奖励： {zone}");
-                        Log.Warning($"发放赛跑大赛排行榜奖励： {zone}");
-                        long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
+                //    if (itemList.Length <= bagComponentServer.GetBagLeftCell())
+                //    {
+                //        bagComponentServer.OnAddItemData(rankRewardConfig.Reward, $"{ItemGetWay.RunRace}_{serverTime}");
+                //    }
+                //    else
+                //    {
+                //        // 发送邮箱
+                //        int zone = self.DomainZone();
+                //        Log.Console($"发放赛跑大赛排行榜奖励： {zone}");
+                //        Log.Warning($"发放赛跑大赛排行榜奖励： {zone}");
+                //        long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
 
-                        mailInfo.Status = 0;
-                        mailInfo.Context = $"恭喜您获得赛跑大赛排行榜第{Response.RankId}名奖励";
-                        mailInfo.Title = "赛跑大赛排行榜奖励";
-                        mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                        //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call(mailServerId,
-                        //    new M2E_EMailSendRequest() { Id = roleInfo.UserId, MailInfo = mailInfo });
+                //        mailInfo.Status = 0;
+                //        mailInfo.Context = $"恭喜您获得赛跑大赛排行榜第{Response.RankId}名奖励";
+                //        mailInfo.Title = "赛跑大赛排行榜奖励";
+                //        mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                //        //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call(mailServerId,
+                //        //    new M2E_EMailSendRequest() { Id = roleInfo.UserId, MailInfo = mailInfo });
 
-                    }
+                //    }
 
-                    M2C_RankRunRaceReward m2C_RankRunRace = new M2C_RankRunRaceReward() { RewardList = rewardItems };
-                    MessageHelper.SendToClient(unit, m2C_RankRunRace);
-                }
+                //    M2C_RankRunRaceReward m2C_RankRunRace = new M2C_RankRunRaceReward() { RewardList = rewardItems };
+                //    MessageHelper.SendToClient(unit, m2C_RankRunRace);
+                //}
             }
 
 

@@ -88,25 +88,26 @@ namespace ET
 
         public static async ETTask OnUpdateScore(this DemonDungeonComponent self, Unit unit, int score)
         {
-            long mapInstanceId = DBHelper.GetRankServerId( self.DomainZone() );
-            RankingInfo rankPetInfo = new RankingInfo();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            rankPetInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
-            rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
-            rankPetInfo.PlayerLv = roleInfoComponentServer.RoleInfo.Lv;
-            rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
-            rankPetInfo.Combat = score;
+            //long mapInstanceId = DBHelper.GetRankServerId( self.DomainZone() );
+            //RankingInfo rankPetInfo = new RankingInfo();
+            //RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+            //rankPetInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
+            //rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
+            //rankPetInfo.PlayerLv = roleInfoComponentServer.RoleInfo.Lv;
+            //rankPetInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
+            //rankPetInfo.Combat = score;
 
-            R2M_RankDemonResponse Response = (R2M_RankDemonResponse)await ActorMessageSenderComponent.Instance.Call
-                     (mapInstanceId, new M2R_RankDemonRequest()
-                     {
-                         RankingInfo = rankPetInfo
-                     });
+            //R2M_RankDemonResponse Response = (R2M_RankDemonResponse)await ActorMessageSenderComponent.Instance.Call
+            //         (mapInstanceId, new M2R_RankDemonRequest()
+            //         {
+            //             RankingInfo = rankPetInfo
+            //         });
 
-            //推给客户端
-            List<Unit> sourcelist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
-            self.M2C_RankDemonMessage.RankList = Response.RankList;
-            MessageHelper.SendToClient(sourcelist, self.M2C_RankDemonMessage);
+            ////推给客户端
+            //List<Unit> sourcelist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
+            //self.M2C_RankDemonMessage.RankList = Response.RankList;
+            //MessageHelper.SendToClient(sourcelist, self.M2C_RankDemonMessage);
+            await ETTask.CompletedTask;
         }
 
         public static async ETTask OnKillEvent(this DemonDungeonComponent self, Unit defend, Unit attack)

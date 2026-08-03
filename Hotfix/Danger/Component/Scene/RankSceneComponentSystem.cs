@@ -506,7 +506,7 @@ namespace ET
                 self.UpdateWorldLevel(rankingInfo);
             }
             self.UpdateRankList(rankingInfo);
-            self.UpdateCampRankList(campId, rankingInfo);
+            //self.UpdateCampRankList(campId, rankingInfo);
         }
 
         public static void UpdateRankPetList(this RankSceneComponent self)
@@ -714,29 +714,29 @@ namespace ET
             int zone = self.DomainZone();
 
             Log.Warning($"发放恶魔排行榜奖励： {zone}");
-            long serverTime = TimeHelper.ServerNow();
-            List<RankingInfo> rankingInfos = self.DBRankInfo.rankingDemon;
-            long mailServerId = DBHelper.GetMailServerId( self.DomainZone() );
-            Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
-            for (int i = 0; i < rankingInfos.Count; i++)
-            {
-                LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 5);
-                if (rankRewardConfig == null)
-                {
-                    continue;
-                }
-                MailInfo mailInfo = new MailInfo();
+            //long serverTime = TimeHelper.ServerNow();
+            //List<RankingInfo> rankingInfos = self.DBRankInfo.rankingDemon;
+            //long mailServerId = DBHelper.GetMailServerId( self.DomainZone() );
+            //Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
+            //for (int i = 0; i < rankingInfos.Count; i++)
+            //{
+            //    LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 5);
+            //    if (rankRewardConfig == null)
+            //    {
+            //        continue;
+            //    }
+            //    MailInfo mailInfo = new MailInfo();
 
-                Log.Warning($"发放恶魔排行榜奖励2： {rankingInfos[i].UserId}");
+            //    Log.Warning($"发放恶魔排行榜奖励2： {rankingInfos[i].UserId}");
 
-                mailInfo.Status = 0;
-                mailInfo.Context = $"恭喜您获得恶魔排行榜第{i + 1}名奖励";
-                mailInfo.Title = "恶魔排行榜奖励";
-                mailInfo.MailId = IdGenerater.Instance.GenerateId();
+            //    mailInfo.Status = 0;
+            //    mailInfo.Context = $"恭喜您获得恶魔排行榜第{i + 1}名奖励";
+            //    mailInfo.Title = "恶魔排行榜奖励";
+            //    mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.Demon}_{serverTime}", rewardCache);
+            //    AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.Demon}_{serverTime}", rewardCache);
             
-            }
+            //}
         }
 
         //家族战结束
