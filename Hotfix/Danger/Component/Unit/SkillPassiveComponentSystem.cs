@@ -184,7 +184,7 @@ namespace ET
 
             self.HuixueTimeNum = self.HuixueTimeNum + 1;
             //10秒触发一次回血
-            if (self.HuixueTimeNum >= 10)
+            if (self.HuixueTimeNum >= 30)
             {
                 self.HuixueTimeNum = 0;
             }
@@ -195,11 +195,11 @@ namespace ET
 
             //血量<10不扣血
             int hpCurrent = self.NumericComponent.GetAsInt((int)NumericType.HP_Current_8);
-            if (hpCurrent <= 20)
+            if (hpCurrent <= 2)
                 return;
 
             //int hpMax = self.NumericComponent.GetAsInt(NumericType.HP_Max_10);
-            int couXue = hpCurrent - 20;
+            int couXue = hpCurrent - 2;
 
             self.NumericComponent.ApplyChange(null, NumericType.HP_Current_8, -1 * couXue, 0, true);
         }

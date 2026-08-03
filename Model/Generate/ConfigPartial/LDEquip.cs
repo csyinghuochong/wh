@@ -51,6 +51,7 @@ namespace ET
                     }
 
                     string[] attributeInfolist = attributeInfo.Split("~");
+                    
                     int attriId = int.Parse(attributeInfolist[0]);
 
                     string[] attributeValue = attributeInfolist[1].Split("~");
