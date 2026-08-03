@@ -82,7 +82,7 @@ namespace ET
                 case SceneType.WZRank:
                     scene.AddComponent<WZRankSceneComponent>();
                     break;
-                case SceneType.PaiMai:
+                case SceneType.Consign:
                     scene.AddComponent<PaiMaiSceneComponent>();
                     break;
                 case SceneType.Team:

@@ -55,7 +55,7 @@ namespace ET
                             Log.Debug($"数据落地:  WZRank: {scene.DomainZone()}");
                         }
                         break;
-                    case SceneType.PaiMai:
+                    case SceneType.Consign:
                         if (request.MessageType == NoticeType.StopSever)
                         {
                             scene.GetComponent<PaiMaiSceneComponent>().SaveDB(0).Coroutine();

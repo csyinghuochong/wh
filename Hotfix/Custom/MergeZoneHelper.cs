@@ -690,10 +690,10 @@ namespace ET
             List<DBPaiMainInfo> dBPaiMainInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(newzone, d => d.Id > 0);
             List<long> paimaishangjiaIds = new List<long>() 
             {
-                PaiMaiHelper.Instance.GetPaiMaiId(1),
-                PaiMaiHelper.Instance.GetPaiMaiId(2),
-                PaiMaiHelper.Instance.GetPaiMaiId(3),
-                PaiMaiHelper.Instance.GetPaiMaiId(4),
+                ConsignHelper.Instance.GetPaiMaiId(1),
+                ConsignHelper.Instance.GetPaiMaiId(2),
+                ConsignHelper.Instance.GetPaiMaiId(3),
+                ConsignHelper.Instance.GetPaiMaiId(4),
             };
             foreach (var entityNew in dBPaiMainInfos_new)
             {

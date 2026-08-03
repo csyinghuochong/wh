@@ -255,7 +255,7 @@ namespace ET
         public static async ETTask InitPaiMainShop(this PaiMaiSceneComponent self, int itemType, List<PaiMaiShopItemInfo> oldPaiMaiShop)
         {
             int zone = self.DomainZone();
-            long unitid = PaiMaiHelper.Instance.GetPaiMaiId(itemType);
+            long unitid = ConsignHelper.Instance.GetPaiMaiId(itemType);
             long dbCacheId = DBHelper.GetDbCacheId(zone);
             
             List<DBPaiMainInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(self.DomainZone(), d => d.Id == unitid);
@@ -285,7 +285,7 @@ namespace ET
         public static async ETTask InitPaiMainStall(this PaiMaiSceneComponent self, int itemType, List<PaiMaiItemInfo> oldPaiMaiStall)
         {
             int zone = self.DomainZone();
-            long unitid = PaiMaiHelper.Instance.GetPaiMaiId(itemType);
+            long unitid = ConsignHelper.Instance.GetPaiMaiId(itemType);
             long dbCacheId = DBHelper.GetDbCacheId(zone);
 
             List<DBPaiMainInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(self.DomainZone(), d => d.Id == unitid);
@@ -395,7 +395,7 @@ namespace ET
         public static async ETTask InitPaiMaiShangJia(this PaiMaiSceneComponent self, int itemType, List<PaiMaiItemInfo> oldPaiMaiAll)
         {
             int zone = self.DomainZone();
-            long unitid = PaiMaiHelper.Instance.GetPaiMaiId(itemType);
+            long unitid = ConsignHelper.Instance.GetPaiMaiId(itemType);
             long dbCacheId = DBHelper.GetDbCacheId(zone);
 
             List<DBPaiMainInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(self.DomainZone(), d => d.Id == unitid);
@@ -467,7 +467,7 @@ namespace ET
         //更新快捷购买列表
         public static void UpdatePaiMaiShopItemList(this PaiMaiSceneComponent self)
         {
-            self.dBPaiMainInfo_Shop.PaiMaiShopItemInfos = PaiMaiHelper.Instance.InitPaiMaiShopItemList(self.dBPaiMainInfo_Shop.PaiMaiShopItemInfos);
+            //self.dBPaiMainInfo_Shop.PaiMaiShopItemInfos = PaiMaiHelper.Instance.InitPaiMaiShopItemList(self.dBPaiMainInfo_Shop.PaiMaiShopItemInfos);
         }
 
         //零点刷新
@@ -660,16 +660,16 @@ namespace ET
             await self.CheckOverTime(self.dBPaiMainInfo_Gemstone);
             await self.CheckOverTime(self.dBPaiMainInfo_Stall);
 
-            await self.SavePaiMaiData(PaiMaiHelper.Instance.GetPaiMaiId(1), self.dBPaiMainInfo_Consume);
+            await self.SavePaiMaiData(ConsignHelper.Instance.GetPaiMaiId(1), self.dBPaiMainInfo_Consume);
             await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000,5000));
-            await self.SavePaiMaiData(PaiMaiHelper.Instance.GetPaiMaiId(2), self.dBPaiMainInfo_Material);
+            await self.SavePaiMaiData(ConsignHelper.Instance.GetPaiMaiId(2), self.dBPaiMainInfo_Material);
             await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 5000));
-            await self.SavePaiMaiData(PaiMaiHelper.Instance.GetPaiMaiId(3), self.dBPaiMainInfo_Equipment);
+            await self.SavePaiMaiData(ConsignHelper.Instance.GetPaiMaiId(3), self.dBPaiMainInfo_Equipment);
             await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 5000));
-            await self.SavePaiMaiData(PaiMaiHelper.Instance.GetPaiMaiId(4), self.dBPaiMainInfo_Gemstone);
+            await self.SavePaiMaiData(ConsignHelper.Instance.GetPaiMaiId(4), self.dBPaiMainInfo_Gemstone);
 
-            await self.SavePaiMaiData(PaiMaiHelper.Instance.GetPaiMaiId(11), self.dBPaiMainInfo_Shop);
-            await self.SavePaiMaiData(PaiMaiHelper.Instance.GetPaiMaiId(12), self.dBPaiMainInfo_Stall);
+            await self.SavePaiMaiData(ConsignHelper.Instance.GetPaiMaiId(11), self.dBPaiMainInfo_Shop);
+            await self.SavePaiMaiData(ConsignHelper.Instance.GetPaiMaiId(12), self.dBPaiMainInfo_Stall);
         }
 
         public static async ETTask SavePaiMaiData(this PaiMaiSceneComponent self, long unitId, DBPaiMainInfo dBPaiMainInfo)

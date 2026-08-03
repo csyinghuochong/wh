@@ -213,7 +213,7 @@ namespace ET
                         //scene.GetComponent<UnionSceneComponent>().OnUnionRaceOver().Coroutine();
                     }
                     break;
-                case SceneType.PaiMai:
+                case SceneType.Consign:
                     //更新快捷购买列表价格
                     //Log.Console($"PaiMai定时刷新: {scene.DomainZone()} {hour}");
                     LogHelper.LogWarning($"PaiMai定时刷新: {scene.DomainZone()} {hour}", true);
