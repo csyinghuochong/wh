@@ -126,42 +126,11 @@ namespace ET
                     rankingInfo.UserId = unitId;
                 }
                 num += 1;
-                MailInfo mailInfo = new MailInfo();
+                //MailInfo mailInfo = new MailInfo();
 
-                if (num == 1)
-                {
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10000209, ItemNum = 1, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010035, ItemNum = 30, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010083, ItemNum = 30, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                }
-
-                if (num == 2)
-                {
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010035, ItemNum = 20, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010083, ItemNum = 20, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                }
-
-                if (num == 3)
-                {
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010035, ItemNum = 15, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010083, ItemNum = 15, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                }
-
-                if (num == 4 || num == 5)
-                {
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010035, ItemNum = 10, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010083, ItemNum = 10, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                }
-
-                if (num >= 6)
-                {
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010035, ItemNum = 5, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = 10010083, ItemNum = 5, GetWay = $"{ItemGetWay.SoloReward}_{serverTime}" });
-                }
-
-                mailInfo.Title = "竞技场第" + num + "名";
-                mailInfo.Context = "恭喜你获得竞技场第" + num + "名,奖励如下";
-                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unitId), unitId, mailInfo).Coroutine();
+                //mailInfo.Title = "竞技场第" + num + "名";
+                //mailInfo.Context = "恭喜你获得竞技场第" + num + "名,奖励如下";
+                //MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unitId), unitId, mailInfo).Coroutine();
 
                 //只发送前100
                 if (num >= 100)

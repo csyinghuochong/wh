@@ -526,12 +526,11 @@ namespace ET
                 {
                     Log.Warning($"发放竞猜奖励: {self.DomainZone()}  {guessIndex} {playerIds[i]}");
 
-                    MailInfo mailInfo = new MailInfo();
-                    mailInfo.Status = 0;
-                    mailInfo.Title = "竞猜奖励";
-                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    mailInfo.ItemList.AddRange(itemList);
-
+                    //MailInfo mailInfo = new MailInfo();
+                    //mailInfo.Status = 0;
+                    //mailInfo.Title = "竞猜奖励";
+                    //mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                    //mailInfo.ItemList.AddRange(itemList);
                 }
 
                 if (hour == 0)

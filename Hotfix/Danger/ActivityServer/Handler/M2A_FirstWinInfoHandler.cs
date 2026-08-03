@@ -19,11 +19,11 @@ namespace ET
             }
 
             MailInfo mailInfo = new MailInfo();
-            mailInfo.Status = 0;
+            /*mailInfo.Status = 0;
             mailInfo.Context = $"首杀奖励";
             mailInfo.Title = "首杀奖励";
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
-            /*
+            
             FirstWinConfig firstWinConfig = FirstWinConfigCategory.Instance.Get(message.FirstWinInfo.FirstWinId);
             string rewardList = firstWinConfig.RewardList_1;
             if (message.FirstWinInfo.Difficulty == 2)

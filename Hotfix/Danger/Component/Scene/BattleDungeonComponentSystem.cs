@@ -76,21 +76,21 @@ namespace ET
             {
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.Status = 0;
-                mailInfo.Context = "战场奖励";
-                mailInfo.Title = "战场奖励";
-                mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                string[] needList = ldGlobalValue.Value.Split('@');
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.BattleWin}_{serverTime}" });
-                }
+                //mailInfo.Context = "战场奖励";
+                //mailInfo.Title = "战场奖励";
+                //mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                //string[] needList = ldGlobalValue.Value.Split('@');
+                //for (int k = 0; k < needList.Length; k++)
+                //{
+                //    string[] itemInfo = needList[k].Split(';');
+                //    if (itemInfo.Length < 2)
+                //    {
+                //        continue;
+                //    }
+                //    int itemId = int.Parse(itemInfo[0]);
+                //    int itemNum = int.Parse(itemInfo[1]);
+                //    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.BattleWin}_{serverTime}" });
+                //}
 
                 Unit unit = self.DomainScene().GetComponent<UnitComponent>().Get(winPlayers[i]);
                 if (unit != null)

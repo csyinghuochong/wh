@@ -5039,14 +5039,11 @@ namespace ET
 		[ProtoMember(1)]
 		public int Status { get; set; }
 
+		[ProtoMember(2)]
+		public int ConfigId { get; set; }
+
 		[ProtoMember(3)]
-		public string Context { get; set; }
-
-		[ProtoMember(5)]
 		public long MailId { get; set; }
-
-		[ProtoMember(6)]
-		public string Title { get; set; }
 
 		[ProtoMember(7)]
 		public List<BagInfo> ItemList = new List<BagInfo>();

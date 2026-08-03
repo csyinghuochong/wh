@@ -78,24 +78,24 @@ namespace ET
                 ActivityTreeStageItem activityTreeStageItem = ActivityV1Config.ActivityTreeStageDesc[oldstage];
                 string[] needList = activityTreeStageItem.Reward.Split('@');
 
-                MailInfo mailInfo = new MailInfo();
-                mailInfo.Status = 0;
-                mailInfo.Title = "成长树活动奖励";
-                mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                //MailInfo mailInfo = new MailInfo();
+                //mailInfo.Status = 0;
+                //mailInfo.Title = "成长树活动奖励";
+                //mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                mailInfo.Context = $"成长树达到 {activityTreeStageItem.Name},获得如下奖励";
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}" });
-                }
-                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo).Coroutine();
+                //mailInfo.Context = $"成长树达到 {activityTreeStageItem.Name},获得如下奖励";
+                //for (int k = 0; k < needList.Length; k++)
+                //{
+                //    string[] itemInfo = needList[k].Split(';');
+                //    if (itemInfo.Length < 2)
+                //    {
+                //        continue;
+                //    }
+                //    int itemId = int.Parse(itemInfo[0]);
+                //    int itemNum = int.Parse(itemInfo[1]);
+                //    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}" });
+                //}
+                //MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo).Coroutine();
             }
 
             response.ActivityV1Info = activityComponentServer.ActivityV1Info; 

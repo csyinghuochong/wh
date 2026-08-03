@@ -1,3 +1,4 @@
+using NLog.Fluent;
 using System.Collections.Generic;
 
 namespace ET
@@ -145,32 +146,33 @@ namespace ET
 
             for (int i = 0; i < players.Count; i++)
             {
-                MailInfo mailInfo = new MailInfo();
-                mailInfo.Status = 0;
-                mailInfo.Title = "角斗场排名奖励";
-                mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                Log.Error("MailInfo mailInfo = new MailInfo");
+            //    MailInfo mailInfo = new MailInfo();
+            //    mailInfo.Status = 0;
+            //    mailInfo.Title = "角斗场排名奖励";
+            //    mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                if (players[i].RankId > 0)
-                {
-                    mailInfo.Context = $"恭喜你在角斗场中获得第{players[i].RankId}名,获得如下奖励";
-                }
-                else
-                {
-                    mailInfo.Context = $"参与角斗场,获得如下奖励";
-                }
-                string[] needList = rewardList.Split('@');
-                for (int k = 0; k < needList.Length; k++)
-                {
-                    string[] itemInfo = needList[k].Split(';');
-                    if (itemInfo.Length < 2)
-                    {
-                        continue;
-                    }
-                    int itemId = int.Parse(itemInfo[0]);
-                    int itemNum = int.Parse(itemInfo[1]);
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.ArenaWin}_{serverTime}" });
-                }
-                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(players[i].UnitId), players[i].UnitId, mailInfo).Coroutine();
+            //    if (players[i].RankId > 0)
+            //    {
+            //        mailInfo.Context = $"恭喜你在角斗场中获得第{players[i].RankId}名,获得如下奖励";
+            //    }
+            //    else
+            //    {
+            //        mailInfo.Context = $"参与角斗场,获得如下奖励";
+            //    }
+            //    string[] needList = rewardList.Split('@');
+            //    for (int k = 0; k < needList.Length; k++)
+            //    {
+            //        string[] itemInfo = needList[k].Split(';');
+            //        if (itemInfo.Length < 2)
+            //        {
+            //            continue;
+            //        }
+            //        int itemId = int.Parse(itemInfo[0]);
+            //        int itemNum = int.Parse(itemInfo[1]);
+            //        mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.ArenaWin}_{serverTime}" });
+            //    }
+            //    MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(players[i].UnitId), players[i].UnitId, mailInfo).Coroutine();
             }
         }
 

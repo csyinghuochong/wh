@@ -9,11 +9,13 @@ namespace ET
         public static async ETTask SendPaiMaiEmail(int zone, PaiMaiItemInfo paiMaiItemInfo,int costNum, long unitid)
         {
             await ETTask.CompletedTask;
+
+            Log.Error("MailInfo mailInfo = new MailInfo");
             MailInfo mailInfo = new MailInfo();
             LDItem ldItemCof = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
-            mailInfo.Status = 0;
-            mailInfo.Context = "你拍卖行出售的道具:" + ldItemCof.Name + ",已经被其他玩家购买" + costNum + "个。";
-            mailInfo.Title = "拍卖行邮件";
+            //mailInfo.Status = 0;
+            //mailInfo.Context = "你拍卖行出售的道具:" + ldItemCof.Name + ",已经被其他玩家购买" + costNum + "个。";
+            //mailInfo.Title = "拍卖行邮件";
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
             BagInfo reward = new BagInfo();
             reward.ItemID = 1;

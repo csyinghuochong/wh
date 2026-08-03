@@ -47,34 +47,7 @@ namespace ET
 
         public static  void SendCampReward(this DemonDungeonComponent self, int campId, int rewardId)
         {
-            MailInfo mailInfo = new MailInfo();
-            string rewardTime = rewardId == 100 ? "胜利" : "参与";
-            mailInfo.Status = 0;
-            mailInfo.Title = "恶魔活动奖励";
-            mailInfo.Context = $"恶魔活动{rewardTime}奖励";
-            mailInfo.MailId = IdGenerater.Instance.GenerateId();
-
-            LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(rewardId);
-            string[] rewardList = ldGlobalValue.Value.Split('@');
-            for (int i = 0; i < rewardList.Length; i++)
-            {
-                string[] rewardItem = rewardList[i].Split(';');
-                mailInfo.ItemList.Add(new BagInfo()
-                {
-                    ItemID = int.Parse(rewardItem[0]),
-                    ItemNum = int.Parse(rewardItem[1]), 
-                });
-            }
-            List<Unit> sourcelist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
-            for (int i = 0; i < sourcelist.Count; i++)
-            {
-                if (campId != sourcelist[i].GetComponent<NumericComponent>().GetAsInt(NumericType.BattleCamp))
-                {
-                    continue;
-                }
-
-                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(sourcelist[i].Id), sourcelist[i].Id, mailInfo).Coroutine();
-            }
+            
         }
 
         public static async ETTask SendRankReward(this DemonDungeonComponent self)

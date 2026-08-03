@@ -791,25 +791,7 @@ namespace ET
             Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
-                LDRankList rankRewardConfig = RankHelper.GetRankReward(i + 1, 3);
-                if (rankRewardConfig == null)
-                {
-                    continue;
-                }
-                MailInfo mailInfo = new MailInfo();
-
-                mailInfo.Status = 0;
-                mailInfo.Context = $"恭喜您获得狩猎排行榜第{i + 1}名奖励";
-                mailInfo.Title = "狩猎排行榜奖励";
-                mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                Log.Debug($"发放狩猎排行榜奖励：zone. {zone} rankid.{i + 1}  unitid.{rankingInfos[i].UnitID}  {rankingInfos[i].PlayerName}  {rankingInfos[i].KillNumber}");
-                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
-                //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-                //      (mailServerId, new M2E_EMailSendRequest()
-                //      {
-                //          Id = rankingInfos[i].UnitID,
-                //          MailInfo = mailInfo
-                //      });
+               
             }
         }
 
@@ -937,18 +919,20 @@ namespace ET
                 {
                     continue;
                 }
+                Log.Error("MailInfo mailInfo = new MailInfo");
+
                 MailInfo mailInfo = new MailInfo();
 
-                mailInfo.Status = 0;
-                mailInfo.Context = $"恭喜您获得排行榜第{i + 1}名奖励";
-                mailInfo.Title = "排行榜奖励";
-                mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                //mailInfo.Status = 0;
+                //mailInfo.Context = $"恭喜您获得排行榜第{i + 1}名奖励";
+                //mailInfo.Title = "排行榜奖励";
+                //mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
-                if (i <= 10)
-                {
-                    Log.Warning($"战力奖励: {self.DomainZone()} {rankingInfos[i].UserId}   {i}");
-                }
-                AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
+                //if (i <= 10)
+                //{
+                //    Log.Warning($"战力奖励: {self.DomainZone()} {rankingInfos[i].UserId}   {i}");
+                //}
+                //AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
                 //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
                 //      (mailServerId, new M2E_EMailSendRequest() 
                 //      { 

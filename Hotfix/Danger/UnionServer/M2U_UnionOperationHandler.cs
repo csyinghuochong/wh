@@ -42,9 +42,10 @@ namespace ET
                                 dBUnionInfo.UnionInfo.Level++;
                                 dBUnionInfo.UnionInfo.Exp -= ldUnion.Exp;
 
+                                Log.Error("MailInfo mailInfo = new MailInfo");
                                 MailInfo mailInfo = new MailInfo();
-                                mailInfo.Title = "家族升级";
-                                mailInfo.Context = "恭喜您!您所在得家族等级获得提升,这是家族升级的奖励!";
+                                //mailInfo.Title = "家族升级";
+                                //mailInfo.Context = "恭喜您!您所在得家族等级获得提升,这是家族升级的奖励!";
 
                                 long serverTime = TimeHelper.ServerNow();
                                 LDUnion ldUnionCof = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);

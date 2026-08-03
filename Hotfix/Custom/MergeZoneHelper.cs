@@ -1,3 +1,4 @@
+using NLog.Fluent;
 using SharpCompress.Common;
 using System;
 using System.Collections;
@@ -669,13 +670,14 @@ namespace ET
                 List<BagInfo> rewardlist = CommonConfig.GetHeQuReward(lv);
                 if (rewardlist!=null && rewardlist.Count > 0)
                 {
-                    MailInfo mailInfo = new MailInfo();
-                    mailInfo.Status = 0;
-                    mailInfo.Context = "合区补偿";
-                    mailInfo.Title = "合区补偿";
-                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    mailInfo.ItemList.AddRange(rewardlist);
-                    entity.MailInfoList.Add(mailInfo);
+                    Log.Error("MailInfo mailInfo = new MailInfo");
+                    //MailInfo mailInfo = new MailInfo();
+                    //mailInfo.Status = 0;
+                    //mailInfo.Context = "合区补偿";
+                    //mailInfo.Title = "合区补偿";
+                    //mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                    //mailInfo.ItemList.AddRange(rewardlist);
+                    //entity.MailInfoList.Add(mailInfo);
                 }
 
                 await Game.Scene.GetComponent<DBComponent>().Save(newzone, entity);
@@ -1133,17 +1135,18 @@ namespace ET
                     List<DBMailInfo> renamedBMailInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBMailInfo>(oldzone, d => d.Id == renameId);
                     if (renamedBMailInfos.Count > 0)
                     {
-                        MailInfo mailInfo = new MailInfo();
-                        mailInfo.Status = 0;
-                        mailInfo.Context = "合区补偿改名卡";
-                        mailInfo.Title = "合区补偿";
-                        mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                        BagInfo reward = new BagInfo();
-                        reward.ItemID = 10010036;
-                        reward.ItemNum = 1;
-                        reward.GetWay = $"{ItemGetWay.System}_{TimeHelper.ServerNow()}";
-                        mailInfo.ItemList.Add(reward);
-                        renamedBMailInfos[0].MailInfoList.Add(mailInfo);
+                        Log.Error("MailInfo mailInfo = new MailInfo");
+                        //MailInfo mailInfo = new MailInfo();
+                        //mailInfo.Status = 0;
+                        //mailInfo.Context = "合区补偿改名卡";
+                        //mailInfo.Title = "合区补偿";
+                        //mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                        //BagInfo reward = new BagInfo();
+                        //reward.ItemID = 10010036;
+                        //reward.ItemNum = 1;
+                        //reward.GetWay = $"{ItemGetWay.System}_{TimeHelper.ServerNow()}";
+                        //mailInfo.ItemList.Add(reward);
+                        //renamedBMailInfos[0].MailInfoList.Add(mailInfo);
 
                         await Game.Scene.GetComponent<DBComponent>().Save(newzone, renamedBMailInfos[0]);
                     }

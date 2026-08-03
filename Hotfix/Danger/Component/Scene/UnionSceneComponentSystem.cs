@@ -357,21 +357,21 @@ namespace ET
                 {
                     MailInfo mailInfo = new MailInfo();
                     mailInfo.Status = 0;
-                    mailInfo.Title = "家族争霸赛奖励";
-                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                    //mailInfo.Title = "家族争霸赛奖励";
+                    //mailInfo.MailId = IdGenerater.Instance.GenerateId();
                   
-                    if (unionid == self.WinUnionId)
-                    {
-                        mailInfo.Context = "发送家族争霸赛胜利奖励";
-                        Log.Warning($"发送奖励胜利！！: {self.DomainZone()} {unitids[i]}");
-                        mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = winJingJin,  GetWay = $"{ItemGetWay.UnionRace}_{serverTime}" });
-                    }
-                    else
-                    {
-                        mailInfo.Context = "发送家族争霸赛失败奖励";
-                        Log.Warning($"发送奖励失败！！: {self.DomainZone()} {unitids[i]}");
-                        mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = failJiangJin, GetWay = $"{ItemGetWay.UnionRace}_{serverTime}" });
-                    }
+                    //if (unionid == self.WinUnionId)
+                    //{
+                    //    mailInfo.Context = "发送家族争霸赛胜利奖励";
+                    //    Log.Warning($"发送奖励胜利！！: {self.DomainZone()} {unitids[i]}");
+                    //    mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = winJingJin,  GetWay = $"{ItemGetWay.UnionRace}_{serverTime}" });
+                    //}
+                    //else
+                    //{
+                    //    mailInfo.Context = "发送家族争霸赛失败奖励";
+                    //    Log.Warning($"发送奖励失败！！: {self.DomainZone()} {unitids[i]}");
+                    //    mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = failJiangJin, GetWay = $"{ItemGetWay.UnionRace}_{serverTime}" });
+                    //}
 
                     //MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unitids[i]), unitids[i], mailInfo).Coroutine();
               

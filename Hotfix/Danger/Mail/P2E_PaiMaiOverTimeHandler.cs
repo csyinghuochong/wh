@@ -19,7 +19,7 @@ namespace ET
             }
 
             long mailid = IdGenerater.Instance.GenerateId();
-            dBMainInfo.MailInfoList.Add(new MailInfo() { MailId = mailid, Context = "拍卖下架", Title = "拍卖下架", ItemList = new List<BagInfo>() { request.PaiMaiItemInfo.BagInfo } });
+            //dBMainInfo.MailInfoList.Add(new MailInfo() { MailId = mailid, Context = "拍卖下架", Title = "拍卖下架", ItemList = new List<BagInfo>() { request.PaiMaiItemInfo.BagInfo } });
 
             await DBHelper.SaveComponent(scene.DomainZone(),  request.PaiMaiItemInfo.UserId, dBMainInfo);
             reply();

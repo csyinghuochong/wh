@@ -44,19 +44,20 @@ namespace ET
 
                 foreach (( long unitid, int feednumber ) in activitySceneComponent.DBDayActivityInfo.FeedPlayerList)
                 {
-                    MailInfo mailInfo = new MailInfo();
-                    mailInfo.Status = 0;
-                    mailInfo.Title = "喂食奖励";
-                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    mailInfo.ItemList.AddRange(itemList);
+                    //MailInfo mailInfo = new MailInfo();
+                    //mailInfo.Status = 0;
+                    //mailInfo.Title = "喂食奖励";
+                    //mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                    //mailInfo.ItemList.AddRange(itemList);
 
-                    Mail2M_SendMailResponse g_EMailSendResponse = (Mail2M_SendMailResponse)await ActorMessageSenderComponent.Instance.Call
-                                       (mailServerId, new M2Mail_SendMailRequest()
-                                       {
-                                           Id = unitid,
-                                           MailInfo = mailInfo,
-                                           GetWay = ItemGetWay.Activity,
-                                       });
+                    //Mail2M_SendMailResponse g_EMailSendResponse = (Mail2M_SendMailResponse)await ActorMessageSenderComponent.Instance.Call
+                    //                   (mailServerId, new M2Mail_SendMailRequest()
+                    //                   {
+                    //                       Id = unitid,
+                    //                       MailInfo = mailInfo,
+                    //                       GetWay = ItemGetWay.Activity,
+                    //                   });
+                    Log.Error("MailInfo mailInfo = new MailInfo");
                 }
             }
             

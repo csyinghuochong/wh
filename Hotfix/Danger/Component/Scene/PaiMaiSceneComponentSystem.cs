@@ -147,14 +147,15 @@ namespace ET
 
                 if (m2G_RechargeResponse.Error == ErrorCode.ERR_Success)
                 {
+                    Log.Error("MailInfo mailInfo = new MailInfo");
                     Log.Warning($"OnAuctionOver[在线]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}");
-                    MailInfo mailInfo = new MailInfo();
-                    mailInfo.Status = 0;
-                    mailInfo.Context = "竞拍道具";
-                    mailInfo.Title = "竞拍道具";
-                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    mailInfo.ItemList.Add(new BagInfo() { ItemID = self.AuctionItem, ItemNum = self.AuctionItemNum, GetWay = auctionGetWay });
-                    await MailHelp.SendUserMail(auctionHomeZone, self.AuctioUnitId, mailInfo);
+                    //MailInfo mailInfo = new MailInfo();
+                    //mailInfo.Status = 0;
+                    //mailInfo.Context = "竞拍道具";
+                    //mailInfo.Title = "竞拍道具";
+                    //mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                    //mailInfo.ItemList.Add(new BagInfo() { ItemID = self.AuctionItem, ItemNum = self.AuctionItemNum, GetWay = auctionGetWay });
+                    //await MailHelp.SendUserMail(auctionHomeZone, self.AuctioUnitId, mailInfo);
                 }
                 else
                 {
@@ -164,13 +165,14 @@ namespace ET
                     {
                         roleInfoComponentServer.RoleInfo.Gold -= self.AuctionPrice;
                         DBHelper.SaveComponentCache(auctionHomeZone, self.AuctioUnitId, roleInfoComponentServer).Coroutine();
-                        MailInfo mailInfo = new MailInfo();
-                        mailInfo.Status = 0;
-                        mailInfo.Context = "竞拍道具";
-                        mailInfo.Title = "竞拍道具";
-                        mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                        mailInfo.ItemList.Add(new BagInfo() { ItemID = self.AuctionItem, ItemNum = self.AuctionItemNum, GetWay = auctionGetWay });
-                        await MailHelp.SendUserMail(auctionHomeZone, self.AuctioUnitId, mailInfo);
+                        Log.Error("MailInfo mailInfo = new MailInfo");
+                        //MailInfo mailInfo = new MailInfo();
+                        //mailInfo.Status = 0;
+                        //mailInfo.Context = "竞拍道具";
+                        //mailInfo.Title = "竞拍道具";
+                        //mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                        //mailInfo.ItemList.Add(new BagInfo() { ItemID = self.AuctionItem, ItemNum = self.AuctionItemNum, GetWay = auctionGetWay });
+                        //await MailHelp.SendUserMail(auctionHomeZone, self.AuctioUnitId, mailInfo);
                     }
                     else
                     {
