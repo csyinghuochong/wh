@@ -26,7 +26,7 @@ namespace ET
 
         public static int GetAutoLevel()
         {
-            return LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Add_Point_Auto_Level);
+            return LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Add_Point_Auto_Level);
         }
 
         public static int GetFreePointByLevel(int level)
@@ -47,10 +47,10 @@ namespace ET
                 return initPointsCache;
             }
 
-            int[] initPoints = LDGlobalValueCategory.Instance.GetIntArray(GlobalValueKey.Add_Point_Init);
+            int[] initPoints = LDGlobalValueCategory.Instance.GetIntArray(GlobalValueKey.Global_Add_Point_Init);
             if (initPoints.Length != PointNumericTypes.Length)
             {
-                throw new Exception($"GlobalValue {GlobalValueKey.Add_Point_Init} 长度应为 {PointNumericTypes.Length}");
+                throw new Exception($"GlobalValue {GlobalValueKey.Global_Add_Point_Init} 长度应为 {PointNumericTypes.Length}");
             }
 
             initPointsCache = initPoints;
@@ -64,10 +64,10 @@ namespace ET
                 return fixedPointPerLevelCache;
             }
 
-            int[] fixedPoints = LDGlobalValueCategory.Instance.GetIntArray(GlobalValueKey.Add_Point_Level_UP_Fixed);
+            int[] fixedPoints = LDGlobalValueCategory.Instance.GetIntArray(GlobalValueKey.Global_Add_Point_Level_UP_Fixed);
             if (fixedPoints.Length != PointNumericTypes.Length)
             {
-                throw new Exception($"GlobalValue {GlobalValueKey.Add_Point_Level_UP_Fixed} 长度应为 {PointNumericTypes.Length}");
+                throw new Exception($"GlobalValue {GlobalValueKey.Global_Add_Point_Level_UP_Fixed} 长度应为 {PointNumericTypes.Length}");
             }
 
             fixedPointPerLevelCache = fixedPoints;

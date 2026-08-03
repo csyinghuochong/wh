@@ -23,7 +23,7 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             int resetNumber = numericComponent.GetAsInt(NumericType.PointResetTimes);
 
-            if (resetNumber >= LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Add_Point_Free_Resets))
+            if (resetNumber >= LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Add_Point_Free_Resets))
             {
                 //扣除消耗
             }

@@ -81,35 +81,35 @@ namespace ET
 
         private void ParseBaseData()
         {
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Bag_Capacity_1);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure] = this.GetInt(GlobalValueKey.Bag_Capacity_2);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagMaterial] = this.GetInt(GlobalValueKey.Bag_Capacity_3);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagConsume] = this.GetInt(GlobalValueKey.Bag_Capacity_4);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagLife] = this.GetInt(GlobalValueKey.Bag_Capacity_51);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome] = this.GetInt(GlobalValueKey.Bag_Capacity_52);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_2);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagMaterial] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_3);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagConsume] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_4);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagLife] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_51);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_52);
         }
 
         private void ParseAddPoint()
         {
             Add_Point_Level_UP_Fixed.Clear();
 
-            if (this.ContainKey(GlobalValueKey.Add_Point_Level_UP_Fixed))
+            if (this.ContainKey(GlobalValueKey.Global_Add_Point_Level_UP_Fixed))
             {
-                Add_Point_Level_UP_Fixed.AddRange(this.GetIntArray(GlobalValueKey.Add_Point_Level_UP_Fixed));
+                Add_Point_Level_UP_Fixed.AddRange(this.GetIntArray(GlobalValueKey.Global_Add_Point_Level_UP_Fixed));
             }
 
-            if (!this.ContainKey(GlobalValueKey.Add_Point_Level_UP_Free))
+            if (!this.ContainKey(GlobalValueKey.Global_Add_Point_Level_UP_Free))
             {
                 Add_Point_Level_UP_Free_ByLevel = Array.Empty<int>();
                 return;
             }
 
-            string rawValue = this.GetByKey(GlobalValueKey.Add_Point_Level_UP_Free).Value;
+            string rawValue = this.GetByKey(GlobalValueKey.Global_Add_Point_Level_UP_Free).Value;
             
             Add_Point_Level_UP_Free_ByLevel = GlobalValueLevelPointParser.ParseToLevelTable(
                 rawValue,
                 this.MaxLevel,
-                GlobalValueKey.Add_Point_Level_UP_Free);
+                GlobalValueKey.Global_Add_Point_Level_UP_Free);
         }
 
         /// <summary>升到指定等级时本次获得的自由属性点（1 级为 0，3 级为 4）。</summary>

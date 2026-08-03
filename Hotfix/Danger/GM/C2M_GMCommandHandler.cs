@@ -9,6 +9,27 @@ namespace ET
     [ActorMessageHandler]
     public class C2M_GMCommandHandler : AMActorLocationHandler<Unit, C2M_GMCommandRequest>
     {
+        /// <summary>
+        /// 提取第二个#后面的整数
+        /// 样例: //#testmail#12 → 12
+        /// </summary>
+        public static bool TryGetSecondHashNumber(string source, out int result)
+        {
+            result = 0;
+            if (string.IsNullOrEmpty(source))
+                return false;
+
+            string[] arr = source.Split('#');
+            // 至少要有两个#，数组长度≥2，第二个#后的内容在arr[1]
+            if (arr.Length < 2)
+                return false;
+
+            return int.TryParse(arr[1].Trim(), out result);
+        }
+
+
+
+
 		protected override async ETTask Run(Unit unit, C2M_GMCommandRequest message)
 		{
 			try
@@ -32,20 +53,27 @@ namespace ET
 					}
 					return;
 				}
-				if (message.GMMsg == "#testmail")
+				if (message.GMMsg .Contains ("#testmail"))
 				{
-                    for(int i = 0; i < 120; i++)
-					{
-                        MailInfo mailInfo = new MailInfo();
-                        mailInfo.Status = 0;
-                        Log.Error("MailInfo mailInfo = new MailInfo");
-                        //mailInfo.Context = i + "_________" + i;
-                        //mailInfo.Title = "系统通知";
-                        mailInfo.MailId = IdGenerater.Instance.GenerateId();
-						mailInfo.Form = "官方xxx";
-						mailInfo.ValidTime = TimeHelper.ServerNow() + RandomHelper.RandInt64();
-                        await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo);
+                    //#testmail#1
+                    //#testmail#2
+
+                    //调用
+                    if (TryGetSecondHashNumber(message.GMMsg, out int mailid))
+                    {
+                        Console.WriteLine(mailid);
                     }
+
+                    MailInfo mailInfo = new MailInfo();
+                    mailInfo.Status = 0;
+					mailInfo.ConfigId = mailid;
+                    Log.Error("MailInfo mailInfo = new MailInfo");
+                    //mailInfo.Context = i + "_________" + i;
+                    //mailInfo.Title = "系统通知";
+                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                    mailInfo.Form = "官方xxx";
+                    mailInfo.ValidTime = TimeHelper.ServerNow() + RandomHelper.RandInt64();
+                    await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo);
                 }
                 if (message.GMMsg == "#mianshang" || message.GMMsg == "#wudi")
 				{
@@ -197,7 +225,6 @@ namespace ET
                                 unit.GetComponent<ChengJiuComponentServer>().OnActiveJingLing(itemId);
                                 break;
                         }
-
 						break;
                     //70001001  0    71001010    1       70001003     2      70001011    3
                     case 2:       //72009041死亡技能      //2#152#29#-67#72000198#1  90000005-爆炸怪 72002013-脱战技能没移除2#-78#0#0.7#72004002#1  70001001  72009001
