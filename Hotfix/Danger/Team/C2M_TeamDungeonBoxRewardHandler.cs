@@ -42,11 +42,12 @@ namespace ET
                 response.Mail = 1;
                 List<BagInfo> bagInfos = new List<BagInfo>();
                 bagInfos.Add(new BagInfo(){ ItemID = request.RewardItem.ItemID, ItemNum = request.RewardItem.ItemNum } );
+                Log.Error("MailInfo mailInfo = new MailInfo");
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.Status = 0;
-                mailInfo.Context = "副本奖励";
-                mailInfo.Title = "副本奖励";
-                mailInfo.MailId = IdGenerater.Instance.GenerateId();
+                //mailInfo.Context = "副本奖励";
+                //mailInfo.Title = "副本奖励";
+                //mailInfo.MailId = IdGenerater.Instance.GenerateId();
                 mailInfo.ItemList.AddRange(bagInfos);
 
                 MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo).Coroutine();

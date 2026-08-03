@@ -760,10 +760,10 @@ namespace ET
                 MailInfo mailInfo = new MailInfo();
 
                 Log.Warning($"发放家族战排行榜奖励2： {rankingInfos[i].UnitID}");
-
+                Log.Error("MailInfo mailInfo = new MailInfo");
                 mailInfo.Status = 0;
-                mailInfo.Context = $"恭喜您获得家族战排行榜第{i + 1}名奖励";
-                mailInfo.Title = "家族战排行榜奖励";
+                //mailInfo.Context = $"恭喜您获得家族战排行榜第{i + 1}名奖励";
+                //mailInfo.Title = "家族战排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.ShowLie}_{serverTime}", rewardCache);
@@ -822,11 +822,12 @@ namespace ET
                 {
                     continue;
                 }
+                Log.Error("MailInfo mailInfo = new MailInfo");
                 MailInfo mailInfo = new MailInfo();
 
                 mailInfo.Status = 0;
-                mailInfo.Context = $"恭喜您获得试炼排行榜第{i + 1}名奖励";
-                mailInfo.Title = "排行榜奖励";
+                //mailInfo.Context = $"恭喜您获得试炼排行榜第{i + 1}名奖励";
+                //mailInfo.Title = "排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
                 if (i <= 10)
@@ -869,11 +870,12 @@ namespace ET
                 {
                     continue;
                 }
+                Log.Error("MailInfo mailInfo = new MailInfo");
                 MailInfo mailInfo = new MailInfo();
 
                 mailInfo.Status = 0;
-                mailInfo.Context = $"恭喜您获得赛季之塔第{i + 1}名奖励";
-                mailInfo.Title = "赛季之塔奖励";
+                //mailInfo.Context = $"恭喜您获得赛季之塔第{i + 1}名奖励";
+                //mailInfo.Title = "赛季之塔奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
                 if (i <= 10)
@@ -976,12 +978,12 @@ namespace ET
                 {
                     continue;
                 }
-
+                Log.Error("MailInfo mailInfo = new MailInfo");
                 MailInfo mailInfo = new MailInfo();
 
                 mailInfo.Status = 0;
-                mailInfo.Context = $"恭喜您获得排行榜第{i + 1}名奖励";
-                mailInfo.Title = "排行榜奖励";
+                //mailInfo.Context = $"恭喜您获得排行榜第{i + 1}名奖励";
+                //mailInfo.Title = "排行榜奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
 
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);

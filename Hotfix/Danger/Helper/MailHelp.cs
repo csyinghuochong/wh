@@ -109,11 +109,11 @@ namespace ET
             {
                 return;
             }
-
+            Log.Error("MailInfo mailInfo = new MailInfo");
             MailInfo mailInfo = new MailInfo();
             mailInfo.Status = 0;
-            mailInfo.Title = "奖励";
-            mailInfo.Context = "全服补偿邮件";
+            //mailInfo.Title = "奖励";
+            //mailInfo.Context = "全服补偿邮件";
             mailInfo.ItemList = serverMailItem.ItemList;
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
             await SendUserMail(zone, userID, mailInfo);

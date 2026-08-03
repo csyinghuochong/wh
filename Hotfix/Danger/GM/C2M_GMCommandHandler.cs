@@ -38,8 +38,9 @@ namespace ET
 					{
                         MailInfo mailInfo = new MailInfo();
                         mailInfo.Status = 0;
-						mailInfo.Context = i + "_________" + i;
-                        mailInfo.Title = "系统通知";
+                        Log.Error("MailInfo mailInfo = new MailInfo");
+                        //mailInfo.Context = i + "_________" + i;
+                        //mailInfo.Title = "系统通知";
                         mailInfo.MailId = IdGenerater.Instance.GenerateId();
 						mailInfo.Form = "官方xxx";
 						mailInfo.ValidTime = TimeHelper.ServerNow() + RandomHelper.RandInt64();

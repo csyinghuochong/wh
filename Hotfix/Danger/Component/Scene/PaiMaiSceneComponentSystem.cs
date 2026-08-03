@@ -181,10 +181,12 @@ namespace ET
                         {
                             self.AuctionJoinList.Remove(self.AuctioUnitId);
                         }
+
+                        Log.Error("MailInfo mailInfo = new MailInfo");
                         MailInfo mailInfo = new MailInfo();
                         mailInfo.Status = 0;
-                        mailInfo.Context = "竞拍失败";
-                        mailInfo.Title = $"金币小于{self.AuctionPrice},竞拍失败";
+                        //mailInfo.Context = "竞拍失败";
+                        //mailInfo.Title = $"金币小于{self.AuctionPrice},竞拍失败";
                         mailInfo.MailId = IdGenerater.Instance.GenerateId();
                         await MailHelp.SendUserMail(auctionHomeZone, self.AuctioUnitId, mailInfo);
                     }
@@ -195,11 +197,12 @@ namespace ET
             int returnggold = (int)( self.AuctionStart * 0.1f);
             for (int i = 0; i < self.AuctionJoinList.Count; i++)
             {
+                Log.Error("MailInfo mailInfo = new MailInfo");
                 long joinPlayerId = self.AuctionJoinList[i];
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.Status = 0;
-                mailInfo.Context = "退还保证金";
-                mailInfo.Title = "退还保证金";
+                //mailInfo.Context = "退还保证金";
+                //mailInfo.Title = "退还保证金";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
                 mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = returnggold, GetWay = $"{ItemGetWay.Auction}_{serverNow}" });
 

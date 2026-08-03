@@ -66,8 +66,8 @@ namespace ET
 
                     MailInfo mailInfo = new MailInfo();
                     mailInfo.Status = 0;
-                    mailInfo.Context = "福利发放";
-                    mailInfo.Title = "福利发放";
+                    //mailInfo.Context = "福利发放";
+                    //mailInfo.Title = "福利发放";
                     mailInfo.MailId = IdGenerater.Instance.GenerateId();
                     for (int k = 0; k < needList.Length; k++)
                     {
