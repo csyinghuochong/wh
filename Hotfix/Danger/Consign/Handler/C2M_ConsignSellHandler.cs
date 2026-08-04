@@ -68,7 +68,7 @@ namespace ET
 				//判断道具是否可以上架和绑定
 				LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
 				
-				if (bagInfo.IsBinging) 
+				if (bagInfo.IsBinding())
 				{
 					response.Error = ErrorCode.ERR_ItemBing;      //道具绑定
 					reply();

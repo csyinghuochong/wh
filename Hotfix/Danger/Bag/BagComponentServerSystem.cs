@@ -759,7 +759,7 @@ namespace ET
             useBagInfo.Loc = (int)ItemLocType.ItemLocBag;
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
             useBagInfo.GetWay = bagInfo.GetWay;
-            useBagInfo.IsBinging = bagInfo.IsBinging;
+            useBagInfo.SetBinding(bagInfo.IsBinding());
             List<BagInfo> bagList = self.GetItemByLoc(ItemLocType.ItemLocBag);
             useBagInfo.Position = AllocBagPosition(bagList);
             bagList.Add(useBagInfo);
@@ -1026,7 +1026,7 @@ namespace ET
                     useBagInfo.GetWay = getWay;
                     leftNum -= useBagInfo.ItemNum;
                     useBagInfo.MakePlayer = makeUserID;
-                    useBagInfo.IsBinging = ItemNewHelper.CheckItemIfBound(rewardItem);
+                    useBagInfo.SetBinding(ItemNewHelper.CheckItemIfBound(rewardItem));
 
                     if (itemtype == ItemBigType.Type_Equip && useBagInfo.BaseAttrList.Count <= 0)
                     {

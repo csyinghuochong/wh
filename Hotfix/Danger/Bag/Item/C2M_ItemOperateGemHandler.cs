@@ -114,7 +114,7 @@ namespace ET
                 //string[] gemIdList = equipInfo.GemIDNew.Split('_');
                 //gemIdList[gemIndex] = useBagInfo.ItemID.ToString();
                 //equipInfo.GemIDNew = string.Join("_", gemIdList);
-                //equipInfo.IsBinging = true;
+                //equipInfo.SetBinding(true);
                 //m2c_bagUpdate.BagInfoUpdate.Add(equipInfo);
                 //消耗宝石
                 bagcComponentServer.OnCostItemData(useBagInfo.BagInfoID, 1);

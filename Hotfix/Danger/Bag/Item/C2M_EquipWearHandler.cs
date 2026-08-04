@@ -76,7 +76,7 @@ namespace ET
                 }
                
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-                useBagInfo.IsBinging = true;
+                useBagInfo.SetBinding(true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
             else
