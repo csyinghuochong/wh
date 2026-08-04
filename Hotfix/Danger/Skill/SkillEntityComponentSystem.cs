@@ -150,7 +150,6 @@ namespace ET
             Unit master = uc?.Get(self.Masterid);
             Unit trackTarget = ResolveTrackTarget(self, uc, rt);
 
-            float dt = CalcDt(self, now);
             self.LastUpdateTime = now;
 
             // —— 飞行（按 BeginTime 时间轴，与客户端同一公式）——
@@ -213,7 +212,17 @@ namespace ET
                 Vector3 dir = new Vector3(dx / total, 0f, dz / total);
                 float maxTravel = Math.Max(0f, total - CollideReach);
                 float move = Math.Min(traveled, maxTravel);
-                Vector3 next = start + dir * move;
+                Vector3 next;
+                if (move >= maxTravel)
+                {
+                    // 贴在碰撞半径上，避免 float 导致永远 spr > CollideReach²
+                    next = trackTarget.Position - dir * CollideReach;
+                }
+                else
+                {
+                    next = start + dir * move;
+                }
+
                 next.y = trackTarget.Position.y;
                 ApplyMove(self, unit, rt, next, dir);
                 return;
@@ -273,17 +282,6 @@ namespace ET
             return speed > 0f ? speed : 1f;
         }
 
-        private static float CalcDt(SkillEntityComponent self, long now)
-        {
-            float dt = (now - self.LastUpdateTime) * 0.001f;
-            if (dt <= 0f)
-            {
-                return 0.1f;
-            }
-
-            return dt > 0.25f ? 0.25f : dt;
-        }
-
         // ==================== 触发 Skill_1 ====================
 
         private static void TryIntervalFire(SkillEntityComponent self, SummonRuntimeData rt, long now)
@@ -316,6 +314,9 @@ namespace ET
                 return;
             }
 
+            float spr = XZSqr(unit.Position, trackTarget.Position);
+            float rangeSq = CollideReach * CollideReach;
+
             // 追踪：必须碰到指定目标
             if (rt.MoveType == SkillEntityMoveType.Track_2)
             {
@@ -324,7 +325,8 @@ namespace ET
                     return;
                 }
 
-                if (XZSqr(unit.Position, trackTarget.Position) > CollideReach * CollideReach)
+                // 略放宽容差，与 Fly 贴停配合，避免浮点卡在半径外
+                if (spr > rangeSq + 0.01f)
                 {
                     return;
                 }
@@ -340,7 +342,7 @@ namespace ET
                 return;
             }
 
-            float rangeSq = CollideReach * CollideReach;
+          
             for (int i = all.Count - 1; i >= 0; i--)
             {
                 Unit other = all[i];
