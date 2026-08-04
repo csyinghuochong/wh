@@ -687,7 +687,7 @@ namespace ET
 
             //DBPaiMainInfo 拍卖，也合并过来，要着重测试
             //List<DBPaiMainInfo> dBPaiMainInfos_old = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(oldzone, d => d.Id > 0);
-            List<DBPaiMainInfo> dBPaiMainInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(newzone, d => d.Id > 0);
+            List<DBConsignInfo> dBPaiMainInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBConsignInfo>(newzone, d => d.Id > 0);
             List<long> paimaishangjiaIds = new List<long>() 
             {
                 ConsignHelper.GetPaiMaiId(1),
@@ -702,12 +702,12 @@ namespace ET
                     continue;
                 }
                 bool have = false;
-                List<DBPaiMainInfo> dBPaiMainInfos_old = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(oldzone, d => d.Id == entityNew.Id);
+                List<DBConsignInfo> dBPaiMainInfos_old = await Game.Scene.GetComponent<DBComponent>().Query<DBConsignInfo>(oldzone, d => d.Id == entityNew.Id);
                 if (dBPaiMainInfos_old == null || dBPaiMainInfos_old.Count == 0)
                 {
                     continue;
                 }
-                List<PaiMaiItemInfo> oldlist_0 = dBPaiMainInfos_old[0].PaiMaiItemInfos;
+                List<ConsignItemInfo> oldlist_0 = dBPaiMainInfos_old[0].PaiMaiItemInfos;
                 if (oldlist_0.Count > 0)
                 {
                     for (int i = 0; i < entityNew.PaiMaiItemInfos.Count; i++)

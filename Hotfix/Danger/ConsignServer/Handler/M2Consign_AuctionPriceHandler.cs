@@ -3,11 +3,11 @@
 namespace ET
 {
     [ActorMessageHandler]
-    public class M2P_PaiMaiAuctionPriceHandler : AMActorRpcHandler<Scene, M2P_PaiMaiAuctionPriceRequest, P2M_PaiMaiAuctionPriceResponse>
+    public class M2Consign_AuctionPriceHandler : AMActorRpcHandler<Scene, M2Consign_AuctionPriceRequest, Consign2M_AuctionPriceResponse>
     {
-        protected override async ETTask Run(Scene scene, M2P_PaiMaiAuctionPriceRequest message, P2M_PaiMaiAuctionPriceResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, M2Consign_AuctionPriceRequest message, Consign2M_AuctionPriceResponse response, Action reply)
         {
-            PaiMaiSceneComponent paiMaiSceneComponent = scene.GetComponent<PaiMaiSceneComponent>();
+            ConsignSceneComponent paiMaiSceneComponent = scene.GetComponent<ConsignSceneComponent>();
             if (TimeHelper.ServerNow() >= paiMaiSceneComponent.AuctionStatus)
             {
                 response.Error = ErrorCode.Err_Auction_Finish;
@@ -25,7 +25,7 @@ namespace ET
             paiMaiSceneComponent.AuctioUnitId = message.UnitID;
             paiMaiSceneComponent.AuctionPlayer = message.AuctionPlayer;
 
-            PaiMaiAuctionRecord keyValuePair = new PaiMaiAuctionRecord();
+            AuctionRecord keyValuePair = new AuctionRecord();
             keyValuePair.UnionId = message.UnitID;
             keyValuePair.Price = message.Price;
             keyValuePair.Time = TimeHelper.ServerNow();

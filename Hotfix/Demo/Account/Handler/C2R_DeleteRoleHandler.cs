@@ -51,8 +51,8 @@ namespace ET
                         AccountId = request.AccountId
                     });
                     long paimaiInstanceid = DBHelper.GetPaiMaiServerId(request.ServerId);
-                    Paimai2R_DeleteRoleData deleteResponse2 = (Paimai2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
-                   (paimaiInstanceid, new R2Paimai_DeleteRoleData()
+                    Consign2R_DeleteRoleData deleteResponse2 = (Consign2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
+                   (paimaiInstanceid, new R2Consign_DeleteRoleData()
                    {
                        DeleUserID = request.DeleUserID,
                        AccountId = request.AccountId,

@@ -109,7 +109,7 @@ namespace ET
 
         public static long GetPaiMaiServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, "PaiMai").InstanceId;
+            return StartSceneConfigCategory.Instance.GetBySceneName(zone, "Consign").InstanceId;
         }
 
         public static long GetRankServerId(int zone)

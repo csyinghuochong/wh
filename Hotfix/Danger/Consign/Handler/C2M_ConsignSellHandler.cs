@@ -3,22 +3,22 @@ using System;
 namespace ET
 {
     [ActorMessageHandler]
-    public class C2M_PaiMaiSellHandler : AMActorLocationRpcHandler<Unit, C2M_PaiMaiSellRequest, M2C_PaiMaiSellResponse>
+    public class C2M_ConsignSellHandler : AMActorLocationRpcHandler<Unit, C2M_ConsignSellRequest, M2C_ConsignSellResponse>
     {
 
-		protected override async ETTask Run(Unit unit, C2M_PaiMaiSellRequest request, M2C_PaiMaiSellResponse response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_ConsignSellRequest request, M2C_ConsignSellResponse response, Action reply)
 		{
            
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Sell, unit.Id))
 			{
-				if (request.PaiMaiItemInfo.BagInfo.ItemNum <= 0)
+				if (request.ConsignItemInfo.BagInfo.ItemNum <= 0)
                 {
                     Log.Error($"C2M_PaiMaiSellRequest 1");
                     response.Error = ErrorCode.ERR_ModifyData;
                     reply();
 					return;
 				}
-				long allprice = request.PaiMaiItemInfo.BagInfo.ItemNum * request.PaiMaiItemInfo.Price;
+				long allprice = request.ConsignItemInfo.BagInfo.ItemNum * request.ConsignItemInfo.Price;
                 if (allprice > 10000000 || allprice < 0)
                 {
                     Log.Error($"C2M_PaiMaiSellRequest 2");
@@ -42,15 +42,15 @@ namespace ET
 
                 //获取出售数据
                 long paimaiItemId = IdGenerater.Instance.GenerateId();
-				request.PaiMaiItemInfo.Id = paimaiItemId;
+				request.ConsignItemInfo.Id = paimaiItemId;
 
-                request.PaiMaiItemInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
-				request.PaiMaiItemInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
-                request.PaiMaiItemInfo.Account = roleInfoComponentServer.Account;
-				request.PaiMaiItemInfo.SellTime = currentTime;
+                request.ConsignItemInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
+				request.ConsignItemInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
+                request.ConsignItemInfo.Account = roleInfoComponentServer.Account;
+				request.ConsignItemInfo.SellTime = currentTime;
 
 				//对比出售数量和道具是否匹配
-				long bagInfoId = request.PaiMaiItemInfo.BagInfo.BagInfoID;
+				long bagInfoId = request.ConsignItemInfo.BagInfo.BagInfoID;
 				BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoId);
 				if (bagInfo == null)
 				{
@@ -58,7 +58,7 @@ namespace ET
 					reply();
 					return;
 				}
-				if (bagInfo.ItemNum < request.PaiMaiItemInfo.BagInfo.ItemNum)
+				if (bagInfo.ItemNum < request.ConsignItemInfo.BagInfo.ItemNum)
 				{
 					response.Error = ErrorCode.ERR_ItemNotEnoughError;      //道具不足
 					reply();
@@ -85,20 +85,20 @@ namespace ET
 
 				//发送对应拍卖行信息
 				long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
-				P2M_PaiMaiSellResponse r_GameStatusResponse = (P2M_PaiMaiSellResponse)await ActorMessageSenderComponent.Instance.Call
-					(paimaiServerId, new M2P_PaiMaiSellRequest()
+				Consign2M_SellResponse r_GameStatusResponse = (Consign2M_SellResponse)await ActorMessageSenderComponent.Instance.Call
+					(paimaiServerId, new M2Consign_SellRequest()
 					{
 						UnitID = unit.Id,
-						PaiMaiItemInfo = request.PaiMaiItemInfo,
+						ConsignItemInfo = request.ConsignItemInfo,
 						PaiMaiTodayGold = 0,
 					});
 
 				if (r_GameStatusResponse.Error == ErrorCode.ERR_Success)
 				{
 					//扣除对应道具
-					bagComponentServer.OnCostItemData(request.PaiMaiItemInfo.BagInfo.BagInfoID, request.PaiMaiItemInfo.BagInfo.ItemNum);
-					response.PaiMaiItemInfo = request.PaiMaiItemInfo;
-					LogHelper.LogWarning(response.PaiMaiItemInfo.PlayerName + "上架道具：" + request.PaiMaiItemInfo.BagInfo.ItemID + "数量" + request.PaiMaiItemInfo.BagInfo.ItemNum + "时间戳:" + currentTime.ToString(), true);
+					bagComponentServer.OnCostItemData(request.ConsignItemInfo.BagInfo.BagInfoID, request.ConsignItemInfo.BagInfo.ItemNum);
+					response.ConsignItemInfo = request.ConsignItemInfo;
+					LogHelper.LogWarning(response.ConsignItemInfo.PlayerName + "上架道具：" + request.ConsignItemInfo.BagInfo.ItemID + "数量" + request.ConsignItemInfo.BagInfo.ItemNum + "时间戳:" + currentTime.ToString(), true);
                 }
                 response.Error = r_GameStatusResponse.Error;
 				reply();

@@ -168,7 +168,7 @@ namespace ET
 							}
 							response = await ActorMessageSenderComponent.Instance.Call(rankId, iRankActorRequest);
 						}
-						else if (actorRequest is IPaiMaiListRequest iPaiMaiRequest)
+						else if (actorRequest is IConsignmentRequest iPaiMaiRequest)
 						{
 							long paimaiServer = player.PaiMaiServerID;
 							response = await ActorMessageSenderComponent.Instance.Call(paimaiServer, iPaiMaiRequest);

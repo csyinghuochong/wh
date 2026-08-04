@@ -3,15 +3,16 @@ using System;
 namespace ET
 {
     [ActorMessageHandler]
-    public class C2M_PaiMaiAuctionJoinHandler : AMActorLocationRpcHandler<Unit, C2M_PaiMaiAuctionJoinRequest, M2C_PaiMaiAuctionJoinResponse>
+    public class C2M_AuctionJoinHandler : AMActorLocationRpcHandler<Unit, C2M_AuctionJoinRequest, M2C_AuctionJoinResponse>
     {
-        protected override async ETTask Run(Unit unit, C2M_PaiMaiAuctionJoinRequest request, M2C_PaiMaiAuctionJoinResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_AuctionJoinRequest request, M2C_AuctionJoinResponse response, Action reply)
         {
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
                 long paimaiserverid = DBHelper.GetPaiMaiServerId(unit);
-                P2M_PaiMaiAuctionJoinResponse r_GameStatusResponse = (P2M_PaiMaiAuctionJoinResponse)await ActorMessageSenderComponent.Instance.Call
-                        (paimaiserverid, new M2P_PaiMaiAuctionJoinRequest()
+                Consign2M_AuctionJoinResponse r_GameStatusResponse = (Consign2M_AuctionJoinResponse)await ActorMessageSenderComponent.Instance.Call
+
+                        (paimaiserverid, new M2Consign_AuctionJoinRequest()
                         {
                             UnitID = unit.Id,
                             Gold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold

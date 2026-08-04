@@ -4,21 +4,21 @@ using System.Collections.Generic;
 namespace ET
 {
     [ActorMessageHandler]
-    public class M2P_PaiMaiBuyHandler : AMActorRpcHandler<Scene, M2P_PaiMaiBuyRequest, P2M_PaiMaiBuyResponse>
+    public class M2Consign_BuyHandler : AMActorRpcHandler<Scene, M2Consign_BuyRequest, Consign2M_BuyResponse>
     {
 
-        protected override async ETTask Run(Scene scene, M2P_PaiMaiBuyRequest request, P2M_PaiMaiBuyResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, M2Consign_BuyRequest request, Consign2M_BuyResponse response, Action reply)
         {
             //获取列表,对应的缓存进行清空
-            if (!ItemNewHelper.IsValidItem(request.PaiMaiItemInfo.BagInfo))
+            if (!ItemNewHelper.IsValidItem(request.ConsignItemInfo.BagInfo))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
                 return;
             }
-            LDItem ldItemCof = LDItemCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
+            LDItem ldItemCof = LDItemCategory.Instance.Get(request.ConsignItemInfo.BagInfo.ItemID);
             int itemType = ldItemCof.ItemType;
-            DBPaiMainInfo dBPaiMainInfo = scene.GetComponent<PaiMaiSceneComponent>().GetPaiMaiDBByType(itemType);
+            DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetPaiMaiDBByType(itemType);
             if (dBPaiMainInfo == null)
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
@@ -27,11 +27,11 @@ namespace ET
             }
 
             long needGold = 0 ;
-            PaiMaiItemInfo paiMaiItemInfo = null;
-            List<PaiMaiItemInfo> paiMaiItemInfos = dBPaiMainInfo.PaiMaiItemInfos;
+            ConsignItemInfo paiMaiItemInfo = null;
+            List<ConsignItemInfo> paiMaiItemInfos = dBPaiMainInfo.PaiMaiItemInfos;
             for (int i = paiMaiItemInfos.Count - 1; i >= 0; i--)
             {
-                if (paiMaiItemInfos[i].Id == request.PaiMaiItemInfo.Id)
+                if (paiMaiItemInfos[i].Id == request.ConsignItemInfo.Id)
                 {
                     paiMaiItemInfo = paiMaiItemInfos[i];
                     break;
@@ -63,13 +63,13 @@ namespace ET
             BagInfo bagInfo = paiMaiItemInfo.BagInfo;
             if (request.BuyNum == bagInfo.ItemNum)
             {
-                response.PaiMaiItemInfo = paiMaiItemInfo;
+                response.ConsignItemInfo = paiMaiItemInfo;
                 paiMaiItemInfos.Remove(paiMaiItemInfo);
             }
             else
             {
                 bagInfo.ItemNum -= request.BuyNum;
-                PaiMaiItemInfo paiMaiItemInfo2 = new PaiMaiItemInfo();
+                ConsignItemInfo paiMaiItemInfo2 = new ConsignItemInfo();
                 
                 BagInfo useBagInfo = new BagInfo();
                 useBagInfo.ItemID = bagInfo.ItemID;
@@ -88,7 +88,7 @@ namespace ET
                 paiMaiItemInfo2.PlayerName = paiMaiItemInfo.PlayerName;
                 paiMaiItemInfo2.SellTime = paiMaiItemInfo.SellTime;
                 
-                response.PaiMaiItemInfo = paiMaiItemInfo2;
+                response.ConsignItemInfo = paiMaiItemInfo2;
             }
             reply();
             await ETTask.CompletedTask;

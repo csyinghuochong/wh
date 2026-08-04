@@ -6,7 +6,7 @@ namespace ET
     public static class MailHelp
     {
 
-        public static async ETTask SendPaiMaiEmail(int zone, PaiMaiItemInfo paiMaiItemInfo,int costNum, long unitid)
+        public static async ETTask SendPaiMaiEmail(int zone, ConsignItemInfo paiMaiItemInfo,int costNum, long unitid)
         {
             await ETTask.CompletedTask;
 

@@ -219,7 +219,7 @@ namespace ET
                     LogHelper.LogWarning($"PaiMai定时刷新: {scene.DomainZone()} {hour}", true);
                     if (hour == 0)
                     {
-                        scene.GetComponent<PaiMaiSceneComponent>().OnZeroClockUpdate();
+                        scene.GetComponent<ConsignSceneComponent>().OnZeroClockUpdate();
                     }
                     break;
                 case SceneType.DBCache:

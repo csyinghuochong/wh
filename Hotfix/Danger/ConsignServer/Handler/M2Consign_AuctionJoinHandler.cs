@@ -5,11 +5,11 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class M2P_PaiMaiAuctionJoinHandler : AMActorRpcHandler<Scene, M2P_PaiMaiAuctionJoinRequest, P2M_PaiMaiAuctionJoinResponse>
+    public class M2Consign_AuctionJoinHandler : AMActorRpcHandler<Scene, M2Consign_AuctionJoinRequest, Consign2M_AuctionJoinResponse>
     {
-        protected override async ETTask Run(Scene scene, M2P_PaiMaiAuctionJoinRequest request, P2M_PaiMaiAuctionJoinResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, M2Consign_AuctionJoinRequest request, Consign2M_AuctionJoinResponse response, Action reply)
         {
-            PaiMaiSceneComponent paiMaiSceneComponent = scene.GetComponent<PaiMaiSceneComponent>();
+            ConsignSceneComponent paiMaiSceneComponent = scene.GetComponent<ConsignSceneComponent>();
             long returngold = (int)(paiMaiSceneComponent.AuctionStart * 0.1f);
             if (returngold <= 0)
             {

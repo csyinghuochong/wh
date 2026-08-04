@@ -180,8 +180,8 @@ namespace ET
 
             //移除拍卖行自己的所有装备。。。。。
             long paimaiInstanceid = DBHelper.GetPaiMaiServerId(zone);
-            Paimai2R_DeleteRoleData deleteResponse2 = (Paimai2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
-           (paimaiInstanceid, new R2Paimai_DeleteRoleData()
+            Consign2R_DeleteRoleData deleteResponse2 = (Consign2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
+           (paimaiInstanceid, new R2Consign_DeleteRoleData()
            {
                DeleUserID = unitid,
                AccountId = oldRoleInfoComponentServer.RoleInfo.AccInfoID, //没用到

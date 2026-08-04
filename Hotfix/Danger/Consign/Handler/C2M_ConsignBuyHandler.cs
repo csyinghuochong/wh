@@ -5,10 +5,10 @@ using UnityEngine;
 namespace ET
 {
     [ActorMessageHandler]
-    public class C2M_PaiMaiBuyHandler : AMActorLocationRpcHandler<Unit, C2M_PaiMaiBuyRequest, M2C_PaiMaiBuyResponse>
+    public class C2M_ConsignBuyHandler : AMActorLocationRpcHandler<Unit, C2M_ConsignBuyRequest, M2C_ConsignBuyResponse>
     {
         //拍卖行购买道具
-        protected override async ETTask Run(Unit unit, C2M_PaiMaiBuyRequest request, M2C_PaiMaiBuyResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_ConsignBuyRequest request, M2C_ConsignBuyResponse response, Action reply)
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
@@ -49,8 +49,8 @@ namespace ET
                 }
             }
 
-            PaiMaiItemInfo paiMaiItemInfo = request.PaiMaiItemInfo;
-            if (request.PaiMaiItemInfo == null || request.PaiMaiItemInfo.BagInfo == null)
+            ConsignItemInfo paiMaiItemInfo = request.ConsignItemInfo;
+            if (request.ConsignItemInfo == null || request.ConsignItemInfo.BagInfo == null)
             {
                 reply();
                 return;
@@ -126,10 +126,10 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
                 long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
-                P2M_PaiMaiBuyResponse r_GameStatusResponse = (P2M_PaiMaiBuyResponse)await ActorMessageSenderComponent.Instance.Call
-                    (paimaiServerId, new M2P_PaiMaiBuyRequest()
+                Consign2M_BuyResponse r_GameStatusResponse = (Consign2M_BuyResponse)await ActorMessageSenderComponent.Instance.Call
+                    (paimaiServerId, new M2Consign_BuyRequest()
                     {
-                        PaiMaiItemInfo = request.PaiMaiItemInfo,
+                        ConsignItemInfo = request.ConsignItemInfo,
                         Gold = roleInfoComponentServer.RoleInfo.Gold,
                         BuyNum = buyNum
                     });
@@ -140,11 +140,11 @@ namespace ET
                     return;
                 }
 
-                needGold = (long)r_GameStatusResponse.PaiMaiItemInfo.Price * r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
+                needGold = (long)r_GameStatusResponse.ConsignItemInfo.Price * r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemNum;
                
                 roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.PaiMaiBuy);
                 //背包添加道具
-                bool ret = bag.OnAddItemData(r_GameStatusResponse.PaiMaiItemInfo.BagInfo, $"{ItemGetWay.PaiMaiBuy}_{TimeHelper.ServerNow()}");
+                bool ret = bag.OnAddItemData(r_GameStatusResponse.ConsignItemInfo.BagInfo, $"{ItemGetWay.PaiMaiBuy}_{TimeHelper.ServerNow()}");
 
                 if (!ret)
                 {
@@ -152,10 +152,10 @@ namespace ET
                 }
 
                 //给出售者邮件发送金币
-                MailHelp.SendPaiMaiEmail(UnitZoneHelper.GetHomeZone(unit), r_GameStatusResponse.PaiMaiItemInfo, r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum, unit.Id).Coroutine();
+                MailHelp.SendPaiMaiEmail(UnitZoneHelper.GetHomeZone(unit), r_GameStatusResponse.ConsignItemInfo, r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemNum, unit.Id).Coroutine();
 
                 //Log.Warning($"拍卖购买者: {unit.Id} 购买 {r_GameStatusResponse.PaiMaiItemInfo.UserId} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
-                Log.Warning($"拍卖被购买: [出售者]{r_GameStatusResponse.PaiMaiItemInfo.UserId}  [购买者]{unit.Id} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
+                Log.Warning($"拍卖被购买: [出售者]{r_GameStatusResponse.ConsignItemInfo.UserId}  [购买者]{unit.Id} 道具ID：{r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
 
                 dataCollation.PaiMaiCostGoldToday += needGold;
                 if (dataCollation.PaiMaiCostGoldToday >= 50000000)
@@ -177,26 +177,26 @@ namespace ET
 
 
                 long baginfoid = 0;
-                if (LDItemCategory.Instance.Get(r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID).ItemType == ItemTypeEnum.Equipment)
+                if (LDItemCategory.Instance.Get(r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemID).ItemType == ItemTypeEnum.Equipment)
                 {
-                    baginfoid = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.BagInfoID;
+                    baginfoid = r_GameStatusResponse.ConsignItemInfo.BagInfo.BagInfoID;
                 }
 
 
-                if (unit.Id != r_GameStatusResponse.PaiMaiItemInfo.UserId)
+                if (unit.Id != r_GameStatusResponse.ConsignItemInfo.UserId)
                 {
-                    long locationactor = r_GameStatusResponse.PaiMaiItemInfo.UserId;
+                    long locationactor = r_GameStatusResponse.ConsignItemInfo.UserId;
 
                     M2M_PaiMaiBuyInfoRequest r2M_RechargeRequest = new M2M_PaiMaiBuyInfoRequest() { PlayerId = unit.Id, BagInfoID = baginfoid,  CostGold = (long)(needGold * 0.95f) };
                     M2M_PaiMaiBuyInfoResponse m2G_RechargeResponse = (M2M_PaiMaiBuyInfoResponse)await MessageHelper.CallLocationActor(locationactor, r2M_RechargeRequest);
 
                     if (m2G_RechargeResponse.Error != ErrorCode.ERR_Success)
                     {
-                        DataCollationComponent dataCollationComponent = await DBHelper.GetComponentCache<DataCollationComponent>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.PaiMaiItemInfo.UserId), r_GameStatusResponse.PaiMaiItemInfo.UserId);
+                        DataCollationComponent dataCollationComponent = await DBHelper.GetComponentCache<DataCollationComponent>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId), r_GameStatusResponse.ConsignItemInfo.UserId);
                         if (dataCollationComponent != null)
                         {
                             dataCollationComponent.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, false);
-                            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.PaiMaiItemInfo.UserId), r_GameStatusResponse.PaiMaiItemInfo.UserId, dataCollationComponent).Coroutine();
+                            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId), r_GameStatusResponse.ConsignItemInfo.UserId, dataCollationComponent).Coroutine();
                         }
                         
                     }
@@ -214,8 +214,8 @@ namespace ET
                     //服务器 道具名称 数量  价格  购买者名称 购买者等级  购买者充值 购买者当前金币 购买者账号 出售者名称   出售者账号  出售者等级 出售者当前金币
                     string serverName = ServerHelper.GetGetServerItem(false, UnitZoneHelper.GetHomeZone(unit)).ServerName;
                     string itemName = WordHelper.GetShowText(ldItem.Name, 0);
-                    int itemNumber = r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemNum;
-                    long price = r_GameStatusResponse.PaiMaiItemInfo.Price;
+                    int itemNumber = r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemNum;
+                    long price = r_GameStatusResponse.ConsignItemInfo.Price;
 
                     string buyPlayerName = roleInfoComponentServer.RoleInfo.Name;
                     int buyPlayerLv = roleInfoComponentServer.RoleInfo.Lv;
@@ -223,9 +223,9 @@ namespace ET
                     long buyNowGold = roleInfoComponentServer.RoleInfo.Gold;
                     string buyAccount = roleInfoComponentServer.Account;
                     
-                    string sellPlayerName = r_GameStatusResponse.PaiMaiItemInfo.PlayerName;
-                    string sellAccoount = r_GameStatusResponse.PaiMaiItemInfo.Account;
-                    RoleInfoComponentServer roleInfoComponentServerSell = await DBHelper.GetComponentCache<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.PaiMaiItemInfo.UserId), r_GameStatusResponse.PaiMaiItemInfo.UserId);
+                    string sellPlayerName = r_GameStatusResponse.ConsignItemInfo.PlayerName;
+                    string sellAccoount = r_GameStatusResponse.ConsignItemInfo.Account;
+                    RoleInfoComponentServer roleInfoComponentServerSell = await DBHelper.GetComponentCache<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId), r_GameStatusResponse.ConsignItemInfo.UserId);
                     if (roleInfoComponentServerSell != null)
                     {
                         int sellPlayerLv = roleInfoComponentServerSell.RoleInfo.Lv;

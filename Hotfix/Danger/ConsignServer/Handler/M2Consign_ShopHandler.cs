@@ -5,18 +5,18 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class M2P_PaiMaiShopHandler : AMActorRpcHandler<Scene, M2P_PaiMaiShopRequest, P2M_PaiMaiShopResponse>
+    public class M2Consign_ShopHandler : AMActorRpcHandler<Scene, M2Consign_ShopRequest, Consign2M_ShopResponse>
     {
 
-        protected override async ETTask Run(Scene scene, M2P_PaiMaiShopRequest request, P2M_PaiMaiShopResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, M2Consign_ShopRequest request, Consign2M_ShopResponse response, Action reply)
         {
             try
             {
                 //获取当前的数据
-                PaiMaiSceneComponent paimaiCompontent = scene.GetComponent<PaiMaiSceneComponent>();
-                response.PaiMaiShopItemInfo = paimaiCompontent.GetPaiMaiShopInfo(request.ItemID);
+                ConsignSceneComponent paimaiCompontent = scene.GetComponent<ConsignSceneComponent>();
+                response.ConsignShopItemInfo = paimaiCompontent.GetPaiMaiShopInfo(request.ItemID);
 
-                long costGold = response.PaiMaiShopItemInfo.Price * request.BuyNum;
+                long costGold = response.ConsignShopItemInfo.Price * request.BuyNum;
                 if (request.ActorId < costGold || costGold < 0)
                 {
                     response.Error = ErrorCode.ERR_GoldNotEnoughError;

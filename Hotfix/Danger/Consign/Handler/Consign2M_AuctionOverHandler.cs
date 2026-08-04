@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 
 namespace ET
 {
 
     [ActorMessageHandler]
-    public class P2M_PaiMaiAuctionOverHandler : AMActorRpcHandler<Unit, P2M_PaiMaiAuctionOverRequest, M2P_PaiMaiAuctionOverResponse>
+    public class Consign2M_AuctionOverHandler : AMActorRpcHandler<Unit, Consign2M_AuctionOverRequest, M2Consign_AuctionOverResponse>
     {
-        protected override async ETTask Run(Unit unit, P2M_PaiMaiAuctionOverRequest request, M2P_PaiMaiAuctionOverResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, Consign2M_AuctionOverRequest request, M2Consign_AuctionOverResponse response, Action reply)
         {
             Log.Warning($"PaiMaiAuctionOver:  {unit.DomainZone()} {unit.Id}");
             

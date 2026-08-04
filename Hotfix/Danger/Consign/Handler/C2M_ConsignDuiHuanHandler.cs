@@ -4,10 +4,10 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class C2M_PaiMaiDuiHuanHandler : AMActorLocationRpcHandler<Unit, C2M_PaiMaiDuiHuanRequest, M2C_PaiMaiDuiHuanResponse>
+    public class C2M_ConsignDuiHuanHandler : AMActorLocationRpcHandler<Unit, C2M_ConsignDuiHuanRequest, M2C_ConsignDuiHuanResponse>
     {
 
-        protected override async ETTask Run(Unit unit, C2M_PaiMaiDuiHuanRequest request, M2C_PaiMaiDuiHuanResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_ConsignDuiHuanRequest request, M2C_ConsignDuiHuanResponse response, Action reply)
         {
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();

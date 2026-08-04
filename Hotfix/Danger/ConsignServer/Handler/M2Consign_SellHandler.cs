@@ -5,20 +5,20 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class M2P_PaiMaiSellHandler : AMActorRpcHandler<Scene, M2P_PaiMaiSellRequest, P2M_PaiMaiSellResponse>
+    public class M2Consign_SellHandler : AMActorRpcHandler<Scene, M2Consign_SellRequest, Consign2M_SellResponse>
     {
 
-        protected override async ETTask Run(Scene scene, M2P_PaiMaiSellRequest request, P2M_PaiMaiSellResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, M2Consign_SellRequest request, Consign2M_SellResponse response, Action reply)
         {
-            if (!ItemNewHelper.IsValidItem(request.PaiMaiItemInfo.BagInfo))
+            if (!ItemNewHelper.IsValidItem(request.ConsignItemInfo.BagInfo))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
                 return;
             }
 
-            PaiMaiSceneComponent paiMaiComponent = scene.GetComponent<PaiMaiSceneComponent>();
-            List<PaiMaiItemInfo> paiMaiItemsTo = new List<PaiMaiItemInfo>();
+            ConsignSceneComponent paiMaiComponent = scene.GetComponent<ConsignSceneComponent>();
+            List<ConsignItemInfo> paiMaiItemsTo = new List<ConsignItemInfo>();
             paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UnitID, paiMaiComponent.dBPaiMainInfo_Consume.PaiMaiItemInfos));
             paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UnitID, paiMaiComponent.dBPaiMainInfo_Material.PaiMaiItemInfos));
             paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UnitID, paiMaiComponent.dBPaiMainInfo_Equipment.PaiMaiItemInfos));
@@ -32,7 +32,7 @@ namespace ET
 
             int openday = ServerHelper.GetOpenServerDay(false, scene.DomainZone());
             long todayGold = CommonConfig.GetPaiMaiTodayGold(openday);
-            long sellGold = request.PaiMaiItemInfo.BagInfo.ItemNum * request.PaiMaiItemInfo.Price;
+            long sellGold = request.ConsignItemInfo.BagInfo.ItemNum * request.ConsignItemInfo.Price;
             if (paimaiingGold + request.PaiMaiTodayGold + sellGold >= todayGold)
             {
                 response.Error = ErrorCode.ERR_PaiMaiSellLimit;
@@ -41,10 +41,10 @@ namespace ET
             }
 
             //判定出售价格最低不能低于快捷拍卖列表的50%
-            PaiMaiShopItemInfo shopinfo = scene.GetComponent<PaiMaiSceneComponent>().GetPaiMaiShopInfo(request.PaiMaiItemInfo.BagInfo.ItemID);
+            ConsignShopItemInfo shopinfo = scene.GetComponent<ConsignSceneComponent>().GetPaiMaiShopInfo(request.ConsignItemInfo.BagInfo.ItemID);
             if (shopinfo != null)
             {
-                int nowPrice = (int)((float)request.PaiMaiItemInfo.Price);
+                int nowPrice = (int)((float)request.ConsignItemInfo.Price);
                 if (nowPrice < shopinfo.Price * 0.5f)
                 {
                     response.Error = ErrorCode.Err_PaiMaiPriceLow;
@@ -53,8 +53,8 @@ namespace ET
                 }
             }
             // 上架紫色道具刷新该类型的道具
-            LDItem ldItem = LDItemCategory.Instance.Get(request.PaiMaiItemInfo.BagInfo.ItemID);
-            DBPaiMainInfo dBPaiMainInfo = scene.GetComponent<PaiMaiSceneComponent>().GetPaiMaiDBByType(ldItem.ItemType);
+            LDItem ldItem = LDItemCategory.Instance.Get(request.ConsignItemInfo.BagInfo.ItemID);
+            DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetPaiMaiDBByType(ldItem.ItemType);
             if (dBPaiMainInfo == null)
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
@@ -62,7 +62,7 @@ namespace ET
                 return;
             }
 
-            dBPaiMainInfo.PaiMaiItemInfos.Add(request.PaiMaiItemInfo);
+            dBPaiMainInfo.PaiMaiItemInfos.Add(request.ConsignItemInfo);
             reply();
             await ETTask.CompletedTask;
         }

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace ET
 {
     [ActorMessageHandler]
-    public class C2P_PaiMaiSearchHandler: AMActorRpcHandler<Scene, C2P_PaiMaiSearchRequest, P2C_PaiMaiSearchResponse>
+    public class C2Consign_SearchHandler: AMActorRpcHandler<Scene, C2Consign_SearchRequest, Consign2C_SearchResponse>
     {
-        protected override async ETTask Run(Scene scene, C2P_PaiMaiSearchRequest request, P2C_PaiMaiSearchResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, C2Consign_SearchRequest request, Consign2C_SearchResponse response, Action reply)
         {
             if (request.FindTypeList.Count <= 0)
             {
@@ -20,23 +20,23 @@ namespace ET
                 return;
             }
 
-            PaiMaiSceneComponent paiMaiComponent = scene.GetComponent<PaiMaiSceneComponent>();
+            ConsignSceneComponent paiMaiComponent = scene.GetComponent<ConsignSceneComponent>();
             foreach (int type in request.FindTypeList)
             {
-                DBPaiMainInfo dBPaiMainInfo = paiMaiComponent.GetPaiMaiDBByType(type);
+                DBConsignInfo dBPaiMainInfo = paiMaiComponent.GetPaiMaiDBByType(type);
                 if (dBPaiMainInfo == null)
                 {
                     reply();
                     return;
                 }
 
-                foreach (PaiMaiItemInfo paiMaiItemInfo in dBPaiMainInfo.PaiMaiItemInfos)
+                foreach (ConsignItemInfo paiMaiItemInfo in dBPaiMainInfo.PaiMaiItemInfos)
                 {
                     if (request.FindItemIdList.Contains(paiMaiItemInfo.BagInfo.ItemID))
                     {
-                        response.PaiMaiItemInfos.Add(paiMaiItemInfo);
+                        response.ConsignItemInfos.Add(paiMaiItemInfo);
 
-                        if (response.PaiMaiItemInfos.Count > 200)
+                        if (response.ConsignItemInfos.Count > 200)
                         {
                             break;
                         }

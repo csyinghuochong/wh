@@ -7,9 +7,9 @@ namespace ET
     /// 查找装备所在拍卖行那一页(待实现)
     /// </summary>
     [ActorMessageHandler]
-    public class C2P_PaiMaiFindHandler: AMActorRpcHandler<Scene, C2P_PaiMaiFindRequest, P2C_PaiMaiFindResponse>
+    public class C2Consign_FindHandler: AMActorRpcHandler<Scene, C2Consign_FindRequest, Consign2C_FindResponse>
     {
-        protected override async ETTask Run(Scene scene, C2P_PaiMaiFindRequest request, P2C_PaiMaiFindResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, C2Consign_FindRequest request, Consign2C_FindResponse response, Action reply)
         {
             if (request.ItemType == 0)
             {
@@ -17,8 +17,8 @@ namespace ET
                 reply();
                 return;
             }
-            PaiMaiSceneComponent paiMaiComponent = scene.GetComponent<PaiMaiSceneComponent>();
-            DBPaiMainInfo dBPaiMainInfo = paiMaiComponent.GetPaiMaiDBByType(request.ItemType);
+            ConsignSceneComponent paiMaiComponent = scene.GetComponent<ConsignSceneComponent>();
+            DBConsignInfo dBPaiMainInfo = paiMaiComponent.GetPaiMaiDBByType(request.ItemType);
             if (dBPaiMainInfo == null)
             {
                 response.Page = 0;
@@ -26,12 +26,12 @@ namespace ET
                 return;
             }
 
-            List<PaiMaiItemInfo> PaiMaiItemInfo = dBPaiMainInfo.PaiMaiItemInfos;
+            List<ConsignItemInfo> PaiMaiItemInfo = dBPaiMainInfo.PaiMaiItemInfos;
 
-            PaiMaiItemInfo paiMaiItemInfo = null;
+            ConsignItemInfo paiMaiItemInfo = null;
             for (int i = 0; i < PaiMaiItemInfo.Count; i++)
             {
-                if (PaiMaiItemInfo[i].Id == request.PaiMaiItemInfoId)
+                if (PaiMaiItemInfo[i].Id == request.ConsignItemInfoId)
                 {
                     paiMaiItemInfo = PaiMaiItemInfo[i];
                     break;

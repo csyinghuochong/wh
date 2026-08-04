@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 
 namespace ET
 {
     [ActorMessageHandler]
-    public class C2M_PaiMaiAuctionPriceHandler : AMActorLocationRpcHandler<Unit, C2M_PaiMaiAuctionPriceRequest, M2C_PaiMaiAuctionPriceResponse>
+    public class C2M_AuctionPriceHandler : AMActorLocationRpcHandler<Unit, C2M_AuctionPriceRequest, M2C_AuctionPriceResponse>
     {
-        protected override async ETTask Run(Unit unit, C2M_PaiMaiAuctionPriceRequest request, M2C_PaiMaiAuctionPriceResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_AuctionPriceRequest request, M2C_AuctionPriceResponse response, Action reply)
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
@@ -15,7 +15,7 @@ namespace ET
                 reply();
                 return;
             }
-            M2P_PaiMaiAuctionPriceRequest message = new M2P_PaiMaiAuctionPriceRequest()
+            M2Consign_AuctionPriceRequest message = new M2Consign_AuctionPriceRequest()
             {
                 Price = request.Price,
                 UnitID = unit.Id, 
@@ -23,7 +23,7 @@ namespace ET
                 AuctionPlayer = roleInfo.Name,
             };
             long paimaiserverid = DBHelper.GetPaiMaiServerId(unit);
-            P2M_PaiMaiAuctionPriceResponse r_GameStatusResponse = (P2M_PaiMaiAuctionPriceResponse)await ActorMessageSenderComponent.Instance.Call
+            Consign2M_AuctionPriceResponse r_GameStatusResponse = (Consign2M_AuctionPriceResponse)await ActorMessageSenderComponent.Instance.Call
                     (paimaiserverid, message);
 
             response.Error = r_GameStatusResponse.Error;

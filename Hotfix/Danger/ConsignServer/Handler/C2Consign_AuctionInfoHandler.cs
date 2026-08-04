@@ -4,11 +4,11 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class C2P_PaiMaiAuctionInfoHandler : AMActorRpcHandler<Scene, C2P_PaiMaiAuctionInfoRequest, P2C_PaiMaiAuctionInfoResponse>
+    public class C2Consign_AuctionInfoHandler : AMActorRpcHandler<Scene, C2Consign_AuctionInfoRequest, Consign2C_AuctionInfoResponse>
     {
-        protected override async ETTask Run(Scene scene, C2P_PaiMaiAuctionInfoRequest request, P2C_PaiMaiAuctionInfoResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, C2Consign_AuctionInfoRequest request, Consign2C_AuctionInfoResponse response, Action reply)
         {
-            PaiMaiSceneComponent paiMaiSceneComponent = scene.GetComponent<PaiMaiSceneComponent>();
+            ConsignSceneComponent paiMaiSceneComponent = scene.GetComponent<ConsignSceneComponent>();
             response.AuctionStatus  = paiMaiSceneComponent.AuctionStatus;
             response.AuctionPrice   = paiMaiSceneComponent.AuctionPrice;
             response.AuctionItem    = paiMaiSceneComponent.AuctionItem;

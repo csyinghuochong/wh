@@ -6,10 +6,10 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public  class C2M_PaiMaiShopHandler : AMActorLocationRpcHandler<Unit, C2M_PaiMaiShopRequest, M2C_PaiMaiShopResponse>
+    public  class C2M_ConsignShopHandler : AMActorLocationRpcHandler<Unit, C2M_ConsignShopRequest, M2C_ConsignShopResponse>
     {
 		//拍卖快捷列表购买道具
-		protected override async ETTask Run(Unit unit, C2M_PaiMaiShopRequest request, M2C_PaiMaiShopResponse response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_ConsignShopRequest request, M2C_ConsignShopResponse response, Action reply)
 		{            response.Error = ErrorCode.ERR_ModifyData;
             reply();
             await ETTask.CompletedTask;
