@@ -97,9 +97,6 @@ namespace ET
                 case UnitType.Bullet:
                     unitInfo.UnitName = unitInfoComponent.UnitName;
                     break;
-                case UnitType.Stall:
-                    unitInfo.UnitName = unitInfoComponent.UnitName;
-                    break;
                 case UnitType.Npc:
                     break;
                 default:
@@ -151,7 +148,6 @@ namespace ET
                 case UnitType.Bullet:
                 case UnitType.SkillEntity:
                 case UnitType.Npc:
-                case UnitType.Stall:
                     createUnits.Units.Add(CreateUnitInfo(sendUnit));
                     break;
                 case UnitType.Monster:

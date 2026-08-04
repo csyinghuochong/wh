@@ -19,7 +19,7 @@ namespace ET
         public int Level;
 
         //第一职业（用文字 法师/战士）
-        public string Occ;
+        public int OccId;
 
         public int OccOld;
 

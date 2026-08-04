@@ -390,13 +390,8 @@ namespace ET
 
             self.CreateAccountTime = roleInfoComponentServer.CreateAccountTime;
             self.CreateAccountTimeStr = TimeInfo.Instance.ToDateTime(self.CreateAccountTime).ToString();
-            
-            self.Occ = WordHelper.GetShowText(LDOccupationCategory.Instance.Get(roleInfoComponentServer.RoleInfo.Occ).Name);
 
-            if (roleInfoComponentServer.RoleInfo.OccTwo > 0)
-            {
-                WordHelper.GetShowText(LDOccupation_TransferCategory.Instance.Get(roleInfoComponentServer.RoleInfo.OccTwo).Name);
-            }
+            self.OccId = roleInfoComponentServer.RoleInfo.Occ;
 
             self.Combat = roleInfoComponentServer.RoleInfo.Combat;
 
