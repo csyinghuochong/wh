@@ -17,12 +17,12 @@ namespace ET
                 reply();
                 return;
             }
-            if (bagInfo.InheritTimes >= LDGlobalValueCategory.Instance.TempValue)
-            {
-                response.Error = ErrorCode.ERR_TimesIsNot;
-                reply();
-                return;
-            }
+            //if (bagInfo.InheritTimes >= LDGlobalValueCategory.Instance.TempValue)
+            //{
+            //    response.Error = ErrorCode.ERR_TimesIsNot;
+            //    reply();
+            //    return;
+            //}
 
             LDEquip Item = LDEquipCategory.Instance.Get(bagInfo.ItemID);
             string costitem = null;
@@ -43,7 +43,7 @@ namespace ET
 
             response.InheritSkills.Add(skillid);
             bagInfo.IsBinging = true;   
-            bagInfo.InheritTimes += 1;
+            //bagInfo.InheritTimes += 1;
             //通知客户端背包道具发生改变
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();;
             m2c_bagUpdate.BagInfoUpdate.Add(bagInfo);

@@ -258,28 +258,6 @@ namespace ET
                             case 16: //附魔技能
                                // roleInfoComponentServer.RoleInfo.MakeList.Add(int.Parse(ldItem.ItemUsePar));
                                 break;
-                            //使用技能
-                            case 101:
-                                break;
-                            //宠物蛋
-                            case 102:
-                            case 103:
-                                {
-                                    string[] getway = useBagInfo.GetWay.Split('_');
-                                    if (ldItem.ItemType == 102)
-                                    {
-                                        //unit.GetComponent<PetComponentServer>().OnAddPet(int.Parse(getway[0]), int.Parse(ldItem.ItemUsePar), 0, useBagInfo.FuLing);
-                                    }
-                                    else
-                                    {
-                                        int skinId = 0;
-                                        if(!string.IsNullOrEmpty(useBagInfo.ItemPar))
-                                        {
-                                            skinId = int.Parse(useBagInfo.ItemPar);
-                                        }
-                                    }
-                                }
-                                break;
                             //随机盒子
                             case 104:
                                 bagComponentServer.OnAddItemData(droplist, string.Empty, $"{ItemGetWay.ItemBox_104}_{TimeHelper.ServerNow()}");
@@ -364,11 +342,7 @@ namespace ET
 
                                 //response.OperatePar = addExp.ToString();
                                 break;
-                            //藏宝图
-                            case 113:
-                                int dropid = int.Parse(useBagInfo.ItemPar.Split('@')[2]);
-                                UnitFactory.CreateDropItems(unit, unit, 0, dropid, request.OperatePar);
-                                break;
+                           
                             case 114: //宝石
                                 break;
                             case 115://宠物皮肤激活道具
@@ -401,13 +375,7 @@ namespace ET
                                 break;
                             case 126: //集字
                                 break;
-                            case 127: //藏宝图
-                                string rewardItem = useBagInfo.ItemPar.Split('@')[2];
-                                bagComponentServer.OnAddItemData(rewardItem, $"{ItemGetWay.TreasureMap}_{TimeHelper.ServerNow()}");
-                                unit.GetComponent<ChengJiuComponentServer>().TriggerEvent(ChengJiuTargetEnum.TreasureMapNumber_210, 0, 1);
-
-
-                                break;
+                            
                             case 128://激活称号
                               //  unit.GetComponent<TitleComponentServer>().OnActiveTile(int.Parse(ldItem.ItemUsePar));
                                 break;

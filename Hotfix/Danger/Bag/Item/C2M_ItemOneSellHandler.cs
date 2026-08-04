@@ -25,15 +25,15 @@ namespace ET
 
                 //默认出售全部
                 //给与对应金币或货币奖励
-                string[] gemids = useBagInfo.GemIDNew.Split('_');
+                List<int> gemids = useBagInfo.GemIdList;
                 List<int> gemIdList = new List<int>();
-                for (int gem = 0; gem < gemids.Length; gem++)
+                for (int gem = 0; gem < gemids.Count; gem++)
                 {
-                    if (gemids[gem] == "0")
+                    if (gemids[gem] == 0)
                     {
                         continue;
                     }
-                    int gemId = int.Parse(gemids[gem]);
+                    int gemId = gemids[gem];
                     gemIdList.Add(gemId);
                     LDItem ldItemConf = LDItemCategory.Instance.Get(gemId);
                     //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData((int)ldItemConf.SellMoneyType, (ldItemConf.SellMoneyValue).ToString());

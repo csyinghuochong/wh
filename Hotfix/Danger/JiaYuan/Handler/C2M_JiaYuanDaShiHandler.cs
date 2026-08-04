@@ -44,19 +44,7 @@ namespace ET
 
                 int numeid = int.Parse(attriinfo[0]);
                 int maxValue = int.Parse(attriinfo[2]);
-                if ( CommonHelper.IfNull(useBagInfo.ItemPar) ) 
-                {
-                    useBagInfo.ItemPar = "50";
-                }
-                maxValue = (int)(maxValue * (float.Parse(useBagInfo.ItemPar) + 20f) / 100f);
-                if (maxValue > int.Parse(attriinfo[2])) {
-                    maxValue = int.Parse(attriinfo[2]);
-                }
-
-                if (maxValue < int.Parse(attriinfo[1])) {
-                    maxValue = int.Parse(attriinfo[1]);
-                }
-
+             
                 int addvalue = RandomHelper.RandomNumber(int.Parse(attriinfo[1]), maxValue + 1);
                 KeyValuePair keyValuePair = jiaYuanComponentServer.GetDaShiProInfo(numeid);
                 int curvalue = keyValuePair != null ? int.Parse(keyValuePair.Value) : 0;

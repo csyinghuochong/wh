@@ -18,7 +18,7 @@ namespace ET
                 reply();
                 return;
             }
-            bagInfo.IsProtect = request.IsProtect;
+            //bagInfo.IsProtect = request.IsProtect;
             ItemAddHelper.OnItemUpdate(unit, bagInfo);
             reply();
             await ETTask.CompletedTask;

@@ -8,7 +8,6 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JingLingCatchRequest request, M2C_JingLingCatchResponse response, Action reply)
         {
-
             UnitComponent unitComponent = unit.GetParent<UnitComponent>();
             Unit zhupuUnit = unitComponent.Get(request.JingLingId);
             if (zhupuUnit == null)
@@ -36,27 +35,7 @@ namespace ET
                 }
             }
 
-            int gailv = CommonHelper.GetZhuPuGaiLv(zhupuUnit.ConfigId, request.ItemId, int.Parse(request.OperateType));
-            if (RandomHelper.RandFloat01() <= gailv * 0.0001f)
-            {
-                response.Message = String.Empty;
-                int skinId = zhupuUnit.GetComponent<NumericComponent>().GetAsInt(NumericType.PetSkin);
-
-                LDMonster ldMonster = LDMonsterCategory.Instance.Get(zhupuUnit.ConfigId);
-                int getItemid = -1;///ldMonster.Parameter[1];
-                //bagComponentServer.OnAddItemData($"{getItemid};1",$"{ItemGetWay.PickItem}_{TimeHelper.ServerNow()}");
-
-                List<BagInfo> bagInfolist = bagComponentServer.GetIdItemList(getItemid);
-                if (bagInfolist.Count > 0)
-                {
-                    bagInfolist[bagInfolist.Count - 1].ItemPar = skinId.ToString();
-                }
-            }
-            else
-            {
-                response.Error = ErrorCode.ERR_ZhuaBuFail;
-            }
-
+            
             unitComponent.Remove(request.JingLingId);
             reply();
             await ETTask.CompletedTask;

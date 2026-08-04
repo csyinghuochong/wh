@@ -3386,12 +3386,8 @@ namespace ET
 	[ProtoContract]
 	public partial class BagInfo: Object
 	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Name { get; set; }
-
+//int32 RpcId = 90;
+//string Name = 91;
 		[ProtoMember(1)]
 		public long BagInfoID { get; set; }
 
@@ -3425,27 +3421,14 @@ namespace ET
 		[ProtoMember(12)]
 		public bool IsNonTradable { get; set; }
 
-////old
-		[ProtoMember(14)]
-		public string ItemPar { get; set; }
-
 		[ProtoMember(15)]
 		public string GetWay { get; set; }
 
 		[ProtoMember(16)]
-		public string GemHole { get; set; }
-
-		[ProtoMember(17)]
-		public string GemIDNew { get; set; }
-
-		[ProtoMember(18)]
 		public string MakePlayer { get; set; }
 
-		[ProtoMember(21)]
-		public int InheritTimes { get; set; }
-
-		[ProtoMember(23)]
-		public bool IsProtect { get; set; }
+		[ProtoMember(18)]
+		public List<int> GemIdList = new List<int>();
 
 	}
 

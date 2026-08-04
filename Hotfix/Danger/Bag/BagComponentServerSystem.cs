@@ -1370,20 +1370,13 @@ namespace ET
                 occInitAttribute.AddRange( equipList[i].BaseAttrList );
 
                 //获取宝石属性
-                string gemIdNew = equipList[i].GemIDNew;
-                if (string.IsNullOrEmpty(gemIdNew))
+
+
+                List<int> gemList = equipList[i].GemIdList;
+
+                for (int z = 0; z < gemList.Count; z++)
                 {
-                    gemIdNew = ItemNewHelper.GetDefaultGem();
-                    equipList[i].GemIDNew = gemIdNew;
-                    //Log.Debug($"GemIDNew==null  unit.Id: {unit.Id} BagInfoID:{equipList[i].BagInfoID}");
-                }
-
-                string[] gemList = gemIdNew.Split('_');
-
-                for (int z = 0; z < gemList.Length; z++)
-                {
-
-                    int gemID = int.Parse(gemList[z]);
+                    int gemID = gemList[z];
                     if (gemID == 0)
                     {
                         continue;

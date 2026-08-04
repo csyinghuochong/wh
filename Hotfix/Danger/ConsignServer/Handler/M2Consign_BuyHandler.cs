@@ -76,8 +76,6 @@ namespace ET
                 useBagInfo.ItemNum = request.BuyNum;
                 useBagInfo.Loc =(int)ItemLocType.ItemLocBag;
                 useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
-                useBagInfo.GemHole = ItemNewHelper.GetDefaultGem();
-                useBagInfo.GemIDNew = ItemNewHelper.GetDefaultGem();
                 useBagInfo.GetWay = bagInfo.GetWay;
                 useBagInfo.IsBinging = bagInfo.IsBinging;
                 

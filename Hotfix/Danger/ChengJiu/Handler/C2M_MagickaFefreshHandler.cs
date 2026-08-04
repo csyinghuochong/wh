@@ -29,8 +29,6 @@ namespace ET
                 return;
             }
 
-            beforeequip.ItemPar = RandomHelper.RandomNumber(1, 100).ToString();
-
             LDItem ldItem =LDItemCategory.Instance.Get(beforeequip.ItemID);
             /*List<int> itemSkills = ItemHelper.GetItemSkill(Item.SkillID);
             if (itemSkills.Count > 0)
