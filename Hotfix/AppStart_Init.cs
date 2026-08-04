@@ -61,10 +61,7 @@ namespace ET
             TimeInfo.Instance.TimeZone = 8;
             await ConfigComponent.Instance.LoadAsync();
 
-            SkillEditorTreeLoader.Load();
-
             StartProcessConfig processConfig = StartProcessConfigCategory.Instance.Get(Game.Options.Process);
-            
 
             Game.Scene.AddComponent<OpcodeTypeComponent>();
             Game.Scene.AddComponent<MessageDispatcherComponent>();

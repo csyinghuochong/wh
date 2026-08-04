@@ -64,6 +64,11 @@ namespace ET
                     }
 #endif
                     break;
+                    case 4:
+#if SERVER
+                    SkillEditorTreeLoader.Load();
+#endif
+                    break;
             }
 
             Log.Warning("EventSystem.Instance.ToString: 1");
