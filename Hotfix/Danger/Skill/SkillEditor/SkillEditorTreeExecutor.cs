@@ -167,12 +167,6 @@ namespace ET
                 return targetIds;
             }
 
-            long targetId = handler?.SkillInfo?.TargetID ?? 0;
-            if (targetId > 0)
-            {
-                targetIds.Add(targetId);
-            }
-
             return targetIds;
         }
 

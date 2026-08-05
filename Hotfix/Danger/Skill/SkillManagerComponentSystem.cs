@@ -60,6 +60,13 @@ namespace ET
             Vector3 targetPosition = LDSkillHelper.ResolveSkillTargetPosition(unit, ldSkill, skillcmd, target);
 
             // SkillInfo 需随技能生命周期存活，不能跨次施法复用同一实例
+
+            //计算技能作用的坐标
+            //Vector3 sourcePoint = unit.Position;
+            //Quaternion rotation = Quaternion.Euler(0, skillcmd.TargetAngle, 0);
+            //Vector3 targetPoint = sourcePoint + rotation * Vector3.forward * skillcmd.TargetDistance;
+
+
             SkillInfo skillInfo = new SkillInfo();
             skillInfo.SkillID = skillcmd.SkillID;
             skillInfo.WeaponSkillID = weaponSkill;

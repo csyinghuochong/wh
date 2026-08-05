@@ -424,9 +424,8 @@ namespace ET
             // TheUnitFrom=技能体 → 树里 caster.parent = 主人
             Skill_TreeEditor handler = skillManager.SkillFactory(skillInfo, skillEntity);
             handler.TheUnitTarget = hitTarget;
-            handler.TargetPosition = center;
-            handler.ICheckShape.Clear();
-            handler.ICheckShape.Add(handler.CreateCheckShape(skillInfo.TargetAngle));
+            handler.ActionPosition = center;
+            handler.ICheckShape = handler.CreateCheckShape(skillInfo.TargetAngle);
             handler.HurtIds.Clear();
 
             // 收集目标：圆心=碰撞目标，半径=Skill_1 范围参数1（3）

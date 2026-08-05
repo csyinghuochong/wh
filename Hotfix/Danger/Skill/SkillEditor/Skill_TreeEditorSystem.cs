@@ -20,15 +20,13 @@ namespace ET
             SkillSetComponentServer skillSetComponentServer = theUnitFrom.GetComponent<SkillSetComponentServer>();
             self.SkillState = SkillState.Running;
             self.SkillBeginTime = TimeHelper.ServerNow();
-            self.DamgeChiXuLastTime = TimeHelper.ServerNow();
             self.SkillExcuteHurtTime = self.SkillBeginTime + (long)(1000 * self.LdSkillConf.Time_1);
             double totalTime = LDSkillHelper.GetSkillTotalTime(self.LdSkillConf);
             self.SkillEndTime = totalTime > 0
                 ? self.SkillBeginTime + (long)(1000 * totalTime)
                 : self.SkillBeginTime + 1000;
-            self.TargetPosition = new Vector3(skillcmd.PosX, skillcmd.PosY, skillcmd.PosZ); //获取起始坐标
-            self.ICheckShape = new List<Shape>() { self.CreateCheckShape(self.SkillInfo.TargetAngle) };
-            self.NowPosition = self.TargetPosition;              //获取技能起始的坐标点
+            self.ActionPosition = new Vector3(skillcmd.PosX, skillcmd.PosY, skillcmd.PosZ); //获取起始坐标
+            self.ICheckShape = self.CreateCheckShape(self.SkillInfo.TargetAngle);
             self.treeLogicExecuted = false;
         }
 
@@ -161,14 +159,7 @@ namespace ET
 
         public static bool CheckShape(this Skill_TreeEditor self, Vector3 t_positon)
         {
-            for (int i = 0; i < self.ICheckShape.Count; i++)
-            {
-                if (self.ICheckShape[i].Contains(t_positon))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return self.ICheckShape.Contains(t_positon);
         }
 
         /*范围类型
@@ -186,26 +177,26 @@ namespace ET
                 case SkillRangeType.SkillRangeSingle_0:
                 case SkillRangeType.SkillRangeCicle_1:
                     ishape = new Circle();
-                    (ishape as Circle).s_position = self.TargetPosition;
+                    (ishape as Circle).s_position = self.ActionPosition;
                     (ishape as Circle).range = (float)(self.LdSkillConf.Range_Type_Param1);
                     break;
                 case SkillRangeType.SkillRangeFan_2:
                     ishape = new Fan();
-                    (ishape as Fan).s_position = self.TargetPosition;
+                    (ishape as Fan).s_position = self.ActionPosition;
                     (ishape as Fan).s_rotation = Quaternion.Euler(0, targetAngle, 0);
                     (ishape as Fan).skill_distance = (float)(self.LdSkillConf.Range_Type_Param1);
                     (ishape as Fan).skill_angle = (float)(self.LdSkillConf.Range_Type_Param2) * 0.5f;
                     break;
                 case SkillRangeType.SkillRangeRectangle_3:
                     ishape = new Rectangle();
-                    (ishape as Rectangle).s_position = self.TargetPosition;
+                    (ishape as Rectangle).s_position = self.ActionPosition;
                     (ishape as Rectangle).s_forward = (Quaternion.Euler(0, targetAngle, 0) * Vector3.forward).normalized;
                     (ishape as Rectangle).x_range = (float)(self.LdSkillConf.Range_Type_Param1) * 0.5f;
                     (ishape as Rectangle).z_range = (float)(self.LdSkillConf.Range_Type_Param2);
                     break;
                 case SkillRangeType.SkillRangeRectangle_4:
                     ishape = new Rectangle_2();
-                    (ishape as Rectangle_2).s_position = self.TargetPosition;
+                    (ishape as Rectangle_2).s_position = self.ActionPosition;
                     (ishape as Rectangle_2).s_forward = (Quaternion.Euler(0, targetAngle, 0) * Vector3.forward).normalized;
                     (ishape as Rectangle_2).x_range = (float)(self.LdSkillConf.Range_Type_Param1) * 0.5f;
                     (ishape as Rectangle_2).z_range = (float)(self.LdSkillConf.Range_Type_Param2);
@@ -233,7 +224,7 @@ namespace ET
 
         public static void OnFinished(this Skill_TreeEditor self)
         {
-            self.ICheckShape.Clear();
+            self.ICheckShape = null;
             self.SkillInfo = null;
         }
     }
