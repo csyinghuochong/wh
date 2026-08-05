@@ -179,7 +179,7 @@ namespace ET
 						unit.AddComponent<AOIEntity, int, Vector3>(10 * 1000, unit.Position);
 						TransferHelper.AfterTransfer(unit);
 						SceneCreatureHelp.CreateSceneRole(scene, request.ChapterId);
-						//SceneCreatureHelp.CreateSceneTeleport(scene, request.ChapterId);
+						SceneCreatureHelp.CreateSceneTeleport(scene, request.ChapterId);
 						unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.LocalDungeonTime, 1, 0);
 						break;
                     case MapTypeEnum.Happy:
