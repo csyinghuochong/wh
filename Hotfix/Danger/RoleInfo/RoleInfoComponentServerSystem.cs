@@ -313,16 +313,6 @@ namespace ET
 
         }
 
-        private static bool IsZhuBoLevel16(this RoleInfoComponentServer self)
-        {
-            if (!CommonHelper.IsZhuBoZone(UnitZoneHelper.GetHomeZone(self.GetParent<Unit>())))
-            {
-                return false;
-
-            }
-
-            return self.Id == 2648795239413776384 || self.Id == 2641338471813283840;
-        }
 
         public static void OnOffLine(this RoleInfoComponentServer self)
         {
@@ -677,11 +667,7 @@ namespace ET
                     saveValue = self.RoleInfo.Name;
                     break;
                 case UserDataType.Exp:
-                    if (self.IsZhuBoLevel16())
-                    {
-                        return;
-                    }
-
+                  
                     self.Role_AddExp(long.Parse(value), notice);
                     //saveValue = self.RoleInfo.Exp.ToString();
                     longValue = self.RoleInfo.Exp;

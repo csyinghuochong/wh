@@ -453,17 +453,6 @@ namespace ET
             {
                 MiJingComponent miJingComponent = self.DomainScene().GetComponent<MiJingComponent>();
                 miJingComponent.BossId = refreshMonster.MonsterId;
-
-                if (!CommonHelper.IsBanHaoZone(self.DomainZone()) && DBHelper.GetOpenServerDay(self.DomainZone()) > 0)
-                {
-                    long robotSceneId = DBHelper.GetRobotServerId();
-                    MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest()
-                    {
-                        Zone = self.DomainZone(),
-                        MessageType = NoticeType.YeWaiBoss,
-                        Message = $"{mapComponent.SceneId}@{form.x};{form.y};{form.z}@{refreshMonster.MonsterId}@2"
-                    });
-                }
             }
             
             if (refreshMonster.Number > 100)

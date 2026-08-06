@@ -1,17 +1,13 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ET
 {
     public partial class LDEquipCategory
     {
+        public Dictionary<int, Dictionary<int, int>> Enhance_AttributeList = new Dictionary<int, Dictionary<int, int>>();
 
-        public Dictionary<int, Dictionary<int,int>> Enhance_AttributeList = new Dictionary<int, Dictionary<int, int>>();
-
-        private Dictionary<int, List<AttributeRandom>> EquipAttribute = new Dictionary<int,List<AttributeRandom>> { };
+        private readonly Dictionary<int, List<AttributeRandom>> EquipAttribute = new Dictionary<int, List<AttributeRandom>>();
 
         public override void AfterEndInit()
         {
@@ -21,72 +17,63 @@ namespace ET
 
         private void ParseEquipAttri()
         {
-
-            EquipAttribute.Clear(); 
+            EquipAttribute.Clear();
             foreach (LDEquip ldEquip in this.GetAll().Values)
             {
-                List<AttributeRandom> equipAttribute = new List<AttributeRandom>();
-
-
-                if (ldEquip.Id == 1115780)
-                {
-                    Console.WriteLine("ldEquip.Id == 1115780");
-                }
-
-                //23_500~600|24_1000~1200|66_50~60|70_50~60|18_30"
-
+                // 23_500~600|24_1000~1200|66_50~60|70_50~60|18_30
                 if (string.IsNullOrEmpty(ldEquip.Attribute))
                 {
                     continue;
                 }
 
-                string[] attributeList = ldEquip.Attribute.Split("|");
+                List<AttributeRandom> equipAttribute = new List<AttributeRandom>();
+                string[] attributeList = ldEquip.Attribute.Split('|');
                 for (int i = 0; i < attributeList.Length; i++)
                 {
                     string attributeInfo = attributeList[i];
-
                     if (attributeInfo.Length < 2)
                     {
                         continue;
                     }
 
-                    string[] attributeInfolist = attributeInfo.Split("~");
-                    
-                    int attriId = int.Parse(attributeInfolist[0]);
-
-                    string[] attributeValue = attributeInfolist[1].Split("~");
-
-                    if (attributeValue.Length == 1)
+                    string[] attributeInfolist = attributeInfo.Split('_');
+                    if (attributeInfolist.Length < 2
+                        || !int.TryParse(attributeInfolist[0], out int attriId))
                     {
-                        equipAttribute.Add(new AttributeRandom()
+                        continue;
+                    }
+
+                    string[] attributeValue = attributeInfolist[1].Split('~');
+                    if (attributeValue.Length == 1
+                        && int.TryParse(attributeValue[0], out int fixedValue))
+                    {
+                        equipAttribute.Add(new AttributeRandom
                         {
                             AttributeID = attriId,
-                            AttributeValueMin = int.Parse(attributeValue[0]),
-                            AttributeValueMax = int.Parse(attributeValue[0]),
+                            AttributeValueMin = fixedValue,
+                            AttributeValueMax = fixedValue,
                         });
                     }
-                    if (attributeValue.Length == 2)
+                    else if (attributeValue.Length == 2
+                             && int.TryParse(attributeValue[0], out int minValue)
+                             && int.TryParse(attributeValue[1], out int maxValue))
                     {
-                        equipAttribute.Add(new AttributeRandom()
+                        equipAttribute.Add(new AttributeRandom
                         {
                             AttributeID = attriId,
-                            AttributeValueMin = int.Parse(attributeValue[0]),
-                            AttributeValueMax = int.Parse(attributeValue[1]),
+                            AttributeValueMin = minValue,
+                            AttributeValueMax = maxValue,
                         });
                     }
                 }
-
 
                 EquipAttribute.Add(ldEquip.Id, equipAttribute);
             }
         }
 
-
         private void ParseEnhance_AttributeList()
         {
             Enhance_AttributeList.Clear();
-
-
             foreach (LDEquip ldEquip in this.GetAll().Values)
             {
                 if (string.IsNullOrEmpty(ldEquip.Enhance_Attribute))
@@ -94,176 +81,275 @@ namespace ET
                     continue;
                 }
 
-                //23_5|24_10|66_2|67_2|1_1|2_1|3_1|4_1|6_1|132_1|133_1|135_1|136_1
-
-                string[] attributeList = ldEquip.Enhance_Attribute.Split("|");
-
-                Dictionary<int, int> attributeItems = new Dictionary<int, int>();
-
-                for (int i = 0; i < attributeList.Length; i++)
+                // 23~3|24~6ï¼ˆå…¼å®¹æ—§è¡¨ 23_3ï¼‰
+                Dictionary<int, int> map = new Dictionary<int, int>();
+                string[] items = ldEquip.Enhance_Attribute.Split('|');
+                for (int i = 0; i < items.Length; i++)
                 {
-                    string[] attributeItem = attributeList[i].Split("_");
-
-
-                    if (attributeItem.Length != 2)
+                    string s = items[i];
+                    if (string.IsNullOrEmpty(s))
                     {
                         continue;
                     }
 
-                    attributeItems.Add(int.Parse(attributeItem[0]), int.Parse(attributeItem[1]));
+                    char sep = s.IndexOf('~') >= 0 ? '~' : '_';
+                    string[] p = s.Split(sep);
+                    if (p.Length == 2 && int.TryParse(p[0], out int id) && int.TryParse(p[1], out int v))
+                    {
+                        map[id] = v;
+                    }
                 }
 
-                Enhance_AttributeList.Add(ldEquip.Id, attributeItems);
-
+                if (map.Count > 0)
+                {
+                    Enhance_AttributeList[ldEquip.Id] = map;
+                }
             }
         }
 
+        /// <summary>
+        /// 4~6 ä½ï¼šid + min(3)ï¼Œmax=minï¼›7~9 ä½ï¼šid + min(3) + max(3)
+        /// </summary>
+        public static bool TryParsePackedAttr(int code, out int attrId, out int minValue, out int maxValue)
+        {
+            attrId = 0;
+            minValue = 0;
+            maxValue = 0;
+            if (code <= 0)
+            {
+                return false;
+            }
 
+            string s = code.ToString();
+            int len = s.Length;
+            if (len < 4 || len > 9)
+            {
+                return false;
+            }
+
+            try
+            {
+                if (len <= 6)
+                {
+                    attrId = int.Parse(s.Substring(0, len - 3));
+                    minValue = int.Parse(s.Substring(len - 3, 3));
+                    maxValue = minValue;
+                }
+                else
+                {
+                    attrId = int.Parse(s.Substring(0, len - 6));
+                    minValue = int.Parse(s.Substring(len - 6, 3));
+                    maxValue = int.Parse(s.Substring(len - 3, 3));
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// è£…å¤‡éšæœºå±æ€§ï¼š
+        /// 1) å¿…ä¸­ Att_Rand_1~6ï¼šæ¯ä¸ªæ± å„æŠ½ 1 æ¡ï¼ˆæ± ç©ºåˆ™è·³è¿‡ï¼‰
+        /// 2) é™„åŠ  Att_Rand_Num æ¬¡ï¼šæŒ‰ç»„æ± æŠ½ï¼ŒåŒå±æ€§ id ä¸é‡å¤
+        ///    - ParamX1ï¼šç»„å±æ€§ç ï¼ˆæ‰“åŒ… id/min/maxï¼‰
+        ///    - ParamX2ï¼šè¯¥ç»„æœ€å¤šæŠ½å‡ æ¡ï¼Œè¶…è¿‡åˆ™è¯¥ç»„ä¸å†è¿›æ± ï¼ˆ0=ä¸é™ï¼‰
+        ///    - ParamX3ï¼šä»ç¬¬å‡ æ¬¡é™„åŠ æ‰åŠ å…¥è¯¥ç»„ï¼›Num=1 ä¸” ParamX3=2 åˆ™æ°¸è¿œæŠ½ä¸åˆ°
+        /// </summary>
         public List<AttributeItem> GetRandomAttribute(int equipId)
         {
-            List<AttributeItem> hideProLists1 = new List<AttributeItem>();
+            List<AttributeItem> result = new List<AttributeItem>();
+            LDEquip e = this.Get(equipId);
+            // å·²æŠ½å‡ºçš„å±æ€§ idï¼Œå¿…ä¸­/é™„åŠ å…±ç”¨ï¼Œé¿å…åŒ id æŠ½ä¸¤æ¬¡
+            HashSet<int> used = new HashSet<int>();
 
-            //1025030|2025030|3025030    
-            //ÒÔ1025030 ¾ÙÀı¡£   ×îºóÈıÎ» 030  ÊÇ×î´óÖµ  ÖĞ¼äÈıÎ»025×îĞ¡Öµ   Ç°1-3Î»ÊÇÊôĞÔid  ¶ÔÓ¦NumericTypeµÄÊıÖµ
-            //1025030|2025030|3025030    
-            //ÒÔ1025030 ¾ÙÀı¡£   ×îºóÈıÎ» 030  ÊÇ×î´óÖµ  ÖĞ¼äÈıÎ»025×îĞ¡Öµ   Ç°1-3Î»ÊÇÊôĞÔid  ¶ÔÓ¦NumericTypeµÄÊıÖµ
-            //Att_Rand_Add ÇĞ·ÖºóµÄÕûÊı ¿ÉÄÜÊÇ7Î» ¿ÉÄÜÊÇ9Î»     ºóÁùÎ»ÊÇ×îĞ¡×î´óÖµ Ç°1µ½ÈıÎ»ÊÇid
-            //µÚN´Î³éÈ¡£º´Ó Att_Rand_Add1~N ºÏ²¢³ØÖĞËæ»ú£¬²¢¹ıÂËÒÑ³é³öµÄÊôĞÔid
-            //Att_Rand_1~6 Îª±ØÖĞ£ºµÚN´ÎÖ»´Ó¶ÔÓ¦³Ø³é£¬²¢¹ıÂËÒÑ³é³öµÄÊôĞÔid
-            //Òª×¢ÒâµÄ£º Att_Rand_Add2 Att_Rand_Add3 Att_Rand_Add4 µÈ¿ÉÄÜÎª¿Õ
-
-            LDEquip lDEquip = this.Get(equipId);
-            List<int> usedAttrIds = new List<int>();
-
-            // ---------- ±ØÖĞÊôĞÔ Att_Rand_1~6 ----------
+            // ---------- å¿…ä¸­ï¼šAtt_Rand_1~6ï¼Œæ¯æ± æŠ½ 1 æ¡ ----------
             int[][] mustPools =
             {
-                lDEquip.Att_Rand_1,
-                lDEquip.Att_Rand_2,
-                lDEquip.Att_Rand_3,
-                lDEquip.Att_Rand_4,
-                lDEquip.Att_Rand_5,
-                lDEquip.Att_Rand_6,
+                e.Att_Rand_1, e.Att_Rand_2, e.Att_Rand_3,
+                e.Att_Rand_4, e.Att_Rand_5, e.Att_Rand_6,
             };
-            for (int i = 0; i < mustPools.Length; i++)
+            for (int p = 0; p < mustPools.Length; p++)
             {
-                int[] pool = mustPools[i];
+                int[] pool = mustPools[p];
                 if (pool == null || pool.Length == 0)
-                    continue;
-
-                List<int> candidates = new List<int>();
-                for (int j = 0; j < pool.Length; j++)
                 {
-                    string s = pool[j].ToString();
-                    if (s.Length < 7)
-                        continue;
-                    int attrId = int.Parse(s.Substring(0, s.Length - 6));
-                    if (usedAttrIds.Contains(attrId))
-                        continue;
-                    candidates.Add(pool[j]);
+                    continue;
                 }
-                if (candidates.Count == 0)
-                    continue;
 
-                int fullId = candidates[RandomHelper.RandomNumber(0, candidates.Count)];
-                string fullStr = fullId.ToString();
-                string last6 = fullStr.Substring(fullStr.Length - 6, 6);
-                int pickAttrId = int.Parse(fullStr.Substring(0, fullStr.Length - 6));
-                int minValue = int.Parse(last6.Substring(0, 3));
-                int maxValue = int.Parse(last6.Substring(3, 3));
-
-                hideProLists1.Add(new AttributeItem()
+                // æœ¬æ± å€™é€‰ï¼šè§£ææ‰“åŒ…ç ï¼Œè¿‡æ»¤å·²ç”¨ id
+                List<int> ids = new List<int>();
+                List<int> mins = new List<int>();
+                List<int> maxs = new List<int>();
+                for (int i = 0; i < pool.Length; i++)
                 {
-                    AttributeID = pickAttrId,
-                    AttributeValue = RandomHelper.RandomNumber(minValue, maxValue + 1),
+                    if (!TryParsePackedAttr(pool[i], out int id, out int min, out int max))
+                    {
+                        continue;
+                    }
+
+                    if (used.Contains(id) || ids.Contains(id))
+                    {
+                        continue;
+                    }
+
+                    ids.Add(id);
+                    mins.Add(min);
+                    maxs.Add(max);
+                }
+
+                if (ids.Count == 0)
+                {
+                    continue;
+                }
+
+                // éšæœºä¸€æ¡ï¼Œå€¼åœ¨ [min, max]
+                int idx = RandomHelper.RandomNumber(0, ids.Count);
+                int pickMin = mins[idx];
+                int pickMax = maxs[idx] < pickMin ? pickMin : maxs[idx];
+                result.Add(new AttributeItem
+                {
+                    AttributeID = ids[idx],
+                    AttributeValue = RandomHelper.RandomNumber(pickMin, pickMax + 1),
                 });
-                usedAttrIds.Add(pickAttrId);
+                used.Add(ids[idx]);
             }
 
-            // ---------- Ëæ»ú¸½¼Ó Att_Rand_Add ----------
-            int attRandomNum = lDEquip.Att_Rand_Add_Num;
-            int[][] addPools =
+            // ---------- éšæœºé™„åŠ ï¼šå…± Att_Rand_Num æ¬¡ ----------
+            int addNum = e.Att_Rand_Num;
+            if (addNum <= 0)
             {
-                lDEquip.Att_Rand_Add1,
-                lDEquip.Att_Rand_Add2,
-                lDEquip.Att_Rand_Add3,
-                lDEquip.Att_Rand_Add4,
-                lDEquip.Att_Rand_Add5,
-                lDEquip.Att_Rand_Add6,
+                return result;
+            }
+
+            // ç»„1~5 çš„å±æ€§ç æ± 
+            List<int>[] groupCodes =
+            {
+                new List<int>(), new List<int>(), new List<int>(), new List<int>(), new List<int>(),
             };
-            for (int i = 0; i < attRandomNum; i++)
+            // è¯¥ç»„æœ€å¤šæŠ½å‡ æ¡ï¼ˆ0=ä¸é™ï¼‰ï¼›æŠ½æ»¡åæœ¬è½®èµ·ä¸å†è¿›æ± 
+            int[] groupMax = { e.Att_Rand_Param12, e.Att_Rand_Param22, e.Att_Rand_Param32, e.Att_Rand_Param42, e.Att_Rand_Param52 };
+            // ä»ç¬¬å‡ æ¬¡é™„åŠ æ‰åŠ å…¥è¯¥ç»„ï¼ˆ1=ç¬¬ä¸€æ¬¡å°±è¿›æ± ï¼›2=ç¬¬äºŒæ¬¡æ‰è¿›æ± ï¼‰
+            int[] groupJoin = { e.Att_Rand_Param13, e.Att_Rand_Param23, e.Att_Rand_Param33, e.Att_Rand_Param43, e.Att_Rand_Param53 };
+            // è¯¥ç»„å·²æŠ½å‡ºæ¡æ•°
+            int[] groupPicked = { 0, 0, 0, 0, 0 };
+
+            // ç»„1ï¼šè¡¨å­—æ®µæ˜¯ int[]ï¼›ç»„2~5ï¼šå­—ç¬¦ä¸²ç”¨ | åˆ†éš”
+            if (e.Att_Rand_Param11 != null)
             {
-                List<int> candidates = new List<int>();
-                List<int> candidateAttrIds = new List<int>();
-                // µÚ i+1 ´Î£ººÏ²¢ Att_Rand_Add1 ~ Att_Rand_Add(i+1)
-                for (int p = 0; p <= i && p < addPools.Length; p++)
+                for (int i = 0; i < e.Att_Rand_Param11.Length; i++)
                 {
-                    int[] pool = addPools[p];
-                    if (pool == null || pool.Length == 0)
-                        continue;
-                    for (int j = 0; j < pool.Length; j++)
+                    if (e.Att_Rand_Param11[i] > 0)
                     {
-                        string s = pool[j].ToString();
-                        if (s.Length < 7)
-                            continue;
-                        int attrId = int.Parse(s.Substring(0, s.Length - 6));
-                        if (usedAttrIds.Contains(attrId))
-                            continue;
-                        if (candidateAttrIds.Contains(attrId))
-                            continue;
-                        candidates.Add(pool[j]);
-                        candidateAttrIds.Add(attrId);
+                        groupCodes[0].Add(e.Att_Rand_Param11[i]);
                     }
                 }
-                if (candidates.Count == 0)
-                    continue;
-
-                int fullId = candidates[RandomHelper.RandomNumber(0, candidates.Count)];
-                string fullStr = fullId.ToString();
-                string last6 = fullStr.Substring(fullStr.Length - 6, 6);
-                int pickAttrId = int.Parse(fullStr.Substring(0, fullStr.Length - 6));
-                int minValue = int.Parse(last6.Substring(0, 3));
-                int maxValue = int.Parse(last6.Substring(3, 3));
-
-                hideProLists1.Add(new AttributeItem()
-                {
-                    AttributeID = pickAttrId,
-                    AttributeValue = RandomHelper.RandomNumber(minValue, maxValue + 1),
-                });
-                usedAttrIds.Add(pickAttrId);
             }
 
-            return hideProLists1;
-        }
+            string[] strPools = { null, e.Att_Rand_Param21, e.Att_Rand_Param31, e.Att_Rand_Param41, e.Att_Rand_Param51 };
+            for (int g = 1; g < 5; g++)
+            {
+                if (string.IsNullOrEmpty(strPools[g]))
+                {
+                    continue;
+                }
 
+                string[] parts = strPools[g].Split('|');
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    if (int.TryParse(parts[i], out int code) && code > 0)
+                    {
+                        groupCodes[g].Add(code);
+                    }
+                }
+            }
+
+            // ç¬¬ round æ¬¡é™„åŠ ï¼šåˆå¹¶ JoinRound<=round ä¸”æœªè¾¾ä¸Šé™çš„ç»„ï¼ŒæŠ½ 1 æ¡
+            for (int round = 1; round <= addNum; round++)
+            {
+                List<int> ids = new List<int>();
+                List<int> mins = new List<int>();
+                List<int> maxs = new List<int>();
+                List<int> fromGroup = new List<int>(); // å€™é€‰æ¥è‡ªå“ªä¸€ç»„ï¼ŒæŠ½ä¸­åç»™è¯¥ç»„ Picked++
+
+                for (int g = 0; g < 5; g++)
+                {
+                    // æœªé…ç½®åŠ å…¥è½®æ¬¡ï¼Œæˆ–è¿˜æ²¡åˆ°è¯¥ç»„åŠ å…¥è½®æ¬¡
+                    if (groupJoin[g] <= 0 || groupJoin[g] > round)
+                    {
+                        continue;
+                    }
+
+                    // å·²è¾¾è¯¥ç»„æœ€å¤§ä¸ªæ•°
+                    if (groupMax[g] > 0 && groupPicked[g] >= groupMax[g])
+                    {
+                        continue;
+                    }
+
+                    List<int> codes = groupCodes[g];
+                    for (int i = 0; i < codes.Count; i++)
+                    {
+                        if (!TryParsePackedAttr(codes[i], out int id, out int min, out int max))
+                        {
+                            continue;
+                        }
+
+                        if (used.Contains(id) || ids.Contains(id))
+                        {
+                            continue;
+                        }
+
+                        ids.Add(id);
+                        mins.Add(min);
+                        maxs.Add(max);
+                        fromGroup.Add(g);
+                    }
+                }
+
+                if (ids.Count == 0)
+                {
+                    continue;
+                }
+
+                int idx = RandomHelper.RandomNumber(0, ids.Count);
+                int pickMin = mins[idx];
+                int pickMax = maxs[idx] < pickMin ? pickMin : maxs[idx];
+                result.Add(new AttributeItem
+                {
+                    AttributeID = ids[idx],
+                    AttributeValue = RandomHelper.RandomNumber(pickMin, pickMax + 1),
+                });
+                used.Add(ids[idx]);
+                groupPicked[fromGroup[idx]]++;
+            }
+
+            return result;
+        }
 
         public List<AttributeItem> GetEquipAttribute(int equipId)
         {
-            List<AttributeItem> hideProLists1 = new List<AttributeItem>();
+            List<AttributeItem> result = new List<AttributeItem>();
+            result.AddRange(GetRandomAttribute(equipId));
 
-            hideProLists1.AddRange(GetRandomAttribute(equipId));
-
-
-            this.EquipAttribute.TryGetValue(equipId, out List<AttributeRandom> hideRandom);
-
-            if (hideRandom == null)
+            if (!this.EquipAttribute.TryGetValue(equipId, out List<AttributeRandom> fixedList) || fixedList == null)
             {
-                return hideProLists1;
-             }
-
-            for (int i = 0; i < hideRandom.Count; i++)
-            {
-                int getValue = RandomHelper.RandomNumber((int)hideRandom[i].AttributeValueMin, (int)hideRandom[i].AttributeValueMax + 1 );
-                hideProLists1.Add ( new AttributeItem()
-                {
-                    AttributeID = hideRandom[i].AttributeID,
-                    AttributeValue = getValue,   
-                }); 
+                return result;
             }
 
+            for (int i = 0; i < fixedList.Count; i++)
+            {
+                int min = (int)fixedList[i].AttributeValueMin;
+                int max = (int)fixedList[i].AttributeValueMax;
+                result.Add(new AttributeItem
+                {
+                    AttributeID = fixedList[i].AttributeID,
+                    AttributeValue = RandomHelper.RandomNumber(min, max + 1),
+                });
+            }
 
-           
-            return hideProLists1;
+            return result;
         }
     }
 }

@@ -48,6 +48,11 @@ namespace ET
                     result_check.errcode = 0;
                     result_check.data.result.status = 0;
                 }
+                else if (ServerHelper.IsBanHaoZone(0))
+                {
+                    result_check.errcode = 0;
+                    result_check.data.result.status = 0;
+                }
                 else
                 {
                     string ai = dbCenterAccountInfo.Id + "_";
@@ -58,9 +63,9 @@ namespace ET
                             ai += "a";
                         }
                     }
-       
+
                     Scene accountScene = session.DomainScene();
-                    Game.EventSystem.Publish(new EventType.RealName() { AccountScene = accountScene,  ai = ai, name = request.Name, idNum = request.IdCardNO });
+                    Game.EventSystem.Publish(new EventType.RealName() { AccountScene = accountScene, ai = ai, name = request.Name, idNum = request.IdCardNO });
                     WaitType.WaitRealNameCode waitCreateMyUnit = await accountScene.GetComponent<ObjectWait>().Wait<WaitType.WaitRealNameCode>();
                     result_check = waitCreateMyUnit.Message;
                 }

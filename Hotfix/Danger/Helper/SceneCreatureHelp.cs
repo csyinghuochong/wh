@@ -48,7 +48,7 @@ namespace ET
 				LDScene_Teleport dungeonTransferConfig = LDScene_TeleportCategory.Instance.Get(transferId);
 				int[] position = dungeonTransferConfig.Position;
 				Vector3 vector3 = new Vector3(position[0], position[1] , position[2]);
-				vector3 = RandomHelper.GetRandomPointInCircle(vector3, 5f);
+				vector3 = RandomHelper.GetRandomPointInCircle(vector3, 5f, 15f);
 				
 				//创建传送点Unit
 				Unit chuansong = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), 1);

@@ -62,7 +62,7 @@ namespace ET
                             return;
                         }
 
-						if (!CommonHelper.IsBanHaoZone(session.DomainZone())
+						if (!ServerHelper.IsBanHaoZone(session.DomainZone())
                             && !GMHelp.GmAccount.Contains(centerAccountList[0].Account)
                             && CommonHelper.GetTodayCreateRoleNumber(centerAccountList[0].RoleList) >= 8)
 						{
@@ -74,7 +74,7 @@ namespace ET
 						long accountCrateTime = centerAccountList[0].CreateTime;
 						long serverNowTime = TimeHelper.ServerNow();
 						long serverOpenTime = ServerHelper.GetOpenServerTime(false, request.ServerId);
-						if (!CommonHelper.IsBanHaoZone(session.DomainZone()) 
+						if (!ServerHelper.IsBanHaoZone(session.DomainZone()) 
 							&& !ServerHelper.IsGoogleServer(session.DomainZone())
                             && !GMHelp.GmAccount.Contains(centerAccountList[0].Account)
 							&& !GMHelp.TestNewOccAccount.Contains(centerAccountList[0].Account))

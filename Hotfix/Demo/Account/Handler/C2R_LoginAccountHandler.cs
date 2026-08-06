@@ -123,7 +123,7 @@ namespace ET
                        
                         if (sessionId != session.InstanceId || session.IsDisposed || session.DomainZone() == 0)
                         {
-                            Log.Console($"session.IsDisposed: {request.AccountName}");
+                            Log.Console($"session.IsDisposed.loginaccounthandler: {request.AccountName}");
                             response.Error = ErrorCode.ERR_LoginInfoIsNull;
                             reply();
                             session.Disconnect().Coroutine();
@@ -154,7 +154,7 @@ namespace ET
                         }
                         if (session.IsDisposed || session.DomainZone() == 0)
                         {
-                            Log.Console($"session.IsDisposed: {request.AccountName}");
+                            Log.Console($"session.IsDisposed.loginaccounthandler2: {request.AccountName}");
                             response.Error = ErrorCode.ERR_LoginInfoIsNull;
                             reply();
                             session.Disconnect().Coroutine();

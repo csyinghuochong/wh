@@ -15,6 +15,18 @@ namespace ET
         public static string LocalIp = "127.0.0.1";
 
 
+        //版号专区
+        public static bool IsBanHaoZone(int zone)
+        {
+            return Game.Options.StartConfig.Contains("BanHao");
+        }
+
+
+        public static bool IsGoogleServer(int zone)
+        {
+            return Platform == 7; 
+        }
+
         //Alpha = 0,              //仅内部人员使用。一般不向外部发布
         //Beta = 1,               //公开测试版
         //BanHao = 2,
@@ -173,10 +185,6 @@ namespace ET
 
         }
 
-        public static bool IsGoogleServer(int zone)
-        {
-            return Platform == 7;
-        }
 
         public static bool IsBanHaoServer(int zone)
         {

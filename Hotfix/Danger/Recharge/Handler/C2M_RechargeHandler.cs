@@ -18,7 +18,7 @@ namespace ET
                     return;
                 }
 
-                if (CommonHelper.IsBanHaoZone(UnitZoneHelper.GetHomeZone(unit)))
+                if (ServerHelper.IsBanHaoZone(UnitZoneHelper.GetHomeZone(unit)))
                 {
                     LogHelper.LogWarning($"充值[版号服]SendDiamondToUnit: {unit.Id}");
                     Console.WriteLine($"充值[版号服]SendDiamondToUnit: {unit.Id}");
