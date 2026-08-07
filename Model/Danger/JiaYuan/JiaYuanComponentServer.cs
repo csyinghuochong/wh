@@ -17,9 +17,6 @@ namespace ET
     public class JiaYuanComponentServer : Entity, IAwake, IDestroy, ITransfer, IDeserialize, IUnitCache
     {
 
-
-
-
         public long RefreshMonsterTime_2 = 0;
 
         public long JiaYuanDaShiTime_1 = 0;
