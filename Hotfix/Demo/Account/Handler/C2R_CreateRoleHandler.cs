@@ -76,8 +76,7 @@ namespace ET
 						long serverOpenTime = ServerHelper.GetOpenServerTime(false, request.ServerId);
 						if (!ServerHelper.IsBanHaoZone(session.DomainZone()) 
 							&& !ServerHelper.IsGoogleServer(session.DomainZone())
-                            && !GMHelp.GmAccount.Contains(centerAccountList[0].Account)
-							&& !GMHelp.TestNewOccAccount.Contains(centerAccountList[0].Account))
+                            && !GMHelp.GmAccount.Contains(centerAccountList[0].Account))
 						{
                            /* if (!centerAccountList[0].Password.Equals(CommonConfig.RobotPassWord) && accountCrateTime > 0 && (accountCrateTime - serverOpenTime >= TimeHelper.OneDay * 14))
                             {

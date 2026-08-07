@@ -130,14 +130,14 @@ namespace ET
                             return;
                         }
                         
-                        if (dbcenterAccountInfo.DeviceID != request.DeviceID)
-                        {
-                            Log.Console($"ErrorCode.ERR_LoginInfoExpire: {request.AccountName}");
-                            response.Error = ErrorCode.ERR_LoginInfoExpire;
-                            reply();
-                            session.Disconnect().Coroutine();
-                            return;
-                        }
+                        //if (dbcenterAccountInfo.DeviceID != request.DeviceID)
+                        //{
+                        //    Log.Console($"ErrorCode.ERR_LoginInfoExpire: {request.AccountName}");
+                        //    response.Error = ErrorCode.ERR_LoginInfoExpire;
+                        //    reply();
+                        //    session.Disconnect().Coroutine();
+                        //    return;
+                        //}
                         
                         CenterServerComponent centerServerComponent = session.DomainScene().GetComponent<CenterServerComponent>();
                         bool IsHoliday = centerServerComponent.IsHoliday;
