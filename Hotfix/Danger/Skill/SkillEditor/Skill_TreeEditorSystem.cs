@@ -1,66 +1,90 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
 {
-    public static  class Skill_TreeEditorSystem
+    public static class Skill_TreeEditorSystem
     {
-
-
-        public static void OnInit(this Skill_TreeEditor self,  SkillInfo skillcmd, Unit theUnitFrom)
+        public static void OnInit(this Skill_TreeEditor self, SkillInfo skillcmd, Unit theUnitFrom)
         {
             self.SkillInfo = skillcmd;
             self.HurtIds.Clear();
             self.LdSkillConf = LDSkillCategory.Instance.Get(skillcmd.WeaponSkillID);
             self.TheUnitFrom = theUnitFrom;
-            SkillSetComponentServer skillSetComponentServer = theUnitFrom.GetComponent<SkillSetComponentServer>();
             self.SkillState = SkillState.Running;
             self.SkillBeginTime = TimeHelper.ServerNow();
-            self.SkillExcuteHurtTime = self.SkillBeginTime + (long)(1000 * self.LdSkillConf.Time_1);
-            double totalTime = LDSkillHelper.GetSkillTotalTime(self.LdSkillConf);
-            self.SkillEndTime = totalTime > 0
-                ? self.SkillBeginTime + (long)(1000 * totalTime)
-                : self.SkillBeginTime + 1000;
-            self.ActionPosition = new Vector3(skillcmd.PosX, skillcmd.PosY, skillcmd.PosZ); //获取起始坐标
-            self.ICheckShape = self.CreateCheckShape(self.SkillInfo.TargetAngle);
             self.treeLogicExecuted = false;
+            self.GuideIntervalMs = 0;
+
+            LDSkill ldSkill = self.LdSkillConf;
+            double firstDelay = ldSkill.Time_1;
+            if (firstDelay < 0)
+            {
+                firstDelay = 0;
+            }
+
+            self.SkillExcuteHurtTime = self.SkillBeginTime + (long)(1000 * firstDelay);
+
+            // 技能结束时间统一：Begin + Time_3
+            double endSec = ldSkill.Time_3 > 0 ? ldSkill.Time_3 : 1;
+            self.SkillEndTime = self.SkillBeginTime + (long)(1000 * endSec);
+
+            // 引导：Time_Interval 跳伤间隔（总窗口以 SkillEndTime/Time_3 为准；5s/1s → 0,1,2,3,4 共五次）
+            if (ldSkill.Type == SkillTypeEnum.SkillTypeGuide_3 && ldSkill.Time_Interval > 0)
+            {
+                self.GuideIntervalMs = (long)(1000 * ldSkill.Time_Interval);
+            }
+
+            self.ActionPosition = new Vector3(skillcmd.PosX, skillcmd.PosY, skillcmd.PosZ);
+            self.ICheckShape = self.CreateCheckShape(self.SkillInfo.TargetAngle);
         }
 
         public static void OnUpdate(this Skill_TreeEditor self)
         {
             long serverNow = TimeHelper.ServerNow();
+            if (self.TheUnitFrom == null || self.TheUnitFrom.IsDisposed)
+            {
+                self.SetSkillState(SkillState.Finished);
+                return;
+            }
+
+            if (serverNow >= self.SkillEndTime)
+            {
+                self.SetSkillState(SkillState.Finished);
+                return;
+            }
+
             if (serverNow < self.SkillExcuteHurtTime)
             {
                 return;
             }
 
-            if (self.TheUnitFrom.IsDisposed)
+            // 到点执行一次（引导：下次间隔再把 treeLogicExecuted 打开）
+            self.treeLogicExecuted = false;
+            self.ExecuteSkillTreeOnce();
+            self.treeLogicExecuted = true;
+
+            if (self.GuideIntervalMs > 0)
             {
-                return;
+                self.SkillExcuteHurtTime += self.GuideIntervalMs;
+                self.treeLogicExecuted = false;
             }
-
-            if (!self.treeLogicExecuted)
+            else
             {
-                self.treeLogicExecuted = true;
-                self.CollectSkillTargets();
-
-                if (self.LdSkillConf != null
-                    && SkillEditorTreeRegistry.TryGetTree(self.LdSkillConf.Id, out SkillEditorSkillLogic logic))
-                {
-                    SkillEditorTreeExecutor.Execute(self, logic);
-                }
-            }
-
-            if (serverNow > self.SkillEndTime)
-            {
-                self.SetSkillState(SkillState.Finished);
+                // 非引导只跳一次，等 SkillEndTime 结束
+                self.SkillExcuteHurtTime = self.SkillEndTime;
             }
         }
 
+        static void ExecuteSkillTreeOnce(this Skill_TreeEditor self)
+        {
+            self.CollectSkillTargets();
+
+            if (SkillEditorTreeRegistry.TryGetTree(self.LdSkillConf.Id, out SkillEditorSkillLogic logic))
+            {
+                SkillEditorTreeExecutor.Execute(self, logic);
+            }
+        }
 
         public static void OnAddHurtIds(this Skill_TreeEditor self, long unitid)
         {
@@ -135,7 +159,6 @@ namespace ET
             {
                 Unit uu = entities[i];
 
-
                 if (!self.CheckShape(uu.Position))
                 {
                     continue;
@@ -150,12 +173,10 @@ namespace ET
             }
         }
 
-
         public static bool SkillCanAttackUnit(this Skill_TreeEditor self, Unit uu)
         {
             return LDSkillHelper.IsValidTarget(self.TheUnitFrom, uu, self.LdSkillConf);
         }
-
 
         public static bool CheckShape(this Skill_TreeEditor self, Vector3 t_positon)
         {
@@ -174,8 +195,8 @@ namespace ET
 
             switch (self.LdSkillConf.Range_Type)
             {
-                case SkillRangeType.SkillRangeSingle_0:
                 case SkillRangeType.SkillRangeCicle_1:
+                case SkillRangeType.SkillRangeSingle_0:
                     ishape = new Circle();
                     (ishape as Circle).s_position = self.ActionPosition;
                     (ishape as Circle).range = (float)(self.LdSkillConf.Range_Type_Param1);
@@ -202,9 +223,9 @@ namespace ET
                     (ishape as Rectangle_2).z_range = (float)(self.LdSkillConf.Range_Type_Param2);
                     break;
             }
+
             return ishape;
         }
-
 
         public static void SetSkillState(this Skill_TreeEditor self, SkillState skillState)
         {
@@ -221,11 +242,12 @@ namespace ET
             return self.SkillState == SkillState.Finished;
         }
 
-
         public static void OnFinished(this Skill_TreeEditor self)
         {
             self.ICheckShape = null;
             self.SkillInfo = null;
+            self.GuideIntervalMs = 0;
+            self.treeLogicExecuted = false;
         }
     }
 }
