@@ -43,7 +43,7 @@ namespace ET
                  UserID = request.UserID,
             });
             await DBHelper.SaveComponent(scene.DomainZone(), unionId, unionInfo);
-            unionInfo.Dispose();
+            unionSceneComponent.DBUnionInfos[unionId] = unionInfo;
             response.UnionId = unionId;
             reply();
             await ETTask.CompletedTask;

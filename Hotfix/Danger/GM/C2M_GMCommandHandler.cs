@@ -175,22 +175,6 @@ namespace ET
                             roleInfoComponentServer.UpdateRoleData(UserDataType.Level, level.ToString());
 						}
 						break;
-					case "7":
-						long userID = long.Parse(commands[1]);
-						long dbCacheId = DBHelper.GetUnitCacheConfig(userID);
-
-						List<string> componentList = new List<string>() { DBHelper.BagComponentServer, DBHelper.TaskComponent };
-						D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = DBHelper.RoleInfoComponent });
-						roleInfoComponentServer = d2GGetUnit.Component as RoleInfoComponentServer;
-						for (int i = 0; i < componentList.Count; i++)
-						{
-							d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = userID, Component = componentList[i] });
-							if (d2GGetUnit.Component == null)
-							{
-								continue;
-							}
-						}
-						break;
 					case "10":
                         Log.Warning("刷新机器人！！");
                         long robotSceneId = DBHelper.GetRobotServerId();

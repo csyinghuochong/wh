@@ -192,11 +192,12 @@ namespace ET
 
                     if (m2G_RechargeResponse.Error != ErrorCode.ERR_Success)
                     {
-                        DataCollationComponent dataCollationComponent = await DBHelper.GetComponentCache<DataCollationComponent>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId), r_GameStatusResponse.ConsignItemInfo.UserId);
+                        int sellerHomeZone = UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId);
+                        DataCollationComponent dataCollationComponent = await DBHelper.GetComponent<DataCollationComponent>(sellerHomeZone, r_GameStatusResponse.ConsignItemInfo.UserId);
                         if (dataCollationComponent != null)
                         {
                             dataCollationComponent.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, false);
-                            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId), r_GameStatusResponse.ConsignItemInfo.UserId, dataCollationComponent).Coroutine();
+                            await DBHelper.SaveComponent(sellerHomeZone, r_GameStatusResponse.ConsignItemInfo.UserId, dataCollationComponent);
                         }
                         
                     }
@@ -225,7 +226,7 @@ namespace ET
                     
                     string sellPlayerName = r_GameStatusResponse.ConsignItemInfo.PlayerName;
                     string sellAccoount = r_GameStatusResponse.ConsignItemInfo.Account;
-                    RoleInfoComponentServer roleInfoComponentServerSell = await DBHelper.GetComponentCache<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId), r_GameStatusResponse.ConsignItemInfo.UserId);
+                    RoleInfoComponentServer roleInfoComponentServerSell = await DBHelper.GetComponent<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId), r_GameStatusResponse.ConsignItemInfo.UserId);
                     if (roleInfoComponentServerSell != null)
                     {
                         int sellPlayerLv = roleInfoComponentServerSell.RoleInfo.Lv;

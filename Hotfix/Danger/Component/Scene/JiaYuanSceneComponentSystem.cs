@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace ET
 
         public static async ETTask CreateJiaYuanUnit(this JiaYuanSceneComponent self, Scene fubnescene, long masterid, long unitid)
         {
-            JiaYuanComponentServer jiaYuanComponentServer = await DBHelper.GetComponentCache<JiaYuanComponentServer>(fubnescene.DomainZone(), masterid);
+            JiaYuanComponentServer jiaYuanComponentServer = await DBHelper.GetComponent<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(masterid), masterid);
 
             if (jiaYuanComponentServer.JiaYuanPastureList_7.Count > 100 
                 || jiaYuanComponentServer.JianYuanPlantList_7.Count > 100

@@ -53,13 +53,12 @@ namespace ET
                 }
                 if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.None)
                 {
-                    long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
-                    D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.Id, Component = DBHelper.ReddotComponent });
-                    if (d2GGetUnit.Component != null)
+                    int homeZone = UnitZoneHelper.GetHomeZone(request.Id);
+                    ReddotComponentServer reddotComponentServer = await DBHelper.GetComponent<ReddotComponentServer>(homeZone, request.Id);
+                    if (reddotComponentServer != null)
                     {
-                        ReddotComponentServer reddotComponentServer = d2GGetUnit.Component as ReddotComponentServer;
                         //reddotComponent.AddReddont((int)BelongReddot.Email);
-                        D2M_SaveComponent d2M_SaveComponent = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = request.Id, EntityByte = MongoHelper.ToBson(reddotComponentServer), ComponentType = DBHelper.ReddotComponent });
+                        await DBHelper.SaveComponent(homeZone, request.Id, reddotComponentServer);
                     }
                 }
 

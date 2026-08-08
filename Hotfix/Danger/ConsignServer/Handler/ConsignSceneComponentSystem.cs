@@ -158,11 +158,11 @@ namespace ET
                 else
                 {
                     Log.Warning($"OnAuctionOver[离线/失败]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}  Error={m2G_RechargeResponse.Error}");
-                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(auctionHomeZone, self.AuctioUnitId);
+                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(auctionHomeZone, self.AuctioUnitId);
                     if (roleInfoComponentServer != null && roleInfoComponentServer.RoleInfo.Gold >= self.AuctionPrice)
                     {
                         roleInfoComponentServer.RoleInfo.Gold -= self.AuctionPrice;
-                        DBHelper.SaveComponentCache(auctionHomeZone, self.AuctioUnitId, roleInfoComponentServer).Coroutine();
+                        await DBHelper.SaveComponent(auctionHomeZone, self.AuctioUnitId, roleInfoComponentServer);
                         Log.Error("MailInfo mailInfo = new MailInfo");
                         //MailInfo mailInfo = new MailInfo();
                         //mailInfo.Status = 0;

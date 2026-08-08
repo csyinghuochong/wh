@@ -45,7 +45,7 @@ namespace ET
                         continue;
                     }
 
-                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(newZone, unitid);
+                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(unitid), unitid);
                     if (roleInfoComponentServer == null)
                     {
                         continue;

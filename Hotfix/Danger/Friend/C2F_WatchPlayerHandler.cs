@@ -9,10 +9,8 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_WatchPlayerRequest request, F2C_WatchPlayerResponse response, Action reply)
         {
-            // 可跨区查看：按被查看玩家 UnitId 归属服取 DBCache，勿用 Friend 场景 DomainZone
-            long dbCacheId = DBHelper.GetUnitCacheConfig(request.UserId);
-            D2G_GetComponent d2GGetUnit_1 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.RoleInfoComponent });
-            RoleInfoComponentServer userinfo = d2GGetUnit_1.Component as RoleInfoComponentServer;
+            int homeZone = UnitZoneHelper.GetHomeZone(request.UserId);
+            RoleInfoComponentServer userinfo = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, request.UserId);
             if (userinfo == null)
             {
                 response.Error = ErrorCode.ERR_Error;
@@ -25,10 +23,9 @@ namespace ET
             {
                 //全部
                 case 0:
-                    D2G_GetComponent d2GGetUnit_2 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.BagComponentServer });
                     response.Lv = roleInfo.Lv;
                     response.Name = roleInfo.Name;
-                    BagComponentServer bagComponentsServer = d2GGetUnit_2.Component as BagComponentServer;
+                    BagComponentServer bagComponentsServer = await DBHelper.GetComponent<BagComponentServer>(homeZone, request.UserId);
                     if (bagComponentsServer == null)
                     {
                         response.Error = ErrorCode.ERR_Error;
@@ -38,8 +35,13 @@ namespace ET
 
                     response.EquipList = bagComponentsServer.EquipList;
                     response.Occ = roleInfo.Occ;
-                    D2G_GetComponent d2GGetUnit_3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.PetComponent });
-                    PetComponentServer petComponentServer = d2GGetUnit_3.Component as PetComponentServer;
+                    PetComponentServer petComponentServer = await DBHelper.GetComponent<PetComponentServer>(homeZone, request.UserId);
+                    if (petComponentServer == null)
+                    {
+                        response.Error = ErrorCode.ERR_Error;
+                        reply();
+                        return;
+                    }
                     List<RolePetInfo> rolePetInfos = petComponentServer.RolePetInfos;
                     List<RolePetInfo> rolePetInfosResponse = new List<RolePetInfo>();
                     for (int pet = rolePetInfos.Count - 1; pet >= 0; pet-- )
@@ -53,8 +55,7 @@ namespace ET
                     response.RolePetInfos = rolePetInfosResponse;
                     response.PetSkinList = petComponentServer.PetSkinList;
 
-                    D2G_GetComponent d2GGetUnit_4 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.NumericComponent });
-                    NumericComponent numericComponent = d2GGetUnit_4.Component as NumericComponent;
+                    NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, request.UserId);
                     if (numericComponent == null)
                     {
                         response.Error = ErrorCode.ERR_Error;

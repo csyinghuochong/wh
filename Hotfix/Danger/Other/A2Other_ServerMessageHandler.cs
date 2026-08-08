@@ -40,7 +40,7 @@ namespace ET
                     case SceneType.Rank:
                         if (request.MessageType == NoticeType.RankRefresh)
                         {
-                            scene.GetComponent<RankSceneComponent>().UpdateCombat().Coroutine();
+                           
                         }
                         if (request.MessageType == NoticeType.StopSever)
                         {

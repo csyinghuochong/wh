@@ -19,10 +19,7 @@ namespace ET
             }
             else
             {
-                long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
-                //rankComponent.ClearRankingTrialById(3178933533368451072);
                 List<KeyValuePairLong> ranklist = rankComponent.DBRankInfo.rankingTrial;
-              
                 List<long> idlist = new List<long>();
                 List<long> idremove = new List<long> (); 
 
@@ -35,12 +32,11 @@ namespace ET
                     }
 
                     idlist.Add(ranklist[i].KeyId);
-                    D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = ranklist[i].KeyId, Component = DBHelper.RoleInfoComponent });
-                    if (d2GGetUnit.Component == null)
+                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(ranklist[i].KeyId), ranklist[i].KeyId);
+                    if (roleInfoComponentServer == null)
                     {
                         continue;
                     }
-                    RoleInfoComponentServer roleInfoComponentServer = (d2GGetUnit.Component as RoleInfoComponentServer);
                     response.RankList.Add(new RankingTrialInfo()
                     { 
                         UserId = ranklist[i].KeyId,

@@ -59,16 +59,16 @@ namespace ET
         
         public static async ETTask UpdateServerInfo(this CenterServerComponent self)
         {
+            // 临时读写用 new：Children 按 Id，会与 DBCenterSerialInfo 同 zone Id 冲突
             DBCenterServerInfo dBServerInfo = null;
             List<DBCenterServerInfo> result = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterServerInfo>(self.DomainZone(), d => d.Id == self.DomainZone());
             if (result.Count == 0)
             {
-                dBServerInfo = self.AddChildWithId<DBCenterServerInfo>((long)self.DomainZone());
+                dBServerInfo = new DBCenterServerInfo() { Id = self.DomainZone() };
             }
             else
             {
                 dBServerInfo = result[0];
-                self.AddChild(dBServerInfo);
             }
 
             if (dBServerInfo.V1ActivityList.Count == 0)

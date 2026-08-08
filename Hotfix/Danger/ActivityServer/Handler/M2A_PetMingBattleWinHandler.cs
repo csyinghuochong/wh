@@ -79,21 +79,27 @@ namespace ET
                 M2A_PetMingRecordResponse m2G_RechargeResponse = (M2A_PetMingRecordResponse)await ActorLocationSenderComponent.Instance.Call(oldUnitid, a2M_PetMing);
                 if (m2G_RechargeResponse.Error != ErrorCode.ERR_Success)
                 {
-                    long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
-                    D2G_GetComponent d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = oldUnitid, Component = DBHelper.PetComponent });
-                    PetComponentServer petComponentServer = d2GGet.Component as PetComponentServer;
-                    petComponentServer.OnPetMingRecord(petMingRecord);
-                    D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = oldUnitid, EntityByte = MongoHelper.ToBson(petComponentServer), ComponentType = DBHelper.PetComponent });
+                    int homeZone = UnitZoneHelper.GetHomeZone(oldUnitid);
+                    PetComponentServer petComponentServer = await DBHelper.GetComponent<PetComponentServer>(homeZone, oldUnitid);
+                    if (petComponentServer != null)
+                    {
+                        petComponentServer.OnPetMingRecord(petMingRecord);
+                        await DBHelper.SaveComponent(homeZone, oldUnitid, petComponentServer);
+                    }
 
-                    D2G_GetComponent d2GGet_2 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = oldUnitid, Component = DBHelper.ReddotComponent });
-                    ReddotComponentServer redComponentServer = d2GGet_2.Component as ReddotComponentServer;
-                    //redComponent.AddReddont((int)BelongReddot.PetMine);
-                    D2M_SaveComponent d2GSave_2 = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = oldUnitid, EntityByte = MongoHelper.ToBson(redComponentServer), ComponentType = DBHelper.ReddotComponent });
+                    ReddotComponentServer redComponentServer = await DBHelper.GetComponent<ReddotComponentServer>(homeZone, oldUnitid);
+                    if (redComponentServer != null)
+                    {
+                        //redComponent.AddReddont((int)BelongReddot.PetMine);
+                        await DBHelper.SaveComponent(homeZone, oldUnitid, redComponentServer);
+                    }
 
-                    D2G_GetComponent d2GGet_3 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = oldUnitid, Component = DBHelper.NumericComponent });
-                    NumericComponent numComponent = d2GGet_3.Component as NumericComponent;
-                    numComponent.ApplyValue( NumericType.PetMineCDTime, 0, false );
-                    D2M_SaveComponent d2GSave_3 = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = oldUnitid, EntityByte = MongoHelper.ToBson(numComponent), ComponentType = DBHelper.NumericComponent });
+                    NumericComponent numComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, oldUnitid);
+                    if (numComponent != null)
+                    {
+                        numComponent.ApplyValue( NumericType.PetMineCDTime, 0, false );
+                        await DBHelper.SaveComponent(homeZone, oldUnitid, numComponent);
+                    }
                 }
             }
 

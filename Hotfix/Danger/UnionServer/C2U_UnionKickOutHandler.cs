@@ -32,23 +32,28 @@ namespace ET
 
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
 
-            // 在线走 Location；失败（含离线 ERR_NotFoundActor）再改库，无需先 T2G_GateUnitInfo
+            // 在线走 Location；失败（含离线 ERR_NotFoundActor）直连归属服 Mongo，不进 DBCache
             U2M_UnionKickOutRequest kickRequest = new U2M_UnionKickOutRequest() { UserId = request.UserId };
             M2U_UnionKickOutResponse kickResponse = (M2U_UnionKickOutResponse)await ActorLocationSenderComponent.Instance.Call(request.UserId, kickRequest);
             if (kickResponse.Error != ErrorCode.ERR_Success)
             {
-                long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
-                D2G_GetComponent d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.NumericComponent });
-                NumericComponent numericComponent = d2GGet.Component as NumericComponent;
-                numericComponent.Set(NumericType.UnionId_0, 0, false);
-                D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = request.UserId, EntityByte = MongoHelper.ToBson(numericComponent), ComponentType = DBHelper.NumericComponent });
+                int homeZone = UnitZoneHelper.GetHomeZone(request.UserId);
+                NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, request.UserId);
+                if (numericComponent != null)
+                {
+                    numericComponent.Set(NumericType.UnionId_0, 0, false);
+                    await DBHelper.SaveComponent(homeZone, request.UserId, numericComponent);
+                }
 
-                d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = request.UserId, Component = DBHelper.RoleInfoComponent });
-                RoleInfoComponentServer roleInfoComponentServer = d2GGet.Component as RoleInfoComponentServer;
-                roleInfoComponentServer.RoleInfo.UnionName = string.Empty;
-                d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = request.UserId, EntityByte = MongoHelper.ToBson(roleInfoComponentServer), ComponentType = DBHelper.RoleInfoComponent });
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, request.UserId);
+                if (roleInfoComponentServer != null)
+                {
+                    roleInfoComponentServer.RoleInfo.UnionName = string.Empty;
+                    await DBHelper.SaveComponent(homeZone, request.UserId, roleInfoComponentServer);
+                }
             }
             reply();
+            await ETTask.CompletedTask;
         }
     }
 }

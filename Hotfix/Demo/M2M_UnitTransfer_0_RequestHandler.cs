@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver.Linq;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +15,7 @@ namespace ET
             {
                 components.Add(request.Unit.Id, new List<byte[]>());
             }
-            if (request.ParamInfo.Equals(DBHelper.BagComponentServer))
+            if (request.ParamInfo.Equals(typeof(BagComponentServer).Name))
             {
                 components[request.Unit.Id].Clear();
             }

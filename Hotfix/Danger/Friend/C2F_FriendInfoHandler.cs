@@ -9,7 +9,6 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_FriendInfoRequest request, F2C_FriendInfoResponse response, Action reply)
         {
-            long dbCacheId = DBHelper.GetDbCacheId( scene.DomainZone() );
             DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
             if (dBFriendInfo == null)
             {
@@ -18,9 +17,9 @@ namespace ET
                 return;
             }
             long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), "Gate1").InstanceId;
-            response.FriendList = await FriendHelper.GetFriendInfos(dbCacheId, gateServerId, dBFriendInfo.FriendList);
-            response.ApplyList = await FriendHelper.GetFriendInfos(dbCacheId, gateServerId, dBFriendInfo.ApplyList);
-            response.Blacklist = await FriendHelper.GetFriendInfos(dbCacheId, gateServerId, dBFriendInfo.Blacklist);
+            response.FriendList = await FriendHelper.GetFriendInfos(gateServerId, dBFriendInfo.FriendList);
+            response.ApplyList = await FriendHelper.GetFriendInfos(gateServerId, dBFriendInfo.ApplyList);
+            response.Blacklist = await FriendHelper.GetFriendInfos(gateServerId, dBFriendInfo.Blacklist);
 
 
             HashSet<long> friendIdSet = new HashSet<long>();

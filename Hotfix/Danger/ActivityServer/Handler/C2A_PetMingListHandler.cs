@@ -25,27 +25,23 @@ namespace ET
                 else
                 {
                     activitySceneComponent.PetMingList.Clear();
-                    long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
 
                     for (int i = 0; i < minglist.Count; i++)
                     {
                         long enemyId = minglist[i].UnitId;
-                        RoleInfoComponentServer roleInfoComponentServer = null;
-                        PetComponentServer petComponentServer = null;
-                        D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = enemyId, Component = DBHelper.RoleInfoComponent });
-                        if (d2GGetUnit.Component == null)
+                        int homeZone = UnitZoneHelper.GetHomeZone(enemyId);
+                        RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, enemyId);
+                        if (roleInfoComponentServer == null)
                         {
                             continue;
                         }
-                        roleInfoComponentServer = d2GGetUnit.Component as RoleInfoComponentServer;
-                        d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = enemyId, Component = DBHelper.PetComponent });
-                        if (d2GGetUnit.Component == null)
+                        PetComponentServer petComponentServer = await DBHelper.GetComponent<PetComponentServer>(homeZone, enemyId);
+                        if (petComponentServer == null)
                         {
                             continue;
                         }
 
                         int teamid = minglist[i].TeamId;
-                        petComponentServer = d2GGetUnit.Component as PetComponentServer;
                         List<int> petconfidds = new List<int>();
                         List<long> petidlist = new List<long>();
                         for (int p = teamid * 5; p < (teamid + 1) * 5; p++ )

@@ -5,36 +5,7 @@ namespace ET
 {
     public static class DBHelper
     {
-
         public static long DebugUnitId = 2898042534301335552; //
-
-        public const string RoleInfoComponent = "RoleInfoComponent";
-        public const string BagComponentServer = "BagComponentServer";
-        public const string TaskComponent = "TaskComponent";
-        public const string ChengJiuComponent = "ChengJiuComponent";
-        public const string PetComponent = "PetComponent";
-        public const string SkillSetComponent = "SkillSetComponent";
-        public const string EnergyComponent = "EnergyComponent";
-        public const string ActivityComponent = "ActivityComponentServer";
-        public const string NumericComponent = "NumericComponent";
-        public const string RechargeComponent = "RechargeComponent";
-        public const string ReddotComponent = "ReddotComponent";
-        public const string ShoujiComponent = "ShoujiComponent";
-        public const string TitleComponent = "TitleComponent";
-        public const string JiaYuanComponent = "JiaYuanComponent";
-        public const string DataCollationComponent = "DataCollationComponent";
-        
-
-        public const string DBMailInfo = "DBMailInfo";
-        public const string DBFriendInfo = "DBFriendInfo";
-        public const string DBServerInfo = "DBServerInfo";
-        public const string DBAccountInfo = "DBAccountInfo";
-        public const string DBUnionManager = "DBUnionManager";
-        public const string DBServerMailInfo = "DBServerMailInfo";
-        public const string DBPopularizeInfo = "DBPopularizeInfo";
-        public const string DBDayActivityInfo = "DBDayActivityInfo";
-        public const string DBCenterSerialInfo = "DBCenterSerialInfo";
-        public const string DBPaiMainInfo = "DBPaiMainInfo";
 
         public static List<string> UnitCacheKeyList = new List<string>();
 

@@ -39,15 +39,21 @@ namespace ET
 
         public static async ETTask AddDBComonent<K>(this Unit self, long id) where K : Entity, IAwake, new()
         {
+            if (self.GetComponent<K>() != null)
+            {
+                return;
+            }
+
+            // Friend/Mail 等同 unit.Id，只能 AddComponent（按类型），不能 AddChild（按 Id）
             Entity dbEntity = await DBHelper.GetComponent<K>(UnitZoneHelper.GetHomeZone(self), self.Id);
             if (dbEntity == null)
             {
-                K component = self.AddChildWithId<K>(id);
+                K component = self.AddComponent<K>();
                 DBHelper.SaveComponent(UnitZoneHelper.GetHomeZone(self), id, component).Coroutine();
             }
             else
             {
-                self.AddChild(dbEntity);
+                self.AddComponent(dbEntity);
             }
         }
 

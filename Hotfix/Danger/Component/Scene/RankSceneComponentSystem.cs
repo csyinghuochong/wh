@@ -83,14 +83,11 @@ namespace ET
             // 战区共享 Rank：不做单服开服天数/世界等级逻辑（无 ServerItem、无本服 FubenCenter）
             if (StartZoneConfigCategory.Instance.IsWarShareZone(self.DomainZone()))
             {
+                // 勿与 DBRankInfo 同 zone Id 同时 AddChild
                 DBServerInfo warDbInfo = await DBHelper.GetComponent<DBServerInfo>(self.DomainZone(), self.DomainZone());
                 if (warDbInfo == null)
                 {
-                    warDbInfo = self.AddChildWithId<DBServerInfo>((long)self.DomainZone());
-                }
-                else
-                {
-                    self.AddChild(warDbInfo);
+                    warDbInfo = new DBServerInfo() { Id = self.DomainZone() };
                 }
                 self.DBServerInfo = warDbInfo;
                 Log.Console($"[WarZoneRank] Init skip WorldLv/OpenDay, zone={self.DomainZone()}");
@@ -100,11 +97,7 @@ namespace ET
             DBServerInfo dBServerInfo = await DBHelper.GetComponent<DBServerInfo>(self.DomainZone(), self.DomainZone());
             if (dBServerInfo == null)
             {
-                dBServerInfo = self.AddChildWithId<DBServerInfo>((long)self.DomainZone());
-            }
-            else
-            {
-                self.AddChild(dBServerInfo);
+                dBServerInfo = new DBServerInfo() { Id = self.DomainZone() };
             }
             //初始化参数
             self.DBServerInfo = dBServerInfo;
@@ -266,30 +259,13 @@ namespace ET
             DBRankInfo dbRankInfo = await DBHelper.GetComponent<DBRankInfo>(self.DomainZone(), self.DomainZone());
             if (dbRankInfo == null)
             {
-                self.DBRankInfo = self.AddChildWithId<DBRankInfo>((long)self.DomainZone());
+                dbRankInfo = new DBRankInfo() { Id = self.DomainZone() };
             }
-            else
-            {
-                self.AddChild(dbRankInfo);
-                self.DBRankInfo = dbRankInfo;
-            }
+            self.DBRankInfo = dbRankInfo;
 
             self.UpdateRankPetList();
         }
 
-        public static async ETTask UpdateCombat(this RankSceneComponent self)
-        {
-            Log.Debug($"UpdateCombatUpdateCombat: {self.DomainZone()}");
-            self.DomainScene().RemoveComponent<UnitComponent>();
-            self.DomainScene().AddComponent<UnitComponent>();
-            List<RankingInfo> rankingInfoList = new List<RankingInfo>();
-            for (int i = self.DBRankInfo.rankingInfos.Count - 1; i >=0; i--)
-            {
-                rankingInfoList.Add(self.DBRankInfo.rankingInfos[i]);
-            }
-
-            await ETTask.CompletedTask;
-        }
 
         public static async ETTask SaveDB(this RankSceneComponent self)
         {

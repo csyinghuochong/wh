@@ -12,7 +12,7 @@ namespace ET
             await ETTask.CompletedTask;
 #if false // TODO: migrate to LD config
 
-            long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
+            long gateServerId = DBHelper.GetGateServerId(scene.DomainZone());
             DBUnionInfo dBUnionInfo =await scene.GetComponent<UnionSceneComponent>().GetDBUnionInfo(request.UnionId);
             if (dBUnionInfo == null)
             {
@@ -28,7 +28,7 @@ namespace ET
                 UnionPlayerInfo unionPlayerInfo = dBUnionInfo.UnionInfo.UnionPlayerList[i];
                 long userId = unionPlayerInfo.UserID;
                 
-                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(scene.DomainZone(), userId);
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(userId), userId);
                 if (roleInfoComponentServer == null)
                 {
                     dBUnionInfo.UnionInfo.UnionPlayerList.RemoveAt(i);
@@ -90,8 +90,7 @@ namespace ET
             }
 
             ///判断族长离线时间
-            D2G_GetComponent d2GSave_2 = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = dBUnionInfo.UnionInfo.LeaderId, Component = DBHelper.NumericComponent });
-            NumericComponent numericComponent = d2GSave_2.Component as NumericComponent;
+            NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(UnitZoneHelper.GetHomeZone(dBUnionInfo.UnionInfo.LeaderId), dBUnionInfo.UnionInfo.LeaderId);
 
             if (dBUnionInfo.UnionInfo.JingXuanEndTime == 0 && numericComponent != null && timeNow - numericComponent.GetAsLong(NumericType.LastGameTime) > TimeHelper.OneDay * 5)
             {

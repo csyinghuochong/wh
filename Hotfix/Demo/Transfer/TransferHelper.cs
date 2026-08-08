@@ -536,8 +536,9 @@ namespace ET
             }
         }
 
-        public static async ETTask<int> TransferComponent(Unit unit, long sceneInstanceId, string component)
+        public static async ETTask<int> TransferComponent<T>(Unit unit, long sceneInstanceId) where T : Entity
         {
+            string component = typeof(T).Name;
             M2M_UnitTransfer_0_Request request_0 = new M2M_UnitTransfer_0_Request();
             request_0.Unit = unit;
             foreach ((Type key, Entity entity) in unit.Components)
@@ -579,8 +580,8 @@ namespace ET
             MessageHelper.SendToClient(unit, m2CStartSceneChange);
 
             await TimerComponent.Instance.WaitFrameAsync();
-            await TransferComponent(unit, sceneInstanceId, DBHelper.BagComponentServer);
-            await TransferComponent(unit, sceneInstanceId, DBHelper.ChengJiuComponent);
+            await TransferComponent<BagComponentServer>(unit, sceneInstanceId);
+            await TransferComponent<ChengJiuComponentServer>(unit, sceneInstanceId);
 
             M2M_UnitTransferRequest request = new M2M_UnitTransferRequest();
             request.Unit = unit;
@@ -590,8 +591,8 @@ namespace ET
                 {
                     continue;
                 }
-                if (key.Name.Equals(DBHelper.BagComponentServer)
-                 || key.Name.Equals(DBHelper.ChengJiuComponent))
+                if (key == typeof(BagComponentServer)
+                 || key == typeof(ChengJiuComponentServer))
                 {
                     continue;
                 }

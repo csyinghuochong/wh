@@ -15,35 +15,35 @@ namespace ET
             await ETTask.CompletedTask;
             Console.WriteLine($"OnArchiveHandler  Begin===   {zone} {unitid}");
 
-            ActivityComponentServer oldActivityComponentServer = GetDBComponent<ActivityComponentServer>(zone, unitid, day, DBHelper.ActivityComponent);
+            ActivityComponentServer oldActivityComponentServer = GetDBComponent<ActivityComponentServer>(zone, unitid, day);
             if (oldActivityComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  activityComponentServer==null:   {zone} {unitid}");
                 return;
             }
 
-            BagComponentServer oldBagComponentServer = GetDBComponent<BagComponentServer>(zone, unitid, day, DBHelper.BagComponentServer);
+            BagComponentServer oldBagComponentServer = GetDBComponent<BagComponentServer>(zone, unitid, day);
             if (oldBagComponentServer==null)
             {
                 Console.WriteLine($"OnArchiveHandler  bagComponentServer==null:   {zone} {unitid}");
                 return;
             }
 
-            ChengJiuComponentServer oldChengJiuComponentServer = GetDBComponent<ChengJiuComponentServer>(zone, unitid, day, DBHelper.ChengJiuComponent);
+            ChengJiuComponentServer oldChengJiuComponentServer = GetDBComponent<ChengJiuComponentServer>(zone, unitid, day);
             if (oldChengJiuComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  chengJiuComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            DBFriendInfo old_dBFriendInfo = GetDBComponent<DBFriendInfo>(zone, unitid, day, DBHelper.DBFriendInfo);
+            DBFriendInfo old_dBFriendInfo = GetDBComponent<DBFriendInfo>(zone, unitid, day);
             if (old_dBFriendInfo == null)
             {
                 Console.WriteLine($"OnArchiveHandler  dBFriendInfo==null:   {zone} {unitid}");
                 //return;
             }
 
-            DBMailInfo old_dBMailInfo = GetDBComponent<DBMailInfo>(zone, unitid, day, DBHelper.DBMailInfo);
+            DBMailInfo old_dBMailInfo = GetDBComponent<DBMailInfo>(zone, unitid, day);
             if (old_dBMailInfo == null)
             {
                 Console.WriteLine($"OnArchiveHandler  dBMailInfo==null:   {zone} {unitid}");
@@ -52,7 +52,7 @@ namespace ET
 
             // 会通知拍卖服移除玩家上架的道具。
             ////PaiMaiHelper.Instance.GetPaiMaiId(1) 
-            //DBPaiMainInfo dBPaiMainInfo = GetDBComponent<DBPaiMainInfo>(zone, unitid, DBHelper.DBPaiMainInfo);
+            //DBPaiMainInfo dBPaiMainInfo = GetDBComponent<DBPaiMainInfo>(zone, unitid, day);
             //if (dBPaiMainInfo == null)
             //{
             //    Console.WriteLine($"OnArchiveHandler  dBPaiMainInfo==null:   {zone} {unitid}");
@@ -61,7 +61,7 @@ namespace ET
 
             //被推广人可能会领取两次推广奖励
             //推广组件不用判断， 也不用移除
-            //DBPopularizeInfo old_dBPopularizeInfo = GetDBComponent<DBPopularizeInfo>(zone, unitid, day, DBHelper.DBPopularizeInfo);
+            //DBPopularizeInfo old_dBPopularizeInfo = GetDBComponent<DBPopularizeInfo>(zone, unitid, day);
             
 
             //宠物天梯可能没有及时刷新
@@ -79,77 +79,77 @@ namespace ET
 
             //DBUnionManager dBUnionManager;
 
-            DataCollationComponent old_dataCollationComponent = GetDBComponent<DataCollationComponent>(zone, unitid, day, DBHelper.DataCollationComponent);
+            DataCollationComponent old_dataCollationComponent = GetDBComponent<DataCollationComponent>(zone, unitid, day);
             if (old_dataCollationComponent == null)
             {
                 Console.WriteLine($"OnArchiveHandler  DataCollationComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            JiaYuanComponentServer oldJiaYuanComponentServer = GetDBComponent<JiaYuanComponentServer>(zone, unitid, day, DBHelper.JiaYuanComponent);
+            JiaYuanComponentServer oldJiaYuanComponentServer = GetDBComponent<JiaYuanComponentServer>(zone, unitid, day);
             if (oldJiaYuanComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  jiaYuanComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            NumericComponent old_numericComponent = GetDBComponent<NumericComponent>(zone, unitid, day, DBHelper.NumericComponent);
+            NumericComponent old_numericComponent = GetDBComponent<NumericComponent>(zone, unitid, day);
             if (old_numericComponent == null)
             {
                 Console.WriteLine($"OnArchiveHandler  jiaYuanComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            PetComponentServer oldPetComponentServer = GetDBComponent<PetComponentServer>(zone, unitid, day, DBHelper.PetComponent);
+            PetComponentServer oldPetComponentServer = GetDBComponent<PetComponentServer>(zone, unitid, day);
             if (oldPetComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  petComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            RechargeComponentServer oldRechargeComponentServer = GetDBComponent<RechargeComponentServer>(zone, unitid, day, DBHelper.RechargeComponent);
+            RechargeComponentServer oldRechargeComponentServer = GetDBComponent<RechargeComponentServer>(zone, unitid, day);
             if (oldRechargeComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  rechargeComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            ReddotComponentServer oldReddotComponentServer = GetDBComponent<ReddotComponentServer>(zone, unitid, day, DBHelper.ReddotComponent);
+            ReddotComponentServer oldReddotComponentServer = GetDBComponent<ReddotComponentServer>(zone, unitid, day);
             if (oldReddotComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  reddotComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            ShoujiComponentServer oldShoujiComponentServer = GetDBComponent<ShoujiComponentServer>(zone, unitid, day, DBHelper.ShoujiComponent);
+            ShoujiComponentServer oldShoujiComponentServer = GetDBComponent<ShoujiComponentServer>(zone, unitid, day);
             if (oldShoujiComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  shoujiComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            SkillSetComponentServer oldSkillSetComponentServer = GetDBComponent<SkillSetComponentServer>(zone, unitid, day, DBHelper.SkillSetComponent);
+            SkillSetComponentServer oldSkillSetComponentServer = GetDBComponent<SkillSetComponentServer>(zone, unitid, day);
             if (oldSkillSetComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  skillSetComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            TaskComponentServer oldTaskComponentServer = GetDBComponent<TaskComponentServer>(zone, unitid, day, DBHelper.TaskComponent);
+            TaskComponentServer oldTaskComponentServer = GetDBComponent<TaskComponentServer>(zone, unitid, day);
             if (oldTaskComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  taskComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            TitleComponentServer oldTitleComponentServer = GetDBComponent<TitleComponentServer>(zone, unitid, day, DBHelper.TitleComponent);
+            TitleComponentServer oldTitleComponentServer = GetDBComponent<TitleComponentServer>(zone, unitid, day);
             if (oldTaskComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  titleComponent==null:   {zone} {unitid}");
                 return;
             }
 
-            RoleInfoComponentServer oldRoleInfoComponentServer = GetDBComponent<RoleInfoComponentServer>(zone, unitid, day, DBHelper.RoleInfoComponent);
+            RoleInfoComponentServer oldRoleInfoComponentServer = GetDBComponent<RoleInfoComponentServer>(zone, unitid, day);
             if (oldRoleInfoComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  RoleInfoComponent==null:   {zone} {unitid}");
@@ -432,7 +432,7 @@ namespace ET
         }
 
 
-        public static K GetDBComponent<K>(int zone, long unitid,int day, string key) where K : Entity, new()
+        public static K GetDBComponent<K>(int zone, long unitid, int day) where K : Entity, new()
         {
             string filepath = $"C:/WJ/{day}/WJBeta{zone}/";
             string fileName = $"{typeof(K).Name}.bin";

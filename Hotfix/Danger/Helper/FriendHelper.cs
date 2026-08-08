@@ -7,14 +7,14 @@ namespace ET
     public static class FriendHelper
     {
 
-        public static async ETTask<List<FriendInfo>> GetFriendInfos(long dbCacheId, long gateServerId,  List<long> friends)
+        public static async ETTask<List<FriendInfo>> GetFriendInfos(long gateServerId,  List<long> friends)
         {
             List<FriendInfo> friendInfos = new List < FriendInfo >();
             for (int i = 0; i < friends.Count; i++)
             {
                 long friendId = friends[i];
-                D2G_GetComponent d2GGetUnit = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = friendId, Component = DBHelper.RoleInfoComponent });
-                RoleInfoComponentServer roleInfoComponentServer = d2GGetUnit.Component as RoleInfoComponentServer;
+                int homeZone = UnitZoneHelper.GetHomeZone(friendId);
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, friendId);
                 if (roleInfoComponentServer == null)
                 {
                     continue;

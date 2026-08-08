@@ -31,7 +31,13 @@ namespace ET
             }
             else
             {
-                JiaYuanComponentServer jiaYuanComponentServer2 = await DBHelper.GetComponentCache<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
+                JiaYuanComponentServer jiaYuanComponentServer2 = await DBHelper.GetComponent<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
+                if (jiaYuanComponentServer2 == null)
+                {
+                    response.Error = ErrorCode.ERR_Error;
+                    reply();
+                    return;
+                }
                 JiaYuanPlant jiaYuanPlant_2 = jiaYuanComponentServer2.GetJiaYuanPlant(request.OperateId);
 
                 response.JiaYuanRecord = jiaYuanPlant_2.GatherRecord;

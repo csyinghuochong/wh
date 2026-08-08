@@ -9,8 +9,15 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanInitRequest request, M2C_JiaYuanInitResponse response, Action reply)
         {
-            JiaYuanComponentServer jiaYuanComponentServer = await DBHelper.GetComponentCache<JiaYuanComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
-            RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponentCache<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId);
+            int masterHomeZone = UnitZoneHelper.GetHomeZone(request.MasterId);
+            JiaYuanComponentServer jiaYuanComponentServer = await DBHelper.GetComponent<JiaYuanComponentServer>(masterHomeZone, request.MasterId);
+            RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(masterHomeZone, request.MasterId);
+            if (jiaYuanComponentServer == null || roleInfoComponentServer == null)
+            {
+                response.Error = ErrorCode.ERR_Error;
+                reply();
+                return;
+            }
             if (unit.Id != request.MasterId)
             {
                 string playerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
@@ -29,7 +36,7 @@ namespace ET
                         PlayerName = playerName,
                         Time = TimeHelper.ServerNow(),
                     });
-                    await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(request.MasterId), request.MasterId, jiaYuanComponentServer);
+                    await DBHelper.SaveComponent(masterHomeZone, request.MasterId, jiaYuanComponentServer);
                 }
             }
             else
