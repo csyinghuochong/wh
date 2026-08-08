@@ -13,12 +13,7 @@ namespace ET
             // 0自己 1-4道具分类
             if (request.PaiMaiType == 0) // 0自己的
             {
-                List<ConsignItemInfo> paiMaiItemsTo = new List<ConsignItemInfo>();
-                paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UserId, paiMaiComponent.dBPaiMainInfo_Consume.PaiMaiItemInfos) );
-                paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UserId, paiMaiComponent.dBPaiMainInfo_Material.PaiMaiItemInfos));
-                paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UserId, paiMaiComponent.dBPaiMainInfo_Equipment.PaiMaiItemInfos));
-                paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UserId, paiMaiComponent.dBPaiMainInfo_Gemstone.PaiMaiItemInfos));
-                response.ConsignItemInfo = paiMaiItemsTo;
+                response.ConsignItemInfo = paiMaiComponent.GetUserShangJiaItems(request.UserId);
                 reply();
                 return;
             }

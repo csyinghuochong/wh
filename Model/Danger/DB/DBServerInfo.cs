@@ -6,7 +6,7 @@ namespace ET
 
 	//RankServer
     [BsonIgnoreExtraElements]
-	public class DBServerInfo : Entity
+	public class DBServerInfo : Entity, IAwake
 	{
 		public ServerInfo ServerInfo = new ServerInfo();
 	}

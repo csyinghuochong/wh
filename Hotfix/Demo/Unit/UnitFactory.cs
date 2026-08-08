@@ -37,17 +37,17 @@ namespace ET
             }
         }
 
-        public static async ETTask AddDBComonent<K>(this Unit self, long id) where K : Entity,  new()
+        public static async ETTask AddDBComonent<K>(this Unit self, long id) where K : Entity, IAwake, new()
         {
             Entity dbEntity = await DBHelper.GetComponent<K>(UnitZoneHelper.GetHomeZone(self), self.Id);
             if (dbEntity == null)
             {
-                Type type = typeof (K);
-            
-                Entity component = Activator.CreateInstance(type) as Entity;
-                component.Id = id;
-
+                K component = self.AddChildWithId<K>(id);
                 DBHelper.SaveComponent(UnitZoneHelper.GetHomeZone(self), id, component).Coroutine();
+            }
+            else
+            {
+                self.AddChild(dbEntity);
             }
         }
 

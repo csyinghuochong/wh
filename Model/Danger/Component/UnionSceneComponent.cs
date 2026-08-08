@@ -11,7 +11,7 @@ namespace ET
         public long UnionRaceSceneId;
         public long UnionRaceSceneInstanceId;
 
-        public DBUnionManager DBUnionManager = new DBUnionManager();
+        public DBUnionManager DBUnionManager;
 
         public Dictionary<long, List<long>> UnionRaceUnits = new Dictionary<long, List<long>>();
 

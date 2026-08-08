@@ -86,8 +86,11 @@ namespace ET
                 DBServerInfo warDbInfo = await DBHelper.GetComponent<DBServerInfo>(self.DomainZone(), self.DomainZone());
                 if (warDbInfo == null)
                 {
-                    warDbInfo = new DBServerInfo();
-                    warDbInfo.Id = self.DomainZone();
+                    warDbInfo = self.AddChildWithId<DBServerInfo>((long)self.DomainZone());
+                }
+                else
+                {
+                    self.AddChild(warDbInfo);
                 }
                 self.DBServerInfo = warDbInfo;
                 Log.Console($"[WarZoneRank] Init skip WorldLv/OpenDay, zone={self.DomainZone()}");
@@ -97,8 +100,11 @@ namespace ET
             DBServerInfo dBServerInfo = await DBHelper.GetComponent<DBServerInfo>(self.DomainZone(), self.DomainZone());
             if (dBServerInfo == null)
             {
-                dBServerInfo = new DBServerInfo();
-                dBServerInfo.Id = self.DomainZone();
+                dBServerInfo = self.AddChildWithId<DBServerInfo>((long)self.DomainZone());
+            }
+            else
+            {
+                self.AddChild(dBServerInfo);
             }
             //初始化参数
             self.DBServerInfo = dBServerInfo;
@@ -258,14 +264,13 @@ namespace ET
             await TimerComponent.Instance.WaitAsync(TimeHelper.Second);
            
             DBRankInfo dbRankInfo = await DBHelper.GetComponent<DBRankInfo>(self.DomainZone(), self.DomainZone());
-            if (dbRankInfo== null)
+            if (dbRankInfo == null)
             {
-                DBRankInfo dBRankInfo = new DBRankInfo();
-                dBRankInfo.Id = self.DomainZone();
-                self.DBRankInfo = dBRankInfo;
+                self.DBRankInfo = self.AddChildWithId<DBRankInfo>((long)self.DomainZone());
             }
             else
             {
+                self.AddChild(dbRankInfo);
                 self.DBRankInfo = dbRankInfo;
             }
 

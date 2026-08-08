@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace ET
 {
@@ -16,14 +15,6 @@ namespace ET
                 reply();
                 return;
             }
-
-            ConsignSceneComponent paiMaiComponent = scene.GetComponent<ConsignSceneComponent>();
-            List<ConsignItemInfo> paiMaiItemsTo = new List<ConsignItemInfo>();
-            paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UnitID, paiMaiComponent.dBPaiMainInfo_Consume.PaiMaiItemInfos));
-            paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UnitID, paiMaiComponent.dBPaiMainInfo_Material.PaiMaiItemInfos));
-            paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UnitID, paiMaiComponent.dBPaiMainInfo_Equipment.PaiMaiItemInfos));
-            paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UnitID, paiMaiComponent.dBPaiMainInfo_Gemstone.PaiMaiItemInfos));
-
 
             // 上架紫色道具刷新该类型的道具
             LDItem ldItem = LDItemCategory.Instance.Get(request.ConsignItemInfo.BagInfo.ItemID);

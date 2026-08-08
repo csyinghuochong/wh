@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace ET
 {
     [BsonIgnoreExtraElements]
-    public class DBMailInfo : Entity
+    public class DBMailInfo : Entity, IAwake
     {
         public List<MailInfo> MailInfoList = new List<MailInfo>();
     }

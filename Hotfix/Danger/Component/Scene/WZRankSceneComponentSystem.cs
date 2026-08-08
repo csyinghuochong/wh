@@ -24,7 +24,6 @@ namespace ET
     {
         public override void Awake(WZRankSceneComponent self)
         {
-            self.DBRankInfo = new DBRankInfo { Id = self.DomainZone() };
             self.InitDBRankInfo().Coroutine();
 
             long dbTime = TimeHelper.Minute * 30 + RandomHelper.RandomNumber(1000, 10000);
@@ -57,10 +56,11 @@ namespace ET
             DBRankInfo dbRankInfo = await DBHelper.GetComponent<DBRankInfo>(self.DomainZone(), self.DomainZone());
             if (dbRankInfo == null)
             {
-                self.DBRankInfo = new DBRankInfo { Id = self.DomainZone() };
+                self.DBRankInfo = self.AddChildWithId<DBRankInfo>((long)self.DomainZone());
             }
             else
             {
+                self.AddChild(dbRankInfo);
                 self.DBRankInfo = dbRankInfo;
             }
         }

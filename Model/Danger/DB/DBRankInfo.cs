@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace ET
 {
     [BsonIgnoreExtraElements]
-    public class DBRankInfo : Entity
+    public class DBRankInfo : Entity, IAwake
     {
         public List<RankPetInfo> rankingPets = new List<RankPetInfo>();     //宠物天梯
         public List<RankingInfo> rankingInfos = new List<RankingInfo>();    //战力排行

@@ -59,7 +59,10 @@ namespace ET
             {
                 dBServerInfo = self.AddChildWithId<DBUnionManager>((long)self.DomainZone());
             }
-            //初始化参数
+            else
+            {
+                self.AddChild(dBServerInfo);
+            }
             self.DBUnionManager = dBServerInfo;
         }
 

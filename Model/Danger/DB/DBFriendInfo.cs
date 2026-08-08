@@ -5,7 +5,7 @@ namespace ET
 {
 
     [BsonIgnoreExtraElements]
-    public class DBFriendInfo : Entity
+    public class DBFriendInfo : Entity, IAwake
     {
 
         /// <summary>

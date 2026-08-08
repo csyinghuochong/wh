@@ -292,21 +292,7 @@ namespace ET
                 Log.Console("zone == 66");
             }
 
-            if (paimaiList == null || paimaiList.Count == 0)
-            {
-                //初始摆摊数据
-                DBConsignInfo dBPaiMainInfo = new DBConsignInfo();
-                dBPaiMainInfo.Id = unitid;
-                self.dBPaiMainInfo_Stall = dBPaiMainInfo;
-                self.dBPaiMainInfo_Stall.PaiMaiItemInfos = oldPaiMaiStall;
-                //存储摆摊数据
-                //D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(dBPaiMainInfo), ComponentType = DBHelper.DBPaiMainInfo });
-                await Game.Scene.GetComponent<DBComponent>().Save<DBConsignInfo>(self.DomainZone(), dBPaiMainInfo);
-            }
-            else
-            {
-                self.dBPaiMainInfo_Stall = paimaiList[0];
-            }
+            await ETTask.CompletedTask;
         }
 
         public static List<ConsignItemInfo> GetItemListByUser(this ConsignSceneComponent self, long useriD, List<ConsignItemInfo> oldPaiMaiAl)
@@ -344,50 +330,36 @@ namespace ET
 
         public static void UpdatePaiMaiDBByType(this ConsignSceneComponent self, int itemType, DBConsignInfo dBPaiMainInfo_Type)
         {
-            switch (itemType)
+            if (dBPaiMainInfo_Type == null)
             {
-                case 1:
-                    self.dBPaiMainInfo_Consume = dBPaiMainInfo_Type;
-                    break;
-                case 2:
-                    self.dBPaiMainInfo_Material = dBPaiMainInfo_Type;
-                    break;
-                case 3:
-                    self.dBPaiMainInfo_Equipment = dBPaiMainInfo_Type;
-                    break;
-                case 4:
-                    self.dBPaiMainInfo_Gemstone = dBPaiMainInfo_Type;
-                    break;
-                default:
-                    Log.Error($"InitPaiMainShangJia: {itemType}");
-                    break;
+                Log.Error($"UpdatePaiMaiDBByType null: {itemType}");
+                return;
             }
 
+            self.ShangJiaByType[itemType] = dBPaiMainInfo_Type;
         }
 
         public static DBConsignInfo GetPaiMaiDBByType(this ConsignSceneComponent self, int itemType)
         {
-            DBConsignInfo dBPaiMainInfo_Type = null;
-            switch (itemType)
+            self.ShangJiaByType.TryGetValue(itemType, out DBConsignInfo db);
+            return db;
+        }
+
+        /// <summary>汇总玩家在所有上架分类中的寄售物</summary>
+        public static List<ConsignItemInfo> GetUserShangJiaItems(this ConsignSceneComponent self, long userId)
+        {
+            List<ConsignItemInfo> result = new List<ConsignItemInfo>();
+            foreach (DBConsignInfo db in self.ShangJiaByType.Values)
             {
-                case 1:
-                    dBPaiMainInfo_Type = self.dBPaiMainInfo_Consume;
-                    break;
-                case 2:
-                    dBPaiMainInfo_Type = self.dBPaiMainInfo_Material;
-                    break;
-                case 3:
-                    dBPaiMainInfo_Type = self.dBPaiMainInfo_Equipment;
-                    break;
-                case 4:
-                    dBPaiMainInfo_Type = self.dBPaiMainInfo_Gemstone;
-                    break;
-                default:
-                    Log.Warning($"InitPaiMainShangJia: {itemType}");
-                    break;
+                if (db?.PaiMaiItemInfos == null)
+                {
+                    continue;
+                }
+
+                result.AddRange(self.GetItemListByUser(userId, db.PaiMaiItemInfos));
             }
 
-            return dBPaiMainInfo_Type;  
+            return result;
         }
 
         public static async ETTask InitPaiMaiShangJia(this ConsignSceneComponent self, int itemType, List<ConsignItemInfo> oldPaiMaiAll)
@@ -431,11 +403,10 @@ namespace ET
 
             List<DBConsignInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBConsignInfo>(self.DomainZone(), d => d.Id == zone);
 
-
-            await self.InitPaiMaiShangJia(1, oldPaiMaiAll);
-            await self.InitPaiMaiShangJia(2, oldPaiMaiAll);
-            await self.InitPaiMaiShangJia(3, oldPaiMaiAll);
-            await self.InitPaiMaiShangJia(4, oldPaiMaiAll);
+            for (int i = 0; i < ConsignHelper.ShangJiaItemTypes.Length; i++)
+            {
+                await self.InitPaiMaiShangJia(ConsignHelper.ShangJiaItemTypes[i], oldPaiMaiAll);
+            }
 
             await self.InitPaiMainShop(11, oldPaiMaiShop);
             await self.InitPaiMainStall(12, oldPaiMaiStall);
@@ -486,15 +457,20 @@ namespace ET
             {
                 return;
             }
-            //Console.WriteLine($"OnDeleteRole.PaiMai :  {self.DomainZone()} {userId}");
-            self.OnDeleteRole_ByType(userId, self.dBPaiMainInfo_Consume);
-            self.OnDeleteRole_ByType(userId, self.dBPaiMainInfo_Material);
-            self.OnDeleteRole_ByType(userId, self.dBPaiMainInfo_Gemstone);
-            self.OnDeleteRole_ByType(userId, self.dBPaiMainInfo_Equipment);
+
+            foreach (DBConsignInfo db in self.ShangJiaByType.Values)
+            {
+                self.OnDeleteRole_ByType(userId, db);
+            }
         }
 
         public static void OnDeleteRole_ByType(this ConsignSceneComponent self, long userId, DBConsignInfo dBPaiMainInfo)
         {
+            if (dBPaiMainInfo?.PaiMaiItemInfos == null)
+            {
+                return;
+            }
+
             List<ConsignItemInfo> paimaiItems = dBPaiMainInfo.PaiMaiItemInfos;
 
             for (int i = paimaiItems.Count - 1; i >= 0; i--)
@@ -512,15 +488,20 @@ namespace ET
         //遍历上架道具
         public static void UpdateShangJiaItems(this ConsignSceneComponent self)
         {
-            self.UpdateShangJiaItems_ByType(self.dBPaiMainInfo_Consume );
-            self.UpdateShangJiaItems_ByType(self.dBPaiMainInfo_Material);
-            self.UpdateShangJiaItems_ByType(self.dBPaiMainInfo_Equipment);
-            self.UpdateShangJiaItems_ByType(self.dBPaiMainInfo_Gemstone);
+            foreach (DBConsignInfo db in self.ShangJiaByType.Values)
+            {
+                self.UpdateShangJiaItems_ByType(db);
+            }
         }
 
 
         public static void UpdateShangJiaItems_ByType(this ConsignSceneComponent self, DBConsignInfo dBPaiMainInfo)
         {
+            if (dBPaiMainInfo?.PaiMaiItemInfos == null)
+            {
+                return;
+            }
+
             List<ConsignItemInfo> paimaiItems = dBPaiMainInfo.PaiMaiItemInfos;
 
             for (int i = paimaiItems.Count - 1; i >= 0; i--)
@@ -557,22 +538,14 @@ namespace ET
             //}
 
             int zone = self.DomainZone();
-            await self.CheckOverTime(self.dBPaiMainInfo_Consume);
-            await self.CheckOverTime(self.dBPaiMainInfo_Material);
-            await self.CheckOverTime(self.dBPaiMainInfo_Equipment);
-            await self.CheckOverTime(self.dBPaiMainInfo_Gemstone);
-            await self.CheckOverTime(self.dBPaiMainInfo_Stall);
-
-            await self.SavePaiMaiData(ConsignHelper.GetPaiMaiId(1), self.dBPaiMainInfo_Consume);
-            await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000,5000));
-            await self.SavePaiMaiData(ConsignHelper.GetPaiMaiId(2), self.dBPaiMainInfo_Material);
-            await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 5000));
-            await self.SavePaiMaiData(ConsignHelper.GetPaiMaiId(3), self.dBPaiMainInfo_Equipment);
-            await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 5000));
-            await self.SavePaiMaiData(ConsignHelper.GetPaiMaiId(4), self.dBPaiMainInfo_Gemstone);
+            foreach (KeyValuePair<int, DBConsignInfo> kv in self.ShangJiaByType)
+            {
+                await self.CheckOverTime(kv.Value);
+                await self.SavePaiMaiData(ConsignHelper.GetPaiMaiId(kv.Key), kv.Value);
+                await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 5000));
+            }
 
             await self.SavePaiMaiData(ConsignHelper.GetPaiMaiId(11), self.dBPaiMainInfo_Shop);
-            await self.SavePaiMaiData(ConsignHelper.GetPaiMaiId(12), self.dBPaiMainInfo_Stall);
         }
 
         public static async ETTask SavePaiMaiData(this ConsignSceneComponent self, long unitId, DBConsignInfo dBPaiMainInfo)
@@ -588,6 +561,11 @@ namespace ET
         {
 
             await ETTask.CompletedTask;
+            if (dBPaiMainInfo?.PaiMaiItemInfos == null)
+            {
+                return;
+            }
+
             //检测超时的道具
             long currentTime = TimeHelper.ServerNow();
 

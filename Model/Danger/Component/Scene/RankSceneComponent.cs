@@ -8,9 +8,9 @@ namespace ET
 
         public long PassTime = 0;   
 
-        public DBRankInfo DBRankInfo = new DBRankInfo();
+        public DBRankInfo DBRankInfo;
 
-        public DBServerInfo DBServerInfo = new DBServerInfo();
+        public DBServerInfo DBServerInfo;
 
         public long RankingTrialLastTime = 0;
         public List<RankingTrialInfo> RankingTrials = new List<RankingTrialInfo>();
