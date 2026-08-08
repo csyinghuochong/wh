@@ -108,24 +108,27 @@ namespace ET
 		public int Scene_Type { get; set; }
 		/// <summary>出生点</summary>
 		[ProtoMember(10)]
-		public double[] Pos_Born { get; set; }
-		/// <summary>传送ID</summary>
+		public double[] Born_Pos { get; set; }
+		/// <summary>出生 角度</summary>
 		[ProtoMember(11)]
+		public double Born_Rotation { get; set; }
+		/// <summary>传送ID</summary>
+		[ProtoMember(12)]
 		public int[] Teleport_Id { get; set; }
 		/// <summary>禁用 小地图</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int MiniMap_Close { get; set; }
 		/// <summary>允许坐骑 0-否 1-是</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public int If_Mount { get; set; }
 		/// <summary>摄像机</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public double[] CameraPos { get; set; }
 		/// <summary>Loading</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int[] LoadingRes { get; set; }
 		/// <summary>音乐</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public string Music { get; set; }
 
 	}

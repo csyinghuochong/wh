@@ -21,7 +21,7 @@ namespace ET
             teamDungeonComponent.TeamInfo = teamInfo;
             teamDungeonComponent.EnterTime = TimeHelper.ServerNow();
             teamDungeonComponent.FubenType = teamInfo.FubenType;
-            teamDungeonComponent.BossDeadPosition = new Vector3((float)ldScene.Pos_Born[0] , (float)ldScene.Pos_Born[1] , (float)ldScene.Pos_Born[2] );
+            teamDungeonComponent.BossDeadPosition = new Vector3((float)ldScene.Born_Pos[0] , (float)ldScene.Born_Pos[1] , (float)ldScene.Born_Pos[2] );
             teamDungeonComponent.InitPlayerList();
             teamInfo.FubenInstanceId = fubenInstanceId;
             teamInfo.FubenUUId = fubenid;

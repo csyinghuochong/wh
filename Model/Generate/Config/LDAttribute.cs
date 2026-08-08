@@ -91,14 +91,17 @@ namespace ET
 		/// <summary>属性 描述</summary>
 		[ProtoMember(4)]
 		public int Desc2 { get; set; }
-		/// <summary>类型 0-固定值 1-千分比</summary>
+		/// <summary>图标</summary>
 		[ProtoMember(5)]
+		public string Icon { get; set; }
+		/// <summary>类型 0-固定值 1-千分比</summary>
+		[ProtoMember(6)]
 		public int Type { get; set; }
 		/// <summary>装备基础属性颜色</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int Color_Equip_Base { get; set; }
 		/// <summary>装备 属性 排序</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int Order_SL_Equip { get; set; }
 
 	}

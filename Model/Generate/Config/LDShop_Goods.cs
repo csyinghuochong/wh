@@ -103,10 +103,10 @@ namespace ET
 		/// <summary>购买限制 角色等级</summary>
 		[ProtoMember(8)]
 		public int Limit_Condition_1 { get; set; }
-		/// <summary>购买限制</summary>
+		/// <summary>购买 限制</summary>
 		[ProtoMember(9)]
 		public int Limit_Condition_2 { get; set; }
-		/// <summary>购买限制</summary>
+		/// <summary>购买 限制</summary>
 		[ProtoMember(10)]
 		public int Limit_Condition_3 { get; set; }
 		/// <summary>本次 限购</summary>

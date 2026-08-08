@@ -102,9 +102,9 @@ namespace ET
         {
             int sceneid = self.DomainScene().GetComponent<MapComponent>().SceneId;
             LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
-            float bornX = (float)ldScene.Pos_Born[0];
-            float bornY = (float)ldScene.Pos_Born[1] * 0.01f;
-            float bornZ = (float)ldScene.Pos_Born[2] * 0.01f;
+            float bornX = (float)ldScene.Born_Pos[0];
+            float bornY = (float)ldScene.Born_Pos[1] * 0.01f;
+            float bornZ = (float)ldScene.Born_Pos[2] * 0.01f;
             List<Unit> unitlist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
             for (int i = 0; i < unitlist.Count; i++)
             {

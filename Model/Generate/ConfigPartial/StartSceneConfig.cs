@@ -139,6 +139,19 @@ namespace ET
             }
         }
 
+        /// <summary>
+        /// WebSocket 外网端口。
+        /// 不能用 OuterPort+1：Localhost 里 Gate1/Gate2/Queue 的 OuterPort 是连号，+1 会互相撞车。
+        /// 用 +10000 与 TCP 段错开。
+        /// HttpListener 前缀绑 InnerIP（不要用 *），本机 127.0.0.1 无需 netsh；
+        /// 客户端仍用 ws://OuterIP:OuterWsPort 连。
+        /// </summary>
+        public const int OuterWsPortOffset = 10000;
+
+        public int OuterWsPort => this.OuterPort + OuterWsPortOffset;
+
+        public string OuterWsPrefix => $"http://{this.StartProcessConfig.InnerIP}:{this.OuterWsPort}/";
+
         private IPEndPoint outerIPPort;
 
         // 外网地址外网端口

@@ -93,7 +93,10 @@ namespace ET
 		public int Scene_Target { get; set; }
 		/// <summary>目标位置</summary>
 		[ProtoMember(5)]
-		public int[] Pos_Target { get; set; }
+		public double[] Target_Pos { get; set; }
+		/// <summary>目标方向</summary>
+		[ProtoMember(6)]
+		public double Target_Rotation { get; set; }
 
 	}
 }
