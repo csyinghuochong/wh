@@ -5,7 +5,7 @@ namespace ET
 {
 
     [BsonIgnoreExtraElements]
-    public class DBConsignInfo : Entity
+    public class DBConsignInfo : Entity, IAwake
     {
 
         public List<ConsignItemInfo> PaiMaiItemInfos = new List<ConsignItemInfo>();                       

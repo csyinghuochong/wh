@@ -7,7 +7,7 @@ namespace ET
 {
 
     [BsonIgnoreExtraElements]
-	public class DBDayActivityInfo : Entity
+	public class DBDayActivityInfo : Entity, IAwake
 	{
 		public int LastHour;
 		

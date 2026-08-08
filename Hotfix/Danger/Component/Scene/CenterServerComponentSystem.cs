@@ -63,12 +63,12 @@ namespace ET
             List<DBCenterServerInfo> result = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterServerInfo>(self.DomainZone(), d => d.Id == self.DomainZone());
             if (result.Count == 0)
             {
-                dBServerInfo = new DBCenterServerInfo();
-                dBServerInfo.Id = self.DomainZone();
+                dBServerInfo = self.AddChildWithId<DBCenterServerInfo>((long)self.DomainZone());
             }
             else
             {
                 dBServerInfo = result[0];
+                self.AddChild(dBServerInfo);
             }
 
             if (dBServerInfo.V1ActivityList.Count == 0)
@@ -78,6 +78,7 @@ namespace ET
             await Game.Scene.GetComponent<DBComponent>().Save(self.DomainZone(), dBServerInfo);
 
             await self.BroadcastActivityList(dBServerInfo);
+            dBServerInfo.Dispose();
         }
 
         public static async ETTask BroadcastActivityList(this CenterServerComponent self, DBCenterServerInfo dBServerInfo)
@@ -169,11 +170,11 @@ namespace ET
             List<DBCenterSerialInfo> d2GGetUnit = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterSerialInfo>(self.DomainZone(), _account => _account.Id == self.DomainZone());
             if (d2GGetUnit.Count == 0)
             {
-                self.DBCenterSerialInfo = new DBCenterSerialInfo();
-                self.DBCenterSerialInfo.Id = self.DomainZone();
+                self.DBCenterSerialInfo = self.AddChildWithId<DBCenterSerialInfo>((long)self.DomainZone());
             }
             else
             {
+                self.AddChild(d2GGetUnit[0]);
                 self.DBCenterSerialInfo = d2GGetUnit[0];
             }
 

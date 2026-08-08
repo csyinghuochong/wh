@@ -264,8 +264,7 @@ namespace ET
             if (paimaiList == null || paimaiList.Count == 0)
             {
                 //初始拍卖行商店
-                DBConsignInfo dBPaiMainInfo = new DBConsignInfo();
-                dBPaiMainInfo.Id = unitid;
+                DBConsignInfo dBPaiMainInfo = self.AddChildWithId<DBConsignInfo>(unitid);
                 self.dBPaiMainInfo_Shop = dBPaiMainInfo;
                 //存储拍卖行商店
                 //D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(dBPaiMainInfo), ComponentType = DBHelper.DBPaiMainInfo });
@@ -273,6 +272,7 @@ namespace ET
             }
             else
             {
+                self.AddChild(paimaiList[0]);
                 self.dBPaiMainInfo_Shop = paimaiList[0];
             }
 
@@ -377,8 +377,7 @@ namespace ET
             if (paimaiList == null || paimaiList.Count == 0)
             {
                 //初始摆摊数据
-                DBConsignInfo dBPaiMainInfo = new DBConsignInfo();
-                dBPaiMainInfo.Id = unitid;
+                DBConsignInfo dBPaiMainInfo = self.AddChildWithId<DBConsignInfo>(unitid);
                 dBPaiMainInfo.PaiMaiItemInfos = self.GetItemListByType(itemType, oldPaiMaiAll);
                 self.UpdatePaiMaiDBByType(itemType, dBPaiMainInfo);
                 //存储摆摊数据
@@ -387,6 +386,7 @@ namespace ET
             }
             else
             {
+                self.AddChild(paimaiList[0]);
                 self.UpdatePaiMaiDBByType(itemType, paimaiList[0]);
             }
         }

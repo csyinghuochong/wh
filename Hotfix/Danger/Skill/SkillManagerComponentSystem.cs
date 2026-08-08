@@ -603,9 +603,7 @@ namespace ET
         public static Skill_TreeEditor SkillFactory(this SkillManagerComponent self, SkillInfo skillcmd, Unit from)
         {
             LDSkill ldSkill = LDSkillCategory.Instance.Get(skillcmd.WeaponSkillID);
-            Skill_TreeEditor skillHandler = null;
-
-            skillHandler = (Skill_TreeEditor)ObjectPool.Instance.Fetch(typeof(Skill_TreeEditor));
+            Skill_TreeEditor skillHandler = (Skill_TreeEditor)ObjectPool.Instance.Fetch(typeof(Skill_TreeEditor));
             skillHandler.OnInit(skillcmd, from);
             return skillHandler;
         }

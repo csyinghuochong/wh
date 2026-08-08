@@ -42,8 +42,11 @@ namespace ET
             DBServerMailInfo dBServerInfo = await DBHelper.GetComponent<DBServerMailInfo>(self.DomainZone(), self.DomainZone());
             if (dBServerInfo == null)
             {
-                dBServerInfo = new DBServerMailInfo();
-                dBServerInfo.Id = self.DomainZone();
+                dBServerInfo = self.AddChildWithId<DBServerMailInfo>((long)self.DomainZone());
+            }
+            else
+            {
+                self.AddChild(dBServerInfo);
             }
             self.dBServerMailInfo = dBServerInfo;
             self.SaveDB().Coroutine();

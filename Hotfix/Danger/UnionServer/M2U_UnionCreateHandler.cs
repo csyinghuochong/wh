@@ -26,8 +26,8 @@ namespace ET
 
             long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
             long unionId = IdGenerater.Instance.GenerateId();
-            DBUnionInfo unionInfo = new DBUnionInfo();
-            unionInfo.Id = unionId;
+            UnionSceneComponent unionSceneComponent = scene.GetComponent<UnionSceneComponent>();
+            DBUnionInfo unionInfo = unionSceneComponent.AddChildWithId<DBUnionInfo>(unionId);
             unionInfo.UnionInfo.Level = 1;
             unionInfo.UnionInfo.UnionId = unionId;
             unionInfo.UnionInfo.LeaderId = request.UserID;       
@@ -42,7 +42,8 @@ namespace ET
                  PlayerName = roleInfoComponentServer.RoleInfo.Name,
                  UserID = request.UserID,
             });
-            DBHelper.SaveComponent(scene.DomainZone(), unionId, unionInfo).Coroutine();
+            await DBHelper.SaveComponent(scene.DomainZone(), unionId, unionInfo);
+            unionInfo.Dispose();
             response.UnionId = unionId;
             reply();
             await ETTask.CompletedTask;

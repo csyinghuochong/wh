@@ -6,7 +6,7 @@ namespace ET
 {
 
     [BsonIgnoreExtraElements]
-    public class DBServerMailInfo : Entity
+    public class DBServerMailInfo : Entity, IAwake
     {
         [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
         public Dictionary<int, ServerMailItem> ServerMailList = new Dictionary<int, ServerMailItem>();

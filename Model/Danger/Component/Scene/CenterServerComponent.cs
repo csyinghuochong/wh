@@ -17,7 +17,7 @@ namespace ET
         public bool StopServer;
         
         public int CheckIndex = 0;
-        public DBCenterSerialInfo DBCenterSerialInfo = new DBCenterSerialInfo();
+        public DBCenterSerialInfo DBCenterSerialInfo;
 
         public Dictionary<string, KeyValuePair<long, string>> PhoneVerification = new Dictionary<string, KeyValuePair<long, string>>();
     }

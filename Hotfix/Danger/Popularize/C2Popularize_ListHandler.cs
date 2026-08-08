@@ -13,6 +13,7 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Popularize, scene.DomainZone()))
             {
                 DBPopularizeInfo dBPopularizeInfo = await DBHelper.GetComponent<DBPopularizeInfo>(scene.DomainZone(), request.ActorId);
+                bool created = false;
                 if (dBPopularizeInfo == null)
                 {
                     if (scene.GetChild<DBPopularizeInfo>(request.ActorId) != null)
@@ -22,6 +23,7 @@ namespace ET
                     }
 
                     dBPopularizeInfo = scene.AddChildWithId<DBPopularizeInfo>(request.ActorId);
+                    created = true;
 
                     int newzone = scene.DomainZone();
                     List<DBPopularizeInfo> dBPopularizeInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBPopularizeInfo>(newzone, d => d.Id > 0);
@@ -31,7 +33,6 @@ namespace ET
                     dBPopularizeInfo.PopularizeCode = newzone * 1000000 + xuindex;
 
                     await DBHelper.SaveComponent(scene.DomainZone(), request.ActorId, dBPopularizeInfo);
-                    dBPopularizeInfo.Dispose();
                 }
              
                 for (int i = 0; i < dBPopularizeInfo.MyPopularizeList.Count; i++)
@@ -60,6 +61,10 @@ namespace ET
                 response.BePopularizeId = dBPopularizeInfo.BePopularizeId;
                 response.MyPopularizeList = dBPopularizeInfo.MyPopularizeList;
 
+                if (created)
+                {
+                    dBPopularizeInfo.Dispose();
+                }
             }
 
             reply();

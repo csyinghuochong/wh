@@ -27,6 +27,6 @@ namespace ET
         public Dictionary<int, DBConsignInfo> ShangJiaByType = new Dictionary<int, DBConsignInfo>();
 
         /// <summary>拍卖商店 id = 1011</summary>
-        public DBConsignInfo dBPaiMainInfo_Shop = new DBConsignInfo();
+        public DBConsignInfo dBPaiMainInfo_Shop;
     }
 }

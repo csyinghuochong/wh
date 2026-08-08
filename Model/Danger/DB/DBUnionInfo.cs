@@ -6,7 +6,7 @@ namespace ET
 {
 
     [BsonIgnoreExtraElements]
-    public class DBUnionInfo : Entity
+    public class DBUnionInfo : Entity, IAwake
     {
         public UnionInfo UnionInfo = new UnionInfo();
 

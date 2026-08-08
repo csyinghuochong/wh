@@ -6,7 +6,7 @@ namespace ET
 {
 
     [BsonIgnoreExtraElements]
-    public class DBCenterSerialInfo : Entity
+    public class DBCenterSerialInfo : Entity, IAwake
     {
         public int SerialIndex = 0;
         public int LastHour = 0;

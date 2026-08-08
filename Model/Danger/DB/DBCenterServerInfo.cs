@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Options;
 namespace ET
 { 
     [BsonIgnoreExtraElements]
-    public class DBCenterServerInfo : Entity
+    public class DBCenterServerInfo : Entity, IAwake
     {
         public int RechageOpen;
          

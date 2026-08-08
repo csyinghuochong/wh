@@ -200,13 +200,12 @@ namespace ET
             DBDayActivityInfo dbDayActivityInfo = await DBHelper.GetComponent<DBDayActivityInfo>(self.DomainZone(), self.DomainZone());
             if (dbDayActivityInfo == null)
             {
-                self.DBDayActivityInfo = new DBDayActivityInfo();
-                self.DBDayActivityInfo.Id = self.DomainZone();
+                self.DBDayActivityInfo = self.AddChildWithId<DBDayActivityInfo>((long)self.DomainZone());
             }
             else
             {
+                self.AddChild(dbDayActivityInfo);
                 self.DBDayActivityInfo = dbDayActivityInfo;
-                self.DBDayActivityInfo.Id = self.DomainZone();
             }
             int openServerDay = DBHelper.GetOpenServerDay(zone);
             LogHelper.LogDebug($"InitDayActivity: {zone}  {openServerDay}");
