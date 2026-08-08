@@ -240,7 +240,7 @@ namespace ET
                                 continue;
                             }
 
-                            CreateRoleInfo roleList = CommonHelper.DeepCopy(createRoleInfo);
+                            CreateRoleInfo roleList = CloneHelper.ShallowClone(createRoleInfo);
 
                             RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(createRoleInfo.ServerId,createRoleInfo.UserID);
                             if (roleInfoComponentServer == null)

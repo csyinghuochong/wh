@@ -41,7 +41,7 @@ namespace ET
                 {
                     //移除宠物
                     petComponentServer.RemovePet(request.PetInfoXianJiId,2);
-                    response.OldPetInfo = CommonHelper.DeepCopy<RolePetInfo>(rolePetInfo);
+                    response.OldPetInfo = CloneHelper.ShallowClone<RolePetInfo>(rolePetInfo);
 
                     //获取评分
                     int pingfen = PetHelper.PetPingJia(rolePetInfoXianJi);

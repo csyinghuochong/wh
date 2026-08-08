@@ -529,87 +529,10 @@ namespace ET
 
                 //int price = 0;
                 int itemId = paiMaiItem.BagInfo.ItemID;
-                ConsignShopItemInfo shopInfo = self.GetPaiMaiShopInfo(itemId);
-                LDItem ldItemCof = LDItemCategory.Instance.Get(itemId);
-                if (shopInfo != null && shopInfo.Price <= 500000 && ldItemCof.ItemType != 3)
-                {
-                    //int singPro = (int)(paiMaiItem.Price / paiMaiItem.BagInfo.ItemNum);  //单价
-                    float pro = paiMaiItem.Price / shopInfo.Price;
-                    float buyPro = 0;
-
-                    if (pro <= 0.5f)
-                    {
-                        buyPro = 0.3f;
-                    }
-                    else if (pro <= 0.75f)
-                    {
-                        buyPro = 0.2f;
-                    }
-                    else if (pro <= 1f)
-                    {
-                        buyPro = 0.1f;
-                    }
-                    else if (pro <= 1.2f)
-                    {
-                        buyPro = 0.05f;
-                    }
-                    else if (pro <= 1.5f)
-                    {
-                        buyPro = 0.025f;
-                    }
-                    int costNum = 0;
-                    switch (ldItemCof.Quality)
-                    {
-
-                        case 1:
-                            costNum = RandomHelper.NextInt(1, 100);
-                            break;
-                        //绿色道具随机数量
-                        case 2:
-                            costNum = RandomHelper.NextInt(1, 100);
-                            break;
-                        //蓝道具随机数量
-                        case 3:
-                            costNum = RandomHelper.NextInt(1, 10);
-                            break;
-                        //紫色道具随机数量
-                        case 4:
-                            costNum = RandomHelper.NextInt(1, 5);
-                            break;
-
-                    }
-                    //不能超过当前拥有上限
-                    costNum = Math.Min(costNum, (int)paiMaiItem.BagInfo.ItemNum);
-
-                    //概率购买
-                    if (pro < 1.5f && RandomHelper.RandFloat01() < buyPro)
-                    {
-                        Log.Info("拍卖行系统购买 概率:" + buyPro + "出售价格:" + paiMaiItem.Price * costNum + "玩家名称:" + paiMaiItem.PlayerName + "出售道具:" + paiMaiItem.BagInfo.ItemID + "出售单价:" + paiMaiItem.Price + "道具拥有数量:" + paiMaiItem.BagInfo.ItemNum);
-                        MailHelp.SendPaiMaiEmail(UnitZoneHelper.GetHomeZone(paiMaiItem.UserId), paiMaiItem, costNum, 0).Coroutine();
-
-                        paiMaiItem.BagInfo.ItemNum -= costNum;
-                        if (paiMaiItem.BagInfo.ItemNum <= 0)
-                        {
-                            dBPaiMainInfo.PaiMaiItemInfos.RemoveAt(i);
-                        }
-                    }
-                }
             }
         }
 
-        //根据道具ID获取对应快捷购买的列表
-        public static ConsignShopItemInfo GetPaiMaiShopInfo(this ConsignSceneComponent self, long needItemID)
-        {
-            //获取当前的数据
-            foreach (ConsignShopItemInfo info in self.dBPaiMainInfo_Shop.PaiMaiShopItemInfos)
-            {
-                if (info.Id == needItemID)
-                {
-                    return info;
-                }
-            }
-            return null;
-        }
+
 
         //根据道具ID获取对应快捷购买的列表
         public static void PaiMaiShopInfoAddBuyNum(this ConsignSceneComponent self, long needItemID, int buyNum)

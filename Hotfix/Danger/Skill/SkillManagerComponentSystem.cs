@@ -532,7 +532,7 @@ namespace ET
             }
             
             Unit unit = self.GetParent<Unit>();
-            nowSkillID = LDSkillHelper.GetEffectiveSkillId(unit, nowSkillID);
+            nowSkillID = LDSkillHelper.GetBuffReplacedSkillId(unit, nowSkillID);
             LDSkill ldSkill = LDSkillCategory.Instance.Get(nowSkillID);
 
             if (LDSkillHelper.IsPassiveSkill(ldSkill))

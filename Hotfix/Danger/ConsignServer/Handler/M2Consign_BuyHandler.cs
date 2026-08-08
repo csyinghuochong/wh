@@ -10,7 +10,7 @@ namespace ET
         protected override async ETTask Run(Scene scene, M2Consign_BuyRequest request, Consign2M_BuyResponse response, Action reply)
         {
             //获取列表,对应的缓存进行清空
-            if (!ItemNewHelper.IsValidItem(request.ConsignItemInfo.BagInfo))
+            if (!ItemNewHelper.CheckValiedItem(request.ConsignItemInfo.BagInfo))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();

@@ -11,7 +11,8 @@ namespace ET
            
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Sell, unit.Id))
 			{
-				if (request.ConsignItemInfo.BagInfo.ItemNum <= 0)
+				if (request.ConsignItemInfo.BagInfo == null 
+					|| request.ConsignItemInfo.BagInfo.ItemNum <= 0)
                 {
                     Log.Error($"C2M_PaiMaiSellRequest 1");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -65,9 +66,6 @@ namespace ET
 					return;
 				}
 
-				//判断道具是否可以上架和绑定
-				LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-				
 				if (bagInfo.IsBinding())
 				{
 					response.Error = ErrorCode.ERR_ItemBing;      //道具绑定

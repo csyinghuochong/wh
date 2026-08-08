@@ -949,7 +949,7 @@ namespace ET
                 
                 int itemID = rewardItem.ItemID;
                 int itemtype = rewardItem.ItemType;
-                if (itemID == 0 || !ItemNewHelper.IsValidItem(rewardItem))
+                if (itemID == 0 || !ItemNewHelper.CheckValiedItem(rewardItem))
                 {
                     continue;
                 }

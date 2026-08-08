@@ -14,7 +14,7 @@ namespace ET
             {
                 //获取当前的数据
                 ConsignSceneComponent paimaiCompontent = scene.GetComponent<ConsignSceneComponent>();
-                response.ConsignShopItemInfo = paimaiCompontent.GetPaiMaiShopInfo(request.ItemID);
+                response.ConsignShopItemInfo = null;// paimaiCompontent.GetPaiMaiShopInfo(request.ItemID);
 
                 long costGold = response.ConsignShopItemInfo.Price * request.BuyNum;
                 if (request.ActorId < costGold || costGold < 0)

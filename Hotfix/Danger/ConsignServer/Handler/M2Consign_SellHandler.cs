@@ -10,7 +10,7 @@ namespace ET
 
         protected override async ETTask Run(Scene scene, M2Consign_SellRequest request, Consign2M_SellResponse response, Action reply)
         {
-            if (!ItemNewHelper.IsValidItem(request.ConsignItemInfo.BagInfo))
+            if (!ItemNewHelper.CheckValiedItem(request.ConsignItemInfo.BagInfo))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
@@ -24,34 +24,7 @@ namespace ET
             paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UnitID, paiMaiComponent.dBPaiMainInfo_Equipment.PaiMaiItemInfos));
             paiMaiItemsTo.AddRange(paiMaiComponent.GetItemListByUser(request.UnitID, paiMaiComponent.dBPaiMainInfo_Gemstone.PaiMaiItemInfos));
 
-            long paimaiingGold = 0;
-            for (int i = 0; i < paiMaiItemsTo.Count; i++)
-            {
-                paimaiingGold += (paiMaiItemsTo[i].Price * paiMaiItemsTo[i].BagInfo.ItemNum);
-            }
 
-            int openday = ServerHelper.GetOpenServerDay(false, scene.DomainZone());
-            long todayGold = CommonConfig.GetPaiMaiTodayGold(openday);
-            long sellGold = request.ConsignItemInfo.BagInfo.ItemNum * request.ConsignItemInfo.Price;
-            if (paimaiingGold + request.PaiMaiTodayGold + sellGold >= todayGold)
-            {
-                response.Error = ErrorCode.ERR_PaiMaiSellLimit;
-                reply();
-                return;
-            }
-
-            //判定出售价格最低不能低于快捷拍卖列表的50%
-            ConsignShopItemInfo shopinfo = scene.GetComponent<ConsignSceneComponent>().GetPaiMaiShopInfo(request.ConsignItemInfo.BagInfo.ItemID);
-            if (shopinfo != null)
-            {
-                int nowPrice = (int)((float)request.ConsignItemInfo.Price);
-                if (nowPrice < shopinfo.Price * 0.5f)
-                {
-                    response.Error = ErrorCode.Err_PaiMaiPriceLow;
-                    reply();
-                    return;
-                }
-            }
             // 上架紫色道具刷新该类型的道具
             LDItem ldItem = LDItemCategory.Instance.Get(request.ConsignItemInfo.BagInfo.ItemID);
             DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetPaiMaiDBByType(ldItem.ItemType);
