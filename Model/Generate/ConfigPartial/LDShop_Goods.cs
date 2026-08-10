@@ -16,10 +16,10 @@ namespace ET
         {
             foreach (LDShop_Goods Item in this.GetAll().Values)
             {
-                if (!ShopGoodsList.TryGetValue(Item.ShopId, out List<LDShop_Goods> goodlist))
+                if (!ShopGoodsList.TryGetValue(Item.Shop_Id, out List<LDShop_Goods> goodlist))
                 {
                     goodlist = new List<LDShop_Goods>();
-                    ShopGoodsList.Add(Item.ShopId, goodlist);
+                    ShopGoodsList.Add(Item.Shop_Id, goodlist);
                 }
                 
                 goodlist.Add(Item);

@@ -48,16 +48,7 @@ namespace ET
 
             //未学会的制造
             List<int> unLearnIds = new List<int> { };
-            
-            Dictionary<int, LDMake> keyValuePairs = LDMakeCategory.Instance.GetAll();
-            foreach (var item in keyValuePairs)
-            {
-                //if (item.Value.ProficiencyType != makeType)
-                {
-                    continue;
-                }
-             
-            }
+          
             if (unLearnIds.Count == 0)
             {
                 return 0;

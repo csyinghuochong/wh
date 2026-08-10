@@ -84,7 +84,7 @@ namespace ET
 		public int Id { get; set; }
 		/// <summary>Shop Id</summary>
 		[ProtoMember(2)]
-		public int ShopId { get; set; }
+		public int Shop_Id { get; set; }
 		/// <summary>组</summary>
 		[ProtoMember(3)]
 		public int Group { get; set; }

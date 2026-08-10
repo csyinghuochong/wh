@@ -25,7 +25,7 @@ namespace ET
                 return;
             }
 
-            int shopId = request.ShopId > 0 ? request.ShopId : storeSellConfig.ShopId;
+            int shopId = request.ShopId > 0 ? request.ShopId : storeSellConfig.Shop_Id;
             bool isGlobalShop = LDShopCategory.Instance.Contain(shopId)
                     && LDShopCategory.Instance.Get(shopId).Type == ShopType.GlobalRandom;
 

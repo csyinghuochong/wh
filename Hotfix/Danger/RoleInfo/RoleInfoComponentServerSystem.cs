@@ -897,23 +897,23 @@ namespace ET
 
         public static void OnMakeItem(this RoleInfoComponentServer self, int makeId)
         {
-            LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
-            List<KeyValuePairInt> makeList = self.RoleInfo.MakeIdList;
+            //LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
+            //List<KeyValuePairInt> makeList = self.RoleInfo.MakeIdList;
 
-            bool have = false;
-            long endTime = 0;// TimeHelper.ServerNow() + equipMakeConfig.MakeTime * 1000;
-            for (int i = 0; i < makeList.Count; i++)
-            {
-                if (makeList[i].KeyId == makeId)
-                {
-                    makeList[i].Value = endTime;
-                    have = true;
-                }
-            }
-            if (!have)
-            {
-                self.RoleInfo.MakeIdList.Add(new KeyValuePairInt() { KeyId = makeId, Value = endTime });
-            }
+            //bool have = false;
+            //long endTime = 0;// TimeHelper.ServerNow() + equipMakeConfig.MakeTime * 1000;
+            //for (int i = 0; i < makeList.Count; i++)
+            //{
+            //    if (makeList[i].KeyId == makeId)
+            //    {
+            //        makeList[i].Value = endTime;
+            //        have = true;
+            //    }
+            //}
+            //if (!have)
+            //{
+            //    self.RoleInfo.MakeIdList.Add(new KeyValuePairInt() { KeyId = makeId, Value = endTime });
+            //}
         }
 
         public static void OnAddChests(this RoleInfoComponentServer self, int fubenId, int monsterId)
@@ -1059,11 +1059,11 @@ namespace ET
             }
             for(int i = 0; i < self.RoleInfo.MakeList.Count; i++)
             {
-                LDMake equipMakeConfig = LDMakeCategory.Instance.Get(self.RoleInfo.MakeList[i]);
-                //if (equipMakeConfig.ProficiencyType == makeType)
-                {
-                    makeIds.Add(self.RoleInfo.MakeList[i]);
-                }
+                //LDMake equipMakeConfig = LDMakeCategory.Instance.Get(self.RoleInfo.MakeList[i]);
+                ////if (equipMakeConfig.ProficiencyType == makeType)
+                //{
+                //    makeIds.Add(self.RoleInfo.MakeList[i]);
+                //}
             }
             return makeIds; 
         }
@@ -1091,11 +1091,11 @@ namespace ET
                     continue;
                 }
 
-                LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
-                //if (equipMakeConfig.ProficiencyType == makeType)
-                {
-                    self.RoleInfo.MakeList.RemoveAt(i); 
-                }
+                //LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
+                ////if (equipMakeConfig.ProficiencyType == makeType)
+                //{
+                //    self.RoleInfo.MakeList.RemoveAt(i); 
+                //}
             }
         }
 
