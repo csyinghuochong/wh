@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 namespace ET
@@ -13,6 +13,15 @@ namespace ET
         public void Dispatch(Session session, MemoryStream memoryStream)
         {
             ushort opcode = BitConverter.ToUInt16(memoryStream.GetBuffer(), Packet.KcpOpcodeIndex);
+            // 外网只允许 Outer opcode，防止客户端伪造内网/Mongo 消息
+            if (!OpcodeHelper.IsOuterMessage(opcode))
+            {
+                Log.Error($"session recv inner message on outer: {opcode} {session.RemoteAddress}");
+                session.Error = ErrorCore.ERR_OuterSessionRecvInnerMessage;
+                session.Dispose();
+                return;
+            }
+
             Type type = OpcodeTypeComponent.Instance.GetType(opcode);
             object message = MessageSerializeHelper.DeserializeFrom(opcode, type, memoryStream);
 

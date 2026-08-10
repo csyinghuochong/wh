@@ -36,10 +36,10 @@ namespace ET
                     int tapport = CommonHelper.IsInnerNet() ? CommonConfig.TapHttpIneer : CommonConfig.TapHttpOuter;
                     
                     scene.AddComponent<HttpComponent, string>($"http://*:{tapport}/");
-                    scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
+                    AddOuterNet(scene, startSceneConfig);
                     break;
                 case SceneType.Realm:
-                    scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
+                    AddOuterNet(scene, startSceneConfig);
                     scene.AddComponent<PlayerInfoListComponent>();
                     scene.AddComponent<CenterServerComponent>();
                     scene.AddComponent<AccountSessionsComponent>();
@@ -47,11 +47,11 @@ namespace ET
                     scene.AddComponent<ObjectWait>();
                     break;
                 case SceneType.Queue:
-                    scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
+                    AddOuterNet(scene, startSceneConfig);
                     scene.AddComponent<QueueSessionsComponent>();
                     break;
                 case SceneType.Gate:
-                    scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort, SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
+                    AddOuterNet(scene, startSceneConfig);
                     scene.AddComponent<PlayerComponent>();
                     scene.AddComponent<GateSessionKeyComponent>();
                     break;
@@ -141,6 +141,21 @@ namespace ET
                     break;  
             }
             return scene;
+        }
+
+        /// <summary>
+        /// TCP(OuterPort) + WebSocket(OuterPort+10000) 双监听，登录分发共用 Outer Dispatcher。
+        /// OuterPort&lt;=0 的场景（如 LoginCenter）不挂 WS。
+        /// </summary>
+        private static void AddOuterNet(Scene scene, StartSceneConfig startSceneConfig)
+        {
+            scene.AddComponent<NetKcpComponent, IPEndPoint, int>(startSceneConfig.InnerIPOutPort,
+                SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
+            if (startSceneConfig.OuterPort > 0)
+            {
+                scene.AddComponent<NetWsComponent, string, int>(startSceneConfig.OuterWsPrefix,
+                    SessionStreamDispatcherType.SessionStreamDispatcherServerOuter);
+            }
         }
     }
 }
