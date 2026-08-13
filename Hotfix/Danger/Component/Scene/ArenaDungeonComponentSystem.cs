@@ -99,8 +99,8 @@ namespace ET
             {
                 return;
             }
-            self.M2C_AreneInfoResult.LeftPlayer = -100;
-            MessageHelper.SendToClient(unitlist, self.M2C_AreneInfoResult);
+            //self.M2C_AreneInfoResult.LeftPlayer = -100;
+            //MessageHelper.SendToClient(unitlist, self.M2C_AreneInfoResult);
         }
 
         public static void OnUpdateRank(this ArenaDungeonComponent self)
@@ -128,8 +128,8 @@ namespace ET
                 }
             }
 
-            self.M2C_AreneInfoResult.LeftPlayer = unitlist.Count;
-            MessageHelper.SendToClient(unitlist, self.M2C_AreneInfoResult);
+            //self.M2C_AreneInfoResult.LeftPlayer = unitlist.Count;
+            //MessageHelper.SendToClient(unitlist, self.M2C_AreneInfoResult);
         }
 
         /// <summary>

@@ -15,12 +15,10 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemSellRequest request, M2C_ItemSellResponse response, Action reply)
         {
-
             long bagInfoID = request.OperateBagID;
 
-            ItemLocType locType = ItemLocType.ItemLocBag;
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            BagInfo useBagInfo = bag.GetItemByLoc(locType, bagInfoID);
+            BagInfo useBagInfo = bag.GetItemByLoc((ItemLocType)request.LocType, bagInfoID);
             if (useBagInfo == null )
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;

@@ -93,12 +93,6 @@ namespace ET
 
             //bagComponentServer.OnCostItemData(request.OperateBagID, ItemLocType.ItemLocBag);
             //bagComponentServer.OnAddItemData($"{newmagid};1", $"{ItemGetWay.GemHeCheng}_{TimeHelper.ServerNow()}");
-
-            List<BagInfo> bagInfos =  bagComponentServer.GetIdItemList(newmagid);
-            if (bagInfos.Count > 0)
-            {
-                response.RewardList.Add(bagInfos[^1]);
-            }
             reply();
             await ETTask.CompletedTask;
         }

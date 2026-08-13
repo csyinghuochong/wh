@@ -5,9 +5,9 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class C2M_MakeEquipHandler : AMActorLocationRpcHandler<Unit, C2M_MakeEquipRequest, M2C_MakeEquipResponse>
+    public class C2M_ComposeGoodsHandler : AMActorLocationRpcHandler<Unit, C2M_ComposeGoodsRequest, M2C_ComposeGoodsResponse>
     {
-        protected override async ETTask Run(Unit unit, C2M_MakeEquipRequest request, M2C_MakeEquipResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_ComposeGoodsRequest request, M2C_ComposeGoodsResponse response, Action reply)
         {            response.Error = ErrorCode.ERR_ModifyData;
             reply();
             await ETTask.CompletedTask;

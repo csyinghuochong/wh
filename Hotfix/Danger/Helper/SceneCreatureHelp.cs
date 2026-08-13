@@ -96,11 +96,23 @@ namespace ET
 			Unit unit = null;
 			if (mtype == 1)
 			{
+				if(!LDNPCCategory.Instance.Contain(monsterid))
+				{
+					Console.WriteLine($"NPC未配置 ID:{monsterid}");	
+					return;
+                }
+				
 				unit = UnitFactory.CreateNpc(scene,createid, monsterid, initposition);
 			}
 			if (mtype == 2)
 			{
-				unit = UnitFactory.CreateMonster(scene,  monsterid, initposition, new CreateMonsterInfo()
+                if (!LDMonsterCategory.Instance.Contain(monsterid))
+                {
+                    Console.WriteLine($"Monster未配置 ID:{monsterid}");
+                    return;
+                }
+
+                unit = UnitFactory.CreateMonster(scene,  monsterid, initposition, new CreateMonsterInfo()
 					{
 						Camp = CampEnum.CampMonster1,
 						Rotation = monsterPosition.Rotation,

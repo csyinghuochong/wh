@@ -2996,6 +2996,9 @@ namespace ET
 		[ProtoMember(3)]
 		public int SellNum { get; set; }
 
+		[ProtoMember(4)]
+		public int LocType { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_ItemSellResponse)]
@@ -5126,83 +5129,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public List<MailInfo> MailInfos = new List<MailInfo>();
-
-	}
-
-	[ResponseType(nameof(M2C_MakeEquipResponse))]
-	[Message(OuterOpcode.C2M_MakeEquipRequest)]
-	[ProtoContract]
-	public partial class C2M_MakeEquipRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MakeId { get; set; }
-
-		[ProtoMember(2)]
-		public long BagInfoID { get; set; }
-
-		[ProtoMember(3)]
-		public int Plan { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_MakeEquipResponse)]
-	[ProtoContract]
-	public partial class M2C_MakeEquipResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(2)]
-		public int NewMakeId { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_MakeLearnResponse))]
-	[Message(OuterOpcode.C2M_MakeLearnRequest)]
-	[ProtoContract]
-	public partial class C2M_MakeLearnRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MakeId { get; set; }
-
-		[ProtoMember(2)]
-		public int Plan { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_MakeLearnResponse)]
-	[ProtoContract]
-	public partial class M2C_MakeLearnResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 
@@ -9074,43 +9000,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_MakeSelectResponse))]
-	[Message(OuterOpcode.C2M_MakeSelectRequest)]
-	[ProtoContract]
-	public partial class C2M_MakeSelectRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MakeType { get; set; }
-
-		[ProtoMember(2)]
-		public int Plan { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_MakeSelectResponse)]
-	[ProtoContract]
-	public partial class M2C_MakeSelectResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<int> MakeList = new List<int>();
-
-	}
-
 	[Message(OuterOpcode.FirstWinInfo)]
 	[ProtoContract]
 	public partial class FirstWinInfo: Object
@@ -10351,24 +10240,6 @@ namespace ET
 
 		[ProtoMember(6)]
 		public List<KeyValuePairInt> TitleList = new List<KeyValuePairInt>();
-
-	}
-
-	[Message(OuterOpcode.M2C_AreneInfoResult)]
-	[ProtoContract]
-	public partial class M2C_AreneInfoResult: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public int LeftPlayer { get; set; }
-
-		[ProtoMember(4)]
-		public string Message { get; set; }
 
 	}
 
@@ -16021,9 +15892,6 @@ namespace ET
 		[ProtoMember(8)]
 		public string Account { get; set; }
 
-		[ProtoMember(9)]
-		public int Recharget { get; set; }
-
 	}
 
 	[Message(OuterOpcode.ConsignShopItemInfo)]
@@ -16166,8 +16034,8 @@ namespace ET
 		[ProtoMember(1)]
 		public ConsignItemInfo ConsignItemInfo { get; set; }
 
-		[ProtoMember(3)]
-		public int IsRecharge { get; set; }
+		[ProtoMember(4)]
+		public string TargetPlayer { get; set; }
 
 	}
 
@@ -16527,4 +16395,111 @@ namespace ET
 	}
 
 //寄售  end####################################################
+//合成begin####################################################
+	[ResponseType(nameof(M2C_ComposeGoodsResponse))]
+	[Message(OuterOpcode.C2M_ComposeGoodsRequest)]
+	[ProtoContract]
+	public partial class C2M_ComposeGoodsRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int Compose_Goods { get; set; }
+
+		[ProtoMember(2)]
+		public long BagInfoID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ComposeGoodsResponse)]
+	[ProtoContract]
+	public partial class M2C_ComposeGoodsResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MakeLearnResponse))]
+	[Message(OuterOpcode.C2M_MakeLearnRequest)]
+	[ProtoContract]
+	public partial class C2M_MakeLearnRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int MakeId { get; set; }
+
+		[ProtoMember(2)]
+		public int Plan { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MakeLearnResponse)]
+	[ProtoContract]
+	public partial class M2C_MakeLearnResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MakeSelectResponse))]
+	[Message(OuterOpcode.C2M_MakeSelectRequest)]
+	[ProtoContract]
+	public partial class C2M_MakeSelectRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int MakeType { get; set; }
+
+		[ProtoMember(2)]
+		public int Plan { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MakeSelectResponse)]
+	[ProtoContract]
+	public partial class M2C_MakeSelectResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<int> MakeList = new List<int>();
+
+	}
+
+//合成 end####################################################
 }
