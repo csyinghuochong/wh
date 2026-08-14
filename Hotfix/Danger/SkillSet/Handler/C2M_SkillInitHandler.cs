@@ -21,7 +21,7 @@ namespace ET{
                 SkillPro skillPro = skillSetComponentServer.SkillList[i];
                 bool shouldRemove = skillPro.SkillSetType == (int)SkillSetEnum.Item
                     ? !LDItemCategory.Instance.Contain(skillPro.SkillID)
-                    : !LDSkillCategory.Instance.Contain(skillPro.SkillID);
+                    : !LDSkill_BattleCategory.Instance.Contain(skillPro.SkillID);
                 if (shouldRemove)
                 {
                     skillSetComponentServer.SkillList.RemoveAt(i);

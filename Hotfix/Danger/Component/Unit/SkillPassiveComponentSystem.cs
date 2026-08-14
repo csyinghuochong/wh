@@ -242,7 +242,7 @@ namespace ET
 
         public static void AddPassiveSkill(this SkillPassiveComponent self, int skillId, Dictionary<int, int> magicskills = null)
         {
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillId);
             self.AddPassiveSkillByType(ldSkill, magicskills);
         }
 
@@ -274,11 +274,11 @@ namespace ET
                 {
                     continue;
                 }
-                if (!LDSkillCategory.Instance.Contain(skillList[i].SkillID))
+                if (!LDSkill_BattleCategory.Instance.Contain(skillList[i].SkillID))
                 {
                     continue;
                 }
-                LDSkill ldSkill = LDSkillCategory.Instance.Get(skillList[i].SkillID);
+                LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillList[i].SkillID);
                 self.AddPassiveSkillByType(ldSkill);
             }
         }
@@ -303,11 +303,11 @@ namespace ET
                 {
                     continue;
                 }
-                if (!LDSkillCategory.Instance.Contain(aiSkillIDList[i]))
+                if (!LDSkill_BattleCategory.Instance.Contain(aiSkillIDList[i]))
                 {
                     continue;
                 }
-                LDSkill ldSkill = LDSkillCategory.Instance.Get(aiSkillIDList[i]);
+                LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(aiSkillIDList[i]);
                 self.AddPassiveSkillByType(ldSkill);
             }
         }
@@ -358,7 +358,7 @@ namespace ET
 
             for(int i = 0; i < zhuanzhuids.Count; i++)
             {
-                LDSkill ldSkill = LDSkillCategory.Instance.Get(zhuanzhuids[i]);
+                LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(zhuanzhuids[i]);
                 self.AddPassiveSkillByType(ldSkill);
             }
 
@@ -371,7 +371,7 @@ namespace ET
                     continue;
                 }
 
-                LDSkill ldSkill = LDSkillCategory.Instance.Get(baseSkillId);
+                LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(baseSkillId);
                 self.AddPassiveSkillByType(ldSkill);
             }
 
@@ -383,12 +383,12 @@ namespace ET
                     continue;
                 }
 
-                LDSkill ldSkill = LDSkillCategory.Instance.Get(baseSkillId);
+                LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(baseSkillId);
                 self.AddPassiveSkillByType(ldSkill);
             }
         }
 
-        public static void AddPassiveSkillByType(this SkillPassiveComponent self, LDSkill ldSkill, Dictionary<int, int> magicskills = null)
+        public static void AddPassiveSkillByType(this SkillPassiveComponent self, LDSkill_Battle ldSkill, Dictionary<int, int> magicskills = null)
         {
             if (ldSkill.Type != SkillTypeEnum.SkillTypePassive_9)
             {
@@ -433,7 +433,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             List<long> targetIdList = new List<long>();
             AIComponent aIComponent = unit.GetComponent<AIComponent>();
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillIfo.SkillId);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillIfo.SkillId);
             if (aIComponent != null)
             {
                 targetId = aIComponent.TargetID;

@@ -20,7 +20,7 @@ namespace ET
                 return;
             }
 
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(args.SkillId);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(args.SkillId);
             string gameObjectParameter = null;//ldSkill.GameObjectParameter;
             string[] summonParListold = gameObjectParameter.Split(';');
             string[] summonParList = new string[summonParListold.Length - 1];

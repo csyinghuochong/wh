@@ -12,7 +12,7 @@ namespace ET
     }
 
 
-    public partial class LDSkill
+    public partial class LDSkill_Battle
     {
         /// <summary>表分隔：ASCII ~ / 全角～ / 波浪号 / 旧 _ `</summary>
         static readonly string[] TildeSeparators = { "\u007E", "\uFF5E", "\u301C", "_", "`" };
@@ -188,11 +188,11 @@ namespace ET
         }
     }
 
-    public partial class LDSkillCategory
+    public partial class LDSkill_BattleCategory
     {
         public override void AfterEndInit()
         {
-            foreach (LDSkill skillconfig in this.GetAll().Values)
+            foreach (LDSkill_Battle skillconfig in this.GetAll().Values)
             {
                 skillconfig.ParseRuntimeData();
             }

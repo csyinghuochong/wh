@@ -111,7 +111,7 @@ namespace ET
                 string skillName = string.Empty;
                 if (skillid != 0)
                 {
-                    skillName = LDSkillCategory.Instance.Get(skillid).Name.ToString(); 
+                    skillName = LDSkill_BattleCategory.Instance.Get(skillid).Name.ToString(); 
                 }
                 
                 if (attack.Type == UnitType.Player)

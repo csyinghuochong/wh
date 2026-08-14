@@ -55,7 +55,7 @@ namespace ET
             List<SkillInfo> skillInfos = self.TempSkillInfos;
             skillInfos.Clear();
          
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(weaponSkill);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(weaponSkill);
             Unit target = unit.GetParent<UnitComponent>().Get(skillcmd.TargetID);
             Vector3 targetPosition = LDSkillHelper.ResolveSkillTargetPosition(unit, ldSkill, skillcmd, target);
 
@@ -146,7 +146,7 @@ namespace ET
         /// <summary>
         /// 新技能 Interrupt_1=1 时，打断当前所有 Interrupt_2=1 的进行中技能。
         /// </summary>
-        public static void InterruptSkillsByNewCast(this SkillManagerComponent self, LDSkill newSkill)
+        public static void InterruptSkillsByNewCast(this SkillManagerComponent self, LDSkill_Battle newSkill)
         {
             if (!LDSkillHelper.CanInterruptOtherSkills(newSkill))
             {
@@ -157,7 +157,7 @@ namespace ET
             for (int i = self.Skills.Count - 1; i >= 0; i--)
             {
                 Skill_TreeEditor skillHandler = self.Skills[i];
-                LDSkill running = skillHandler.LdSkillConf;
+                LDSkill_Battle running = skillHandler.LdSkillConf;
                 if (!LDSkillHelper.CanBeInterrupted(running))
                 {
                     continue;
@@ -187,11 +187,11 @@ namespace ET
         /// <returns></returns>
         public static bool CheckChongJi(this SkillManagerComponent self, int skillId)
         {
-            if (!LDSkillCategory.Instance.Contain(skillId))
+            if (!LDSkill_BattleCategory.Instance.Contain(skillId))
             {
                 return false;
             }
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillId);
             int skillcnt = self.Skills.Count;
             for (int i = skillcnt - 1; i >= 0; i--)
             {
@@ -215,7 +215,7 @@ namespace ET
             for (int i = self.Skills.Count - 1; i >= 0; i--)
             {
                 Skill_TreeEditor skillHandler = self.Skills[i];
-                LDSkill running = skillHandler.LdSkillConf;
+                LDSkill_Battle running = skillHandler.LdSkillConf;
                 if (running == null || running.Type != SkillTypeEnum.SkillTypeCast_2)
                 {
                     continue;
@@ -237,7 +237,7 @@ namespace ET
             }
         }
         
-        public static void ApplyConsume(Unit unit, LDSkill ldSkill)
+        public static void ApplyConsume(Unit unit, LDSkill_Battle ldSkill)
         {
            
         }
@@ -265,7 +265,7 @@ namespace ET
                 return m2C_Skill;
             }
 
-            LDSkill baseLdSkill = LDSkillCategory.Instance.Get(skillcmd.SkillID);
+            LDSkill_Battle baseLdSkill = LDSkill_BattleCategory.Instance.Get(skillcmd.SkillID);
             //ApplyConsume(unit, baseLdSkill);
 
             SkillSetComponentServer skillSetComponentServer = unit.GetComponent<SkillSetComponentServer>();
@@ -275,7 +275,7 @@ namespace ET
             {
                 weaponSkillid = tianfuSkill;
             }
-            LDSkill weaponLdSkill = LDSkillCategory.Instance.Get(weaponSkillid);
+            LDSkill_Battle weaponLdSkill = LDSkill_BattleCategory.Instance.Get(weaponSkillid);
             List<SkillInfo> skillList = self.GetRandomSkills(skillcmd, weaponSkillid);
             if (skillList == null ||  skillList.Count == 0)
             {
@@ -363,7 +363,7 @@ namespace ET
             }
         }
 
-        public static SkillCDItem AddSkillCD(this SkillManagerComponent self, int itemid, int skillid, LDSkill weapon, bool zhudong)
+        public static SkillCDItem AddSkillCD(this SkillManagerComponent self, int itemid, int skillid, LDSkill_Battle weapon, bool zhudong)
         {
             self.ApplyPublicCD(itemid, weapon, zhudong);
             SkillCDItem skillCd = self.UpdateSkillCD(itemid, skillid, weapon.Id, zhudong);
@@ -374,7 +374,7 @@ namespace ET
         /// 公共CD：按表 PublicCD（秒）写入结束时间。
         /// 道具技能 → ItemPublicCDTime；普通技能 → SkillPublicCDTime。
         /// </summary>
-        public static void ApplyPublicCD(this SkillManagerComponent self, int itemId, LDSkill ldSkill, bool zhudong)
+        public static void ApplyPublicCD(this SkillManagerComponent self, int itemId, LDSkill_Battle ldSkill, bool zhudong)
         {
             if (!zhudong || ldSkill == null || ldSkill.PublicCD <= 0f)
             {
@@ -402,7 +402,7 @@ namespace ET
                 {
                     return;
                 }
-                LDSkill ldSkill = LDSkillCategory.Instance.Get((int)keyValuePair.Value);
+                LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get((int)keyValuePair.Value);
                 if (unit.GetComponent<StateComponent>().CanUseSkill(ldSkill, true) != ErrorCode.ERR_Success)
                 {
                     return;
@@ -426,7 +426,7 @@ namespace ET
 
         public static async ETTask TriggerAddSkill(this SkillManagerComponent self, C2M_SkillCmd c2M_SkillCmd, int skillId)
         {
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillId);
             await ETTask.CompletedTask;
         }
 
@@ -434,7 +434,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             SkillCDItem skillcd = null;
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(weaponSkill);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(weaponSkill);
 
             // 表未配个人CD：不上个人CD（公共CD由 AddSkillCD 统一 ApplyPublicCD）
             if (ldSkill.SkillCD <= 0)
@@ -526,14 +526,14 @@ namespace ET
             { 
                 return ErrorCode.ERR_SkillMoveTime;
             }
-            if (!LDSkillCategory.Instance.Contain(nowSkillID))
+            if (!LDSkill_BattleCategory.Instance.Contain(nowSkillID))
             {
                 return ErrorCode.ERR_ItemNotExist;
             }
             
             Unit unit = self.GetParent<Unit>();
             nowSkillID = LDSkillHelper.GetBuffReplacedSkillId(unit, nowSkillID);
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(nowSkillID);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(nowSkillID);
 
             if (LDSkillHelper.IsPassiveSkill(ldSkill))
             {
@@ -602,7 +602,7 @@ namespace ET
         
         public static Skill_TreeEditor SkillFactory(this SkillManagerComponent self, SkillInfo skillcmd, Unit from)
         {
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillcmd.WeaponSkillID);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillcmd.WeaponSkillID);
             Skill_TreeEditor skillHandler = (Skill_TreeEditor)ObjectPool.Instance.Fetch(typeof(Skill_TreeEditor));
             skillHandler.OnInit(skillcmd, from);
             return skillHandler;
@@ -637,7 +637,7 @@ namespace ET
             {
                 return;
             }
-            if (!LDSkillCategory.Instance.Contain(endSkillId))
+            if (!LDSkill_BattleCategory.Instance.Contain(endSkillId))
             {
                 return;
             }

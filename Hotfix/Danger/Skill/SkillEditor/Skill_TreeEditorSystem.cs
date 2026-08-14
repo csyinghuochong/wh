@@ -9,14 +9,14 @@ namespace ET
         {
             self.SkillInfo = skillcmd;
             self.HurtIds.Clear();
-            self.LdSkillConf = LDSkillCategory.Instance.Get(skillcmd.WeaponSkillID);
+            self.LdSkillConf = LDSkill_BattleCategory.Instance.Get(skillcmd.WeaponSkillID);
             self.TheUnitFrom = theUnitFrom;
             self.SkillState = SkillState.Running;
             self.SkillBeginTime = TimeHelper.ServerNow();
             self.treeLogicExecuted = false;
             self.GuideIntervalMs = 0;
 
-            LDSkill ldSkill = self.LdSkillConf;
+            LDSkill_Battle ldSkill = self.LdSkillConf;
             double firstDelay = ldSkill.Time_1;
             if (firstDelay < 0)
             {

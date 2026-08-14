@@ -1024,7 +1024,7 @@ namespace ET
             //宠物技能
             for (int i = 0; i < rolePetInfo.PetSkill.Count; i++)
             {
-                LDSkill ldSkillCof = LDSkillCategory.Instance.Get(rolePetInfo.PetSkill[i]);
+                LDSkill_Battle ldSkillCof = LDSkill_BattleCategory.Instance.Get(rolePetInfo.PetSkill[i]);
                 
             }
 

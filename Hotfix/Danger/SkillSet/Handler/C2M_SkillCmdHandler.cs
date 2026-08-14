@@ -21,7 +21,7 @@ namespace ET
                    
                 }
               
-                if (!LDSkillCategory.Instance.Contain(request.SkillID))
+                if (!LDSkill_BattleCategory.Instance.Contain(request.SkillID))
                 {
                     Log.Error($"C2M_SkillCmd 1");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -79,7 +79,7 @@ namespace ET
                 }
 
                 MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();        
-                LDSkill ldSkill = LDSkillCategory.Instance.Get(request.SkillID);
+                LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(request.SkillID);
                 if (mapComponent.MapTypeEnum != MapTypeEnum.RunRace && !CommonHelper.IsInnerNet())
                 {
                 }

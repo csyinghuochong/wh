@@ -55,7 +55,7 @@ namespace ET
             return TimeHelper.ClientNow() < self.NetWaitEndTime;
         }
 
-        public static int CanUseSkill(this StateComponent self, LDSkill ldSkill, bool checkDead)
+        public static int CanUseSkill(this StateComponent self, LDSkill_Battle ldSkill, bool checkDead)
         {
             if (self.StateTypeGet(StateTypeEnum.BePulled)
                 || self.StateTypeGet(StateTypeEnum.NoMove))

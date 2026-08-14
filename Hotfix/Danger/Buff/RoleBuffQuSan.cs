@@ -20,7 +20,7 @@ namespace ET
             BuffManagerComponent buffManager = theUnitFrom.GetComponent<BuffManagerComponent>();
             for (int i = buffManager.m_Buffs.Count - 1; i >= 0; i--)
             {
-                LDSkill_Buff ldSkillBuff = buffManager.m_Buffs[i].MBuff;
+                LDSkill_Battle_Buff ldSkillBuff = buffManager.m_Buffs[i].MBuff;
               
             }
         }

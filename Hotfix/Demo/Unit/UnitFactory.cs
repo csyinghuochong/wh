@@ -120,7 +120,7 @@ namespace ET
             unit.ConfigId = skillid;
             unit.Position = vector3;
             unit.Type = UnitType.Bullet;            //子弹Unity,根据这个类型会实例化出特效
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillid);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillid);
             numericComponent.Set(NumericType.Speed_Current_15, 1, false);
             numericComponent.Set(NumericType.MasterId, masterid, false);
             numericComponent.Set(NumericType.StartAngle, starangle, false);

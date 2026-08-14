@@ -14,7 +14,7 @@ namespace ET
 
         public SkillState SkillState;
 
-        public LDSkill LdSkillConf;
+        public LDSkill_Battle LdSkillConf;
 
         public long SkillBeginTime;
         public long SkillEndTime;

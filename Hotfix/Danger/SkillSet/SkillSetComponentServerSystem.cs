@@ -433,7 +433,7 @@ namespace ET
 
         public static void CheckSkillTianFu(this SkillSetComponentServer self, int skillId, bool active)
         {
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillId);
 
             int tianfuid = 0;//int.Parse(ldSkill.ComObjParameter);
             self.AddiontTianFu(tianfuid, active);
@@ -525,7 +525,7 @@ namespace ET
 		            }
 		           default:
 		            {
-			            if (!LDSkillCategory.Instance.Contain(self.SkillList[k].SkillID))
+			            if (!LDSkill_BattleCategory.Instance.Contain(self.SkillList[k].SkillID))
 			            {
 				            self.SkillList.RemoveAt(k);
 			            }
@@ -1140,7 +1140,7 @@ namespace ET
 
 			foreach (int skillId in occSkilld)
 			{
-				if (!LDSkillCategory.Instance.Contain(skillId))
+				if (!LDSkill_BattleCategory.Instance.Contain(skillId))
 				{
 					continue;
 				}

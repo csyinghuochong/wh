@@ -7,50 +7,50 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDSkill_BuffCategory : ProtoObject, IMerge
+    public partial class LDSkill_Battle_BuffCategory : ProtoObject, IMerge
     {
-        public static LDSkill_BuffCategory Instance;
+        public static LDSkill_Battle_BuffCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDSkill_Buff> dict = new Dictionary<int, LDSkill_Buff>();
+        private Dictionary<int, LDSkill_Battle_Buff> dict = new Dictionary<int, LDSkill_Battle_Buff>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDSkill_Buff> list = new List<LDSkill_Buff>();
+        private List<LDSkill_Battle_Buff> list = new List<LDSkill_Battle_Buff>();
 		
-        public LDSkill_BuffCategory()
+        public LDSkill_Battle_BuffCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDSkill_BuffCategory s = o as LDSkill_BuffCategory;
+            LDSkill_Battle_BuffCategory s = o as LDSkill_Battle_BuffCategory;
             this.list.AddRange(s.list);
         }
 		
 		public override void EndInit()
 		{
-			foreach (LDSkill_Buff config in list)
+			foreach (LDSkill_Battle_Buff config in list)
 			{
 				config.EndInit();
 				if (this.dict.ContainsKey(config.Id))
 				{
-					throw new Exception($"配置表重复Id: 表={nameof(LDSkill_Buff)} Id={config.Id}");
+					throw new Exception($"配置表重复Id: 表={nameof(LDSkill_Battle_Buff)} Id={config.Id}");
 				}
 				this.dict.Add(config.Id, config);
 			}
 			this.AfterEndInit();
 		}
 		
-        public LDSkill_Buff Get(int id)
+        public LDSkill_Battle_Buff Get(int id)
         {
-            this.dict.TryGetValue(id, out LDSkill_Buff item);
+            this.dict.TryGetValue(id, out LDSkill_Battle_Buff item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDSkill_Buff)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDSkill_Battle_Buff)}，配置id: {id}");
             }
 
             return item;
@@ -61,12 +61,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDSkill_Buff> GetAll()
+        public Dictionary<int, LDSkill_Battle_Buff> GetAll()
         {
             return this.dict;
         }
 
-        public LDSkill_Buff GetOne()
+        public LDSkill_Battle_Buff GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -77,7 +77,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDSkill_Buff: ProtoObject, IConfig
+	public partial class LDSkill_Battle_Buff: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ET
 {
-    public partial class LDSkillBuffCategory
+    public partial class LDSkill_Battle_BuffCategory
     {
         // 该buff可以解除的buff Id
         public Dictionary<int, List<int>> RelieveBuffList = new Dictionary<int, List<int>>();

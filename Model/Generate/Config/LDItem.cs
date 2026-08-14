@@ -145,6 +145,9 @@ namespace ET
 		/// <summary>显示特效</summary>
 		[ProtoMember(22)]
 		public string EquipEffect { get; set; }
+		/// <summary>排序</summary>
+		[ProtoMember(23)]
+		public int Order_LS { get; set; }
 
 	}
 }

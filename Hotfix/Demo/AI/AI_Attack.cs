@@ -50,7 +50,7 @@ namespace ET
 
                 if (aiComponent.TargetID != 0 && distance <= aiComponent.ActDistance && skillManagerComponent.IsCanUseSkill (skillId) == ErrorCode.ERR_Success)
                 {
-                    LDSkill ldSkill = LDSkillCategory.Instance.Get(skillId);
+                    LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillId);
                     Vector3 direction = target.Position - unit.Position;
                     
                     C2M_SkillCmd cmd = aiComponent.c2M_SkillCmd;
@@ -73,7 +73,7 @@ namespace ET
                     long serverNow = TimeHelper.ServerNow();
                     aiComponent.LastAttackTime = serverNow;
                     skillManagerComponent.OnUseSkill(cmd, true);
-                    rigidityEndTime = (long)(LDSkillCategory.Instance.Get(cmd.SkillID).Time_2 * 1000) + serverNow;
+                    rigidityEndTime = (long)(LDSkill_BattleCategory.Instance.Get(cmd.SkillID).Time_2 * 1000) + serverNow;
                 }
                 if (rigidityEndTime > stateComponent.RigidityEndTime)
                 {

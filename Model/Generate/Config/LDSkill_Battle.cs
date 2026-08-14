@@ -7,50 +7,50 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDSkillCategory : ProtoObject, IMerge
+    public partial class LDSkill_BattleCategory : ProtoObject, IMerge
     {
-        public static LDSkillCategory Instance;
+        public static LDSkill_BattleCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDSkill> dict = new Dictionary<int, LDSkill>();
+        private Dictionary<int, LDSkill_Battle> dict = new Dictionary<int, LDSkill_Battle>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDSkill> list = new List<LDSkill>();
+        private List<LDSkill_Battle> list = new List<LDSkill_Battle>();
 		
-        public LDSkillCategory()
+        public LDSkill_BattleCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDSkillCategory s = o as LDSkillCategory;
+            LDSkill_BattleCategory s = o as LDSkill_BattleCategory;
             this.list.AddRange(s.list);
         }
 		
 		public override void EndInit()
 		{
-			foreach (LDSkill config in list)
+			foreach (LDSkill_Battle config in list)
 			{
 				config.EndInit();
 				if (this.dict.ContainsKey(config.Id))
 				{
-					throw new Exception($"配置表重复Id: 表={nameof(LDSkill)} Id={config.Id}");
+					throw new Exception($"配置表重复Id: 表={nameof(LDSkill_Battle)} Id={config.Id}");
 				}
 				this.dict.Add(config.Id, config);
 			}
 			this.AfterEndInit();
 		}
 		
-        public LDSkill Get(int id)
+        public LDSkill_Battle Get(int id)
         {
-            this.dict.TryGetValue(id, out LDSkill item);
+            this.dict.TryGetValue(id, out LDSkill_Battle item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDSkill)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDSkill_Battle)}，配置id: {id}");
             }
 
             return item;
@@ -61,12 +61,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDSkill> GetAll()
+        public Dictionary<int, LDSkill_Battle> GetAll()
         {
             return this.dict;
         }
 
-        public LDSkill GetOne()
+        public LDSkill_Battle GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -77,7 +77,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDSkill: ProtoObject, IConfig
+	public partial class LDSkill_Battle: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -90,7 +90,7 @@ namespace ET
 		public int Desc_Brief { get; set; }
 		/// <summary>图标</summary>
 		[ProtoMember(4)]
-		public string SkillIcon { get; set; }
+		public string Icon { get; set; }
 		/// <summary>BUFF 替换技能 前置优先</summary>
 		[ProtoMember(5)]
 		public string Replace_Skill { get; set; }

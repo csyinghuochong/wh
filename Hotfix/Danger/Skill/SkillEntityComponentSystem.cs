@@ -89,9 +89,9 @@ namespace ET
 
             // 伤害范围仅作非追踪兜底；真正 AOE 半径读 Skill_1.Range_Type_Param1
             self.DamageRange = CollideReach;
-            if (self.Runtime.ActionSkillId > 0 && LDSkillCategory.Instance.Contain(self.Runtime.ActionSkillId))
+            if (self.Runtime.ActionSkillId > 0 && LDSkill_BattleCategory.Instance.Contain(self.Runtime.ActionSkillId))
             {
-                LDSkill actionSkill = LDSkillCategory.Instance.Get(self.Runtime.ActionSkillId);
+                LDSkill_Battle actionSkill = LDSkill_BattleCategory.Instance.Get(self.Runtime.ActionSkillId);
                 if (actionSkill.Range_Type_Param1 > 0)
                 {
                     self.DamageRange = (float)actionSkill.Range_Type_Param1;
@@ -391,7 +391,7 @@ namespace ET
             }
 
             int skill1 = rt.ActionSkillId;
-            if (skill1 <= 0 || !LDSkillCategory.Instance.Contain(skill1))
+            if (skill1 <= 0 || !LDSkill_BattleCategory.Instance.Contain(skill1))
             {
                 Log.Error($"FireSkill1 abort skill_1 invalid={skill1} summon={rt.SummonId}");
                 return;
@@ -407,7 +407,7 @@ namespace ET
             Unit hitTarget = tid > 0 ? uc.Get(tid) : null;
             // Base_Position=1：范围圆心在目标
             Vector3 center = hitTarget != null ? hitTarget.Position : skillEntity.Position;
-            LDSkill actionSkill = LDSkillCategory.Instance.Get(skill1);
+            LDSkill_Battle actionSkill = LDSkill_BattleCategory.Instance.Get(skill1);
             float aoeRadius = actionSkill.Range_Type_Param1 > 0 ? (float)actionSkill.Range_Type_Param1 : 3f;
 
             SkillInfo skillInfo = new SkillInfo
@@ -456,7 +456,7 @@ namespace ET
             Skill_TreeEditor handler,
             Unit master,
             UnitComponent uc,
-            LDSkill actionSkill,
+            LDSkill_Battle actionSkill,
             Vector3 center,
             float radius,
             long primaryTargetId)
@@ -542,7 +542,7 @@ namespace ET
             self.BuffState = BuffState.Finished;
             TimerComponent.Instance?.Remove(ref self.Timer);
 
-            if (destroySkillId > 0 && LDSkillCategory.Instance.Contain(destroySkillId))
+            if (destroySkillId > 0 && LDSkill_BattleCategory.Instance.Contain(destroySkillId))
             {
                 int old = self.Runtime.ActionSkillId;
                 self.Runtime.ActionSkillId = destroySkillId;

@@ -15,7 +15,7 @@ namespace ET
         {
             Unit unit = aiComponent.GetParent<Unit>();
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(unit.ConfigId);
-            LDSkill ldSkill = LDSkillCategory.Instance.Get(-1);
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(-1);
 
             bool remove = false;
             long instanceId = aiComponent.InstanceId;

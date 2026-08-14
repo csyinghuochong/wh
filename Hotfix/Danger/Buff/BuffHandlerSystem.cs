@@ -16,8 +16,8 @@ namespace ET
             self.TheUnitBelongto = theUnitBelongto;
             self.BuffState = BuffState.Running;
             self.BeginTime = TimeHelper.ServerNow();
-            self.MLdSkillConf = LDSkillCategory.Instance.Get(buffData.SkillId);
-            self.MBuff = LDSkill_BuffCategory.Instance.Get(buffData.BuffId);
+            self.MLdSkillConf = LDSkill_BattleCategory.Instance.Get(buffData.SkillId);
+            self.MBuff = LDSkill_Battle_BuffCategory.Instance.Get(buffData.BuffId);
             //self.DelayTime = self.MBuff.BuffDelayTime;
             self.BuffEndTime = CheckBuffTime(theUnitBelongto, self.MBuff) + 1000 * (int)self.GetTianfuProAdd((int)BuffAttributeEnum.AddBuffTime) + TimeHelper.ServerNow();
             self.BuffEndTime = buffData.BuffEndTime > 0 ? buffData.BuffEndTime : self.BuffEndTime;
@@ -32,7 +32,7 @@ namespace ET
         /// <param name="theUnitBelongto"></param>
         /// <param name="skillBuffConfig"></param>
         /// <returns></returns>
-        public static int CheckBuffTime(Unit theUnitBelongto, LDSkill_Buff ldSkillBuff)
+        public static int CheckBuffTime(Unit theUnitBelongto, LDSkill_Battle_Buff ldSkillBuff)
         {
            
             return 0;

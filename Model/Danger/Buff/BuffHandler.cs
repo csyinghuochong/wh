@@ -27,8 +27,8 @@ namespace ET
         /// </summary>
         public BuffData BuffData;
 
-        public LDSkill_Buff MBuff;
-        public LDSkill MLdSkillConf;
+        public LDSkill_Battle_Buff MBuff;
+        public LDSkill_Battle MLdSkillConf;
         public Skill_TreeEditor mSkillHandler;
 
         /// <summary>

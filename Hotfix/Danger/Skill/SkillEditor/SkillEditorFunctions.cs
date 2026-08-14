@@ -1907,7 +1907,7 @@ namespace ET
                 || numeric.GetAsLong(NumericType.HP_Current_8) <= 0;
         }
 
-        private static bool IsBuffClearable(LDSkill_Buff buffConfig)
+        private static bool IsBuffClearable(LDSkill_Battle_Buff buffConfig)
         {
            // if (buffConfig?.Remove == null || buffConfig.Remove.Length == 0)
             {

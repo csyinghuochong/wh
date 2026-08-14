@@ -119,7 +119,7 @@ namespace ET
                     self.m_Buffs.RemoveAt(i);
                 }
             }
-            LDSkill_Buff ldSkillBuff = LDSkill_BuffCategory.Instance.Get(buffid);
+            LDSkill_Battle_Buff ldSkillBuff = LDSkill_Battle_BuffCategory.Instance.Get(buffid);
             M2C_UnitBuffRemove m2C_UnitBuffUpdate = self.m2C_UnitBuffRemove;
             m2C_UnitBuffUpdate.UnitIdBelongTo = self.GetParent<Unit>().Id;
             m2C_UnitBuffUpdate.BuffID = buffid;
@@ -187,13 +187,13 @@ namespace ET
         /// 隐身buff伤害加成, 技能效果内只加成一次
         /// </summary>
         /// <returns></returns>
-        public static LDSkill_Buff GetHideBuffDamgePro(this BuffManagerComponent self)
+        public static LDSkill_Battle_Buff GetHideBuffDamgePro(this BuffManagerComponent self)
         {
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
                 //判断当前状态是否为暴击状态的buff
-                LDSkill_Buff ldSkillBuff = self.m_Buffs[i].MBuff;
+                LDSkill_Battle_Buff ldSkillBuff = self.m_Buffs[i].MBuff;
 
                 /*   if (ldSkillBuff.BuffType != 2)
                   {
@@ -343,7 +343,7 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            LDSkill_Buff ldSkillBuff = LDSkill_BuffCategory.Instance.Get(buffData.BuffId);
+            LDSkill_Battle_Buff ldSkillBuff = LDSkill_Battle_BuffCategory.Instance.Get(buffData.BuffId);
             float now_DiKangPro = numericComponent.GetAsFloat(NumericType.Numeric_Error);
          
             StateComponent stateComponent = unit.GetComponent<StateComponent>();
@@ -420,7 +420,7 @@ namespace ET
             {
                 bool remove = false;
                 buffHandler = nowAllBuffList[i];
-                LDSkill_Buff tempBuff = buffHandler.MBuff;
+                LDSkill_Battle_Buff tempBuff = buffHandler.MBuff;
                
                 if (remove)
                 {
@@ -490,7 +490,7 @@ namespace ET
             }
         }
 
-        public static void BuffAddSyncTime(this BuffManagerComponent self, long endTime, LDSkill_Buff ldSkillBuff)
+        public static void BuffAddSyncTime(this BuffManagerComponent self, long endTime, LDSkill_Battle_Buff ldSkillBuff)
         {
             Unit unit = self.GetParent<Unit>();
             int buffcnt = self.m_Buffs.Count;
@@ -911,7 +911,7 @@ namespace ET
             for (int i = 0; i < self.m_Buffs.Count; i++)
             {
                 BuffHandler buffHandler = self.m_Buffs[i];
-                LDSkill_Buff ldSkillBuff = buffHandler.MBuff;
+                LDSkill_Battle_Buff ldSkillBuff = buffHandler.MBuff;
                 if (ldSkillBuff == null || ldSkillBuff.Id < 10) //子弹
                 {
                     continue;
