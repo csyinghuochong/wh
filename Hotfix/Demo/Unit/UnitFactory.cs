@@ -79,7 +79,7 @@ namespace ET
             if (unit.GetComponent<BagComponentServer>() == null)
             {
                 BagComponentServer bagComponentServer = unit.AddComponent<BagComponentServer>();
-                bagComponentServer.OnInit(createRoleInfo); // 视野15米
+                bagComponentServer.OnInit(createRoleInfo); 
             }
 
             unit.AddDataComponent<TaskComponentServer>();

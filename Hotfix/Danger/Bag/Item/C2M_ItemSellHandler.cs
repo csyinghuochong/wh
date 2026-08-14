@@ -16,9 +16,16 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemSellRequest request, M2C_ItemSellResponse response, Action reply)
         {
             long bagInfoID = request.OperateBagID;
+            ItemLocType locType = (ItemLocType)request.LocType;
+            if (locType < ItemLocType.ItemLocBag || locType > ItemLocType.ItemLocBagHome)
+            {
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
 
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            BagInfo useBagInfo = bag.GetItemByLoc((ItemLocType)request.LocType, bagInfoID);
+            BagInfo useBagInfo = bag.GetItemByLoc(locType, bagInfoID);
             if (useBagInfo == null )
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
@@ -43,6 +50,7 @@ namespace ET
             if (useBagInfo.ItemNum <= 0)
             {
                 m2c_bagUpdate.BagInfoDelete.Add(useBagInfo);
+                bag.GetItemByLoc(locType)?.Remove(useBagInfo);
             }
             else
             {
