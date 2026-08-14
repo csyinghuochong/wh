@@ -48,7 +48,7 @@ namespace ET
                 return;
             }
             unit.GetComponent<NumericComponent>().ApplyChange(unit, NumericType.RaceDonationNumber, request.Price, 0);
-            roleInfoComponentServer.UpdateRoleMoneySub( UserDataType.Gold,  (request.Price * -1).ToString(),true, ItemGetWay.Donation );
+            roleInfoComponentServer.UpdateRoleData( UserDataType.Gold,  (request.Price * -1).ToString(),true, ItemGetWay.Donation );
             reply();
             await ETTask.CompletedTask;
         }

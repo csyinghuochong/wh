@@ -149,7 +149,7 @@ namespace ET
                 }
             }
            
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (costgold * -1).ToString(), true, ItemGetWay.SkillMake);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Gold, (costgold * -1).ToString(), true, ItemGetWay.SkillMake);
 
             reply();
             await ETTask.CompletedTask;

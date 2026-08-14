@@ -29,7 +29,7 @@ namespace ET
                 reply();
                 return;
             }
-            roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (needCost * -1).ToString(), true,ItemGetWay.PetChouKa);
+            roleInfoComponent.UpdateRoleData(UserDataType.Diamond, (needCost * -1).ToString(), true,ItemGetWay.PetChouKa);
             List<int> weights = new List<int>();
             List<int> petlists = new List<int>();
             for (int i = 2; i < petinfos.Length; i++)

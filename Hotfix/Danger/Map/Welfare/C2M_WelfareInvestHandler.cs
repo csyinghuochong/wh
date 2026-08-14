@@ -37,7 +37,7 @@ namespace ET
             }
             string reward = CommonConfig.WelfareInvestList[request.Index].Value;
             unit.GetComponent<BagComponentServer>().OnAddItemData(reward, $"{ItemGetWay.Welfare}_{TimeHelper.ServerNow()}");
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub( UserDataType.Gold,(ment * -1).ToString(), true, ItemGetWay.Welfare );
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData( UserDataType.Gold,(ment * -1).ToString(), true, ItemGetWay.Welfare );
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.InvestMent, ment, 0);
             unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.InvestTotal, ment, 0);
             reply();

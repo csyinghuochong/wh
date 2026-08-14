@@ -22,7 +22,7 @@ namespace ET
             });
  
             numeric.ApplyChange(null, NumericType.RechargeNumber, centerAccount.BuChangRecharge, 0,true);
-            roleInfoComponentServer.UpdateRoleMoneyAdd( UserDataType.Diamond, centerAccount.BuChangDiamond.ToString(), true, ItemGetWay.BuChang);
+            roleInfoComponentServer.UpdateRoleData( UserDataType.Diamond, centerAccount.BuChangDiamond.ToString(), true, ItemGetWay.BuChang);
             response.PlayerInfo = centerAccount.PlayerInfo;
             reply();
             await ETTask.CompletedTask;

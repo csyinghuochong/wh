@@ -98,7 +98,7 @@ namespace ET
                         reply();
                         return;
                     }
-                    roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * (int)(needDimanond * discount)).ToString(), true, ItemGetWay.PetChouKa);
+                    roleInfoComponentServer.UpdateRoleData(UserDataType.Diamond, (-1 * (int)(needDimanond * discount)).ToString(), true, ItemGetWay.PetChouKa);
                     numericComponent.ApplyChange(null, NumericType.PetExploreNumber, 10, 0);
                 }
             }

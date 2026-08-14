@@ -101,7 +101,7 @@ namespace ET
             LDHome ldHome = LDHomeCategory.Instance.Get(self.RoleInfo.JiaYuanLv);
             //self.RoleInfo.JiaYuanExp += jiaYuanConfig.JiaYuanAddExp;
             //int addexp = Mathf.FloorToInt(hour * ldHome.JiaYuanAddExp);
-            //self.UpdateRoleMoneyAdd(UserDataType.JiaYuanExp, $"{addexp}", true, ItemGetWay.JiaYuanExchange);
+            //self.UpdateRoleData(UserDataType.JiaYuanExp, $"{addexp}", true, ItemGetWay.JiaYuanExchange);
         }
 
         public static void OnRongyuChanChu(this RoleInfoComponentServer self, int coefficient, bool notice)
@@ -585,28 +585,6 @@ namespace ET
                     ?.AddShopBuy(mysteryId, buyNumber, true, false);
         }
 
-        //加金币
-        public static void UpdateRoleMoneyAdd(this RoleInfoComponentServer self, int Type, string value, bool notice, int getWay, string paramsifo = "")
-        {
-            Unit unit = self.GetParent<Unit>();
-            long gold = long.Parse(value);
-            AntiCheatAuditHelper.LogMoneyAdd(unit, Type, gold, getWay, self.RoleInfo.Name, paramsifo);
-            PlayerEconomyHelper.NotifyAfterMoneyAdd(unit, gold, getWay);
-            PlayerEconomyHelper.RecordMoneyGetWay(self.RoleInfo, Type, getWay);
-            unit.GetComponent<DataCollationComponent>().UpdateRoleMoneyAdd(Type, getWay, gold);
-            self.UpdateRoleData(Type, value, notice);
-        }
-
-        //扣金币
-        public static void UpdateRoleMoneySub(this RoleInfoComponentServer self, int Type, string value, bool notice = true, int getWay = ItemGetWay.System, string paramsifo = "")
-        {
-            Unit unit = self.GetParent<Unit>();
-            long gold = long.Parse(value);
-            AntiCheatAuditHelper.LogMoneySub(unit, Type, gold, getWay, self.RoleInfo.Name);
-            unit.GetComponent<DataCollationComponent>().UpdateRoleMoneySub(Type, getWay, gold);
-            self.UpdateRoleData(Type, value, notice);
-        }
-
         public static async ETTask SendUnionOperate(this RoleInfoComponentServer self, int getWay, int dataType,  long dataValue)
         {
             Unit unit = self.GetParent<Unit>();
@@ -633,9 +611,29 @@ namespace ET
         }
 
         //需要通知客户端
-        public static void UpdateRoleData(this RoleInfoComponentServer self, int Type, string value, bool notice = true)
+        public static void UpdateRoleData(this RoleInfoComponentServer self, int Type, string value, bool notice = true, int getWay = ItemGetWay.System, string paramsifo = "")
         {
             Unit unit = self.GetParent<Unit>();
+            if (Type == UserDataType.Gold
+                || Type == UserDataType.BindGold
+                || Type == UserDataType.Diamond
+                || Type == UserDataType.BindDiamond)
+            {
+                long gold = long.Parse(value);
+                if (gold >= 0)
+                {
+                    AntiCheatAuditHelper.LogMoneyAdd(unit, Type, gold, getWay, self.RoleInfo.Name, paramsifo);
+                    PlayerEconomyHelper.NotifyAfterMoneyAdd(unit, gold, getWay);
+                    PlayerEconomyHelper.RecordMoneyGetWay(self.RoleInfo, Type, getWay);
+                    unit.GetComponent<DataCollationComponent>().UpdateRoleMoneyAdd(Type, getWay, gold);
+                }
+                else
+                {
+                    AntiCheatAuditHelper.LogMoneySub(unit, Type, gold, getWay, self.RoleInfo.Name);
+                    unit.GetComponent<DataCollationComponent>().UpdateRoleMoneySub(Type, getWay, gold);
+                }
+            }
+
             NumericComponent numericComponent = null;
             string saveValue = "";
             long longValue = 0;

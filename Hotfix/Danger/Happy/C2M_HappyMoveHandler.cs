@@ -42,7 +42,7 @@ namespace ET
                     reply();
                     return;
                 }
-                //roleInfoComponent.UpdateRoleMoneySub( UserDataType.Gold, (globalValue.Value2 * -1).ToString(), true, ItemGetWay.HappyMove);
+                //roleInfoComponent.UpdateRoleData( UserDataType.Gold, (globalValue.Value2 * -1).ToString(), true, ItemGetWay.HappyMove);
             }
             if (request.OperatateType  == 3)
             {
@@ -53,7 +53,7 @@ namespace ET
                     reply();
                     return;
                 }
-                roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (globalValue.Value2 * -1).ToString(), true, ItemGetWay.HappyMove);*/
+                roleInfoComponent.UpdateRoleData(UserDataType.Diamond, (globalValue.Value2 * -1).ToString(), true, ItemGetWay.HappyMove);*/
             }
 
             for (int r = 10; r > 0; r--)

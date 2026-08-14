@@ -66,12 +66,12 @@ namespace ET
             if (request.ShareType == 8)
             {
                 //给金币
-                roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, "1", true, ItemGetWay.Share);
+                roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, "1", true, ItemGetWay.Share);
             }
             else
             {
                 //给钻石
-                roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Diamond, "120", true, ItemGetWay.Share);
+                roleInfoComponentServer.UpdateRoleData(UserDataType.Diamond, "120", true, ItemGetWay.Share);
             }
 
             chengJiuComponentServer.OnShare();

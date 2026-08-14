@@ -47,7 +47,7 @@ namespace ET
                 }
 
                 // 消耗钻石
-                roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
+                roleInfoComponentServer.UpdateRoleData(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
             }
             else if(request.CostType == 1)//花费凭证
             {
@@ -80,7 +80,7 @@ namespace ET
                 }
 
                 // 消耗钻石
-                roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
+                roleInfoComponentServer.UpdateRoleData(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
             }
             else if (request.CostType == 11) // 凭证+钻石
             {
@@ -92,7 +92,7 @@ namespace ET
                 }
 
                 // 消耗钻石
-                roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
+                roleInfoComponentServer.UpdateRoleData(UserDataType.Diamond, (-1 * needGold).ToString(), true, ItemGetWay.TowerOfSealCost);
 
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(90);

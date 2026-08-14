@@ -48,7 +48,7 @@ namespace ET
             int diamondMax = int.Parse(diamond[1]);
             int randomZuanshi = RandomHelper.RandomNumber(diamondMin, diamondMax);
             bagComponentServer.OnAddItemData(reward[0], $"{96}_{TimeHelper.ServerNow()}");
-            userInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Diamond, randomZuanshi.ToString(), true, 96);
+            userInfoComponentServer.UpdateRoleData(UserDataType.Diamond, randomZuanshi.ToString(), true, 96);
 
             reply();
             await ETTask.CompletedTask;

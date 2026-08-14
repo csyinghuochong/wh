@@ -38,7 +38,7 @@ namespace ET
                     return;
                 }
                 //扣除金币 
-                roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (costgold * -1).ToString(), true, ItemGetWay.Turtle);
+                roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, (costgold * -1).ToString(), true, ItemGetWay.Turtle);
 
             }
             reply();

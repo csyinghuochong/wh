@@ -53,7 +53,7 @@ namespace ET
                 }
                 else
                 {
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd((int)ldItem.SellMoneyType, (useBagInfo.ItemNum * sellValue).ToString(), true, 39);
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData((int)ldItem.SellMoneyType, (useBagInfo.ItemNum * sellValue).ToString(), true, 39);
                     unit.GetComponent<BagComponentServer>().OnCostItemData(useBagInfo, (ItemLocType)request.OperateType, useBagInfo.ItemNum);
                 }*/
                 if (useBagInfo.ItemNum == 0)
@@ -67,7 +67,7 @@ namespace ET
             }
             if (sellGold > 0)
             {
-                roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, sellGold.ToString(), true, 39);
+                roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, sellGold.ToString(), true, 39);
             }
 
             MessageHelper.SendToClient(unit, m2c_bagUpdate);

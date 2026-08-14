@@ -27,7 +27,7 @@ namespace ET
                         return;
                     }
 
-                    roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString());
+                    roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, (needGold * -1).ToString());
 					roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, (level - sp).ToString());
 					skillSetComponentServer.OnSkillReset(true);
 					break;

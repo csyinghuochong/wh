@@ -45,13 +45,13 @@ namespace ET
                     LDUnion ldUnionCof = LDUnionCategory.Instance.Get(unionID);
                     numericComponent.ApplyChange(unit, NumericType.UnionDonationNumber, 1, 0);
                   
-                    /*roleInfoComponent.UpdateRoleMoneySub(UserDataType.Gold, (ldUnionCof.DonateGold * -1).ToString(), true, ItemGetWay.Donation);
+                    /*roleInfoComponent.UpdateRoleData(UserDataType.Gold, (ldUnionCof.DonateGold * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);
                     int randNumGongXian = RandomHelper.RandomNumber(ldUnionCof.DonateReward[0], ldUnionCof.DonateReward[1] + 1);
                     int randUnionGold = RandomHelper.RandomNumber(ldUnionCof.AddUnionGold[0], ldUnionCof.AddUnionGold[1] + 1);
-                    roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionContri, randNumGongXian.ToString(), true, ItemGetWay.Donation);
-                    roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionExp, randNumExp.ToString(), true, ItemGetWay.Donation);
-                    roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionGold, randUnionGold.ToString(), true, ItemGetWay.Donation);*/
+                    roleInfoComponent.UpdateRoleData(UserDataType.UnionContri, randNumGongXian.ToString(), true, ItemGetWay.Donation);
+                    roleInfoComponent.UpdateRoleData(UserDataType.UnionExp, randNumExp.ToString(), true, ItemGetWay.Donation);
+                    roleInfoComponent.UpdateRoleData(UserDataType.UnionGold, randUnionGold.ToString(), true, ItemGetWay.Donation);*/
                 }
                 else if (request.Type == 1) // 钻石捐献
                 {
@@ -79,13 +79,13 @@ namespace ET
                     numericComponent.ApplyChange(unit, NumericType.UnionDiamondDonationNumber, 1, 0);
                     // 花费250钻石，暂时写死，M2U_UnionOperationRequest也是
 
-                    /*roleInfoComponent.UpdateRoleMoneySub(UserDataType.Diamond, (ldUnionCof.DonateDiamond * -1).ToString(), true, ItemGetWay.Donation);
+                    /*roleInfoComponent.UpdateRoleData(UserDataType.Diamond, (ldUnionCof.DonateDiamond * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);
                     int randNumGongXian = RandomHelper.RandomNumber(ldUnionCof.DonateReward[0], ldUnionCof.DonateReward[1] + 1);
                     int randUnionGold = RandomHelper.RandomNumber(ldUnionCof.AddUnionGold[0], ldUnionCof.AddUnionGold[1] + 1);
-                    roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionContri, randNumGongXian.ToString(), true, ItemGetWay.Donation);
-                    roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionExp, randNumExp.ToString(), true, ItemGetWay.Donation);
-                    roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.UnionGold, randUnionGold.ToString(), true, ItemGetWay.Donation);*/
+                    roleInfoComponent.UpdateRoleData(UserDataType.UnionContri, randNumGongXian.ToString(), true, ItemGetWay.Donation);
+                    roleInfoComponent.UpdateRoleData(UserDataType.UnionExp, randNumExp.ToString(), true, ItemGetWay.Donation);
+                    roleInfoComponent.UpdateRoleData(UserDataType.UnionGold, randUnionGold.ToString(), true, ItemGetWay.Donation);*/
                 }
             }
 

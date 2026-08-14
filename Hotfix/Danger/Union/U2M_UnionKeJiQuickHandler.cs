@@ -15,7 +15,7 @@ namespace ET
                 return;
             }
 
-            roleInfo.UpdateRoleMoneySub(UserDataType.Diamond, $"-{request.Cost}", true, ItemGetWay.UnionXiuLian);
+            roleInfo.UpdateRoleData(UserDataType.Diamond, $"-{request.Cost}", true, ItemGetWay.UnionXiuLian);
 
             reply();
             await ETTask.CompletedTask;

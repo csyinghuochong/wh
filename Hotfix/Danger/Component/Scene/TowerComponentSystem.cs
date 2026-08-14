@@ -107,8 +107,8 @@ namespace ET
             MessageHelper.SendToClient(self.MainUnit, message);
 
             RoleInfoComponentServer roleInfoComponentServer = self.MainUnit.GetComponent<RoleInfoComponentServer>();
-            roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Exp, message.RewardExp.ToString(), true, ItemGetWay.TiaoZhan);
-            roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, message.RewardGold.ToString(), true, ItemGetWay.TiaoZhan);
+            roleInfoComponentServer.UpdateRoleData(UserDataType.Exp, message.RewardExp.ToString(), true, ItemGetWay.TiaoZhan);
+            roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, message.RewardGold.ToString(), true, ItemGetWay.TiaoZhan);
             self.TowerId = 0;
         }
 

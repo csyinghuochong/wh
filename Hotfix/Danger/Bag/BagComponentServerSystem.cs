@@ -893,7 +893,7 @@ namespace ET
                         continue;
                     }
 
-                    roleInfoComponent.UpdateRoleMoneyAdd(kv.Key, kv.Value.ToString(), true, getType);
+                    roleInfoComponent.UpdateRoleData(kv.Key, kv.Value.ToString(), true, getType);
                 }
             }
 
@@ -985,12 +985,12 @@ namespace ET
         }
 
         //指定某一个格子的ID
-        public static bool OnCostItemData(this BagComponentServer self, long uid, int number)
+        public static bool OnCostItemData(this BagComponentServer self, long uid, int number, ItemLocType itemLocType = ItemLocType.ItemLocBag)
         {
             //通知客户端背包刷新
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
 
-            List<BagInfo> ItemTypeList = self.GetItemByLoc(ItemLocType.ItemLocBag);
+            List<BagInfo> ItemTypeList = self.GetItemByLoc(itemLocType);
             for (int k = ItemTypeList.Count - 1; k >= 0; k--)
             {
                 if (ItemTypeList[k].BagInfoID == uid)
@@ -1038,35 +1038,13 @@ namespace ET
 
             for (int i = costItems.Count - 1; i >= 0; i--)
             {
+                int itemType = costItems[i].ItemType > 0 ? costItems[i].ItemType : ItemBigType.Type_Item;
                 int itemID = costItems[i].ItemID;
                 int itemNum = costItems[i].ItemNum;
-
-                //扣除金币
-                if (itemID == (int)UserDataType.Gold)
+                int userDataType = ItemNewHelper.GetItemToUserDataType(itemType, itemID);
+                if (userDataType != UserDataType.None)
                 {
-                    itemNum = -1 * itemNum;
-                    roleInfo.UpdateRoleMoneySub(UserDataType.Gold, itemNum.ToString(), true, itemGetWay);
-                    continue;
-                }
-            
-                if (itemID == (int)UserDataType.Diamond)
-                {
-                    itemNum = -1 * itemNum;
-                    roleInfo.UpdateRoleMoneySub(UserDataType.Diamond, itemNum.ToString(), true, itemGetWay);
-                    continue;
-                }
-             
-                if (itemID == (int)UserDataType.JiaYuanFund)
-                {
-                    itemNum = -1 * itemNum;
-                    roleInfo.UpdateRoleData(UserDataType.JiaYuanFund, itemNum.ToString());
-                    continue;
-                }
-               
-                if (itemID == (int)UserDataType.UnionContri)
-                {
-                    itemNum = -1 * itemNum;
-                    roleInfo.UpdateRoleData(UserDataType.UnionContri, itemNum.ToString());
+                    roleInfo.UpdateRoleData(userDataType, (-itemNum).ToString(), true, itemGetWay);
                     continue;
                 }
                 

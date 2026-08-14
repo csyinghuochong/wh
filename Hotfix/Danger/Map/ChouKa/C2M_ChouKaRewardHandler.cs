@@ -43,7 +43,7 @@ namespace ET
             roleInfoComponentServer.RoleInfo.ChouKaRewardIds.Add(request.RewardId);
             int randomZuanshi = RandomHelper.RandomNumber(rewardConfig.RewardDiamond[0], rewardConfig.RewardDiamond[1]);
             unit.GetComponent<BagComponentServer>().OnAddItemData(rewardConfig.RewardItems, $"{ItemGetWay.ChouKa}_{TimeHelper.ServerNow()}");
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneyAdd(  UserDataType.Diamond, randomZuanshi.ToString(),true, ItemGetWay.ChouKa);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(  UserDataType.Diamond, randomZuanshi.ToString(),true, ItemGetWay.ChouKa);
 
             reply();
             await ETTask.CompletedTask;

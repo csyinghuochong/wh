@@ -20,7 +20,7 @@ namespace ET
 
                 if (r_GameStatusResponse.Error == ErrorCode.ERR_Success)
                 {
-                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (-1 * r_GameStatusResponse.CostGold).ToString(), true, ItemGetWay.AuctionJoin);
+                    unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Gold, (-1 * r_GameStatusResponse.CostGold).ToString(), true, ItemGetWay.AuctionJoin);
                 }
                 response.Error = r_GameStatusResponse.Error;
                 reply();

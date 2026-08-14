@@ -37,8 +37,8 @@ namespace ET
             //判断钻石是否足够
             if (roleInfo.RoleInfo.Diamond >= diamond)
             {
-                roleInfo.UpdateRoleMoneySub(UserDataType.Diamond, (diamond * -1).ToString(), true, ItemGetWay.DuiHuan);
-                roleInfo.UpdateRoleMoneyAdd(UserDataType.Gold, (diamond * d2GGetUnit.ServerInfo.ExChangeGold).ToString(), true, ItemGetWay.DuiHuan);
+                roleInfo.UpdateRoleData(UserDataType.Diamond, (diamond * -1).ToString(), true, ItemGetWay.DuiHuan);
+                roleInfo.UpdateRoleData(UserDataType.Gold, (diamond * d2GGetUnit.ServerInfo.ExChangeGold).ToString(), true, ItemGetWay.DuiHuan);
                 taskComponentServer.OnDuiHuanGold((int)diamond);
             }
             else 

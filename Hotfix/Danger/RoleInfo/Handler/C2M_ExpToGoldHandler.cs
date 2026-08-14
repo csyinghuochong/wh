@@ -88,7 +88,7 @@ namespace ET
                 case 3:
                      /*int sendGold = (int)(10000 + expCof.Exp_Role * 10);
                      sendGold = (int)(10000 + expCof.Exp_Role * 10);
-                     roleInfoComponent.UpdateRoleMoneyAdd(UserDataType.Gold, sendGold.ToString(), true, 32);*/
+                     roleInfoComponent.UpdateRoleData(UserDataType.Gold, sendGold.ToString(), true, 32);*/
                      //Log.Debug($"Gold:  {roleInfoComponent.Id} {sendGold} excharge");
                     break;
                 case 2:

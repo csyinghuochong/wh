@@ -21,7 +21,7 @@ namespace ET
 
 			skillPro.Level++;
 			
-			//unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Gold, (costGoldValue*-1).ToString(), true, ItemGetWay.CostItem);
+			//unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Gold, (costGoldValue*-1).ToString(), true, ItemGetWay.CostItem);
 			//unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Sp, (costSPValue * -1).ToString());
 
 			Function_Fight.UnitUpdateProperty_Base( unit,true, true );

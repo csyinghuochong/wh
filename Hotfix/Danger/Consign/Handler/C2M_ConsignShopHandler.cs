@@ -76,7 +76,7 @@ namespace ET
 				if (costGold > 0 && roleInfo.RoleInfo.Gold >= costGold)
 				{
 					//发送金币
-					roleInfo.UpdateRoleMoneySub(UserDataType.Gold, (costGold * -1).ToString(), true, ItemGetWay.PaiMaiShop);
+					roleInfo.UpdateRoleData(UserDataType.Gold, (costGold * -1).ToString(), true, ItemGetWay.PaiMaiShop);
 
 					//添加道具
 					List<RewardItem> rewardItems = new List<RewardItem>();

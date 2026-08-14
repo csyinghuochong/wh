@@ -27,7 +27,7 @@ namespace ET
             //开启月卡
             unit.UpdateYueKaTimes();
 
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (cost * -1).ToString(), true, ItemGetWay.CostItem);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Diamond, (cost * -1).ToString(), true, ItemGetWay.CostItem);
 
             //long addPilao = int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) - int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
             //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.PiLao, addPilao.ToString());

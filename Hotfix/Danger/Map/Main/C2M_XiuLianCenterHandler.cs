@@ -42,7 +42,7 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.XiuLian_ExpNumber, xiulianNumber+1);
                 numericComponent.ApplyValue(NumericType.XiuLian_ExpTime, TimeHelper.ServerNow());
                 int addValue = Mathf.CeilToInt(xiuLianExpCoefficient * level);
-                roleInfoComponentServer.UpdateRoleMoneyAdd( UserDataType.Exp, addValue.ToString(), true, ItemGetWay.XiuLian);
+                roleInfoComponentServer.UpdateRoleData( UserDataType.Exp, addValue.ToString(), true, ItemGetWay.XiuLian);
             }
             else if (request.XiuLianType == 2)
             {
@@ -55,7 +55,7 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.XiuLian_CoinNumber, xiulianNumber + 1);
                 numericComponent.ApplyValue(NumericType.XiuLian_CoinTime, TimeHelper.ServerNow());
                 int addValue = Mathf.CeilToInt(xiuLianCoinCoefficient * level);
-                roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, addValue.ToString(), true, 37);// ItemGetWay.XiuLian);
+                roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, addValue.ToString(), true, 37);// ItemGetWay.XiuLian);
             }
             reply();
             await ETTask.CompletedTask;

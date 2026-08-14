@@ -152,7 +152,7 @@ namespace ET
             }
             else
             {
-                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.ChouKa);
+                unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.ChouKa);
             }
             if (request.ChouKaType == 10)
             {

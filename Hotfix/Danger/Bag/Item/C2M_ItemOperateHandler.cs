@@ -192,11 +192,11 @@ namespace ET
                         {
                             //增加金币
                             case 1:
-                              //  roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, ldItem.ItemUsePar, true, ItemGetWay.ItemBox_6);
+                              //  roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, ldItem.ItemUsePar, true, ItemGetWay.ItemBox_6);
                                 break;
                             //增加经验
                             case 2:
-                               // roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Exp, ldItem.ItemUsePar, true, ItemGetWay.ItemBox_6);
+                               // roleInfoComponentServer.UpdateRoleData(UserDataType.Exp, ldItem.ItemUsePar, true, ItemGetWay.ItemBox_6);
                                 break;
                             //回城卷轴[返回另外一个副本场景]
                             case 4:
@@ -321,7 +321,7 @@ namespace ET
                                 LDExp ldExp = LDExpCategory.Instance.Get(userLv);
                                 /*long addCoin = (int)RandomHelper.RandomNumberFloat(float.Parse(jinbiInfos[0]) * exp.Exp_Role, float.Parse(jinbiInfos[1]) * exp.Exp_Role);
                                 addCoin *= costNumber;
-                                roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Gold, addCoin.ToString(), true, ItemGetWay.ItemBox_6);*/
+                                roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, addCoin.ToString(), true, ItemGetWay.ItemBox_6);*/
                                 break;
                             //经验木桩
                             case 112:
@@ -334,10 +334,10 @@ namespace ET
                                 /*exp = ExpCategory.Instance.Get(userLv);
                                 int addExp = (int)RandomHelper.RandomNumberFloat(float.Parse(paramInfo[0]) * exp.RoseExpPro, float.Parse(paramInfo[1]) * exp.RoseExpPro);
                                 addExp *= costNumber;   
-                                roleInfoComponentServer.UpdateRoleMoneyAdd(UserDataType.Exp, addExp.ToString(), true, ItemGetWay.DuiHuan);
+                                roleInfoComponentServer.UpdateRoleData(UserDataType.Exp, addExp.ToString(), true, ItemGetWay.DuiHuan);
                                 if (needZuanshi > 0)
                                 {
-                                    roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.DuiHuan);
+                                    roleInfoComponentServer.UpdateRoleData(UserDataType.Diamond, (needZuanshi * -1).ToString(), true, ItemGetWay.DuiHuan);
                                 }*/
 
                                 //response.OperatePar = addExp.ToString();

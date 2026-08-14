@@ -74,7 +74,7 @@ namespace ET
 
 
             unit.GetComponent<NumericComponent>().ApplyValue( numerType, xiulianid+1);
-            //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleMoneySub( UserDataType.UnionContri,(unionQiangHuaConfig.CostGold * -1).ToString(), true, ItemGetWay.UnionXiuLian);
+            //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData( UserDataType.UnionContri,(unionQiangHuaConfig.CostGold * -1).ToString(), true, ItemGetWay.UnionXiuLian);
 
             //刷新角色属性
             Function_Fight.UnitUpdateProperty_Base(unit,true,true);

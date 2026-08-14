@@ -142,7 +142,7 @@ namespace ET
 
                 needGold = (long)r_GameStatusResponse.ConsignItemInfo.Price * r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemNum;
                
-                roleInfoComponentServer.UpdateRoleMoneySub(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.PaiMaiBuy);
+                roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.PaiMaiBuy);
                 //背包添加道具
                 bool ret = bag.OnAddItemData(r_GameStatusResponse.ConsignItemInfo.BagInfo, $"{ItemGetWay.PaiMaiBuy}_{TimeHelper.ServerNow()}");
 
