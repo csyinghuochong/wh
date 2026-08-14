@@ -58,6 +58,7 @@ namespace ET
             roleInfo.PiLao = 120;     //初始化疲劳
             //roleInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
             roleInfo.CreateTime = TimeHelper.ServerNow();
+            roleInfo.Occ = createRoleInfo.PlayerOcc;
 
             if (createRoleInfo.RobotId > 0)
             {
@@ -74,7 +75,6 @@ namespace ET
                 roleInfo.Lv = 1;
                 roleInfo.Gold = 0;
                 //roleInfo.SeasonLevel = 1;
-                roleInfo.Occ = createRoleInfo.PlayerOcc;
             }
         }
         
@@ -247,43 +247,7 @@ namespace ET
                 }
             }
 
-            if (self.RoleInfo.RobotId > 0 &&    self.RoleInfo.HorseIds.Count == 0)
-            {
-                Dictionary<int, LDMount> allMounts = LDMountCategory.Instance.GetAll();
-                int randomIndex = RandomHelper.RandomNumber(0, allMounts.Count);
-                int index = 0;
-                foreach (LDMount mount in allMounts.Values)
-                {
-                    if (index++ == randomIndex)
-                    {
-                        self.OnHorseActive(mount.Id, true);
-                        numericComponent.Set(NumericType.HorseFightID, mount.Id, false);
-                        numericComponent.Set(NumericType.HorseRide, mount.Id, false);
-                        break;
-                    }
-                }
-            }
-            
             RoleAddPointHelper.EnsureLevel1InitPoints(unit, self.RoleInfo.Lv);
-            
-            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
-            if (self.RoleInfo.RobotId > 0 &&   petComponentServer.RolePetInfos.Count == 0)
-            {
-                Dictionary<int, LDPet> allPets = LDPetCategory.Instance.GetAll();
-                int randomindex = RandomHelper.RandomNumber(0, allPets.Count);
-                int index = 0;
-                foreach (LDPet pet in allPets.Values)
-                {
-                    if (index++ == randomindex)
-                    {
-                        petComponentServer.OnGmAddPet(pet.Id);
-                        break;
-                    }
-                }
-                
-                petComponentServer.RolePetInfos[0].PetStatus = 1;
-                petComponentServer.FightPetId = petComponentServer.RolePetInfos[0].Id;
-            }
 
             if (numericComponent.GetAsInt(NumericType.TrialDungeonId) < maxTowerId)
             {
@@ -297,20 +261,11 @@ namespace ET
                 Log.Warning($"抽卡次数异常:{self.DomainZone()} {self.RoleInfo.Name}   充值:{recharge}  抽卡:{dataCollationComponent.ChouKaTimes}");
             }
 
-            // 烟雨楼Id: 2466222808943362373   烟雨楼 寸断De法殇 ID: 2466171477355986944
-            if (self.RoleInfo.UserId == 2466171477355986944)
-            {
-                //self.RoleInfo.UnionName = "烟雨楼";
-                //self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.UnionLeader, 0, false);
-                //self.GetParent<Unit>().GetComponent<NumericComponent>().ApplyValue(NumericType.UnionId_0, 2466222808943362373, false);
-            }
-            
             if (!LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv +1) && self.RoleInfo.JiaYuanExp > 0)
             {
                 self.RoleInfo.JiaYuanExp = 0;
                 Console.WriteLine($"清空家园经验: {self.Id}  {self.RoleInfo.JiaYuanLv}  {self.RoleInfo.JiaYuanExp}");
             }
-
         }
 
 

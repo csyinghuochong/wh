@@ -56,17 +56,7 @@ namespace ET
         /// <param name="self"></param>
         public static void OnBegin(this RunRaceDungeonComponent self)
         {
-            if (self.DomainZone() == 5)
-            {
-
-                long robotSceneId = DBHelper.GetRobotServerId();
-                MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest()
-                {
-                    Zone = self.DomainZone(),
-                    MessageType = NoticeType.RunRace,
-                    Message = string.Empty
-                });
-            }
+           
         }
 
         public static void OnEnter(this RunRaceDungeonComponent self, Unit unit)

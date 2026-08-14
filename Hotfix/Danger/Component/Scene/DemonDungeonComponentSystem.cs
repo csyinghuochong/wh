@@ -9,16 +9,6 @@ namespace ET
         public static void OnBegin(this DemonDungeonComponent self)
         {
             self.IsOver = false;
-            if (self.DomainZone() == 5)
-            {
-                long robotSceneId =DBHelper.GetRobotServerId();
-                MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest()
-                {
-                    Zone = self.DomainZone(),
-                    MessageType = NoticeType.Demon,
-                    Message = string.Empty
-                });
-            }
         }
 
         public static void OnClose(this DemonDungeonComponent self)

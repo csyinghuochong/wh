@@ -220,8 +220,7 @@ namespace ET
                 self.InitPetMineExtend();
             }
             self.SaveDB();
-            self.CreateRobot(openServerDay).Coroutine();
-            self.CreateRobotMainCity(openServerDay).Coroutine();        
+            self.CreateRobot(openServerDay).Coroutine();     
 
             //每日活动
             self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Second, TimerType.ActivitySceneTimer, self);
@@ -430,48 +429,11 @@ namespace ET
 
         private static async ETTask CreateRobot(this ActivitySceneComponent self, int openServerDay)
         {
-            if (CommonHelper.IsInnerNet())
-            {
-                return;
-            }
-            if (!CommonHelper.IsInnerNet())
-            {
-                return;
-            }
-            await TimerComponent.Instance.WaitAsync(TimeHelper.Minute * 10 + self.DomainZone());
+            await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 10 + self.DomainZone());
 
-            int createRobotNumber = 0;
-            if (openServerDay >= 30)
-            {
-                createRobotNumber = 10;
-            }
-            else if (openServerDay >= 20)
-            {
-                createRobotNumber = 15;
-            }
-            else if (openServerDay >= 15)
-            {
-                createRobotNumber = 20;
-            }
-            else if (openServerDay >= 10)
-            {
-                createRobotNumber = 25;
-            }
-            else
-            {
-                createRobotNumber = 30;
-            }
-
+            int createRobotNumber = 10;
             long robotSceneId = DBHelper.GetRobotServerId();
-            MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = NoticeType.CreateRobot, Message = $"1001#{createRobotNumber}" });
-        }
-
-        private static async ETTask CreateRobotMainCity(this ActivitySceneComponent self, int openServerDay)
-        {
-            await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 30 + self.DomainZone());
-            long robotSceneId = DBHelper.GetRobotServerId();
-
-            MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = NoticeType.CreateRobotMainCity, Message = string.Empty });
+            MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = NoticeType.CreateRobot, Message = $"1#{createRobotNumber}" });
         }
 
         public static async ETTask NoticeActivityUpdate_Hour(this ActivitySceneComponent self, DateTime dateTime)
