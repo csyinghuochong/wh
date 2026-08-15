@@ -740,11 +740,11 @@ namespace ET
             rankPetInfo.PlayerLv = self.RoleInfo.Lv;
             rankPetInfo.Combat = self.RoleInfo.Combat;
             rankPetInfo.Occ = self.RoleInfo.Occ;
-            int campId = numericComponent.GetAsInt(NumericType.AcvitiyCamp);
+
             R2M_RankUpdateResponse Response = (R2M_RankUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankUpdateRequest()
                      {
-                         CampId = campId,
+                         CampId = 0,
                          RankingInfo = rankPetInfo
                      });
             if (unit.IsDisposed)
@@ -757,7 +757,7 @@ namespace ET
             numericComponent.ApplyValue(NumericType.SoloRankId, Response.SoloRankId);
 
             // 同步上报战区排行（不影响本服名次）
-            self.UploadWarCombat(campId, rankPetInfo).Coroutine();
+            self.UploadWarCombat(0, rankPetInfo).Coroutine();
         }
 
         /// <summary>上报战区战力榜；展示名带服前缀</summary>

@@ -108,7 +108,7 @@ namespace ET
                         }
 						break;
 					case (int)MapTypeEnum.LocalDungeon:
-						numericComponent.ApplyValue(NumericType.TaskDungeonId, request.ChapterId, false);
+					
 						LDScene dungeonConfig = LDSceneCategory.Instance.Get(request.ChapterId);
 					
 						MapComponent localMapComponent = scene.GetComponent<MapComponent>();

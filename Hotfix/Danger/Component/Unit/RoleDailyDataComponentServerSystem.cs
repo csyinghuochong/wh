@@ -30,7 +30,7 @@ namespace ET
             NumericType.XiuLian_ExpTime,
             NumericType.XiuLian_CoinTime,
             NumericType.TiLiKillNumber,
-            NumericType.ChouKa,
+            NumericType.ChouKaNumber,
             NumericType.ExpToGoldTimes,
             NumericType.RechargeSign,
             NumericType.TeamDungeonTimes,
