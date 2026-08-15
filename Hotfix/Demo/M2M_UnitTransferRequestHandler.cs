@@ -75,24 +75,7 @@ namespace ET
 				{
 					case (int)MapTypeEnum.CellDungeon:
 						MapComponent mapComponent = scene.GetComponent<MapComponent>();
-						CellDungeonComponent cellDungeonComponent = scene.GetComponent<CellDungeonComponent>();
-						int sonid = cellDungeonComponent.CurrentFubenCell.sonid;
-						//ChapterSonConfig chapterSon = ChapterSonConfigCategory.Instance.Get(sonid);
-						unit.AddComponent<PathfindingComponent, int>(mapComponent.NavMeshId);
-						Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
-						cellDungeonComponent.MainUnit = unit;
-						//更新unit坐标
-						//unit.Position = new Vector3(chapterSon.BornPosLeft[0] * 0.01f, chapterSon.BornPosLeft[1] * 0.01f, chapterSon.BornPosLeft[2] * 0.01f);
-						//unit.Rotation = Quaternion.identity;
-
-						// 通知客户端创建My Unit
-						M2C_CreateMyUnit m2CCreateUnits = new M2C_CreateMyUnit();
-						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-						MessageHelper.SendToClient(unit, m2CCreateUnits);
-						// 加入aoi
-						unit.AddComponent<AOIEntity, int, Vector3>(4 * 1000, unit.Position);
-						cellDungeonComponent.GenerateFubenScene(false);
-						TransferHelper.AfterTransfer(unit);
+												
 						break;
 					case (int)MapTypeEnum.PetMing:
 					case (int)MapTypeEnum.PetDungeon:
@@ -106,7 +89,7 @@ namespace ET
 						unit.Position = ldScene.GetBornPos(); 
 						unit.Rotation = Quaternion.identity;
 
-						m2CCreateUnits = new M2C_CreateMyUnit();
+                        M2C_CreateMyUnit m2CCreateUnits = new M2C_CreateMyUnit();
 						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
 						MessageHelper.SendToClient(unit, m2CCreateUnits);
 						// 加入aoi

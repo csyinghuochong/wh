@@ -11,7 +11,7 @@ namespace ET
             int shopId = request.ShopId;
             if (!LDShopCategory.Instance.Contain(shopId))
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = ErrorCode.ERR_ShopNotConfig;
                 reply();
                 await ETTask.CompletedTask;
                 return;

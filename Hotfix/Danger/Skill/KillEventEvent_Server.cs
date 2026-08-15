@@ -163,9 +163,6 @@ namespace ET
                 case MapTypeEnum.PetDungeon:
                     domainScene.GetComponent<PetFubenSceneComponent>().OnKillEvent();
                     break;
-                case MapTypeEnum.CellDungeon:
-                    domainScene.GetComponent<CellDungeonComponent>().OnKillEvent();
-                    break;
                 case MapTypeEnum.PetTianTi:
                     domainScene.GetComponent<PetTianTiComponent>().OnKillEvent();
                     break;

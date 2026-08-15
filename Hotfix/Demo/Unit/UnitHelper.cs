@@ -5,22 +5,7 @@ namespace ET
 {
     public static class UnitHelper
     {
-        public static int GetFubenDifficulty(Unit unit)
-        {
-            int fubenDifficulty = FubenDifficulty.None;
-            Scene domainScene = unit.DomainScene();
-            MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
-            if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
-            {
-                fubenDifficulty = domainScene.GetComponent<CellDungeonComponent>().FubenDifficulty;
-            }
-            else if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
-            {
-                fubenDifficulty = domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
-            }
-            return fubenDifficulty;
-        }
-
+       
         public static UnitInfo CreateUnitInfo(Unit unit)
         {
             UnitInfo unitInfo = new UnitInfo();

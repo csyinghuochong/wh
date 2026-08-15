@@ -89,10 +89,6 @@ namespace ET
                     Scene domainScene = self.DomainScene();
                     MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
                     int fubenDifficulty = (int)FubenDifficulty.None;
-                    if (mapComponent.MapTypeEnum == (int)MapTypeEnum.CellDungeon)
-                    {
-                        fubenDifficulty = (int)domainScene.GetComponent<CellDungeonComponent>().FubenDifficulty;
-                    }
                     if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                     {
                         fubenDifficulty = (int)domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
