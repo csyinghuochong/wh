@@ -658,305 +658,234 @@ namespace ET
             {
                 return false;
             }
+
             if (rewardItems_init[0].ItemType == ItemBigType.Type_None)
             {
                 Log.Error("rewardItems_init[0].ItemType == ItemBigType.Type_None");
                 return false;
             }
-            
-            string[] getWayInfo = getWay.Split('_');
-            int getType = int.Parse(getWayInfo[0]);
+
+            int getType = int.Parse(getWay.Split('_')[0]);
             Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            if (unit.IsRobot() && getType == ItemGetWay.PickItem)
-            {
-                return true;
-            }
-
-            if (getType == ItemGetWay.GM)
-            {
-                gm = true;
-            }
-
-            // 同 ItemType+ItemID 合并数量，减少后续扫描与满格误判
-            Dictionary<long, RewardItem> rewardItemMap = new Dictionary<long, RewardItem>();
-            for (int i = 0; i < rewardItems_init.Count; i++)
-            {
-                RewardItem src = rewardItems_init[i];
-                long key = ((long)src.ItemType << 32) | (uint)src.ItemID;
-                if (rewardItemMap.TryGetValue(key, out RewardItem merged))
-                {
-                    merged.ItemNum += src.ItemNum;
-                }
-                else
-                {
-                    rewardItemMap[key] = new RewardItem()
-                    {
-                        ItemType = src.ItemType,
-                        ItemID = src.ItemID,
-                        ItemNum = src.ItemNum
-                    };
-                }
-            }
-
-            List<long> autoUseKeys = null;
-            foreach (KeyValuePair<long, RewardItem> kv in rewardItemMap)
-            {
-                RewardItem checkItem = kv.Value;
-                if (checkItem.ItemType != ItemBigType.Type_Item || !LDItemCategory.Instance.Contain(checkItem.ItemID))
-                {
-                    continue;
-                }
-
-                if (LDItemCategory.Instance.Get(checkItem.ItemID).IfAutoUse != 1)
-                {
-                    continue;
-                }
-
-                autoUseKeys ??= new List<long>();
-                autoUseKeys.Add(kv.Key);
-            }
-
-            if (autoUseKeys != null)
-            {
-                for (int i = 0; i < autoUseKeys.Count; i++)
-                {
-                    RewardItem autoItem = rewardItemMap[autoUseKeys[i]];
-                    rewardItemMap.Remove(autoUseKeys[i]);
-                    int useTimes = autoItem.ItemNum > 0 ? autoItem.ItemNum : 1;
-                    for (int n = 0; n < useTimes; n++)
-                    {
-                        ItemUseHelper.UseItem(unit, autoItem.ItemID, null, null, out _);
-                    }
-
-                    if (notice)
-                    {
-                        ItemAddHelper.OnGetItem(unit, getType, autoItem.ItemType, autoItem.ItemID, autoItem.ItemNum);
-                    }
-                }
-            }
-
-            List<RewardItem> rewardItems = new List<RewardItem>(rewardItemMap.Count);
-            Dictionary<long, long> pileSumCache = new Dictionary<long, long>();
+            List<RewardItem> bagItems = new List<RewardItem>();
             Dictionary<int, int> leftCellByLoc = new Dictionary<int, int>();
 
-            foreach (RewardItem rewardItem in rewardItemMap.Values)
+            foreach (RewardItem item in MergeRewardItems(rewardItems_init).Values)
             {
-                // 货币大类 / 道具里映射为货币的：不占背包格，但仍进入发奖列表
-                int userDataType = ItemNewHelper.GetItemToUserDataType(rewardItem);
-                if (userDataType != UserDataType.None)
-                {
-                    rewardItems.Add(rewardItem);
-                    continue;
-                }
-
-                if (rewardItem.ItemType == ItemBigType.Type_Exp)
-                {
-                    // Type_Money 但 ItemID 非法：丢弃
-                    continue;
-                }
-
-                if (rewardItem.ItemType != ItemBigType.Type_Item
-                    && rewardItem.ItemType != ItemBigType.Type_Equip)
-                {
-                    Console.WriteLine($"{rewardItem.ItemType} 类型未处理");
-                    continue;
-                }
-                if (!ItemNewHelper.CheckValiedItem(rewardItem))
+                if (TryAddCurrency(unit, item, getType, notice) || TrySkipBag(unit, item, getType, notice))
                 {
                     continue;
                 }
 
-                if (rewardItem.ItemType == ItemBigType.Type_Item
-                    && LDItemCategory.Instance.Get(rewardItem.ItemID).IfBag == 0)
-                {
-                    rewardItems.Add(rewardItem);
-                    continue;
-                }
-
-                long itemKey = ((long)rewardItem.ItemType << 32) | (uint)rewardItem.ItemID;
-                if (!pileSumCache.TryGetValue(itemKey, out long itemPileSum))
-                {
-                    itemPileSum = ItemNewHelper.GetNewItemPileSum(rewardItem);
-                    pileSumCache[itemKey] = itemPileSum;
-                }
-
-                ItemLocType toLocType = ResolveAddItemLoc(specLocType, rewardItem);
-                List<BagInfo> locList = self.GetItemByLoc(toLocType);
-                if (locList == null)
-                {
-                    Log.Error($"OnAddItemData invalid loc={(int)toLocType} item={rewardItem.ItemID}");
-                    return false;
-                }
-
-                int locKey = (int)toLocType;
-                if (!leftCellByLoc.TryGetValue(locKey, out int leftCell))
-                {
-                    leftCell = self.GetBagLeftCell(locKey);
-                    leftCellByLoc[locKey] = leftCell;
-                }
-
-                int needCells = ItemNewHelper.CalcNeedNewCells(locList, rewardItem.ItemType, rewardItem.ItemID, rewardItem.ItemNum, (int)itemPileSum);
-                if (needCells > leftCell)
+                if (!TryReserveBagCell(self, item, specLocType, leftCellByLoc))
                 {
                     return false;
                 }
 
-                leftCellByLoc[locKey] = leftCell - needCells;
-                rewardItems.Add(rewardItem);
+                bagItems.Add(item);
             }
 
-            if (rewardItems.Count == 0)
+            if (bagItems.Count > 0)
+            {
+                InsertBagItems(self, unit, bagItems, makeUserID, getWay, getType, notice, specLocType);
+            }
+
+            return true;
+        }
+
+        private static Dictionary<long, RewardItem> MergeRewardItems(List<RewardItem> srcList)
+        {
+            Dictionary<long, RewardItem> map = new Dictionary<long, RewardItem>();
+            for (int i = 0; i < srcList.Count; i++)
+            {
+                RewardItem src = srcList[i];
+                long key = ((long)src.ItemType << 32) | (uint)src.ItemID;
+                if (map.TryGetValue(key, out RewardItem merged))
+                {
+                    merged.ItemNum += src.ItemNum;
+                    continue;
+                }
+
+                map[key] = new RewardItem { ItemType = src.ItemType, ItemID = src.ItemID, ItemNum = src.ItemNum };
+            }
+
+            return map;
+        }
+
+        private static bool TryAddCurrency(Unit unit, RewardItem item, int getType, bool notice)
+        {
+            int dataType = ItemNewHelper.GetItemToUserDataType(item);
+            if (dataType == UserDataType.None)
+            {
+                return false;
+            }
+
+            if (dataType == UserDataType.DailyActive || dataType == UserDataType.WeeklyActive)
+            {
+                unit.GetComponent<RoleDailyDataComponentServer>()?.AddActivePoint(dataType, item.ItemNum, notice);
+                return true;
+            }
+
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(dataType, item.ItemNum.ToString(), true, getType);
+            return true;
+        }
+
+        private static bool TrySkipBag(Unit unit, RewardItem item, int getType, bool notice)
+        {
+            if (item.ItemType == ItemBigType.Type_Exp)
             {
                 return true;
             }
 
-            M2C_RoleBagUpdate m2c_bagUpdate = self.message;
-            m2c_bagUpdate.BagInfoAdd.Clear();
-            m2c_bagUpdate.BagInfoUpdate.Clear();
-            m2c_bagUpdate.BagInfoDelete.Clear();
-            Dictionary<int, long> currencyAdds = null;
-         
-            for (int i = 0; i < rewardItems.Count; i++)
+            if (item.ItemType != ItemBigType.Type_Item && item.ItemType != ItemBigType.Type_Equip)
             {
-                RewardItem rewardItem = rewardItems[i];
-                
-                int itemID = rewardItem.ItemID;
-                int itemtype = rewardItem.ItemType;
-                if (itemID == 0 || !ItemNewHelper.CheckValiedItem(rewardItem))
-                {
-                    continue;
-                }
-
-                int leftNum = rewardItem.ItemNum;
-                int userDataType = ItemNewHelper.GetItemToUserDataType(rewardItem);
-                if (userDataType != UserDataType.None)
-                {
-                    if (currencyAdds == null)
-                    {
-                        currencyAdds = new Dictionary<int, long>();
-                    }
-                    currencyAdds.TryGetValue(userDataType, out long currencySum);
-                    currencyAdds[userDataType] = currencySum + leftNum;
-                    continue;
-                }
-
-                if (itemtype == ItemBigType.Type_Item && LDItemCategory.Instance.Get(itemID).IfBag == 0)
-                {
-                    if (notice)
-                    {
-                        ItemAddHelper.OnGetItem(unit, getType, itemtype, itemID, rewardItem.ItemNum);
-                    }
-
-                    continue;
-                }
-
-                long itemKey = ((long)rewardItem.ItemType << 32) | (uint)rewardItem.ItemID;
-                if (!pileSumCache.TryGetValue(itemKey, out long cachedPileSum))
-                {
-                    cachedPileSum = ItemNewHelper.GetNewItemPileSum(rewardItem);
-                    pileSumCache[itemKey] = cachedPileSum;
-                }
-                int maxPileSum = (int)cachedPileSum;
-                ItemLocType toLocType = ResolveAddItemLoc(specLocType, rewardItem);
-                List<BagInfo> itemlist = self.GetItemByLoc(toLocType);
-                if (itemlist == null)
-                {
-                    Log.Error($"OnAddItemData insert invalid loc={(int)toLocType} item={itemID}");
-                    return false;
-                }
-                
-                for (int k = 0; k < itemlist.Count; k++)
-                {
-                    BagInfo userBagInfo = itemlist[k];
-                    
-                    if (userBagInfo.ItemID != itemID || userBagInfo.ItemType != itemtype)
-                    {
-                        continue;
-                    }
-                    if (userBagInfo.ItemNum >= maxPileSum)
-                    {
-                        continue;
-                    }
-                    int newNum = leftNum + userBagInfo.ItemNum;
-                    if (newNum > maxPileSum)
-                    {
-                        leftNum = newNum - maxPileSum;
-                        newNum = maxPileSum;
-                    }
-                    else
-                    {
-                        leftNum = 0;
-                    }
-                    userBagInfo.ItemNum = newNum;
-                    m2c_bagUpdate.BagInfoUpdate.Add(userBagInfo);
-
-                    if (leftNum == 0)
-                    {
-                        break;
-                    }
-                }
-
-                while (leftNum > 0)
-                {
-                    BagInfo useBagInfo = new BagInfo();
-                    
-                    useBagInfo.ItemType = itemtype;
-                    useBagInfo.ItemID = itemID;
-                    useBagInfo.ItemNum = (leftNum > maxPileSum) ? maxPileSum : leftNum;
-                    useBagInfo.Loc = (int)toLocType;
-                    useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
-                    useBagInfo.GetWay = getWay;
-                    leftNum -= useBagInfo.ItemNum;
-                    useBagInfo.MakePlayer = makeUserID;
-                    useBagInfo.SetBinding(ItemNewHelper.CheckItemIfBound(rewardItem));
-
-                    if (itemtype == ItemBigType.Type_Equip && useBagInfo.BaseAttrList.Count <= 0)
-                    {
-                        LDEquip equipconfig = LDEquipCategory.Instance.Get(itemID);
-                        useBagInfo.EnhanceLevel = RandomHelper.RandomNumber(0, equipconfig.Enhance);
-                        useBagInfo.BaseAttrList = (LDEquipCategory.Instance.GetEquipAttribute(itemID));
-                        ItemNewHelper.SortBaseAttrList(useBagInfo.BaseAttrList);
-                    }
-                    if (itemtype == ItemBigType.Type_Item)
-                    {
-                        int subType = LDItemCategory.Instance.Get(itemID).ItemType;
-                    }
-
-                    itemlist.Add(useBagInfo);
-                    m2c_bagUpdate.BagInfoAdd.Add(useBagInfo);
-                }
-
-                BagSortHelper.SortIfNeeded(itemlist, toLocType);
-
-                if (notice)
-                {
-                    ItemAddHelper.OnGetItem(unit, getType, itemtype, itemID, rewardItem.ItemNum);
-                }
+                Console.WriteLine($"{item.ItemType} 类型未处理");
+                return true;
             }
 
-            if (currencyAdds != null)
+            if (!ItemNewHelper.CheckValiedItem(item))
             {
-                RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
-                foreach (KeyValuePair<int, long> kv in currencyAdds)
-                {
-                    if (kv.Key == UserDataType.DailyActive || kv.Key == UserDataType.WeeklyActive)
-                    {
-                        dailyData?.AddActivePoint(kv.Key, (int)kv.Value, notice);
-                        continue;
-                    }
+                return true;
+            }
 
-                    roleInfoComponent.UpdateRoleData(kv.Key, kv.Value.ToString(), true, getType);
+            if (item.ItemType != ItemBigType.Type_Item)
+            {
+                return false;
+            }
+
+            LDItem ldItem = LDItemCategory.Instance.Get(item.ItemID);
+            if (ldItem.IfAutoUse != 1 && ldItem.IfBag != 0)
+            {
+                return false;
+            }
+
+            if (ldItem.IfAutoUse == 1)
+            {
+                int useTimes = item.ItemNum > 0 ? item.ItemNum : 1;
+                for (int n = 0; n < useTimes; n++)
+                {
+                    ItemUseHelper.UseItem(unit, item.ItemID, null, null, out _);
                 }
             }
 
             if (notice)
             {
-                MessageHelper.SendToClient(unit, m2c_bagUpdate);
+                ItemAddHelper.OnGetItem(unit, getType, item.ItemType, item.ItemID, item.ItemNum);
             }
 
             return true;
+        }
+
+        private static bool TryReserveBagCell(BagComponentServer self, RewardItem item, ItemLocType specLocType, Dictionary<int, int> leftCellByLoc)
+        {
+            ItemLocType toLocType = ResolveAddItemLoc(specLocType, item);
+            List<BagInfo> locList = self.GetItemByLoc(toLocType);
+            if (locList == null)
+            {
+                Log.Error($"OnAddItemData invalid loc={(int)toLocType} item={item.ItemID}");
+                return false;
+            }
+
+            int locKey = (int)toLocType;
+            if (!leftCellByLoc.TryGetValue(locKey, out int leftCell))
+            {
+                leftCell = self.GetBagLeftCell(locKey);
+            }
+
+            int needCells = ItemNewHelper.CalcNeedNewCells(locList, item.ItemType, item.ItemID, item.ItemNum, ItemNewHelper.GetNewItemPileSum(item));
+            if (needCells > leftCell)
+            {
+                return false;
+            }
+
+            leftCellByLoc[locKey] = leftCell - needCells;
+            return true;
+        }
+
+        private static void InsertBagItems(BagComponentServer self, Unit unit, List<RewardItem> bagItems, string makeUserID, string getWay, int getType, bool notice, ItemLocType specLocType)
+        {
+            M2C_RoleBagUpdate bagUpdate = self.message;
+            bagUpdate.BagInfoAdd.Clear();
+            bagUpdate.BagInfoUpdate.Clear();
+            bagUpdate.BagInfoDelete.Clear();
+
+            for (int i = 0; i < bagItems.Count; i++)
+            {
+                RewardItem item = bagItems[i];
+                int maxPileSum = ItemNewHelper.GetNewItemPileSum(item);
+                ItemLocType toLocType = ResolveAddItemLoc(specLocType, item);
+                List<BagInfo> itemList = self.GetItemByLoc(toLocType);
+                int leftNum = FillExistPile(itemList, item, maxPileSum, bagUpdate);
+                CreateNewCells(itemList, item, leftNum, maxPileSum, toLocType, makeUserID, getWay, bagUpdate);
+                BagSortHelper.SortIfNeeded(itemList, toLocType);
+                if (notice)
+                {
+                    ItemAddHelper.OnGetItem(unit, getType, item.ItemType, item.ItemID, item.ItemNum);
+                }
+            }
+
+            if (notice)
+            {
+                MessageHelper.SendToClient(unit, bagUpdate);
+            }
+        }
+
+        private static int FillExistPile(List<BagInfo> itemList, RewardItem item, int maxPileSum, M2C_RoleBagUpdate bagUpdate)
+        {
+            int leftNum = item.ItemNum;
+            for (int k = 0; k < itemList.Count && leftNum > 0; k++)
+            {
+                BagInfo bagInfo = itemList[k];
+                if (bagInfo.ItemID != item.ItemID || bagInfo.ItemType != item.ItemType || bagInfo.ItemNum >= maxPileSum)
+                {
+                    continue;
+                }
+
+                int newNum = leftNum + bagInfo.ItemNum;
+                if (newNum > maxPileSum)
+                {
+                    leftNum = newNum - maxPileSum;
+                    newNum = maxPileSum;
+                }
+                else
+                {
+                    leftNum = 0;
+                }
+
+                bagInfo.ItemNum = newNum;
+                bagUpdate.BagInfoUpdate.Add(bagInfo);
+            }
+
+            return leftNum;
+        }
+
+        private static void CreateNewCells(List<BagInfo> itemList, RewardItem item, int leftNum, int maxPileSum, ItemLocType toLocType, string makeUserID, string getWay, M2C_RoleBagUpdate bagUpdate)
+        {
+            while (leftNum > 0)
+            {
+                BagInfo bagInfo = new BagInfo
+                {
+                    ItemType = item.ItemType,
+                    ItemID = item.ItemID,
+                    ItemNum = leftNum > maxPileSum ? maxPileSum : leftNum,
+                    Loc = (int)toLocType,
+                    BagInfoID = IdGenerater.Instance.GenerateId(),
+                    GetWay = getWay,
+                    MakePlayer = makeUserID
+                };
+                leftNum -= bagInfo.ItemNum;
+                bagInfo.SetBinding(ItemNewHelper.CheckItemIfBound(item));
+                if (item.ItemType == ItemBigType.Type_Equip && bagInfo.BaseAttrList.Count <= 0)
+                {
+                    LDEquip equipConfig = LDEquipCategory.Instance.Get(item.ItemID);
+                    bagInfo.EnhanceLevel = RandomHelper.RandomNumber(0, equipConfig.Enhance);
+                    bagInfo.BaseAttrList = LDEquipCategory.Instance.GetEquipAttribute(item.ItemID);
+                    ItemNewHelper.SortBaseAttrList(bagInfo.BaseAttrList);
+                }
+
+                itemList.Add(bagInfo);
+                bagUpdate.BagInfoAdd.Add(bagInfo);
+            }
         }
 
         public static bool CheckNeedItem(this BagComponentServer self, string rewardItems)

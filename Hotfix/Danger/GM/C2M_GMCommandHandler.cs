@@ -161,6 +161,7 @@ namespace ET
 							//MessageHelper.Broadcast(unit, createSpilings);
 						}
 						break;
+
 					case "4": //直接接取某个任务      4#30080019
                         unit.GetComponent<TaskComponentServer>().OnGMGetTask(int.Parse(commands[1]));
 						break;

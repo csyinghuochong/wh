@@ -166,7 +166,7 @@ namespace ET
             self.CheckSkillUseMP(unit);
 
             //self.CheckHuiXue();
-            self.TestCouXue();
+            //self.TestCouXue();
             //self.CheckActGailvTime(unit);
         }
 
