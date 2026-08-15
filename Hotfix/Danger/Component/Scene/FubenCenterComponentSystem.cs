@@ -91,10 +91,6 @@ namespace ET
             {
                 sceneid = BattleHelper.GetSceneIdByType(MapTypeEnum.RunRace);
             }
-            if (functionId == 1059)
-            {
-                sceneid = BattleHelper.GetSceneIdByType(MapTypeEnum.Demon);
-            }
             if (sceneid == 0)
             {
                 return 0;
@@ -121,10 +117,6 @@ namespace ET
                 case MapTypeEnum.RunRace:
                     RunRaceDungeonComponent runRaceDungeon = fubnescene.AddComponent<RunRaceDungeonComponent>();
                     runRaceDungeon.OnBegin();
-                    break;
-                case MapTypeEnum.Demon:
-                    DemonDungeonComponent demonDungeon = fubnescene.AddComponent<DemonDungeonComponent>();
-                    demonDungeon.OnBegin();
                     break;
                 default:
                     break;

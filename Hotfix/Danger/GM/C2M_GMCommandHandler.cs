@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace ET
 {
+
+    //1#3#10001#1  添加道具id(10001)自动使用领悟生活技能          3#1  制造id(1)
+
     [ActorMessageHandler]
     public class C2M_GMCommandHandler : AMActorLocationHandler<Unit, C2M_GMCommandRequest>
     {

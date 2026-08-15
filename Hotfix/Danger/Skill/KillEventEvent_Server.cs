@@ -208,9 +208,6 @@ namespace ET
                 case MapTypeEnum.TowerOfSeal:
                     domainScene.GetComponent<TowerOfSealComponent>().OnKillEvent(defendUnit);
                     break;
-                case MapTypeEnum.Demon:
-                    domainScene.GetComponent<DemonDungeonComponent>().OnKillEvent(defendUnit, mainAttack).Coroutine();
-                    break;
                 default:
                     break;
             }

@@ -800,9 +800,6 @@ namespace ET
 		[ProtoMember(24)]
 		public string UnionName { get; set; }
 
-		[ProtoMember(25)]
-		public string DemonName { get; set; }
-
 		[ProtoMember(26)]
 		public List<int> FashionEquipList = new List<int>();
 
@@ -4278,76 +4275,6 @@ namespace ET
 	[Message(OuterOpcode.M2C_ChangeOccTwoResponse)]
 	[ProtoContract]
 	public partial class M2C_ChangeOccTwoResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-//获取商品列表（Type1 2/3 个人随机货架在 Map；Type9 全服经 M2A_GoldShopList 到 Activity）
-	[ResponseType(nameof(M2C_ShopListResponse))]
-	[Message(OuterOpcode.C2M_ShopListRequest)]
-	[ProtoContract]
-	public partial class C2M_ShopListRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ShopId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ShopListResponse)]
-	[ProtoContract]
-	public partial class M2C_ShopListResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_ShopBuyResponse))]
-//商店购买
-	[Message(OuterOpcode.C2M_ShopBuyRequest)]
-	[ProtoContract]
-	public partial class C2M_ShopBuyRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int ShopId { get; set; }
-
-		[ProtoMember(2)]
-		public int ShopGoodsID { get; set; }
-
-		[ProtoMember(3)]
-		public int BuyNumber { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ShopBuyResponse)]
-	[ProtoContract]
-	public partial class M2C_ShopBuyResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -12394,15 +12321,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_RankDemonMessage)]
-	[ProtoContract]
-	public partial class M2C_RankDemonMessage: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public List<RankingInfo> RankList = new List<RankingInfo>();
-
-	}
-
 	[Message(OuterOpcode.M2C_UnitNumericListUpdate)]
 	[ProtoContract]
 	public partial class M2C_UnitNumericListUpdate: Object, IActorMessage
@@ -16197,4 +16115,76 @@ namespace ET
 	}
 
 //背包  end####################################################
+//商店begin####################################################
+//获取商品列表（Type1 2/3 个人随机货架在 Map；Type9 全服经 M2A_GoldShopList 到 Activity）
+	[ResponseType(nameof(M2C_ShopListResponse))]
+	[Message(OuterOpcode.C2M_ShopListRequest)]
+	[ProtoContract]
+	public partial class C2M_ShopListRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ShopId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ShopListResponse)]
+	[ProtoContract]
+	public partial class M2C_ShopListResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
+
+	}
+
+	[ResponseType(nameof(M2C_ShopBuyResponse))]
+//商店购买
+	[Message(OuterOpcode.C2M_ShopBuyRequest)]
+	[ProtoContract]
+	public partial class C2M_ShopBuyRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int ShopId { get; set; }
+
+		[ProtoMember(2)]
+		public int ShopGoodsID { get; set; }
+
+		[ProtoMember(3)]
+		public int BuyNumber { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ShopBuyResponse)]
+	[ProtoContract]
+	public partial class M2C_ShopBuyResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+//商店  end####################################################
 }

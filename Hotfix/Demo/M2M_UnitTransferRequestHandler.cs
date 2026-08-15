@@ -73,10 +73,6 @@ namespace ET
                 //客户端收到创建Unit之后会请求数据。 不用通知
                 switch (request.SceneType)
 				{
-					case (int)MapTypeEnum.CellDungeon:
-						MapComponent mapComponent = scene.GetComponent<MapComponent>();
-												
-						break;
 					case (int)MapTypeEnum.PetMing:
 					case (int)MapTypeEnum.PetDungeon:
 					case (int)MapTypeEnum.PetTianTi:
@@ -287,20 +283,6 @@ namespace ET
                         unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
 
                         unit.DomainScene().GetComponent<RunRaceDungeonComponent>().OnEnter(unit);
-                        break;
-					case MapTypeEnum.Demon:
-                        unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
-                        ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-                        unit.Position = ldScene.GetBornPos();
-                        unit.Rotation = Quaternion.identity;
-
-                        unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, 0, false);
-                        // 通知客户端创建My Unit
-                        m2CCreateUnits = new M2C_CreateMyUnit();
-                        m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-                        MessageHelper.SendToClient(unit, m2CCreateUnits);
-                        // 加入aoi
-                        unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
                         break;
                     case MapTypeEnum.OneChallenge:
                         unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);

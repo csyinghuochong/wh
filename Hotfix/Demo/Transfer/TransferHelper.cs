@@ -57,8 +57,7 @@ namespace ET
                     case MapTypeEnum.MainCityScene:
                         await TransferHelper.MainCityTransfer(unit);
                         break;
-                    case (int)MapTypeEnum.CellDungeon:
-                        break;
+                 
                     //宠物闯关
                     case (int)MapTypeEnum.PetDungeon:
                         int petfubenid = int.Parse(request.paramInfo);
@@ -314,7 +313,6 @@ namespace ET
                         await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.Scene_Type, request.SceneId, 0, "0");
                         break;
                     case MapTypeEnum.RunRace:
-                    case MapTypeEnum.Demon:
                         f2M_YeWaiSceneIdResponse = (F2M_YeWaiSceneIdResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetFubenCenterId(unit), new M2F_YeWaiSceneIdRequest() { SceneId = request.SceneId,UnitId = unit.Id  });
                         if (f2M_YeWaiSceneIdResponse.FubenInstanceId == 0)

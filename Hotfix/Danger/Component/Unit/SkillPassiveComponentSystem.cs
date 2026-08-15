@@ -71,7 +71,7 @@ namespace ET
             }
             if (unit.Type == UnitType.Player)
             {
-                if (unit.SceneType == MapTypeEnum.RunRace || unit.SceneType == MapTypeEnum.Demon)
+                if (unit.SceneType == MapTypeEnum.RunRace)
                 {
                     return;
                 }
