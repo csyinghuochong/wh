@@ -20,9 +20,6 @@ namespace ET
 
         public List<int> ZhanQuReceiveIds = new List<int>();
 
-        public ActivityV1Info ActivityV1Info = new ActivityV1Info();
-        
-        
         /*
         public const int V1TotalPoints = 3198;                               //活动周期累计积分
         public const int V1PointsChouKaIndex = 3199;

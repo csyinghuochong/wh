@@ -34,7 +34,6 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             numericComponent.Set((int)NumericType.Now_Dead, 0, false);
             numericComponent.Set((int)NumericType.Now_Damage, 0, false);
-            numericComponent.Set((int)NumericType.Now_Stall, 0, false);
             numericComponent.Set((int)NumericType.TeamId, 0, false);
             numericComponent.Set((int)NumericType.HP_Current_8, numericComponent.GetAsLong((int)NumericType.HP_Max_10), false);
             numericComponent.Set((int)NumericType.Now_Weapon, unit.GetComponent<BagComponentServer>().GetWuqiItemId(), false);

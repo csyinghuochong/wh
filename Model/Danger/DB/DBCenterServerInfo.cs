@@ -11,12 +11,10 @@ namespace ET
          
         public int WeeklyIndex;  //0 1 2 3 
 
-        public List<int> V1ActivityList = new List<int>();  
 
         public List<long> GmWhiteList = new List<long>();
 
         public List<int> RechageDic = new List<int>();
-
 
         /// <summary>
         /// 设备黑名单

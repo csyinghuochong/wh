@@ -465,46 +465,6 @@ namespace ET
                 self.CreateRobot(openServerDay).Coroutine();
             }
 
-            if (ActivityV1Config.GuessRewardList.TryGetValue(hour, out string guessReward))
-            {
-                int guessIndex = RandomHelper.RandomNumber(0, ActivityV1Config.GuessNumber);
-                List<long> playerIds = null;
-                self.DBDayActivityInfo.GuessPlayerList.TryGetValue(guessIndex, out playerIds);
-                if (playerIds == null)
-                {
-                    playerIds = new List<long>();
-                }
-
-                List<BagInfo> itemList = new List<BagInfo>();
-                string[] rewardItem = guessReward.Split('@');
-                for (int i = 0; i < rewardItem.Length; i++)
-                {
-                    string[] itemInfo = rewardItem[i].Split(';');
-                    itemList.Add(new BagInfo() { ItemID = int.Parse(itemInfo[0]), ItemNum = int.Parse(itemInfo[1]) });
-                }
-                long mailServerId = DBHelper.GetMailServerId(self.DomainZone());
-                for (int i = 0; i < playerIds.Count; i++)
-                {
-                    Log.Warning($"发放竞猜奖励: {self.DomainZone()}  {guessIndex} {playerIds[i]}");
-
-                    //MailInfo mailInfo = new MailInfo();
-                    //mailInfo.Status = 0;
-                    //mailInfo.Title = "竞猜奖励";
-                    //mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    //mailInfo.ItemList.AddRange(itemList);
-                }
-
-                if (hour == 0)
-                {
-                    self.DBDayActivityInfo.GuessRewardList.Clear();
-                    self.DBDayActivityInfo.OpenGuessIds.Clear();
-                }
-                self.DBDayActivityInfo.GuessRewardList[hour] = playerIds;
-                self.DBDayActivityInfo.OpenGuessIds.Add(guessIndex);
-
-                self.DBDayActivityInfo.GuessPlayerList.Clear();
-            }
-
             if (hour == 0 && dayOfWeek == DayOfWeek.Monday)
             {
                 Console.WriteLine($"限时活动清空");

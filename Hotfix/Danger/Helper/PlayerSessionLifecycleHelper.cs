@@ -67,16 +67,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            long stallId = numericComponent.GetAsLong(NumericType.Now_Stall);
-            if (stallId > 0)
-            {
-                Unit unitstall = unit.GetParent<UnitComponent>().Get(stallId);
-                if (unitstall != null)
-                {
-                    unitstall.AddComponent<DeathTimeComponent, long>(TimeHelper.Hour * 6);
-                }
-            }
-
+           
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
             string oaid = dataCollationComponent.OAID;
             string lastgametime = TimeHelper.DateTimeNow().ToString();

@@ -36,30 +36,17 @@ namespace ET
             response.TimerChouKaReceiveIndex = activityComponentServer.TimerChouKaReceiveIndex;
             response.LastTimerChouKaPassTime = activityComponentServer.LastTimerChouKaPassTime;
 
-            ActivityV1Info activityV1Info = activityComponentServer.ActivityV1Info;
             long servertime = TimeHelper.ServerNow();
-            if (servertime - activityV1Info.OrderLastFefreshTime >= ActivityV1Config.ActivityOrderRefreshTime)
-            {
-                activityV1Info.OrderLastFefreshTime = TimeHelper.ServerNow();
-                activityV1Info.OrderId  = ActivityV1Config.GenerateActivityOrderId();
-            }
-
+          
             ServerInfo dBServerInfo = ConfigData.ServerInfoList[UnitZoneHelper.GetHomeZone(unit)];
-            activityV1Info.ChouKaDropId = dBServerInfo.ChouKaDropId;
-            activityV1Info.GuessIds.Clear();
-
+           
             long activitySceneid = DBHelper.GetActivityServerId(unit);
             A2M_ActivitySelfInfo r_GameStatusResponse = (A2M_ActivitySelfInfo)await ActorMessageSenderComponent.Instance.Call
                    (activitySceneid, new M2A_ActivitySelfInfo()
                    {
                         UnitId = unit.Id,   
                    });
-            activityV1Info.GuessIds = r_GameStatusResponse.GuessIds;
-            activityV1Info.LastGuessReward = r_GameStatusResponse.LastGuessReward;
-            activityV1Info.BaoShiDu = r_GameStatusResponse.BaoShiDu;
-            activityV1Info.OpenGuessIds = r_GameStatusResponse.OpenGuessIds;
-            response.ActivityV1Info = activityV1Info;
-
+        
             reply();
             await ETTask.CompletedTask;
         }

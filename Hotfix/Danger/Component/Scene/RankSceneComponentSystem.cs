@@ -248,8 +248,6 @@ namespace ET
                 self.DBServerInfo.ServerInfo.ExChangeGold = duihuan_nowGold;
                 Log.Info("更新货币兑换值:" + self.DBServerInfo.ServerInfo.ExChangeGold);
             }
-
-            self.DBServerInfo.ServerInfo.ChouKaDropId = ActivityV1Config.ChouKaDropId[RandomHelper.RandomNumber(0, ActivityV1Config.ChouKaDropId.Count)];
         }
 
         public static async ETTask InitDBRankInfo(this RankSceneComponent self)

@@ -163,8 +163,6 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
            
-            self.CheckSkillUseMP(unit);
-
             //self.CheckHuiXue();
             //self.TestCouXue();
             //self.CheckActGailvTime(unit);
@@ -218,27 +216,6 @@ namespace ET
             //}
         }
 
-        public static void CheckSkillUseMP(this SkillPassiveComponent self, Unit unit)
-        {
-            if (unit.Type == UnitType.Player && (unit.ConfigId == 3 || unit.ConfigId == 5))
-            {
-                NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-                int nowMp = numericComponent.GetAsInt(NumericType.SkillUseMP);
-                int maxMp = numericComponent.GetAsInt(NumericType.Numeric_Error);
-                float addMp = numericComponent.GetAsFloat(NumericType.Numeric_Error);
-                int equipIndex = numericComponent.GetAsInt(NumericType.EquipIndex);
-                //equipIndex 0弓   1剑
-                int huifuspeed = equipIndex == 0 ? 1 : 2;
-                if (addMp == 0f && nowMp < maxMp)
-                {
-                    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.SkillUseMP, 10 * huifuspeed, 0);
-                }
-                if (addMp > 0f && nowMp < maxMp)
-                {
-                    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.SkillUseMP, 10 * huifuspeed, 0);
-                }
-            }
-        }
 
         public static void AddPassiveSkill(this SkillPassiveComponent self, int skillId, Dictionary<int, int> magicskills = null)
         {
