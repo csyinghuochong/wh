@@ -88,6 +88,9 @@ namespace ET
 		/// <summary>中文</summary>
 		[ProtoMember(3)]
 		public string CN { get; set; }
+		/// <summary>英文</summary>
+		[ProtoMember(4)]
+		public string EN { get; set; }
 
 	}
 }

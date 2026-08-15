@@ -555,14 +555,14 @@ namespace ET
             //被动技能触发冷却CD
             if (!zhudong && skillCDItem != null && serverNow < skillCDItem.CDPassive)
             {
-                return ErrorCode.Prompt_Battle_Skill_CD;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Skill_CD);
             }
 
             //主动技能触发冷却CD
             if (zhudong && skillCDItem != null && serverNow < skillCDItem.CDEndTime)
             {
                 //Console.WriteLine($"check cd {nowSkillID}   {skillCDItem.CDEndTime}  {serverNow}   false");
-                return ErrorCode.Prompt_Battle_Skill_CD;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Skill_CD);
             }
 
             //if (skillCDItem == null)
@@ -594,7 +594,7 @@ namespace ET
                 //判定是否再公共冷却时间
                 if (serverNow < self.SkillPublicCDTime)
                 {
-                    return ErrorCode.Prompt_Battle_Skill_CD;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Skill_CD);
                 }
             }
             return ErrorCode.ERR_Success;
