@@ -130,7 +130,6 @@ namespace ET
                 case SceneType.FubenWork:
                     
                     scene.AddComponent<HappySceneComponent>();
-                    scene.AddComponent<BattleSceneComponent>();
                     scene.AddComponent<ArenaSceneComponent>();
                     scene.AddComponent<SoloSceneComponent>();
                     break;

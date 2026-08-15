@@ -28,24 +28,26 @@ namespace ET
                     TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
                     break;
                 case MapTypeEnum.Battle:
-                    //动态创建副本
-                    int sceneId = request.SceneId;  
-                    fubenid = IdGenerater.Instance.GenerateId();
-                    fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                    fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, scene.DomainZone(), "Battle" + fubenid.ToString(), SceneType.Map);
-                    //Console.WriteLine($"M2LocalDungeon_Enter: {fubnescene.Name}   {scene.DomainZone()}");
-                    fubnescene.AddComponent<BattleDungeonComponent>().SendReward = false;
-                    fubnescene.GetComponent<BattleDungeonComponent>().BattleOpenTime = TimeHelper.ServerNow();
-                    MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-                    mapComponent.SetMapInfo((int)MapTypeEnum.Battle, sceneId, 0);
-                    mapComponent.NavMeshId = LDSceneCategory.Instance.Get(sceneId).GetNavMeshId();
-                    Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
-                    fubnescene.AddComponent<YeWaiRefreshComponent>().SceneId = sceneId;
-                    
-                    //FubenHelp.CreateMonsterList(fubnescene, LDSceneCategory.Instance.Get(sceneId).CreateMonsterPosi);
-                    response.FubenId = fubenid;
-                    response.FubenInstanceId = fubenInstanceId;
-                    TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
+                    if (!LDSceneCategory.Instance.Contain(request.SceneId))
+                    {
+                        response.Error = ErrorCode.ERR_NotFindLevel;
+                        break;
+                    }
+                    LDScene battleSceneConfig = LDSceneCategory.Instance.Get(request.SceneId);
+                    long battleFubenId = IdGenerater.Instance.GenerateId();
+                    long battleFubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
+                    Scene battleScene = SceneFactory.Create(Game.Scene, battleFubenId, battleFubenInstanceId, scene.DomainZone(), "Battle" + battleFubenId.ToString(), SceneType.Map);
+                    BattleDungeonComponent battleDungeon = battleScene.AddComponent<BattleDungeonComponent>();
+                    battleDungeon.BattleOpenTime = TimeHelper.ServerNow();
+                    MapComponent battleMap = battleScene.GetComponent<MapComponent>();
+                    battleMap.SetMapInfo(MapTypeEnum.Battle, request.SceneId, 0);
+                    battleMap.NavMeshId = battleSceneConfig.GetNavMeshId();
+                    Game.Scene.GetComponent<RecastPathComponent>().Update(battleMap.NavMeshId);
+                    response.FubenId = battleFubenId;
+                    response.FubenInstanceId = battleFubenInstanceId;
+                    TransferHelper.NoticeFubenCenter(battleScene, 1).Coroutine();
+                    break;
+               default:
                     break;
             }
 

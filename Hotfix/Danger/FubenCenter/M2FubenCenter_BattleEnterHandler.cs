@@ -7,30 +7,22 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, M2FubenCenter_BattleEnterRequest request, FubenCenter2M_BattleEnterResponse response, Action reply)
         {
-
-            KeyValuePairInt keyValuePairInt  = scene.GetComponent<BattleSceneComponent>().GetBattleInstanceId(request.UserID, request.SceneId);
-            if (keyValuePairInt != null)
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Battle, scene.DomainZone()))
             {
-                response.FubenInstanceId = keyValuePairInt.Value;
-                response.Camp = keyValuePairInt.KeyId;
-                reply();
-            }
-            else
-            {
-                using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Battle, scene.DomainZone()))
+                FubenCenterComponent fubenCenter = scene.GetComponent<FubenCenterComponent>();
+                KeyValuePairInt keyValuePairInt = fubenCenter.GetBattleInstanceId(request.UserID, request.SceneId);
+                if (keyValuePairInt == null)
                 {
-                    
-                    ///随机选择一个 fubenwork 创建副本。 
-                    keyValuePairInt = await scene.GetComponent<BattleSceneComponent>().GenerateBattleInstanceId(request.UserID, request.SceneId);
-                    if (keyValuePairInt != null)
-                    {
-                        response.FubenInstanceId = keyValuePairInt.Value;
-                        response.Camp = keyValuePairInt.KeyId;
-                    }
+                    keyValuePairInt = await fubenCenter.GenerateBattleInstanceId(request.UserID, request.SceneId);
                 }
-                reply();
+                if (keyValuePairInt != null)
+                {
+                    response.FubenInstanceId = keyValuePairInt.Value;
+                    response.Camp = keyValuePairInt.KeyId;
+                }
             }
-           
+
+            reply();
             await ETTask.CompletedTask;
         }
     }

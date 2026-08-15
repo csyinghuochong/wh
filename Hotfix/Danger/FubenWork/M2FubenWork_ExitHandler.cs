@@ -22,6 +22,10 @@ namespace ET
             {
                 case MapTypeEnum.Battle:
                     Scene fubenscene = Game.Scene.Get(request.FubenId);
+                    if (fubenscene == null)
+                    {
+                        break;
+                    }
                     CloseBattleFubenScene(fubenscene, request).Coroutine();
                     break;
             }

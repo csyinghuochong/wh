@@ -212,7 +212,7 @@ namespace ET
 						//int todayCamp = numericComponent.GetAsInt(NumericType.Numeric_Error);
 						//todayCamp = todayCamp > 0 ? todayCamp : int.Parse(request.ParamInfo);
 						int todayCamp = int.Parse(request.ParamInfo);
-						numericComponent.Set(NumericType.BattleCamp, todayCamp); //1 2
+						numericComponent.Set(NumericType.BattleCamp, todayCamp, false); //1 2
 						//numericComponent.Set(NumericType.Numeric_Error, todayCamp); //1 2
 						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
 						ldScene = LDSceneCategory.Instance.Get(request.ChapterId);

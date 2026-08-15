@@ -236,7 +236,12 @@ namespace ET
                         FubenCenterComponent fubenCenter = scene.GetComponent<FubenCenterComponent>();
                         foreach (var item in fubenCenter.Children)
                         {
-                            item.Value.GetComponent<YeWaiRefreshComponent>().OnZeroClockUpdate(request.OpenDay);
+                            YeWaiRefreshComponent yeWaiRefresh = item.Value.GetComponent<YeWaiRefreshComponent>();
+                            if (yeWaiRefresh == null)
+                            {
+                                continue;
+                            }
+                            yeWaiRefresh.OnZeroClockUpdate(request.OpenDay);
                         }
                     }
                     if (request.FunctionId > 0 && request.FunctionType == 1)
@@ -254,23 +259,6 @@ namespace ET
 
                     Log.Error($"FubenCenterComponent:  {request.FunctionId}");
 
-                    if (hour == 0)
-                    {
-                        scene.GetComponent<BattleSceneComponent>().OnZeroClockUpdate();
-                    }
-                    if (request.FunctionId == 1025 && request.FunctionType == 1)
-                    {
-                        //Log.Console("OnBattleOpen");scene
-                      
-                        scene.GetComponent<FubenCenterComponent>().OnActivityOpen(request.FunctionId);  
-
-                        //scene.GetComponent<BattleSceneComponent>().OnBattleOpen();
-                    }
-                    if (request.FunctionId == 1025 && request.FunctionType == 2)
-                    {
-                        // Log.Console("OnBattleOver");
-                        //scene.GetComponent<BattleSceneComponent>().OnBattleOver().Coroutine();
-                    }
                     if (request.FunctionId == 1045 && request.FunctionType == 1)
                     {
                         //scene.GetComponent<SoloSceneComponent>().OnSoloBegin().Coroutine();

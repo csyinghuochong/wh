@@ -3,6 +3,18 @@
 namespace ET
 {
 
+    public class BattleInfo : Entity, IAwake
+    {
+        public int SceneId = 0;
+        public long FubenId = 0;
+        public int PlayerNumber = 0;
+        public long ProgressId = 0;
+        public long FubenInstanceId = 0;
+
+        public List<long> Camp1Player = new List<long>();
+        public List<long> Camp2Player = new List<long>();
+    }
+
 
     public class FubenCenterComponent : Entity, IAwake
     {
@@ -12,17 +24,11 @@ namespace ET
         public ServerInfo ServerInfo;
 
         /// <summary>
-        /// 奔跑大赛
+        /// 战场活动（？？？）。玩家↔实例↔阵营只记在 FubenCenter，中途退出按这份名单回原副本。
         /// </summary>
-        public bool RunRaceOpen = false;    
-        public Dictionary<long, List<long>> RunRacePlayerList = new Dictionary<long, List<long>>();
+        public bool BattleOpen = false;
+        public List<BattleInfo> BattleInfos = new List<BattleInfo>();
 
-        /// <summary>
-        /// 恶魔大赛
-        /// </summary>
-        public bool DemonOpen = false;
-        public Dictionary<long, List<long>> DemonPlayerList = new Dictionary<long, List<long>>();
-
-
+        
     }
 }
