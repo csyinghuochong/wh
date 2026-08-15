@@ -700,6 +700,43 @@ namespace ET
                 }
             }
 
+            List<long> autoUseKeys = null;
+            foreach (KeyValuePair<long, RewardItem> kv in rewardItemMap)
+            {
+                RewardItem checkItem = kv.Value;
+                if (checkItem.ItemType != ItemBigType.Type_Item || !LDItemCategory.Instance.Contain(checkItem.ItemID))
+                {
+                    continue;
+                }
+
+                if (LDItemCategory.Instance.Get(checkItem.ItemID).IfAutoUse != 1)
+                {
+                    continue;
+                }
+
+                autoUseKeys ??= new List<long>();
+                autoUseKeys.Add(kv.Key);
+            }
+
+            if (autoUseKeys != null)
+            {
+                for (int i = 0; i < autoUseKeys.Count; i++)
+                {
+                    RewardItem autoItem = rewardItemMap[autoUseKeys[i]];
+                    rewardItemMap.Remove(autoUseKeys[i]);
+                    int useTimes = autoItem.ItemNum > 0 ? autoItem.ItemNum : 1;
+                    for (int n = 0; n < useTimes; n++)
+                    {
+                        ItemUseHelper.UseItem(unit, autoItem.ItemID, null, null, out _);
+                    }
+
+                    if (notice)
+                    {
+                        ItemAddHelper.OnGetItem(unit, getType, autoItem.ItemType, autoItem.ItemID, autoItem.ItemNum);
+                    }
+                }
+            }
+
             List<RewardItem> rewardItems = new List<RewardItem>(rewardItemMap.Count);
             Dictionary<long, long> pileSumCache = new Dictionary<long, long>();
             Dictionary<int, int> leftCellByLoc = new Dictionary<int, int>();
@@ -728,6 +765,13 @@ namespace ET
                 }
                 if (!ItemNewHelper.CheckValiedItem(rewardItem))
                 {
+                    continue;
+                }
+
+                if (rewardItem.ItemType == ItemBigType.Type_Item
+                    && LDItemCategory.Instance.Get(rewardItem.ItemID).IfBag == 0)
+                {
+                    rewardItems.Add(rewardItem);
                     continue;
                 }
 
@@ -795,6 +839,16 @@ namespace ET
                     }
                     currencyAdds.TryGetValue(userDataType, out long currencySum);
                     currencyAdds[userDataType] = currencySum + leftNum;
+                    continue;
+                }
+
+                if (itemtype == ItemBigType.Type_Item && LDItemCategory.Instance.Get(itemID).IfBag == 0)
+                {
+                    if (notice)
+                    {
+                        ItemAddHelper.OnGetItem(unit, getType, itemtype, itemID, rewardItem.ItemNum);
+                    }
+
                     continue;
                 }
 

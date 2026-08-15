@@ -75,14 +75,6 @@ namespace ET
         //体力值
         public long PiLao;
 
-        //活力值
-        public int Vitality;
-
-        //当前生活技能类型 (这里最好用文字表示  炼金 锻造)
-        public string MakeSkill;
-
-        //生活技能熟练度
-        public int MakeShuLiandu;
 
         //宠物探险关卡
         public int PetFubenId;

@@ -352,7 +352,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            int skillNumber = 1 + numericComponent.GetAsInt(NumericType.MakeType_2) > 0 ? 1 : 0;
+          
             numericComponent.ApplyValue(NumericType.ZeroClock, 1, notice);
             // 日清列表由 RoleDailyDataComponent 统一 Clear（含 BuyStoreItems 本次限购）
             unit.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists(RoleDailyClearType.Day);
@@ -1003,24 +1003,6 @@ namespace ET
             }
         }
 
-         public static List<int> GetMakeListByType(this RoleInfoComponentServer self, int makeType)
-        {
-            List<int> makeIds =  new List<int> { };
-            if (makeType == 0)
-            { 
-                return makeIds;
-            }
-            for(int i = 0; i < self.RoleInfo.MakeList.Count; i++)
-            {
-                //LDMake equipMakeConfig = LDMakeCategory.Instance.Get(self.RoleInfo.MakeList[i]);
-                ////if (equipMakeConfig.ProficiencyType == makeType)
-                //{
-                //    makeIds.Add(self.RoleInfo.MakeList[i]);
-                //}
-            }
-            return makeIds; 
-        }
-
         public static void OnResetSeason(this RoleInfoComponentServer self, bool notice)
         {
             //self.RoleInfo.SeasonLevel = 1;
@@ -1029,28 +1011,6 @@ namespace ET
             //self.RoleInfo.OpenJingHeIds.Clear();
         }
 
-        public static void ClearMakeListByType(this RoleInfoComponentServer self, int makeType)
-        {
-            if (makeType == 0)
-            {
-                return;
-            }
-            for (int i = self.RoleInfo.MakeList.Count - 1; i >= 0; i--)
-            {
-                int makeId = self.RoleInfo.MakeList[i];
-                if (makeId == 0)
-                {
-                    self.RoleInfo.MakeList.RemoveAt(i);
-                    continue;
-                }
-
-                //LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
-                ////if (equipMakeConfig.ProficiencyType == makeType)
-                //{
-                //    self.RoleInfo.MakeList.RemoveAt(i); 
-                //}
-            }
-        }
 
         public static int GetMonsterKillNumber(this RoleInfoComponentServer self, int monsterId)
         {

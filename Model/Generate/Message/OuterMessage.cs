@@ -2713,328 +2713,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemHuiShouResponse))]
-//回收装备
-	[Message(OuterOpcode.C2M_ItemHuiShouRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemHuiShouRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public List<long> OperateBagID = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemHuiShouResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemHuiShouResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ItemMeltingResponse))]
-//装备熔炼
-	[Message(OuterOpcode.C2M_ItemMeltingRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemMeltingRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public List<long> OperateBagID = new List<long>();
-
-		[ProtoMember(3)]
-		public int MakeType { get; set; }
-
-		[ProtoMember(4)]
-		public int Plan { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemMeltingResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemMeltingResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ItemQiangHuaResponse))]
-//强化槽位
-	[Message(OuterOpcode.C2M_ItemQiangHuaRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemQiangHuaRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int WeiZhi { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemQiangHuaResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemQiangHuaResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public int QiangHuaLevel { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ItemXiLianResponse))]
-//洗练装备
-	[Message(OuterOpcode.C2M_ItemXiLianRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemXiLianRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(1)]
-		public int Times { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemXiLianResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemXiLianResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<ItemXiLianResult> ItemXiLianResults = new List<ItemXiLianResult>();
-
-	}
-
-	[ResponseType(nameof(M2C_ItemInheritResponse))]
-//装备传承
-	[Message(OuterOpcode.C2M_ItemInheritRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemInheritRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long OperateBagID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemInheritResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemInheritResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(2)]
-		public List<int> InheritSkills = new List<int>();
-
-	}
-
-	[ResponseType(nameof(M2C_ItemProtectResponse))]
-//装备锁定
-	[Message(OuterOpcode.C2M_ItemProtectRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemProtectRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(2)]
-		public bool IsProtect { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemProtectResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemProtectResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ItemInheritSelectResponse))]
-//传承确认
-	[Message(OuterOpcode.C2M_ItemInheritSelectRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemInheritSelectRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(2)]
-		public List<int> InheritSkills = new List<int>();
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemInheritSelectResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemInheritSelectResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ItemOperateResponse))]
-//穿戴装备
-	[Message(OuterOpcode.C2M_ItemOperateRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemOperateRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(3)]
-		public string OperatePar { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemOperateResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemOperateResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public string OperatePar { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ItemSellResponse))]
-//出售道具
-	[Message(OuterOpcode.C2M_ItemSellRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemSellRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(3)]
-		public int SellNum { get; set; }
-
-		[ProtoMember(4)]
-		public int LocType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemSellResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemSellResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public string OperatePar { get; set; }
-
-	}
-
-//道具[装备]更新
-	[Message(OuterOpcode.M2C_RoleBagUpdate)]
-	[ProtoContract]
-	public partial class M2C_RoleBagUpdate: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public List<BagInfo> BagInfoAdd = new List<BagInfo>();
-
-		[ProtoMember(2)]
-		public List<BagInfo> BagInfoUpdate = new List<BagInfo>();
-
-		[ProtoMember(3)]
-		public List<BagInfo> BagInfoDelete = new List<BagInfo>();
-
-	}
-
 	[ResponseType(nameof(Actor_QuitFubenResponse))]
 	[Message(OuterOpcode.Actor_QuitFubenRequest)]
 	[ProtoContract]
@@ -3242,79 +2920,6 @@ namespace ET
 
 		[ProtoMember(18)]
 		public List<int> GemIdList = new List<int>();
-
-	}
-
-//背包道具初始化
-	[ResponseType(nameof(M2C_BagGetAllItemResponse))]
-	[Message(OuterOpcode.C2M_BagGetAllItemRequest)]
-	[ProtoContract]
-	public partial class C2M_BagGetAllItemRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_BagGetAllItemResponse)]
-	[ProtoContract]
-	public partial class M2C_BagGetAllItemResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<BagInfo> BagInfos = new List<BagInfo>();
-
-		[ProtoMember(2)]
-		public List<int> AdditionalCellNum = new List<int>();
-
-		[ProtoMember(6)]
-		public List<int> FashionActiveIds = new List<int>();
-
-		[ProtoMember(7)]
-		public List<int> FashionEquipList = new List<int>();
-
-	}
-
-//背包排序
-	[ResponseType(nameof(M2C_BagSortResponse))]
-	[Message(OuterOpcode.C2M_BagSortRequest)]
-	[ProtoContract]
-	public partial class C2M_BagSortRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ItemLocType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_BagSortResponse)]
-	[ProtoContract]
-	public partial class M2C_BagSortResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
 
 	}
 
@@ -9048,43 +8653,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemOperateGemResponse))]
-	[Message(OuterOpcode.C2M_ItemOperateGemRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemOperateGemRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(3)]
-		public string OperatePar { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemOperateGemResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemOperateGemResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public string OperatePar { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_PetDuiHuanResponse))]
 	[Message(OuterOpcode.C2M_PetDuiHuanRequest)]
 	[ProtoContract]
@@ -10062,43 +9630,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemSplitResponse))]
-	[Message(OuterOpcode.C2M_ItemSplitRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemSplitRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(3)]
-		public string OperatePar { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemSplitResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemSplitResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public string OperatePar { get; set; }
-
-	}
-
 //副本击杀boss
 	[Message(OuterOpcode.M2C_TeamDungeonKillBossMessage)]
 	[ProtoContract]
@@ -10326,40 +9857,6 @@ namespace ET
 	{
 		[ProtoMember(1)]
 		public SkillSetInfo SkillSetInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_BagBuyCellResponse))]
-	[Message(OuterOpcode.C2M_BagBuyCellRequest)]
-	[ProtoContract]
-	public partial class C2M_BagBuyCellRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_BagBuyCellResponse)]
-	[ProtoContract]
-	public partial class M2C_BagBuyCellResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(2)]
-		public List<int> AdditionalCellNum = new List<int>();
-
-		[ProtoMember(3)]
-		public string GetItem { get; set; }
 
 	}
 
@@ -10809,38 +10306,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public List<int> PlanOpenList = new List<int>();
-
-	}
-
-	[ResponseType(nameof(M2C_ItemOneSellResponse))]
-//一键盘出售
-	[Message(OuterOpcode.C2M_ItemOneSellRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemOneSellRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public List<long> BagInfoIds = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemOneSellResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemOneSellResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
 
 	}
 
@@ -11815,41 +11280,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemDestoryResponse))]
-//销毁装备
-	[Message(OuterOpcode.C2M_ItemDestoryRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemDestoryRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemDestoryResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemDestoryResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_ItemFumoUseResponse))]
 //附魔使用
 	[Message(OuterOpcode.C2M_ItemFumoUseRequest)]
@@ -12396,67 +11826,6 @@ namespace ET
 	[Message(OuterOpcode.M2C_TowerOfSealNextResponse)]
 	[ProtoContract]
 	public partial class M2C_TowerOfSealNextResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-// 装备增幅
-	[ResponseType(nameof(M2C_EquipmentIncreaseResponse))]
-	[Message(OuterOpcode.C2M_EquipmentIncreaseRequest)]
-	[ProtoContract]
-	public partial class C2M_EquipmentIncreaseRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public BagInfo EquipmentBagInfo { get; set; }
-
-		[ProtoMember(2)]
-		public BagInfo ReelBagInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_EquipmentIncreaseResponse)]
-	[ProtoContract]
-	public partial class M2C_EquipmentIncreaseResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-//一键取出
-	[ResponseType(nameof(M2C_TakeOutAllResponse))]
-	[Message(OuterOpcode.C2M_TakeOutAllRequest)]
-	[ProtoContract]
-	public partial class C2M_TakeOutAllRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int HorseId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TakeOutAllResponse)]
-	[ProtoContract]
-	public partial class M2C_TakeOutAllResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13078,116 +12447,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ItemOperateMagicResponse))]
-//魔能装备特殊处理
-	[Message(OuterOpcode.C2M_ItemOperateMagicRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemOperateMagicRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(3)]
-		public string OperatePar { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemOperateMagicResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemOperateMagicResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public string OperatePar { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_EquipWearResponse))]
-	[Message(OuterOpcode.C2M_EquipWearRequest)]
-	[ProtoContract]
-	public partial class C2M_EquipWearRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(3)]
-		public string OperatePar { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_EquipWearResponse)]
-	[ProtoContract]
-	public partial class M2C_EquipWearResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public string OperatePar { get; set; }
-
-	}
-
-//装备鉴定
-	[ResponseType(nameof(M2C_EquipAppraiseResponse))]
-	[Message(OuterOpcode.C2M_EquipAppraiseRequest)]
-	[ProtoContract]
-	public partial class C2M_EquipAppraiseRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateItemID { get; set; }
-
-		[ProtoMember(3)]
-		public long CostItemId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_EquipAppraiseResponse)]
-	[ProtoContract]
-	public partial class M2C_EquipAppraiseResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public string OperatePar { get; set; }
 
 	}
 
@@ -14153,40 +13412,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_JingHeWearResponse))]
-	[Message(OuterOpcode.C2M_JingHeWearRequest)]
-	[ProtoContract]
-	public partial class C2M_JingHeWearRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(3)]
-		public string OperatePar { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JingHeWearResponse)]
-	[ProtoContract]
-	public partial class M2C_JingHeWearResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_TaskOnLoginResponse))]
 	[Message(OuterOpcode.C2M_TaskOnLoginRequest)]
 	[ProtoContract]
@@ -14783,62 +14008,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_WelfareDraw2Response))]
-	[Message(OuterOpcode.C2M_WelfareDraw2Request)]
-	[ProtoContract]
-	public partial class C2M_WelfareDraw2Request: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_WelfareDraw2Response)]
-	[ProtoContract]
-	public partial class M2C_WelfareDraw2Response: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_WelfareDraw2RewardResponse))]
-	[Message(OuterOpcode.C2M_WelfareDraw2RewardRequest)]
-	[ProtoContract]
-	public partial class C2M_WelfareDraw2RewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_WelfareDraw2RewardResponse)]
-	[ProtoContract]
-	public partial class M2C_WelfareDraw2RewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 
@@ -16283,5 +15452,749 @@ namespace ET
 
 	}
 
-//合成 end####################################################
+//合成  end####################################################
+//制造begin####################################################
+	[ResponseType(nameof(M2C_SkillMakeResponse))]
+	[Message(OuterOpcode.C2M_SkillMakeRequest)]
+	[ProtoContract]
+	public partial class C2M_SkillMakeRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillMakeId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillMakeResponse)]
+	[ProtoContract]
+	public partial class M2C_SkillMakeResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//制造  end####################################################
+//背包begin####################################################
+//背包道具初始化
+	[ResponseType(nameof(M2C_BagGetAllItemResponse))]
+	[Message(OuterOpcode.C2M_BagGetAllItemRequest)]
+	[ProtoContract]
+	public partial class C2M_BagGetAllItemRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_BagGetAllItemResponse)]
+	[ProtoContract]
+	public partial class M2C_BagGetAllItemResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public List<BagInfo> BagInfos = new List<BagInfo>();
+
+		[ProtoMember(2)]
+		public List<int> AdditionalCellNum = new List<int>();
+
+		[ProtoMember(6)]
+		public List<int> FashionActiveIds = new List<int>();
+
+		[ProtoMember(7)]
+		public List<int> FashionEquipList = new List<int>();
+
+	}
+
+//背包排序
+	[ResponseType(nameof(M2C_BagSortResponse))]
+	[Message(OuterOpcode.C2M_BagSortRequest)]
+	[ProtoContract]
+	public partial class C2M_BagSortRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ItemLocType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_BagSortResponse)]
+	[ProtoContract]
+	public partial class M2C_BagSortResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_BagBuyCellResponse))]
+	[Message(OuterOpcode.C2M_BagBuyCellRequest)]
+	[ProtoContract]
+	public partial class C2M_BagBuyCellRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_BagBuyCellResponse)]
+	[ProtoContract]
+	public partial class M2C_BagBuyCellResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(2)]
+		public List<int> AdditionalCellNum = new List<int>();
+
+		[ProtoMember(3)]
+		public string GetItem { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemSellResponse))]
+//出售道具
+	[Message(OuterOpcode.C2M_ItemSellRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemSellRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(2)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(3)]
+		public int SellNum { get; set; }
+
+		[ProtoMember(4)]
+		public int LocType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemSellResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemSellResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public string OperatePar { get; set; }
+
+	}
+
+//道具[装备]更新
+	[Message(OuterOpcode.M2C_RoleBagUpdate)]
+	[ProtoContract]
+	public partial class M2C_RoleBagUpdate: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public List<BagInfo> BagInfoAdd = new List<BagInfo>();
+
+		[ProtoMember(2)]
+		public List<BagInfo> BagInfoUpdate = new List<BagInfo>();
+
+		[ProtoMember(3)]
+		public List<BagInfo> BagInfoDelete = new List<BagInfo>();
+
+	}
+
+	[ResponseType(nameof(M2C_EquipWearResponse))]
+	[Message(OuterOpcode.C2M_EquipWearRequest)]
+	[ProtoContract]
+	public partial class C2M_EquipWearRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(2)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(3)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_EquipWearResponse)]
+	[ProtoContract]
+	public partial class M2C_EquipWearResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public string OperatePar { get; set; }
+
+	}
+
+//装备鉴定
+	[ResponseType(nameof(M2C_EquipAppraiseResponse))]
+	[Message(OuterOpcode.C2M_EquipAppraiseRequest)]
+	[ProtoContract]
+	public partial class C2M_EquipAppraiseRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public long OperateItemID { get; set; }
+
+		[ProtoMember(3)]
+		public long CostItemId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_EquipAppraiseResponse)]
+	[ProtoContract]
+	public partial class M2C_EquipAppraiseResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemHuiShouResponse))]
+//回收装备
+	[Message(OuterOpcode.C2M_ItemHuiShouRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemHuiShouRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public List<long> OperateBagID = new List<long>();
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemHuiShouResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemHuiShouResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemMeltingResponse))]
+//装备熔炼
+	[Message(OuterOpcode.C2M_ItemMeltingRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemMeltingRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public List<long> OperateBagID = new List<long>();
+
+		[ProtoMember(3)]
+		public int MakeType { get; set; }
+
+		[ProtoMember(4)]
+		public int Plan { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemMeltingResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemMeltingResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemQiangHuaResponse))]
+//强化槽位
+	[Message(OuterOpcode.C2M_ItemQiangHuaRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemQiangHuaRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int WeiZhi { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemQiangHuaResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemQiangHuaResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public int QiangHuaLevel { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemXiLianResponse))]
+//洗练装备
+	[Message(OuterOpcode.C2M_ItemXiLianRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemXiLianRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(1)]
+		public int Times { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemXiLianResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemXiLianResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public List<ItemXiLianResult> ItemXiLianResults = new List<ItemXiLianResult>();
+
+	}
+
+	[ResponseType(nameof(M2C_ItemInheritResponse))]
+//装备传承
+	[Message(OuterOpcode.C2M_ItemInheritRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemInheritRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long OperateBagID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemInheritResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemInheritResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(2)]
+		public List<int> InheritSkills = new List<int>();
+
+	}
+
+	[ResponseType(nameof(M2C_ItemProtectResponse))]
+//装备锁定
+	[Message(OuterOpcode.C2M_ItemProtectRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemProtectRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(2)]
+		public bool IsProtect { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemProtectResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemProtectResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemInheritSelectResponse))]
+//传承确认
+	[Message(OuterOpcode.C2M_ItemInheritSelectRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemInheritSelectRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(2)]
+		public List<int> InheritSkills = new List<int>();
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemInheritSelectResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemInheritSelectResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemOperateResponse))]
+//穿戴装备
+	[Message(OuterOpcode.C2M_ItemOperateRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemOperateRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(2)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(3)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemOperateResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemOperateResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemUseResponse))]
+//使用道具
+	[Message(OuterOpcode.C2M_ItemUseRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemUseRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(2)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemUseResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemUseResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemOperateGemResponse))]
+	[Message(OuterOpcode.C2M_ItemOperateGemRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemOperateGemRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(2)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(3)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemOperateGemResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemOperateGemResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemSplitResponse))]
+	[Message(OuterOpcode.C2M_ItemSplitRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemSplitRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(2)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(3)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemSplitResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemSplitResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public string OperatePar { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemDestoryResponse))]
+//销毁装备
+	[Message(OuterOpcode.C2M_ItemDestoryRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemDestoryRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(2)]
+		public long OperateBagID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemDestoryResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemDestoryResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//一键取出
+	[ResponseType(nameof(M2C_TakeOutAllResponse))]
+	[Message(OuterOpcode.C2M_TakeOutAllRequest)]
+	[ProtoContract]
+	public partial class C2M_TakeOutAllRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int HorseId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TakeOutAllResponse)]
+	[ProtoContract]
+	public partial class M2C_TakeOutAllResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemOneSellResponse))]
+//一键盘出售
+	[Message(OuterOpcode.C2M_ItemOneSellRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemOneSellRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(2)]
+		public List<long> BagInfoIds = new List<long>();
+
+	}
+
+	[Message(OuterOpcode.M2C_ItemOneSellResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemOneSellResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+//背包  end####################################################
 }

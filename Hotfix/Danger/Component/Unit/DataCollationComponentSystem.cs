@@ -417,11 +417,6 @@ namespace ET
 
             self.PiLao = roleInfoComponentServer.RoleInfo.PiLao;
 
-            int makeType = numericComponent.GetAsInt( NumericType.MakeType_1 );
-            self.MakeSkill = MakeHelper.GetMakeTypeName( makeType );
-
-            self.MakeShuLiandu = numericComponent.GetAsInt( NumericType.MakeShuLianDu_1 );
-
             self.PetFubenId = petComponentServer.GetPassMaxFubenId();
 
             self.TrialFubenId = numericComponent.GetAsInt( NumericType.TrialDungeonId );

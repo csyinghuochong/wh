@@ -77,7 +77,7 @@ namespace ET
                     skillSetComponentServer.AsyncUpdateSkillSet().Coroutine();
                     break;
                 case 3:
-                    numeric.ApplyValue(NumericType.SkillMakePlan2, 1);
+                   
                     break;
                 case 4:
                     //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.GemWarehouseOpen, 1);

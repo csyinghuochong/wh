@@ -37,12 +37,7 @@ namespace ET
                         }
 					}
 				}
-				if (request.GameSettingInfos[i].KeyId == (int)GameSettingEnum.FirstUnionName)
-				{
-					//1显示家族称号 2其他称号
-                    numericComponent.ApplyValue(NumericType.FirstUnionName, int.Parse(request.GameSettingInfos[i].Value));
-                }
-
+				
 				if (settingIndexMap.TryGetValue(request.GameSettingInfos[i].KeyId, out int settingIndex))
 				{
 					roleInfo.GameSettingInfos[settingIndex].Value = request.GameSettingInfos[i].Value;
