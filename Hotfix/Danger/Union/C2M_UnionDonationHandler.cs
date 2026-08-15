@@ -21,13 +21,6 @@ namespace ET
             {
                 if (request.Type == 0) // 金币捐献
                 {
-                    if (numericComponent.GetAsInt(NumericType.UnionDonationNumber) >= 5)
-                    {
-                        response.Error = ErrorCode.ERR_TimesIsNot;
-                        reply();
-                        return;
-                    }
-
                     long selfgold = roleInfo.Gold;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit),
@@ -43,8 +36,7 @@ namespace ET
 
                     int unionID = int.Parse(responseUnionEnter.Par);
                     LDUnion ldUnionCof = LDUnionCategory.Instance.Get(unionID);
-                    numericComponent.ApplyChange(unit, NumericType.UnionDonationNumber, 1, 0);
-                  
+
                     /*roleInfoComponent.UpdateRoleData(UserDataType.Gold, (ldUnionCof.DonateGold * -1).ToString(), true, ItemGetWay.Donation);
                     int randNumExp = RandomHelper.RandomNumber(ldUnionCof.DonateExp[0], ldUnionCof.DonateExp[1] + 1);
                     int randNumGongXian = RandomHelper.RandomNumber(ldUnionCof.DonateReward[0], ldUnionCof.DonateReward[1] + 1);

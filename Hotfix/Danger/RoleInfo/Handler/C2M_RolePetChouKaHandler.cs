@@ -44,7 +44,6 @@ namespace ET
                     return;
                 }
                 roleInfoComponentServer.UpdateRoleData(UserDataType.Diamond, (-1 * needDimanond).ToString(), true,ItemGetWay.PetChouKa);
-                numericComponent.ApplyChange(null, NumericType.PetChouKa, 1, 0);
                 unit.GetComponent<DataCollationComponent>().OnPetChouKa(1);
             }
 

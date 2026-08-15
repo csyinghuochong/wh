@@ -106,7 +106,7 @@ namespace ET
                     case MapTypeEnum.SeasonTower:
 
                         //计算赛季之塔下一关
-                        int seasonTowerid = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.SeasonTowerId);
+                        int seasonTowerid = 0;
                         if (seasonTowerid == 0)
                         {
                             request.paramInfo = TowerHelper.GetFirstTowerIdByScene(MapTypeEnum.SeasonTower).ToString();

@@ -23,32 +23,18 @@ namespace ET
         {
             NumericType.HongBao,
             NumericType.Now_XiLian,
-            NumericType.PetChouKa,
-            NumericType.YueKaAward,
-            NumericType.XiuLian_ExpNumber,
-            NumericType.XiuLian_CoinNumber,
-            NumericType.XiuLian_ExpTime,
-            NumericType.XiuLian_CoinTime,
+
+            NumericType.YueKaAwardTime,
+
             NumericType.TiLiKillNumber,
             NumericType.ChouKaNumber,
             NumericType.ExpToGoldTimes,
-            NumericType.RechargeSign,
-            NumericType.TeamDungeonTimes,
             NumericType.TeamDungeonXieZhu,
             NumericType.BattleTodayKill,
             NumericType.FubenTimesReset,
             NumericType.FenShangSet,
             NumericType.ArenaNumber,
-            NumericType.LocalDungeonTime,
-            NumericType.TreasureTask,
-            NumericType.JiaYuanExchangeZiJin,
-            NumericType.JiaYuanExchangeExp,
-            NumericType.JiaYuanVisitRefresh,
-            NumericType.JiaYuanGatherOther,
-            NumericType.JiaYuanPickOther,
-            NumericType.UnionDonationNumber,
             NumericType.UnionDiamondDonationNumber,
-            NumericType.RaceDonationNumber,
             NumericType.JiaYuanPurchaseRefresh,
             NumericType.TowerOfSealArrived,
             NumericType.TowerOfSealFinished,
@@ -61,8 +47,6 @@ namespace ET
             NumericType.DrawIndex,
             NumericType.DrawReward,
             NumericType.PetMineReset,
-            NumericType.V1ChouKaNumber,
-            NumericType.V1RechageNumber,
             NumericType.PetExploreNumber,
             NumericType.PetHeXinExploreNumber,
         };
@@ -141,6 +125,8 @@ namespace ET
             data.DayJingLing.Clear();
             data.BuyStoreItems.Clear();
             data.DailyActivePoint = 0;
+            data.RechargeSign = 0;
+            data.TeamDungeonTimes = 0;
             self.PersonalRandomShops.Clear();
         }
 
@@ -391,6 +377,42 @@ namespace ET
 
         #endregion
 
+        #region 签到充值 RechargeSign 0不能领取 1可以领取 2已领取
+
+        public static int GetRechargeSign(this RoleDailyDataComponentServer self)
+        {
+            return self.GetDailyData().RechargeSign;
+        }
+
+        public static void SetRechargeSign(this RoleDailyDataComponentServer self, int value, bool notice = true)
+        {
+            self.GetDailyData().RechargeSign = value;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        #endregion
+
+        #region 组队副本次数 TeamDungeonTimes
+
+        public static int GetTeamDungeonTimes(this RoleDailyDataComponentServer self)
+        {
+            return self.GetDailyData().TeamDungeonTimes;
+        }
+
+        public static void AddTeamDungeonTimes(this RoleDailyDataComponentServer self, bool notice = true)
+        {
+            self.GetDailyData().TeamDungeonTimes++;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        #endregion
+
         public static void OnLogin(this RoleDailyDataComponentServer self)
         {
             self.EnsureLists();
@@ -444,6 +466,8 @@ namespace ET
                 BuyStoreItems = CloneKvList(src.BuyStoreItems),
                 DailyActivePoint = src.DailyActivePoint,
                 WeeklyActivePoint = src.WeeklyActivePoint,
+                RechargeSign = src.RechargeSign,
+                TeamDungeonTimes = src.TeamDungeonTimes,
             };
         }
 

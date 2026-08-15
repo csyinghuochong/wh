@@ -29,8 +29,8 @@ namespace ET
                 return;
             }
 
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt(NumericType.RechargeSign) != 1)
+            RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
+            if (daily.GetRechargeSign() != 1)
             {
                 response.Error = ErrorCode.ERR_TaskCanNotGet;
                 reply();
@@ -38,7 +38,7 @@ namespace ET
             }
 
             LogHelper.LogDebug($"充值签到成功1：{unit.Id} { bagComponentServer.GetItemNumber(ItemBigType.Type_Item, 10010043)}");
-            numericComponent.ApplyValue(NumericType.RechargeSign, 2);
+            daily.SetRechargeSign(2);
             unit.GetComponent<BagComponentServer>().OnAddItemData(activityConfig.Par_2, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
             LogHelper.LogDebug($"充值签到成功2：{unit.Id} { bagComponentServer.GetItemNumber(ItemBigType.Type_Item, 10010043)}");
            

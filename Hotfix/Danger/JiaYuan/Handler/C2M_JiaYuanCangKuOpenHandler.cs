@@ -7,23 +7,23 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanCangKuOpenRequest request, M2C_JiaYuanCangKuOpenResponse response, Action reply)
         {
-            int cangkuNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.JianYuanCangKu);
-            if (cangkuNumber >= 4)
-            {
-                response.Error = ErrorCode.ERR_Error;
-                reply();
-                return;
-            }
+            //int cangkuNumber = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.JianYuanCangKu);
+            //if (cangkuNumber >= 4)
+            //{
+            //    response.Error = ErrorCode.ERR_Error;
+            //    reply();
+            //    return;
+            //}
 
-            string costItems = JiaYuanHelper.GetOpenJiaYuanWarehouse(cangkuNumber);
-            if (!unit.GetComponent<BagComponentServer>().OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost))
-            {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                reply();
-                return;
-            }
+            //string costItems = JiaYuanHelper.GetOpenJiaYuanWarehouse(cangkuNumber);
+            //if (!unit.GetComponent<BagComponentServer>().OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost))
+            //{
+            //    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+            //    reply();
+            //    return;
+            //}
 
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.JianYuanCangKu, cangkuNumber + 1);
+            //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.JianYuanCangKu, cangkuNumber + 1);
             reply();
             await ETTask.CompletedTask;
         }

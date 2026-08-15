@@ -32,30 +32,11 @@ namespace ET
             //1 经验  2金币
             if (request.XiuLianType == 1)
             {
-                int xiulianNumber = numericComponent.GetAsInt(NumericType.XiuLian_ExpNumber);
-                if (xiulianNumber >= 3)
-                {
-                    reply();
-                    return;
-                }
-            
-                numericComponent.ApplyValue(NumericType.XiuLian_ExpNumber, xiulianNumber+1);
-                numericComponent.ApplyValue(NumericType.XiuLian_ExpTime, TimeHelper.ServerNow());
-                int addValue = Mathf.CeilToInt(xiuLianExpCoefficient * level);
-                roleInfoComponentServer.UpdateRoleData( UserDataType.Exp, addValue.ToString(), true, ItemGetWay.XiuLian);
+                
             }
             else if (request.XiuLianType == 2)
             {
-                int xiulianNumber = numericComponent.GetAsInt(NumericType.XiuLian_CoinNumber);
-                if (xiulianNumber >= 3)
-                {
-                    reply();
-                    return;
-                }
-                numericComponent.ApplyValue(NumericType.XiuLian_CoinNumber, xiulianNumber + 1);
-                numericComponent.ApplyValue(NumericType.XiuLian_CoinTime, TimeHelper.ServerNow());
-                int addValue = Mathf.CeilToInt(xiuLianCoinCoefficient * level);
-                roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, addValue.ToString(), true, 37);// ItemGetWay.XiuLian);
+                
             }
             reply();
             await ETTask.CompletedTask;

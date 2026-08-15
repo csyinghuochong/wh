@@ -421,8 +421,6 @@ namespace ET
 
             self.TrialFubenId = numericComponent.GetAsInt( NumericType.TrialDungeonId );
 
-            self.XiLianExp = numericComponent.GetAsInt( NumericType.ItemXiLianDu);
-
             self.LastSealTowerId = numericComponent.GetAsInt( NumericType.TowerOfSealArrived);
 
             self.UpdateData();

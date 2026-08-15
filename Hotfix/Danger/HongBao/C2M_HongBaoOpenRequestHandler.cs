@@ -17,7 +17,7 @@ namespace ET
             }
 
             long serverTime = TimeHelper.ServerNow();
-            long lastTime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.HongBaoLastTime);
+            long lastTime = 0;
             if (serverTime - lastTime < TimeHelper.Minute * 30)
             {
                 response.Error = ErrorCode.ERR_HongBaoTime;
@@ -78,7 +78,6 @@ namespace ET
 
             int hongbaoAmount = RandomHelper.RandomNumber(minGold, maxGold);
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HongBao, 1);
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HongBaoLastTime, TimeHelper.ServerNow());
             unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Gold, hongbaoAmount.ToString(), true, 33);// ItemGetWay.HongBao);
             response.HongbaoAmount = hongbaoAmount;
 

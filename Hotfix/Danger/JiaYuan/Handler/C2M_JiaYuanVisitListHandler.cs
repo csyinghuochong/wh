@@ -39,15 +39,15 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.JiaYuan, unit.Id))
             {
                 JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
-                if (request.OperateType == 1)
-                {
-                    if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.JiaYuanVisitRefresh) >= 3)
-                    {
-                        return;
-                    }
-                    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.JiaYuanVisitRefresh, 1, 0);
-                    jiaYuanComponentServer.JiaYuanFuJinTime_3 = 0;
-                }
+                //if (request.OperateType == 1)
+                //{
+                //    if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.JiaYuanVisitRefresh) >= 3)
+                //    {
+                //        return;
+                //    }
+                //    unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.JiaYuanVisitRefresh, 1, 0);
+                //    jiaYuanComponentServer.JiaYuanFuJinTime_3 = 0;
+                //}
 
                 DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(UnitZoneHelper.GetHomeZone(unit), unit.Id);
 

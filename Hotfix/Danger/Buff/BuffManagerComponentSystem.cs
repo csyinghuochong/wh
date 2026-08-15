@@ -804,104 +804,10 @@ namespace ET
             self.BuffRemoveList(CommonConfig.DonationBuff);
 
             Unit unit = self.GetParent<Unit>();
-            int rankid = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RaceDonationRankID);
+            int rankid = 0;
             if (rankid == 0)
             {
                 return;
-            }
-            else if (rankid == 1)
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003061;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003062;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003063;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003064;
-                self.BuffFactory(buffData_2, unit, null);
-            }
-            else if (rankid == 2)
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003051;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003052;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003053;
-                self.BuffFactory(buffData_2, unit, null);
-            }
-            else if (rankid == 3)
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003041;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003042;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003043;
-                self.BuffFactory(buffData_2, unit, null);
-            }
-            else if (rankid >= 4 && rankid <= 5)
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003031;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003032;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003033;
-                self.BuffFactory(buffData_2, unit, null);
-            }
-            else if (rankid >= 6 && rankid <= 10)
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003021;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003022;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003023;
-                self.BuffFactory(buffData_2, unit, null);
-            }
-            else
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003011;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003012;
-                self.BuffFactory(buffData_2, unit, null);
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99003013;
-                self.BuffFactory(buffData_2, unit, null);
             }
         }
 

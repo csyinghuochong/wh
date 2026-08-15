@@ -26,12 +26,7 @@ namespace ET
             NumericComponent unitNumeric = unit.GetComponent<NumericComponent>();
             if (unit.Id != request.MasterId)
             {
-                if (unitNumeric.GetAsInt(NumericType.JiaYuanPickOther) >= 5)
-                {
-                    response.Error = ErrorCode.ERR_TimesIsNot;
-                    reply();
-                    return;
-                }
+               
             }
 
             boxUnit.GetComponent<UnitLifeComponent>()?.OnDead(unit);
@@ -45,8 +40,7 @@ namespace ET
             }
             else
             {
-                unitNumeric.ApplyChange(null, NumericType.JiaYuanPickOther, 1, 0);
-
+ 
                 RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
                 JiaYuanOperate jiaYuanOperate = new JiaYuanOperate();
                 jiaYuanOperate.OperateType = JiaYuanOperateType.Pick;

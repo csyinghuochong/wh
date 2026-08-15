@@ -14210,6 +14210,14 @@ namespace ET
 		[ProtoMember(9)]
 		public int WeeklyActivePoint { get; set; }
 
+		// 签到充值奖励，每日重置 0不能领取 1可以领取 2已领取
+		[ProtoMember(10)]
+		public int RechargeSign { get; set; }
+
+		// 已进入组队副本次数，每日重置
+		[ProtoMember(11)]
+		public int TeamDungeonTimes { get; set; }
+
 	}
 
 	[ResponseType(nameof(M2C_RoleDailyDataInit))]

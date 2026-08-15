@@ -92,9 +92,6 @@ namespace ET
         public int PetDuiHuanTimes;
 
 
-        //洗炼经验
-        public int XiLianExp;
-
         //洗练次数
         public int XiLianTimes;
 

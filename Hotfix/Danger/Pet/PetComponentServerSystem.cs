@@ -1001,26 +1001,6 @@ namespace ET
                 }
             }
 
-            //宠物修炼属性。 宠物数值
-            if (numericComponent != null)
-            {
-                int xiuLian_0 = numericComponent.GetAsInt(NumericType.UnionPetXiuLian_0);
-                int xiuLian_1 = numericComponent.GetAsInt(NumericType.UnionPetXiuLian_1);
-                int xiuLian_2 = numericComponent.GetAsInt(NumericType.UnionPetXiuLian_2);
-                int xiuLian_3 = numericComponent.GetAsInt(NumericType.UnionPetXiuLian_3);
-                List<int> unionXiuLianids = new List<int>() { xiuLian_0, xiuLian_1, xiuLian_2, xiuLian_3 };
-                for (int i = 0; i < unionXiuLianids.Count; i++)
-                {
-                    if (unionXiuLianids[i] == 0)
-                    {
-                        continue;
-                    }
-                   
-                }
-            }
-            
-            
-            
             //宠物技能
             for (int i = 0; i < rolePetInfo.PetSkill.Count; i++)
             {

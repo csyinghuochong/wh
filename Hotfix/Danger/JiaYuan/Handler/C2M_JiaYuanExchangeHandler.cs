@@ -15,12 +15,6 @@ namespace ET
             switch (request.ExchangeType)
             {
                 case 1: //金币兑换资金
-                    if (numericComponent.GetAsInt(NumericType.JiaYuanExchangeZiJin) >= 10)
-                    {
-                        response.Error = ErrorCode.ERR_TimesIsNot;
-                        reply();
-                        return;
-                    }
                    
                     /*if (roleInfo.Gold < ldHome.ExchangeZiJinCostGold)
                     {
@@ -40,13 +34,6 @@ namespace ET
                         reply();
                         return;
                     }
-                    if (numericComponent.GetAsInt(NumericType.JiaYuanExchangeExp) >= 10)
-                    {
-                        response.Error = ErrorCode.ERR_TimesIsNot;
-                        reply();
-                        return;
-                    }
-                   
                     /*if (roleInfo.JiaYuanFund < ldHome.ExchangeExpCostZiJin)
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;

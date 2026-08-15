@@ -20,13 +20,13 @@ namespace ET
                 reply();
                 return;
             }
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt(NumericType.SerialNumber) >= 5)
-            {
-                response.Error = ErrorCode.ERR_TimesIsNot;
-                reply();
-                return;
-            }
+            //NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            //if (numericComponent.GetAsInt(NumericType.SerialNumber) >= 5)
+            //{
+            //    response.Error = ErrorCode.ERR_TimesIsNot;
+            //    reply();
+            //    return;
+            //}
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
             {
@@ -72,7 +72,7 @@ namespace ET
 
                 string reward = CommonConfig.SerialReward[serialIndex];
                 bag.OnAddItemData(reward, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}");
-                numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
+                //numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
             }
 
             reply();

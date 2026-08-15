@@ -124,7 +124,7 @@ namespace ET
             numericComponent.Set(NumericType.Speed_Current_15, 1, false);
             numericComponent.Set(NumericType.MasterId, masterid, false);
             numericComponent.Set(NumericType.StartAngle, starangle, false);
-            numericComponent.Set(NumericType.StartTime, TimeHelper.ServerNow(), false);
+            numericComponent.Set(NumericType.GatherStartTime, TimeHelper.ServerNow(), false);
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);        //添加视野
             return unit;
         }
@@ -158,7 +158,7 @@ namespace ET
             numericComponent.ApplyValue(NumericType.Speed_Current_15, NumericConvert.DisplayToStored(NumericType.Speed_Current_15, speed), false);
             numericComponent.ApplyValue(NumericType.MasterId, masterId, false);
             numericComponent.SetStartAngle(rotation, false);
-            numericComponent.ApplyValue(NumericType.StartTime, TimeHelper.ServerNow(), false);
+            numericComponent.ApplyValue(NumericType.GatherStartTime, TimeHelper.ServerNow(), false);
             // AOI 由 CreateSummon 在 SkillEntityComponent.Init 写完 MoveType/TrackTarget 后再挂，避免客户端缺参数
             return unit;
         }
@@ -501,7 +501,7 @@ namespace ET
             //添加其他组件
 
    
-            numericComponent.Set(NumericType.StartTime, jiaYuanPlant.StartTime);
+            numericComponent.Set(NumericType.GatherStartTime, jiaYuanPlant.StartTime);
             numericComponent.Set(NumericType.GatherNumber, jiaYuanPlant.GatherNumber);
             numericComponent.Set(NumericType.GatherLastTime, jiaYuanPlant.GatherLastTime);
             numericComponent.Set(NumericType.GatherCellIndex, jiaYuanPlant.CellIndex);
@@ -537,7 +537,7 @@ namespace ET
             aIComponent.Begin();
 
             //添加其他组件
-            numericComponent.Set(NumericType.StartTime, jiaYuanPastures.StartTime, false);
+            numericComponent.Set(NumericType.GatherStartTime, jiaYuanPastures.StartTime, false);
             numericComponent.Set(NumericType.GatherNumber, jiaYuanPastures.GatherNumber, false);
             numericComponent.Set(NumericType.GatherLastTime, jiaYuanPastures.GatherLastTime, false);
 

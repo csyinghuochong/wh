@@ -280,17 +280,7 @@ namespace ET
                 unionplayerNumber = unionplayerNumber +  $"{unioid}:{playernumber}  ";
             }
 
-            for (int i = 0; i < units.Count; i++)
-            {
-                if (winunionid == units[i].GetUnionId() && winunionid != 0)
-                {
-                    units[i].GetComponent<NumericComponent>().ApplyValue(NumericType.UnionRaceWin, 1, true, false);
-                }
-                else
-                {
-                    units[i].GetComponent<NumericComponent>().ApplyValue(NumericType.UnionRaceWin, 0, true, false);
-                }
-            }
+          
             self.WinUnionId = winunionid;
 
             if (minite == 0)

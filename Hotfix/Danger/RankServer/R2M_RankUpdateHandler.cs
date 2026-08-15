@@ -18,9 +18,6 @@
                     unit.GetComponent<TaskComponentServer>().OnPetTianTiRank(message.RankId);
                    
                     break;
-                case 3:
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.RaceDonationRankID, message.RankId);
-                    break;
                 case 4:
                     unit.GetComponent<NumericComponent>().ApplyValue(NumericType.SoloRankId, message.RankId);
                     break;

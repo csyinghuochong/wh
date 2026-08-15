@@ -104,7 +104,7 @@ namespace ET
             numeric?.ApplyValue(NumericType.SkillEntity_MoveType, self.Runtime.MoveType, false);
             numeric?.ApplyValue(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
             // 与客户端共用同一 BeginTime
-            numeric?.ApplyValue(NumericType.StartTime, now, false);
+            numeric?.ApplyValue(NumericType.GatherStartTime, now, false);
 
             Log.Info(
                 $"SkillEntity Init unit={unit?.Id} summon={self.Runtime.SummonId} skill_1={self.Runtime.ActionSkillId} " +

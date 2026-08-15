@@ -69,11 +69,10 @@ namespace ET
             taskComponentServer.OnRechargeDay();
 
             numericComponent.ApplyChange(null, NumericType.RechargeNumber, rechargeNumber, 1, notice);
-            numericComponent.ApplyChange(null, NumericType.V1RechageNumber, rechargeNumber, 0, notice);
-            //充值签到标记，已经领取的不充值
-            if (numericComponent.GetAsInt(NumericType.RechargeSign) != 2)
+            RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
+            if (daily != null && daily.GetRechargeSign() != 2)
             {
-                numericComponent.ApplyValue(NumericType.RechargeSign, 1, notice);
+                daily.SetRechargeSign(1, notice);
             }
 
             rechargeComponentServer.NotifyClient();

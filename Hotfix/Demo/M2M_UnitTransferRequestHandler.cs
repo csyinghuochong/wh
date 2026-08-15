@@ -159,7 +159,6 @@ namespace ET
 						TransferHelper.AfterTransfer(unit);
 						SceneCreatureHelp.CreateSceneRole(scene, request.ChapterId);
 						SceneCreatureHelp.CreateSceneTeleport(scene, request.ChapterId);
-						unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.LocalDungeonTime, 1, 0);
 						break;
                     case MapTypeEnum.Happy:
                         unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
@@ -350,12 +349,12 @@ namespace ET
                                     }
                                     else
                                     {
-                                        unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonTimes, unit.GetTeamDungeonTimes() + 1);
+                                        unit.GetComponent<RoleDailyDataComponentServer>()?.AddTeamDungeonTimes();
                                     }
                                 }
                                 else
                                 {
-                                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonTimes, unit.GetTeamDungeonTimes() + 1);
+                                    unit.GetComponent<RoleDailyDataComponentServer>()?.AddTeamDungeonTimes();
                                 }
                                 if (fubenType == TeamFubenType.ShenYuan && unit.Id == teamDungeonComponent.TeamInfo.TeamId)
                                 {

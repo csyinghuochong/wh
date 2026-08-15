@@ -258,10 +258,6 @@ namespace ET
 				{
 					continue;
 				}
-				if (numericComponent.GetAsInt(NumericType.LocalDungeonTime) >= 30)
-				{
-					break;
-				}
 			}
 
 			return randomMonsterList;

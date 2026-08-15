@@ -391,16 +391,6 @@ namespace ET
 			{
 				UnitId = unit.Id,
 			});
-
-			numericComponent.ApplyValue(NumericType.RaceDonationRankID, union2G_EnterChat.DonationRankId, false, false);
-			if (unionid != 0 && union2G_EnterChat.WinUnionId == unionid)
-			{
-				numericComponent.ApplyValue(NumericType.UnionRaceWin, 1, false, false);
-			}
-			else
-			{
-				numericComponent.ApplyValue(NumericType.UnionRaceWin, 0, false, false);
-			}
 		}
 	}
 }
