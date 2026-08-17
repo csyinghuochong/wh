@@ -22,6 +22,9 @@ namespace ET
           /// </summary>
         public long LastLoginTime;
 
+        /// <summary>游戏日计数时间（Global_Reset_Time 切日），签到等日清共用，不下发客户端。</summary>
+        public long LastDailyCountTime;
+
 
         /// <summary>
         /// 今日在线时长
@@ -32,7 +35,6 @@ namespace ET
 
         public string UserName;
 
-        public long CreateAccountTime;
 
         public long UpdateCombatTime;
 

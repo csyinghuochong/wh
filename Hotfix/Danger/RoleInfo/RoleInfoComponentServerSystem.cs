@@ -45,7 +45,7 @@ namespace ET
         public static void OnInit(this RoleInfoComponentServer self,string account, long userId, long accountId, CreateRoleInfo createRoleInfo)
         {
             self.Account = account;
-            self.CreateAccountTime = createRoleInfo.CreateTime;
+
             RoleInfo roleInfo = self.RoleInfo;
             roleInfo.Sp = 1;
             roleInfo.UserId = userId;
@@ -59,6 +59,7 @@ namespace ET
             //roleInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
             roleInfo.CreateTime = TimeHelper.ServerNow();
             roleInfo.Occ = createRoleInfo.PlayerOcc;
+            roleInfo.CreateTime = createRoleInfo.CreateTime;
 
             if (createRoleInfo.RobotId > 0)
             {

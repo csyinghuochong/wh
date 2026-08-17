@@ -23,9 +23,12 @@ namespace ET
 
         public static void OnLogin(this ActivityComponentServer self, int level)
         {
-            if (self.ActivityInfo.DayTeHui.Count == 0)
+            
+            Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer role = unit?.GetComponent<RoleInfoComponentServer>();
+            if (role != null && ActivityHelper.EnsureSignInLoginDay(self.ActivityInfo, ref role.LastDailyCountTime))
             {
-                self.ActivityInfo.DayTeHui = DayTeHuiHelper.GetDayTeHuiList(2, level);
+                unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
             }
         }
 
@@ -44,21 +47,12 @@ namespace ET
 
         public static void OnZeroClockUpdate(this ActivityComponentServer self, int level)
         {
-            self.ActivityInfo.DayTeHui = DayTeHuiHelper.GetDayTeHuiList(2, level);
-
+         
             //重置每日特惠 和 新春活动
             for (int i = self.ActivityReceiveIds.Count - 1; i >= 0; i--)
             {
 
             }
-
-            if (self.ActivityInfo.TotalSignNumber >= 30)
-            {
-                self.ActivityInfo.TotalSignNumber = 0;
-
-            }
-
-   
             //self.LastTimerChouKaPassTime = 0;
             //self.TimerChouKaReceiveIndex = 0
         }

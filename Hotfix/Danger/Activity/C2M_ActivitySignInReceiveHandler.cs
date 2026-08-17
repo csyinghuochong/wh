@@ -8,50 +8,11 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ActivitySignInReceiveRequest request, M2C_ActivitySignInReceiveResponse response, Action reply)
         {
-            long createTime = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.CreateTime;
+            int activityId = ActivityHelper.DailySignActivityId;
+            int signInId = request.SignInId > 0 ? request.SignInId : request.ActivityId;
             long now = TimeHelper.ServerNow();
 
-            // ActivityId / SignInId 均为 Activity_Sign_In 主 Id；优先 ActivityId
-            int signInId = request.ActivityId > 0 ? request.ActivityId : request.SignInId;
-            int activityTypeId = ActivityHelper.DailySignActivityId;
-
-            if (signInId > 0)
-            {
-                if (!LDActivity_Sign_InCategory.Instance.Contain(signInId))
-                {
-                    response.Error = ErrorCode.ERR_Error;
-                    reply();
-                    await ETTask.CompletedTask;
-                    return;
-                }
-
-                activityTypeId = LDActivity_Sign_InCategory.Instance.Get(signInId).ActivityId;
-            }
-
-            int todayId = ActivityHelper.GetTodaySignInId(createTime, activityTypeId, now);
-            if (todayId <= 0)
-            {
-                response.Error = ErrorCode.ERR_Error;
-                reply();
-                await ETTask.CompletedTask;
-                return;
-            }
-
-            if (signInId <= 0)
-            {
-                signInId = todayId;
-            }
-
-            // 只允许领今天这一档
-            if (signInId != todayId)
-            {
-                response.Error = ErrorCode.ERR_Error;
-                reply();
-                await ETTask.CompletedTask;
-                return;
-            }
-
-            if (!LDActivity_Sign_InCategory.Instance.Contain(signInId))
+            if (signInId <= 0 || !LDActivity_Sign_InCategory.Instance.Contain(signInId))
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();
@@ -60,11 +21,23 @@ namespace ET
             }
 
             LDActivity_Sign_In cfg = LDActivity_Sign_InCategory.Instance.Get(signInId);
-            ActivityComponentServer activity = unit.GetComponent<ActivityComponentServer>();
-            // 同一天不可重复领（跨周期同 Id 也靠日历天区分）
-            if (activity.ActivityInfo.LastSignTime > 0 && CommonHelper.GetDaysDiffByDate(activity.ActivityInfo.LastSignTime, now) == 0)
+            if (cfg.ActivityId > 0)
             {
-                response.Error = ErrorCode.ERR_AlreadyReceived;
+                activityId = cfg.ActivityId;
+            }
+
+            ActivityComponentServer activity = unit.GetComponent<ActivityComponentServer>();
+            RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
+            if (ActivityHelper.EnsureSignInLoginDay(activity.ActivityInfo, ref role.LastDailyCountTime, now, activityId))
+            {
+                unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
+            }
+
+            if (!ActivityHelper.CanReceiveSignIn(activity.ActivityInfo, cfg, activityId))
+            {
+                response.Error = ActivityHelper.IsSignInReceived(activity.ActivityInfo, signInId, activityId)
+                        ? ErrorCode.ERR_AlreadyReceived
+                        : ErrorCode.ERR_Error;
                 reply();
                 await ETTask.CompletedTask;
                 return;
@@ -87,12 +60,12 @@ namespace ET
                 return;
             }
 
-            activity.ActivityInfo.SignInReceiveId = signInId;
-            activity.ActivityInfo.LastSignTime = now;
-            activity.ActivityInfo.TotalSignNumber += 1;
+            activity.ActivityInfo.SignInReceivedId = signInId;
             unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
 
             response.ReceiveId = signInId;
+            response.SignInLoginDays = activity.ActivityInfo.SignInLoginDays;
+            response.SignInReceivedId = signInId;
             response.Error = ErrorCode.ERR_Success;
             reply();
             await ETTask.CompletedTask;

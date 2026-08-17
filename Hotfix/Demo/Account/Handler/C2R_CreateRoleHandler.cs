@@ -71,7 +71,7 @@ namespace ET
                             return;
                         }
 
-						long accountCrateTime = centerAccountList[0].CreateTime;
+						long accountCreateTime = centerAccountList[0].CreateTime;
 						long serverNowTime = TimeHelper.ServerNow();
 						long serverOpenTime = ServerHelper.GetOpenServerTime(false, request.ServerId);
 						if (!ServerHelper.IsBanHaoZone(session.DomainZone()) 
@@ -108,6 +108,7 @@ namespace ET
 						createRoleInfo.ServerId = request.ServerId;
 						createRoleInfo.RobotId = robotId;
 						createRoleInfo.Sex = request.Sex;
+						createRoleInfo.CreateTime = TimeHelper.ServerNow();
                         centerAccountList[0].RoleList.Add(createRoleInfo);
                         Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(CommonConfig.CenterZoneId, centerAccountList[0]).Coroutine();
                         

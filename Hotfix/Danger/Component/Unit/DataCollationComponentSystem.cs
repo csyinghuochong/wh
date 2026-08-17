@@ -388,7 +388,7 @@ namespace ET
             self.Password = roleInfoComponentServer.Password;
             self.Robot = unit.IsRobot() ?  1 : 0;
 
-            self.CreateAccountTime = roleInfoComponentServer.CreateAccountTime;
+            self.CreateAccountTime = roleInfoComponentServer.RoleInfo.CreateTime;
             self.CreateAccountTimeStr = TimeInfo.Instance.ToDateTime(self.CreateAccountTime).ToString();
 
             self.OccId = roleInfoComponentServer.RoleInfo.Occ;
