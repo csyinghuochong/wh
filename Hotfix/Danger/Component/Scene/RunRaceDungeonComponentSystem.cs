@@ -123,7 +123,7 @@ namespace ET
             {
                 Unit unit = unitlist[i];    
                 int runracemonster = CommonConfig.RunRaceMonsterList[RandomHelper.RandomNumber(0, CommonConfig.RunRaceMonsterList.Count)];
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, runracemonster);
+                //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.RunRaceTransform, runracemonster);
 
                 M2C_RunRaceBattleInfo m2C_RunRaceBattle = new M2C_RunRaceBattleInfo() { NextTransforTime = self.NextTransforTime };
                 MessageHelper.SendToClient(unit, m2C_RunRaceBattle);
@@ -157,10 +157,10 @@ namespace ET
             {
                 Unit unit = units[i];   
                 NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-                if (numericComponent.GetAsInt(NumericType.RunRaceRankId) != 0)
-                {
-                    continue;
-                }
+                //if (numericComponent.GetAsInt(NumericType.RunRaceRankId) != 0)
+                //{
+                //    continue;
+                //}
 
                 if (Vector3.Distance(unit.Position, vector3) > 2f)
                 {

@@ -40,7 +40,7 @@ namespace ET
                 return;
             }
 
-            long shareSet = numericComponent.GetAsLong(NumericType.FenShangSet);
+            long shareSet = 0;// numericComponent.GetAsLong(NumericType.FenShangSet);
             if ((shareSet & request.ShareType) > 0)
             {
                 response.Error = ErrorCode.ERR_TimesIsNot;
@@ -61,7 +61,7 @@ namespace ET
             }
 
             shareSet = shareSet | (long)request.ShareType;
-            numericComponent.ApplyValue(NumericType.FenShangSet, shareSet);
+            //numericComponent.ApplyValue(NumericType.FenShangSet, shareSet);
 
             if (request.ShareType == 8)
             {

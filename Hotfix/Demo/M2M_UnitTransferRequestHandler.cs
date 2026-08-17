@@ -54,7 +54,6 @@ namespace ET
 				unit.AddComponent<AttackRecordComponent>();
 				NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 				numericComponent.Set(NumericType.BattleCamp, CampEnum.CampPlayer_1, false);
-                numericComponent.Set(NumericType.RunRaceTransform, 0, false);
                 numericComponent.Set(NumericType.CardTransform, 0, false);
 
                 unit.Type = UnitType.Player;
@@ -139,7 +138,7 @@ namespace ET
                         //进入神秘之门（喜从天降玩法）
                         if (dungeonConfig.Scene_Type == SceneSubTypeEnum.LocalDungeon_1)
                         {
-                            numericComponent.ApplyValue(NumericType.HappyMoveNumber, 0, false);
+                            unit.GetComponent<RoleDailyDataComponentServer>()?.SetHappyMoveNumber(0, false);
                             numericComponent.ApplyValue(NumericType.HappyMoveTime, 0, false);
                             int randomPosition = RandomHelper.RandomNumber(0, HappyFubenConfig.PositionList.Count);
                             numericComponent.Set(NumericType.HappyCellIndex, randomPosition + 1, false);
@@ -164,7 +163,7 @@ namespace ET
                         unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
                         ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
 
-						int happcellIndex = numericComponent.GetAsInt(NumericType.HappyCellIndex);
+						int happcellIndex = numericComponent.GetAsInt(NumericType.UnitCellIndex);
 						if (happcellIndex > 0)
 						{
                             unit.Position = HappyFubenConfig.PositionList[happcellIndex - 1];
@@ -172,7 +171,7 @@ namespace ET
 						else
 						{
                             int randomPosition = RandomHelper.RandomNumber(0, HappyFubenConfig.PositionList.Count);
-                            numericComponent.Set(NumericType.HappyCellIndex, randomPosition + 1, false);
+                            numericComponent.Set(NumericType.UnitCellIndex, randomPosition + 1, false);
                             unit.Position = HappyFubenConfig.PositionList[randomPosition];
                         }
                         unit.Rotation = Quaternion.identity;
@@ -236,7 +235,6 @@ namespace ET
 						TransferHelper.AfterTransfer(unit);
 						break;
 					case MapTypeEnum.Solo:
-						numericComponent.ApplyValue(NumericType.JueXingAnger, 0, false);
                         unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
                         ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
 
@@ -272,8 +270,6 @@ namespace ET
 
                         unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, 0, false);
 						int runracemonster = CommonConfig.RunRaceMonsterList[RandomHelper.RandomNumber(0, CommonConfig.RunRaceMonsterList.Count)];
-						numericComponent.Set(NumericType.RunRaceTransform, runracemonster, false);
-
 						// 通知客户端创建My Unit
 						m2CCreateUnits = new M2C_CreateMyUnit();
                         m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
@@ -345,7 +341,6 @@ namespace ET
                                     int totalTimes_2 = int.Parse(LDGlobalValueCategory.Instance.Get(74).Value);
                                     if (totalTimes_2 > times_2)
                                     {
-                                        unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamDungeonXieZhu, unit.GetTeamDungeonXieZhu() + 1);
                                     }
                                     else
                                     {
@@ -405,12 +400,6 @@ namespace ET
 	                    MessageHelper.SendToClient(unit, m2CCreateUnits);
 	                    // 加入aoi
 	                    unit.AddComponent<AOIEntity, int, Vector3>(4 * 1000, unit.Position);
-
-	                    towerOfSealRecastPath.Update(towerOfSealMapComponent.NavMeshId);
-	                    scene.GetComponent<TowerOfSealComponent>().MyUnit = unit;
-	                    scene.GetComponent<TowerOfSealComponent>()
-			                    .GenerateFuben(numericComponent.GetAsInt(NumericType.TowerOfSealArrived),
-				                    numericComponent.GetAsInt(NumericType.TowerOfSealFinished));
 
                         TransferHelper.AfterTransfer(unit);
                         break;

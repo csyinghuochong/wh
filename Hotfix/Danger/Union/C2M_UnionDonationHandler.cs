@@ -47,13 +47,6 @@ namespace ET
                 }
                 else if (request.Type == 1) // 钻石捐献
                 {
-                    if (numericComponent.GetAsInt(NumericType.UnionDiamondDonationNumber) >= 10)
-                    {
-                        response.Error = ErrorCode.ERR_TimesIsNot;
-                        reply();
-                        return;
-                    }
-
                     long selfDiamond = roleInfo.Diamond;
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit),
@@ -68,7 +61,6 @@ namespace ET
 
                     int unionID = int.Parse(responseUnionEnter.Par);
                     LDUnion ldUnionCof = LDUnionCategory.Instance.Get(unionID);
-                    numericComponent.ApplyChange(unit, NumericType.UnionDiamondDonationNumber, 1, 0);
                     // 花费250钻石，暂时写死，M2U_UnionOperationRequest也是
 
                     /*roleInfoComponent.UpdateRoleData(UserDataType.Diamond, (ldUnionCof.DonateDiamond * -1).ToString(), true, ItemGetWay.Donation);

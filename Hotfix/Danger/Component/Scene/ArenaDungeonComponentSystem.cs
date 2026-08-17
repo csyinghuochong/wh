@@ -27,16 +27,16 @@ namespace ET
         /// <param name="self"></param>
         public static void OnArenaClose(this ArenaDungeonComponent self)
         {
-            self.ArenaClose = true;
-            List<Unit> unitlist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
-            for (int i = 0; i < unitlist.Count; i++)
-            {
-                NumericComponent numericComponent = unitlist[i].GetComponent<NumericComponent>();
-                numericComponent.ApplyValue(NumericType.ArenaNumber, 1);
-            }
+            //self.ArenaClose = true;
+            //List<Unit> unitlist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
+            //for (int i = 0; i < unitlist.Count; i++)
+            //{
+            //    NumericComponent numericComponent = unitlist[i].GetComponent<NumericComponent>();
+            //    numericComponent.ApplyValue(NumericType.ArenaNumber, 1);
+            //}
 
-            self.OnUpdateRank();
-            self.OnUpdateRankTwo().Coroutine();
+            //self.OnUpdateRank();
+            //self.OnUpdateRankTwo().Coroutine();
         }
 
         /// <summary>

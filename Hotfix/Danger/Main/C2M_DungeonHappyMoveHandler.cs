@@ -20,9 +20,10 @@ namespace ET
             }
 
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
             if (request.OperatateType == 1)
             {
-                if (numeric.GetAsInt(NumericType.HappyMoveNumber) >= 5)
+                if (dailyData.GetHappyMoveNumber() >= 5)
                 {
                     response.Error = ErrorCode.ERR_TimesIsNot;
                     reply();
@@ -40,7 +41,7 @@ namespace ET
 
                 long mianfeicd = TimeHelper.Second * 5 ;
                 numeric.ApplyValue(NumericType.HappyMoveTime, TimeHelper.ServerNow() + mianfeicd);
-                numeric.ApplyChange(null, NumericType.HappyMoveNumber,1, 0);
+                dailyData.AddHappyMoveNumber();
             }
             if (request.OperatateType == 2)
             {
@@ -89,7 +90,7 @@ namespace ET
                     continue;
                 }
 
-                numeric.ApplyValue(NumericType.HappyCellIndex, newCell + 1);
+                numeric.ApplyValue(NumericType.UnitCellIndex, newCell + 1);
                 Vector3 vector3 = HappyFubenConfig.PositionList[newCell];
                 unit.Position = vector3;
                 break;

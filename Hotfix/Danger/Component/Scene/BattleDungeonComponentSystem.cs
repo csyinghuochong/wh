@@ -46,10 +46,10 @@ namespace ET
                 MessageHelper.SendToClient(units[i], m2C_Battle);
             }
 
-            if (attack != null && attack.Type == UnitType.Player)
-            {
-                attack.GetComponent<NumericComponent>().ApplyChange(null, NumericType.BattleTodayKill, 1, 0);
-            }
+            //if (attack != null && attack.Type == UnitType.Player)
+            //{
+            //    attack.GetComponent<NumericComponent>().ApplyChange(null, NumericType.BattleTodayKill, 1, 0);
+            //}
         }
 
         public static void SendReward(this BattleDungeonComponent self, List<long> Camp1Player, List<long> Camp2Player)

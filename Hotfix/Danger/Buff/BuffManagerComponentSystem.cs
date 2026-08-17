@@ -686,55 +686,6 @@ namespace ET
             {
                 return;
             }
-
-            //self.BuffRemove(99001042);
-            //self.BuffRemove(99001031);
-            //self.BuffRemove(99001032);
-            //self.BuffRemove(99001011);
-            self.BuffRemoveList(CommonConfig.BaoShiBuff);
-
-            /*RoleInfoComponent roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
-            if (roleInfoComponent.RoleInfo.BaoShiDu >= 80)
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99001041;
-                self.BuffFactory(buffData_2, unit, null);
-
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99001042;
-                self.BuffFactory(buffData_2, unit, null);
-            }
-
-            if (roleInfoComponent.RoleInfo.BaoShiDu >= 40 && roleInfoComponent.RoleInfo.BaoShiDu < 80)
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99001031;
-                self.BuffFactory(buffData_2, unit, null);
-
-                buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99001032;
-                self.BuffFactory(buffData_2, unit, null);
-            }
-
-            if (roleInfoComponent.RoleInfo.BaoShiDu >= 20 && roleInfoComponent.RoleInfo.BaoShiDu < 40)
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99001021;
-                self.BuffFactory(buffData_2, unit, null);
-            }
-
-            if (roleInfoComponent.RoleInfo.BaoShiDu < 20)
-            {
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99001011;
-                self.BuffFactory(buffData_2, unit, null);
-            }*/
         }
 
         public static void InitBuff(this BuffManagerComponent self, int sceneType)
@@ -801,8 +752,7 @@ namespace ET
 
         public static void InitDonationBuff(this BuffManagerComponent self)
         {
-            self.BuffRemoveList(CommonConfig.DonationBuff);
-
+  
             Unit unit = self.GetParent<Unit>();
             int rankid = 0;
             if (rankid == 0)

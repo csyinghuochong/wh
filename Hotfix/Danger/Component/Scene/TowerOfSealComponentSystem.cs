@@ -30,10 +30,10 @@ namespace ET
             M2C_FubenSettlement m2C_FubenSettlement = new M2C_FubenSettlement();
             m2C_FubenSettlement.BattleResult = CombatResultEnum.Win;
 
-            MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
-            int arrived = players[0].GetComponent<NumericComponent>().GetAsInt(NumericType.TowerOfSealArrived);
-            players[0].GetComponent<NumericComponent>().ApplyValue(NumericType.TowerOfSealFinished, arrived);
-            MessageHelper.SendToClient(players[0], m2C_FubenSettlement);
+            //MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
+            //int arrived = players[0].GetComponent<NumericComponent>().GetAsInt(NumericType.TowerOfSealArrived);
+            //players[0].GetComponent<NumericComponent>().ApplyValue(NumericType.TowerOfSealFinished, arrived);
+            //MessageHelper.SendToClient(players[0], m2C_FubenSettlement);
         }
 
         /// <summary>

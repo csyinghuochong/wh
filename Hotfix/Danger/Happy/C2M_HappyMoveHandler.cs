@@ -74,7 +74,6 @@ namespace ET
                     continue;
                 }
 
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HappyCellIndex, newCell + 1);
                 Vector3 vector3 = HappyFubenConfig.PositionList[newCell];
                 unit.Position = vector3;
                 break;

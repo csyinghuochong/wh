@@ -26,13 +26,6 @@ namespace ET
                 return;
             }
 
-            if (numericComponent.GetAsInt(NumericType.PetHeXinExploreNumber) < request.RewardId)
-            {
-                response.Error = ErrorCode.Pre_Condition_Error;
-                reply();
-                return;
-            }
-
             string[] reward = rewardConfig.Split('$');
             string[] items = reward[0].Split('@');
             if (bagComponentServer.GetBagLeftCell() < items.Length)

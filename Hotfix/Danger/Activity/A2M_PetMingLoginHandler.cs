@@ -9,12 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, A2M_PetMingLoginRequest request, M2A_PetMingLoginResponse response, Action reply)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            int petMineLogin = numericComponent.GetAsInt(NumericType.PetMineLogin);
-            if (petMineLogin == 1)
-            {
-                reply();
-                return;
-            }
+            
             //numericComponent.ApplyValue(NumericType.PetMineLogin, 1);
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
             taskComponentServer.OnPetMineLogin(request.PetMineList, request.PetMingExtend);

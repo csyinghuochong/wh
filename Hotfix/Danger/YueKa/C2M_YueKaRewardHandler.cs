@@ -14,7 +14,7 @@ namespace ET
                 reply();    //月卡已过期
                 return;
             }
-            if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.YueKaAwardTime) == 1)
+            if (unit.GetComponent<RoleDailyDataComponentServer>().GetYueKaAwardTime() == 1)
             {
                 reply();    //当天已领取
                 return;
@@ -29,7 +29,7 @@ namespace ET
             }
 
             int remainTimes = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.YueKaRemainTimes);
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.YueKaAwardTime, 1);
+            unit.GetComponent<RoleDailyDataComponentServer>().SetYueKaAwardTime(1);
             unit.GetComponent<NumericComponent>().ApplyValue(NumericType.YueKaRemainTimes, remainTimes -1);
           
             unit.GetComponent<BagComponentServer>().OnAddItemData(reward, $"{ItemGetWay.YueKaReward}_{TimeHelper.ServerNow()}");

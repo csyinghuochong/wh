@@ -7627,65 +7627,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_LingDiUpResponse))]
-	[Message(OuterOpcode.C2M_LingDiUpRequest)]
-	[ProtoContract]
-	public partial class C2M_LingDiUpRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_LingDiUpResponse)]
-	[ProtoContract]
-	public partial class M2C_LingDiUpResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_LingDiRewardResponse))]
-	[Message(OuterOpcode.C2M_LingDiRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_LingDiRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RewardId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_LingDiRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_LingDiRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_XiuLianCenterResponse))]
 	[Message(OuterOpcode.C2M_XiuLianCenterRequest)]
 	[ProtoContract]
@@ -7994,65 +7935,6 @@ namespace ET
 	[Message(OuterOpcode.M2C_RolePointResetResponse)]
 	[ProtoContract]
 	public partial class M2C_RolePointResetResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(R2C_CampRankListResponse))]
-	[Message(OuterOpcode.C2R_CampRankListRequest)]
-	[ProtoContract]
-	public partial class C2R_CampRankListRequest: Object, IRankActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_CampRankListResponse)]
-	[ProtoContract]
-	public partial class R2C_CampRankListResponse: Object, IRankActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<RankingInfo> RankList_1 = new List<RankingInfo>();
-
-		[ProtoMember(2)]
-		public List<RankingInfo> RankList_2 = new List<RankingInfo>();
-
-	}
-
-	[ResponseType(nameof(M2C_CampRankSelectResponse))]
-	[Message(OuterOpcode.C2M_CampRankSelectRequest)]
-	[ProtoContract]
-	public partial class C2M_CampRankSelectRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int CampId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_CampRankSelectResponse)]
-	[ProtoContract]
-	public partial class M2C_CampRankSelectResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -12794,157 +12676,6 @@ namespace ET
 
 	}
 
-//幸运抽奖. 随机一个位置，并不会会道具， 该位置每天是固定的
-	[ResponseType(nameof(M2C_WelfareDrawResponse))]
-	[Message(OuterOpcode.C2M_WelfareDrawRequest)]
-	[ProtoContract]
-	public partial class C2M_WelfareDrawRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_WelfareDrawResponse)]
-	[ProtoContract]
-	public partial class M2C_WelfareDrawResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//转盘结束，给予道具
-	[ResponseType(nameof(M2C_WelfareDrawRewardResponse))]
-	[Message(OuterOpcode.C2M_WelfareDrawRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_WelfareDrawRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_WelfareDrawRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_WelfareDrawRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//当前的任务全部完成，才可以领取
-	[ResponseType(nameof(M2C_WelfareTaskRewardResponse))]
-	[Message(OuterOpcode.C2M_WelfareTaskRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_WelfareTaskRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int day { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_WelfareTaskRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_WelfareTaskRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//投资
-	[ResponseType(nameof(M2C_WelfareInvestResponse))]
-	[Message(OuterOpcode.C2M_WelfareInvestRequest)]
-	[ProtoContract]
-	public partial class C2M_WelfareInvestRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int Index { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_WelfareInvestResponse)]
-	[ProtoContract]
-	public partial class M2C_WelfareInvestResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//投资奖励。第七天可以领取奖励
-	[ResponseType(nameof(M2C_WelfareInvestRewardResponse))]
-	[Message(OuterOpcode.C2M_WelfareInvestRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_WelfareInvestRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_WelfareInvestRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_WelfareInvestRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //累计充值奖励
 	[ResponseType(nameof(M2C_RechargeRewardResponse))]
 	[Message(OuterOpcode.C2M_RechargeRewardRequest)]
@@ -14210,13 +13941,31 @@ namespace ET
 		[ProtoMember(9)]
 		public int WeeklyActivePoint { get; set; }
 
-		// 签到充值奖励，每日重置 0不能领取 1可以领取 2已领取
+// 签到充值奖励，每日重置 0不能领取 1可以领取 2已领取
 		[ProtoMember(10)]
 		public int RechargeSign { get; set; }
 
-		// 已进入组队副本次数，每日重置
+// 已进入组队副本次数，每日重置
 		[ProtoMember(11)]
 		public int TeamDungeonTimes { get; set; }
+
+		[ProtoMember(12)]
+		public int HongBao { get; set; }
+
+		[ProtoMember(13)]
+		public int NowXiLian { get; set; }
+
+		[ProtoMember(14)]
+		public int YueKaAwardTime { get; set; }
+
+		[ProtoMember(15)]
+		public int TiLiKillNumber { get; set; }
+
+		[ProtoMember(16)]
+		public int ChouKaNumber { get; set; }
+
+		[ProtoMember(17)]
+		public int HappyMoveNumber { get; set; }
 
 	}
 

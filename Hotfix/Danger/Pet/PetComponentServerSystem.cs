@@ -447,17 +447,6 @@ namespace ET
                 rolePetInfo.Star = RandomHelper.RandomNumber(minStart, maxStart);
             }
 
-            int petluckly = numericComponent.GetAsInt(NumericType.PetExploreLuckly);
-
-            //运气值100 百分变异
-            if (XiLianType == 1 && getWay == ItemGetWay.PetExplore && petluckly >= 100  ) //&&ldPetConfig.Skin.Length >= 2)
-            {
-                //Log.Console("幸运值100！！！！！");
-                int skinId = 0;//ldPetConfig.Skin[RandomHelper.RandomNumber(1, ldPetConfig.Skin.Length)];
-                rolePetInfo.SkinId = skinId;
-                //rolePetInfo.PetName = PetSkinConfigCategory.Instance.Get(rolePetInfo.SkinId).Name;
-                numericComponent.ApplyValue(NumericType.PetExploreLuckly, 0);
-            }
 
             rolePetInfo.Luckly = 0;   //1为运气加倍 
 

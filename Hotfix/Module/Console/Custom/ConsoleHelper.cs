@@ -1489,7 +1489,7 @@ namespace ET
                     roleRecharge.TryGetValue(numericComponent.Id, out rechargetNumber);
 
                     long rechargeExp = numericComponent.GetAsLong(NumericType.RechargeNumber);
-                    long maoxianTotal = rechargeExp * 10 + numericComponent.GetAsLong(NumericType.MaoXianExp);
+                    long maoxianTotal = rechargeExp * 10 ;
 
                     if ( rechargeExp > 1000 && rechargeExp > rechargetNumber * 2)
                     { 

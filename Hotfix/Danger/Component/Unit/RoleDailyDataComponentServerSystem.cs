@@ -19,38 +19,6 @@ namespace ET
 
     public static class RoleDailyDataComponentServerSystem
     {
-        private static readonly int[] DailyResetNumericTypes =
-        {
-            NumericType.HongBao,
-            NumericType.Now_XiLian,
-
-            NumericType.YueKaAwardTime,
-
-            NumericType.TiLiKillNumber,
-            NumericType.ChouKaNumber,
-            NumericType.ExpToGoldTimes,
-            NumericType.TeamDungeonXieZhu,
-            NumericType.BattleTodayKill,
-            NumericType.FubenTimesReset,
-            NumericType.FenShangSet,
-            NumericType.ArenaNumber,
-            NumericType.UnionDiamondDonationNumber,
-            NumericType.JiaYuanPurchaseRefresh,
-            NumericType.TowerOfSealArrived,
-            NumericType.TowerOfSealFinished,
-            NumericType.RunRaceRankId,
-            NumericType.HappyCellIndex,
-            NumericType.HappyMoveNumber,
-            NumericType.PetMineBattle,
-            NumericType.PetMineLogin,
-            NumericType.CostTiLi,
-            NumericType.DrawIndex,
-            NumericType.DrawReward,
-            NumericType.PetMineReset,
-            NumericType.PetExploreNumber,
-            NumericType.PetHeXinExploreNumber,
-        };
-
         public static void EnsureLists(this RoleDailyDataComponentServer self)
         {
             RoleDailyData data = self.Data ??= new RoleDailyData();
@@ -85,11 +53,6 @@ namespace ET
             if (numericComponent == null)
             {
                 return;
-            }
-
-            for (int i = 0; i < DailyResetNumericTypes.Length; i++)
-            {
-                numericComponent.ApplyValue(DailyResetNumericTypes[i], 0, notice);
             }
 
             int yuekatimes = numericComponent.GetAsInt(NumericType.YueKaRemainTimes);
@@ -127,6 +90,12 @@ namespace ET
             data.DailyActivePoint = 0;
             data.RechargeSign = 0;
             data.TeamDungeonTimes = 0;
+            data.HongBao = 0;
+            data.NowXiLian = 0;
+            data.YueKaAwardTime = 0;
+            data.TiLiKillNumber = 0;
+            data.ChouKaNumber = 0;
+            data.HappyMoveNumber = 0;
             self.PersonalRandomShops.Clear();
         }
 
@@ -413,6 +382,132 @@ namespace ET
 
         #endregion
 
+        #region 红包 HongBao 0未领 1已领
+
+        public static int GetHongBao(this RoleDailyDataComponentServer self)
+        {
+            return self.GetDailyData().HongBao;
+        }
+
+        public static void SetHongBao(this RoleDailyDataComponentServer self, int value, bool notice = true)
+        {
+            self.GetDailyData().HongBao = value;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        #endregion
+
+        #region 今日洗练 NowXiLian
+
+        public static int GetNowXiLian(this RoleDailyDataComponentServer self)
+        {
+            return self.GetDailyData().NowXiLian;
+        }
+
+        public static void AddNowXiLian(this RoleDailyDataComponentServer self, int add = 1, bool notice = true)
+        {
+            self.GetDailyData().NowXiLian += add;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        #endregion
+
+        #region 月卡今日领取 YueKaAwardTime
+
+        public static int GetYueKaAwardTime(this RoleDailyDataComponentServer self)
+        {
+            return self.GetDailyData().YueKaAwardTime;
+        }
+
+        public static void SetYueKaAwardTime(this RoleDailyDataComponentServer self, int value, bool notice = true)
+        {
+            self.GetDailyData().YueKaAwardTime = value;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        #endregion
+
+        #region 体力击杀计数 TiLiKillNumber
+
+        public static int GetTiLiKillNumber(this RoleDailyDataComponentServer self)
+        {
+            return self.GetDailyData().TiLiKillNumber;
+        }
+
+        public static void SetTiLiKillNumber(this RoleDailyDataComponentServer self, int value, bool notice = false)
+        {
+            self.GetDailyData().TiLiKillNumber = value;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        public static void AddTiLiKillNumber(this RoleDailyDataComponentServer self, bool notice = false)
+        {
+            self.GetDailyData().TiLiKillNumber++;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        #endregion
+
+        #region 今日抽卡 ChouKaNumber
+
+        public static int GetChouKaNumber(this RoleDailyDataComponentServer self)
+        {
+            return self.GetDailyData().ChouKaNumber;
+        }
+
+        public static void AddChouKaNumber(this RoleDailyDataComponentServer self, int add = 1, bool notice = true)
+        {
+            self.GetDailyData().ChouKaNumber += add;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        #endregion
+
+        #region 欢乐副本移动 HappyMoveNumber
+
+        public static int GetHappyMoveNumber(this RoleDailyDataComponentServer self)
+        {
+            return self.GetDailyData().HappyMoveNumber;
+        }
+
+        public static void AddHappyMoveNumber(this RoleDailyDataComponentServer self, bool notice = true)
+        {
+            self.GetDailyData().HappyMoveNumber++;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        public static void SetHappyMoveNumber(this RoleDailyDataComponentServer self, int value, bool notice = true)
+        {
+            self.GetDailyData().HappyMoveNumber = value;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        #endregion
+
         public static void OnLogin(this RoleDailyDataComponentServer self)
         {
             self.EnsureLists();
@@ -468,6 +563,12 @@ namespace ET
                 WeeklyActivePoint = src.WeeklyActivePoint,
                 RechargeSign = src.RechargeSign,
                 TeamDungeonTimes = src.TeamDungeonTimes,
+                HongBao = src.HongBao,
+                NowXiLian = src.NowXiLian,
+                YueKaAwardTime = src.YueKaAwardTime,
+                TiLiKillNumber = src.TiLiKillNumber,
+                ChouKaNumber = src.ChouKaNumber,
+                HappyMoveNumber = src.HappyMoveNumber,
             };
         }
 

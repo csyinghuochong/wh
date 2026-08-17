@@ -385,7 +385,7 @@ namespace ET
 
             numericComponent.Set(NumericType.BattleCamp, roleCamp);
             numericComponent.Set(NumericType.MasterId, masterId);
-            numericComponent.Set(NumericType.UnitPositon, cell);
+            numericComponent.Set(NumericType.UnitCellIndex, cell);
             long max_hp = numericComponent.GetAsLong(NumericType.HP_Max_10);
             numericComponent.SetValueNoSync(NumericType.Numeric_Error, max_hp);
             unit.AddComponent<AOIEntity, int, Vector3>(1 * 1000, unit.Position);

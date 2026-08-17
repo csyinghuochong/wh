@@ -98,10 +98,6 @@ namespace ET
         //钻石洗练次数
         public int DiamondXiLianTimes;
 
-        //上次封印之塔层数（不是最高, 上一次即可）
-        public int LastSealTowerId;
-
-
         //当前系统设置语言
         public int CurSystemLanguage;
         //系统设置的区域

@@ -10,12 +10,12 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PetMingResetRequest request, M2C_PetMingResetResponse response, Action reply)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt(NumericType.PetMineReset) >= 3)
-            {
-                response.Error = ErrorCode.ERR_TimesIsNot;
-                reply();
-                return;
-            }
+            //if (numericComponent.GetAsInt(NumericType.PetMineReset) >= 3)
+            //{
+            //    response.Error = ErrorCode.ERR_TimesIsNot;
+            //    reply();
+            //    return;
+            //}
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
@@ -26,7 +26,6 @@ namespace ET
                 return;
             }
             int sceneid = BattleHelper.GetSceneIdByType( MapTypeEnum.PetMing );
-            numericComponent.ApplyChange( null, NumericType.PetMineReset, 1, 0 );
             roleInfoComponentServer.UpdateRoleData( UserDataType.Diamond,  "-350");
             roleInfoComponentServer.AddFubenTimes(sceneid, 5);
 

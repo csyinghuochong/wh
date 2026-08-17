@@ -88,7 +88,7 @@ namespace ET
                 {
                     //小龟到达终点，给支持玩家发送奖励
                     unit.Stop(0);
-                    unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_TurtleAI, 3);
+                    //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_TurtleAI, 3);
                     TurtleReport( aiComponent ).Coroutine();
                     break;
                 }
@@ -103,12 +103,12 @@ namespace ET
                     if (state == 1 || lastState == 0)
                     {
                         unit.FindPathMoveToAsync(aiComponent.TargetPoint[0], cancellationToken, true).Coroutine();
-                        unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_TurtleAI, 1);
+                        //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_TurtleAI, 1);
                     }
                     else
                     {
                         unit.Stop(0);
-                        unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_TurtleAI, 2);
+                        //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.Now_TurtleAI, 2);
                     }
 
                     if (state != lastState && lastState != 0)

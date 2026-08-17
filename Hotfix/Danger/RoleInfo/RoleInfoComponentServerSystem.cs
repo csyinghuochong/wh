@@ -428,14 +428,13 @@ namespace ET
             NumericComponent numericComponent = main.GetComponent<NumericComponent>();
             numericComponent.ApplyChange(null, NumericType.KillMonsterNumber, 1, 0);
 
-            int tiliKillNumber = numericComponent.GetAsInt(NumericType.TiLiKillNumber);
+            RoleDailyDataComponentServer dailyData = main.GetComponent<RoleDailyDataComponentServer>();
+            int tiliKillNumber = dailyData?.GetTiLiKillNumber() ?? 0;
             if (sceneType == MapTypeEnum.LocalDungeon && !showlieopen && self.RoleInfo.PiLao > 0)
             {
                 if (tiliKillNumber >= 4)
                 {
-                    numericComponent.ApplyValue(NumericType.TiLiKillNumber, 0, false);
-
-                    numericComponent.ApplyChange(null, NumericType.CostTiLi, 1, 0);
+                    dailyData?.SetTiLiKillNumber(0, false);
                     //if ( CommonHelper.IsZhuBoZone(UnitZoneHelper.GetHomeZone(main)) && self.RoleInfo.PiLao < 2)
                     //{
                     //    self.UpdateRoleData(UserDataType.PiLao, "100", true);
@@ -447,7 +446,7 @@ namespace ET
                 }
                 else
                 {
-                    numericComponent.ApplyChange(null, NumericType.TiLiKillNumber,  1, 0);
+                    dailyData?.AddTiLiKillNumber();
                 }
             }
 
@@ -475,16 +474,7 @@ namespace ET
                 
                 expcoefficient += expAdd;
                 expcoefficient+= now_GoldAdd_Pro;
-                
-                if ((sceneType == MapTypeEnum.LocalDungeon && self.RoleInfo.PiLao > 0)
-                  || sceneType != MapTypeEnum.LocalDungeon)
-                {
-                    if (numericComponent.GetAsInt(NumericType.JueXingExp) < 5000)
-                    {
-                        numericComponent.ApplyChange(null, NumericType.JueXingExp, 1, 0);
-                    }
-                }
-
+              
                 int addexp = (int)(expcoefficient * 0);
                 self.UpdateRoleData(UserDataType.Exp, addexp.ToString());
             }
@@ -671,11 +661,6 @@ namespace ET
                     saveValue = self.RoleInfo.BindDiamond.ToString();
                     break;
                 case UserDataType.Occ:
-                    break;
-              
-                case UserDataType.JueXingExp:
-                    numericComponent ??= unit.GetComponent<NumericComponent>();
-                    numericComponent.ApplyChange(null, NumericType.JueXingExp, long.Parse(value), 0);
                     break;
                 //case UserDataType.PiLao:
                 //    if (value == "0")

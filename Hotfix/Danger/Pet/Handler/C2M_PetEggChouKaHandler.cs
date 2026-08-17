@@ -45,79 +45,7 @@ namespace ET
                 return;
             }
 
-            int dropId = 0;
-            int exlporeNumber = numericComponent.GetAsInt(NumericType.PetExploreNumber);
-            float discount;
-            if (exlporeNumber < int.Parse(exploreDiscountSet[0])) // 超过300次打8折
-            {
-                discount = 1;
-            }
-            else
-            {
-                discount = float.Parse(exploreDiscountSet[1]);
-            }
 
-            if (request.ChouKaType == 1)
-            {
-                string[] chouKaConfig = CachedChouKaConfigParts;
-                string needItems = chouKaConfig[0];
-                dropId = int.Parse(chouKaConfig[1]);
-                bool sucess = bagComponentServer.OnCostItemData(needItems, ItemLocType.ItemLocBag, ItemGetWay.PetEggDuiHuan);
-                if (!sucess)
-                {
-                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                    reply();
-                    return;
-                }
-
-                numericComponent.ApplyChange(null, NumericType.PetExploreNumber, 1, 0);
-            }
-            else if (request.ChouKaType == 10)
-            {
-                string[] tenChouKaConfig = CachedTenChouKaConfigParts;
-                int needDimanond = int.Parse(tenChouKaConfig[0]);
-                dropId = int.Parse(tenChouKaConfig[1]);
-
-                if (request.CostType == 2)
-                {
-                    if (bagComponentServer.GetItemNumber(ItemBigType.Type_Item, CommonConfig.ZuanShiTenChoukaItem) < 1)
-                    {
-                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                        reply();
-                        return;
-                    }
-
-                    bagComponentServer.OnCostItemData($"{CommonConfig.ZuanShiTenChoukaItem};1", ItemLocType.ItemLocBag, ItemGetWay.ChouKa);
-                    numericComponent.ApplyChange(null, NumericType.PetExploreNumber, 10, 0);
-                }
-                else
-                {
-                    if (roleInfo.Diamond < (int)(needDimanond * discount))
-                    {
-                        response.Error = ErrorCode.ERR_DiamondNotEnoughError;
-                        reply();
-                        return;
-                    }
-                    roleInfoComponentServer.UpdateRoleData(UserDataType.Diamond, (-1 * (int)(needDimanond * discount)).ToString(), true, ItemGetWay.PetChouKa);
-                    numericComponent.ApplyChange(null, NumericType.PetExploreNumber, 10, 0);
-                }
-            }
-
-            int oldValue = exlporeNumber / 10;
-            int newValue = (exlporeNumber + request.ChouKaType ) / 10;
-
-            if (newValue > oldValue)
-            {
-                numericComponent.ApplyChange(null, NumericType.PetExploreLuckly, RandomHelper.RandomNumber(5,16), 0);
-            }
-            int exploreLuck = numericComponent.GetAsInt(NumericType.PetExploreLuckly);
-            List <RewardItem> rewardItems = new List<RewardItem>();
-            for (int i = 0; i < request.ChouKaType; i++)
-            {
-                DropHelper.DropIDToDropItem_2(dropId, rewardItems);
-            }
-            bagComponentServer.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PetExplore}_{TimeHelper.ServerNow()}_{exploreLuck}");
-            response.ReardList = rewardItems;
             reply();
             await ETTask.CompletedTask;
         }

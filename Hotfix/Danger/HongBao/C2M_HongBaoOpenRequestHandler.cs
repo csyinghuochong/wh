@@ -24,7 +24,7 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.GetComponent<NumericComponent>().GetAsInt(NumericType.HongBao) != 0)
+            if (unit.GetComponent<RoleDailyDataComponentServer>().GetHongBao() != 0)
             {
                 response.Error = ErrorCode.ERR_AlreadyReceived;
                 reply();
@@ -77,7 +77,7 @@ namespace ET
             }
 
             int hongbaoAmount = RandomHelper.RandomNumber(minGold, maxGold);
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HongBao, 1);
+            unit.GetComponent<RoleDailyDataComponentServer>().SetHongBao(1);
             unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Gold, hongbaoAmount.ToString(), true, 33);// ItemGetWay.HongBao);
             response.HongbaoAmount = hongbaoAmount;
 

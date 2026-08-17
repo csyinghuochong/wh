@@ -106,7 +106,6 @@ namespace ET
                     break;
             }
             roleInfoComponentServer.UpdateRoleData(UserDataType.Exp, (costExp * -1).ToString());
-            numericComponent.ApplyChange(null, NumericType.ExpToGoldTimes, 1, 0);
             reply();
             await ETTask.CompletedTask;
         }

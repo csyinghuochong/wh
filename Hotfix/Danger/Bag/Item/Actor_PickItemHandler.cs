@@ -15,7 +15,7 @@ namespace ET
             int errorCode = ErrorCode.ERR_Success;
             //DropType ==  0 公共掉落 2保护掉落   1私有掉落 3 归属掉落
 
-            int cellindex = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.HappyCellIndex);
+            int cellindex = 0;
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             UnitComponent unitComponent = unit.GetParent<UnitComponent>();
             RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
