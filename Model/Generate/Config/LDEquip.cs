@@ -90,7 +90,7 @@ namespace ET
 		public string Icon { get; set; }
 		/// <summary>模型</summary>
 		[ProtoMember(4)]
-		public string Model { get; set; }
+		public int Fashion_Id { get; set; }
 		/// <summary>类型</summary>
 		[ProtoMember(5)]
 		public int Sub_Type { get; set; }

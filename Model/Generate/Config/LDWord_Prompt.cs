@@ -89,7 +89,5 @@ namespace ET
 		[ProtoMember(3)]
 		public string CN { get; set; }
 
-        [ProtoMember(4)]
-        public string EN { get; set; }
 	}
 }

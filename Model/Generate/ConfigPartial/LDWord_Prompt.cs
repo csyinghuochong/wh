@@ -62,9 +62,9 @@ namespace ET
         /// <summary>按语言取提示文案；lang=0 中文，其它英文。EN 未配时回退 CN。</summary>
         public string GetShowText(int lang = 0)
         {
-            if (lang != 0 && !string.IsNullOrEmpty(this.EN))
+            if (lang != 0 && !string.IsNullOrEmpty(this.CN))
             {
-                return this.EN;
+                return this.CN;
             }
 
             return this.CN ?? string.Empty;

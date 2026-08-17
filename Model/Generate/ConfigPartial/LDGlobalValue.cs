@@ -81,12 +81,13 @@ namespace ET
 
         private void ParseBaseData()
         {
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_2);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagMaterial] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_3);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagConsume] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_4);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagLife] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_51);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_52);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120021);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120022);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagMaterial] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120023);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagConsume] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120024);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagLife] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1200251);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1200252);
+            this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome2] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1200253);
         }
 
         private void ParseAddPoint()
