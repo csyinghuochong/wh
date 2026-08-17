@@ -14,7 +14,7 @@ namespace ET
                 unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
             }
 
-            response.ActivityInfo = ActivityHelper.CloneSignInState(activity.ActivityInfo);
+            response.ActivityInfo = activity.ActivityInfo;
             reply();
             await ETTask.CompletedTask;
         }
