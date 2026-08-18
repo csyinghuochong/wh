@@ -29,7 +29,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
-            ActivityHelper.EnsureSignInLoginDay(self.ActivityInfo, role.LastLoginTime, role.RoleInfo.CreateTime);
+            ActivityHelper.EnsureSignInLoginDay(self.ActivityInfo,  role.LastLoginTime, role.RoleInfo.CreateTime);
 
             Console.WriteLine($"SignInLoginDays: {self.ActivityInfo.SignInLoginDays}");
 
