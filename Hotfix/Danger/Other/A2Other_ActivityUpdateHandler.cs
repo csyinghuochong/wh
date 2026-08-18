@@ -11,62 +11,6 @@ namespace ET
     public class A2Other_ActivityUpdateHandler : AMActorRpcHandler<Scene, A2Other_ActivityUpdateRequest, Other2A_ActivityUpdateResponse>
     {
 
-        private async ETTask TestSmss(Scene scene)
-        {
-            if (scene.DomainZone() == 3)
-            {
-                for (int i = 0; i < 2; i++)
-                {
-
-                    Console.WriteLine("SendSmsVerifyCode.Send 18319670288");
-                    SendSmsVerifyCode.Send_2("18319670288", 1, 1);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    SendSmsVerifyCode.Send_2("18319670288", 1, 2);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    SendSmsVerifyCode.Send_2("18319670288", 2, 1);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    SendSmsVerifyCode.Send_2("18319670288", 2, 2);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-
-                    Console.WriteLine("SendSmsVerifyCode.Send 18652422521");
-                    SendSmsVerifyCode.Send_2("18652422521", 1, 1);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    SendSmsVerifyCode.Send_2("18652422521", 1, 2);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    SendSmsVerifyCode.Send_2("18652422521", 2, 1);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    SendSmsVerifyCode.Send_2("18652422521", 2, 2);
-
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    Console.WriteLine("SendSmsVerifyCode.Send 15172796169");
-                    SendSmsVerifyCode.Send_2("15172796169", 1, 1);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    SendSmsVerifyCode.Send_2("15172796169", 1, 2);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    SendSmsVerifyCode.Send_2("15172796169", 2, 1);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 20);
-                    SendSmsVerifyCode.Send_2("15172796169", 2, 2);
-                }
-            }
-        }
-
-        private async ETTask TestSmssNew(Scene scene)
-        {
-            if (scene.DomainZone() == 3)
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    //移动
-                    Console.WriteLine("SendSmsVerifyCode.Send 18319670288");
-                    Sample.Send("18319670288", 1, 1);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Minute * 2);
-                    Sample.Send("18319670288", 1, 2);
-                    await TimerComponent.Instance.WaitAsync(TimeHelper.Minute * 2);
-                }
-            }
-
-        }
-
         protected override async ETTask Run(Scene scene, A2Other_ActivityUpdateRequest request, Other2A_ActivityUpdateResponse response, Action reply)
         {
             int hour = request.Hour;

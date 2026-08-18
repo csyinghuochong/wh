@@ -21,6 +21,7 @@ namespace ET
 
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             PlayerDailyResetHelper.RunLoginCrossDay(unit, currentTime);
+            roleInfoComponentServer.LastLoginTime = currentTime;
 
             unit.GetComponent<BagComponentServer>().OnLogin(roleInfo.RobotId, roleInfo.Occ, roleInfo.OccTwo);
             unit.GetComponent<TaskComponentServer>().OnLogin();

@@ -43,7 +43,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 登录时按上次登录时间补刷跨天/同天体力与家园经验。
+        /// 登录时按上次登录时间补刷跨天/同天体力与家园经验。切日以 Global_Reset_Time（默认 5 点）为准。
         /// </summary>
         public static void RunLoginCrossDay(Unit unit, long currentTime)
         {
@@ -64,7 +64,7 @@ namespace ET
             }
 
             DateTime lastdateTime = TimeInfo.Instance.ToDateTime(lastLoginTime);
-            if (dateTime.Day != lastdateTime.Day)
+            if (!ActivityHelper.IsSameGameDay(lastLoginTime, currentTime))
             {
                 Log.Debug($"OnZeroClockUpdate [登录刷新]: {unit.Id}");
                 float passhour = (currentTime - lastLoginTime) * 1f / TimeHelper.Hour;

@@ -279,8 +279,6 @@ namespace ET
         {
             self.CheckData();
             self.RemoteAddress = remoteIp;
-            
-            self.LastLoginTime = TimeHelper.ServerNow();
             self.UserName = self.RoleInfo.Name;
         }
 

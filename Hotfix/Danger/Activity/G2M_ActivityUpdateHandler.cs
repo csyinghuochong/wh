@@ -11,13 +11,11 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             switch (message.ActivityType)
             {
-                case 0:
+                case 5:
                     Log.Debug($"OnZeroClockUpdate [零点刷新]: {unit.Id}");
                     PlayerDailyResetHelper.RunZeroClock(unit, true);
                     break;
-                case -1:
-                    LocationProxyComponent.Instance.Remove(unit.Id).Coroutine();
-                    break;
+
                 default:
                     //if (message.ActivityType == 18  && unit.DomainZone() == 81)
                     //{
