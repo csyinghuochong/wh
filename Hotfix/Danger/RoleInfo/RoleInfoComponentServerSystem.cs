@@ -294,44 +294,13 @@ namespace ET
         }
 
         /// <summary>
-        /// 0 6 12 20点各刷新30点体力
+        /// 
         /// </summary>
         /// <param name="self"></param>
         /// <param name="notice"></param>
         public static void OnHourUpdate(this RoleInfoComponentServer self, int hour, bool notice)
         {
-            if (self.LastLoginTime > 0)
-            {
-                DateTime lastdateTime = TimeInfo.Instance.ToDateTime(self.LastLoginTime);
-                DateTime nowdateTime = TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow());
-                if ( lastdateTime.Hour == nowdateTime.Hour)
-                {
-                    if (self.Id == 2341487098982367232)
-                    {
-                        Console.WriteLine($"刀：lastdateTime.Hour == nowdateTime.Hour  {hour}");
-                    }
-                    return;
-                }
-            }
-
-            if (hour == 0 )
-            {
-                self.RecoverPiLao(30 + self.GetAddPiLao(self.RoleInfo.MakeList.Count), notice);
-            }
-            if (hour == 12)
-            {
-                self.RecoverPiLao(30, notice);
-            }
-
-            if (hour == 6 ||  hour == 20)
-            {
-                self.RecoverPiLao(50, notice);
-            }
-
-            Unit unit = self.GetParent<Unit>();
-            unit.GetComponent<JiaYuanComponentServer>().OnHourUpdate(hour, notice);
-            AntiCheatAuditHelper.OnHourTick(unit);
-            //LogHelper.CheckBlackRoom(self.GetParent<Unit>());
+          
         }
 
         public static void RecoverPiLao(this RoleInfoComponentServer self, int addValue, bool notice)
@@ -347,7 +316,7 @@ namespace ET
 
 
 
-        public static void OnZeroClockUpdate(this RoleInfoComponentServer self, bool notice)
+        public static void OnDailyReset(this RoleInfoComponentServer self, bool notice)
         {
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();

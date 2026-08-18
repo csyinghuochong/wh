@@ -13942,9 +13942,6 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
-		[ProtoMember(1)]
-		public int ReceiveId { get; set; }
-
 		[ProtoMember(2)]
 		public int SignInLoginDays { get; set; }
 

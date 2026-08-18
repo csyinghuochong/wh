@@ -38,7 +38,7 @@ namespace ET
             self.EnsureLists();
         }
 
-        public static void OnZeroClockUpdate(this RoleDailyDataComponentServer self, bool notice = false)
+        public static void OnDailyReset(this RoleDailyDataComponentServer self, bool notice = false)
         {
             Unit unit = self.GetParent<Unit>();
             if (unit == null || unit.Type != UnitType.Player)

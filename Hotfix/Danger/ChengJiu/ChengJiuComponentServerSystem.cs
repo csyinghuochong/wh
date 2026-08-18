@@ -62,7 +62,7 @@ namespace ET
             self.TriggerEvent(ChengJiuTargetEnum.PlayerLevel_205, 0, roleInfo.RoleInfo.Lv);
         }
 
-        public static void OnZeroClockUpdate(this ChengJiuComponentServer self)
+        public static void OnDailyReset(this ChengJiuComponentServer self)
         {
             self.RandomDrop = 0;
         }

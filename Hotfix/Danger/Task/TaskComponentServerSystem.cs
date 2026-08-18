@@ -1337,7 +1337,7 @@ namespace ET
         /// 重置每日活跃
         /// </summary> 
         /// <param name="self"></param>
-        public static void OnZeroClockUpdate(this TaskComponentServer self, bool notice)
+        public static void OnDailyReset(this TaskComponentServer self, bool notice)
         {
             self.OnLineTime = 0;
             self.UpdateDayTask(notice);

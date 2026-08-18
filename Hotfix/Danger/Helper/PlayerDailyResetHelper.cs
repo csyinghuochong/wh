@@ -4,14 +4,14 @@ using System.Collections.Generic;
 namespace ET
 {
     /// <summary>
-    /// 登录跨天 / 零点刷新编排：统一 Login 与 G2M 零点扇出，避免两处各写一份。
+    /// 登录跨天 / 日清编排：统一 Login 与 G2M 日清扇出，避免两处各写一份。
     /// </summary>
     public static class PlayerDailyResetHelper
     {
         /// <summary>
-        /// 零点刷新：notice=true 为整点推送，false 为登录补刷。
+        /// 日清：notice=true 为整点推送，false 为登录补刷。
         /// </summary>
-        public static void RunZeroClock(Unit unit, bool notice)
+        public static void RunDailyReset(Unit unit, bool notice)
         {
             if (unit == null || unit.IsDisposed)
             {
@@ -21,27 +21,23 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
 
-            unit.GetComponent<RoleDailyDataComponentServer>().OnZeroClockUpdate(notice);
-            if (notice)
-            {
-                roleInfoComponentServer.OnHourUpdate(0, true);
-            }
+            unit.GetComponent<RoleDailyDataComponentServer>().OnDailyReset(notice);
+           
+            unit.GetComponent<ActivityComponentServer>().OnDailyReset(roleInfo.Lv);
 
-            unit.GetComponent<ActivityComponentServer>().OnZeroClockUpdate(roleInfo.Lv);
-
-            // 日清列表已在 RoleDailyData.OnZeroClockUpdate 清过；这里只做 RoleInfo 其它跨天逻辑
-            roleInfoComponentServer.OnZeroClockUpdate(notice);
+            // 日清列表已在 RoleDailyData.OnDailyReset 清过；这里只做 RoleInfo 其它跨天逻辑
+            roleInfoComponentServer.OnDailyReset(notice);
 
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
             if (notice)
             {
                 taskComponentServer.CheckWeeklyUpdate();
             }
-            taskComponentServer.OnZeroClockUpdate(notice);
+            taskComponentServer.OnDailyReset(notice);
 
-            unit.GetComponent<ChengJiuComponentServer>().OnZeroClockUpdate();
-            unit.GetComponent<JiaYuanComponentServer>()?.OnZeroClockUpdate(notice);
-            unit.GetComponent<DataCollationComponent>()?.OnZeroClockUpdate(notice);
+            unit.GetComponent<ChengJiuComponentServer>().OnDailyReset();
+            unit.GetComponent<JiaYuanComponentServer>().OnDailyReset(notice);
+            unit.GetComponent<DataCollationComponent>().OnDailyReset(notice);
         }
 
         /// <summary>
@@ -60,20 +56,20 @@ namespace ET
 
             if (lastLoginTime == 0)
             {
-                Log.Debug($"OnZeroClockUpdate [数据初始化]: {unit.Id}");
-                RunZeroClock(unit, false);
+                Log.Debug($"OnDailyReset [数据初始化]: {unit.Id}");
+                RunDailyReset(unit, false);
                 return;
             }
 
             DateTime lastdateTime = TimeInfo.Instance.ToDateTime(lastLoginTime);
             if (!ActivityHelper.IsSameGameDay(lastLoginTime, currentTime))
             {
-                Log.Debug($"OnZeroClockUpdate [登录刷新]: {unit.Id}");
+                Log.Debug($"OnDailyReset [登录刷新]: {unit.Id}");
                 float passhour = (currentTime - lastLoginTime) * 1f / TimeHelper.Hour;
                 RecoverPiLaoAcrossDays(roleInfoComponentServer, unit, lastdateTime, dateTime, passhour, currentTime, lastLoginTime);
 
                 unit.GetComponent<TaskComponentServer>().CheckWeeklyUpdate(lastLoginTime, currentTime);
-                RunZeroClock(unit, false);
+                RunDailyReset(unit, false);
                 roleInfoComponentServer.OnJiaYuanExp(Math.Min(passhour, 12f));
             }
             else

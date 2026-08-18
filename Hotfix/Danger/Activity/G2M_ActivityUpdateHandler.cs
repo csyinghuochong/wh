@@ -14,8 +14,8 @@ namespace ET
             switch (message.ActivityType)
             {
                 case 5:
-                    Console.WriteLine($"OnZeroClockUpdate [零点刷新]: {unit.Id}");
-                    PlayerDailyResetHelper.RunZeroClock(unit, true);
+                    Console.WriteLine($"OnDailyReset [日清]: {unit.Id}");
+                    PlayerDailyResetHelper.RunDailyReset(unit, true);
                     break;
 
                 default:
@@ -50,8 +50,6 @@ namespace ET
 
                     //    LogHelper.OnLineInfo(gongzuoshiInfo);    
                     //}
-
-                    roleInfoComponentServer.OnHourUpdate(message.ActivityType, true);
                     break;
             }
    

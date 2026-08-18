@@ -457,10 +457,10 @@ namespace ET
         }
 
         /// <summary>
-        /// 零点刷新
+        /// 日清
         /// </summary>
         /// <param name="self"></param>
-        public static void OnZeroClockUpdate(this JiaYuanComponentServer self, bool notice)
+        public static void OnDailyReset(this JiaYuanComponentServer self, bool notice)
         {
 #if SERVER
             self.UpdatePlanGoodList();

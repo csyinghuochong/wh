@@ -90,7 +90,7 @@ namespace ET
             }
         }
 
-        public static void OnZeroClockUpdate(this DataCollationComponent self, bool notice)
+        public static void OnDailyReset(this DataCollationComponent self, bool notice)
         {
             self.PaiMaiCostGoldToday = 0;
         }

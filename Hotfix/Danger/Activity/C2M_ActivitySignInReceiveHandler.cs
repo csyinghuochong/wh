@@ -28,14 +28,9 @@ namespace ET
 
             ActivityComponentServer activity = unit.GetComponent<ActivityComponentServer>();
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
-            if (ActivityHelper.EnsureSignInLoginDay(activity.ActivityInfo, ref role.LastLoginTime, now, activityId))
+            if (!ActivityHelper.CanReceiveSignIn(activity.ActivityInfo, cfg, role.RoleInfo.CreateTime, activityId))
             {
-                unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
-            }
-
-            if (!ActivityHelper.CanReceiveSignIn(activity.ActivityInfo, cfg, activityId))
-            {
-                response.Error = ActivityHelper.IsSignInReceived(activity.ActivityInfo, signInId, activityId)
+                response.Error = ActivityHelper.IsSignInReceived(activity.ActivityInfo, signInId, role.RoleInfo.CreateTime, activityId)
                         ? ErrorCode.ERR_AlreadyReceived
                         : ErrorCode.ERR_Error;
                 reply();
@@ -63,7 +58,6 @@ namespace ET
             activity.ActivityInfo.SignInReceivedId = signInId;
             unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
 
-            response.ReceiveId = signInId;
             response.SignInLoginDays = activity.ActivityInfo.SignInLoginDays;
             response.SignInReceivedId = signInId;
             response.Error = ErrorCode.ERR_Success;

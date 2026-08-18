@@ -7,14 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ActivityInfoRequest request, M2C_ActivityInfoResponse response, Action reply)
         {
-            ActivityComponentServer activity = unit.GetComponent<ActivityComponentServer>();
-            RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
-            if (ActivityHelper.EnsureSignInLoginDay(activity.ActivityInfo, ref role.LastLoginTime))
-            {
-                unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
-            }
-
-            response.ActivityInfo = activity.ActivityInfo;
+            response.ActivityInfo = unit.GetComponent<ActivityComponentServer>().ActivityInfo;
             reply();
             await ETTask.CompletedTask;
         }

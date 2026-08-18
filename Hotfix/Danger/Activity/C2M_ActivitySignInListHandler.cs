@@ -10,13 +10,8 @@ namespace ET
             int activityId = request.ActivityId > 0 ? request.ActivityId : ActivityHelper.DailySignActivityId;
             ActivityComponentServer activity = unit.GetComponent<ActivityComponentServer>();
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
-            if (ActivityHelper.EnsureSignInLoginDay(activity.ActivityInfo, ref role.LastLoginTime, 0, activityId))
-            {
-                unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
-            }
-
             ActivityInfo info = activity.ActivityInfo;
-            int group = ActivityHelper.GetCurrentSignInGroup(info, activityId);
+            int group = ActivityHelper.GetCurrentSignInGroup(role.RoleInfo.CreateTime, activityId);
             response.SignInIds = ActivityHelper.GetSignInIdsByGroup(activityId, group);
             response.SignInLoginDays = info.SignInLoginDays;
             response.SignInReceivedId = info.SignInReceivedId;
