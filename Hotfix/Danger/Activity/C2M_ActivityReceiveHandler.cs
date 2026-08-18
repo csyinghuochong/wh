@@ -24,9 +24,6 @@ namespace ET
                     return;
                 }
 
-                LogHelper.LogWarning($"C2M_ActivityReceive:  {unit.Id} {request.ActivityId} {request.ReceiveIndex} {TimeHelper.ServerNow().ToString()}", true);
-
-
                 /*
                 switch (activityConfig.ActivityType)
                 {
@@ -296,7 +293,6 @@ namespace ET
                 }
             }
                 */
-                LogHelper.LogWarning($"C2M_ActivityReceive[成功]:  {unit.Id} {request.ActivityId} {request.ReceiveIndex} {TimeHelper.ServerNow().ToString()}", true);
                 reply();
                 await ETTask.CompletedTask;
             }

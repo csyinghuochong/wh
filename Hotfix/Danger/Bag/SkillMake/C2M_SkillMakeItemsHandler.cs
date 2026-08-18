@@ -5,9 +5,9 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class C2M_SkillMakeHandler : AMActorLocationRpcHandler<Unit, C2M_SkillMakeRequest, M2C_SkillMakeResponse>
+    public class C2M_SkillMakeItemsHandler : AMActorLocationRpcHandler<Unit, C2M_SkillMakeItemsRequest, M2C_SkillMakeItemsResponse>
     {
-        protected override async ETTask Run(Unit unit, C2M_SkillMakeRequest request, M2C_SkillMakeResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_SkillMakeItemsRequest request, M2C_SkillMakeItemsResponse response, Action reply)
         {
             if (!LDSkill_MakeCategory.Instance.Contain(request.SkillMakeId))
             {
@@ -17,7 +17,7 @@ namespace ET
             }
 
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-            if (roleInfo.MakeList == null || !roleInfo.MakeList.Contains(request.SkillMakeId))
+            if (roleInfo.MakeIdList == null || !roleInfo.MakeIdList.Contains(request.SkillMakeId))
             {
                 response.Error = ErrorCode.ERR_MakeTypeError;
                 reply();

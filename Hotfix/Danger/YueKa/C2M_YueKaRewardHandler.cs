@@ -28,10 +28,7 @@ namespace ET
                 return;
             }
 
-            int remainTimes = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.YueKaRemainTimes);
             unit.GetComponent<RoleDailyDataComponentServer>().SetYueKaAwardTime(1);
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.YueKaRemainTimes, remainTimes -1);
-          
             unit.GetComponent<BagComponentServer>().OnAddItemData(reward, $"{ItemGetWay.YueKaReward}_{TimeHelper.ServerNow()}");
 
             reply();

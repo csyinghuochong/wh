@@ -37,17 +37,6 @@ namespace ET
                 return ErrorCode.ERR_Success;
             }
 
-            if (ldItem.ItemType == ItemSubTypeEnum.SubType_Recipe_98)
-            {
-                int makeId = ItemNewHelper.GetSkillMakeId(ldItem.Id);
-                RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-                if (makeId > 0 && LDSkill_MakeCategory.Instance.Contain(makeId) && !roleInfo.MakeList.Contains(makeId))
-                {
-                    roleInfo.MakeList.Add(makeId);
-                    MessageHelper.SendToClient(unit, new M2C_UpdateUserInfoMessage { RoleInfo = roleInfo });
-                }
-            }
-
             if (useBagInfo != null && bagUpdate != null)
             {
                 if (useBagInfo.ItemNum <= 0)

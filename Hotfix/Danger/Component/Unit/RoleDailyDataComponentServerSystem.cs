@@ -47,21 +47,6 @@ namespace ET
             }
 
             self.ClearDayLists(RoleDailyClearType.Day);
-
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            if (numericComponent == null)
-            {
-                return;
-            }
-
-            int yuekatimes = numericComponent.GetAsInt(NumericType.YueKaRemainTimes);
-            numericComponent.ApplyValue(NumericType.YueKaEndTime, yuekatimes, notice);
-
-            int lirun = (int)(numericComponent.GetAsInt(NumericType.InvestTotal) * 0.25f);
-            numericComponent.ApplyValue(
-                NumericType.InvestTotal,
-                numericComponent.GetAsInt(NumericType.InvestTotal) + lirun,
-                notice);
         }
 
         /// <summary>

@@ -596,13 +596,13 @@ namespace ET
 		public int OccTwo { get; set; }
 
 		[ProtoMember(20)]
-		public List<int> MakeList = new List<int>();
+		public List<int> MakeTypeList = new List<int>();
 
 		[ProtoMember(21)]
-		public List<int> CompleteGuideIds = new List<int>();
+		public List<int> MakeIdList = new List<int>();
 
-		[ProtoMember(29)]
-		public List<KeyValuePairInt> MakeIdList = new List<KeyValuePairInt>();
+		[ProtoMember(26)]
+		public List<int> CompleteGuideIds = new List<int>();
 
 		[ProtoMember(32)]
 		public List<int> HorseIds = new List<int>();
@@ -13910,46 +13910,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ActivitySignInReceiveResponse))]
-	[Message(OuterOpcode.C2M_ActivitySignInReceiveRequest)]
-	[ProtoContract]
-	public partial class C2M_ActivitySignInReceiveRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ActivityId { get; set; }
-
-		[ProtoMember(2)]
-		public int SignInId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ActivitySignInReceiveResponse)]
-	[ProtoContract]
-	public partial class M2C_ActivitySignInReceiveResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(2)]
-		public int SignInLoginDays { get; set; }
-
-		[ProtoMember(3)]
-		public int SignInReceivedId { get; set; }
-
-	}
-
 //寄售begin####################################################
 	[Message(OuterOpcode.AuctionRecord)]
 	[ProtoContract]
@@ -14535,83 +14495,43 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_MakeLearnResponse))]
-	[Message(OuterOpcode.C2M_MakeLearnRequest)]
-	[ProtoContract]
-	public partial class C2M_MakeLearnRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MakeId { get; set; }
-
-		[ProtoMember(2)]
-		public int Plan { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_MakeLearnResponse)]
-	[ProtoContract]
-	public partial class M2C_MakeLearnResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_MakeSelectResponse))]
-	[Message(OuterOpcode.C2M_MakeSelectRequest)]
-	[ProtoContract]
-	public partial class C2M_MakeSelectRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MakeType { get; set; }
-
-		[ProtoMember(2)]
-		public int Plan { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_MakeSelectResponse)]
-	[ProtoContract]
-	public partial class M2C_MakeSelectResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<int> MakeList = new List<int>();
-
-	}
-
 //合成  end####################################################
 //制造begin####################################################
-	[ResponseType(nameof(M2C_SkillMakeResponse))]
-	[Message(OuterOpcode.C2M_SkillMakeRequest)]
+	[ResponseType(nameof(M2C_SkillMakeLearnResponse))]
+	[Message(OuterOpcode.C2M_SkillMakeLearnRequest)]
 	[ProtoContract]
-	public partial class C2M_SkillMakeRequest: Object, IActorLocationRequest
+	public partial class C2M_SkillMakeLearnRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillMakeType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillMakeLearnResponse)]
+	[ProtoContract]
+	public partial class M2C_SkillMakeLearnResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_SkillMakeItemsResponse))]
+	[Message(OuterOpcode.C2M_SkillMakeItemsRequest)]
+	[ProtoContract]
+	public partial class C2M_SkillMakeItemsRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -14624,9 +14544,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_SkillMakeResponse)]
+	[Message(OuterOpcode.M2C_SkillMakeItemsResponse)]
 	[ProtoContract]
-	public partial class M2C_SkillMakeResponse: Object, IActorLocationResponse
+	public partial class M2C_SkillMakeItemsResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -15424,44 +15344,6 @@ namespace ET
 
 //商店  end####################################################
 //活动  end####################################################
-//领取奖励
-	[ResponseType(nameof(M2C_ActivityReceiveResponse))]
-	[Message(OuterOpcode.C2M_ActivityReceiveRequest)]
-	[ProtoContract]
-	public partial class C2M_ActivityReceiveRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ActivityType { get; set; }
-
-		[ProtoMember(2)]
-		public int ActivityId { get; set; }
-
-		[ProtoMember(3)]
-		public int ReceiveIndex { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ActivityReceiveResponse)]
-	[ProtoContract]
-	public partial class M2C_ActivityReceiveResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //活动信息
 	[ResponseType(nameof(M2C_ActivityInfoResponse))]
 	[Message(OuterOpcode.C2M_ActivityInfoRequest)]
@@ -15491,6 +15373,93 @@ namespace ET
 
 		[ProtoMember(1)]
 		public ActivityInfo ActivityInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.ActivityInfo)]
+	[ProtoContract]
+	public partial class ActivityInfo: Object
+	{
+		[ProtoMember(1)]
+		public int SignInLoginDays { get; set; }
+
+		[ProtoMember(2)]
+		public int SignInReceivedId { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ActivitySignInReceiveResponse))]
+	[Message(OuterOpcode.C2M_ActivitySignInReceiveRequest)]
+	[ProtoContract]
+	public partial class C2M_ActivitySignInReceiveRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ActivityId { get; set; }
+
+		[ProtoMember(2)]
+		public int SignInId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ActivitySignInReceiveResponse)]
+	[ProtoContract]
+	public partial class M2C_ActivitySignInReceiveResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(2)]
+		public int SignInLoginDays { get; set; }
+
+		[ProtoMember(3)]
+		public int SignInReceivedId { get; set; }
+
+	}
+
+//领取奖励（通用）
+	[ResponseType(nameof(M2C_ActivityReceiveResponse))]
+	[Message(OuterOpcode.C2M_ActivityReceiveRequest)]
+	[ProtoContract]
+	public partial class C2M_ActivityReceiveRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ActivityType { get; set; }
+
+		[ProtoMember(2)]
+		public int ActivityId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ActivityReceiveResponse)]
+	[ProtoContract]
+	public partial class M2C_ActivityReceiveResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
 
 	}
 
@@ -15591,18 +15560,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public int ReceiveIndex { get; set; }
-
-	}
-
-	[Message(OuterOpcode.ActivityInfo)]
-	[ProtoContract]
-	public partial class ActivityInfo: Object
-	{
-		[ProtoMember(1)]
-		public int SignInLoginDays { get; set; }
-
-		[ProtoMember(2)]
-		public int SignInReceivedId { get; set; }
 
 	}
 
