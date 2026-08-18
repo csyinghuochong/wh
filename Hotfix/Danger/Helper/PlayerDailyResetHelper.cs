@@ -62,7 +62,7 @@ namespace ET
             }
 
             DateTime lastdateTime = TimeInfo.Instance.ToDateTime(lastLoginTime);
-            if (!ActivityHelper.IsSameGameDay(lastLoginTime, currentTime))
+            if (!ActivityHelper.IsSameGameResetDay(lastLoginTime, currentTime))
             {
                 Log.Debug($"OnDailyReset [登录刷新]: {unit.Id}");
                 float passhour = (currentTime - lastLoginTime) * 1f / TimeHelper.Hour;

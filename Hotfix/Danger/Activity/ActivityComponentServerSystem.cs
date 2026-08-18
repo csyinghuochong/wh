@@ -29,12 +29,13 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
-            ActivityHelper.EnsureSignInLoginDay(self.ActivityInfo, ref role.LastLoginTime, role.RoleInfo.CreateTime);
+            ActivityHelper.EnsureSignInLoginDay(self.ActivityInfo, role.LastLoginTime, role.RoleInfo.CreateTime);
+
+            Console.WriteLine($"SignInLoginDays: {self.ActivityInfo.SignInLoginDays}");
 
             //重置每日特惠 和 新春活动
             for (int i = self.ActivityReceiveIds.Count - 1; i >= 0; i--)
             {
-
             }
         }
 
