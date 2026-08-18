@@ -84,66 +84,69 @@ namespace ET
 		public int Id { get; set; }
 		/// <summary>类型</summary>
 		[ProtoMember(2)]
+		public int Type { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(3)]
 		public int Make_Type_1 { get; set; }
 		/// <summary>Id</summary>
-		[ProtoMember(3)]
+		[ProtoMember(4)]
 		public int Make_Id_1 { get; set; }
 		/// <summary>数量</summary>
-		[ProtoMember(4)]
+		[ProtoMember(5)]
 		public int Make_Num_1 { get; set; }
 		/// <summary>权重</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public int Make_Weight_1 { get; set; }
 		/// <summary>类型</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int Make_Type_2 { get; set; }
 		/// <summary>Id</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int Make_Id_2 { get; set; }
 		/// <summary>数量</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int Make_Num_2 { get; set; }
 		/// <summary>权重</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int Make_Weight_2 { get; set; }
 		/// <summary>类型</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int Make_Type_3 { get; set; }
 		/// <summary>Id</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int Make_Id_3 { get; set; }
 		/// <summary>数量</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int Make_Num_3 { get; set; }
 		/// <summary>权重</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public int Make_Weight_3 { get; set; }
 		/// <summary>类型</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public int Make_Type_4 { get; set; }
 		/// <summary>Id</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int Make_Id_4 { get; set; }
 		/// <summary>数量</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public int Make_Num_4 { get; set; }
 		/// <summary>权重</summary>
-		[ProtoMember(17)]
+		[ProtoMember(18)]
 		public int Make_Weight_4 { get; set; }
 		/// <summary>类型</summary>
-		[ProtoMember(18)]
+		[ProtoMember(19)]
 		public int Make_Type_5 { get; set; }
 		/// <summary>Id</summary>
-		[ProtoMember(19)]
+		[ProtoMember(20)]
 		public int Make_Id_5 { get; set; }
 		/// <summary>数量</summary>
-		[ProtoMember(20)]
+		[ProtoMember(21)]
 		public int Make_Num_5 { get; set; }
 		/// <summary>权重</summary>
-		[ProtoMember(21)]
+		[ProtoMember(22)]
 		public int Make_Weight_5 { get; set; }
 		/// <summary>消耗</summary>
-		[ProtoMember(22)]
+		[ProtoMember(23)]
 		public string Consume { get; set; }
 
 	}

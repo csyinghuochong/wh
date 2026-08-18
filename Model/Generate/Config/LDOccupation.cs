@@ -91,12 +91,12 @@ namespace ET
 		/// <summary>女头</summary>
 		[ProtoMember(4)]
 		public int RoleHead_Woman { get; set; }
-		/// <summary>男模部件</summary>
+		/// <summary>男时装</summary>
 		[ProtoMember(5)]
-		public int[] Model_Man { get; set; }
-		/// <summary>女模部件</summary>
+		public int[] Fashion_Id_Man { get; set; }
+		/// <summary>女时装</summary>
 		[ProtoMember(6)]
-		public int[] Model_Woman { get; set; }
+		public int[] Fashion_Id_Woman { get; set; }
 		/// <summary>生命系数</summary>
 		[ProtoMember(7)]
 		public double Hp_Param { get; set; }

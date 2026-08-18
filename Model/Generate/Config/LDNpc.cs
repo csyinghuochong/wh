@@ -99,15 +99,27 @@ namespace ET
 		public string Model { get; set; }
 		/// <summary>类型</summary>
 		[ProtoMember(7)]
-		public int Type { get; set; }
+		public int Type1 { get; set; }
 		/// <summary>参数</summary>
 		[ProtoMember(8)]
-		public int[] Param { get; set; }
-		/// <summary>雷达 显示</summary>
+		public int[] Param1_1 { get; set; }
+		/// <summary>文本</summary>
 		[ProtoMember(9)]
+		public int Word1 { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(10)]
+		public int Type2 { get; set; }
+		/// <summary>参数</summary>
+		[ProtoMember(11)]
+		public int[] Param2_1 { get; set; }
+		/// <summary>文本</summary>
+		[ProtoMember(12)]
+		public int Word2 { get; set; }
+		/// <summary>雷达 显示</summary>
+		[ProtoMember(13)]
 		public int Rader { get; set; }
 		/// <summary>禁用</summary>
-		[ProtoMember(10)]
+		[ProtoMember(14)]
 		public int Is_Close { get; set; }
 
 	}
