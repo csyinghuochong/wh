@@ -15,9 +15,9 @@ namespace ET
             {
                 case 5:
                     Console.WriteLine($"OnDailyReset [日清]: {unit.Id}");
-                    PlayerDailyResetHelper.RunDailyReset(unit, true);
+                    unit.GetComponent<TaskComponentServer>().CheckWeeklyUpdate();
+                    PlayerDailyResetHelper.RunDailyReset(unit, 2);
                     break;
-
                 default:
                     //if (message.ActivityType == 18  && unit.DomainZone() == 81)
                     //{

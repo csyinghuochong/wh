@@ -89,22 +89,6 @@ namespace ET
                 self.UploadCombat().Coroutine();
             }
         }
-
-        public static void OnJiaYuanExp(this RoleInfoComponentServer self, float hour)
-        {
-            
-            if ( !LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv + 1) )
-            {
-                
-                return;
-            }
-            
-            LDHome ldHome = LDHomeCategory.Instance.Get(self.RoleInfo.JiaYuanLv);
-            //self.RoleInfo.JiaYuanExp += jiaYuanConfig.JiaYuanAddExp;
-            //int addexp = Mathf.FloorToInt(hour * ldHome.JiaYuanAddExp);
-            //self.UpdateRoleData(UserDataType.JiaYuanExp, $"{addexp}", true, ItemGetWay.JiaYuanExchange);
-        }
-
         public static void OnRongyuChanChu(this RoleInfoComponentServer self, int coefficient, bool notice)
         {
             if (coefficient == 0)
@@ -305,23 +289,20 @@ namespace ET
 
         public static void RecoverPiLao(this RoleInfoComponentServer self, int addValue, bool notice)
         {
-            Unit unit = self.GetParent<Unit>();
-            long recoverPiLao = unit.GetMaxPiLao() - self.RoleInfo.PiLao;
-            recoverPiLao = Math.Min(recoverPiLao, addValue);
+            //Unit unit = self.GetParent<Unit>();
+            //long recoverPiLao = unit.GetMaxPiLao() - self.RoleInfo.PiLao;
+            //recoverPiLao = Math.Min(recoverPiLao, addValue);
 
-            Log.Warning($"[增加体力] {unit.DomainZone()}    {unit.Id}    {recoverPiLao}");
-            //self.UpdateRoleData(UserDataType.PiLao, recoverPiLao.ToString(), notice);
-            self.LastLoginTime = TimeHelper.ServerNow();
+            //Log.Warning($"[增加体力] {unit.DomainZone()}    {unit.Id}    {recoverPiLao}");
+            ////self.UpdateRoleData(UserDataType.PiLao, recoverPiLao.ToString(), notice);
+            //self.LastLoginTime = TimeHelper.ServerNow();
         }
-
 
 
         public static void OnDailyReset(this RoleInfoComponentServer self, bool notice)
         {
             Unit unit = self.GetParent<Unit>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-          
-            numericComponent.ApplyValue(NumericType.ZeroClock, 1, notice);
+
             // 日清列表由 RoleDailyDataComponent 统一 Clear（含 BuyStoreItems 本次限购）
             unit.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists(RoleDailyClearType.Day);
             self.LastLoginTime = TimeHelper.ServerNow();

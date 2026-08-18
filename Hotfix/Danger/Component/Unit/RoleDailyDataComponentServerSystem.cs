@@ -47,7 +47,6 @@ namespace ET
             }
 
             self.ClearDayLists(RoleDailyClearType.Day);
-            self.NotifyUpdate(RoleDailyDataComponentServer.ReasonZeroClock);
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (numericComponent == null)

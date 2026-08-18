@@ -1296,7 +1296,7 @@ namespace ET
             }
         }
        
-        public static void CheckWeeklyUpdate(this TaskComponentServer self, long lastTime, long curTime)
+        public static void LoginCheckWeeklyUpdate(this TaskComponentServer self, long lastTime, long curTime)
         {
             //判断条件。 超过一周或者过了周末
             float passday = ((curTime - lastTime) * 1f / TimeHelper.OneDay);

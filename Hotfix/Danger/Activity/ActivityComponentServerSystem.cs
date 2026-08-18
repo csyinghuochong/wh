@@ -29,7 +29,27 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
-            ActivityHelper.EnsureSignInLoginDay(self.ActivityInfo,  role.LastLoginTime, role.RoleInfo.CreateTime);
+
+            // 每个游戏日首次进入时登录天数 +1；跨组（进度组 != 当前组）时重置
+            long createTime = role.RoleInfo.CreateTime;
+            long lastLoginTime = role.LastLoginTime;
+            long now = TimeHelper.ServerNow();
+            int groupNow = ActivityHelper.GetCurrentSignInGroup(createTime, ActivityHelper.DailySignActivityId, now);
+            int groupOld = ActivityHelper.GetSignInProgressGroup(self.ActivityInfo);
+            if (groupOld <= 0 && lastLoginTime > 0 && self.ActivityInfo.SignInLoginDays > 0)
+            {
+                groupOld = ActivityHelper.GetCurrentSignInGroup(createTime, ActivityHelper.DailySignActivityId, lastLoginTime);
+            }
+
+            if (self.ActivityInfo.SignInLoginDays <= 0 || (groupOld > 0 && groupOld != groupNow))
+            {
+                self.ActivityInfo.SignInLoginDays = 1;
+                self.ActivityInfo.SignInReceivedId = 0;
+            }
+            else
+            {
+                self.ActivityInfo.SignInLoginDays += 1;
+            }
 
             Console.WriteLine($"SignInLoginDays: {self.ActivityInfo.SignInLoginDays}");
 

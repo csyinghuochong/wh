@@ -1,3 +1,4 @@
+using Alipay.AopSdk.F2FPay.Business;
 using System;
 using System.Collections.Generic;
 
@@ -9,9 +10,9 @@ namespace ET
     public static class PlayerDailyResetHelper
     {
         /// <summary>
-        /// 日清：notice=true 为整点推送，false 为登录补刷。
+        /// resetType 初始化 1 登录检测  2 在线推送
         /// </summary>
-        public static void RunDailyReset(Unit unit, bool notice)
+        public static void RunDailyReset(Unit unit, int resetType)
         {
             if (unit == null || unit.IsDisposed)
             {
@@ -21,29 +22,33 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
 
-            unit.GetComponent<RoleDailyDataComponentServer>().OnDailyReset(notice);
+            unit.GetComponent<RoleDailyDataComponentServer>().OnDailyReset(resetType == 2);
            
             unit.GetComponent<ActivityComponentServer>().OnDailyReset(roleInfo.Lv);
 
-            // 日清列表已在 RoleDailyData.OnDailyReset 清过；这里只做 RoleInfo 其它跨天逻辑
-            roleInfoComponentServer.OnDailyReset(notice);
-
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-            if (notice)
-            {
-                taskComponentServer.CheckWeeklyUpdate();
-            }
-            taskComponentServer.OnDailyReset(notice);
+   
+            taskComponentServer.OnDailyReset(resetType == 2);
 
             unit.GetComponent<ChengJiuComponentServer>().OnDailyReset();
-            unit.GetComponent<JiaYuanComponentServer>().OnDailyReset(notice);
-            unit.GetComponent<DataCollationComponent>().OnDailyReset(notice);
+            unit.GetComponent<JiaYuanComponentServer>().OnDailyReset(resetType == 2);
+            unit.GetComponent<DataCollationComponent>().OnDailyReset(resetType == 2);
+
+            // 日清列表已在 RoleDailyData.OnDailyReset 清过；这里只做 RoleInfo 其它跨天逻辑
+            //LastLoginTime 放在最后执行 防止其他有地方用到
+            roleInfoComponentServer.OnDailyReset(resetType == 2);
+
+            // 在线日清：用 M2C_RoleDailyDataUpdate 替代 NumericType.ZeroClock
+            if (resetType == 2)
+            {
+                unit.GetComponent<RoleDailyDataComponentServer>().NotifyUpdate(RoleDailyDataComponentServer.ReasonZeroClock);
+            }
         }
 
         /// <summary>
         /// 登录时按上次登录时间补刷跨天/同天体力与家园经验。切日以 Global_Reset_Time（默认 5 点）为准。
         /// </summary>
-        public static void RunLoginCrossDay(Unit unit, long currentTime)
+        public static void LoginCheckCrossDay(Unit unit, long currentTime)
         {
             if (unit == null || unit.IsDisposed)
             {
@@ -57,7 +62,7 @@ namespace ET
             if (lastLoginTime == 0)
             {
                 Log.Debug($"OnDailyReset [数据初始化]: {unit.Id}");
-                RunDailyReset(unit, false);
+                RunDailyReset(unit, 0);
                 return;
             }
 
@@ -68,16 +73,12 @@ namespace ET
                 float passhour = (currentTime - lastLoginTime) * 1f / TimeHelper.Hour;
                 RecoverPiLaoAcrossDays(roleInfoComponentServer, unit, lastdateTime, dateTime, passhour, currentTime, lastLoginTime);
 
-                unit.GetComponent<TaskComponentServer>().CheckWeeklyUpdate(lastLoginTime, currentTime);
-                RunDailyReset(unit, false);
-                roleInfoComponentServer.OnJiaYuanExp(Math.Min(passhour, 12f));
+                unit.GetComponent<TaskComponentServer>().LoginCheckWeeklyUpdate(lastLoginTime, currentTime);
+                RunDailyReset(unit, 1);
             }
             else
             {
                 RecoverPiLaoSameDay(roleInfoComponentServer, unit, lastdateTime.Hour, dateTime.Hour);
-                unit.GetComponent<JiaYuanComponentServer>().OnLoginCheck(lastdateTime.Hour, dateTime.Hour);
-                float passhour = (currentTime - lastLoginTime) * 1f / TimeHelper.Hour;
-                roleInfoComponentServer.OnJiaYuanExp(Math.Min(passhour, 12f));
             }
         }
 

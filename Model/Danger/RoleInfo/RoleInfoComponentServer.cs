@@ -1,8 +1,5 @@
-﻿#if SERVER
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
-#endif
-
 
 namespace ET
 {

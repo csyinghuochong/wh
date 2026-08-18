@@ -462,39 +462,11 @@ namespace ET
         /// <param name="self"></param>
         public static void OnDailyReset(this JiaYuanComponentServer self, bool notice)
         {
-#if SERVER
             self.UpdatePlanGoodList();
             self.UpdatePurchaseItemList(notice);
             self.CheckDaShiPro();
-#endif
         }
 
-        /// <summary>
-        /// 12点刷新
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="hour_1"></param>
-        /// <param name="hour_2"></param>
-        public static void OnLoginCheck(this JiaYuanComponentServer self, int hour_1, int hour_2)
-        {
-#if SERVER
-            LogHelper.LogWarning($"OnLoginCheck : {hour_1} {hour_2}");
-            ///收购12点刷新
-            if ((hour_1 < 12 && hour_2 >= 12)
-            || (hour_1 > hour_2))
-            {
-                self.UpdatePurchaseItemList(false);
-            }
-
-            if ((hour_1 < 6 && hour_2 >= 6)
-             || (hour_1 < 12 && hour_2 >= 12)
-             || (hour_1 < 18 && hour_2 >= 18)
-             || (hour_1 > hour_2))
-            {
-                self.UpdatePlanGoodList();
-            }
-#endif
-        }
 
         public static void UpdatePlanGoodList(this JiaYuanComponentServer self)
         {
