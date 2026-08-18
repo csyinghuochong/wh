@@ -28,7 +28,7 @@ namespace ET
 
             ActivityComponentServer activity = unit.GetComponent<ActivityComponentServer>();
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
-            if (ActivityHelper.EnsureSignInLoginDay(activity.ActivityInfo, ref role.LastDailyCountTime, now, activityId))
+            if (ActivityHelper.EnsureSignInLoginDay(activity.ActivityInfo, ref role.LastLoginTime, now, activityId))
             {
                 unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
             }

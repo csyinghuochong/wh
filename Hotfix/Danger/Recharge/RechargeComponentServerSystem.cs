@@ -49,7 +49,6 @@ namespace ET
         public static void OnLogin(this RechargeComponentServer self)
         {
             self.EnsureRechargePro();
-            self.NotifyClient();
         }
     }
 }

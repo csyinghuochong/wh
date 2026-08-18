@@ -1,4 +1,6 @@
 
+using System;
+
 namespace ET
 {
 
@@ -12,7 +14,7 @@ namespace ET
             switch (message.ActivityType)
             {
                 case 5:
-                    Log.Debug($"OnZeroClockUpdate [零点刷新]: {unit.Id}");
+                    Console.WriteLine($"OnZeroClockUpdate [零点刷新]: {unit.Id}");
                     PlayerDailyResetHelper.RunZeroClock(unit, true);
                     break;
 

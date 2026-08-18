@@ -10,7 +10,7 @@ namespace ET
             int activityId = request.ActivityId > 0 ? request.ActivityId : ActivityHelper.DailySignActivityId;
             ActivityComponentServer activity = unit.GetComponent<ActivityComponentServer>();
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
-            if (ActivityHelper.EnsureSignInLoginDay(activity.ActivityInfo, ref role.LastDailyCountTime, 0, activityId))
+            if (ActivityHelper.EnsureSignInLoginDay(activity.ActivityInfo, ref role.LastLoginTime, 0, activityId))
             {
                 unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
             }

@@ -181,7 +181,6 @@ namespace ET
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(unitid, 1001);
             unit.AddComponent<AttackRecordComponent>();
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-            UnitComponentEnsureHelper.EnsureLifeComponent(unit);
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unitInfoComponent.EnergySkillId = createMonsterInfo.SkillId;
             unitInfoComponent.UnitName = ldMonster.Name.ToString();
@@ -238,7 +237,8 @@ namespace ET
             unit.AddComponent<PathfindingComponent, int>(mapComponent.NavMeshId);
             //添加其他组件
             unit.AddComponent<StateComponent>();         //添加状态组件
-            unit.AddComponent<BuffManagerComponent>();      //添加Buff管理器
+            unit.AddComponent<BuffManagerComponent>();
+            unit.AddComponent<UnitLifeComponent>();
             skillPassive.UpdateMonsterPassiveSkill();
             skillPassive.Activeted();
         
@@ -316,7 +316,6 @@ namespace ET
             unit.AddComponent<SkillManagerComponent>();
             unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
-            UnitComponentEnsureHelper.EnsureLifeComponent(unit);
             unitInfoComponent.UnitName = master.GetComponent<UnitInfoComponent>().UnitName;
             numericComponent.Set(NumericType.MasterId, master.Id);
             numericComponent.Set(NumericType.BattleCamp, master.GetBattleCamp());
@@ -325,7 +324,8 @@ namespace ET
             unit.ConfigId = monster;
             unit.MasterId = master.Id;
             unit.AddComponent<StateComponent>();            //添加状态组件
-            unit.AddComponent<BuffManagerComponent>();      //添加
+            unit.AddComponent<BuffManagerComponent>();
+            unit.AddComponent<UnitLifeComponent>();
             unit.Type = UnitType.Monster;
             unit.Position = new Vector3(master.Position.x + RandomHelper.RandFloat01() * 1f, master.Position.y, master.Position.z + RandomHelper.RandFloat01() * 1f);
             //添加其他组件
@@ -358,7 +358,8 @@ namespace ET
             unitInfoComponent.UnitName = petinfo.PetName;
             unitInfoComponent.MasterName = petinfo.PlayerName;
             unit.AddComponent<StateComponent>();         //添加状态组件
-            unit.AddComponent<BuffManagerComponent>();      //添加
+            unit.AddComponent<BuffManagerComponent>();
+            unit.AddComponent<UnitLifeComponent>();
             unit.Position = postion;
             unit.Type = UnitType.Pet;
             unit.Rotation = Quaternion.Euler(0f, rotation, 0f);
@@ -410,7 +411,8 @@ namespace ET
             unitInfoComponent.UnitName = jiaYuanPet.PetName;
             unit.ConfigId = jiaYuanPet.ConfigId;
             unit.AddComponent<StateComponent>();         //添加状态组件
-            unit.AddComponent<BuffManagerComponent>();      //添加
+            unit.AddComponent<BuffManagerComponent>();
+            unit.AddComponent<UnitLifeComponent>();
             unit.Position = JiaYuanHelper.JiaYuanPetPosition[1];
             unit.Type = UnitType.Pet;
             numericComponent.Set(NumericType.MasterId, masterid, false);
@@ -443,8 +445,8 @@ namespace ET
             unit.ConfigId = petinfo.ConfigId;
             unit.MasterId = master.Id;
             unit.AddComponent<StateComponent>();         //添加状态组件
-            UnitComponentEnsureHelper.EnsureLifeComponent(unit);
-            unit.AddComponent<BuffManagerComponent>();      //添加
+            unit.AddComponent<BuffManagerComponent>();
+            unit.AddComponent<UnitLifeComponent>();
             unit.Position = new Vector3(master.Position.x + RandomHelper.RandFloat01() * 1f, master.Position.y, master.Position.z + RandomHelper.RandFloat01() * 1f);
             unit.Type = UnitType.Pet;
             AIComponent aIComponent = unit.AddComponent<AIComponent, int>(2);     //AI行为树序号
@@ -494,7 +496,8 @@ namespace ET
 
             unit.ConfigId = jiaYuanPlant.ItemId;
             unit.AddComponent<StateComponent>();         //添加状态组件
-            unit.AddComponent<BuffManagerComponent>();      //添加
+            unit.AddComponent<BuffManagerComponent>();
+            unit.AddComponent<UnitLifeComponent>();
             unit.Position = JiaYuanHelper.PlanPositionList[jiaYuanPlant.CellIndex];
             unit.Type = UnitType.Plant;
 
@@ -528,7 +531,8 @@ namespace ET
 
             unit.ConfigId = jiaYuanPastures.ConfigId;
             unit.AddComponent<StateComponent>();         //添加状态组件
-            unit.AddComponent<BuffManagerComponent>();      //添加
+            unit.AddComponent<BuffManagerComponent>();
+            unit.AddComponent<UnitLifeComponent>();
             unit.Position = JiaYuanHelper.PastureInitPos;
             unit.Type = UnitType.Pasture;
 
@@ -565,7 +569,8 @@ namespace ET
             unit.ConfigId = jinglingId;
             unit.MasterId = master.Id;
             unit.AddComponent<StateComponent>();         //添加状态组件
-            unit.AddComponent<BuffManagerComponent>();      //添加
+            unit.AddComponent<BuffManagerComponent>();
+            unit.AddComponent<UnitLifeComponent>();
             unit.Position = new Vector3(master.Position.x + RandomHelper.RandFloat01() * 1f, master.Position.y, master.Position.z + RandomHelper.RandFloat01() * 1f);
             unit.Type = UnitType.JingLing;
 

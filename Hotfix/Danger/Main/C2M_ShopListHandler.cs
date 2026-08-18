@@ -63,11 +63,6 @@ namespace ET
             }
 
             RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
-            if (daily == null)
-            {
-                daily = unit.AddComponent<RoleDailyDataComponentServer>();
-            }
-
             response.ShopGoodsItems = daily.GetOrInitPersonalRandomShop(shopId);
             response.Error = ErrorCode.ERR_Success;
             reply();

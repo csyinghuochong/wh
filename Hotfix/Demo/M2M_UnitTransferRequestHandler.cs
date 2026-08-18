@@ -52,6 +52,7 @@ namespace ET
 				unit.AddComponent<SkillManagerComponent>();
 				unit.AddComponent<BuffManagerComponent>();
 				unit.AddComponent<AttackRecordComponent>();
+				unit.AddComponent<UnitLifeComponent>();
 				NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 				numericComponent.Set(NumericType.BattleCamp, CampEnum.CampPlayer_1, false);
                 numericComponent.Set(NumericType.CardTransform, 0, false);
@@ -59,8 +60,7 @@ namespace ET
                 unit.Type = UnitType.Player;
                 unit.SceneType = request.SceneType;
 				unit.ConfigId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
-                UnitComponentEnsureHelper.EnsurePlayerComponents(unit);
-                unit.GetComponent<PlayerSessionComponent>()?.CheckNumeric();
+                unit.CheckNumeric();
                 Function_Fight.UnitUpdateProperty_Base(unit, false, false);
 
                 long hpmax = numericComponent.GetAsLong(NumericType.HP_Max_10);
@@ -425,7 +425,7 @@ namespace ET
                         }
 						unitComponent.AddPlayer(unit);		
 						unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
-						unit.GetComponent<PlayerSessionComponent>()?.OnReturn();
+						unit.OnReturn();
 						// 通知客户端创建My Unit
 						m2CCreateUnits = new M2C_CreateMyUnit();
 						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);

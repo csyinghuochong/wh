@@ -18,12 +18,9 @@ namespace ET
          public string Account;
          public string Password;
           /// <summary>
-          /// 登录或者零点刷新的时候会改变.主要用来体力恢复，刷新数据
+          /// 登录或者零点刷新的时候会改变.主要用来体力恢复、刷新数据、签到登录天数。
           /// </summary>
         public long LastLoginTime;
-
-        /// <summary>游戏日计数时间（Global_Reset_Time 切日），签到等日清共用，不下发客户端。</summary>
-        public long LastDailyCountTime;
 
 
         /// <summary>

@@ -23,12 +23,18 @@ namespace ET
 
         public static void OnLogin(this ActivityComponentServer self, int level)
         {
-            
+        }
+
+        public static void OnZeroClockUpdate(this ActivityComponentServer self, int level)
+        {
             Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer role = unit?.GetComponent<RoleInfoComponentServer>();
-            if (role != null && ActivityHelper.EnsureSignInLoginDay(self.ActivityInfo, ref role.LastDailyCountTime))
+            RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
+            ActivityHelper.EnsureSignInLoginDay(self.ActivityInfo, ref role.LastLoginTime);
+
+            //重置每日特惠 和 新春活动
+            for (int i = self.ActivityReceiveIds.Count - 1; i >= 0; i--)
             {
-                unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
+
             }
         }
 
@@ -43,18 +49,6 @@ namespace ET
         public static void Check(this ActivityComponentServer self)
         {
             self.LastTimerChouKaPassTime += TimeHelper.Second;
-        }
-
-        public static void OnZeroClockUpdate(this ActivityComponentServer self, int level)
-        {
-         
-            //重置每日特惠 和 新春活动
-            for (int i = self.ActivityReceiveIds.Count - 1; i >= 0; i--)
-            {
-
-            }
-            //self.LastTimerChouKaPassTime = 0;
-            //self.TimerChouKaReceiveIndex = 0
         }
 
     }
