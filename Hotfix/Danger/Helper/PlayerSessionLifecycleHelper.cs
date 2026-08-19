@@ -64,9 +64,7 @@ namespace ET
             numericComponent.SetValueNoSync(NumericType.Now_Dead, 0);
             numericComponent.SetValueNoSync(NumericType.Now_Damage, 0);
             numericComponent.SetValueNoSync(NumericType.BossBelongID, 0);
-            numericComponent.SetValueNoSync(NumericType.Now_Shield_HP, 0);
-            numericComponent.SetValueNoSync(NumericType.Now_Shield_MaxHP, 0);
-            numericComponent.SetValueNoSync(NumericType.Now_Shield_DamgeCostPro, 0);
+
             if (numericComponent.GetAsLong(NumericType.Now_Dead) <= 0)
             {
                 long maxHp = numericComponent.GetAsLong(NumericType.HP_Max_10);

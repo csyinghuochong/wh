@@ -6,7 +6,7 @@ namespace ET
     /// 角色日清：零点重置 <see cref="RoleDailyData"/>，在线日清走 M2C_RoleDailyDataUpdate。
     /// 个人随机商店货架（Type 2/3）也挂这里，每日清；终身限购在 RoleInfo.BuyStoreItemsForever。
     /// </summary>
-    public class RoleDailyDataComponentServer : Entity, IAwake, ITransfer, IUnitCache
+    public class RoleDailyDataComponentServer : Entity, IAwake, ITransfer, IUnitCache, IDeserialize
     {
         public RoleDailyData Data = new RoleDailyData();
 

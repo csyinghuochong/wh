@@ -1064,7 +1064,7 @@ namespace ET
 
                     //等级 充值  活跃度 体力 当前金币   成就点数  当前主线任务
                     gongzuoshiInfo += $"账号: {roleInfoComponentServer.Account}  \t名称：{roleInfoComponentServer.RoleInfo.Name}  \t等级:{roleInfoComponentServer.RoleInfo.Lv}   \t充值:{dataCollations[0].Recharge}" +
-                            $"\t体力:{roleInfoComponentServer.RoleInfo.PiLao}  \t金币:{roleInfoComponentServer.RoleInfo.Gold}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
+                            $"\t体力:{roleInfoComponentServer.RoleInfo.TiLi}  \t金币:{roleInfoComponentServer.RoleInfo.Gold}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
                             $"\t当前主线:{dataCollations[0].MainTask}  \t角色天数:{roleInfoComponentServer.GetCrateDay()}  \t金币获取:{dataCollations[0].GoldGet}  \t金币消耗:{dataCollations[0].GoldCost}   \t成就任务:{chengjiuTask}" + 
                             $"\t金币获取总值:{dataCollations[0].GetGoldGetTotal()}  \t金币消耗总值:{dataCollations[0].GetGoldCostTotal()} 今日在线:{dataCollations[0].TodayOnLine}  \t击杀boos:{killmonsterNumber} \t设备:{dataCollations[0].GetDeviceID()}" +
                             $"\tIP:{roleInfoComponentServer.RemoteAddress}  身份证:{idcard} \n";

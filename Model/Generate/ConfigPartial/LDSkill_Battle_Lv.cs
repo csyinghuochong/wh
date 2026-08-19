@@ -25,10 +25,35 @@ namespace ET
                 skillLvList.Sort((a, b) => a.Skill_Battle_Lv.CompareTo(b.Skill_Battle_Lv));
             }
         }
-        
-        public LDSkill_Battle_Lv GetLDSkill_Lv(int skill, int lv)
+
+        public int GetSkillMaxLv(int skill)
         {
-            return ConsumeList[skill][lv - 1];
+            if (skill <= 0)
+            {
+                return 0;
+            }
+            if (!ConsumeList.TryGetValue(skill, out List<LDSkill_Battle_Lv> skillLvList))
+            {
+                return 1;
+            }
+            return skillLvList.Count;
+        }
+
+        public LDSkill_Battle_Lv GetLDSkillLv(int skill, int lv)
+        {
+            if (lv <= 0)
+            {
+                return null;
+            }
+            if (!ConsumeList.TryGetValue(skill, out List<LDSkill_Battle_Lv> skillLvList))
+            {
+                return null;
+            }
+            if (skillLvList.Count < lv)
+            {
+                return null;
+            }
+            return skillLvList[lv - 1];
         }
     }
 }

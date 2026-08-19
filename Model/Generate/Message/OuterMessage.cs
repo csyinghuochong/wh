@@ -540,12 +540,16 @@ namespace ET
 		public long BindDiamond { get; set; }
 
 //钱币
+		[ProtoMember(3)]
+		public long Gold { get; set; }
+
+//钱币
 		[ProtoMember(4)]
 		public long BindGold { get; set; }
 
-//钱币
-		[ProtoMember(3)]
-		public long Gold { get; set; }
+//职业
+		[ProtoMember(5)]
+		public int Occ { get; set; }
 
 		[ProtoMember(6)]
 		public long AccInfoID { get; set; }
@@ -577,13 +581,13 @@ namespace ET
 		[ProtoMember(14)]
 		public long Exp { get; set; }
 
-// 疲劳
+// 体力
 		[ProtoMember(15)]
-		public long PiLao { get; set; }
+		public long TiLi { get; set; }
 
-//职业
+// 活力
 		[ProtoMember(16)]
-		public int Occ { get; set; }
+		public long HuoLi { get; set; }
 
 		[ProtoMember(17)]
 		public string UnionName { get; set; }
@@ -14509,6 +14513,9 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(1)]
+		public int OperatateType { get; set; }
+
+		[ProtoMember(2)]
 		public int SkillMakeType { get; set; }
 
 	}

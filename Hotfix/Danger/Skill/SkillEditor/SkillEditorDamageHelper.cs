@@ -787,13 +787,13 @@ namespace ET
             long damageToHp = totalDamage;
             if (!ignoreShield)
             {
-                long shieldHp = targetNumeric.GetStoredValue(NumericType.Now_Shield_HP);
-                if (shieldHp > 0)
-                {
-                    long absorbed = Math.Min(shieldHp, damageToHp);
-                    targetNumeric.ApplyChange(caster, NumericType.Now_Shield_HP, -absorbed, skillId, true, damageType);
-                    damageToHp -= absorbed;
-                }
+                //long shieldHp = targetNumeric.GetStoredValue(NumericType.Now_Shield_HP);
+                //if (shieldHp > 0)
+                //{
+                //    long absorbed = Math.Min(shieldHp, damageToHp);
+                //    targetNumeric.ApplyChange(caster, NumericType.Now_Shield_HP, -absorbed, skillId, true, damageType);
+                //    damageToHp -= absorbed;
+                //}
             }
 
             if (damageToHp <= 0)

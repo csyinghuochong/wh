@@ -620,7 +620,7 @@ namespace ET
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(bekill.ConfigId);
             if (SceneConfigHelper.IsSingleFuben(sceneType) )
             {
-                drop = main.GetComponent<RoleInfoComponentServer>().RoleInfo.PiLao > 0 || bekill.IsBoss();
+                drop = main.GetComponent<RoleInfoComponentServer>().RoleInfo.TiLi > 0 || bekill.IsBoss();
 
                 //场景宝箱掉落和体力无关
 

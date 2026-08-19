@@ -64,7 +64,6 @@ namespace ET
         public override void OnFinished()
         {
             NumericComponent numericComponent = this.TheUnitBelongto.GetComponent<NumericComponent>();
-            numericComponent.ApplyValue(NumericType.Now_Shield_HP, 0);
         }
     }
 }

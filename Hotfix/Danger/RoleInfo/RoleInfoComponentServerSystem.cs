@@ -55,7 +55,7 @@ namespace ET
             roleInfo.AccInfoID =accountId;
             roleInfo.Name = createRoleInfo.PlayerName;
             roleInfo.ServerMailIdCur = -1;
-            roleInfo.PiLao = 120;     //初始化疲劳
+            roleInfo.TiLi = 120;     //初始化疲劳
             //roleInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
             roleInfo.CreateTime = TimeHelper.ServerNow();
             roleInfo.Occ = createRoleInfo.PlayerOcc;
@@ -379,7 +379,7 @@ namespace ET
 
             RoleDailyDataComponentServer dailyData = main.GetComponent<RoleDailyDataComponentServer>();
             int tiliKillNumber = dailyData?.GetTiLiKillNumber() ?? 0;
-            if (sceneType == MapTypeEnum.LocalDungeon && !showlieopen && self.RoleInfo.PiLao > 0)
+            if (sceneType == MapTypeEnum.LocalDungeon && !showlieopen && self.RoleInfo.TiLi > 0)
             {
                 if (tiliKillNumber >= 4)
                 {
@@ -402,7 +402,7 @@ namespace ET
             bool drop = true;
             if (SceneConfigHelper.IsSingleFuben(sceneType))
             {
-                drop = self.RoleInfo.PiLao > 0 || beKill.IsBoss() || showlieopen;
+                drop = self.RoleInfo.TiLi > 0 || beKill.IsBoss() || showlieopen;
             }
             if (drop)
             {
@@ -546,6 +546,10 @@ namespace ET
                     self.RoleInfo.UnionZiJin += int.Parse(value);
                     saveValue = self.RoleInfo.UnionZiJin.ToString();
                     break;
+                case UserDataType.DailyActive:
+                case UserDataType.WeeklyActive:
+                    unit.GetComponent<RoleDailyDataComponentServer>()?.AddActivePoint(Type, int.Parse(value), notice);
+                    return;
               
                 case UserDataType.JiaYuanLv:
                     self.RoleInfo.JiaYuanLv += int.Parse(value);

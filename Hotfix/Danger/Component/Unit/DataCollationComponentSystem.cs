@@ -415,8 +415,6 @@ namespace ET
 
             self.JiaYuanFund = roleInfoComponentServer.RoleInfo.JiaYuanFund;
 
-            self.PiLao = roleInfoComponentServer.RoleInfo.PiLao;
-
             self.PetFubenId = petComponentServer.GetPassMaxFubenId();
 
             self.TrialFubenId = numericComponent.GetAsInt( NumericType.TrialDungeonId );

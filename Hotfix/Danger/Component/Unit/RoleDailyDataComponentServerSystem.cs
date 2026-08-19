@@ -7,19 +7,23 @@ namespace ET
     {
         public override void Awake(RoleDailyDataComponentServer self)
         {
-            if (self.Data == null)
-            {
-                self.Data = new RoleDailyData();
-            }
+            self.InitLists();
+        }
+    }
 
-            self.EnsureLists();
-            self.TryMigrateFromRoleInfo();
+    [ObjectSystem]
+    public class RoleDailyDataComponentDeserializeSystem : DeserializeSystem<RoleDailyDataComponentServer>
+    {
+        public override void Deserialize(RoleDailyDataComponentServer self)
+        {
+            self.InitLists();
         }
     }
 
     public static class RoleDailyDataComponentServerSystem
     {
-        public static void EnsureLists(this RoleDailyDataComponentServer self)
+        /// <summary>仅 Awake / Deserialize 调用，业务接口不要再补列表。</summary>
+        public static void InitLists(this RoleDailyDataComponentServer self)
         {
             RoleDailyData data = self.Data ??= new RoleDailyData();
             data.DayFubenTimes ??= new List<KeyValuePairInt>();
@@ -30,12 +34,6 @@ namespace ET
             data.DayJingLing ??= new List<int>();
             data.BuyStoreItems ??= new List<KeyValuePairInt>();
             self.PersonalRandomShops ??= new Dictionary<int, List<ShopGoodsItem>>();
-        }
-
-        public static void TryMigrateFromRoleInfo(this RoleDailyDataComponentServer self)
-        {
-            // RoleInfo 日清字段已删除，无需迁移
-            self.EnsureLists();
         }
 
         public static void OnDailyReset(this RoleDailyDataComponentServer self, bool notice = false)
@@ -54,8 +52,7 @@ namespace ET
         /// </summary>
         public static void ClearDayLists(this RoleDailyDataComponentServer self, int clearType = RoleDailyClearType.Day)
         {
-            self.EnsureLists();
-            RoleDailyData data = self.Data;
+            RoleDailyData data = self.GetDailyData();
 
             if (clearType == RoleDailyClearType.Week)
             {
@@ -91,7 +88,6 @@ namespace ET
                 return;
             }
 
-            self.EnsureLists();
             if (userDataType == UserDataType.DailyActive)
             {
                 self.Data.DailyActivePoint += add;
@@ -116,14 +112,12 @@ namespace ET
 
         public static int GetDailyActivePoint(this RoleDailyDataComponentServer self)
         {
-            self.EnsureLists();
-            return self.Data.DailyActivePoint;
+            return self.GetDailyData().DailyActivePoint;
         }
 
         public static int GetWeeklyActivePoint(this RoleDailyDataComponentServer self)
         {
-            self.EnsureLists();
-            return self.Data.WeeklyActivePoint;
+            return self.GetDailyData().WeeklyActivePoint;
         }
 
         /// <summary>
@@ -131,7 +125,6 @@ namespace ET
         /// </summary>
         public static List<ShopGoodsItem> GetOrInitPersonalRandomShop(this RoleDailyDataComponentServer self, int shopId)
         {
-            self.EnsureLists();
             if (self.PersonalRandomShops.TryGetValue(shopId, out List<ShopGoodsItem> list)
                 && list != null
                 && list.Count > 0)
@@ -146,8 +139,7 @@ namespace ET
 
         public static RoleDailyData GetDailyData(this RoleDailyDataComponentServer self)
         {
-            self.EnsureLists();
-            return self.Data;
+            return self.Data ??= new RoleDailyData();
         }
 
         public static int GetCount(List<KeyValuePairInt> list, int keyId)
@@ -494,13 +486,11 @@ namespace ET
 
         public static void OnLogin(this RoleDailyDataComponentServer self)
         {
-            self.EnsureLists();
             // 全量由客户端 LoginHelper 请求 C2M_RoleDailyDataRequest，不再登录主动推 Init
         }
 
         public static void FillInitResponse(this RoleDailyDataComponentServer self, M2C_RoleDailyDataInit response)
         {
-            self.EnsureLists();
             RoleInfo roleInfo = self.GetParent<Unit>()?.GetComponent<RoleInfoComponentServer>()?.RoleInfo;
             response.Data = self.CloneDailyData();
             response.BuyStoreItemsForever = CloneKvList(roleInfo?.BuyStoreItemsForever);
@@ -532,8 +522,7 @@ namespace ET
 
         private static RoleDailyData CloneDailyData(this RoleDailyDataComponentServer self)
         {
-            self.EnsureLists();
-            RoleDailyData src = self.Data;
+            RoleDailyData src = self.GetDailyData();
             return new RoleDailyData
             {
                 DayFubenTimes = CloneKvList(src.DayFubenTimes),

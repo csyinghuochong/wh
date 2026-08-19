@@ -219,6 +219,8 @@ namespace ET
                 case UserDataType.BindDiamond:
                 case UserDataType.JiaYuanFund:
                 case UserDataType.UnionContri:
+                case UserDataType.DailyActive:
+                case UserDataType.WeeklyActive:
                 {
                     Unit unit = self.GetParent<Unit>();
                     RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
@@ -236,6 +238,18 @@ namespace ET
                         case UserDataType.BindDiamond:
                             number = roleInfo.BindDiamond;
                             break;
+                        case UserDataType.TiLi:
+                            number = roleInfo.TiLi;
+                            break;
+                        case UserDataType.HuoLi:
+                            number = roleInfo.HuoLi;
+                            break;
+                        case UserDataType.DailyActive:
+                            number = unit.GetComponent<RoleDailyDataComponentServer>()?.GetDailyActivePoint() ?? 0;
+                            break;
+                        case UserDataType.WeeklyActive:
+                            number = unit.GetComponent<RoleDailyDataComponentServer>()?.GetWeeklyActivePoint() ?? 0;
+                            break;
                         case UserDataType.JiaYuanFund:
                             number = roleInfo.JiaYuanFund;
                             break;
@@ -243,16 +257,6 @@ namespace ET
                             number = roleInfo.UnionZiJin;
                             break;
                     }
-                    break;
-                }
-                case UserDataType.DailyActive:
-                {
-                    number = self.GetParent<Unit>().GetComponent<RoleDailyDataComponentServer>()?.GetDailyActivePoint() ?? 0;
-                    break;
-                }
-                case UserDataType.WeeklyActive:
-                {
-                    number = self.GetParent<Unit>().GetComponent<RoleDailyDataComponentServer>()?.GetWeeklyActivePoint() ?? 0;
                     break;
                 }
                 default:
@@ -718,12 +722,6 @@ namespace ET
             if (dataType == UserDataType.None)
             {
                 return false;
-            }
-
-            if (dataType == UserDataType.DailyActive || dataType == UserDataType.WeeklyActive)
-            {
-                unit.GetComponent<RoleDailyDataComponentServer>()?.AddActivePoint(dataType, item.ItemNum, notice);
-                return true;
             }
 
             unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(dataType, item.ItemNum.ToString(), true, getType);

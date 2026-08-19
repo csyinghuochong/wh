@@ -72,9 +72,6 @@ namespace ET
         //家园资金
         public long JiaYuanFund;
 
-        //体力值
-        public long PiLao;
-
 
         //宠物探险关卡
         public int PetFubenId;

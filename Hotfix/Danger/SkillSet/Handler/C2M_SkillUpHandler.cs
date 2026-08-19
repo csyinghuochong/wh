@@ -18,26 +18,49 @@ namespace ET
                 reply();
                 return;
             }
+			int maxLv = LDSkill_Battle_LvCategory.Instance.GetSkillMaxLv(request.SkillID);
+			if (skillPro.Level >= maxLv)
+			{
+                response.Error = ErrorCode.ERR_SkillMaxLevel;
+                reply();
+                return;
+            }
+
+			int nextLv = skillPro.Level + 1;
+			LDSkill_Battle_Lv nextCfg = LDSkill_Battle_LvCategory.Instance.GetLDSkillLv(request.SkillID, nextLv);
+			if (nextCfg == null)
+			{
+				response.Error = ErrorCode.ERR_Parameter;
+				reply();
+				return;
+			}
+
+			RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+			if (roleInfo.Lv < nextCfg.Learn_Lv)
+			{
+				response.Error = ErrorCode.ERR_LevelNoEnough;
+				reply();
+				return;
+			}
+
+			List<RewardItem> costItems = ItemNewHelper.GetRewardItems(nextCfg.Cost);
+			BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+			if (costItems.Count > 0 && !bag.CheckNeedItem(costItems))
+			{
+				response.Error = ErrorCode.ERR_ItemNotEnoughError;
+				reply();
+				return;
+			}
+
+			if (costItems.Count > 0 && !bag.OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
+			{
+				response.Error = ErrorCode.ERR_ItemNotEnoughError;
+				reply();
+				return;
+			}
 
 			skillPro.Level++;
-			
-			//unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Gold, (costGoldValue*-1).ToString(), true, ItemGetWay.CostItem);
-			//unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Sp, (costSPValue * -1).ToString());
-
 			Function_Fight.UnitUpdateProperty_Base( unit,true, true );
-			//测试跑马灯
-			//string text = "";
-			//if (RandomHelper.RandFloat01() < 0.5f)
-			//	text = "测试一个长字符串的适配！！测试一个长字符串的适配！！";
-			//else
-			//	text = "";
-			//M2C_HorseNoticeInfo m2C_HorseNoticeInfo = new M2C_HorseNoticeInfo() { NoticeText = skillconf.SkillName + " 升级了. " + text };
-			//MessageHelper.Broadcast(unit, m2C_HorseNoticeInfo);
-
-			////测试邮件
-			//long mailServerId = DBHelper.GetMailServerId(unit);
-			//E2M_EMailSendResponse g_SendChatRequest = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-			//	(mailServerId, new M2E_EMailSendRequest() {  Id = unit.GetComponent<UnitInfoComponent>().UserID });
 
 			reply();
 			await ETTask.CompletedTask;
