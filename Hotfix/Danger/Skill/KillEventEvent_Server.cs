@@ -184,9 +184,6 @@ namespace ET
                 case MapTypeEnum.TowerDungeon:
                     domainScene.GetComponent<TowerComponent>().OnKillEvent(defendUnit);
                     break;
-                case MapTypeEnum.RandomTower:
-                    domainScene.GetComponent<RandomTowerComponent>().OnKillEvent(defendUnit);
-                    break;
                 case MapTypeEnum.LocalDungeon:
                     domainScene.GetComponent<LocalDungeonComponent>().OnKillEvent(defendUnit, mainAttack);
                     break;

@@ -417,7 +417,6 @@ namespace ET
 
             self.PetFubenId = petComponentServer.GetPassMaxFubenId();
 
-            self.TrialFubenId = numericComponent.GetAsInt( NumericType.TrialDungeonId );
             self.UpdateData();
         }
     }

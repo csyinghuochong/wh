@@ -626,6 +626,9 @@ namespace ET
 		[ProtoMember(50)]
 		public long CreateTime { get; set; }
 
+		[ProtoMember(51)]
+		public List<KeyValuePairInt> TowerIds = new List<KeyValuePairInt>();
+
 //商店终身限购次数 Key=LDShop_Goods.Id
 		[ProtoMember(68)]
 		public List<KeyValuePairInt> BuyStoreItemsForever = new List<KeyValuePairInt>();
@@ -13544,40 +13547,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public int Code { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_TimerChouKaResponse))]
-	[Message(OuterOpcode.C2M_TimerChouKaRequest)]
-	[ProtoContract]
-	public partial class C2M_TimerChouKaRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TimerChouKaResponse)]
-	[ProtoContract]
-	public partial class M2C_TimerChouKaResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(9)]
-		public int TimerChouKaReceiveIndex { get; set; }
-
-		[ProtoMember(10)]
-		public long LastTimerChouKaPassTime { get; set; }
 
 	}
 

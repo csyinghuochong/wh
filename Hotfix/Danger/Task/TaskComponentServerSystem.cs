@@ -874,7 +874,6 @@ namespace ET
             }
 
             long unionid = numericComponent.GetAsLong(NumericType.UnionId_0);
-            int trialid = numericComponent.GetAsInt(NumericType.TrialDungeonId);
             //触发一下搜集道具类型的任务
             using (self.TaskEventBatch())
             {

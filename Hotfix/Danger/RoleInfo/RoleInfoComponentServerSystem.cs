@@ -156,6 +156,57 @@ namespace ET
             return indexs;
         }
 
+        public static int GetTowerId(RoleInfo roleInfo, int sceneType)
+        {
+            if (roleInfo?.TowerIds == null)
+            {
+                return 0;
+            }
+            for (int i = 0; i < roleInfo.TowerIds.Count; i++)
+            {
+                if (roleInfo.TowerIds[i].KeyId == sceneType)
+                {
+                    return (int)roleInfo.TowerIds[i].Value;
+                }
+            }
+            return 0;
+        }
+
+        public static void ApplyTowerId(RoleInfo roleInfo, string sceneTypeAndTowerId)
+        {
+            if (roleInfo == null || string.IsNullOrEmpty(sceneTypeAndTowerId))
+            {
+                return;
+            }
+            string[] parts = sceneTypeAndTowerId.Split(';');
+            if (parts.Length < 2)
+            {
+                return;
+            }
+            ApplyTowerId(roleInfo, int.Parse(parts[0]), int.Parse(parts[1]));
+        }
+
+        public static void ApplyTowerId(RoleInfo roleInfo, int sceneType, int towerId)
+        {
+            if (roleInfo == null)
+            {
+                return;
+            }
+            if (roleInfo.TowerIds == null)
+            {
+                roleInfo.TowerIds = new List<KeyValuePairInt>();
+            }
+            for (int i = 0; i < roleInfo.TowerIds.Count; i++)
+            {
+                if (roleInfo.TowerIds[i].KeyId == sceneType)
+                {
+                    roleInfo.TowerIds[i].Value = towerId;
+                    return;
+                }
+            }
+            roleInfo.TowerIds.Add(new KeyValuePairInt() { KeyId = sceneType, Value = towerId });
+        }
+
         public static int GetTiliRecover(this RoleInfoComponentServer self, List<int> indexids)
         {
             int totalTili = 0;
@@ -204,7 +255,6 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
            
-            int maxTowerId = 0;
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             for (int  i =  self.RoleInfo.HorseIds.Count - 1; i >= 0; i--)
@@ -216,11 +266,6 @@ namespace ET
             }
 
             RoleAddPointHelper.EnsureLevel1InitPoints(unit, self.RoleInfo.Lv);
-
-            if (numericComponent.GetAsInt(NumericType.TrialDungeonId) < maxTowerId)
-            {
-                numericComponent.Set(NumericType.TrialDungeonId, maxTowerId, false);
-            }
 
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
             int recharge = numericComponent.GetAsInt(NumericType.RechargeNumber);
@@ -603,6 +648,10 @@ namespace ET
                 case UserDataType.UnionName:
                     self.RoleInfo.UnionName = value;
                     saveValue = self.RoleInfo.UnionName;
+                    break;
+                case UserDataType.TowerId:
+                    ApplyTowerId(self.RoleInfo, value);
+                    saveValue = value;
                     break;
          
                 case UserDataType.Combat:

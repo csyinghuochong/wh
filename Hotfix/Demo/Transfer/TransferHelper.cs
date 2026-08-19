@@ -80,18 +80,6 @@ namespace ET
                         }
                         break;
                     case (int)MapTypeEnum.TrialDungeon:
-                        int requestTowerId = int.Parse(request.paramInfo);
-                        int passId = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.TrialDungeonId);
-                        if (passId == 0 && requestTowerId != 20001)
-                        {
-                            Log.Error($"试炼之地作弊3:{unit.DomainZone()} {unit.Id} {requestTowerId}   {passId}");
-                            return ErrorCode.ERR_ModifyData;
-                        }
-                        if (passId != 0 && requestTowerId > passId + 1 )
-                        {
-                            Log.Error($"试炼之地作弊4:{unit.DomainZone()} {unit.Id} {requestTowerId}   {passId}");
-                            return ErrorCode.ERR_ModifyData;
-                        }
                         fubenid = IdGenerater.Instance.GenerateId();
                         fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
                         fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "TrialDungeon" + fubenid.ToString(), SceneType.Map);
@@ -125,19 +113,6 @@ namespace ET
                         mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).GetNavMeshId();
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.SeasonTower, request.SceneId, FubenDifficulty.None, request.paramInfo);
-                        TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
-                        break;
-                    case (int)MapTypeEnum.RandomTower:
-                        //2200001
-                        fubenid = IdGenerater.Instance.GenerateId();
-                        fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "RandomTower" + fubenid.ToString(), SceneType.Map);
-                        fubnescene.AddComponent<RandomTowerComponent>();
-                        mapComponent = fubnescene.GetComponent<MapComponent>();
-                        mapComponent.SetMapInfo((int)MapTypeEnum.RandomTower, request.SceneId, 0);
-                        mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).GetNavMeshId();
-                        TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.RandomTower, request.SceneId, 0, "0");
                         TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
                         break;
                     case (int)MapTypeEnum.Union:

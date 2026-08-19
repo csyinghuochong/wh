@@ -121,7 +121,7 @@ namespace ET
         public static async ETTask CreateMonster(this TowerComponent self, int towerId, bool init)
         {
             long instanceId = self.InstanceId;
-            self.MainUnit.GetComponent<NumericComponent>().ApplyValue(NumericType.TowerId, towerId, true);
+            self.MainUnit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.TowerId, $"{MapTypeEnum.TowerDungeon};{towerId}");
             await TimerComponent.Instance.WaitAsync(2000);
             if (instanceId != self.InstanceId)
             {

@@ -364,12 +364,6 @@ namespace ET
 						
 							scene.GetComponent<TowerComponent>().MainUnit = unit;
 						}
-						if (request.SceneType == MapTypeEnum.RandomTower)
-						{
-							MapComponent randomTowerMapComponent = scene.GetComponent<MapComponent>();
-							Game.Scene.GetComponent<RecastPathComponent>().Update(randomTowerMapComponent.NavMeshId);
-							scene.GetComponent<RandomTowerComponent>().MainUnit = unit;
-						}
 						if (request.SceneType == MapTypeEnum.TrialDungeon)
 						{
 							MapComponent trialMapComponent = scene.GetComponent<MapComponent>();
