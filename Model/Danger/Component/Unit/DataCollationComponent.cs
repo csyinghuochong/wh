@@ -10,7 +10,7 @@ namespace ET
     public class DataCollationComponent : Entity, IAwake, ITransfer, IUnitCache
     {
 
-        //    userid,
+        //userid,
 
         //名称
         public string Name;

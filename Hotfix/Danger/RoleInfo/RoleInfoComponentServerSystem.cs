@@ -49,7 +49,6 @@ namespace ET
             RoleInfo roleInfo = self.RoleInfo;
             roleInfo.Sp = 1;
             roleInfo.UserId = userId;
-            roleInfo.BaoShiDu = 100;
             roleInfo.AccInfoID =accountId;
             roleInfo.Name = createRoleInfo.PlayerName;
             roleInfo.ServerMailIdCur = -1;
@@ -205,17 +204,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
            
-            if (self.RoleInfo.CreateTime == 0)
-            {
-                self.RoleInfo.CreateTime = TimeHelper.ServerNow();
-            }
-            if (self.RoleInfo.Lv < 20 && self.RoleInfo.BaoShiDu < 100)
-            {
-                self.RoleInfo.BaoShiDu = 100;
-            }
-
             int maxTowerId = 0;
-            
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             for (int  i =  self.RoleInfo.HorseIds.Count - 1; i >= 0; i--)

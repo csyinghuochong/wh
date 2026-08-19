@@ -80,31 +80,6 @@ namespace ET
             {
                 return;
             }
-
-            List<int> list = null;
-            switch (type)
-            {
-                case UserDataType.Diamond:
-                    list = roleInfo.DiamondGetWay;
-                    break;
-                case UserDataType.Gold:
-                    list = roleInfo.GoldGetWay;
-                    break;
-                case UserDataType.Exp:
-                    list = roleInfo.ExpGetWay;
-                    break;
-            }
-
-            if (list == null)
-            {
-                return;
-            }
-
-            list.Add(getWay);
-            if (list.Count > 200)
-            {
-                list.RemoveAt(0);
-            }
         }
     }
 }

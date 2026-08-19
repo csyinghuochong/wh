@@ -611,9 +611,6 @@ namespace ET
 		[ProtoMember(32)]
 		public List<int> HorseIds = new List<int>();
 
-		[ProtoMember(38)]
-		public int BaoShiDu { get; set; }
-
 		[ProtoMember(39)]
 		public List<KeyValuePair> FirstWinSelf = new List<KeyValuePair>();
 
@@ -623,23 +620,11 @@ namespace ET
 		[ProtoMember(41)]
 		public int ServerMailIdCur { get; set; }
 
-		[ProtoMember(42)]
-		public List<int> DiamondGetWay = new List<int>();
-
 		[ProtoMember(43)]
 		public List<KeyValuePair> GameSettingInfos = new List<KeyValuePair>();
 
 		[ProtoMember(50)]
 		public long CreateTime { get; set; }
-
-		[ProtoMember(53)]
-		public List<int> UnionKeJiList = new List<int>();
-
-		[ProtoMember(61)]
-		public List<int> GoldGetWay = new List<int>();
-
-		[ProtoMember(62)]
-		public List<int> ExpGetWay = new List<int>();
 
 //商店终身限购次数 Key=LDShop_Goods.Id
 		[ProtoMember(68)]
@@ -9544,12 +9529,6 @@ namespace ET
 		[ProtoMember(3)]
 		public int JiaYuanLv { get; set; }
 
-		[ProtoMember(7)]
-		public long JiaYuanFund { get; set; }
-
-		[ProtoMember(8)]
-		public long JiaYuanExp { get; set; }
-
 		[ProtoMember(4)]
 		public string MasterName { get; set; }
 
@@ -9558,6 +9537,12 @@ namespace ET
 
 		[ProtoMember(6)]
 		public List<int> LearnMakeIds = new List<int>();
+
+		[ProtoMember(7)]
+		public long JiaYuanFund { get; set; }
+
+		[ProtoMember(8)]
+		public long JiaYuanExp { get; set; }
 
 		[ProtoMember(10)]
 		public List<int> PlanOpenList = new List<int>();
@@ -11599,38 +11584,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemIncreaseTransferResponse))]
-//增幅转移
-	[Message(OuterOpcode.C2M_ItemIncreaseTransferRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemIncreaseTransferRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long OperateBagID_1 { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID_2 { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemIncreaseTransferResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemIncreaseTransferResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
 	[Message(OuterOpcode.BattleSummonInfo)]
 	[ProtoContract]
 	public partial class BattleSummonInfo: Object
@@ -11824,76 +11777,6 @@ namespace ET
 
 	}
 
-//小龟大赛记录
-	[ResponseType(nameof(M2C_TurtleRecordResponse))]
-	[Message(OuterOpcode.C2M_TurtleRecordRequest)]
-	[ProtoContract]
-	public partial class C2M_TurtleRecordRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TurtleRecordResponse)]
-	[ProtoContract]
-	public partial class M2C_TurtleRecordResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(2)]
-		public int SupportId { get; set; }
-
-		[ProtoMember(3)]
-		public List<int> WinTimes = new List<int>();
-
-		[ProtoMember(4)]
-		public List<int> SupportTimes = new List<int>();
-
-	}
-
-//小龟大赛支持
-	[ResponseType(nameof(M2C_TurtleSupportResponse))]
-	[Message(OuterOpcode.C2M_TurtleSupportRequest)]
-	[ProtoContract]
-	public partial class C2M_TurtleSupportRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int SupportId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TurtleSupportResponse)]
-	[ProtoContract]
-	public partial class M2C_TurtleSupportResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2C_RankUnionRaceResponse))]
 	[Message(OuterOpcode.C2R_RankUnionRaceRequest)]
 	[ProtoContract]
@@ -11986,18 +11869,6 @@ namespace ET
 
 		[ProtoMember(3)]
 		public List<RewardItem> RewardList = new List<RewardItem>();
-
-	}
-
-	[Message(OuterOpcode.M2C_TurtleRewardMessage)]
-	[ProtoContract]
-	public partial class M2C_TurtleRewardMessage: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(2)]
-		public List<string> PlayerName = new List<string>();
 
 	}
 

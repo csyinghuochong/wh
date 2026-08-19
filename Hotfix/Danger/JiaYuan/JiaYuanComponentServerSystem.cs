@@ -9,9 +9,7 @@ namespace ET
     {
         public override void Awake(JiaYuanComponentServer self)
         {
-#if SERVER
             self.InitOpenList();
-#endif
         }
     }
 
