@@ -48,9 +48,9 @@ namespace ET
             JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            LDHome ldHome = LDHomeCategory.Instance.Get(roleInfo.JiaYuanLv);
+            LDHome ldHome = LDHomeCategory.Instance.Get(jiaYuanComponentServer.JiaYuanLv);
 
-            if (jiaYuanPastureConfig.BuyJiaYuanLv > roleInfo.JiaYuanLv)
+            if (jiaYuanPastureConfig.BuyJiaYuanLv > jiaYuanComponentServer.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_LvNoHigh;
                 reply();

@@ -44,13 +44,7 @@ namespace ET
             {
                 return;
             }
-            if (ldMonster.Type == (int)MonsterTypeEnum.Boss && roleInfoComponentServer.RoleInfo.Lv >= 20)
-            {
-                roleInfoComponentServer.UpdateRoleData(UserDataType.BaoShiDu, "-1", true);
-                return;
-            }
-
-
+           
             ///刷新刷出神秘之门
             if (roleInfoComponentServer.RoleInfo.TiLi > 0 && roleInfoComponentServer.RoleInfo.Lv > 20  && !unit.IsSceneItem() && RandomHelper.RandFloat01() < 0.001f)
             {

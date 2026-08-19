@@ -27,22 +27,22 @@ namespace ET
                 return;
             }
 
+            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 
-            if (request.Position == 1 &&  roleInfoComponentServer.RoleInfo.Lv < roleInfoComponentServer.RoleInfo.JiaYuanLv)
+            if (request.Position == 1 &&  roleInfoComponentServer.RoleInfo.Lv < jiaYuanComponentServer.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;
                 reply();
                 return;
             }
-            if (request.Position == 2 && roleInfoComponentServer.RoleInfo.Lv < roleInfoComponentServer.RoleInfo.JiaYuanLv)
+            if (request.Position == 2 && roleInfoComponentServer.RoleInfo.Lv < jiaYuanComponentServer.JiaYuanLv)
             {
                 response.Error = ErrorCode.ERR_JiaYuanLevel;
                 reply();
                 return;
             }
 
-            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
             JiaYuanPet jiaYuanPet = jiaYuanComponentServer.GetJiaYuanPet(request.PetId);
           
             unit.GetComponent<PetComponentServer>().OnPetWalk(request.PetId, request.PetStatus);

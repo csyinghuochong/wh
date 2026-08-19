@@ -44,6 +44,7 @@ namespace ET
                
             }
 
+            jiaYuanComponentServer.EnsureJiaYuanData();
             response.PlanOpenList = jiaYuanComponentServer.InitOpenList();
             response.PurchaseItemList = jiaYuanComponentServer.PurchaseItemList_7;
             response.LearnMakeIds = jiaYuanComponentServer.LearnMakeIds_7;
@@ -52,8 +53,9 @@ namespace ET
             response.JiaYuanProList = jiaYuanComponentServer.JiaYuanProList_7;
             response.JiaYuanDaShiTime = jiaYuanComponentServer.JiaYuanDaShiTime_1;
             response.JiaYuanPetList = jiaYuanComponentServer.JiaYuanPetList_2;
-
-            response.JiaYuanLv = roleInfoComponentServer.RoleInfo.JiaYuanLv;
+            response.JiaYuanLv = jiaYuanComponentServer.JiaYuanLv;
+            response.JiaYuanFund = jiaYuanComponentServer.JiaYuanFund;
+            response.JiaYuanExp = jiaYuanComponentServer.JiaYuanExp;
             response.MasterName = roleInfoComponentServer.RoleInfo.Name;
             reply();
         }

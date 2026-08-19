@@ -11,18 +11,17 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_JiaYuanCookBookOpen request, M2C_JiaYuanCookBookOpen response, Action reply)
         {
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             LDItem ldItemCof = LDItemCategory.Instance.Get(request.LearnMakeId);
             long needzijin = JiaYuanHelper.GetCookBookCost(ldItemCof.UseLv_Min);
+            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
 
-            if (roleInfoComponentServer.RoleInfo.JiaYuanFund < needzijin)
+            if (jiaYuanComponentServer.JiaYuanFund < needzijin)
             {
                 response.Error = ErrorCode.ERR_HouBiNotEnough;
                 reply();
                 return;
             }
 
-            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
             if (jiaYuanComponentServer.LearnMakeIds_7.Contains(request.LearnMakeId))
             {
                 response.Error = ErrorCode.ERR_AlreadyLearn;
@@ -31,7 +30,7 @@ namespace ET
             }
 
             jiaYuanComponentServer.LearnMakeIds_7.Add(request.LearnMakeId);
-            roleInfoComponentServer.UpdateRoleData(UserDataType.JiaYuanFund, (needzijin * -1).ToString() );
+            jiaYuanComponentServer.AddJiaYuanFund(needzijin * -1);
             DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer).Coroutine();
 
             response.LearnMakeIds = jiaYuanComponentServer.LearnMakeIds_7;

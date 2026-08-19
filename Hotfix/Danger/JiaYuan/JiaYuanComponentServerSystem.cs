@@ -89,8 +89,7 @@ namespace ET
         public static void CheckDaShiPro(this JiaYuanComponentServer self)
         {
 #if SERVER
-            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
-            LDHome ldHome = LDHomeCategory.Instance.Get(roleInfo.JiaYuanLv);
+            LDHome ldHome = LDHomeCategory.Instance.Get(self.JiaYuanLv);
 
             string proMax = string.Empty; //// ldHome.ProMax;
             string[] prolist = proMax.Split('|');
@@ -312,10 +311,55 @@ namespace ET
             return self.PlanOpenList_7;
         }
 
+        /// <summary>
+        /// 新号默认 1 级 / 10000 资金。
+        /// </summary>
+        public static void EnsureJiaYuanData(this JiaYuanComponentServer self)
+        {
+            if (self.JiaYuanLv > 0)
+            {
+                return;
+            }
+
+            self.JiaYuanLv = 1;
+            self.JiaYuanFund = 10000;
+        }
+
+        public static void CheckJiaYuanData(this JiaYuanComponentServer self)
+        {
+            self.EnsureJiaYuanData();
+            if (!LDHomeCategory.Instance.Contain(self.JiaYuanLv))
+            {
+                self.JiaYuanLv = 1;
+            }
+            if (!LDHomeCategory.Instance.Contain(self.JiaYuanLv + 1) && self.JiaYuanExp > 0)
+            {
+                self.JiaYuanExp = 0;
+            }
+        }
+
+        public static void AddJiaYuanFund(this JiaYuanComponentServer self, long delta)
+        {
+            self.JiaYuanFund += delta;
+            if (self.JiaYuanFund < 0)
+            {
+                self.JiaYuanFund = 0;
+            }
+        }
+
+        public static void AddJiaYuanExp(this JiaYuanComponentServer self, long delta)
+        {
+            self.JiaYuanExp += delta;
+            if (self.JiaYuanExp < 0)
+            {
+                self.JiaYuanExp = 0;
+            }
+        }
 
         public static void OnLogin(this JiaYuanComponentServer self)
         {
 #if SERVER
+            self.CheckJiaYuanData();
             List<int> numbers = self.LearnMakeIds_7;
 
             // 使用 Distinct() 去除重复元素
@@ -472,8 +516,7 @@ namespace ET
         {
 #if SERVER
             int openday = DBHelper.GetOpenServerDay(self.DomainZone());
-            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
-            int jiayuanlv = roleInfo.JiaYuanLv;
+            int jiayuanlv = self.JiaYuanLv;
 
             /*LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(87);
 
@@ -511,8 +554,7 @@ namespace ET
 #if SERVER
             self.PurchaseItemList_7.Clear();
 
-            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
-            JiaYuanHelper.InitPurchaseItemList(roleInfo.JiaYuanLv, self.PurchaseItemList_7);
+            JiaYuanHelper.InitPurchaseItemList(self.JiaYuanLv, self.PurchaseItemList_7);
 #endif
         }
 
@@ -528,8 +570,7 @@ namespace ET
                 }
             }
 
-            RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
-            JiaYuanHelper.InitPurchaseItemList(roleInfo.JiaYuanLv, self.PurchaseItemList_7);
+            JiaYuanHelper.InitPurchaseItemList(self.JiaYuanLv, self.PurchaseItemList_7);
             if (notice)
             {
                 M2C_JiaYuanUpdate m2C_JiaYuan = new M2C_JiaYuanUpdate() { PurchaseItemList = self.PurchaseItemList_7 };

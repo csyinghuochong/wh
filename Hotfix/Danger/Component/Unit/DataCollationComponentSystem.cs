@@ -411,9 +411,9 @@ namespace ET
 
             self.UnionName = roleInfoComponentServer.RoleInfo.UnionName;
 
-            self.JiaYuanLv = roleInfoComponentServer.RoleInfo.JiaYuanLv;
+            self.JiaYuanLv = unit.GetComponent<JiaYuanComponentServer>()?.JiaYuanLv ?? 1;
 
-            self.JiaYuanFund = roleInfoComponentServer.RoleInfo.JiaYuanFund;
+            self.JiaYuanFund = unit.GetComponent<JiaYuanComponentServer>()?.JiaYuanFund ?? 0;
 
             self.PetFubenId = petComponentServer.GetPassMaxFubenId();
 

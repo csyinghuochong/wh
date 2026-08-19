@@ -251,7 +251,7 @@ namespace ET
                             number = unit.GetComponent<RoleDailyDataComponentServer>()?.GetWeeklyActivePoint() ?? 0;
                             break;
                         case UserDataType.JiaYuanFund:
-                            number = roleInfo.JiaYuanFund;
+                            number = unit.GetComponent<JiaYuanComponentServer>()?.JiaYuanFund ?? 0;
                             break;
                         case UserDataType.UnionContri:
                             number = roleInfo.UnionZiJin;

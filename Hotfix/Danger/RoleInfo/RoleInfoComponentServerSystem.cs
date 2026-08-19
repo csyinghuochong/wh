@@ -49,9 +49,7 @@ namespace ET
             RoleInfo roleInfo = self.RoleInfo;
             roleInfo.Sp = 1;
             roleInfo.UserId = userId;
-            roleInfo.JiaYuanLv = 1;
             roleInfo.BaoShiDu = 100;
-            roleInfo.JiaYuanFund = 10000;
             roleInfo.AccInfoID =accountId;
             roleInfo.Name = createRoleInfo.PlayerName;
             roleInfo.ServerMailIdCur = -1;
@@ -206,10 +204,6 @@ namespace ET
         public static void CheckData(this RoleInfoComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
-            if (!LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv))
-            {
-                self.RoleInfo.JiaYuanLv = 1;
-            }
            
             if (self.RoleInfo.CreateTime == 0)
             {
@@ -245,14 +239,7 @@ namespace ET
             {
                 Log.Warning($"抽卡次数异常:{self.DomainZone()} {self.RoleInfo.Name}   充值:{recharge}  抽卡:{dataCollationComponent.ChouKaTimes}");
             }
-
-            if (!LDHomeCategory.Instance.Contain(self.RoleInfo.JiaYuanLv +1) && self.RoleInfo.JiaYuanExp > 0)
-            {
-                self.RoleInfo.JiaYuanExp = 0;
-                Console.WriteLine($"清空家园经验: {self.Id}  {self.RoleInfo.JiaYuanLv}  {self.RoleInfo.JiaYuanExp}");
-            }
         }
-
 
         public static void OnOffLine(this RoleInfoComponentServer self)
         {
@@ -535,13 +522,11 @@ namespace ET
             {
                 
                 case UserDataType.JiaYuanExp:
-                    self.RoleInfo.JiaYuanExp += int.Parse(value);
-                    saveValue = self.RoleInfo.JiaYuanExp.ToString();
-                    break;
+                    unit.GetComponent<JiaYuanComponentServer>()?.AddJiaYuanExp(int.Parse(value));
+                    return;
                 case UserDataType.JiaYuanFund:
-                    self.RoleInfo.JiaYuanFund += int.Parse(value);
-                    saveValue = self.RoleInfo.JiaYuanFund.ToString();
-                    break;
+                    unit.GetComponent<JiaYuanComponentServer>()?.AddJiaYuanFund(long.Parse(value));
+                    return;
                 case UserDataType.UnionContri:
                     self.RoleInfo.UnionZiJin += int.Parse(value);
                     saveValue = self.RoleInfo.UnionZiJin.ToString();
@@ -552,10 +537,15 @@ namespace ET
                     return;
               
                 case UserDataType.JiaYuanLv:
-                    self.RoleInfo.JiaYuanLv += int.Parse(value);
-                    saveValue = self.RoleInfo.JiaYuanLv.ToString();
-                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo);
-                    break;
+                {
+                    JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
+                    if (jiaYuanComponentServer != null)
+                    {
+                        jiaYuanComponentServer.JiaYuanLv += int.Parse(value);
+                        PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo);
+                    }
+                    return;
+                }
                 
                 //名字应该在改名的协议处理
                 case UserDataType.Name:
@@ -627,14 +617,7 @@ namespace ET
                 //    self.RoleInfo.PiLao = newValue;
                 //    saveValue = self.RoleInfo.PiLao.ToString();
                 //    break;
-                case UserDataType.BaoShiDu:
-                    long addValue = long.Parse(value);
-                    long newValue = self.RoleInfo.BaoShiDu + (int)addValue;
-                    newValue = Math.Min(Math.Max(0, newValue), CommonHelper.GetMaxBaoShiDu());
-                    self.RoleInfo.BaoShiDu = (int)newValue;
-                    saveValue = self.RoleInfo.BaoShiDu.ToString();
-                    unit.GetComponent<BuffManagerComponent>()?.InitBaoShiBuff();
-                    break;
+              
                 case UserDataType.UnionName:
                     self.RoleInfo.UnionName = value;
                     saveValue = self.RoleInfo.UnionName;
@@ -1048,7 +1031,7 @@ namespace ET
             {
                 maxjiayuan = jiaYuanConfig;
             }
-            self.RoleInfo.JiaYuanLv = maxjiayuan.Id;
+            self.GetParent<Unit>().GetComponent<JiaYuanComponentServer>().JiaYuanLv = maxjiayuan.Id;
 
             /*
             SeasonLevelConfig maxseason = null;

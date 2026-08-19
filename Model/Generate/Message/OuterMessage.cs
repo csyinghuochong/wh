@@ -611,15 +611,6 @@ namespace ET
 		[ProtoMember(32)]
 		public List<int> HorseIds = new List<int>();
 
-		[ProtoMember(35)]
-		public long JiaYuanFund { get; set; }
-
-		[ProtoMember(36)]
-		public long JiaYuanExp { get; set; }
-
-		[ProtoMember(37)]
-		public int JiaYuanLv { get; set; }
-
 		[ProtoMember(38)]
 		public int BaoShiDu { get; set; }
 
@@ -9552,6 +9543,12 @@ namespace ET
 
 		[ProtoMember(3)]
 		public int JiaYuanLv { get; set; }
+
+		[ProtoMember(7)]
+		public long JiaYuanFund { get; set; }
+
+		[ProtoMember(8)]
+		public long JiaYuanExp { get; set; }
 
 		[ProtoMember(4)]
 		public string MasterName { get; set; }

@@ -9,9 +9,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_JiaYuanExchangeRequest request, M2C_JiaYuanExchangeResponse response, Action reply)
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            RoleInfoComponentServer roleInfoComponentServer=unit.GetComponent<RoleInfoComponentServer>();
-            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            LDHome ldHome = LDHomeCategory.Instance.Get(roleInfo.JiaYuanLv);
+            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
+            LDHome ldHome = LDHomeCategory.Instance.Get(jiaYuanComponentServer.JiaYuanLv);
             switch (request.ExchangeType)
             {
                 case 1: //金币兑换资金

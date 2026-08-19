@@ -81,7 +81,21 @@ namespace ET
         public List<JiaYuanMonster> JiaYuanMonster_2 = new List<JiaYuanMonster>();
 
         public int NowOpenNpcId;
+
+        /// <summary>
+        /// 家园等级。不走 RoleInfo / RoleDataUpdate，进入家园时由 Init 下发。
+        /// </summary>
+        public int JiaYuanLv;
+
+        /// <summary>
+        /// 家园经验。
+        /// </summary>
+        public long JiaYuanExp;
+
+        /// <summary>
+        /// 家园资金。
+        /// </summary>
+        public long JiaYuanFund;
         
-        public long MasterId = 0;
     }
 }

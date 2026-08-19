@@ -42,7 +42,8 @@ namespace ET
                 case UserDataType.JiaYuanLv:
                     task = unit.GetComponent<TaskComponentServer>();
                     chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-                    int jiaYuanShowLv = roleInfo.JiaYuanLv - 10000;
+                    int jiaYuanLv = unit.GetComponent<JiaYuanComponentServer>()?.JiaYuanLv ?? 1;
+                    int jiaYuanShowLv = jiaYuanLv - 10000;
                     task?.OnJiaYuanLevel(jiaYuanShowLv);
                     chengJiu?.OnJiaYuanLevel(jiaYuanShowLv);
                     break;
