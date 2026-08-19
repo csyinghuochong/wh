@@ -11,7 +11,6 @@ namespace ET
         {
             JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             List<JiaYuanPurchaseItem> purchaselist = jiaYuanComponentServer.PurchaseItemList_7;
             JiaYuanPurchaseItem jiaYuanPurchaseItem = null;
             long serverTime = TimeHelper.ServerNow();
@@ -41,7 +40,7 @@ namespace ET
                 return;
             }
 
-            roleInfoComponentServer.UpdateRoleData(UserDataType.JiaYuanFund, jiaYuanPurchaseItem.BuyZiJin.ToString());
+            jiaYuanComponentServer.AddJiaYuanFund(jiaYuanPurchaseItem.BuyZiJin);
             bagComponentServer.OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.JiaYuanCost  );
             response.PurchaseItemList = jiaYuanComponentServer.PurchaseItemList_7;
             DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer).Coroutine();

@@ -23,7 +23,7 @@ namespace ET
                     }
 
                     roleInfoComponent.UpdateRoleData(UserDataType.Gold, (ldHome.ExchangeZiJinCostGold * -1).ToString(), true, ItemGetWay.JiaYuanCost);
-                    roleInfoComponent.UpdateRoleData(UserDataType.JiaYuanFund, (ldHome.ExchangeZiJin).ToString(), true, ItemGetWay.JiaYuanExchange);
+                    jiaYuanComponentServer.AddJiaYuanFund(ldHome.ExchangeZiJin);
                     numericComponent.ApplyChange(null, NumericType.JiaYuanExchangeZiJin, 1, 0);*/
                     break;
                 case 2: //资金兑换经验
@@ -40,8 +40,8 @@ namespace ET
                         return;
                     }
 
-                    roleInfoComponent.UpdateRoleData(UserDataType.JiaYuanFund, (ldHome.ExchangeExpCostZiJin * -1).ToString(), true, ItemGetWay.JiaYuanCost);
-                    roleInfoComponent.UpdateRoleData(UserDataType.JiaYuanExp, (ldHome.ExchangeExp).ToString(), true, ItemGetWay.JiaYuanExchange);
+                    jiaYuanComponentServer.AddJiaYuanFund(ldHome.ExchangeExpCostZiJin * -1);
+                    jiaYuanComponentServer.AddJiaYuanExp(ldHome.ExchangeExp);
                     numericComponent.ApplyChange(null, NumericType.JiaYuanExchangeExp, 1, 0);*/
                     break;
                 default:

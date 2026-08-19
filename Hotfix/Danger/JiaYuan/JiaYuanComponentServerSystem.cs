@@ -356,6 +356,18 @@ namespace ET
             }
         }
 
+        public static void AddJiaYuanLv(this JiaYuanComponentServer self, int delta)
+        {
+            self.JiaYuanLv += delta;
+            if (self.JiaYuanLv < 1)
+            {
+                self.JiaYuanLv = 1;
+            }
+            Unit unit = self.GetParent<Unit>();
+            RoleInfo roleInfo = unit?.GetComponent<RoleInfoComponentServer>()?.RoleInfo;
+            PlayerEconomyHelper.NotifyRoleDataProgression(unit, UserDataType.JiaYuanLv, roleInfo);
+        }
+
         public static void OnLogin(this JiaYuanComponentServer self)
         {
 #if SERVER

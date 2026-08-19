@@ -537,15 +537,8 @@ namespace ET
                     return;
               
                 case UserDataType.JiaYuanLv:
-                {
-                    JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
-                    if (jiaYuanComponentServer != null)
-                    {
-                        jiaYuanComponentServer.JiaYuanLv += int.Parse(value);
-                        PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo);
-                    }
+                    unit.GetComponent<JiaYuanComponentServer>()?.AddJiaYuanLv(int.Parse(value));
                     return;
-                }
                 
                 //名字应该在改名的协议处理
                 case UserDataType.Name:

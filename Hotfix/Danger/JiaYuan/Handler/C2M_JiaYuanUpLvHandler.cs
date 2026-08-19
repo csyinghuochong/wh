@@ -29,9 +29,8 @@ namespace ET
                 return;
             }
 
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            roleInfoComponentServer.UpdateRoleData(UserDataType.JiaYuanExp, (ldHome.Exp * -1).ToString());
-            roleInfoComponentServer.UpdateRoleData(UserDataType.JiaYuanLv, "1");
+            jiaYuanComponentServer.AddJiaYuanExp(ldHome.Exp * -1);
+            jiaYuanComponentServer.AddJiaYuanLv(1);
 
             reply();
             await ETTask.CompletedTask;
