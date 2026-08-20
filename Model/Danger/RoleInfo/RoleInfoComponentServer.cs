@@ -32,6 +32,8 @@ namespace ET
 
         public long UpdateCombatTime;
 
+        public int RechargeBuChang; //充值补偿  目前主要用于玩家充值成功但是掉线的情况上线后给与补偿
+
         [BsonIgnore]
         public readonly M2C_RoleDataBroadcast m2C_RoleDataBroadcast  = new M2C_RoleDataBroadcast();
         [BsonIgnore]

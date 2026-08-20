@@ -386,11 +386,11 @@ namespace ET
                 }
             }
 
-            Dictionary<long, NumericComponent> NumericComponentDict = new Dictionary<long, NumericComponent>();
-            List<NumericComponent> NumericComponents = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(zone, d => d.Id > 0);
-            foreach (var entity in NumericComponents)
+            Dictionary<long, RechargeComponentServer> RechargeComponentDict = new Dictionary<long, RechargeComponentServer>();
+            List<RechargeComponentServer> rechargeComponents = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(zone, d => d.Id > 0);
+            foreach (var entity in rechargeComponents)
             {
-                NumericComponentDict.Add(entity.Id, entity as NumericComponent);
+                RechargeComponentDict.Add(entity.Id, entity);
             }
 
             List<PetComponentServer> petComponents = await Game.Scene.GetComponent<DBComponent>().Query<PetComponentServer>(zone, d => d.Id > 0);
@@ -423,7 +423,11 @@ namespace ET
 
                 string userName = userInfo.RoleInfo.Name;
                 int userlv = userInfo.RoleInfo.Lv;
-                long recharget = NumericComponentDict[entity.Id].GetAsLong(NumericType.RechargeNumber);
+                long recharget = 0;
+                if (RechargeComponentDict.TryGetValue(entity.Id, out RechargeComponentServer rechargeComponentServer))
+                {
+                    recharget = rechargeComponentServer.GetTotalRechargeNum();
+                }
                 long diamond = userInfo.RoleInfo.Diamond;
 
                 Log.Warning($"{servername} 玩家:{userName}  等级: {userlv}  充值额度:{recharget}  当前钻石{diamond}  拥有神兽:{shenshou}");
@@ -516,19 +520,19 @@ namespace ET
                 {
                     continue;
                 }
-                List<NumericComponent> numericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(oldzone, d => d.Id == oldentity.Id);
-                if (numericComponentlist == null || numericComponentlist.Count == 0)
+                List<RechargeComponentServer> rechargeComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(oldzone, d => d.Id == oldentity.Id);
+                if (rechargeComponentlist == null || rechargeComponentlist.Count == 0)
                 {
                     continue;
                 }
-                if (numericComponentlist[0].GetAsLong(NumericType.RechargeNumber) > 0)
+                if (rechargeComponentlist[0].GetTotalRechargeNum() > 0)
                 {
                     continue;
                 }
                 
                 invalidPlayers.Add( oldentity.Id );
-                //Log.Console($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Level}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
-                //Log.Warning($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Level}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
+                //Log.Console($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Level}   {rechargeComponentlist[0].GetTotalRechargeNum()}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
+                //Log.Warning($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Level}   {rechargeComponentlist[0].GetTotalRechargeNum()}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
             }
             Log.Console($"不参与合区的玩家数量 {invalidPlayers.Count}");
 

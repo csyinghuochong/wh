@@ -514,7 +514,6 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             LDPet ldPetConfig =LDPetCategory.Instance.Get(petId);
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             List<int> weight = new List<int>();
 
@@ -534,7 +533,7 @@ namespace ET
 
             if (PetHelper.IsShenShou(petId))
             {
-                int rechargeNumber = numericComponent.GetAsInt(NumericType.RechargeNumber);
+                int rechargeNumber = (int)unit.GetTotalRechargeNum();
                 if (rechargeNumber < 5000)
                 {
                     RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;

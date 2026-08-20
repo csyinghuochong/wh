@@ -13,15 +13,19 @@ namespace ET
             long accountZone = DBHelper.GetRealmCenter();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            NumericComponent numeric = unit.GetComponent<NumericComponent>();
+            RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
             R2M_BuChangeResponse centerAccount = (R2M_BuChangeResponse)await ActorMessageSenderComponent.Instance.Call(accountZone, new M2R_BuChangeRequest()
             { 
                 BuChangId = request.BuChangId,
                 UserId = roleInfoComponentServer.Id,
                 AccountId = roleInfo.AccInfoID
             });
- 
-            numeric.ApplyChange(null, NumericType.RechargeNumber, centerAccount.BuChangRecharge, 0,true);
+
+            if (centerAccount.BuChangRecharge != 0)
+            {
+                rechargeComponentServer.RechargePro.TotalRechargeNum += centerAccount.BuChangRecharge;
+                rechargeComponentServer.NotifyClient();
+            }
             roleInfoComponentServer.UpdateRoleData( UserDataType.Diamond, centerAccount.BuChangDiamond.ToString(), true, ItemGetWay.BuChang);
             response.PlayerInfo = centerAccount.PlayerInfo;
             reply();

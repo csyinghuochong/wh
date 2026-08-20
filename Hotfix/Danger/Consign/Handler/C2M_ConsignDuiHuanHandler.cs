@@ -10,7 +10,6 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ConsignDuiHuanRequest request, M2C_ConsignDuiHuanResponse response, Action reply)
         {
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
             long dbCacheId = DBHelper.GetRankServerId(unit);
             R2M_DBServerInfoResponse d2GGetUnit = (R2M_DBServerInfoResponse)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2R_DBServerInfoRequest() { });
@@ -21,7 +20,7 @@ namespace ET
                 return;
             }
 
-            if (numericComponent.GetAsInt(NumericType.RechargeNumber) <= 0)
+            if (unit.GetTotalRechargeNum() <= 0)
             {
                 reply();
                 return;

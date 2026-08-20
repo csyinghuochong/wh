@@ -31,7 +31,6 @@ namespace ET
             }
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             //if (roleInfoComponentServer.RoleInfo.RechargeReward.Contains(request.RechargeNumber))
             //{
@@ -40,7 +39,7 @@ namespace ET
             //    return;
             //}
 
-            long rechargeTotal = numericComponent.GetAsLong(NumericType.RechargeNumber);
+            long rechargeTotal = unit.GetTotalRechargeNum();
             if (rechargeTotal < request.RechargeNumber)
             {
                 response.Error = ErrorCode.Pre_Condition_Error;

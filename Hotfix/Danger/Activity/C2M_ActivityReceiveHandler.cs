@@ -97,7 +97,7 @@ namespace ET
                             reply();
                             return;
                         }
-                        int selfRechage = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber);
+                        int selfRechage = (int)unit.GetTotalRechargeNum();
                         if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
                         {
                             if (request.ReceiveIndex == 3 && selfRechage < 50)
@@ -253,7 +253,7 @@ namespace ET
                     case 101:   //冒险家
                                 //需要从dbaccountinfo中获取当前角色重置额度
                         long needrecharge = int.Parse(activityConfig.Par_2);
-                        int rechargeNum = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.RechargeNumber);
+                        int rechargeNum = (int)unit.GetTotalRechargeNum();
                         rechargeNum *= 10;
                         rechargeNum += unit.GetComponent<NumericComponent>().GetAsInt(NumericType.MaoXianExp);
                         if (rechargeNum < needrecharge)

@@ -12,7 +12,6 @@ namespace ET
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             DataCollationComponent dataCollation = unit.GetComponent<DataCollationComponent>();
 
             //背包是否有位置
@@ -106,7 +105,7 @@ namespace ET
                 int createDay = roleInfoComponentServer.GetCrateDay();
 
                 //firstDay = createDay <= 1 && roleInfoComponent.RoleInfo.Level <= 10;
-                request.IsRecharge = numericComponent.GetAsInt(NumericType.RechargeNumber);
+                request.IsRecharge = (int)unit.GetTotalRechargeNum();
 
                 if (request.IsRecharge > 0
                     || CommonHelper.IsCanPaiMai_Level(createDay, roleInfoComponentServer.RoleInfo.Lv) == 0)

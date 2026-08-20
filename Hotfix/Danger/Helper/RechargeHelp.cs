@@ -26,9 +26,7 @@ namespace ET
                 return;
             }
         
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
-            rechargeComponentServer.EnsureRechargePro();
 
             if (Log.IsDebugEnabled)
             {
@@ -68,7 +66,6 @@ namespace ET
 
             taskComponentServer.OnRechargeDay();
 
-            numericComponent.ApplyChange(null, NumericType.RechargeNumber, rechargeNumber, 1, notice);
             RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
             if (daily != null && daily.GetRechargeSign() != 2)
             {
@@ -117,16 +114,13 @@ namespace ET
             {
                 Log.Warning($"充值OnPaySucess PlayerState.None: {zone}   {userId}  rechargeNumber:{rechargeNumber}");
                 int homeZone = UnitZoneHelper.GetHomeZone(userId);
-                NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, userId);
-                if (numericComponent != null)
-                {
-                    numericComponent.ApplyChange(null, NumericType.RechargeBuChang, rechargeNumber, 1, false);
-                    await DBHelper.SaveComponent(homeZone, userId, numericComponent);
-                }
-
+ 
                 RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, userId);
                 if (roleInfoComponentServer != null)
                 {
+                    roleInfoComponentServer.RechargeBuChang = 1;
+                    await DBHelper.SaveComponent(homeZone, userId, roleInfoComponentServer);
+
                     long accountId = roleInfoComponentServer.RoleInfo.AccInfoID;
                     SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType).Coroutine();
                 }

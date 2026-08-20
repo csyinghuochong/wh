@@ -37,9 +37,9 @@ namespace ET
             MessageHelper.SendToLocationActor( userID, mail2M_SendServer);
         }
 
-        public static bool CheckSendMail(int MailType, string Title, NumericComponent numericComponent, RoleInfoComponentServer roleInfoComponentServer, BagComponentServer bagComponentServer)
+        public static bool CheckSendMail(int MailType, string Title, long rechargeNum, RoleInfoComponentServer roleInfoComponentServer, BagComponentServer bagComponentServer)
         {
-            if (numericComponent == null || roleInfoComponentServer == null || bagComponentServer == null)
+            if (roleInfoComponentServer == null || bagComponentServer == null)
             {
                 return false;
             }
@@ -47,7 +47,7 @@ namespace ET
             switch (MailType)
             {
                 case 2: // 充值>=6元 10011003
-                    if (numericComponent.GetAsLong(NumericType.RechargeNumber) < int.Parse(Title))
+                    if (rechargeNum < int.Parse(Title))
                     {
                         return false;
                     }
@@ -64,8 +64,8 @@ namespace ET
                     string[] needrecharge = Title.Split('_');
                     int min_value = int.Parse(needrecharge[0]);
                     int max_value = int.Parse(needrecharge[1]);
-                    if (numericComponent.GetAsLong(NumericType.RechargeNumber) < min_value
-                        || numericComponent.GetAsLong(NumericType.RechargeNumber) >= max_value)
+                    if (rechargeNum < min_value
+                        || rechargeNum >= max_value)
                     {
                         return false;
                     }
@@ -90,14 +90,15 @@ namespace ET
             {
                 return;
             }
-            NumericComponent  numericComponent = await DBHelper.GetComponent<NumericComponent>(zone, userID);
+            RechargeComponentServer rechargeComponentServer = await DBHelper.GetComponent<RechargeComponentServer>(zone, userID);
             BagComponentServer bagComponentServer = await DBHelper.GetComponent<BagComponentServer>(zone, userID);
-            if (numericComponent == null || bagComponentServer == null)
+            if (bagComponentServer == null)
             {
                 return;
             }
 
-            bool cansendMail = MailHelp.CheckSendMail(serverMailItem.MailType, serverMailItem.ParasmNew, numericComponent, roleInfoComponentServer, bagComponentServer);
+            long rechargeNum = rechargeComponentServer?.GetTotalRechargeNum() ?? 0;
+            bool cansendMail = MailHelp.CheckSendMail(serverMailItem.MailType, serverMailItem.ParasmNew, rechargeNum, roleInfoComponentServer, bagComponentServer);
             if (cansendMail == false)
             {
                 return;

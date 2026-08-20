@@ -254,8 +254,6 @@ namespace ET
         public static void CheckData(this RoleInfoComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
-           
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             for (int  i =  self.RoleInfo.HorseIds.Count - 1; i >= 0; i--)
             {
@@ -268,7 +266,7 @@ namespace ET
             RoleAddPointHelper.EnsureLevel1InitPoints(unit, self.RoleInfo.Lv);
 
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
-            int recharge = numericComponent.GetAsInt(NumericType.RechargeNumber);
+            int recharge = (int)unit.GetTotalRechargeNum();
             if (recharge!=0 && dataCollationComponent.ChouKaTimes > (recharge * 2) && dataCollationComponent.ChouKaTimes > 100)
             {
                 Log.Warning($"抽卡次数异常:{self.DomainZone()} {self.RoleInfo.Name}   充值:{recharge}  抽卡:{dataCollationComponent.ChouKaTimes}");

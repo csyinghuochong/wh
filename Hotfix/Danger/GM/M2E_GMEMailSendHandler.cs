@@ -36,11 +36,8 @@ namespace ET
                 for (int i = 0; i < dBMailInfos.Count; i++)
                 {
                     long mailOwnerId = dBMailInfos[i].Id;
-                    List<NumericComponent> numericInfoList = await dbComponent.Query<NumericComponent>(scene.DomainZone(), d => d.Id == mailOwnerId);
-                    if (numericInfoList.Count == 0)
-                    {
-                        continue;
-                    }
+                    List<RechargeComponentServer> rechargeInfoList = await dbComponent.Query<RechargeComponentServer>(scene.DomainZone(), d => d.Id == mailOwnerId);
+                    long rechargeNum = rechargeInfoList.Count > 0 ? rechargeInfoList[0].GetTotalRechargeNum() : 0;
                     List<RoleInfoComponentServer> RoleInfoComponents = await dbComponent.Query<RoleInfoComponentServer>(scene.DomainZone(), d => d.Id == mailOwnerId);
                     if (RoleInfoComponents.Count == 0)
                     {
@@ -58,7 +55,7 @@ namespace ET
                         continue;
                     }
 
-                    bool cansendMail = MailHelp.CheckSendMail(request.MailType, request.Title, numericInfoList[0], roleInfoComponent, bagInfoList[0]);
+                    bool cansendMail = MailHelp.CheckSendMail(request.MailType, request.Title, rechargeNum, roleInfoComponent, bagInfoList[0]);
                     if (cansendMail == false)
                     {
                         continue;

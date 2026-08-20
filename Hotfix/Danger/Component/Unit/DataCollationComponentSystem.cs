@@ -378,7 +378,6 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();  
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();  
 
@@ -399,7 +398,7 @@ namespace ET
 
             self.Diamond = roleInfoComponentServer.RoleInfo.Diamond;
 
-            self.Recharge = numericComponent.GetAsLong( NumericType.RechargeNumber );
+            self.Recharge = unit.GetTotalRechargeNum();
 
             self.TodayOnLine = roleInfoComponentServer.TodayOnLine;
 

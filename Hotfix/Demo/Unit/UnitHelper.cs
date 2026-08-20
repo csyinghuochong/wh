@@ -310,6 +310,15 @@ namespace ET
             return units;
         }
 
+        public static long GetTotalRechargeNum(this Unit unit)
+        {
+#if SERVER
+            return unit.GetComponent<RechargeComponentServer>().GetTotalRechargeNum();
+#else
+            return unit.ZoneScene().GetComponent<RechargeComponent>().RechargePro.TotalRechargeNum;
+#endif
+        }
+
         public static void RecordPostion(this Unit self, int sceneType, int sceneId)
         {
             bool record = false;

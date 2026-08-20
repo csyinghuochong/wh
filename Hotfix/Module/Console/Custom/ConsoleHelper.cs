@@ -512,8 +512,8 @@ namespace ET
                 {
 
                     //获取充值的数值组件
-                    List<NumericComponent> numericComponent = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id > 0 && d.Id == unitID);
-                    string showStr = $"{RoleInfoComponentSing[0].RoleInfo.Name} 战力:{RoleInfoComponentSing[0].RoleInfo.Combat}金币:{RoleInfoComponentSing[0].RoleInfo.Gold} 钻石:{RoleInfoComponentSing[0].RoleInfo.Diamond} 职业{RoleInfoComponentSing[0].RoleInfo.Occ}-{RoleInfoComponentSing[0].RoleInfo.OccTwo} 充值:{numericComponent[0].GetAsInt(NumericType.RechargeNumber)}";
+                    List<RechargeComponentServer> rechargeComponent = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(pyzone, d => d.Id > 0 && d.Id == unitID);
+                    string showStr = $"{RoleInfoComponentSing[0].RoleInfo.Name} 战力:{RoleInfoComponentSing[0].RoleInfo.Combat}金币:{RoleInfoComponentSing[0].RoleInfo.Gold} 钻石:{RoleInfoComponentSing[0].RoleInfo.Diamond} 职业{RoleInfoComponentSing[0].RoleInfo.Occ}-{RoleInfoComponentSing[0].RoleInfo.OccTwo} 充值:{rechargeComponent[0].GetTotalRechargeNum()}";
                     Log.Debug($"{showStr}");
                 }
             }
@@ -716,13 +716,13 @@ namespace ET
                     {
                         continue;
                     }
-                    List<NumericComponent> unumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == unitid);
+                    List<RechargeComponentServer> rechargeComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(pyzone, d => d.Id == unitid);
                     if (RoleInfoComponentlist.Count == 0)
                     {
                         continue;
                     }
 
-                    levelInfo += $"排名: {rank+1}   \t玩家：{RoleInfoComponentlist[0].UserName}   \t充值：{unumericComponentlist[0].GetAsInt(NumericType.RechargeNumber)}      \t";
+                    levelInfo += $"排名: {rank+1}   \t玩家：{RoleInfoComponentlist[0].UserName}   \t充值：{rechargeComponentlist[0].GetTotalRechargeNum()}      \t";
                 }
 
 
@@ -1481,20 +1481,20 @@ namespace ET
             {
                 int pyzoneid = zonlist[zoneindex];
 
-                List<NumericComponent> numericComponents = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzoneid, _account => _account.Id > 0);
-                for (int numIndex = 0; numIndex < numericComponents.Count; numIndex++)
+                List<RechargeComponentServer> rechargeComponents = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(pyzoneid, _account => _account.Id > 0);
+                for (int numIndex = 0; numIndex < rechargeComponents.Count; numIndex++)
                 {
-                    NumericComponent numericComponent = numericComponents[numIndex];
+                    RechargeComponentServer rechargeComponent = rechargeComponents[numIndex];
                     long rechargetNumber = 0;
-                    roleRecharge.TryGetValue(numericComponent.Id, out rechargetNumber);
+                    roleRecharge.TryGetValue(rechargeComponent.Id, out rechargetNumber);
 
-                    long rechargeExp = numericComponent.GetAsLong(NumericType.RechargeNumber);
+                    long rechargeExp = rechargeComponent.GetTotalRechargeNum();
                     long maoxianTotal = rechargeExp * 10 ;
 
                     if ( rechargeExp > 1000 && rechargeExp > rechargetNumber * 2)
                     { 
                         
-                        List<RoleInfoComponentServer> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzoneid, _account => _account.Id == numericComponent.Id);
+                        List<RoleInfoComponentServer> RoleInfoComponents = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzoneid, _account => _account.Id == rechargeComponent.Id);
                         if (RoleInfoComponents == null || RoleInfoComponents.Count == 0)
                         {
                             continue;
@@ -1673,12 +1673,12 @@ namespace ET
                     //    continue;
                     //}
 
-                    List<NumericComponent> NumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == petComponentServer.Id);
-                    if (NumericComponentlist == null || NumericComponentlist.Count == 0)
+                    List<RechargeComponentServer> rechargeComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(pyzone, d => d.Id == petComponentServer.Id);
+                    if (rechargeComponentlist == null || rechargeComponentlist.Count == 0)
                     {
                         continue;
                     }
-                    int recharge = NumericComponentlist[0].GetAsInt(NumericType.RechargeNumber);
+                    int recharge = (int)rechargeComponentlist[0].GetTotalRechargeNum();
 
                     levelInfo = levelInfo + $"区:{pyzone}   \t账号：{roleInfoComponentServer.Account}  \t玩家:{roleInfoComponentServer.RoleInfo.Name}  \t神兽数量:{shenshouNumber}   \t等级:{roleInfoComponentServer.RoleInfo.Lv} \t钻石:{roleInfoComponentServer.RoleInfo.Diamond}  \t充值:{recharge} \n";
 
@@ -1775,8 +1775,8 @@ namespace ET
                             continue;
                         }
 
-                        List<NumericComponent> NumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == roleInfoComponentServer.Id);
-                        if (NumericComponentlist == null || NumericComponentlist.Count == 0)
+                        List<RechargeComponentServer> rechargeComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(pyzone, d => d.Id == roleInfoComponentServer.Id);
+                        if (rechargeComponentlist == null || rechargeComponentlist.Count == 0)
                         {
                             continue;
                         }
@@ -1791,7 +1791,7 @@ namespace ET
                             continue;
                         }
 
-                        int recharge = NumericComponentlist[0].GetAsInt(NumericType.RechargeNumber);
+                        int recharge = (int)rechargeComponentlist[0].GetTotalRechargeNum();
                         //if (recharge > 200)
                         //{ 
                         //    continue; 
@@ -1816,12 +1816,12 @@ namespace ET
                             continue;
                         }
 
-                        List<NumericComponent> NumericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(pyzone, d => d.Id == roleInfoComponentServer.Id);
-                        if (NumericComponentlist == null || NumericComponentlist.Count == 0)
+                        List<RechargeComponentServer> rechargeComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(pyzone, d => d.Id == roleInfoComponentServer.Id);
+                        if (rechargeComponentlist == null || rechargeComponentlist.Count == 0)
                         {
                             continue;
                         }
-                        int recharge = NumericComponentlist[0].GetAsInt(NumericType.RechargeNumber);
+                        int recharge = (int)rechargeComponentlist[0].GetTotalRechargeNum();
 
                         levelInfo = levelInfo + $"区:{pyzone}   账号：{roleInfoComponentServer.Account} 玩家:{roleInfoComponentServer.RoleInfo.Name} 等级:{roleInfoComponentServer.RoleInfo.Lv} 钻石:{roleInfoComponentServer.RoleInfo.Diamond} 充值:{recharge} \n";
                     }

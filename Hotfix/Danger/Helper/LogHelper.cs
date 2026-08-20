@@ -487,7 +487,7 @@ namespace ET
             //}
             RoleInfoComponentServer userInfo = unit.GetComponent<RoleInfoComponentServer>();
 
-            long rechargeValue = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber);
+            long rechargeValue = unit.GetTotalRechargeNum();
 
             //GM账号免于检测
             if (GMHelp.GmAccount.Contains(userInfo.Account)) {
@@ -496,16 +496,16 @@ namespace ET
 
             int openDay = DBHelper.GetOpenServerDay(unit);
             //钻石线
-            if (userInfo.RoleInfo.Diamond >= unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber) * 150 + 50000)
+            if (userInfo.RoleInfo.Diamond >= rechargeValue * 150 + 50000)
             {
-                LogHelper.ZuobiInfo("钻石作弊:" + userInfo.RoleInfo.Diamond + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.RoleInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));
+                LogHelper.ZuobiInfo("钻石作弊:" + userInfo.RoleInfo.Diamond + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.RoleInfo.Lv + " 充值:" + rechargeValue);
             }
 
             //等级线
             ServerInfo serverInfo = ConfigData.ServerInfoList[UnitZoneHelper.GetHomeZone(unit)];
             if (userInfo.RoleInfo.Lv > serverInfo.WorldLv) 
             {
-                LogHelper.ZuobiInfo("玩家等级超过服务器等级限制:" + userInfo.RoleInfo.Lv + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.RoleInfo.Lv + " 充值:" + unit.GetComponent<NumericComponent>().GetAsLong(NumericType.RechargeNumber));
+                LogHelper.ZuobiInfo("玩家等级超过服务器等级限制:" + userInfo.RoleInfo.Lv + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.RoleInfo.Lv + " 充值:" + rechargeValue);
             }
 
             if (openDay <= 180 || userInfo.RoleInfo.Lv < 60)
