@@ -262,8 +262,7 @@ namespace ET
 
         public static int GetWuqiItemID(this Unit self)
         {
-            int itemId = self.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Weapon);
-            return itemId;
+            return 0;
         }
 
 

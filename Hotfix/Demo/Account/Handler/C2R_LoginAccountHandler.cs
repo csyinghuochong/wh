@@ -258,8 +258,6 @@ namespace ET
                             }
                             
                             roleList.PlayerLv = roleInfoComponentServer.RoleInfo.Lv;
-                            roleList.WeaponId = numericComponent.GetAsInt(NumericType.Now_Weapon);
-  
                             roleList.FashionIds = bagComponentServer.FashionEquipList;
                             
                             response.RoleLists.Add(roleList);
