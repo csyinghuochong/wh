@@ -512,6 +512,10 @@ namespace ET
                 {
                     continue;
                 }
+                if (serverNow - oldentity.LastLoginTime < TimeHelper.OneDay * 10)
+                {
+                    continue;
+                }
                 List<NumericComponent> numericComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<NumericComponent>(oldzone, d => d.Id == oldentity.Id);
                 if (numericComponentlist == null || numericComponentlist.Count == 0)
                 {
@@ -521,10 +525,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (serverNow - numericComponentlist[0].GetAsLong(NumericType.LastGameTime) < TimeHelper.OneDay * 10)
-                {
-                    continue;
-                }
+                
                 invalidPlayers.Add( oldentity.Id );
                 //Log.Console($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Level}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");
                 //Log.Warning($"移除玩家： {oldentity.RoleInfo.Name}  {oldentity.RoleInfo.Level}   {numericComponentlist[0].GetAsLong(NumericType.RechargeNumber)}  {TimeInfo.Instance.ToDateTime(numericComponentlist[0].GetAsLong(NumericType.LastGameTime)).ToString()}");

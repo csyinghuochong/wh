@@ -93,7 +93,6 @@ namespace ET
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
             UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
             unitGateComponent.PlayerState = PlayerState.Game;
         }
@@ -116,7 +115,6 @@ namespace ET
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
             string oaid = dataCollationComponent.OAID;
             string lastgametime = TimeHelper.DateTimeNow().ToString();
-            numericComponent.ApplyValue(NumericType.LastGameTime, TimeHelper.ServerNow(), false);
             roleInfoComponentServer.OnOffLine();
             dataCollationComponent.OnOffLine(lastgametime);
             UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
