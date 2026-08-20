@@ -75,7 +75,8 @@ namespace ET
             response.BagInfos = bagInfos;
 			response.FashionActiveIds = bagComponentServer.FashionActiveIds;	
 			response.FashionEquipList = bagComponentServer.FashionEquipList;
-			response.AdditionalCellNum = bagComponentServer.AdditionalCellNum;	
+			response.AdditionalCellNum = bagComponentServer.AdditionalCellNum;
+            response.CangKuNumber = bagComponentServer.CangKuNumber;
             reply();
 			await ETTask.CompletedTask;
 		}

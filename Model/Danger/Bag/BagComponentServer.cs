@@ -29,6 +29,14 @@ namespace ET
         /// </summary>
         public List<int> FashionEquipList = new List<int>();
 
+        /// <summary>默认已开 1 页仓库。</summary>
+        public const int DefaultCangKuNumber = 1;
+
+        /// <summary>仓库页数上限（ItemWareHouse1~4）。</summary>
+        public const int MaxCangKuNumber = 4;
+
+        /// <summary>已开启的角色仓库页数。</summary>
+        public int CangKuNumber;
 
         public List<BagInfo> EquipList = new List<BagInfo>();
         public List<BagInfo> BagItemList =new List<BagInfo>();  //背包

@@ -94,6 +94,7 @@ namespace ET
             unit.AddDataComponent<ShoujiComponentServer>();
             unit.AddDataComponent<DataCollationComponent>();
             unit.AddDataComponent<RoleDailyDataComponentServer>();
+            unit.AddDataComponent<RoleContextComponent>();
 
             await unit.AddDBComonent<DBFriendInfo>(unit.Id);
             await unit.AddDBComonent<DBMailInfo>(unit.Id);

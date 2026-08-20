@@ -7756,6 +7756,9 @@ namespace ET
 		[ProtoMember(92)]
 		public int Error { get; set; }
 
+		[ProtoMember(1)]
+		public int CangKuNumber { get; set; }
+
 	}
 
 	[ResponseType(nameof(M2C_PetEggDuiHuanResponse))]
@@ -14443,6 +14446,9 @@ namespace ET
 
 		[ProtoMember(7)]
 		public List<int> FashionEquipList = new List<int>();
+
+		[ProtoMember(8)]
+		public int CangKuNumber { get; set; }
 
 	}
 

@@ -10,6 +10,7 @@ namespace ET
 
         public override void Awake(BagComponentServer self)
         {
+            self.CangKuNumber = BagComponentServer.DefaultCangKuNumber;
         }
     }
 
@@ -22,6 +23,11 @@ namespace ET
             for (int i = self.AdditionalCellNum.Count; i < (int)ItemLocType.ItemLocMax; i++)
             {
                 self.AdditionalCellNum.Add(0);
+            }
+
+            if (self.CangKuNumber <= 0)
+            {
+                self.CangKuNumber = BagComponentServer.DefaultCangKuNumber;
             }
 
 

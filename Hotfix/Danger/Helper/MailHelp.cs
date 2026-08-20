@@ -58,13 +58,6 @@ namespace ET
                         return false;
                     }
                     break;
-                case 4: //开启第二个仓库并且格子没有开完的
-                    if (numericComponent.GetAsInt(NumericType.CangKuNumber) < 2)
-                    {
-                        return false;
-                    }
-                 
-                    break;
                 case 5:
                     // 充值>=6<30元 10011003
                     //充值额度某个区间段

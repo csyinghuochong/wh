@@ -7,10 +7,9 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_RoleOpenCangKuRequest request, M2C_RoleOpenCangKuResponse response, Action reply)
         {
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            int cangkuNumber = numericComponent.GetAsInt(NumericType.CangKuNumber);
-            if (cangkuNumber >= 4)
+            int cangkuNumber = bagComponentServer.CangKuNumber;
+            if (cangkuNumber >= BagComponentServer.MaxCangKuNumber)
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();
@@ -25,7 +24,8 @@ namespace ET
                 return;
             }
 
-            numericComponent.ApplyValue(NumericType.CangKuNumber, cangkuNumber+1);
+            bagComponentServer.CangKuNumber = cangkuNumber + 1;
+            response.CangKuNumber = bagComponentServer.CangKuNumber;
             reply();
             await ETTask.CompletedTask;
         }
