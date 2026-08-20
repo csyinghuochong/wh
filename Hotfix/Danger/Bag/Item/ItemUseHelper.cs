@@ -32,6 +32,16 @@ namespace ET
                 return ErrorCode.ERR_ItemNoUseTime;
             }
 
+            int recipeMakeId = 0;
+            if (ldItem.ItemType == ItemSubTypeEnum.SubType_Recipe_98)
+            {
+                recipeMakeId = ldItem.ItemTypeParam1;
+                if (recipeMakeId <= 0 || !LDSkill_MakeCategory.Instance.Contain(recipeMakeId))
+                {
+                    return ErrorCode.ERR_ModifyData;
+                }
+            }
+
             if (useBagInfo != null && !bagComponentServer.OnCostItemData(useBagInfo, ItemLocType.ItemLocBag, 1))
             {
                 return ErrorCode.ERR_Success;
@@ -57,6 +67,11 @@ namespace ET
             if (ldItem.SumUseNum > 0)
             {
                 roleInfoComponentServer.OnTotalUseTimes(ldItem.Id);
+            }
+
+            if (recipeMakeId > 0)
+            {
+                roleInfoComponentServer.LearnRecipe(recipeMakeId);
             }
 
             return ErrorCode.ERR_Success;

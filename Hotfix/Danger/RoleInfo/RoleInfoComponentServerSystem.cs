@@ -324,8 +324,6 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
 
-            // 日清列表由 RoleDailyDataComponent 统一 Clear（含 BuyStoreItems 本次限购）
-            unit.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists(RoleDailyClearType.Day);
             self.LastLoginTime = TimeHelper.ServerNow();
             self.TodayOnLine = 0;
         }
@@ -819,6 +817,27 @@ namespace ET
             //{
             //    self.RoleInfo.MakeIdList.Add(new KeyValuePairInt() { KeyId = makeId, Value = endTime });
             //}
+        }
+
+        /// <summary>
+        /// 领悟配方。ItemType=98，ItemTypeParam1=LDSkill_Make.Id。已学会则忽略。
+        /// </summary>
+        public static void LearnRecipe(this RoleInfoComponentServer self, int makeId)
+        {
+            RoleInfo roleInfo = self.RoleInfo;
+            if (roleInfo.MakeIdList == null)
+            {
+                roleInfo.MakeIdList = new List<int>();
+            }
+            if (roleInfo.MakeIdList.Contains(makeId))
+            {
+                return;
+            }
+
+            roleInfo.MakeIdList.Add(makeId);
+            Unit unit = self.GetParent<Unit>();
+            MessageHelper.SendToClient(unit, new M2C_UpdateUserInfoMessage { RoleInfo = roleInfo });
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, self).Coroutine();
         }
 
         public static void OnAddChests(this RoleInfoComponentServer self, int fubenId, int monsterId)

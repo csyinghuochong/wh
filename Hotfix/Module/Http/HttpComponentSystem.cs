@@ -111,45 +111,63 @@ namespace ET
 
         public static async ETTask Handle(this HttpComponent self, HttpListenerContext context)
         {
-            string abspath = string.Empty;
-            string rawurl = string.Empty;
             try
             {
                 IHttpHandler handler;
-
                 if (self.dispatcher.TryGetValue(context.Request.Url.AbsolutePath, out handler))
                 {
                     await handler.Handle(self.Domain, context);
                 }
                 else
                 {
-                    
-                    if (context != null && context.Request != null)
-                    {
-                        abspath = context.Request.Url.AbsolutePath;
-                        rawurl = context.Request.RawUrl;
-                    }
-                    //Console.WriteLine($"HttpComponent_Handle Failed: {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}  {abspath} {rawurl}");
+                    context.Response.StatusCode = 404;
+                    context.Response.ContentLength64 = 0;
                 }
             }
             catch (Exception e)
             {
                 Log.Error(e);
+                try
+                {
+                    context.Response.StatusCode = 500;
+                    context.Response.ContentLength64 = 0;
+                }
+                catch
+                {
+                    // 对端已断开
+                }
             }
             finally
             {
-                // 安全释放资源
+                self.SafeClose(context);
+            }
+        }
+
+        /// <summary>
+        /// 未知路径或对端提前断开时，Dispose 流会抛 HttpListenerException。用 Close 收尾即可。
+        /// </summary>
+        private static void SafeClose(this HttpComponent self, HttpListenerContext context)
+        {
+            try
+            {
+                context.Response.Close();
+            }
+            catch (HttpListenerException)
+            {
                 try
                 {
-                    context.Request.InputStream.Dispose();
-                    context.Response.OutputStream.Dispose();
+                    context.Response.Abort();
                 }
-                catch (HttpListenerException ex)
+                catch
                 {
-                    Console.WriteLine($"释放 HttpListener 资源时发生网络异常: {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}  {abspath} {rawurl}");
-                    // 记录日志但不抛出，避免影响主线程
-                    Log.Debug($"释放 HttpListener 资源时发生网络异常: {ex.Message}");
+                    // ignore
                 }
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+            catch (InvalidOperationException)
+            {
             }
         }
     }

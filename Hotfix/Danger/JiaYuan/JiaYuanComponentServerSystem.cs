@@ -86,56 +86,6 @@ namespace ET
 
         public static void CheckDaShiPro(this JiaYuanComponentServer self)
         {
-#if SERVER
-            LDHome ldHome = LDHomeCategory.Instance.Get(self.JiaYuanLv);
-
-            string proMax = string.Empty; //// ldHome.ProMax;
-            string[] prolist = proMax.Split('|');
-            Dictionary<int, int> promaxvalue = new Dictionary<int, int>();
-            for (int i = 0; i < prolist.Length; i++)
-            {
-                if (CommonHelper.IfNull(prolist[i]))
-                {
-                    continue;
-                }
-                string[] proinfo = prolist[i].Split('&');
-                promaxvalue.Add(int.Parse(proinfo[0]), int.Parse(proinfo[1]));
-            }
-
-            for (int i = self.JiaYuanProList_7.Count - 1; i >= 0; i--)
-            {
-                int numericType = self.JiaYuanProList_7[i].KeyId;
-                int lvalue = int.Parse(self.JiaYuanProList_7[i].Value);
-                if (!promaxvalue.TryGetValue(numericType, out int maxvlue))
-                {
-                    maxvlue = 0;
-                }
-                int oldmaxvlue = maxvlue;
-                maxvlue = (int)(maxvlue * 0.8f);
-                
-                //超过80%会下降
-                if (lvalue >= maxvlue)
-                {
-                    lvalue -= RandomHelper.NextInt(1,3);
-                    if (lvalue < maxvlue) {
-                        lvalue = maxvlue;
-                    }
-                }
-
-                //超过100%会下降更多
-                if (lvalue >= oldmaxvlue)
-                {
-                    lvalue -= RandomHelper.NextInt(10, 20);
-                    if (lvalue < maxvlue)
-                    {
-                        lvalue = maxvlue;
-                    }
-                }
-
-                lvalue = Mathf.Max(lvalue, 0);
-                self.JiaYuanProList_7[i].Value = lvalue.ToString();
-            }
-#endif
         }
 
         public static List<AttributeItem> GetJianYuanPro(this JiaYuanComponentServer self)

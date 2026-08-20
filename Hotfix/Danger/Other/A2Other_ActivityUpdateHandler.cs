@@ -39,11 +39,6 @@ namespace ET
                         ActorLocationSenderComponent.Instance.Send(players[i].UnitId, new G2M_ActivityUpdate() { ActivityType = hour });
                     }
 
-                    if (request.Hour == 20 && scene.DomainZone() == 3)
-                    {
-                        //Console.WriteLine("gongzuoshi3 0");
-                        //Game.EventSystem.Publish(new EventType.GMCommonRequest() { Context = "gongzuoshi3 0" });
-                    }
 
                     if (request.Hour == 23 && scene.DomainZone() == 3)
                     {
@@ -60,11 +55,7 @@ namespace ET
                         //string filePath_2 = "../Logs/WJ_Chat.txt";
                         //LogHelper.WriteLogList(new List<string>() { "" }, filePath_2, false);
                     }
-                    if (request.Hour == 10 && scene.DomainZone() == 3)
-                    {
-                        //打印拍卖
-                    }
-
+                  
                     break;
                 case SceneType.Map:
                     //Log.Console($"{scene.Name}  {scene.DomainZone()}  request.FunctionType: {request.FunctionId} {request.FunctionType}");
