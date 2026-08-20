@@ -2803,9 +2803,6 @@ namespace ET
 		[ProtoMember(3)]
 		public int SoloRankId { get; set; }
 
-		[ProtoMember(4)]
-		public int TrialRankId { get; set; }
-
 		[ProtoMember(5)]
 		public int OccRankId { get; set; }
 

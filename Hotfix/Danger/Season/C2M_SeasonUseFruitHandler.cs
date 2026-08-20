@@ -47,18 +47,16 @@ namespace ET
             }
 
             LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-            if (ldItem.ItemType != ItemTypeEnum.Consume || ldItem.ItemType != 132)
-            {
-                Log.Error($"C2M_SeasonUseFruitRequest 3");
-                response.Error = ErrorCode.ERR_ModifyData;
-                reply();
-                return;
-            }
+         
 
             reduceTime += 0;///long.Parse(ldItem.ItemUsePar);
 
             bagComponentServer.OnCostItemData(request.BagInfoIDs[0], 1);
-            unit.GetComponent<NumericComponent>().ApplyChange(null, NumericType.SeasonBossRefreshTime, -1 * reduceTime, 0);
+            if (reduceTime != 0)
+            {
+                RoleContextComponent roleContext = unit.GetComponent<RoleContextComponent>();
+                roleContext.SetSeasonBossRefreshTime(roleContext.SeasonBossRefreshTime - reduceTime);
+            }
 
             reply();
             await ETTask.CompletedTask;

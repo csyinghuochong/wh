@@ -392,7 +392,6 @@ namespace ET
             }
 
             NumericComponent numericComponent = main.GetComponent<NumericComponent>();
-            numericComponent.ApplyChange(null, NumericType.KillMonsterNumber, 1, 0);
 
             RoleDailyDataComponentServer dailyData = main.GetComponent<RoleDailyDataComponentServer>();
             int tiliKillNumber = dailyData?.GetTiLiKillNumber() ?? 0;
@@ -701,7 +700,6 @@ namespace ET
             }
             numericComponent.ApplyValue(NumericType.CombatRankID, Response.RankId);
             numericComponent.ApplyValue(NumericType.OccCombatRankID, Response.OccRankId);
-            numericComponent.ApplyValue(NumericType.PetTianTiRankID, Response.PetRankId);
             numericComponent.ApplyValue(NumericType.SoloRankId, Response.SoloRankId);
 
             // 同步上报战区排行（不影响本服名次）

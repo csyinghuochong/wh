@@ -45,7 +45,7 @@ namespace ET
 
                     LDItem ldItem = LDItemCategory.Instance.Get(request.ItemId);
                     // 60=药水(Param1=技能ID
-                    bool skillCastItem = ldItem.ItemType == ItemSubTypeEnum.SubType_Potion_60;
+                    bool skillCastItem = ldItem.ItemType == ItemTypeEnum.SubType_Potion_60;
                     if (!skillCastItem)
                     {
                         Console.WriteLine($"request.SkillID error:  {request.SkillID}");
@@ -55,7 +55,7 @@ namespace ET
                         return;
                     }
 
-                    if (ldItem.ItemType == ItemSubTypeEnum.SubType_Potion_60
+                    if (ldItem.ItemType == ItemTypeEnum.SubType_Potion_60
                         && ldItem.ItemTypeParam1 != request.SkillID)
                     {
                         Log.Error($"C2M_SkillCmd potion skill mismatch item={request.ItemId} skill={request.SkillID} param1={ldItem.ItemTypeParam1}");

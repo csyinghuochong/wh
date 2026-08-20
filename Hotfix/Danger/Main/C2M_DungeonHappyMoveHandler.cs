@@ -21,6 +21,7 @@ namespace ET
 
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
             RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+            RoleContextComponent roleContext = unit.GetComponent<RoleContextComponent>();
             if (request.OperatateType == 1)
             {
                 if (dailyData.GetHappyMoveNumber() >= 5)
@@ -31,7 +32,7 @@ namespace ET
                 }
 
                 //非免费时间则返回
-                long happmoveTime = numeric.GetAsLong(NumericType.HappyMoveTime);
+                long happmoveTime = roleContext.HappyMoveTime;
                 if (TimeHelper.ServerNow() < happmoveTime)
                 {
                     response.Error = ErrorCode.ERR_HappyMove_CD;
@@ -40,7 +41,7 @@ namespace ET
                 }
 
                 long mianfeicd = TimeHelper.Second * 5 ;
-                numeric.ApplyValue(NumericType.HappyMoveTime, TimeHelper.ServerNow() + mianfeicd);
+                roleContext.SetHappyMoveTime(TimeHelper.ServerNow() + mianfeicd);
                 dailyData.AddHappyMoveNumber();
             }
             if (request.OperatateType == 2)

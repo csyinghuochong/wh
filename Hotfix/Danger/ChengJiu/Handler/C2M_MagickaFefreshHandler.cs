@@ -11,7 +11,7 @@ namespace ET
         {
 
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            BagInfo beforeequip = bagComponentServer.GetMagicEquipBySubType(ItemLocType.ItemLocEquip, request.Position);
+            BagInfo beforeequip = null;
 
             if (beforeequip == null)
             {

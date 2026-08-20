@@ -381,10 +381,8 @@ namespace ET
 			long unionid = unit.GetUnionId();
 			numericComponent.ApplyValue(NumericType.CombatRankID, chat2G_EnterChat.RankId, false,false);
             numericComponent.ApplyValue(NumericType.OccCombatRankID, chat2G_EnterChat.OccRankId, false, false);
-            numericComponent.ApplyValue(NumericType.PetTianTiRankID, chat2G_EnterChat.PetRankId, false, false);
             numericComponent.ApplyValue(NumericType.SoloRankId, chat2G_EnterChat.SoloRankId, false, false);
-            numericComponent.ApplyValue(NumericType.TrialRankId, chat2G_EnterChat.TrialRankId, false, false);
-
+      
             long unionsceneid = DBHelper.GetUnionServerId(unit);
 			Union2G_EnterUnion union2G_EnterChat = (Union2G_EnterUnion)await MessageHelper.CallActor(unionsceneid, new G2Union_EnterUnion()
 			{

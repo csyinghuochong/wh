@@ -14,8 +14,8 @@ namespace ET
 #if false // TODO: migrate to LD config
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();   
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            if (numericComponent.GetAsInt( NumericType.SeasonReward ) >= roleInfoComponentServer.RoleInfo.SeasonLevel)
+            RoleContextComponent roleContext = unit.GetComponent<RoleContextComponent>();
+            if (roleContext.SeasonReward >= roleInfoComponentServer.RoleInfo.SeasonLevel)
             {
                 response.Error = ErrorCode.ERR_Parameter;
                 reply();
@@ -23,7 +23,7 @@ namespace ET
             }
 
             int rewardLevel = request.SeasonLevel;
-            if (numericComponent.GetAsInt(NumericType.SeasonReward) >= rewardLevel )
+            if (roleContext.SeasonReward >= rewardLevel )
             {
                 Log.Error($"C2M_SeasonLevelRewardRequest 2");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -47,7 +47,7 @@ namespace ET
                 return;
             }
 
-            numericComponent.ApplyValue(NumericType.SeasonReward, rewardLevel);
+            roleContext.SetSeasonReward(rewardLevel);
             */
             reply();
             await ETTask.CompletedTask;

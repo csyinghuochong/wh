@@ -185,7 +185,7 @@ namespace ET
                         }
                         break;
                     case (int)MapTypeEnum.PetMing:
-                        long cdTime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.PetMineCDTime);
+                        long cdTime = unit.GetComponent<RoleContextComponent>().PetMineCDTime;
                         if (cdTime > TimeHelper.ServerNow())
                         {
                             return ErrorCode.ERR_InMakeCD;

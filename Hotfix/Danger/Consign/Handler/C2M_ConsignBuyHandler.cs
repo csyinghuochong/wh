@@ -176,7 +176,7 @@ namespace ET
 
 
                 long baginfoid = 0;
-                if (LDItemCategory.Instance.Get(r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemID).ItemType == ItemTypeEnum.Equipment)
+                if (r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemType == ItemBigType.Type_Equip)
                 {
                     baginfoid = r_GameStatusResponse.ConsignItemInfo.BagInfo.BagInfoID;
                 }

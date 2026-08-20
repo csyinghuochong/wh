@@ -22,7 +22,8 @@ namespace ET
             if (request.OperatateType == 1)
             {
                 //非免费时间则返回
-                long happmoveTime = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.HappyMoveTime);
+                RoleContextComponent roleContext = unit.GetComponent<RoleContextComponent>();
+                long happmoveTime = roleContext.HappyMoveTime;
                 if (TimeHelper.ServerNow()  < happmoveTime)
                 {
                     response.Error = ErrorCode.ERR_HappyMove_CD;
@@ -31,7 +32,7 @@ namespace ET
                 }
 
                 long mianfeicd = LDGlobalValueCategory.Instance.TempValue * 1000;
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HappyMoveTime, TimeHelper.ServerNow() + mianfeicd);
+                roleContext.SetHappyMoveTime(TimeHelper.ServerNow() + mianfeicd);
             }
             if (request.OperatateType == 2)
             {

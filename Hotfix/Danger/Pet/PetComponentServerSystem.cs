@@ -1005,11 +1005,6 @@ namespace ET
                 rolePetInfo.Ks.Add(numericType);
                 rolePetInfo.Vs.Add(item.Value);
             }
-
-            int pingfen = PetHelper.PetPingJia(rolePetInfo);
-            rolePetInfo.Ks.Add((int)NumericType.PetPinFen);
-            rolePetInfo.Vs.Add(pingfen);
-            rolePetInfo.PetPingFen = pingfen;
         }
 
         public static void UpdatePetNumeric(this PetComponentServer self, Dictionary<int, long> attriDic)

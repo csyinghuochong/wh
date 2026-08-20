@@ -225,7 +225,7 @@ namespace ET
 			Unit mainUnit = localDungeonComponent.MainUnit;
 
             RoleInfoComponentServer roleInfoComponentServer = mainUnit.GetComponent<RoleInfoComponentServer>();
-			NumericComponent numericComponent = mainUnit.GetComponent<NumericComponent>();
+			RoleContextComponent roleContext = mainUnit.GetComponent<RoleContextComponent>();
 			
 		
             string[] monsters = createMonster.Split('@');
@@ -233,8 +233,8 @@ namespace ET
 			{
 				//赛季boss
 				long serverNow = TimeHelper.ServerNow();
-				long seasonBossTime = numericComponent.GetAsLong(NumericType.SeasonBossRefreshTime);
-				int sessonBossFuben = numericComponent.GetAsInt(NumericType.SeasonBossFuben);
+				long seasonBossTime = roleContext.SeasonBossRefreshTime;
+				int sessonBossFuben = roleContext.SeasonBossFuben;
                 if (seasonBossTime > 0 && serverNow > seasonBossTime && fubenid == sessonBossFuben)
 				{
                     KeyValuePairInt keyValuePairInt = new KeyValuePairInt();

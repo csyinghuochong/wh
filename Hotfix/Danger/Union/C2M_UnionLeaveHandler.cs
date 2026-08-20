@@ -28,7 +28,7 @@ namespace ET
 
             numericComponent.ApplyValue(NumericType.UnionLeader, 0);
             numericComponent.ApplyValue(NumericType.UnionId_0, 0);
-            numericComponent.ApplyValue(NumericType.UnionIdLeaveTime, TimeHelper.ServerNow());
+            unit.GetComponent<RoleContextComponent>().SetUnionIdLeaveTime(TimeHelper.ServerNow());
             roleInfoComponentServer.UpdateRoleData(UserDataType.UnionName, "");
             roleInfoComponentServer.UpdateRoleDataBroadcast(UserDataType.UnionName, "");
             dbSaveComponent.UpdateCacheDB();

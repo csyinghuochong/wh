@@ -626,6 +626,7 @@ namespace ET
 		[ProtoMember(50)]
 		public long CreateTime { get; set; }
 
+// 各塔通关进度 Key=MapTypeEnum Value=TowerId
 		[ProtoMember(51)]
 		public List<KeyValuePairInt> TowerIds = new List<KeyValuePairInt>();
 
@@ -7544,73 +7545,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public int HongbaoAmount { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RandomTowerBeginResponse))]
-//随机副本开始战斗
-	[Message(OuterOpcode.C2M_RandomTowerBeginRequest)]
-	[ProtoContract]
-	public partial class C2M_RandomTowerBeginRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RandomNumber { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RandomTowerBeginResponse)]
-	[ProtoContract]
-	public partial class M2C_RandomTowerBeginResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RandomTowerRewardResponse))]
-//随机副本领取奖励
-	[Message(OuterOpcode.C2M_RandomTowerRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_RandomTowerRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RewardId { get; set; }
-
-		[ProtoMember(2)]
-		public int SceneType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RandomTowerRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_RandomTowerRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 
@@ -15414,4 +15348,47 @@ namespace ET
 	}
 
 //活动  end####################################################
+
+//玩家杂项（只推自己）
+	[Message(OuterOpcode.RoleContextPro)]
+	[ProtoContract]
+	public partial class RoleContextPro: Object
+	{
+		[ProtoMember(1)]
+		public long UnionIdLeaveTime { get; set; }
+
+		[ProtoMember(2)]
+		public long HappyMoveTime { get; set; }
+
+		[ProtoMember(3)]
+		public int SeasonBossFuben { get; set; }
+
+		[ProtoMember(4)]
+		public long SeasonBossRefreshTime { get; set; }
+
+		[ProtoMember(5)]
+		public int SeasonReward { get; set; }
+
+		[ProtoMember(6)]
+		public long SeasonOpenTime { get; set; }
+
+		[ProtoMember(7)]
+		public long PetMineCDTime { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RoleContextUpdate)]
+	[ProtoContract]
+	public partial class M2C_RoleContextUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public RoleContextPro RoleContext { get; set; }
+
+	}
 }

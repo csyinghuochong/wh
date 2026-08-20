@@ -23,10 +23,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (!CommonConfig.ItemAddShieldExp.TryGetValue(bagInfo.ItemID, out int addValue))
-                {
-                    continue;
-                }
+                int addValue = 0;
                 if (addValue > 10) {
                     addValue = RandomHelper.NextInt((int)(addValue * 0.8f), (int)(addValue * 1.2f));
                 }

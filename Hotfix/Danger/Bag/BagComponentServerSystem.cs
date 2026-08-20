@@ -415,16 +415,7 @@ namespace ET
             return equiptianfuids;
         }
 
-        public static BagInfo GetJingHeByWeiZhi(this BagComponentServer self, int subType)
-        {
-            List<BagInfo> bagInfos = self.GetCurJingHeList();
-            for (int i = 0; i < bagInfos.Count; i++)
-            {
-               
-            }
-            return null;
-        }
-
+   
         public static List<BagInfo> GetEquipListByWeizhi(this BagComponentServer self, ItemLocType equipIndex, int position)
         {
             List<BagInfo> bagInfos = new List<BagInfo>();
@@ -440,11 +431,6 @@ namespace ET
             return bagInfos;
         }
 
-        public static int GetMaxQiangHuaLevel(this BagComponentServer self)
-        {
-            int maxLevel = 0;
-            return maxLevel;
-        }
 
         //获取某个装备位置的道具数据
         public static BagInfo GetEquipBySubType(this BagComponentServer self, ItemLocType equipIndex, int subType)
@@ -461,17 +447,6 @@ namespace ET
             return null;
         }
 
-        //获取某个装备位置的道具数据
-        public static BagInfo GetMagicEquipBySubType(this BagComponentServer self, ItemLocType equipIndex, int position)
-        {
-            List<BagInfo> equipList = self.GetItemByLoc(equipIndex);
-            for (int i = 0; i < equipList.Count; i++)
-            {
-                LDItem ldItemCof = LDItemCategory.Instance.Get(equipList[i].ItemID);
-               
-            }
-            return null;
-        }
 
         public static void OnLogin(this BagComponentServer self, int robotId, int occ, int occTwo)
         {
@@ -495,11 +470,6 @@ namespace ET
         {
             BagInfo bagInfo = self.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)EquipCaoWeiTypeEnum.Wuqi_1);
             return bagInfo != null ? bagInfo.ItemID : 0;
-        }
-
-        public static void OnAddJianDing(this BagComponentServer self)
-        {
-
         }
 
         //字符串添加道具 

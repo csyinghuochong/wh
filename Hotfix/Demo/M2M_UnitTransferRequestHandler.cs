@@ -139,7 +139,7 @@ namespace ET
                         if (dungeonConfig.Scene_Type == SceneSubTypeEnum.LocalDungeon_1)
                         {
                             unit.GetComponent<RoleDailyDataComponentServer>()?.SetHappyMoveNumber(0, false);
-                            numericComponent.ApplyValue(NumericType.HappyMoveTime, 0, false);
+                            unit.GetComponent<RoleContextComponent>().SetHappyMoveTime(0, false);
                             int randomPosition = RandomHelper.RandomNumber(0, HappyFubenConfig.PositionList.Count);
                             numericComponent.Set(NumericType.HappyCellIndex, randomPosition + 1, false);
                             unit.Position = HappyFubenConfig.PositionList[randomPosition];

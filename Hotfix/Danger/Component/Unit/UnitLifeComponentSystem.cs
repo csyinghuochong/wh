@@ -159,11 +159,8 @@ namespace ET
             {
                 LocalDungeonComponent localDungeon = unit.DomainScene().GetComponent<LocalDungeonComponent>();
                 RoleInfoComponentServer roleInfoComponentServer = localDungeon.MainUnit.GetComponent<RoleInfoComponentServer>();
-                localDungeon.MainUnit.GetComponent<NumericComponent>().ApplyValue(
-                    NumericType.SeasonBossFuben,
-                    SeasonHelper.GetFubenId(roleInfoComponentServer.RoleInfo.Lv));
-                localDungeon.MainUnit.GetComponent<NumericComponent>().ApplyValue(
-                    NumericType.SeasonBossRefreshTime,
+                localDungeon.MainUnit.GetComponent<RoleContextComponent>().SetSeasonBoss(
+                    SeasonHelper.GetFubenId(roleInfoComponentServer.RoleInfo.Lv),
                     TimeHelper.ServerNow() + resurrection * 1000);
                 resurrection = 0;
             }

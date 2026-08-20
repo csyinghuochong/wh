@@ -32,6 +32,7 @@ namespace ET
             unit.GetComponent<SkillSetComponentServer>().OnLogin(roleInfo.Occ);
             // RoleDailyData 全量由客户端 LoginHelper 请求，此处只做迁移准备
             unit.GetComponent<RoleDailyDataComponentServer>().OnLogin();
+            unit.GetComponent<RoleContextComponent>().OnLogin();
             unit.ResetLoginNumeric();
             roleInfoComponentServer.LastLoginTime = currentTime;
         }

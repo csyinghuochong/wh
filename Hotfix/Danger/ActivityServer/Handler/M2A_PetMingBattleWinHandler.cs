@@ -94,11 +94,11 @@ namespace ET
                         await DBHelper.SaveComponent(homeZone, oldUnitid, redComponentServer);
                     }
 
-                    NumericComponent numComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, oldUnitid);
-                    if (numComponent != null)
+                    RoleContextComponent roleContext = await DBHelper.GetComponent<RoleContextComponent>(homeZone, oldUnitid);
+                    if (roleContext != null)
                     {
-                        numComponent.ApplyValue( NumericType.PetMineCDTime, 0, false );
-                        await DBHelper.SaveComponent(homeZone, oldUnitid, numComponent);
+                        roleContext.PetMineCDTime = 0;
+                        await DBHelper.SaveComponent(homeZone, oldUnitid, roleContext);
                     }
                 }
             }
