@@ -16,10 +16,11 @@ namespace ET
                 return;
             }
 
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
+            RoleInfo roleInfo = roleInfoComponent.RoleInfo;
             if (roleInfo.MakeIdList == null || !roleInfo.MakeIdList.Contains(request.SkillMakeId))
             {
-                response.Error = ErrorCode.ERR_MakeTypeError;
+                response.Error = ErrorCode.ERR_MakeNoLearnError;
                 reply();
                 return;
             }
@@ -41,6 +42,22 @@ namespace ET
                 return;
             }
 
+            int vitalityCost = cfg.Consume_Item_12;
+            if (vitalityCost > 0 && roleInfo.HuoLi < vitalityCost)
+            {
+                response.Error = ErrorCode.ERR_VitalityNotEnoughError;
+                reply();
+                return;
+            }
+
+            int bindGoldCost = cfg.Consume_Item_5;
+            if (bindGoldCost > 0 && roleInfo.BindGold < bindGoldCost)
+            {
+                response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                reply();
+                return;
+            }
+
             if (!HasBagSpace(bag, reward))
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -54,6 +71,16 @@ namespace ET
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;
+            }
+
+            if (vitalityCost > 0)
+            {
+                roleInfoComponent.UpdateRoleData(UserDataType.HuoLi, (-vitalityCost).ToString(), true, getWay);
+            }
+
+            if (bindGoldCost > 0)
+            {
+                roleInfoComponent.UpdateRoleData(UserDataType.BindGold, (-bindGoldCost).ToString(), true, getWay);
             }
 
             List<RewardItem> rewards = new List<RewardItem> { reward };
