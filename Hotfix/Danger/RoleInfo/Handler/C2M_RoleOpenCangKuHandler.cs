@@ -9,7 +9,7 @@ namespace ET
         {
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             int cangkuNumber = bagComponentServer.CangKuNumber;
-            if (cangkuNumber >= BagComponentServer.MaxCangKuNumber)
+            if (cangkuNumber >= 4)
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();

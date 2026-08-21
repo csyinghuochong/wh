@@ -55,9 +55,11 @@ namespace ET
             int second = dateTime.Second;
             int time1 = huor * 3600 + minute * 60 + second;
 
-            for (int i = 0; i < CommonConfig.WorldSayList.Count; i++)
+
+            List<WorldSayConfig> worldSayList = new List<WorldSayConfig>();
+            for (int i = 0; i < worldSayList.Count; i++)
             {
-                WorldSayConfig worldSayConfig = CommonConfig.WorldSayList[i];
+                WorldSayConfig worldSayConfig = worldSayList[i];
 
                 if (!worldSayConfig.OpenDay.Contains((int)dateTime.DayOfWeek) && worldSayConfig.OpenDay[0] != -1)
                 {

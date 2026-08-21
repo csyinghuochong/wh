@@ -10,7 +10,16 @@ namespace ET
 
         public override void Awake(BagComponentServer self)
         {
-            self.CangKuNumber = BagComponentServer.DefaultCangKuNumber;
+            self.CangKuNumber = LDGlobalValueCategory.Instance.DefaultCangKuNumber;
+            self.EnsureItemLists();
+        }
+    }
+
+    [ObjectSystem]
+    public class BagComponentDeserializeSystem : DeserializeSystem<BagComponentServer>
+    {
+        public override void Deserialize(BagComponentServer self)
+        {
         }
     }
 
@@ -24,12 +33,6 @@ namespace ET
             {
                 self.AdditionalCellNum.Add(0);
             }
-
-            if (self.CangKuNumber <= 0)
-            {
-                self.CangKuNumber = BagComponentServer.DefaultCangKuNumber;
-            }
-
 
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
             int[] equipInit = ldOccupation.Equip_Init;
@@ -80,38 +83,27 @@ namespace ET
         }
 
 
+        public static void EnsureItemLists(this BagComponentServer self)
+        {
+            self.AllItemList ??= new Dictionary<int, List<BagInfo>>();
+        }
+
+        static List<BagInfo> GetOrCreateItemList(this BagComponentServer self, ItemLocType loc)
+        {
+            self.AllItemList ??= new Dictionary<int, List<BagInfo>>();
+            int locKey = (int)loc;
+            if (!self.AllItemList.TryGetValue(locKey, out List<BagInfo> bagList) || bagList == null)
+            {
+                bagList = new List<BagInfo>();
+                self.AllItemList[locKey] = bagList;
+            }
+
+            return bagList;
+        }
+
         public static List<BagInfo> GetItemByLoc(this BagComponentServer self, ItemLocType itemEquipType)
         {
-            List<BagInfo> ItemTypeList = null;
-            switch (itemEquipType)
-            {
-                case ItemLocType.ItemLocEquip:
-                    ItemTypeList = self.EquipList;
-                    break;
-                case ItemLocType.ItemLocBag:
-                    ItemTypeList = self.BagItemList;
-                    break;
-                case ItemLocType.ItemLocBagTreasure:
-                    ItemTypeList = self.TreasureList;
-                    break;
-                case ItemLocType.ItemLocBagMaterial:
-                    ItemTypeList = self.MaterialList;
-                    break;
-                case ItemLocType.ItemLocBagConsume:
-                    ItemTypeList = self.ConsumeList;
-                    break;
-                case ItemLocType.ItemLocBagLife:
-                    ItemTypeList = self.LifeList;
-                    break;
-                case ItemLocType.ItemLocBagHome:
-                    ItemTypeList = self.HomeList;
-                    break;
-
-                case ItemLocType.ItemWareHouse1:
-                    ItemTypeList = self.Warehouse1;
-                    break;
-            }
-            return ItemTypeList;
+            return self.GetOrCreateItemList(itemEquipType);
         }
 
         public static void OnRecvItemSort(this BagComponentServer self, ItemLocType itemEquipType)
@@ -149,22 +141,16 @@ namespace ET
 
         public static void CheckAllItem(this BagComponentServer self, int occ, int occTwo)
         {
-            self.CheckValiedItem(self.EquipList, occ, occTwo);
-            self.CheckValiedItem(self.BagItemList, occ, occTwo);
-            self.CheckValiedItem(self.TreasureList, occ, occTwo);
-            self.CheckValiedItem(self.MaterialList, occ, occTwo);
-            self.CheckValiedItem(self.ConsumeList, occ, occTwo);
-            self.CheckValiedItem(self.LifeList, occ, occTwo);
-            self.CheckValiedItem(self.HomeList, occ, occTwo);
-            self.CheckValiedItem(self.Warehouse1, occ, occTwo);
+            foreach (KeyValuePair<int, List<BagInfo>> kv in self.AllItemList)
+            {
+                if (kv.Value == null)
+                {
+                    continue;
+                }
 
-            BagSortHelper.SortIfNeeded(self.BagItemList, ItemLocType.ItemLocBag);
-            BagSortHelper.SortIfNeeded(self.TreasureList, ItemLocType.ItemLocBagTreasure);
-            BagSortHelper.SortIfNeeded(self.MaterialList, ItemLocType.ItemLocBagMaterial);
-            BagSortHelper.SortIfNeeded(self.ConsumeList, ItemLocType.ItemLocBagConsume);
-            BagSortHelper.SortIfNeeded(self.LifeList, ItemLocType.ItemLocBagLife);
-            BagSortHelper.SortIfNeeded(self.HomeList, ItemLocType.ItemLocBagHome);
-            BagSortHelper.SortIfNeeded(self.Warehouse1, ItemLocType.ItemWareHouse1);
+                self.CheckValiedItem(kv.Value, occ, occTwo);
+                BagSortHelper.SortIfNeeded(kv.Value, kv.Key);
+            }
         }
 
         //获取自身所有的道具
@@ -174,15 +160,15 @@ namespace ET
 
             self.CheckAllItem(occ, occTwo);
 
-            bagList.AddRange(self.EquipList);
-            bagList.AddRange(self.BagItemList);
-            bagList.AddRange(self.TreasureList);
-            bagList.AddRange(self.MaterialList);
-            bagList.AddRange(self.ConsumeList);
-            bagList.AddRange(self.LifeList);
-            bagList.AddRange(self.HomeList);
+            foreach (List<BagInfo> locList in self.AllItemList.Values)
+            {
+                if (locList == null || locList.Count == 0)
+                {
+                    continue;
+                }
 
-            bagList.AddRange(self.Warehouse1);
+                bagList.AddRange(locList);
+            }
          
             return bagList;
         }
@@ -333,14 +319,15 @@ namespace ET
         /// <returns></returns>
         public static bool IsHaveEquipSkill(this BagComponentServer self, int skillId, long xilianequip)
         {
-            for (int i = 0; i < self.EquipList.Count; i++)
+            List<BagInfo> equipList = self.GetItemByLoc(ItemLocType.ItemLocEquip);
+            for (int i = 0; i < equipList.Count; i++)
             {
-                if (self.EquipList[i].BagInfoID == xilianequip)
+                if (equipList[i].BagInfoID == xilianequip)
                 {
                     continue;
                 }
 
-                LDItem ldItem = LDItemCategory.Instance.Get(self.EquipList[i].ItemID);
+                LDItem ldItem = LDItemCategory.Instance.Get(equipList[i].ItemID);
                 /*if (Item.SkillID.Contains(skillId.ToString()))
                 {
                     return true;
@@ -351,8 +338,8 @@ namespace ET
 
         public static void OnResetSeason(this BagComponentServer self, bool notice)
         { 
-            self.ClearJingHeItem(self.BagItemList);
-            self.ClearJingHeItem(self.Warehouse1);
+            self.ClearJingHeItem(self.GetItemByLoc(ItemLocType.ItemLocBag));
+            self.ClearJingHeItem(self.GetItemByLoc(ItemLocType.ItemWareHouse1));
           
         }
 
@@ -388,24 +375,23 @@ namespace ET
         public static List<int> GetEquipTianFuIds(this BagComponentServer self)
         {
             List<int> equiptianfuids = new List<int>(); 
-            List<BagInfo> equiplist = new List<BagInfo>();
-            equiplist.AddRange(self.EquipList );
+            List<BagInfo> equiplist = self.GetItemByLoc(ItemLocType.ItemLocEquip);
 
-            for (int i = 0; i < self.EquipList.Count; i++)
+            for (int i = 0; i < equiplist.Count; i++)
             {
-                if (self.EquipList[i].ItemType != ItemBigType.Type_Equip)
+                if (equiplist[i].ItemType != ItemBigType.Type_Equip)
                 {
                     continue;
                 }
 
-                if (!LDItemCategory.Instance.Contain(self.EquipList[i].ItemID))
+                if (!LDItemCategory.Instance.Contain(equiplist[i].ItemID))
                 {
                     continue;
                 }
 
-                LDItem ldItem = LDItemCategory.Instance.Get(self.EquipList[i].ItemID);
+                LDItem ldItem = LDItemCategory.Instance.Get(equiplist[i].ItemID);
 
-                LDEquip ldEquip = LDEquipCategory.Instance.Get(self.EquipList[i].ItemID);
+                LDEquip ldEquip = LDEquipCategory.Instance.Get(equiplist[i].ItemID);
                 /*if (equip.TianFuId != 0)
                 {
                     equiptianfuids.Add(equip.TianFuId);
@@ -525,7 +511,7 @@ namespace ET
                     continue;
                 }
 
-                self.BagItemList.Add(bagInfo);
+                self.GetItemByLoc(ItemLocType.ItemLocBag).Add(bagInfo);
                 uniqueUpdate.BagInfoAdd.Add(bagInfo);
                 hasUniqueAdd = true;
 
@@ -545,7 +531,7 @@ namespace ET
 
             if (hasUniqueAdd)
             {
-                BagSortHelper.SortIfNeeded(self.BagItemList, ItemLocType.ItemLocBag);
+                BagSortHelper.SortIfNeeded(self.GetItemByLoc(ItemLocType.ItemLocBag), ItemLocType.ItemLocBag);
                 MessageHelper.SendToClient(unit, uniqueUpdate);
             }
         }
@@ -561,8 +547,8 @@ namespace ET
             }
             else
             {
-                self.BagItemList.Add(bagInfo);
-                BagSortHelper.SortIfNeeded(self.BagItemList, ItemLocType.ItemLocBag);
+                self.GetItemByLoc(ItemLocType.ItemLocBag).Add(bagInfo);
+                BagSortHelper.SortIfNeeded(self.GetItemByLoc(ItemLocType.ItemLocBag), ItemLocType.ItemLocBag);
 
                 Unit parentUnit = self.GetParent<Unit>();
                 M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();

@@ -627,19 +627,22 @@ namespace ET
                     break;
                 case UserDataType.Occ:
                     break;
-                //case UserDataType.PiLao:
-                //    if (value == "0")
-                //    {
-                //        return;
-                //    }
+                case UserDataType.HuoLi:
+                    int maxValue = 120;///unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
+                    long newValue = long.Parse(value) + self.RoleInfo.HuoLi;
+                    newValue = Math.Min(Math.Max(0, newValue), maxValue);
+                    self.RoleInfo.HuoLi = newValue;
+                    saveValue = self.RoleInfo.HuoLi.ToString();
+                    break;
+                case UserDataType.TiLi:
+                   
+                     maxValue = 120;///unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
+                     newValue = long.Parse(value) + self.RoleInfo.TiLi;
+                    newValue = Math.Min(Math.Max(0, newValue), maxValue);
+                    self.RoleInfo.TiLi = newValue;
+                    saveValue = self.RoleInfo.TiLi.ToString();
+                    break;
 
-                //    int maxValue = 100;///unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
-                //    long newValue = long.Parse(value) + self.RoleInfo.PiLao;
-                //    newValue = Math.Min(Math.Max(0, newValue), maxValue);
-                //    self.RoleInfo.PiLao = newValue;
-                //    saveValue = self.RoleInfo.PiLao.ToString();
-                //    break;
-              
                 case UserDataType.UnionName:
                     self.RoleInfo.UnionName = value;
                     saveValue = self.RoleInfo.UnionName;

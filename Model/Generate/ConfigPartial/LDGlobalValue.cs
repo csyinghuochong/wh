@@ -39,6 +39,10 @@ namespace ET
 
         public int AccountBagMax = 0;
 
+        /// <summary>默认已开 1 页仓库。</summary>
+        public int DefaultCangKuNumber = 1;
+
+
         public int MaxLevel = 100;
         
         public int TempValue = 0;

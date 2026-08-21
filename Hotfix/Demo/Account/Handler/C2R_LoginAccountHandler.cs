@@ -239,9 +239,12 @@ namespace ET
                             {
                                 continue;
                             }
+                            if (createRoleInfo.CreateTime <= 1787223600000)
+                            {
+                                continue;
+                            }
 
                             CreateRoleInfo roleList = CloneHelper.ShallowClone(createRoleInfo);
-
                             RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(createRoleInfo.ServerId,createRoleInfo.UserID);
                             if (roleInfoComponentServer == null)
                             {

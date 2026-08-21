@@ -33,7 +33,7 @@ namespace ET
                         return;
                     }
 
-                    response.EquipList = bagComponentsServer.EquipList;
+                    response.EquipList = bagComponentsServer.GetItemByLoc(ItemLocType.ItemLocEquip);
                     response.Occ = roleInfo.Occ;
                     PetComponentServer petComponentServer = await DBHelper.GetComponent<PetComponentServer>(homeZone, request.UserId);
                     if (petComponentServer == null)
