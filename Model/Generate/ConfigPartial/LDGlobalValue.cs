@@ -30,7 +30,7 @@ namespace ET
         public int JianDingFuQulity = 0;
 
 
-        public int[] BagInitCapacity = new int[(int)ItemLocType.ItemLocMax + 1];
+        public Dictionary<int, int> BagInitCapacity = new Dictionary<int, int>();
       
         public int GemStoreInitCapacity = 0;
         public int GemStoreMaxCapacity = 0;
@@ -85,6 +85,7 @@ namespace ET
 
         private void ParseBaseData()
         {
+            this.BagInitCapacity.Clear();
             this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120021);
             this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120022);
             this.BagInitCapacity[(int)ItemLocType.ItemLocBagMaterial] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120023);
@@ -127,6 +128,11 @@ namespace ET
         public int GetTotalFreePointByLevel(int level)
         {
             return GlobalValueLevelPointParser.GetTotalPointsByLevel(Add_Point_Level_UP_Free_ByLevel, level);
+        }
+
+        public int GetBagInitCapacity(int loc)
+        {
+            return this.BagInitCapacity.TryGetValue(loc, out int cap) ? cap : 0;
         }
 
         public LDGlobalValue GetByKey(string key)

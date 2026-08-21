@@ -20,6 +20,7 @@ namespace ET
     {
         public override void Deserialize(BagComponentServer self)
         {
+            self.EnsureItemLists();
         }
     }
 
@@ -29,10 +30,7 @@ namespace ET
 
         public static void OnInit(this BagComponentServer self,  CreateRoleInfo createRoleInfo)
         {
-            for (int i = self.AdditionalCellNum.Count; i < (int)ItemLocType.ItemLocMax; i++)
-            {
-                self.AdditionalCellNum.Add(0);
-            }
+            self.EnsureItemLists();
 
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
             int[] equipInit = ldOccupation.Equip_Init;
@@ -86,6 +84,7 @@ namespace ET
         public static void EnsureItemLists(this BagComponentServer self)
         {
             self.AllItemList ??= new Dictionary<int, List<BagInfo>>();
+            self.AddedCellNum ??= new Dictionary<int, int>();
         }
 
         static List<BagInfo> GetOrCreateItemList(this BagComponentServer self, ItemLocType loc)
@@ -289,8 +288,8 @@ namespace ET
 
         public static int GeBagTotalCell(this BagComponentServer self, int hourseId)
         {
-            int storeCapacity = LDGlobalValueCategory.Instance.BagInitCapacity[hourseId];
-            return storeCapacity + self.AdditionalCellNum[hourseId];
+            return LDGlobalValueCategory.Instance.GetBagInitCapacity(hourseId)
+                   + BagCellNumHelper.Get(self.AddedCellNum, hourseId);
         }
 
 

@@ -19,13 +19,9 @@ namespace ET
 
             if (request.OperateType == (int)ItemLocType.ItemLocBag)
             {
-                //if (bagComponentServer.GetBagTotalCell() >= LDGlobalValueCategory.Instance.BagMaxCapacity[(int)ItemLocType.ItemLocBag])
-                //{
-                //    response.Error = ErrorCode.ERR_AleardyMaxCell;
-                //    reply();
-                //    return;
-                //}
-                BuyCellCost buyCellCost = CommonConfig.BuyBagCellCosts[bagComponentServer.AdditionalCellNum[0]];
+                int loc = (int)ItemLocType.ItemLocBag;
+                int addcell = BagCellNumHelper.Get(bagComponentServer.AddedCellNum, loc);
+                BuyCellCost buyCellCost = CommonConfig.BuyBagCellCosts[addcell];
                 if (!bagComponentServer.OnCostItemData(buyCellCost.Cost, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -35,7 +31,7 @@ namespace ET
 
 
                 response.GetItem = buyCellCost.Get;
-                bagComponentServer.AdditionalCellNum[0] += 1;
+                BagCellNumHelper.Add(bagComponentServer.AddedCellNum, loc);
 
                 bagComponentServer.OnAddItemData(buyCellCost.Get, $"{ItemGetWay.CostItem}_{TimeHelper.ServerNow()}", true);
             }
@@ -50,15 +46,7 @@ namespace ET
                     return;
                 }
 
-
-                //if (bagComponentServer.GetHourseTotalCell(request.OperateType) >= LDGlobalValueCategory.Instance.BagMaxCapacity[request.OperateType])
-                //{
-                //    response.Error = ErrorCode.ERR_AleardyMaxCell;
-                //    reply();
-                //    return;
-                //}
-                
-                int addcell = bagComponentServer.AdditionalCellNum[storeindex];
+                int addcell = BagCellNumHelper.Get(bagComponentServer.AddedCellNum, storeindex);
                 BuyCellCost buyCellCost = CommonConfig.BuyStoreCellCosts[(storeindex - 5) * 10 + addcell];
                 if (!bagComponentServer.OnCostItemData(buyCellCost.Cost,ItemLocType.ItemLocBag, ItemGetWay.CostItem))
                 {
@@ -68,7 +56,7 @@ namespace ET
                 }
 
                 response.GetItem = buyCellCost.Get;
-                bagComponentServer.AdditionalCellNum[storeindex] += 1;
+                BagCellNumHelper.Add(bagComponentServer.AddedCellNum, storeindex);
 
                 bagComponentServer.OnAddItemData(
                     buyCellCost.Get,
@@ -77,7 +65,7 @@ namespace ET
                     (ItemLocType)request.OperateType);
             }
 
-            response.AdditionalCellNum = bagComponentServer.AdditionalCellNum;
+            response.AddedCellNum = BagCellNumHelper.ToProto(bagComponentServer.AddedCellNum);
             //response.BagAddedCell = bagComponentServer.BagAddedCell;
             reply();
             await ETTask.CompletedTask;

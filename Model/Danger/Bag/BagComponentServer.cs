@@ -11,14 +11,7 @@ namespace ET
     /// </summary>
     
     public class BagComponentServer : Entity, IAwake, ITransfer, IDeserialize, IUnitCache
-
     {
-        
-
-        /// <summary>
-        /// 附加格子
-        /// </summary>
-        public List<int> AdditionalCellNum = new List<int>();
 
         /// <summary>
         /// 激活的时装
@@ -32,6 +25,13 @@ namespace ET
 
         /// <summary>已开启的角色仓库页数。</summary>
         public int CangKuNumber;
+
+        /// <summary>
+        /// 已购买/增加的格子数量，key = ItemLocType
+        /// </summary>
+        [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
+        public Dictionary<int, int> AddedCellNum = new Dictionary<int, int>();
+
 
         [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
         public Dictionary<int, List<BagInfo>> AllItemList = new Dictionary<int, List<BagInfo>>();

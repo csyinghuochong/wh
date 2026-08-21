@@ -14373,7 +14373,7 @@ namespace ET
 		public List<BagInfo> BagInfos = new List<BagInfo>();
 
 		[ProtoMember(2)]
-		public List<int> AdditionalCellNum = new List<int>();
+		public List<KeyValuePairInt> AddedCellNum = new List<KeyValuePairInt>();
 
 		[ProtoMember(6)]
 		public List<int> FashionActiveIds = new List<int>();
@@ -14445,7 +14445,7 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(2)]
-		public List<int> AdditionalCellNum = new List<int>();
+		public List<KeyValuePairInt> AddedCellNum = new List<KeyValuePairInt>();
 
 		[ProtoMember(3)]
 		public string GetItem { get; set; }

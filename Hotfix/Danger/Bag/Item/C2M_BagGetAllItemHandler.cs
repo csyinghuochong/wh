@@ -75,7 +75,7 @@ namespace ET
             response.BagInfos = bagInfos;
 			response.FashionActiveIds = bagComponentServer.FashionActiveIds;	
 			response.FashionEquipList = bagComponentServer.FashionEquipList;
-			response.AdditionalCellNum = bagComponentServer.AdditionalCellNum;
+            response.AddedCellNum = BagCellNumHelper.ToProto(bagComponentServer.AddedCellNum);
             response.CangKuNumber = bagComponentServer.CangKuNumber;
             reply();
 			await ETTask.CompletedTask;
