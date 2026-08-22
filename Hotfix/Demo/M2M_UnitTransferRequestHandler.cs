@@ -122,11 +122,14 @@ namespace ET
 						{
 							LDScene_Teleport transferConfig = LDScene_TeleportCategory.Instance.Get(transferId);
 							unit.Position = new Vector3(transferConfig.Position[0] , transferConfig.Position[1] , transferConfig.Position[2]);
-						}
+                            unit.Rotation = Quaternion.Euler(0, (int)transferConfig.Target_Rotation, 0);
+
+                        }
 						else
 						{
 							unit.Position = dungeonConfig.GetBornPos();
-						}
+                            unit.Rotation = Quaternion.Euler(0, (int)dungeonConfig.Born_Rotation, 0);
+                        }
 
 						//神秘之门返回
 						/*if (unit.GetComponent<UnitInfoComponent>().LastDungeonId == request.ChapterId)
