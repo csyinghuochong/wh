@@ -42,7 +42,7 @@ namespace ET
                 rolePetInfo.AddPropretyNum = (rolePetInfo.PetLv - 1) * 5;
 			}
 			petComponentServer.UpdatePetAttribute(rolePetInfo, true);
-			response.RolePetInfo = rolePetInfo;	
+			response.PetInfo = rolePetInfo;	
 
 			reply();
 			await ETTask.CompletedTask;

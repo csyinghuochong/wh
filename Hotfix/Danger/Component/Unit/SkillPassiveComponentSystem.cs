@@ -351,18 +351,6 @@ namespace ET
                 LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(baseSkillId);
                 self.AddPassiveSkillByType(ldSkill);
             }
-
-            for (int i = 0; i < rolePetInfo.PetSkill.Count; i++)
-            {
-                int baseSkillId = rolePetInfo.PetSkill[i];
-                if (baseSkillId == 0)
-                {
-                    continue;
-                }
-
-                LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(baseSkillId);
-                self.AddPassiveSkillByType(ldSkill);
-            }
         }
 
         public static void AddPassiveSkillByType(this SkillPassiveComponent self, LDSkill_Battle ldSkill, Dictionary<int, int> magicskills = null)

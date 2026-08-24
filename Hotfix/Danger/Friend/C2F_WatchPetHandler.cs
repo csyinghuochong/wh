@@ -25,7 +25,7 @@ namespace ET
                 reply();
                 return;
             }
-            response.RolePetInfos = petComponentServer.GetPetInfo( request.PetId );
+            response.PetInfos = petComponentServer.GetPetInfo( request.PetId );
             
             NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, request.UnitID);
             if (numericComponent == null)

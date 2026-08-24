@@ -4941,7 +4941,7 @@ namespace ET
 		public int Occ { get; set; }
 
 		[ProtoMember(7)]
-		public List<PetInfo> RolePetInfos = new List<PetInfo>();
+		public List<PetInfo> PetInfos = new List<PetInfo>();
 
 		[ProtoMember(8)]
 		public List<KeyValuePair> PetSkinList = new List<KeyValuePair>();
@@ -13434,11 +13434,11 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_RolePetFight))]
+	[ResponseType(nameof(M2C_PetFight))]
 //宠物出战[1出战 0休息]
-	[Message(OuterOpcode.C2M_RolePetFight)]
+	[Message(OuterOpcode.C2M_PetFight)]
 	[ProtoContract]
-	public partial class C2M_RolePetFight: Object, IActorLocationRequest
+	public partial class C2M_PetFight: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13451,9 +13451,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_RolePetFight)]
+	[Message(OuterOpcode.M2C_PetFight)]
 	[ProtoContract]
-	public partial class M2C_RolePetFight: Object, IActorLocationResponse
+	public partial class M2C_PetFight: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13526,7 +13526,7 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(3)]
-		public PetInfo RolePetInfo { get; set; }
+		public PetInfo PetInfo { get; set; }
 
 	}
 
@@ -13561,7 +13561,7 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(1)]
-		public PetInfo rolePetInfo { get; set; }
+		public PetInfo PetInfo { get; set; }
 
 		[ProtoMember(2)]
 		public long DeletePetInfoId { get; set; }
@@ -13605,7 +13605,35 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(1)]
-		public PetInfo rolePetInfo { get; set; }
+		public PetInfo PetInfo { get; set; }
+
+	}
+
+// 单条资质运行时。A/B/C 读 LDPet.Aptitude_n（A初始最低值 B最低值上限 C最高值），不入库
+// 初始化：D=A，E=A~C 随机
+// 洗练：有概率增加 D（达到 B 不再增加），E=D~C 随机
+// 稀有道具记 F，超稀有道具记 G；达最终值后不能再吃对应道具
+// Z 存储 E+F；面板显示 min(E+F, C+G)
+// 异化效果二：A|B|C 用 LDPet.Aptitude_Add_Change 叠在配置上算，不另存
+// 合成后上限=主宠+LDPet.Aptitude_Add_Star；合成后当前值=主宠值+rand(副宠当前/上限,1)*提升上限
+	[Message(OuterOpcode.PetAptitudeInfo)]
+	[ProtoContract]
+	public partial class PetAptitudeInfo: Object
+	{
+		[ProtoMember(1)]
+		public int D { get; set; }
+
+		[ProtoMember(2)]
+		public int E { get; set; }
+
+		[ProtoMember(3)]
+		public int F { get; set; }
+
+		[ProtoMember(4)]
+		public int G { get; set; }
+
+		[ProtoMember(5)]
+		public int Z { get; set; }
 
 	}
 
@@ -13634,59 +13662,43 @@ namespace ET
 		[ProtoMember(8)]
 		public string PetName { get; set; }
 
-		[ProtoMember(9)]
-		public bool IfBaby { get; set; }
-
 		[ProtoMember(10)]
 		public int AddPropretyNum { get; set; }
 
 		[ProtoMember(11)]
 		public string AddPropretyValue { get; set; }
 
-		[ProtoMember(12)]
-		public int PetPingFen { get; set; }
-
 		[ProtoMember(13)]
-		public int ZiZhi_Hp { get; set; }
+		public PetAptitudeInfo Aptitude_1 { get; set; }
 
 		[ProtoMember(14)]
-		public int ZiZhi_Act { get; set; }
+		public PetAptitudeInfo Aptitude_2 { get; set; }
 
 		[ProtoMember(15)]
-		public int ZiZhi_MageAct { get; set; }
+		public PetAptitudeInfo Aptitude_3 { get; set; }
 
 		[ProtoMember(16)]
-		public int ZiZhi_Def { get; set; }
+		public PetAptitudeInfo Aptitude_4 { get; set; }
 
 		[ProtoMember(17)]
-		public int ZiZhi_Adf { get; set; }
+		public PetAptitudeInfo Aptitude_5 { get; set; }
 
 		[ProtoMember(18)]
-		public int ZiZhi_ActSpeed { get; set; }
+		public PetAptitudeInfo Aptitude_6 { get; set; }
 
+// 神兽默认变异；普通宠出生不异化，洗练按 Global_Pet_Change 判定。先天技读 LDPet.Skill，异化技读 LDPet.Skill_Change（IfChange==1 才激活），都不入库
 		[ProtoMember(19)]
-		public float ZiZhi_ChengZhang { get; set; }
+		public int IfChange { get; set; }
 
-		[ProtoMember(20)]
-		public List<int> PetSkill = new List<int>();
-
-		[ProtoMember(21)]
-		public int EquipID_1 { get; set; }
-
+// 打书/洗练技能才入库。洗练结果需二次确认后再覆盖，协议逻辑后续完善
 		[ProtoMember(22)]
-		public string EquipIDHide_1 { get; set; }
+		public int Skill_Extra_Position_Num { get; set; }
 
 		[ProtoMember(23)]
-		public int EquipID_2 { get; set; }
+		public List<int> Skill_Extra_A = new List<int>();
 
 		[ProtoMember(24)]
-		public string EquipIDHide_2 { get; set; }
-
-		[ProtoMember(25)]
-		public int EquipID_3 { get; set; }
-
-		[ProtoMember(26)]
-		public string EquipIDHide_3 { get; set; }
+		public List<int> Skill_Extra_B = new List<int>();
 
 		[ProtoMember(30)]
 		public List<int> Ks = new List<int>();
@@ -13694,35 +13706,8 @@ namespace ET
 		[ProtoMember(31)]
 		public List<long> Vs = new List<long>();
 
-		[ProtoMember(32)]
-		public int RoleCamp { get; set; }
-
 		[ProtoMember(33)]
 		public string PlayerName { get; set; }
-
-		[ProtoMember(34)]
-		public int SkinId { get; set; }
-
-		[ProtoMember(35)]
-		public List<long> PetHeXinList = new List<long>();
-
-		[ProtoMember(38)]
-		public int UpStageStatus { get; set; }
-
-		[ProtoMember(39)]
-		public int ShouHuPos { get; set; }
-
-		[ProtoMember(40)]
-		public bool IsProtect { get; set; }
-
-		[ProtoMember(41)]
-		public List<long> PetEquipList = new List<long>();
-
-		[ProtoMember(42)]
-		public List<int> LockSkill = new List<int>();
-
-		[ProtoMember(43)]
-		public int Luckly { get; set; }
 
 	}
 
@@ -13894,7 +13879,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(7)]
-		public PetInfo RolePetInfos { get; set; }
+		public PetInfo PetInfos { get; set; }
 
 		[ProtoMember(9)]
 		public List<int> Ks = new List<int>();

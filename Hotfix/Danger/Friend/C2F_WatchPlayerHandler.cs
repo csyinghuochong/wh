@@ -52,7 +52,7 @@ namespace ET
                         }
                     }
 
-                    response.RolePetInfos = rolePetInfosResponse;
+                    response.PetInfos = rolePetInfosResponse;
                  
                     NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, request.UserId);
                     if (numericComponent == null)

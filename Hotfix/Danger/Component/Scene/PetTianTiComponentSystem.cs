@@ -66,8 +66,7 @@ namespace ET
                 List<int> petlist = new List<int>() { 1000101, 1000201, 1000301 };
                 for (int k = 0; k < petlist.Count; k++)
                 {
-                    PetInfo petInfo = petComponentServer.GenerateNewPet(petlist[0], 0);
-                    petComponentServer.PetXiLian(petInfo,0, 2, 0, 0 );
+                    PetInfo petInfo = petComponentServer.GenerateNewPet(petlist[0]);
                     petComponentServer.UpdatePetAttribute(petInfo, false);
                     petInfo.PlayerName = "机器人";
                     Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,

@@ -218,7 +218,6 @@ namespace ET
             {
                 self.TriggerEvent(ChengJiuTargetEnum.PetIdNumber_301, rolePetInfo.ConfigId, 1);
                 self.TriggerEvent(ChengJiuTargetEnum.TotalPetNumber_302, 0, 1);
-                self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
             }
         }
 
@@ -248,7 +247,6 @@ namespace ET
             using (self.ChengJiuEventBatch())
             {
                 self.TriggerEvent(ChengJiuTargetEnum.TotalPetHeCheng_303, 0, 1);
-                self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
             }
         }
 
@@ -257,7 +255,6 @@ namespace ET
             using (self.ChengJiuEventBatch())
             {
                 self.TriggerEvent(ChengJiuTargetEnum.TotalPetXiLian_304, 0, 1);
-                self.TriggerEvent(ChengJiuTargetEnum.PetNSkill_305, 0, rolePetInfo.PetSkill.Count);
             }
         }
 

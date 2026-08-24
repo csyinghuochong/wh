@@ -60,7 +60,6 @@ namespace ET
                 //新的装备给宠物
                 //bagComponentServer.OnChangeItemLoc(bagInfo, ItemLocType.PetLocEquip, ItemLocType.ItemLocBag);
                 m2c_bagUpdate.BagInfoUpdate.Add(bagInfo);
-                rolePetInfo.PetEquipList.Add(request.BagInfoId);
             }
             petComponentServer.UpdatePetAttribute(rolePetInfo, false);
             MessageHelper.SendToClient(unit, m2c_bagUpdate);

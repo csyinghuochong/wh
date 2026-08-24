@@ -562,7 +562,7 @@ namespace ET
         {
             using (self.TaskEventBatch())
             {
-                int combat = PetHelper.PetPingJia(rolePetInfo);
+                int combat = PetHelper.PetPingFen(rolePetInfo);
             }
         }
 
