@@ -52,7 +52,6 @@ namespace ET
             response.JianYuanPlantList = jiaYuanComponentServer.JianYuanPlantList_7;
             response.JiaYuanProList = jiaYuanComponentServer.JiaYuanProList_7;
             response.JiaYuanDaShiTime = jiaYuanComponentServer.JiaYuanDaShiTime_1;
-            response.JiaYuanPetList = jiaYuanComponentServer.JiaYuanPetList_2;
             response.JiaYuanLv = jiaYuanComponentServer.JiaYuanLv;
             response.JiaYuanFund = jiaYuanComponentServer.JiaYuanFund;
             response.JiaYuanExp = jiaYuanComponentServer.JiaYuanExp;

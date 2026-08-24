@@ -77,6 +77,8 @@ namespace ET
                     mailInfo.MailId = IdGenerater.Instance.GenerateId();
                     mailInfo.Form = "官方xxx";
                     mailInfo.ValidTime = TimeHelper.ServerNow() + RandomHelper.RandomNumber(2000, 80000);
+					mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1000100 });
+                    mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1001000 });
                     await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo);
                 }
                

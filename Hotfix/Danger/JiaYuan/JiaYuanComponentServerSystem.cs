@@ -23,31 +23,7 @@ namespace ET
         /// <param name="status"></param>
         public static void OnJiaYuanPetWalk(this JiaYuanComponentServer self, RolePetInfo rolePetInfo, int status, int position)
         {
-#if SERVER
-            for (int i = self.JiaYuanPetList_2.Count - 1; i >= 0; i--)
-            {
-                if (self.JiaYuanPetList_2[i].unitId == rolePetInfo.Id)
-                {
-                    self.JiaYuanPetList_2.RemoveAt(i);
-                }
-            }
 
-            if (status == 2)
-            {
-                self.JiaYuanPetList_2.Add( new JiaYuanPet()
-                {
-                    LastExpTime = TimeHelper.ServerNow(),
-                    unitId = rolePetInfo.Id,
-                    ConfigId = rolePetInfo.ConfigId,
-                    PetLv = rolePetInfo.PetLv,
-                    PlayerName = rolePetInfo.PlayerName,
-                    PetName = rolePetInfo.PetName,  
-                    Position = position,
-                    CurExp = 0,
-                    MoodValue = 0,
-                });
-            }
-#endif
         }
 
         public static void AddJiaYuanRecord(this JiaYuanComponentServer self, JiaYuanRecord jiaYuanRecord)
@@ -60,29 +36,6 @@ namespace ET
             }
         }
 
-        public static JiaYuanPet GetJiaYuanPet(this JiaYuanComponentServer self, long unitid)
-        {
-            for (int i = 0; i < self.JiaYuanPetList_2.Count; i++)
-            {
-                if (self.JiaYuanPetList_2[i].unitId == unitid)
-                {
-                    return self.JiaYuanPetList_2[i];
-                }
-            }
-            return null;
-        }
-
-        public static JiaYuanPet GetJiaYuanPetGetPosition(this JiaYuanComponentServer self, int position)
-        {
-            for (int i = 0; i < self.JiaYuanPetList_2.Count; i++)
-            {
-                if (self.JiaYuanPetList_2[i].Position == position)
-                {
-                    return self.JiaYuanPetList_2[i];
-                }
-            }
-            return null;
-        }
 
         public static void CheckDaShiPro(this JiaYuanComponentServer self)
         {
@@ -325,29 +278,6 @@ namespace ET
             // 使用 Distinct() 去除重复元素
             self.LearnMakeIds_7 = numbers.Distinct().ToList();
 
-            //检测宠物
-            PetComponentServer petComponentServer = self.GetParent<Unit>().GetComponent<PetComponentServer>();
-            for(int i = self.JiaYuanPetList_2.Count - 1; i >= 0; i--)
-            {
-                RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(self.JiaYuanPetList_2[i].unitId);
-                if (rolePetInfo == null || rolePetInfo.PetStatus != 2)
-                {
-                    self.JiaYuanPetList_2.RemoveAt(i);
-                }
-            }
-            for (int i = 0; i < petComponentServer.RolePetInfos.Count; i++)
-            {
-                if (petComponentServer.RolePetInfos[i].PetStatus != 2)
-                {
-                    continue;
-                }
-
-                if (null == self.GetJiaYuanPet(petComponentServer.RolePetInfos[i].Id))
-                {
-                    petComponentServer.RolePetInfos[i].PetStatus = 0;
-                }
-            }
-
             if (self.RefreshMonsterTime_2 == 0)
             {
                 self.RefreshMonsterTime_2 = TimeHelper.ServerNow() - TimeHelper.Hour * 5;
@@ -362,51 +292,9 @@ namespace ET
             self.CheckPetExp();
         }
 
-        public static void UpdatePetMood(this JiaYuanComponentServer self, long unitid, int addvalue)
-        {
-            for (int i = 0; i < self.JiaYuanPetList_2.Count; i++)
-            {
-                JiaYuanPet jiaYuanPet = self.JiaYuanPetList_2[i];
-                if (jiaYuanPet.unitId != unitid)
-                {
-                    continue;
-                }
-
-                jiaYuanPet.MoodValue += addvalue;
-            }
-        }
-
         public static void CheckPetExp(this JiaYuanComponentServer self)
         {
-#if SERVER
-            long serverTime = TimeHelper.ServerNow();
-            PetComponentServer petComponentServer = self.GetParent<Unit>().GetComponent<PetComponentServer>();
-            for ( int i = self.JiaYuanPetList_2.Count - 1; i >= 0; i--)
-            {
-                JiaYuanPet jiaYuanPet = self.JiaYuanPetList_2[i];
-                if (petComponentServer.GetPetInfo(jiaYuanPet.unitId) == null)
-                {
-                    self.JiaYuanPetList_2.RemoveAt(i);
-                    continue;
-                }
-                if (petComponentServer.GetFightPetId() == jiaYuanPet.unitId)
-                {
-                    self.JiaYuanPetList_2.RemoveAt(i);
-                    continue;
-                }
 
-                long passTime = serverTime - jiaYuanPet.LastExpTime;
-                if (passTime < TimeHelper.Hour)
-                {
-                    continue;
-                }
-
-                int passHour = (int)(1f * passTime / TimeHelper.Hour);
-                passHour = Mathf.Min(12, passHour);
-                jiaYuanPet.CurExp +=(passHour * CommonHelper.GetJiaYuanPetExp(jiaYuanPet.PetLv, jiaYuanPet.MoodValue) );
-                jiaYuanPet.LastExpTime = TimeHelper.ServerNow();
-            }
-#endif
         }
 
         public static void OnRemoveUnit(this JiaYuanComponentServer self, long unitid)

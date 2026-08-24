@@ -11,8 +11,7 @@ namespace ET
             RankSceneComponent rankSceneComponent = scene.GetComponent<RankSceneComponent>();
             response.RankId = rankSceneComponent.GetCombatRank(request.UnitId);
             response.OccRankId = rankSceneComponent.GetOccCombatRank(request.UnitId, request.Occ);
-            response.PetRankId = rankSceneComponent.GetPetRank(request.UnitId);
-
+        
             if (rankSceneComponent.DBRankInfo.rankSoloInfo.Count > 0
              && rankSceneComponent.DBRankInfo.rankSoloInfo[0].UserId == request.UnitId)
             {

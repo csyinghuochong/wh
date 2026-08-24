@@ -2797,9 +2797,6 @@ namespace ET
 		[ProtoMember(1)]
 		public int RankId { get; set; }
 
-		[ProtoMember(2)]
-		public int PetRankId { get; set; }
-
 		[ProtoMember(3)]
 		public int SoloRankId { get; set; }
 

@@ -73,10 +73,6 @@ namespace ET
                     UnitId = keyValuePair.unitId
                 }); 
             }
-            for (int i = 0; i < jiaYuanComponentServer.JiaYuanPetList_2.Count; i++)
-            {
-                UnitFactory.CreateJiaYuanPet(fubnescene, masterid, jiaYuanComponentServer.JiaYuanPetList_2[i]);
-            }
         }
 
         public static async ETTask<long> GetJiaYuanFubenId(this JiaYuanSceneComponent self, long masterid, long unitid)
