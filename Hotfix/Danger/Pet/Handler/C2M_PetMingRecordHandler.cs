@@ -8,7 +8,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PetMingRecordRequest request, M2C_PetMingRecordResponse response, Action reply)
         {
             PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
-            response.PetMingRecords = petComponentServer.PetMingRecordList;
+            //response.PetMingRecords = petComponentServer.PetMingRecordList;
             reply();
             await ETTask.CompletedTask;
         } 

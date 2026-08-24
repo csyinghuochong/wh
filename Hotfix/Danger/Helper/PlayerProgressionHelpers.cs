@@ -41,7 +41,7 @@ namespace ET
     /// </summary>
     public static class PetProgressionHelper
     {
-        public static void NotifyPetAcquired(Unit unit, RolePetInfo newpet)
+        public static void NotifyPetAcquired(Unit unit, PetInfo newpet)
         {
             if (unit == null || unit.IsDisposed || newpet == null)
             {

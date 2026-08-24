@@ -87,7 +87,7 @@ namespace ET
             List<long> pets = petComponentServer.PetFormations;
             for (int i = 0; i < pets.Count; i++)
             {
-                RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(pets[i]);
+                PetInfo rolePetInfo = petComponentServer.GetPetInfo(pets[i]);
                 if (rolePetInfo == null)
                 {
                     continue;

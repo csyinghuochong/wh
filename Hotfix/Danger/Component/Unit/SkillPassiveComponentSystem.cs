@@ -318,7 +318,7 @@ namespace ET
             return false;
         }
 
-        public static void UpdatePetPassiveSkill(this SkillPassiveComponent self, RolePetInfo rolePetInfo)
+        public static void UpdatePetPassiveSkill(this SkillPassiveComponent self, PetInfo rolePetInfo)
         {
             self.SkillPassiveInfos.Clear();
             int configId = self.GetParent<Unit>().ConfigId;

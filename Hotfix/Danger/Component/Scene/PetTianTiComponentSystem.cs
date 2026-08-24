@@ -22,16 +22,16 @@ namespace ET
 
             PetComponentServer petComponentServer = self.MainUnit.GetComponent<PetComponentServer>();
             petComponentServer.CheckSkin();
-            for (int i = 0; i < petComponentServer.TeamPetList.Count; i++)
-            {
-                RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(petComponentServer.TeamPetList[i]);
-                if (rolePetInfo == null)
-                {
-                    continue;
-                }
-                Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), unit.Id,
-                   unit.GetBattleCamp(), rolePetInfo, AIGetTargetHelp.Formation_1[i], 0f, i);
-            }
+            //for (int i = 0; i < petComponentServer.TeamPetList.Count; i++)
+            //{
+            //    RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(petComponentServer.TeamPetList[i]);
+            //    if (rolePetInfo == null)
+            //    {
+            //        continue;
+            //    }
+            //    Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), unit.Id,
+            //       unit.GetBattleCamp(), rolePetInfo, AIGetTargetHelp.Formation_1[i], 0f, i);
+            //}
 
             //先查找真实玩家。再查找
             long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
@@ -39,34 +39,34 @@ namespace ET
             if (petComponentServerEnemy != null)
             {
                 petComponentServerEnemy.CheckSkin();
-                for (int i = 0; i < petComponentServerEnemy.TeamPetList.Count; i++)
-                {
-                    RolePetInfo rolePetInfo = petComponentServerEnemy.GetPetInfo(petComponentServerEnemy.TeamPetList[i]);
-                    if (rolePetInfo == null)
-                    {
-                        continue;
-                    }
-                    if (unit.DomainScene().GetComponent<UnitComponent>().Get(rolePetInfo.Id)!=null)
-                    {
-                        Log.Debug($"宠物ID重复：{unit.Id}");
-                        continue;
-                    }
+                //for (int i = 0; i < petComponentServerEnemy.TeamPetList.Count; i++)
+                //{
+                //    PetInfo rolePetInfo = petComponentServerEnemy.GetPetInfo(petComponentServerEnemy.TeamPetList[i]);
+                //    if (rolePetInfo == null)
+                //    {
+                //        continue;
+                //    }
+                //    if (unit.DomainScene().GetComponent<UnitComponent>().Get(rolePetInfo.Id)!=null)
+                //    {
+                //        Log.Debug($"宠物ID重复：{unit.Id}");
+                //        continue;
+                //    }
                     
-                    BagComponentServer bagComponentServer = await DBHelper.GetComponent<BagComponentServer>(UnitZoneHelper.GetHomeZone(self.EnemyId), self.EnemyId);
-                    NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(UnitZoneHelper.GetHomeZone(self.EnemyId), self.EnemyId);
+                //    BagComponentServer bagComponentServer = await DBHelper.GetComponent<BagComponentServer>(UnitZoneHelper.GetHomeZone(self.EnemyId), self.EnemyId);
+                //    NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(UnitZoneHelper.GetHomeZone(self.EnemyId), self.EnemyId);
 
-                    petComponentServerEnemy.UpdatePetAttributeWithData(bagComponentServer ,numericComponent, rolePetInfo, false);
-                    Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,
-                       CampEnum.CampPlayer_2, rolePetInfo, AIGetTargetHelp.Formation_2[i], 180f, i);
+                //    petComponentServerEnemy.UpdatePetAttributeWithData(bagComponentServer ,numericComponent, rolePetInfo, false);
+                //    Unit petunit = UnitFactory.CreateTianTiPet(unit.DomainScene(), 0,
+                //       CampEnum.CampPlayer_2, rolePetInfo, AIGetTargetHelp.Formation_2[i], 180f, i);
 
-                }
+                //}
             }
             else
             {
                 List<int> petlist = new List<int>() { 1000101, 1000201, 1000301 };
                 for (int k = 0; k < petlist.Count; k++)
                 {
-                    RolePetInfo petInfo = petComponentServer.GenerateNewPet(petlist[0], 0);
+                    PetInfo petInfo = petComponentServer.GenerateNewPet(petlist[0], 0);
                     petComponentServer.PetXiLian(petInfo,0, 2, 0, 0 );
                     petComponentServer.UpdatePetAttribute(petInfo, false);
                     petInfo.PlayerName = "机器人";
@@ -143,13 +143,13 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             rankPetInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
             rankPetInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
-            rankPetInfo.PetUId = unit.GetComponent<PetComponentServer>().TeamPetList;
-            rankPetInfo.TeamName = rankPetInfo.PlayerName;
-            for (int i = 0; i < rankPetInfo.PetUId.Count; i++ )
-            {
-                RolePetInfo rolePetInfo = unit.GetComponent<PetComponentServer>().GetPetInfo(rankPetInfo.PetUId[i]);
-                rankPetInfo.PetConfigId.Add(rolePetInfo!=null ? rolePetInfo.ConfigId :0);
-            }
+            //rankPetInfo.PetUId = unit.GetComponent<PetComponentServer>().TeamPetList;
+            //rankPetInfo.TeamName = rankPetInfo.PlayerName;
+            //for (int i = 0; i < rankPetInfo.PetUId.Count; i++ )
+            //{
+            //    RolePetInfo rolePetInfo = unit.GetComponent<PetComponentServer>().GetPetInfo(rankPetInfo.PetUId[i]);
+            //    rankPetInfo.PetConfigId.Add(rolePetInfo!=null ? rolePetInfo.ConfigId :0);
+            //}
             R2M_PetRankUpdateResponse m2m_TrasferUnitResponse = (R2M_PetRankUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_PetRankUpdateRequest() {  RankPetInfo = rankPetInfo, Win = result, EnemyId = self.DomainScene().GetComponent<PetTianTiComponent>().EnemyId });
 

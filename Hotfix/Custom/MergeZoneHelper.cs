@@ -397,17 +397,17 @@ namespace ET
             foreach (var entity in petComponents)
             {
                 string shenshou = string.Empty;
-                for (int pet = 0; pet < entity.RolePetInfos.Count; pet++)
+                for (int pet = 0; pet < entity.PetInfos.Count; pet++)
                 {
-                    if (entity.RolePetInfos[pet].ConfigId == 2000001)
+                    if (entity.PetInfos[pet].ConfigId == 2000001)
                     {
                         shenshou += "2000001 ";
                     }
-                    if (entity.RolePetInfos[pet].ConfigId == 2000002)
+                    if (entity.PetInfos[pet].ConfigId == 2000002)
                     {
                         shenshou += "2000002 ";
                     }
-                    if (entity.RolePetInfos[pet].ConfigId == 2000003)
+                    if (entity.PetInfos[pet].ConfigId == 2000003)
                     {
                         shenshou += "2000003 ";
                     }

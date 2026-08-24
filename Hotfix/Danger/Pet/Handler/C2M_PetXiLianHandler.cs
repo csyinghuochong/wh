@@ -5,16 +5,16 @@ namespace ET
 {
     //玩家宠物
     [ActorMessageHandler]
-	public class C2M_RolePetXiLianHandler : AMActorLocationRpcHandler<Unit, C2M_RolePetXiLian, M2C_RolePetXiLian>
+	public class C2M_PetXiLianHandler : AMActorLocationRpcHandler<Unit, C2M_PetXiLian, M2C_PetXiLian>
 	{
-		protected override async ETTask Run(Unit unit, C2M_RolePetXiLian request, M2C_RolePetXiLian response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_PetXiLian request, M2C_PetXiLian response, Action reply)
 		{
 			//读取数据库
 			PetComponentServer pet = unit.GetComponent<PetComponentServer>();
 			BagComponentServer bag = unit.GetComponent<BagComponentServer>();
 			ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
 			TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-			RolePetInfo petInfo = pet.GetPetInfo(request.PetInfoId);
+			PetInfo petInfo = pet.GetPetInfo(request.PetInfoId);
 			BagInfo bagInfo = bag.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoID);
 
 			//判断是否有足够的道具
@@ -178,7 +178,7 @@ namespace ET
 		}
 
 		//宠物打技能书
-		private bool Pet_AddSkill( Unit unit, RolePetInfo petinfo, int addSkillID)
+		private bool Pet_AddSkill( Unit unit, PetInfo petinfo, int addSkillID)
 		{
 			//判断当前技能是否有重复的
 			if (petinfo.PetSkill.Contains(addSkillID))
@@ -265,7 +265,7 @@ namespace ET
 		}
 
 		//宠物自身洗炼
-		private int Pet_XilianSelf(RolePetInfo petinfo)
+		private int Pet_XilianSelf(PetInfo petinfo)
 		{
 			
 			int ErrorCore = -1;
@@ -303,7 +303,7 @@ namespace ET
 		}
 
 		//宝宝属性点重置
-		private bool Pet_AddProprety(RolePetInfo petinfo)
+		private bool Pet_AddProprety(PetInfo petinfo)
 		{
 			//判定目标是否为宝宝
 			bool ifBaby = petinfo.IfBaby;

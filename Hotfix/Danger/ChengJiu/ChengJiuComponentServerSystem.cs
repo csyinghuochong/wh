@@ -212,7 +212,7 @@ namespace ET
             }
         }
 
-        public static void OnGetPet(this ChengJiuComponentServer self, RolePetInfo rolePetInfo)
+        public static void OnGetPet(this ChengJiuComponentServer self, PetInfo rolePetInfo)
         {
             using (self.ChengJiuEventBatch())
             {
@@ -243,7 +243,7 @@ namespace ET
             }
         }
 
-        public static void OnPetHeCheng(this ChengJiuComponentServer self, RolePetInfo rolePetInfo)
+        public static void OnPetHeCheng(this ChengJiuComponentServer self, PetInfo rolePetInfo)
         {
             using (self.ChengJiuEventBatch())
             {
@@ -252,7 +252,7 @@ namespace ET
             }
         }
 
-        public static void OnPetXiLian(this ChengJiuComponentServer self, RolePetInfo rolePetInfo)
+        public static void OnPetXiLian(this ChengJiuComponentServer self, PetInfo rolePetInfo)
         {
             using (self.ChengJiuEventBatch())
             {

@@ -11,7 +11,7 @@ namespace ET
 		{
 			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
 			UnitComponent unitComponent = unit.GetParent<UnitComponent>();
-			RolePetInfo petinfo = petComponentServer.GetPetInfo(request.PetInfoId);
+            PetInfo petinfo = petComponentServer.GetPetInfo(request.PetInfoId);
 			if (petinfo == null)
 			{
                 response.Error = ErrorCode.ERR_Pet_NoExist;
@@ -27,7 +27,7 @@ namespace ET
             if (request.PetStatus == 1)
             {
                 //出战要清掉之前的
-                RolePetInfo fightpet = petComponentServer.GetFightPet();
+                PetInfo fightpet = petComponentServer.GetFightPet();
                 if (fightpet != null)
                 {
                     fightpet.PetStatus = 0;

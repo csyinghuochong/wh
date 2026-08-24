@@ -4,12 +4,12 @@ namespace ET
 {
     //玩家宠物
     [ActorMessageHandler]
-	public class C2M_RolePetRNameHandler : AMActorLocationRpcHandler<Unit, C2M_RolePetRName, M2C_RolePetRName>
+	public class C2M_PetRNameHandler : AMActorLocationRpcHandler<Unit, C2M_PetRName, M2C_PetRName>
 	{
-		protected override async ETTask Run(Unit unit, C2M_RolePetRName request, M2C_RolePetRName response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_PetRName request, M2C_PetRName response, Action reply)
 		{
 			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
-			RolePetInfo petinfo = petComponentServer.GetPetInfo(request.PetInfoId);
+			PetInfo petinfo = petComponentServer.GetPetInfo(request.PetInfoId);
 			if (petinfo==null)
 			{
 				reply();

@@ -584,7 +584,7 @@ namespace ET
         public static void AfterTransfer(Unit unit)
         {
             PetComponentServer petComponent = unit.GetComponent<PetComponentServer>();
-            RolePetInfo fightId = petComponent.GetFightPet();
+            PetInfo fightId = petComponent.GetFightPet();
             if (fightId != null)
             {
                 petComponent.UpdatePetAttribute(fightId, false);
@@ -627,7 +627,7 @@ namespace ET
         {
             UnitComponent unitComponent = unit.DomainScene().GetComponent<UnitComponent>();
             PetComponentServer petComponent = unit.GetComponent<PetComponentServer>();
-            RolePetInfo fightId = petComponent.GetFightPet();
+            PetInfo fightId = petComponent.GetFightPet();
             if (fightId != null)
             {
                 unitComponent.Remove(fightId.Id);

@@ -4,25 +4,14 @@ namespace ET
 {
     //玩家宠物
     [ActorMessageHandler]
-	public class C2M_RolePetListHandler : AMActorLocationRpcHandler<Unit, C2M_RolePetList, M2C_RolePetList>
+	public class C2M_RolePetListHandler : AMActorLocationRpcHandler<Unit, C2M_PetList, M2C_PetList>
 	{
-		protected override async ETTask Run(Unit unit, C2M_RolePetList request, M2C_RolePetList response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_PetList request, M2C_PetList response, Action reply)
 		{
 			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
 			petComponentServer.InitPetInfo();
-			response.RolePetInfos = petComponentServer.GetAllPets();
-			response.TeamPetList = petComponentServer.TeamPetList;
-			response.RolePetEggs = petComponentServer.RolePetEggs;
+			response.PetInfos = petComponentServer.GetAllPets();
 			response.PetFormations = petComponentServer.PetFormations;
-			response.PetFubenInfos = petComponentServer.PetFubenInfos;
-			response.PetFubeRewardId = petComponentServer.PetFubeRewardId;
-			response.PetSkinList = petComponentServer.PetSkinList;
-			response.PetShouHuList = petComponentServer.PetShouHuList;
-			response.PetShouHuActive = petComponentServer.PetShouHuActive;
-            response.PetCangKuOpen = petComponentServer.PetCangKuOpen;
-			response.PetMingList = petComponentServer.PetMingList;
-			response.PetMingPosition = petComponentServer.PetMingPosition;
-			response.RolePetBag = petComponentServer.RolePetBag;
 			response.FightPetId = petComponentServer.FightPetId;
 
             reply();

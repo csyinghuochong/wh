@@ -4,9 +4,9 @@ namespace ET
 {
     //玩家宠物
     [ActorMessageHandler]
-	public class C2M_RolePetFenjieHandler : AMActorLocationRpcHandler<Unit, C2M_RolePetFenjie, M2C_RolePetFenjie>
+	public class C2M_PetFenjieHandler : AMActorLocationRpcHandler<Unit, C2M_PetFenjie, M2C_PetFenjie>
 	{
-		protected override async ETTask Run(Unit unit, C2M_RolePetFenjie request, M2C_RolePetFenjie response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_PetFenjie request, M2C_PetFenjie response, Action reply)
 		{
 			PetComponentServer pet = unit.GetComponent<PetComponentServer>();
 			BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
@@ -22,14 +22,9 @@ namespace ET
 
 
 			int petType = 1;
-			RolePetInfo rolePetInfo = pet.GetPetInfo(request.PetInfoId);
+			PetInfo rolePetInfo = pet.GetPetInfo(request.PetInfoId);
 
-			if (rolePetInfo == null)
-			{
-				petType = 2;
-                rolePetInfo = pet.GetPetInfoByBag(request.PetInfoId);
-            }
-
+	
 			if (rolePetInfo == null)
 			{
 				response.Error = ErrorCode.ERR_Pet_NoExist;
@@ -57,7 +52,7 @@ namespace ET
             }
 			else
 			{
-                pet.RemovePetBag(request.PetInfoId);
+                
             }
 
 			

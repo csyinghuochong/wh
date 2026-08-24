@@ -6,13 +6,13 @@ namespace ET
 {
 	//玩家宠物
 	[ActorMessageHandler]
-	public class C2M_RolePetJiadianHandler : AMActorLocationRpcHandler<Unit, C2M_RolePetJiadian, M2C_RolePetJiadian>
+	public class C2M_PetAddPointHandler : AMActorLocationRpcHandler<Unit, C2M_PetAddPoint, M2C_PetAddPoint>
 	{
-		protected override async ETTask Run(Unit unit, C2M_RolePetJiadian request, M2C_RolePetJiadian response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_PetAddPoint request, M2C_PetAddPoint response, Action reply)
 		{
 			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
 			//读取数据库
-			RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
+			PetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
 			if (rolePetInfo == null)
 			{
 				reply();

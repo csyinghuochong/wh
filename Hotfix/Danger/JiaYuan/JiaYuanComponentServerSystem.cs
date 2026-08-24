@@ -21,7 +21,7 @@ namespace ET
         /// <param name="self"></param>
         /// <param name="unitid"></param>
         /// <param name="status"></param>
-        public static void OnJiaYuanPetWalk(this JiaYuanComponentServer self, RolePetInfo rolePetInfo, int status, int position)
+        public static void OnJiaYuanPetWalk(this JiaYuanComponentServer self, PetInfo rolePetInfo, int status, int position)
         {
 
         }

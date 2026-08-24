@@ -4941,7 +4941,7 @@ namespace ET
 		public int Occ { get; set; }
 
 		[ProtoMember(7)]
-		public List<RolePetInfo> RolePetInfos = new List<RolePetInfo>();
+		public List<PetInfo> RolePetInfos = new List<PetInfo>();
 
 		[ProtoMember(8)]
 		public List<KeyValuePair> PetSkinList = new List<KeyValuePair>();
@@ -13159,13 +13159,37 @@ namespace ET
 	}
 
 //Pet start####################################################
-	[ResponseType(nameof(M2C_RolePetList))]
-	[Message(OuterOpcode.C2M_RolePetList)]
+	[ResponseType(nameof(M2C_PetList))]
+	[Message(OuterOpcode.C2M_PetList)]
 	[ProtoContract]
-	public partial class C2M_RolePetList: Object, IActorLocationRequest
+	public partial class C2M_PetList: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_PetList)]
+	[ProtoContract]
+	public partial class M2C_PetList: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public List<PetInfo> PetInfos = new List<PetInfo>();
+
+		[ProtoMember(2)]
+		public long FightPetId { get; set; }
+
+		[ProtoMember(4)]
+		public List<long> PetFormations = new List<long>();
 
 	}
 
@@ -13175,10 +13199,80 @@ namespace ET
 	public partial class M2C_PetListMessage: Object, IActorMessage
 	{
 		[ProtoMember(1)]
-		public List<RolePetInfo> PetList = new List<RolePetInfo>();
+		public List<PetInfo> PetList = new List<PetInfo>();
 
 		[ProtoMember(2)]
 		public long RemovePetId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_PetDataUpdate)]
+	[ProtoContract]
+	public partial class M2C_PetDataUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long PetId { get; set; }
+
+		[ProtoMember(2)]
+		public int UpdateType { get; set; }
+
+		[ProtoMember(3)]
+		public string UpdateTypeValue { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_PetDataBroadcast)]
+	[ProtoContract]
+	public partial class M2C_PetDataBroadcast: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long PetId { get; set; }
+
+		[ProtoMember(2)]
+		public int UpdateType { get; set; }
+
+		[ProtoMember(3)]
+		public string UpdateTypeValue { get; set; }
+
+		[ProtoMember(4)]
+		public long UnitId { get; set; }
+
+	}
+
+//宠物更新
+	[Message(OuterOpcode.M2C_PetListUpdate)]
+	[ProtoContract]
+	public partial class M2C_PetListUpdate: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public List<PetInfo> PetInfoAdd = new List<PetInfo>();
+
+		[ProtoMember(2)]
+		public List<PetInfo> PetInfoUpdate = new List<PetInfo>();
+
+		[ProtoMember(3)]
+		public List<PetInfo> PetInfoDelete = new List<PetInfo>();
+
+		[ProtoMember(4)]
+		public int GetWay { get; set; }
 
 	}
 
@@ -13216,10 +13310,11 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(1)]
-		public RolePetInfo RolePetInfo { get; set; }
+		public PetInfo PetInfo { get; set; }
 
 	}
 
+//宠物探索
 	[ResponseType(nameof(M2C_PetExploreReward))]
 	[Message(OuterOpcode.C2M_PetExploreReward)]
 	[ProtoContract]
@@ -13248,194 +13343,6 @@ namespace ET
 
 	}
 
-//宠物更新
-	[Message(OuterOpcode.M2C_RolePetBagUpdate)]
-	[ProtoContract]
-	public partial class M2C_RolePetBagUpdate: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public List<RolePetInfo> RolePetBag = new List<RolePetInfo>();
-
-		[ProtoMember(2)]
-		public int UpdateMode { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetTakeOutBag))]
-	[Message(OuterOpcode.C2M_PetTakeOutBag)]
-	[ProtoContract]
-	public partial class C2M_PetTakeOutBag: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetTakeOutBag)]
-	[ProtoContract]
-	public partial class M2C_PetTakeOutBag: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetHeXinChouKaResponse))]
-	[Message(OuterOpcode.C2M_PetHeXinChouKaRequest)]
-	[ProtoContract]
-	public partial class C2M_PetHeXinChouKaRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int ChouKaType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetHeXinChouKaResponse)]
-	[ProtoContract]
-	public partial class M2C_PetHeXinChouKaResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<RewardItem> ReardList = new List<RewardItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_PetHeXinExploreReward))]
-	[Message(OuterOpcode.C2M_PetHeXinExploreReward)]
-	[ProtoContract]
-	public partial class C2M_PetHeXinExploreReward: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int RewardId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetHeXinExploreReward)]
-	[ProtoContract]
-	public partial class M2C_PetHeXinExploreReward: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetChangePosResponse))]
-	[Message(OuterOpcode.C2M_PetChangePosRequest)]
-	[ProtoContract]
-	public partial class C2M_PetChangePosRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int Index1 { get; set; }
-
-		[ProtoMember(2)]
-		public int Index2 { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetChangePosResponse)]
-	[ProtoContract]
-	public partial class M2C_PetChangePosResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetList)]
-	[ProtoContract]
-	public partial class M2C_RolePetList: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<RolePetInfo> RolePetInfos = new List<RolePetInfo>();
-
-		[ProtoMember(2)]
-		public List<long> TeamPetList = new List<long>();
-
-		[ProtoMember(3)]
-		public List<RolePetEgg> RolePetEggs = new List<RolePetEgg>();
-
-		[ProtoMember(4)]
-		public List<long> PetFormations = new List<long>();
-
-		[ProtoMember(5)]
-		public List<PetFubenInfo> PetFubenInfos = new List<PetFubenInfo>();
-
-		[ProtoMember(6)]
-		public List<KeyValuePair> PetSkinList = new List<KeyValuePair>();
-
-		[ProtoMember(7)]
-		public int PetFubeRewardId { get; set; }
-
-		[ProtoMember(8)]
-		public List<long> PetShouHuList = new List<long>();
-
-		[ProtoMember(9)]
-		public int PetShouHuActive { get; set; }
-
-		[ProtoMember(10)]
-		public List<int> PetCangKuOpen = new List<int>();
-
-		[ProtoMember(11)]
-		public List<long> PetMingList = new List<long>();
-
-		[ProtoMember(12)]
-		public List<long> PetMingPosition = new List<long>();
-
-		[ProtoMember(13)]
-		public List<RolePetInfo> RolePetBag = new List<RolePetInfo>();
-
-		[ProtoMember(14)]
-		public long FightPetId { get; set; }
-
-	}
-
 	[Message(OuterOpcode.PetFubenInfo)]
 	[ProtoContract]
 	public partial class PetFubenInfo: Object
@@ -13451,30 +13358,11 @@ namespace ET
 
 	}
 
-//宠物更新
-	[Message(OuterOpcode.M2C_RolePetUpdate)]
+	[ResponseType(nameof(M2C_PetFormationSet))]
+//宠物出战设置  [宠物战斗副本可能用上]
+	[Message(OuterOpcode.C2M_PetFormationSet)]
 	[ProtoContract]
-	public partial class M2C_RolePetUpdate: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public List<RolePetInfo> PetInfoAdd = new List<RolePetInfo>();
-
-		[ProtoMember(2)]
-		public List<RolePetInfo> PetInfoUpdate = new List<RolePetInfo>();
-
-		[ProtoMember(3)]
-		public List<RolePetInfo> PetInfoDelete = new List<RolePetInfo>();
-
-		[ProtoMember(4)]
-		public int GetWay { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetFormationSet))]
-//宠物出战设置
-	[Message(OuterOpcode.C2M_RolePetFormationSet)]
-	[ProtoContract]
-	public partial class C2M_RolePetFormationSet: Object, IActorLocationRequest
+	public partial class C2M_PetFormationSet: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13499,9 +13387,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_RolePetFormationSet)]
+	[Message(OuterOpcode.M2C_PetFormationSet)]
 	[ProtoContract]
-	public partial class M2C_RolePetFormationSet: Object, IActorLocationResponse
+	public partial class M2C_PetFormationSet: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13514,186 +13402,11 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_RolePetSkinSet))]
-//更改宠物皮肤
-	[Message(OuterOpcode.C2M_RolePetSkinSet)]
-	[ProtoContract]
-	public partial class C2M_RolePetSkinSet: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public int SkinId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetSkinSet)]
-	[ProtoContract]
-	public partial class M2C_RolePetSkinSet: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetHeXin))]
-//更改宠物之核
-	[Message(OuterOpcode.C2M_RolePetHeXin)]
-	[ProtoContract]
-	public partial class C2M_RolePetHeXin: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public long BagInfoId { get; set; }
-
-		[ProtoMember(3)]
-		public int Position { get; set; }
-
-		[ProtoMember(4)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetHeXin)]
-	[ProtoContract]
-	public partial class M2C_RolePetHeXin: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetInfo RolePetInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetEggPut))]
-//宠物蛋放入
-	[Message(OuterOpcode.C2M_RolePetEggPut)]
-	[ProtoContract]
-	public partial class C2M_RolePetEggPut: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long BagInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public int Index { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetEggPut)]
-	[ProtoContract]
-	public partial class M2C_RolePetEggPut: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetEgg RolePetEgg { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetEggHatch))]
-//宠物蛋孵化
-	[Message(OuterOpcode.C2M_RolePetEggHatch)]
-	[ProtoContract]
-	public partial class C2M_RolePetEggHatch: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long BagInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public int Index { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetEggHatch)]
-	[ProtoContract]
-	public partial class M2C_RolePetEggHatch: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetEgg RolePetEgg { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetEggOpen))]
-//宠物蛋开启【时间未到需要扣除钻石】
-	[Message(OuterOpcode.C2M_RolePetEggOpen)]
-	[ProtoContract]
-	public partial class C2M_RolePetEggOpen: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int Index { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetEggOpen)]
-	[ProtoContract]
-	public partial class M2C_RolePetEggOpen: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetInfo PetInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetRName))]
+	[ResponseType(nameof(M2C_PetRName))]
 //宠物改名
-	[Message(OuterOpcode.C2M_RolePetRName)]
+	[Message(OuterOpcode.C2M_PetRName)]
 	[ProtoContract]
-	public partial class C2M_RolePetRName: Object, IActorLocationRequest
+	public partial class C2M_PetRName: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13706,9 +13419,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_RolePetRName)]
+	[Message(OuterOpcode.M2C_PetRName)]
 	[ProtoContract]
-	public partial class M2C_RolePetRName: Object, IActorLocationResponse
+	public partial class M2C_PetRName: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13753,104 +13466,11 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_PetPutCangKu))]
-	[Message(OuterOpcode.C2M_PetPutCangKu)]
-	[ProtoContract]
-	public partial class C2M_PetPutCangKu: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public int PetStatus { get; set; }
-
-		[ProtoMember(3)]
-		public int OpenIndex { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetPutCangKu)]
-	[ProtoContract]
-	public partial class M2C_PetPutCangKu: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetOpenCangKu))]
-	[Message(OuterOpcode.C2M_PetOpenCangKu)]
-	[ProtoContract]
-	public partial class C2M_PetOpenCangKu: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OpenIndex { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetOpenCangKu)]
-	[ProtoContract]
-	public partial class M2C_PetOpenCangKu: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetProtect))]
-	[Message(OuterOpcode.C2M_RolePetProtect)]
-	[ProtoContract]
-	public partial class C2M_RolePetProtect: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public bool IsProtect { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetProtect)]
-	[ProtoContract]
-	public partial class M2C_RolePetProtect: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetFenjie))]
+	[ResponseType(nameof(M2C_PetFenjie))]
 //宠物分解
-	[Message(OuterOpcode.C2M_RolePetFenjie)]
+	[Message(OuterOpcode.C2M_PetFenjie)]
 	[ProtoContract]
-	public partial class C2M_RolePetFenjie: Object, IActorLocationRequest
+	public partial class C2M_PetFenjie: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13860,9 +13480,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_RolePetFenjie)]
+	[Message(OuterOpcode.M2C_PetFenjie)]
 	[ProtoContract]
-	public partial class M2C_RolePetFenjie: Object, IActorLocationResponse
+	public partial class M2C_PetFenjie: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13875,11 +13495,11 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_RolePetJiadian))]
+	[ResponseType(nameof(M2C_PetAddPoint))]
 //宠物加点
-	[Message(OuterOpcode.C2M_RolePetJiadian)]
+	[Message(OuterOpcode.C2M_PetAddPoint)]
 	[ProtoContract]
-	public partial class C2M_RolePetJiadian: Object, IActorLocationRequest
+	public partial class C2M_PetAddPoint: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13892,9 +13512,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_RolePetJiadian)]
+	[Message(OuterOpcode.M2C_PetAddPoint)]
 	[ProtoContract]
-	public partial class M2C_RolePetJiadian: Object, IActorLocationResponse
+	public partial class M2C_PetAddPoint: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13906,15 +13526,15 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(3)]
-		public RolePetInfo RolePetInfo { get; set; }
+		public PetInfo RolePetInfo { get; set; }
 
 	}
 
-	[ResponseType(nameof(M2C_RolePetHeCheng))]
-//宠物合成
-	[Message(OuterOpcode.C2M_RolePetHeCheng)]
+	[ResponseType(nameof(M2C_PetHeCheng))]
+//宠物合成 [1合2 2合3]
+	[Message(OuterOpcode.C2M_PetHeCheng)]
 	[ProtoContract]
-	public partial class C2M_RolePetHeCheng: Object, IActorLocationRequest
+	public partial class C2M_PetHeCheng: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13927,9 +13547,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_RolePetHeCheng)]
+	[Message(OuterOpcode.M2C_PetHeCheng)]
 	[ProtoContract]
-	public partial class M2C_RolePetHeCheng: Object, IActorLocationResponse
+	public partial class M2C_PetHeCheng: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13941,56 +13561,18 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(1)]
-		public RolePetInfo rolePetInfo { get; set; }
+		public PetInfo rolePetInfo { get; set; }
 
 		[ProtoMember(2)]
 		public long DeletePetInfoId { get; set; }
 
 	}
 
-	[ResponseType(nameof(M2C_RolePetUpStar))]
-//宠物合成
-	[Message(OuterOpcode.C2M_RolePetUpStar)]
-	[ProtoContract]
-	public partial class C2M_RolePetUpStar: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public List<long> CostPetInfoIds = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetUpStar)]
-	[ProtoContract]
-	public partial class M2C_RolePetUpStar: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetInfo rolePetInfo { get; set; }
-
-		[ProtoMember(2)]
-		public List<long> CostPetInfoIds = new List<long>();
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetXiLian))]
+	[ResponseType(nameof(M2C_PetXiLian))]
 //宠物洗练
-	[Message(OuterOpcode.C2M_RolePetXiLian)]
+	[Message(OuterOpcode.C2M_PetXiLian)]
 	[ProtoContract]
-	public partial class C2M_RolePetXiLian: Object, IActorLocationRequest
+	public partial class C2M_PetXiLian: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -14009,9 +13591,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_RolePetXiLian)]
+	[Message(OuterOpcode.M2C_PetXiLian)]
 	[ProtoContract]
-	public partial class M2C_RolePetXiLian: Object, IActorLocationResponse
+	public partial class M2C_PetXiLian: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -14023,63 +13605,13 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(1)]
-		public RolePetInfo rolePetInfo { get; set; }
+		public PetInfo rolePetInfo { get; set; }
 
 	}
 
-	[ResponseType(nameof(M2C_RolePetXiuLian))]
-//宠物修炼
-	[Message(OuterOpcode.C2M_RolePetXiuLian)]
+	[Message(OuterOpcode.PetInfo)]
 	[ProtoContract]
-	public partial class C2M_RolePetXiuLian: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public int XiuLianId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetXiuLian)]
-	[ProtoContract]
-	public partial class M2C_RolePetXiuLian: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetInfo rolePetInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.RolePetEgg)]
-	[ProtoContract]
-	public partial class RolePetEgg: Object
-	{
-		[ProtoMember(1)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(2)]
-		public long EndTime { get; set; }
-
-		[ProtoMember(3)]
-		public int FuLing { get; set; }
-
-	}
-
-	[Message(OuterOpcode.RolePetInfo)]
-	[ProtoContract]
-	public partial class RolePetInfo: Object
+	public partial class PetInfo: Object
 	{
 		[ProtoMember(1)]
 		public long Id { get; set; }
@@ -14194,119 +13726,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_PetDataUpdate)]
-	[ProtoContract]
-	public partial class M2C_PetDataUpdate: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public long PetId { get; set; }
-
-		[ProtoMember(2)]
-		public int UpdateType { get; set; }
-
-		[ProtoMember(3)]
-		public string UpdateTypeValue { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetDataBroadcast)]
-	[ProtoContract]
-	public partial class M2C_PetDataBroadcast: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public long PetId { get; set; }
-
-		[ProtoMember(2)]
-		public int UpdateType { get; set; }
-
-		[ProtoMember(3)]
-		public string UpdateTypeValue { get; set; }
-
-		[ProtoMember(4)]
-		public long UnitId { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RankPetCombatResponse))]
-	[Message(OuterOpcode.C2M_RankPetCombatRequest)]
-	[ProtoContract]
-	public partial class C2M_RankPetCombatRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long PlayerId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RankPetCombatResponse)]
-	[ProtoContract]
-	public partial class M2C_RankPetCombatResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_QuitPetRankResponse))]
-	[Message(OuterOpcode.C2M_QuitPetRankRequest)]
-	[ProtoContract]
-	public partial class C2M_QuitPetRankRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MapIndex { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_QuitPetRankResponse)]
-	[ProtoContract]
-	public partial class M2C_QuitPetRankResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2C_RankPetListResponse))]
 	[Message(OuterOpcode.C2R_RankPetListRequest)]
 	[ProtoContract]
@@ -14344,40 +13763,6 @@ namespace ET
 
 		[ProtoMember(3)]
 		public long RankNumber { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetChouKaResponse))]
-	[Message(OuterOpcode.C2M_RolePetChouKaRequest)]
-	[ProtoContract]
-	public partial class C2M_RolePetChouKaRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ChouKaType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetChouKaResponse)]
-	[ProtoContract]
-	public partial class M2C_RolePetChouKaResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetInfo RolePetInfo { get; set; }
 
 	}
 
@@ -14476,341 +13861,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_PetHeXinHeChengResponse))]
-//宠物之核合成
-	[Message(OuterOpcode.C2M_PetHeXinHeChengRequest)]
-	[ProtoContract]
-	public partial class C2M_PetHeXinHeChengRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long BagInfoID_1 { get; set; }
-
-		[ProtoMember(2)]
-		public long BagInfoID_2 { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetHeXinHeChengResponse)]
-	[ProtoContract]
-	public partial class M2C_PetHeXinHeChengResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetEggDuiHuanResponse))]
-	[Message(OuterOpcode.C2M_PetEggDuiHuanRequest)]
-	[ProtoContract]
-	public partial class C2M_PetEggDuiHuanRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int ChouKaId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetEggDuiHuanResponse)]
-	[ProtoContract]
-	public partial class M2C_PetEggDuiHuanResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<RewardItem> ReardList = new List<RewardItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_PetEggChouKaResponse))]
-	[Message(OuterOpcode.C2M_PetEggChouKaRequest)]
-	[ProtoContract]
-	public partial class C2M_PetEggChouKaRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int ChouKaType { get; set; }
-
-		[ProtoMember(2)]
-		public int CostType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetEggChouKaResponse)]
-	[ProtoContract]
-	public partial class M2C_PetEggChouKaResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<RewardItem> ReardList = new List<RewardItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetEggPutOut))]
-//宠物蛋卸下
-	[Message(OuterOpcode.C2M_RolePetEggPutOut)]
-	[ProtoContract]
-	public partial class C2M_RolePetEggPutOut: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public int Index { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetEggPutOut)]
-	[ProtoContract]
-	public partial class M2C_RolePetEggPutOut: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetEgg RolePetEgg { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetHeXinHeChengQuickResponse))]
-//宠物之核一键合成
-	[Message(OuterOpcode.C2M_PetHeXinHeChengQuickRequest)]
-	[ProtoContract]
-	public partial class C2M_PetHeXinHeChengQuickRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetHeXinHeChengQuickResponse)]
-	[ProtoContract]
-	public partial class M2C_PetHeXinHeChengQuickResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//宠物兑换
-	[ResponseType(nameof(M2C_PetDuiHuanResponse))]
-	[Message(OuterOpcode.C2M_PetDuiHuanRequest)]
-	[ProtoContract]
-	public partial class C2M_PetDuiHuanRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetDuiHuanResponse)]
-	[ProtoContract]
-	public partial class M2C_PetDuiHuanResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetInfo RolePetInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePetUpStage))]
-//宠物进化
-	[Message(OuterOpcode.C2M_RolePetUpStage)]
-	[ProtoContract]
-	public partial class C2M_RolePetUpStage: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public long PetInfoXianJiId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePetUpStage)]
-	[ProtoContract]
-	public partial class M2C_RolePetUpStage: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetInfo OldPetInfo { get; set; }
-
-		[ProtoMember(2)]
-		public RolePetInfo NewPetInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetShouHuResponse))]
-//宠物守护
-	[Message(OuterOpcode.C2M_PetShouHuRequest)]
-	[ProtoContract]
-	public partial class C2M_PetShouHuRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public int Position { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetShouHuResponse)]
-	[ProtoContract]
-	public partial class M2C_PetShouHuResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<long> PetShouHuList = new List<long>();
-
-	}
-
-	[ResponseType(nameof(M2C_PetShouHuActiveResponse))]
-//宠物守护
-	[Message(OuterOpcode.C2M_PetShouHuActiveRequest)]
-	[ProtoContract]
-	public partial class C2M_PetShouHuActiveRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int PetShouHuActive { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetShouHuActiveResponse)]
-	[ProtoContract]
-	public partial class M2C_PetShouHuActiveResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int PetShouHuActive { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetFragmentDuiHuan))]
-	[Message(OuterOpcode.C2M_PetFragmentDuiHuan)]
-	[ProtoContract]
-	public partial class C2M_PetFragmentDuiHuan: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetFragmentDuiHuan)]
-	[ProtoContract]
-	public partial class M2C_PetFragmentDuiHuan: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public RolePetInfo RolePetInfo { get; set; }
-
-	}
-
 	[ResponseType(nameof(F2C_WatchPetResponse))]
 	[Message(OuterOpcode.C2F_WatchPetRequest)]
 	[ProtoContract]
@@ -14844,10 +13894,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(7)]
-		public RolePetInfo RolePetInfos { get; set; }
-
-		[ProtoMember(8)]
-		public List<BagInfo> PetHeXinList = new List<BagInfo>();
+		public PetInfo RolePetInfos { get; set; }
 
 		[ProtoMember(9)]
 		public List<int> Ks = new List<int>();

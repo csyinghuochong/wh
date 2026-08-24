@@ -553,12 +553,12 @@ namespace ET
         /// 宠物洗练
         /// </summary>
         /// <param name="self"></param>
-        public static void OnPetXiLian(this TaskComponentServer self, RolePetInfo rolePetInfo)
+        public static void OnPetXiLian(this TaskComponentServer self, PetInfo rolePetInfo)
         {
            
         }
 
-        public static void OnPetHeCheng(this TaskComponentServer self, RolePetInfo rolePetInfo)
+        public static void OnPetHeCheng(this TaskComponentServer self, PetInfo rolePetInfo)
         {
             using (self.TaskEventBatch())
             {
@@ -570,7 +570,7 @@ namespace ET
         /// 获得宠物
         /// </summary>
         /// <param name="self"></param>
-        public static void OnGetPet(this TaskComponentServer self, RolePetInfo rolePetInfo)
+        public static void OnGetPet(this TaskComponentServer self, PetInfo rolePetInfo)
         {
             using (self.TaskEventBatch())
             {

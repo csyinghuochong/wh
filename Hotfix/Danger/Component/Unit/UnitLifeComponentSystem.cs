@@ -87,7 +87,7 @@ namespace ET
 
             if (unit.Type == UnitType.Player)
             {
-                RolePetInfo rolePetInfo = unit.GetComponent<PetComponentServer>().GetFightPet();
+                PetInfo rolePetInfo = unit.GetComponent<PetComponentServer>().GetFightPet();
                 if (rolePetInfo != null)
                 {
                     unit.GetParent<UnitComponent>().Remove(rolePetInfo.Id);

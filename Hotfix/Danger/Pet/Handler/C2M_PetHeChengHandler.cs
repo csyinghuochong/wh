@@ -6,9 +6,9 @@ namespace ET
 {
     //玩家宠物
     [ActorMessageHandler]
-	public class C2M_RolePetHeChengHandler : AMActorLocationRpcHandler<Unit, C2M_RolePetHeCheng, M2C_RolePetHeCheng>
+	public class C2M_PetHeChengHandler : AMActorLocationRpcHandler<Unit, C2M_PetHeCheng, M2C_PetHeCheng>
 	{
-		protected override async ETTask Run(Unit unit, C2M_RolePetHeCheng request, M2C_RolePetHeCheng response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_PetHeCheng request, M2C_PetHeCheng response, Action reply)
 		{
 			//读取数据库
 			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
@@ -16,8 +16,8 @@ namespace ET
 			ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
 			TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
-			RolePetInfo petinfo_1 = petComponentServer.GetPetInfo(request.PetInfoId1);
-			RolePetInfo petinfo_2 = petComponentServer.GetPetInfo(request.PetInfoId2);
+			PetInfo petinfo_1 = petComponentServer.GetPetInfo(request.PetInfoId1);
+            PetInfo petinfo_2 = petComponentServer.GetPetInfo(request.PetInfoId2);
 			if (petinfo_1 == null || petinfo_2 == null)
 			{
 				response.Error = ErrorCode.ERR_Pet_NoExist;
@@ -42,8 +42,8 @@ namespace ET
 			int petHeChengNumber = dataCollationComponent.PetHeCheng;
 
 			PetHeChengResult heChengResult = petComponentServer.TryHeChengPets(petinfo_1, petinfo_2, petHeChengNumber);
-			RolePetInfo petinfo_update = heChengResult.UpdatePet;
-			RolePetInfo petinfo_delete = heChengResult.DeletePet;
+            PetInfo petinfo_update = heChengResult.UpdatePet;
+            PetInfo petinfo_delete = heChengResult.DeletePet;
 			petinfo_update.ConfigId = heChengResult.PetID;
 			petinfo_update.PetLv = heChengResult.PetLv;
 			petinfo_update.PetExp = heChengResult.PetExp;

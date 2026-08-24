@@ -46,17 +46,17 @@ namespace ET
                         List<long> petidlist = new List<long>();
                         for (int p = teamid * 5; p < (teamid + 1) * 5; p++ )
                         {
-                            RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(petComponentServer.PetMingList[p]);
-                            if (rolePetInfo != null)
-                            {
-                                petidlist.Add(rolePetInfo.Id);
-                                petconfidds.Add(rolePetInfo.ConfigId);
-                            }
-                            else
-                            {
-                                petidlist.Add(0);
-                                petconfidds.Add(0); 
-                            }
+                            //PetInfo rolePetInfo = petComponentServer.GetPetInfo(petComponentServer.PetMingList[p]);
+                            //if (rolePetInfo != null)
+                            //{
+                            //    petidlist.Add(rolePetInfo.Id);
+                            //    petconfidds.Add(rolePetInfo.ConfigId);
+                            //}
+                            //else
+                            //{
+                            //    petidlist.Add(0);
+                            //    petconfidds.Add(0); 
+                            //}
                         }
 
                         activitySceneComponent.PetMingList.Add(new PetMingPlayerInfo()

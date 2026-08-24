@@ -342,7 +342,7 @@ namespace ET
             return unit;
         }
 
-        public static Unit CreateTianTiPet(Scene scene,  long masterId, int roleCamp, RolePetInfo petinfo, Vector3 postion, float rotation, int cell)
+        public static Unit CreateTianTiPet(Scene scene,  long masterId, int roleCamp, PetInfo petinfo, Vector3 postion, float rotation, int cell)
         {
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(petinfo.Id, 1);
             scene.GetComponent<UnitComponent>().Add(unit);
@@ -398,7 +398,7 @@ namespace ET
         }
 
       
-        public static Unit CreatePet(Unit master, RolePetInfo petinfo)
+        public static Unit CreatePet(Unit master, PetInfo petinfo)
         {
             Scene scene = master.DomainScene();
             Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(petinfo.Id, 1);

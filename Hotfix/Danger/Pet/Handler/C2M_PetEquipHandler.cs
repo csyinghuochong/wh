@@ -11,7 +11,7 @@ namespace ET
         {
             PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            RolePetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
+            PetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
             if (rolePetInfo == null)
             {
                 response.Error = ErrorCode.ERR_Pet_NoExist;
@@ -64,7 +64,7 @@ namespace ET
             }
             petComponentServer.UpdatePetAttribute(rolePetInfo, false);
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
-            response.RolePetInfo = rolePetInfo;
+            response.PetInfo = rolePetInfo;
 
             reply();
             await ETTask.CompletedTask;

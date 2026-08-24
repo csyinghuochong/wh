@@ -42,8 +42,8 @@ namespace ET
                         reply();
                         return;
                     }
-                    List<RolePetInfo> rolePetInfos = petComponentServer.RolePetInfos;
-                    List<RolePetInfo> rolePetInfosResponse = new List<RolePetInfo>();
+                    List<PetInfo> rolePetInfos = petComponentServer.PetInfos;
+                    List<PetInfo> rolePetInfosResponse = new List<PetInfo>();
                     for (int pet = rolePetInfos.Count - 1; pet >= 0; pet-- )
                     {
                         if (rolePetInfos[pet].PetStatus < 2)
@@ -53,8 +53,7 @@ namespace ET
                     }
 
                     response.RolePetInfos = rolePetInfosResponse;
-                    response.PetSkinList = petComponentServer.PetSkinList;
-
+                 
                     NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, request.UserId);
                     if (numericComponent == null)
                     {
