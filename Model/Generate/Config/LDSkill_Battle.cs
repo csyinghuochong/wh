@@ -94,9 +94,9 @@ namespace ET
 		/// <summary>BUFF 替换技能 前置优先</summary>
 		[ProtoMember(5)]
 		public string Replace_Skill { get; set; }
-		/// <summary>技能覆盖</summary>
+		/// <summary>宠物技能 关联性</summary>
 		[ProtoMember(6)]
-		public int[] Cover { get; set; }
+		public int[] Pet_Relate { get; set; }
 		/// <summary>技能类型 0-无 1-瞬发 2-吟唱 3-引导 8-属性 9-被动</summary>
 		[ProtoMember(7)]
 		public int Type { get; set; }

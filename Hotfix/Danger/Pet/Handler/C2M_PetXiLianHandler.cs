@@ -17,159 +17,16 @@ namespace ET
 			PetInfo petInfo = pet.GetPetInfo(request.PetInfoId);
 			BagInfo bagInfo = bag.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoID);
 
-			//判断是否有足够的道具
-			if (bagInfo == null || petInfo == null)
-			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
-				return;
-			}
-			if (bag.GetItemNumber(ItemBigType.Type_Item,bagInfo.ItemID) < 1)
-			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
-				return;
-			}
+			bool ifCost = false;
 
-			LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-			int itemSubType = ldItem.ItemType;
-			bool ifCost = true;
-
-			LDPet ldPetCof = LDPetCategory.Instance.Get(petInfo.ConfigId);
-			
-			////没有对应子类型的新增一下。
-			////新增的道具都要添加子类型
-			switch (itemSubType)
-			{
-				//宠物洗练
-				case 105:
-					// 宠之晶 增加额外效果,洗炼5%的概率使普通宠物发生变异,变异的宠物不能使用此道具
-					//if (PetHelper.IsBianYI(petInfo))
-					//{
-					//	response.Error = ErrorCode.ERR_Pet_NoUseItem;
-					//	reply();
-					//	return;
-					//}
-
-					if (!PetHelper.IsBianYI(petInfo) && RandomHelper.RandomNumber(0, 101) <= 5)
-					{
-						
-					}
-					
-					//重置资质系数
-					pet.PetXiLian(petInfo, 0, 2, bagInfo.ItemID, 0);
-                    pet.UpdatePetAttribute(petInfo, true);
-                    petInfo.LockSkill.Clear();
-                    response.rolePetInfo = petInfo;
-					break;
-				//增加经验
-				case 108:
-					if (LDExpCategory.Instance.Contain(petInfo.PetLv))
-					{
-                        /*int addExp = ExpCategory.Instance.Get(petInfo.PetLv).PetItemUpExp;
-                        unit.GetComponent<PetComponent>().PetAddExp(petInfo, addExp);
-                        response.rolePetInfo = petInfo;*/
-                    }
-					break;
-				//增加等级
-				case 109:
-					///////
-					if ( !LDExpCategory.Instance.Contain(petInfo.PetLv + 1) )
-					{
-						reply();
-						return;
-					}
-					pet.PetAddLv(petInfo, 1);
-					response.rolePetInfo = petInfo;
-					break;
-				case 117:	//洗点
-					pet.OnResetPoint(petInfo);
-                    petInfo.LockSkill.Clear();
-                    response.rolePetInfo = petInfo;
-					break;
-				case 118: //资质
-					pet.UpdatePetZiZhi(petInfo, bagInfo.ItemID);
-					pet.UpdatePetAttribute(petInfo, true);
-                    petInfo.LockSkill.Clear();
-                    response.rolePetInfo = petInfo;
-					break;
-				case 119: //成长
-					pet.UpdatePetChengZhang(petInfo, bagInfo.ItemID);
-					pet.UpdatePetAttribute(petInfo, true);
-					response.rolePetInfo = petInfo;
-					break;
-				//学习技能书
-				case 122:
-					bool ifok = false;///Pet_AddSkill(unit, petInfo, int.Parse(ldItem.ItemUsePar));
-					if (ifok)
-					{
-                        pet.UpdatePetAttribute(petInfo, true);
-                        taskComponentServer.OnPetUseSkillBook();
-                   
-                        petInfo.LockSkill.Clear();
-
-                    }
-                    response.rolePetInfo = petInfo;
-					ifCost = ifok;
-					response.Error = ifok ? ErrorCode.ERR_Success : ErrorCode.ERR_Pet_AddSkillSame;
-					break;
-				case 133:
-					// 超级宠之晶 只有变异宠物可以用,洗宠物属性,不会改变其皮肤,只改变技能和资质 
-					//if (!PetHelper.IsBianYI(petInfo))
-					//{
-					//	response.Error = ErrorCode.ERR_Pet_NoUseItem;
-					//	reply();
-					//	return;
-					//}
-
-					//重置资质系数
-					pet.PetXiLian(petInfo, 0, 2, bagInfo.ItemID, 0);
-                    pet.UpdatePetAttribute(petInfo, true);
-					response.rolePetInfo = petInfo;
-					break;
-				case 134:
-					// 变异宠物果实 只有普通宠物可以用,使用后随机获得一个变异效果(随机一个皮肤不能是第一个),其他属性和技能不变
-					if (PetHelper.IsBianYI(petInfo))
-					{
-						response.Error = ErrorCode.ERR_Pet_NoUseItem;
-						reply();
-						return;
-					}
-
-					
-					response.rolePetInfo = petInfo;
-					break;
-				case 136:
-					if (petInfo.PetSkill.Count < 2)
-					{
-                        response.Error = ErrorCode.ERR_Pet_CanNotLock;
-                        reply();
-                        return;
-                    }
-
-					int lockSkill = int.Parse(request.ParamInfo);
-                    //只锁定一个技能， 用list方便以后做扩展。 锁定的技能在122这个Pet_AddSkill不会被顶掉
-                    petInfo.LockSkill.Clear();
-					petInfo.LockSkill.Add(lockSkill);	
-                    response.rolePetInfo = petInfo;
-                    break;
-				default:
-					break;
-			}
-
-			//扣除相关道具
-			if (ifCost)
+            //扣除相关道具
+            if (ifCost)
 			{
 				//扣除道具
 				bag.OnCostItemData($"{bagInfo.ItemID};1", ItemLocType.ItemLocBag, ItemGetWay.PetHeXinExplore);		
 				chengJiuComponentServer.OnPetXiLian(petInfo);		//激活成就
 				taskComponentServer.OnPetXiLian(petInfo);                    //激活任务
 
-                if (itemSubType == 105 || itemSubType == 133)
-                {
-                    taskComponentServer.OnPetXiLianCrystal();
-              
-                }
             }
             pet.OnPetScoreChanged();
 

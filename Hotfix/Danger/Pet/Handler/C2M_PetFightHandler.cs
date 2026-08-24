@@ -5,7 +5,7 @@ namespace ET
 {
     //玩家宠物
     [ActorMessageHandler]
-	public class C2M_RolePetFightHandler : AMActorLocationRpcHandler<Unit, C2M_RolePetFight, M2C_RolePetFight>
+	public class C2M_PetFightHandler : AMActorLocationRpcHandler<Unit, C2M_RolePetFight, M2C_RolePetFight>
 	{
 		protected override async ETTask Run(Unit unit, C2M_RolePetFight request, M2C_RolePetFight response, Action reply)
 		{
