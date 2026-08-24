@@ -117,7 +117,7 @@ namespace ET
             BagSortHelper.SortIfNeeded(ItemTypeList, itemEquipType);
         }
 
-        public static void CheckValiedItem(this BagComponentServer self, List<BagInfo> bagInfos, int occ, int occTwo)
+        public static void CheckValiedItem(this BagComponentServer self, List<BagInfo> bagInfos)
         {
             for (int i = bagInfos.Count - 1; i >= 0; i--)
             {
@@ -138,7 +138,7 @@ namespace ET
             }
         }
 
-        public static void CheckAllItem(this BagComponentServer self, int occ, int occTwo)
+        public static void CheckAllItem(this BagComponentServer self)
         {
             foreach (KeyValuePair<int, List<BagInfo>> kv in self.AllItemList)
             {
@@ -147,17 +147,48 @@ namespace ET
                     continue;
                 }
 
-                self.CheckValiedItem(kv.Value, occ, occTwo);
+                self.CheckValiedItem(kv.Value);
                 BagSortHelper.SortIfNeeded(kv.Value, kv.Key);
             }
         }
 
+
+        //根据ID获取对应的背包数据
+        public static BagInfo GetItemByLoc(this BagComponentServer self, ItemLocType itemLocType, long bagId)
+        {
+            if (bagId == 0)
+                return null;
+            List<BagInfo> ItemTypeList = self.GetItemByLoc(itemLocType);
+            for (int i = 0; i < ItemTypeList.Count; i++)
+            {
+                if (ItemTypeList[i].BagInfoID == bagId)
+                {
+                    return ItemTypeList[i];
+                }
+            }
+            return null;
+        }
+
+        public static BagInfo GetItemByUId(this BagComponentServer self,  long bagId)
+        {
+            if (bagId == 0)
+                return null;
+            List<BagInfo> ItemTypeList = self.GetAllItems();
+            for (int i = 0; i < ItemTypeList.Count; i++)
+            {
+                if (ItemTypeList[i].BagInfoID == bagId)
+                {
+                    return ItemTypeList[i];
+                }
+            }
+            return null;
+        }
+
+
         //获取自身所有的道具
-        public static List<BagInfo> GetAllItems(this BagComponentServer self, int occ, int occTwo)
+        public static List<BagInfo> GetAllItems(this BagComponentServer self)
         {
             List<BagInfo> bagList = new List<BagInfo>();
-
-            self.CheckAllItem(occ, occTwo);
 
             foreach (List<BagInfo> locList in self.AllItemList.Values)
             {
@@ -254,23 +285,6 @@ namespace ET
                     break;
             }
             return number;
-        }
-
-
-        //根据ID获取对应的背包数据
-        public static BagInfo GetItemByLoc(this BagComponentServer self, ItemLocType itemLocType, long bagId)
-        {
-            if (bagId == 0)
-                return null;
-            List<BagInfo> ItemTypeList = self.GetItemByLoc(itemLocType);
-            for (int i = 0; i < ItemTypeList.Count; i++)
-            {
-                if (ItemTypeList[i].BagInfoID == bagId)
-                {
-                    return ItemTypeList[i];
-                }
-            }
-            return null;
         }
 
 
@@ -438,7 +452,7 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
            
-            self.CheckAllItem(occ, occTwo);
+            self.CheckAllItem( );
 
             ///old
             //int warehourseNumber = (int)ItemLocType.ItemLocMax - 5;

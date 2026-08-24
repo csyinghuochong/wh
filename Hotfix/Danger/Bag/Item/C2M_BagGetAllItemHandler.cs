@@ -21,7 +21,7 @@ namespace ET
             //读取数据库
             int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
             int occTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
-            List<BagInfo> bagInfos = bagComponentServer.GetAllItems(occ, occTwo);
+            List<BagInfo> bagInfos = bagComponentServer.GetAllItems();
 
 			/*
 			for (int i = 0; i < bagInfos.Count; i++) {

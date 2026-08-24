@@ -13700,6 +13700,9 @@ namespace ET
 		[ProtoMember(24)]
 		public List<int> Skill_Extra_B = new List<int>();
 
+		[ProtoMember(25)]
+		public List<RewardItem> EatItems = new List<RewardItem>();
+
 		[ProtoMember(30)]
 		public List<int> Ks = new List<int>();
 

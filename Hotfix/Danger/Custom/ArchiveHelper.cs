@@ -220,7 +220,7 @@ namespace ET
 
             int occ = oldRoleInfoComponentServer.RoleInfo.Occ;
             int occTwo = oldRoleInfoComponentServer.RoleInfo.OccTwo;
-            List<BagInfo> bagInfos = oldBagComponentServer.GetAllItems(occ, occTwo );
+            List<BagInfo> bagInfos = oldBagComponentServer.GetAllItems( );
             for (int i = 0; i < bagInfos.Count; i++)
             {
                 if (soldbaginfoids.Contains(bagInfos[i].BagInfoID))

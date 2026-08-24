@@ -66,6 +66,16 @@ namespace ET
             newpet.PetName = ldPetConfig.Name.ToString();
             newpet.IfChange = ldPetConfig.Is_Best == 1 ? 1 :0;
             newpet.AddPropretyNum = 0;
+            // 先天 Skill / 异化 Skill_Change 读 LDPet，不入库。Pet表备注：固定技能1：3个先天技能；固定技能2：1个异化技能（异化后才激活）
+            newpet.Skill_Extra_A = new List<int>();
+            newpet.Skill_Extra_B = new List<int>();
+            newpet.EatItems = new List<RewardItem>();
+            newpet.Aptitude_1 = new PetAptitudeInfo();
+            newpet.Aptitude_2 = new PetAptitudeInfo();
+            newpet.Aptitude_3 = new PetAptitudeInfo();
+            newpet.Aptitude_4 = new PetAptitudeInfo();
+            newpet.Aptitude_5 = new PetAptitudeInfo();
+            newpet.Aptitude_6 = new PetAptitudeInfo();
             //newpet.PetName = PetSkinConfigCategory.Instance.Get(newpet.SkinId).Name;
             newpet.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
             return newpet;
@@ -108,13 +118,6 @@ namespace ET
         }
 
 
-        /// <summary>
-        /// 宠物资质/评分变化后刷新成就（洗练、合成、升阶等）
-        /// </summary>
-        public static void OnPetScoreChanged(this PetComponentServer self)
-        {
-            self.CheckPetPingFen();
-        }
 
         /// <summary>
         /// 获得宠物后的任务/成就推进
@@ -524,6 +527,13 @@ namespace ET
             }
 
             self.ResetFormation(self.PetFormations, petId);
+        }
+
+        /// <summary>
+        /// Pet表备注：合体前对副宠进行重置，把药退出来。按 EatItems 退还，空接口后续补实际入包。
+        /// </summary>
+        public static void ResetSubPetRefundItems(this PetComponentServer self, PetInfo subPet)
+        {
         }
 
         /// <summary>

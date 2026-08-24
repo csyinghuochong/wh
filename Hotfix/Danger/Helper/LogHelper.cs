@@ -523,9 +523,8 @@ namespace ET
             }
 
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
-            int occTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
-            List<BagInfo> bagInfos =  bagComponentServer.GetAllItems(occ, occTwo  );
+
+            List<BagInfo> bagInfos =  bagComponentServer.GetAllItems(  );
             for (int i = 0; i < bagInfos.Count; i++)
             {
                 if (bagInfos[i].ItemID > 100 && bagInfos[i].ItemNum >= 10000)
