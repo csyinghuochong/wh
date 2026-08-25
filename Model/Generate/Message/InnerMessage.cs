@@ -970,43 +970,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Mail2M_ReceiveMailResponse))]
-	[Message(InnerOpcode.M2Mail_ReceiveMailRequest)]
-	[ProtoContract]
-	public partial class M2Mail_ReceiveMailRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long Id { get; set; }
-
-		[ProtoMember(2)]
-		public long MailId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Mail2M_ReceiveMailResponse)]
-	[ProtoContract]
-	public partial class Mail2M_ReceiveMailResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(4)]
-		public MailInfo MailInfo { get; set; }
-
-	}
-
 	[ResponseType(nameof(Other2A_ActivityUpdateResponse))]
 	[Message(InnerOpcode.A2Other_ActivityUpdateRequest)]
 	[ProtoContract]

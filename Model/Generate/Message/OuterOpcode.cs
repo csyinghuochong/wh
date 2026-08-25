@@ -166,8 +166,8 @@ namespace ET
 		 public const ushort MailInfo = 10163;
 		 public const ushort C2M_ReceiveMailRequest = 10164;
 		 public const ushort M2C_ReceiveMailResponse = 10165;
-		 public const ushort C2Mail_ReceiveMailRequest = 10166;
-		 public const ushort Mail2C_ReceiveMailResponse = 10167;
+		 public const ushort C2M_DeleteAllMailRequest = 10166;
+		 public const ushort M2C_DeleteAllMailResponse = 10167;
 		 public const ushort C2Mail_GetAllMailRequest = 10168;
 		 public const ushort Mail2C_GetAllMailResponse = 10169;
 		 public const ushort C2M_TianFuActiveRequest = 10170;

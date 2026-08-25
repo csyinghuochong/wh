@@ -3520,10 +3520,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Mail2C_ReceiveMailResponse))]
-	[Message(OuterOpcode.C2Mail_ReceiveMailRequest)]
+	[ResponseType(nameof(M2C_DeleteAllMailResponse))]
+	[Message(OuterOpcode.C2M_DeleteAllMailRequest)]
 	[ProtoContract]
-	public partial class C2Mail_ReceiveMailRequest: Object, IMailActorRequest
+	public partial class C2M_DeleteAllMailRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3531,14 +3531,11 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
-		[ProtoMember(1)]
-		public long MailId { get; set; }
-
 	}
 
-	[Message(OuterOpcode.Mail2C_ReceiveMailResponse)]
+	[Message(OuterOpcode.M2C_DeleteAllMailResponse)]
 	[ProtoContract]
-	public partial class Mail2C_ReceiveMailResponse: Object, IMailActorResponse
+	public partial class M2C_DeleteAllMailResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

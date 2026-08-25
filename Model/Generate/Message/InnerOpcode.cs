@@ -57,8 +57,6 @@ namespace ET
 		 public const ushort G2M_ActivityUpdate = 20054;
 		 public const ushort M2Mail_SendMailRequest = 20055;
 		 public const ushort Mail2M_SendMailResponse = 20056;
-		 public const ushort M2Mail_ReceiveMailRequest = 20057;
-		 public const ushort Mail2M_ReceiveMailResponse = 20058;
 		 public const ushort A2Other_ActivityUpdateRequest = 20059;
 		 public const ushort Other2A_ActivityUpdateResponse = 20060;
 		 public const ushort A2Other_ServerMessageRequest = 20061;

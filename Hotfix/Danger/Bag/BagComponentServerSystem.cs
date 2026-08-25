@@ -484,92 +484,29 @@ namespace ET
             return self.OnAddItemData(costItems, string.Empty, getType, notice, false, useLocType);
         }
 
-        public static void OnAddItemData(this BagComponentServer self, List<BagInfo> bagInfos, string getType)
-        {
-            if (bagInfos == null || bagInfos.Count == 0)
-            {
-                return;
-            }
-
-            Unit unit = self.GetParent<Unit>();
-            M2C_RoleBagUpdate uniqueUpdate = new M2C_RoleBagUpdate();
-            bool hasUniqueAdd = false;
-            Dictionary<string, List<RewardItem>> stackableByGetWay = null;
-
-            for (int i = 0; i < bagInfos.Count; i++)
-            {
-                BagInfo bagInfo = bagInfos[i];
-                LDItem ldItemCof = LDItemCategory.Instance.Get(bagInfo.ItemID);
-                int maxPileSum = ldItemCof.ItemPileSum;
-
-                if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
-                {
-                    string way = string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay;
-                    if (stackableByGetWay == null)
-                    {
-                        stackableByGetWay = new Dictionary<string, List<RewardItem>>();
-                    }
-                    if (!stackableByGetWay.TryGetValue(way, out List<RewardItem> rewardList))
-                    {
-                        rewardList = new List<RewardItem>();
-                        stackableByGetWay[way] = rewardList;
-                    }
-                    int itemType = bagInfo.ItemType != 0 ? bagInfo.ItemType : ItemBigType.Type_Item;
-                    rewardList.Add(new RewardItem()
-                    {
-                        ItemType = itemType,
-                        ItemID = bagInfo.ItemID,
-                        ItemNum = bagInfo.ItemNum
-                    });
-                    continue;
-                }
-
-                self.GetItemByLoc(ItemLocType.ItemLocBag).Add(bagInfo);
-                uniqueUpdate.BagInfoAdd.Add(bagInfo);
-                hasUniqueAdd = true;
-
-                string[] getWayParts = getType.Split('_');
-                int getTypeValue = int.Parse(getWayParts[0]);
-                ItemAddHelper.OnGetItem(unit, getTypeValue, bagInfo);
-            }
-
-            // 可堆叠按 GetWay 聚合后一次入包
-            if (stackableByGetWay != null)
-            {
-                foreach (KeyValuePair<string, List<RewardItem>> kv in stackableByGetWay)
-                {
-                    self.OnAddItemData(kv.Value, string.Empty, kv.Key);
-                }
-            }
-
-            if (hasUniqueAdd)
-            {
-                BagSortHelper.SortIfNeeded(self.GetItemByLoc(ItemLocType.ItemLocBag), ItemLocType.ItemLocBag);
-                MessageHelper.SendToClient(unit, uniqueUpdate);
-            }
-        }
-
         public static bool OnAddItemData(this BagComponentServer self, BagInfo bagInfo, string getType)
         {
-            LDItem ldItemCof = LDItemCategory.Instance.Get(bagInfo.ItemID);
-            int maxPileSum = ldItemCof.ItemPileSum;
+            int maxPileSum = ItemNewHelper.GetNewItemPileSum(bagInfo);
 
             if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
             {
-                return self.OnAddItemData($"{bagInfo.ItemType}_{bagInfo.ItemID}_{bagInfo.ItemNum}", string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay);
+                return self.OnAddItemData($"{bagInfo.ItemType}~{bagInfo.ItemID}~{bagInfo.ItemNum}", string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay);
             }
             else
             {
-                self.GetItemByLoc(ItemLocType.ItemLocBag).Add(bagInfo);
-                BagSortHelper.SortIfNeeded(self.GetItemByLoc(ItemLocType.ItemLocBag), ItemLocType.ItemLocBag);
+                int itemType = bagInfo.ItemType != 0 ? bagInfo.ItemType : ItemBigType.Type_Item;
+                ItemLocType toLoc = ItemNewHelper.GetToItemLocType(itemType, bagInfo.ItemID);
+                bagInfo.ItemType = itemType;
+                bagInfo.Loc = (int)toLoc;
+                List<BagInfo> locList = self.GetItemByLoc(toLoc);
+                locList.Add(bagInfo);
+                BagSortHelper.SortIfNeeded(locList, toLoc);
 
                 Unit parentUnit = self.GetParent<Unit>();
                 M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
                 m2c_bagUpdate.BagInfoAdd.Add(bagInfo);
-                //通知客户端背包道具发生改变
                 MessageHelper.SendToClient(parentUnit, m2c_bagUpdate);
 
-                //检测任务需求道具
                 string[] getWayParts = getType.Split('_');
                 int getTypeValue = int.Parse(getWayParts[0]);
                 ItemAddHelper.OnGetItem(parentUnit, getTypeValue, bagInfo);
