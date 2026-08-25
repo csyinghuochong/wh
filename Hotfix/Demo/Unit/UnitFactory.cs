@@ -435,17 +435,17 @@ namespace ET
             numericComponent.Set(NumericType.TeamId, master.GetTeamId(), false); ;
             numericComponent.Set(NumericType.UnionId_0, master.GetUnionId(), false);
             NumericComponent masterNumeric = master.GetComponent<NumericComponent>();
-            long max_hp = numericComponent.GetAsLong(NumericType.Numeric_Error);
-            numericComponent.SetValueNoSync(NumericType.Numeric_Error, max_hp);
-            numericComponent.Set(NumericType.Numeric_Error, masterNumeric.GetAsLong(NumericType.Numeric_Error), false); 
+            long max_hp = numericComponent.GetAsLong(NumericType.HP_Max_10);
+            numericComponent.SetValueNoSync(NumericType.HP_Current_8, max_hp);
 
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             if (scene.GetComponent<MapComponent>().MapTypeEnum != (int)MapTypeEnum.MainCityScene)
             {
-                SkillPassiveComponent skillPassiveComponent = unit.AddComponent<SkillPassiveComponent>();
-                skillPassiveComponent.UpdatePetPassiveSkill(petinfo);
-                skillPassiveComponent.Activeted();
+                
             }
+            SkillPassiveComponent skillPassiveComponent = unit.AddComponent<SkillPassiveComponent>();
+            skillPassiveComponent.UpdatePetPassiveSkill(petinfo);
+            skillPassiveComponent.Activeted();
 
             return unit;
         }
