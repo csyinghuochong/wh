@@ -28,7 +28,12 @@ namespace ET
             }
 
 			// Pet表备注：合体前对副宠进行重置，把药退出来
-			petComponentServer.ResetSubPetRefundItems(petinfo_2);
+			if (!petComponentServer.ResetSubPetRefundItems(petinfo_2))
+			{
+				response.Error = ErrorCode.ERR_BagIsFull;
+				reply();
+				return;
+			}
 
 			int error = PetHelper.HeCheng(petinfo_1, petinfo_2);
 			if (error != ErrorCode.ERR_Success)

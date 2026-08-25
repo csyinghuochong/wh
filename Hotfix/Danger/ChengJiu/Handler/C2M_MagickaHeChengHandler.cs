@@ -42,57 +42,6 @@ namespace ET
                 return;
             }
 
-            int magiclevel = 0;
-
-            foreach ( ( int key, List<int>  idlist) in CommonConfig.MagicHeChengList)
-            {
-                HashSet<int> idSet = new HashSet<int>(idlist);
-                foreach (int itemid in removeids)
-                {
-                    if (!idSet.Contains(itemid))
-                    {
-                        continue;
-                    }
-                    if (magiclevel == 0)
-                    {
-                        magiclevel = key;
-                        continue;
-                    }
-                    if (magiclevel != key)
-                    {
-                        //必须相同等级。
-                        response.Error = ErrorCode.ERR_MagicHeCheng_2;
-                        reply();
-                        return;
-                    }
-                }
-            }
-
-            //已经最大等级了。
-            if (magiclevel >= CommonConfig.MagicHeChengList.Count)
-            {
-                response.Error = ErrorCode.ERR_MagicHeCheng_3;
-                reply();
-                return;
-            }
-
-            //但是只有50%概率，50%随机刷新一个同等级魔能
-            int newlevel = 0;
-            if (RandomHelper.RandFloat01() < 0.5f)
-            {
-                newlevel = magiclevel;
-            }
-            else
-            {
-                newlevel = magiclevel + 1;
-            }
-
-            List<int> newmagicids = CommonConfig.MagicHeChengList[newlevel];
-            int idindex =  RandomHelper.RandomNumber(0, newmagicids.Count);
-            int newmagid = newmagicids[idindex];
-
-            //bagComponentServer.OnCostItemData(request.OperateBagID, ItemLocType.ItemLocBag);
-            //bagComponentServer.OnAddItemData($"{newmagid};1", $"{ItemGetWay.GemHeCheng}_{TimeHelper.ServerNow()}");
             reply();
             await ETTask.CompletedTask;
         }

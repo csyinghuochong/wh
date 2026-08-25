@@ -26,7 +26,7 @@ namespace ET
                 rechargeComponentServer.RechargePro.TotalRechargeNum += centerAccount.BuChangRecharge;
                 rechargeComponentServer.NotifyClient();
             }
-            roleInfoComponentServer.UpdateRoleData( UserDataType.Diamond, centerAccount.BuChangDiamond.ToString(), true, ItemGetWay.BuChang);
+            roleInfoComponentServer.UpdateRoleData( UserDataType.Diamond, centerAccount.BuChangDiamond.ToString(), true, ItemGetWay.Activity);
             response.PlayerInfo = centerAccount.PlayerInfo;
             reply();
             await ETTask.CompletedTask;

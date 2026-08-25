@@ -26,7 +26,7 @@ namespace ET
 
             if (request.ItemId != 0)
             {
-                bool costresult =  bagComponentServer.OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.JingLing);
+                bool costresult =  bagComponentServer.OnCostItemData($"{request.ItemId};1", ItemLocType.ItemLocBag, ItemGetWay.Activity);
                 if (costresult == false)
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;

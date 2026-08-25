@@ -129,6 +129,7 @@ namespace ET
 								unit.GetComponent<BagComponentServer>().OnAddItemData($"{itemType}~{itemId}~{itemNumber}", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", true);
 								break;
 							case ItemBigType.Type_Pet:
+								//1#32#11#1
 								unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.GM, itemId);
 								break;
                             case ItemBigType.Type_Elf:

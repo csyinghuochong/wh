@@ -76,6 +76,7 @@ namespace ET
             newpet.Aptitude_4 = new PetAptitudeInfo();
             newpet.Aptitude_5 = new PetAptitudeInfo();
             newpet.Aptitude_6 = new PetAptitudeInfo();
+            PetHelper.InitPetAptitude(newpet);
             //newpet.PetName = PetSkinConfigCategory.Instance.Get(newpet.SkinId).Name;
             newpet.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
             return newpet;
@@ -109,14 +110,7 @@ namespace ET
             }
 
             self.CheckSkin();
-            self.OnPetScoreChanged();
         }
-
-        public static void CheckPetPingFen(this PetComponentServer self)
-        {
-            Unit unit = self.GetParent<Unit>();
-        }
-
 
 
         /// <summary>
@@ -342,32 +336,8 @@ namespace ET
        
         public static void UpdatePetAttributeWithData(this PetComponentServer self, BagComponentServer bagComponentServer, NumericComponent numericComponent, PetInfo rolePetInfo, bool updateUnit = false)
         {
-            //存储数据
-            rolePetInfo.Ks.Clear();
-            rolePetInfo.Vs.Clear();
-
-            Dictionary<int, long> attriDic = new Dictionary<int, long>();
-
-            //获取宠物身上属性
-            self.UpdatePetNumeric(attriDic);
-       
-
-            //获取加点属性
-            string[] attributeinfos = rolePetInfo.AddPropretyValue.Split('_');
-            int PointLiLiang = int.Parse(attributeinfos[0]);          //力量
-            int PointZhiLi = int.Parse(attributeinfos[1]);            //智力
-            int PointTiZhi = int.Parse(attributeinfos[2]);            //体制
-            int PointNaiLi = int.Parse(attributeinfos[3]);            //耐力
-
-
-            //刷新一下属性attriDic  赋值给rolePetInfo.Ks rolePetInfo.Vs
-            self.UpdatePetNumeric(attriDic);
-            foreach (var item in attriDic)
-            {
-                int numericType = item.Key;
-                rolePetInfo.Ks.Add(numericType);
-                rolePetInfo.Vs.Add(item.Value);
-            }
+            // 最终属性存 Ks/Vs。资质/等级变化时重算，先只用资质。
+            PetHelper.ApplyAptitudeAttributes(rolePetInfo);
         }
 
         public static void UpdatePetNumeric(this PetComponentServer self, Dictionary<int, long> attriDic)
@@ -530,10 +500,66 @@ namespace ET
         }
 
         /// <summary>
-        /// Pet表备注：合体前对副宠进行重置，把药退出来。按 EatItems 退还，空接口后续补实际入包。
+        /// Pet表备注：合体前对副宠进行重置，把药退出来。按 EatItems 退还背包，并清掉副宠 F/G。
+        /// 背包满返回 false，不改副宠。
         /// </summary>
-        public static void ResetSubPetRefundItems(this PetComponentServer self, PetInfo subPet)
+        public static bool ResetSubPetRefundItems(this PetComponentServer self, PetInfo subPet)
         {
+            if (subPet == null)
+            {
+                return false;
+            }
+
+            if (subPet.EatItems.Count > 0)
+            {
+                List<RewardItem> refund = new List<RewardItem>();
+                for (int i = 0; i < subPet.EatItems.Count; i++)
+                {
+                    RewardItem eat = subPet.EatItems[i];
+                    if (eat == null || eat.ItemID <= 0 || eat.ItemNum <= 0)
+                    {
+                        continue;
+                    }
+
+                    refund.Add(new RewardItem
+                    {
+                        ItemType = ItemBigType.Type_Item,
+                        ItemID = eat.ItemID,
+                        ItemNum = eat.ItemNum
+                    });
+                }
+
+                if (refund.Count > 0)
+                {
+                    BagComponentServer bag = self.GetParent<Unit>().GetComponent<BagComponentServer>();
+                    if (!bag.OnAddItemData(refund, string.Empty, $"{ItemGetWay.PetHeCheng}_{TimeHelper.ServerNow()}"))
+                    {
+                        return false;
+                    }
+                }
+
+                subPet.EatItems.Clear();
+            }
+
+            ResetAptitudeEat(subPet.Aptitude_1);
+            ResetAptitudeEat(subPet.Aptitude_2);
+            ResetAptitudeEat(subPet.Aptitude_3);
+            ResetAptitudeEat(subPet.Aptitude_4);
+            ResetAptitudeEat(subPet.Aptitude_5);
+            ResetAptitudeEat(subPet.Aptitude_6);
+            return true;
+        }
+
+        static void ResetAptitudeEat(PetAptitudeInfo apt)
+        {
+            if (apt == null)
+            {
+                return;
+            }
+
+            apt.F = 0;
+            apt.G = 0;
+            apt.Z = apt.E;
         }
 
         /// <summary>

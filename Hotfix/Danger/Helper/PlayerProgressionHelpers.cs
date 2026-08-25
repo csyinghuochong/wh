@@ -47,8 +47,7 @@ namespace ET
             {
                 return;
             }
-            PetComponentServer pet = unit.GetComponent<PetComponentServer>();
-            pet?.OnPetScoreChanged();
+
             unit.GetComponent<ChengJiuComponentServer>()?.OnGetPet(newpet);
             unit.GetComponent<TaskComponentServer>()?.OnGetPet(newpet);
         }

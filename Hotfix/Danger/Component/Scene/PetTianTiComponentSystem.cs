@@ -108,7 +108,7 @@ namespace ET
                 m2C_FubenSettlement.StarInfos = new List<int> { 1, 1, 1 };
 
                 DungeonSettlementHelper.SettlePetTianTiWin(
-                    self.MainUnit, rewardItems, $"{ItemGetWay.PetTianTiReward}_{TimeHelper.ServerNow()}");
+                    self.MainUnit, rewardItems, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
             }
             else
             {

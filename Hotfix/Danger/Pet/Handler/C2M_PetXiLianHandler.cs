@@ -38,6 +38,14 @@ namespace ET
 			LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
 			int itemType = ldItem.ItemType;
 
+			if (bagInfo.ItemID == 1)
+			{
+				itemType = ItemTypeEnum.SubType_PetXiLian_F;
+            }
+            if (bagInfo.ItemID == 2)
+            {
+                itemType = ItemTypeEnum.SubType_PetXiLian_G;
+            }
 
             switch (itemType)
 			{
@@ -106,7 +114,8 @@ namespace ET
 				taskComponentServer.OnPetXiLian(petInfo);                    //激活任务
 
             }
-            pet.OnPetScoreChanged();
+   
+            pet.UpdatePetAttribute(petInfo, true);
 			response.PetInfo = petInfo;
 
             reply();

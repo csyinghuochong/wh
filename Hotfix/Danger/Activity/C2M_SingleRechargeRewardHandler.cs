@@ -49,7 +49,7 @@ namespace ET
                 return;
             }
 
-            bool ret = bagComponentServer.OnAddItemData(rewardData, $"{ItemGetWay.ActivityChouKa}_{TimeHelper.ServerNow()}");
+            bool ret = bagComponentServer.OnAddItemData(rewardData, $"{ItemGetWay.Activity}_{TimeHelper.ServerNow()}");
 
             if (ret)
             {
