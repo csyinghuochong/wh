@@ -24,7 +24,7 @@ namespace ET
             foreach (LDItem item in this.GetAll().Values)
             {
                 int skillId = item.ItemTypeParam1;
-                if (item.ItemType != ItemTypeEnum.SubType_PetSkillBook_97
+                if (item.ItemType != ItemTypeEnum.SubType_PetSkillBook_39
                     || skillId <= 0
                     || !added.Add(skillId)
                     || !skillCategory.Contain(skillId))

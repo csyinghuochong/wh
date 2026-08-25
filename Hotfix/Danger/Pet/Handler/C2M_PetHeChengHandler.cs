@@ -22,7 +22,7 @@ namespace ET
 
             if (petinfo_1.PetStatus == 1 || petinfo_2.PetStatus == 1)
             {
-                response.Error = ErrorCode.ERR_Pet_Hint_2;
+                response.Error = ErrorCode.ERR_Pet_HeCheng_FightError;
                 reply();
                 return;
             }

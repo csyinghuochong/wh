@@ -38,18 +38,9 @@ namespace ET
 			LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
 			int itemType = ldItem.ItemType;
 
-			if (bagInfo.ItemID == 1)
-			{
-				itemType = ItemTypeEnum.SubType_PetXiLian_F;
-            }
-            if (bagInfo.ItemID == 2)
-            {
-                itemType = ItemTypeEnum.SubType_PetXiLian_G;
-            }
-
             switch (itemType)
 			{
-				case ItemTypeEnum.SubType_PetSkillBook_97:
+				case ItemTypeEnum.SubType_PetSkillBook_39:
 					// Pet表备注：消耗技能书学习技能：已有技能或已有技能的低级不能学。有空槽则占空槽。没有空槽则随机顶掉一个已有技能（目前完全随机）
 					int bookError = PetHelper.LearnSkillByBook(petInfo, ldItem.ItemTypeParam1);
 					if (bookError != ErrorCode.ERR_Success)
@@ -60,7 +51,7 @@ namespace ET
 					}
 					ifCost = true;
                     break;
-				case ItemTypeEnum.SubType_PetXiLian_96:
+				case ItemTypeEnum.SubType_PetXiSun_31:
 					costNum = request.CostItemNum > 0 ? request.CostItemNum : 1;
 					itemGetWay = ItemGetWay.ItemXiLian;
 					if (bagInfo.ItemNum < costNum)
@@ -79,8 +70,8 @@ namespace ET
 					}
 					ifCost = true;
 					break;
-				case ItemTypeEnum.SubType_PetXiLian_F:
-				case ItemTypeEnum.SubType_PetXiLian_G:
+				case ItemTypeEnum.SubType_PetZiZhi_G_38:
+				case ItemTypeEnum.SubType_PetZiZhi_F_380:
 					// Pet表备注：稀有道具记 F，超稀有道具记 G；达最终值后不能再吃对应道具。吃过记 EatItems
 					costNum = request.CostItemNum > 0 ? request.CostItemNum : 1;
 					itemGetWay = ItemGetWay.ItemXiLian;

@@ -71,7 +71,7 @@ namespace ET
             newpet.Aptitude_4 = new PetAptitudeInfo();
             newpet.Aptitude_5 = new PetAptitudeInfo();
             newpet.Aptitude_6 = new PetAptitudeInfo();
-            newpet.Star = RandomHelper.RandomNumber(1, ldPetConfig.Star_Limit + 1);
+            newpet.Star = 1;// RandomHelper.RandomNumber(1, ldPetConfig.Star_Limit + 1);
             PetHelper.InitPetAptitude(newpet);
             //newpet.PetName = PetSkinConfigCategory.Instance.Get(newpet.SkinId).Name;
             newpet.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
@@ -316,20 +316,6 @@ namespace ET
                 if (self.PetInfos[i].Id == petId)
                 {
                     int petconfigid = self.PetInfos[i].ConfigId;
-                    if (Log.IsDebugEnabled)
-                    {
-                        Log.Debug($"RemovePet: unitid:{unit.Id}  petconfigid:{petconfigid}");
-                    }
-
-                    if (petconfigid >= 2000001)
-                    {
-                        Log.Error($"RemovePet: unitid:{unit.Id}  petconfigid:{petconfigid}");
-                        Console.WriteLine($"RemovePet: unitid:{unit.Id}  petconfigid:{petconfigid}");
-                    }
-
-                    //移除宠物之核
-                    //bagComponentServer.OnCostItemData(self.RolePetInfos[i].PetEquipList, ItemLocType.PetLocEquip);
-
                     self.PetInfos.RemoveAt(i);
                     break;
                 }
