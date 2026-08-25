@@ -114,7 +114,35 @@ namespace ET
                     unit.GetComponent<TaskComponentServer>().UpdateWeeklyTask(true);
                     return;
                 }
-				switch (commands[0])
+                if (message.GMMsg == "petfight#")
+                {
+                    //出战要清掉之前的
+					PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
+                    UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+                    PetInfo fightpet = petComponentServer.GetFightPet();
+                    if (fightpet != null)
+                    {
+                        fightpet.PetStatus = 0;
+                        unitComponent.Remove(fightpet.Id);
+                    }
+
+                    PetInfo petinfo = petComponentServer.PetInfos.FirstOrDefault();
+					if (petinfo == null)
+					{
+						return;
+					}
+                    Unit existingPetUnit = unitComponent.Get(petinfo.Id);
+                    if (existingPetUnit == null)
+                    {
+                        petComponentServer.UpdatePetAttribute(petinfo, false);
+                        UnitFactory.CreatePet(unit, petinfo);
+                    }
+
+                    petinfo.PetStatus = 1;
+                    petComponentServer.FightPetId = petinfo.Id;
+                    return;
+                }
+                switch (commands[0])
                 {
 					case "1":             //新增道具1#1#1001#1 1#2#1012#1 【添加道具/道具类型/道具id/道具数量】
 						int itemType  =int.Parse(commands[1]);

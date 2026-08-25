@@ -225,7 +225,6 @@ namespace ET
             numericComponent.Set(NumericType.TeamId, master != null ? master.GetTeamId() : 0, false);
             numericComponent.Set(NumericType.AttackMode, master!=null ?  master.GetAttackMode() : 0, false);
             numericComponent.Set(NumericType.UnionId_0, master != null ? master.GetUnionId() : 0, false);
-            numericComponent.Set(NumericType.PetSkin, createMonsterInfo.SkinId, false);
             numericComponent.Set(NumericType.MasterId, createMonsterInfo.MasterID, false);
             numericComponent.Set(NumericType.HP_Current_8, numericComponent.GetAsLong(NumericType.HP_Max_10), false);
 
