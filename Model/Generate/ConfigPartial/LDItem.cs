@@ -12,9 +12,27 @@ namespace ET
 
         public override void AfterEndInit()
         {
-            foreach (LDItem Item in this.GetAll().Values)
+            LDSkill_BattleCategory skillCategory = LDSkill_BattleCategory.Instance;
+            if (skillCategory == null)
             {
-          
+                return;
+            }
+
+            List<int> ids = skillCategory.PetBookSkillIds;
+            ids.Clear();
+            HashSet<int> added = new HashSet<int>();
+            foreach (LDItem item in this.GetAll().Values)
+            {
+                int skillId = item.ItemTypeParam1;
+                if (item.ItemType != ItemTypeEnum.SubType_PetSkillBook_97
+                    || skillId <= 0
+                    || !added.Add(skillId)
+                    || !skillCategory.Contain(skillId))
+                {
+                    continue;
+                }
+
+                ids.Add(skillId);
             }
         }
 

@@ -717,7 +717,6 @@ namespace ET
 		 public const ushort M2C_RoleContextUpdate = 10714;
 		 public const ushort C2M_PetList = 10715;
 		 public const ushort M2C_PetList = 10716;
-		 public const ushort M2C_PetListMessage = 10717;
 		 public const ushort M2C_PetDataUpdate = 10718;
 		 public const ushort M2C_PetDataBroadcast = 10719;
 		 public const ushort M2C_PetListUpdate = 10720;

@@ -13193,19 +13193,6 @@ namespace ET
 
 	}
 
-//宠物更新
-	[Message(OuterOpcode.M2C_PetListMessage)]
-	[ProtoContract]
-	public partial class M2C_PetListMessage: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public List<PetInfo> PetList = new List<PetInfo>();
-
-		[ProtoMember(2)]
-		public long RemovePetId { get; set; }
-
-	}
-
 	[Message(OuterOpcode.M2C_PetDataUpdate)]
 	[ProtoContract]
 	public partial class M2C_PetDataUpdate: Object, IActorMessage

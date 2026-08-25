@@ -190,12 +190,31 @@ namespace ET
 
     public partial class LDSkill_BattleCategory
     {
+        /// <summary>可打书技能池（ItemType=97 的 ItemTypeParam1）。</summary>
+        public List<int> PetBookSkillIds = new List<int>();
+
         public override void AfterEndInit()
         {
+            this.PetBookSkillIds.Clear();
             foreach (LDSkill_Battle skillconfig in this.GetAll().Values)
             {
                 skillconfig.ParseRuntimeData();
             }
+        }
+
+        /// <summary>Pet表备注：排除后从剩余普通技能池随机不重复抽取；特技表未配齐，池暂为全部技能书技能。</summary>
+        public List<int> CollectPetBookSkillPool(HashSet<int> banned)
+        {
+            List<int> pool = new List<int>();
+            for (int i = 0; i < this.PetBookSkillIds.Count; i++)
+            {
+                if (!banned.Contains(this.PetBookSkillIds[i]))
+                {
+                    pool.Add(this.PetBookSkillIds[i]);
+                }
+            }
+
+            return pool;
         }
     }
 }
