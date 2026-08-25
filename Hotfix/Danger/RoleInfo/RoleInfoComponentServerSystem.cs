@@ -52,7 +52,8 @@ namespace ET
             roleInfo.AccInfoID =accountId;
             roleInfo.Name = createRoleInfo.PlayerName;
             roleInfo.ServerMailIdCur = -1;
-            roleInfo.TiLi = 120;     //初始化疲劳
+            roleInfo.TiLi = 120;     //初始化体力
+            roleInfo.HuoLi = 120;     //初始化活力
             //roleInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
             roleInfo.CreateTime = TimeHelper.ServerNow();
             roleInfo.Occ = createRoleInfo.PlayerOcc;
