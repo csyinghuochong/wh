@@ -42,7 +42,7 @@ namespace ET
 			{
 				case ItemTypeEnum.SubType_PetSkillBook_39:
 					// Pet表备注：消耗技能书学习技能：已有技能或已有技能的低级不能学。有空槽则占空槽。没有空槽则随机顶掉一个已有技能（目前完全随机）
-					int bookError = PetHelper.LearnSkillByBook(petInfo, ldItem.ItemTypeParam1);
+					int bookError = PetHelper.LearnSkillByBook(petInfo, ldItem.GetTypeParam1());
 					if (bookError != ErrorCode.ERR_Success)
 					{
 						response.Error = bookError;

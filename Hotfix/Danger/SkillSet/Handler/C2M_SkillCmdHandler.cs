@@ -56,7 +56,7 @@ namespace ET
                     }
 
                     if (ldItem.ItemType == ItemTypeEnum.SubType_Potion_60
-                        && ldItem.ItemTypeParam1 != request.SkillID)
+                        && ldItem.GetTypeParam1() != request.SkillID)
                     {
                         Log.Error($"C2M_SkillCmd potion skill mismatch item={request.ItemId} skill={request.SkillID} param1={ldItem.ItemTypeParam1}");
                         response.Error = ErrorCode.ERR_ModifyData;

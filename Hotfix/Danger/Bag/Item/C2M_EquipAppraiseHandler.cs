@@ -40,7 +40,7 @@ namespace ET
          
 
             LDItem appraise = LDItemCategory.Instance.Get(baginfoCost.ItemID);
-            int appraiseLevel = appraise.ItemTypeParam1;
+            int appraiseLevel = appraise.GetTypeParam1();
 
 
             LDEquip lDEquip = LDEquipCategory.Instance.Get(baginfoOpera.ItemID);

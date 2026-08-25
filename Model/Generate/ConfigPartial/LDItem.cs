@@ -3,6 +3,29 @@ using System.Collections.Generic;
 
 namespace ET
 {
+    public partial class LDItem
+    {
+        public int GetTypeParam1()
+        {
+            return ParseTypeParam(this.ItemTypeParam1);
+        }
+
+        public int GetTypeParam2()
+        {
+            return ParseTypeParam(this.ItemTypeParam2);
+        }
+
+        static int ParseTypeParam(string raw)
+        {
+            if (string.IsNullOrEmpty(raw))
+            {
+                return 0;
+            }
+
+            return int.TryParse(raw, out int value) ? value : 0;
+        }
+    }
+
     public partial class LDItemCategory
     {
 
@@ -23,11 +46,13 @@ namespace ET
             HashSet<int> added = new HashSet<int>();
             foreach (LDItem item in this.GetAll().Values)
             {
-                int skillId = item.ItemTypeParam1;
-                if (item.ItemType != ItemTypeEnum.SubType_PetSkillBook_39
-                    || skillId <= 0
-                    || !added.Add(skillId)
-                    || !skillCategory.Contain(skillId))
+                if (item.ItemType != ItemTypeEnum.SubType_PetSkillBook_39)
+                {
+                    continue;
+                }
+
+                int skillId = item.GetTypeParam1();
+                if (skillId <= 0 || !added.Add(skillId) || !skillCategory.Contain(skillId))
                 {
                     continue;
                 }
