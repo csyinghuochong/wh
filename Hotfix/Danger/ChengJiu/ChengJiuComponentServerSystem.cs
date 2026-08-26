@@ -10,7 +10,6 @@ namespace ET
         public override void Awake(ChengJiuComponentServer self)
         {
             self.RandomDrop = 0;
-            self.ChengJiuEventBatchDepth = 0;
             self.ChengJiuEventCoalesceAdd?.Clear();
             self.ChengJiuEventCoalesceSet?.Clear();
             Unit unit = self.GetParent<Unit>();
@@ -123,17 +122,7 @@ namespace ET
         {
            
         }
-
-        public static void OnPetPingFen(this ChengJiuComponentServer self, int maxPing, int arrayPing)
-        {
-
-        }
-
-        public static void OnPetMaxZiZhi(this ChengJiuComponentServer self, int hp, int act, int def, int adf, int mage)
-        {
-           
-        }
-
+      
         public static void OnPetHeCheng(this ChengJiuComponentServer self, PetInfo rolePetInfo)
         {
             
@@ -160,119 +149,8 @@ namespace ET
             self.JingLingList.Add(jid);
         }
 
-        public static void OnGmGaoJi(this ChengJiuComponentServer self)
-        {
-            self.ChengJiuProgessList.Clear();
-            self.ChengJiuCompleteList.Clear();
-#if false // TODO: migrate to LD config
-            Dictionary<int, ChengJiuConfig> allchengjiu = ChengJiuConfigCategory.Instance.GetAll();
-            foreach (var item in allchengjiu)
-            {
-                self.ChengJiuCompleteList.Add( item.Key );
-            }
-#endif
-
-            self.JingLingList.Clear();  
-            Dictionary<int, LDElf> alljingling = LDElfCategory.Instance.GetAll();
-            foreach (var item in alljingling)
-            {
-                self.OnActiveJingLing(item.Key); 
-            }
-        }
 
 
-
-        public static int GetCurrentMagickaSlotIdByPosition(this ChengJiuComponentServer self, int position)
-        {
-            foreach (var magicinfo in self.MagickaSlotIdList)
-            {
-               
-            }
-            return 0;
-        }
-
-        public static void OnAddMagickaExpByPosition(this ChengJiuComponentServer self, int position, int addexp)
-        {
-            /*MagickaSlotInfo magickaSlotInfo = null;
-
-            foreach (var magicinfo in self.MagickaSlotIdList)
-            {
-                MagickaSlotConfig magickaSlotConfig = MagickaSlotConfigCategory.Instance.Get(magicinfo.SlotId);
-                if (magickaSlotConfig.Position == position + 1)
-                {
-                    magickaSlotInfo = magicinfo;
-                    break;
-                }
-            }
-            if (magickaSlotInfo == null || magickaSlotInfo.SlotId == 0)
-            {
-                return;
-            }
-            magickaSlotInfo.Exp += addexp;
-            int nexid = self.GetNextMagickaSlotIdByPosition(position);
-            int curid = self.GetCurrentMagickaSlotIdByPosition(position);
-            if (nexid <= curid)
-            {
-                return;
-            }
-
-            int needexp = MagickaSlotConfigCategory.Instance.Get(curid).NeedExp;
-            if (magickaSlotInfo.Exp >= needexp)
-            {
-                magickaSlotInfo.Exp -= needexp;
-                magickaSlotInfo.SlotId = nexid;
-            }
-            */
-        }
-
-        public static int GetCurrentMagickaTotalLevel(this ChengJiuComponentServer self)
-        {
-            int totallevel = 0;
-            foreach( var magicinfo in self.MagickaSlotIdList )
-            {
-              
-            }
-            return totallevel;
-        }
-
-        public static void OnOpenMagicka(this ChengJiuComponentServer self,int position, int magicid)
-        {
-            for (int i = self.MagickaSlotIdList.Count - 1; i >= 0; i--)
-            {
-              
-            }
-
-            self.MagickaSlotIdList.Add(new MagickaSlotInfo() { SlotId = magicid, Exp = 0 });
-        }
-
-        public static List<AttributeItem> GetMagickaProLists(this ChengJiuComponentServer self)
-        {
-            List<AttributeItem> proList = new List<AttributeItem>();
-            for (int i = self.MagickaSlotIdList.Count - 1; i >= 0; i--)
-            {
-            }
-
-            return proList;
-        }
-
-        public static int GetMaxMagickaSlotIdPosition(this ChengJiuComponentServer self)
-        {
-            int position = 0;
-           
-            return position;
-        }
-
-        public static int GetFirstMagickaSlotIdByPosition(this ChengJiuComponentServer self, int position)
-        {
-
-            return 0;
-        }
-
-        public static int GetNextMagickaSlotIdByPosition(this ChengJiuComponentServer self, int position)
-        {
-            int id = self.GetCurrentMagickaSlotIdByPosition(position);
-           
-            return id;
-        }
+ 
     }
 }

@@ -3688,282 +3688,6 @@ namespace ET
 
 	}
 
-//成就进度
-	[Message(OuterOpcode.ChengJiuInfo)]
-	[ProtoContract]
-	public partial class ChengJiuInfo: Object
-	{
-		[ProtoMember(1)]
-		public int ChengJiuID { get; set; }
-
-		[ProtoMember(2)]
-		public int ChengJiuProgess { get; set; }
-
-		[ProtoMember(3)]
-		public long ChengJiuProgessLong { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ChengJiuListResponse))]
-	[Message(OuterOpcode.C2M_ChengJiuListRequest)]
-	[ProtoContract]
-	public partial class C2M_ChengJiuListRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ChengJiuListResponse)]
-	[ProtoContract]
-	public partial class M2C_ChengJiuListResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<ChengJiuInfo> ChengJiuProgessList = new List<ChengJiuInfo>();
-
-		[ProtoMember(2)]
-		public List<int> ChengJiuCompleteList = new List<int>();
-
-		[ProtoMember(3)]
-		public int TotalChengJiuPoint { get; set; }
-
-		[ProtoMember(4)]
-		public List<int> AlreadReceivedId = new List<int>();
-
-		[ProtoMember(5)]
-		public List<int> JingLingList = new List<int>();
-
-		[ProtoMember(6)]
-		public int JingLingId { get; set; }
-
-		[ProtoMember(7)]
-		public int RandomDrop { get; set; }
-
-		[ProtoMember(8)]
-		public List<MagickaSlotInfo> MagickaSlotIds = new List<MagickaSlotInfo>();
-
-	}
-
-	[Message(OuterOpcode.MagickaSlotInfo)]
-	[ProtoContract]
-	public partial class MagickaSlotInfo: Object
-	{
-		[ProtoMember(1)]
-		public int SlotId { get; set; }
-
-		[ProtoMember(2)]
-		public long Exp { get; set; }
-
-		[ProtoMember(3)]
-		public long BagInfoID { get; set; }
-
-	}
-
-//激活魔能
-	[ResponseType(nameof(M2C_MagickaSlotOpenResponse))]
-	[Message(OuterOpcode.C2M_MagickaSlotOpenRequest)]
-	[ProtoContract]
-	public partial class C2M_MagickaSlotOpenRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int Position { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_MagickaSlotOpenResponse)]
-	[ProtoContract]
-	public partial class M2C_MagickaSlotOpenResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<MagickaSlotInfo> MagickaSlotIds = new List<MagickaSlotInfo>();
-
-	}
-
-//魔能注入
-	[ResponseType(nameof(M2C_MagickaZhuruResponse))]
-	[Message(OuterOpcode.C2M_MagickaZhuruRequest)]
-	[ProtoContract]
-	public partial class C2M_MagickaZhuruRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int Position { get; set; }
-
-		[ProtoMember(2)]
-		public List<long> OperateBagID = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.M2C_MagickaZhuruResponse)]
-	[ProtoContract]
-	public partial class M2C_MagickaZhuruResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int AddExp { get; set; }
-
-		[ProtoMember(2)]
-		public List<MagickaSlotInfo> MagickaSlotIds = new List<MagickaSlotInfo>();
-
-	}
-
-//魔能合成
-	[ResponseType(nameof(M2C_MagickaHeChengResponse))]
-	[Message(OuterOpcode.C2M_MagickaHeChengRequest)]
-	[ProtoContract]
-	public partial class C2M_MagickaHeChengRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public List<long> OperateBagID = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.M2C_MagickaHeChengResponse)]
-	[ProtoContract]
-	public partial class M2C_MagickaHeChengResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<BagInfo> RewardList = new List<BagInfo>();
-
-	}
-
-//魔能刷新
-	[ResponseType(nameof(M2C_MagickaFefreshResponse))]
-	[Message(OuterOpcode.C2M_MagickaFefreshRequest)]
-	[ProtoContract]
-	public partial class C2M_MagickaFefreshRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int Position { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_MagickaFefreshResponse)]
-	[ProtoContract]
-	public partial class M2C_MagickaFefreshResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//激活成就
-	[Message(OuterOpcode.M2C_ChengJiuActiveMessage)]
-	[ProtoContract]
-	public partial class M2C_ChengJiuActiveMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int ChengJiuId { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ChengJiuRewardResponse))]
-	[Message(OuterOpcode.C2M_ChengJiuRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_ChengJiuRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RewardId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ChengJiuRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_ChengJiuRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_ChouKaResponse))]
 	[Message(OuterOpcode.C2M_ChouKaRequest)]
 	[ProtoContract]
@@ -13190,6 +12914,25 @@ namespace ET
 
 	}
 
+//宠物列表增量：获得/取出/分解等
+	[Message(OuterOpcode.M2C_PetListUpdate)]
+	[ProtoContract]
+	public partial class M2C_PetListUpdate: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public List<PetInfo> PetInfoAdd = new List<PetInfo>();
+
+		[ProtoMember(2)]
+		public List<PetInfo> PetInfoUpdate = new List<PetInfo>();
+
+		[ProtoMember(3)]
+		public List<PetInfo> PetInfoDelete = new List<PetInfo>();
+
+		[ProtoMember(4)]
+		public int GetWay { get; set; }
+
+	}
+
 	[Message(OuterOpcode.M2C_PetDataUpdate)]
 	[ProtoContract]
 	public partial class M2C_PetDataUpdate: Object, IActorMessage
@@ -13238,25 +12981,6 @@ namespace ET
 
 		[ProtoMember(4)]
 		public long UnitId { get; set; }
-
-	}
-
-//宠物更新
-	[Message(OuterOpcode.M2C_PetListUpdate)]
-	[ProtoContract]
-	public partial class M2C_PetListUpdate: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public List<PetInfo> PetInfoAdd = new List<PetInfo>();
-
-		[ProtoMember(2)]
-		public List<PetInfo> PetInfoUpdate = new List<PetInfo>();
-
-		[ProtoMember(3)]
-		public List<PetInfo> PetInfoDelete = new List<PetInfo>();
-
-		[ProtoMember(4)]
-		public int GetWay { get; set; }
 
 	}
 
@@ -13515,7 +13239,9 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_PetHeCheng))]
-//宠物合成 [1合2 2合3]
+// 宠物合成 [1合2 2合3]
+// Pet表备注：同种同星的宠物合成，增加星级；合成时只要有异化则结果必异化；合体前对副宠进行重置，把药退出来
+// 合成后上限 = 主宠 + 读表提升值；合成后当前值 = 主宠值 + rand(副宠当前值/上限值, 1) * 提升上限
 	[Message(OuterOpcode.C2M_PetHeCheng)]
 	[ProtoContract]
 	public partial class C2M_PetHeCheng: Object, IActorLocationRequest
@@ -13553,7 +13279,11 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_PetXiLian))]
-//宠物洗练
+// 宠物洗练/打书共用。按消耗道具 ItemType 分支：
+// 97 技能书 → LearnSkillByBook。Pet表备注：消耗技能书学习技能：已有技能或已有技能的低级不能学。有空槽则占空槽。没有空槽则随机顶掉一个已有技能（目前完全随机）
+// 96 洗练石 → XiLianExtraSkills。Pet表备注：洗练时，会同时随机 槽位 和 A
+// 94 / 95 → EatAptitudeItem。稀有记 F、超稀有记 G，吃过记 EatItems；达最终值后不能再吃
+// BagInfoID=消耗道具；CostItemNum=数量（洗练石可用 4）；二次确认后续用 ParamInfo
 	[Message(OuterOpcode.C2M_PetXiLian)]
 	[ProtoContract]
 	public partial class C2M_PetXiLian: Object, IActorLocationRequest
@@ -13596,7 +13326,7 @@ namespace ET
 // 单条资质运行时。A/B/C 读 LDPet.Aptitude_n（A初始最低值 B最低值上限 C最高值），不入库
 // 初始化：D=A，E=A~C 随机
 // 洗练：有概率增加 D（达到 B 不再增加），E=D~C 随机
-// 稀有道具记 F，超稀有道具记 G；达最终值后不能再吃对应道具
+// 稀有道具记 F（ItemType=94），超稀有道具记 G（ItemType=95）；达最终值后不能再吃对应道具。吃过记 PetInfo.EatItems
 // Z 存储 E+F；面板显示 min(E+F, C+G)
 // 异化效果二：A|B|C 用 LDPet.Aptitude_Add_Change 叠在配置上算，不另存
 // 合成后上限=主宠+LDPet.Aptitude_Add_Star；合成后当前值=主宠值+rand(副宠当前/上限,1)*提升上限
@@ -13670,11 +13400,11 @@ namespace ET
 		[ProtoMember(18)]
 		public PetAptitudeInfo Aptitude_6 { get; set; }
 
-// 神兽默认变异；普通宠出生不异化，洗练按 Global_Pet_Change 判定。先天技读 LDPet.Skill，异化技读 LDPet.Skill_Change（IfChange==1 才激活），都不入库
+// Pet表备注：固定技能1：3个先天技能（直接拥有）读 LDPet.Skill，不入库。固定技能2：1个异化技能（显示，异化后才激活）读 LDPet.Skill_Change。神兽默认异化；普通宠出生不异化。异化后洗练保持不退回
 		[ProtoMember(19)]
 		public int IfChange { get; set; }
 
-// 打书/洗练技能才入库。洗练结果需二次确认后再覆盖，协议逻辑后续完善
+// Pet表备注：打书/洗练技能才入库。洗练时，会同时随机 槽位 和 A。洗练结果需二次确认后再覆盖（后续完善）
 		[ProtoMember(22)]
 		public int Skill_Extra_Position_Num { get; set; }
 
@@ -14116,4 +13846,93 @@ namespace ET
 	}
 
 //PetMing    end####################################################
+//ChengJiu   start####################################################
+	[ResponseType(nameof(M2C_ChengJiuListResponse))]
+	[Message(OuterOpcode.C2M_ChengJiuListRequest)]
+	[ProtoContract]
+	public partial class C2M_ChengJiuListRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ChengJiuListResponse)]
+	[ProtoContract]
+	public partial class M2C_ChengJiuListResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(5)]
+		public List<int> JingLingList = new List<int>();
+
+		[ProtoMember(6)]
+		public int JingLingId { get; set; }
+
+		[ProtoMember(7)]
+		public int RandomDrop { get; set; }
+
+	}
+
+//激活成就
+	[Message(OuterOpcode.M2C_ChengJiuActiveMessage)]
+	[ProtoContract]
+	public partial class M2C_ChengJiuActiveMessage: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int ChengJiuId { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ChengJiuRewardResponse))]
+	[Message(OuterOpcode.C2M_ChengJiuRewardRequest)]
+	[ProtoContract]
+	public partial class C2M_ChengJiuRewardRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int RewardId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ChengJiuRewardResponse)]
+	[ProtoContract]
+	public partial class M2C_ChengJiuRewardResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//ChengJiu end####################################################
 }
