@@ -563,7 +563,7 @@ namespace ET
                     break;
                 case UserDataType.DailyActive:
                 case UserDataType.WeeklyActive:
-                    unit.GetComponent<RoleDailyDataComponentServer>()?.AddActivePoint(Type, int.Parse(value), notice);
+                    ActivePointHelper.Add(unit, Type, int.Parse(value), notice);
                     return;
               
                 case UserDataType.JiaYuanLv:

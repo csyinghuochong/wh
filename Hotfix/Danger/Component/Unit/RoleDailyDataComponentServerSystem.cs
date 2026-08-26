@@ -101,9 +101,6 @@ namespace ET
                 return;
             }
 
-            Unit unit = self.GetParent<Unit>();
-            unit?.GetComponent<TaskComponentServer>()?.RefreshActivityTasksByActivePoint(userDataType, notice);
-
             if (notice)
             {
                 self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);

@@ -37,6 +37,23 @@ namespace ET
     }
 
     /// <summary>
+    /// 日/周活跃：DailyData 只改点数，任务进度由本 Helper 扇出，避免 DailyData↔Task 互调。
+    /// </summary>
+    public static class ActivePointHelper
+    {
+        public static void Add(Unit unit, int userDataType, int add, bool notice = true)
+        {
+            if (unit == null || unit.IsDisposed || add <= 0)
+            {
+                return;
+            }
+
+            unit.GetComponent<RoleDailyDataComponentServer>()?.AddActivePoint(userDataType, add, notice);
+            unit.GetComponent<TaskComponentServer>()?.RefreshActivityTasksByActivePoint(userDataType, notice);
+        }
+    }
+
+    /// <summary>
     /// 宠物获得后的任务/成就推进，避免 Pet 与 Task/ChengJiu 在多处各写一遍。
     /// </summary>
     public static class PetProgressionHelper

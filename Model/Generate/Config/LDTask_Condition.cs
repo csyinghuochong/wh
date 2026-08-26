@@ -91,9 +91,9 @@ namespace ET
 		/// <summary>进度显示 0-否 1-是</summary>
 		[ProtoMember(4)]
 		public int Progress_Show { get; set; }
-		/// <summary>消耗 待扩充</summary>
+		/// <summary>检测 道具</summary>
 		[ProtoMember(5)]
-		public string Submit { get; set; }
+		public int Inspect { get; set; }
 		/// <summary>数字处理 0-否 1-是</summary>
 		[ProtoMember(6)]
 		public int Digit_Deal { get; set; }

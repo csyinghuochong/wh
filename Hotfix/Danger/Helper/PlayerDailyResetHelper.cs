@@ -28,7 +28,7 @@ namespace ET
 
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
    
-            taskComponentServer.OnDailyReset(resetType == 2);
+            taskComponentServer.OnDailyReset(resetType);
 
             unit.GetComponent<ChengJiuComponentServer>().OnDailyReset();
             unit.GetComponent<JiaYuanComponentServer>().OnDailyReset(resetType == 2);

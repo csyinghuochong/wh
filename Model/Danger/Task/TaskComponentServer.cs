@@ -11,7 +11,6 @@ namespace ET
     {
         public int OnLineTime = 0;
 
-
         public List<TaskPro> RoleTaskList = new List<TaskPro>();
         public List<int> RoleComoleteTaskList = new List<int>();
 

@@ -79,7 +79,7 @@ namespace ET
     [ProtoContract]
 	public partial class LDTask_Group: ProtoObject, IConfig
 	{
-		/// <summary>Id</summary>
+		/// <summary>Id 1-999</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
 		/// <summary>隶属</summary>
@@ -87,14 +87,14 @@ namespace ET
 		public int Belong { get; set; }
 		/// <summary>页码</summary>
 		[ProtoMember(3)]
-		public int Group { get; set; }
+		public int Page { get; set; }
 		/// <summary>名称</summary>
 		[ProtoMember(4)]
 		public int Name { get; set; }
 		/// <summary>资源</summary>
 		[ProtoMember(5)]
 		public string Resources { get; set; }
-		/// <summary>类型 1-日 2-周 3-月</summary>
+		/// <summary>类型 0-无 1-日 2-周 3-月</summary>
 		[ProtoMember(6)]
 		public int Type { get; set; }
 
