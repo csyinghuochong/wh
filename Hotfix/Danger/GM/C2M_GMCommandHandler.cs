@@ -166,12 +166,9 @@ namespace ET
                         }
 						break;
                     //70001001  0    71001010    1       70001003     2      70001011    3
-                    case "2":       //72009041死亡技能      //2#152#29#-67#72000198#1  90000005-爆炸怪 72002013-脱战技能没移除2#-78#0#0.7#72004002#1  70001001  72009001
-                        float posX = float.Parse(commands[1]);
-						float posY = float.Parse(commands[2]); 
-						float posZ = float.Parse(commands[3]);
-						int monsterId = int.Parse(commands[4]);
-						int number = int.Parse(commands[5]);
+                    case "2":       //72009041死亡技能      //2#72000198#1  90000005-爆炸怪 72002013-脱战技能没移除2#-78#0#0.7#72004002#1  70001001  72009001
+						int monsterId = int.Parse(commands[1]);
+						int number = int.Parse(commands[2]);
 						if (number > 100)
 						{
 							Log.Error("number > 100");
@@ -182,11 +179,10 @@ namespace ET
                         for (int c = 0; c < number; c++)
 						{
 							await TimerComponent.Instance.WaitAsync(1);
-							Vector3 vector3 = new Vector3(posX + RandomHelper.RandomNumberFloat(-1, 1), posY, posZ + RandomHelper.RandomNumberFloat(-1, 1));
+							Vector3 vector3 = RandomHelper.GetRandomPointInCircle(unit.Position, 2f);
 							Unit monster = UnitFactory.CreateMonster(unit.DomainScene(), monsterId, vector3, new CreateMonsterInfo()
 							{ 
 								Camp = CampEnum.CampMonster1,
-								MasterID = monsterId == 80002010 ? unit.Id : 0
                             });
 
 							//M2C_CreateSpilings createSpilings = new M2C_CreateSpilings();

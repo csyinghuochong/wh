@@ -74,7 +74,6 @@ namespace ET
                 roleInfoComponentServer.UpdateRoleData(UserDataType.Diamond, "120", true, ItemGetWay.Share);
             }
 
-            chengJiuComponentServer.OnShare();
             reply();
             await ETTask.CompletedTask;
         }

@@ -18,10 +18,7 @@ namespace ET
                 return;
             }
 
-            if (getWay == ItemGetWay.PaiMaiSell)
-            {
-                unit.GetComponent<ChengJiuComponentServer>()?.OnPaiMaiGetGold((int)gold);
-            }
+  
         }
 
         /// <summary>

@@ -30,31 +30,4 @@ namespace ET
         }
     }
 
-    /// <summary>
-    /// 成就事件批处理作用域：Dispose 时自动 End，避免漏调 EndBatch。
-    /// 用法：using (chengJiu.ChengJiuEventBatch()) { Trigger... }
-    /// </summary>
-    public struct ChengJiuEventBatchScope : IDisposable
-    {
-        private ChengJiuComponentServer self;
-        private bool disposed;
-
-        public ChengJiuEventBatchScope(ChengJiuComponentServer self)
-        {
-            this.self = self;
-            this.disposed = false;
-            self.BeginChengJiuEventBatch();
-        }
-
-        public void Dispose()
-        {
-            if (disposed || self == null)
-            {
-                return;
-            }
-            disposed = true;
-            self.EndChengJiuEventBatch();
-            self = null;
-        }
-    }
 }

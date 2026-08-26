@@ -507,16 +507,6 @@ namespace ET
 
             List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems(roleInfoComponent.RoleInfo.Occ, taskid);
 
-            if (rewardItems.Count == 0)
-            {
-                rewardItems.Add( new RewardItem()
-                {
-                    ItemType = ItemBigType.Type_Item, 
-                    ItemID = 1,
-                    ItemNum = 1
-                });
-            }
-            
             int needcell = ItemNewHelper.GetNeedCell(rewardItems);
             int bagLeftCell = bagComponentServer.GetBagLeftCell();
             if (bagLeftCell < needcell)
@@ -549,13 +539,7 @@ namespace ET
             }
 
             TaskRewardHelper.GrantTaskCommitRewards(unit, rewardItems);
-
-            if (TaskHelper.GetTaskGroup(commitLdTask.Group) != null)
-            {
-                self.SendToUpdateTask();
-            }
-     
-            
+            self.SendToUpdateTask();
             return ErrorCode.ERR_Success;
         }
 
@@ -851,7 +835,8 @@ namespace ET
 
 
         /// <summary>
-        /// 每次登录检测。日/周开表和 101/102 只在 OnDailyReset（隔天登录 / 在线 5 点 / 首次初始化）。
+        /// 每次登录检测。101/102 只在 OnDailyReset。
+        /// InitAllTaskGroups 只补缺：每个 Task_Group（含成就 Type0）都要有任务，已有的不清、不重建。
         /// </summary>
         public static void OnLogin(this TaskComponentServer self)
         {
@@ -866,6 +851,8 @@ namespace ET
                     continue;
                 }
             }
+
+            self.InitAllTaskGroups();
 
             using (self.TaskEventBatch())
             {
@@ -1183,6 +1170,29 @@ namespace ET
             }
         }
 
+        /// <summary>
+        /// 所有 Task_Group 默认全开（日常/周常/成就 Type0）。已有的不重复建。
+        /// 某个 Group 在 Task 表没有行会打 Error，方便对表。
+        /// </summary>
+        public static void InitAllTaskGroups(this TaskComponentServer self)
+        {
+            if (LDTask_GroupCategory.Instance == null)
+            {
+                return;
+            }
+
+            foreach (LDTask_Group group in LDTask_GroupCategory.Instance.GetAll().Values)
+            {
+                if (TaskHelper.GenerateTaskListByType(group.Id).Count == 0)
+                {
+                    Log.Error($"InitAllTaskGroups: Task_Group={group.Id} 在 Task 表没有任务");
+                    continue;
+                }
+
+                self.InitTasksByType(group.Id);
+            }
+        }
+
         public static void ClearTasksByResetType(this TaskComponentServer self, int resetType)
         {
             HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList);
@@ -1336,7 +1346,7 @@ namespace ET
             bool notice = resetType == 2;
             self.OnLineTime = 0;
             self.UpdateDayTask(notice);
-            self.InitTasksByResetType(TaskGroupResetType.Weekly);
+            self.InitAllTaskGroups();
             self.TriggerDailyLoginTaskEvents();
 
             if (notice)
