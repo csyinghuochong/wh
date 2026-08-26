@@ -40,7 +40,10 @@ namespace ET
 
             switch (itemType)
 			{
-				case ItemTypeEnum.SubType_PetSkillBook_39:
+				case ItemTypeEnum.SubType_Pet_Exp_30:
+					petInfo.PetExp += int.Parse(ldItem.ItemTypeParam1);
+					break;
+                case ItemTypeEnum.SubType_PetSkillBook_39:
 					// Pet表备注：消耗技能书学习技能：已有技能或已有技能的低级不能学。有空槽则占空槽。没有空槽则随机顶掉一个已有技能（目前完全随机）
 					int bookError = PetHelper.LearnSkillByBook(petInfo, ldItem.GetTypeParam1());
 					if (bookError != ErrorCode.ERR_Success)
@@ -51,8 +54,8 @@ namespace ET
 					}
 					ifCost = true;
                     break;
-				case ItemTypeEnum.SubType_PetXiSun_31:
-					costNum = request.CostItemNum > 0 ? request.CostItemNum : 1;
+				case ItemTypeEnum.SubType_PetXiSun_31:  //宠物洗练丹
+                    costNum = request.CostItemNum > 0 ? request.CostItemNum : 1;
 					itemGetWay = ItemGetWay.ItemXiLian;
 					if (bagInfo.ItemNum < costNum)
 					{
@@ -60,7 +63,7 @@ namespace ET
 						reply();
 						return;
 					}
-					// Pet表备注：洗练时，会同时随机 槽位 和 A
+					// Pet表备注：洗练时，会同时随机 槽位 和 技能A
 					int xiLianError = PetHelper.XiLianExtraSkills(petInfo);
 					if (xiLianError != ErrorCode.ERR_Success)
 					{
@@ -72,7 +75,7 @@ namespace ET
 					break;
 				case ItemTypeEnum.SubType_PetZiZhi_G_38:
 				case ItemTypeEnum.SubType_PetZiZhi_F_380:
-					// Pet表备注：稀有道具记 F，超稀有道具记 G；达最终值后不能再吃对应道具。吃过记 EatItems
+					// Item：Param1 资质 1~6；Param2 min|max；Param3 0全部 1随机加一个。F/G 达上限不能再吃，吃过记 EatItems
 					costNum = request.CostItemNum > 0 ? request.CostItemNum : 1;
 					itemGetWay = ItemGetWay.ItemXiLian;
 					if (bagInfo.ItemNum < costNum)

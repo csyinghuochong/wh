@@ -88,12 +88,12 @@ namespace ET
             long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
             Unit master = aiComponent.UnitComponent.Get(masterid);
 
-            long nowspeed = 60000;
-            long speedadd = 40000;
+            long nowspeed = 350;
+            long speedadd = 0;
             if (master != null && !master.IsDisposed)
             {
-                nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error);
-                unit.GetComponent<NumericComponent>().Set(NumericType.Numeric_Error, nowspeed);
+                nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Speed_Current_15);
+                unit.GetComponent<NumericComponent>().Set(NumericType.Speed_Fixed_16, nowspeed);
             }
 
             while (true)
@@ -103,7 +103,7 @@ namespace ET
 
                 if (distacne > 10f)
                 {
-                    speedadd = 40000;
+                    speedadd = 50;
                 }
                 if (distacne < 2f)
                 {

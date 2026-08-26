@@ -27,7 +27,6 @@ namespace ET
     public class DBCenterAccountInfo : Entity, IAwake
     {
         
-
         //禁封角色列表
         public List<long> BanUserList = new List<long>();
         
@@ -37,7 +36,10 @@ namespace ET
         //用户名
         public string Account { get; set; }
 
+
+
         public string EnPhone{ get; set; }
+
 
         //密码
         public string Password { get; set; }
