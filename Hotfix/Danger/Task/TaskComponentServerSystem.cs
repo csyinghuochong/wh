@@ -11,7 +11,23 @@ namespace ET
         public override void Awake(TaskComponentServer self)
         {
             self.TaskEventBatchDepth = 0;
-            self.TaskEventCoalesce?.Clear();
+            if (self.TaskEventCoalesce == null)
+            {
+                self.TaskEventCoalesce = new Dictionary<(int, int), int>();
+            }
+            else
+            {
+                self.TaskEventCoalesce.Clear();
+            }
+
+            if (self.PendingTaskUpdateGroups == null)
+            {
+                self.PendingTaskUpdateGroups = new HashSet<int>();
+            }
+            else
+            {
+                self.PendingTaskUpdateGroups.Clear();
+            }
         }
     }
 
@@ -36,6 +52,15 @@ namespace ET
             else
             {
                 self.TaskEventCoalesce.Clear();
+            }
+
+            if (self.PendingTaskUpdateGroups == null)
+            {
+                self.PendingTaskUpdateGroups = new HashSet<int>();
+            }
+            else
+            {
+                self.PendingTaskUpdateGroups.Clear();
             }
         }
     }
@@ -282,8 +307,7 @@ namespace ET
             }
 
             self.CreateTask(taskid);
-          
-            self.SendToUpdateTask();
+            self.SendToUpdateTask(LDTaskCategory.Instance.Get(taskid).Group);
         }
 
         public static List<TaskPro> GetTrackTaskList(this TaskComponentServer self)
@@ -430,7 +454,7 @@ namespace ET
             }
 
             TaskRewardHelper.GrantTaskCommitRewards(unit, rewardItems);
-            self.SendToUpdateTask();
+            self.SendToUpdateTask(commitLdTask.Group);
             return ErrorCode.ERR_Success;
         }
 
@@ -905,7 +929,7 @@ namespace ET
                 return;
             }
 
-            bool updateTask = false;
+            self.PendingTaskUpdateGroups.Clear();
             for (int i = 0; i < self.RoleTaskList.Count; i++)
             {
                 TaskPro taskPro = self.RoleTaskList[i];
@@ -925,20 +949,20 @@ namespace ET
                     continue;
                 }
 
-                updateTask = true;
                 ApplyConditionProgress(taskPro, ldTask, delta);
+                self.PendingTaskUpdateGroups.Add(ldTask.Group);
             }
 
             self.TaskEventCoalesce.Clear();
-            if (updateTask)
+            if (self.PendingTaskUpdateGroups.Count > 0)
             {
-                self.SendToUpdateTask();
+                self.SendToUpdateTask(self.PendingTaskUpdateGroups);
             }
         }
 
         private static void ApplyTaskEvent(this TaskComponentServer self, int conditionType, int param1, int param2)
         {
-            bool updateTask = false;
+            self.PendingTaskUpdateGroups.Clear();
 
             for (int i = 0; i < self.RoleTaskList.Count; i++)
             {
@@ -960,16 +984,16 @@ namespace ET
                 {
                     continue;
                 }
-                updateTask = true;
                 ApplyConditionProgress(taskPro, ldTask, param1);
+                self.PendingTaskUpdateGroups.Add(ldTask.Group);
             }
 
-            if (!updateTask)
+            if (self.PendingTaskUpdateGroups.Count == 0)
             {
                 return;
             }
 
-            self.SendToUpdateTask();
+            self.SendToUpdateTask(self.PendingTaskUpdateGroups);
         }
         
 
@@ -1042,7 +1066,7 @@ namespace ET
 
             if (created)
             {
-                self.SendToUpdateTask();
+                self.SendToUpdateTask(taskType);
             }
         }
 
@@ -1164,7 +1188,17 @@ namespace ET
 
             if (notice)
             {
-                self.SendToUpdateTask();
+                List<int> weeklyGroups = TaskHelper.GetGroupIdsByResetType(TaskGroupResetType.Weekly);
+                self.PendingTaskUpdateGroups.Clear();
+                for (int i = 0; i < weeklyGroups.Count; i++)
+                {
+                    self.PendingTaskUpdateGroups.Add(weeklyGroups[i]);
+                }
+
+                if (self.PendingTaskUpdateGroups.Count > 0)
+                {
+                    self.SendToUpdateTask(self.PendingTaskUpdateGroups);
+                }
             }
         }
 
@@ -1214,11 +1248,52 @@ namespace ET
             return TaskHelper.GetClientShowTaskList(self.RoleTaskList, self.RoleComoleteTaskList);
         }
 
+        /// <summary>
+        /// GroupIds 为空：整表覆盖（日清、GM 全完成）。
+        /// 有 GroupIds：只带这些组当前展示条，客户端按组替换。
+        /// </summary>
         public static void SendToUpdateTask(this TaskComponentServer self)
-        {  
+        {
+            self.SendToUpdateTaskCore(null);
+        }
+
+        public static void SendToUpdateTask(this TaskComponentServer self, int groupId)
+        {
+            if (groupId <= 0)
+            {
+                self.SendToUpdateTaskCore(null);
+                return;
+            }
+
+            HashSet<int> groups = new HashSet<int>();
+            groups.Add(groupId);
+            self.SendToUpdateTaskCore(groups);
+        }
+
+        public static void SendToUpdateTask(this TaskComponentServer self, HashSet<int> groupIds)
+        {
+            self.SendToUpdateTaskCore(groupIds);
+        }
+
+        private static void SendToUpdateTaskCore(this TaskComponentServer self, HashSet<int> groupIds)
+        {
             Unit unit = self.GetParent<Unit>();
             M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
-            m2C_TaskUpdate.RoleTaskList = self.GetClientShowTaskList();
+            m2C_TaskUpdate.GroupIds.Clear();
+            if (groupIds != null && groupIds.Count > 0)
+            {
+                foreach (int groupId in groupIds)
+                {
+                    m2C_TaskUpdate.GroupIds.Add(groupId);
+                }
+
+                m2C_TaskUpdate.RoleTaskList = TaskHelper.GetClientShowTaskList(self.RoleTaskList, self.RoleComoleteTaskList, groupIds);
+            }
+            else
+            {
+                m2C_TaskUpdate.RoleTaskList = self.GetClientShowTaskList();
+            }
+
             MessageHelper.SendToClient(unit, m2C_TaskUpdate);
         }
 

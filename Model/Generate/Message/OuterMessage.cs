@@ -3070,6 +3070,9 @@ namespace ET
 		[ProtoMember(2)]
 		public List<TaskPro> DayTaskList = new List<TaskPro>();
 
+		[ProtoMember(3)]
+		public List<int> GroupIds = new List<int>();
+
 	}
 
 //任务列表
@@ -3460,6 +3463,9 @@ namespace ET
 
 		[ProtoMember(9)]
 		public string Form { get; set; }
+
+		[ProtoMember(10)]
+		public List<string> ParamList = new List<string>();
 
 	}
 

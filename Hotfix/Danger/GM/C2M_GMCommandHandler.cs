@@ -31,8 +31,6 @@ namespace ET
         }
 
 
-
-
 		protected override async ETTask Run(Unit unit, C2M_GMCommandRequest message)
 		{
 			try
@@ -77,7 +75,9 @@ namespace ET
                     mailInfo.MailId = IdGenerater.Instance.GenerateId();
                     mailInfo.Form = "官方xxx";
                     mailInfo.ValidTime = TimeHelper.ServerNow() + RandomHelper.RandomNumber(2000, 80000);
-					mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1000100, ItemNum = 1 });
+					mailInfo.ParamList.Add("AAAA");
+                    mailInfo.ParamList.Add("BBBB");
+                    mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1000100, ItemNum = 1 });
                     mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1000100, ItemNum = 1 });
                     await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo);
                 }

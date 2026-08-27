@@ -24,18 +24,9 @@ namespace ET
         /// <summary>批处理合并表：key=(conditionType, param2)，value=累加的 param1</summary>
         [BsonIgnore]
         public Dictionary<(int, int), int> TaskEventCoalesce = new Dictionary<(int, int), int>();
-        
-        /*public const int WeeklyTaskNumber = 3172;
-        public const int WeeklyTaskId = 3173;
-           public const int DailyTaskNumber = 3063;                                 //赏金任务完成数量   
-        public const int RingTaskNumber = 3161;
-        public const int RingTaskId = 3162;
-         public const int SeasonTask = 3152;
-           public const int UnionTaskId = 3110;      
-                   public const int DailyTaskID = 3084;                                         //赏金任务ID                                  //家族任务
-        public const int UnionTaskNumber = 3111;
-                public const int SystemTask = 3182;                    
-                                     //系统任务*/
 
+        /// <summary>本次进度变更涉及到的 Group，Flush 时按组推送</summary>
+        [BsonIgnore]
+        public HashSet<int> PendingTaskUpdateGroups = new HashSet<int>();
     }
 }
