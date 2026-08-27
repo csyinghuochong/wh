@@ -63,7 +63,14 @@ namespace ET
                     task = unit.GetComponent<TaskComponentServer>();
                     chengJiu = unit.GetComponent<ChengJiuComponentServer>();
                     chengJiu?.OnCombatToValue(roleInfo.Combat);
-                    task?.OnCombatToValue(roleInfo.Combat);
+                    task?.OnCombatToValue(roleInfo.Combat, (int)delta);
+                    break;
+
+                default:
+                    if (RoleCurrencyHelper.IsExtraCurrency(type))
+                    {
+                        ExtraCurrencyHelper.OnChanged(unit, type, delta);
+                    }
                     break;
             }
         }

@@ -634,6 +634,10 @@ namespace ET
 		[ProtoMember(68)]
 		public List<KeyValuePairInt> BuyStoreItemsForever = new List<KeyValuePairInt>();
 
+		// 不进背包的扩展货币 Key=LDItem.Id（成就点31-35、声望51-60等）
+		[ProtoMember(69)]
+		public List<KeyValuePairInt> ExtraCurrencies = new List<KeyValuePairInt>();
+
 	}
 
 	[Message(OuterOpcode.KeyValuePair)]

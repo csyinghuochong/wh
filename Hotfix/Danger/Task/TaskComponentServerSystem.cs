@@ -43,23 +43,6 @@ namespace ET
     public static class TaskComponentServerSystem
     {
 
-        public static bool ShowPaiMai(this TaskComponentServer self, int lv, int simulator)
-        {
-            if (simulator == 0)
-            {
-                return true;
-            }
-            //int mainTaskNumber = 0;
-            //for (int i = 0; i < self.RoleComoleteTaskList.Count; i++)
-            //{
-            //    TaskConfig taskConfig = TaskConfigCategory.Instance.Get(self.RoleComoleteTaskList[i]);
-            //    if (taskConfig.TaskType == TaskTypeEnum.Main)
-            //    {
-            //        mainTaskNumber ++;  
-            //    }
-            //}
-            return lv >= 5 && self.RoleComoleteTaskList.Count > lv;
-        }
 
         public static int GetMainTaskNumber(this TaskComponentServer self)
         {
@@ -244,61 +227,13 @@ namespace ET
 
         public static TaskPro CreateTask(this TaskComponentServer self, int taskid)
         {
-            Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            LDTask ldTask = LDTaskCategory.Instance.Get(taskid);
             TaskPro taskPro = new TaskPro();
             taskPro.taskID = taskid;
-
-            switch (ldTask.Condition_Type)
-            {
-                case (int)(int)TastConditionType.PlayerLv_1:
-                    taskPro.taskTargetNum_1 = roleInfo.Lv;
-                    break;
-                default:
-                    taskPro.taskTargetNum_1 = 0;
-                    break;
-            }
-
-            bool completed = false;
-            
-           // self.IsCompleted(taskPro, ldTask.TargetType, ldTask.Target, ldTask.TargetValue);
-            taskPro.taskStatus = completed ? (int)TaskStatuEnum.Completed : (int)TaskStatuEnum.Accepted;
-
-            if (!TaskHelper.ShouldRecordTaskProgress(self.RoleTaskList, self.RoleComoleteTaskList, taskPro)
-                && ldTask.Condition_Type == TastConditionType.PlayerLv_1)
-            {
-                taskPro.taskTargetNum_1 = 0;
-            }
-
-            // 日/周活跃档位：按当前活跃点覆盖进度（各档独立子组，都会记）
-            if (TaskHelper.IsActivityTask(ldTask)
-                && TaskHelper.ShouldRecordTaskProgress(self.RoleTaskList, self.RoleComoleteTaskList, taskPro))
-            {
-                self.ApplyActivePointToActivityTask(taskPro, ldTask);
-            }
-
-            if (self.RoleComoleteTaskList.Contains(taskid))
-            {
-                taskPro.taskStatus = (int)TaskStatuEnum.Commited;
-            }
-            
+            taskPro.taskTargetNum_1 = 0;
+            taskPro.taskStatus = self.RoleComoleteTaskList.Contains(taskid)
+                    ? (int)TaskStatuEnum.Commited
+                    : (int)TaskStatuEnum.Accepted;
             self.RoleTaskList.Add(taskPro);
-            /*if (ldTask.TaskType == TaskTypeEnum.Treasure)
-            {
-                self.GetRandomFubenId(taskPro);
-            }
-            if (ldTask.TaskType != TaskTypeEnum.Season
-                && ldTask.TaskType != TaskTypeEnum.Welfare
-                && ldTask.TaskType != TaskTypeEnum.System
-                && self.GetTrackTaskList().Count < 3)
-            {
-                taskPro.TrackStatus = 1;
-            }*/
             return taskPro;
         }
 
@@ -376,76 +311,35 @@ namespace ET
             return null;
         }
 
-        /// <summary>按当前日/周活跃刷新条件 131/132 任务进度与完成态</summary>
-        public static void RefreshActivityTasksByActivePoint(this TaskComponentServer self, int userDataType, bool notice = true)
+        public static int GetPointProgressCurrent(this TaskComponentServer self, LDTask ldTask)
         {
-            int conditionType = userDataType == UserDataType.WeeklyActive
-                    ? TastConditionType.WeekActivityNumber_132
-                    : TastConditionType.DayActivityNumber_131;
+            if (ldTask == null)
+            {
+                return 0;
+            }
+
             Unit unit = self.GetParent<Unit>();
-            RoleDailyDataComponentServer dailyData = unit?.GetComponent<RoleDailyDataComponentServer>();
-            if (dailyData == null)
+            if (TaskHelper.IsActivityTask(ldTask))
             {
-                return;
-            }
-
-            int curPoint = userDataType == UserDataType.WeeklyActive
-                    ? dailyData.GetWeeklyActivePoint()
-                    : dailyData.GetDailyActivePoint();
-
-            bool changed = false;
-            for (int i = 0; i < self.RoleTaskList.Count; i++)
-            {
-                TaskPro taskPro = self.RoleTaskList[i];
-                if (!LDTaskCategory.Instance.Contain(taskPro.taskID))
-                {
-                    continue;
-                }
-
-                LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
-                if (ldTask.Condition_Type != conditionType)
-                {
-                    continue;
-                }
-
-                if (self.ApplyActivePointToActivityTask(taskPro, ldTask, curPoint))
-                {
-                    changed = true;
-                }
-            }
-
-            if (changed && notice)
-            {
-                self.SendToUpdateTask();
-            }
-        }
-
-        /// <summary>用活跃点数覆盖写入档位任务进度；已领取不回退状态</summary>
-        public static bool ApplyActivePointToActivityTask(this TaskComponentServer self, TaskPro taskPro, LDTask ldTask, int curPoint = -1)
-        {
-            if (curPoint < 0)
-            {
-                RoleDailyDataComponentServer dailyData = self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>();
+                RoleDailyDataComponentServer dailyData = unit?.GetComponent<RoleDailyDataComponentServer>();
                 if (dailyData == null)
                 {
-                    return false;
+                    return 0;
                 }
 
-                curPoint = ldTask.Condition_Type == TastConditionType.WeekActivityNumber_132
+                return ldTask.Condition_Type == TastConditionType.WeekActivityNumber_132
                         ? dailyData.GetWeeklyActivePoint()
                         : dailyData.GetDailyActivePoint();
             }
 
-            int oldNum = taskPro.taskTargetNum_1;
-            int oldStatus = taskPro.taskStatus;
-            taskPro.taskTargetNum_1 = curPoint;
-            if (taskPro.taskStatus != (int)TaskStatuEnum.Commited)
+            if (TaskHelper.IsExtraCurrencyTask(ldTask))
             {
-                bool completed = curPoint >= ldTask.Param1;
-                taskPro.taskStatus = completed ? (int)TaskStatuEnum.Completed : (int)TaskStatuEnum.Accepted;
+                RoleInfo roleInfo = unit?.GetComponent<RoleInfoComponentServer>()?.RoleInfo;
+                int itemId = TaskHelper.GetConditionInspect(ldTask.Condition_Type);
+                return (int)RoleCurrencyHelper.Get(roleInfo, itemId);
             }
 
-            return oldNum != taskPro.taskTargetNum_1 || oldStatus != taskPro.taskStatus;
+            return 0;
         }
         
         public static int CheckGiveItemTask (this TaskComponentServer self, int TargetType, int[] Target, int[] TargetValue, long BagInfoID, TaskPro taskPro)
@@ -489,12 +383,9 @@ namespace ET
             }
 
             LDTask commitLdTask = LDTaskCategory.Instance.Get(taskid);
-            if (TaskHelper.IsActivityTask(commitLdTask))
+            if (TaskHelper.IsPointProgressTask(commitLdTask))
             {
-                RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
-                int curPoint = commitLdTask.Condition_Type == TastConditionType.WeekActivityNumber_132
-                        ? dailyData.GetWeeklyActivePoint()
-                        : dailyData.GetDailyActivePoint();
+                int curPoint = self.GetPointProgressCurrent(commitLdTask);
                 if (curPoint < commitLdTask.Param1)
                 {
                     return ErrorCode.ERR_Error;
@@ -687,8 +578,10 @@ namespace ET
         {
         }
 
-        public static void OnCombatToValue(this TaskComponentServer self, int combat)
+        public static void OnCombatToValue(this TaskComponentServer self, int combat, int delta = 0)
         {
+            self.NotifyCondition(TastConditionType.CombatRechage_121, combat, delta);
+            self.NotifyCondition(TastConditionType.CombatIncrease_122, combat, delta);
         }
 
         /// <summary>
@@ -830,47 +723,25 @@ namespace ET
         //等级更新
         public static void OnUpdateLevel(this TaskComponentServer self, int rolelv)
         {
-            self.TriggerTaskEvent(TastConditionType.PlayerLv_1, 0, rolelv);
+            self.NotifyCondition(TastConditionType.PlayerLv_1, rolelv);
         }
 
 
         /// <summary>
-        /// 每次登录检测。101/102 只在 OnDailyReset。
-        /// InitAllTaskGroups 只补缺：每个 Task_Group（含成就 Type0）都要有任务，已有的不清、不重建。
+        /// 每次登录：清无效任务，缺的 Group 补建。进度只在数值变化时刷，登录不回填。
+        /// 101/102 只在 OnDailyReset。
         /// </summary>
         public static void OnLogin(this TaskComponentServer self)
         {
-            Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-
-            for (int i = self.RoleTaskList.Count - 1; i >=0; i--)
+            for (int i = self.RoleTaskList.Count - 1; i >= 0; i--)
             {
                 if (!LDTaskCategory.Instance.Contain(self.RoleTaskList[i].taskID))
                 {
                     self.RoleTaskList.RemoveAt(i);
-                    continue;
                 }
             }
 
             self.InitAllTaskGroups();
-
-            using (self.TaskEventBatch())
-            {
-                for (int i = 0; i < self.RoleTaskList.Count; i++)
-                {
-                    TaskPro taskPro = self.RoleTaskList[i];
-                    LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
-                   
-                    if (ldTask.Condition_Type == TastConditionType.PlayerLv_1)
-                    {
-                        int roleLv = roleInfoComponentServer.RoleInfo.Lv;
-                        self.TriggerTaskEvent(TastConditionType.PlayerLv_1, ldTask.Param1, roleLv);
-                    }
-                }
-            }
-
-            self.RefreshActivityTasksByActivePoint(UserDataType.DailyActive, true);
-            self.RefreshActivityTasksByActivePoint(UserDataType.WeeklyActive, true);
         }
 
 
@@ -966,6 +837,20 @@ namespace ET
             {
                 self.FlushTaskEventBatch();
             }
+        }
+
+        /// <summary>
+        /// 数值变化时推进任务。覆盖写 current，累计加 delta，由 Task_Condition.Type 决定。
+        /// </summary>
+        public static void NotifyCondition(this TaskComponentServer self, int conditionType, int current, int delta = 0)
+        {
+            bool overrideMode = GetConditionMode(conditionType) == TaskConditionMode.Override;
+            if (!overrideMode && delta <= 0)
+            {
+                return;
+            }
+
+            self.TriggerTaskEvent(conditionType, overrideMode ? current : delta, 0);
         }
 
         public static void TriggerTaskEvent(this TaskComponentServer self, int conditionType, int param1, int param2)

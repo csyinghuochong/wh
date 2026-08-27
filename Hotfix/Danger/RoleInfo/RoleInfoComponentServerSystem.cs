@@ -551,16 +551,6 @@ namespace ET
             switch (Type)
             {
                 
-                case UserDataType.JiaYuanExp:
-                    unit.GetComponent<JiaYuanComponentServer>()?.AddJiaYuanExp(int.Parse(value));
-                    return;
-                case UserDataType.JiaYuanFund:
-                    unit.GetComponent<JiaYuanComponentServer>()?.AddJiaYuanFund(long.Parse(value));
-                    return;
-                case UserDataType.UnionContri:
-                    self.RoleInfo.UnionZiJin += int.Parse(value);
-                    saveValue = self.RoleInfo.UnionZiJin.ToString();
-                    break;
                 case UserDataType.DailyActive:
                 case UserDataType.WeeklyActive:
                     ActivePointHelper.Add(unit, Type, int.Parse(value), notice);
@@ -654,13 +644,23 @@ namespace ET
                     break;
          
                 case UserDataType.Combat:
+                    int oldCombat = self.RoleInfo.Combat;
                     self.RoleInfo.Combat = int.Parse(value);
                     saveValue = self.RoleInfo.Combat.ToString();
-                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo);
+                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo, self.RoleInfo.Combat - oldCombat);
                     break;
-              
+
                 default:
-                    saveValue = value;
+                    if (RoleCurrencyHelper.IsExtraCurrency(Type))
+                    {
+                        long extraDelta = long.Parse(value);
+                        saveValue = RoleCurrencyHelper.Add(self.RoleInfo, Type, extraDelta).ToString();
+                        PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo, extraDelta);
+                    }
+                    else
+                    {
+                        saveValue = value;
+                    }
                     break;
             }
 

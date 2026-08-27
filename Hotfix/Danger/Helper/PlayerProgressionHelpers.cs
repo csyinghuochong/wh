@@ -37,6 +37,30 @@ namespace ET
     }
 
     /// <summary>
+    /// ExtraCurrencies（成就点 31-35、声望 51-60）变化后推进任务。
+    /// 条件靠 Task_Condition.Inspect=ItemID；覆盖/累计看 Type。
+    /// </summary>
+    public static class ExtraCurrencyHelper
+    {
+        public static void OnChanged(Unit unit, int itemId, long delta = 0)
+        {
+            if (unit == null || unit.IsDisposed)
+            {
+                return;
+            }
+
+            int conditionType = TaskHelper.GetConditionByCurrencyItemId(itemId);
+            if (conditionType <= 0)
+            {
+                return;
+            }
+
+            int cur = (int)RoleCurrencyHelper.Get(unit.GetComponent<RoleInfoComponentServer>()?.RoleInfo, itemId);
+            unit.GetComponent<TaskComponentServer>()?.NotifyCondition(conditionType, cur, (int)delta);
+        }
+    }
+
+    /// <summary>
     /// 日/周活跃：DailyData 只改点数，任务进度由本 Helper 扇出，避免 DailyData↔Task 互调。
     /// </summary>
     public static class ActivePointHelper
@@ -48,8 +72,20 @@ namespace ET
                 return;
             }
 
-            unit.GetComponent<RoleDailyDataComponentServer>()?.AddActivePoint(userDataType, add, notice);
-            unit.GetComponent<TaskComponentServer>()?.RefreshActivityTasksByActivePoint(userDataType, notice);
+            RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+            dailyData?.AddActivePoint(userDataType, add, notice);
+            if (dailyData == null)
+            {
+                return;
+            }
+
+            int conditionType = userDataType == UserDataType.WeeklyActive
+                    ? TastConditionType.WeekActivityNumber_132
+                    : TastConditionType.DayActivityNumber_131;
+            int cur = userDataType == UserDataType.WeeklyActive
+                    ? dailyData.GetWeeklyActivePoint()
+                    : dailyData.GetDailyActivePoint();
+            unit.GetComponent<TaskComponentServer>()?.NotifyCondition(conditionType, cur, add);
         }
     }
 

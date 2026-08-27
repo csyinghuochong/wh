@@ -239,8 +239,6 @@ namespace ET
                 case UserDataType.BindGold:
                 case UserDataType.Diamond:
                 case UserDataType.BindDiamond:
-                case UserDataType.JiaYuanFund:
-                case UserDataType.UnionContri:
                 case UserDataType.DailyActive:
                 case UserDataType.WeeklyActive:
                 {
@@ -272,16 +270,16 @@ namespace ET
                         case UserDataType.WeeklyActive:
                             number = unit.GetComponent<RoleDailyDataComponentServer>()?.GetWeeklyActivePoint() ?? 0;
                             break;
-                        case UserDataType.JiaYuanFund:
-                            number = unit.GetComponent<JiaYuanComponentServer>()?.JiaYuanFund ?? 0;
-                            break;
-                        case UserDataType.UnionContri:
-                            number = roleInfo.UnionZiJin;
-                            break;
                     }
                     break;
                 }
                 default:
+                    if (RoleCurrencyHelper.IsExtraCurrency(userDataType))
+                    {
+                        Unit unit = self.GetParent<Unit>();
+                        RoleInfo extraRole = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+                        number = RoleCurrencyHelper.Get(extraRole, userDataType);
+                    }
                     break;
             }
             return number;
