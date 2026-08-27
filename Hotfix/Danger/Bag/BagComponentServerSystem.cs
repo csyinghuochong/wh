@@ -223,65 +223,30 @@ namespace ET
         {
             int userDataType = ItemNewHelper.GetItemToUserDataType(itemType, itemId);
             long number = 0;
-            switch (userDataType)
+            if (userDataType == UserDataType.None)
             {
-                case UserDataType.None:
-                    List<BagInfo> bagInfos = self.GetItemByLoc(itemLocType);
-                    for (int i = 0; i < bagInfos.Count; i++)
-                    {
-                        if (bagInfos[i].ItemID == itemId)
-                        {
-                            number += bagInfos[i].ItemNum;
-                        }
-                    }
-                    break;
-                case UserDataType.Gold:
-                case UserDataType.BindGold:
-                case UserDataType.Diamond:
-                case UserDataType.BindDiamond:
-                case UserDataType.DailyActive:
-                case UserDataType.WeeklyActive:
+                List<BagInfo> bagInfos = self.GetItemByLoc(itemLocType);
+                for (int i = 0; i < bagInfos.Count; i++)
                 {
-                    Unit unit = self.GetParent<Unit>();
-                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-                    switch (userDataType)
+                    if (bagInfos[i].ItemID == itemId)
                     {
-                        case UserDataType.Gold:
-                            number = roleInfo.Gold;
-                            break;
-                        case UserDataType.BindGold:
-                            number = roleInfo.BindGold;
-                            break;
-                        case UserDataType.Diamond:
-                            number = roleInfo.Diamond;
-                            break;
-                        case UserDataType.BindDiamond:
-                            number = roleInfo.BindDiamond;
-                            break;
-                        case UserDataType.TiLi:
-                            number = roleInfo.TiLi;
-                            break;
-                        case UserDataType.HuoLi:
-                            number = roleInfo.HuoLi;
-                            break;
-                        case UserDataType.DailyActive:
-                            number = unit.GetComponent<RoleDailyDataComponentServer>()?.GetDailyActivePoint() ?? 0;
-                            break;
-                        case UserDataType.WeeklyActive:
-                            number = unit.GetComponent<RoleDailyDataComponentServer>()?.GetWeeklyActivePoint() ?? 0;
-                            break;
+                        number += bagInfos[i].ItemNum;
                     }
-                    break;
                 }
-                default:
-                    if (RoleCurrencyHelper.IsExtraCurrency(userDataType))
-                    {
-                        Unit unit = self.GetParent<Unit>();
-                        RoleInfo extraRole = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-                        number = RoleCurrencyHelper.Get(extraRole, userDataType);
-                    }
-                    break;
             }
+            else if (RoleCurrencyHelper.IsDailyCurrency(userDataType))
+            {
+                RoleDailyDataComponentServer dailyData = self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>();
+                number = userDataType == UserDataType.WeeklyActive
+                        ? dailyData?.GetWeeklyActivePoint() ?? 0
+                        : dailyData?.GetDailyActivePoint() ?? 0;
+            }
+            else if (RoleCurrencyHelper.IsItemCurrency(userDataType))
+            {
+                RoleInfo roleInfo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo;
+                number = RoleCurrencyHelper.Get(roleInfo, userDataType);
+            }
+
             return number;
         }
 

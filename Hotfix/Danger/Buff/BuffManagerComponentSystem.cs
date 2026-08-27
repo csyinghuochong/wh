@@ -761,9 +761,9 @@ namespace ET
             }
         }
 
-        public static List<KeyValuePair> GetMessageBuff(this BuffManagerComponent self)
+        public static List<IntStringPair> GetMessageBuff(this BuffManagerComponent self)
         {
-            List<KeyValuePair> Buffs = new List<KeyValuePair>();
+            List<IntStringPair> Buffs = new List<IntStringPair>();
             for (int i = 0; i < self.m_Buffs.Count; i++)
             {
                 BuffHandler buffHandler = self.m_Buffs[i];
@@ -772,7 +772,7 @@ namespace ET
                 {
                     continue;
                 }
-                Buffs.Add(new KeyValuePair()
+                Buffs.Add(new IntStringPair()
                 {
                     KeyId = ldSkillBuff.Id,
                     Value = $"{buffHandler.BuffData.SkillId}_{buffHandler.BuffData.Spellcaster}",
@@ -799,7 +799,7 @@ namespace ET
                 ObjectPool.Instance.Recycle(buffHandler);
                 self.m_Buffs.RemoveAt(i);
                
-                unitInfoComponentServer.Buffs.Add(new KeyValuePair() { KeyId = buffHandler.MBuff.Id, Value2 = buffHandler.BuffEndTime.ToString() });
+                unitInfoComponentServer.Buffs.Add(new IntStringPair() { KeyId = buffHandler.MBuff.Id, Value2 = buffHandler.BuffEndTime.ToString() });
             }
         }
     }

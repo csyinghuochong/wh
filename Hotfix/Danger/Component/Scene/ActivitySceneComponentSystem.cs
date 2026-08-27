@@ -121,7 +121,7 @@ namespace ET
 
                 for (int hexin = 0; hexin < hexinlist.Count; hexin++)
                 {
-                    self.DBDayActivityInfo.PetMingHexinList.Add(new KeyValuePairInt()
+                    self.DBDayActivityInfo.PetMingHexinList.Add(new IntLongPair()
                     {
                         KeyId = mineBattleConfig[i].Id,
                         Value = hexinlist[hexin]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 
@@ -30,7 +30,7 @@ namespace ET
             }
             else
             {
-                KeyValuePairInt keyValuePairInt = BuChangHelper.GetBuChangRecharge(playerInfo);
+                IntLongPair keyValuePairInt = BuChangHelper.GetBuChangRecharge(playerInfo);
                 response.BuChangRecharge = keyValuePairInt.KeyId;
                 response.BuChangDiamond = (int)keyValuePairInt.Value;
                 playerInfo.BuChangZone.Add(UnitIdStruct.GetUnitZone(request.UserId));

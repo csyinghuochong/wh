@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 
 namespace ET
@@ -15,7 +15,7 @@ namespace ET
         public List<RankShouLieInfo> rankShowLie = new List<RankShouLieInfo>(); //狩猎
         public List<RankShouLieInfo> rankUnionRace = new List<RankShouLieInfo>();//家族战
 
-        public List<KeyValuePairLong> rankingTrial = new List<KeyValuePairLong>();   //试炼副本伤害排行
-        public List<KeyValuePairLong> rankSeasonTower = new List<KeyValuePairLong>();   //试炼副本伤害排行  id/层数/时间
+        public List<LongLongPair> rankingTrial = new List<LongLongPair>();   //试炼副本伤害排行
+        public List<LongLongPair> rankSeasonTower = new List<LongLongPair>();   //试炼副本伤害排行  id/层数/时间
     }
 }

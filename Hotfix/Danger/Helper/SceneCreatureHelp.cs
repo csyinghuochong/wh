@@ -210,9 +210,9 @@ namespace ET
 			*/
 		}
 
-		public static List<KeyValuePairInt> GetRandomMonster(Scene scene, int fubenid, string createMonster)
+		public static List<IntLongPair> GetRandomMonster(Scene scene, int fubenid, string createMonster)
 		{
-            List<KeyValuePairInt> randomMonsterList = new List<KeyValuePairInt>();	
+            List<IntLongPair> randomMonsterList = new List<IntLongPair>();	
 
             MapComponent mapComponent = scene.GetComponent<MapComponent>();
 			int sceneType = mapComponent.MapTypeEnum;
@@ -237,7 +237,7 @@ namespace ET
 				int sessonBossFuben = roleContext.SeasonBossFuben;
                 if (seasonBossTime > 0 && serverNow > seasonBossTime && fubenid == sessonBossFuben)
 				{
-                    KeyValuePairInt keyValuePairInt = new KeyValuePairInt();
+                    IntLongPair keyValuePairInt = new IntLongPair();
 					keyValuePairInt.KeyId = RandomHelper.RandomNumber(0, monsters.Length);
                     keyValuePairInt.Value = SeasonHelper.SeasonBossId;
                     randomMonsterList.Add(keyValuePairInt);
@@ -275,7 +275,7 @@ namespace ET
 			string[] monsters = createMonster.Split('@');
 			//1;37.65,0,3.2;70005005;1@138.43,0,0.06;70005010;1
 
-			List<KeyValuePairInt> randomMonsterList = GetRandomMonster(scene, mapComponent.SceneId, createMonster);
+			List<IntLongPair> randomMonsterList = GetRandomMonster(scene, mapComponent.SceneId, createMonster);
 
 			for (int i = 0; i < monsters.Length; i++)
 			{

@@ -9,7 +9,7 @@ namespace ET
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            if (roleInfo.Gold < request.Price)
+            if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < request.Price)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();

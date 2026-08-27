@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 
 namespace ET
@@ -106,24 +106,24 @@ namespace ET
         //金币消耗
         public string GoldCost;
         [BsonIgnore]
-        public List<KeyValuePairInt> GoldCostList = new List<KeyValuePairInt>();
+        public List<IntLongPair> GoldCostList = new List<IntLongPair>();
 
         //钻石消耗
         public string DiamondCost;
 
         [BsonIgnore]
-        public List<KeyValuePairInt> DiamondCostList = new List<KeyValuePairInt>();
+        public List<IntLongPair> DiamondCostList = new List<IntLongPair>();
 
 
         //金币获取列表
         public string GoldGet;
         [BsonIgnore]
-        public List<KeyValuePairInt> GoldGetList = new List<KeyValuePairInt>();
+        public List<IntLongPair> GoldGetList = new List<IntLongPair>();
 
         //钻石获取列表
         public string DiamondGet;
         [BsonIgnore]
-        public List<KeyValuePairInt> DiamondGetList = new List<KeyValuePairInt>();
+        public List<IntLongPair> DiamondGetList = new List<IntLongPair>();
 
 
         // 购买自己的玩家列表

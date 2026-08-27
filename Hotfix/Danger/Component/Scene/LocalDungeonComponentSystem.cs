@@ -46,7 +46,7 @@ namespace ET
             }
            
             ///刷新刷出神秘之门
-            if (roleInfoComponentServer.RoleInfo.TiLi > 0 && roleInfoComponentServer.RoleInfo.Lv > 20  && !unit.IsSceneItem() && RandomHelper.RandFloat01() < 0.001f)
+            if (RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.TiLi) > 0 && roleInfoComponentServer.RoleInfo.Lv > 20  && !unit.IsSceneItem() && RandomHelper.RandFloat01() < 0.001f)
             {
                 int shenminId = 40000003;
                 List<Unit> npclist = self.MainUnit.GetParent<UnitComponent>().GetAll();

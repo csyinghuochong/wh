@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -10,7 +10,7 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Battle, scene.DomainZone()))
             {
                 FubenCenterComponent fubenCenter = scene.GetComponent<FubenCenterComponent>();
-                KeyValuePairInt keyValuePairInt = fubenCenter.GetBattleInstanceId(request.UserID, request.SceneId);
+                IntLongPair keyValuePairInt = fubenCenter.GetBattleInstanceId(request.UserID, request.SceneId);
                 if (keyValuePairInt == null)
                 {
                     keyValuePairInt = await fubenCenter.GenerateBattleInstanceId(request.UserID, request.SceneId);

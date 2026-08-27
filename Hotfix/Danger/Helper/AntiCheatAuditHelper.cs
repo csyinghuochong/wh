@@ -103,7 +103,7 @@ namespace ET
                 return;
             }
             LogHelper.GongZuoShi($"神兽作弊: {unit.DomainZone()}   \t名称:{roleInfo.Name}  " +
-                $"\t等级:{roleInfo.Lv}" + $"\t钻石:{roleInfo.Diamond}" +
+                $"\t等级:{roleInfo.Lv}" + $"\t钻石:{RoleCurrencyHelper.Get(roleInfo, UserDataType.Diamond)}" +
                 $"\t充值:{rechargeNumber}");
         }
 

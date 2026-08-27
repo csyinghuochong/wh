@@ -47,13 +47,13 @@ namespace ET
             self.Account = account;
 
             RoleInfo roleInfo = self.RoleInfo;
-            roleInfo.Sp = 1;
+            RoleCurrencyHelper.Set(roleInfo, UserDataType.Sp, 1);
             roleInfo.UserId = userId;
             roleInfo.AccInfoID =accountId;
             roleInfo.Name = createRoleInfo.PlayerName;
             roleInfo.ServerMailIdCur = -1;
-            roleInfo.TiLi = 120;     //初始化体力
-            roleInfo.HuoLi = 120;     //初始化活力
+            RoleCurrencyHelper.Set(roleInfo, UserDataType.TiLi, 120);     //初始化体力
+            RoleCurrencyHelper.Set(roleInfo, UserDataType.HuoLi, 120);     //初始化活力
             //roleInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
             roleInfo.CreateTime = TimeHelper.ServerNow();
             roleInfo.Occ = createRoleInfo.PlayerOcc;
@@ -65,14 +65,14 @@ namespace ET
                 LDRobot ldRobot = LDRobotCategory.Instance.Get(robotId);
                 //roleInfo.Lv = ldRobot.Behaviour == 1 ?  RandomHelper.RandomNumber(10, 19) : ldRobot.Level;
                 //roleInfo.Occ = ldRobot.Behaviour == 1 ?  RandomHelper.RandomNumber(1, 3) : ldRobot.Occ;
-                roleInfo.Gold = 100000;
+                RoleCurrencyHelper.Set(roleInfo, UserDataType.Gold, 100000);
                 roleInfo.RobotId = robotId;
                 //roleInfo.OccTwo = robotConfig.OccTwo;
             }
             else
             {
                 roleInfo.Lv = 1;
-                roleInfo.Gold = 0;
+                RoleCurrencyHelper.Set(roleInfo, UserDataType.Gold, 0);
                 //roleInfo.SeasonLevel = 1;
             }
         }
@@ -195,7 +195,7 @@ namespace ET
             }
             if (roleInfo.TowerIds == null)
             {
-                roleInfo.TowerIds = new List<KeyValuePairInt>();
+                roleInfo.TowerIds = new List<IntLongPair>();
             }
             for (int i = 0; i < roleInfo.TowerIds.Count; i++)
             {
@@ -205,7 +205,7 @@ namespace ET
                     return;
                 }
             }
-            roleInfo.TowerIds.Add(new KeyValuePairInt() { KeyId = sceneType, Value = towerId });
+            roleInfo.TowerIds.Add(new IntLongPair() { KeyId = sceneType, Value = towerId });
         }
 
         public static int GetTiliRecover(this RoleInfoComponentServer self, List<int> indexids)
@@ -396,7 +396,7 @@ namespace ET
 
             RoleDailyDataComponentServer dailyData = main.GetComponent<RoleDailyDataComponentServer>();
             int tiliKillNumber = dailyData?.GetTiLiKillNumber() ?? 0;
-            if (sceneType == MapTypeEnum.LocalDungeon && !showlieopen && self.RoleInfo.TiLi > 0)
+            if (sceneType == MapTypeEnum.LocalDungeon && !showlieopen && RoleCurrencyHelper.Get(self.RoleInfo, UserDataType.TiLi) > 0)
             {
                 if (tiliKillNumber >= 4)
                 {
@@ -419,7 +419,7 @@ namespace ET
             bool drop = true;
             if (SceneConfigHelper.IsSingleFuben(sceneType))
             {
-                drop = self.RoleInfo.TiLi > 0 || beKill.IsBoss() || showlieopen;
+                drop = RoleCurrencyHelper.Get(self.RoleInfo, UserDataType.TiLi) > 0 || beKill.IsBoss() || showlieopen;
             }
             if (drop)
             {
@@ -458,7 +458,7 @@ namespace ET
             MessageHelper.Broadcast(unit, m2C_BroadcastRoleData);
         }
 
-        private static int FindKeyValuePairIndex(List<KeyValuePairInt> list, int keyId)
+        private static int FindKeyValuePairIndex(List<IntLongPair> list, int keyId)
         {
             for (int i = 0; i < list.Count; i++)
             {
@@ -568,7 +568,6 @@ namespace ET
                 case UserDataType.Exp:
                   
                     self.Role_AddExp(long.Parse(value), notice);
-                    //saveValue = self.RoleInfo.Exp.ToString();
                     longValue = self.RoleInfo.Exp;
                     saveValue = value;
                     break;
@@ -581,59 +580,12 @@ namespace ET
                     numericComponent ??= unit.GetComponent<NumericComponent>();
                     PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo);
                     Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-                    // 升级后按新上限回满（ResetProperty 保留 HP_Current，但 Max 可能变大）
                     numericComponent.Set(NumericType.HP_Current_8, numericComponent.GetAsLong(NumericType.HP_Max_10), true);
                     self.UpdateRankInfo();
                     self.BroadcastLevel(self.RoleInfo.Lv).Coroutine();
                     break;
-                case UserDataType.Sp:
-                    self.RoleInfo.Sp += int.Parse(value);
-                    saveValue = self.RoleInfo.Sp.ToString();
-                    break;
-                case UserDataType.Gold:
-                    long goldChange = long.Parse(value);
-                    self.RoleInfo.Gold += goldChange;
-                    saveValue = self.RoleInfo.Gold.ToString();
-                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo, goldChange);
-                    break;
-                case UserDataType.BindGold:
-                    self.RoleInfo.BindGold += long.Parse(value);
-                    saveValue = self.RoleInfo.BindGold.ToString();
-                    break;
-                case UserDataType.Diamond:
-                    long addDiamond = long.Parse(value);
-                    self.RoleInfo.Diamond += addDiamond;
-                    self.RoleInfo.Diamond = Math.Max(self.RoleInfo.Diamond, 0);
-                    saveValue = self.RoleInfo.Diamond.ToString();
-                    if (addDiamond < 0)
-                    {
-                        //累计消耗钻石转换为积分
-                    }
-                    break;
-                case UserDataType.BindDiamond:
-                    addDiamond = long.Parse(value);
-                    self.RoleInfo.BindDiamond += addDiamond;
-                    self.RoleInfo.BindDiamond = Math.Max(self.RoleInfo.BindDiamond, 0);
-                    saveValue = self.RoleInfo.BindDiamond.ToString();
-                    break;
                 case UserDataType.Occ:
                     break;
-                case UserDataType.HuoLi:
-                    int maxValue = 120;///unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
-                    long newValue = long.Parse(value) + self.RoleInfo.HuoLi;
-                    newValue = Math.Min(Math.Max(0, newValue), maxValue);
-                    self.RoleInfo.HuoLi = newValue;
-                    saveValue = self.RoleInfo.HuoLi.ToString();
-                    break;
-                case UserDataType.TiLi:
-                   
-                     maxValue = 120;///unit.IsYueKaStates() ? int.Parse(LDGlobalValueCategory.Instance.Get(26).Value) : int.Parse(LDGlobalValueCategory.Instance.Get(10).Value);
-                     newValue = long.Parse(value) + self.RoleInfo.TiLi;
-                    newValue = Math.Min(Math.Max(0, newValue), maxValue);
-                    self.RoleInfo.TiLi = newValue;
-                    saveValue = self.RoleInfo.TiLi.ToString();
-                    break;
-
                 case UserDataType.UnionName:
                     self.RoleInfo.UnionName = value;
                     saveValue = self.RoleInfo.UnionName;
@@ -651,11 +603,21 @@ namespace ET
                     break;
 
                 default:
-                    if (RoleCurrencyHelper.IsExtraCurrency(Type))
+                    if (RoleCurrencyHelper.IsItemCurrency(Type))
                     {
-                        long extraDelta = long.Parse(value);
-                        saveValue = RoleCurrencyHelper.Add(self.RoleInfo, Type, extraDelta).ToString();
-                        PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo, extraDelta);
+                        long delta = long.Parse(value);
+                        long next = RoleCurrencyHelper.Get(self.RoleInfo, Type) + delta;
+                        if (Type == UserDataType.TiLi || Type == UserDataType.HuoLi)
+                        {
+                            next = System.Math.Min(System.Math.Max(0, next), 120);
+                        }
+                        else if (next < 0)
+                        {
+                            next = 0;
+                        }
+
+                        saveValue = RoleCurrencyHelper.Set(self.RoleInfo, Type, next).ToString();
+                        PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo, delta);
                     }
                     else
                     {
@@ -801,7 +763,7 @@ namespace ET
         public static void OnMakeItem(this RoleInfoComponentServer self, int makeId)
         {
             //LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
-            //List<KeyValuePairInt> makeList = self.RoleInfo.MakeIdList;
+            //List<IntLongPair> makeList = self.RoleInfo.MakeIdList;
 
             //bool have = false;
             //long endTime = 0;// TimeHelper.ServerNow() + equipMakeConfig.MakeTime * 1000;
@@ -815,7 +777,7 @@ namespace ET
             //}
             //if (!have)
             //{
-            //    self.RoleInfo.MakeIdList.Add(new KeyValuePairInt() { KeyId = makeId, Value = endTime });
+            //    self.RoleInfo.MakeIdList.Add(new IntLongPair() { KeyId = makeId, Value = endTime });
             //}
         }
 
@@ -871,7 +833,7 @@ namespace ET
 
         public static int OnGetFirstWinSelf(this RoleInfoComponentServer self, int firstwinid, int difficulty)
         {
-            KeyValuePair keyValuePair1 = null;
+            IntStringPair keyValuePair1 = null;
             for (int i = 0; i < self.RoleInfo.FirstWinSelf.Count; i++)
             {
                 if (self.RoleInfo.FirstWinSelf[i].KeyId != firstwinid)
@@ -916,7 +878,7 @@ namespace ET
             bool have = false;
             for (int i = 0; i < self.RoleInfo.FirstWinSelf.Count; i++)
             {
-                KeyValuePair keyValuePair = self.RoleInfo.FirstWinSelf[i];
+                IntStringPair keyValuePair = self.RoleInfo.FirstWinSelf[i];
                 if (keyValuePair.KeyId != firstwinid)
                 {
                     continue;
@@ -934,7 +896,7 @@ namespace ET
             }
             if (!have)
             {
-                self.RoleInfo.FirstWinSelf.Add( new KeyValuePair() {  KeyId = firstwinid, Value = difficulty.ToString(), Value2 = "" } );
+                self.RoleInfo.FirstWinSelf.Add( new IntStringPair() {  KeyId = firstwinid, Value = difficulty.ToString(), Value2 = "" } );
             }
 
             M2C_FirstWinSelfUpdateMessage m2C_FirstWinSelfUpdateMessage = new M2C_FirstWinSelfUpdateMessage() { FirstWinInfos = self.RoleInfo.FirstWinSelf  };

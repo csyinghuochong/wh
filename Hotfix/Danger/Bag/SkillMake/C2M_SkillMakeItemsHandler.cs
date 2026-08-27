@@ -43,7 +43,7 @@ namespace ET
             }
 
             int vitalityCost = cfg.Consume_Item_12;
-            if (vitalityCost > 0 && roleInfo.HuoLi < vitalityCost)
+            if (vitalityCost > 0 && unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.HuoLi) < vitalityCost)
             {
                 response.Error = ErrorCode.ERR_VitalityNotEnoughError;
                 reply();
@@ -51,7 +51,7 @@ namespace ET
             }
 
             int bindGoldCost = cfg.Consume_Item_5;
-            if (bindGoldCost > 0 && roleInfo.BindGold < bindGoldCost)
+            if (bindGoldCost > 0 && unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.BindGold) < bindGoldCost)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();

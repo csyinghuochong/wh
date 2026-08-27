@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,7 +17,7 @@ namespace ET
         /// <summary>表分隔：ASCII ~ / 全角～ / 波浪号 / 旧 _ `</summary>
         static readonly string[] TildeSeparators = { "\u007E", "\uFF5E", "\u301C", "_", "`" };
 
-        public List<KeyValuePairInt> ReplaceSkillList = new List<KeyValuePairInt>();
+        public List<IntLongPair> ReplaceSkillList = new List<IntLongPair>();
         public List<LDSkillAttributeLimit> SelfAttributeLimits = new List<LDSkillAttributeLimit>();
 
         public void ParseRuntimeData()
@@ -39,7 +39,7 @@ namespace ET
                     {
                         continue;
                     }
-                    KeyValuePairInt pair = new KeyValuePairInt();
+                    IntLongPair pair = new IntLongPair();
                     pair.KeyId = buffId;
                     pair.Value = newSkillId;
                     this.ReplaceSkillList.Add(pair);

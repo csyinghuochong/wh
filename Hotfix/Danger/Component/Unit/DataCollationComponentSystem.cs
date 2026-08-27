@@ -127,7 +127,7 @@ namespace ET
             }
         }
 
-        public static List<KeyValuePairLong> GetBuySelfPlayer(this DataCollationComponent self)
+        public static List<LongLongPair> GetBuySelfPlayer(this DataCollationComponent self)
         {
             return null;
         }
@@ -183,7 +183,7 @@ namespace ET
             return 0;
         }
 
-        public static void OnAddCostList(this DataCollationComponent self, List<KeyValuePairInt> pairInts, int getWay, long value)
+        public static void OnAddCostList(this DataCollationComponent self, List<IntLongPair> pairInts, int getWay, long value)
         {
             bool have = false;
             for (int i = 0; i < pairInts.Count; i++)
@@ -196,11 +196,11 @@ namespace ET
             }
             if (!have)
             {
-                pairInts.Add(new KeyValuePairInt() { KeyId = getWay, Value = value });
+                pairInts.Add(new IntLongPair() { KeyId = getWay, Value = value });
             }
         }
 
-        public static void SetAllCostList(this DataCollationComponent self, List<KeyValuePairInt> pairInts, string costValue)
+        public static void SetAllCostList(this DataCollationComponent self, List<IntLongPair> pairInts, string costValue)
         {
             if (string.IsNullOrEmpty(costValue))
             {
@@ -268,7 +268,7 @@ namespace ET
             return value;
         }
 
-        public static string CostListToString(this DataCollationComponent self, List<KeyValuePairInt> pairInts)
+        public static string CostListToString(this DataCollationComponent self, List<IntLongPair> pairInts)
         {
             string str = string.Empty;
             for (int i = 0; i < pairInts.Count; i++)
@@ -394,9 +394,9 @@ namespace ET
 
             self.Combat = roleInfoComponentServer.RoleInfo.Combat;
 
-            self.Gold = roleInfoComponentServer.RoleInfo.Gold;    
+            self.Gold = RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold);    
 
-            self.Diamond = roleInfoComponentServer.RoleInfo.Diamond;
+            self.Diamond = RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Diamond);
 
             self.Recharge = unit.GetTotalRechargeNum();
 

@@ -26,13 +26,13 @@ namespace ET
         public static void InitLists(this RoleDailyDataComponentServer self)
         {
             RoleDailyData data = self.Data ??= new RoleDailyData();
-            data.DayFubenTimes ??= new List<KeyValuePairInt>();
+            data.DayFubenTimes ??= new List<IntLongPair>();
             data.ChouKaRewardIds ??= new List<int>();
-            data.MysteryItems ??= new List<KeyValuePairInt>();
-            data.DayItemUse ??= new List<KeyValuePairInt>();
-            data.DayMonsters ??= new List<KeyValuePairInt>();
+            data.MysteryItems ??= new List<IntLongPair>();
+            data.DayItemUse ??= new List<IntLongPair>();
+            data.DayMonsters ??= new List<IntLongPair>();
             data.DayJingLing ??= new List<int>();
-            data.BuyStoreItems ??= new List<KeyValuePairInt>();
+            data.BuyStoreItems ??= new List<IntLongPair>();
             self.PersonalRandomShops ??= new Dictionary<int, List<ShopGoodsItem>>();
         }
 
@@ -57,6 +57,7 @@ namespace ET
             if (clearType == RoleDailyClearType.Week)
             {
                 data.WeeklyActivePoint = 0;
+                SetCount(data.Currencies, UserDataType.WeeklyActive, 0);
                 return;
             }
 
@@ -69,6 +70,7 @@ namespace ET
             data.DayJingLing.Clear();
             data.BuyStoreItems.Clear();
             data.DailyActivePoint = 0;
+            SetCount(data.Currencies, UserDataType.DailyActive, 0);
             data.RechargeSign = 0;
             data.TeamDungeonTimes = 0;
             data.HongBao = 0;
@@ -88,13 +90,17 @@ namespace ET
                 return;
             }
 
+            RoleDailyData data = self.GetDailyData();
+
             if (userDataType == UserDataType.DailyActive)
             {
-                self.Data.DailyActivePoint += add;
+                data.DailyActivePoint += add;
+                AddCount(data.Currencies, UserDataType.DailyActive, add);
             }
             else if (userDataType == UserDataType.WeeklyActive)
             {
-                self.Data.WeeklyActivePoint += add;
+                data.WeeklyActivePoint += add;
+                AddCount(data.Currencies, UserDataType.WeeklyActive, add);
             }
             else
             {
@@ -109,12 +115,38 @@ namespace ET
 
         public static int GetDailyActivePoint(this RoleDailyDataComponentServer self)
         {
-            return self.GetDailyData().DailyActivePoint;
+            RoleDailyData data = self.GetDailyData();
+            int fromDict = GetCount(data.Currencies, UserDataType.DailyActive);
+            return fromDict != 0 || HasCount(data.Currencies, UserDataType.DailyActive)
+                    ? fromDict
+                    : data.DailyActivePoint;
         }
 
         public static int GetWeeklyActivePoint(this RoleDailyDataComponentServer self)
         {
-            return self.GetDailyData().WeeklyActivePoint;
+            RoleDailyData data = self.GetDailyData();
+            int fromDict = GetCount(data.Currencies, UserDataType.WeeklyActive);
+            return fromDict != 0 || HasCount(data.Currencies, UserDataType.WeeklyActive)
+                    ? fromDict
+                    : data.WeeklyActivePoint;
+        }
+
+        public static bool HasCount(List<IntLongPair> list, int keyId)
+        {
+            if (list == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].KeyId == keyId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -139,7 +171,7 @@ namespace ET
             return self.Data ??= new RoleDailyData();
         }
 
-        public static int GetCount(List<KeyValuePairInt> list, int keyId)
+        public static int GetCount(List<IntLongPair> list, int keyId)
         {
             if (list == null)
             {
@@ -157,7 +189,7 @@ namespace ET
             return 0;
         }
 
-        public static void AddCount(List<KeyValuePairInt> list, int keyId, int add)
+        public static void AddCount(List<IntLongPair> list, int keyId, int add)
         {
             if (list == null || add <= 0)
             {
@@ -173,10 +205,10 @@ namespace ET
                 }
             }
 
-            list.Add(new KeyValuePairInt { KeyId = keyId, Value = add });
+            list.Add(new IntLongPair { KeyId = keyId, Value = add });
         }
 
-        public static void SetCount(List<KeyValuePairInt> list, int keyId, long value)
+        public static void SetCount(List<IntLongPair> list, int keyId, long value)
         {
             if (list == null)
             {
@@ -192,7 +224,7 @@ namespace ET
                 }
             }
 
-            list.Add(new KeyValuePairInt { KeyId = keyId, Value = value });
+            list.Add(new IntLongPair { KeyId = keyId, Value = value });
         }
 
         #region 副本次数 DayFubenTimes
@@ -287,7 +319,7 @@ namespace ET
                 return 0;
             }
 
-            roleInfo.BuyStoreItemsForever ??= new List<KeyValuePairInt>();
+            roleInfo.BuyStoreItemsForever ??= new List<IntLongPair>();
             return GetCount(roleInfo.BuyStoreItemsForever, goodsId);
         }
 
@@ -309,7 +341,7 @@ namespace ET
                 RoleInfo roleInfo = self.GetParent<Unit>()?.GetComponent<RoleInfoComponentServer>()?.RoleInfo;
                 if (roleInfo != null)
                 {
-                    roleInfo.BuyStoreItemsForever ??= new List<KeyValuePairInt>();
+                    roleInfo.BuyStoreItemsForever ??= new List<IntLongPair>();
                     AddCount(roleInfo.BuyStoreItemsForever, goodsId, buyNumber);
                 }
             }
@@ -542,9 +574,9 @@ namespace ET
             };
         }
 
-        private static List<KeyValuePairInt> CloneKvList(List<KeyValuePairInt> src)
+        private static List<IntLongPair> CloneKvList(List<IntLongPair> src)
         {
-            List<KeyValuePairInt> list = new List<KeyValuePairInt>();
+            List<IntLongPair> list = new List<IntLongPair>();
             if (src == null)
             {
                 return list;
@@ -552,7 +584,7 @@ namespace ET
 
             for (int i = 0; i < src.Count; i++)
             {
-                list.Add(new KeyValuePairInt { KeyId = src[i].KeyId, Value = src[i].Value });
+                list.Add(new IntLongPair { KeyId = src[i].KeyId, Value = src[i].Value });
             }
 
             return list;

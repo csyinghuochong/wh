@@ -46,14 +46,14 @@ namespace ET
                 int maxValue = int.Parse(attriinfo[2]);
              
                 int addvalue = RandomHelper.RandomNumber(int.Parse(attriinfo[1]), maxValue + 1);
-                KeyValuePair keyValuePair = jiaYuanComponentServer.GetDaShiProInfo(numeid);
+                IntStringPair keyValuePair = jiaYuanComponentServer.GetDaShiProInfo(numeid);
                 int curvalue = keyValuePair != null ? int.Parse(keyValuePair.Value) : 0;
                 int maxvalue = LDHomeCategory.Instance.GetProMax(jiayuanlv, numeid);
                 addvalue = Math.Min(addvalue, maxvalue - curvalue);
                 addvalue = Math.Max( addvalue, 0 );
                 jiaYuanComponentServer.UpdateDaShiProInfo( numeid, addvalue );
 
-                response.JiaYuanProAdd.Add( new KeyValuePairInt() {  KeyId = numeid, Value = addvalue } ); 
+                response.JiaYuanProAdd.Add( new IntLongPair() {  KeyId = numeid, Value = addvalue } ); 
             }
             jiaYuanComponentServer.JiaYuanDaShiTime_1++;
             response.JiaYuanDaShiTime = jiaYuanComponentServer.JiaYuanDaShiTime_1;

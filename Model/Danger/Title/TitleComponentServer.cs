@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 
 namespace ET
@@ -10,7 +10,7 @@ namespace ET
     {
 
         //称号
-        public List<KeyValuePairInt> TitleList = new List<KeyValuePairInt>();
+        public List<IntLongPair> TitleList = new List<IntLongPair>();
 
 #if SERVER
         [BsonIgnore]

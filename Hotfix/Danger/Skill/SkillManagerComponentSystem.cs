@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -392,7 +392,7 @@ namespace ET
             }
         }
 
-        public static async ETTask TriggerBuffSkill(this SkillManagerComponent self, KeyValuePairLong4 keyValuePair, long targetId, int buffNum)
+        public static async ETTask TriggerBuffSkill(this SkillManagerComponent self, LongLongPair4 keyValuePair, long targetId, int buffNum)
         {
             for (int i = 0; i < buffNum; i++)
             {

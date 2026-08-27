@@ -37,7 +37,7 @@ namespace ET
             if (request.OperatateType == 2)
             {
                 LDGlobalValue ldGlobalValue = LDGlobalValueCategory.Instance.Get(94);
-                if (roleInfoComponentServer.RoleInfo.Gold < LDGlobalValueCategory.Instance.TempValue)
+                if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < LDGlobalValueCategory.Instance.TempValue)
                 {
                     response.Error = ErrorCode.ERR_GoldNotEnoughError;
                     reply();

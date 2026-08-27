@@ -80,7 +80,7 @@ namespace ET
                     }
                     int needDimanond = int.Parse(xiLianDiamondSet[0]);
                     needDimanond = (int)(needDimanond * discount);
-                    if (roleInfo.Diamond < needDimanond)
+                    if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Diamond) < needDimanond)
                     {
                         response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                         reply();

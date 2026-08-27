@@ -52,7 +52,7 @@ namespace ET
                 proList.Add(new AttributeItem() { AttributeID = numericType, AttributeValue = lvalue });
             }
 
-            List<KeyValuePair> jiayuandashi = CommonConfig.JiaYuanDaShiPro;
+            List<IntStringPair> jiayuandashi = CommonConfig.JiaYuanDaShiPro;
             for (int i = 0; i < jiayuandashi.Count; i++)
             {
                 string dashiValue2 = jiayuandashi[i].Value2;
@@ -128,10 +128,10 @@ namespace ET
                     return;
                 }
             }
-            self.JiaYuanProList_7.Add( new KeyValuePair() { KeyId = keyid, Value = addvalue.ToString() } );
+            self.JiaYuanProList_7.Add( new IntStringPair() { KeyId = keyid, Value = addvalue.ToString() } );
         }
 
-        public static KeyValuePair GetDaShiProInfo(this JiaYuanComponentServer self, int keyid)
+        public static IntStringPair GetDaShiProInfo(this JiaYuanComponentServer self, int keyid)
         {
             for (int i = 0; i < self.JiaYuanProList_7.Count; i++)
             {

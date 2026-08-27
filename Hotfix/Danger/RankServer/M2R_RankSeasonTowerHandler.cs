@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Scene scene, M2R_RankSeasonTowerRequest request, R2M_RankSeasonTowerResponse response, Action reply)
         {
             RankSceneComponent rankSceneComponent = scene.GetComponent<RankSceneComponent>();
-            List<KeyValuePairLong> rankSeasonTower = rankSceneComponent.DBRankInfo.rankSeasonTower;
+            List<LongLongPair> rankSeasonTower = rankSceneComponent.DBRankInfo.rankSeasonTower;
 
             //TotalTime = ranklist[i].Value,        //时间
             //FubenId = (int)(ranklist[i].Value2),  //副本
@@ -44,7 +44,7 @@ namespace ET
             }
 
             ///先排层数 再排时间
-            rankSeasonTower.Sort(delegate (KeyValuePairLong a, KeyValuePairLong b)
+            rankSeasonTower.Sort(delegate (LongLongPair a, LongLongPair b)
             {
                 if (b.Value2 == a.Value2)
                 {

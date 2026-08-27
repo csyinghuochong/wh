@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -92,7 +92,7 @@ namespace ET
 
         public static void OnShouJiTreasure(this ShoujiComponentServer self, int shoujiId, int itemNum)
         {
-            KeyValuePairInt keyValuePairInt = null;
+            IntLongPair keyValuePairInt = null;
             for (int i = 0; i < self.TreasureInfo.Count; i++)
             {
                 if (self.TreasureInfo[i].KeyId == shoujiId)
@@ -103,14 +103,14 @@ namespace ET
             }
             if (keyValuePairInt == null)
             {
-                keyValuePairInt = new KeyValuePairInt() { KeyId = shoujiId, Value = itemNum };
+                keyValuePairInt = new IntLongPair() { KeyId = shoujiId, Value = itemNum };
                 self.TreasureInfo.Add(keyValuePairInt); 
             }
         }
 
-        public static KeyValuePairInt GetTreasureInfo(this ShoujiComponentServer self, int shoujiId)
+        public static IntLongPair GetTreasureInfo(this ShoujiComponentServer self, int shoujiId)
         {
-            KeyValuePairInt keyValuePairInt = null;
+            IntLongPair keyValuePairInt = null;
             for (int i = 0; i < self.TreasureInfo.Count; i++)
             {
                 if (self.TreasureInfo[i].KeyId == shoujiId)

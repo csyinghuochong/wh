@@ -19,7 +19,7 @@ namespace ET
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            if (roleInfo.Diamond < 350)
+            if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Diamond) < 350)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();

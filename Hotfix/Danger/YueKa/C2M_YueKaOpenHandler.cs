@@ -17,7 +17,7 @@ namespace ET
                 return;
             }
             //判定是否钻石足够
-            if (unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Diamond < cost)
+            if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Diamond) < cost)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();

@@ -35,7 +35,7 @@ namespace ET
             }
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            if (roleInfo.Lv < unionCreateNeedLevel || roleInfo.Diamond < unionCreateNeedDiamond)
+            if (roleInfo.Lv < unionCreateNeedLevel || unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Diamond) < unionCreateNeedDiamond)
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();

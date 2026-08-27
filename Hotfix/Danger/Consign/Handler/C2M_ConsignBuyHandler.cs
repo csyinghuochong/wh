@@ -90,7 +90,7 @@ namespace ET
             }
 
             //钱是否足够
-            if (roleInfoComponentServer.RoleInfo.Gold < needGold)
+            if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < needGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -129,7 +129,7 @@ namespace ET
                     (paimaiServerId, new M2Consign_BuyRequest()
                     {
                         ConsignItemInfo = request.ConsignItemInfo,
-                        Gold = roleInfoComponentServer.RoleInfo.Gold,
+                        Gold = unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold),
                         BuyNum = buyNum
                     });
                 if (r_GameStatusResponse.Error != ErrorCode.ERR_Success)
@@ -160,7 +160,7 @@ namespace ET
                 if (dataCollation.PaiMaiCostGoldToday >= 50000000)
                 {
                     string levelInfo = $"区： {unit.DomainZone()}  {roleInfoComponentServer.RoleInfo.Name}   \t拍卖消耗金币:{dataCollation.PaiMaiCostGoldToday}  " +
-                        $" \t账号:{roleInfoComponentServer.Account}   \t钻石:{roleInfoComponentServer.RoleInfo.Diamond}  \t金币:{roleInfoComponentServer.RoleInfo.Gold} \n";
+                        $" \t账号:{roleInfoComponentServer.Account}   \t钻石:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Diamond)}  \t金币:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold)} \n";
                     LogHelper.PaiMaiInfo(levelInfo);
                 }
 
@@ -220,7 +220,7 @@ namespace ET
                     string buyPlayerName = roleInfoComponentServer.RoleInfo.Name;
                     int buyPlayerLv = roleInfoComponentServer.RoleInfo.Lv;
                     int buyPlayerRecharge = request.IsRecharge;
-                    long buyNowGold = roleInfoComponentServer.RoleInfo.Gold;
+                    long buyNowGold = RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold);
                     string buyAccount = roleInfoComponentServer.Account;
                     
                     string sellPlayerName = r_GameStatusResponse.ConsignItemInfo.PlayerName;
@@ -229,7 +229,7 @@ namespace ET
                     if (roleInfoComponentServerSell != null)
                     {
                         int sellPlayerLv = roleInfoComponentServerSell.RoleInfo.Lv;
-                        long sellNowGold = roleInfoComponentServerSell.RoleInfo.Gold;
+                        long sellNowGold = RoleCurrencyHelper.Get(roleInfoComponentServerSell.RoleInfo, UserDataType.Gold);
 
                         string paimaiInfo = $"服务器:{serverName}   \t道具名称:{itemName}   \t数量:{itemNumber}   \t价格:{price}  \t购买者名称:{buyPlayerName}   \t购买者等级:{buyPlayerLv}    " +
                             $"\t购买者充值:{buyPlayerRecharge}   \t购买者当前金币:{buyNowGold}   \t购买者账号:{buyAccount}    \t出售者名称:{sellPlayerName}   \t出售者账号:{sellAccoount}   \t出售者等级:{sellPlayerLv}    \t出售者当前金币:{sellNowGold} ";

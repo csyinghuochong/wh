@@ -15,7 +15,7 @@ namespace ET
                         (paimaiserverid, new M2Consign_AuctionJoinRequest()
                         {
                             UnitID = unit.Id,
-                            Gold = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Gold
+                            Gold = unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold)
                         });
 
                 if (r_GameStatusResponse.Error == ErrorCode.ERR_Success)

@@ -796,7 +796,7 @@ namespace ET
             self.SendToUpdateTask();
         }
 
-        public static void OnPetMineLogin(this TaskComponentServer self, List<PetMingPlayerInfo> petMingPlayers, List<KeyValuePairInt> extends)
+        public static void OnPetMineLogin(this TaskComponentServer self, List<PetMingPlayerInfo> petMingPlayers, List<IntLongPair> extends)
         {
             using (self.TaskEventBatch())
             {

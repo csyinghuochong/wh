@@ -1,4 +1,4 @@
-﻿using Alipay.AopSdk.Core.Domain;
+using Alipay.AopSdk.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -242,7 +242,7 @@ namespace ET
             for (int i = 0; i < 1000; i++)
             {
                 string code = serialHelper.GenerateCheckCode(6);
-                dBCenterSerialInfo.SerialList.Add(new KeyValuePair() { KeyId = sindex, Value = code, Value2 = "0" });
+                dBCenterSerialInfo.SerialList.Add(new IntStringPair() { KeyId = sindex, Value = code, Value2 = "0" });
                 codelist += code;
                 codelist += "\r\n";
             }

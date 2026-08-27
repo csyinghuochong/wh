@@ -531,22 +531,6 @@ namespace ET
 	[ProtoContract]
 	public partial class RoleInfo: Object
 	{
-//钻石---灵玉
-		[ProtoMember(1)]
-		public long Diamond { get; set; }
-
-//钻石---灵玉
-		[ProtoMember(2)]
-		public long BindDiamond { get; set; }
-
-//钱币
-		[ProtoMember(3)]
-		public long Gold { get; set; }
-
-//钱币
-		[ProtoMember(4)]
-		public long BindGold { get; set; }
-
 //职业
 		[ProtoMember(5)]
 		public int Occ { get; set; }
@@ -574,20 +558,9 @@ namespace ET
 		[ProtoMember(12)]
 		public int Lv { get; set; }
 
-		[ProtoMember(13)]
-		public int Sp { get; set; }
-
 // 经验
 		[ProtoMember(14)]
 		public long Exp { get; set; }
-
-// 体力
-		[ProtoMember(15)]
-		public long TiLi { get; set; }
-
-// 活力
-		[ProtoMember(16)]
-		public long HuoLi { get; set; }
 
 		[ProtoMember(17)]
 		public string UnionName { get; set; }
@@ -612,37 +585,34 @@ namespace ET
 		public List<int> HorseIds = new List<int>();
 
 		[ProtoMember(39)]
-		public List<KeyValuePair> FirstWinSelf = new List<KeyValuePair>();
-
-		[ProtoMember(40)]
-		public long UnionZiJin { get; set; }
+		public List<IntStringPair> FirstWinSelf = new List<IntStringPair>();
 
 		[ProtoMember(41)]
 		public int ServerMailIdCur { get; set; }
 
 		[ProtoMember(43)]
-		public List<KeyValuePair> GameSettingInfos = new List<KeyValuePair>();
+		public List<IntStringPair> GameSettingInfos = new List<IntStringPair>();
 
 		[ProtoMember(50)]
 		public long CreateTime { get; set; }
 
 // 各塔通关进度 Key=MapTypeEnum Value=TowerId
 		[ProtoMember(51)]
-		public List<KeyValuePairInt> TowerIds = new List<KeyValuePairInt>();
+		public List<IntLongPair> TowerIds = new List<IntLongPair>();
 
 //商店终身限购次数 Key=LDShop_Goods.Id
 		[ProtoMember(68)]
-		public List<KeyValuePairInt> BuyStoreItemsForever = new List<KeyValuePairInt>();
+		public List<IntLongPair> BuyStoreItemsForever = new List<IntLongPair>();
 
-		// 不进背包的扩展货币 Key=LDItem.Id（成就点31-35、声望51-60等）
+// 不进背包的货币 Key=LDItem.Id（灵玉/金币/体力/成就点等）
 		[ProtoMember(69)]
-		public List<KeyValuePairInt> ExtraCurrencies = new List<KeyValuePairInt>();
+		public List<IntLongPair> ExtraCurrencies = new List<IntLongPair>();
 
 	}
 
-	[Message(OuterOpcode.KeyValuePair)]
+	[Message(OuterOpcode.IntStringPair)]
 	[ProtoContract]
-	public partial class KeyValuePair: Object
+	public partial class IntStringPair: Object
 	{
 		[ProtoMember(1)]
 		public int KeyId { get; set; }
@@ -655,9 +625,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.KeyValuePairInt)]
+	[Message(OuterOpcode.IntLongPair)]
 	[ProtoContract]
-	public partial class KeyValuePairInt: Object
+	public partial class IntLongPair: Object
 	{
 		[ProtoMember(1)]
 		public int KeyId { get; set; }
@@ -667,9 +637,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.KeyValuePairLong)]
+	[Message(OuterOpcode.LongLongPair)]
 	[ProtoContract]
-	public partial class KeyValuePairLong: Object
+	public partial class LongLongPair: Object
 	{
 		[ProtoMember(1)]
 		public long KeyId { get; set; }
@@ -771,7 +741,7 @@ namespace ET
 		public MoveInfo MoveInfo { get; set; }
 
 		[ProtoMember(19)]
-		public List<KeyValuePair> Buffs = new List<KeyValuePair>();
+		public List<IntStringPair> Buffs = new List<IntStringPair>();
 
 		[ProtoMember(20)]
 		public List<SkillInfo> Skills = new List<SkillInfo>();
@@ -1294,7 +1264,7 @@ namespace ET
 		public List<RechargeInfo> RechargeInfos = new List<RechargeInfo>();
 
 		[ProtoMember(6)]
-		public List<KeyValuePair> DeleteUserList = new List<KeyValuePair>();
+		public List<IntStringPair> DeleteUserList = new List<IntStringPair>();
 
 		[ProtoMember(7)]
 		public List<int> BuChangZone = new List<int>();
@@ -3406,7 +3376,7 @@ namespace ET
 		public int RpcId { get; set; }
 
 		[ProtoMember(1)]
-		public List<KeyValuePair> GameSettingInfos = new List<KeyValuePair>();
+		public List<IntStringPair> GameSettingInfos = new List<IntStringPair>();
 
 	}
 
@@ -4669,7 +4639,7 @@ namespace ET
 		public List<PetInfo> PetInfos = new List<PetInfo>();
 
 		[ProtoMember(8)]
-		public List<KeyValuePair> PetSkinList = new List<KeyValuePair>();
+		public List<IntStringPair> PetSkinList = new List<IntStringPair>();
 
 		[ProtoMember(9)]
 		public List<BagInfo> PetHeXinList = new List<BagInfo>();
@@ -4941,16 +4911,16 @@ namespace ET
 		public RoleInfo RoleInfo { get; set; }
 
 		[ProtoMember(3)]
-		public List<KeyValuePair> ReddontList = new List<KeyValuePair>();
+		public List<IntStringPair> ReddontList = new List<IntStringPair>();
 
 		[ProtoMember(4)]
-		public List<KeyValuePairInt> TreasureInfo = new List<KeyValuePairInt>();
+		public List<IntLongPair> TreasureInfo = new List<IntLongPair>();
 
 		[ProtoMember(5)]
 		public List<ShouJiChapterInfo> ShouJiChapterInfos = new List<ShouJiChapterInfo>();
 
 		[ProtoMember(6)]
-		public List<KeyValuePairInt> TitleList = new List<KeyValuePairInt>();
+		public List<IntLongPair> TitleList = new List<IntLongPair>();
 
 	}
 
@@ -7503,7 +7473,7 @@ namespace ET
 		public long UnitId { get; set; }
 
 		[ProtoMember(6)]
-		public List<KeyValuePairInt> TitleList = new List<KeyValuePairInt>();
+		public List<IntLongPair> TitleList = new List<IntLongPair>();
 
 	}
 
@@ -7876,7 +7846,7 @@ namespace ET
 		public List<int> PlanOpenList = new List<int>();
 
 		[ProtoMember(12)]
-		public List<KeyValuePair> JiaYuanProList = new List<KeyValuePair>();
+		public List<IntStringPair> JiaYuanProList = new List<IntStringPair>();
 
 		[ProtoMember(13)]
 		public List<JiaYuanRecord> JiaYuanRecordList = new List<JiaYuanRecord>();
@@ -8495,10 +8465,10 @@ namespace ET
 		public long JiaYuanDaShiTime { get; set; }
 
 		[ProtoMember(2)]
-		public List<KeyValuePairInt> JiaYuanProAdd = new List<KeyValuePairInt>();
+		public List<IntLongPair> JiaYuanProAdd = new List<IntLongPair>();
 
 		[ProtoMember(7)]
-		public List<KeyValuePair> JiaYuanProList = new List<KeyValuePair>();
+		public List<IntStringPair> JiaYuanProList = new List<IntStringPair>();
 
 	}
 
@@ -8959,7 +8929,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
-		public List<KeyValuePair> FirstWinInfos = new List<KeyValuePair>();
+		public List<IntStringPair> FirstWinInfos = new List<IntStringPair>();
 
 	}
 
@@ -8977,7 +8947,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
-		public List<KeyValuePair> FirstWinInfos = new List<KeyValuePair>();
+		public List<IntStringPair> FirstWinInfos = new List<IntStringPair>();
 
 	}
 
@@ -10985,26 +10955,26 @@ namespace ET
 	public partial class RoleDailyData: Object
 	{
 		[ProtoMember(1)]
-		public List<KeyValuePairInt> DayFubenTimes = new List<KeyValuePairInt>();
+		public List<IntLongPair> DayFubenTimes = new List<IntLongPair>();
 
 		[ProtoMember(2)]
 		public List<int> ChouKaRewardIds = new List<int>();
 
 		[ProtoMember(3)]
-		public List<KeyValuePairInt> MysteryItems = new List<KeyValuePairInt>();
+		public List<IntLongPair> MysteryItems = new List<IntLongPair>();
 
 		[ProtoMember(4)]
-		public List<KeyValuePairInt> DayItemUse = new List<KeyValuePairInt>();
+		public List<IntLongPair> DayItemUse = new List<IntLongPair>();
 
 		[ProtoMember(5)]
-		public List<KeyValuePairInt> DayMonsters = new List<KeyValuePairInt>();
+		public List<IntLongPair> DayMonsters = new List<IntLongPair>();
 
 		[ProtoMember(6)]
 		public List<int> DayJingLing = new List<int>();
 
 // 商店本次限购 Key=LDShop_Goods.Id
 		[ProtoMember(7)]
-		public List<KeyValuePairInt> BuyStoreItems = new List<KeyValuePairInt>();
+		public List<IntLongPair> BuyStoreItems = new List<IntLongPair>();
 
 // 日活跃点数（Item/UserDataType=11），零点清零
 		[ProtoMember(8)]
@@ -11046,6 +11016,10 @@ namespace ET
 		[ProtoMember(17)]
 		public int HappyMoveNumber { get; set; }
 
+// 会日清/周清的 Item 货币 Key=Item.Id（日活跃21、周活跃22）
+		[ProtoMember(18)]
+		public List<IntLongPair> Currencies = new List<IntLongPair>();
+
 	}
 
 	[ResponseType(nameof(M2C_RoleDailyDataInit))]
@@ -11079,7 +11053,7 @@ namespace ET
 		public RoleDailyData Data { get; set; }
 
 		[ProtoMember(2)]
-		public List<KeyValuePairInt> BuyStoreItemsForever = new List<KeyValuePairInt>();
+		public List<IntLongPair> BuyStoreItemsForever = new List<IntLongPair>();
 
 	}
 
@@ -11095,7 +11069,7 @@ namespace ET
 		public RoleDailyData Data { get; set; }
 
 		[ProtoMember(2)]
-		public List<KeyValuePairInt> BuyStoreItemsForever = new List<KeyValuePairInt>();
+		public List<IntLongPair> BuyStoreItemsForever = new List<IntLongPair>();
 
 // 1=全量 2=仅商店限购 3=零点清空后全量
 		[ProtoMember(3)]
@@ -11865,7 +11839,7 @@ namespace ET
 		public List<BagInfo> BagInfos = new List<BagInfo>();
 
 		[ProtoMember(2)]
-		public List<KeyValuePairInt> AddedCellNum = new List<KeyValuePairInt>();
+		public List<IntLongPair> AddedCellNum = new List<IntLongPair>();
 
 		[ProtoMember(6)]
 		public List<int> FashionActiveIds = new List<int>();
@@ -11937,7 +11911,7 @@ namespace ET
 		public int Error { get; set; }
 
 		[ProtoMember(2)]
-		public List<KeyValuePairInt> AddedCellNum = new List<KeyValuePairInt>();
+		public List<IntLongPair> AddedCellNum = new List<IntLongPair>();
 
 		[ProtoMember(3)]
 		public string GetItem { get; set; }
@@ -13672,7 +13646,7 @@ namespace ET
 		public long ChanChu { get; set; }
 
 		[ProtoMember(2)]
-		public List<KeyValuePairInt> PetMineExtend = new List<KeyValuePairInt>();
+		public List<IntLongPair> PetMineExtend = new List<IntLongPair>();
 
 		[ProtoMember(4)]
 		public List<PetMingPlayerInfo> PetMingPlayerInfos = new List<PetMingPlayerInfo>();

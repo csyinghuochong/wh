@@ -15,12 +15,12 @@ namespace ET
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             int level = roleInfo.Lv;
-			int sp = roleInfo.Sp;
+			int sp = (int)unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Sp);
 			switch (request.OperationType)
 			{
 				case 1:
                     int needGold = int.Parse(LDGlobalValueCategory.Instance.Get(20).Value);
-                    if (roleInfo.Gold < needGold)
+                    if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < needGold)
                     {
                         response.Error = ErrorCode.ERR_GoldNotEnoughError;
                         reply();

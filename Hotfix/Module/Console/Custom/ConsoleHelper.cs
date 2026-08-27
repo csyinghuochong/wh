@@ -513,7 +513,7 @@ namespace ET
 
                     //获取充值的数值组件
                     List<RechargeComponentServer> rechargeComponent = await Game.Scene.GetComponent<DBComponent>().Query<RechargeComponentServer>(pyzone, d => d.Id > 0 && d.Id == unitID);
-                    string showStr = $"{RoleInfoComponentSing[0].RoleInfo.Name} 战力:{RoleInfoComponentSing[0].RoleInfo.Combat}金币:{RoleInfoComponentSing[0].RoleInfo.Gold} 钻石:{RoleInfoComponentSing[0].RoleInfo.Diamond} 职业{RoleInfoComponentSing[0].RoleInfo.Occ}-{RoleInfoComponentSing[0].RoleInfo.OccTwo} 充值:{rechargeComponent[0].GetTotalRechargeNum()}";
+                    string showStr = $"{RoleInfoComponentSing[0].RoleInfo.Name} 战力:{RoleInfoComponentSing[0].RoleInfo.Combat}金币:{RoleCurrencyHelper.Get(RoleInfoComponentSing[0].RoleInfo, UserDataType.Gold)} 钻石:{RoleCurrencyHelper.Get(RoleInfoComponentSing[0].RoleInfo, UserDataType.Diamond)} 职业{RoleInfoComponentSing[0].RoleInfo.Occ}-{RoleInfoComponentSing[0].RoleInfo.OccTwo} 充值:{rechargeComponent[0].GetTotalRechargeNum()}";
                     Log.Debug($"{showStr}");
                 }
             }
@@ -770,7 +770,7 @@ namespace ET
                 int pyzone = StartZoneConfigCategory.Instance.Get(zonlist[i]).PhysicZone;
                 long dbCacheId = DBHelper.GetDbCacheId(pyzone);
 
-                List<KeyValuePairLong> allpaimai = new List<KeyValuePairLong>();    
+                List<LongLongPair> allpaimai = new List<LongLongPair>();    
                 string levelInfo = $"{pyzone}区玩家拍卖金币>{maxGold}列表： \n";
                 List<DataCollationComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(pyzone, d => d.PaiMaiGold > maxGold);
                 for (int userinfo = 0; userinfo < RoleInfoComponentList.Count; userinfo++)
@@ -781,17 +781,17 @@ namespace ET
                     //    continue;
                     //}
 
-                    allpaimai.Add( new KeyValuePairLong() { KeyId = dataComponent.Id, Value = dataComponent.PaiMaiGold } );
+                    allpaimai.Add( new LongLongPair() { KeyId = dataComponent.Id, Value = dataComponent.PaiMaiGold } );
                 }
                 
-                allpaimai.Sort(delegate (KeyValuePairLong a, KeyValuePairLong b)
+                allpaimai.Sort(delegate (LongLongPair a, LongLongPair b)
                 {
                     return (int)(a.Value - b.Value);   
                 });
 
                 for (int paimaigold = 0; paimaigold < allpaimai.Count; paimaigold++)
                 {
-                    KeyValuePairLong pairLong = allpaimai[paimaigold];
+                    LongLongPair pairLong = allpaimai[paimaigold];
 
                     List<RoleInfoComponentServer> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == pairLong.KeyId);
                     if (RoleInfoComponentlist == null || RoleInfoComponentlist.Count == 0)
@@ -799,7 +799,7 @@ namespace ET
                         return;
                     }
                     RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentlist[0]; 
-                    levelInfo += $"{roleInfoComponentServer.RoleInfo.Name}   \t拍卖获得金币:{pairLong.Value}   \t账号:{roleInfoComponentServer.Account}   \t钻石:{roleInfoComponentServer.RoleInfo.Diamond}  \t金币:{roleInfoComponentServer.RoleInfo.Gold} \n";
+                    levelInfo += $"{roleInfoComponentServer.RoleInfo.Name}   \t拍卖获得金币:{pairLong.Value}   \t账号:{roleInfoComponentServer.Account}   \t钻石:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Diamond)}  \t金币:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold)} \n";
                 }
 
                 LogHelper.GongZuoShi(levelInfo);
@@ -848,7 +848,7 @@ namespace ET
                 int pyzone = StartZoneConfigCategory.Instance.Get(zonlist[i]).PhysicZone;
                 long dbCacheId = DBHelper.GetDbCacheId(pyzone);
 
-                List<KeyValuePairLong> allpaimai = new List<KeyValuePairLong>();
+                List<LongLongPair> allpaimai = new List<LongLongPair>();
                 levelInfo  +=  $"{pyzone}区玩家拍卖金币>{maxGold}列表： \n";
                 List<DataCollationComponent> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<DataCollationComponent>(pyzone, d => d.PaiMaiGold > maxGold);
                 for (int userinfo = 0; userinfo < RoleInfoComponentList.Count; userinfo++)
@@ -863,17 +863,17 @@ namespace ET
                         continue;
                     }
 
-                    allpaimai.Add(new KeyValuePairLong() { KeyId = dataComponent.Id, Value = dataComponent.PaiMaiGold });
+                    allpaimai.Add(new LongLongPair() { KeyId = dataComponent.Id, Value = dataComponent.PaiMaiGold });
                 }
 
-                allpaimai.Sort(delegate (KeyValuePairLong a, KeyValuePairLong b)
+                allpaimai.Sort(delegate (LongLongPair a, LongLongPair b)
                 {
                     return (int)(a.Value - b.Value);
                 });
 
                 for (int paimaigold = 0; paimaigold < allpaimai.Count; paimaigold++)
                 {
-                    KeyValuePairLong pairLong = allpaimai[paimaigold];
+                    LongLongPair pairLong = allpaimai[paimaigold];
 
                     List<RoleInfoComponentServer> RoleInfoComponentlist = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.Id == pairLong.KeyId);
                     if (RoleInfoComponentlist == null || RoleInfoComponentlist.Count == 0)
@@ -881,7 +881,7 @@ namespace ET
                         return;
                     }
                     RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentlist[0];
-                    levelInfo += $"{roleInfoComponentServer.RoleInfo.Name}   \t拍卖获得金币:{pairLong.Value}   \t账号:{roleInfoComponentServer.Account}   \t钻石:{roleInfoComponentServer.RoleInfo.Diamond}  \t金币:{roleInfoComponentServer.RoleInfo.Gold} \n";
+                    levelInfo += $"{roleInfoComponentServer.RoleInfo.Name}   \t拍卖获得金币:{pairLong.Value}   \t账号:{roleInfoComponentServer.Account}   \t钻石:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Diamond)}  \t金币:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold)} \n";
                 }
             }
             LogHelper.PaiMai2Info(levelInfo);
@@ -1064,7 +1064,7 @@ namespace ET
 
                     //等级 充值  活跃度 体力 当前金币   成就点数  当前主线任务
                     gongzuoshiInfo += $"账号: {roleInfoComponentServer.Account}  \t名称：{roleInfoComponentServer.RoleInfo.Name}  \t等级:{roleInfoComponentServer.RoleInfo.Lv}   \t充值:{dataCollations[0].Recharge}" +
-                            $"\t体力:{roleInfoComponentServer.RoleInfo.TiLi}  \t金币:{roleInfoComponentServer.RoleInfo.Gold}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
+                            $"\t体力:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.TiLi)}  \t金币:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold)}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
                             $"\t当前主线:{dataCollations[0].MainTask}  \t角色天数:{roleInfoComponentServer.GetCrateDay()}  \t金币获取:{dataCollations[0].GoldGet}  \t金币消耗:{dataCollations[0].GoldCost}   \t成就任务:{chengjiuTask}" + 
                             $"\t金币获取总值:{dataCollations[0].GetGoldGetTotal()}  \t金币消耗总值:{dataCollations[0].GetGoldCostTotal()} 今日在线:{dataCollations[0].TodayOnLine}  \t击杀boos:{killmonsterNumber} \t设备:{dataCollations[0].GetDeviceID()}" +
                             $"\tIP:{roleInfoComponentServer.RemoteAddress}  身份证:{idcard} \n";
@@ -1213,7 +1213,7 @@ namespace ET
             }
 
             long serverNow = TimeHelper.ServerNow();
-            List<KeyValuePairLong> buyselflist = new List<KeyValuePairLong>() ; ;// dataCollationComponents[0].BuySelfPlayer;
+            List<LongLongPair> buyselflist = new List<LongLongPair>() ; ;// dataCollationComponents[0].BuySelfPlayer;
 
             string gongzuoshiInfo = string.Empty;
             string allpaimaiInfo = string.Empty;    
@@ -1502,7 +1502,7 @@ namespace ET
 
                       
                         //服务器名称  角色名称 等级  充值积分总数 充值记录总数  当前金币
-                        gongzuoshiInfo += $"区:{pyzoneid}  \t角色名称:{RoleInfoComponents[0].UserName}  \t等级:{RoleInfoComponents[0].RoleInfo.Lv}   \t充值积分总数:{maoxianTotal} \t充值记录总数:{rechargetNumber}  当前金币：{RoleInfoComponents[0].RoleInfo.Gold}  \n";
+                        gongzuoshiInfo += $"区:{pyzoneid}  \t角色名称:{RoleInfoComponents[0].UserName}  \t等级:{RoleInfoComponents[0].RoleInfo.Lv}   \t充值积分总数:{maoxianTotal} \t充值记录总数:{rechargetNumber}  当前金币：{RoleCurrencyHelper.Get(RoleInfoComponents[0].RoleInfo, UserDataType.Gold)}  \n";
                     }
                 }
             }
@@ -1680,7 +1680,7 @@ namespace ET
                     }
                     int recharge = (int)rechargeComponentlist[0].GetTotalRechargeNum();
 
-                    levelInfo = levelInfo + $"区:{pyzone}   \t账号：{roleInfoComponentServer.Account}  \t玩家:{roleInfoComponentServer.RoleInfo.Name}  \t神兽数量:{shenshouNumber}   \t等级:{roleInfoComponentServer.RoleInfo.Lv} \t钻石:{roleInfoComponentServer.RoleInfo.Diamond}  \t充值:{recharge} \n";
+                    levelInfo = levelInfo + $"区:{pyzone}   \t账号：{roleInfoComponentServer.Account}  \t玩家:{roleInfoComponentServer.RoleInfo.Name}  \t神兽数量:{shenshouNumber}   \t等级:{roleInfoComponentServer.RoleInfo.Lv} \t钻石:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Diamond)}  \t充值:{recharge} \n";
 
                 }
 
@@ -1748,7 +1748,7 @@ namespace ET
 
                     if (chaxun == "gold")
                     {
-                        long baggold = roleInfoComponentServer.RoleInfo.Gold;
+                        long baggold = RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold);
                         long mailgold = 0;
                         List<DBMailInfo> dBMailInfolist = await Game.Scene.GetComponent<DBComponent>().Query<DBMailInfo>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                         if (dBMailInfolist == null || dBMailInfolist.Count == 0)
@@ -1801,7 +1801,7 @@ namespace ET
                     }
                     if (chaxun == "diamond")
                     {
-                        if (roleInfoComponentServer.RoleInfo.Diamond < maxGold)
+                        if (RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Diamond) < maxGold)
                         {
                             continue;
                         }
@@ -1823,7 +1823,7 @@ namespace ET
                         }
                         int recharge = (int)rechargeComponentlist[0].GetTotalRechargeNum();
 
-                        levelInfo = levelInfo + $"区:{pyzone}   账号：{roleInfoComponentServer.Account} 玩家:{roleInfoComponentServer.RoleInfo.Name} 等级:{roleInfoComponentServer.RoleInfo.Lv} 钻石:{roleInfoComponentServer.RoleInfo.Diamond} 充值:{recharge} \n";
+                        levelInfo = levelInfo + $"区:{pyzone}   账号：{roleInfoComponentServer.Account} 玩家:{roleInfoComponentServer.RoleInfo.Name} 等级:{roleInfoComponentServer.RoleInfo.Lv} 钻石:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Diamond)} 充值:{recharge} \n";
                     }
                 }
 

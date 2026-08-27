@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,7 +10,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ShouJiTreasureRequest request, M2C_ShouJiTreasureResponse response, Action reply)
         {
             ShoujiComponentServer shoujiComponentServer = unit.GetComponent<ShoujiComponentServer>();
-            KeyValuePairInt keyValuePairInt = shoujiComponentServer.GetTreasureInfo(request.ShouJiId);
+            IntLongPair keyValuePairInt = shoujiComponentServer.GetTreasureInfo(request.ShouJiId);
           
             List<long> huishouList = request.ItemIds;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();

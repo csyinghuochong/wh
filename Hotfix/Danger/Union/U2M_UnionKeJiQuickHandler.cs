@@ -8,7 +8,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, U2M_UnionKeJiQuickRequest request, M2U_UnionKeJiQuickResponse response, Action reply)
         {
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-            if (roleInfo.RoleInfo.Diamond <= request.Cost)
+            if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Diamond) <= request.Cost)
             {
                 response.Error = ErrorCode.ERR_DiamondNotEnoughError;
                 reply();

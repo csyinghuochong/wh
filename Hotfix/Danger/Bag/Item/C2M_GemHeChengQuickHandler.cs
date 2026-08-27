@@ -57,7 +57,7 @@ namespace ET
 
             for (int i = gemList.Count - 1; i >= 0; i--)
             {
-                KeyValuePairInt keyValuePair = EquipMakeConfigCategory.Instance.GetHeChengList[gemList[i].ItemID];
+                IntLongPair keyValuePair = EquipMakeConfigCategory.Instance.GetHeChengList[gemList[i].ItemID];
                 int neednumber = (int)keyValuePair.Value;
                 int newmakeid = keyValuePair.KeyId;
                 int newnumber = gemList[i].ItemNum / neednumber;

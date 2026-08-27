@@ -20,7 +20,7 @@ namespace ET
             }
             else
             {
-                List<KeyValuePairLong> ranklist = rankComponent.DBRankInfo.rankSeasonTower;
+                List<LongLongPair> ranklist = rankComponent.DBRankInfo.rankSeasonTower;
 
                 List<long> idlist = new List<long>();
                 List<long> idremove = new List<long>();

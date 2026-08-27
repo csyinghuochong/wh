@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -36,7 +36,7 @@ namespace ET
         {
             long userTime = TimeHelper.ServerNow() - self.BeginTime;
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
-            KeyValuePairLong rankingInfo = new KeyValuePairLong()
+            LongLongPair rankingInfo = new LongLongPair()
             {
                 KeyId = unit.Id,
                 Value = userTime,

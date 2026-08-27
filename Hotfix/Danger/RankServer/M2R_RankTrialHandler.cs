@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Scene scene, M2R_RankTrialRequest request, R2M_RankTrialResponse response, Action reply)
         {
             RankSceneComponent rankSceneComponent = scene.GetComponent<RankSceneComponent>();
-            List<KeyValuePairLong> rankRunRace = rankSceneComponent.DBRankInfo.rankingTrial;
+            List<LongLongPair> rankRunRace = rankSceneComponent.DBRankInfo.rankingTrial;
 
             bool have = false;
             for (int i = 0; i < rankRunRace.Count; i++)
@@ -41,7 +41,7 @@ namespace ET
             }
 
             ///试炼之塔排行先按照层树排序,层序一样按照秒伤 试炼排行榜得秒伤处也显示层数和秒伤,比如40层50000秒伤 显示格式为: 40层(50000/秒)
-            rankRunRace.Sort(delegate (KeyValuePairLong a, KeyValuePairLong b)
+            rankRunRace.Sort(delegate (LongLongPair a, LongLongPair b)
             {
                 if (b.Value2 == a.Value2)
                 {

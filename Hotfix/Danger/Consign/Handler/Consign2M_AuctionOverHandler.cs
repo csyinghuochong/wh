@@ -11,7 +11,7 @@ namespace ET
             Log.Warning($"PaiMaiAuctionOver:  {unit.DomainZone()} {unit.Id}");
             
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            if (roleInfoComponentServer.RoleInfo.Gold < request.Price)
+            if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < request.Price)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
             }

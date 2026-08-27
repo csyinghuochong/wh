@@ -19,7 +19,7 @@ namespace ET
                 return;
             }
 
-            self.ReddontList.Add(new KeyValuePair() { KeyId = reddotType, Value = "1" });
+            self.ReddontList.Add(new IntStringPair() { KeyId = reddotType, Value = "1" });
         }
 
         public static int GetReddot(this ReddotComponentServer self, int reddotType)

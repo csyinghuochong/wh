@@ -102,7 +102,7 @@ namespace ET
             //技能(清空 技能点重置)
             //觉醒转换成对应的
             int level = roleInfoComponentServer.RoleInfo.Lv;
-            int sp = roleInfoComponentServer.RoleInfo.Sp;
+            int sp = (int)unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Sp);
 
             roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, (level - sp).ToString());
 

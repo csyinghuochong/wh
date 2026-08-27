@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -49,7 +49,7 @@ namespace ET
         /// <summary>
         /// 家园大师
         /// </summary>
-        public List<KeyValuePair> JiaYuanProList_7 = new List<KeyValuePair>();
+        public List<IntStringPair> JiaYuanProList_7 = new List<IntStringPair>();
 
 
         /// <summary>

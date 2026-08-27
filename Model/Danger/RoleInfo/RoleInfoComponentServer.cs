@@ -40,7 +40,7 @@ namespace ET
         public readonly M2C_RoleDataUpdate m2C_RoleDataUpdate = new M2C_RoleDataUpdate();
 
 
-        public List<KeyValuePair> Buffs = new List<KeyValuePair>();
+        public List<IntStringPair> Buffs = new List<IntStringPair>();
 
     }
 }

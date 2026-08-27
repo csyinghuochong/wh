@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -259,11 +259,11 @@ namespace ET
             return camp;
         }
 
-        public static KeyValuePairInt GetBattleInstanceId(this FubenCenterComponent self, long unitid, int sceneId)
+        public static IntLongPair GetBattleInstanceId(this FubenCenterComponent self, long unitid, int sceneId)
         {
             if (!self.BattleOpen)
             {
-                return new KeyValuePairInt() { KeyId = 0, Value = 0 };
+                return new IntLongPair() { KeyId = 0, Value = 0 };
             }
 
             int playerLimit = GetBattlePlayerLimit(sceneId);
@@ -277,11 +277,11 @@ namespace ET
                 }
                 if (battleInfo.Camp1Player.Contains(unitid))
                 {
-                    return new KeyValuePairInt() { KeyId = 1, Value = battleInfo.FubenInstanceId };
+                    return new IntLongPair() { KeyId = 1, Value = battleInfo.FubenInstanceId };
                 }
                 if (battleInfo.Camp2Player.Contains(unitid))
                 {
-                    return new KeyValuePairInt() { KeyId = 2, Value = battleInfo.FubenInstanceId };
+                    return new IntLongPair() { KeyId = 2, Value = battleInfo.FubenInstanceId };
                 }
                 if (assignable == null && battleInfo.PlayerNumber < playerLimit)
                 {
@@ -292,13 +292,13 @@ namespace ET
             if (assignable != null)
             {
                 int camp = AddBattlePlayer(assignable, unitid);
-                return new KeyValuePairInt() { KeyId = camp, Value = assignable.FubenInstanceId };
+                return new IntLongPair() { KeyId = camp, Value = assignable.FubenInstanceId };
             }
 
             return null;
         }
 
-        public static async ETTask<KeyValuePairInt> GenerateBattleInstanceId(this FubenCenterComponent self, long unitid, int sceneId)
+        public static async ETTask<IntLongPair> GenerateBattleInstanceId(this FubenCenterComponent self, long unitid, int sceneId)
         {
             if (!self.BattleOpen)
             {
@@ -329,7 +329,7 @@ namespace ET
             battleInfo.SceneId = sceneId;
             int camp = AddBattlePlayer(battleInfo, unitid);
             self.BattleInfos.Add(battleInfo);
-            return new KeyValuePairInt() { KeyId = camp, Value = battleInfo.FubenInstanceId };
+            return new IntLongPair() { KeyId = camp, Value = battleInfo.FubenInstanceId };
         }
 
         public static async ETTask  InitYeWaiScene(this FubenCenterComponent self)

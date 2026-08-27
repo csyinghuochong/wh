@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 #if SERVER
 using MongoDB.Bson.Serialization.Attributes;
 #endif
@@ -6,7 +6,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ET
 {
-    public class KeyValuePairLong4
+    public class LongLongPair4
     {
 
         public long KeyId;

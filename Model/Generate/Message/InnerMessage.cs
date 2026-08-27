@@ -3452,7 +3452,7 @@ namespace ET
 		public int CampId { get; set; }
 
 		[ProtoMember(2)]
-		public KeyValuePairLong RankingInfo { get; set; }
+		public LongLongPair RankingInfo { get; set; }
 
 	}
 
@@ -3606,7 +3606,7 @@ namespace ET
 		public List<PetMingPlayerInfo> PetMineList = new List<PetMingPlayerInfo>();
 
 		[ProtoMember(2)]
-		public List<KeyValuePairInt> PetMingExtend = new List<KeyValuePairInt>();
+		public List<IntLongPair> PetMingExtend = new List<IntLongPair>();
 
 	}
 
@@ -3672,7 +3672,7 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(2)]
-		public KeyValuePairLong RankingInfo { get; set; }
+		public LongLongPair RankingInfo { get; set; }
 
 	}
 

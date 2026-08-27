@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Options;
 namespace ET
@@ -14,7 +14,7 @@ namespace ET
         /// <summary>
         /// 珍宝
         /// </summary>
-        public List<KeyValuePairInt> TreasureInfo = new List<KeyValuePairInt>();
+        public List<IntLongPair> TreasureInfo = new List<IntLongPair>();
 
 
         [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -88,7 +88,7 @@ namespace ET
             R2M_RankTrialResponse Response = (R2M_RankTrialResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankTrialRequest()
                      {
-                         RankingInfo = new KeyValuePairLong() { KeyId = unitId, Value = hurtValue, Value2 = mapComponent.SonSceneId }
+                         RankingInfo = new LongLongPair() { KeyId = unitId, Value = hurtValue, Value2 = mapComponent.SonSceneId }
                      });
             if (Response.Error == ErrorCode.ERR_Success && Response.RankId != 0)
             {

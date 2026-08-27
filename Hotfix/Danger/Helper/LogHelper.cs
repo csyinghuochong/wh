@@ -496,9 +496,9 @@ namespace ET
 
             int openDay = DBHelper.GetOpenServerDay(unit);
             //钻石线
-            if (userInfo.RoleInfo.Diamond >= rechargeValue * 150 + 50000)
+            if (userInfo.RoleInfo.GetCurrency(UserDataType.Diamond) >= rechargeValue * 150 + 50000)
             {
-                LogHelper.ZuobiInfo("钻石作弊:" + userInfo.RoleInfo.Diamond + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.RoleInfo.Lv + " 充值:" + rechargeValue);
+                LogHelper.ZuobiInfo("钻石作弊:" + userInfo.RoleInfo.GetCurrency(UserDataType.Diamond) + " 服务器:" + unit.DomainZone() + " 名字:" + userInfo.UserName + " 等级:" + userInfo.RoleInfo.Lv + " 充值:" + rechargeValue);
             }
 
             //等级线

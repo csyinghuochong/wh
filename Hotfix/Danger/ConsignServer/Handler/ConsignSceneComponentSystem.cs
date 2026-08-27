@@ -159,9 +159,9 @@ namespace ET
                 {
                     Log.Warning($"OnAuctionOver[离线/失败]:  {self.DomainZone()}  {self.AuctioUnitId}  {self.AuctionPlayer}  Error={m2G_RechargeResponse.Error}");
                     RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(auctionHomeZone, self.AuctioUnitId);
-                    if (roleInfoComponentServer != null && roleInfoComponentServer.RoleInfo.Gold >= self.AuctionPrice)
+                    if (roleInfoComponentServer != null && RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold) >= self.AuctionPrice)
                     {
-                        roleInfoComponentServer.RoleInfo.Gold -= self.AuctionPrice;
+                        RoleCurrencyHelper.Add(roleInfoComponentServer.RoleInfo, UserDataType.Gold, -self.AuctionPrice);
                         await DBHelper.SaveComponent(auctionHomeZone, self.AuctioUnitId, roleInfoComponentServer);
                         Log.Error("MailInfo mailInfo = new MailInfo");
                         //MailInfo mailInfo = new MailInfo();

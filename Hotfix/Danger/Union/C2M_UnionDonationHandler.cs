@@ -21,7 +21,7 @@ namespace ET
             {
                 if (request.Type == 0) // 金币捐献
                 {
-                    long selfgold = roleInfo.Gold;
+                    long selfgold = unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold);
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit),
                         new M2U_UnionOperationRequest() { OperateType = 3, UnitId = unit.Id, UnionId = unionid, Par = selfgold.ToString() });
@@ -47,7 +47,7 @@ namespace ET
                 }
                 else if (request.Type == 1) // 钻石捐献
                 {
-                    long selfDiamond = roleInfo.Diamond;
+                    long selfDiamond = unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Diamond);
                     U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
                         DBHelper.GetUnionServerId(unit),
                         new M2U_UnionOperationRequest() { OperateType = 4, UnitId = unit.Id, UnionId = unionid, Par = selfDiamond.ToString() });

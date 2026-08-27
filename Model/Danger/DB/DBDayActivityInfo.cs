@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Options;
 using System.Collections.Generic;
 
@@ -36,7 +36,7 @@ namespace ET
         public Dictionary<long, long> PetMingChanChu = new Dictionary<long, long>();
 
 		//核心矿
-		public List<KeyValuePairInt> PetMingHexinList = new List<KeyValuePairInt> { };
+		public List<IntLongPair> PetMingHexinList = new List<IntLongPair> { };
 
         /// <summary>
         /// 竞猜数字->竞猜玩家列表

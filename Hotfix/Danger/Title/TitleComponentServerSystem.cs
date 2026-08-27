@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,7 +65,7 @@ namespace ET
 
             for (int i = self.TitleList.Count - 1; i >= 0; i--)
             {
-                KeyValuePairInt titleEntry = self.TitleList[i];
+                IntLongPair titleEntry = self.TitleList[i];
                 LDElf ldElf = LDElfCategory.Instance.Get(titleEntry.KeyId);
                 //proList.AddRange(GetCachedTitlePro(titleEntry.KeyId, ldElf.AddProperty));
             }
@@ -168,7 +168,7 @@ namespace ET
 
             LDTitle elf = LDTitleCategory.Instance.Get(titleId);
             long endTime = elf.ValidityTime == -1 ? -1 : TimeHelper.ServerNow() + elf.ValidityTime * 1000;
-            self.TitleList.Add(new KeyValuePairInt() { KeyId = titleId, Value = endTime });
+            self.TitleList.Add(new IntLongPair() { KeyId = titleId, Value = endTime });
         }
     }
 }

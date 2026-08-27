@@ -360,7 +360,7 @@ namespace ET
             foreach (var entity in RoleInfoComponents)
             {
                 UserinfoComponetDict.Add(entity.Id, entity as RoleInfoComponentServer);
-                if ((entity.RoleInfo.Gold > 1000000 || entity.RoleInfo.Diamond > 10000) && entity.RoleInfo.RobotId == 0)
+                if ((RoleCurrencyHelper.Get(entity.RoleInfo, UserDataType.Gold) > 1000000 || RoleCurrencyHelper.Get(entity.RoleInfo, UserDataType.Diamond) > 10000) && entity.RoleInfo.RobotId == 0)
                 {
                    // Log.Warning($"Gold:{entity.RoleInfo.Gold}  Diamond:{entity.RoleInfo.Diamond}  ID:{entity.Id}  Account:{entity.Account} Name: {entity.RoleInfo.Name}  Level:{entity.RoleInfo.Level} ");
                 }
@@ -428,7 +428,7 @@ namespace ET
                 {
                     recharget = rechargeComponentServer.GetTotalRechargeNum();
                 }
-                long diamond = userInfo.RoleInfo.Diamond;
+                long diamond = RoleCurrencyHelper.Get(userInfo.RoleInfo, UserDataType.Diamond);
 
                 Log.Warning($"{servername} 玩家:{userName}  等级: {userlv}  充值额度:{recharget}  当前钻石{diamond}  拥有神兽:{shenshou}");
             }
@@ -786,10 +786,10 @@ namespace ET
                     int maxnumber = Math.Min(500, rankingInfos_new.Count);
                     entity.rankingInfos = rankingInfos_new.GetRange(0, maxnumber);
 
-                    List<KeyValuePairLong> rankingTrial_new = entity.rankingTrial;
-                    List<KeyValuePairLong> rankingTrial_old = dBRankInfos_old[0].rankingTrial;
+                    List<LongLongPair> rankingTrial_new = entity.rankingTrial;
+                    List<LongLongPair> rankingTrial_old = dBRankInfos_old[0].rankingTrial;
                     rankingTrial_new.AddRange(rankingTrial_old);
-                    rankingTrial_new.Sort(delegate (KeyValuePairLong a, KeyValuePairLong b)
+                    rankingTrial_new.Sort(delegate (LongLongPair a, LongLongPair b)
                     {
                         if (b.Value2 == a.Value2)
                         {
@@ -803,10 +803,10 @@ namespace ET
                     maxnumber = Math.Min(rankingTrial_new.Count, 100);
                     entity.rankingTrial = rankingTrial_new.GetRange(0, maxnumber);
 
-                    List<KeyValuePairLong> rankSeasonTower_new = entity.rankSeasonTower;
-                    List<KeyValuePairLong> rankSeasonTower_old = dBRankInfos_old[0].rankSeasonTower;
+                    List<LongLongPair> rankSeasonTower_new = entity.rankSeasonTower;
+                    List<LongLongPair> rankSeasonTower_old = dBRankInfos_old[0].rankSeasonTower;
                     rankSeasonTower_new.AddRange(rankSeasonTower_old);
-                    rankSeasonTower_new.Sort(delegate (KeyValuePairLong a, KeyValuePairLong b)
+                    rankSeasonTower_new.Sort(delegate (LongLongPair a, LongLongPair b)
                     {
                         if (b.Value2 == a.Value2)
                         {

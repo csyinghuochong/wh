@@ -58,7 +58,7 @@ namespace ET
 					ItemID = -1,// paiMaiSellConfig.ItemID,
 					BuyNum = request.BuyNum,
 					//Price = r_PaiMaiShopResponse.PaiMaiShopItemInfo.Price,
-					ActorId = roleInfo.RoleInfo.Gold,
+					ActorId = unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold),
 				};
 
 				long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
@@ -73,7 +73,7 @@ namespace ET
 
 				//消耗金币
 				long costGold = (long)r_PaiMaiShopResponse.PaiMaiShopItemInfo.Price * request.BuyNum;
-				if (costGold > 0 && roleInfo.RoleInfo.Gold >= costGold)
+				if (costGold > 0 && unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) >= costGold)
 				{
 					//发送金币
 					roleInfo.UpdateRoleData(UserDataType.Gold, (costGold * -1).ToString(), true, ItemGetWay.PaiMaiShop);

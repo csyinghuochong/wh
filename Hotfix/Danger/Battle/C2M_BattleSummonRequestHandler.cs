@@ -51,7 +51,7 @@ namespace ET
 
             //判断金币
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();  
-            if(roleInfoComponentServer.RoleInfo.Gold < costgold)
+            if(unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < costgold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
