@@ -1532,6 +1532,9 @@ namespace ET
 		[ProtoMember(10)]
 		public bool ShowNotice { get; set; }
 
+		[ProtoMember(11)]
+		public List<CreateRoleInfo> RoleList = new List<CreateRoleInfo>();
+
 	}
 
 	[ResponseType(nameof(Realm2C_SendSmsVerifyCode))]

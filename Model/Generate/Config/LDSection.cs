@@ -85,8 +85,11 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>场景ID</summary>
+		/// <summary>描述</summary>
 		[ProtoMember(3)]
+		public int Desc { get; set; }
+		/// <summary>场景ID</summary>
+		[ProtoMember(4)]
 		public int[] Scene_Id { get; set; }
 
 	}

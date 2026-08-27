@@ -94,6 +94,9 @@ namespace ET
 		/// <summary>内容</summary>
 		[ProtoMember(5)]
 		public int Content { get; set; }
+		/// <summary>隶属</summary>
+		[ProtoMember(6)]
+		public int Belong_Id { get; set; }
 
 	}
 }

@@ -85,50 +85,53 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>头像</summary>
+		/// <summary>描述</summary>
 		[ProtoMember(3)]
+		public int Desc { get; set; }
+		/// <summary>头像</summary>
+		[ProtoMember(4)]
 		public string Icon { get; set; }
 		/// <summary>模型</summary>
-		[ProtoMember(4)]
+		[ProtoMember(5)]
 		public string Model { get; set; }
 		/// <summary>品质</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public int Quality { get; set; }
 		/// <summary>神兽</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int Is_Best { get; set; }
 		/// <summary>星级 上限</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int Star_Limit { get; set; }
 		/// <summary>体资质</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int[] Aptitude_1 { get; set; }
 		/// <summary>力资质</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int[] Aptitude_2 { get; set; }
 		/// <summary>智资质</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int[] Aptitude_3 { get; set; }
 		/// <summary>念资质</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int[] Aptitude_4 { get; set; }
 		/// <summary>敏资质</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int[] Aptitude_5 { get; set; }
 		/// <summary>迅资质</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public int[] Aptitude_6 { get; set; }
 		/// <summary>变异提升</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public int[] Aptitude_Add_Change { get; set; }
 		/// <summary>星级提升上限 当前值按算法提升</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int[] Aptitude_Add_Star { get; set; }
 		/// <summary>技能</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public int[] Skill { get; set; }
 		/// <summary>变异技能</summary>
-		[ProtoMember(17)]
+		[ProtoMember(18)]
 		public int[] Skill_Change { get; set; }
 
 	}

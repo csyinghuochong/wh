@@ -7,50 +7,50 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDAuctionCategory : ProtoObject, IMerge
+    public partial class LDExchangeCategory : ProtoObject, IMerge
     {
-        public static LDAuctionCategory Instance;
+        public static LDExchangeCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDAuction> dict = new Dictionary<int, LDAuction>();
+        private Dictionary<int, LDExchange> dict = new Dictionary<int, LDExchange>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDAuction> list = new List<LDAuction>();
+        private List<LDExchange> list = new List<LDExchange>();
 		
-        public LDAuctionCategory()
+        public LDExchangeCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDAuctionCategory s = o as LDAuctionCategory;
+            LDExchangeCategory s = o as LDExchangeCategory;
             this.list.AddRange(s.list);
         }
 		
 		public override void EndInit()
 		{
-			foreach (LDAuction config in list)
+			foreach (LDExchange config in list)
 			{
 				config.EndInit();
 				if (this.dict.ContainsKey(config.Id))
 				{
-					throw new Exception($"配置表重复Id: 表={nameof(LDAuction)} Id={config.Id}");
+					throw new Exception($"配置表重复Id: 表={nameof(LDExchange)} Id={config.Id}");
 				}
 				this.dict.Add(config.Id, config);
 			}
 			this.AfterEndInit();
 		}
 		
-        public LDAuction Get(int id)
+        public LDExchange Get(int id)
         {
-            this.dict.TryGetValue(id, out LDAuction item);
+            this.dict.TryGetValue(id, out LDExchange item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDAuction)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDExchange)}，配置id: {id}");
             }
 
             return item;
@@ -61,12 +61,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDAuction> GetAll()
+        public Dictionary<int, LDExchange> GetAll()
         {
             return this.dict;
         }
 
-        public LDAuction GetOne()
+        public LDExchange GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -77,7 +77,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDAuction: ProtoObject, IConfig
+	public partial class LDExchange: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

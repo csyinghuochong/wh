@@ -26,8 +26,6 @@ namespace ET
                         long serverTime = TimeHelper.ServerNow();
                         List<ServerItem> serverItems = ServerHelper.GetServerList();
 
-                        //Console.WriteLine($"C2A_ServerList: ServerItems {ServerHelper.GetServerList().Count}");
-
                         response.ServerItems.Clear();
                         for (int i = 0; i < serverItems.Count; i++)
                         {
@@ -47,7 +45,7 @@ namespace ET
                             timeColse = long.Parse(stringxxx[1]);
                             response.NoticeText = stringxxx[2];
                         }
-                        
+
                         string[] stringxxx_EN = LogHelper.GetNoticeNew_EN().Split('@');
                         if (stringxxx_EN.Length == 3)
                         {
@@ -64,18 +62,93 @@ namespace ET
                         {
                             response.ShowNotice = true;
                         }
-                        
-                        string outeIp = StartMachineConfigCategory.Instance.Get(1).OuterIP;
+
                         response.SmsVerifyType = 0; //0 mob  1 aliyun
-                        reply();
-                        await ETTask.CompletedTask;
                     }
+
+                    await FillAccountRoleList(request.Account, response);
+                    reply();
+                    await ETTask.CompletedTask;
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex.ToString());
             }
+        }
+
+        private static async ETTask FillAccountRoleList(string account, R2C_ServerList response)
+        {
+            response.RoleList.Clear();
+            if (string.IsNullOrEmpty(account))
+            {
+                return;
+            }
+
+            account = account.Trim().ToLower();
+            if (string.IsNullOrEmpty(account))
+            {
+                return;
+            }
+
+            List<DBCenterAccountInfo> centerAccountInfoList = await Game.Scene.GetComponent<DBComponent>()
+                .Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Account.Equals(account));
+            if (centerAccountInfoList == null || centerAccountInfoList.Count == 0)
+            {
+                return;
+            }
+
+            DBCenterAccountInfo dbCenterAccountInfo = centerAccountInfoList[0];
+            try
+            {
+                List<CreateRoleInfo> roleList = dbCenterAccountInfo.RoleList;
+                if (roleList == null)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < roleList.Count; i++)
+                {
+                    CreateRoleInfo roleInfo = roleList[i];
+                    if (roleInfo == null || roleInfo.State == (int)RoleInfoState.Freeze)
+                    {
+                        continue;
+                    }
+
+                    if (!LDOccupationCategory.Instance.Contain(roleInfo.PlayerOcc))
+                    {
+                        continue;
+                    }
+
+                    response.RoleList.Add(CopyRoleInfo(roleInfo));
+                }
+            }
+            finally
+            {
+                dbCenterAccountInfo.Dispose();
+            }
+        }
+
+        private static CreateRoleInfo CopyRoleInfo(CreateRoleInfo src)
+        {
+            CreateRoleInfo copy = new CreateRoleInfo();
+            copy.UserID = src.UserID;
+            copy.PlayerLv = src.PlayerLv;
+            copy.PlayerOcc = src.PlayerOcc;
+            copy.WeaponId = src.WeaponId;
+            copy.PlayerName = src.PlayerName;
+            copy.OccTwo = src.OccTwo;
+            copy.ServerId = src.ServerId;
+            copy.State = src.State;
+            copy.CreateTime = src.CreateTime;
+            copy.RobotId = src.RobotId;
+            copy.Sex = src.Sex;
+            if (src.FashionIds != null && src.FashionIds.Count > 0)
+            {
+                copy.FashionIds.AddRange(src.FashionIds);
+            }
+
+            return copy;
         }
     }
 }

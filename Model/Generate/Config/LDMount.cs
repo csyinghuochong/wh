@@ -85,44 +85,26 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>描述</summary>
+		/// <summary>体资质</summary>
 		[ProtoMember(3)]
-		public int Desc { get; set; }
-		/// <summary>获取描述</summary>
+		public int[] Aptitude_1 { get; set; }
+		/// <summary>力资质</summary>
 		[ProtoMember(4)]
-		public int Desc_Get { get; set; }
-		/// <summary>模型</summary>
+		public int[] Aptitude_2 { get; set; }
+		/// <summary>智资质</summary>
 		[ProtoMember(5)]
-		public string Model { get; set; }
-		/// <summary>特效</summary>
+		public int[] Aptitude_3 { get; set; }
+		/// <summary>念资质</summary>
 		[ProtoMember(6)]
-		public string Effect { get; set; }
-		/// <summary>品质</summary>
+		public int[] Aptitude_4 { get; set; }
+		/// <summary>敏资质</summary>
 		[ProtoMember(7)]
-		public int Quality { get; set; }
-		/// <summary>标签</summary>
+		public int[] Aptitude_5 { get; set; }
+		/// <summary>迅资质</summary>
 		[ProtoMember(8)]
-		public string Tage { get; set; }
-		/// <summary>生命资质</summary>
-		[ProtoMember(9)]
-		public int Aptitude_HP { get; set; }
-		/// <summary>物攻资质</summary>
-		[ProtoMember(10)]
-		public int Aptitude_Atk { get; set; }
-		/// <summary>法攻资质</summary>
-		[ProtoMember(11)]
-		public int Aptitude_MagAtk { get; set; }
-		/// <summary>物防资质</summary>
-		[ProtoMember(12)]
-		public int Aptitude_Def { get; set; }
-		/// <summary>法防资质</summary>
-		[ProtoMember(13)]
-		public int Aptitude_MagDef { get; set; }
-		/// <summary>移动速度</summary>
-		[ProtoMember(14)]
-		public int Speed { get; set; }
+		public int[] Aptitude_6 { get; set; }
 		/// <summary>启用</summary>
-		[ProtoMember(15)]
+		[ProtoMember(9)]
 		public int Enable { get; set; }
 
 	}

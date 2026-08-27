@@ -903,7 +903,7 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             List<RankingInfo> rankingInfos = self.DBRankInfo.rankingInfos;
             long mailServerId = DBHelper.GetMailServerId(zone);
-            int mailConfigId = LDMailCategory.Instance.GetMailByKey(MailKey.Mail_XXX);
+            int mailConfigId = LDMailCategory.Instance.GetMailByKey(MailKey.Mail_Exchange_Failure);
             if (mailConfigId <= 0 && LDMailCategory.Instance.Contain(1))
             {
                 mailConfigId = 1;
