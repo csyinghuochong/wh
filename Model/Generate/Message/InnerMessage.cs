@@ -3995,46 +3995,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Consign2M_ShopResponse))]
-	[Message(InnerOpcode.M2Consign_ShopRequest)]
-	[ProtoContract]
-	public partial class M2Consign_ShopRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ItemID { get; set; }
-
-		[ProtoMember(2)]
-		public int BuyNum { get; set; }
-
-		[ProtoMember(3)]
-		public int Price { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Consign2M_ShopResponse)]
-	[ProtoContract]
-	public partial class Consign2M_ShopResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public ConsignShopItemInfo ConsignShopItemInfo { get; set; }
-
-	}
-
 	[ResponseType(nameof(Consign2R_DeleteRoleData))]
 	[Message(InnerOpcode.R2Consign_DeleteRoleData)]
 	[ProtoContract]

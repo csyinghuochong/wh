@@ -244,42 +244,6 @@ namespace ET
             }
         }
 
-
-        /// <summary>
-        /// 拍卖商店
-        /// </summary>
-        /// <param name="self"></param>
-        /// <returns></returns>
-        public static async ETTask InitPaiMainShop(this ConsignSceneComponent self, int itemType, List<ConsignShopItemInfo> oldPaiMaiShop)
-        {
-            int zone = self.DomainZone();
-            long unitid = ConsignHelper.GetPaiMaiId(itemType);
-            long dbCacheId = DBHelper.GetDbCacheId(zone);
-            
-            List<DBConsignInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBConsignInfo>(self.DomainZone(), d => d.Id == unitid);
-            if (zone == 66)
-            {
-                Log.Console("zone == 66");
-            }
-            if (paimaiList == null || paimaiList.Count == 0)
-            {
-                //初始拍卖行商店
-                DBConsignInfo dBPaiMainInfo = self.AddChildWithId<DBConsignInfo>(unitid);
-                self.dBPaiMainInfo_Shop = dBPaiMainInfo;
-                //存储拍卖行商店
-                //D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(dBPaiMainInfo), ComponentType = DBHelper.DBPaiMainInfo });
-                await Game.Scene.GetComponent<DBComponent>().Save<DBConsignInfo>(self.DomainZone(), dBPaiMainInfo);
-            }
-            else
-            {
-                self.AddChild(paimaiList[0]);
-                self.dBPaiMainInfo_Shop = paimaiList[0];
-            }
-
-            //更新快捷购买列表
-            self.UpdatePaiMaiShopItemList();
-        }
-
         public static async ETTask InitPaiMainStall(this ConsignSceneComponent self, int itemType, List<ConsignItemInfo> oldPaiMaiStall)
         {
             int zone = self.DomainZone();
@@ -397,7 +361,6 @@ namespace ET
             long dbCacheId = DBHelper.GetDbCacheId(zone);
             await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(5000, 10000));
 
-            List<ConsignShopItemInfo> oldPaiMaiShop = new List<ConsignShopItemInfo>();
             List<ConsignItemInfo> oldPaiMaiAll = new List<ConsignItemInfo>();
             List<ConsignItemInfo> oldPaiMaiStall = new List<ConsignItemInfo>();
 
@@ -408,7 +371,6 @@ namespace ET
                 await self.InitPaiMaiShangJia(ConsignHelper.ShangJiaItemTypes[i], oldPaiMaiAll);
             }
 
-            await self.InitPaiMainShop(11, oldPaiMaiShop);
             await self.InitPaiMainStall(12, oldPaiMaiStall);
 
             self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Minute * 30 + RandomHelper.RandomNumber(1000, 10000), TimerType.ConsignSceneTimer, self);
@@ -513,19 +475,6 @@ namespace ET
             }
         }
 
-
-
-        //根据道具ID获取对应快捷购买的列表
-        public static void PaiMaiShopInfoAddBuyNum(this ConsignSceneComponent self, long needItemID, int buyNum)
-        {
-            foreach (ConsignShopItemInfo info in self.dBPaiMainInfo_Shop.PaiMaiShopItemInfos)
-            {
-                if (info.Id == needItemID)
-                {
-                    info.BuyNum += buyNum;
-                }
-            }
-        }
 
         public static async ETTask SaveDB(this ConsignSceneComponent self, int random)
         {
