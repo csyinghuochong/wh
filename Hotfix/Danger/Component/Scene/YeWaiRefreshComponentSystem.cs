@@ -449,12 +449,6 @@ namespace ET
                 Log.Warning($"refreshMonster.UnionRace: {refreshMonster.MonsterId}");
             }
 
-            if (mapComponent.MapTypeEnum == MapTypeEnum.MiJing && ldMonster.Type == MonsterTypeEnum.Boss)
-            {
-                MiJingComponent miJingComponent = self.DomainScene().GetComponent<MiJingComponent>();
-                miJingComponent.BossId = refreshMonster.MonsterId;
-            }
-            
             if (refreshMonster.Number > 100)
             {
                 Log.Error($"refreshMonster.Number > 100");

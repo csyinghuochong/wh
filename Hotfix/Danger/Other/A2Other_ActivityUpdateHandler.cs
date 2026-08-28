@@ -96,7 +96,6 @@ namespace ET
                     {
                         //Log.Console("OnShowLieOver");
                         Log.Warning("OnShowLieOver");
-                        scene.GetComponent<RankSceneComponent>().OnShowLieOver().Coroutine();
                     }
                     if (request.FunctionId == 1044 && request.FunctionType == 2)
                     {

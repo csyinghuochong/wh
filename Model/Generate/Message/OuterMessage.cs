@@ -3073,6 +3073,7 @@ namespace ET
 		[ProtoMember(2)]
 		public List<TaskPro> DayTaskList = new List<TaskPro>();
 
+// 有值：只替换这些 Group 的展示条；空：整表覆盖（与登录下发一致）
 		[ProtoMember(3)]
 		public List<int> GroupIds = new List<int>();
 
@@ -3745,37 +3746,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(R2C_RankShowLieResponse))]
-	[Message(OuterOpcode.C2R_RankShowLieRequest)]
-	[ProtoContract]
-	public partial class C2R_RankShowLieRequest: Object, IRankActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_RankShowLieResponse)]
-	[ProtoContract]
-	public partial class R2C_RankShowLieResponse: Object, IRankActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<RankShouLieInfo> RankList = new List<RankShouLieInfo>();
-
-	}
-
 	[Message(OuterOpcode.RankingInfo)]
 	[ProtoContract]
 	public partial class RankingInfo: Object
@@ -3793,24 +3763,6 @@ namespace ET
 		public long Combat { get; set; }
 
 		[ProtoMember(5)]
-		public int Occ { get; set; }
-
-	}
-
-	[Message(OuterOpcode.RankShouLieInfo)]
-	[ProtoContract]
-	public partial class RankShouLieInfo: Object
-	{
-		[ProtoMember(1)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(2)]
-		public string PlayerName { get; set; }
-
-		[ProtoMember(3)]
-		public long KillNumber { get; set; }
-
-		[ProtoMember(4)]
 		public int Occ { get; set; }
 
 	}
@@ -5449,40 +5401,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(U2C_DonationRankListResponse))]
-	[Message(OuterOpcode.C2U_DonationRankListRequest)]
-	[ProtoContract]
-	public partial class C2U_DonationRankListRequest: Object, IUnionActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RankType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.U2C_DonationRankListResponse)]
-	[ProtoContract]
-	public partial class U2C_DonationRankListResponse: Object, IUnionActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<RankingInfo> RankList = new List<RankingInfo>();
-
-	}
-
 	[ResponseType(nameof(U2C_UnionRaceInfoResponse))]
 	[Message(OuterOpcode.C2U_UnionRaceInfoRequest)]
 	[ProtoContract]
@@ -6915,21 +6833,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public long UnitId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SyncMiJingDamage)]
-	[ProtoContract]
-	public partial class M2C_SyncMiJingDamage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public List<TeamPlayerInfo> DamageList = new List<TeamPlayerInfo>();
 
 	}
 
@@ -8896,41 +8799,6 @@ namespace ET
 
 	}
 
-//家族争霸赛捐献
-	[ResponseType(nameof(M2C_DonationResponse))]
-	[Message(OuterOpcode.C2M_DonationRequest)]
-	[ProtoContract]
-	public partial class C2M_DonationRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long Price { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_DonationResponse)]
-	[ProtoContract]
-	public partial class M2C_DonationResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_UnionDonationResponse))]
 	[Message(OuterOpcode.C2M_UnionDonationRequest)]
 	[ProtoContract]
@@ -9375,34 +9243,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_SkillJueXingResponse))]
-	[Message(OuterOpcode.C2M_SkillJueXingRequest)]
-	[ProtoContract]
-	public partial class C2M_SkillJueXingRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int JueXingId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillJueXingResponse)]
-	[ProtoContract]
-	public partial class M2C_SkillJueXingResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_SkillXuanZhuanResponse))]
 	[Message(OuterOpcode.C2M_SkillXuanZhuanRequest)]
 	[ProtoContract]
@@ -9642,37 +9482,6 @@ namespace ET
 
 		[ProtoMember(3)]
 		public long NextRefreshTime { get; set; }
-
-	}
-
-	[ResponseType(nameof(R2C_RankUnionRaceResponse))]
-	[Message(OuterOpcode.C2R_RankUnionRaceRequest)]
-	[ProtoContract]
-	public partial class C2R_RankUnionRaceRequest: Object, IRankActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_RankUnionRaceResponse)]
-	[ProtoContract]
-	public partial class R2C_RankUnionRaceResponse: Object, IRankActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<RankShouLieInfo> RankList = new List<RankShouLieInfo>();
 
 	}
 
@@ -13858,7 +13667,6 @@ namespace ET
 	}
 
 //ChengJiu end####################################################
-
 //Mount start####################################################
 // 坐骑实例。资质结构复用 PetAptitudeInfo（D最低 E当前 F强化 G上限 Z最终）
 // 表 LDMount.Aptitude_1~6：长度为1时 D=E=Z=该值；长度为3时按宠物 A/B/C 初始化
@@ -13987,6 +13795,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_MountUse))]
+//坐骑使用[1使用/已激活 0休息]
 	[Message(OuterOpcode.C2M_MountUse)]
 	[ProtoContract]
 	public partial class C2M_MountUse: Object, IActorLocationRequest
@@ -14052,6 +13861,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_MountRide))]
+//上下马：有骑乘则下马，否则骑乘当前使用的坐骑
 	[Message(OuterOpcode.C2M_MountRide)]
 	[ProtoContract]
 	public partial class C2M_MountRide: Object, IActorLocationRequest
@@ -14094,6 +13904,47 @@ namespace ET
 
 		[ProtoMember(3)]
 		public int RideConfigId { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MountXiLian))]
+// 坐骑洗练/经验丹。按消耗道具 ItemType 分支：
+// 30 洗练丹 → 重置资质（按 LDMount.Aptitude 重随 D/E）
+// 31 经验丹 → ItemTypeParam1 为经验值
+// BagInfoID=消耗道具；CostItemNum=数量（默认 1）
+	[Message(OuterOpcode.C2M_MountXiLian)]
+	[ProtoContract]
+	public partial class C2M_MountXiLian: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long MountInfoId { get; set; }
+
+		[ProtoMember(2)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(3)]
+		public int CostItemNum { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountXiLian)]
+	[ProtoContract]
+	public partial class M2C_MountXiLian: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public MountInfo MountInfo { get; set; }
 
 	}
 

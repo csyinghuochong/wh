@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -61,15 +62,13 @@ namespace ET
             return warZone != 0 && warZone == this.GetWarZone(zoneB);
         }
         
+        public const long DefaultServerOpenTime = 1786791600000;
+        public const int GameZoneListPortStart = 20325;
+
         public override void AfterEndInit()
         {
-            _serverItems.Clear();
             this.WarZoneMembers = new MultiMap<int, int>();
             this.WarShareZones.Clear();
-
-            _serverItems.Add( GetServerItem( 1, "127.0.0.1:20325", "版号服", 1786791600000, 1 ) );
-            _serverItems.Add( GetServerItem( 2, "127.0.0.1:20335", "内测1服", 1786791600000, 1 ) );
-            _serverItems.Add( GetServerItem( 3, "127.0.0.1:20345", "内测2服", 1786791600000, 1 ) );
 
             foreach (StartZoneConfig config in this.GetAll().Values)
             {
@@ -86,6 +85,73 @@ namespace ET
 
                 this.WarZoneMembers.Add(config.WarZone, config.Id);
             }
+
+            this.RebuildServerItems();
+            StartSceneConfigCategory.Instance?.EnsureGameZonesExpanded();
+        }
+
+        public void RebuildServerItems()
+        {
+            _serverItems.Clear();
+
+            List<StartZoneConfig> gameZones = new List<StartZoneConfig>();
+            foreach (StartZoneConfig config in this.GetAll().Values)
+            {
+                if (config.Id <= 0 || config.Id >= StartSceneConfigCategory.GameZoneIdMax)
+                {
+                    continue;
+                }
+
+                gameZones.Add(config);
+            }
+
+            gameZones.Sort((a, b) => a.Id.CompareTo(b.Id));
+            string outerIp = GetListOuterIp();
+            for (int i = 0; i < gameZones.Count; i++)
+            {
+                StartZoneConfig config = gameZones[i];
+                int port = GameZoneListPortStart + (config.Id - 1) * 10;
+                long openTime = config.OpenTime > 0 ? config.OpenTime : DefaultServerOpenTime;
+                _serverItems.Add(GetServerItem(config.Id, $"{outerIp}:{port}", GetZoneDisplayName(config), openTime, 1));
+            }
+        }
+
+        static string GetListOuterIp()
+        {
+            StartMachineConfigCategory machines = StartMachineConfigCategory.Instance;
+            if (machines == null || machines.GetAll().Count == 0)
+            {
+                return "127.0.0.1";
+            }
+
+            if (machines.Contain(1))
+            {
+                string ip = machines.Get(1).OuterIP;
+                if (!string.IsNullOrEmpty(ip))
+                {
+                    return ip;
+                }
+            }
+
+            foreach (StartMachineConfig machine in machines.GetAll().Values)
+            {
+                if (!string.IsNullOrEmpty(machine.OuterIP))
+                {
+                    return machine.OuterIP;
+                }
+            }
+
+            return "127.0.0.1";
+        }
+
+        static string GetZoneDisplayName(StartZoneConfig config)
+        {
+            if (string.IsNullOrEmpty(config.Name))
+            {
+                return config.Id.ToString();
+            }
+
+            return config.Name;
         }
     }
 }

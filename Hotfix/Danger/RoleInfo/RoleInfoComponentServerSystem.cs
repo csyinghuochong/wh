@@ -336,27 +336,6 @@ namespace ET
             //}
         }
 
-        public static async ETTask UpdateShowLie(this RoleInfoComponentServer self)
-        {
-            Unit unit = self.GetParent<Unit>();
-            if (!ConfigData.ShowLieOpen || unit.IsRobot())
-            {
-                return;
-            }
-            RankShouLieInfo rankPetInfo = new RankShouLieInfo();
-            rankPetInfo.UnitID = self.RoleInfo.UserId;
-            rankPetInfo.PlayerName = self.RoleInfo.Name;
-            rankPetInfo.Occ = self.RoleInfo.Occ;
-            rankPetInfo.KillNumber = 0;/// self.ShouLieKill;
-            long mapInstanceId = DBHelper.GetRankServerId(unit);
-            R2M_RankShowLieResponse Response = (R2M_RankShowLieResponse)await ActorMessageSenderComponent.Instance.Call
-                     (mapInstanceId, new M2R_RankShowLieRequest()
-                     {
-                         RankingInfo = rankPetInfo
-                     });
-        }
-
-
         /// <summary>
         /// 杀怪经验
         /// </summary>

@@ -226,5 +226,17 @@ namespace ET
                 RideConfigId = self.GetRideConfigId()
             });
         }
+
+        public static void NotifyMountUpdate(this MountComponentServer self, MountInfo mountInfo)
+        {
+            if (mountInfo == null)
+            {
+                return;
+            }
+
+            M2C_MountListUpdate update = new M2C_MountListUpdate();
+            update.MountInfoUpdate.Add(mountInfo);
+            MessageHelper.SendToClient(self.GetParent<Unit>(), update);
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2R_RankListRequest request, R2C_RankListResponse response, Action reply)
         {
+            int zone = scene.DomainZone();
             if (scene.SceneType == SceneType.WZRank)
             {
                 WZRankSceneComponent wzRank = scene.GetComponent<WZRankSceneComponent>();

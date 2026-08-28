@@ -12,9 +12,6 @@ namespace ET
 
         public List<RankingInfo> rankSoloInfo = new List<RankingInfo>();    //solo
 
-        public List<RankShouLieInfo> rankShowLie = new List<RankShouLieInfo>(); //狩猎
-        public List<RankShouLieInfo> rankUnionRace = new List<RankShouLieInfo>();//家族战
-
         public List<LongLongPair> rankingTrial = new List<LongLongPair>();   //试炼副本伤害排行
         public List<LongLongPair> rankSeasonTower = new List<LongLongPair>();   //试炼副本伤害排行  id/层数/时间
     }

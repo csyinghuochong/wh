@@ -40,7 +40,7 @@ namespace ET
 
             switch (itemType)
 			{
-				case ItemTypeEnum.SubType_Pet_Exp_30:
+				case ItemTypeEnum.SubType_Pet_Exp_36:
 					petInfo.PetExp += int.Parse(ldItem.ItemTypeParam1);
 					break;
                 case ItemTypeEnum.SubType_PetSkillBook_39:
@@ -54,7 +54,7 @@ namespace ET
 					}
 					ifCost = true;
                     break;
-				case ItemTypeEnum.SubType_PetXiSun_31:  //宠物洗练丹
+				case ItemTypeEnum.SubType_PetXiLian_35:  //宠物洗练丹
                     costNum = request.CostItemNum > 0 ? request.CostItemNum : 1;
 					itemGetWay = ItemGetWay.ItemXiLian;
 					if (bagInfo.ItemNum < costNum)

@@ -254,12 +254,6 @@ namespace ET
             }
             self.EnterTime = TimeHelper.ServerNow();
             List<Unit> allPlayer = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
-            for (int i = 0; i < allPlayer.Count; i++)
-            {
-                M2C_SyncMiJingDamage m2C_SyncMiJingDamage = new M2C_SyncMiJingDamage();
-                m2C_SyncMiJingDamage.DamageList.AddRange(self.TeamInfo.PlayerList);
-                MessageHelper.SendToClient(allPlayer[i], m2C_SyncMiJingDamage);
-            }
         }
 
         public static async ETTask CheckFriend(this TeamDungeonComponent self, Dictionary<long,int> hurts)

@@ -87,7 +87,7 @@ namespace ET
 		public string DBConnection { get; set; }
 		/// <summary>名字</summary>
 		[ProtoMember(3)]
-		public int Name { get; set; }
+		public string Name { get; set; }
 		/// <summary>开服时间</summary>
 		[ProtoMember(4)]
 		public long OpenTime { get; set; }
@@ -97,7 +97,7 @@ namespace ET
 		/// <summary>物理区</summary>
 		[ProtoMember(6)]
 		public int PhysicZone { get; set; }
-		/// <summary>数据库名</summary>
+		/// <summary>数据库</summary>
 		[ProtoMember(7)]
 		public string DBName { get; set; }
 

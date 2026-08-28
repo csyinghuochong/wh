@@ -690,20 +690,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-            RankShouLieInfo rankingInfo = new RankShouLieInfo()
-            {
-                UnitID = unit.Id,
-                KillNumber = 1,
-                Occ = roleInfo.RoleInfo.Occ,
-                PlayerName = roleInfo.RoleInfo.Name
-            };
-            M2R_RankUnionRaceRequest request = new M2R_RankUnionRaceRequest()
-            {
-                 RankingInfo = rankingInfo
-            };
-            long mapInstanceId = DBHelper.GetRankServerId(unit);
-            R2M_RankUnionRaceResponse Response = (R2M_RankUnionRaceResponse)await ActorMessageSenderComponent.Instance.Call
-                     (mapInstanceId, request);
+            await ETTask.CompletedTask;
         }
 
         //击杀怪物可触发多种类型的任务

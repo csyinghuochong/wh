@@ -189,9 +189,6 @@ namespace ET
             self.SendTrialReward().Coroutine();
             self.SendSeasonTowerReward().Coroutine();
             self.BroadcastWorldLv(1).Coroutine();
-
-            self.DBRankInfo.rankShowLie.Clear();
-            self.DBRankInfo.rankUnionRace.Clear();
         }
 
         //更新兑换金币
@@ -652,7 +649,6 @@ namespace ET
 
         public static  void OnShowLieBegin(this RankSceneComponent self)
         {
-            self.DBRankInfo.rankShowLie.Clear();
             self.BroadcastShowLie("1").Coroutine();
         }
 
@@ -730,7 +726,7 @@ namespace ET
           
             Log.Warning($"发放家族战排行榜奖励： {zone}");
             long serverTime = TimeHelper.ServerNow();
-            List<RankShouLieInfo> rankingInfos = self.DBRankInfo.rankUnionRace;
+            List<RankingInfo> rankingInfos = null;
             long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
             Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
@@ -742,7 +738,7 @@ namespace ET
                 }
                 MailInfo mailInfo = new MailInfo();
 
-                Log.Warning($"发放家族战排行榜奖励2： {rankingInfos[i].UnitID}");
+                Log.Warning($"发放家族战排行榜奖励2： {rankingInfos[i].UserId}");
                 Log.Error("MailInfo mailInfo = new MailInfo");
                 mailInfo.Status = 0;
                 //mailInfo.Context = $"恭喜您获得家族战排行榜第{i + 1}名奖励";
@@ -759,24 +755,6 @@ namespace ET
             }
         }
 
-        //发送狩猎排行奖励
-        public static async ETTask OnShowLieOver(this RankSceneComponent self)
-        {
-            await ETTask.CompletedTask;
-            int zone = self.DomainZone();
-            self.BroadcastShowLie("0").Coroutine();
-
-            //Log.Console($"发放狩猎排行榜奖励： {zone}");
-            Log.Debug($"发放狩猎排行榜奖励： {zone}");
-            long serverTime = TimeHelper.ServerNow();
-            List<RankShouLieInfo> rankingInfos = self.DBRankInfo.rankShowLie;
-            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(self.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
-            Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
-            for (int i = 0; i < rankingInfos.Count; i++)
-            {
-               
-            }
-        }
 
         /// <summary>
         /// 发送试炼副本奖励

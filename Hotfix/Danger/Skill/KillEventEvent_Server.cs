@@ -175,9 +175,6 @@ namespace ET
                 case MapTypeEnum.BaoZangZhiDi:
                     ;
                     break;
-                case MapTypeEnum.MiJing:
-                    domainScene.GetComponent<MiJingComponent>().OnKillEvent(defendUnit);
-                    break;
                 case MapTypeEnum.Solo:
                     domainScene.GetComponent<SoloDungeonComponent>().OnKillEvent(mainAttack,defendUnit);
                     break;

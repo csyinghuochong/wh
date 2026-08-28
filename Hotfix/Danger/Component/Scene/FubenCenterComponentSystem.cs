@@ -360,9 +360,6 @@ namespace ET
                 
                 switch (sceneConfig.Scene_Type)
                 {
-                    case MapTypeEnum.MiJing:
-                        fubnescene.AddComponent<MiJingComponent>();
-                        break;
                     default:
                         break;
                 }
