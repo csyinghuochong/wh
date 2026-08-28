@@ -4035,37 +4035,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Mail2Consign_AuctionOverTimeResponse))]
-	[Message(InnerOpcode.Consign2Mail_AuctionOverTimeRequest)]
-	[ProtoContract]
-	public partial class Consign2Mail_AuctionOverTimeRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public ConsignItemInfo ConsignItemInfo { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Mail2Consign_AuctionOverTimeResponse)]
-	[ProtoContract]
-	public partial class Mail2Consign_AuctionOverTimeResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(Consign2R_DeleteRoleData))]
 	[Message(InnerOpcode.R2Consign_DeleteRoleData)]
 	[ProtoContract]

@@ -222,15 +222,13 @@ namespace ET
 		 public const ushort Consign2M_XiaJiaResponse = 20219;
 		 public const ushort M2Consign_ShopRequest = 20220;
 		 public const ushort Consign2M_ShopResponse = 20221;
-		 public const ushort Consign2Mail_AuctionOverTimeRequest = 20222;
-		 public const ushort Mail2Consign_AuctionOverTimeResponse = 20223;
-		 public const ushort R2Consign_DeleteRoleData = 20224;
-		 public const ushort Consign2R_DeleteRoleData = 20225;
-		 public const ushort M2Consign_AuctionPriceRequest = 20226;
-		 public const ushort Consign2M_AuctionPriceResponse = 20227;
-		 public const ushort M2Consign_AuctionJoinRequest = 20228;
-		 public const ushort Consign2M_AuctionJoinResponse = 20229;
-		 public const ushort Consign2M_AuctionOverRequest = 20230;
-		 public const ushort M2Consign_AuctionOverResponse = 20231;
+		 public const ushort R2Consign_DeleteRoleData = 20222;
+		 public const ushort Consign2R_DeleteRoleData = 20223;
+		 public const ushort M2Consign_AuctionPriceRequest = 20224;
+		 public const ushort Consign2M_AuctionPriceResponse = 20225;
+		 public const ushort M2Consign_AuctionJoinRequest = 20226;
+		 public const ushort Consign2M_AuctionJoinResponse = 20227;
+		 public const ushort Consign2M_AuctionOverRequest = 20228;
+		 public const ushort M2Consign_AuctionOverResponse = 20229;
 	}
 }
