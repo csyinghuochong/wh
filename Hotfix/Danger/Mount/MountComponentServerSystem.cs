@@ -34,18 +34,26 @@ namespace ET
         {
             for (int i = 0; i < self.MountInfos.Count; i++)
             {
-                if (self.MountInfos[i].Status == 1)
+                if (MountHelper.IsUseStatus(self.MountInfos[i].Status))
                 {
                     return self.MountInfos[i];
                 }
             }
 
-            return self.GetMountInfo(self.UseMountId);
+            return null;
         }
 
         public static MountInfo GetRideMount(this MountComponentServer self)
         {
-            return self.GetMountInfo(self.RideMountId);
+            for (int i = 0; i < self.MountInfos.Count; i++)
+            {
+                if (self.MountInfos[i].Status == MountHelper.StatusRide)
+                {
+                    return self.MountInfos[i];
+                }
+            }
+
+            return null;
         }
 
         public static int GetRideConfigId(this MountComponentServer self)
@@ -64,7 +72,7 @@ namespace ET
             LDMount ldMount = LDMountCategory.Instance.Get(configId);
             MountInfo mountInfo = new MountInfo();
             mountInfo.Id = IdGenerater.Instance.GenerateId();
-            mountInfo.Status = 0;
+            mountInfo.Status = MountHelper.StatusRest;
             mountInfo.ConfigId = ldMount.Id;
             mountInfo.MountLv = 1;
             mountInfo.MountExp = 0;
@@ -94,13 +102,6 @@ namespace ET
             {
                 MountHelper.ApplyAptitudeAttributes(self.MountInfos[i]);
             }
-
-            MountInfo useMount = self.GetUseMount();
-            self.UseMountId = useMount != null ? useMount.Id : 0;
-            if (self.GetRideMount() == null)
-            {
-                self.RideMountId = 0;
-            }
         }
 
         public static MountInfo OnAddMount(this MountComponentServer self, int getWay, int configId)
@@ -120,9 +121,9 @@ namespace ET
             MountInfo mountInfo = self.GenerateNewMount(configId);
             self.MountInfos.Add(mountInfo);
 
-            if (self.UseMountId == 0)
+            if (self.GetUseMount() == null)
             {
-                self.SetUse(mountInfo, 1);
+                self.SetUse(mountInfo, MountHelper.StatusUse);
             }
 
             M2C_MountListUpdate update = new M2C_MountListUpdate();
@@ -154,68 +155,76 @@ namespace ET
                 return;
             }
 
-            if (status == 1)
+            bool wasRiding = self.GetRideMount() != null;
+            if (status == MountHelper.StatusUse)
             {
                 for (int i = 0; i < self.MountInfos.Count; i++)
                 {
-                    self.MountInfos[i].Status = self.MountInfos[i].Id == target.Id ? 1 : 0;
+                    MountInfo mountInfo = self.MountInfos[i];
+                    if (mountInfo.Id == target.Id)
+                    {
+                        if (mountInfo.Status != MountHelper.StatusRide)
+                        {
+                            mountInfo.Status = MountHelper.StatusUse;
+                        }
+                    }
+                    else
+                    {
+                        mountInfo.Status = MountHelper.StatusRest;
+                    }
                 }
-
-                self.UseMountId = target.Id;
             }
             else
             {
-                target.Status = 0;
-                if (self.UseMountId == target.Id)
-                {
-                    self.UseMountId = 0;
-                }
+                target.Status = MountHelper.StatusRest;
+            }
 
-                if (self.RideMountId == target.Id)
-                {
-                    self.SetRide(null);
-                }
+            if (wasRiding && self.GetRideMount() == null)
+            {
+                self.BroadcastRide();
             }
         }
 
-        public static void SetRide(this MountComponentServer self, MountInfo target)
+        public static void SetRide(this MountComponentServer self, bool ride)
         {
-            self.RideMountId = target != null ? target.Id : 0;
-            Unit unit = self.GetParent<Unit>();
-            MessageHelper.Broadcast(unit, new M2C_MountRideUpdate
-            {
-                UnitId = unit.Id,
-                RideMountId = self.RideMountId,
-                RideConfigId = self.GetRideConfigId()
-            });
-        }
-
-        public static void Dismount(this MountComponentServer self)
-        {
-            if (self.RideMountId == 0)
+            MountInfo useMount = self.GetUseMount();
+            if (useMount == null)
             {
                 return;
             }
 
-            self.SetRide(null);
+            int next = ride ? MountHelper.StatusRide : MountHelper.StatusUse;
+            if (useMount.Status == next)
+            {
+                return;
+            }
+
+            useMount.Status = next;
+            self.BroadcastRide();
+        }
+
+        public static void Dismount(this MountComponentServer self)
+        {
+            self.SetRide(false);
         }
 
         public static void ClearRideSilent(this MountComponentServer self)
         {
-            self.RideMountId = 0;
+            MountInfo ride = self.GetRideMount();
+            if (ride != null)
+            {
+                ride.Status = MountHelper.StatusUse;
+            }
         }
 
-        public static MountInfo PickRideMount(this MountComponentServer self)
+        static void BroadcastRide(this MountComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
-            string random = unit.GetComponent<RoleInfoComponentServer>().GetGameSettingValue(GameSettingEnum.RandomHorese);
-            if (random != "0" && self.MountInfos.Count > 0)
+            MessageHelper.Broadcast(unit, new M2C_MountRideUpdate
             {
-                int index = RandomHelper.RandomNumber(0, self.MountInfos.Count);
-                return self.MountInfos[index];
-            }
-
-            return self.GetUseMount();
+                UnitId = unit.Id,
+                RideConfigId = self.GetRideConfigId()
+            });
         }
     }
 }

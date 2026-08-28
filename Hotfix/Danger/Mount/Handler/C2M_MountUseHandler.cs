@@ -16,8 +16,8 @@ namespace ET
                 return;
             }
 
-            mountComponentServer.SetUse(mountInfo, request.Status);
-            response.UseMountId = mountComponentServer.UseMountId;
+            int status = request.Status == MountHelper.StatusUse ? MountHelper.StatusUse : MountHelper.StatusRest;
+            mountComponentServer.SetUse(mountInfo, status);
             reply();
             await ETTask.CompletedTask;
         }
