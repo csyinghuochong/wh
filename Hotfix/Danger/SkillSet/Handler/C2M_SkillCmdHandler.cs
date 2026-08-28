@@ -12,7 +12,6 @@ namespace ET
             {
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-                NumericComponent numeric = unit.GetComponent<NumericComponent>();
                 SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
                 DBSaveComponent dbSaveComponent = unit.GetComponent<DBSaveComponent>();
                 int occtwo = roleInfo.OccTwo;
@@ -84,7 +83,7 @@ namespace ET
                 {
                 }
                 dbSaveComponent.NoFindPath = 0;
-                numeric.ApplyValue(NumericType.HorseRide, 0, true, true);
+                unit.GetComponent<MountComponentServer>().Dismount();
 
                 M2C_SkillCmd m2C_SkillCmd = skillManagerComponent.OnUseSkill(request, true);
 

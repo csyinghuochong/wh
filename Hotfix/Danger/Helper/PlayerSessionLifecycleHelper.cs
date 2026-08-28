@@ -25,6 +25,7 @@ namespace ET
             unit.GetComponent<DBSaveComponent>().OnLogin();
             unit.GetComponent<RechargeComponentServer>().OnLogin();
             unit.GetComponent<PetComponentServer>().OnLogin();
+            unit.GetComponent<MountComponentServer>().OnLogin();
             unit.GetComponent<ActivityComponentServer>().OnLogin(roleInfo.Lv);
             unit.GetComponent<TitleComponentServer>().OnCheckTitle(false);
             unit.GetComponent<ChengJiuComponentServer>().OnLogin();

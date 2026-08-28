@@ -610,6 +610,12 @@ namespace ET
                 return true;
             }
 
+            if (item.ItemType == ItemBigType.Type_Mount)
+            {
+                unit.GetComponent<MountComponentServer>().OnAddMount(getType, item.ItemID);
+                return true;
+            }
+
             if (item.ItemType != ItemBigType.Type_Item && item.ItemType != ItemBigType.Type_Equip)
             {
                 Console.WriteLine($"{item.ItemType} 类型未处理");

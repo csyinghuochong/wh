@@ -255,15 +255,6 @@ namespace ET
         public static void CheckData(this RoleInfoComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
-
-            for (int  i =  self.RoleInfo.HorseIds.Count - 1; i >= 0; i--)
-            {
-                if ( !LDMountCategory.Instance.Contain( self.RoleInfo.HorseIds[i]))
-                {
-                    self.RoleInfo.HorseIds.RemoveAt(i);
-                }
-            }
-
             RoleAddPointHelper.EnsureLevel1InitPoints(unit, self.RoleInfo.Lv);
 
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
@@ -1026,16 +1017,6 @@ namespace ET
         {
             int lv = level == 1 ? 70 - self.RoleInfo.Lv : 40 - self.RoleInfo.Lv;
             self.UpdateRoleData(UserDataType.Level, lv.ToString());
-
-            self.RoleInfo.HorseIds.Clear();
-            Dictionary<int, LDMount> allzuoqi = LDMountCategory.Instance.GetAll();
-            foreach (( int zuoqiid, LDMount zuoQiShowConfig ) in allzuoqi)
-            {
-                self.RoleInfo.HorseIds.Add(zuoqiid);
-            }
-            NumericComponent numeric = self.GetParent<Unit>().GetComponent<NumericComponent>();
-            numeric.ApplyValue(NumericType.HorseRide, self.RoleInfo.HorseIds[0]);
-            numeric.ApplyValue(NumericType.HorseFightID, self.RoleInfo.HorseIds[0]);
 
             LDHome maxjiayuan = null;
             Dictionary<int, LDHome> allJiayuan = LDHomeCategory.Instance.GetAll();

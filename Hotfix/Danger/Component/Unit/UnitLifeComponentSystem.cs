@@ -94,11 +94,7 @@ namespace ET
                     unit.GetComponent<PetComponentServer>().OnPetDead(rolePetInfo.Id);
                 }
 
-                int nowHorse = numericComponent.GetAsInt(NumericType.HorseRide);
-                if (nowHorse > 0)
-                {
-                    numericComponent.ApplyValue(NumericType.HorseRide, 0);
-                }
+                unit.GetComponent<MountComponentServer>().Dismount();
             }
 
             if (unit.Type == UnitType.Player && attack != null && attack.Type == UnitType.Monster)

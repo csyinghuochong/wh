@@ -581,9 +581,6 @@ namespace ET
 		[ProtoMember(26)]
 		public List<int> CompleteGuideIds = new List<int>();
 
-		[ProtoMember(32)]
-		public List<int> HorseIds = new List<int>();
-
 		[ProtoMember(39)]
 		public List<IntStringPair> FirstWinSelf = new List<IntStringPair>();
 
@@ -757,6 +754,9 @@ namespace ET
 
 		[ProtoMember(26)]
 		public List<int> FashionEquipList = new List<int>();
+
+		[ProtoMember(27)]
+		public int RideConfigId { get; set; }
 
 	}
 
@@ -6796,70 +6796,6 @@ namespace ET
 	[Message(OuterOpcode.M2C_TrialDungeonBeginResponse)]
 	[ProtoContract]
 	public partial class M2C_TrialDungeonBeginResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//上下马
-	[ResponseType(nameof(M2C_HorseRideResponse))]
-	[Message(OuterOpcode.C2M_HorseRideRequest)]
-	[ProtoContract]
-	public partial class C2M_HorseRideRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int HorseId { get; set; }
-
-		[ProtoMember(2)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_HorseRideResponse)]
-	[ProtoContract]
-	public partial class M2C_HorseRideResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//坐骑出战
-	[ResponseType(nameof(M2C_HorseFightResponse))]
-	[Message(OuterOpcode.C2M_HorseFightRequest)]
-	[ProtoContract]
-	public partial class C2M_HorseFightRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int HorseId { get; set; }
-
-		[ProtoMember(2)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_HorseFightResponse)]
-	[ProtoContract]
-	public partial class M2C_HorseFightResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -13922,4 +13858,244 @@ namespace ET
 	}
 
 //ChengJiu end####################################################
+
+//Mount start####################################################
+// 坐骑实例。资质结构复用 PetAptitudeInfo（D最低 E当前 F强化 G上限 Z最终）
+// 表 LDMount.Aptitude_1~6：长度为1时 D=E=Z=该值；长度为3时按宠物 A/B/C 初始化
+	[Message(OuterOpcode.MountInfo)]
+	[ProtoContract]
+	public partial class MountInfo: Object
+	{
+		[ProtoMember(1)]
+		public long Id { get; set; }
+
+		[ProtoMember(2)]
+		public int Status { get; set; }
+
+		[ProtoMember(3)]
+		public int ConfigId { get; set; }
+
+		[ProtoMember(4)]
+		public int MountLv { get; set; }
+
+		[ProtoMember(5)]
+		public int MountExp { get; set; }
+
+		[ProtoMember(6)]
+		public string MountName { get; set; }
+
+		[ProtoMember(13)]
+		public PetAptitudeInfo Aptitude_1 { get; set; }
+
+		[ProtoMember(14)]
+		public PetAptitudeInfo Aptitude_2 { get; set; }
+
+		[ProtoMember(15)]
+		public PetAptitudeInfo Aptitude_3 { get; set; }
+
+		[ProtoMember(16)]
+		public PetAptitudeInfo Aptitude_4 { get; set; }
+
+		[ProtoMember(17)]
+		public PetAptitudeInfo Aptitude_5 { get; set; }
+
+		[ProtoMember(18)]
+		public PetAptitudeInfo Aptitude_6 { get; set; }
+
+		[ProtoMember(30)]
+		public List<int> Ks = new List<int>();
+
+		[ProtoMember(31)]
+		public List<long> Vs = new List<long>();
+
+	}
+
+	[ResponseType(nameof(M2C_MountList))]
+	[Message(OuterOpcode.C2M_MountList)]
+	[ProtoContract]
+	public partial class C2M_MountList: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountList)]
+	[ProtoContract]
+	public partial class M2C_MountList: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public List<MountInfo> MountInfos = new List<MountInfo>();
+
+		[ProtoMember(2)]
+		public long UseMountId { get; set; }
+
+		[ProtoMember(3)]
+		public long RideMountId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountListUpdate)]
+	[ProtoContract]
+	public partial class M2C_MountListUpdate: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public List<MountInfo> MountInfoAdd = new List<MountInfo>();
+
+		[ProtoMember(2)]
+		public List<MountInfo> MountInfoUpdate = new List<MountInfo>();
+
+		[ProtoMember(3)]
+		public List<MountInfo> MountInfoDelete = new List<MountInfo>();
+
+		[ProtoMember(4)]
+		public int GetWay { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountDataUpdate)]
+	[ProtoContract]
+	public partial class M2C_MountDataUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long MountId { get; set; }
+
+		[ProtoMember(2)]
+		public int UpdateType { get; set; }
+
+		[ProtoMember(3)]
+		public string UpdateTypeValue { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MountUse))]
+	[Message(OuterOpcode.C2M_MountUse)]
+	[ProtoContract]
+	public partial class C2M_MountUse: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long MountInfoId { get; set; }
+
+		[ProtoMember(2)]
+		public int Status { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountUse)]
+	[ProtoContract]
+	public partial class M2C_MountUse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public long UseMountId { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MountRName))]
+	[Message(OuterOpcode.C2M_MountRName)]
+	[ProtoContract]
+	public partial class C2M_MountRName: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long MountInfoId { get; set; }
+
+		[ProtoMember(2)]
+		public string MountName { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountRName)]
+	[ProtoContract]
+	public partial class M2C_MountRName: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MountRide))]
+	[Message(OuterOpcode.C2M_MountRide)]
+	[ProtoContract]
+	public partial class C2M_MountRide: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountRide)]
+	[ProtoContract]
+	public partial class M2C_MountRide: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public long RideMountId { get; set; }
+
+		[ProtoMember(2)]
+		public int RideConfigId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountRideUpdate)]
+	[ProtoContract]
+	public partial class M2C_MountRideUpdate: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public long RideMountId { get; set; }
+
+		[ProtoMember(3)]
+		public int RideConfigId { get; set; }
+
+	}
+
+//Mount end####################################################
 }

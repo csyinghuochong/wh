@@ -65,6 +65,8 @@ namespace ET
                     unitInfo.ConfigId = roleInfoComponentServer.RoleInfo.Occ;
                     unitInfo.UnionName = string.IsNullOrWhiteSpace(roleInfoComponentServer.RoleInfo.UnionName) ? string.Empty : roleInfoComponentServer.RoleInfo.UnionName;
                     unitInfo.FashionEquipList = unit.GetComponent<BagComponentServer>().FashionEquipList;
+                    MountComponentServer mountComponentServer = unit.GetComponent<MountComponentServer>();
+                    unitInfo.RideConfigId = mountComponentServer != null ? mountComponentServer.GetRideConfigId() : 0;
                     break;
                 case UnitType.Monster:
                     unitInfo.MasterName = unitInfoComponent.MasterName;

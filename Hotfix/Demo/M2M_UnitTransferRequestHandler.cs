@@ -270,7 +270,7 @@ namespace ET
                         unit.Position = ldScene.GetBornPos();
                         unit.Rotation = Quaternion.identity;
 
-                        unit.GetComponent<NumericComponent>().ApplyValue(NumericType.HorseRide, 0, false);
+                        unit.GetComponent<MountComponentServer>().ClearRideSilent();
 						int runracemonster = CommonConfig.RunRaceMonsterList[RandomHelper.RandomNumber(0, CommonConfig.RunRaceMonsterList.Count)];
 						// 通知客户端创建My Unit
 						m2CCreateUnits = new M2C_CreateMyUnit();
@@ -443,7 +443,7 @@ namespace ET
                     //unit.GetComponent<BuffManagerComponent>().InitBuff(request.SceneType);
                     unit.GetComponent<SkillPassiveComponent>().Reset();
                     unit.GetComponent<SkillPassiveComponent>().Activeted();
-                    unit.OnUpdateHorseRide(0);
+                    unit.GetComponent<MountComponentServer>().Dismount();
                 }
                 //Function_Fight.UnitUpdateProperty_Base(unit, false, true);
 				response.NewInstanceId = unit.InstanceId;

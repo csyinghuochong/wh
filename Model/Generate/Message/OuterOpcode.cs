@@ -755,5 +755,17 @@ namespace ET
 		 public const ushort M2C_ChengJiuActiveMessage = 10752;
 		 public const ushort C2M_ChengJiuRewardRequest = 10753;
 		 public const ushort M2C_ChengJiuRewardResponse = 10754;
+		 public const ushort MountInfo = 10755;
+		 public const ushort C2M_MountList = 10756;
+		 public const ushort M2C_MountList = 10757;
+		 public const ushort M2C_MountListUpdate = 10758;
+		 public const ushort M2C_MountDataUpdate = 10759;
+		 public const ushort C2M_MountUse = 10760;
+		 public const ushort M2C_MountUse = 10761;
+		 public const ushort C2M_MountRName = 10762;
+		 public const ushort M2C_MountRName = 10763;
+		 public const ushort C2M_MountRide = 10764;
+		 public const ushort M2C_MountRide = 10765;
+		 public const ushort M2C_MountRideUpdate = 10766;
 	}
 }

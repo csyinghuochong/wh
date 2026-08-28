@@ -160,6 +160,9 @@ namespace ET
 								//1#32#11#1
 								unit.GetComponent<PetComponentServer>().OnAddPet(ItemGetWay.GM, itemId);
 								break;
+							case ItemBigType.Type_Mount:
+								unit.GetComponent<MountComponentServer>().OnAddMount(ItemGetWay.GM, itemId);
+								break;
                             case ItemBigType.Type_Elf:
                                 unit.GetComponent<ChengJiuComponentServer>().OnActiveJingLing(itemId);
                                 break;

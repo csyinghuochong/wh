@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ET</RootNamespace>
@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="..\..\Unity\Assets\Hotfix\Share\Helper\ZStringHelper.cs" />
+    <Compile Remove="..\..\Unity\Assets\Hotfix\Share\Helper\FashionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Demo\AI\AI_Transfer.cs~RF1d944a39.TMP" />
