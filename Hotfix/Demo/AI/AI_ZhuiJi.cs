@@ -7,7 +7,8 @@ namespace ET
     [AIHandler]
     public class AI_ZhuiJi : AAIHandler
     {
-   
+        private const float RepathDistance = 0.5f;
+
         public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             if (aiComponent.TargetID == 0 || aiComponent.IsRetreat !=0)
@@ -30,9 +31,10 @@ namespace ET
         {
             Unit unit = aiComponent.GetParent<Unit>();
             StateComponent stateComponent = unit.GetComponent<StateComponent>();
+            MoveComponent moveComponent = unit.GetComponent<MoveComponent>();
 
             long checktime = 100;
-   
+
             for (int i = 0; i < 10000; i++)
             {
                 Unit target = aiComponent.UnitComponent.Get(aiComponent.TargetID);
@@ -40,17 +42,32 @@ namespace ET
                 {
                     Vector3 standPos = AIGetTargetHelp.GetChaseApproachPosition(unit, target, aiComponent.ActDistance);
                     float distanceToTarget = PositionHelper.Distance2D(unit.Position, target.Position);
-                    bool inAttackRange = distanceToTarget < aiComponent.ActDistance;
+                    bool inAttackRange = distanceToTarget <= aiComponent.ActDistance;
                     bool canMove = stateComponent.CanMove() == ErrorCode.ERR_Success;
+                    bool moving = !moveComponent.IsArrived();
 
-                    if (inAttackRange || !canMove)
+                    if (!canMove)
                     {
-                        unit.Stop(-2);
+                        if (moving)
+                        {
+                            unit.Stop(-2);
+                        }
                     }
-
-                    if (!inAttackRange && canMove)
+                    else if (inAttackRange)
                     {
-                        unit.FindPathMoveToAsync(standPos, cancellationToken, false).Coroutine();
+                        if (moving)
+                        {
+                            unit.Stop(0);
+                        }
+                    }
+                    else
+                    {
+                        float destMoved = PositionHelper.Distance2D(standPos, aiComponent.TargetZhuiJi);
+                        if (!moving || destMoved > RepathDistance)
+                        {
+                            aiComponent.TargetZhuiJi = standPos;
+                            unit.FindPathMoveToAsync(standPos, cancellationToken, false).Coroutine();
+                        }
                     }
                 }
                 bool timeRet = await TimerComponent.Instance.WaitAsync(checktime, cancellationToken);

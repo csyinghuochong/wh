@@ -120,7 +120,7 @@ namespace ET
 						if (transferId != 0)
 						{
 							LDScene_Teleport transferConfig = LDScene_TeleportCategory.Instance.Get(transferId);
-							unit.Position = new Vector3(transferConfig.Position[0] , transferConfig.Position[1] , transferConfig.Position[2]);
+							unit.Position = new Vector3(transferConfig.Target_Pos[0] , transferConfig.Target_Pos[1] , transferConfig.Target_Pos[2]);
                             unit.Rotation = Quaternion.Euler(0, (int)transferConfig.Target_Rotation, 0);
                         }
 						else

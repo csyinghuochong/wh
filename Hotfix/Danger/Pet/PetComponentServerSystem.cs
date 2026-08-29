@@ -116,18 +116,6 @@ namespace ET
         {
             string pingFen = string.Empty;
 
-            for (int i = 0; i < self.PetInfos.Count; i++)
-            {
-                PetInfo rolePetInfo = self.PetInfos[i];
-                int intFen = 0;
-                if (intFen == 0)
-                {
-                    intFen = PetHelper.PetPingFen(rolePetInfo);
-                }
-                string strFen = $"{rolePetInfo.ConfigId}{ConfigData.DataCollationSpit}{intFen};";
-                pingFen += strFen;
-            }
-
             return pingFen;
         }
 
