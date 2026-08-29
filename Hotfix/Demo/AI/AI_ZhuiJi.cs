@@ -7,8 +7,7 @@ namespace ET
     [AIHandler]
     public class AI_ZhuiJi : AAIHandler
     {
-        private const float StandArriveDistance = 0.6f;
-
+   
         public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             if (aiComponent.TargetID == 0 || aiComponent.IsRetreat !=0)
@@ -33,26 +32,23 @@ namespace ET
             StateComponent stateComponent = unit.GetComponent<StateComponent>();
 
             long checktime = 100;
-      
-
+   
             for (int i = 0; i < 10000; i++)
             {
                 Unit target = aiComponent.UnitComponent.Get(aiComponent.TargetID);
                 if (target != null)
                 {
-                    Vector3 standPos = AIGetTargetHelp.GetChaseStandPosition(unit, target, aiComponent.ActDistance, aiComponent.UnitComponent);
+                    Vector3 standPos = AIGetTargetHelp.GetChaseApproachPosition(unit, target, aiComponent.ActDistance);
                     float distanceToTarget = PositionHelper.Distance2D(unit.Position, target.Position);
-                    float distanceToStand = PositionHelper.Distance2D(unit.Position, standPos);
-                    bool inAttackRange = distanceToTarget <= aiComponent.ActDistance;
-                    bool needMove = distanceToStand > StandArriveDistance && !inAttackRange;
+                    bool inAttackRange = distanceToTarget < aiComponent.ActDistance;
+                    bool canMove = stateComponent.CanMove() == ErrorCode.ERR_Success;
 
-                    if (!needMove)
+                    if (inAttackRange || !canMove)
                     {
                         unit.Stop(-2);
                     }
 
-                    bool shouldUpdatePath = checktime == 100 || (checktime == 200 && i % 5 == 0);
-                    if (needMove && shouldUpdatePath && stateComponent.CanMove() == ErrorCode.ERR_Success)
+                    if (!inAttackRange && canMove)
                     {
                         unit.FindPathMoveToAsync(standPos, cancellationToken, false).Coroutine();
                     }

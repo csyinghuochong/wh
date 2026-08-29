@@ -578,9 +578,11 @@ namespace ET
 
             if (unit.Type == UnitType.Monster)
             {
-                if (stateComponent.IsRigidity())
+ 
+                //判定是否再公共冷却时间
+                if (serverNow < self.SkillPublicCDTime)
                 {
-                    return ErrorCode.ERR_CanNotUseSkill_Rigidity;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Skill_CD);
                 }
             }
             if (unit.Type != UnitType.Player)

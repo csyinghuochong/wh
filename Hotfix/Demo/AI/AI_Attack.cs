@@ -17,7 +17,7 @@ namespace ET
                 return false;
             }
 
-            float distance = Vector3.Distance(target.Position, aiComponent.GetParent<Unit>().Position);
+            float distance = PositionHelper.Distance2D(target.Position, aiComponent.GetParent<Unit>().Position);
             return distance <= aiComponent.ActDistance;
         }
 
@@ -30,11 +30,7 @@ namespace ET
             for (int i = 0; i < 100000; ++i)
             {
                 long rigidityEndTime = 0;
-                int skillId =  aiComponent.GetCastSkillId();
-                if (skillId == 0)
-                {
-                    break;
-                }
+                int skillId = aiComponent.GetCastSkillId();
 
                 Unit target = aiComponent.UnitComponent.Get(aiComponent.TargetID);
                 if (target == null || !target.IsCanBeAttack())
@@ -45,10 +41,11 @@ namespace ET
                 float distance = 0f;
                 if (target != null)
                 {
-                    distance = Vector3.Distance(target.Position, unit.Position);
+                    distance = PositionHelper.Distance2D(target.Position, unit.Position);
                 }
 
-                if (aiComponent.TargetID != 0 && distance <= aiComponent.ActDistance && skillManagerComponent.IsCanUseSkill (skillId) == ErrorCode.ERR_Success)
+                if (skillId != 0 && aiComponent.TargetID != 0 && distance <= aiComponent.ActDistance
+                    && skillManagerComponent.IsCanUseSkill(skillId) == ErrorCode.ERR_Success)
                 {
                     LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillId);
                     Vector3 direction = target.Position - unit.Position;
@@ -67,7 +64,7 @@ namespace ET
                     {
                         float ange = Mathf.Rad2Deg(Mathf.Atan2(direction.x, direction.z));
                         cmd.TargetAngle = Mathf.FloorToInt(ange);
-                        cmd.TargetDistance = Vector3.Distance(unit.Position, target.Position);
+                        cmd.TargetDistance = PositionHelper.Distance2D(unit.Position, target.Position);
                     }
 
                     long serverNow = TimeHelper.ServerNow();

@@ -18,7 +18,7 @@ namespace ET
                 return false;
             }
 
-            float distance = Vector3.Distance(unit.Position, master.Position);
+            float distance = PositionHelper.Distance2D(unit.Position, master.Position);
             AttackRecordComponent attackRecordComponent = master.GetComponent<AttackRecordComponent>();
             if (distance > aiComponent.LoseAggro)    //超出追击距离，返回
             {
@@ -52,7 +52,7 @@ namespace ET
                 return true;
             }
 
-            distance = Vector3.Distance(unit.Position, enemyUnit.Position);
+            distance = PositionHelper.Distance2D(unit.Position, enemyUnit.Position);
             ///1
             aiComponent.TargetID = enemyUnit.Id;
             ///2
@@ -99,7 +99,7 @@ namespace ET
             while (true)
             {
                 int errorCode = unit.GetComponent<StateComponent>().CanMove();
-                float distacne = Vector3.Distance(unit.Position, master.Position);
+                float distacne = PositionHelper.Distance2D(unit.Position, master.Position);
 
                 if (distacne > 10f)
                 {
@@ -145,7 +145,7 @@ namespace ET
                     nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Numeric_Error);
                 }
                 int errorCode = unit.GetComponent<StateComponent>().CanMove();
-                float distacne = Vector3.Distance(unit.Position, master.Position);
+                float distacne = PositionHelper.Distance2D(unit.Position, master.Position);
 
                 if (aiComponent.IsRetreat > 0 && distacne < 1.5f)
                 {

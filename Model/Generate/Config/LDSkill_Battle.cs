@@ -175,7 +175,7 @@ namespace ET
 		/// <summary>优先级 是否顺序 0-否 1-是</summary>
 		[ProtoMember(32)]
 		public int Target_Priority_Param { get; set; }
-		/// <summary>目标 筛选方式 0-最近优先 1-朝向最近优先 2-最远优先 3-朝向最远优先 4-属性最多 5-属性最少 9-手动锁定</summary>
+		/// <summary>目标 筛选方式 0-最近优先 1-朝向最近优先 2-最远优先 3-朝向最远优先 4-属性最多 5-属性最少 8-仇恨优先 9-手动锁定</summary>
 		[ProtoMember(33)]
 		public int[] Target_Select_Type { get; set; }
 		/// <summary>目标筛选 属性ID</summary>
