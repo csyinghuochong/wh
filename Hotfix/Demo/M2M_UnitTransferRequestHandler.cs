@@ -122,7 +122,6 @@ namespace ET
 							LDScene_Teleport transferConfig = LDScene_TeleportCategory.Instance.Get(transferId);
 							unit.Position = new Vector3(transferConfig.Position[0] , transferConfig.Position[1] , transferConfig.Position[2]);
                             unit.Rotation = Quaternion.Euler(0, (int)transferConfig.Target_Rotation, 0);
-
                         }
 						else
 						{
@@ -130,27 +129,6 @@ namespace ET
                             unit.Rotation = Quaternion.Euler(0, (int)dungeonConfig.Born_Rotation, 0);
                         }
 
-						//神秘之门返回
-						/*if (unit.GetComponent<UnitInfoComponent>().LastDungeonId == request.ChapterId)
-						{
-							unit.GetComponent<UnitInfoComponent>().LastDungeonId = 0;
-						 	unit.Position = unit.GetComponent<UnitInfoComponent>().LastDungeonPosition;
-                        }
-
-                        //进入神秘之门（喜从天降玩法）
-                        if (dungeonConfig.Scene_Type == SceneSubTypeEnum.LocalDungeon_1)
-                        {
-                            unit.GetComponent<RoleDailyDataComponentServer>()?.SetHappyMoveNumber(0, false);
-                            unit.GetComponent<RoleContextComponent>().SetHappyMoveTime(0, false);
-                            int randomPosition = RandomHelper.RandomNumber(0, HappyFubenConfig.PositionList.Count);
-                            numericComponent.Set(NumericType.HappyCellIndex, randomPosition + 1, false);
-                            unit.Position = HappyFubenConfig.PositionList[randomPosition];
-
-							scene.AddComponent<DungeonHappyComponent>();
-                        }
-                        */
-
-                        unit.Rotation = Quaternion.identity;
 						// 通知客户端创建My Unitda
 						m2CCreateUnits = new M2C_CreateMyUnit();
 						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
