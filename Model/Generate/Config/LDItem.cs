@@ -142,17 +142,20 @@ namespace ET
 		/// <summary>获取 绑定 0-否 1-是</summary>
 		[ProtoMember(21)]
 		public int IfLock { get; set; }
-		/// <summary>每天 使用 次数</summary>
+		/// <summary>交易 所属</summary>
 		[ProtoMember(22)]
+		public int Exchange_Belong { get; set; }
+		/// <summary>每天 使用 次数</summary>
+		[ProtoMember(23)]
 		public int DayUseNum { get; set; }
 		/// <summary>总共 使用 次数</summary>
-		[ProtoMember(23)]
+		[ProtoMember(24)]
 		public int SumUseNum { get; set; }
 		/// <summary>显示特效</summary>
-		[ProtoMember(24)]
+		[ProtoMember(25)]
 		public string EquipEffect { get; set; }
 		/// <summary>排序</summary>
-		[ProtoMember(25)]
+		[ProtoMember(26)]
 		public int Order_LS { get; set; }
 
 	}

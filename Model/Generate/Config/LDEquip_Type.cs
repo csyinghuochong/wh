@@ -85,6 +85,9 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
+		/// <summary>交易所属</summary>
+		[ProtoMember(3)]
+		public int Exchange_Belong { get; set; }
 
 	}
 }

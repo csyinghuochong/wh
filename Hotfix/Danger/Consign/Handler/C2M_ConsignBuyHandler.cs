@@ -135,7 +135,7 @@ namespace ET
                 }
                 else
                 {
-                    dataCollation.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, true);
+                    dataCollation.UpdateBuySelfPlayerList(ConsignHelper.GetConsignSellerGold(needGold), unit.Id, baginfoid, true);
                 }
             }
 

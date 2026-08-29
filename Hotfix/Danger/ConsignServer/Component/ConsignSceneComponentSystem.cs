@@ -258,7 +258,7 @@ namespace ET
 
         public static async ETTask InitDBData(this ConsignSceneComponent self)
         {
-            await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(5000, 10000));
+            await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 10000));
 
             int[] belongIds = ConsignHelper.GetShangJiaBelongIds();
             for (int i = 0; i < belongIds.Length; i++)
@@ -367,11 +367,10 @@ namespace ET
                 return;
             }
 
-            long currentTime = TimeHelper.ServerNow();
             for (int i = dBPaiMainInfo.PaiMaiItemInfos.Count - 1; i >= 0; i--)
             {
                 ConsignItemInfo paiMaiItemInfo = dBPaiMainInfo.PaiMaiItemInfos[i];
-                if (paiMaiItemInfo.OverTime <= 0 || currentTime < paiMaiItemInfo.OverTime)
+                if (!ConsignHelper.IsConsignExpired(paiMaiItemInfo))
                 {
                     continue;
                 }

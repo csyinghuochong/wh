@@ -38,7 +38,7 @@ namespace ET
                 return;
             }
 
-            if (paiMaiItemInfo.OverTime > 0 && TimeHelper.ServerNow() >= paiMaiItemInfo.OverTime)
+            if (ConsignHelper.IsConsignExpired(paiMaiItemInfo))
             {
                 paiMaiItemInfos.Remove(paiMaiItemInfo);
                 MailHelp.SendConsignOverTimeMail(paiMaiItemInfo).Coroutine();

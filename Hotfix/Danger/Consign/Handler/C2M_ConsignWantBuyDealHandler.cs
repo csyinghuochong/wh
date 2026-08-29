@@ -80,7 +80,7 @@ namespace ET
                     return;
                 }
 
-                long gold = (long)dealResponse.Price * dealResponse.DealNum;
+                long gold = ConsignHelper.GetConsignSellerGold((long)dealResponse.Price * dealResponse.DealNum);
                 if (gold > 0)
                 {
                     roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, gold.ToString(), true, ItemGetWay.PaiMaiSell);

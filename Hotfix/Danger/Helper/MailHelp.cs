@@ -74,7 +74,7 @@ namespace ET
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
             BagInfo reward = new BagInfo();
             reward.ItemID = 1;
-            int sellPrice = (int)(paiMaiItemInfo.Price * 0.95f) * costNum;     //5%手续费
+            int sellPrice = (int)ConsignHelper.GetConsignSellerGold((long)paiMaiItemInfo.Price * costNum);
             reward.ItemNum = sellPrice;
             reward.GetWay = $"{ItemGetWay.PaiMaiSell}_{TimeHelper.ServerNow()}";
             mailInfo.ItemList.Add(reward);
