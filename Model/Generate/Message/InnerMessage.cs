@@ -3841,10 +3841,10 @@ namespace ET
 	}
 
 //寄售begin####################################################
-	[ResponseType(nameof(Consign2M_SellResponse))]
-	[Message(InnerOpcode.M2Consign_SellRequest)]
+	[ResponseType(nameof(Consign2M_ShangJiaResponse))]
+	[Message(InnerOpcode.M2Consign_ShangJiaRequest)]
 	[ProtoContract]
-	public partial class M2Consign_SellRequest: Object, IActorRequest
+	public partial class M2Consign_ShangJiaRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3863,9 +3863,9 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.Consign2M_SellResponse)]
+	[Message(InnerOpcode.Consign2M_ShangJiaResponse)]
 	[ProtoContract]
-	public partial class Consign2M_SellResponse: Object, IActorResponse
+	public partial class Consign2M_ShangJiaResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

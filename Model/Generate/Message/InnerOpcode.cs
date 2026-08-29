@@ -212,8 +212,8 @@ namespace ET
 		 public const ushort L2M_GetWeChatOACode = 20209;
 		 public const ushort L2M_WeChatOABindResult = 20210;
 		 public const ushort M2L_WeChatOABindResult = 20211;
-		 public const ushort M2Consign_SellRequest = 20212;
-		 public const ushort Consign2M_SellResponse = 20213;
+		 public const ushort M2Consign_ShangJiaRequest = 20212;
+		 public const ushort Consign2M_ShangJiaResponse = 20213;
 		 public const ushort M2Consign_BuyRequest = 20214;
 		 public const ushort Consign2M_BuyResponse = 20215;
 		 public const ushort M2Consign_XiaJiaRequest = 20216;

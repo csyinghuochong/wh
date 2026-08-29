@@ -3,10 +3,10 @@ using System;
 namespace ET
 {
     [ActorMessageHandler]
-    public class C2M_ConsignSellHandler : AMActorLocationRpcHandler<Unit, C2M_ConsignSellRequest, M2C_ConsignSellResponse>
+    public class C2M_ConsignShangJiaHandler : AMActorLocationRpcHandler<Unit, C2M_ConsignShangJiaRequest, M2C_ConsignShangJiaResponse>
     {
 
-		protected override async ETTask Run(Unit unit, C2M_ConsignSellRequest request, M2C_ConsignSellResponse response, Action reply)
+		protected override async ETTask Run(Unit unit, C2M_ConsignShangJiaRequest request, M2C_ConsignShangJiaResponse response, Action reply)
 		{
            
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Sell, unit.Id))
@@ -101,8 +101,8 @@ namespace ET
 
 				//发送对应拍卖行信息
 				long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
-				Consign2M_SellResponse r_GameStatusResponse = (Consign2M_SellResponse)await ActorMessageSenderComponent.Instance.Call
-					(paimaiServerId, new M2Consign_SellRequest()
+				Consign2M_ShangJiaResponse r_GameStatusResponse = (Consign2M_ShangJiaResponse)await ActorMessageSenderComponent.Instance.Call
+					(paimaiServerId, new M2Consign_ShangJiaRequest()
 					{
 						UnitID = unit.Id,
 						ConsignItemInfo = request.ConsignItemInfo,

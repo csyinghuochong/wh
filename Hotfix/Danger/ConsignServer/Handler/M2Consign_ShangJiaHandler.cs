@@ -4,10 +4,10 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class M2Consign_SellHandler : AMActorRpcHandler<Scene, M2Consign_SellRequest, Consign2M_SellResponse>
+    public class M2Consign_ShangJiaHandler : AMActorRpcHandler<Scene, M2Consign_ShangJiaRequest, Consign2M_ShangJiaResponse>
     {
 
-        protected override async ETTask Run(Scene scene, M2Consign_SellRequest request, Consign2M_SellResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, M2Consign_ShangJiaRequest request, Consign2M_ShangJiaResponse response, Action reply)
         {
             if (!ItemNewHelper.CheckValiedItem(request.ConsignItemInfo.BagInfo))
             {

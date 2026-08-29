@@ -10962,7 +10962,7 @@ namespace ET
 		public long SellTime { get; set; }
 
 		[ProtoMember(11)]
-		public long OverTime { get; set; }
+		public int OverTime { get; set; }
 
 	}
 
@@ -11000,10 +11000,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ConsignSellResponse))]
-	[Message(OuterOpcode.C2M_ConsignSellRequest)]
+	[ResponseType(nameof(M2C_ConsignShangJiaResponse))]
+	[Message(OuterOpcode.C2M_ConsignShangJiaRequest)]
 	[ProtoContract]
-	public partial class C2M_ConsignSellRequest: Object, IActorLocationRequest
+	public partial class C2M_ConsignShangJiaRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11019,9 +11019,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_ConsignSellResponse)]
+	[Message(OuterOpcode.M2C_ConsignShangJiaResponse)]
 	[ProtoContract]
-	public partial class M2C_ConsignSellResponse: Object, IActorLocationResponse
+	public partial class M2C_ConsignShangJiaResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

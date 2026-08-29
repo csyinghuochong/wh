@@ -593,8 +593,8 @@ namespace ET
 		 public const ushort ConsignItemInfo = 10590;
 		 public const ushort C2M_ConsignBuyRequest = 10591;
 		 public const ushort M2C_ConsignBuyResponse = 10592;
-		 public const ushort C2M_ConsignSellRequest = 10593;
-		 public const ushort M2C_ConsignSellResponse = 10594;
+		 public const ushort C2M_ConsignShangJiaRequest = 10593;
+		 public const ushort M2C_ConsignShangJiaResponse = 10594;
 		 public const ushort C2Consign_ListRequest = 10595;
 		 public const ushort Consign2C_ListResponse = 10596;
 		 public const ushort C2M_ConsignXiaJiaRequest = 10597;
