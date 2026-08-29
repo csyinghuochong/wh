@@ -16,17 +16,15 @@ namespace ET
                 return;
             }
 
-            // 上架紫色道具刷新该类型的道具
-            LDItem ldItem = LDItemCategory.Instance.Get(request.ConsignItemInfo.BagInfo.ItemID);
-            DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetPaiMaiDBByType(ldItem.ItemType);
-            if (dBPaiMainInfo == null)
+            ConsignItemInfo consignItem = request.ConsignItemInfo;
+            if (consignItem.BelongId <= 0 && consignItem.BagInfo != null)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
-                reply();
-                return;
+                consignItem.BelongId = ItemNewHelper.GetConsignBelongId(consignItem.BagInfo);
             }
 
-            dBPaiMainInfo.PaiMaiItemInfos.Add(request.ConsignItemInfo);
+            DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetOrCreatePaiMaiDBByBelongId(consignItem.BelongId);
+
+            dBPaiMainInfo.PaiMaiItemInfos.Add(consignItem);
             reply();
             await ETTask.CompletedTask;
         }

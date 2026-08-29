@@ -10943,17 +10943,26 @@ namespace ET
 		[ProtoMember(3)]
 		public BagInfo BagInfo { get; set; }
 
-		[ProtoMember(5)]
+		[ProtoMember(4)]
 		public int Price { get; set; }
 
-		[ProtoMember(6)]
+		[ProtoMember(5)]
 		public string PlayerName { get; set; }
 
+		[ProtoMember(6)]
+		public string Account { get; set; }
+
 		[ProtoMember(7)]
-		public long SellTime { get; set; }
+		public int BelongId { get; set; }
 
 		[ProtoMember(8)]
-		public string Account { get; set; }
+		public string TargetPlayer { get; set; }
+
+		[ProtoMember(10)]
+		public long SellTime { get; set; }
+
+		[ProtoMember(11)]
+		public long OverTime { get; set; }
 
 	}
 
@@ -10973,9 +10982,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public int BuyNum { get; set; }
-
-		[ProtoMember(3)]
-		public int IsRecharge { get; set; }
 
 	}
 
@@ -11045,14 +11051,11 @@ namespace ET
 		[ProtoMember(1)]
 		public long UserId { get; set; }
 
-		[ProtoMember(2)]
-		public int PaiMaiType { get; set; }
-
 		[ProtoMember(3)]
 		public int Page { get; set; }
 
-		[ProtoMember(4)]
-		public int PaiMaiShowType { get; set; }
+		[ProtoMember(5)]
+		public int BelongId2 { get; set; }
 
 	}
 
@@ -11075,9 +11078,6 @@ namespace ET
 		[ProtoMember(2)]
 		public int NextPage { get; set; }
 
-		[ProtoMember(3)]
-		public long PaiMaiCostGoldToday { get; set; }
-
 	}
 
 	[ResponseType(nameof(M2C_ConsignXiaJiaResponse))]
@@ -11092,7 +11092,7 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(1)]
-		public int ItemType { get; set; }
+		public int BelongId { get; set; }
 
 		[ProtoMember(2)]
 		public long ConsignItemInfoId { get; set; }
@@ -11114,186 +11114,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ConsignDuiHuanResponse))]
-	[Message(OuterOpcode.C2M_ConsignDuiHuanRequest)]
-	[ProtoContract]
-	public partial class C2M_ConsignDuiHuanRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long DiamondsNumber { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ConsignDuiHuanResponse)]
-	[ProtoContract]
-	public partial class M2C_ConsignDuiHuanResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_AuctionJoinResponse))]
-//参入竞拍
-	[Message(OuterOpcode.C2M_AuctionJoinRequest)]
-	[ProtoContract]
-	public partial class C2M_AuctionJoinRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_AuctionJoinResponse)]
-	[ProtoContract]
-	public partial class M2C_AuctionJoinResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_AuctionPriceResponse))]
-	[Message(OuterOpcode.C2M_AuctionPriceRequest)]
-	[ProtoContract]
-	public partial class C2M_AuctionPriceRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long Price { get; set; }
-
-		[ProtoMember(2)]
-		public string AuctionPlayer { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_AuctionPriceResponse)]
-	[ProtoContract]
-	public partial class M2C_AuctionPriceResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(Consign2C_AuctionInfoResponse))]
-	[Message(OuterOpcode.C2Consign_AuctionInfoRequest)]
-	[ProtoContract]
-	public partial class C2Consign_AuctionInfoRequest: Object, IConsignmentRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.Consign2C_AuctionInfoResponse)]
-	[ProtoContract]
-	public partial class Consign2C_AuctionInfoResponse: Object, IConsignmentResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int AuctionItem { get; set; }
-
-		[ProtoMember(2)]
-		public long AuctionPrice { get; set; }
-
-		[ProtoMember(3)]
-		public long AuctionStatus { get; set; }
-
-		[ProtoMember(4)]
-		public int AuctionNumber { get; set; }
-
-		[ProtoMember(5)]
-		public string AuctionPlayer { get; set; }
-
-		[ProtoMember(6)]
-		public long AuctionStart { get; set; }
-
-		[ProtoMember(7)]
-		public bool AuctionJoin { get; set; }
-
-	}
-
-	[ResponseType(nameof(Consign2C_AuctionRecordResponse))]
-	[Message(OuterOpcode.C2Consign_AuctionRecordRequest)]
-	[ProtoContract]
-	public partial class C2Consign_AuctionRecordRequest: Object, IConsignmentRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.Consign2C_AuctionRecordResponse)]
-	[ProtoContract]
-	public partial class Consign2C_AuctionRecordResponse: Object, IConsignmentResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<AuctionRecord> RecordList = new List<AuctionRecord>();
-
-	}
-
 	[ResponseType(nameof(Consign2C_FindResponse))]
 	[Message(OuterOpcode.C2Consign_FindRequest)]
 	[ProtoContract]
@@ -11306,7 +11126,7 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(1)]
-		public int ItemType { get; set; }
+		public int BelongId { get; set; }
 
 		[ProtoMember(2)]
 		public long ConsignItemInfoId { get; set; }
@@ -11346,7 +11166,7 @@ namespace ET
 		public List<int> FindItemIdList = new List<int>();
 
 		[ProtoMember(2)]
-		public List<int> FindTypeList = new List<int>();
+		public List<int> FindBelongIdList = new List<int>();
 
 	}
 
@@ -11365,6 +11185,233 @@ namespace ET
 
 		[ProtoMember(1)]
 		public List<ConsignItemInfo> ConsignItemInfos = new List<ConsignItemInfo>();
+
+	}
+
+	[ResponseType(nameof(Consign2C_SelfListResponse))]
+	[Message(OuterOpcode.C2Consign_SelfListRequest)]
+	[ProtoContract]
+	public partial class C2Consign_SelfListRequest: Object, IConsignmentRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.Consign2C_SelfListResponse)]
+	[ProtoContract]
+	public partial class Consign2C_SelfListResponse: Object, IConsignmentResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<ConsignItemInfo> ConsignItemInfo = new List<ConsignItemInfo>();
+
+	}
+
+	[Message(OuterOpcode.ConsignWantBuyInfo)]
+	[ProtoContract]
+	public partial class ConsignWantBuyInfo: Object
+	{
+		[ProtoMember(1)]
+		public long Id { get; set; }
+
+		[ProtoMember(2)]
+		public long UserId { get; set; }
+
+		[ProtoMember(3)]
+		public string PlayerName { get; set; }
+
+		[ProtoMember(4)]
+		public string Account { get; set; }
+
+		[ProtoMember(5)]
+		public int ItemType { get; set; }
+
+		[ProtoMember(6)]
+		public int ItemId { get; set; }
+
+		[ProtoMember(7)]
+		public int ItemNum { get; set; }
+
+		[ProtoMember(8)]
+		public int Price { get; set; }
+
+		[ProtoMember(9)]
+		public long Time { get; set; }
+
+	}
+
+	[ResponseType(nameof(Consign2C_WantBuyListResponse))]
+	[Message(OuterOpcode.C2Consign_WantBuyListRequest)]
+	[ProtoContract]
+	public partial class C2Consign_WantBuyListRequest: Object, IConsignmentRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ItemType { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.Consign2C_WantBuyListResponse)]
+	[ProtoContract]
+	public partial class Consign2C_WantBuyListResponse: Object, IConsignmentResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<ConsignWantBuyInfo> WantBuyInfo = new List<ConsignWantBuyInfo>();
+
+	}
+
+	[ResponseType(nameof(Consign2C_ItemListResponse))]
+	[Message(OuterOpcode.C2Consign_ItemListRequest)]
+	[ProtoContract]
+	public partial class C2Consign_ItemListRequest: Object, IConsignmentRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ItemType { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.Consign2C_ItemListResponse)]
+	[ProtoContract]
+	public partial class Consign2C_ItemListResponse: Object, IConsignmentResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<ConsignItemInfo> ConsignList = new List<ConsignItemInfo>();
+
+	}
+
+	[ResponseType(nameof(M2C_ConsignWantBuyAddResponse))]
+	[Message(OuterOpcode.C2M_ConsignWantBuyAddRequest)]
+	[ProtoContract]
+	public partial class C2M_ConsignWantBuyAddRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ItemType { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemId { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemNum { get; set; }
+
+		[ProtoMember(4)]
+		public int Price { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ConsignWantBuyAddResponse)]
+	[ProtoContract]
+	public partial class M2C_ConsignWantBuyAddResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public ConsignWantBuyInfo WantBuyInfo { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ConsignWantBuyDealResponse))]
+	[Message(OuterOpcode.C2M_ConsignWantBuyDealRequest)]
+	[ProtoContract]
+	public partial class C2M_ConsignWantBuyDealRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long WantBuyId { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemType { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemId { get; set; }
+
+		[ProtoMember(4)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(5)]
+		public int SellNum { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ConsignWantBuyDealResponse)]
+	[ProtoContract]
+	public partial class M2C_ConsignWantBuyDealResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
 
 	}
 

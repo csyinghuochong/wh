@@ -16,30 +16,32 @@ namespace ET
                 reply();
                 return;
             }
-            LDItem ldItemCof = LDItemCategory.Instance.Get(request.ConsignItemInfo.BagInfo.ItemID);
-            int itemType = ldItemCof.ItemType;
-            DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetPaiMaiDBByType(itemType);
-            if (dBPaiMainInfo == null)
+            ConsignSceneComponent consignScene = scene.GetComponent<ConsignSceneComponent>();
+            int belongId = request.ConsignItemInfo.BelongId;
+            if (belongId <= 0 && request.ConsignItemInfo.BagInfo != null)
+            {
+                belongId = ItemNewHelper.GetConsignBelongId(request.ConsignItemInfo.BagInfo);
+            }
+
+            DBConsignInfo dBPaiMainInfo = consignScene.GetPaiMaiDBByBelongId(belongId);
+            List<ConsignItemInfo> paiMaiItemInfos = dBPaiMainInfo?.PaiMaiItemInfos;
+            ConsignItemInfo paiMaiItemInfo = consignScene.FindShangJiaItemInList(paiMaiItemInfos, request.ConsignItemInfo.Id);
+            if (paiMaiItemInfo == null)
+            {
+                paiMaiItemInfo = consignScene.FindShangJiaItem(0, request.ConsignItemInfo.Id, out paiMaiItemInfos);
+            }
+
+            if (paiMaiItemInfo == null || paiMaiItemInfos == null)
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
                 return;
             }
 
-            long needGold = 0 ;
-            ConsignItemInfo paiMaiItemInfo = null;
-            List<ConsignItemInfo> paiMaiItemInfos = dBPaiMainInfo.PaiMaiItemInfos;
-            for (int i = paiMaiItemInfos.Count - 1; i >= 0; i--)
+            if (paiMaiItemInfo.OverTime > 0 && TimeHelper.ServerNow() >= paiMaiItemInfo.OverTime)
             {
-                if (paiMaiItemInfos[i].Id == request.ConsignItemInfo.Id)
-                {
-                    paiMaiItemInfo = paiMaiItemInfos[i];
-                    break;
-                }
-            }
-
-            if (paiMaiItemInfo == null)
-            {
+                paiMaiItemInfos.Remove(paiMaiItemInfo);
+                MailHelp.SendConsignOverTimeMail(paiMaiItemInfo).Coroutine();
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
                 return;
@@ -52,7 +54,7 @@ namespace ET
                 return;
             }
             
-            needGold = (long)paiMaiItemInfo.Price * request.BuyNum;
+            long needGold = (long)paiMaiItemInfo.Price * request.BuyNum;
             if (request.Gold < needGold)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
@@ -85,6 +87,10 @@ namespace ET
                 paiMaiItemInfo2.Price = paiMaiItemInfo.Price;
                 paiMaiItemInfo2.PlayerName = paiMaiItemInfo.PlayerName;
                 paiMaiItemInfo2.SellTime = paiMaiItemInfo.SellTime;
+                paiMaiItemInfo2.BelongId = paiMaiItemInfo.BelongId;
+                paiMaiItemInfo2.Account = paiMaiItemInfo.Account;
+                paiMaiItemInfo2.TargetPlayer = paiMaiItemInfo.TargetPlayer;
+                paiMaiItemInfo2.OverTime = paiMaiItemInfo.OverTime;
                 
                 response.ConsignItemInfo = paiMaiItemInfo2;
             }

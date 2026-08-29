@@ -6,6 +6,61 @@ namespace ET
     public static class MailHelp
     {
 
+        public static async ETTask SendConsignOverTimeMail(ConsignItemInfo paiMaiItemInfo)
+        {
+            if (paiMaiItemInfo?.BagInfo == null || paiMaiItemInfo.UserId <= 0)
+            {
+                return;
+            }
+
+            MailInfo mailInfo = new MailInfo();
+            mailInfo.Status = 0;
+            mailInfo.MailId = IdGenerater.Instance.GenerateId();
+            paiMaiItemInfo.BagInfo.GetWay = $"{ItemGetWay.XiaJia}_{TimeHelper.ServerNow()}";
+            mailInfo.ItemList.Add(paiMaiItemInfo.BagInfo);
+
+            int homeZone = UnitZoneHelper.GetHomeZone(paiMaiItemInfo.UserId);
+            await SendUserMail(homeZone, paiMaiItemInfo.UserId, mailInfo);
+        }
+
+        public static async ETTask SendWantBuyItemMail(long userId, BagInfo bagInfo)
+        {
+            if (userId <= 0 || bagInfo == null)
+            {
+                return;
+            }
+
+            MailInfo mailInfo = new MailInfo();
+            mailInfo.Status = 0;
+            mailInfo.MailId = IdGenerater.Instance.GenerateId();
+            bagInfo.GetWay = $"{ItemGetWay.PaiMaiBuy}_{TimeHelper.ServerNow()}";
+            mailInfo.ItemList.Add(bagInfo);
+
+            int homeZone = UnitZoneHelper.GetHomeZone(userId);
+            await SendUserMail(homeZone, userId, mailInfo);
+        }
+
+        public static async ETTask SendWantBuyGoldMail(long userId, long goldNum)
+        {
+            if (userId <= 0 || goldNum <= 0)
+            {
+                return;
+            }
+
+            MailInfo mailInfo = new MailInfo();
+            mailInfo.Status = 0;
+            mailInfo.MailId = IdGenerater.Instance.GenerateId();
+            BagInfo gold = new BagInfo();
+            gold.ItemID = UserDataType.Gold;
+            gold.ItemType = ItemBigType.Type_Item;
+            gold.ItemNum = goldNum > int.MaxValue ? int.MaxValue : (int)goldNum;
+            gold.GetWay = $"{ItemGetWay.PaiMaiSell}_{TimeHelper.ServerNow()}";
+            mailInfo.ItemList.Add(gold);
+
+            int homeZone = UnitZoneHelper.GetHomeZone(userId);
+            await SendUserMail(homeZone, userId, mailInfo);
+        }
+
         public static async ETTask SendPaiMaiEmail(int zone, ConsignItemInfo paiMaiItemInfo,int costNum, long unitid)
         {
             await ETTask.CompletedTask;

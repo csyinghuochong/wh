@@ -3734,43 +3734,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2M_PaiMaiBuyInfoResponse))]
-	[Message(InnerOpcode.M2M_PaiMaiBuyInfoRequest)]
-	[ProtoContract]
-	public partial class M2M_PaiMaiBuyInfoRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long PlayerId { get; set; }
-
-		[ProtoMember(2)]
-		public long CostGold { get; set; }
-
-		[ProtoMember(3)]
-		public long BagInfoID { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2M_PaiMaiBuyInfoResponse)]
-	[ProtoContract]
-	public partial class M2M_PaiMaiBuyInfoResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //抖音渠道账号绑定官服账号
 	[ResponseType(nameof(R2Other_TiktokBinging))]
 	[Message(InnerOpcode.Other2R_TiktokBinging)]
@@ -3967,7 +3930,7 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(1)]
-		public int ItemType { get; set; }
+		public int BelongId { get; set; }
 
 		[ProtoMember(2)]
 		public long ConsignItemInfoId { get; set; }
@@ -4032,10 +3995,10 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Consign2M_AuctionPriceResponse))]
-	[Message(InnerOpcode.M2Consign_AuctionPriceRequest)]
+	[ResponseType(nameof(Consign2M_WantBuyAddResponse))]
+	[Message(InnerOpcode.M2Consign_WantBuyAddRequest)]
 	[ProtoContract]
-	public partial class M2Consign_AuctionPriceRequest: Object, IActorRequest
+	public partial class M2Consign_WantBuyAddRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -4044,57 +4007,13 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(1)]
-		public long Price { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(3)]
-		public int Occ { get; set; }
-
-		[ProtoMember(5)]
-		public string AuctionPlayer { get; set; }
+		public ConsignWantBuyInfo WantBuyInfo { get; set; }
 
 	}
 
-	[Message(InnerOpcode.Consign2M_AuctionPriceResponse)]
+	[Message(InnerOpcode.Consign2M_WantBuyAddResponse)]
 	[ProtoContract]
-	public partial class Consign2M_AuctionPriceResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(Consign2M_AuctionJoinResponse))]
-//参入竞拍
-	[Message(InnerOpcode.M2Consign_AuctionJoinRequest)]
-	[ProtoContract]
-	public partial class M2Consign_AuctionJoinRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long Gold { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitID { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Consign2M_AuctionJoinResponse)]
-	[ProtoContract]
-	public partial class Consign2M_AuctionJoinResponse: Object, IActorResponse
+	public partial class Consign2M_WantBuyAddResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -4105,15 +4024,12 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
-		[ProtoMember(1)]
-		public long CostGold { get; set; }
-
 	}
 
-	[ResponseType(nameof(M2Consign_AuctionOverResponse))]
-	[Message(InnerOpcode.Consign2M_AuctionOverRequest)]
+	[ResponseType(nameof(Consign2M_WantBuyDealResponse))]
+	[Message(InnerOpcode.M2Consign_WantBuyDealRequest)]
 	[ProtoContract]
-	public partial class Consign2M_AuctionOverRequest: Object, IActorRequest
+	public partial class M2Consign_WantBuyDealRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -4122,22 +4038,25 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(1)]
-		public long Price { get; set; }
+		public long WantBuyId { get; set; }
 
 		[ProtoMember(2)]
-		public long UnitID { get; set; }
+		public int ItemType { get; set; }
 
 		[ProtoMember(3)]
-		public int ItemID { get; set; }
+		public int ItemId { get; set; }
 
 		[ProtoMember(4)]
-		public int ItemNumber { get; set; }
+		public int SellNum { get; set; }
+
+		[ProtoMember(5)]
+		public long SellerUserId { get; set; }
 
 	}
 
-	[Message(InnerOpcode.M2Consign_AuctionOverResponse)]
+	[Message(InnerOpcode.Consign2M_WantBuyDealResponse)]
 	[ProtoContract]
-	public partial class M2Consign_AuctionOverResponse: Object, IActorResponse
+	public partial class Consign2M_WantBuyDealResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -4147,6 +4066,15 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long BuyerUserId { get; set; }
+
+		[ProtoMember(2)]
+		public int DealNum { get; set; }
+
+		[ProtoMember(3)]
+		public int Price { get; set; }
 
 	}
 

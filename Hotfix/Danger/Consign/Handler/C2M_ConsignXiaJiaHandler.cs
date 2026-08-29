@@ -21,7 +21,7 @@ namespace ET
                 Consign2M_XiaJiaResponse r_GameStatusResponse = (Consign2M_XiaJiaResponse)await ActorMessageSenderComponent.Instance.Call
                     (chargeServerId, new M2Consign_XiaJiaRequest()
                     {
-                        ItemType = request.ItemType,    
+                        BelongId = request.BelongId,    
                         ConsignItemInfoId = request.ConsignItemInfoId
                     });
 

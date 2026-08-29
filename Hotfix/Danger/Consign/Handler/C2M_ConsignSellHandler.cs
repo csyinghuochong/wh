@@ -28,12 +28,6 @@ namespace ET
                     return;
                 }
 
-				//if (allprice + unit.GetComponent<DataCollationComponent>().PaiMaiTodayGold >= 50000000)
-				//{
-    //                response.Error = ErrorCode.ERR_PaiMaiSellLimit;
-    //                reply();
-    //                return;
-    //            }
 
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
@@ -48,7 +42,19 @@ namespace ET
                 request.ConsignItemInfo.PlayerName = roleInfoComponentServer.RoleInfo.Name;
 				request.ConsignItemInfo.UserId = roleInfoComponentServer.RoleInfo.UserId;
                 request.ConsignItemInfo.Account = roleInfoComponentServer.Account;
-				request.ConsignItemInfo.SellTime = currentTime;
+                request.ConsignItemInfo.SellTime = currentTime;
+                if (string.IsNullOrEmpty(request.ConsignItemInfo.TargetPlayer)
+                    && !string.IsNullOrEmpty(request.TargetPlayer))
+                {
+                    request.ConsignItemInfo.TargetPlayer = request.TargetPlayer;
+                }
+
+                if (request.ConsignItemInfo.OverTime <= currentTime)
+                {
+                    request.ConsignItemInfo.OverTime = currentTime + TimeHelper.OneDay;
+                }
+
+                request.ConsignItemInfo.BelongId = ItemNewHelper.GetConsignBelongId(request.ConsignItemInfo.BagInfo);
 
 				//对比出售数量和道具是否匹配
 				long bagInfoId = request.ConsignItemInfo.BagInfo.BagInfoID;

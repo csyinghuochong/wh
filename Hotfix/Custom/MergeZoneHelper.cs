@@ -693,12 +693,10 @@ namespace ET
             //DBPaiMainInfo 拍卖，也合并过来，要着重测试
             //List<DBPaiMainInfo> dBPaiMainInfos_old = await Game.Scene.GetComponent<DBComponent>().Query<DBPaiMainInfo>(oldzone, d => d.Id > 0);
             List<DBConsignInfo> dBPaiMainInfos_new = await Game.Scene.GetComponent<DBComponent>().Query<DBConsignInfo>(newzone, d => d.Id > 0);
+            //所有拍卖的belongid。
             List<long> paimaishangjiaIds = new List<long>() 
             {
-                ConsignHelper.GetPaiMaiId(1),
-                ConsignHelper.GetPaiMaiId(2),
-                ConsignHelper.GetPaiMaiId(3),
-                ConsignHelper.GetPaiMaiId(4),
+              
             };
             foreach (var entityNew in dBPaiMainInfos_new)
             {

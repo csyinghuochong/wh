@@ -22,32 +22,7 @@ namespace ET
                 return;
             }
 
-            if (unit.Id == 2268423382062137344 && unit.DomainZone() == 32)
-            {
-                List<long> removeIds = new List<long>();    
-                MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
-
-                if (mapComponent.MapTypeEnum == MapTypeEnum.BaoZangZhiDi)
-                {
-                    List<Unit> monsterid = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Monster);
-                    for (int i = 0; i < monsterid.Count; i++)
-                    {
-                        NumericComponent monsterNumeric = monsterid[i].GetComponent<NumericComponent>();
-
-                        if (monsterNumeric.GetAsInt(NumericType.Now_Dead) == 1
-                            && (monsterid[i].ConfigId == 70005012 || monsterid[i].ConfigId == 70005013))
-                        {
-                            removeIds.Add(monsterid[i].Id);
-                            Console.WriteLine($"umericType.Now_Dead: {monsterid[i].ConfigId}");
-                        }
-                    }
-                }
-                for (int i = 0; i < removeIds.Count; i++)
-                {
-                    unit.GetParent<UnitComponent>().Remove(removeIds[i]);
-                }
-            }
-
+ 
             ConsignItemInfo paiMaiItemInfo = request.ConsignItemInfo;
             if (request.ConsignItemInfo == null || request.ConsignItemInfo.BagInfo == null)
             {
@@ -103,16 +78,6 @@ namespace ET
             if (openPaiMai == 0)
             {
                 int createDay = roleInfoComponentServer.GetCrateDay();
-
-                //firstDay = createDay <= 1 && roleInfoComponent.RoleInfo.Level <= 10;
-                request.IsRecharge = (int)unit.GetTotalRechargeNum();
-
-                if (request.IsRecharge > 0
-                    || CommonHelper.IsCanPaiMai_Level(createDay, roleInfoComponentServer.RoleInfo.Lv) == 0)
-                {
-                    openPaiMai = 1;
-                    //unit.GetComponent<NumericComponent>().ApplyValue(NumericType.PaiMaiOpen, 1);
-                }
             }
 
             if (!firstDay && openPaiMai == 0)
@@ -156,25 +121,7 @@ namespace ET
                 //Log.Warning($"拍卖购买者: {unit.Id} 购买 {r_GameStatusResponse.PaiMaiItemInfo.UserId} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
                 Log.Warning($"拍卖被购买: [出售者]{r_GameStatusResponse.ConsignItemInfo.UserId}  [购买者]{unit.Id} 道具ID：{r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
 
-                dataCollation.PaiMaiCostGoldToday += needGold;
-                if (dataCollation.PaiMaiCostGoldToday >= 50000000)
-                {
-                    string levelInfo = $"区： {unit.DomainZone()}  {roleInfoComponentServer.RoleInfo.Name}   \t拍卖消耗金币:{dataCollation.PaiMaiCostGoldToday}  " +
-                        $" \t账号:{roleInfoComponentServer.Account}   \t钻石:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Diamond)}  \t金币:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold)} \n";
-                    LogHelper.PaiMaiInfo(levelInfo);
-                }
-
-                //long gateServerId = DBHelper.GetGateServerId(unit);
-                //G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                //   (gateServerId, new T2G_GateUnitInfoRequest()
-                //   {
-                //       UserID = r_GameStatusResponse.PaiMaiItemInfo.UserId
-                //   });
-                //if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-                //{ 
-                //}
-
-
+                
                 long baginfoid = 0;
                 if (r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemType == ItemBigType.Type_Equip)
                 {
@@ -185,56 +132,10 @@ namespace ET
                 if (unit.Id != r_GameStatusResponse.ConsignItemInfo.UserId)
                 {
                     long locationactor = r_GameStatusResponse.ConsignItemInfo.UserId;
-
-                    M2M_PaiMaiBuyInfoRequest r2M_RechargeRequest = new M2M_PaiMaiBuyInfoRequest() { PlayerId = unit.Id, BagInfoID = baginfoid,  CostGold = (long)(needGold * 0.95f) };
-                    M2M_PaiMaiBuyInfoResponse m2G_RechargeResponse = (M2M_PaiMaiBuyInfoResponse)await MessageHelper.CallLocationActor(locationactor, r2M_RechargeRequest);
-
-                    if (m2G_RechargeResponse.Error != ErrorCode.ERR_Success)
-                    {
-                        int sellerHomeZone = UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId);
-                        DataCollationComponent dataCollationComponent = await DBHelper.GetComponent<DataCollationComponent>(sellerHomeZone, r_GameStatusResponse.ConsignItemInfo.UserId);
-                        if (dataCollationComponent != null)
-                        {
-                            dataCollationComponent.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, false);
-                            await DBHelper.SaveComponent(sellerHomeZone, r_GameStatusResponse.ConsignItemInfo.UserId, dataCollationComponent);
-                        }
-                        
-                    }
                 }
                 else
                 {
                     dataCollation.UpdateBuySelfPlayerList((long)(needGold * 0.95f), unit.Id, baginfoid, true);
-                }
-                
-                //每天更新文本。
-                //今天拍卖出售获取金币数量>=50000000  打印出来
-                //充值《100 金币大于5亿
-                if (needGold >= 500000)
-                {
-                    //服务器 道具名称 数量  价格  购买者名称 购买者等级  购买者充值 购买者当前金币 购买者账号 出售者名称   出售者账号  出售者等级 出售者当前金币
-                    string serverName = ServerHelper.GetGetServerItem(false, UnitZoneHelper.GetHomeZone(unit)).ServerName;
-                    string itemName = WordHelper.GetShowText(ldItem.Name, 0);
-                    int itemNumber = r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemNum;
-                    long price = r_GameStatusResponse.ConsignItemInfo.Price;
-
-                    string buyPlayerName = roleInfoComponentServer.RoleInfo.Name;
-                    int buyPlayerLv = roleInfoComponentServer.RoleInfo.Lv;
-                    int buyPlayerRecharge = request.IsRecharge;
-                    long buyNowGold = RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold);
-                    string buyAccount = roleInfoComponentServer.Account;
-                    
-                    string sellPlayerName = r_GameStatusResponse.ConsignItemInfo.PlayerName;
-                    string sellAccoount = r_GameStatusResponse.ConsignItemInfo.Account;
-                    RoleInfoComponentServer roleInfoComponentServerSell = await DBHelper.GetComponent<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId), r_GameStatusResponse.ConsignItemInfo.UserId);
-                    if (roleInfoComponentServerSell != null)
-                    {
-                        int sellPlayerLv = roleInfoComponentServerSell.RoleInfo.Lv;
-                        long sellNowGold = RoleCurrencyHelper.Get(roleInfoComponentServerSell.RoleInfo, UserDataType.Gold);
-
-                        string paimaiInfo = $"服务器:{serverName}   \t道具名称:{itemName}   \t数量:{itemNumber}   \t价格:{price}  \t购买者名称:{buyPlayerName}   \t购买者等级:{buyPlayerLv}    " +
-                            $"\t购买者充值:{buyPlayerRecharge}   \t购买者当前金币:{buyNowGold}   \t购买者账号:{buyAccount}    \t出售者名称:{sellPlayerName}   \t出售者账号:{sellAccoount}   \t出售者等级:{sellPlayerLv}    \t出售者当前金币:{sellNowGold} ";
-                        LogHelper.PaiMaiInfo(paimaiInfo);
-                    }
                 }
             }
 
