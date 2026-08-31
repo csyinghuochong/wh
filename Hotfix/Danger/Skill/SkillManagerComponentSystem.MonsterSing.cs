@@ -108,6 +108,7 @@ namespace ET
 
         public static void OnMonsterSingComplete(this SkillManagerComponent self)
         {
+            Console.WriteLine("OnMonsterSingComplete"); 
             self.SingTimer = 0;
             if (self.IsDisposed || !self.IsMonsterSinging())
             {
