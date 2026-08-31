@@ -46,18 +46,11 @@ namespace ET
                     bool canMove = stateComponent.CanMove() == ErrorCode.ERR_Success;
                     bool moving = !moveComponent.IsArrived();
 
-                    if (!canMove)
+                    if (!canMove || inAttackRange)
                     {
                         if (moving)
                         {
-                            unit.Stop(-2);
-                        }
-                    }
-                    else if (inAttackRange)
-                    {
-                        if (moving)
-                        {
-                            unit.Stop(0);
+                            unit.Stop(canMove ? 0 : -2);
                         }
                     }
                     else
