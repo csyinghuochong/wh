@@ -57,20 +57,16 @@ namespace ET
 
         public static int CanUseSkill(this StateComponent self, LDSkill_Battle ldSkill, bool checkDead)
         {
-            if (self.StateTypeGet(StateTypeEnum.BePulled)
-                || self.StateTypeGet(StateTypeEnum.NoMove))
-            {
-                return ErrorCode.ERR_CanNotMove_1;
-            }
+           
             if (self.IsNetWaitEndTime())
             {
                 return ErrorCode.ERR_CanNotUseSkill_NetWait;
             }
-            if (self.StateTypeGet(StateTypeEnum.Dizziness) && (ldSkill == null || ldSkill.Use_Stun != 1))
+            if (self.StateTypeGet(StateTypeEnum.HunMi) && (ldSkill == null || ldSkill.Use_Stun != 1))
             {
                 return ErrorCode.ERR_CanNotUseSkill_Dizziness;
             }
-            if (self.StateTypeGet(StateTypeEnum.JiTui) )
+            if (self.StateTypeGet(StateTypeEnum.PassiveMove) )
             {
                 return ErrorCode.ERR_CanNotUseSkill_JiTui;
             }
@@ -78,12 +74,12 @@ namespace ET
             {
                 return ErrorCode.ERR_CanNotUseSkill_Sleep;
             }
-            if (self.StateTypeGet(StateTypeEnum.Hung))
+            if (self.StateTypeGet(StateTypeEnum.PassiveMove))
             {
                 return ErrorCode.ERR_CanNotUseSkill_Hung;
             }
 
-            if (self.StateTypeGet(StateTypeEnum.Silence) && (ldSkill == null || ldSkill.Use_Silence != 1))
+            if (self.StateTypeGet(StateTypeEnum.ForbidCast) && (ldSkill == null || ldSkill.Use_Silence != 1))
             {
                 return ErrorCode.ERR_CanNotUseSkill_Silence;
             }
@@ -93,7 +89,7 @@ namespace ET
             {
                 return ErrorCode.ERR_CanNotSkillDead;
             }
-            if (unit.Type == UnitType.Monster && self.StateTypeGet(StateTypeEnum.Singing))
+            if (unit.Type == UnitType.Monster && unit.IsSinging())
             {
                 return ErrorCode.ERR_CanNotMove_Singing;
             }
@@ -107,7 +103,7 @@ namespace ET
             {
                 return canMove;
             }
-            if (self.StateTypeGet(StateTypeEnum.BePulled) || self.StateTypeGet(StateTypeEnum.JiTui))
+            if (self.StateTypeGet(StateTypeEnum.PassiveMove))
             {
                 return ErrorCode.ERR_Success;
             }
@@ -116,8 +112,8 @@ namespace ET
 
         public static int CanMove(this StateComponent self)
         {
-            if (self.StateTypeGet(StateTypeEnum.BePulled) || 
-               self.StateTypeGet(StateTypeEnum.NoMove))
+            if (self.StateTypeGet(StateTypeEnum.PassiveMove) || 
+               self.StateTypeGet(StateTypeEnum.ForbidMove))
             {
                 return ErrorCode.ERR_CanNotMove_1;
             }
@@ -129,15 +125,15 @@ namespace ET
             {
                 return ErrorCode.ERR_CanNotMove_Rigidity;
             }
-            if (self.StateTypeGet(StateTypeEnum.Dizziness))
+            if (self.StateTypeGet(StateTypeEnum.HunMi))
             {
                 return ErrorCode.ERR_CanNotMove_Dizziness;
             }
-            if (self.StateTypeGet(StateTypeEnum.JiTui))
+            if (self.StateTypeGet(StateTypeEnum.PassiveMove))
             {
                 return ErrorCode.ERR_CanNotMove_JiTui;
             }
-            if (self.StateTypeGet(StateTypeEnum.Shackle))
+            if (self.StateTypeGet(StateTypeEnum.ForbidMove))
             {
                 return ErrorCode.ERR_CanNotMove_Shackle;
             }
@@ -150,7 +146,7 @@ namespace ET
                 return ErrorCode.ERR_CanNotMove_Fear;
             }
             Unit unit = self.GetParent<Unit>();
-            if (unit.Type == UnitType.Monster && self.StateTypeGet(StateTypeEnum.Singing))
+            if (unit.Type == UnitType.Monster && unit.IsSinging())
             {
                 return ErrorCode.ERR_CanNotMove_Singing;
             }
@@ -182,59 +178,18 @@ namespace ET
                 unit.Stop(0);        //停止当前移动
             }
 
-            //打断吟唱中技能
-            unit.GetComponent<SkillManagerComponent>().InterruptSing(0, true);
+            unit.GetComponent<SkillManagerComponent>()?.InterruptSing(0, true);
             unit.GetComponent<SkillPassiveComponent>().StateTypeAdd(nowStateType);
-            
-                        
-            //发送改变属性的相关消息
-            /*if (self.IsBroadcastType(nowStateType))
-            {
-                MessageHelper.Broadcast(self.GetParent<Unit>(), new M2C_UnitStateUpdate() { UnitId = self.Parent.Id, StateType = (long)nowStateType, StateValue = stateValue, StateOperateType = 1, StateTime = 0 });
-            }
-            else
-            {
-                if (unit.Type == UnitType.Player)
-                {
-                    MessageHelper.SendToClient(self.GetParent<Unit>(), new M2C_UnitStateUpdate() { UnitId = self.Parent.Id, StateType = (long)nowStateType, StateValue = stateValue, StateOperateType = 1, StateTime = 0 });
-                }   
-            }  */
-        }
-
-        public static bool IsBroadcastType(this StateComponent self, long nowStateType)
-        {
-            return nowStateType == StateTypeEnum.Singing
-                || nowStateType == StateTypeEnum.OpenBox
-                || nowStateType == StateTypeEnum.Stealth
-                || nowStateType == StateTypeEnum.Hide
-                || nowStateType == StateTypeEnum.BaTi;  
         }
 
         /// <summary>
-        /// 移除某个状态
+        /// 移除某个状态。Buff 加的状态不广播，客户端/服务器各自处理。吟唱走 C2M/M2C_SingingUpdate。
         /// </summary>
         /// <param name="nowStateType"></param>
         public static void StateTypeRemove(this StateComponent self, long nowStateType)
         {
             self.CurrentStateType = self.CurrentStateType & ~nowStateType;
-#if SERVER
-            //发送改变属性的相关消息
-            Unit unit = self.GetParent<Unit>();
-            if (unit == null || unit.IsDisposed)
-                return;
-
-            if (self.IsBroadcastType(nowStateType))
-            {
-                MessageHelper.Broadcast(self.GetParent<Unit>(), new M2C_UnitStateUpdate() { UnitId = self.Parent.Id, StateType = (long)nowStateType, StateOperateType = 2, StateTime = 0 });
-            }
-            else
-            {
-                if (unit.Type == UnitType.Player)
-                {
-                    MessageHelper.SendToClient(self.GetParent<Unit>(), new M2C_UnitStateUpdate() { UnitId = self.Parent.Id, StateType = (long)nowStateType, StateOperateType = 2, StateTime = 0 });
-                }
-            }
-#else
+#if !SERVER
             Unit unit = self.GetParent<Unit>();
             if (unit.MainHero && self.CanMove()== ErrorCode.ERR_Success)
             {
@@ -273,7 +228,7 @@ namespace ET
 
         public static bool SkillBuffStateContrast(this StateComponent self,int buffStateType, long stateType) {
 
-            if (1 << buffStateType == stateType)
+            if (1L << buffStateType == stateType)
             {
                 return true;
             }
@@ -296,31 +251,12 @@ namespace ET
             if (self.SilenceCheckTime < TimeHelper.ServerNow() - 5000)
             {
                 self.SilenceCheckTime = 0;
-                self.StateTypeRemove(StateTypeEnum.Dizziness);
-                self.StateTypeRemove(StateTypeEnum.Silence);
-                self.StateTypeRemove(StateTypeEnum.Shackle);
+                self.StateTypeRemove(StateTypeEnum.HunMi);
+                self.StateTypeRemove(StateTypeEnum.ForbidCast);
+                self.StateTypeRemove(StateTypeEnum.ForbidMove);
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="zoneScene"></param>
-        /// <param name="operatype">1新增  2移除</param>
-        /// <param name="stateType"></param>
-        /// <param name="stateValue"></param>
-        public static void SendUpdateState(this StateComponent self, int operatype, long stateType, string stateValue)
-        {
-            if (self.c2M_UnitStateUpdate == null)
-            {
-                self.c2M_UnitStateUpdate = new C2M_UnitStateUpdate();
-            }
-            C2M_UnitStateUpdate c2M_UnitStateUpdate = self.c2M_UnitStateUpdate;
-            c2M_UnitStateUpdate.StateOperateType = operatype;
-            c2M_UnitStateUpdate.StateType = stateType;
-            c2M_UnitStateUpdate.StateValue = stateValue;
-            self.ZoneScene().GetComponent<SessionComponent>().Session.Send(c2M_UnitStateUpdate);
-        }
 #endif
     }
 }

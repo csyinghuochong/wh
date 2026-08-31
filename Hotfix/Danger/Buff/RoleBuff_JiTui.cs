@@ -37,7 +37,7 @@ namespace ET
 
             theUnitBelongto.Stop(-2);
             StateComponent stateComponent = theUnitBelongto.GetComponent<StateComponent>();
-            stateComponent.StateTypeAdd(StateTypeEnum.JiTui);
+            stateComponent.StateTypeAdd(StateTypeEnum.PassiveMove);
             theUnitBelongto.FindPathMoveToAsync(this.TargetPosition, null, false, Math.Max(100, (int)(newSpeed * 100f / oldSpeed))).Coroutine();
         }
 
@@ -52,7 +52,7 @@ namespace ET
         public override void OnFinished()
         {
             StateComponent stateComponent = this.TheUnitBelongto.GetComponent<StateComponent>();
-            stateComponent.StateTypeRemove(StateTypeEnum.JiTui);
+            stateComponent.StateTypeRemove(StateTypeEnum.PassiveMove);
         }
 
     }

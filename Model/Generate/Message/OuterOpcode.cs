@@ -96,8 +96,8 @@ namespace ET
 		 public const ushort M2C_CancelAttack = 10093;
 		 public const ushort C2M_TestRobotCase = 10094;
 		 public const ushort M2C_TestRobotCase = 10095;
-		 public const ushort C2M_UnitStateUpdate = 10096;
-		 public const ushort M2C_UnitStateUpdate = 10097;
+		 public const ushort C2M_SingingUpdate = 10096;
+		 public const ushort M2C_SingingUpdate = 10097;
 		 public const ushort UnitBuffInfo = 10098;
 		 public const ushort M2C_UnitBuffUpdate = 10099;
 		 public const ushort M2C_UnitBuffRemove = 10100;

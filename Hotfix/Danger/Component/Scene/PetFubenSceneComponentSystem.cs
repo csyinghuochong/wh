@@ -80,8 +80,6 @@ namespace ET
 
         public static void  GeneratePetFuben(this PetFubenSceneComponent self, Unit unit, int sceneId)
         {
-            unit.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.WuDi);
-
             PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             petComponentServer.CheckSkin();
             List<long> pets = petComponentServer.PetFormations;

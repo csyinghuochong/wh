@@ -1,15 +1,13 @@
-﻿namespace ET
+namespace ET
 {
 
 	[ActorMessageHandler]
-    public class C2M_UnitStateUpdateHandler : AMActorLocationHandler<Unit, C2M_UnitStateUpdate>
+    public class C2M_SingingUpdateHandler : AMActorLocationHandler<Unit, C2M_SingingUpdate>
     {
-		protected override async ETTask Run(Unit unit, C2M_UnitStateUpdate message)
+		protected override async ETTask Run(Unit unit, C2M_SingingUpdate message)
 		{
-			//驭剑的光能击吟唱前可以给自己加buff
-			if (message.StateOperateType == 1 &&  message.StateType == StateTypeEnum.Singing)
+			if (message.StateOperateType == 1 && message.StateType == SingingUpdateKind.Singing)
 			{
-                //"StateValue":"61022102_0
                 int buffid = 0;
                 string[] stateParts = message.StateValue.Split('_');
                 int skillid = int.Parse(stateParts[0]);
@@ -25,17 +23,14 @@
                 }
             }
 
-            StateComponent stateComponent = unit.GetComponent<StateComponent>();
-            if (message.StateOperateType == 1)
+            MessageHelper.Broadcast(unit, new M2C_SingingUpdate()
 			{
-				//增加
-				stateComponent.StateTypeAdd(message.StateType, message.StateValue);
-			}
-			else
-			{
-				//移除
-				stateComponent.StateTypeRemove(message.StateType);
-			}
+				UnitId = unit.Id,
+				StateType = message.StateType,
+				StateOperateType = message.StateOperateType,
+				StateTime = message.StateTime,
+				StateValue = message.StateValue,
+			});
 			
 			await ETTask.CompletedTask;
 		}

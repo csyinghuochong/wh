@@ -107,7 +107,6 @@ namespace ET
 
             //己方队伍
             Unit unit = self.MainUnit;
-            unit.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.WuDi);
             PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             petComponentServer.CheckSkin();
             //List<long> pets = petComponentServer.PetMingList;

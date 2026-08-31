@@ -802,6 +802,7 @@ namespace ET
             }
 
             targetNumeric.ApplyChange(caster, NumericType.HP_Current_8, -damageToHp, skillId, true, damageType);
+            target.GetComponent<SkillManagerComponent>()?.InterruptPendingSing();
         }
 
         /// <summary>按伤害 × 吸血比例回复施法者 HP，向下取整。</summary>

@@ -25,6 +25,11 @@ namespace ET
         public long LastLianJiTime = 0;
         public long Timer;
 
+        /// <summary>怪物吟唱前摇计时。到点后才 OnUseSkill。</summary>
+        public long SingTimer;
+        /// <summary>吟唱中缓存的施法指令；SkillID==0 表示未在吟唱。</summary>
+        public C2M_SkillCmd SingSkillCmd = new C2M_SkillCmd();
+
         public M2C_SkillCmd M2C_SkillCmd = new M2C_SkillCmd();
         public M2C_UnitFinishSkill M2C_UnitFinishSkill = new M2C_UnitFinishSkill();
         public UnitComponent SelfUnitComponent;

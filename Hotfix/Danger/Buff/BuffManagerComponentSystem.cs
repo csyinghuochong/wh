@@ -344,74 +344,11 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             LDSkill_Battle_Buff ldSkillBuff = LDSkill_Battle_BuffCategory.Instance.Get(buffData.BuffId);
-            float now_DiKangPro = numericComponent.GetAsFloat(NumericType.Numeric_Error);
-         
-            StateComponent stateComponent = unit.GetComponent<StateComponent>();
-
-            //眩晕抵抗
-            int newState = 0;
-            float now_DizzinessPro = numericComponent.GetAsFloat(NumericType.Numeric_Error);
-            if (RandomHelper.RandFloat01() < now_DizzinessPro)
-            {
-                if (newState == StateTypeEnum.Dizziness)
-                {
-                    //眩晕抵抗
-                    M2C_UnitBuffStatus m2C_UnitBuffStatus = new M2C_UnitBuffStatus();
-                    m2C_UnitBuffStatus.UnitID = unit.Id;
-                    m2C_UnitBuffStatus.FlyType = 11;
-                    m2C_UnitBuffStatus.BuffID = buffData.BuffId;
-                    //全部广播
-                    MessageHelper.Broadcast(unit, m2C_UnitBuffStatus);
-                    return;
-                }
-            }
-
-            //霸体状态和无敌状态免疫眩晕和沉默的buff
-            if (stateComponent.StateTypeGet(StateTypeEnum.BaTi) || stateComponent.StateTypeGet(StateTypeEnum.WuDi))
-            {
-                if (newState == StateTypeEnum.Shackle || newState == StateTypeEnum.Dizziness)
-                {
-                    //免疫
-                    M2C_UnitBuffStatus m2C_UnitBuffStatus = new M2C_UnitBuffStatus();
-                    m2C_UnitBuffStatus.UnitID = unit.Id;
-                    m2C_UnitBuffStatus.FlyType = 12;
-                    m2C_UnitBuffStatus.BuffID = buffData.BuffId;
-                    //当前场景内的玩家全部广播
-                    MessageHelper.Broadcast(unit, m2C_UnitBuffStatus);
-                    return;
-                }
-            }
-
-            //霸体状态驱散禁锢效果
-            if (newState == StateTypeEnum.BaTi)
-            {
-                self.OnRemoveBuffByState(StateTypeEnum.Shackle);
-                self.OnRemoveBuffByState(StateTypeEnum.Dizziness);
-            }
+           
 
             int addBufStatus = 1;   //1新增buff  2 移除 3 重置 4同状态返回
             BuffHandler buffHandler = null;
             List<BuffHandler> nowAllBuffList = self.m_Buffs;
-
-            //判断叠加上限
-            /*
-            if (ldSkillBuff.BuffAddClassMax != 0)
-            {
-                int curNumber = 0;
-                for (int i = nowAllBuffList.Count - 1; i >= 0; i--)
-                {
-                    buffHandler = nowAllBuffList[i];
-                    LDSkillBuff tempBuff = buffHandler.MBuff;
-                    if (tempBuff.Id == ldSkillBuff.Id)
-                    {
-                        curNumber++;
-                    }
-                }
-                if (curNumber >= ldSkillBuff.BuffAddClassMax)
-                {
-                    return;
-                }
-            }*/
 
             string[] weiyiBuffId = new string[0];
           

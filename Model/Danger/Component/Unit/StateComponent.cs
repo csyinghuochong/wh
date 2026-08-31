@@ -16,9 +16,6 @@ namespace ET
         public long NetWaitEndTime;
 
 #if !SERVER
-
-        public C2M_UnitStateUpdate c2M_UnitStateUpdate = null;
-
         /// <summary>
         /// 沉默, 避免前后端不同步出现玩家不能移动的情况
         /// </summary>

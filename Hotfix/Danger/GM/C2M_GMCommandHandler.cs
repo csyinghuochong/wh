@@ -97,8 +97,13 @@ namespace ET
 					}
 					return;
 				}
-               
-				if (message.GMMsg == "resetguide#")
+                if (message.GMMsg.Contains("addspeed#"))
+                {
+					int addspeed = int.Parse(message.GMMsg.Split("#")[1]);
+                    unit.GetComponent<NumericComponent>().ChangeAttrFixed(null, NumericType.Speed_Fixed_16, addspeed, 0);
+                    return;
+                }
+                if (message.GMMsg == "resetguide#")
 				{
 					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.CompleteGuideIds.Clear();
 					return;

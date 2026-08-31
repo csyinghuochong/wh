@@ -11,7 +11,6 @@ namespace ET
         public override void OnInit(BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null)
         {
             this.OnBaseBuffInit(buffData, theUnitFrom, theUnitBelongto);
-            theUnitBelongto.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.NoMove);
         }
 
         public override void OnUpdate()
@@ -25,7 +24,6 @@ namespace ET
         public override void OnFinished()
         {
             StateComponent stateComponent = this.TheUnitBelongto.GetComponent<StateComponent>();
-            stateComponent.StateTypeRemove(StateTypeEnum.NoMove);
         }
     }
 }

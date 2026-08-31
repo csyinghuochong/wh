@@ -87,7 +87,7 @@ namespace ET
 		public int Special_Name { get; set; }
 		/// <summary>位置</summary>
 		[ProtoMember(3)]
-		public int[] Position { get; set; }
+		public double[] Position { get; set; }
 		/// <summary>新场景ID</summary>
 		[ProtoMember(4)]
 		public int Scene_Target { get; set; }

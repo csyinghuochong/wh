@@ -2171,9 +2171,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.C2M_UnitStateUpdate)]
+	[Message(OuterOpcode.C2M_SingingUpdate)]
 	[ProtoContract]
-	public partial class C2M_UnitStateUpdate: Object, IActorLocationMessage
+	public partial class C2M_SingingUpdate: Object, IActorLocationMessage
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -2195,9 +2195,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_UnitStateUpdate)]
+	[Message(OuterOpcode.M2C_SingingUpdate)]
 	[ProtoContract]
-	public partial class M2C_UnitStateUpdate: Object, IActorMessage
+	public partial class M2C_SingingUpdate: Object, IActorMessage
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

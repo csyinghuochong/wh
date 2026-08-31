@@ -18,7 +18,6 @@ namespace ET
         public static  async ETTask GeneratePetFuben(this PetTianTiComponent self)
         {
             Unit unit = self.MainUnit;
-            unit.GetComponent<StateComponent>().StateTypeAdd(StateTypeEnum.WuDi);
 
             PetComponentServer petComponentServer = self.MainUnit.GetComponent<PetComponentServer>();
             petComponentServer.CheckSkin();

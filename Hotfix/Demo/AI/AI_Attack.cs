@@ -69,8 +69,12 @@ namespace ET
 
                     long serverNow = TimeHelper.ServerNow();
                     aiComponent.LastAttackTime = serverNow;
-                    skillManagerComponent.OnUseSkill(cmd, true);
-                    rigidityEndTime = (long)(LDSkill_BattleCategory.Instance.Get(cmd.SkillID).Time_2 * 1000) + serverNow;
+                    // true=已起条/正在读条，到点由 OnMonsterSingComplete 出手；false=瞬发，立刻 OnUseSkill
+                    if (!skillManagerComponent.TryBeginMonsterSing(cmd))
+                    {
+                        skillManagerComponent.OnUseSkill(cmd, true);
+                        rigidityEndTime = (long)(ldSkill.Time_2 * 1000) + serverNow;
+                    }
                 }
                 if (rigidityEndTime > stateComponent.RigidityEndTime)
                 {

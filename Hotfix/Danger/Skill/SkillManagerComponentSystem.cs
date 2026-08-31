@@ -32,6 +32,8 @@ namespace ET
             self.FangunSkillId = 0;////int.Parse(LDGlobalValueCategory.Instance.Get(2).Value);
             self.SelfUnitComponent = self.DomainScene().GetComponent<UnitComponent>();
             self.SelfUnit = self.GetParent<Unit>();
+             self.SingSkillCmd = new C2M_SkillCmd();
+            self.SingSkillCmd.SkillID = 0;
         }
     }
 
@@ -47,7 +49,7 @@ namespace ET
     /// <summary>
     /// 技能管理
     /// </summary>
-    public static class SkillManagerComponentSystem
+    public static partial class SkillManagerComponentSystem
     {
         public static List<SkillInfo> GetRandomSkills(this SkillManagerComponent self, C2M_SkillCmd skillcmd, int weaponSkill)
         {
@@ -91,6 +93,7 @@ namespace ET
                 ObjectPool.Instance.Recycle(skillHandler);
             }
             self.SkillCDs.Clear();
+            self.ClearMonsterSing();
             TimerComponent.Instance?.Remove(ref self.Timer);
         }
 
@@ -201,8 +204,8 @@ namespace ET
         }
 
         /// <summary>
-        /// 打断吟唱中， 吟唱前客户端处理。
-        /// ifStop=true 时仅打断 Interrupt_2=1 的施法类技能（移动/受控等）。
+        /// 打断吟唱中。ifStop=true 时仅打断 Interrupt_2=1 的施法类技能（移动/受控等）。
+        /// 怪物前摇未进 Skills 列表，一并清掉。
         /// </summary>
         public static void InterruptSing(this SkillManagerComponent self,int skillId,bool ifStop)
         {
@@ -210,6 +213,8 @@ namespace ET
             {
                 return;
             }
+
+            self.InterruptPendingSing(skillId);
 
             Unit unit =self.GetParent<Unit>();
             for (int i = self.Skills.Count - 1; i >= 0; i--)
@@ -236,7 +241,7 @@ namespace ET
                 self.BroadcastSkill(unit, m2C_SkillInterruptResult);
             }
         }
-        
+
         public static void ApplyConsume(Unit unit, LDSkill_Battle ldSkill)
         {
            

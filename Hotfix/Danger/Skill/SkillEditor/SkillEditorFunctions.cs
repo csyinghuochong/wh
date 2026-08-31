@@ -1329,23 +1329,6 @@ namespace ET
 
         private static void SetUnitChooseStatus(SkillEditorFunctionContext ctx)
         {
-            Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(0));
-            int status = ctx.GetParamInt(1, 0);
-            StateComponent stateComponent = unit?.GetComponent<StateComponent>();
-            if (stateComponent == null)
-            {
-                return;
-            }
-
-            if (status == 0)
-            {
-                stateComponent.StateTypeRemove(StateTypeEnum.Stealth);
-                stateComponent.StateTypeRemove(StateTypeEnum.Hide);
-            }
-            else
-            {
-                stateComponent.StateTypeAdd(StateTypeEnum.Stealth);
-            }
         }
 
         private static void GetUnitAttribute(SkillEditorFunctionContext ctx)

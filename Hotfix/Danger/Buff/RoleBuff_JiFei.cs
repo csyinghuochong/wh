@@ -21,7 +21,7 @@ namespace ET
             Vector3 dir = (theUnitBelongto.Position - theUnitFrom.Position).normalized;
             Vector3 vector3 = theUnitBelongto.Position + dir * distance;
             StateComponent stateComponent = theUnitBelongto.GetComponent<StateComponent>();
-            stateComponent.StateTypeAdd(StateTypeEnum.JiTui);
+            stateComponent.StateTypeAdd(StateTypeEnum.PassiveMove);
             this.BeginTime = TimeHelper.ServerNow();
             this.StartPosition = theUnitBelongto.Position;
             this.TargetPosition = vector3;
@@ -42,7 +42,7 @@ namespace ET
         public override void OnFinished()
         {
             StateComponent stateComponent = this.TheUnitBelongto.GetComponent<StateComponent>();
-            stateComponent.StateTypeRemove(StateTypeEnum.JiTui);
+            stateComponent.StateTypeRemove(StateTypeEnum.PassiveMove);
         }
 
     }
