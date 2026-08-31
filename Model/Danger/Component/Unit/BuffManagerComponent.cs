@@ -12,7 +12,7 @@ namespace ET
         public List<ABuffHandler> m_Buffs = new List<ABuffHandler>();
 #else
 
-        public List<BuffHandler> m_Buffs = new List<BuffHandler>();
+        public List<Buff> m_Buffs = new List<Buff>();
 
         public List<LongLongPair> m_BuffRecord = new List<LongLongPair>();  //buffid_增删_
         public readonly M2C_UnitBuffUpdate m2C_UnitBuffUpdate = new M2C_UnitBuffUpdate();

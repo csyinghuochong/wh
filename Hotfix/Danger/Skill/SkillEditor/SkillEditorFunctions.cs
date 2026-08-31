@@ -818,7 +818,7 @@ namespace ET
 
             {
 
-                BuffHandler bh = buffMgr.m_Buffs[i];
+                Buff bh = buffMgr.m_Buffs[i];
 
                 if (bh?.MBuff == null) { continue; }
 
@@ -867,7 +867,7 @@ namespace ET
 
             {
 
-                BuffHandler bh = buffMgr.m_Buffs[i];
+                Buff bh = buffMgr.m_Buffs[i];
 
                 if (bh?.MBuff == null) { continue; }
 

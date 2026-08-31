@@ -49,7 +49,7 @@ namespace ET
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
-                BuffHandler buffHandler = self.m_Buffs[i];
+                Buff buffHandler = self.m_Buffs[i];
                 ObjectPool.Instance.Recycle(buffHandler);
                 self.m_Buffs.RemoveAt(i);
             }
@@ -112,7 +112,7 @@ namespace ET
             {
                 if (buffid == self.m_Buffs[i].MBuff.Id)
                 {
-                    BuffHandler buffHandler = self.m_Buffs[i];
+                    Buff buffHandler = self.m_Buffs[i];
                     buffHandler.BuffState = BuffState.Finished;
                     ObjectPool.Instance.Recycle(buffHandler);
                     buffHandler.OnFinished();
@@ -126,7 +126,7 @@ namespace ET
             MessageHelper.BroadcastBuff(self.GetParent<Unit>(), m2C_UnitBuffUpdate, ldSkillBuff, self.SceneType);
         }
 
-        public static void OnRemoveBuffItem(this BuffManagerComponent self, BuffHandler buffHandler)
+        public static void OnRemoveBuffItem(this BuffManagerComponent self, Buff buffHandler)
         {
             M2C_UnitBuffRemove m2C_UnitBuffUpdate = self.m2C_UnitBuffRemove;
             m2C_UnitBuffUpdate.UnitIdBelongTo = self.GetParent<Unit>().Id;
@@ -241,7 +241,7 @@ namespace ET
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
-                BuffHandler buffHandler = self.m_Buffs[i];
+                Buff buffHandler = self.m_Buffs[i];
                
                 /*
                 buffHandler.OnFinished();
@@ -304,7 +304,7 @@ namespace ET
         public static void BuffRemoveBySkillid(this BuffManagerComponent self, int skillid)
         {
             //判断玩家身上是否有相同的buff,如果有就注销此Buff
-            List<BuffHandler> nowAllBuffList = self.m_Buffs;
+            List<Buff> nowAllBuffList = self.m_Buffs;
             for (int i = nowAllBuffList.Count - 1; i >= 0; i--)
             {
                 if (nowAllBuffList[i].MLdSkillConf.Id == skillid)
@@ -347,8 +347,8 @@ namespace ET
            
 
             int addBufStatus = 1;   //1新增buff  2 移除 3 重置 4同状态返回
-            BuffHandler buffHandler = null;
-            List<BuffHandler> nowAllBuffList = self.m_Buffs;
+            Buff buffHandler = null;
+            List<Buff> nowAllBuffList = self.m_Buffs;
 
             string[] weiyiBuffId = new string[0];
           
@@ -380,8 +380,7 @@ namespace ET
             //添加Buff
             if (addBufStatus == 1)
             {
-                string BuffClassScript = null;
-                buffHandler = (BuffHandler)ObjectPool.Instance.Fetch(BuffDispatcherComponent.Instance.BuffTypes[BuffClassScript]);
+                buffHandler = self.AddChild<Buff>();
 
                 self.m_Buffs.Insert(0, buffHandler);     //添加至buff列表中
                 buffHandler.OnInit(buffData, from, unit, skillHandler);
@@ -433,7 +432,7 @@ namespace ET
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
-                BuffHandler buffHandler = self.m_Buffs[i];
+                Buff buffHandler = self.m_Buffs[i];
                 if (buffHandler.MBuff.Id == ldSkillBuff.Id)
                 {
                     buffHandler.BuffEndTime = endTime;
@@ -516,7 +515,7 @@ namespace ET
             return buffnumber;
         }
 
-        public static int GetBuffIndexById(this BuffManagerComponent self, BuffHandler buffHandler)
+        public static int GetBuffIndexById(this BuffManagerComponent self, Buff buffHandler)
         {
             int buffindex = 0;
             int bufflist = self.m_Buffs.Count;
@@ -550,7 +549,7 @@ namespace ET
 
                 if (self.m_Buffs[i].BuffState == BuffState.Finished)
                 {
-                    BuffHandler buffHandler = self.m_Buffs[i];
+                    Buff buffHandler = self.m_Buffs[i];
                     ObjectPool.Instance.Recycle(buffHandler);
                     buffHandler.OnFinished();
                     self.m_Buffs.RemoveAt(i);
@@ -703,7 +702,7 @@ namespace ET
             List<IntStringPair> Buffs = new List<IntStringPair>();
             for (int i = 0; i < self.m_Buffs.Count; i++)
             {
-                BuffHandler buffHandler = self.m_Buffs[i];
+                Buff buffHandler = self.m_Buffs[i];
                 LDSkill_Battle_Buff ldSkillBuff = buffHandler.MBuff;
                 if (ldSkillBuff == null || ldSkillBuff.Id < 10) //子弹
                 {
@@ -731,7 +730,7 @@ namespace ET
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
-                BuffHandler buffHandler = self.m_Buffs[i];
+                Buff buffHandler = self.m_Buffs[i];
                 buffHandler.OnFinished();
                 ObjectPool.Instance.Recycle(buffHandler);
                 self.m_Buffs.RemoveAt(i);

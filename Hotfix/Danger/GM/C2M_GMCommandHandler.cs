@@ -187,7 +187,7 @@ namespace ET
                         for (int c = 0; c < number; c++)
 						{
 							await TimerComponent.Instance.WaitAsync(1);
-							Vector3 vector3 = RandomHelper.GetRandomPointInCircle(unit.Position, 2f);
+							Vector3 vector3 = RandomHelper.GetRandomPointInCircle(unit.Position,2f, 6f);
 							Unit monster = UnitFactory.CreateMonster(unit.DomainScene(), monsterId, vector3, new CreateMonsterInfo()
 							{ 
 								Camp = CampEnum.CampMonster1,

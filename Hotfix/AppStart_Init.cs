@@ -93,9 +93,7 @@ namespace ET
             Game.Scene.AddComponent<DBComponent>();
             Game.Scene.AddComponent<AIDispatcherComponent>();
             Game.Scene.AddComponent<SkillDispatcherComponent>();
-            Game.Scene.AddComponent<BuffDispatcherComponent>();
             Game.Scene.AddComponent<ShouJiChapterInfoComponent>();
-
             long unitid = DBHelper.DebugUnitId;
             // int n = (int)((unitid / 99) % 4);
             Log.Console($"unit.zone1204: {UnitIdStruct.GetUnitZone(unitid)}");

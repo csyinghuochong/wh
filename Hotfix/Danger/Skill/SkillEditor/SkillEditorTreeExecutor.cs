@@ -43,8 +43,7 @@ namespace ET
                     break;
 
                 case SkillEditorNodeType.IfRoot:
-                    WarnMissingIfResultOnce(ctx, node);
-                    ExecuteChildren(ctx, node);
+                    ExecuteIfRoot(ctx, node);
                     break;
 
                 case SkillEditorNodeType.ForRoot:
@@ -59,10 +58,7 @@ namespace ET
                     break;
 
                 case SkillEditorNodeType.IfCondition:
-                    if (EvaluateCondition(ctx, node))
-                    {
-                        ExecuteChildren(ctx, node);
-                    }
+                    // IF条件由 ExecuteIfRoot 求值，不作为独立节点执行（避免条件函数掷两次）。
                     break;
 
                 case SkillEditorNodeType.BlankText:
@@ -76,6 +72,48 @@ namespace ET
             {
                 ExecuteNode(ctx, node.Children[i]);
             }
+        }
+
+        /// <summary>
+        /// IF根：先求全部 IF条件，全部通过才执行 IF结果。
+        /// 条件函数（如概率触发）会改写 rs；结束后还原，避免同级后续节点（计算伤害）把 rs=0 当成未命中。
+        /// </summary>
+        private static void ExecuteIfRoot(SkillEditorFunctionContext ctx, SkillEditorTreeNode node)
+        {
+            WarnMissingIfResultOnce(ctx, node);
+
+            long savedRs = ctx.GetVariable("rs", 0);
+            bool savedCondition = ctx.LastConditionResult;
+
+            bool passed = true;
+            bool hasCondition = false;
+            for (int i = 0; i < node.Children.Count; i++)
+            {
+                SkillEditorTreeNode child = node.Children[i];
+                if (child.NodeType != SkillEditorNodeType.IfCondition)
+                {
+                    continue;
+                }
+
+                bool childPassed = EvaluateCondition(ctx, child);
+                passed = hasCondition ? passed && childPassed : childPassed;
+                hasCondition = true;
+            }
+
+            if (passed)
+            {
+                for (int i = 0; i < node.Children.Count; i++)
+                {
+                    SkillEditorTreeNode child = node.Children[i];
+                    if (child.NodeType == SkillEditorNodeType.IfResult)
+                    {
+                        ExecuteNode(ctx, child);
+                    }
+                }
+            }
+
+            ctx.SetVariable("rs", savedRs);
+            ctx.LastConditionResult = savedCondition;
         }
 
         private static void WarnMissingIfResultOnce(SkillEditorFunctionContext ctx, SkillEditorTreeNode ifRoot)

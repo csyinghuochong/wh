@@ -130,34 +130,34 @@ namespace ET
 		/// <summary>消失 技能</summary>
 		[ProtoMember(17)]
 		public int Skill_Remove { get; set; }
-		/// <summary>特殊效果 添加</summary>
-		[ProtoMember(18)]
-		public int[] Special_Effect { get; set; }
-		/// <summary>特殊效果 免疫</summary>
-		[ProtoMember(19)]
-		public int[] Special_Effect_Immune { get; set; }
 		/// <summary>免疫组</summary>
+		[ProtoMember(18)]
+		public int[] Immune_Group { get; set; }
+		/// <summary>控制</summary>
+		[ProtoMember(19)]
+		public int[] Control { get; set; }
+		/// <summary>免疫</summary>
 		[ProtoMember(20)]
-		public int[] Group_Immune { get; set; }
-		/// <summary>移动移除 0-否 1-是</summary>
+		public int[] Immune { get; set; }
+		/// <summary>移动 移除 0-否 1-是</summary>
 		[ProtoMember(21)]
 		public int Remove_Move { get; set; }
-		/// <summary>战斗移除 0-否 1-是</summary>
+		/// <summary>战斗 移除 0-否 1-是</summary>
 		[ProtoMember(22)]
 		public int Remove_Battle_Enter { get; set; }
-		/// <summary>脱战移除 0-否 1-是</summary>
+		/// <summary>脱战 移除 0-否 1-是</summary>
 		[ProtoMember(23)]
 		public int Remove_Battle_Leave { get; set; }
-		/// <summary>死亡移除 0-否 1-是</summary>
+		/// <summary>死亡 移除 0-否 1-是</summary>
 		[ProtoMember(24)]
 		public int Remove_Dead { get; set; }
-		/// <summary>安全区移除 0-否 1-是</summary>
+		/// <summary>安全区 移除 0-否 1-是</summary>
 		[ProtoMember(25)]
 		public int Remove_SafeArea { get; set; }
-		/// <summary>切场景移除 0-否 1-是</summary>
+		/// <summary>切场景 移除 0-否 1-是</summary>
 		[ProtoMember(26)]
 		public int Remove_ChangeScene { get; set; }
-		/// <summary>下线移除 0-否 1-是</summary>
+		/// <summary>下线 移除 0-否 1-是</summary>
 		[ProtoMember(27)]
 		public int Remove_Logout { get; set; }
 		/// <summary>特效1</summary>
