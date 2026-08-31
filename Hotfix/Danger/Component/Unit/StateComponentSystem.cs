@@ -30,11 +30,6 @@ namespace ET
             self.RigidityEndTime = 0;
         }
 
-        public static void Reset(this StateComponent self)
-        {
-            self.CurrentStateType = StateTypeEnum.None;
-        }
-
         public static void SetRigidityEndTime(this StateComponent self, long addTime)
         {
             self.RigidityEndTime =  addTime;
@@ -45,24 +40,15 @@ namespace ET
             return  TimeHelper.ClientNow() <  self.RigidityEndTime;
         }
 
-        public static void SetNetWaitEndTime(this StateComponent self, long addTime)
-        {
-            self.NetWaitEndTime =  addTime;
-        }
-
-        public static bool IsNetWaitEndTime(this StateComponent self)
-        {
-            return TimeHelper.ClientNow() < self.NetWaitEndTime;
-        }
-
         public static int CanUseSkill(this StateComponent self, LDSkill_Battle ldSkill, bool checkDead)
         {
            
-            if (self.IsNetWaitEndTime())
-            {
-                return ErrorCode.ERR_CanNotUseSkill_NetWait;
-            }
+            bool stunSkill = ldSkill != null && ldSkill.Use_Stun == 1 && self.StateTypeGet(StateTypeEnum.HunMi);
             if (self.StateTypeGet(StateTypeEnum.HunMi) && (ldSkill == null || ldSkill.Use_Stun != 1))
+            {
+                return ErrorCode.ERR_CanNotUseSkill_Dizziness;
+            }
+            if (self.StateTypeGet(StateTypeEnum.MaBi))
             {
                 return ErrorCode.ERR_CanNotUseSkill_Dizziness;
             }
@@ -74,12 +60,12 @@ namespace ET
             {
                 return ErrorCode.ERR_CanNotUseSkill_Sleep;
             }
-            if (self.StateTypeGet(StateTypeEnum.PassiveMove))
-            {
-                return ErrorCode.ERR_CanNotUseSkill_Hung;
-            }
 
-            if (self.StateTypeGet(StateTypeEnum.ForbidCast) && (ldSkill == null || ldSkill.Use_Silence != 1))
+            if (self.StateTypeGet(StateTypeEnum.ForbidCast) && (ldSkill == null || ldSkill.Use_Silence != 1) && !stunSkill)
+            {
+                return ErrorCode.ERR_CanNotUseSkill_Silence;
+            }
+            if (self.StateTypeGet(StateTypeEnum.Silence) && (ldSkill == null || ldSkill.Use_Silence != 1) && !stunSkill)
             {
                 return ErrorCode.ERR_CanNotUseSkill_Silence;
             }
@@ -117,10 +103,6 @@ namespace ET
             {
                 return ErrorCode.ERR_CanNotMove_1;
             }
-            if (self.IsNetWaitEndTime())
-            {
-                return ErrorCode.ERR_CanNotMove_NetWait;
-            }
             if (self.IsRigidity())
             {
                 return ErrorCode.ERR_CanNotMove_Rigidity;
@@ -129,13 +111,9 @@ namespace ET
             {
                 return ErrorCode.ERR_CanNotMove_Dizziness;
             }
-            if (self.StateTypeGet(StateTypeEnum.PassiveMove))
+            if (self.StateTypeGet(StateTypeEnum.MaBi))
             {
-                return ErrorCode.ERR_CanNotMove_JiTui;
-            }
-            if (self.StateTypeGet(StateTypeEnum.ForbidMove))
-            {
-                return ErrorCode.ERR_CanNotMove_Shackle;
+                return ErrorCode.ERR_CanNotMove_Dizziness;
             }
             if (self.StateTypeGet(StateTypeEnum.Sleep))
             {
@@ -167,7 +145,7 @@ namespace ET
         /// 增加某个状态
         /// </summary>
         /// <param name="nowStateType"></param>
-        public static void StateTypeAdd(this StateComponent self, long nowStateType, string stateValue ="0")
+        public static void StateTypeAdd(this StateComponent self, long nowStateType)
         {
             Unit unit = self.GetParent<Unit>();
             self.CurrentStateType = self.CurrentStateType | nowStateType;
@@ -189,13 +167,6 @@ namespace ET
         public static void StateTypeRemove(this StateComponent self, long nowStateType)
         {
             self.CurrentStateType = self.CurrentStateType & ~nowStateType;
-#if !SERVER
-            Unit unit = self.GetParent<Unit>();
-            if (unit.MainHero && self.CanMove()== ErrorCode.ERR_Success)
-            {
-                self.SilenceCheckTime = 0;
-            }
-#endif
         }
 
         /// <summary>
@@ -204,59 +175,7 @@ namespace ET
         /// <param name="nowStateType"></param>
         public static bool StateTypeGet(this StateComponent self, long nowStateType)
         {
-            long state = (self.CurrentStateType & nowStateType);
-            //Log.Debug("nowStateTypes = " + nowStateTypes + " state = " + state);
-            // 0 表示没有状态   大于0表示有状态
-            if (state > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (self.CurrentStateType & nowStateType) > 0;
         }
-
-        /// <summary>
-        /// 获取当前状态
-        /// </summary>
-        /// <returns></returns>
-        public static long GetNowStateType(this StateComponent self)
-        {
-            return self.CurrentStateType;
-        }
-
-        public static bool SkillBuffStateContrast(this StateComponent self,int buffStateType, long stateType) {
-
-            if (1L << buffStateType == stateType)
-            {
-                return true;
-            }
-            else {
-                return false;
-            }
-
-        }
-
-#if !SERVER
-        /// <summary>
-        /// 
-        /// </summary>
-        public static void CheckSilence(this StateComponent self)
-        {
-            if (self.SilenceCheckTime == 0)
-            {
-                return;
-            }
-            if (self.SilenceCheckTime < TimeHelper.ServerNow() - 5000)
-            {
-                self.SilenceCheckTime = 0;
-                self.StateTypeRemove(StateTypeEnum.HunMi);
-                self.StateTypeRemove(StateTypeEnum.ForbidCast);
-                self.StateTypeRemove(StateTypeEnum.ForbidMove);
-            }
-        }
-
-#endif
     }
 }

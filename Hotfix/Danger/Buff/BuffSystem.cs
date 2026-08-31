@@ -35,6 +35,7 @@ namespace ET
             //self.InterValTime = self.MBuff.BuffLoopTime * 1000;
             self.InterValTimeBegin = TimeHelper.ServerNow();
             self.NowBuffValue = 0f;
+            self.ApplyBuffControl();
         }
 
         /// <summary>
@@ -90,6 +91,7 @@ namespace ET
 
         public static  void OnFinished(this Buff self)
         {
+            self.RemoveBuffControl();
             if (!self.IsTrigger)
             {
                 return;
@@ -144,6 +146,58 @@ namespace ET
                     break;
             }
             */
+        }
+
+        public static void ApplyBuffControl(this Buff self)
+        {
+            long mask = StateTypeEnum.FromControl(self.MBuff?.Control);
+            if (mask == 0)
+            {
+                return;
+            }
+
+            if (Log.IsDebugEnabled)
+            {
+                long remain = self.BuffEndTime - TimeHelper.ServerNow();
+                Log.Debug($"ApplyBuffControl unit={self.TheUnitBelongto.Id} buff={self.BuffData.BuffId} mask={mask} remainMs={remain}");
+            }
+
+            self.TheUnitBelongto?.GetComponent<StateComponent>()?.StateTypeAdd(mask);
+        }
+
+        public static void RemoveBuffControl(this Buff self)
+        {
+            long mask = StateTypeEnum.FromControl(self.MBuff?.Control);
+            if (mask == 0 || self.TheUnitBelongto == null)
+            {
+                return;
+            }
+
+            long still = 0;
+            BuffManagerComponent buffManager = self.TheUnitBelongto.GetComponent<BuffManagerComponent>();
+            if (buffManager != null)
+            {
+                for (int i = 0; i < buffManager.m_Buffs.Count; i++)
+                {
+                    Buff other = buffManager.m_Buffs[i];
+                    if (other == null || other.Id == self.Id)
+                    {
+                        continue;
+                    }
+
+                    still |= StateTypeEnum.FromControl(other.MBuff?.Control);
+                }
+            }
+
+            long remove = mask & ~still;
+            if (remove != 0)
+            {
+                if (Log.IsDebugEnabled)
+                {
+                    Log.Debug($"RemoveBuffControl unit={self.TheUnitBelongto.Id} buff={self.BuffData.BuffId} remove={remove} still={still}");
+                }
+                self.TheUnitBelongto.GetComponent<StateComponent>()?.StateTypeRemove(remove);
+            }
         }
     }
 }
