@@ -95,7 +95,7 @@ namespace ET
                     }
                 }
                 
-                response.Error = m2C_SkillCmd!= null ? m2C_SkillCmd.Error : ErrorCode.ERR_UseSkillError;
+                response.Error = m2C_SkillCmd!= null ? m2C_SkillCmd.Error : ErrorCode.ERR_CanNotUseSkill;
                 response.Message = m2C_SkillCmd != null ? m2C_SkillCmd.Message: string.Empty;
                 reply();
                 await ETTask.CompletedTask;

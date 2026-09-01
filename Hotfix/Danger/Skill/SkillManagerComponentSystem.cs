@@ -284,7 +284,7 @@ namespace ET
             List<SkillInfo> skillList = self.GetRandomSkills(skillcmd, weaponSkillid);
             if (skillList == null ||  skillList.Count == 0)
             {
-                m2C_Skill.Error = ErrorCode.ERR_UseSkillError;
+                m2C_Skill.Error = ErrorCode.ERR_CanNotUseSkill;
                 return m2C_Skill;
             }
 
