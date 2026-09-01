@@ -35,7 +35,7 @@ namespace ET
             //加载新场景
             for (int i = 0; i < maps.Count; i++)
             {
-                self.Update(maps[i]);
+                self.Update(maps[i].ToString());
             }
         }
 
@@ -46,7 +46,7 @@ namespace ET
                 return;
             }
             self.UnLoadMapNavData(mapId);
-            self.Update(mapId);
+            self.Update(mapId.ToString());
         }
     }
 }

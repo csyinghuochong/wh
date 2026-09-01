@@ -116,7 +116,7 @@ namespace ET
             unit.AddComponent<ObjectWait>();
             
             unit.AddComponent<MoveComponent>();
-            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<UnitInfoComponent>();
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
             unit.ConfigId = skillid;
@@ -145,7 +145,7 @@ namespace ET
             scene.GetComponent<UnitComponent>().Add(unit);
             unit.AddComponent<ObjectWait>();
             unit.AddComponent<MoveComponent>();
-            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<UnitInfoComponent>();
 
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
@@ -235,7 +235,7 @@ namespace ET
             unit.AddComponent<MoveComponent>();
             unit.AddComponent<SkillManagerComponent>();
             SkillPassiveComponent skillPassive = unit.AddComponent<SkillPassiveComponent>();
-            unit.AddComponent<PathfindingComponent, int>(mapComponent.NavMeshId);
+            unit.AddComponent<PathfindingComponent, string>(mapComponent.NavMeshId);
             //添加其他组件
             unit.AddComponent<StateComponent>();         //添加状态组件
             unit.AddComponent<BuffManagerComponent>();
@@ -315,7 +315,7 @@ namespace ET
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unit.AddComponent<MoveComponent>();
             unit.AddComponent<SkillManagerComponent>();
-            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             unitInfoComponent.UnitName = master.GetComponent<UnitInfoComponent>().UnitName;
             numericComponent.Set(NumericType.MasterId, master.Id);
@@ -352,7 +352,7 @@ namespace ET
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unit.AddComponent<SkillManagerComponent>();
             MapComponent mapComponent = scene.GetComponent<MapComponent>();
-            unit.AddComponent<PathfindingComponent, int>(mapComponent.NavMeshId);
+            unit.AddComponent<PathfindingComponent, string>(mapComponent.NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             unit.ConfigId = petinfo.ConfigId;
             unit.MasterId = masterId;
@@ -408,7 +408,7 @@ namespace ET
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unit.AddComponent<MoveComponent>();
             unit.AddComponent<SkillManagerComponent>();
-            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             unitInfoComponent.MasterName = petinfo.PlayerName;
             unitInfoComponent.UnitName = petinfo.PetName;
@@ -460,7 +460,7 @@ namespace ET
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unit.AddComponent<MoveComponent>();
             unit.AddComponent<SkillManagerComponent>();
-            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
 
             unitInfoComponent.UnitName = LDHome_FarmCategory.Instance.Get(jiaYuanPlant.ItemId).Id.ToString();
@@ -495,7 +495,7 @@ namespace ET
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unit.AddComponent<MoveComponent>();
             unit.AddComponent<SkillManagerComponent>();
-            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             //unitInfoComponent.MasterName = roleInfoComponent.RoleInfo.Name;
             //unitInfoComponent.UnitName = JiaYuanPastureConfigCategory.Instance.Get(jiaYuanPastures.ConfigId).Name;
@@ -532,7 +532,7 @@ namespace ET
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
             unit.AddComponent<MoveComponent>();
             unit.AddComponent<SkillManagerComponent>();
-            unit.AddComponent<PathfindingComponent, int>(scene.GetComponent<MapComponent>().NavMeshId);
+            unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             unitInfoComponent.MasterName = master.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
             unitInfoComponent.UnitName = LDElfCategory.Instance.Get(jinglingId).Name.ToString();

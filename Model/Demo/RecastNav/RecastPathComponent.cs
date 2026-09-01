@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace ET
@@ -10,7 +11,7 @@ namespace ET
 
         /// <summary>
         /// 寻路处理者（可用于拓展多线程，参考A*插件）
-        /// key为地图id，value为具体处理者
+        /// key 为 RecastDll 地图 id（Scenes_300 -> 300）
         /// </summary>
         public Dictionary<int, RecastPathProcessor> m_RecastPathProcessorDic = new Dictionary<int, RecastPathProcessor>();
 
@@ -36,9 +37,20 @@ namespace ET
         /// <summary>
         /// 寻路
         /// </summary>
-        public void SearchPath(int mapId, Vector3 from, Vector3 to, List<Vector3> result, int unitType)
+        public void SearchPath(string navName, Vector3 from, Vector3 to, List<Vector3> result, int unitType)
         {
-            GetRecastPathProcessor(mapId).CalculatePath(from, to, result, unitType);
+            RecastPathProcessor processor = GetRecastPathProcessor(navName);
+            if (processor == null)
+            {
+                return;
+            }
+
+            processor.CalculatePath(from, to, result, unitType);
+        }
+
+        public RecastPathProcessor GetRecastPathProcessor(string navName)
+        {
+            return GetRecastPathProcessor(RecastFileReader.ToNavId(navName));
         }
 
         public RecastPathProcessor GetRecastPathProcessor(int mapId)
@@ -47,11 +59,9 @@ namespace ET
             {
                 return recastPathProcessor;
             }
-            else
-            {
-                Log.Error($"未找到地图id为{mapId}的recastPathProcessor");
-                return null;
-            }
+
+            Log.Error($"未找到地图id为{mapId}的recastPathProcessor");
+            return null;
         }
 
         /// <summary>
@@ -59,9 +69,14 @@ namespace ET
         /// </summary>
         public void LoadMapNavData(int mapId, char[] navDataPath)
         {
+            if (mapId <= 0)
+            {
+                Log.Error($"LoadMapNavData mapId invalid");
+                return;
+            }
+
             if (m_RecastPathProcessorDic.ContainsKey(mapId))
             {
-                //Log.Warning($"已存在Id为{mapId}的地图Nav数据，请勿重复加载！");
                 return;
             }
 
@@ -71,6 +86,10 @@ namespace ET
                 recastPathProcessor.MapId = mapId;
                 m_RecastPathProcessorDic[mapId] = recastPathProcessor;
                 Log.Info($"加载Id为{mapId}的地图Nav数据成功！");
+            }
+            else
+            {
+                Log.Error($"加载Id为{mapId}的地图Nav数据失败 path={new string(navDataPath)}");
             }
         }
 
@@ -82,7 +101,6 @@ namespace ET
         {
             if (!m_RecastPathProcessorDic.ContainsKey(mapId))
             {
-                //Log.Warning($"不存在Id为{mapId}的地图Nav数据，无法进行卸载！");
                 return;
             }
 
@@ -110,14 +128,21 @@ namespace ET
             //RecastInterface.Fini();
         }
 
-        public void Update(int mapId)
+        public void Update(string navName)
         {
             if (!ConfigData.OldNavMesh)
             {
                 return;
             }
 
-            string path = $"../Config/RecastNavData/{mapId}.bin";
+            int mapId = RecastFileReader.ToNavId(navName);
+            string path = RecastFileReader.ResolveNavPath(navName);
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                Log.Error($"未找到寻路文件 nav={navName} id={mapId} path={path}");
+                return;
+            }
+
             LoadMapNavData(mapId, path.ToCharArray());
         }
     }
