@@ -462,7 +462,7 @@ namespace ET
                 }
             }
 
-            ApplyBuff(
+            if (!ApplyBuff(
                 ctx,
                 caster,
                 target,
@@ -471,7 +471,12 @@ namespace ET
                 tickCount,
                 ignoreImmune,
                 buffLevel,
-                isControl ? effectType : null);
+                isControl ? effectType : null))
+            {
+                ctx.SetVariable("rs", 0);
+                ctx.LastConditionResult = false;
+                return;
+            }
             ctx.SetVariable("rs", 1);
             ctx.LastConditionResult = true;
         }
@@ -909,7 +914,7 @@ namespace ET
 
 
 
-        private static void ApplyBuff(
+        private static bool ApplyBuff(
 
             SkillEditorFunctionContext ctx,
 
@@ -931,13 +936,13 @@ namespace ET
 
         {
 
-            if (target == null || buffId <= 0) { return; }
+            if (target == null || buffId <= 0) { return false; }
 
             BuffManagerComponent buffMgr = target.GetComponent<BuffManagerComponent>();
 
-            if (buffMgr == null) { return; }
+            if (buffMgr == null) { return false; }
 
-            if (!ignoreImmune && buffMgr.IsSkillImmune(ctx.SkillId)) { return; }
+            if (!ignoreImmune && buffMgr.IsSkillImmune(ctx.SkillId)) { return false; }
 
             BuffData buffData = new BuffData
             {
@@ -950,8 +955,12 @@ namespace ET
                 buffData.BuffEndTime = TimeHelper.ServerNow() + intervalMs * tickCount;
             }
 
-            buffMgr.BuffFactory(buffData, caster, ctx.Handler);
+            if (!buffMgr.BuffFactory(buffData, caster, ctx.Handler, true, ignoreImmune))
+            {
+                return false;
+            }
             if (Log.IsDebugEnabled) Log.Debug($"ApplyBuff target={target.Id} buffId={buffId} interval={intervalMs} ticks={tickCount} level={buffLevel} control={controlType ?? string.Empty}");
+            return true;
         }
 
         private static void DestroyUnit(SkillEditorFunctionContext ctx)

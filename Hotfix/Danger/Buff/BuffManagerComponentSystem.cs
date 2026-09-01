@@ -333,12 +333,12 @@ namespace ET
             MessageHelper.Broadcast(unit, m2C_UnitBuffStatus);
         }
 
-        public static void BuffFactory(this BuffManagerComponent self, BuffData buffData, Unit from, Skill_TreeEditor skillHandler, bool notice = true)
+        public static bool BuffFactory(this BuffManagerComponent self, BuffData buffData, Unit from, Skill_TreeEditor skillHandler, bool notice = true, bool ignoreImmune = false)
         {
             if (buffData.BuffId <= 0)
             {
                 Log.Error("buffData.BuffId <= 0");
-                return;
+                return false;
             }
 
             Unit unit = self.GetParent<Unit>();
@@ -350,8 +350,7 @@ namespace ET
             Buff buffHandler = null;
             List<Buff> nowAllBuffList = self.m_Buffs;
 
-            string[] weiyiBuffId = new string[0];
-          
+  
             //先移除互斥
             for (int i = nowAllBuffList.Count - 1; i >= 0; i--)
             {
@@ -375,7 +374,15 @@ namespace ET
 
             if (addBufStatus == 4)
             {
-                return;
+                return false;
+            }
+            if (!ignoreImmune && self.IsControlImmune(ldSkillBuff))
+            {
+                if (Log.IsDebugEnabled)
+                {
+                    Log.Debug($"IsControlImmune unit={unit.Id} buff={ldSkillBuff.Id}");
+                }
+                return false;
             }
             //添加Buff
             if (addBufStatus == 1)
@@ -409,7 +416,7 @@ namespace ET
                 if (unit.GetComponent<AOIEntity>() == null)
                 {
                     Log.Error($"unit.GetComponent<AOIEntity>() == null  {unit.Type} {unit.ConfigId}  {unit.Id}  {unit.IsDisposed}");
-                    return;
+                    return true;
                 }
                 MessageHelper.BroadcastBuff(unit, m2C_UnitBuffUpdate, ldSkillBuff, self.SceneType);
             }
@@ -421,9 +428,10 @@ namespace ET
                 Unit unitpet = unit.GetParent<UnitComponent>().Get(rolePetId);
                 if (unitpet != null)
                 {
-                    unitpet.GetComponent<BuffManagerComponent>().BuffFactory(buffData, from, skillHandler, notice);
+                    unitpet.GetComponent<BuffManagerComponent>().BuffFactory(buffData, from, skillHandler, notice, ignoreImmune);
                 }
             }
+            return true;
         }
 
         public static void BuffAddSyncTime(this BuffManagerComponent self, long endTime, LDSkill_Battle_Buff ldSkillBuff)
@@ -474,6 +482,117 @@ namespace ET
 
 
             return false;
+        }
+
+        /// <summary>
+        /// Immune_Group 对上 Group：整条 buff 加不上。
+        /// Immune 只挡状态；Control 全部被免疫才整条加不上。
+        /// </summary>
+        public static bool IsControlImmune(this BuffManagerComponent self, LDSkill_Battle_Buff incoming)
+        {
+            if (incoming == null)
+            {
+                return false;
+            }
+
+            int buffcnt = self.m_Buffs.Count;
+            bool hasGroup = incoming.Group != null && incoming.Group.Length > 0;
+            if (hasGroup)
+            {
+                for (int i = 0; i < buffcnt; i++)
+                {
+                    Buff buff = self.m_Buffs[i];
+                    if (buff == null || buff.BuffState == BuffState.Finished || buff.MBuff == null)
+                    {
+                        continue;
+                    }
+
+                    if (StateTypeEnum.IdsOverlap(buff.MBuff.Immune_Group, incoming.Group))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return self.IsAllControlImmune(incoming.Control);
+        }
+
+        public static bool HasImmuneId(this BuffManagerComponent self, int id)
+        {
+            if (id <= 0)
+            {
+                return false;
+            }
+
+            int buffcnt = self.m_Buffs.Count;
+            for (int i = 0; i < buffcnt; i++)
+            {
+                Buff buff = self.m_Buffs[i];
+                if (buff == null || buff.BuffState == BuffState.Finished)
+                {
+                    continue;
+                }
+
+                int[] immune = buff.MBuff?.Immune;
+                if (immune == null)
+                {
+                    continue;
+                }
+
+                for (int j = 0; j < immune.Length; j++)
+                {
+                    if (immune[j] == id)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static bool IsAllControlImmune(this BuffManagerComponent self, int[] control)
+        {
+            if (control == null || control.Length == 0)
+            {
+                return false;
+            }
+
+            bool any = false;
+            for (int i = 0; i < control.Length; i++)
+            {
+                int id = control[i];
+                if (id <= 0)
+                {
+                    continue;
+                }
+
+                any = true;
+                if (!self.HasImmuneId(id))
+                {
+                    return false;
+                }
+            }
+
+            return any;
+        }
+
+        public static long GetActiveImmuneMask(this BuffManagerComponent self)
+        {
+            long mask = 0;
+            int buffcnt = self.m_Buffs.Count;
+            for (int i = 0; i < buffcnt; i++)
+            {
+                Buff buff = self.m_Buffs[i];
+                if (buff == null || buff.BuffState == BuffState.Finished)
+                {
+                    continue;
+                }
+
+                mask |= StateTypeEnum.FromControl(buff.MBuff?.Immune);
+            }
+
+            return mask;
         }
 
         public static int GetBuffNumber(this BuffManagerComponent self, int buffId)

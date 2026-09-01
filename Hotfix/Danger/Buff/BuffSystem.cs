@@ -156,6 +156,14 @@ namespace ET
                 return;
             }
 
+            BuffManagerComponent buffManager = self.TheUnitBelongto?.GetComponent<BuffManagerComponent>();
+            long immune = buffManager?.GetActiveImmuneMask() ?? 0;
+            mask &= ~immune;
+            if (mask == 0)
+            {
+                return;
+            }
+
             if (Log.IsDebugEnabled)
             {
                 long remain = self.BuffEndTime - TimeHelper.ServerNow();
