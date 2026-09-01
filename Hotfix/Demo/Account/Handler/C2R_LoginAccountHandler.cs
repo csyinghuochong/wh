@@ -144,6 +144,13 @@ namespace ET
                         bool StopServer = centerServerComponent.StopServer;
                         
                         PlayerInfo centerPlayerInfo = dbcenterAccountInfo.PlayerInfo;
+
+                        if (CommonHelper.IsInnerNet())
+                        {
+                            centerPlayerInfo.RealName = 1;
+                            centerPlayerInfo.IdCardNo = "429001198512282996";
+                        }
+
                         if (centerPlayerInfo.RealName == 0)
                         {
                             response.Error = ErrorCode.ERR_NotRealName;
