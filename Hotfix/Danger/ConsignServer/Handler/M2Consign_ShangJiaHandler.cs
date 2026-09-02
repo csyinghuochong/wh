@@ -19,7 +19,7 @@ namespace ET
             ConsignItemInfo consignItem = request.ConsignItemInfo;
             if (consignItem.BelongId <= 0 && consignItem.BagInfo != null)
             {
-                consignItem.BelongId = ItemNewHelper.GetConsignBelongId(consignItem.BagInfo);
+                consignItem.BelongId = ConsignHelper.GetConsignBelongId(consignItem.BagInfo);
             }
 
             DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetOrCreatePaiMaiDBByBelongId(consignItem.BelongId);

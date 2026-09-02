@@ -52,7 +52,7 @@ namespace ET
                 int days = ConsignHelper.NormalizeConsignDays((int)request.ConsignItemInfo.OverTime);
                 request.ConsignItemInfo.OverTime = days;
 
-                request.ConsignItemInfo.BelongId = ItemNewHelper.GetConsignBelongId(request.ConsignItemInfo.BagInfo);
+                request.ConsignItemInfo.BelongId = ConsignHelper.GetConsignBelongId(request.ConsignItemInfo.BagInfo);
                 if (request.ConsignItemInfo.BelongId <= 0)
                 {
                     response.Error = ErrorCode.ERR_Parameter;
