@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ET
 {
@@ -8,30 +7,23 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2Consign_SearchRequest request, Consign2C_SearchResponse response, Action reply)
         {
-            if (request.FindItemIdList.Count <= 0)
+            if (request.ItemId <= 0 && request.ItemType <= 0)
             {
+                response.Error = ErrorCode.ERR_Parameter;
                 reply();
                 return;
             }
 
             ConsignSceneComponent paiMaiComponent = scene.GetComponent<ConsignSceneComponent>();
-            if (request.FindBelongIdList.Count <= 0)
+            if (request.BelongId > 0)
+            {
+                SearchInDb(paiMaiComponent.GetPaiMaiDBByBelongId(request.BelongId), request, response);
+            }
+            else
             {
                 foreach (DBConsignInfo db in paiMaiComponent.ShangJiaByBelongId.Values)
                 {
                     SearchInDb(db, request, response);
-                    if (response.ConsignItemInfos.Count > 200)
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                foreach (int belongId in request.FindBelongIdList)
-                {
-                    DBConsignInfo dBPaiMainInfo = paiMaiComponent.GetPaiMaiDBByBelongId(belongId);
-                    SearchInDb(dBPaiMainInfo, request, response);
                     if (response.ConsignItemInfos.Count > 200)
                     {
                         break;
@@ -50,15 +42,28 @@ namespace ET
                 return;
             }
 
-            foreach (ConsignItemInfo paiMaiItemInfo in dBPaiMainInfo.PaiMaiItemInfos)
+            for (int i = 0; i < dBPaiMainInfo.PaiMaiItemInfos.Count; i++)
             {
-                if (request.FindItemIdList.Contains(paiMaiItemInfo.BagInfo.ItemID))
+                ConsignItemInfo paiMaiItemInfo = dBPaiMainInfo.PaiMaiItemInfos[i];
+                if (paiMaiItemInfo?.BagInfo == null || ConsignHelper.IsDesignatedShangJia(paiMaiItemInfo))
                 {
-                    response.ConsignItemInfos.Add(paiMaiItemInfo);
-                    if (response.ConsignItemInfos.Count > 200)
-                    {
-                        return;
-                    }
+                    continue;
+                }
+
+                if (request.ItemId > 0 && paiMaiItemInfo.BagInfo.ItemID != request.ItemId)
+                {
+                    continue;
+                }
+
+                if (request.ItemType > 0 && paiMaiItemInfo.BagInfo.ItemType != request.ItemType)
+                {
+                    continue;
+                }
+
+                response.ConsignItemInfos.Add(paiMaiItemInfo);
+                if (response.ConsignItemInfos.Count > 200)
+                {
+                    return;
                 }
             }
         }

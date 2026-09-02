@@ -11169,10 +11169,13 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(1)]
-		public List<int> FindItemIdList = new List<int>();
+		public int BelongId { get; set; }
 
 		[ProtoMember(2)]
-		public List<int> FindBelongIdList = new List<int>();
+		public int ItemType { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemId { get; set; }
 
 	}
 
