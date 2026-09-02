@@ -255,6 +255,13 @@ namespace ET
             }
 
             int total = paimaiListShow.Count;
+            int totalPage = (total + pageSize - 1) / pageSize;
+            if (totalPage <= 0)
+            {
+                totalPage = 1;
+            }
+
+            response.TotalPage = totalPage;
             int start = (page - 1) * pageSize;
             if (total == 0 || start >= total)
             {

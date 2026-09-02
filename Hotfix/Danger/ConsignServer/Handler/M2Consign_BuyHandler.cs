@@ -79,7 +79,7 @@ namespace ET
                 useBagInfo.Loc =(int)ItemLocType.ItemLocBag;
                 useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
                 useBagInfo.GetWay = bagInfo.GetWay;
-                useBagInfo.SetBinding(bagInfo.IsBinding());
+                useBagInfo.ItemFlags = bagInfo.ItemFlags;   
                 
                 paiMaiItemInfo2.Id = IdGenerater.Instance.GenerateId();
                 paiMaiItemInfo2.BagInfo = useBagInfo;

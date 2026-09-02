@@ -32,7 +32,7 @@ namespace ET
             //绑定装备无法转移(客户端已经给出对应提示)
             if (bagInfo_1.IsBinding() && !bagInfo_2.IsBinding() && ldItemConfig1.Quality == 4)
             {
-                bagInfo_2.SetBinding(true);
+               
             }
 
             //紫色品质以上才可以转移

@@ -2171,6 +2171,7 @@ namespace ET
 
 	}
 
+// 吟唱同步（开箱动作暂仍走此协议）。Buff 加的状态不走这里，客户端/服务器各自 StateTypeAdd/Remove。
 	[Message(OuterOpcode.C2M_SingingUpdate)]
 	[ProtoContract]
 	public partial class C2M_SingingUpdate: Object, IActorLocationMessage
@@ -3341,6 +3342,9 @@ namespace ET
 
 		[ProtoMember(3)]
 		public int ItemType { get; set; }
+
+		[ProtoMember(4)]
+		public int ItemFlags { get; set; }
 
 	}
 
@@ -11083,6 +11087,9 @@ namespace ET
 
 		[ProtoMember(2)]
 		public int NextPage { get; set; }
+
+		[ProtoMember(3)]
+		public int TotalPage { get; set; }
 
 	}
 

@@ -508,7 +508,7 @@ namespace ET
             useBagInfo.Loc = (int)ItemLocType.ItemLocBag;
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
             useBagInfo.GetWay = bagInfo.GetWay;
-            useBagInfo.SetBinding(bagInfo.IsBinding());
+            useBagInfo.ItemFlags = bagInfo.ItemFlags;
             List<BagInfo> bagList = self.GetItemByLoc(ItemLocType.ItemLocBag);
             bagList.Add(useBagInfo);
             BagSortHelper.SortIfNeeded(bagList, ItemLocType.ItemLocBag);
@@ -578,14 +578,14 @@ namespace ET
             for (int i = 0; i < srcList.Count; i++)
             {
                 RewardItem src = srcList[i];
-                long key = ((long)src.ItemType << 32) | (uint)src.ItemID;
+                long key = ((long)src.ItemFlags << 48) | ((long)src.ItemType << 32) | (uint)src.ItemID;
                 if (map.TryGetValue(key, out RewardItem merged))
                 {
                     merged.ItemNum += src.ItemNum;
                     continue;
                 }
 
-                map[key] = new RewardItem { ItemType = src.ItemType, ItemID = src.ItemID, ItemNum = src.ItemNum };
+                map[key] = new RewardItem { ItemType = src.ItemType, ItemID = src.ItemID, ItemNum = src.ItemNum, ItemFlags = src.ItemFlags };
             }
 
             return map;
@@ -671,7 +671,7 @@ namespace ET
                 leftCell = self.GetBagLeftCell(locKey);
             }
 
-            int needCells = ItemNewHelper.CalcNeedNewCells(locList, item.ItemType, item.ItemID, item.ItemNum, ItemNewHelper.GetNewItemPileSum(item));
+            int needCells = ItemNewHelper.CalcNeedNewCells(locList, item.ItemType, item.ItemID, item.ItemNum, ItemNewHelper.GetNewItemPileSum(item), item.ItemFlags);
             if (needCells > leftCell)
             {
                 return false;
@@ -715,7 +715,7 @@ namespace ET
             for (int k = 0; k < itemList.Count && leftNum > 0; k++)
             {
                 BagInfo bagInfo = itemList[k];
-                if (bagInfo.ItemID != item.ItemID || bagInfo.ItemType != item.ItemType || bagInfo.ItemNum >= maxPileSum)
+                if (bagInfo.ItemID != item.ItemID || bagInfo.ItemType != item.ItemType || !ItemFlagEnum.CanPileTogether(bagInfo.ItemFlags, item.ItemFlags) || bagInfo.ItemNum >= maxPileSum)
                 {
                     continue;
                 }
@@ -753,7 +753,14 @@ namespace ET
                     MakePlayer = makeUserID
                 };
                 leftNum -= bagInfo.ItemNum;
-                bagInfo.SetBinding(ItemNewHelper.CheckItemIfBound(item));
+                if (item.ItemFlags != 0)
+                {
+                    bagInfo.ItemFlags = item.ItemFlags;
+                }
+                else
+                {
+                    bagInfo.SetTradeStatus(ItemNewHelper.CheckItemIfBound(item)? ItemFlagEnum.NonTradable : ItemFlagEnum.None);
+                }
                 if (item.ItemType == ItemBigType.Type_Equip && bagInfo.BaseAttrList.Count <= 0)
                 {
                     LDEquip equipConfig = LDEquipCategory.Instance.Get(item.ItemID);

@@ -206,7 +206,7 @@ namespace ET
                 }
 
                 int pileSum = ItemNewHelper.GetNewItemPileSum(reward);
-                int need = ItemNewHelper.CalcNeedNewCells(locList, reward.ItemType, reward.ItemID, reward.ItemNum, pileSum);
+                int need = ItemNewHelper.CalcNeedNewCells(locList, reward.ItemType, reward.ItemID, reward.ItemNum, pileSum, reward.ItemFlags);
                 int locKey = (int)toLoc;
                 if (needByLoc.TryGetValue(locKey, out int exist))
                 {

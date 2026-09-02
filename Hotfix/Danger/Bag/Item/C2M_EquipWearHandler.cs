@@ -76,7 +76,7 @@ namespace ET
                 }
                
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-                useBagInfo.SetBinding(true);
+                useBagInfo.SetTradeStatus(ItemFlagEnum.NonTradable);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
             else
