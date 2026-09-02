@@ -11415,6 +11415,83 @@ namespace ET
 
 	}
 
+	[ResponseType(nameof(Consign2C_CollectResponse))]
+	[Message(OuterOpcode.C2Consign_CollectRequest)]
+	[ProtoContract]
+	public partial class C2Consign_CollectRequest: Object, IConsignmentRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+		[ProtoMember(2)]
+		public long ConsignItemInfoId { get; set; }
+
+		[ProtoMember(3)]
+		public int BelongId { get; set; }
+
+		[ProtoMember(4)]
+		public int Collect { get; set; }
+
+	}
+
+	[Message(OuterOpcode.Consign2C_CollectResponse)]
+	[ProtoContract]
+	public partial class Consign2C_CollectResponse: Object, IConsignmentResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int Collect { get; set; }
+
+	}
+
+	[ResponseType(nameof(Consign2C_CollectListResponse))]
+	[Message(OuterOpcode.C2Consign_CollectListRequest)]
+	[ProtoContract]
+	public partial class C2Consign_CollectListRequest: Object, IConsignmentRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.Consign2C_CollectListResponse)]
+	[ProtoContract]
+	public partial class Consign2C_CollectListResponse: Object, IConsignmentResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<ConsignItemInfo> ConsignItemInfo = new List<ConsignItemInfo>();
+
+	}
+
 //寄售  end####################################################
 //合成begin####################################################
 	[ResponseType(nameof(M2C_ComposeGoodsResponse))]

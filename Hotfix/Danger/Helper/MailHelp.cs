@@ -61,30 +61,38 @@ namespace ET
             await SendUserMail(homeZone, userId, mailInfo);
         }
 
-        public static async ETTask SendPaiMaiEmail(int zone, ConsignItemInfo paiMaiItemInfo,int costNum, long unitid)
+        public static async ETTask SendPaiMaiEmail(int zone, ConsignItemInfo paiMaiItemInfo, int costNum, long unitid)
         {
-            await ETTask.CompletedTask;
+            if (paiMaiItemInfo?.BagInfo == null || paiMaiItemInfo.UserId <= 0 || costNum <= 0)
+            {
+                return;
+            }
 
-            Log.Error("MailInfo mailInfo = new MailInfo");
+            long goldNum = ConsignHelper.GetConsignSellerGold((long)paiMaiItemInfo.Price * costNum);
+            if (goldNum <= 0)
+            {
+                return;
+            }
+
             MailInfo mailInfo = new MailInfo();
-            LDItem ldItemCof = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
-            //mailInfo.Status = 0;
-            //mailInfo.Context = "你拍卖行出售的道具:" + ldItemCof.Name + ",已经被其他玩家购买" + costNum + "个。";
-            //mailInfo.Title = "拍卖行邮件";
+            mailInfo.Status = 0;
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
-            BagInfo reward = new BagInfo();
-            reward.ItemID = 1;
-            int sellPrice = (int)ConsignHelper.GetConsignSellerGold((long)paiMaiItemInfo.Price * costNum);
-            reward.ItemNum = sellPrice;
-            reward.GetWay = $"{ItemGetWay.PaiMaiSell}_{TimeHelper.ServerNow()}";
-            mailInfo.ItemList.Add(reward);
-           
-            //发送到邮件服
-            long mailServerId = StartSceneConfigCategory.Instance.GetBySceneName(zone, "EMail").InstanceId;      //获取邮件消息ID
-            //E2M_EMailSendResponse g_EMailSendResponse = (E2M_EMailSendResponse)await ActorMessageSenderComponent.Instance.Call
-            //    (mailServerId, new M2E_EMailSendRequest() { Id = paiMaiItemInfo.UserId, MailInfo = mailInfo });
+            BagInfo gold = new BagInfo();
+            gold.ItemID = UserDataType.Gold;
+            gold.ItemType = ItemBigType.Type_Item;
+            gold.ItemNum = goldNum > int.MaxValue ? int.MaxValue : (int)goldNum;
+            gold.GetWay = $"{ItemGetWay.PaiMaiSell}_{TimeHelper.ServerNow()}";
+            mailInfo.ItemList.Add(gold);
+
+            await SendUserMail(zone, paiMaiItemInfo.UserId, mailInfo);
         }
 
+        /// <summary>
+        /// 用来发送全服邮件的 不要乱用
+        /// </summary>
+        /// <param name="zone"></param>
+        /// <param name="userID"></param>
+        /// <param name="serverMailItem"></param>
         public static void  SendServerMail(int zone, long userID, ServerMailItem serverMailItem)
         {
             Mail2M_SendServerMailItem mail2M_SendServer = new Mail2M_SendServerMailItem();

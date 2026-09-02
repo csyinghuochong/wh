@@ -58,7 +58,7 @@ namespace ET
                     case SceneType.Consign:
                         if (request.MessageType == NoticeType.StopSever)
                         {
-                            scene.GetComponent<ConsignSceneComponent>().SaveDB(0).Coroutine();
+                            scene.GetComponent<ConsignSceneComponent>().SaveDB().Coroutine();
                             Log.Debug($"数据落地:  PaiMai: {scene.DomainZone()}");
                         }
                         break;

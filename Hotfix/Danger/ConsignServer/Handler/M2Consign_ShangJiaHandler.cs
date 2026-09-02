@@ -25,6 +25,12 @@ namespace ET
             DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetOrCreatePaiMaiDBByBelongId(consignItem.BelongId);
 
             dBPaiMainInfo.PaiMaiItemInfos.Add(consignItem);
+
+            if (CommonHelper.IsInnerNet())
+            {
+                scene.GetComponent<ConsignSceneComponent>().SaveDB().Coroutine();
+            }
+
             reply();
             await ETTask.CompletedTask;
         }

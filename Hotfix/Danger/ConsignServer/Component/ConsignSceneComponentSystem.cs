@@ -11,7 +11,7 @@ namespace ET
         {
             try
             {
-                self.SaveDB(1).Coroutine();
+                self.SaveDB().Coroutine();
             }
             catch (Exception e)
             {
@@ -285,7 +285,7 @@ namespace ET
         /// <param name="self"></param>
         /// <param name="deleteType">0删角 1回档</param>
         /// <param name="userId"></param>
-        public static void OnDeleteRole(this ConsignSceneComponent self, int deleteType, long userId)
+        public static async ETTask OnDeleteRole(this ConsignSceneComponent self, int deleteType, long userId)
         {
             if (userId <= 0)
             {
@@ -298,6 +298,7 @@ namespace ET
             }
 
             self.OnDeleteRoleWantBuy(userId);
+            await self.OnDeleteRoleCollect(userId);
         }
 
         public static void OnDeleteRole_ByType(this ConsignSceneComponent self, long userId, DBConsignInfo dBPaiMainInfo)
@@ -323,15 +324,8 @@ namespace ET
 
  
 
-        public static async ETTask SaveDB(this ConsignSceneComponent self, int random)
+        public static async ETTask SaveDB(this ConsignSceneComponent self)
         {
-            //if (random == 1)
-            //{
-            //    if (RandomHelper.RandomNumber(1,3) != 1)
-            //    {
-            //        return;
-            //    }
-            //}
 
             foreach (KeyValuePair<int, DBConsignInfo> kv in self.ShangJiaByBelongId)
             {
@@ -558,6 +552,135 @@ namespace ET
                     db.WantBuyInfos.RemoveAt(i);
                     MailHelp.SendWantBuyGoldMail(info.UserId, (long)info.Price * info.ItemNum).Coroutine();
                 }
+            }
+        }
+
+        public static async ETTask SaveCollectData(this ConsignSceneComponent self, DBConsignCollect db)
+        {
+            if (db == null)
+            {
+                return;
+            }
+
+            await Game.Scene.GetComponent<DBComponent>().Save<DBConsignCollect>(self.DomainZone(), db);
+        }
+
+        public static async ETTask<DBConsignCollect> QueryCollectDB(this ConsignSceneComponent self, long userId)
+        {
+            if (userId <= 0)
+            {
+                return null;
+            }
+
+            List<DBConsignCollect> list = await Game.Scene.GetComponent<DBComponent>()
+                    .Query<DBConsignCollect>(self.DomainZone(), d => d.Id == userId);
+            if (list == null || list.Count == 0)
+            {
+                return null;
+            }
+
+            return list[0];
+        }
+
+        public static async ETTask<int> AddCollect(this ConsignSceneComponent self, long userId, long consignItemInfoId)
+        {
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Collect, userId))
+            {
+                DBConsignCollect db = await self.QueryCollectDB(userId);
+                bool created = false;
+                if (db == null)
+                {
+                    db = self.AddChildWithId<DBConsignCollect>(userId);
+                    created = true;
+                }
+
+                if (db.CollectIds == null)
+                {
+                    db.CollectIds = new List<long>();
+                }
+
+                if (db.CollectIds.Contains(consignItemInfoId))
+                {
+                    return ErrorCode.ERR_Success;
+                }
+
+                if (db.CollectIds.Count >= ConsignHelper.CollectMax)
+                {
+                    return ErrorCode.ERR_Parameter;
+                }
+
+                db.CollectIds.Add(consignItemInfoId);
+                await self.SaveCollectData(db);
+                if (created)
+                {
+                    db.Dispose();
+                }
+                return ErrorCode.ERR_Success;
+            }
+        }
+
+        public static async ETTask RemoveCollect(this ConsignSceneComponent self, long userId, long consignItemInfoId)
+        {
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Collect, userId))
+            {
+                DBConsignCollect db = await self.QueryCollectDB(userId);
+                if (db?.CollectIds == null)
+                {
+                    return;
+                }
+
+                db.CollectIds.Remove(consignItemInfoId);
+                await self.SaveCollectData(db);
+            }
+        }
+
+        public static async ETTask<List<ConsignItemInfo>> GetCollectList(this ConsignSceneComponent self, long userId)
+        {
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Collect, userId))
+            {
+                List<ConsignItemInfo> result = new List<ConsignItemInfo>();
+                DBConsignCollect db = await self.QueryCollectDB(userId);
+                if (db?.CollectIds == null)
+                {
+                    return result;
+                }
+
+                bool pruned = false;
+                for (int i = db.CollectIds.Count - 1; i >= 0; i--)
+                {
+                    long consignItemInfoId = db.CollectIds[i];
+                    ConsignItemInfo item = self.FindShangJiaItem(0, consignItemInfoId, out _);
+                    if (item == null || ConsignHelper.IsConsignExpired(item))
+                    {
+                        db.CollectIds.RemoveAt(i);
+                        pruned = true;
+                        continue;
+                    }
+
+                    result.Insert(0, item);
+                }
+
+                if (pruned)
+                {
+                    await self.SaveCollectData(db);
+                }
+
+                return result;
+            }
+        }
+
+        public static async ETTask OnDeleteRoleCollect(this ConsignSceneComponent self, long userId)
+        {
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Collect, userId))
+            {
+                DBConsignCollect db = await self.QueryCollectDB(userId);
+                if (db?.CollectIds == null)
+                {
+                    return;
+                }
+
+                db.CollectIds.Clear();
+                await self.SaveCollectData(db);
             }
         }
 

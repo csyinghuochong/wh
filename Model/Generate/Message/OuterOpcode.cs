@@ -749,5 +749,9 @@ namespace ET
 		 public const ushort M2C_MountRideUpdate = 10746;
 		 public const ushort C2M_MountXiLian = 10747;
 		 public const ushort M2C_MountXiLian = 10748;
+		 public const ushort C2Consign_CollectRequest = 10749;
+		 public const ushort Consign2C_CollectResponse = 10750;
+		 public const ushort C2Consign_CollectListRequest = 10751;
+		 public const ushort Consign2C_CollectListResponse = 10752;
 	}
 }

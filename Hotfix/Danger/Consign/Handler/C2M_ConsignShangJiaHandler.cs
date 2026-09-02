@@ -51,14 +51,6 @@ namespace ET
 
                 int days = ConsignHelper.NormalizeConsignDays((int)request.ConsignItemInfo.OverTime);
                 request.ConsignItemInfo.OverTime = days;
-                int serviceFee = ConsignHelper.GetConsignServiceFee(days);
-                if (serviceFee > 0
-                    && bagComponentServer.GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < serviceFee)
-                {
-                    response.Error = ErrorCode.ERR_GoldNotEnoughError;
-                    reply();
-                    return;
-                }
 
                 request.ConsignItemInfo.BelongId = ItemNewHelper.GetConsignBelongId(request.ConsignItemInfo.BagInfo);
                 if (request.ConsignItemInfo.BelongId <= 0)
@@ -113,10 +105,6 @@ namespace ET
 				{
 					//扣除对应道具
 					bagComponentServer.OnCostItemData(request.ConsignItemInfo.BagInfo.BagInfoID, request.ConsignItemInfo.BagInfo.ItemNum);
-                    if (serviceFee > 0)
-                    {
-                        roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, (serviceFee * -1).ToString(), true, ItemGetWay.PaiMaiSell);
-                    }
 					response.ConsignItemInfo = request.ConsignItemInfo;
 					LogHelper.LogWarning(response.ConsignItemInfo.PlayerName + "上架道具：" + request.ConsignItemInfo.BagInfo.ItemID + "数量" + request.ConsignItemInfo.BagInfo.ItemNum + "时间戳:" + currentTime.ToString(), true);
                 }

@@ -12,7 +12,7 @@ namespace ET
         protected override async ETTask Run(Scene scene, R2Consign_DeleteRoleData request, Consign2R_DeleteRoleData response, Action reply)
         {
             ConsignSceneComponent rankScene = scene.GetComponent<ConsignSceneComponent>();
-            rankScene.OnDeleteRole(request.DeleteType, request.DeleUserID);
+            await rankScene.OnDeleteRole(request.DeleteType, request.DeleUserID);
 
             reply();
             await ETTask.CompletedTask;

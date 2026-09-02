@@ -116,27 +116,14 @@ namespace ET
                 }
 
                 //给出售者邮件发送金币
-                MailHelp.SendPaiMaiEmail(UnitZoneHelper.GetHomeZone(unit), r_GameStatusResponse.ConsignItemInfo, r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemNum, unit.Id).Coroutine();
+                MailHelp.SendPaiMaiEmail(
+                    UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId),
+                    r_GameStatusResponse.ConsignItemInfo,
+                    r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemNum,
+                    r_GameStatusResponse.ConsignItemInfo.UserId).Coroutine();
 
                 //Log.Warning($"拍卖购买者: {unit.Id} 购买 {r_GameStatusResponse.PaiMaiItemInfo.UserId} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
                 Log.Warning($"拍卖被购买: [出售者]{r_GameStatusResponse.ConsignItemInfo.UserId}  [购买者]{unit.Id} 道具ID：{r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
-
-                
-                long baginfoid = 0;
-                if (r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemType == ItemBigType.Type_Equip)
-                {
-                    baginfoid = r_GameStatusResponse.ConsignItemInfo.BagInfo.BagInfoID;
-                }
-
-
-                if (unit.Id != r_GameStatusResponse.ConsignItemInfo.UserId)
-                {
-                    long locationactor = r_GameStatusResponse.ConsignItemInfo.UserId;
-                }
-                else
-                {
-                    dataCollation.UpdateBuySelfPlayerList(ConsignHelper.GetConsignSellerGold(needGold), unit.Id, baginfoid, true);
-                }
             }
 
             reply();

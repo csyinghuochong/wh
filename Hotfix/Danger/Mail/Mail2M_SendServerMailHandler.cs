@@ -3,6 +3,9 @@
 namespace ET
 {
 
+    /// <summary>
+    /// 这个是用来处理全服邮件的 暂时不要乱用
+    /// </summary>
     [ActorMessageHandler]
     public class Mail2M_SendServerMailHandler : AMActorLocationHandler<Unit, Mail2M_SendServerMailItem>
     {
