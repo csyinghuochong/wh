@@ -80,7 +80,7 @@ namespace ET
                 break;
             }
 
-            unit.Stop(-2);
+            unit.Stop(MoveStopTypeEnum.MoveStopTypeFu2);
             reply();
             await ETTask.CompletedTask;
         }

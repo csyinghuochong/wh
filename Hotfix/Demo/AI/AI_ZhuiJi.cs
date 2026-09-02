@@ -50,7 +50,7 @@ namespace ET
                     {
                         if (moving)
                         {
-                            unit.Stop(canMove ? 0 : -2);
+                            unit.Stop(canMove ? 0 : MoveStopTypeEnum.MoveStopTypeFu2);
                         }
                     }
                     else

@@ -1852,7 +1852,7 @@ namespace ET
                     }
                 }
 
-                unit.Stop(-2);
+                unit.Stop(MoveStopTypeEnum.MoveStopTypeFu2);
                 return;
             }
 

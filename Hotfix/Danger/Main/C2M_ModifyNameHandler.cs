@@ -7,8 +7,7 @@ namespace ET
     [ActorMessageHandler]
     public class C2M_ModifyNameHandler : AMActorLocationRpcHandler<Unit, C2M_ModifyNameRequest, M2C_ModifyNameResponse>
     {
-        private static string modifyNameCost;
-        private static bool modifyNameCostInit;
+     
 
         protected override async ETTask Run(Unit unit, C2M_ModifyNameRequest request, M2C_ModifyNameResponse response, Action reply)
         {
@@ -54,13 +53,9 @@ namespace ET
                 reply();
                 return;
             }
-
-            if (!modifyNameCostInit)
-            {
-                modifyNameCost = LDGlobalValueCategory.Instance.Get(70).Value;
-                modifyNameCostInit = true;
-            }
-            if (bag.OnCostItemData(modifyNameCost, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
+            Console.WriteLine("修改名字未配置消耗！！");
+       
+            if (bag.OnCostItemData("", ItemLocType.ItemLocBag, ItemGetWay.CostItem))
             {
                 roleInfo.UpdateRoleData(UserDataType.Name, request.NewName);
                 M2C_RoleDataBroadcast m2C_BroadcastRoleData = new M2C_RoleDataBroadcast();

@@ -110,7 +110,6 @@ namespace ET
                     Console.WriteLine($"Monster未配置 ID:{monsterid}");
                     return;
                 }
-
                 unit = UnitFactory.CreateMonster(scene,  monsterid, initposition, new CreateMonsterInfo()
 					{
 						Camp = CampEnum.CampMonster1,
@@ -118,8 +117,17 @@ namespace ET
 						SceneCreateId =   createid,
 					});
 			}
-			
-			/*if (mtype == 1)    //固定位置刷怪
+            if (mtype == 9)
+            {
+                if (!LDMonsterCategory.Instance.Contain(monsterid))
+                {
+                    Console.WriteLine($"Monster未配置 ID:{monsterid}");
+                    return;
+                }
+				
+            }
+
+            /*if (mtype == 1)    //固定位置刷怪
 			{
 				if (monsterPosition.CreateNum > 100)
 				{
@@ -207,7 +215,7 @@ namespace ET
 				scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterByPos_2(monsterPosition.Id);
 			}
 			*/
-		}
+        }
 
 		public static List<IntLongPair> GetRandomMonster(Scene scene, int fubenid, string createMonster)
 		{

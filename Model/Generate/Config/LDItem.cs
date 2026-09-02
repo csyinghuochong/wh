@@ -82,7 +82,7 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>相同 Id</summary>
+		/// <summary>相同 ID</summary>
 		[ProtoMember(2)]
 		public int Same_Id { get; set; }
 		/// <summary>名称</summary>
@@ -103,7 +103,7 @@ namespace ET
 		/// <summary>最大 使用 等级</summary>
 		[ProtoMember(8)]
 		public int UseLv_Max { get; set; }
-		/// <summary>子 类</summary>
+		/// <summary>类型</summary>
 		[ProtoMember(9)]
 		public int ItemType { get; set; }
 		/// <summary>参数1</summary>
@@ -118,44 +118,47 @@ namespace ET
 		/// <summary>参数4</summary>
 		[ProtoMember(13)]
 		public string ItemTypeParam4 { get; set; }
-		/// <summary>奖励</summary>
+		/// <summary>掉落 Id</summary>
 		[ProtoMember(14)]
 		public int Drop_Id { get; set; }
-		/// <summary>堆叠</summary>
+		/// <summary>奖励</summary>
 		[ProtoMember(15)]
+		public string Reward { get; set; }
+		/// <summary>堆叠</summary>
+		[ProtoMember(16)]
 		public int ItemPileSum { get; set; }
 		/// <summary>出售ID</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public int Sell_ID { get; set; }
 		/// <summary>出售值</summary>
-		[ProtoMember(17)]
+		[ProtoMember(18)]
 		public int Sell_Num { get; set; }
 		/// <summary>进背包 0-否 1-是</summary>
-		[ProtoMember(18)]
+		[ProtoMember(19)]
 		public int IfBag { get; set; }
 		/// <summary>背包类型 1-装备 2-奇珍 3-材料 4-消耗</summary>
-		[ProtoMember(19)]
+		[ProtoMember(20)]
 		public int BagType { get; set; }
 		/// <summary>自动 使用 0-否 1-是</summary>
-		[ProtoMember(20)]
-		public int IfAutoUse { get; set; }
-		/// <summary>获取 绑定 0-否 1-是</summary>
 		[ProtoMember(21)]
+		public int IfAutoUse { get; set; }
+		/// <summary>禁交易 0-否 1-是</summary>
+		[ProtoMember(22)]
 		public int IfLock { get; set; }
 		/// <summary>交易 所属</summary>
-		[ProtoMember(22)]
+		[ProtoMember(23)]
 		public int Exchange_Belong { get; set; }
 		/// <summary>每天 使用 次数</summary>
-		[ProtoMember(23)]
+		[ProtoMember(24)]
 		public int DayUseNum { get; set; }
 		/// <summary>总共 使用 次数</summary>
-		[ProtoMember(24)]
+		[ProtoMember(25)]
 		public int SumUseNum { get; set; }
 		/// <summary>显示特效</summary>
-		[ProtoMember(25)]
+		[ProtoMember(26)]
 		public string EquipEffect { get; set; }
 		/// <summary>排序</summary>
-		[ProtoMember(26)]
+		[ProtoMember(27)]
 		public int Order_LS { get; set; }
 
 	}

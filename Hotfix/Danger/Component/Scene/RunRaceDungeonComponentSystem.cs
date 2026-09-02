@@ -106,7 +106,7 @@ namespace ET
                     unit.Position = new Vector3(bornX + RandomHelper.RandomNumberFloat(-1, 1), 
                         bornY, 
                         bornZ + RandomHelper.RandomNumberFloat(-1, 1));
-                    unit.Stop(-2);
+                    unit.Stop(MoveStopTypeEnum.MoveStopTypeFu2);
                 }
             }
         }

@@ -981,6 +981,9 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
+		[ProtoMember(1)]
+		public int StopType { get; set; }
+
 	}
 
 	[Message(OuterOpcode.C2M_StopTest)]
