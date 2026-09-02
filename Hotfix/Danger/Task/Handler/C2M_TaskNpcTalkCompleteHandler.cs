@@ -15,12 +15,12 @@ namespace ET
             {
                 TaskPro taskPro = taskComponentServer.RoleTaskList[k];
                 
-                if (!LDTaskCategory.Instance.Contain(taskPro.taskID))
+                if (!LDTask_2Category.Instance.Contain(taskPro.taskID))
                 {
                     Log.Debug($"无效的任务ID {taskPro.taskID}");
                     continue;
                 }
-                LDTask ldTask = LDTaskCategory.Instance.Get(taskPro.taskID);
+                LDTask_2 ldTask = LDTask_2Category.Instance.Get(taskPro.taskID);
      
                 if (taskPro.taskStatus < (int)TaskStatuEnum.Completed 
                     && ldTask.Condition_Type  == TastConditionType.TalkToNpc_200  && ldTask.Param2 == request.NpcId)

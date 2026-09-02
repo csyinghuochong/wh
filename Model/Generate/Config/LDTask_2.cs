@@ -7,50 +7,50 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDTaskCategory : ProtoObject, IMerge
+    public partial class LDTask_2Category : ProtoObject, IMerge
     {
-        public static LDTaskCategory Instance;
+        public static LDTask_2Category Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDTask> dict = new Dictionary<int, LDTask>();
+        private Dictionary<int, LDTask_2> dict = new Dictionary<int, LDTask_2>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDTask> list = new List<LDTask>();
+        private List<LDTask_2> list = new List<LDTask_2>();
 		
-        public LDTaskCategory()
+        public LDTask_2Category()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDTaskCategory s = o as LDTaskCategory;
+            LDTask_2Category s = o as LDTask_2Category;
             this.list.AddRange(s.list);
         }
 		
 		public override void EndInit()
 		{
-			foreach (LDTask config in list)
+			foreach (LDTask_2 config in list)
 			{
 				config.EndInit();
 				if (this.dict.ContainsKey(config.Id))
 				{
-					throw new Exception($"配置表重复Id: 表={nameof(LDTask)} Id={config.Id}");
+					throw new Exception($"配置表重复Id: 表={nameof(LDTask_2)} Id={config.Id}");
 				}
 				this.dict.Add(config.Id, config);
 			}
 			this.AfterEndInit();
 		}
 		
-        public LDTask Get(int id)
+        public LDTask_2 Get(int id)
         {
-            this.dict.TryGetValue(id, out LDTask item);
+            this.dict.TryGetValue(id, out LDTask_2 item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDTask)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDTask_2)}，配置id: {id}");
             }
 
             return item;
@@ -61,12 +61,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDTask> GetAll()
+        public Dictionary<int, LDTask_2> GetAll()
         {
             return this.dict;
         }
 
-        public LDTask GetOne()
+        public LDTask_2 GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -77,7 +77,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDTask: ProtoObject, IConfig
+	public partial class LDTask_2: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

@@ -10,7 +10,7 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_TaskGetRequest request, M2C_TaskGetResponse response, Action reply)
         {
-            if (!LDTaskCategory.Instance.Contain(request.TaskId))
+            if (!LDTask_2Category.Instance.Contain(request.TaskId))
             {
                 Log.Error($"C2M_TaskGetRequest 1");
                 response.Error = ErrorCode.ERR_ModifyData;
@@ -18,7 +18,7 @@ namespace ET
                 return;
             }
 
-            LDTask ldTask = LDTaskCategory.Instance.Get(request.TaskId);
+            LDTask_2 ldTask = LDTask_2Category.Instance.Get(request.TaskId);
            // if (ldTask.TaskType == TaskTypeEnum.Daily)
             {
                 TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();

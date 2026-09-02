@@ -9,7 +9,7 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_TaskCommitRequest request, M2C_TaskCommitResponse response, Action reply)
         {
-            if (!LDTaskCategory.Instance.Contain(request.TaskId))
+            if (!LDTask_2Category.Instance.Contain(request.TaskId))
             {
                 reply();
                 return;
