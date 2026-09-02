@@ -288,6 +288,25 @@ namespace ET
             return unit;
         }
 
+        public static Unit CreateInteraction(Scene scene, int createid, int interactionId, Vector3 vector3, float rotation)
+        {
+            LDInteraction ldInteraction = LDInteractionCategory.Instance.Get(interactionId);
+
+            Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), interactionId);
+            scene.GetComponent<UnitComponent>().Add(unit);
+
+            UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
+            unitInfoComponent.Scene_Creature = createid;
+            unitInfoComponent.UnitName = ldInteraction.Name.ToString();
+            unit.ConfigId = interactionId;
+            unit.Position = vector3;
+            unit.Rotation = Quaternion.Euler(0, rotation, 0);
+            unit.Type = UnitType.Interaction;
+
+            unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
+            return unit;
+        }
+
         public static Unit CreateNpcByPosition(Scene scene, int npcId, Vector3 vector3)
         {
             LDNPC ldNpc = LDNPCCategory.Instance.Get(npcId);

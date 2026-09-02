@@ -93,7 +93,7 @@ namespace ET
 			
 			Vector3 initposition = new Vector3((float)monsterPosition.Position[0], (float)monsterPosition.Position[1], (float)monsterPosition.Position[2]);
 			Unit unit = null;
-			if (mtype == 1)
+			if (mtype == UnitType.Npc)
 			{
 				if(!LDNPCCategory.Instance.Contain(monsterid))
 				{
@@ -103,7 +103,7 @@ namespace ET
 				
 				unit = UnitFactory.CreateNpc(scene,createid, monsterid, initposition);
 			}
-			if (mtype == 2)
+			if (mtype == UnitType.Monster)
 			{
                 if (!LDMonsterCategory.Instance.Contain(monsterid))
                 {
@@ -117,14 +117,15 @@ namespace ET
 						SceneCreateId =   createid,
 					});
 			}
-            if (mtype == 9)
+            if (mtype == UnitType.Interaction)
             {
-                if (!LDMonsterCategory.Instance.Contain(monsterid))
+                if (!LDInteractionCategory.Instance.Contain(monsterid))
                 {
-                    Console.WriteLine($"Monster未配置 ID:{monsterid}");
+                    Console.WriteLine($"Interaction未配置 ID:{monsterid}");
                     return;
                 }
-				
+
+                unit = UnitFactory.CreateInteraction(scene, createid, monsterid, initposition, monsterPosition.Rotation);
             }
 
             /*if (mtype == 1)    //固定位置刷怪

@@ -86,6 +86,9 @@ namespace ET
                     break;
                 case UnitType.Npc:
                     break;
+                case UnitType.Interaction:
+                    unitInfo.UnitName = unitInfoComponent.UnitName;
+                    break;
                 default:
                     break;
             }
@@ -135,6 +138,7 @@ namespace ET
                 case UnitType.Bullet:
                 case UnitType.SkillEntity:
                 case UnitType.Npc:
+                case UnitType.Interaction:
                     createUnits.Units.Add(CreateUnitInfo(sendUnit));
                     break;
                 case UnitType.Monster:
