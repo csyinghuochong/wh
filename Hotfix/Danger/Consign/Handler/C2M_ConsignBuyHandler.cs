@@ -30,8 +30,8 @@ namespace ET
                 return;
             }
 
-            LDItem ldItem = LDItemCategory.Instance.Get(paiMaiItemInfo.BagInfo.ItemID);
-            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / ldItem.ItemPileSum);
+            int pileNumber = ItemNewHelper.GetNewItemPileSum(paiMaiItemInfo.BagInfo);
+            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / pileNumber);
             if (bag.GetBagLeftCell() < cell)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
@@ -72,20 +72,6 @@ namespace ET
                 return;
             }
 
-            bool firstDay = false;
-            int openPaiMai = 0;//unit.GetComponent<NumericComponent>().GetAsInt(NumericType.PaiMaiOpen);
-
-            if (openPaiMai == 0)
-            {
-                int createDay = roleInfoComponentServer.GetCrateDay();
-            }
-
-            if (!firstDay && openPaiMai == 0)
-            {
-                response.Error = ErrorCode.Pre_Condition_Error;
-                reply();
-                return;
-            }
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Buy, unit.Id))
             {
