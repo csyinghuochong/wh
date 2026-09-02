@@ -85,7 +85,7 @@ namespace ET
 		/// <summary>场景Id</summary>
 		[ProtoMember(2)]
 		public int Scene_Id { get; set; }
-		/// <summary>类型 1：NPC 2：怪物</summary>
+		/// <summary>类型 1：NPC 2：怪物 9：交互</summary>
 		[ProtoMember(3)]
 		public int Type { get; set; }
 		/// <summary>对应ID</summary>
