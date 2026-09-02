@@ -90,6 +90,7 @@ namespace ET
                 paiMaiItemInfo2.BelongId = paiMaiItemInfo.BelongId;
                 paiMaiItemInfo2.Account = paiMaiItemInfo.Account;
                 paiMaiItemInfo2.TargetPlayer = paiMaiItemInfo.TargetPlayer;
+                paiMaiItemInfo2.TargetUserId = paiMaiItemInfo.TargetUserId;
                 paiMaiItemInfo2.OverTime = paiMaiItemInfo.OverTime;
                 
                 response.ConsignItemInfo = paiMaiItemInfo2;

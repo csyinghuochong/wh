@@ -107,6 +107,140 @@ namespace ET
             return result;
         }
 
+        public static List<ConsignItemInfo> GetPublicShangJiaItems(this ConsignSceneComponent self, List<ConsignItemInfo> source)
+        {
+            List<ConsignItemInfo> result = new List<ConsignItemInfo>();
+            if (source == null)
+            {
+                return result;
+            }
+
+            for (int i = 0; i < source.Count; i++)
+            {
+                ConsignItemInfo item = source[i];
+                if (item == null || ConsignHelper.IsDesignatedShangJia(item))
+                {
+                    continue;
+                }
+
+                result.Add(item);
+            }
+
+            return result;
+        }
+
+        public static List<ConsignItemInfo> GetTargetShangJiaItems(this ConsignSceneComponent self, long userId)
+        {
+            List<ConsignItemInfo> result = new List<ConsignItemInfo>();
+            if (userId <= 0)
+            {
+                return result;
+            }
+
+            foreach (DBConsignInfo db in self.ShangJiaByBelongId.Values)
+            {
+                AddTargetShangJiaItems(result, db?.PaiMaiItemInfos, userId);
+            }
+
+            return result;
+        }
+
+        private static void AddTargetShangJiaItems(List<ConsignItemInfo> result, List<ConsignItemInfo> source, long userId)
+        {
+            if (source == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < source.Count; i++)
+            {
+                ConsignItemInfo item = source[i];
+                if (item == null || item.TargetUserId != userId)
+                {
+                    continue;
+                }
+
+                result.Add(item);
+            }
+        }
+
+        /// <summary>公开货插到指定货前面，指定货追加到桶尾，保证 [公开...][指定...] 分段。</summary>
+        public static void InsertShangJiaItem(this ConsignSceneComponent self, DBConsignInfo db, ConsignItemInfo item)
+        {
+            if (db.PaiMaiItemInfos == null)
+            {
+                db.PaiMaiItemInfos = new List<ConsignItemInfo>();
+            }
+
+            if (ConsignHelper.IsDesignatedShangJia(item))
+            {
+                db.PaiMaiItemInfos.Add(item);
+                return;
+            }
+
+            for (int i = 0; i < db.PaiMaiItemInfos.Count; i++)
+            {
+                if (ConsignHelper.IsDesignatedShangJia(db.PaiMaiItemInfos[i]))
+                {
+                    db.PaiMaiItemInfos.Insert(i, item);
+                    return;
+                }
+            }
+
+            db.PaiMaiItemInfos.Add(item);
+        }
+
+        public static void CompactShangJiaOrder(this ConsignSceneComponent self, DBConsignInfo db)
+        {
+            if (db?.PaiMaiItemInfos == null || db.PaiMaiItemInfos.Count <= 1)
+            {
+                return;
+            }
+
+            List<ConsignItemInfo> publics = null;
+            List<ConsignItemInfo> designated = null;
+            bool mixed = false;
+            for (int i = 0; i < db.PaiMaiItemInfos.Count; i++)
+            {
+                ConsignItemInfo item = db.PaiMaiItemInfos[i];
+                if (ConsignHelper.IsDesignatedShangJia(item))
+                {
+                    if (designated == null)
+                    {
+                        designated = new List<ConsignItemInfo>();
+                    }
+
+                    designated.Add(item);
+                    continue;
+                }
+
+                if (designated != null)
+                {
+                    mixed = true;
+                }
+
+                if (publics == null)
+                {
+                    publics = new List<ConsignItemInfo>();
+                }
+
+                publics.Add(item);
+            }
+
+            if (!mixed || designated == null)
+            {
+                return;
+            }
+
+            db.PaiMaiItemInfos.Clear();
+            if (publics != null)
+            {
+                db.PaiMaiItemInfos.AddRange(publics);
+            }
+
+            db.PaiMaiItemInfos.AddRange(designated);
+        }
+
         public static void FillListPage(this ConsignSceneComponent self, List<ConsignItemInfo> paimaiListShow, int page, Consign2C_ListResponse response)
         {
             if (paimaiListShow == null)
@@ -114,48 +248,32 @@ namespace ET
                 paimaiListShow = new List<ConsignItemInfo>();
             }
 
-            //每个belongid 每次请求 30个为一页
-            int pagenum = 30;
-
-            int maxpage = paimaiListShow.Count / pagenum;
-            int extra = (paimaiListShow.Count % pagenum) > 0 ? 1 : 0;
-            maxpage += extra;
-
-            int startindex = (page - 1) * pagenum;
-            if (startindex >= paimaiListShow.Count)
+            int pageSize = ConsignHelper.ListPageSize;
+            if (page <= 0)
             {
-                startindex = paimaiListShow.Count - 1;
+                page = 1;
             }
 
-            if (startindex < 0)
+            int total = paimaiListShow.Count;
+            int start = (page - 1) * pageSize;
+            if (total == 0 || start >= total)
             {
-                startindex = 0;
-            }
-
-            if (page >= maxpage)
-            {
-                if (page == maxpage)
+                response.ConsignItemInfo = new List<ConsignItemInfo>();
+                response.NextPage = 0;
+                response.Message = "1";
+                if (total > 0)
                 {
-                    int getnumber = Math.Max(paimaiListShow.Count - startindex, 0);
-                    response.ConsignItemInfo = paimaiListShow.GetRange(startindex, getnumber);
-                    response.Message = "1";
-                    response.NextPage = maxpage;
+                    response.Error = ErrorCode.ERR_PaiMaiBuyMaxPage;
                 }
-                else
-                {
-                    if (paimaiListShow.Count > 0)
-                    {
-                        response.Error = ErrorCode.ERR_PaiMaiBuyMaxPage;
-                    }
-                }
+
+                return;
             }
-            else
-            {
-                int getnumber = Math.Min(paimaiListShow.Count - startindex, pagenum);
-                response.ConsignItemInfo = paimaiListShow.GetRange(startindex, getnumber);
-                response.Message = "0";
-                response.NextPage = maxpage;
-            }
+
+            int count = Math.Min(pageSize, total - start);
+            response.ConsignItemInfo = paimaiListShow.GetRange(start, count);
+            bool lastPage = start + count >= total;
+            response.Message = lastPage ? "1" : "0";
+            response.NextPage = lastPage ? 0 : page + 1;
         }
 
         public static ConsignItemInfo RemoveShangJiaItem(this ConsignSceneComponent self, int belongId, long consignItemInfoId)
@@ -253,6 +371,7 @@ namespace ET
             {
                 self.AddChild(paimaiList[0]);
                 self.UpdatePaiMaiDBByBelongId(belongId, paimaiList[0]);
+                self.CompactShangJiaOrder(paimaiList[0]);
             }
         }
 

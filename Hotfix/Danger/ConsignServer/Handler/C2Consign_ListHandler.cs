@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -8,8 +9,30 @@ namespace ET
         protected override async ETTask Run(Scene scene, C2Consign_ListRequest request, Consign2C_ListResponse response, Action reply)
         {
             ConsignSceneComponent paiMaiComponent = scene.GetComponent<ConsignSceneComponent>();
+            if (request.ListType == ConsignHelper.ListTypeTarget)
+            {
+                if (request.UserId <= 0)
+                {
+                    response.Error = ErrorCode.ERR_Parameter;
+                    reply();
+                    return;
+                }
 
-            int belongId = request.BelongId2 ;
+                await paiMaiComponent.CheckAllOverTime();
+                List<ConsignItemInfo> targetList = paiMaiComponent.GetTargetShangJiaItems(request.UserId);
+                paiMaiComponent.FillListPage(targetList, request.Page, response);
+                reply();
+                return;
+            }
+
+            int belongId = request.BelongId2;
+            if (belongId <= 0)
+            {
+                response.Error = ErrorCode.ERR_Parameter;
+                reply();
+                return;
+            }
+
             DBConsignInfo dBPaiMainInfo = paiMaiComponent.GetPaiMaiDBByBelongId(belongId);
             if (dBPaiMainInfo == null)
             {
@@ -18,7 +41,8 @@ namespace ET
             }
 
             await paiMaiComponent.CheckOverTime(dBPaiMainInfo);
-            paiMaiComponent.FillListPage(dBPaiMainInfo.PaiMaiItemInfos, request.Page, response);
+            List<ConsignItemInfo> publicList = paiMaiComponent.GetPublicShangJiaItems(dBPaiMainInfo.PaiMaiItemInfos);
+            paiMaiComponent.FillListPage(publicList, request.Page, response);
             reply();
             await ETTask.CompletedTask;
         }

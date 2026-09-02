@@ -40,10 +40,9 @@ namespace ET
 
             if (item.UserId == request.UserId)
             {
-                //response.Error = ErrorCode.ERR_Parameter;
-                //reply();
-                //return;
-                Console.WriteLine("自己的不能收藏！！");
+                response.Error = ErrorCode.Err_ConsignCollectSelfError;
+                reply();
+                return;
             }
 
             int error = await consignScene.AddCollect(request.UserId, request.ConsignItemInfoId);

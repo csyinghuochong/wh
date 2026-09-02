@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -47,6 +48,36 @@ namespace ET
                     && !string.IsNullOrEmpty(request.TargetPlayer))
                 {
                     request.ConsignItemInfo.TargetPlayer = request.TargetPlayer;
+                }
+
+                request.ConsignItemInfo.TargetUserId = 0;
+                if (!string.IsNullOrEmpty(request.ConsignItemInfo.TargetPlayer))
+                {
+                    int homeZone = UnitZoneHelper.GetHomeZone(unit);
+                    string targetName = request.ConsignItemInfo.TargetPlayer;
+                    List<RoleInfoComponentServer> targetRoles = await Game.Scene.GetComponent<DBComponent>()
+                            .Query<RoleInfoComponentServer>(homeZone, d => d.RoleInfo.Name == targetName);
+                    if (targetRoles == null || targetRoles.Count == 0)
+                    {
+                        response.Error = ErrorCode.ERR_NonePlayerError;
+                        reply();
+                        return;
+                    }
+
+                    long targetUserId = targetRoles[0].RoleInfo.UserId;
+                    if (targetUserId <= 0)
+                    {
+                        targetUserId = targetRoles[0].Id;
+                    }
+
+                    if (targetUserId == roleInfoComponentServer.RoleInfo.UserId)
+                    {
+                        response.Error = ErrorCode.ERR_Parameter;
+                        reply();
+                        return;
+                    }
+
+                    request.ConsignItemInfo.TargetUserId = targetUserId;
                 }
 
                 int days = ConsignHelper.NormalizeConsignDays((int)request.ConsignItemInfo.OverTime);

@@ -23,8 +23,7 @@ namespace ET
             }
 
             DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetOrCreatePaiMaiDBByBelongId(consignItem.BelongId);
-
-            dBPaiMainInfo.PaiMaiItemInfos.Add(consignItem);
+            scene.GetComponent<ConsignSceneComponent>().InsertShangJiaItem(dBPaiMainInfo, consignItem);
 
             if (CommonHelper.IsInnerNet())
             {

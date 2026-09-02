@@ -10958,6 +10958,9 @@ namespace ET
 		[ProtoMember(8)]
 		public string TargetPlayer { get; set; }
 
+		[ProtoMember(9)]
+		public long TargetUserId { get; set; }
+
 		[ProtoMember(10)]
 		public long SellTime { get; set; }
 
@@ -11056,6 +11059,9 @@ namespace ET
 
 		[ProtoMember(5)]
 		public int BelongId2 { get; set; }
+
+		[ProtoMember(6)]
+		public int ListType { get; set; }
 
 	}
 
