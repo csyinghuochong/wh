@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
 
-
 namespace ET
 {
     public static class FriendHelper
     {
-
-        public static async ETTask<List<FriendInfo>> GetFriendInfos(long gateServerId,  List<long> friends)
+        public static async ETTask<List<FriendInfo>> GetFriendInfos(List<long> friends, HashSet<long> onlineIds)
         {
-            List<FriendInfo> friendInfos = new List < FriendInfo >();
+            List<FriendInfo> friendInfos = new List<FriendInfo>();
+            if (friends == null)
+            {
+                return friendInfos;
+            }
+
             for (int i = 0; i < friends.Count; i++)
             {
                 long friendId = friends[i];
@@ -19,19 +22,13 @@ namespace ET
                 {
                     continue;
                 }
+
                 RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-
-                G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                   (gateServerId, new T2G_GateUnitInfoRequest()
-                   {
-                       UserID = friendId
-                   });
-
                 friendInfos.Add(new FriendInfo()
                 {
                     UserId = friendId,
                     PlayerLevel = roleInfo.Lv,
-                    OnLineTime = g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0  ? 1 : 0,
+                    OnLineTime = onlineIds != null && onlineIds.Contains(friendId) ? 1 : 0,
                     PlayerName = roleInfo.Name,
                     Occ = roleInfo.Occ
                 });

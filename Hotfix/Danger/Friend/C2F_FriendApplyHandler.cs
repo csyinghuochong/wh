@@ -29,19 +29,8 @@ namespace ET
             {
                 dBFriendInfo.ApplyList.Add(applyUserId);
                 DBHelper.SaveComponent(scene.DomainZone(), dBFriendInfo.Id, dBFriendInfo).Coroutine();
-                
-                long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), "Gate1").InstanceId;
-                G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                    (gateServerId, new T2G_GateUnitInfoRequest()
-                    {
-                        UserID = request.UserID
-                    });
-
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-                {
-                    M2C_FriendApplyResult m2C_FriendApplyResult = new M2C_FriendApplyResult() {  FriendInfo = request.RoleInfo };
-                    MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, m2C_FriendApplyResult);
-                }
+                await ServerMessageHelper.SendToClient(scene.DomainZone(), request.UserID,
+                    new M2C_FriendApplyResult() { FriendInfo = request.RoleInfo });
             }
 
             reply();

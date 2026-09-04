@@ -26,16 +26,7 @@ namespace ET
 
             //需要判断次数就添加C2M
             M2C_TeamDungeonApplyResult m2C_HorseNoticeInfo = new M2C_TeamDungeonApplyResult() { TeamPlayerInfo = request.TeamPlayerInfo };
-            long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), "Gate1").InstanceId;
-            G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                  (gateServerId, new T2G_GateUnitInfoRequest()
-                  {
-                      UserID = teamInfo.TeamId
-                  });
-            if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-            {
-                MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, m2C_HorseNoticeInfo);
-            }
+            await ServerMessageHelper.SendToClient(scene.DomainZone(), teamInfo.TeamId, m2C_HorseNoticeInfo);
 
             reply();
         }

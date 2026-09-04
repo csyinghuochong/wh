@@ -38,26 +38,12 @@ namespace ET
                     return;
                 }
 
-                long gateServerId = DBHelper.GetGateServerId(scene.DomainZone());
-                G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                      (gateServerId, new T2G_GateUnitInfoRequest()
-                      {
-                          UserID = request.Id
-                      });
-
-                //在线直接推送
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-                {
-                    M2C_UpdateMailInfo m2C_HorseNoticeInfo = new M2C_UpdateMailInfo();
-                    MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, m2C_HorseNoticeInfo);
-                }
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.None)
+                if (!await ServerMessageHelper.SendToClient(scene.DomainZone(), request.Id, new M2C_UpdateMailInfo()))
                 {
                     int homeZone = UnitZoneHelper.GetHomeZone(request.Id);
                     ReddotComponentServer reddotComponentServer = await DBHelper.GetComponent<ReddotComponentServer>(homeZone, request.Id);
                     if (reddotComponentServer != null)
                     {
-                        //reddotComponent.AddReddont((int)BelongReddot.Email);
                         await DBHelper.SaveComponent(homeZone, request.Id, reddotComponentServer);
                     }
                 }

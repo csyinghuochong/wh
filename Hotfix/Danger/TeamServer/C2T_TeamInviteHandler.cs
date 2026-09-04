@@ -35,18 +35,8 @@ namespace ET
                 }
             }
 
-            long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), "Gate1").InstanceId;
-            G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                (gateServerId, new T2G_GateUnitInfoRequest() 
-                {
-                    UserID = request.UserID
-                });
-
-            if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-            {
-                M2C_TeamInviteResult m2C_HorseNoticeInfo = new M2C_TeamInviteResult() {   TeamPlayerInfo = request.TeamPlayerInfo };
-                MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, m2C_HorseNoticeInfo);
-            }
+            await ServerMessageHelper.SendToClient(scene.DomainZone(), request.UserID,
+                new M2C_TeamInviteResult() { TeamPlayerInfo = request.TeamPlayerInfo });
 
             reply();
         }

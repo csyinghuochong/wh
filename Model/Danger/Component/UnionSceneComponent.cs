@@ -2,7 +2,7 @@
 
 namespace ET
 {
-    public class UnionSceneComponent : Entity, IAwake
+    public class UnionSceneComponent : Entity, IAwake, IDestroy
     {
         public long Timer;
 
@@ -21,5 +21,9 @@ namespace ET
 
 
         public Dictionary<long, DBUnionInfo> DBUnionInfos = new Dictionary<long, DBUnionInfo>();
+
+        public bool AllUnionsLoaded;
+
+        public ETTask LoadAllUnionsTask;
     }
 }

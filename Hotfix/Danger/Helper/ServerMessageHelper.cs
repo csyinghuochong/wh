@@ -6,15 +6,38 @@ namespace ET
     public static class ServerMessageHelper
     {
 
+        /// <summary>本区聊天服在线名单。进游戏进聊天、断线退聊天；只问在线用这个，推客户端仍走 Gate Session。</summary>
+        public static async ETTask<HashSet<long>> GetChatOnlineUnitIds(int zone)
+        {
+            Chat2Mail_GetUnitList chatOnline = (Chat2Mail_GetUnitList)await MessageHelper.CallActor(
+                DBHelper.GetChatServerId(zone), new Mail2Chat_GetUnitList());
+            if (chatOnline?.OnlineUnitIdList == null || chatOnline.OnlineUnitIdList.Count == 0)
+            {
+                return new HashSet<long>();
+            }
+
+            return new HashSet<long>(chatOnline.OnlineUnitIdList);
+        }
+
+        /// <summary>在线则推到 Gate Session。返回是否发出。离线分支由调用方自己处理。</summary>
+        public static async ETTask<bool> SendToClient(int zone, long userId, IActorMessage message)
+        {
+            G2T_GateUnitInfoResponse gateInfo = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call(
+                DBHelper.GetGateServerId(zone),
+                new T2G_GateUnitInfoRequest() { UserID = userId });
+            if (gateInfo == null || gateInfo.PlayerState != (int)PlayerState.Game || gateInfo.SessionInstanceId <= 0)
+            {
+                return false;
+            }
+
+            MessageHelper.SendActor(gateInfo.SessionInstanceId, message);
+            return true;
+        }
+
         public static async ETTask NoticeUnionLeader(int zone, long unitid, int leader)
         {
-            long gateServerId = DBHelper.GetGateServerId(zone);
-            G2T_GateUnitInfoResponse g2M_UpdateUnitResponse_3 = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-              (gateServerId, new T2G_GateUnitInfoRequest()
-              {
-                  UserID = unitid
-              });
-            if (g2M_UpdateUnitResponse_3.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse_3.SessionInstanceId > 0)
+            HashSet<long> onlineIds = await GetChatOnlineUnitIds(zone);
+            if (onlineIds.Contains(unitid))
             {
                 MessageHelper.SendToLocationActor(unitid, new M2M_UnionTransferMessage() { UnionLeader = leader });
             }

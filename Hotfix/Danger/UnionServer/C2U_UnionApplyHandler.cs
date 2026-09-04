@@ -13,17 +13,7 @@ namespace ET
                 dBUnionInfo.UnionInfo.ApplyList.Add(request.UserId);
             }
 
-            long gateServerId = DBHelper.GetGateServerId(scene.DomainZone());
-            G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                  (gateServerId, new T2G_GateUnitInfoRequest()
-                  {
-                      UserID = dBUnionInfo.UnionInfo.LeaderId
-                  });
-            if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-            {
-                M2C_UnionApplyResult m2C_HorseNoticeInfo = new M2C_UnionApplyResult();
-                MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, m2C_HorseNoticeInfo);
-            }
+            await ServerMessageHelper.SendToClient(scene.DomainZone(), dBUnionInfo.UnionInfo.LeaderId, new M2C_UnionApplyResult());
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
             reply();
         }

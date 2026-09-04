@@ -29,6 +29,15 @@ namespace ET
         }
     }
 
+    [ObjectSystem]
+    public class UnionSceneComponentDestroySystem : DestroySystem<UnionSceneComponent>
+    {
+        public override void Destroy(UnionSceneComponent self)
+        {
+            TimerComponent.Instance.Remove(ref self.Timer);
+        }
+    }
+
     public static class UnionSceneComponentSystem
     {
 
@@ -57,13 +66,97 @@ namespace ET
             DBUnionManager dBServerInfo = await DBHelper.GetComponent<DBUnionManager>(self.DomainZone(), self.DomainZone());
             if (dBServerInfo == null)
             {
-                dBServerInfo = self.AddChildWithId<DBUnionManager>((long)self.DomainZone());
-            }
-            else
-            {
-                self.AddChild(dBServerInfo);
+                dBServerInfo = new DBUnionManager();
+                dBServerInfo.Id = self.DomainZone();
             }
             self.DBUnionManager = dBServerInfo;
+            await self.LoadAllUnionInfos();
+        }
+
+        /// <summary>启动全量载入本区公会；列表/重复调用走同一趟，已在内存的跳过。</summary>
+        public static async ETTask LoadAllUnionInfos(this UnionSceneComponent self)
+        {
+            if (self.AllUnionsLoaded)
+            {
+                return;
+            }
+
+            if (self.LoadAllUnionsTask != null)
+            {
+                await self.LoadAllUnionsTask;
+                return;
+            }
+
+            ETTask tcs = ETTask.Create(true);
+            self.LoadAllUnionsTask = tcs;
+            try
+            {
+                List<DBUnionInfo> result = await Game.Scene.GetComponent<DBComponent>().Query<DBUnionInfo>(self.DomainZone(), d => d.UnionInfo != null);
+                if (result != null)
+                {
+                    for (int i = 0; i < result.Count; i++)
+                    {
+                        self.CacheUnionInfo(result[i]);
+                    }
+                }
+
+                self.AllUnionsLoaded = true;
+                self.LoadAllUnionsTask = null;
+                tcs.SetResult();
+                Log.Info($"LoadAllUnionInfos zone:{self.DomainZone()} count:{self.DBUnionInfos.Count}");
+            }
+            catch (Exception e)
+            {
+                self.LoadAllUnionsTask = null;
+                tcs.SetResult();
+                Log.Error($"LoadAllUnionInfos zone:{self.DomainZone()} {e}");
+            }
+        }
+
+        private static void CacheUnionInfo(this UnionSceneComponent self, DBUnionInfo unionInfo)
+        {
+            if (unionInfo == null)
+            {
+                return;
+            }
+
+            long unionId = unionInfo.Id;
+            if (unionId == 0 && unionInfo.UnionInfo != null)
+            {
+                unionId = unionInfo.UnionInfo.UnionId;
+            }
+            if (unionId == 0)
+            {
+                return;
+            }
+
+            if (self.DBUnionInfos.TryGetValue(unionId, out DBUnionInfo cached) && cached != null)
+            {
+                return;
+            }
+
+            if (unionInfo.Id == 0)
+            {
+                unionInfo.Id = unionId;
+            }
+
+            self.DBUnionInfos[unionId] = unionInfo;
+        }
+
+        public static UnionListItem ToUnionListItem(this DBUnionInfo dBUnionInfo)
+        {
+            UnionInfo unionInfo = dBUnionInfo.UnionInfo;
+            UnionListItem unionListItem = new UnionListItem();
+            unionListItem.UnionName = unionInfo.UnionName;
+            unionListItem.PlayerNumber = unionInfo.UnionPlayerList.Count;
+            unionListItem.UnionId = unionInfo.UnionId;
+            unionListItem.UnionLevel = Math.Max(unionInfo.Level, 1);
+            unionListItem.UnionLeader = unionInfo.LeaderName;
+            unionListItem.UnionBanner = unionInfo.UnionBanner;
+            unionListItem.UnionPattern = unionInfo.UnionPattern;
+            unionListItem.UnionPurpose = unionInfo.UnionPurpose;
+            unionListItem.LeaderId = unionInfo.LeaderId;
+            return unionListItem;
         }
 
         public static async ETTask<DBUnionInfo> GetDBUnionInfo(this UnionSceneComponent self, long unionId)
@@ -73,19 +166,14 @@ namespace ET
                 return null;
             }
 
-            DBUnionInfo cached = self.GetChild<DBUnionInfo>(unionId);
-            if (cached != null)
+            if (self.DBUnionInfos.TryGetValue(unionId, out DBUnionInfo cached) && cached != null)
             {
                 return cached;
             }
 
-            if (self.DBUnionInfos.TryGetValue(unionId, out cached))
+            if (self.AllUnionsLoaded)
             {
-                if (cached != null && !cached.IsDisposed)
-                {
-                    return cached;
-                }
-                self.DBUnionInfos.Remove(unionId);
+                return null;
             }
 
             DBUnionInfo unionInfo = await DBHelper.GetComponent<DBUnionInfo>(self.DomainZone(), unionId);
@@ -94,8 +182,12 @@ namespace ET
                 return null;
             }
 
-            self.AddChild(unionInfo);
-            self.DBUnionInfos[unionId] = unionInfo;
+            self.CacheUnionInfo(unionInfo);
+            if (self.DBUnionInfos.TryGetValue(unionId, out cached) && cached != null)
+            {
+                return cached;
+            }
+
             return unionInfo;
         }
 
@@ -476,22 +568,14 @@ namespace ET
                 }
                 playerlist.AddRange(dBUnionInfo.UnionInfo.UnionPlayerList);
             }
-            long gateServerId = DBHelper.GetGateServerId(self.DomainZone());
+            int zone = self.DomainZone();
             M2C_HorseNoticeInfo m2C_HorseNoticeInfo = new M2C_HorseNoticeInfo()
             {
                 NoticeType = NoticeType.UnionRace,
             };
             for (int i = 0; i < playerlist.Count; i++)
             {
-                G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                 (gateServerId, new T2G_GateUnitInfoRequest()
-                 {
-                     UserID = playerlist[i].UserID
-                 });
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-                {
-                    MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, m2C_HorseNoticeInfo);
-                }
+                await ServerMessageHelper.SendToClient(zone, playerlist[i].UserID, m2C_HorseNoticeInfo);
             }
         }
 

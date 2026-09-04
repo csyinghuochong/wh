@@ -111,22 +111,17 @@ namespace ET
             m2C_HorseNoticeInfo.TeamInfo = teamInfo;
             T2M_TeamUpdateRequest t2M_TeamUpdateRequest = self.t2M_TeamUpdateRequest;
 
-            long gateServerId = DBHelper.GetGateServerId(self.DomainZone());
+            int zone = self.DomainZone();
             for (int i = 0; i < userIds.Count; i++)
             {
                 long userId = userIds[i].UserID;
-                G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                    (gateServerId, new T2G_GateUnitInfoRequest()
-                    {
-                        UserID = userId
-                    });
-
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
+                if (!await ServerMessageHelper.SendToClient(zone, userId, m2C_HorseNoticeInfo))
                 {
-                    t2M_TeamUpdateRequest.TeamId = self.GetTeamInfoId(userId);
-                    MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, m2C_HorseNoticeInfo);
-                    MessageHelper.SendToLocationActor(userId, t2M_TeamUpdateRequest);
+                    continue;
                 }
+
+                t2M_TeamUpdateRequest.TeamId = self.GetTeamInfoId(userId);
+                MessageHelper.SendToLocationActor(userId, t2M_TeamUpdateRequest);
             }
         }
 

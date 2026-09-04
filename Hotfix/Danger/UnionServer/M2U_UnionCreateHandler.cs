@@ -9,25 +9,28 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, M2U_UnionCreateRequest request, U2M_UnionCreateResponse response, Action reply)
         {
-            Log.Warning($"M2U_UnionCreateRequest:{request.UserID}");
             if (request.UnionName.Length > 10 || !StringHelper.IsSpecialChar(request.UnionName))
             {
                 response.Error = ErrorCode.ERR_Union_NameValied;
                 reply();
                 return;
             }
-            List<DBUnionInfo> result = await Game.Scene.GetComponent<DBComponent>().Query<DBUnionInfo>(scene.DomainZone(), _unionifo => _unionifo.UnionInfo.UnionName == request.UnionName);
-            if (result.Count > 0)
+
+            UnionSceneComponent unionSceneComponent = scene.GetComponent<UnionSceneComponent>();
+            await unionSceneComponent.LoadAllUnionInfos();
+            foreach (DBUnionInfo exist in unionSceneComponent.DBUnionInfos.Values)
             {
-                response.Error = ErrorCode.ERR_Union_Same_Name;
-                reply();
-                return;
+                if (exist?.UnionInfo != null && exist.UnionInfo.UnionName == request.UnionName)
+                {
+                    response.Error = ErrorCode.ERR_Union_Same_Name;
+                    reply();
+                    return;
+                }
             }
 
-            long dbCacheId = DBHelper.GetDbCacheId(scene.DomainZone());
             long unionId = IdGenerater.Instance.GenerateId();
-            UnionSceneComponent unionSceneComponent = scene.GetComponent<UnionSceneComponent>();
-            DBUnionInfo unionInfo = unionSceneComponent.AddChildWithId<DBUnionInfo>(unionId);
+            DBUnionInfo unionInfo = new DBUnionInfo();
+            unionInfo.Id = unionId;
             unionInfo.UnionInfo.Level = 1;
             unionInfo.UnionInfo.UnionId = unionId;
             unionInfo.UnionInfo.LeaderId = request.UserID;       

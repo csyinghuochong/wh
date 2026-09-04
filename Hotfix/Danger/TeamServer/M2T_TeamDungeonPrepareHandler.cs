@@ -45,19 +45,10 @@ namespace ET
                 TeamInfo = teamInfo,
                 ErrorCode = errorCode,
             };
-            long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), "Gate1").InstanceId;
+            int zone = scene.DomainZone();
             for (int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
-                G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                    (gateServerId, new T2G_GateUnitInfoRequest()
-                    {
-                        UserID = teamInfo.PlayerList[i].UserID
-                    });
-
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-                {
-                    MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, m2C_HorseNoticeInfo);
-                }
+                await ServerMessageHelper.SendToClient(zone, teamInfo.PlayerList[i].UserID, m2C_HorseNoticeInfo);
             }
             response.TeamInfo = teamInfo;
             reply();

@@ -272,8 +272,6 @@ namespace ET
 
             Dictionary<long, long> fubenids = new Dictionary<long, long>();
 
-            //通知玩家
-            long gateServerId = DBHelper.GetGateServerId(self.DomainZone());
             List<SoloPlayerInfo> playerlist = new List<SoloPlayerInfo>();
             for (int i = self.MatchList.Count - 1; i >= 0; i--)
             {
@@ -334,30 +332,20 @@ namespace ET
                 }
             }
 
-            //对缓存的匹配数据进行发送消息
+            int zone = self.DomainZone();
             for (int i = 0; i < playerlist.Count; i++)
             {
                 self.m2C_SoloMatchResult.Result = 1;
                 self.m2C_SoloMatchResult.FubenId = fubenids[playerlist[i].UnitId];
 
-               //循环给每个要进入的玩家发送进入副本的消息
-               //发送消息获取对应的玩家数据
-               G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                    (gateServerId, new T2G_GateUnitInfoRequest()
-                    {
-                        UserID = playerlist[i].UnitId
-                    });
-                //判断目标是玩家且当前是在线的
-                if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
+                if (!await ServerMessageHelper.SendToClient(zone, playerlist[i].UnitId, self.m2C_SoloMatchResult))
                 {
-                    //给对应玩家发送进入地图的消息
-                    MessageHelper.SendActor(g2M_UpdateUnitResponse.SessionInstanceId, self.m2C_SoloMatchResult);
+                    continue;
+                }
 
-                    //匹配成功的要移除匹配列表
-                    if (self.MatchList.Contains(playerlist[i]))
-                    {
-                        self.MatchList.Remove(playerlist[i]);
-                    }
+                if (self.MatchList.Contains(playerlist[i]))
+                {
+                    self.MatchList.Remove(playerlist[i]);
                 }
             }
         }

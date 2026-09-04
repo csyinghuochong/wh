@@ -85,7 +85,8 @@ namespace ET
                 return db;
             }
 
-            db = self.AddChildWithId<DBConsignInfo>(belongId);
+            db = new DBConsignInfo();
+            db.Id = belongId;
             self.UpdatePaiMaiDBByBelongId(belongId, db);
             return db;
         }
@@ -370,13 +371,13 @@ namespace ET
             List<DBConsignInfo> paimaiList = await Game.Scene.GetComponent<DBComponent>().Query<DBConsignInfo>(self.DomainZone(), d => d.Id == unitid);
             if (paimaiList == null || paimaiList.Count == 0)
             {
-                DBConsignInfo dBPaiMainInfo = self.AddChildWithId<DBConsignInfo>(unitid);
+                DBConsignInfo dBPaiMainInfo = new DBConsignInfo();
+                dBPaiMainInfo.Id = unitid;
                 self.UpdatePaiMaiDBByBelongId(belongId, dBPaiMainInfo);
                 await Game.Scene.GetComponent<DBComponent>().Save<DBConsignInfo>(self.DomainZone(), dBPaiMainInfo);
             }
             else
             {
-                self.AddChild(paimaiList[0]);
                 self.UpdatePaiMaiDBByBelongId(belongId, paimaiList[0]);
                 self.CompactShangJiaOrder(paimaiList[0]);
             }
@@ -519,7 +520,8 @@ namespace ET
                 return db;
             }
 
-            db = self.AddChildWithId<DBConsignWantBuy>(dbId);
+            db = new DBConsignWantBuy();
+            db.Id = dbId;
             self.WantBuyByItemKey[dbId] = db;
             return db;
         }
@@ -540,7 +542,6 @@ namespace ET
                     continue;
                 }
 
-                self.AddChild(db);
                 self.WantBuyByItemKey[db.Id] = db;
             }
         }
@@ -797,11 +798,10 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Collect, userId))
             {
                 DBConsignCollect db = await self.QueryCollectDB(userId);
-                bool created = false;
                 if (db == null)
                 {
-                    db = self.AddChildWithId<DBConsignCollect>(userId);
-                    created = true;
+                    db = new DBConsignCollect();
+                    db.Id = userId;
                 }
 
                 if (db.CollectIds == null)
@@ -821,10 +821,6 @@ namespace ET
 
                 db.CollectIds.Add(consignItemInfoId);
                 await self.SaveCollectData(db);
-                if (created)
-                {
-                    db.Dispose();
-                }
                 return ErrorCode.ERR_Success;
             }
         }

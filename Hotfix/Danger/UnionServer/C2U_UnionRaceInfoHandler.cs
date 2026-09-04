@@ -8,27 +8,20 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2U_UnionRaceInfoRequest request, U2C_UnionRaceInfoResponse response, Action reply)
         {
-            Log.Warning($"C2U_UnionRaceInfoRequest:{request.ActorId}");
-            
             UnionSceneComponent unionSceneComponent = scene.GetComponent<UnionSceneComponent>();
-            
+            await unionSceneComponent.LoadAllUnionInfos();
+
             response.TotalDonation = unionSceneComponent.GetBaseJiangJin() + (int)(unionSceneComponent.DBUnionManager.TotalDonation);
 
             for (int i = 0; i < unionSceneComponent.DBUnionManager.SignupUnions.Count; i++)
             {
-                List<DBUnionInfo> result = await Game.Scene.GetComponent<DBComponent>().Query<DBUnionInfo>(scene.DomainZone(), _account => _account.UnionInfo.UnionId == unionSceneComponent.DBUnionManager.SignupUnions[i]);
-                if (result.Count == 0)
+                DBUnionInfo dBUnionInfo = await unionSceneComponent.GetDBUnionInfo(unionSceneComponent.DBUnionManager.SignupUnions[i]);
+                if (dBUnionInfo?.UnionInfo == null || dBUnionInfo.UnionInfo.LeaderId == 0)
                 {
                     continue;
                 }
-                DBUnionInfo dBUnionInfo = result[0];
-                UnionListItem unionListItem = new UnionListItem();
-                unionListItem.UnionName = dBUnionInfo.UnionInfo.UnionName;
-                unionListItem.PlayerNumber = dBUnionInfo.UnionInfo.UnionPlayerList.Count;
-                unionListItem.UnionId = dBUnionInfo.UnionInfo.UnionId;
-                unionListItem.UnionBanner = dBUnionInfo.UnionInfo.UnionBanner;
-                unionListItem.UnionPattern = dBUnionInfo.UnionInfo.UnionPattern;
-                response.UnionInfoList.Add(unionListItem);
+
+                response.UnionInfoList.Add(dBUnionInfo.ToUnionListItem());
             }
 
             reply();

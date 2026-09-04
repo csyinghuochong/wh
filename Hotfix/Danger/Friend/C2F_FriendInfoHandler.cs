@@ -16,10 +16,10 @@ namespace ET
                 reply();
                 return;
             }
-            long gateServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), "Gate1").InstanceId;
-            response.FriendList = await FriendHelper.GetFriendInfos(gateServerId, dBFriendInfo.FriendList);
-            response.ApplyList = await FriendHelper.GetFriendInfos(gateServerId, dBFriendInfo.ApplyList);
-            response.Blacklist = await FriendHelper.GetFriendInfos(gateServerId, dBFriendInfo.Blacklist);
+            HashSet<long> onlineIds = await ServerMessageHelper.GetChatOnlineUnitIds(scene.DomainZone());
+            response.FriendList = await FriendHelper.GetFriendInfos(dBFriendInfo.FriendList, onlineIds);
+            response.ApplyList = await FriendHelper.GetFriendInfos(dBFriendInfo.ApplyList, onlineIds);
+            response.Blacklist = await FriendHelper.GetFriendInfos(dBFriendInfo.Blacklist, onlineIds);
 
 
             HashSet<long> friendIdSet = new HashSet<long>();
