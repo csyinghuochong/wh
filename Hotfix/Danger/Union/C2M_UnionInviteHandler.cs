@@ -11,10 +11,6 @@
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             Unit beinvite = unit.GetParent<UnitComponent>().Get(message.InviteId);
 
-            if (string.IsNullOrEmpty(roleInfo.UnionName))
-            {
-                return;
-            }
             long unionid = numericComponent.GetAsLong( NumericType.UnionId_0 );
             if (unionid == 0)
             {
@@ -24,6 +20,11 @@
             if (beinvite != null)
             {
                 if (beinvite.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0) != 0)
+                {
+                    return;
+                }
+
+                if (beinvite.GetComponent<RoleContextComponent>().IsRefuseUnionInvite())
                 {
                     return;
                 }

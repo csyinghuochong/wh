@@ -18,7 +18,6 @@ namespace ET
         public int AuctionItemNum;
         public string AuctionPlayer;
         public List<long> AuctionJoinList = new List<long>();
-        public List<AuctionRecord> AuctionRecords = new List<AuctionRecord>();
 
         /// <summary>
         /// 上架分桶：key / DB Id = 道具表、装备表上的具体 belongid（166020 等大分类的下一级）。

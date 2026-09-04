@@ -185,12 +185,11 @@ namespace ET
                         }
                         break;
                     case (int)MapTypeEnum.PetMing:
-                        long cdTime = unit.GetComponent<RoleContextComponent>().PetMineCDTime;
+                        long cdTime = 0;
                         if (cdTime > TimeHelper.ServerNow())
                         {
                             return ErrorCode.ERR_InMakeCD;
                         }
-
                         string[] praminfos = request.paramInfo.Split('_');
                         fubenid = IdGenerater.Instance.GenerateId();
                         fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();

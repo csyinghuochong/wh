@@ -55,7 +55,6 @@ namespace ET
             if (reduceTime != 0)
             {
                 RoleContextComponent roleContext = unit.GetComponent<RoleContextComponent>();
-                roleContext.SetSeasonBossRefreshTime(roleContext.SeasonBossRefreshTime - reduceTime);
             }
 
             reply();

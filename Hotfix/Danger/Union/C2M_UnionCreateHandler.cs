@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -7,7 +8,7 @@ namespace ET
     public class C2M_UnionCreateHandler : AMActorLocationRpcHandler<Unit, C2M_UnionCreateRequest, M2C_UnionCreateResponse>
     {
         private static int unionCreateNeedLevel;
-        private static int unionCreateNeedDiamond;
+        private static List<RewardItem> unionCreateCostItems;
         private static bool unionCreateCacheInit;
 
         private static void EnsureUnionCreateCache()
@@ -17,27 +18,34 @@ namespace ET
                 return;
             }
 
-            unionCreateNeedLevel = int.Parse(LDGlobalValueCategory.Instance.Get(21).Value);
-            unionCreateNeedDiamond = int.Parse(LDGlobalValueCategory.Instance.Get(22).Value);
+            unionCreateNeedLevel = 1;
+            unionCreateCostItems = ItemNewHelper.GetRewardItems(UnionHelper.GetUnion_CreateCost());
             unionCreateCacheInit = true;
         }
 
         protected override async ETTask Run(Unit unit, C2M_UnionCreateRequest request, M2C_UnionCreateResponse response, Action reply)
         {
             EnsureUnionCreateCache();
-            //判断等级、钻石
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (numericComponent.GetAsLong(NumericType.UnionId_0) != 0)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = ErrorCode.ERR_PlayerHaveUnion;
                 reply();
                 return;
             }
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-            if (roleInfo.Lv < unionCreateNeedLevel || unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Diamond) < unionCreateNeedDiamond)
+            if (roleInfo.Lv < unionCreateNeedLevel)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = ErrorCode.Pre_Condition_Error;
+                reply();
+                return;
+            }
+
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            if (unionCreateCostItems.Count > 0 && !bag.CheckNeedItem(unionCreateCostItems))
+            {
+                response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;
             }
@@ -47,18 +55,21 @@ namespace ET
             {
                 UnionName =request.UnionName,
                 UnionPurpose = request.UnionPurpose,
-                UserID = roleInfo.UserId
+                UserID = roleInfo.UserId,
+                UnionBanner = request.UnionBanner,
+                UnionPattern = request.UnionPattern,
             });
 
             if (d2GGetUnit.Error == ErrorCode.ERR_Success)
             {
+                if (unionCreateCostItems.Count > 0)
+                {
+                    bag.OnCostItemData(unionCreateCostItems, ItemLocType.ItemLocBag, ItemGetWay.CostItem);
+                }
+
+                roleInfoComponentServer.SetUnionName(request.UnionName);
                 numericComponent.ApplyValue( NumericType.UnionLeader, 1, true);
                 numericComponent.ApplyValue( NumericType.UnionId_0, d2GGetUnit.UnionId, true);
-                roleInfoComponentServer.UpdateRoleData(UserDataType.UnionName, request.UnionName);
-                roleInfoComponentServer.UpdateRoleDataBroadcast(UserDataType.UnionName, request.UnionName);
-                unit.GetComponent<TaskComponentServer>().OnJoinUnion();
-               
-                unit.UpdateUnionToChat().Coroutine();
             }
             response.Error = d2GGetUnit.Error;
             reply();

@@ -207,7 +207,7 @@ namespace ET
 						int newLevel = int.Parse(commands[1]);
 						RoleInfoComponentServer roleInfoComponentServer =  unit.GetComponent<RoleInfoComponentServer>();
 						TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();	
-                        //if (newLevel <= roleInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList))
+                        //if (newLevel <= roleInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList_2))
 						if(newLevel <= LDGlobalValueCategory.Instance.MaxLevel)
 						{
 							int level = newLevel - roleInfoComponentServer.RoleInfo.Lv;

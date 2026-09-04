@@ -55,7 +55,7 @@ namespace ET
                 wantBuy.ItemId = request.ItemId;
                 wantBuy.ItemNum = request.ItemNum;
                 wantBuy.Price = request.Price;
-                wantBuy.Time = TimeHelper.ServerNow();
+                wantBuy.Time = TimeHelper.ServerNow() + TimeHelper.OneDay * request.Day;
 
                 long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
                 Consign2M_WantBuyAddResponse addResponse = (Consign2M_WantBuyAddResponse)await ActorMessageSenderComponent.Instance.Call(

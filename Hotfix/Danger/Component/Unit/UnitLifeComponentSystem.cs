@@ -148,17 +148,14 @@ namespace ET
                 return 0;
             }
 
-            LDMonster ldMonster = LDMonsterCategory.Instance.Get(unit.ConfigId);
             int resurrection = 0;
+            LDMonster ldMonster = LDMonsterCategory.Instance.Get(unit.ConfigId);
+           
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             if (SeasonHelper.SeasonBossId == unit.ConfigId && mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
             {
                 LocalDungeonComponent localDungeon = unit.DomainScene().GetComponent<LocalDungeonComponent>();
                 RoleInfoComponentServer roleInfoComponentServer = localDungeon.MainUnit.GetComponent<RoleInfoComponentServer>();
-                localDungeon.MainUnit.GetComponent<RoleContextComponent>().SetSeasonBoss(
-                    SeasonHelper.GetFubenId(roleInfoComponentServer.RoleInfo.Lv),
-                    TimeHelper.ServerNow() + resurrection * 1000);
-                resurrection = 0;
             }
 
             if (resurrection == 0)

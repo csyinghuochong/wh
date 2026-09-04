@@ -86,7 +86,7 @@ namespace ET
                 request.ConsignItemInfo.BelongId = ConsignHelper.GetConsignBelongId(request.ConsignItemInfo.BagInfo);
                 if (request.ConsignItemInfo.BelongId <= 0)
                 {
-                    response.Error = ErrorCode.ERR_Parameter;
+                    response.Error = ErrorCode.Err_ConsignNoSellType;
                     reply();
                     return;
                 }

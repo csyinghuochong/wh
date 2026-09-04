@@ -10,9 +10,9 @@ namespace ET
         protected override async ETTask Run(Scene scene, M2U_UnionCreateRequest request, U2M_UnionCreateResponse response, Action reply)
         {
             Log.Warning($"M2U_UnionCreateRequest:{request.UserID}");
-            if (request.UnionName.Length > 7 || !StringHelper.IsSpecialChar(request.UnionName))
+            if (request.UnionName.Length > 10 || !StringHelper.IsSpecialChar(request.UnionName))
             {
-                response.Error = ErrorCode.ERR_Union_Same_Name;
+                response.Error = ErrorCode.ERR_Union_NameValied;
                 reply();
                 return;
             }
@@ -33,6 +33,8 @@ namespace ET
             unionInfo.UnionInfo.LeaderId = request.UserID;       
             unionInfo.UnionInfo.UnionName = request.UnionName;
             unionInfo.UnionInfo.UnionPurpose = request.UnionPurpose;
+            unionInfo.UnionInfo.UnionBanner = request.UnionBanner;
+            unionInfo.UnionInfo.UnionPattern = request.UnionPattern;
 
             RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(scene.DomainZone(), request.UserID);
             unionInfo.UnionInfo.LeaderName = roleInfoComponentServer.RoleInfo.Name;

@@ -144,13 +144,10 @@ namespace ET
             }
 
             List<Unit> unitlist = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
-            self.M2C_HappyInfoResult.NextRefreshTime = TimeHelper.ServerNow() + HappyFubenConfig.ItemFreshTime;
-            MessageHelper.SendToClient(unitlist, self.M2C_HappyInfoResult);
         }
 
         public static void NoticeRefreshTime(this HappyDungeonComponent self, Unit unit)
         {
-            MessageHelper.SendToClient(unit, self.M2C_HappyInfoResult);
         }
     }
 }

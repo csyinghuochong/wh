@@ -566,6 +566,36 @@ namespace ET
             return new List<ConsignWantBuyInfo>(db.WantBuyInfos);
         }
 
+        public static List<ConsignWantBuyInfo> GetWantBuyList(this ConsignSceneComponent self, long userId)
+        {
+            List<ConsignWantBuyInfo> result = new List<ConsignWantBuyInfo>();
+            if (userId <= 0)
+            {
+                return result;
+            }
+
+            foreach (DBConsignWantBuy db in self.WantBuyByItemKey.Values)
+            {
+                if (db?.WantBuyInfos == null)
+                {
+                    continue;
+                }
+
+                for (int i = 0; i < db.WantBuyInfos.Count; i++)
+                {
+                    ConsignWantBuyInfo info = db.WantBuyInfos[i];
+                    if (info == null || info.UserId != userId)
+                    {
+                        continue;
+                    }
+
+                    result.Add(info);
+                }
+            }
+
+            return result;
+        }
+
         public static List<ConsignItemInfo> GetShangJiaItemsByItem(this ConsignSceneComponent self, int itemType, int itemId)
         {
             List<ConsignItemInfo> result = new List<ConsignItemInfo>();
@@ -609,6 +639,32 @@ namespace ET
                 if (list[i].Id == wantBuyId)
                 {
                     return list[i];
+                }
+            }
+
+            return null;
+        }
+
+        public static ConsignWantBuyInfo FindWantBuy(this ConsignSceneComponent self, long wantBuyId)
+        {
+            if (wantBuyId <= 0)
+            {
+                return null;
+            }
+
+            foreach (DBConsignWantBuy db in self.WantBuyByItemKey.Values)
+            {
+                if (db?.WantBuyInfos == null)
+                {
+                    continue;
+                }
+
+                for (int i = 0; i < db.WantBuyInfos.Count; i++)
+                {
+                    if (db.WantBuyInfos[i].Id == wantBuyId)
+                    {
+                        return db.WantBuyInfos[i];
+                    }
                 }
             }
 
@@ -679,6 +735,34 @@ namespace ET
                     MailHelp.SendWantBuyGoldMail(info.UserId, (long)info.Price * info.ItemNum).Coroutine();
                 }
             }
+        }
+
+        public static ConsignWantBuyInfo CancelWantBuy(this ConsignSceneComponent self, int itemType, int itemId, long wantBuyId, long userId)
+        {
+            DBConsignWantBuy db = self.GetWantBuyDB(itemType, itemId);
+            if (db?.WantBuyInfos == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < db.WantBuyInfos.Count; i++)
+            {
+                ConsignWantBuyInfo info = db.WantBuyInfos[i];
+                if (info.Id != wantBuyId)
+                {
+                    continue;
+                }
+
+                if (info.UserId != userId)
+                {
+                    return null;
+                }
+
+                db.WantBuyInfos.RemoveAt(i);
+                return info;
+            }
+
+            return null;
         }
 
         public static async ETTask SaveCollectData(this ConsignSceneComponent self, DBConsignCollect db)

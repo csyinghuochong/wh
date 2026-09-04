@@ -1557,336 +1557,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(U2M_UnionCreateResponse))]
-	[Message(InnerOpcode.M2U_UnionCreateRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionCreateRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public string UnionName { get; set; }
-
-		[ProtoMember(2)]
-		public string UnionPurpose { get; set; }
-
-		[ProtoMember(4)]
-		public long UserID { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionCreateResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionCreateResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-	}
-
-//离开公会
-	[ResponseType(nameof(U2M_UnionLeaveResponse))]
-	[Message(InnerOpcode.M2U_UnionLeaveRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionLeaveRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public long UserId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionLeaveResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionLeaveResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//转让族长
-	[ResponseType(nameof(U2M_UnionTransferResponse))]
-	[Message(InnerOpcode.M2U_UnionTransferRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionTransferRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long NewLeader { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(3)]
-		public long UnionId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionTransferResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionTransferResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-///转让族长
-	[Message(InnerOpcode.M2M_UnionTransferMessage)]
-	[ProtoContract]
-	public partial class M2M_UnionTransferMessage: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int UnionLeader { get; set; }
-
-	}
-
-//家族操作  1增加经验  2获取等级
-	[ResponseType(nameof(U2M_UnionOperationResponse))]
-	[Message(InnerOpcode.M2U_UnionOperationRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionOperationRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(3)]
-		public string Par { get; set; }
-
-		[ProtoMember(4)]
-		public long UnitId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionOperationResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionOperationResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public string Par { get; set; }
-
-	}
-
-//公会踢人
-	[ResponseType(nameof(M2U_UnionKickOutResponse))]
-	[Message(InnerOpcode.U2M_UnionKickOutRequest)]
-	[ProtoContract]
-	public partial class U2M_UnionKickOutRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2U_UnionKickOutResponse)]
-	[ProtoContract]
-	public partial class M2U_UnionKickOutResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//加速完成
-	[ResponseType(nameof(M2U_UnionKeJiQuickResponse))]
-	[Message(InnerOpcode.U2M_UnionKeJiQuickRequest)]
-	[ProtoContract]
-	public partial class U2M_UnionKeJiQuickRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int Cost { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2U_UnionKeJiQuickResponse)]
-	[ProtoContract]
-	public partial class M2U_UnionKeJiQuickResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(U2M_UnionKeJiLearnResponse))]
-	[Message(InnerOpcode.M2U_UnionKeJiLearnRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionKeJiLearnRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public int KeJiId { get; set; }
-
-		[ProtoMember(3)]
-		public int Position { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionKeJiLearnResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionKeJiLearnResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//入会通知
-	[ResponseType(nameof(M2U_UnionApplyResponse))]
-	[Message(InnerOpcode.U2M_UnionApplyRequest)]
-	[ProtoContract]
-	public partial class U2M_UnionApplyRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public string UnionName { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2U_UnionApplyResponse)]
-	[ProtoContract]
-	public partial class M2U_UnionApplyResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2U_UnionInviteReplyMessage)]
-	[ProtoContract]
-	public partial class M2U_UnionInviteReplyMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public int ReplyCode { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitID { get; set; }
-
-	}
-
 	[ResponseType(nameof(Rank2R_DeleteRoleData))]
 	[Message(InnerOpcode.R2Rank_DeleteRoleData)]
 	[ProtoContract]
@@ -2734,46 +2404,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Union2G_EnterUnion))]
-	[Message(InnerOpcode.G2Union_EnterUnion)]
-	[ProtoContract]
-	public partial class G2Union_EnterUnion: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string Name { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Union2G_EnterUnion)]
-	[ProtoContract]
-	public partial class Union2G_EnterUnion: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(2)]
-		public long WinUnionId { get; set; }
-
-		[ProtoMember(3)]
-		public int DonationRankId { get; set; }
-
-		[ProtoMember(4)]
-		public long LeaderId { get; set; }
-
-	}
-
 //进入家园
 	[ResponseType(nameof(J2M_JiaYuanEnterResponse))]
 	[Message(InnerOpcode.M2J_JiaYuanEnterRequest)]
@@ -2877,88 +2507,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
-
-	}
-
-//进入家族地图
-	[ResponseType(nameof(U2M_UnionEnterResponse))]
-	[Message(InnerOpcode.M2U_UnionEnterRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionEnterRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public int SceneId { get; set; }
-
-		[ProtoMember(4)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionEnterResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionEnterResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int FubenId { get; set; }
-
-		[ProtoMember(2)]
-		public long FubenInstanceId { get; set; }
-
-	}
-
-//捐献
-	[ResponseType(nameof(U2M_DonationResponse))]
-	[Message(InnerOpcode.M2U_DonationRequest)]
-	[ProtoContract]
-	public partial class M2U_DonationRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(3)]
-		public RankingInfo RankingInfo { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_DonationResponse)]
-	[ProtoContract]
-	public partial class U2M_DonationResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int RankId { get; set; }
 
 	}
 
@@ -3278,43 +2826,6 @@ namespace ET
 	[Message(InnerOpcode.Chat2M_UpdateUnion)]
 	[ProtoContract]
 	public partial class Chat2M_UpdateUnion: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(U2M_UnionMysteryBuyResponse))]
-	[Message(InnerOpcode.M2U_UnionMysteryBuyRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionMysteryBuyRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public int MysteryId { get; set; }
-
-		[ProtoMember(3)]
-		public int BuyNumber { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionMysteryBuyResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionMysteryBuyResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -4026,6 +3537,46 @@ namespace ET
 
 	}
 
+	[ResponseType(nameof(Consign2M_WantBuyCancelResponse))]
+	[Message(InnerOpcode.M2Consign_WantBuyCancelRequest)]
+	[ProtoContract]
+	public partial class M2Consign_WantBuyCancelRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long WantBuyId { get; set; }
+
+		[ProtoMember(2)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Consign2M_WantBuyCancelResponse)]
+	[ProtoContract]
+	public partial class Consign2M_WantBuyCancelResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int RefundNum { get; set; }
+
+		[ProtoMember(2)]
+		public int Price { get; set; }
+
+	}
+
 	[ResponseType(nameof(Consign2M_WantBuyDealResponse))]
 	[Message(InnerOpcode.M2Consign_WantBuyDealRequest)]
 	[ProtoContract]
@@ -4079,4 +3630,533 @@ namespace ET
 	}
 
 //寄售  end####################################################
+//公会 start####################################################
+	[ResponseType(nameof(U2M_UnionCreateResponse))]
+	[Message(InnerOpcode.M2U_UnionCreateRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionCreateRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public string UnionName { get; set; }
+
+		[ProtoMember(2)]
+		public string UnionPurpose { get; set; }
+
+		[ProtoMember(4)]
+		public long UserID { get; set; }
+
+		[ProtoMember(5)]
+		public int UnionBanner { get; set; }
+
+		[ProtoMember(6)]
+		public int UnionPattern { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionCreateResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionCreateResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+	}
+
+//离开公会
+	[ResponseType(nameof(U2M_UnionLeaveResponse))]
+	[Message(InnerOpcode.M2U_UnionLeaveRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionLeaveRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionLeaveResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionLeaveResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//转让族长
+	[ResponseType(nameof(U2M_UnionTransferResponse))]
+	[Message(InnerOpcode.M2U_UnionTransferRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionTransferRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long NewLeader { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitID { get; set; }
+
+		[ProtoMember(3)]
+		public long UnionId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionTransferResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionTransferResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+///转让族长
+	[Message(InnerOpcode.M2M_UnionTransferMessage)]
+	[ProtoContract]
+	public partial class M2M_UnionTransferMessage: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int UnionLeader { get; set; }
+
+	}
+
+//家族操作  1增加经验  2获取等级
+	[ResponseType(nameof(U2M_UnionOperationResponse))]
+	[Message(InnerOpcode.M2U_UnionOperationRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionOperationRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(3)]
+		public string Par { get; set; }
+
+		[ProtoMember(4)]
+		public long UnitId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionOperationResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionOperationResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public string Par { get; set; }
+
+	}
+
+//公会踢人
+	[ResponseType(nameof(M2U_UnionKickOutResponse))]
+	[Message(InnerOpcode.U2M_UnionKickOutRequest)]
+	[ProtoContract]
+	public partial class U2M_UnionKickOutRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.M2U_UnionKickOutResponse)]
+	[ProtoContract]
+	public partial class M2U_UnionKickOutResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//加速完成
+	[ResponseType(nameof(M2U_UnionKeJiQuickResponse))]
+	[Message(InnerOpcode.U2M_UnionKeJiQuickRequest)]
+	[ProtoContract]
+	public partial class U2M_UnionKeJiQuickRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int Cost { get; set; }
+
+	}
+
+	[Message(InnerOpcode.M2U_UnionKeJiQuickResponse)]
+	[ProtoContract]
+	public partial class M2U_UnionKeJiQuickResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(U2M_UnionKeJiLearnResponse))]
+	[Message(InnerOpcode.M2U_UnionKeJiLearnRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionKeJiLearnRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public int KeJiId { get; set; }
+
+		[ProtoMember(3)]
+		public int Position { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionKeJiLearnResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionKeJiLearnResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//入会通知
+	[ResponseType(nameof(M2U_UnionApplyResponse))]
+	[Message(InnerOpcode.U2M_UnionApplyRequest)]
+	[ProtoContract]
+	public partial class U2M_UnionApplyRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public string UnionName { get; set; }
+
+	}
+
+	[Message(InnerOpcode.M2U_UnionApplyResponse)]
+	[ProtoContract]
+	public partial class M2U_UnionApplyResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[Message(InnerOpcode.M2U_UnionInviteReplyMessage)]
+	[ProtoContract]
+	public partial class M2U_UnionInviteReplyMessage: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public int ReplyCode { get; set; }
+
+		[ProtoMember(3)]
+		public long UnitID { get; set; }
+
+	}
+
+	[ResponseType(nameof(Union2G_EnterUnion))]
+	[Message(InnerOpcode.G2Union_EnterUnion)]
+	[ProtoContract]
+	public partial class G2Union_EnterUnion: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public string Name { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Union2G_EnterUnion)]
+	[ProtoContract]
+	public partial class Union2G_EnterUnion: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(2)]
+		public long WinUnionId { get; set; }
+
+		[ProtoMember(3)]
+		public int DonationRankId { get; set; }
+
+		[ProtoMember(4)]
+		public long LeaderId { get; set; }
+
+	}
+
+//进入家族地图
+	[ResponseType(nameof(U2M_UnionEnterResponse))]
+	[Message(InnerOpcode.M2U_UnionEnterRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionEnterRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public int SceneId { get; set; }
+
+		[ProtoMember(4)]
+		public int OperateType { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionEnterResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionEnterResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int FubenId { get; set; }
+
+		[ProtoMember(2)]
+		public long FubenInstanceId { get; set; }
+
+	}
+
+//捐献
+	[ResponseType(nameof(U2M_DonationResponse))]
+	[Message(InnerOpcode.M2U_DonationRequest)]
+	[ProtoContract]
+	public partial class M2U_DonationRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(3)]
+		public RankingInfo RankingInfo { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_DonationResponse)]
+	[ProtoContract]
+	public partial class U2M_DonationResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int RankId { get; set; }
+
+	}
+
+	[ResponseType(nameof(U2M_UnionMysteryBuyResponse))]
+	[Message(InnerOpcode.M2U_UnionMysteryBuyRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionMysteryBuyRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public int MysteryId { get; set; }
+
+		[ProtoMember(3)]
+		public int BuyNumber { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionMysteryBuyResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionMysteryBuyResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//公会改名同步到玩家显示缓存
+	[ResponseType(nameof(M2U_UnionSetNameResponse))]
+	[Message(InnerOpcode.U2M_UnionSetNameRequest)]
+	[ProtoContract]
+	public partial class U2M_UnionSetNameRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public string UnionName { get; set; }
+
+	}
+
+	[Message(InnerOpcode.M2U_UnionSetNameResponse)]
+	[ProtoContract]
+	public partial class M2U_UnionSetNameResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//公会  end####################################################
 }

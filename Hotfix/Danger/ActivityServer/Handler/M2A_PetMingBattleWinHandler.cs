@@ -97,7 +97,6 @@ namespace ET
                     RoleContextComponent roleContext = await DBHelper.GetComponent<RoleContextComponent>(homeZone, oldUnitid);
                     if (roleContext != null)
                     {
-                        roleContext.PetMineCDTime = 0;
                         await DBHelper.SaveComponent(homeZone, oldUnitid, roleContext);
                     }
                 }

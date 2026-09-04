@@ -19,7 +19,7 @@ namespace ET
             if (CommonHelper.GetDayByTime(dBUnionInfo.MysteryFreshTime) != CommonHelper.GetDayByTime(TimeHelper.ServerNow()))
             {
                 int openDay = ServerHelper.GetOpenServerDay(false, scene.DomainZone());
-                dBUnionInfo.MysteryItemInfos = UnionHelper.InitMysteryItemInfos(openDay);
+                //dBUnionInfo.MysteryItemInfos = UnionHelper.InitMysteryItemInfos(openDay);
                 dBUnionInfo.MysteryFreshTime = TimeHelper.ServerNow();
                 DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
             }

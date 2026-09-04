@@ -22,7 +22,7 @@ namespace ET
             unitInfo.ForwardY = forward.y;
             unitInfo.ForwardZ = forward.z;
             unitInfo.UnitType = unit.Type;
-
+            unitInfo.Scene_Creature = unitInfoComponent.Scene_Creature;
             MoveComponent moveComponent = unit.GetComponent<MoveComponent>();
             if (moveComponent != null)
             {

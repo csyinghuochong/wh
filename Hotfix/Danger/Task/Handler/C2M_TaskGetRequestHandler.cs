@@ -10,6 +10,28 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_TaskGetRequest request, M2C_TaskGetResponse response, Action reply)
         {
+            int taskTable = ResolveTaskTable(request.TaskTable, request.TaskId);
+            response.TaskTable = taskTable;
+            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+
+            if (taskTable == TaskTableType.Task_1)
+            {
+                (TaskPro taskPro, int error) = taskComponentServer.OnAcceptedTask_1(request.TaskId, request.NpcId);
+                response.Error = error;
+                response.TaskPro = taskPro;
+                reply();
+                await ETTask.CompletedTask;
+                return;
+            }
+
+            if (taskTable != TaskTableType.Task_2)
+            {
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                await ETTask.CompletedTask;
+                return;
+            }
+
             if (!LDTask_2Category.Instance.Contain(request.TaskId))
             {
                 Log.Error($"C2M_TaskGetRequest 1");
@@ -18,11 +40,9 @@ namespace ET
                 return;
             }
 
-            LDTask_2 ldTask = LDTask_2Category.Instance.Get(request.TaskId);
            // if (ldTask.TaskType == TaskTypeEnum.Daily)
             {
-                TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-                if (taskComponentServer.GetTaskList(TaskTypeEnum.Daily).Count > 0)
+                if (taskComponentServer.GetTaskList_2(TaskTypeEnum.Daily).Count > 0)
                 {
                     response.Error = ErrorCode.ERR_TaskCanNotGet;
                     reply();
@@ -51,7 +71,7 @@ namespace ET
             /*else if (ldTask.TaskType == TaskTypeEnum.Union)
             {
                 TaskComponent taskComponent = unit.GetComponent<TaskComponent>();
-                if (taskComponent.GetTaskList(TaskTypeEnum.Union).Count > 0)
+                if (taskComponent.GetTaskList_2(TaskTypeEnum.Union).Count > 0)
                 {
                     response.Error = ErrorCode.ERR_TaskNoComplete;
                     reply();
@@ -60,7 +80,7 @@ namespace ET
 
                 //获取当前任务是否已达上限
                 int uniontask = unit.GetComponent<NumericComponent>().GetAsInt(NumericType.UnionTaskNumber);
-                if (uniontask >= GlobalValueCategory.Instance.TempValue)
+                if (uniontask >= LDGlobalValueCategory.Instance.TempValue)
                 {
                     response.Error = ErrorCode.ERR_TaskLimited;
                     reply();
@@ -81,7 +101,7 @@ namespace ET
             else if (ldTask.TaskType == TaskTypeEnum.Treasure
                 || ldTask.TaskType == TaskTypeEnum.Ring)
             {
-                if (unit.GetComponent<TaskComponent>().GetTaskList(ldTask.TaskType).Count > 1)
+                if (unit.GetComponent<TaskComponent>().GetTaskList_2(ldTask.TaskType).Count > 1)
                 {
                     Log.Error($"C2M_TaskGetRequest 2");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -129,6 +149,26 @@ namespace ET
             }*/
             reply();
             await ETTask.CompletedTask;
+        }
+
+        private static int ResolveTaskTable(int taskTable, int taskId)
+        {
+            if (taskTable == TaskTableType.Task_1 || taskTable == TaskTableType.Task_2)
+            {
+                return taskTable;
+            }
+
+            if (LDTask_1Category.Instance != null && LDTask_1Category.Instance.Contain(taskId))
+            {
+                return TaskTableType.Task_1;
+            }
+
+            if (LDTask_2Category.Instance != null && LDTask_2Category.Instance.Contain(taskId))
+            {
+                return TaskTableType.Task_2;
+            }
+
+            return TaskTableType.None;
         }
     }
 }

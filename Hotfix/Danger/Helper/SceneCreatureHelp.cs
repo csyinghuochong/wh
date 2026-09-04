@@ -75,19 +75,19 @@ namespace ET
 			}
 			for (int i = 0; i < creatureList.Count;i++)
 			{
-				int monsterId = creatureList[i];
-				CreateSceneRoleById(scene, monsterId);
+				int sceneCreateId = creatureList[i];
+				CreateSceneRoleById(scene, sceneCreateId);
 			}
 		}
 
-		public static void CreateSceneRoleById(Scene scene, int createid)
+		public static void CreateSceneRoleById(Scene scene, int sceenCreateid)
 		{
-			if (createid == 0)
+			if (sceenCreateid == 0)
 			{
 				return;
 			}
 			
-			LDScene_Creature monsterPosition = LDScene_CreatureCategory.Instance.Get(createid);
+			LDScene_Creature monsterPosition = LDScene_CreatureCategory.Instance.Get(sceenCreateid);
 			int mtype = monsterPosition.Type;   //1npc  2 怪物
 			int monsterid = monsterPosition.Match_Id;
 			
@@ -101,7 +101,7 @@ namespace ET
 					return;
                 }
 				
-				unit = UnitFactory.CreateNpc(scene,createid, monsterid, initposition);
+				unit = UnitFactory.CreateNpc(scene,sceenCreateid, monsterid, initposition);
 			}
 			if (mtype == UnitType.Monster)
 			{
@@ -114,9 +114,11 @@ namespace ET
 					{
 						Camp = CampEnum.CampMonster1,
 						Rotation = monsterPosition.Rotation,
-						SceneCreateId =   createid,
+						SceneCreateId =   sceenCreateid,
 					});
-			}
+
+                Console.WriteLine($"monster.postion:  {unit.Position}");
+            }
             if (mtype == UnitType.Interaction)
             {
                 if (!LDInteractionCategory.Instance.Contain(monsterid))
@@ -125,97 +127,8 @@ namespace ET
                     return;
                 }
 
-                unit = UnitFactory.CreateInteraction(scene, createid, monsterid, initposition, monsterPosition.Rotation);
+                unit = UnitFactory.CreateInteraction(scene, sceenCreateid, monsterid, initposition, monsterPosition.Rotation);
             }
-
-            /*if (mtype == 1)    //固定位置刷怪
-			{
-				if (monsterPosition.CreateNum > 100)
-				{
-					Log.Error($"monsterPosition.CreateNum:  {monsterPos}");
-                    return 0;
-                }
-
-				for (int c = 0; c < monsterPosition.CreateNum; c++)
-				{
-					LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
-					Vector3 vector3 = new Vector3(float.Parse(position[0]), float.Parse(position[1]), float.Parse(position[2]));
-
-					//51 场景怪 有AI 不显示名称
-					//52 能量台子 无AI
-					//54 场景怪 有AI 显示名称
-					//55 宝箱类(一次) 无AI
-					//56 宝箱类(无限) 无AI
-					/*if (ldMonster.MonsterSonType != 52)
-					{
-						UnitFactory.CreateMonster(scene, ldMonster.Id, vector3, new CreateMonsterInfo()
-						{
-							Camp = ldMonster.MonsterCamp,
-							Rotation = monsterPosition.Create,
-						});
-					}#1#
-				}
-			}
-			if (mtype == 2)
-			{
-                if (monsterPosition.CreateNum > 100)
-                {
-                    Log.Error($"monsterPosition.CreateNum:  {monsterPos}");
-                    return 0;
-                }
-
-                for (int c = 0; c < monsterPosition.CreateNum; c++)
-				{
-					float range = (float)monsterPosition.CreateRange;
-					LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterPosition.MonsterID);
-					Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
-					UnitFactory.CreateMonster(scene, monsterPosition.MonsterID, vector3, new CreateMonsterInfo()
-					{
-						Camp = CampEnum.CampMonster1,
-						Rotation = monsterPosition.Create,
-					});
-				}
-			}
-			if (mtype == 3)
-			{
-				//定时刷新  YeWaiRefreshComponent
-				scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterByPos(monsterPosition.Id);
-			}
-			if (mtype == 4)
-			{
-				//4; 0,0,0; 71020001; 2,2; 2, 2
-				int playerLv = 1;
-				if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TowerDungeon)
-				{
-					Unit mainUnit = scene.GetComponent<TowerComponent>().MainUnit;
-					playerLv = mainUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
-				}
-                if (monsterPosition.CreateNum > 100)
-                {
-                    Log.Error($"monsterPosition.CreateNum:  {monsterPos}");
-                    return 0;
-                }
-
-                for (int c = 0; c < monsterPosition.CreateNum; c++)
-				{
-					float range = (float)monsterPosition.CreateRange;
-					LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterPosition.MonsterID);
-					Vector3 vector3 = new Vector3(float.Parse(position[0]) + RandomHelper.RandomNumberFloat(-1 * range, range), float.Parse(position[1]), float.Parse(position[2]) + RandomHelper.RandomNumberFloat(-1 * range, range));
-					UnitFactory.CreateMonster(scene, monsterPosition.MonsterID, vector3, new CreateMonsterInfo()
-					{
-						PlayerLevel = playerLv,
-						AttributeParams = monsterPosition.Par,
-						Camp = CampEnum.CampMonster1,
-						Rotation = monsterPosition.Create,
-					});
-				}
-			}
-			if (mtype == 5 || mtype == 6)
-			{
-				//固定时间刷新  YeWaiRefreshComponent
-				scene.GetComponent<YeWaiRefreshComponent>().CreateMonsterByPos_2(monsterPosition.Id);
-			}
-			*/
         }
 
 		public static List<IntLongPair> GetRandomMonster(Scene scene, int fubenid, string createMonster)
@@ -239,17 +152,6 @@ namespace ET
             string[] monsters = createMonster.Split('@');
             if (SeasonHelper.GetOpenSeason(roleInfoComponentServer.RoleInfo.Lv)!= null)
 			{
-				//赛季boss
-				long serverNow = TimeHelper.ServerNow();
-				long seasonBossTime = roleContext.SeasonBossRefreshTime;
-				int sessonBossFuben = roleContext.SeasonBossFuben;
-                if (seasonBossTime > 0 && serverNow > seasonBossTime && fubenid == sessonBossFuben)
-				{
-                    IntLongPair keyValuePairInt = new IntLongPair();
-					keyValuePairInt.KeyId = RandomHelper.RandomNumber(0, monsters.Length);
-                    keyValuePairInt.Value = SeasonHelper.SeasonBossId;
-                    randomMonsterList.Add(keyValuePairInt);
-                }
             }
 			
 			for (int i = 0; i < monsters.Length; i++)

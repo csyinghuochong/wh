@@ -11,8 +11,6 @@ namespace ET
             PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
             petComponentServer.OnPetMingRecord( request.PetMingRecord );
 
-            unit.GetComponent<RoleContextComponent>().SetPetMineCDTime(0);
-
             ///红点
             //unit.GetComponent<ReddotComponent>().AddReddont(BelongReddot.PetMine);
 

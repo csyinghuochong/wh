@@ -52,10 +52,10 @@ namespace ET
             //    numericComponent_2.Set(NumericType.UnionLeader, 1, false);
             //    DBHelper.SaveComponent(scene.DomainZone(), request.NewLeader, numericComponent_2).Coroutine();
             //}
-            UnionHelper.NoticeUnionLeader(scene.DomainZone(), request.NewLeader, 1).Coroutine();
+            ServerMessageHelper.NoticeUnionLeader(scene.DomainZone(), request.NewLeader, 1).Coroutine();
 
             //通知旧族长
-            UnionHelper.NoticeUnionLeader(scene.DomainZone(), request.UnitID, 0).Coroutine();
+            ServerMessageHelper.NoticeUnionLeader(scene.DomainZone(), request.UnitID, 0).Coroutine();
 
             reply();
             await ETTask.CompletedTask;

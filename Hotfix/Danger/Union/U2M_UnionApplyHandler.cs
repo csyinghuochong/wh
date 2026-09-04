@@ -10,13 +10,9 @@ namespace ET
         {
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
+            roleInfo.SetUnionName(request.UnionName);
             numeric.ApplyValue(NumericType.UnionLeader, 0);
             numeric.ApplyValue(NumericType.UnionId_0, request.UnionId);
-            roleInfo.UpdateRoleData(UserDataType.UnionName, request.UnionName);
-            roleInfo.UpdateRoleDataBroadcast(UserDataType.UnionName, request.UnionName);
-            unit.GetComponent<TaskComponentServer>().OnJoinUnion();
-         
-            unit.UpdateUnionToChat().Coroutine();
             reply();
             await ETTask.CompletedTask;
         }

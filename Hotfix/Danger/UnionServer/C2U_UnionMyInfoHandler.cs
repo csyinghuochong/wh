@@ -147,10 +147,10 @@ namespace ET
                         unionPlayerInfo_new.Position = 1;
                         unionPlayerInfo_old.Position = 0;
                         dBUnionInfo.UnionInfo.LeaderName = unionPlayerInfo_new.PlayerName;
-                        UnionHelper.NoticeUnionLeader(scene.DomainZone(), newLeaderId, 1).Coroutine();
+                        ServerMessageHelper.NoticeUnionLeader(scene.DomainZone(), newLeaderId, 1).Coroutine();
 
                         //通知旧族长
-                        UnionHelper.NoticeUnionLeader(scene.DomainZone(), oldLeaderid, 0).Coroutine();
+                        ServerMessageHelper.NoticeUnionLeader(scene.DomainZone(), oldLeaderid, 0).Coroutine();
                     }
                 }
             }

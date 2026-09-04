@@ -491,6 +491,30 @@ namespace ET
             });
         }
 
+        /// <summary>
+        /// 公会名只作为玩家身上的显示缓存（真名在 UnionInfo）。改档案并推 AOI，调用方只走这一次。
+        /// </summary>
+        public static void SetUnionName(this RoleInfoComponentServer self, string unionName, bool notice = true)
+        {
+            if (unionName == null)
+            {
+                unionName = string.Empty;
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            if (unit == null)
+            {
+                self.RoleInfo.UnionName = unionName;
+                return;
+            }
+
+            self.UpdateRoleData(UserDataType.UnionName, unionName, notice);
+            if (notice)
+            {
+                self.UpdateRoleDataBroadcast(UserDataType.UnionName, unionName);
+            }
+        }
+
         //需要通知客户端
         public static void UpdateRoleData(this RoleInfoComponentServer self, int Type, string value, bool notice = true, int getWay = ItemGetWay.System, string paramsifo = "")
         {
@@ -704,7 +728,7 @@ namespace ET
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
             //等级达到上限,则无法获得经验. 经验最多200%
-            int maxlevel = self.GetMaxLevel(taskComponentServer.RoleComoleteTaskList);
+            int maxlevel = 1000; //读表
             if (addValue > 0 &&self.RoleInfo.Lv >= maxlevel)
             {
                 long maxExp = upNeedExp * 2;

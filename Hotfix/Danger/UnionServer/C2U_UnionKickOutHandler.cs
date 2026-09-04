@@ -48,7 +48,7 @@ namespace ET
                 RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, request.UserId);
                 if (roleInfoComponentServer != null)
                 {
-                    roleInfoComponentServer.RoleInfo.UnionName = string.Empty;
+                    roleInfoComponentServer.SetUnionName(string.Empty);
                     await DBHelper.SaveComponent(homeZone, request.UserId, roleInfoComponentServer);
                 }
             }

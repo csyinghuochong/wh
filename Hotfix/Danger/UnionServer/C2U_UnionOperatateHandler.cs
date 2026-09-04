@@ -24,6 +24,7 @@ namespace ET
                 {
                     case 1:
                         dBUnionInfo.UnionInfo.UnionName = request.Value;
+                        ServerMessageHelper.NoticeUnionName(dBUnionInfo, request.Value).Coroutine();
                         break;
                     case 2:
                         dBUnionInfo.UnionInfo.UnionPurpose = request.Value;

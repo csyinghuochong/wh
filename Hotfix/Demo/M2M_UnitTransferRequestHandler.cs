@@ -106,9 +106,7 @@ namespace ET
                         }
 						break;
 					case (int)MapTypeEnum.LocalDungeon:
-					
 						LDScene dungeonConfig = LDSceneCategory.Instance.Get(request.ChapterId);
-					
 						MapComponent localMapComponent = scene.GetComponent<MapComponent>();
 						RecastPathComponent recastPathComponent = Game.Scene.GetComponent<RecastPathComponent>();
 						unit.AddComponent<PathfindingComponent, string>(localMapComponent.NavMeshId);
@@ -134,7 +132,9 @@ namespace ET
 						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
 						MessageHelper.SendToClient(unit, m2CCreateUnits);
 						// 加入aoi
-						unit.AddComponent<AOIEntity, int, Vector3>(10 * 1000, unit.Position);
+
+						int aoiValue = (CommonHelper.IsInnerNet() ? 100 : 10) * 1000;
+						unit.AddComponent<AOIEntity, int, Vector3>(aoiValue, unit.Position);
 						TransferHelper.AfterTransfer(unit);
 						SceneCreatureHelp.CreateSceneRole(scene, request.ChapterId);
 						SceneCreatureHelp.CreateSceneTeleport(scene, request.ChapterId);

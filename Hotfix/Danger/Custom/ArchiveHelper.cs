@@ -258,7 +258,7 @@ namespace ET
                 ///清空该玩家的家族id 
                 old_numericComponent.ApplyValue(NumericType.UnionLeader, 0);
                 old_numericComponent.ApplyValue(NumericType.UnionId_0, 0);
-                oldRoleInfoComponentServer.UpdateRoleData(UserDataType.UnionName, "", false);
+                oldRoleInfoComponentServer.SetUnionName("", false);
             }
 
 
