@@ -13860,6 +13860,12 @@ namespace ET
 		[ProtoMember(8)]
 		public int UnionPattern { get; set; }
 
+		[ProtoMember(9)]
+		public string UnionPurpose { get; set; }
+
+		[ProtoMember(10)]
+		public long LeaderId { get; set; }
+
 	}
 
 	[ResponseType(nameof(M2C_UnionDonationResponse))]

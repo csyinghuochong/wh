@@ -27,6 +27,8 @@ namespace ET
                 unionListItem.UnionLeader = dBUnionInfo.UnionInfo.LeaderName;
                 unionListItem.UnionBanner = dBUnionInfo.UnionInfo.UnionBanner;
                 unionListItem.UnionPattern = dBUnionInfo.UnionInfo.UnionPattern;
+                unionListItem.UnionPurpose = dBUnionInfo.UnionInfo.UnionPurpose;
+                unionListItem.LeaderId = dBUnionInfo.UnionInfo.LeaderId;
                 unionList.Add(unionListItem);
             }
             response.UnionList = unionList;
