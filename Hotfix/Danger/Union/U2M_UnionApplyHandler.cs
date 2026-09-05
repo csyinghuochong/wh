@@ -10,9 +10,9 @@ namespace ET
         {
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-            roleInfo.SetUnionName(request.UnionName);
-            numeric.ApplyValue(NumericType.UnionLeader, 0);
             numeric.ApplyValue(NumericType.UnionId_0, request.UnionId);
+            numeric.ApplyValue(NumericType.UnionLeader, 0);
+            roleInfo.SetUnionName(request.UnionName);
             reply();
             await ETTask.CompletedTask;
         }

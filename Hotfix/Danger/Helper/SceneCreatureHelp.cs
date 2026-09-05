@@ -116,8 +116,6 @@ namespace ET
 						Rotation = monsterPosition.Rotation,
 						SceneCreateId =   sceenCreateid,
 					});
-
-                Console.WriteLine($"monster.postion:  {unit.Position}");
             }
             if (mtype == UnitType.Interaction)
             {

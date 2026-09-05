@@ -67,9 +67,9 @@ namespace ET
                     bag.OnCostItemData(unionCreateCostItems, ItemLocType.ItemLocBag, ItemGetWay.CostItem);
                 }
 
+                numericComponent.ApplyValue(NumericType.UnionId_0, d2GGetUnit.UnionId, true);
+                numericComponent.ApplyValue(NumericType.UnionLeader, 1, true);
                 roleInfoComponentServer.SetUnionName(request.UnionName);
-                numericComponent.ApplyValue( NumericType.UnionLeader, 1, true);
-                numericComponent.ApplyValue( NumericType.UnionId_0, d2GGetUnit.UnionId, true);
             }
             response.Error = d2GGetUnit.Error;
             reply();
