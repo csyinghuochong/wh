@@ -31,9 +31,9 @@ namespace ET
                 return;
             }
 
-            dBUnionInfo.UnionInfo.LeaderId  = request.NewLeader;
-            unionPlayerInfo_new.Position    = 1;
-            unionPlayerInfo_self.Position   = 0;
+            dBUnionInfo.UnionInfo.LeaderId = request.NewLeader;
+            unionPlayerInfo_new.Position = UnionPosition.Leader;
+            unionPlayerInfo_self.Position = UnionPosition.Member;
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
 
             //通知新族长

@@ -37,8 +37,8 @@ namespace ET
                             reply();
                             return;
                         }
-                        long operateid  = long.Parse(operatevalue[0]);
-                        int position    = int.Parse(operatevalue[1]);
+                        long operateid = long.Parse(operatevalue[0]);
+                        int position = int.Parse(operatevalue[1]);
 
                         UnionPlayerInfo unionPlayerInfo_1 = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.UnitId);
                         if (unionPlayerInfo_1 == null)
@@ -47,8 +47,12 @@ namespace ET
                             reply();
                             return;
                         }
-                        ///1族长 2副族长  ///3长老
-                        if (unionPlayerInfo_1.Position == 0 || (unionPlayerInfo_1.Position >= position && position != 0 ))
+                        if (unionPlayerInfo_1.UserID == dBUnionInfo.UnionInfo.LeaderId)
+                        {
+                            unionPlayerInfo_1.Position = UnionPosition.Leader;
+                        }
+                        if (unionPlayerInfo_1.Position == UnionPosition.Member
+                            || (unionPlayerInfo_1.Position >= position && position != UnionPosition.Member))
                         {
                             response.Error = ErrorCode.ERR_Union_NoLimits;
                             reply();
@@ -62,7 +66,7 @@ namespace ET
                             reply();
                             return;
                         }
-                        if (unionPlayerInfo_2.Position != 0 && unionPlayerInfo_2.Position <= unionPlayerInfo_1.Position)
+                        if (unionPlayerInfo_2.Position != UnionPosition.Member && unionPlayerInfo_2.Position <= unionPlayerInfo_1.Position)
                         {
                             response.Error = ErrorCode.ERR_Union_NoLimits;
                             reply();

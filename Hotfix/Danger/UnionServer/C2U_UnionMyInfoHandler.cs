@@ -21,7 +21,7 @@ namespace ET
 
             HashSet<long> onlineIds = await ServerMessageHelper.GetChatOnlineUnitIds(scene.DomainZone());
             List<UnionPlayerInfo> playerList = src.UnionPlayerList;
-            if (playerList != null && onlineIds.Count > 0)
+            if (playerList != null)
             {
                 for (int i = 0; i < playerList.Count; i++)
                 {
@@ -29,6 +29,11 @@ namespace ET
                     if (player == null || player.UserID == 0)
                     {
                         continue;
+                    }
+
+                    if (player.UserID == src.LeaderId)
+                    {
+                        player.Position = UnionPosition.Leader;
                     }
 
                     if (onlineIds.Contains(player.UserID))

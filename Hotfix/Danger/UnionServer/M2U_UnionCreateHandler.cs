@@ -41,7 +41,7 @@ namespace ET
 
             RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(scene.DomainZone(), request.UserID);
             unionInfo.UnionInfo.LeaderName = roleInfoComponentServer.RoleInfo.Name;
-            unionInfo.UnionInfo.UnionPlayerList.Add(UnionHelper.CreateUnionPlayerSnapshot(roleInfoComponentServer.RoleInfo, request.UserID, TimeHelper.ServerNow()));
+            unionInfo.UnionInfo.UnionPlayerList.Add(UnionHelper.CreateUnionPlayerSnapshot(roleInfoComponentServer.RoleInfo, request.UserID, TimeHelper.ServerNow(), UnionPosition.Leader));
             await DBHelper.SaveComponent(scene.DomainZone(), unionId, unionInfo);
             unionSceneComponent.DBUnionInfos[unionId] = unionInfo;
             response.UnionId = unionId;
