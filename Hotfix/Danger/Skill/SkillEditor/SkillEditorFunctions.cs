@@ -19,6 +19,7 @@ namespace ET
             SkillEditorFunctionRegistry.Register("DEFINE_VARIABLE_RAMDOM_VALUE", DefineVariableRamdomValue);        //定义变量-随机值
             SkillEditorFunctionRegistry.Register("CHANCE_TRIGGER", ChanceTrigger);        //概率触发
             SkillEditorFunctionRegistry.Register("LOGIC_RELATION", LogicRelation);        //逻辑运算
+            SkillEditorFunctionRegistry.Register("INTERRUPT_CHANT", InterruptChant);        //打断吟唱
             SkillEditorFunctionRegistry.Register("BREAK", BreakLoop);        //跳出循环
             SkillEditorFunctionRegistry.Register("RETURN_TRUE", ReturnTrue);        //返回成功值
             SkillEditorFunctionRegistry.Register("DESTROY_UNIT", DestroyUnit);        //销毁单位
@@ -162,6 +163,57 @@ namespace ET
             ctx.LastConditionResult = result;
 
             ctx.SetVariable("rs", result ? 1 : 0);
+        }
+
+
+        /// <summary>
+        /// 只打断当前循环目标的吟唱读条（尚未 OnUseSkill）。
+        /// 已进 Skills 正在生效的技能不处理。参数 0：概率（万分比，默认 10000）。
+        /// </summary>
+        private static void InterruptChant(SkillEditorFunctionContext ctx)
+        {
+            int rate = ctx.GetParamInt(0, 10000);
+            if (rate < 0) { rate = 0; }
+            if (rate > 10000) { rate = 10000; }
+
+            bool hit = rate >= 10000 || RandomHelper.RandomNumber(0, 10000) < rate;
+            ctx.LastConditionResult = hit;
+            ctx.SetVariable("rs", hit ? 1 : 0);
+            if (!hit)
+            {
+                return;
+            }
+
+            Unit target = ctx.Handler?.TheUnitTarget;
+            if (target == null || target.IsDisposed)
+            {
+                ctx.LastConditionResult = false;
+                ctx.SetVariable("rs", 0);
+                return;
+            }
+
+            if (target.Type == UnitType.Monster)
+            {
+                // 怪物吟唱在服务器读条（SingSkillCmd），清前摇即可
+                target.GetComponent<SkillManagerComponent>()?.InterruptPendingSing();
+            }
+            else if (target.Type == UnitType.Player)
+            {
+                // 玩家吟唱在客户端读条，服务器只广播停条
+                MessageHelper.Broadcast(target, new M2C_SingingUpdate()
+                {
+                    UnitId = target.Id,
+                    StateType = SingingUpdateKind.Singing,
+                    StateValue = "0_0",
+                    StateOperateType = 2,
+                    StateTime = 0,
+                });
+            }
+
+            if (Log.IsDebugEnabled)
+            {
+                Log.Debug($"INTERRUPT_CHANT skill={ctx.SkillId} target={target.Id} rate={rate}");
+            }
         }
 
 
