@@ -6,7 +6,7 @@ using System.Xml;
 namespace ET
 {
     /// <summary>
-    /// Loads Config/SkillEditor/TreeSave.xml at server startup.
+    /// Copies SkillEditor_v1/bin/Debug/DocEditor/TreeSave.xml to Config, then loads it.
     /// </summary>
     public static class SkillEditorTreeLoader
     {
@@ -14,6 +14,7 @@ namespace ET
 
         public static void Load(string path = DefaultTreeSavePath)
         {
+            TryCopyEditorTreeSave(path);
             SkillEditorTreeRegistry.Reset();
 
             if (!File.Exists(path))
@@ -56,6 +57,42 @@ namespace ET
             }
 
             SkillEditorTreeRegistry.SetLoaded(true);
+        }
+
+        /// <summary>
+        /// destPath is Config/SkillEditor/TreeSave.xml; editor save lives under SkillEditor_v1/bin/Debug.
+        /// </summary>
+        private static void TryCopyEditorTreeSave(string destPath)
+        {
+            string destFull = Path.GetFullPath(destPath);
+            string destDir = Path.GetDirectoryName(destFull);
+            if (string.IsNullOrEmpty(destDir))
+            {
+                return;
+            }
+
+            string trunk = Path.GetFullPath(Path.Combine(destDir, "..", ".."));
+            string srcFull = Path.Combine(trunk, "SkillEditor_v1", "bin", "Debug", "DocEditor", "TreeSave.xml");
+            if (!File.Exists(srcFull))
+            {
+                Log.Warning($"SkillEditor editor TreeSave not found, skip copy: {srcFull}");
+                return;
+            }
+
+            try
+            {
+                if (!Directory.Exists(destDir))
+                {
+                    Directory.CreateDirectory(destDir);
+                }
+
+                File.Copy(srcFull, destFull, overwrite: true);
+                Log.Info($"SkillEditor TreeSave copied: {srcFull} -> {destFull}");
+            }
+            catch (Exception e)
+            {
+                Log.Error($"SkillEditor TreeSave copy failed: {e}");
+            }
         }
 
         private static SkillEditorSkillLogic ParseAction(XmlElement actionElem)

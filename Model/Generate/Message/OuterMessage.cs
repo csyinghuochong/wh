@@ -8693,38 +8693,6 @@ namespace ET
 
 	}
 
-//使用赛季果实， 更新boss刷新时间
-	[ResponseType(nameof(M2C_SeasonUseFruitResponse))]
-	[Message(OuterOpcode.C2M_SeasonUseFruitRequest)]
-	[ProtoContract]
-	public partial class C2M_SeasonUseFruitRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public List<long> BagInfoIDs = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.M2C_SeasonUseFruitResponse)]
-	[ProtoContract]
-	public partial class M2C_SeasonUseFruitResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //开启晶核
 	[ResponseType(nameof(M2C_SeasonOpenJingHeResponse))]
 	[Message(OuterOpcode.C2M_SeasonOpenJingHeRequest)]
@@ -13829,6 +13797,12 @@ namespace ET
 
 		[ProtoMember(7)]
 		public int OccTwo { get; set; }
+
+		[ProtoMember(8)]
+		public int GongXianDu { get; set; }
+
+		[ProtoMember(9)]
+		public long JoinTime { get; set; }
 
 	}
 

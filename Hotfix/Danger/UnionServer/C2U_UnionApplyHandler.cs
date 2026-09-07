@@ -8,6 +8,12 @@ namespace ET
         protected override async ETTask Run(Scene scene, C2U_UnionApplyRequest request, U2C_UnionApplyResponse response, Action reply)
         {
             DBUnionInfo dBUnionInfo =await scene.GetComponent<UnionSceneComponent>().GetDBUnionInfo(request.UnionId);
+
+            if (dBUnionInfo == null)
+            {
+                response.Error = ErrorCode.ERR_Union_Not_Exist;
+                return;
+            }
             if (!dBUnionInfo.UnionInfo.ApplyList.Contains(request.UserId))
             {
                 dBUnionInfo.UnionInfo.ApplyList.Add(request.UserId);

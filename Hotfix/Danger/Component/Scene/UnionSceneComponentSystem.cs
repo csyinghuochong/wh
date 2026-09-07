@@ -240,43 +240,9 @@ namespace ET
                 bool operateSucess = false;
 
                 ////通知玩家
-                //long gateServerId = DBHelper.GetGateServerId(self.DomainZone());
-                //G2T_GateUnitInfoResponse g2M_UpdateUnitResponse = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                //   (gateServerId, new T2G_GateUnitInfoRequest()
-                //   {
-                //       UserID = unitid
-                //   });
-
-                //if (g2M_UpdateUnitResponse.PlayerState == (int)PlayerState.Game && g2M_UpdateUnitResponse.SessionInstanceId > 0)
-                //{
-                //    U2M_UnionApplyRequest r2M_RechargeRequest = new U2M_UnionApplyRequest() { UnionId = unionid, UnionName = dBUnionInfo.UnionInfo.UnionName };
-                //    M2U_UnionApplyResponse m2G_RechargeResponse = (M2U_UnionApplyResponse)await ActorLocationSenderComponent.Instance.Call(g2M_UpdateUnitResponse.UnitId, r2M_RechargeRequest);
-                //    if (m2G_RechargeResponse.Error == ErrorCode.ERR_Success)
-                //    {
-                //        operateSucess = true;
-                //    }
-                //    else
-                //    {
-                //        Log.Warning($"加入帮会失败: {self.DomainZone()} {g2M_UpdateUnitResponse.UnitId}");
-                //    }
-                //}
-                //else
-                //{
-                //    operateSucess = true;
-                //    long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
-                //    D2G_GetComponent d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unitid, Component = DBHelper.NumericComponent });
-                //    NumericComponent numericComponent = d2GGet.Component as NumericComponent;
-                //    numericComponent.Set(NumericType.UnionId_0, unionid, false);
-                //    D2M_SaveComponent d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(numericComponent), ComponentType = DBHelper.NumericComponent });
-
-                //    d2GGet = (D2G_GetComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new G2D_GetComponent() { UnitId = unitid, Component = DBHelper.RoleInfoComponent });
-                //    RoleInfoComponent roleInfoComponent = d2GGet.Component as RoleInfoComponent;
-                //    roleInfoComponent.RoleInfo.UnionName = dBUnionInfo.UnionInfo.UnionName;
-                //    d2GSave = (D2M_SaveComponent)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2D_SaveComponent() { UnitId = unitid, EntityByte = MongoHelper.ToBson(RoleInfoComponent), ComponentType = DBHelper.RoleInfoComponent });
-                //}
-
                 U2M_UnionApplyRequest r2M_RechargeRequest = new U2M_UnionApplyRequest() { UnionId = unionid, UnionName = dBUnionInfo.UnionInfo.UnionName };
                 M2U_UnionApplyResponse m2G_RechargeResponse = (M2U_UnionApplyResponse)await ActorLocationSenderComponent.Instance.Call(unitid, r2M_RechargeRequest);
+                RoleInfoComponentServer joinRoleInfo = null;
                 if (m2G_RechargeResponse.Error == ErrorCode.ERR_Success)
                 {
                     operateSucess = true;
@@ -284,6 +250,13 @@ namespace ET
                 else
                 {
                     Log.Warning($"加入帮会不在线: {unitid}: {self.DomainZone()} {unitid}");
+
+                    //公会身份是立刻生效的权威数据，不是邮件那种可延后的通知。
+                    //入会当下就要改 UnionId、公会名。后面「是否已有会」、申请列表、人数上限、再入会，读的都是这份数据。
+                    //只把人加进 UnionPlayerList，玩家身上的 UnionId 留到上线再写：中间他还能再申请别的会，两边对不上。
+                    //上线队列还要做登录钩子、去重、失败重试，入会这种低频操作不值得新开一套
+                    //DBCache 也不是待办队列，是玩家组件缓存。离线写进去，上线读档时容易和 Mongo 打架，所以踢人刻意避开了它。
+                    //邮件、奖励、公告才适合「记下、上线再发」。公会身份不行。
 
                     operateSucess = true;
                     int homeZone = UnitZoneHelper.GetHomeZone(unitid);
@@ -294,20 +267,21 @@ namespace ET
                         await DBHelper.SaveComponent(homeZone, unitid, numericComponent);
                     }
 
-                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, unitid);
-                    if (roleInfoComponentServer != null)
+                    joinRoleInfo = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, unitid);
+                    if (joinRoleInfo != null)
                     {
-                        roleInfoComponentServer.SetUnionName(dBUnionInfo.UnionInfo.UnionName);
-                        await DBHelper.SaveComponent(homeZone, unitid, roleInfoComponentServer);
+                        joinRoleInfo.SetUnionName(dBUnionInfo.UnionInfo.UnionName, false);
+                        await DBHelper.SaveComponent(homeZone, unitid, joinRoleInfo);
                     }
                 }
 
                 if (operateSucess)
                 {
-                    dBUnionInfo.UnionInfo.UnionPlayerList.Add(new UnionPlayerInfo()
+                    if (joinRoleInfo == null)
                     {
-                        UserID = unitid,
-                    });
+                        joinRoleInfo = await DBHelper.GetComponent<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(unitid), unitid);
+                    }
+                    dBUnionInfo.UnionInfo.UnionPlayerList.Add(UnionHelper.CreateUnionPlayerSnapshot(joinRoleInfo?.RoleInfo, unitid, TimeHelper.ServerNow()));
                 }
             }
 
