@@ -64,7 +64,7 @@ namespace ET
 
 						if (!ServerHelper.IsBanHaoZone(session.DomainZone())
                             && !GMHelp.GmAccount.Contains(centerAccountList[0].Account)
-                            && CommonHelper.GetTodayCreateRoleNumber(centerAccountList[0].RoleList) >= 8)
+                            && CommonHelper.GetTodayCreateRoleNumber(centerAccountList[0].RoleList) >= 20)
 						{
                             response.Error = ErrorCode.ERR_CreateRole_Limit;
                             reply();

@@ -250,6 +250,19 @@ namespace ET
             return number;
         }
 
+        /// <summary>消耗校验数量：本 ID + Same_Id 指向的补扣 ID。</summary>
+        public static long GetItemNumberForCost(this BagComponentServer self, int itemType, int itemId, ItemLocType itemLocType = ItemLocType.ItemLocBag)
+        {
+            long number = self.GetItemNumber(itemType, itemId, itemLocType);
+            int fallbackId = ItemNewHelper.GetCostFallbackItemId(itemType, itemId);
+            if (fallbackId > 0)
+            {
+                number += self.GetItemNumber(itemType, fallbackId, itemLocType);
+            }
+
+            return number;
+        }
+
 
         public static bool IsBagFullByLoc(this BagComponentServer self, int hourseId)
         {
@@ -780,7 +793,7 @@ namespace ET
             for (int i = 0; i < needItems.Count; i++)
             {
                 RewardItem itemInfo = needItems[i];
-                if (self.GetItemNumber(ItemBigType.Type_Item, itemInfo.ItemID) < itemInfo.ItemNum)
+                if (self.GetItemNumberForCost(ItemBigType.Type_Item, itemInfo.ItemID) < itemInfo.ItemNum)
                 {
                     return false;
                 }
@@ -794,7 +807,7 @@ namespace ET
             {
                 RewardItem itemInfo = rewardItems[i];
                 int itemType = itemInfo.ItemType > 0 ? itemInfo.ItemType : ItemBigType.Type_Item;
-                if (self.GetItemNumber(itemType, itemInfo.ItemID) < itemInfo.ItemNum)
+                if (self.GetItemNumberForCost(itemType, itemInfo.ItemID) < itemInfo.ItemNum)
                 {
                     return false;
                 }
@@ -892,14 +905,12 @@ namespace ET
                 int itemID = costItems[i].ItemID;
                 int itemNum = costItems[i].ItemNum;
 
-                //获取背包内的道具是否足够
-                if (self.GetItemNumber(itemType, itemID, itemLocType) < itemNum)
+                if (self.GetItemNumberForCost(itemType, itemID, itemLocType) < itemNum)
                 {
                     return false;
                 }
             }
 
-            //通知客户端背包刷新
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
@@ -910,58 +921,83 @@ namespace ET
                 int itemType = costItems[i].ItemType > 0 ? costItems[i].ItemType : ItemBigType.Type_Item;
                 int itemID = costItems[i].ItemID;
                 int itemNum = costItems[i].ItemNum;
-                int userDataType = ItemNewHelper.GetItemToUserDataType(itemType, itemID);
-                if (userDataType != UserDataType.None)
+                int remain = self.CostOneItemId(itemType, itemID, itemNum, itemLocType, itemGetWay, roleInfo, m2c_bagUpdate);
+                int fallbackId = ItemNewHelper.GetCostFallbackItemId(itemType, itemID);
+                if (remain > 0 && fallbackId > 0)
                 {
-                    roleInfo.UpdateRoleData(userDataType, (-itemNum).ToString(), true, itemGetWay);
-                    continue;
+                    remain = self.CostOneItemId(itemType, fallbackId, remain, itemLocType, itemGetWay, roleInfo, m2c_bagUpdate);
+                    ItemAddHelper.OnCostItem(unit, ItemBigType.Type_Item, fallbackId);
                 }
-                
-                LogHelper.LogWarning($"消耗道具: {unit.Id} {itemID} {itemNum}", false);
-                List<BagInfo> bagInfos = self.GetItemByLoc(itemLocType);
-                for (int k = bagInfos.Count - 1; k >= 0; k--)
-                {
-                    BagInfo userBagInfo = bagInfos[k];
-                    if (userBagInfo.ItemID == itemID)
-                    {
-                        if (userBagInfo.ItemNum >= itemNum)
-                        {
-                            //满足扣除数
-                            int costNum = itemNum;
-                            itemNum -= userBagInfo.ItemNum;
-                            userBagInfo.ItemNum -= costNum;
-                            if (userBagInfo.ItemNum <= 0)
-                            {
-                                m2c_bagUpdate.BagInfoDelete.Add(userBagInfo);
-                                bagInfos.RemoveAt(k);
-                            }
-                            else
-                            {
-                                m2c_bagUpdate.BagInfoUpdate.Add(userBagInfo);
-                            }
-                        }
-                        else
-                        {
-                            itemNum -= userBagInfo.ItemNum;
-                            //完全删除道具
-                            userBagInfo.ItemNum = 0;
-                            m2c_bagUpdate.BagInfoDelete.Add(userBagInfo);
-                            bagInfos.RemoveAt(k);
-                        }
 
-                        //扣除完道具直接跳出当前循环
-                        if (itemNum <= 0)
-                        {
-                            break;
-                        }
-                    }
+                if (remain > 0)
+                {
+                    return false;
                 }
+
                 ItemAddHelper.OnCostItem(unit, ItemBigType.Type_Item, itemID);
             }
 
-            //通知客户端背包道具发生改变
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
             return true;
+        }
+
+        /// <summary>扣指定 ID，返回仍未扣完的数量。货币走 RoleData，背包走格子。</summary>
+        private static int CostOneItemId(this BagComponentServer self, int itemType, int itemId, int itemNum,
+                ItemLocType itemLocType, int itemGetWay, RoleInfoComponentServer roleInfo, M2C_RoleBagUpdate m2c_bagUpdate)
+        {
+            if (itemNum <= 0)
+            {
+                return 0;
+            }
+
+            int userDataType = ItemNewHelper.GetItemToUserDataType(itemType, itemId);
+            if (userDataType != UserDataType.None)
+            {
+                long have = self.GetItemNumber(itemType, itemId, itemLocType);
+                int costThis = itemNum;
+                if (have < costThis)
+                {
+                    costThis = (int)have;
+                }
+
+                if (costThis > 0)
+                {
+                    roleInfo.UpdateRoleData(userDataType, (-costThis).ToString(), true, itemGetWay);
+                    itemNum -= costThis;
+                }
+
+                return itemNum;
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            LogHelper.LogWarning($"消耗道具: {unit.Id} {itemId} {itemNum}", false);
+            List<BagInfo> bagInfos = self.GetItemByLoc(itemLocType);
+            for (int k = bagInfos.Count - 1; k >= 0; k--)
+            {
+                BagInfo userBagInfo = bagInfos[k];
+                if (userBagInfo.ItemID != itemId)
+                {
+                    continue;
+                }
+
+                if (userBagInfo.ItemNum > itemNum)
+                {
+                    userBagInfo.ItemNum -= itemNum;
+                    m2c_bagUpdate.BagInfoUpdate.Add(userBagInfo);
+                    return 0;
+                }
+
+                itemNum -= userBagInfo.ItemNum;
+                userBagInfo.ItemNum = 0;
+                m2c_bagUpdate.BagInfoDelete.Add(userBagInfo);
+                bagInfos.RemoveAt(k);
+                if (itemNum <= 0)
+                {
+                    return 0;
+                }
+            }
+
+            return itemNum;
         }
 
         public static int GetQiangHuaLevel(this BagComponentServer self, int subType)

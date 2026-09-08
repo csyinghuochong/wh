@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -56,9 +57,8 @@ namespace ET
                 }
 
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(useBagInfo.ItemID);
-              
-              //获取之前的位置是否有装备
-                BagInfo beforeequip = bag.GetEquipBySubType(ItemLocType.ItemLocEquip, caowei);
+                List<BagInfo> equippedList = bag.GetEquipListByWeizhi(ItemLocType.ItemLocEquip, caowei);
+                BagInfo beforeequip = ItemNewHelper.GetWearReplaceEquip(equippedList, caowei);
 
                 if (beforeequip != null)
                 {

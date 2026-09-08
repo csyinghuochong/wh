@@ -26,7 +26,7 @@ namespace ET
                 mainIsCurrency = ItemNewHelper.GetItemToUserDataType(cfg.Consume_Type_1, cfg.Consume_Id_1) != UserDataType.None;
                 if (mainIsCurrency)
                 {
-                    if (bag.GetItemNumber(cfg.Consume_Type_1, cfg.Consume_Id_1) < cfg.Consume_Num_1)
+                    if (bag.GetItemNumberForCost(cfg.Consume_Type_1, cfg.Consume_Id_1) < cfg.Consume_Num_1)
                     {
                         response.Error = ErrorCode.ERR_ItemNotEnoughError;
                         reply();
