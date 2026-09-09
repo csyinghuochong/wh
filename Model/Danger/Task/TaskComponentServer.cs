@@ -29,6 +29,9 @@ namespace ET
         /// <summary>Task_1 已交付。</summary>
         public List<int> RoleComoleteTaskList_1 = new List<int>();
 
+        /// <summary>Commit 时随机写入的下一个 Task_1。0=尚未交付过，按链头可接。</summary>
+        public int NextTask1_Id;
+
         [BsonIgnore]
         public M2C_TaskUpdate M2C_TaskUpdate = new M2C_TaskUpdate();
 

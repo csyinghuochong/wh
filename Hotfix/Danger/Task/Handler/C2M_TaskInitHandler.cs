@@ -13,6 +13,7 @@ namespace ET
             response.RoleComoleteTaskList_2 = taskComponentServer.RoleComoleteTaskList_2;
             response.RoleTaskList_1 = taskComponentServer.RoleTaskList_1;
             response.RoleComoleteTaskList_1 = taskComponentServer.RoleComoleteTaskList_1;
+            response.NextTask1_Id = taskComponentServer.NextTask1_Id;
             reply();
             await ETTask.CompletedTask;
         }

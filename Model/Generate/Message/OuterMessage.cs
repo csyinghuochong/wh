@@ -2867,6 +2867,9 @@ namespace ET
 		[ProtoMember(4)]
 		public List<int> RoleComoleteTaskList_1 = new List<int>();
 
+		[ProtoMember(5)]
+		public int NextTask1_Id { get; set; }
+
 	}
 
 //接取任务
@@ -3056,6 +3059,9 @@ namespace ET
 		[ProtoMember(3)]
 		public int NpcId { get; set; }
 
+		[ProtoMember(4)]
+		public int RewardIndex { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_TaskCommitResponse)]
@@ -3076,6 +3082,9 @@ namespace ET
 
 		[ProtoMember(2)]
 		public List<int> RoleComoleteTaskList_1 = new List<int>();
+
+		[ProtoMember(3)]
+		public int NextTask1_Id { get; set; }
 
 	}
 
@@ -3108,6 +3117,9 @@ namespace ET
 // 1：RoleTaskList_1 为全量，客户端整表覆盖；0：不改 Task_1
 		[ProtoMember(5)]
 		public int UpdateTask_1 { get; set; }
+
+		[ProtoMember(6)]
+		public int NextTask1_Id { get; set; }
 
 	}
 

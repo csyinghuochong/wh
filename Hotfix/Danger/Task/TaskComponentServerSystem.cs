@@ -198,7 +198,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 随机分支放弃后回到 UnActive，仍走服务端列表；链头/全开直接接的从列表移除，客户端可再推可接。
+        /// 放弃后从列表移除；NextTask1_Id 仍指向该任务，可再接。
         /// </summary>
         public static void GiveUpTask_1(this TaskComponentServer self, int taskId)
         {
@@ -210,17 +210,7 @@ namespace ET
                 return;
             }
 
-            if (TaskHelper.IsTask1RandomBranch(taskId, self.RoleComoleteTaskList_1))
-            {
-                exist.taskStatus = (int)TaskStatuEnum.UnActive;
-                exist.TrackStatus = 0;
-                TaskHelper.ResetTask1Progress(exist);
-            }
-            else
-            {
-                self.RoleTaskList_1.Remove(exist);
-            }
-
+            self.RoleTaskList_1.Remove(exist);
             self.SendToUpdateTaskCore(new HashSet<int>(), true);
         }
 
@@ -331,50 +321,29 @@ namespace ET
                 return (null, ErrorCode.ERR_TaskCanNotGet);
             }
 
+            if (self.NextTask1_Id <= 0)
+            {
+                self.NextTask1_Id = taskId;
+            }
+
             TaskPro taskPro = self.CreateTask_1(taskId);
             return (taskPro, ErrorCode.ERR_Success);
         }
 
         /// <summary>
-        /// 列表里已是 UnActive：交付后写入的后继，可接。
-        /// 否则：无前置=链头；前置已交付且 Next_Id_Type=0 全开也可接；随机分支必须先被写入 UnActive。
+        /// 后继只认 NextTask1_Id；为 0 时仅链头可接。
         /// </summary>
         public static bool CanAcceptTask_1(this TaskComponentServer self, LDTask_1 ldTask, TaskPro exist)
         {
-            return TaskHelper.CanAcceptTask_1(ldTask, exist, self.RoleComoleteTaskList_1);
-        }
-
-        public static TaskPro TryAddUnActiveTask_1(this TaskComponentServer self, int taskId)
-        {
-            if (taskId <= 0 || LDTask_1Category.Instance == null || !LDTask_1Category.Instance.Contain(taskId))
-            {
-                return null;
-            }
-
-            if (self.RoleComoleteTaskList_1.Contains(taskId))
-            {
-                return null;
-            }
-
-            TaskPro exist = self.GetTaskById_1(taskId);
-            if (exist != null)
-            {
-                return exist;
-            }
-
-            TaskPro taskPro = new TaskPro();
-            taskPro.taskID = taskId;
-            taskPro.taskStatus = (int)TaskStatuEnum.UnActive;
-            TaskHelper.ResetTask1Progress(taskPro);
-            self.RoleTaskList_1.Add(taskPro);
-            return taskPro;
+            return TaskHelper.CanAcceptTask_1(ldTask, exist, self.RoleComoleteTaskList_1, self.NextTask1_Id);
         }
 
         /// <summary>
-        /// 交付后开后继：Next_Id_Type 0 全开，1 随机一条。已有/已交付的不重复写。
+        /// 交付后从 Next_Id 随机一条写入 NextTask1_Id。已交付/已接的不选。
         /// </summary>
         public static void UnlockNextTasks_1(this TaskComponentServer self, LDTask_1 ldTask)
         {
+            self.NextTask1_Id = 0;
             if (ldTask == null || ldTask.Next_Id == null || ldTask.Next_Id.Length == 0)
             {
                 return;
@@ -389,6 +358,13 @@ namespace ET
                     continue;
                 }
 
+                if (nextId <= 0
+                    || !LDTask_1Category.Instance.Contain(nextId)
+                    || self.IsHaveTask_1(nextId))
+                {
+                    continue;
+                }
+
                 nextIds.Add(nextId);
             }
 
@@ -397,14 +373,7 @@ namespace ET
                 return;
             }
 
-            // 全开由客户端按表+完成列表推可接，服务端只写随机分支
-            if (ldTask.Next_Id_Type != 1)
-            {
-                return;
-            }
-
-            int pick = nextIds[RandomHelper.RandomNumber(0, nextIds.Count)];
-            self.TryAddUnActiveTask_1(pick);
+            self.NextTask1_Id = nextIds[RandomHelper.RandomNumber(0, nextIds.Count)];
         }
 
         public static TaskPro OnGetDailyTask(this TaskComponentServer self, int taskId)
@@ -630,7 +599,7 @@ namespace ET
         }
 
         //领取奖励
-        public static int OnCommitTask(this TaskComponentServer self, C2M_TaskCommitRequest request)
+        public static int OnCommitTask_2(this TaskComponentServer self, C2M_TaskCommitRequest request)
         {
             int taskid = request.TaskId;
             Unit unit = self.GetParent<Unit>();
@@ -741,7 +710,12 @@ namespace ET
                 return ErrorCode.Pre_Condition_Error;
             }
 
-            List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems_1(roleInfoComponent.RoleInfo.Occ, taskid);
+            List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems_1(roleInfoComponent.RoleInfo.Occ, taskid, request.RewardIndex, true);
+            if (rewardItems == null)
+            {
+                return ErrorCode.ERR_ModifyData;
+            }
+
             int needcell = ItemNewHelper.GetNeedCell(rewardItems);
             int bagLeftCell = bagComponentServer.GetBagLeftCell();
             if (bagLeftCell < needcell || bagLeftCell < rewardItems.Count)
@@ -1777,6 +1751,7 @@ namespace ET
             M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
             m2C_TaskUpdate.GroupIds.Clear();
             m2C_TaskUpdate.UpdateTask_1 = updateTask1 ? 1 : 0;
+            m2C_TaskUpdate.NextTask1_Id = self.NextTask1_Id;
             if (updateTask1)
             {
                 List<TaskPro> task1List = new List<TaskPro>(self.RoleTaskList_1.Count);
