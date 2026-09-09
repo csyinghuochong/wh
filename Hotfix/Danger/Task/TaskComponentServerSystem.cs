@@ -331,7 +331,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 后继只认 NextTask1_Id；为 0 时仅链头可接。
+        /// 可接：NextTask1_Id，或链头 / 前置已交且 Next_Id_Type=0 全开。
         /// </summary>
         public static bool CanAcceptTask_1(this TaskComponentServer self, LDTask_1 ldTask, TaskPro exist)
         {

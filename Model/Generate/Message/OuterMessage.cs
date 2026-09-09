@@ -758,6 +758,12 @@ namespace ET
 		[ProtoMember(27)]
 		public int RideConfigId { get; set; }
 
+		[ProtoMember(28)]
+		public int WeaponId { get; set; }
+
+		[ProtoMember(29)]
+		public int OffHandId { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_CreateUnits)]
@@ -8382,6 +8388,12 @@ namespace ET
 
 		[ProtoMember(2)]
 		public List<int> FashionEquipList = new List<int>();
+
+		[ProtoMember(3)]
+		public int WeaponId { get; set; }
+
+		[ProtoMember(4)]
+		public int OffHandId { get; set; }
 
 	}
 

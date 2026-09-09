@@ -447,6 +447,12 @@ namespace ET
             return bagInfo != null ? bagInfo.ItemID : 0;
         }
 
+        public static int GetFuShouItemId(this BagComponentServer self)
+        {
+            BagInfo bagInfo = self.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)EquipCaoWeiTypeEnum.FuShou_2);
+            return bagInfo != null ? bagInfo.ItemID : 0;
+        }
+
         //字符串添加道具 
         public static bool OnAddItemData(this BagComponentServer self, string rewardItems, string getType, bool notice = true)
         {

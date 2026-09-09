@@ -53,10 +53,7 @@ namespace ET
                 }
             }
 
-            M2C_FashionUpdate m2C_FashionUpdate = new M2C_FashionUpdate();
-            m2C_FashionUpdate.UnitID = unit.Id;
-            m2C_FashionUpdate.FashionEquipList = bagComponentServer.FashionEquipList;
-            MessageHelper.Broadcast(unit, m2C_FashionUpdate);
+            UnitHelper.BroadcastUnitAppear(unit);
 
             reply();
             await ETTask.CompletedTask;

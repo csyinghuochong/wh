@@ -64,7 +64,10 @@ namespace ET
                     unitInfo.UnitName = roleInfoComponentServer.RoleInfo.Name;
                     unitInfo.ConfigId = roleInfoComponentServer.RoleInfo.Occ;
                     unitInfo.UnionName = string.IsNullOrWhiteSpace(roleInfoComponentServer.RoleInfo.UnionName) ? string.Empty : roleInfoComponentServer.RoleInfo.UnionName;
-                    unitInfo.FashionEquipList = unit.GetComponent<BagComponentServer>().FashionEquipList;
+                    BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+                    unitInfo.FashionEquipList = bagComponentServer.FashionEquipList;
+                    unitInfo.WeaponId = bagComponentServer.GetWuqiItemId();
+                    unitInfo.OffHandId = bagComponentServer.GetFuShouItemId();
                     MountComponentServer mountComponentServer = unit.GetComponent<MountComponentServer>();
                     unitInfo.RideConfigId = mountComponentServer != null ? mountComponentServer.GetRideConfigId() : 0;
                     break;
@@ -346,6 +349,23 @@ namespace ET
                 numericComponent.Set(NumericType.Born_Y, 0f);
                 numericComponent.Set(NumericType.Born_Z, 0f);
             }
+        }
+
+        public static void BroadcastUnitAppear(Unit unit)
+        {
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            if (bag == null)
+            {
+                return;
+            }
+
+            MessageHelper.Broadcast(unit, new M2C_FashionUpdate()
+            {
+                UnitID = unit.Id,
+                FashionEquipList = bag.FashionEquipList,
+                WeaponId = bag.GetWuqiItemId(),
+                OffHandId = bag.GetFuShouItemId(),
+            });
         }
     }
 }
