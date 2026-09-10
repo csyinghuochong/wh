@@ -81,7 +81,8 @@ namespace ET
                 return;
             }
 
-            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(cfg.Goods);
+            int inheritSourceFlags = mainBagInfo != null ? mainBagInfo.ItemFlags : 0;
+            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(cfg.Goods, inheritSourceFlags);
             bool freeMainCell = mainBagInfo != null && mainBagInfo.ItemNum <= cfg.Consume_Num_1;
             if (!HasEnoughSpace(bag, rewardItems, mainLoc, freeMainCell))
             {
