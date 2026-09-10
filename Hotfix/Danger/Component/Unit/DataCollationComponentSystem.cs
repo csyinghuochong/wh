@@ -410,9 +410,9 @@ namespace ET
 
             self.UnionName = roleInfoComponentServer.RoleInfo.UnionName;
 
-            self.JiaYuanLv = unit.GetComponent<JiaYuanComponentServer>()?.JiaYuanLv ?? 1;
+            self.HomeLv = unit.GetComponent<HomeComponentServer>().HomeLv;
 
-            self.JiaYuanFund = unit.GetComponent<JiaYuanComponentServer>()?.JiaYuanFund ?? 0;
+            self.HomeFund = unit.GetComponent<HomeComponentServer>().HomeFund;
 
             self.PetFubenId = petComponentServer.GetPassMaxFubenId();
 

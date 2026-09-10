@@ -880,7 +880,7 @@ namespace ET
                 return;
         }
 
-        public static void OnJiaYuanLevel(this TaskComponentServer self, int jiaYuanLv)
+        public static void OnHomeLevel(this TaskComponentServer self, int homeLv)
         {
         }
 

@@ -2404,50 +2404,6 @@ namespace ET
 
 	}
 
-//进入家园
-	[ResponseType(nameof(J2M_JiaYuanEnterResponse))]
-	[Message(InnerOpcode.M2J_JiaYuanEnterRequest)]
-	[ProtoContract]
-	public partial class M2J_JiaYuanEnterRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long MasterId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public int SceneId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.J2M_JiaYuanEnterResponse)]
-	[ProtoContract]
-	public partial class J2M_JiaYuanEnterResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int FubenId { get; set; }
-
-		[ProtoMember(2)]
-		public long FubenInstanceId { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2Popularize_RewardResponse))]
 	[Message(InnerOpcode.Popularize2M_RewardRequest)]
 	[ProtoContract]
@@ -2476,37 +2432,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2M_JiaYuanOperateResponse))]
-	[Message(InnerOpcode.M2M_JiaYuanOperateRequest)]
-	[ProtoContract]
-	public partial class M2M_JiaYuanOperateRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public JiaYuanOperate JiaYuanOperate { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2M_JiaYuanOperateResponse)]
-	[ProtoContract]
-	public partial class M2M_JiaYuanOperateResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 
@@ -4159,4 +4084,81 @@ namespace ET
 	}
 
 //公会  end####################################################
+//Home begin####################################################
+//进入家园
+	[ResponseType(nameof(Home2M_EnterResponse))]
+	[Message(InnerOpcode.M2Home_EnterRequest)]
+	[ProtoContract]
+	public partial class M2Home_EnterRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long MasterId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public int SceneId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Home2M_EnterResponse)]
+	[ProtoContract]
+	public partial class Home2M_EnterResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int FubenId { get; set; }
+
+		[ProtoMember(2)]
+		public long FubenInstanceId { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2M_HomeOperateResponse))]
+	[Message(InnerOpcode.M2M_HomeOperateRequest)]
+	[ProtoContract]
+	public partial class M2M_HomeOperateRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public HomeOperate OperateType { get; set; }
+
+	}
+
+	[Message(InnerOpcode.M2M_HomeOperateResponse)]
+	[ProtoContract]
+	public partial class M2M_HomeOperateResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//Home   end####################################################
 }

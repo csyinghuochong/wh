@@ -4,12 +4,12 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class C2M_JiaYuanUpLvHandler : AMActorLocationRpcHandler<Unit, C2M_JiaYuanUpLvRequest, M2C_JiaYuanUpLvResponse>
+    public class C2M_HomeUpLvHandler : AMActorLocationRpcHandler<Unit, C2M_HomeUpLvRequest, M2C_HomeUpLvResponse>
     {
-        protected override async ETTask Run(Unit unit, C2M_JiaYuanUpLvRequest request, M2C_JiaYuanUpLvResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_HomeUpLvRequest request, M2C_HomeUpLvResponse response, Action reply)
         {
-            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
-            int lvid = jiaYuanComponentServer.JiaYuanLv;
+            HomeComponentServer homeComponentServer = unit.GetComponent<HomeComponentServer>();
+            int lvid = homeComponentServer.HomeLv;
             LDHome ldHome = LDHomeCategory.Instance.Get(lvid);
             if ( !LDHomeCategory.Instance.Contain(lvid) )
             {
@@ -22,15 +22,15 @@ namespace ET
                 reply();
                 return;
             }*/
-            if (jiaYuanComponentServer.JiaYuanExp < ldHome.Exp)
+            if (homeComponentServer.HomeExp < ldHome.Exp)
             {
                 response.Error = ErrorCode.ERR_ExpNoEnough;
                 reply();
                 return;
             }
 
-            jiaYuanComponentServer.AddJiaYuanExp(ldHome.Exp * -1);
-            jiaYuanComponentServer.AddJiaYuanLv(1);
+            homeComponentServer.AddHomeExp(ldHome.Exp * -1);
+            homeComponentServer.AddHomeLv(1);
 
             reply();
             await ETTask.CompletedTask;

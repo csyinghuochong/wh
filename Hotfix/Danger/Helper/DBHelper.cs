@@ -143,9 +143,9 @@ namespace ET
             //return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Arena)).InstanceId;
         }
 
-        public static long GetJiaYuanServerId(int zone)
+        public static long GetHomeServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.JiaYuan)).InstanceId;
+            return StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Home)).InstanceId;
         }
 
         // —— Unit 重载：本服 Actor 一律走归属服（跨服旅游后 DomainZone 是对方区）——
@@ -167,7 +167,7 @@ namespace ET
         public static long GetHappyServerId(Unit unit) => GetHappyServerId(UnitZoneHelper.GetHomeZone(unit));
         public static long MapCityServerId(Unit unit) => MapCityServerId(UnitZoneHelper.GetHomeZone(unit));
         public static long GetArenaServerId(Unit unit) => GetArenaServerId(UnitZoneHelper.GetHomeZone(unit));
-        public static long GetJiaYuanServerId(Unit unit) => GetJiaYuanServerId(UnitZoneHelper.GetHomeZone(unit));
+        public static long GetHomeServerId(Unit unit) => GetHomeServerId(UnitZoneHelper.GetHomeZone(unit));
         public static int GetOpenServerDay(Unit unit) => GetOpenServerDay(UnitZoneHelper.GetHomeZone(unit));
 
         public static long GetRobotServerId()

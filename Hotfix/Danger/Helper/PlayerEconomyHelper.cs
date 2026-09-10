@@ -36,13 +36,13 @@ namespace ET
 
             switch (type)
             {
-                case UserDataType.JiaYuanLv:
+                case UserDataType.HomeLv:
                     task = unit.GetComponent<TaskComponentServer>();
                     chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-                    int jiaYuanLv = unit.GetComponent<JiaYuanComponentServer>()?.JiaYuanLv ?? 1;
-                    int jiaYuanShowLv = jiaYuanLv - 10000;
-                    task?.OnJiaYuanLevel(jiaYuanShowLv);
-                    chengJiu?.OnJiaYuanLevel(jiaYuanShowLv);
+                    int homeLv = unit.GetComponent<HomeComponentServer>()?.HomeLv ?? 1;
+                    int homeShowLv = homeLv - 10000;
+                    task?.OnHomeLevel(homeShowLv);
+                    chengJiu?.OnHomeLevel(homeShowLv);
                     break;
 
                 case UserDataType.Level:

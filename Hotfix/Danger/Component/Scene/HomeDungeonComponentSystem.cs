@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace ET
 {
-    public class JiaYuanDungeonComponent : Entity, IAwake, IDestroy
+    public static class HomeDungeonComponentSystem
     {
-        public long MasterId = 0;
     }
 }

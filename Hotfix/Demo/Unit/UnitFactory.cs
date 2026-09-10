@@ -91,7 +91,7 @@ namespace ET
             unit.AddDataComponent<RechargeComponentServer>();
             unit.AddDataComponent<ReddotComponentServer>();
             unit.AddDataComponent<TitleComponentServer>();
-            unit.AddDataComponent<JiaYuanComponentServer>();
+            unit.AddDataComponent<HomeComponentServer>();
             unit.AddDataComponent<ShoujiComponentServer>();
             unit.AddDataComponent<DataCollationComponent>();
             unit.AddDataComponent<RoleDailyDataComponentServer>();
@@ -470,9 +470,9 @@ namespace ET
             return unit;
         }
 
-        public static Unit CreatePlan(Scene scene, JiaYuanPlant jiaYuanPlant, long unitid)
+        public static Unit CreatePlan(Scene scene, HomePlant homePlant, long unitid)
         {
-            Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(jiaYuanPlant.UnitId, jiaYuanPlant.ItemId);
+            Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(homePlant.UnitId, homePlant.ItemId);
             scene.GetComponent<UnitComponent>().Add(unit);
             unit.AddComponent<ObjectWait>();
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
@@ -482,22 +482,22 @@ namespace ET
             unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
 
-            unitInfoComponent.UnitName = LDHome_FarmCategory.Instance.Get(jiaYuanPlant.ItemId).Id.ToString();
+            unitInfoComponent.UnitName = LDHome_FarmCategory.Instance.Get(homePlant.ItemId).Id.ToString();
 
-            unit.ConfigId = jiaYuanPlant.ItemId;
+            unit.ConfigId = homePlant.ItemId;
             unit.AddComponent<StateComponent>();         //添加状态组件
             unit.AddComponent<BuffManagerComponent>();
             unit.AddComponent<UnitLifeComponent>();
-            unit.Position = JiaYuanHelper.PlanPositionList[jiaYuanPlant.CellIndex];
+            unit.Position = Vector3.zero;
             unit.Type = UnitType.Plant;
 
             //添加其他组件
 
    
-            numericComponent.Set(NumericType.GatherStartTime, jiaYuanPlant.StartTime);
-            numericComponent.Set(NumericType.GatherNumber, jiaYuanPlant.GatherNumber);
-            numericComponent.Set(NumericType.GatherLastTime, jiaYuanPlant.GatherLastTime);
-            numericComponent.Set(NumericType.GatherCellIndex, jiaYuanPlant.CellIndex);
+            numericComponent.Set(NumericType.GatherStartTime, homePlant.StartTime);
+            numericComponent.Set(NumericType.GatherNumber, homePlant.GatherNumber);
+            numericComponent.Set(NumericType.GatherLastTime, homePlant.GatherLastTime);
+            numericComponent.Set(NumericType.GatherCellIndex, homePlant.CellIndex);
 
 
             numericComponent.Set(NumericType.MasterId, unitid, false);
@@ -505,9 +505,9 @@ namespace ET
             return unit;
         }
 
-        public static Unit CreatePasture(Scene scene, JiaYuanPastures jiaYuanPastures, long unitid)
+        public static Unit CreatePasture(Scene scene, HomePastures homePastures, long unitid)
         {
-            Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(jiaYuanPastures.UnitId, jiaYuanPastures.ConfigId);
+            Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(homePastures.UnitId, homePastures.ConfigId);
             scene.GetComponent<UnitComponent>().Add(unit);
             unit.AddComponent<ObjectWait>();
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
@@ -516,14 +516,12 @@ namespace ET
             unit.AddComponent<SkillManagerComponent>();
             unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
-            //unitInfoComponent.MasterName = roleInfoComponent.RoleInfo.Name;
-            //unitInfoComponent.UnitName = JiaYuanPastureConfigCategory.Instance.Get(jiaYuanPastures.ConfigId).Name;
-
-            unit.ConfigId = jiaYuanPastures.ConfigId;
+          
+            unit.ConfigId = homePastures.ConfigId;
             unit.AddComponent<StateComponent>();         //添加状态组件
             unit.AddComponent<BuffManagerComponent>();
             unit.AddComponent<UnitLifeComponent>();
-            unit.Position = JiaYuanHelper.PastureInitPos;
+            unit.Position = Vector3.zero;
             unit.Type = UnitType.Pasture;
 
             AIComponent aIComponent = unit.AddComponent<AIComponent, int>(11);     //AI行为树序号
@@ -531,9 +529,9 @@ namespace ET
             aIComponent.Begin();
 
             //添加其他组件
-            numericComponent.Set(NumericType.GatherStartTime, jiaYuanPastures.StartTime, false);
-            numericComponent.Set(NumericType.GatherNumber, jiaYuanPastures.GatherNumber, false);
-            numericComponent.Set(NumericType.GatherLastTime, jiaYuanPastures.GatherLastTime, false);
+            numericComponent.Set(NumericType.GatherStartTime, homePastures.StartTime, false);
+            numericComponent.Set(NumericType.GatherNumber, homePastures.GatherNumber, false);
+            numericComponent.Set(NumericType.GatherLastTime, homePastures.GatherLastTime, false);
 
             numericComponent.Set(NumericType.MasterId, unitid, false);
             numericComponent.Set(NumericType.Numeric_Error, 30000, false);

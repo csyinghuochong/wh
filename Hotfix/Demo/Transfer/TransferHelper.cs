@@ -127,26 +127,26 @@ namespace ET
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, responseUnionEnter.FubenInstanceId, (int)MapTypeEnum.Union, request.SceneId, request.Difficulty, "0");
                         break;
-                    case (int)MapTypeEnum.JiaYuan:
+                    case (int)MapTypeEnum.Home:
                         //动态创建副本
                         Scene scene = unit.DomainScene();
-                        mapInstanceId = DBHelper.GetJiaYuanServerId(unit);
+                        mapInstanceId = DBHelper.GetHomeServerId(unit);
                         ///进入之前先刷新一下
                         if (long.Parse(request.paramInfo) == unit.Id)
                         {
-                            JiaYuanComponentServer jiaYuanComponentServer = unit.GetComponent<JiaYuanComponentServer>();
-                            jiaYuanComponentServer.OnBeforEnter();
-                            await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, jiaYuanComponentServer);
+                            HomeComponentServer homeComponentServer = unit.GetComponent<HomeComponentServer>();
+                            homeComponentServer.OnBeforEnter();
+                            await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, homeComponentServer);
                         }
-                        J2M_JiaYuanEnterResponse j2M_JianYuanEnterResponse = (J2M_JiaYuanEnterResponse)await ActorMessageSenderComponent.Instance.Call(
-                        mapInstanceId, new M2J_JiaYuanEnterRequest() { MasterId = long.Parse(request.paramInfo), UnitId = unit.Id, SceneId = request.SceneId });
+                        Home2M_EnterResponse j2M_JianYuanEnterResponse = (Home2M_EnterResponse)await ActorMessageSenderComponent.Instance.Call(
+                        mapInstanceId, new M2Home_EnterRequest() { MasterId = long.Parse(request.paramInfo), UnitId = unit.Id, SceneId = request.SceneId });
                         TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, j2M_JianYuanEnterResponse.FubenInstanceId, (int)MapTypeEnum.JiaYuan, request.SceneId, request.Difficulty, "0");
+                        await TransferHelper.Transfer(unit, j2M_JianYuanEnterResponse.FubenInstanceId, (int)MapTypeEnum.Home, request.SceneId, request.Difficulty, "0");
 
-                        if (oldScene == MapTypeEnum.JiaYuan)
+                        if (oldScene == MapTypeEnum.Home)
                         {
-                            JiaYuanSceneComponent jiayuanSceneComponent = scene.GetParent<JiaYuanSceneComponent>();
-                            jiayuanSceneComponent.OnUnitLeave(scene);
+                            HomeSceneComponent homeSceneComponent = scene.GetParent<HomeSceneComponent>();
+                            homeSceneComponent.OnUnitLeave(scene);
                         }
                         break;
                     case (int)MapTypeEnum.TowerDungeon:

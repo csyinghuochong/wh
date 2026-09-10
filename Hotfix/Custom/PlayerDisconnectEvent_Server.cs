@@ -25,15 +25,15 @@
                 ArenaDungeonComponent areneSceneComponent = scene.GetComponent<ArenaDungeonComponent>();
                 areneSceneComponent.OnUnitDisconnect(userId);
             }
-            if (sceneTypeEnum == (int)MapTypeEnum.JiaYuan)
+            if (sceneTypeEnum == (int)MapTypeEnum.Home)
             {
-                JiaYuanSceneComponent jiayuanSceneComponent = scene.GetParent<JiaYuanSceneComponent>();
-                jiayuanSceneComponent.OnUnitLeave(scene);
+                HomeSceneComponent homeSceneComponent = scene.GetParent<HomeSceneComponent>();
+                homeSceneComponent.OnUnitLeave(scene);
             }
             if (sceneTypeEnum == (int)MapTypeEnum.OneChallenge)
             {
-                OneChallengeDungeonComponent jiayuanSceneComponent = scene.GetParent<OneChallengeDungeonComponent>();
-                jiayuanSceneComponent.OnUnitLeave(scene);
+                OneChallengeDungeonComponent oneChallengeSceneComponent = scene.GetParent<OneChallengeDungeonComponent>();
+                oneChallengeSceneComponent.OnUnitLeave(scene);
             }
         }
 

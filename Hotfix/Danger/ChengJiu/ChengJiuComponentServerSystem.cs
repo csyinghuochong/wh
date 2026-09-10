@@ -89,7 +89,7 @@ namespace ET
 
         }
 
-        public static void OnJiaYuanLevel(this ChengJiuComponentServer self, int jiaYuanLv)
+        public static void OnHomeLevel(this ChengJiuComponentServer self, int homeLv)
         {
 
         }

@@ -117,8 +117,8 @@ namespace ET
                         scene.AddComponent<ReChargeGoogleComponent>();
                     }
                     break;
-                case SceneType.JiaYuan:
-                    scene.AddComponent<JiaYuanSceneComponent>();
+                case SceneType.Home:
+                    scene.AddComponent<HomeSceneComponent>();
                     break;
                 case SceneType.Map:             //野外地图
                     scene.AddComponent<MapComponent>();

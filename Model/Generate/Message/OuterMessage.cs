@@ -3734,46 +3734,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ChouKaResponse))]
-	[Message(OuterOpcode.C2M_ChouKaRequest)]
-	[ProtoContract]
-	public partial class C2M_ChouKaRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ChouKaType { get; set; }
-
-		[ProtoMember(2)]
-		public int ChapterId { get; set; }
-
-		[ProtoMember(3)]
-		public int CostType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ChouKaResponse)]
-	[ProtoContract]
-	public partial class M2C_ChouKaResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<RewardItem> RewardList = new List<RewardItem>();
-
-	}
-
 	[ResponseType(nameof(R2C_RankListResponse))]
 	[Message(OuterOpcode.C2R_RankListRequest)]
 	[ProtoContract]
@@ -5257,37 +5217,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public int HongbaoAmount { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ChouKaRewardResponse))]
-	[Message(OuterOpcode.C2M_ChouKaRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_ChouKaRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RewardId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ChouKaRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_ChouKaRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 
@@ -6789,734 +6718,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.JiaYuanPlant)]
-	[ProtoContract]
-	public partial class JiaYuanPlant: Object
-	{
-		[ProtoMember(1)]
-		public int CellIndex { get; set; }
-
-		[ProtoMember(2)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(3)]
-		public long StartTime { get; set; }
-
-		[ProtoMember(4)]
-		public int GatherNumber { get; set; }
-
-		[ProtoMember(5)]
-		public long GatherLastTime { get; set; }
-
-		[ProtoMember(6)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(7)]
-		public int StealNumber { get; set; }
-
-		[ProtoMember(8)]
-		public List<JiaYuanRecord> GatherRecord = new List<JiaYuanRecord>();
-
-	}
-
-	[Message(OuterOpcode.JiaYuanPastures)]
-	[ProtoContract]
-	public partial class JiaYuanPastures: Object
-	{
-		[ProtoMember(2)]
-		public int ConfigId { get; set; }
-
-		[ProtoMember(3)]
-		public long StartTime { get; set; }
-
-		[ProtoMember(4)]
-		public int GatherNumber { get; set; }
-
-		[ProtoMember(5)]
-		public long GatherLastTime { get; set; }
-
-		[ProtoMember(6)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(7)]
-		public int StealNumber { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanInitResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanInitRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanInitRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long MasterId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanInitResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanInitResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(3)]
-		public int JiaYuanLv { get; set; }
-
-		[ProtoMember(4)]
-		public string MasterName { get; set; }
-
-		[ProtoMember(5)]
-		public long JiaYuanDaShiTime { get; set; }
-
-		[ProtoMember(6)]
-		public List<int> LearnMakeIds = new List<int>();
-
-		[ProtoMember(7)]
-		public long JiaYuanFund { get; set; }
-
-		[ProtoMember(8)]
-		public long JiaYuanExp { get; set; }
-
-		[ProtoMember(10)]
-		public List<int> PlanOpenList = new List<int>();
-
-		[ProtoMember(12)]
-		public List<IntStringPair> JiaYuanProList = new List<IntStringPair>();
-
-		[ProtoMember(13)]
-		public List<JiaYuanRecord> JiaYuanRecordList = new List<JiaYuanRecord>();
-
-		[ProtoMember(14)]
-		public List<JiaYuanPastures> JiaYuanPastureList = new List<JiaYuanPastures>();
-
-		[ProtoMember(15)]
-		public List<JiaYuanPurchaseItem> PurchaseItemList = new List<JiaYuanPurchaseItem>();
-
-		[ProtoMember(16)]
-		public List<JiaYuanPlant> JianYuanPlantList = new List<JiaYuanPlant>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanPlantResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanPlantRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanPlantRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int CellIndex { get; set; }
-
-		[ProtoMember(2)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(3)]
-		public long OperateBagID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanPlantResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanPlantResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanWatchResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanWatchRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanWatchRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long MasterId { get; set; }
-
-		[ProtoMember(3)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(4)]
-		public long OperateId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanWatchResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanWatchResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<JiaYuanRecord> JiaYuanRecord = new List<JiaYuanRecord>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanGatherResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanGatherRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanGatherRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public int CellIndex { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(4)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanGatherResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanGatherResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanUprootResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanUprootRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanUprootRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public int CellIndex { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(4)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanUprootResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanUprootResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(2)]
-		public int CellIndex { get; set; }
-
-		[ProtoMember(4)]
-		public List<JiaYuanPastures> JiaYuanPastureList = new List<JiaYuanPastures>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanCangKuOpenResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanCangKuOpenRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanCangKuOpenRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanCangKuOpenResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanCangKuOpenResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanMysteryListResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanMysteryListRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanMysteryListRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int NpcID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanMysteryListResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanMysteryListResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanMysteryBuyResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanMysteryBuyRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanMysteryBuyRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int ProductId { get; set; }
-
-		[ProtoMember(2)]
-		public int MysteryId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanMysteryBuyResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanMysteryBuyResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanPastureListResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanPastureListRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanPastureListRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanPastureListResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanPastureListResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanPastureBuyResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanPastureBuyRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanPastureBuyRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int ProductId { get; set; }
-
-		[ProtoMember(2)]
-		public int MysteryId { get; set; }
-
-		[ProtoMember(3)]
-		public int BuyType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanPastureBuyResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanPastureBuyResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
-
-		[ProtoMember(4)]
-		public List<JiaYuanPastures> JiaYuanPastureList = new List<JiaYuanPastures>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanPlanOpenResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanPlanOpenRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanPlanOpenRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int CellIndex { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanPlanOpenResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanPlanOpenResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public List<int> PlanOpenList = new List<int>();
-
-	}
-
-	[Message(OuterOpcode.JiaYuanPurchaseItem)]
-	[ProtoContract]
-	public partial class JiaYuanPurchaseItem: Object
-	{
-		[ProtoMember(1)]
-		public int ItemID { get; set; }
-
-		[ProtoMember(2)]
-		public int BuyZiJin { get; set; }
-
-		[ProtoMember(3)]
-		public long MakeTime { get; set; }
-
-		[ProtoMember(4)]
-		public int LeftNum { get; set; }
-
-		[ProtoMember(5)]
-		public int PurchaseId { get; set; }
-
-		[ProtoMember(6)]
-		public long EndTime { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanPurchaseResponse))]
-//家园收购
-	[Message(OuterOpcode.C2M_JiaYuanPurchaseRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanPurchaseRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(5)]
-		public int PurchaseId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanPurchaseResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanPurchaseResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(2)]
-		public List<JiaYuanPurchaseItem> PurchaseItemList = new List<JiaYuanPurchaseItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanPurchaseRefresh))]
-//家园收购刷新
-	[Message(OuterOpcode.C2M_JiaYuanPurchaseRefresh)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanPurchaseRefresh: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(5)]
-		public int PurchaseId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanPurchaseRefresh)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanPurchaseRefresh: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(2)]
-		public List<JiaYuanPurchaseItem> PurchaseItemList = new List<JiaYuanPurchaseItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanCookResponse))]
-//制作菜肴
-	[Message(OuterOpcode.C2M_JiaYuanCookRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanCookRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public List<long> BagInfoIds = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanCookResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanCookResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(2)]
-		public List<int> LearnMakeIds = new List<int>();
-
-		[ProtoMember(3)]
-		public int LearnId { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanCookBookOpen))]
-//学习菜单
-	[Message(OuterOpcode.C2M_JiaYuanCookBookOpen)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanCookBookOpen: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int LearnMakeId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanCookBookOpen)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanCookBookOpen: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(2)]
-		public List<int> LearnMakeIds = new List<int>();
-
-	}
-
-//家园刷新
-	[Message(OuterOpcode.M2C_JiaYuanUpdate)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanUpdate: Object, IActorMessage
-	{
-		[ProtoMember(2)]
-		public List<JiaYuanPurchaseItem> PurchaseItemList = new List<JiaYuanPurchaseItem>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanUpLvResponse))]
-//家园升级
-	[Message(OuterOpcode.C2M_JiaYuanUpLvRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanUpLvRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanUpLvResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanUpLvResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanExchangeResponse))]
-//家园兑换
-	[Message(OuterOpcode.C2M_JiaYuanExchangeRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanExchangeRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int ExchangeType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanExchangeResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanExchangeResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanDaShiResponse))]
-//家园大师
-	[Message(OuterOpcode.C2M_JiaYuanDaShiRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanDaShiRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public List<long> BagInfoIDs = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanDaShiResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanDaShiResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public long JiaYuanDaShiTime { get; set; }
-
-		[ProtoMember(2)]
-		public List<IntLongPair> JiaYuanProAdd = new List<IntLongPair>();
-
-		[ProtoMember(7)]
-		public List<IntStringPair> JiaYuanProList = new List<IntStringPair>();
-
-	}
-
 	[ResponseType(nameof(Popularize2C_ListResponse))]
 //我的推广列表
 	[Message(OuterOpcode.C2Popularize_ListRequest)]
@@ -7698,246 +6899,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.JiaYuanMonster)]
-	[ProtoContract]
-	public partial class JiaYuanMonster: Object
-	{
-		[ProtoMember(1)]
-		public long unitId { get; set; }
-
-		[ProtoMember(2)]
-		public float x { get; set; }
-
-		[ProtoMember(3)]
-		public float y { get; set; }
-
-		[ProtoMember(4)]
-		public float z { get; set; }
-
-		[ProtoMember(5)]
-		public long BornTime { get; set; }
-
-		[ProtoMember(6)]
-		public int ConfigId { get; set; }
-
-	}
-
-//开启宝箱
-	[ResponseType(nameof(Actor_JiaYuanPickResponse))]
-	[Message(OuterOpcode.Actor_JiaYuanPickRequest)]
-	[ProtoContract]
-	public partial class Actor_JiaYuanPickRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public long MasterId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.Actor_JiaYuanPickResponse)]
-	[ProtoContract]
-	public partial class Actor_JiaYuanPickResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.JiaYuanVisit)]
-	[ProtoContract]
-	public partial class JiaYuanVisit: Object
-	{
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public int Occ { get; set; }
-
-		[ProtoMember(3)]
-		public int OccTwo { get; set; }
-
-		[ProtoMember(4)]
-		public int Rubbish { get; set; }
-
-		[ProtoMember(5)]
-		public int Gather { get; set; }
-
-		[ProtoMember(6)]
-		public string PlayerName { get; set; }
-
-	}
-
-//好友家园
-	[ResponseType(nameof(M2C_JiaYuanVisitListResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanVisitListRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanVisitListRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public long MasterId { get; set; }
-
-		[ProtoMember(3)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanVisitListResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanVisitListResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<JiaYuanVisit> JiaYuanVisit_1 = new List<JiaYuanVisit>();
-
-		[ProtoMember(2)]
-		public List<JiaYuanVisit> JiaYuanVisit_2 = new List<JiaYuanVisit>();
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanGatherOtherResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanGatherOtherRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanGatherOtherRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public int CellIndex { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(4)]
-		public long MasterId { get; set; }
-
-		[ProtoMember(5)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanGatherOtherResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanGatherOtherResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[Message(OuterOpcode.JiaYuanRecord)]
-	[ProtoContract]
-	public partial class JiaYuanRecord: Object
-	{
-		[ProtoMember(1)]
-		public long Time { get; set; }
-
-		[ProtoMember(2)]
-		public string PlayerName { get; set; }
-
-		[ProtoMember(3)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(4)]
-		public int OperateId { get; set; }
-
-		[ProtoMember(7)]
-		public long PlayerId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.JiaYuanOperate)]
-	[ProtoContract]
-	public partial class JiaYuanOperate: Object
-	{
-		[ProtoMember(1)]
-		public long Time { get; set; }
-
-		[ProtoMember(2)]
-		public string PlayerName { get; set; }
-
-		[ProtoMember(3)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(4)]
-		public int OperateId { get; set; }
-
-		[ProtoMember(5)]
-		public string OperatePar { get; set; }
-
-		[ProtoMember(6)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(7)]
-		public long PlayerId { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_JiaYuanRecordListResponse))]
-	[Message(OuterOpcode.C2M_JiaYuanRecordListRequest)]
-	[ProtoContract]
-	public partial class C2M_JiaYuanRecordListRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JiaYuanRecordListResponse)]
-	[ProtoContract]
-	public partial class M2C_JiaYuanRecordListResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(5)]
-		public List<JiaYuanRecord> JiaYuanRecordList = new List<JiaYuanRecord>();
 
 	}
 
@@ -14021,4 +12982,412 @@ namespace ET
 	}
 
 //公会  end####################################################
+//Home begin####################################################
+//家园植物
+	[Message(OuterOpcode.HomePlant)]
+	[ProtoContract]
+	public partial class HomePlant: Object
+	{
+		[ProtoMember(1)]
+		public int CellIndex { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemId { get; set; }
+
+		[ProtoMember(3)]
+		public long StartTime { get; set; }
+
+		[ProtoMember(4)]
+		public int GatherNumber { get; set; }
+
+		[ProtoMember(5)]
+		public long GatherLastTime { get; set; }
+
+		[ProtoMember(6)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(7)]
+		public int StealNumber { get; set; }
+
+	}
+
+//家园动物
+	[Message(OuterOpcode.HomePastures)]
+	[ProtoContract]
+	public partial class HomePastures: Object
+	{
+		[ProtoMember(2)]
+		public int ConfigId { get; set; }
+
+		[ProtoMember(3)]
+		public long StartTime { get; set; }
+
+		[ProtoMember(4)]
+		public int GatherNumber { get; set; }
+
+		[ProtoMember(5)]
+		public long GatherLastTime { get; set; }
+
+		[ProtoMember(6)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(7)]
+		public int StealNumber { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_HomeInitResponse))]
+	[Message(OuterOpcode.C2M_HomeInitRequest)]
+	[ProtoContract]
+	public partial class C2M_HomeInitRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long MasterId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_HomeInitResponse)]
+	[ProtoContract]
+	public partial class M2C_HomeInitResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(3)]
+		public int HomeLv { get; set; }
+
+		[ProtoMember(4)]
+		public string MasterName { get; set; }
+
+		[ProtoMember(7)]
+		public long HomeFund { get; set; }
+
+		[ProtoMember(8)]
+		public long HomeExp { get; set; }
+
+		[ProtoMember(10)]
+		public List<int> PlanOpenList = new List<int>();
+
+		[ProtoMember(14)]
+		public List<HomePastures> HomePastureList = new List<HomePastures>();
+
+		[ProtoMember(16)]
+		public List<HomePlant> HomePlantList = new List<HomePlant>();
+
+	}
+
+//种植植物
+	[ResponseType(nameof(M2C_HomePlantResponse))]
+	[Message(OuterOpcode.C2M_HomePlantRequest)]
+	[ProtoContract]
+	public partial class C2M_HomePlantRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int CellIndex { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemId { get; set; }
+
+		[ProtoMember(3)]
+		public long OperateBagID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_HomePlantResponse)]
+	[ProtoContract]
+	public partial class M2C_HomePlantResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+//家园收获果实
+	[ResponseType(nameof(M2C_HomeGatherResponse))]
+	[Message(OuterOpcode.C2M_HomeGatherRequest)]
+	[ProtoContract]
+	public partial class C2M_HomeGatherRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public int CellIndex { get; set; }
+
+		[ProtoMember(3)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(4)]
+		public int OperateType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_HomeGatherResponse)]
+	[ProtoContract]
+	public partial class M2C_HomeGatherResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+//铲除植物
+	[ResponseType(nameof(M2C_HomeUprootResponse))]
+	[Message(OuterOpcode.C2M_HomeUprootRequest)]
+	[ProtoContract]
+	public partial class C2M_HomeUprootRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public int CellIndex { get; set; }
+
+		[ProtoMember(3)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(4)]
+		public int OperateType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_HomeUprootResponse)]
+	[ProtoContract]
+	public partial class M2C_HomeUprootResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(2)]
+		public int CellIndex { get; set; }
+
+		[ProtoMember(4)]
+		public List<HomePastures> HomePastureList = new List<HomePastures>();
+
+	}
+
+//家园购买天地
+	[ResponseType(nameof(M2C_HomePlanOpenResponse))]
+	[Message(OuterOpcode.C2M_HomePlanOpenRequest)]
+	[ProtoContract]
+	public partial class C2M_HomePlanOpenRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int CellIndex { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_HomePlanOpenResponse)]
+	[ProtoContract]
+	public partial class M2C_HomePlanOpenResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public List<int> PlanOpenList = new List<int>();
+
+	}
+
+	[ResponseType(nameof(M2C_HomeUpLvResponse))]
+//家园升级
+	[Message(OuterOpcode.C2M_HomeUpLvRequest)]
+	[ProtoContract]
+	public partial class C2M_HomeUpLvRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_HomeUpLvResponse)]
+	[ProtoContract]
+	public partial class M2C_HomeUpLvResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+//家园访问列表
+	[Message(OuterOpcode.HomeVisit)]
+	[ProtoContract]
+	public partial class HomeVisit: Object
+	{
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int Occ { get; set; }
+
+		[ProtoMember(3)]
+		public int OccTwo { get; set; }
+
+		[ProtoMember(4)]
+		public int Rubbish { get; set; }
+
+		[ProtoMember(5)]
+		public int Gather { get; set; }
+
+		[ProtoMember(6)]
+		public string PlayerName { get; set; }
+
+	}
+
+//好友家园
+	[ResponseType(nameof(M2C_HomeVisitListResponse))]
+	[Message(OuterOpcode.C2M_HomeVisitListRequest)]
+	[ProtoContract]
+	public partial class C2M_HomeVisitListRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public long MasterId { get; set; }
+
+		[ProtoMember(3)]
+		public int OperateType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_HomeVisitListResponse)]
+	[ProtoContract]
+	public partial class M2C_HomeVisitListResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<HomeVisit> HomeVisit_1 = new List<HomeVisit>();
+
+		[ProtoMember(2)]
+		public List<HomeVisit> JHomeVisit_2 = new List<HomeVisit>();
+
+	}
+
+//偷菜
+	[ResponseType(nameof(M2C_HomeGatherOtherResponse))]
+	[Message(OuterOpcode.C2M_HomeGatherOtherRequest)]
+	[ProtoContract]
+	public partial class C2M_HomeGatherOtherRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public int CellIndex { get; set; }
+
+		[ProtoMember(3)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(4)]
+		public long MasterId { get; set; }
+
+		[ProtoMember(5)]
+		public int OperateType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_HomeGatherOtherResponse)]
+	[ProtoContract]
+	public partial class M2C_HomeGatherOtherResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+//家园通过操作
+	[Message(OuterOpcode.HomeOperate)]
+	[ProtoContract]
+	public partial class HomeOperate: Object
+	{
+		[ProtoMember(1)]
+		public long Time { get; set; }
+
+		[ProtoMember(2)]
+		public string PlayerName { get; set; }
+
+		[ProtoMember(3)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(4)]
+		public int OperateId { get; set; }
+
+		[ProtoMember(5)]
+		public string OperatePar { get; set; }
+
+		[ProtoMember(6)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(7)]
+		public long PlayerId { get; set; }
+
+	}
+
+//Home   end####################################################
 }

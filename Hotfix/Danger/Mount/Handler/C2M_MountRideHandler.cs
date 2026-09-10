@@ -10,6 +10,7 @@ namespace ET
             MountComponentServer mountComponentServer = unit.GetComponent<MountComponentServer>();
             if (mountComponentServer.GetRideMount() != null)
             {
+                mountComponentServer.WantRide = false;
                 mountComponentServer.Dismount();
                 response.RideConfigId = 0;
                 reply();
@@ -25,6 +26,7 @@ namespace ET
                 return;
             }
 
+            mountComponentServer.WantRide = true;
             mountComponentServer.SetRide(true);
             response.RideConfigId = mountComponentServer.GetRideConfigId();
             reply();

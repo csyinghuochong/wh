@@ -17,9 +17,9 @@ namespace ET
 				{
 					Log.Error($"LoginTest M2M_UnitTransfer   unitComponent.Get(unit.Id)!=null: {scene.DomainZone()} {request.Unit.Id}  request.SceneType： {request.SceneType}");
 
-					if (request.SceneType == MapTypeEnum.JiaYuan)
+					if (request.SceneType == MapTypeEnum.Home)
 					{
-						Log.Error($"JiaYuan: {scene.Id} {scene.InstanceId}");
+						Log.Error($"Home: {scene.Id} {scene.InstanceId}");
                     }
 					response.Error = ErrorCode.ERR_OperationOften;
 					reply();
@@ -65,6 +65,11 @@ namespace ET
 
                 long hpmax = numericComponent.GetAsLong(NumericType.HP_Max_10);
                 numericComponent.Set(NumericType.HP_Current_8, hpmax, false);
+
+                if (request.SceneType != MapTypeEnum.RunRace)
+                {
+                    unit.GetComponent<MountComponentServer>()?.RestoreWantRide();
+                }
                 
                 //添加消息类型, GateSession邮箱在收到消息的时候会立即转发给客户端，MessageDispatcher类型会再次对Actor消息进行分发到具体的Handler处理，默认的MailboxComponent类型是MessageDispatcher。
                 //await unit.AddLocation();                     
@@ -284,7 +289,7 @@ namespace ET
 
                         TransferHelper.AfterTransfer(unit);
                         break;
-                    case MapTypeEnum.JiaYuan:
+                    case MapTypeEnum.Home:
 					case MapTypeEnum.Union:
 					case MapTypeEnum.BaoZangZhiDi:
 					case MapTypeEnum.MiJing:
@@ -421,7 +426,6 @@ namespace ET
                     //unit.GetComponent<BuffManagerComponent>().InitBuff(request.SceneType);
                     unit.GetComponent<SkillPassiveComponent>().Reset();
                     unit.GetComponent<SkillPassiveComponent>().Activeted();
-                    unit.GetComponent<MountComponentServer>().Dismount();
                 }
                 //Function_Fight.UnitUpdateProperty_Base(unit, false, true);
 				response.NewInstanceId = unit.InstanceId;

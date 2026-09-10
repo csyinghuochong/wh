@@ -905,8 +905,8 @@ namespace ET
             //EnergyComponent 正能量组件
             
             dbcount = 0;
-            List<JiaYuanComponentServer> jiayuanComponents = await Game.Scene.GetComponent<DBComponent>().Query<JiaYuanComponentServer>(oldzone, d => d.Id > 0);
-            foreach (var entity in jiayuanComponents)
+            List<HomeComponentServer> homeComponents = await Game.Scene.GetComponent<DBComponent>().Query<HomeComponentServer>(oldzone, d => d.Id > 0);
+            foreach (var entity in homeComponents)
             {
                 if (invalidPlayers.Contains(entity.Id))
                 {
@@ -920,7 +920,7 @@ namespace ET
                 }
                 await Game.Scene.GetComponent<DBComponent>().Save(newzone, entity);
             }
-            Log.Console("JiaYuanComponent Complelte");
+            Log.Console("HomeComponent Complelte");
 
             //NumericComponent  数值组件
             dbcount = 0;

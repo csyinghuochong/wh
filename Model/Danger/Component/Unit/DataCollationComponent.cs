@@ -67,10 +67,10 @@ namespace ET
         public string UnionName;
 
         //家园等级
-        public int JiaYuanLv;
+        public int HomeLv;
 
         //家园资金
-        public long JiaYuanFund;
+        public long HomeFund;
 
 
         //宠物探险关卡

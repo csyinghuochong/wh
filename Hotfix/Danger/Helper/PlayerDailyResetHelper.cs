@@ -31,7 +31,7 @@ namespace ET
             taskComponentServer.OnDailyReset(resetType);
 
             unit.GetComponent<ChengJiuComponentServer>().OnDailyReset();
-            unit.GetComponent<JiaYuanComponentServer>().OnDailyReset(resetType == 2);
+            unit.GetComponent<HomeComponentServer>().OnDailyReset(resetType == 2);
             unit.GetComponent<DataCollationComponent>().OnDailyReset(resetType == 2);
 
             // 日清列表已在 RoleDailyData.OnDailyReset 清过；这里只做 RoleInfo 其它跨天逻辑

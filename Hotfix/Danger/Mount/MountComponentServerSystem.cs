@@ -102,6 +102,11 @@ namespace ET
             {
                 MountHelper.ApplyAptitudeAttributes(self.MountInfos[i]);
             }
+
+            if (self.GetRideMount() != null)
+            {
+                self.WantRide = true;
+            }
         }
 
         public static MountInfo OnAddMount(this MountComponentServer self, int getWay, int configId)
@@ -206,6 +211,26 @@ namespace ET
         public static void Dismount(this MountComponentServer self)
         {
             self.SetRide(false);
+        }
+
+        public static void RestoreWantRide(this MountComponentServer self)
+        {
+            if (!self.WantRide)
+            {
+                self.ClearRideSilent();
+                return;
+            }
+
+            MountInfo useMount = self.GetUseMount();
+            if (useMount == null)
+            {
+                return;
+            }
+
+            if (useMount.Status != MountHelper.StatusRide)
+            {
+                useMount.Status = MountHelper.StatusRide;
+            }
         }
 
         public static void ClearRideSilent(this MountComponentServer self)

@@ -550,8 +550,8 @@ namespace ET
                     ActivePointHelper.Add(unit, Type, int.Parse(value), notice);
                     return;
               
-                case UserDataType.JiaYuanLv:
-                    unit.GetComponent<JiaYuanComponentServer>()?.AddJiaYuanLv(int.Parse(value));
+                case UserDataType.HomeLv:
+                    unit.GetComponent<HomeComponentServer>()?.AddHomeLv(int.Parse(value));
                     return;
                 
                 //名字应该在改名的协议处理
@@ -1021,13 +1021,13 @@ namespace ET
             int lv = level == 1 ? 70 - self.RoleInfo.Lv : 40 - self.RoleInfo.Lv;
             self.UpdateRoleData(UserDataType.Level, lv.ToString());
 
-            LDHome maxjiayuan = null;
-            Dictionary<int, LDHome> allJiayuan = LDHomeCategory.Instance.GetAll();
-            foreach ((int jiayualv, LDHome jiaYuanConfig) in allJiayuan)
+            LDHome maxHomeLv = null;
+            Dictionary<int, LDHome> allHome = LDHomeCategory.Instance.GetAll();
+            foreach ((int jiayualv, LDHome ldHomeConfig) in allHome)
             {
-                maxjiayuan = jiaYuanConfig;
+                maxHomeLv = ldHomeConfig;
             }
-            self.GetParent<Unit>().GetComponent<JiaYuanComponentServer>().JiaYuanLv = maxjiayuan.Id;
+            self.GetParent<Unit>().GetComponent<HomeComponentServer>().HomeLv = maxHomeLv.Id;
 
             /*
             SeasonLevelConfig maxseason = null;

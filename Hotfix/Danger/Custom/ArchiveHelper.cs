@@ -86,17 +86,17 @@ namespace ET
                 return;
             }
 
-            JiaYuanComponentServer oldJiaYuanComponentServer = GetDBComponent<JiaYuanComponentServer>(zone, unitid, day);
-            if (oldJiaYuanComponentServer == null)
+            HomeComponentServer oldHomeComponentServer = GetDBComponent<HomeComponentServer>(zone, unitid, day);
+            if (oldHomeComponentServer == null)
             {
-                Console.WriteLine($"OnArchiveHandler  jiaYuanComponent==null:   {zone} {unitid}");
+                Console.WriteLine($"OnArchiveHandler  homenComponent==null:   {zone} {unitid}");
                 return;
             }
 
             NumericComponent old_numericComponent = GetDBComponent<NumericComponent>(zone, unitid, day);
             if (old_numericComponent == null)
             {
-                Console.WriteLine($"OnArchiveHandler  jiaYuanComponent==null:   {zone} {unitid}");
+                Console.WriteLine($"OnArchiveHandler  numericComponent==null:   {zone} {unitid}");
                 return;
             }
 
@@ -272,7 +272,7 @@ namespace ET
                 //
                 //ActivityComponentServer    BagComponentServer     ChengJiuComponent    DBFriendInfo 
                 //DBMailInfo    DBPopularizeInfo     DataCollationComponent  EnergyComponent 
-                //JiaYuanComponent    NumericComponent     PetComponent     RechargeComponent 
+                //HomeComponent    NumericComponent     PetComponent     RechargeComponent 
                 //ReddotComponent     ShoujiComponent     SkillSetComponent    TaskComponent 
                 //TitleComponent      RoleInfoComponent 
                 //Game.Scene.GetComponent<DBComponent>().Remove<Entity>(zone, unitid, allComponets[i]).Coroutine();
@@ -288,7 +288,7 @@ namespace ET
             await SaveDBComponent(zone, old_dBMailInfo);
 
             await SaveDBComponent(zone, old_dataCollationComponent);
-            await SaveDBComponent(zone, oldJiaYuanComponentServer);
+            await SaveDBComponent(zone, oldHomeComponentServer);
             await SaveDBComponent(zone, old_numericComponent);
             await SaveDBComponent(zone, oldPetComponentServer);
             await SaveDBComponent(zone, oldRechargeComponentServer);
@@ -391,7 +391,7 @@ namespace ET
             await ExecuteBatchSingleComponent<DBFriendInfo>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DBMailInfo>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DataCollationComponent>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<JiaYuanComponentServer>(zone, saveuserids);
+            await ExecuteBatchSingleComponent<HomeComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<NumericComponent>(zone, saveuserids);
             await ExecuteBatchSingleComponent<PetComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<RechargeComponentServer>(zone, saveuserids);
