@@ -121,12 +121,6 @@ namespace ET
                 return;
             }
 
-            ShoujiComponentServer oldShoujiComponentServer = GetDBComponent<ShoujiComponentServer>(zone, unitid, day);
-            if (oldShoujiComponentServer == null)
-            {
-                Console.WriteLine($"OnArchiveHandler  shoujiComponent==null:   {zone} {unitid}");
-                return;
-            }
 
             SkillSetComponentServer oldSkillSetComponentServer = GetDBComponent<SkillSetComponentServer>(zone, unitid, day);
             if (oldSkillSetComponentServer == null)
@@ -293,7 +287,6 @@ namespace ET
             await SaveDBComponent(zone, oldPetComponentServer);
             await SaveDBComponent(zone, oldRechargeComponentServer);
             await SaveDBComponent(zone, oldReddotComponentServer);
-            await SaveDBComponent(zone, oldShoujiComponentServer);
             await SaveDBComponent(zone, oldSkillSetComponentServer);
             await SaveDBComponent(zone, oldTaskComponentServer);
             await SaveDBComponent(zone, oldTitleComponentServer);
@@ -396,7 +389,6 @@ namespace ET
             await ExecuteBatchSingleComponent<PetComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<RechargeComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<ReddotComponentServer>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<ShoujiComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<SkillSetComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<TaskComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<TitleComponentServer>(zone, saveuserids);

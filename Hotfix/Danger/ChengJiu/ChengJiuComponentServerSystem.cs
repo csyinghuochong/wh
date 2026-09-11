@@ -64,31 +64,6 @@ namespace ET
                 return;
         }
 
-        public static void OnPassFuben(this ChengJiuComponentServer self, int difficulty, int chapterid, int star)
-        {
-
-        }
-
-        public static void OnChouKaTen(this ChengJiuComponentServer self)
-        {
-        }
-
-        public static void OnEquipXiLian(this ChengJiuComponentServer self, int times)
-        {
-        }
-
-        /// <summary>
-        /// 洗练结果推进（隐藏技能等），Handler 只调此门面
-        /// </summary>
-        public static void OnEquipXiLianResults(this ChengJiuComponentServer self, List<ItemXiLianResult> results, int times)
-        {
-        }
-
-        public static void OnMakeEquip(this ChengJiuComponentServer self)
-        {
-
-        }
-
         public static void OnHomeLevel(this ChengJiuComponentServer self, int homeLv)
         {
 

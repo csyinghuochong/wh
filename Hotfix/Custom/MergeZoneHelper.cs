@@ -992,24 +992,6 @@ namespace ET
             Log.Console("ReddotComponent Complelte");
 
 
-            //ShoujiComponent  收集大厅
-            dbcount = 0;
-            List<ShoujiComponentServer> shoujiComponents = await Game.Scene.GetComponent<DBComponent>().Query<ShoujiComponentServer>(oldzone, d => d.Id > 0);
-            foreach (var entity in shoujiComponents)
-            {
-                if (invalidPlayers.Contains(entity.Id))
-                {
-                    continue;
-                }
-                dbcount++;
-                if (dbcount % onecount == 0)
-                {
-                    await TimerComponent.Instance.WaitFrameAsync();
-                }
-                await Game.Scene.GetComponent<DBComponent>().Save(newzone, entity);
-            }
-            Log.Console("ShoujiComponent Complelte");
-
             //SkillSetComponent  技能
             dbcount = 0;
             List<SkillSetComponentServer> skillSetComponents = await Game.Scene.GetComponent<DBComponent>().Query<SkillSetComponentServer>(oldzone, d => d.Id > 0);

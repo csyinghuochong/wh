@@ -92,7 +92,6 @@ namespace ET
             unit.AddDataComponent<ReddotComponentServer>();
             unit.AddDataComponent<TitleComponentServer>();
             unit.AddDataComponent<HomeComponentServer>();
-            unit.AddDataComponent<ShoujiComponentServer>();
             unit.AddDataComponent<DataCollationComponent>();
             unit.AddDataComponent<RoleDailyDataComponentServer>();
             unit.AddDataComponent<RoleContextComponent>();

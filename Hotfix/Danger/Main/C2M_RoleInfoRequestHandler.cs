@@ -3,20 +3,16 @@
 namespace ET
 {
     [ActorMessageHandler]
-    public class C2M_UserInfoRequestHandler : AMActorLocationRpcHandler<Unit, C2M_UserInfoRequest, M2C_UserInfoInitResponse>
+    public class C2M_RoleInfoRequestHandler : AMActorLocationRpcHandler<Unit, C2M_RoleInfoRequest, M2C_RoleInfoInitResponse>
     {
-        protected override async ETTask Run(Unit unit, C2M_UserInfoRequest request, M2C_UserInfoInitResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_RoleInfoRequest request, M2C_RoleInfoInitResponse response, Action reply)
         {
-            ShoujiComponentServer shoujiComponentServer = unit.GetComponent<ShoujiComponentServer>();
-            shoujiComponentServer.UpdateShouJIStar();
-
+           
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             ReddotComponentServer reddotComponentServer = unit.GetComponent<ReddotComponentServer>();
             TitleComponentServer titleComponentServer = unit.GetComponent<TitleComponentServer>();
             response.RoleInfo = roleInfoComponentServer.RoleInfo;
             response.ReddontList = reddotComponentServer.ReddontList;
-            response.TreasureInfo = shoujiComponentServer.TreasureInfo;
-            response.ShouJiChapterInfos = shoujiComponentServer.ShouJiChapterInfos;
             response.TitleList = titleComponentServer.TitleList;
 
             reply();
