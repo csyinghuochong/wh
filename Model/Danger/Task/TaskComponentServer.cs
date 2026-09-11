@@ -43,12 +43,8 @@ namespace ET
         [BsonIgnore]
         public Dictionary<(int, int), int> TaskEventCoalesce = new Dictionary<(int, int), int>();
 
-        /// <summary>本次进度变更涉及到的 Group，Flush 时按组推送</summary>
+        /// <summary>本次进度变更涉及到的 Group，Flush 时按组推送 Task_2</summary>
         [BsonIgnore]
         public HashSet<int> PendingTaskUpdateGroups = new HashSet<int>();
-
-        /// <summary>本次是否有 Task_1 进度变更，推送时整表覆盖 RoleTaskList_1</summary>
-        [BsonIgnore]
-        public bool PendingTaskUpdate_1;
     }
 }

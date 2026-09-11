@@ -12341,10 +12341,6 @@ namespace ET
 		[ProtoMember(4)]
 		public List<TaskPro> RoleTaskList_1 = new List<TaskPro>();
 
-// 1：RoleTaskList_1 为全量，客户端整表覆盖；0：不改 Task_1
-		[ProtoMember(5)]
-		public int UpdateTask_1 { get; set; }
-
 		[ProtoMember(6)]
 		public int NextTask1_Id { get; set; }
 

@@ -29,8 +29,6 @@ namespace ET
             {
                 self.PendingTaskUpdateGroups.Clear();
             }
-
-            self.PendingTaskUpdate_1 = false;
         }
     }
 
@@ -66,8 +64,6 @@ namespace ET
             {
                 self.PendingTaskUpdateGroups.Clear();
             }
-
-            self.PendingTaskUpdate_1 = false;
         }
     }
 
@@ -159,7 +155,7 @@ namespace ET
 
                 LDTask_1 ldTask = LDTask_1Category.Instance.Get(taskid);
                 self.CompleteTask1Progress(taskPro, ldTask);
-                self.SendToUpdateTaskCore(new HashSet<int>(), true);
+                self.SendToUpdateTask(new HashSet<int>());
                 return;
             }
 
@@ -211,7 +207,7 @@ namespace ET
             }
 
             self.RoleTaskList_1.Remove(exist);
-            self.SendToUpdateTaskCore(new HashSet<int>(), true);
+            self.SendToUpdateTask(new HashSet<int>());
         }
 
         /// <summary>
@@ -616,6 +612,15 @@ namespace ET
             }
 
             TaskRewardHelper.GrantTaskCommitRewards(unit, rewardItems);
+            int exp = ExpHelper.EvaluateRewardFormula(
+                    commitLdTask.Exp_Role_Param1,
+                    commitLdTask.Exp_Role_Param2,
+                    commitLdTask.Exp_Role_Param3,
+                    roleInfoComponent.RoleInfo.Lv);
+            if (exp > 0)
+            {
+                roleInfoComponent.Role_AddExp(exp, true);
+            }
             self.SendToUpdateTask(commitLdTask.Group);
             return ErrorCode.ERR_Success;
         }
@@ -682,13 +687,18 @@ namespace ET
             }
 
             TaskRewardHelper.GrantTaskCommitRewards(unit, rewardItems);
-            if (ldTask.Exp_Role_Param1 > 0)
+            int exp = ExpHelper.EvaluateRewardFormula(
+                    ldTask.Exp_Role_Param1,
+                    ldTask.Exp_Role_Param2,
+                    ldTask.Exp_Role_Param3,
+                    roleInfoComponent.RoleInfo.Lv);
+            if (exp > 0)
             {
-                roleInfoComponent.Role_AddExp(ldTask.Exp_Role_Param1, true);
+                roleInfoComponent.Role_AddExp(exp, true);
             }
 
             self.UnlockNextTasks_1(ldTask);
-            self.SendToUpdateTaskCore(new HashSet<int>(), true);
+            self.SendToUpdateTask(new HashSet<int>());
             return ErrorCode.ERR_Success;
         }
 
@@ -1133,11 +1143,6 @@ namespace ET
             taskPro.taskStatus = completed ? (int)TaskStatuEnum.Completed : (int)TaskStatuEnum.Accepted;
         }
 
-        private static void ApplyConditionProgress(TaskPro taskPro, LDTask_2 ldTask, int value)
-        {
-            ApplyConditionProgress(taskPro, ldTask.Condition_Type, ldTask.Param1, value);
-        }
-
         private static void ApplyTask1SlotProgress(TaskPro taskPro, LDTask_1 ldTask, int slot, int conditionType, int value)
         {
             int cur = TaskHelper.GetTaskProTargetNum(taskPro, slot);
@@ -1216,14 +1221,13 @@ namespace ET
             }
 
             self.PendingTaskUpdateGroups.Clear();
-            self.PendingTaskUpdate_1 = false;
-            self.FlushTaskEventBatch_1();
             self.FlushTaskEventBatch_2();
+            bool updateTask1 = self.FlushTaskEventBatch_1();
             self.TaskEventCoalesce.Clear();
-            self.FlushPendingTaskUpdates();
+            self.FlushPendingTaskUpdates(updateTask1);
         }
 
-        private static void FlushTaskEventBatch_1(this TaskComponentServer self)
+        private static bool FlushTaskEventBatch_1(this TaskComponentServer self)
         {
             bool changed = false;
             for (int i = 0; i < self.RoleTaskList_1.Count; i++)
@@ -1258,7 +1262,7 @@ namespace ET
                 }
             }
 
-            self.PendingTaskUpdate_1 = changed;
+            return changed;
         }
 
         private static void FlushTaskEventBatch_2(this TaskComponentServer self)
@@ -1282,7 +1286,7 @@ namespace ET
                     continue;
                 }
 
-                ApplyConditionProgress(taskPro, ldTask, delta);
+                ApplyConditionProgress(taskPro, ldTask.Condition_Type, ldTask.Param1, delta);
                 self.PendingTaskUpdateGroups.Add(ldTask.Group);
             }
         }
@@ -1290,8 +1294,13 @@ namespace ET
         private static void ApplyTaskEvent(this TaskComponentServer self, int conditionType, int param1, int param2)
         {
             self.PendingTaskUpdateGroups.Clear();
-            self.PendingTaskUpdate_1 = false;
+            self.ApplyTask2Progress(conditionType, param1, param2);
+            bool updateTask1 = self.ApplyTask1Progress(conditionType, param1, param2);
+            self.FlushPendingTaskUpdates(updateTask1);
+        }
 
+        private static void ApplyTask2Progress(this TaskComponentServer self, int conditionType, int param1, int param2)
+        {
             for (int i = 0; i < self.RoleTaskList_2.Count; i++)
             {
                 TaskPro taskPro = self.RoleTaskList_2[i];
@@ -1312,30 +1321,20 @@ namespace ET
                 {
                     continue;
                 }
-                ApplyConditionProgress(taskPro, ldTask, param1);
+
+                ApplyConditionProgress(taskPro, ldTask.Condition_Type, ldTask.Param1, param1);
                 self.PendingTaskUpdateGroups.Add(ldTask.Group);
             }
-
-            self.PendingTaskUpdate_1 = self.ApplyTask1Progress(conditionType, param1, param2);
-            self.FlushPendingTaskUpdates();
         }
 
-        private static void FlushPendingTaskUpdates(this TaskComponentServer self)
+        private static void FlushPendingTaskUpdates(this TaskComponentServer self, bool updateTask1)
         {
-            bool updateTask1 = self.PendingTaskUpdate_1;
-            self.PendingTaskUpdate_1 = false;
             if (self.PendingTaskUpdateGroups.Count == 0 && !updateTask1)
             {
                 return;
             }
 
-            if (self.PendingTaskUpdateGroups.Count > 0)
-            {
-                self.SendToUpdateTaskCore(self.PendingTaskUpdateGroups, updateTask1);
-                return;
-            }
-
-            self.SendToUpdateTaskCore(new HashSet<int>(), updateTask1);
+            self.SendToUpdateTask(self.PendingTaskUpdateGroups);
         }
         
 
@@ -1590,13 +1589,9 @@ namespace ET
             return TaskHelper.GetClientShowTaskList_2(self.RoleTaskList_2, self.RoleComoleteTaskList_2);
         }
 
-        /// <summary>
-        /// GroupIds 为空：整表覆盖（日清、GM 全完成）。
-        /// 有 GroupIds：只带这些组当前展示条，客户端按组替换。
-        /// </summary>
-        public static void SendToUpdateTask(this TaskComponentServer self)
+        public static void SendToUpdateTask(this TaskComponentServer self, HashSet<int> groupIds = null)
         {
-            self.SendToUpdateTaskCore(null);
+            self.SendToUpdateTaskCore(groupIds);
         }
 
         public static void SendToUpdateTask(this TaskComponentServer self, int groupId)
@@ -1610,11 +1605,6 @@ namespace ET
             HashSet<int> groups = new HashSet<int>();
             groups.Add(groupId);
             self.SendToUpdateTaskCore(groups);
-        }
-
-        public static void SendToUpdateTask(this TaskComponentServer self, HashSet<int> groupIds)
-        {
-            self.SendToUpdateTaskCore(groupIds);
         }
 
         public static void OnNpcTalkComplete(this TaskComponentServer self, int npcId)
@@ -1667,31 +1657,29 @@ namespace ET
 
             if (task1Changed)
             {
-                self.SendToUpdateTaskCore(new HashSet<int>(), true);
+                self.SendToUpdateTask();
             }
         }
 
-        private static void SendToUpdateTaskCore(this TaskComponentServer self, HashSet<int> groupIds, bool updateTask1 = false)
+        /// <summary>
+        /// RoleTaskList_1 始终全量。
+        /// groupIds 有值：RoleTaskList_2 按组替换。
+        /// groupIds 为 null：RoleTaskList_2 整表覆盖（日清、GM）。
+        /// groupIds 空集合：不改 RoleTaskList_2（只推 Task_1）。
+        /// </summary>
+        private static void SendToUpdateTaskCore(this TaskComponentServer self, HashSet<int> groupIds)
         {
             Unit unit = self.GetParent<Unit>();
             M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
             m2C_TaskUpdate.GroupIds.Clear();
-            m2C_TaskUpdate.UpdateTask_1 = updateTask1 ? 1 : 0;
             m2C_TaskUpdate.NextTask1_Id = self.NextTask1_Id;
-            if (updateTask1)
-            {
-                List<TaskPro> task1List = new List<TaskPro>(self.RoleTaskList_1.Count);
-                for (int i = 0; i < self.RoleTaskList_1.Count; i++)
-                {
-                    task1List.Add(self.RoleTaskList_1[i]);
-                }
 
-                m2C_TaskUpdate.RoleTaskList_1 = task1List;
-            }
-            else
+            List<TaskPro> task1List = new List<TaskPro>(self.RoleTaskList_1.Count);
+            for (int i = 0; i < self.RoleTaskList_1.Count; i++)
             {
-                m2C_TaskUpdate.RoleTaskList_1 = new List<TaskPro>();
+                task1List.Add(self.RoleTaskList_1[i]);
             }
+            m2C_TaskUpdate.RoleTaskList_1 = task1List;
 
             if (groupIds != null && groupIds.Count > 0)
             {
