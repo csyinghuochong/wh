@@ -42,8 +42,6 @@ namespace ET
         /// <summary>技能方案1</summary>
         public List<SkillBarSlot> SkillBarList1 = new List<SkillBarSlot>();
 
-        //生命之盾
-        public List<LifeShieldInfo> LifeShieldList = new List<LifeShieldInfo>();
 
 #if SERVER
         [BsonIgnore]

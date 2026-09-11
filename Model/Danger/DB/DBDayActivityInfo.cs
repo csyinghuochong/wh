@@ -23,9 +23,6 @@ namespace ET
         [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
         public Dictionary<int, List<ShopGoodsItem>> GlobalRandomShops = new Dictionary<int, List<ShopGoodsItem>>();
 
-		//战区活动
-		public List<ZhanQuReceiveNumber> ZhanQuReveives = new List<ZhanQuReceiveNumber>();
-
 		//首胜记录
 		public List<FirstWinInfo> FirstWinInfos = new List<FirstWinInfo>();
 

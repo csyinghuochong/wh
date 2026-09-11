@@ -1013,75 +1013,6 @@ namespace ET
 			return new List<AttributeItem>();
         }
 
-		public static void OnShieldAddExp(this SkillSetComponentServer self, int shieldType, int addExp) 
-		{
-			LifeShieldInfo keyValuePair = null;
-			for (int i = 0; i < self.LifeShieldList.Count; i++)
-			{
-				if ((int)self.LifeShieldList[i].ShieldType == shieldType)
-				{
-					keyValuePair = self.LifeShieldList[i];
-					break;
-				}
-			}
-			if (keyValuePair == null)
-			{
-				//默认0级 0经验
-				keyValuePair = new LifeShieldInfo() { ShieldType = shieldType, Level = 0, Exp = 0 };
-				self.LifeShieldList.Add(keyValuePair);
-			}
-
-			int curLv = keyValuePair.Level;
-			int curExp = keyValuePair.Exp;
-			int maxLv = -1;///LifeShieldConfigCategory.Instance.LifeShieldList[shieldType].Count;
-			if (curLv == maxLv)
-			{
-				curExp += addExp;
-				keyValuePair.Exp = curExp;
-				return;
-			}
-			
-			//可以升级
-			keyValuePair.Level = (curLv + 1);
-			//keyValuePair.Exp = (curExp + addExp - lifeShieldConfig.ShieldExp);
-		}
-
-		/// <summary>
-		/// 生命之盾之外的其他最小等级
-		/// </summary>
-		/// <param name="self"></param>
-		/// <returns></returns>
-		public static int GetOtherMinLevel(this SkillSetComponentServer self)
-		{
-			int minLevel = 0;
-			for (int i = 0; i < self.LifeShieldList.Count; i++)
-			{
-				if ((int)self.LifeShieldList[i].ShieldType == 6)
-				{
-					continue;
-				}
-				if (minLevel == 0 || self.LifeShieldList[i].Level < minLevel)
-				{
-					minLevel = self.LifeShieldList[i].Level;
-				}
-			}
-			return minLevel;
-		}
-
-		public static int GetLifeShieldLevel(this SkillSetComponentServer self, int sType)
-		{
-			for (int i = 0; i < self.LifeShieldList.Count; i++)
-			{
-				if ((int)self.LifeShieldList[i].ShieldType == sType)
-				{
-					return self.LifeShieldList[i].Level;
-				}
-			}
-			return 0;
-		}
-
-
-
 		/// <summary>
 		/// 重置技能点
 		/// </summary>
@@ -1185,7 +1116,6 @@ namespace ET
 			SkillSetInfo.SkillBarList = self.SkillBarList0;
 			SkillSetInfo.SkillBarList1 = self.SkillBarList1;
 			SkillSetInfo.SkillBarPlan = self.SkillBarPlan;
-			SkillSetInfo.LifeShieldList = self.LifeShieldList;
 			MessageHelper.SendToClient(unit, self.M2C_SkillSetMessage);
 		}
 	}

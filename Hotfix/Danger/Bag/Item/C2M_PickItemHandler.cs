@@ -5,9 +5,9 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class Actor_PickItemHandler : AMActorLocationRpcHandler<Unit, Actor_PickItemRequest, Actor_PickItemResponse>
+    public class C2M_PickItemHandler : AMActorLocationRpcHandler<Unit, C2M_PickItemRequest, M2C_PickItemResponse>
     {
-        private int OnFubenPick(Unit unit, Actor_PickItemRequest request, int sceneTypeEnum, List<long> removeIds)
+        private int OnFubenPick(Unit unit, C2M_PickItemRequest request, int sceneTypeEnum, List<long> removeIds)
         {
             List<DropInfo> drops = request.ItemIds;
            
@@ -139,7 +139,7 @@ namespace ET
             return errorCode;
         }
 
-        private int OnTeamPick(Unit unit, Actor_PickItemRequest request, int sceneTypeEnum, List<long> removeIds)
+        private int OnTeamPick(Unit unit, C2M_PickItemRequest request, int sceneTypeEnum, List<long> removeIds)
         {
             long debugId = 1231456;
             RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
@@ -403,7 +403,7 @@ namespace ET
             return errorCode;
         }
 
-        protected override async ETTask Run(Unit unit, Actor_PickItemRequest request, Actor_PickItemResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_PickItemRequest request, M2C_PickItemResponse response, Action reply)
         {
             UnitInfoComponent unitInfoComponent = unit.GetComponent<UnitInfoComponent>();
 

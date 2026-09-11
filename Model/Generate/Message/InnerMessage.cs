@@ -1047,80 +1047,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2M_ZhanQuInfoResponse))]
-	[Message(InnerOpcode.M2A_ZhanQuInfoRequest)]
-	[ProtoContract]
-	public partial class M2A_ZhanQuInfoRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.A2M_ZhanQuInfoResponse)]
-	[ProtoContract]
-	public partial class A2M_ZhanQuInfoResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<int> DayTeHui = new List<int>();
-
-		[ProtoMember(2)]
-		public List<ZhanQuReceiveNumber> ReceiveNum = new List<ZhanQuReceiveNumber>();
-
-	}
-
-	[ResponseType(nameof(A2M_ZhanQuReceiveResponse))]
-	[Message(InnerOpcode.M2A_ZhanQuReceiveRequest)]
-	[ProtoContract]
-	public partial class M2A_ZhanQuReceiveRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ActivityType { get; set; }
-
-		[ProtoMember(2)]
-		public int ActivityId { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.A2M_ZhanQuReceiveResponse)]
-	[ProtoContract]
-	public partial class A2M_ZhanQuReceiveResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2M_PetRankUpdateResponse))]
 	[Message(InnerOpcode.M2R_PetRankUpdateRequest)]
 	[ProtoContract]
@@ -1818,52 +1744,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(R2M_BuChangeResponse))]
-	[Message(InnerOpcode.M2R_BuChangeRequest)]
-	[ProtoContract]
-	public partial class M2R_BuChangeRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long BuChangId { get; set; }
-
-		[ProtoMember(2)]
-		public long UserId { get; set; }
-
-		[ProtoMember(3)]
-		public long AccountId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.R2M_BuChangeResponse)]
-	[ProtoContract]
-	public partial class R2M_BuChangeResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public PlayerInfo PlayerInfo { get; set; }
-
-		[ProtoMember(2)]
-		public int BuChangRecharge { get; set; }
-
-		[ProtoMember(3)]
-		public int BuChangDiamond { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2M_SerialReardResponse))]
 //序列号奖励
 	[Message(InnerOpcode.M2R_SerialReardRequest)]
@@ -1993,105 +1873,6 @@ namespace ET
 	[Message(InnerOpcode.L2A_LoginAccountResponse)]
 	[ProtoContract]
 	public partial class L2A_LoginAccountResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(Chat2G_EnterChat))]
-	[Message(InnerOpcode.G2Chat_EnterChat)]
-	[ProtoContract]
-	public partial class G2Chat_EnterChat: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string Name { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public long GateSessionActorId { get; set; }
-
-		[ProtoMember(4)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(5)]
-		public int Level { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Chat2G_EnterChat)]
-	[ProtoContract]
-	public partial class Chat2G_EnterChat: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public long ChatInfoUnitInstanceId { get; set; }
-
-	}
-
-	[ResponseType(nameof(Chat2M_UpdateLevel))]
-	[Message(InnerOpcode.M2Chat_UpdateLevel)]
-	[ProtoContract]
-	public partial class M2Chat_UpdateLevel: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(5)]
-		public int Level { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Chat2M_UpdateLevel)]
-	[ProtoContract]
-	public partial class Chat2M_UpdateLevel: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(Chat2G_RequestExitChat))]
-	[Message(InnerOpcode.G2Chat_RequestExitChat)]
-	[ProtoContract]
-	public partial class G2Chat_RequestExitChat: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Chat2G_RequestExitChat)]
-	[ProtoContract]
-	public partial class Chat2G_RequestExitChat: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -2658,34 +2439,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Chat2Mail_GetUnitList))]
-	[Message(InnerOpcode.Mail2Chat_GetUnitList)]
-	[ProtoContract]
-	public partial class Mail2Chat_GetUnitList: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Chat2Mail_GetUnitList)]
-	[ProtoContract]
-	public partial class Chat2Mail_GetUnitList: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<long> OnlineUnitIdList = new List<long>();
-
-	}
-
 	[Message(InnerOpcode.Mail2M_SendServerMailItem)]
 	[ProtoContract]
 	public partial class Mail2M_SendServerMailItem: Object, IActorLocationMessage
@@ -2729,37 +2482,6 @@ namespace ET
 
 		[ProtoMember(3)]
 		public int ServerMailIdMax { get; set; }
-
-	}
-
-	[ResponseType(nameof(Chat2M_UpdateUnion))]
-	[Message(InnerOpcode.M2Chat_UpdateUnion)]
-	[ProtoContract]
-	public partial class M2Chat_UpdateUnion: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(4)]
-		public long UnionId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Chat2M_UpdateUnion)]
-	[ProtoContract]
-	public partial class Chat2M_UpdateUnion: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 
@@ -4161,4 +3883,164 @@ namespace ET
 	}
 
 //Home   end####################################################
+//Chat  begin################################################
+	[ResponseType(nameof(Chat2G_EnterChat))]
+	[Message(InnerOpcode.G2Chat_EnterChat)]
+	[ProtoContract]
+	public partial class G2Chat_EnterChat: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public string Name { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public long GateSessionActorId { get; set; }
+
+		[ProtoMember(4)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(5)]
+		public int Level { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Chat2G_EnterChat)]
+	[ProtoContract]
+	public partial class Chat2G_EnterChat: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long ChatInfoUnitInstanceId { get; set; }
+
+	}
+
+	[ResponseType(nameof(Chat2M_UpdateLevel))]
+	[Message(InnerOpcode.M2Chat_UpdateLevel)]
+	[ProtoContract]
+	public partial class M2Chat_UpdateLevel: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(5)]
+		public int Level { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Chat2M_UpdateLevel)]
+	[ProtoContract]
+	public partial class Chat2M_UpdateLevel: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(Chat2G_RequestExitChat))]
+	[Message(InnerOpcode.G2Chat_RequestExitChat)]
+	[ProtoContract]
+	public partial class G2Chat_RequestExitChat: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Chat2G_RequestExitChat)]
+	[ProtoContract]
+	public partial class Chat2G_RequestExitChat: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(Chat2Mail_GetUnitList))]
+	[Message(InnerOpcode.Mail2Chat_GetUnitList)]
+	[ProtoContract]
+	public partial class Mail2Chat_GetUnitList: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Chat2Mail_GetUnitList)]
+	[ProtoContract]
+	public partial class Chat2Mail_GetUnitList: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<long> OnlineUnitIdList = new List<long>();
+
+	}
+
+	[ResponseType(nameof(Chat2M_UpdateUnion))]
+	[Message(InnerOpcode.M2Chat_UpdateUnion)]
+	[ProtoContract]
+	public partial class M2Chat_UpdateUnion: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(4)]
+		public long UnionId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Chat2M_UpdateUnion)]
+	[ProtoContract]
+	public partial class Chat2M_UpdateUnion: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//Chat   end####################################################
 }

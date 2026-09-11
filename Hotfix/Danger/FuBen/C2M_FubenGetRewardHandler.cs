@@ -5,9 +5,9 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class Actor_FubenGetRewardHandler : AMActorLocationRpcHandler<Unit, Actor_GetFubenRewardRequest, Actor_GetFubenRewardReponse>
+    public class C2M_FubenGetRewardHandler : AMActorLocationRpcHandler<Unit, C2M_GetFubenRewardRequest, M2C_GetFubenRewardReponse>
     {
-        protected override async ETTask Run(Unit unit, Actor_GetFubenRewardRequest request, Actor_GetFubenRewardReponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_GetFubenRewardRequest request, M2C_GetFubenRewardReponse response, Action reply)
         {
             //需要验证, 奖励的数据放在fubencompoentsystem
 

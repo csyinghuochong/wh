@@ -6,9 +6,9 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class Actor_SendReviveHandler : AMActorLocationRpcHandler<Unit, Actor_SendReviveRequest, Actor_SendReviveResponse>
+    public class C2M_SendReviveHandler : AMActorLocationRpcHandler<Unit, C2M_SendReviveRequest, M2C_SendReviveResponse>
     {
-        protected override async ETTask Run(Unit unit, Actor_SendReviveRequest request, Actor_SendReviveResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_SendReviveRequest request, M2C_SendReviveResponse response, Action reply)
         {
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
 
