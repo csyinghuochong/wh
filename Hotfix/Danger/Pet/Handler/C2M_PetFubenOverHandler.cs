@@ -21,12 +21,6 @@ namespace ET
                 result = result == CombatResultEnum.None ? CombatResultEnum.Fail : result;
                 domainScene.GetComponent<PetTianTiComponent>().OnGameOver(result);
             }
-            if (mapComponent.MapTypeEnum == MapTypeEnum.PetMing)
-            {
-                int result = domainScene.GetComponent<PetMingDungeonComponent>().GetCombatResult();
-                result = result == CombatResultEnum.None ? CombatResultEnum.Fail : result;
-                domainScene.GetComponent<PetMingDungeonComponent>().OnGameOver(result).Coroutine();
-            }
         }
     }
 }

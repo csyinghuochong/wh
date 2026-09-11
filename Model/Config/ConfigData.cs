@@ -17,8 +17,6 @@ namespace ET
 
         public static Dictionary<int , ServerInfo> ServerInfoList = new Dictionary<int , ServerInfo>();
 
-        public static List<int> FunctionOpenIds = new List<int> { 1025, 1043, 1044, 1045, 1052, 1055, 1057, 1058, 1059 };
-
 
         //公众平台上开发者设置的token, appID, EncodingAESKey
         //public const string sToken = "yinhuochongweijing666";

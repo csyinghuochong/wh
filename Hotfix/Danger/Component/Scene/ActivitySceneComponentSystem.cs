@@ -93,43 +93,6 @@ namespace ET
             //self.TeamUpdateHandler().Coroutine();
         }
 
-        public static void InitPetMineExtend(this ActivitySceneComponent self)
-        {
-#if false // TODO: migrate to LD config
-            List<MineBattleConfig> mineBattleConfig = MineBattleConfigCategory.Instance.GetAll().Values.ToList();
-            for (int i = 0; i < mineBattleConfig.Count; i++)
-            {
-                int totalNumber = CommonConfig.PetMiningList[mineBattleConfig[i].Id].Count;
-
-                int hexinNumber = 1;
-
-                if (mineBattleConfig[i].Id == 10001)
-                {
-                    hexinNumber = 1;
-                }
-                if (mineBattleConfig[i].Id == 10002)
-                {
-                    hexinNumber = 2;
-                }
-                if (mineBattleConfig[i].Id == 10003)
-                {
-                    hexinNumber = 5;
-                }
-
-                int[] index = RandomHelper.GetRandoms(hexinNumber, 0, totalNumber);
-                List<int> hexinlist = new List<int>(index);
-
-                for (int hexin = 0; hexin < hexinlist.Count; hexin++)
-                {
-                    self.DBDayActivityInfo.PetMingHexinList.Add(new IntLongPair()
-                    {
-                        KeyId = mineBattleConfig[i].Id,
-                        Value = hexinlist[hexin]
-                    });
-                }
-            }
-#endif
-        }
 
         public static void CheckPetMine(this ActivitySceneComponent self)
         {
@@ -215,10 +178,6 @@ namespace ET
                 self.InitGlobalRandomShop();
             }
 
-            if (self.DBDayActivityInfo.PetMingHexinList.Count == 0)
-            {
-                self.InitPetMineExtend();
-            }
             self.SaveDB();
             self.CreateRobot(openServerDay).Coroutine();     
 
@@ -331,7 +290,7 @@ namespace ET
             long curTime = (dateTime.Hour * 60 + dateTime.Minute) * 60 + dateTime.Second;
             TimerComponent.Instance.Remove(ref self.ActivityTimer);
             ///1025 战场 1043家族boss 1044家族争霸  1045竞技 1052狩猎活动  1055喜从天降  1057小龟大赛  1058奔跑比赛 1059恶魔活动
-            List<int> functonIds = ConfigData.FunctionOpenIds;
+            List<int> functonIds = new List<int>();
             for (int i = 0; i < functonIds.Count; i++)
             {
                 long startTime = FunctionHelp.GetOpenTime(functonIds[i]);
@@ -346,7 +305,6 @@ namespace ET
                     }
                     startTime = curTime + RandomHelper.NextLong(TimeHelper.Second * 5, TimeHelper.Hour * 10);
                 }
-
                 if (curTime < startTime)
                 {
                     long sTime = serverTime + (startTime - curTime) * 1000;
@@ -449,31 +407,14 @@ namespace ET
                         (self.MapIdList[i], new A2Other_ActivityUpdateRequest() { Hour = hour, OpenDay = openServerDay });
             }
 
-            if (hour == 0)
+            //五点刷新商店 开启 活动定时器
+            if (hour == 5)
             {
                 LogHelper.LogWarning($"全服随机商店刷新: {self.DomainZone()}", true);
                 self.InitGlobalRandomShop();
-                self.DBDayActivityInfo.PetMingHexinList.Clear();
-
-                self.InitPetMineExtend();
                 self.InitFunctionButton();
             }
-            
-            if (!CommonHelper.IsInnerNet() && self.DomainZone() != 3 && hour == 6)
-            {
-                Log.Warning($"刷新机器人: {self.DomainZone()}");
-                self.CreateRobot(openServerDay).Coroutine();
-            }
-
-            if (hour == 0 && dayOfWeek == DayOfWeek.Monday)
-            {
-                Console.WriteLine($"限时活动清空");
-                self.DBDayActivityInfo.FeedPlayerList.Clear();
-                self.DBDayActivityInfo.FeedRewardKey = 0;
-                self.DBDayActivityInfo.BaoShiDu = 0;
-                self.DBDayActivityInfo.OpenGuessIds.Clear();
-            }
-
+       
         }
     }
 }

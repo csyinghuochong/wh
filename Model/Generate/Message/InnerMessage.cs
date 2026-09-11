@@ -933,43 +933,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Mail2M_SendMailResponse))]
-	[Message(InnerOpcode.M2Mail_SendMailRequest)]
-	[ProtoContract]
-	public partial class M2Mail_SendMailRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long Id { get; set; }
-
-		[ProtoMember(3)]
-		public MailInfo MailInfo { get; set; }
-
-		[ProtoMember(4)]
-		public int GetWay { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Mail2M_SendMailResponse)]
-	[ProtoContract]
-	public partial class Mail2M_SendMailResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(Other2A_ActivityUpdateResponse))]
 	[Message(InnerOpcode.A2Other_ActivityUpdateRequest)]
 	[ProtoContract]
@@ -1814,46 +1777,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(E2M_GMEMailSendResponse))]
-	[Message(InnerOpcode.M2E_GMEMailSendRequest)]
-	[ProtoContract]
-	public partial class M2E_GMEMailSendRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public string Itemlist { get; set; }
-
-		[ProtoMember(3)]
-		public string Title { get; set; }
-
-		[ProtoMember(4)]
-		public string UserName { get; set; }
-
-		[ProtoMember(5)]
-		public int MailType { get; set; }
-
-	}
-
-	[Message(InnerOpcode.E2M_GMEMailSendResponse)]
-	[ProtoContract]
-	public partial class E2M_GMEMailSendResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(L2A_LoginAccountResponse))]
 	[Message(InnerOpcode.A2L_LoginAccountRequest)]
 	[ProtoContract]
@@ -2415,76 +2338,6 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.ServerMailItem)]
-	[ProtoContract]
-	public partial class ServerMailItem: Object
-	{
-		[ProtoMember(1)]
-		public int MailType { get; set; }
-
-		[ProtoMember(2)]
-		public string ParasmNew { get; set; }
-
-		[ProtoMember(3)]
-		public List<BagInfo> ItemList = new List<BagInfo>();
-
-		[ProtoMember(4)]
-		public long EndTime { get; set; }
-
-		[ProtoMember(5)]
-		public int ServerMailIId { get; set; }
-
-		[ProtoMember(6)]
-		public int Parasm { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Mail2M_SendServerMailItem)]
-	[ProtoContract]
-	public partial class Mail2M_SendServerMailItem: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public ServerMailItem ServerMailItem { get; set; }
-
-	}
-
-	[ResponseType(nameof(Mail2G_EnterMail))]
-	[Message(InnerOpcode.G2Mail_EnterMail)]
-	[ProtoContract]
-	public partial class G2Mail_EnterMail: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public int ServerMailIdCur { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Mail2G_EnterMail)]
-	[ProtoContract]
-	public partial class Mail2G_EnterMail: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(3)]
-		public int ServerMailIdMax { get; set; }
-
-	}
-
 //进入喜从天降
 	[ResponseType(nameof(H2M_HapplyEnterResponse))]
 	[Message(InnerOpcode.M2H_HapplyEnterRequest)]
@@ -2564,191 +2417,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2M_PetMingPlayerInfoResponse))]
-	[Message(InnerOpcode.M2A_PetMingPlayerInfoRequest)]
-	[ProtoContract]
-	public partial class M2A_PetMingPlayerInfoRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MingType { get; set; }
-
-		[ProtoMember(2)]
-		public int Postion { get; set; }
-
-	}
-
-	[Message(InnerOpcode.A2M_PetMingPlayerInfoResponse)]
-	[ProtoContract]
-	public partial class A2M_PetMingPlayerInfoResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public PetMingPlayerInfo PetMingPlayerInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(A2M_PetMingBattleWinResponse))]
-	[Message(InnerOpcode.M2A_PetMingBattleWinRequest)]
-	[ProtoContract]
-	public partial class M2A_PetMingBattleWinRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MingType { get; set; }
-
-		[ProtoMember(2)]
-		public int Postion { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(4)]
-		public int TeamId { get; set; }
-
-		[ProtoMember(5)]
-		public string WinPlayer { get; set; }
-
-	}
-
-	[Message(InnerOpcode.A2M_PetMingBattleWinResponse)]
-	[ProtoContract]
-	public partial class A2M_PetMingBattleWinResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2A_PetMingChanChuResponse))]
-	[Message(InnerOpcode.A2M_PetMingChanChuRequest)]
-	[ProtoContract]
-	public partial class A2M_PetMingChanChuRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(4)]
-		public long ChanChu { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2A_PetMingChanChuResponse)]
-	[ProtoContract]
-	public partial class M2A_PetMingChanChuResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2A_PetMingLoginResponse))]
-	[Message(InnerOpcode.A2M_PetMingLoginRequest)]
-	[ProtoContract]
-	public partial class A2M_PetMingLoginRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(1)]
-		public List<PetMingPlayerInfo> PetMineList = new List<PetMingPlayerInfo>();
-
-		[ProtoMember(2)]
-		public List<IntLongPair> PetMingExtend = new List<IntLongPair>();
-
-	}
-
-	[Message(InnerOpcode.M2A_PetMingLoginResponse)]
-	[ProtoContract]
-	public partial class M2A_PetMingLoginResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2A_PetMingRecordResponse))]
-	[Message(InnerOpcode.A2M_PetMingRecordRequest)]
-	[ProtoContract]
-	public partial class A2M_PetMingRecordRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(1)]
-		public PetMingRecord PetMingRecord { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2A_PetMingRecordResponse)]
-	[ProtoContract]
-	public partial class M2A_PetMingRecordResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //赛季副本
 	[ResponseType(nameof(R2M_RankSeasonTowerResponse))]
 	[Message(InnerOpcode.M2R_RankSeasonTowerRequest)]
@@ -2781,83 +2449,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public int RankId { get; set; }
-
-	}
-
-	[ResponseType(nameof(A2M_ActivityGuessResponse))]
-	[Message(InnerOpcode.M2A_ActivityGuessRequest)]
-	[ProtoContract]
-	public partial class M2A_ActivityGuessRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public int GuessId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.A2M_ActivityGuessResponse)]
-	[ProtoContract]
-	public partial class A2M_ActivityGuessResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(A2M_ActivitySelfInfo))]
-	[Message(InnerOpcode.M2A_ActivitySelfInfo)]
-	[ProtoContract]
-	public partial class M2A_ActivitySelfInfo: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.A2M_ActivitySelfInfo)]
-	[ProtoContract]
-	public partial class A2M_ActivitySelfInfo: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<int> GuessIds = new List<int>();
-
-		[ProtoMember(2)]
-		public List<int> LastGuessReward = new List<int>();
-
-		[ProtoMember(3)]
-		public int BaoShiDu { get; set; }
-
-		[ProtoMember(4)]
-		public List<int> OpenGuessIds = new List<int>();
 
 	}
 
@@ -3736,43 +3327,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(U2M_UnionMysteryBuyResponse))]
-	[Message(InnerOpcode.M2U_UnionMysteryBuyRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionMysteryBuyRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public int MysteryId { get; set; }
-
-		[ProtoMember(3)]
-		public int BuyNumber { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionMysteryBuyResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionMysteryBuyResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //公会改名同步到玩家显示缓存
 	[ResponseType(nameof(M2U_UnionSetNameResponse))]
 	[Message(InnerOpcode.U2M_UnionSetNameRequest)]
@@ -4043,4 +3597,153 @@ namespace ET
 	}
 
 //Chat   end####################################################
+//Mail begin####################################################
+	[ResponseType(nameof(Mail2M_SendMailResponse))]
+	[Message(InnerOpcode.M2Mail_SendMailRequest)]
+	[ProtoContract]
+	public partial class M2Mail_SendMailRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long Id { get; set; }
+
+		[ProtoMember(3)]
+		public MailInfo MailInfo { get; set; }
+
+		[ProtoMember(4)]
+		public int GetWay { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Mail2M_SendMailResponse)]
+	[ProtoContract]
+	public partial class Mail2M_SendMailResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(E2M_GMEMailSendResponse))]
+	[Message(InnerOpcode.M2E_GMEMailSendRequest)]
+	[ProtoContract]
+	public partial class M2E_GMEMailSendRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(2)]
+		public string Itemlist { get; set; }
+
+		[ProtoMember(3)]
+		public string Title { get; set; }
+
+		[ProtoMember(4)]
+		public string UserName { get; set; }
+
+		[ProtoMember(5)]
+		public int MailType { get; set; }
+
+	}
+
+	[Message(InnerOpcode.E2M_GMEMailSendResponse)]
+	[ProtoContract]
+	public partial class E2M_GMEMailSendResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[Message(InnerOpcode.ServerMailItem)]
+	[ProtoContract]
+	public partial class ServerMailItem: Object
+	{
+		[ProtoMember(1)]
+		public int MailType { get; set; }
+
+		[ProtoMember(2)]
+		public string ParasmNew { get; set; }
+
+		[ProtoMember(3)]
+		public List<BagInfo> ItemList = new List<BagInfo>();
+
+		[ProtoMember(4)]
+		public long EndTime { get; set; }
+
+		[ProtoMember(5)]
+		public int ServerMailIId { get; set; }
+
+		[ProtoMember(6)]
+		public int Parasm { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Mail2M_SendServerMailItem)]
+	[ProtoContract]
+	public partial class Mail2M_SendServerMailItem: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public ServerMailItem ServerMailItem { get; set; }
+
+	}
+
+	[ResponseType(nameof(Mail2G_EnterMail))]
+	[Message(InnerOpcode.G2Mail_EnterMail)]
+	[ProtoContract]
+	public partial class G2Mail_EnterMail: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public int ServerMailIdCur { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Mail2G_EnterMail)]
+	[ProtoContract]
+	public partial class Mail2G_EnterMail: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(3)]
+		public int ServerMailIdMax { get; set; }
+
+	}
+
+//Mail  end####################################################
 }

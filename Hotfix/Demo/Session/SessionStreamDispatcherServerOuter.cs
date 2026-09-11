@@ -184,15 +184,7 @@ namespace ET
 						}
 						else if (actorRequest is IActivityActorRequest iActivityRequest)
 						{
-                            if (actorRequest is C2A_PetMingListRequest infoRequest)
-                            {
-                                infoRequest.ActorId = player.UnitId;
-                            }
-                            if (actorRequest is C2A_PetMingChanChuRequest infoRequest2)
-                            {
-                                infoRequest2.ActorId = player.UnitId;
-                            }
-
+ 
                             long activityID = player.ActivityServerID;
 							response = await ActorMessageSenderComponent.Instance.Call(activityID, iActivityRequest);
 						}

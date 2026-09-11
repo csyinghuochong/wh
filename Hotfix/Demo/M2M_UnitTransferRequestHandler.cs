@@ -104,11 +104,7 @@ namespace ET
 							scene.GetComponent<PetTianTiComponent>().MainUnit = unit;
 							scene.GetComponent<PetTianTiComponent>().GeneratePetFuben().Coroutine();
 						}
-						if (request.SceneType == (int)MapTypeEnum.PetMing)
-						{
-							scene.GetComponent<PetMingDungeonComponent>().MainUnit = unit;
-							scene.GetComponent<PetMingDungeonComponent>().GeneratePetFuben().Coroutine();
-                        }
+
 						break;
 					case (int)MapTypeEnum.LocalDungeon:
 						LDScene dungeonConfig = LDSceneCategory.Instance.Get(request.ChapterId);

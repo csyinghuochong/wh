@@ -1108,15 +1108,6 @@ namespace ET
             self.SendToUpdateTask();
         }
 
-        public static void OnPetMineLogin(this TaskComponentServer self, List<PetMingPlayerInfo> petMingPlayers, List<IntLongPair> extends)
-        {
-            using (self.TaskEventBatch())
-            {
-                for (int i = 0; i < petMingPlayers.Count; i++)
-                {
-                }
-            }
-        }
 
         // Begin → 合并 Trigger；End → Flush。怕漏 End 时请用 using (self.TaskEventBatch()) { ... }
         /// <summary>
@@ -1282,7 +1273,6 @@ namespace ET
                     changed = true;
                 }
             }
-
             return changed;
         }
 

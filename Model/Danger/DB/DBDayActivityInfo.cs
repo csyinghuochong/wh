@@ -12,11 +12,6 @@ namespace ET
 		public int LastHour;
 		
 
-		/// <summary>
-		/// 小龟历史胜利次数
-		/// </summary>
-		public List<int> TurtleWinTimes = new List<int>() { }; 
-
         /// <summary>
         /// 全服随机商店货架 Key=ShopId（LDShop.Type==9）
         /// </summary>
@@ -26,80 +21,6 @@ namespace ET
 		//首胜记录
 		public List<FirstWinInfo> FirstWinInfos = new List<FirstWinInfo>();
 
-		//宠物矿场(矿场类型->玩家ID)
-		public List<PetMingPlayerInfo> PetMingList = new List<PetMingPlayerInfo>();
-
-        [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
-        public Dictionary<long, long> PetMingChanChu = new Dictionary<long, long>();
-
-		//核心矿
-		public List<IntLongPair> PetMingHexinList = new List<IntLongPair> { };
-
-        /// <summary>
-        /// 竞猜数字->竞猜玩家列表
-        /// </summary>
-        [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
-        public Dictionary<int, List<long>> GuessPlayerList = new Dictionary<int, List<long>>();
-
-        /// <summary>
-        /// 参与竞猜的玩家
-        /// </summary>
-        /// <param name="guessPlayerList"></param>
-        public void AddGuessPlayerList(Dictionary<int, List<long>> guessPlayerList)
-        {
-            foreach (var item in guessPlayerList)
-            {
-                if (!GuessPlayerList.ContainsKey(item.Key))
-                {
-                    GuessPlayerList.Add(item.Key, new List<long>());        
-                }
-
-                if (item.Value.Count > 0 && GuessPlayerList[item.Key].Contains(item.Value[0]))
-                {
-                    continue;
-                }
-
-                GuessPlayerList[item.Key].AddRange(item.Value);
-            }
-        }
-
-        /// <summary>
-        /// 竞猜数字->中奖的玩家
-        /// </summary>
-        [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
-        public Dictionary<int, List<long>> GuessRewardList = new Dictionary<int, List<long>>();
-        public void AddGuessRewardList(Dictionary<int, List<long>> guessRewardList)
-        {
-            foreach (var item in guessRewardList)
-            {
-                if (!GuessRewardList.ContainsKey(item.Key))
-                {
-                    GuessRewardList.Add(item.Key, new List<long>());    
-                }
-
-                if (item.Value.Count > 0 && GuessRewardList[item.Key].Contains(item.Value[0]))
-                {
-                    continue;
-                }
-
-                GuessRewardList[item.Key].AddRange(item.Value);
-            }
-        }
-
-        /// <summary>
-        /// 喂食玩家列表
-        /// </summary>
-        [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
-        public Dictionary<long, int> FeedPlayerList = new Dictionary<long, int>();
-
-        public int FeedRewardKey = 0;
-
-        public int BaoShiDu = 0;
-
-        /// <summary>
-        /// 竞猜开奖的字
-        /// </summary>
-        public List<int> OpenGuessIds = new List<int>() { };
     }
 
 }

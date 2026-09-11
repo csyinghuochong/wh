@@ -792,7 +792,7 @@ namespace ET
 
             roleInfo.MakeIdList.Add(makeId);
             Unit unit = self.GetParent<Unit>();
-            MessageHelper.SendToClient(unit, new M2C_UpdateUserInfoMessage { RoleInfo = roleInfo });
+            MessageHelper.SendToClient(unit, new M2C_UpdateRoleInfoMessage { RoleInfo = roleInfo });
             DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, self).Coroutine();
         }
 

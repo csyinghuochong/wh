@@ -630,8 +630,6 @@ namespace ET
                     continue;
                 }
 
-                newentity.AddGuessPlayerList(dBDayActivityInfos_old[0].GuessPlayerList);
-                newentity.AddGuessRewardList(dBDayActivityInfos_old[0].GuessRewardList);
                 await Game.Scene.GetComponent<DBComponent>().Save(newzone, newentity);
             }
 

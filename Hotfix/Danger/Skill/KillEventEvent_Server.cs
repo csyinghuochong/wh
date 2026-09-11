@@ -169,9 +169,6 @@ namespace ET
                 case MapTypeEnum.TeamDungeon:
                     domainScene.GetComponent<TeamDungeonComponent>().OnKillEvent(defendUnit);
                     break;
-                case MapTypeEnum.PetMing:
-                    domainScene.GetComponent<PetMingDungeonComponent>().OnKillEvent();
-                    break;
                 case MapTypeEnum.BaoZangZhiDi:
                     ;
                     break;

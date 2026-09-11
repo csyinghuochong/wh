@@ -523,11 +523,6 @@ namespace ET
             //self.PetFubenInfos.Add(new PetFubenInfo() { PetFubenId = petfubenId, Star = star, Reward = 0 });
         }
 
-        public static void OnPetMingRecord(this PetComponentServer self, PetMingRecord record)
-        {
-
-        }
-
         public static void OnGmGaoJi(this PetComponentServer self)
         {
 

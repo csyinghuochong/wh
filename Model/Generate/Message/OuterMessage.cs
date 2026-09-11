@@ -2725,138 +2725,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_UpdateMailInfo)]
-	[ProtoContract]
-	public partial class M2C_UpdateMailInfo: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public List<MailInfo> MailInfos = new List<MailInfo>();
-
-	}
-
-	[Message(OuterOpcode.MailInfo)]
-	[ProtoContract]
-	public partial class MailInfo: Object
-	{
-		[ProtoMember(1)]
-		public int Status { get; set; }
-
-		[ProtoMember(2)]
-		public int ConfigId { get; set; }
-
-		[ProtoMember(3)]
-		public long MailId { get; set; }
-
-		[ProtoMember(7)]
-		public List<BagInfo> ItemList = new List<BagInfo>();
-
-		[ProtoMember(8)]
-		public long ValidTime { get; set; }
-
-		[ProtoMember(9)]
-		public string Form { get; set; }
-
-		[ProtoMember(10)]
-		public List<string> ParamList = new List<string>();
-
-	}
-
-	[ResponseType(nameof(M2C_ReceiveMailResponse))]
-	[Message(OuterOpcode.C2M_ReceiveMailRequest)]
-	[ProtoContract]
-	public partial class C2M_ReceiveMailRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long MailId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ReceiveMailResponse)]
-	[ProtoContract]
-	public partial class M2C_ReceiveMailResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_DeleteAllMailResponse))]
-	[Message(OuterOpcode.C2M_DeleteAllMailRequest)]
-	[ProtoContract]
-	public partial class C2M_DeleteAllMailRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_DeleteAllMailResponse)]
-	[ProtoContract]
-	public partial class M2C_DeleteAllMailResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(Mail2C_GetAllMailResponse))]
-	[Message(OuterOpcode.C2Mail_GetAllMailRequest)]
-	[ProtoContract]
-	public partial class C2Mail_GetAllMailRequest: Object, IMailActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.Mail2C_GetAllMailResponse)]
-	[ProtoContract]
-	public partial class Mail2C_GetAllMailResponse: Object, IMailActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<MailInfo> MailInfos = new List<MailInfo>();
-
-	}
-
 	[ResponseType(nameof(M2C_TianFuActiveResponse))]
 	[Message(OuterOpcode.C2M_TianFuActiveRequest)]
 	[ProtoContract]
@@ -7044,37 +6912,12 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_UpdateUserInfoMessage)]
+	[Message(OuterOpcode.M2C_UpdateRoleInfoMessage)]
 	[ProtoContract]
-	public partial class M2C_UpdateUserInfoMessage: Object, IActorMessage
+	public partial class M2C_UpdateRoleInfoMessage: Object, IActorMessage
 	{
 		[ProtoMember(1)]
 		public RoleInfo RoleInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_TaskOnLoginResponse))]
-	[Message(OuterOpcode.C2M_TaskOnLoginRequest)]
-	[ProtoContract]
-	public partial class C2M_TaskOnLoginRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TaskOnLoginResponse)]
-	[ProtoContract]
-	public partial class M2C_TaskOnLoginResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
 
 	}
 
@@ -10204,245 +10047,6 @@ namespace ET
 	}
 
 //Pet   end####################################################
-//PetMing  begin####################################################
-	[Message(OuterOpcode.PetMingPlayerInfo)]
-	[ProtoContract]
-	public partial class PetMingPlayerInfo: Object
-	{
-		[ProtoMember(1)]
-		public int MineType { get; set; }
-
-		[ProtoMember(2)]
-		public int Postion { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(4)]
-		public string PlayerName { get; set; }
-
-		[ProtoMember(5)]
-		public List<int> PetConfig = new List<int>();
-
-		[ProtoMember(6)]
-		public List<long> PetIdList = new List<long>();
-
-		[ProtoMember(7)]
-		public int TeamId { get; set; }
-
-		[ProtoMember(8)]
-		public long OccupyTime { get; set; }
-
-	}
-
-	[ResponseType(nameof(A2C_PetMingListResponse))]
-	[Message(OuterOpcode.C2A_PetMingListRequest)]
-	[ProtoContract]
-	public partial class C2A_PetMingListRequest: Object, IActivityActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.A2C_PetMingListResponse)]
-	[ProtoContract]
-	public partial class A2C_PetMingListResponse: Object, IActivityActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public long ChanChu { get; set; }
-
-		[ProtoMember(2)]
-		public List<IntLongPair> PetMineExtend = new List<IntLongPair>();
-
-		[ProtoMember(4)]
-		public List<PetMingPlayerInfo> PetMingPlayerInfos = new List<PetMingPlayerInfo>();
-
-	}
-
-	[ResponseType(nameof(M2C_PetMingRewardResponse))]
-	[Message(OuterOpcode.C2M_PetMingRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_PetMingRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int Number { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetMingRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_PetMingRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(A2C_PetMingChanChuResponse))]
-	[Message(OuterOpcode.C2A_PetMingChanChuRequest)]
-	[ProtoContract]
-	public partial class C2A_PetMingChanChuRequest: Object, IActivityActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.A2C_PetMingChanChuResponse)]
-	[ProtoContract]
-	public partial class A2C_PetMingChanChuResponse: Object, IActivityActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.PetMingRecord)]
-	[ProtoContract]
-	public partial class PetMingRecord: Object
-	{
-		[ProtoMember(1)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(2)]
-		public long Time { get; set; }
-
-		[ProtoMember(3)]
-		public int MineType { get; set; }
-
-		[ProtoMember(4)]
-		public int Position { get; set; }
-
-		[ProtoMember(5)]
-		public string WinPlayer { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetMingRecordResponse))]
-	[Message(OuterOpcode.C2M_PetMingRecordRequest)]
-	[ProtoContract]
-	public partial class C2M_PetMingRecordRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetMingRecordResponse)]
-	[ProtoContract]
-	public partial class M2C_PetMingRecordResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<PetMingRecord> PetMingRecords = new List<PetMingRecord>();
-
-	}
-
-	[ResponseType(nameof(M2C_PetMingOccupyResponse))]
-	[Message(OuterOpcode.C2M_PetMingOccupyRequest)]
-	[ProtoContract]
-	public partial class C2M_PetMingOccupyRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int Operate { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetMingOccupyResponse)]
-	[ProtoContract]
-	public partial class M2C_PetMingOccupyResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_PetMingResetResponse))]
-	[Message(OuterOpcode.C2M_PetMingResetRequest)]
-	[ProtoContract]
-	public partial class C2M_PetMingResetRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetMingResetResponse)]
-	[ProtoContract]
-	public partial class M2C_PetMingResetResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//PetMing    end####################################################
 //ChengJiu   start####################################################
 	[ResponseType(nameof(M2C_ChengJiuListResponse))]
 	[Message(OuterOpcode.C2M_ChengJiuListRequest)]
@@ -11759,76 +11363,6 @@ namespace ET
 
 	}
 
-//家族神秘商店道具
-	[ResponseType(nameof(U2C_UnionMysteryListResponse))]
-	[Message(OuterOpcode.C2U_UnionMysteryListRequest)]
-	[ProtoContract]
-	public partial class C2U_UnionMysteryListRequest: Object, IUnionActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.U2C_UnionMysteryListResponse)]
-	[ProtoContract]
-	public partial class U2C_UnionMysteryListResponse: Object, IUnionActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
-
-	}
-
-//家族神秘商店道具
-	[ResponseType(nameof(M2C_UnionMysteryBuyResponse))]
-	[Message(OuterOpcode.C2M_UnionMysteryBuyRequest)]
-	[ProtoContract]
-	public partial class C2M_UnionMysteryBuyRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MysteryId { get; set; }
-
-		[ProtoMember(3)]
-		public int BuyNumber { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_UnionMysteryBuyResponse)]
-	[ProtoContract]
-	public partial class M2C_UnionMysteryBuyResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //设置是否接受公会邀请
 	[ResponseType(nameof(M2C_UnionInviteRefuseResponse))]
 	[Message(OuterOpcode.C2M_UnionInviteRefuseRequest)]
@@ -12970,4 +12504,138 @@ namespace ET
 	}
 
 //Task  end####################################################
+//Mail begin####################################################
+	[Message(OuterOpcode.M2C_UpdateMailInfo)]
+	[ProtoContract]
+	public partial class M2C_UpdateMailInfo: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public List<MailInfo> MailInfos = new List<MailInfo>();
+
+	}
+
+	[Message(OuterOpcode.MailInfo)]
+	[ProtoContract]
+	public partial class MailInfo: Object
+	{
+		[ProtoMember(1)]
+		public int Status { get; set; }
+
+		[ProtoMember(2)]
+		public int ConfigId { get; set; }
+
+		[ProtoMember(3)]
+		public long MailId { get; set; }
+
+		[ProtoMember(7)]
+		public List<BagInfo> ItemList = new List<BagInfo>();
+
+		[ProtoMember(8)]
+		public long ValidTime { get; set; }
+
+		[ProtoMember(9)]
+		public string Form { get; set; }
+
+		[ProtoMember(10)]
+		public List<string> ParamList = new List<string>();
+
+	}
+
+	[ResponseType(nameof(M2C_ReceiveMailResponse))]
+	[Message(OuterOpcode.C2M_ReceiveMailRequest)]
+	[ProtoContract]
+	public partial class C2M_ReceiveMailRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long MailId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ReceiveMailResponse)]
+	[ProtoContract]
+	public partial class M2C_ReceiveMailResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_DeleteAllMailResponse))]
+	[Message(OuterOpcode.C2M_DeleteAllMailRequest)]
+	[ProtoContract]
+	public partial class C2M_DeleteAllMailRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_DeleteAllMailResponse)]
+	[ProtoContract]
+	public partial class M2C_DeleteAllMailResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(Mail2C_GetAllMailResponse))]
+	[Message(OuterOpcode.C2Mail_GetAllMailRequest)]
+	[ProtoContract]
+	public partial class C2Mail_GetAllMailRequest: Object, IMailActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.Mail2C_GetAllMailResponse)]
+	[ProtoContract]
+	public partial class Mail2C_GetAllMailResponse: Object, IMailActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<MailInfo> MailInfos = new List<MailInfo>();
+
+	}
+
+//Mail  end####################################################
 }

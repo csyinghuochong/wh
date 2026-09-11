@@ -184,25 +184,6 @@ namespace ET
                             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
                         }
                         break;
-                    case (int)MapTypeEnum.PetMing:
-                        long cdTime = 0;
-                        if (cdTime > TimeHelper.ServerNow())
-                        {
-                            return ErrorCode.ERR_InMakeCD;
-                        }
-                        string[] praminfos = request.paramInfo.Split('_');
-                        fubenid = IdGenerater.Instance.GenerateId();
-                        fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "Fuben" + fubenid.ToString(), SceneType.Map);
-                        PetMingDungeonComponent petMingDungeon = fubnescene.AddComponent<PetMingDungeonComponent>();
-                        petMingDungeon.MineType = request.Difficulty;
-                        petMingDungeon.Position = int.Parse(praminfos[0]);
-                        petMingDungeon.TeamId = int.Parse(praminfos[1]);
-                        fubnescene.GetComponent<MapComponent>().SetMapInfo((int)MapTypeEnum.PetMing, request.SceneId, 0);
-                        TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.PetMing, request.SceneId, request.Difficulty, praminfos[0]);
-                        TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
-                        break;
                     case (int)MapTypeEnum.PetTianTi:
                         ////动态创建副本
                         long enemyId = long.Parse(request.paramInfo);

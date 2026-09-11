@@ -72,7 +72,6 @@
   <ItemGroup>
     <Folder Include="Danger\ActivityServer\" />
     <Folder Include="Danger\Handler\Map\" />
-    <Folder Include="Danger\HongBao\" />
     <Folder Include="Module\Function\" />
   </ItemGroup>
   <ItemGroup>
