@@ -115,48 +115,48 @@ namespace ET
 		/// <summary>接取 NPC</summary>
 		[ProtoMember(12)]
 		public int NPC_Accept { get; set; }
-		/// <summary>接取 对话</summary>
+		/// <summary>对话</summary>
 		[ProtoMember(13)]
-		public int NPC_Accept_Dialogue_1 { get; set; }
-		/// <summary>接取 对话</summary>
-		[ProtoMember(14)]
-		public int NPC_Accept_Dialogue_2 { get; set; }
-		/// <summary>接取 对话</summary>
-		[ProtoMember(15)]
-		public int NPC_Accept_Dialogue_3 { get; set; }
-		/// <summary>接取 对话</summary>
-		[ProtoMember(16)]
-		public int NPC_Accept_Dialogue_4 { get; set; }
+		public int[] NPC_Accept_Dialogue { get; set; }
 		/// <summary>要求1</summary>
-		[ProtoMember(17)]
+		[ProtoMember(14)]
 		public int Requirement_1 { get; set; }
 		/// <summary>要求2</summary>
-		[ProtoMember(18)]
+		[ProtoMember(15)]
 		public int Requirement_2 { get; set; }
 		/// <summary>要求3</summary>
-		[ProtoMember(19)]
+		[ProtoMember(16)]
 		public int Requirement_3 { get; set; }
 		/// <summary>要求4</summary>
-		[ProtoMember(20)]
+		[ProtoMember(17)]
 		public int Requirement_4 { get; set; }
 		/// <summary>完成 NPC</summary>
-		[ProtoMember(21)]
+		[ProtoMember(18)]
 		public int NPC_Finish { get; set; }
 		/// <summary>未完成 对话</summary>
-		[ProtoMember(22)]
+		[ProtoMember(19)]
 		public int NPC_Finish_Dialogue_1 { get; set; }
 		/// <summary>完成 对话</summary>
-		[ProtoMember(23)]
+		[ProtoMember(20)]
 		public int NPC_Finish_Dialogue_2 { get; set; }
 		/// <summary>角色 经验 参数</summary>
-		[ProtoMember(24)]
+		[ProtoMember(21)]
 		public int Exp_Role_Param1 { get; set; }
 		/// <summary>角色 经验 参数</summary>
-		[ProtoMember(25)]
+		[ProtoMember(22)]
 		public int Exp_Role_Param2 { get; set; }
 		/// <summary>角色 经验 参数</summary>
-		[ProtoMember(26)]
+		[ProtoMember(23)]
 		public int Exp_Role_Param3 { get; set; }
+		/// <summary>技能 点 参数</summary>
+		[ProtoMember(24)]
+		public int Skill_Point_Param1 { get; set; }
+		/// <summary>技能 点 参数</summary>
+		[ProtoMember(25)]
+		public int Skill_Point_Param2 { get; set; }
+		/// <summary>技能 点 参数</summary>
+		[ProtoMember(26)]
+		public int Skill_Point_Param3 { get; set; }
 		/// <summary>绑定 钱币</summary>
 		[ProtoMember(27)]
 		public int Gold_1 { get; set; }

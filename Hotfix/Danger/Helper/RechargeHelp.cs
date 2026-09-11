@@ -13,6 +13,40 @@ namespace ET
             unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
         }
 
+
+        /// <summary>
+        /// 充值发奖串：Pay.Reward 为基础；首购追加 Activity_1.First_Reward；非首购追加 Extra_Reward（钻石数）。
+        /// </summary>
+        public static string GetDiamondNumber(int payId, int zone, bool isFirstBuy = false)
+        {
+            LDPay ldPay = LDPayCategory.Instance.Get(payId);
+            string reward = ldPay.Reward;
+            if (!LDActivity_1Category.Instance.Contain(payId))
+            {
+                return reward;
+            }
+
+            LDActivity_1 ldActivity1 = LDActivity_1Category.Instance.Get(payId);
+            if (isFirstBuy && ldActivity1.Is_First > 0 && !string.IsNullOrEmpty(ldActivity1.First_Reward))
+            {
+                return reward + "|" + ldActivity1.First_Reward;
+            }
+
+            if (!isFirstBuy && !string.IsNullOrEmpty(ldActivity1.Extra_Reward))
+            {
+                return reward + "|" + ldActivity1.Extra_Reward;
+            }
+
+            return reward;
+        }
+
+        public static int GetRechargeNumber(int payId, int zone)
+        {
+            LDPay ldPay = LDPayCategory.Instance.Get(payId);
+            return ldPay.Tier_Id;
+        }
+
+
         public static void OnRechage(Unit unit, int playId, int rechargetType, bool notice)
         {
             if (playId <= 0)
@@ -41,7 +75,7 @@ namespace ET
                 canFirstBuy = activity1.Is_First > 0 && !rechargeComponentServer.HasFirstBuy(playId);
             }
 
-            string diamondNumber = CommonConfig.GetDiamondNumber(playId, homeZone, canFirstBuy);
+            string diamondNumber = GetDiamondNumber(playId, homeZone, canFirstBuy);
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(diamondNumber);
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
@@ -59,7 +93,7 @@ namespace ET
                 Console.WriteLine($"OnRechage: {unit.Id}   {rechargetType}  {playId}");
             }
 
-            int rechargeNumber = CommonConfig.GetRechargeNumber(playId, homeZone);
+            int rechargeNumber = GetRechargeNumber(playId, homeZone);
             long serverTime = TimeHelper.ServerNow();
             rechargeComponentServer.RechargePro.LastRechargeTime = serverTime;
             rechargeComponentServer.RechargePro.TotalRechargeNum += rechargeNumber;

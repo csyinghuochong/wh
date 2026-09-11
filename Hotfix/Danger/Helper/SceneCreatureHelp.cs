@@ -87,11 +87,11 @@ namespace ET
 				return;
 			}
 			
-			LDScene_Creature monsterPosition = LDScene_CreatureCategory.Instance.Get(sceenCreateid);
-			int mtype = monsterPosition.Type;   //1npc  2 怪物
-			int monsterid = monsterPosition.Match_Id;
+			LDScene_Creature sceneCreate = LDScene_CreatureCategory.Instance.Get(sceenCreateid);
+			int mtype = sceneCreate.Type;   //1npc  2 怪物
+			int monsterid = sceneCreate.Match_Id;
 			
-			Vector3 initposition = new Vector3((float)monsterPosition.Position[0], (float)monsterPosition.Position[1], (float)monsterPosition.Position[2]);
+			Vector3 initposition = new Vector3((float)sceneCreate.Position[0], (float)sceneCreate.Position[1], (float)sceneCreate.Position[2]);
 			Unit unit = null;
 			if (mtype == UnitType.Npc)
 			{
@@ -101,8 +101,8 @@ namespace ET
 					return;
                 }
 				
-				unit = UnitFactory.CreateNpc(scene,sceenCreateid, monsterid, initposition);
-			}
+				unit = UnitFactory.CreateNpc(scene,sceenCreateid, monsterid, initposition, sceneCreate.Rotation);
+            }
 			if (mtype == UnitType.Monster)
 			{
                 if (!LDMonsterCategory.Instance.Contain(monsterid))
@@ -113,7 +113,7 @@ namespace ET
                 unit = UnitFactory.CreateMonster(scene,  monsterid, initposition, new CreateMonsterInfo()
 					{
 						Camp = CampEnum.CampMonster1,
-						Rotation = monsterPosition.Rotation,
+						Rotation = sceneCreate.Rotation,
 						SceneCreateId =   sceenCreateid,
 					});
             }
@@ -125,7 +125,7 @@ namespace ET
                     return;
                 }
 
-                unit = UnitFactory.CreateInteraction(scene, sceenCreateid, monsterid, initposition, monsterPosition.Rotation);
+                unit = UnitFactory.CreateInteraction(scene, sceenCreateid, monsterid, initposition, sceneCreate.Rotation);
             }
         }
 

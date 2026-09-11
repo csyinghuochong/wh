@@ -4415,37 +4415,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ExpToGoldResponse))]
-	[Message(OuterOpcode.C2M_ExpToGoldRequest)]
-	[ProtoContract]
-	public partial class C2M_ExpToGoldRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ExpToGoldResponse)]
-	[ProtoContract]
-	public partial class M2C_ExpToGoldResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[Message(OuterOpcode.FirstWinInfo)]
 	[ProtoContract]
 	public partial class FirstWinInfo: Object
@@ -7144,65 +7113,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemXiLianNumReward))]
-	[Message(OuterOpcode.C2M_ItemXiLianNumReward)]
-	[ProtoContract]
-	public partial class C2M_ItemXiLianNumReward: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int RewardId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemXiLianNumReward)]
-	[ProtoContract]
-	public partial class M2C_ItemXiLianNumReward: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_BloodstoneQiangHuaResponse))]
-	[Message(OuterOpcode.C2M_BloodstoneQiangHuaRequest)]
-	[ProtoContract]
-	public partial class C2M_BloodstoneQiangHuaRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int QiangHuaType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_BloodstoneQiangHuaResponse)]
-	[ProtoContract]
-	public partial class M2C_BloodstoneQiangHuaResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public int Level { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_OneChallengeResponse))]
 	[Message(OuterOpcode.C2M_OneChallengeRequest)]
 	[ProtoContract]
@@ -9459,35 +9369,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public PetInfo PetInfo { get; set; }
-
-	}
-
-//宠物探索
-	[ResponseType(nameof(M2C_PetExploreReward))]
-	[Message(OuterOpcode.C2M_PetExploreReward)]
-	[ProtoContract]
-	public partial class C2M_PetExploreReward: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int RewardId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_PetExploreReward)]
-	[ProtoContract]
-	public partial class M2C_PetExploreReward: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
 
 	}
 

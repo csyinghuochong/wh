@@ -70,7 +70,7 @@ namespace ET
                     return;
                 }
 
-                string reward = CommonConfig.SerialReward[serialIndex];
+                string reward = null;
                 bag.OnAddItemData(reward, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}");
                 //numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
             }

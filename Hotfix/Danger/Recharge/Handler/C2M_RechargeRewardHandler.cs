@@ -11,23 +11,9 @@ namespace ET
         {
             if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
             {
-                if (!CommonConfig.RechargeReward_EN.ContainsKey(request.RechargeNumber))
-                {
-                    Log.Error($"C2M_RechargeRewardRequest 1");
-                    response.Error = ErrorCode.ERR_ModifyData;
-                    reply();
-                    return;
-                }
             }
             else
             {
-                if (!CommonConfig.RechargeReward.ContainsKey(request.RechargeNumber))
-                {
-                    Log.Error($"C2M_RechargeRewardRequest 1");
-                    response.Error = ErrorCode.ERR_ModifyData;
-                    reply();
-                    return;
-                }
             }
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
@@ -48,15 +34,7 @@ namespace ET
             }
 
             string rewarditem = "";
-            if (ServerHelper.IsGoogleServer(UnitZoneHelper.GetHomeZone(unit)))
-            {
-                rewarditem = CommonConfig.RechargeReward_EN[request.RechargeNumber];
-            }
-            else
-            {
-                rewarditem = CommonConfig.RechargeReward[request.RechargeNumber];
-            }
-            
+          
             string[] rewardList = rewarditem.Split('@');
             if (bagComponentServer.GetBagLeftCell() < rewardList.Length)
             {

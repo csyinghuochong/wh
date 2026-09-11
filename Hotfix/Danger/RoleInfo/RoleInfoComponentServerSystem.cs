@@ -394,14 +394,6 @@ namespace ET
             if (drop)
             {
                 float expcoefficient = 1f;
-                if (sceneType == MapTypeEnum.LocalDungeon && beKill.IsBoss())
-                {
-                    int killNumber = self.GetMonsterKillNumber(ldMonster.Id);
-                    int chpaterid = -1;////LDSceneCategory.Instance.GetChapterByDungeon(sceneId);
-                    BossDevelopment bossDevelopment = CommonConfig.GetBossDevelopmentByKill(chpaterid, killNumber);
-                    expcoefficient *= bossDevelopment.ExpAdd;
-                }
-
                 float expAdd = (numericComponent.GetAsFloat(NumericType.Numeric_Error) - 1f);
                 expAdd = Math.Clamp(expAdd, 0f, 1f);    
                 

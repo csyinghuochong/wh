@@ -103,15 +103,14 @@ namespace ET
                     unit.GetComponent<NumericComponent>().ChangeAttrFixed(null, NumericType.Speed_Fixed_16, addspeed, 0);
                     return;
                 }
+				if (message.GMMsg.Contains("gettask#"))
+				{
+                    int taskid = int.Parse(message.GMMsg.Split("#")[1]);
+                    unit.GetComponent<TaskComponentServer>().OnAcceptedTask_1(taskid, 231);
+				}
                 if (message.GMMsg == "resetguide#")
 				{
 					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.CompleteGuideIds.Clear();
-					return;
-				}
-				
-                if (message.GMMsg == "completetask#")
-				{
-					unit.GetComponent<TaskComponentServer>().GMCompletCurrentTask();
 					return;
 				}
                 if (message.GMMsg == "resetweek#")
@@ -198,10 +197,6 @@ namespace ET
 							//createSpilings.Spilings.Add(spilingInfo);
 							//MessageHelper.Broadcast(unit, createSpilings);
 						}
-						break;
-
-					case "4": //直接接取某个任务      4#30080019
-                        unit.GetComponent<TaskComponentServer>().OnGMGetTask(int.Parse(commands[1]));
 						break;
 					case "6":
 						int newLevel = int.Parse(commands[1]);

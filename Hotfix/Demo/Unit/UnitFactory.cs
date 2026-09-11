@@ -265,7 +265,7 @@ namespace ET
             return unit;
         }
 
-        public static Unit CreateNpc(Scene scene, int createid,  int npcId, Vector3 vector3)
+        public static Unit CreateNpc(Scene scene, int createid,  int npcId, Vector3 vector3, int rotation)
         {
             LDNPC ldNpc = LDNPCCategory.Instance.Get(npcId);
             if (ldNpc.Is_Close >= 1)
@@ -280,8 +280,7 @@ namespace ET
             unit.AddComponent<UnitInfoComponent>().Scene_Creature = createid;
             unit.ConfigId = npcId;
             unit.Position = vector3;
-            //unit.Position = new Vector3(npcConfig.Position[0] * 0.01f, npcConfig.Position[1] * 0.01f, npcConfig.Position[2] * 0.01f);
-            unit.Rotation = Quaternion.Euler(0, 0, 0);
+            unit.Rotation = Quaternion.Euler(0, rotation, 0);
             unit.Type = UnitType.Npc;
            
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);

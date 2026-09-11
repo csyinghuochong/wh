@@ -21,7 +21,7 @@ namespace ET
             {
                 int loc = (int)ItemLocType.ItemLocBag;
                 int addcell = BagCellNumHelper.Get(bagComponentServer.AddedCellNum, loc);
-                BuyCellCost buyCellCost = CommonConfig.BuyBagCellCosts[addcell];
+                BuyCellCost buyCellCost = new BuyCellCost();    
                 if (!bagComponentServer.OnCostItemData(buyCellCost.Cost, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -47,7 +47,7 @@ namespace ET
                 }
 
                 int addcell = BagCellNumHelper.Get(bagComponentServer.AddedCellNum, storeindex);
-                BuyCellCost buyCellCost = CommonConfig.BuyStoreCellCosts[(storeindex - 5) * 10 + addcell];
+                BuyCellCost buyCellCost = new BuyCellCost();
                 if (!bagComponentServer.OnCostItemData(buyCellCost.Cost,ItemLocType.ItemLocBag, ItemGetWay.CostItem))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;

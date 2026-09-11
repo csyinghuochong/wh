@@ -736,14 +736,6 @@ namespace ET
 			Unit unit = self.GetParent<Unit>();
 			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
 			RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-
-            int occ = roleInfo.Occ;
-            if (occ == 3)
-			{
-                self.OnRmItemSkill(CommonConfig.HunterFarSkill, 0);
-                self.OnRmItemSkill(CommonConfig.HunterNearSkill, 0);
-                self.OnAddItemSkill(equipIndex == 0 ? CommonConfig.HunterFarSkill : CommonConfig.HunterNearSkill);
-            }
         }
 
         /// <summary>

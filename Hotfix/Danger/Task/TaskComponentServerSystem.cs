@@ -472,54 +472,6 @@ namespace ET
             return taskPro;
         }
 
-        public static void GetRandomFubenId(this TaskComponentServer self, TaskPro taskPro)
-        {
-            Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            int lv = roleInfoComponentServer.RoleInfo.Lv;
-
-            List<int> openfubenids = new List<int>();
-            HashSet<int> mysteryDungeonSet = new HashSet<int>(LDSectionCategory.Instance.MysteryDungeonList);
-            Dictionary<int, LDScene> allfuben =  LDSceneCategory.Instance.GetAll();
-            foreach (( int fubenid, LDScene config) in allfuben)
-            {
-                if (config.Id == 50007)
-                {
-                    continue;
-                }
-                if (mysteryDungeonSet.Contains(config.Id))
-                {
-                    continue;
-                }
-                if (config.GetEnterLv() <= lv && config.Id < CommonConfig.GMDungeonId)
-                {
-                    openfubenids.Add(fubenid);
-                }
-            }
-            int dungeonid = openfubenids[RandomHelper.RandomNumber(0, openfubenids.Count)];
-            string[] monsters =  SceneConfigHelper.GetLocalDungeonMonsters_2(dungeonid).Split('@');
-            taskPro.FubenId = dungeonid;
-            taskPro.WaveId = RandomHelper.RandomNumber(0, monsters.Length);
-            Log.Warning($"生成藏宝图任务怪: {unit.Id} {dungeonid} {taskPro.WaveId}");
-        }
-        
-        public static void OnGMGetTask(this TaskComponentServer self, int taskid)
-        {
-            HashSet<int> existingTaskIds = new HashSet<int>(self.RoleTaskList_2.Count);
-            for (int i = 0; i < self.RoleTaskList_2.Count; i++)
-            {
-                existingTaskIds.Add(self.RoleTaskList_2[i].taskID);
-            }
-
-            if (existingTaskIds.Contains(taskid))
-            {
-                return;
-            }
-
-            self.CreateTask_2(taskid);
-            self.SendToUpdateTask(LDTask_2Category.Instance.Get(taskid).Group);
-        }
-
         public static List<TaskPro> GetTrackTaskList_2(this TaskComponentServer self)
         {
             List<TaskPro> taskPros = new List<TaskPro>();
@@ -1089,26 +1041,6 @@ namespace ET
         {
         }
 
-        public static void GMCompletCurrentTask(this TaskComponentServer self)
-        {
-            for (int i = 0; i < self.RoleTaskList_2.Count; i++)
-            {
-                TaskPro taskPro = self.RoleTaskList_2[i];
-                LDTask_2 ldTask = LDTask_2Category.Instance.Get(taskPro.taskID);
-
-                if (taskPro.taskStatus == (int)TaskStatuEnum.Completed)
-                {
-                    continue;
-                }
-
-                taskPro.taskTargetNum_1 = ldTask.Param1;
-                taskPro.taskStatus = (int)TaskStatuEnum.Completed;
-            }
-
-            self.SendToUpdateTask();
-        }
-
-
         // Begin → 合并 Trigger；End → Flush。怕漏 End 时请用 using (self.TaskEventBatch()) { ... }
         /// <summary>
         /// 任务事件批处理作用域，离开 using 自动 End/Flush。仅限 Component 内部 OnXxx 使用。
@@ -1276,7 +1208,22 @@ namespace ET
             return changed;
         }
 
-        private static bool ApplyTask1ProgressFromCoalesce(this TaskComponentServer self)
+        private static void FlushTaskEventBatch(this TaskComponentServer self)
+        {
+            if (self.TaskEventCoalesce.Count == 0)
+            {
+                return;
+            }
+
+            self.PendingTaskUpdateGroups.Clear();
+            self.PendingTaskUpdate_1 = false;
+            self.FlushTaskEventBatch_1();
+            self.FlushTaskEventBatch_2();
+            self.TaskEventCoalesce.Clear();
+            self.FlushPendingTaskUpdates();
+        }
+
+        private static void FlushTaskEventBatch_1(this TaskComponentServer self)
         {
             bool changed = false;
             for (int i = 0; i < self.RoleTaskList_1.Count; i++)
@@ -1311,18 +1258,11 @@ namespace ET
                 }
             }
 
-            return changed;
+            self.PendingTaskUpdate_1 = changed;
         }
 
-        private static void FlushTaskEventBatch(this TaskComponentServer self)
+        private static void FlushTaskEventBatch_2(this TaskComponentServer self)
         {
-            if (self.TaskEventCoalesce.Count == 0)
-            {
-                return;
-            }
-
-            self.PendingTaskUpdateGroups.Clear();
-            self.PendingTaskUpdate_1 = false;
             for (int i = 0; i < self.RoleTaskList_2.Count; i++)
             {
                 TaskPro taskPro = self.RoleTaskList_2[i];
@@ -1345,10 +1285,6 @@ namespace ET
                 ApplyConditionProgress(taskPro, ldTask, delta);
                 self.PendingTaskUpdateGroups.Add(ldTask.Group);
             }
-
-            self.PendingTaskUpdate_1 = self.ApplyTask1ProgressFromCoalesce();
-            self.TaskEventCoalesce.Clear();
-            self.FlushPendingTaskUpdates();
         }
 
         private static void ApplyTaskEvent(this TaskComponentServer self, int conditionType, int param1, int param2)
