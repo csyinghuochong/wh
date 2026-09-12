@@ -9,13 +9,23 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_TaskCommitRequest request, M2C_TaskCommitResponse response, Action reply)
         {
+            int taskTable = ResolveTaskTable(request.TaskTable, request.TaskId);
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-            if (LDTask_1Category.Instance != null && LDTask_1Category.Instance.Contain(request.TaskId))
+
+            if (taskTable == TaskTableType.Task_1)
             {
                 response.Error = taskComponentServer.OnCommitTask_1(request);
                 response.RoleComoleteTaskList_2 = taskComponentServer.RoleComoleteTaskList_2;
                 response.RoleComoleteTaskList_1 = taskComponentServer.RoleComoleteTaskList_1;
                 response.NextTask1_Id = taskComponentServer.NextTask1_Id;
+                reply();
+                await ETTask.CompletedTask;
+                return;
+            }
+
+            if (taskTable != TaskTableType.Task_2)
+            {
+                response.Error = ErrorCode.ERR_ModifyData;
                 reply();
                 await ETTask.CompletedTask;
                 return;
@@ -33,6 +43,26 @@ namespace ET
             response.NextTask1_Id = taskComponentServer.NextTask1_Id;
             reply();
             await ETTask.CompletedTask;
+        }
+
+        private static int ResolveTaskTable(int taskTable, int taskId)
+        {
+            if (taskTable == TaskTableType.Task_1 || taskTable == TaskTableType.Task_2)
+            {
+                return taskTable;
+            }
+
+            if (LDTask_1Category.Instance != null && LDTask_1Category.Instance.Contain(taskId))
+            {
+                return TaskTableType.Task_1;
+            }
+
+            if (LDTask_2Category.Instance != null && LDTask_2Category.Instance.Contain(taskId))
+            {
+                return TaskTableType.Task_2;
+            }
+
+            return TaskTableType.None;
         }
     }
 }

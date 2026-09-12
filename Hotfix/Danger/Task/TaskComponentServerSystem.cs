@@ -121,31 +121,15 @@ namespace ET
             return self.IsTaskComplete_2(taskid) || self.RoleComoleteTaskList_1.Contains(taskid);
         }
 
-        //任务追踪
-        public static int TaskTrack(this TaskComponentServer self, C2M_TaskTrackRequest request)
-        {
-            TaskPro task1 = self.GetTaskById_1(request.TaskId);
-            if (task1 != null)
-            {
-                task1.TrackStatus = request.TrackStatus;
-                return ErrorCode.ERR_Success;
-            }
-
-            for (int i = 0; i < self.RoleTaskList_2.Count; i++)
-            {
-                if (self.RoleTaskList_2[i].taskID == request.TaskId)
-                {
-                    self.RoleTaskList_2[i].TrackStatus = request.TrackStatus;
-                }
-            }
-            return ErrorCode.ERR_Success;
-        }
 
         //对话之类的任务由客户端触发完成
         public static void OnTaskNotice(this TaskComponentServer self, C2M_TaskNoticeRequest request)
         {
             int taskid = request.TaskId;
-            if (TaskHelper.IsTask1(taskid))
+            int taskTable = request.TaskTable;
+            bool isTask1 = taskTable == TaskTableType.Task_1
+                    || (taskTable != TaskTableType.Task_2 && TaskHelper.IsTask1(taskid));
+            if (isTask1)
             {
                 TaskPro taskPro = self.GetTaskById_1(taskid);
                 if (taskPro == null || taskPro.taskStatus != (int)TaskStatuEnum.Accepted)
@@ -174,9 +158,11 @@ namespace ET
         /// </summary>
         /// <param name="self"></param>
         /// <param name="taskId"></param>
-        public static void OnRecvGiveUpTask(this TaskComponentServer self, int taskId)
+        public static void OnRecvGiveUpTask(this TaskComponentServer self, int taskId, int taskTable = TaskTableType.Task_2)
         {
-            if (TaskHelper.IsTask1(taskId))
+            bool isTask1 = taskTable == TaskTableType.Task_1
+                    || (taskTable != TaskTableType.Task_2 && TaskHelper.IsTask1(taskId));
+            if (isTask1)
             {
                 self.GiveUpTask_1(taskId);
                 return;
@@ -559,7 +545,12 @@ namespace ET
                 return ErrorCode.ERR_TaskCommited;
             }
 
-            if (taskPro.taskStatus == (int)TaskStatuEnum.Commited || self.RoleComoleteTaskList_2.Contains(taskid))
+            if (taskPro.taskStatus == (int)TaskStatuEnum.Commited)
+            {
+                return ErrorCode.ERR_TaskCommited;
+            }
+
+            if (!UnionHelper.IsUnionWorkTask(taskid) && self.RoleComoleteTaskList_2.Contains(taskid))
             {
                 return ErrorCode.ERR_TaskCommited;
             }
@@ -602,7 +593,7 @@ namespace ET
             //    }
             //}
             taskPro.taskStatus = (int)TaskStatuEnum.Commited;
-            if (!self.RoleComoleteTaskList_2.Contains(taskid))
+            if (UnionHelper.IsUnionWorkTask(taskid) || !self.RoleComoleteTaskList_2.Contains(taskid))
             {
                 self.RoleComoleteTaskList_2.Add(taskid);
             }
@@ -812,9 +803,7 @@ namespace ET
             }
         }
 
-        /// <summary>
-        /// 在线时长，暂时一分钟触发一次。105/106 的 Param2 不是过滤键。
-        /// </summary>
+        /// <summary>在线时长，一分钟一次。</summary>
         public static void OnLineTime(this TaskComponentServer self, int time)
         {
             self.NotifyCondition(TastConditionType.ToDayOnLineTime_105, self.OnLineTime, time);
@@ -1098,21 +1087,6 @@ namespace ET
 
         public static void TriggerTaskEvent(this TaskComponentServer self, int conditionType, int param1, int param2)
         {
-            if (self.TaskEventBatchDepth > 0)
-            {
-                var key = (conditionType, param2);
-                if (GetConditionMode(conditionType) == TaskConditionMode.Override)
-                {
-                    self.TaskEventCoalesce[key] = param1;
-                }
-                else
-                {
-                    self.TaskEventCoalesce.TryGetValue(key, out int sum);
-                    self.TaskEventCoalesce[key] = sum + param1;
-                }
-                return;
-            }
-
             self.ApplyTaskEvent(conditionType, param1, param2);
         }
 
@@ -1274,7 +1248,7 @@ namespace ET
                 }
 
                 LDTask_2 ldTask = LDTask_2Category.Instance.Get(taskPro.taskID);
-                if (!TryGetCoalesceDelta(self, ldTask.Condition_Type, ldTask.Param2, out int delta))
+                if (!self.TaskEventCoalesce.TryGetValue((ldTask.Condition_Type, ldTask.Param2), out int delta))
                 {
                     continue;
                 }
@@ -1333,17 +1307,6 @@ namespace ET
             }
 
             self.SendToUpdateTask(self.PendingTaskUpdateGroups);
-        }
-
-        private static bool TryGetCoalesceDelta(TaskComponentServer self, int conditionType, int param2, out int delta)
-        {
-            if (self.TaskEventCoalesce.TryGetValue((conditionType, param2), out delta))
-            {
-                return true;
-            }
-
-            return TaskHelper.IsOnlineTimeCondition(conditionType)
-                   && self.TaskEventCoalesce.TryGetValue((conditionType, 0), out delta);
         }
 
         /// <summary>
@@ -1582,25 +1545,11 @@ namespace ET
             self.SendToUpdateTaskCore(groups);
         }
 
+        /// <summary>
+        /// NPC 对话完成：只处理 Task_1。Task_2 成就是独立进度，不走本协议。
+        /// </summary>
         public static void OnNpcTalkComplete(this TaskComponentServer self, int npcId)
         {
-            for (int k = 0; k < self.RoleTaskList_2.Count; k++)
-            {
-                TaskPro taskPro = self.RoleTaskList_2[k];
-                if (!LDTask_2Category.Instance.Contain(taskPro.taskID))
-                {
-                    continue;
-                }
-
-                LDTask_2 ldTask = LDTask_2Category.Instance.Get(taskPro.taskID);
-                if (taskPro.taskStatus < (int)TaskStatuEnum.Completed
-                    && ldTask.Condition_Type == TastConditionType.TalkToNpc_200
-                    && ldTask.Param2 == npcId)
-                {
-                    taskPro.taskStatus = TaskStatuEnum.Completed;
-                }
-            }
-
             bool task1Changed = false;
             for (int k = 0; k < self.RoleTaskList_1.Count; k++)
             {
@@ -1740,7 +1689,7 @@ namespace ET
             }
         }
 
-        /// <summary>接取工会打工。一次只能接一个；TaskId=0 时取下一个未完成。</summary>
+        /// <summary>接取工会打工（Task_2）。一次只能接一个；TaskId=0 时从池子随机（可重复）。次数看 Global_Union_Work_Times。</summary>
         public static (TaskPro, int) OnAcceptUnionWork(this TaskComponentServer self, int taskId)
         {
             Unit unit = self.GetParent<Unit>();
@@ -1761,7 +1710,7 @@ namespace ET
 
             if (taskId <= 0)
             {
-                taskId = UnionHelper.PickNextUnionWorkTaskId(self.RoleComoleteTaskList_2, self.RoleTaskList_2);
+                taskId = UnionHelper.PickNextUnionWorkTaskId();
             }
 
             if (taskId <= 0 || !UnionHelper.IsUnionWorkTask(taskId))
@@ -1769,20 +1718,32 @@ namespace ET
                 return (null, ErrorCode.ERR_TaskCanNotGet);
             }
 
-            if (self.RoleComoleteTaskList_2.Contains(taskId))
-            {
-                return (null, ErrorCode.ERR_TaskCommited);
-            }
-
             TaskPro exist = self.GetTaskById_2(taskId);
             if (exist != null)
             {
-                return (null, ErrorCode.ERR_TaskNoComplete);
+                if (exist.taskStatus != (int)TaskStatuEnum.Commited)
+                {
+                    return (null, ErrorCode.ERR_TaskNoComplete);
+                }
+
+                ResetUnionWorkTaskPro(exist);
+                self.SendToUpdateTask(LDTask_2Category.Instance.Get(taskId).Group);
+                return (exist, ErrorCode.ERR_Success);
             }
 
             TaskPro taskPro = self.CreateTask_2(taskId);
+            ResetUnionWorkTaskPro(taskPro);
             self.SendToUpdateTask(LDTask_2Category.Instance.Get(taskId).Group);
             return (taskPro, ErrorCode.ERR_Success);
+        }
+
+        private static void ResetUnionWorkTaskPro(TaskPro taskPro)
+        {
+            taskPro.taskStatus = (int)TaskStatuEnum.Accepted;
+            taskPro.taskTargetNum_1 = 0;
+            taskPro.taskTargetNum_2 = 0;
+            taskPro.taskTargetNum_3 = 0;
+            taskPro.taskTargetNum_4 = 0;
         }
     }
 }

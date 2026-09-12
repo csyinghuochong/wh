@@ -3,6 +3,9 @@ using System;
 namespace ET
 {
 
+    /// <summary>
+    /// NPC 对话完成。只处理 Task_1，不加 TaskTable。
+    /// </summary>
     [ActorMessageHandler]
     public class C2M_TaskNpcTalkCompleteHandler : AMActorLocationRpcHandler<Unit, C2M_TaskNpcTalkCompleteRequest, M2C_TaskNpcTalkCompleteResponse>
     {

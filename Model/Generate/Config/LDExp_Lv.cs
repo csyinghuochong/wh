@@ -82,12 +82,15 @@ namespace ET
 		/// <summary>等级</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>角色升级经验</summary>
+		/// <summary>角色 升级经验</summary>
 		[ProtoMember(2)]
 		public int Exp_Role { get; set; }
-		/// <summary>角色标准生命</summary>
+		/// <summary>角色 标准生命</summary>
 		[ProtoMember(3)]
 		public int Hp_Standard { get; set; }
+		/// <summary>坐骑 升级经验</summary>
+		[ProtoMember(4)]
+		public int Exp_Mount { get; set; }
 
 	}
 }

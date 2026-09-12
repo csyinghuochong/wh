@@ -61,11 +61,11 @@ namespace ET
                 unit.SceneType = request.SceneType;
 				unit.ConfigId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
                 unit.CheckNumeric();
+                unit.GetComponent<MountComponentServer>()?.RestoreWantRide();
                 Function_Fight.UnitUpdateProperty_Base(unit, false, false);
 
                 long hpmax = numericComponent.GetAsLong(NumericType.HP_Max_10);
                 numericComponent.Set(NumericType.HP_Current_8, hpmax, false);
-                unit.GetComponent<MountComponentServer>()?.RestoreWantRide();
 
                 //添加消息类型, GateSession邮箱在收到消息的时候会立即转发给客户端，MessageDispatcher类型会再次对Actor消息进行分发到具体的Handler处理，默认的MailboxComponent类型是MessageDispatcher。
                 //await unit.AddLocation();                     

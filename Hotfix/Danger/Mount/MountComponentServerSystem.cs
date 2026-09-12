@@ -242,6 +242,66 @@ namespace ET
             }
         }
 
+        public static void MountAddExp(this MountComponentServer self, MountInfo mountInfo, int addExp)
+        {
+            if (mountInfo == null || addExp <= 0)
+            {
+                return;
+            }
+
+            int newExp = mountInfo.MountExp + addExp;
+            bool levelChanged = false;
+            while (true)
+            {
+                int lv = mountInfo.MountLv <= 0 ? 1 : mountInfo.MountLv;
+                if (LDExp_LvCategory.Instance == null || !LDExp_LvCategory.Instance.Contain(lv))
+                {
+                    break;
+                }
+
+                int needExp = LDExp_LvCategory.Instance.Get(lv).Exp_Mount;
+                if (needExp <= 0 || newExp < needExp)
+                {
+                    break;
+                }
+
+                int nextLv = lv + 1;
+                if (!LDExp_LvCategory.Instance.Contain(nextLv))
+                {
+                    newExp = needExp;
+                    break;
+                }
+
+                newExp -= needExp;
+                mountInfo.MountLv = nextLv;
+                levelChanged = true;
+            }
+
+            mountInfo.MountExp = newExp;
+            if (!levelChanged)
+            {
+                return;
+            }
+
+            MountHelper.ApplyAptitudeAttributes(mountInfo);
+            if (self.GetRideMount()?.Id == mountInfo.Id)
+            {
+                self.RefreshRideSpeed();
+            }
+        }
+
+        public static void RefreshRideSpeed(this MountComponentServer self)
+        {
+            Unit unit = self.GetParent<Unit>();
+            if (unit?.GetComponent<NumericComponent>() == null)
+            {
+                return;
+            }
+
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+            unit.GetComponent<MoveComponent>()?.ChangeSpeed(unit.GetSpeedNow());
+        }
+
         static void BroadcastRide(this MountComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
@@ -250,6 +310,7 @@ namespace ET
                 UnitId = unit.Id,
                 RideConfigId = self.GetRideConfigId()
             });
+            self.RefreshRideSpeed();
         }
 
         public static void NotifyMountUpdate(this MountComponentServer self, MountInfo mountInfo)

@@ -9764,43 +9764,14 @@ namespace ET
 		[ProtoMember(1)]
 		public int TaskId { get; set; }
 
+		[ProtoMember(2)]
+		public int TaskTable { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_TaskGiveUpResponse)]
 	[ProtoContract]
 	public partial class M2C_TaskGiveUpResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//任务追踪
-	[ResponseType(nameof(M2C_TaskTrackResponse))]
-	[Message(OuterOpcode.C2M_TaskTrackRequest)]
-	[ProtoContract]
-	public partial class C2M_TaskTrackRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int TaskId { get; set; }
-
-		[ProtoMember(2)]
-		public int TrackStatus { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TaskTrackResponse)]
-	[ProtoContract]
-	public partial class M2C_TaskTrackResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -9827,6 +9798,9 @@ namespace ET
 
 		[ProtoMember(2)]
 		public int TaskStatus { get; set; }
+
+		[ProtoMember(3)]
+		public int TaskTable { get; set; }
 
 	}
 
@@ -9897,6 +9871,9 @@ namespace ET
 
 		[ProtoMember(4)]
 		public int RewardIndex { get; set; }
+
+		[ProtoMember(5)]
+		public int TaskTable { get; set; }
 
 	}
 

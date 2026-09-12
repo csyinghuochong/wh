@@ -182,7 +182,9 @@ namespace ET
         public static void SceondCheck(this DBSaveComponent self)
         {
             self.SceondIndex++;
-            if (self.SceondIndex >= 60)
+
+            int minute = CommonHelper.IsInnerNet() ? 2 : 60;
+            if (self.SceondIndex >= minute)
             { 
                 self.SceondIndex = 0;
                 self.MinuteCheck();

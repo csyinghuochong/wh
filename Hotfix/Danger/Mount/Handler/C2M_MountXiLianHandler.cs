@@ -61,7 +61,7 @@ namespace ET
                         return;
                     }
 
-                    mountInfo.MountExp += addExp;
+                    mountComponentServer.MountAddExp(mountInfo, addExp);
                     break;
                 default:
                     response.Error = ErrorCode.ERR_Mount_NoUseItem;

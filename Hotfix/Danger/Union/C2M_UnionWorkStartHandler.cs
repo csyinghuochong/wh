@@ -2,6 +2,9 @@ using System;
 
 namespace ET
 {
+    /// <summary>
+    /// 公会打工接取。只处理 Task_2，不加 TaskTable。
+    /// </summary>
     [ActorMessageHandler]
     public class C2M_UnionWorkStartHandler : AMActorLocationRpcHandler<Unit, C2M_UnionWorkStartRequest, M2C_UnionWorkStartResponse>
     {
