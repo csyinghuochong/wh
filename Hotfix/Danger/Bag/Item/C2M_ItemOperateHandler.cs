@@ -40,24 +40,6 @@ namespace ET
                     Log.Error("request.OperateType == 222");
                 }
 
-                //穿戴装备
-                if (request.OperateType == 3)
-                {
-                    Log.Error("request.OperateType == 3");
-                }
-
-                //卸下装备
-                if (request.OperateType == 4)
-                {
-                    Log.Error("request.OperateType == 4");
-                }
-
-                //鉴定装备
-                if (request.OperateType == 5)
-                {
-                  
-                }
-
                 //放入仓库
                 if (request.OperateType == 6)
                 {
