@@ -2879,7 +2879,7 @@ namespace ET
 
 	}
 
-//家族操作  1增加经验  2获取等级
+//家族操作  1增加经验  2获取等级  6增加工会资源
 	[ResponseType(nameof(U2M_UnionOperationResponse))]
 	[Message(InnerOpcode.M2U_UnionOperationRequest)]
 	[ProtoContract]
@@ -2902,6 +2902,9 @@ namespace ET
 
 		[ProtoMember(4)]
 		public long UnitId { get; set; }
+
+		[ProtoMember(5)]
+		public List<RewardItem> Items = new List<RewardItem>();
 
 	}
 

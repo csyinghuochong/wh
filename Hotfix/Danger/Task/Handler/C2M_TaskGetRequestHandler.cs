@@ -40,6 +40,13 @@ namespace ET
                 return;
             }
 
+            if (UnionHelper.IsUnionWorkTask(request.TaskId))
+            {
+                response.Error = ErrorCode.ERR_TaskCanNotGet;
+                reply();
+                return;
+            }
+
            // if (ldTask.TaskType == TaskTypeEnum.Daily)
             {
                 if (taskComponentServer.GetTaskList_2(TaskTypeEnum.Daily).Count > 0)

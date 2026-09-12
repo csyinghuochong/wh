@@ -118,11 +118,6 @@ namespace ET
 					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.CompleteGuideIds.Clear();
 					return;
 				}
-                if (message.GMMsg == "resetweek#")
-                {
-                    unit.GetComponent<TaskComponentServer>().UpdateWeeklyTask(true);
-                    return;
-                }
                 if (message.GMMsg == "petfight#")
                 {
                     //出战要清掉之前的

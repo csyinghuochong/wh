@@ -579,15 +579,11 @@ namespace ET
             }
 
             List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems(roleInfoComponent.RoleInfo.Occ, taskid);
+            List<RewardItem> bagRewards = UnionHelper.FilterOutUnionResources(rewardItems);
 
-            int needcell = ItemNewHelper.GetNeedCell(rewardItems);
+            int needcell = ItemNewHelper.GetNeedCell(bagRewards);
             int bagLeftCell = bagComponentServer.GetBagLeftCell();
-            if (bagLeftCell < needcell)
-            {
-                return ErrorCode.ERR_BagIsFull;
-            }
-            
-            if (bagLeftCell < rewardItems.Count)
+            if (bagRewards.Count > 0 && (bagLeftCell < needcell || bagLeftCell < bagRewards.Count))
             {
                 return ErrorCode.ERR_BagIsFull;
             }
@@ -817,11 +813,12 @@ namespace ET
         }
 
         /// <summary>
-        /// 在线时长，暂时一分钟触发一次
+        /// 在线时长，暂时一分钟触发一次。105/106 的 Param2 不是过滤键。
         /// </summary>
-        /// <param name="self"></param>
         public static void OnLineTime(this TaskComponentServer self, int time)
         {
+            self.NotifyCondition(TastConditionType.ToDayOnLineTime_105, self.OnLineTime, time);
+            self.TriggerTaskEvent(TastConditionType.TaskOnLineTime_106, time, 0);
         }
 
         /// <summary>
@@ -1015,6 +1012,7 @@ namespace ET
                 }
             }
 
+            self.ClearUnionWorkOnlineTasks(false);
             self.InitAllTaskGroups();
         }
 
@@ -1276,7 +1274,7 @@ namespace ET
                 }
 
                 LDTask_2 ldTask = LDTask_2Category.Instance.Get(taskPro.taskID);
-                if (!self.TaskEventCoalesce.TryGetValue((ldTask.Condition_Type, ldTask.Param2), out int delta))
+                if (!TryGetCoalesceDelta(self, ldTask.Condition_Type, ldTask.Param2, out int delta))
                 {
                     continue;
                 }
@@ -1309,7 +1307,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (ldTask.Param2 != param2)
+                if (ldTask.Param2 != param2 && !TaskHelper.IsOnlineTimeCondition(conditionType))
                 {
                     continue;
                 }
@@ -1336,17 +1334,16 @@ namespace ET
 
             self.SendToUpdateTask(self.PendingTaskUpdateGroups);
         }
-        
 
-        public static void CheckDailyTask(this TaskComponentServer self)
+        private static bool TryGetCoalesceDelta(TaskComponentServer self, int conditionType, int param2, out int delta)
         {
-            self.InitTasksByResetType(TaskGroupResetType.Daily);
-        }
+            if (self.TaskEventCoalesce.TryGetValue((conditionType, param2), out delta))
+            {
+                return true;
+            }
 
-
-        public static void CheckWeeklyTask(this TaskComponentServer self)
-        {
-            self.InitTasksByResetType(TaskGroupResetType.Weekly);
+            return TaskHelper.IsOnlineTimeCondition(conditionType)
+                   && self.TaskEventCoalesce.TryGetValue((conditionType, 0), out delta);
         }
 
         /// <summary>
@@ -1378,9 +1375,15 @@ namespace ET
 
         /// <summary>
         /// 按 Group 全开：同一子组每条条件可能不同，必须各自记账。有新建时推送客户端。
+        /// 打工组不自动建，只能 C2M_UnionWorkStartRequest。
         /// </summary>
         public static void InitTasksByType(this TaskComponentServer self, int taskType)
         {
+            if (!UnionHelper.IsAutoInitTaskGroup(taskType))
+            {
+                return;
+            }
+
             List<int> taskIds = TaskHelper.GenerateTaskListByType(taskType);
             if (taskIds.Count == 0)
             {
@@ -1416,6 +1419,11 @@ namespace ET
             List<int> groupIds = TaskHelper.GetGroupIdsByResetType(resetType);
             for (int i = 0; i < groupIds.Count; i++)
             {
+                if (!UnionHelper.IsAutoInitTaskGroup(groupIds[i]))
+                {
+                    continue;
+                }
+
                 self.InitTasksByType(groupIds[i]);
             }
         }
@@ -1433,6 +1441,11 @@ namespace ET
 
             foreach (LDTask_Group group in LDTask_GroupCategory.Instance.GetAll().Values)
             {
+                if (!UnionHelper.IsAutoInitTaskGroup(group.Id))
+                {
+                    continue;
+                }
+
                 if (TaskHelper.GenerateTaskListByType(group.Id).Count == 0)
                 {
                     Log.Error($"InitAllTaskGroups: Task_Group={group.Id} 在 Task 表没有任务");
@@ -1443,6 +1456,10 @@ namespace ET
             }
         }
 
+        /// <summary>
+        /// 按 Task_Group.Type 清进行中 + 已领取。打工 Type=1 日清会清完成记录，方便第二天再接；
+        /// 不会在随后的 Init 里自动接取。
+        /// </summary>
         public static void ClearTasksByResetType(this TaskComponentServer self, int resetType)
         {
             HashSet<int> completedTaskIds = new HashSet<int>(self.RoleComoleteTaskList_2);
@@ -1504,14 +1521,10 @@ namespace ET
             }
         }
 
-        public static void UpdateDayTask(this TaskComponentServer self, bool notice)
-        {
-            self.ClearTasksByResetType(TaskGroupResetType.Daily);
-            self.InitTasksByResetType(TaskGroupResetType.Daily);
-        }
-
-
-        public static void UpdateWeeklyTask(this TaskComponentServer self, bool notice)
+        /// <summary>
+        /// 周清：Type=2 的任务 + 周活跃。打工 Type=1 不走这里。
+        /// </summary>
+        public static void OnWeeklyReset(this TaskComponentServer self, bool notice)
         {
             self.ClearTasksByResetType(TaskGroupResetType.Weekly);
 
@@ -1526,62 +1539,24 @@ namespace ET
             }
 
             self.InitTasksByResetType(TaskGroupResetType.Weekly);
-
-            if (notice)
+            if (!notice)
             {
-                List<int> weeklyGroups = TaskHelper.GetGroupIdsByResetType(TaskGroupResetType.Weekly);
-                self.PendingTaskUpdateGroups.Clear();
-                for (int i = 0; i < weeklyGroups.Count; i++)
-                {
-                    self.PendingTaskUpdateGroups.Add(weeklyGroups[i]);
-                }
-
-                if (self.PendingTaskUpdateGroups.Count > 0)
-                {
-                    self.SendToUpdateTask(self.PendingTaskUpdateGroups);
-                }
+                return;
             }
-        }
 
-
-
-        public static void CheckWeeklyUpdate(this TaskComponentServer self)
-        {
-            System.DateTime dateTime = TimeHelper.DateTimeNow();
-            if( dateTime.DayOfWeek == System.DayOfWeek.Monday)
+            List<int> weeklyGroups = TaskHelper.GetGroupIdsByResetType(TaskGroupResetType.Weekly);
+            if (weeklyGroups.Count == 0)
             {
-                //Log.Console($"ResetWeeklyTask: passday:{self.Id} {dateTime.DayOfWeek == System.DayOfWeek.Monday}");
-                self.UpdateWeeklyTask(true);
+                return;
             }
-        }
-       
-        public static void LoginCheckWeeklyUpdate(this TaskComponentServer self, long lastTime, long curTime)
-        {
-            //判断条件。 超过一周或者过了周末
-            float passday = ((curTime - lastTime) * 1f / TimeHelper.OneDay);
-            if (passday >= 7)
+
+            HashSet<int> groups = new HashSet<int>();
+            for (int i = 0; i < weeklyGroups.Count; i++)
             {
-                //Log.Warning($"ResetWeeklyTask: passday:{self.Id} {passday}");
-                self.UpdateWeeklyTask(false);
+                groups.Add(weeklyGroups[i]);
             }
-            else
-            {
-                DateTime lastdateTime = TimeInfo.Instance.ToDateTime(lastTime);
-                DateTime curdateTime = TimeInfo.Instance.ToDateTime(curTime);
-                if ((curdateTime.DayOfWeek < lastdateTime.DayOfWeek && curdateTime.DayOfWeek!= 0)
-                 || (curdateTime.DayOfWeek > lastdateTime.DayOfWeek && lastdateTime.DayOfWeek == 0))
-                {
-                    Log.Warning($"ResetWeeklyTask:{self.Id} {curdateTime.DayOfWeek} {lastdateTime.DayOfWeek}");
-                    self.UpdateWeeklyTask(false);
-                }
-                //int curday = curdateTime.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)(curdateTime.DayOfWeek);
-                //int lastday = lastdateTime.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)(lastdateTime.DayOfWeek);
-                //if(curday < lastday)
-                //{
-                //    Log.Console($"ResetWeeklyTask:{self.Id} {curdateTime.DayOfWeek} {lastdateTime.DayOfWeek}");
-                //    self.ResetWeeklyTask();
-                //}
-            }
+
+            self.SendToUpdateTask(groups);
         }
 
         public static List<TaskPro> GetClientShowTaskList_2(this TaskComponentServer self)
@@ -1704,20 +1679,110 @@ namespace ET
 
         /// <summary>
         /// 日清。resetType：0 首次初始化 / 1 跨天登录 / 2 在线 5 点。
-        /// 1、2（以及 0）刷新 101/102 登录次数；同天重登不会进这里。
+        /// 清 Type=1（含打工完成记录）后 InitAll 补建；打工不自动接。
+        /// 101/102 只在这里加；同天重登不会进。
         /// </summary>
         public static void OnDailyReset(this TaskComponentServer self, int resetType)
         {
-            bool notice = resetType == 2;
             self.OnLineTime = 0;
-            self.UpdateDayTask(notice);
+            self.ClearTasksByResetType(TaskGroupResetType.Daily);
             self.InitAllTaskGroups();
             self.TriggerDailyLoginTaskEvents();
-
-            if (notice)
+            if (resetType == 2)
             {
                 self.SendToUpdateTask();
             }
+        }
+
+        /// <summary>
+        /// 下线清掉未完成的打工在线任务（105/106）。已完成/已领取保留在 completeTask。
+        /// </summary>
+        public static void ClearUnionWorkOnlineTasks(this TaskComponentServer self, bool notice)
+        {
+            bool removed = false;
+            for (int i = self.RoleTaskList_2.Count - 1; i >= 0; i--)
+            {
+                TaskPro taskPro = self.RoleTaskList_2[i];
+                if (!UnionHelper.IsUnionWorkTask(taskPro.taskID))
+                {
+                    continue;
+                }
+
+                if (taskPro.taskStatus >= (int)TaskStatuEnum.Completed)
+                {
+                    continue;
+                }
+
+                if (!LDTask_2Category.Instance.Contain(taskPro.taskID))
+                {
+                    self.RoleTaskList_2.RemoveAt(i);
+                    removed = true;
+                    continue;
+                }
+
+                LDTask_2 ldTask = LDTask_2Category.Instance.Get(taskPro.taskID);
+                if (!UnionHelper.IsUnionWorkOnlineCondition(ldTask.Condition_Type))
+                {
+                    continue;
+                }
+
+                self.RoleTaskList_2.RemoveAt(i);
+                removed = true;
+            }
+
+            if (notice && removed)
+            {
+                int groupId = UnionHelper.GetUnionWorkGroupId();
+                if (groupId > 0)
+                {
+                    self.SendToUpdateTask(groupId);
+                }
+            }
+        }
+
+        /// <summary>接取工会打工。一次只能接一个；TaskId=0 时取下一个未完成。</summary>
+        public static (TaskPro, int) OnAcceptUnionWork(this TaskComponentServer self, int taskId)
+        {
+            Unit unit = self.GetParent<Unit>();
+            if (unit == null || unit.GetUnionId() == 0)
+            {
+                return (null, ErrorCode.ERR_Union_Not_Exist);
+            }
+
+            if (UnionHelper.IsUnionWorkAllCompleted(self.RoleComoleteTaskList_2))
+            {
+                return (null, ErrorCode.ERR_TaskLimited);
+            }
+
+            if (UnionHelper.HasAcceptedUnionWork(self.RoleTaskList_2))
+            {
+                return (null, ErrorCode.ERR_TaskNoComplete);
+            }
+
+            if (taskId <= 0)
+            {
+                taskId = UnionHelper.PickNextUnionWorkTaskId(self.RoleComoleteTaskList_2, self.RoleTaskList_2);
+            }
+
+            if (taskId <= 0 || !UnionHelper.IsUnionWorkTask(taskId))
+            {
+                return (null, ErrorCode.ERR_TaskCanNotGet);
+            }
+
+            if (self.RoleComoleteTaskList_2.Contains(taskId))
+            {
+                return (null, ErrorCode.ERR_TaskCommited);
+            }
+
+            TaskPro exist = self.GetTaskById_2(taskId);
+            if (exist != null)
+            {
+                return (null, ErrorCode.ERR_TaskNoComplete);
+            }
+
+            TaskPro taskPro = self.CreateTask_2(taskId);
+            self.SendToUpdateTask(LDTask_2Category.Instance.Get(taskId).Group);
+            return (taskPro, ErrorCode.ERR_Success);
         }
     }
 }

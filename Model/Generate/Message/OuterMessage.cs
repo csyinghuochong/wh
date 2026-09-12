@@ -8003,6 +8003,41 @@ namespace ET
 
 	}
 
+//公会打工：一次接一个，不走 C2M_TaskGetRequest / InitAllTaskGroups
+	[ResponseType(nameof(M2C_UnionWorkStartResponse))]
+	[Message(OuterOpcode.C2M_UnionWorkStartRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionWorkStartRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int TaskId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionWorkStartResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionWorkStartResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public TaskPro TaskPro { get; set; }
+
+	}
+
 //公会列表
 	[ResponseType(nameof(U2C_UnionListResponse))]
 	[Message(OuterOpcode.C2U_UnionListRequest)]
@@ -8655,6 +8690,9 @@ namespace ET
 
 		[ProtoMember(20)]
 		public int UnionPattern { get; set; }
+
+		[ProtoMember(21)]
+		public List<RewardItem> ResourceList = new List<RewardItem>();
 
 	}
 

@@ -143,6 +143,17 @@ namespace ET
                         dBUnionInfo.UnionInfo.UnionGold += int.Parse(request.Par);
                         DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
                         break;
+                    case 6: //工会资源 ItemType=75
+                        if (request.Items != null)
+                        {
+                            for (int i = 0; i < request.Items.Count; i++)
+                            {
+                                UnionHelper.AddUnionResource(dBUnionInfo.UnionInfo, request.Items[i]);
+                            }
+                        }
+
+                        DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
+                        break;
                     default:
                         break;
                 }

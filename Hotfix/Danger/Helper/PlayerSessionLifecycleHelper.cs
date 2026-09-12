@@ -118,6 +118,7 @@ namespace ET
             string lastgametime = TimeHelper.DateTimeNow().ToString();
             roleInfoComponentServer.OnOffLine();
             dataCollationComponent.OnOffLine(lastgametime);
+            unit.GetComponent<TaskComponentServer>()?.ClearUnionWorkOnlineTasks(false);
             UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
             unitGateComponent.PlayerState = PlayerState.None;
 

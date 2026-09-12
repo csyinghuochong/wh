@@ -72,7 +72,11 @@ namespace ET
                 float passhour = (currentTime - lastLoginTime) * 1f / TimeHelper.Hour;
                 RecoverPiLaoAcrossDays(roleInfoComponentServer, unit, lastdateTime, dateTime, passhour, currentTime, lastLoginTime);
 
-                unit.GetComponent<TaskComponentServer>().LoginCheckWeeklyUpdate(lastLoginTime, currentTime);
+                if (!ActivityHelper.IsSameGameResetWeek(lastLoginTime, currentTime))
+                {
+                    unit.GetComponent<TaskComponentServer>().OnWeeklyReset(false);
+                }
+
                 RunDailyReset(unit, 1);
             }
             else

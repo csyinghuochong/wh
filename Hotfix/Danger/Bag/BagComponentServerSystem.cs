@@ -566,10 +566,21 @@ namespace ET
             int getType = int.Parse(getWay.Split('_')[0]);
             Unit unit = self.GetParent<Unit>();
             List<RewardItem> bagItems = new List<RewardItem>();
+            List<RewardItem> unionItems = new List<RewardItem>();
             Dictionary<int, int> leftCellByLoc = new Dictionary<int, int>();
 
             foreach (RewardItem item in MergeRewardItems(rewardItems_init).Values)
             {
+                if (UnionHelper.IsUnionResourceItem(item))
+                {
+                    unionItems.Add(item);
+                    if (notice)
+                    {
+                        ItemAddHelper.OnGetItem(unit, getType, item.ItemType, item.ItemID, item.ItemNum);
+                    }
+                    continue;
+                }
+
                 if (TryAddCurrency(unit, item, getType, notice) || TrySkipBag(unit, item, getType, notice))
                 {
                     continue;
@@ -581,6 +592,11 @@ namespace ET
                 }
 
                 bagItems.Add(item);
+            }
+
+            if (unionItems.Count > 0)
+            {
+                UnionHelper.SendUnionResource(unit, unionItems).Coroutine();
             }
 
             if (bagItems.Count > 0)

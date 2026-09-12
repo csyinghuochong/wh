@@ -15,7 +15,11 @@ namespace ET
             {
                 case 5:
                     Console.WriteLine($"OnDailyReset [日清]: {unit.Id}");
-                    unit.GetComponent<TaskComponentServer>().CheckWeeklyUpdate();
+                    if (ActivityHelper.IsGameWeekResetDay(TimeHelper.ServerNow()))
+                    {
+                        unit.GetComponent<TaskComponentServer>().OnWeeklyReset(true);
+                    }
+
                     PlayerDailyResetHelper.RunDailyReset(unit, 2);
                     break;
                 default:
