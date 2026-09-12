@@ -181,9 +181,6 @@ namespace ET
                 case MapTypeEnum.SeasonTower:
                     domainScene.GetComponent<SeasonTowerComponent>().OnKillEvent(defendUnit);
                     break;
-                case MapTypeEnum.TowerOfSeal:
-                    domainScene.GetComponent<TowerOfSealComponent>().OnKillEvent(defendUnit);
-                    break;
                 default:
                     break;
             }

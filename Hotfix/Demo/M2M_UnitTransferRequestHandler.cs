@@ -65,12 +65,8 @@ namespace ET
 
                 long hpmax = numericComponent.GetAsLong(NumericType.HP_Max_10);
                 numericComponent.Set(NumericType.HP_Current_8, hpmax, false);
+                unit.GetComponent<MountComponentServer>()?.RestoreWantRide();
 
-                if (request.SceneType != MapTypeEnum.RunRace)
-                {
-                    unit.GetComponent<MountComponentServer>()?.RestoreWantRide();
-                }
-                
                 //添加消息类型, GateSession邮箱在收到消息的时候会立即转发给客户端，MessageDispatcher类型会再次对Actor消息进行分发到具体的Handler处理，默认的MailboxComponent类型是MessageDispatcher。
                 //await unit.AddLocation();                     
                 //注册消息机制的ID,可以通过消息ID让其他玩家对自己进行消息发送
@@ -237,23 +233,6 @@ namespace ET
 
                         TransferHelper.AfterTransfer(unit);
                         break;
-					case MapTypeEnum.RunRace:
-                        unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
-                        ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-                        unit.Position = ldScene.GetBornPos();
-                        unit.Rotation = Quaternion.identity;
-
-                        unit.GetComponent<MountComponentServer>().ClearRideSilent();
-						int runracemonster = CommonConfig.RunRaceMonsterList[RandomHelper.RandomNumber(0, CommonConfig.RunRaceMonsterList.Count)];
-						// 通知客户端创建My Unit
-						m2CCreateUnits = new M2C_CreateMyUnit();
-                        m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-                        MessageHelper.SendToClient(unit, m2CCreateUnits);
-                        // 加入aoi
-                        unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
-
-                        unit.DomainScene().GetComponent<RunRaceDungeonComponent>().OnEnter(unit);
-                        break;
                     case MapTypeEnum.OneChallenge:
                         unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
                         ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
@@ -355,23 +334,7 @@ namespace ET
 						
                         TransferHelper.AfterTransfer(unit);
                         break;
-                    case MapTypeEnum.TowerOfSeal:
-	                    MapComponent towerOfSealMapComponent = scene.GetComponent<MapComponent>();
-	                    RecastPathComponent towerOfSealRecastPath = Game.Scene.GetComponent<RecastPathComponent>();
-	                    unit.AddComponent<PathfindingComponent, string>(towerOfSealMapComponent.NavMeshId);
-	                    ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-	                    unit.Position = ldScene.GetBornPos();
-	                    unit.Rotation = Quaternion.identity;
 
-	                    // 通知客户端创建My Unit
-	                    m2CCreateUnits = new M2C_CreateMyUnit();
-	                    m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-	                    MessageHelper.SendToClient(unit, m2CCreateUnits);
-	                    // 加入aoi
-	                    unit.AddComponent<AOIEntity, int, Vector3>(4 * 1000, unit.Position);
-
-                        TransferHelper.AfterTransfer(unit);
-                        break;
 					case (int)MapTypeEnum.MainCityScene:
 						ldScene = LDSceneCategory.Instance.Get(CommonHelper.MainCityID());
 						numericComponent = unit.GetComponent<NumericComponent>();
@@ -410,15 +373,11 @@ namespace ET
 
                 //unit.GetComponent<DBSaveComponent>().Check_2();
                 unit.GetComponent<DBSaveComponent>().Activeted();
-               
-                if (request.SceneType != MapTypeEnum.RunRace)
-				{
-                    //unit.GetComponent<BuffManagerComponent>().InitBuff(request.SceneType);
-                    unit.GetComponent<SkillPassiveComponent>().Reset();
-                    unit.GetComponent<SkillPassiveComponent>().Activeted();
-                }
+
+                unit.GetComponent<SkillPassiveComponent>().Reset();
+                unit.GetComponent<SkillPassiveComponent>().Activeted();
                 //Function_Fight.UnitUpdateProperty_Base(unit, false, true);
-				response.NewInstanceId = unit.InstanceId;
+                response.NewInstanceId = unit.InstanceId;
 				reply();
                 await ETTask.CompletedTask;
             }

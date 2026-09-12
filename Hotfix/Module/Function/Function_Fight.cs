@@ -14,11 +14,7 @@ namespace ET
         /// </summary>
         public static void UnitUpdateProperty_Base(Unit unit, bool notice, bool rank)
         {
-            if (unit.SceneType == MapTypeEnum.RunRace)
-            {
-                return;
-            }
-
+           
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
 
             // notice 时先快照一级属性，Reset 后再对比，避免无变化也推客户端

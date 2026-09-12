@@ -248,17 +248,6 @@ namespace ET
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.Scene_Type, request.SceneId, 0, "0");
                         break;
-                    case MapTypeEnum.RunRace:
-                        f2M_YeWaiSceneIdResponse = (F2M_YeWaiSceneIdResponse)await ActorMessageSenderComponent.Instance.Call(
-                        DBHelper.GetFubenCenterId(unit), new M2F_YeWaiSceneIdRequest() { SceneId = request.SceneId,UnitId = unit.Id  });
-                        if (f2M_YeWaiSceneIdResponse.FubenInstanceId == 0)
-                        {
-                            return ErrorCode.ERR_AlreadyFinish;
-                        }
-                        ldScene = LDSceneCategory.Instance.Get(request.SceneId);
-                        TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.Scene_Type, request.SceneId, 0, "0");
-                        break;
                     case MapTypeEnum.Solo:
                         long soloServerId = DBHelper.GetSoloServerId(unit);
                         S2M_SoloEnterResponse d2GGetUnit = (S2M_SoloEnterResponse)await ActorMessageSenderComponent.Instance.Call(soloServerId, new M2S_SoloEnterRequest()

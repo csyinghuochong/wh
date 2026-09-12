@@ -87,10 +87,6 @@ namespace ET
 
             //动态创建副本.....RecastPathComponent.awake寻路
             int sceneid = 0;
-            if (functionId == 1058)
-            {
-                sceneid = BattleHelper.GetSceneIdByType(MapTypeEnum.RunRace);
-            }
             if (sceneid == 0)
             {
                 return 0;
@@ -112,16 +108,7 @@ namespace ET
             YeWaiRefreshComponent yeWaiRefreshComponen = fubnescene.AddComponent<YeWaiRefreshComponent>();
             yeWaiRefreshComponen.SceneId = ldScene.Id;
 
-            switch (ldScene.Scene_Type)
-            {
-                case MapTypeEnum.RunRace:
-                    RunRaceDungeonComponent runRaceDungeon = fubnescene.AddComponent<RunRaceDungeonComponent>();
-                    runRaceDungeon.OnBegin();
-                    break;
-                default:
-                    break;
-            }
-
+          
             //FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonster);
             //FubenHelp.CreateMonsterList(fubnescene, ldScene.CreateMonsterPosi);
 

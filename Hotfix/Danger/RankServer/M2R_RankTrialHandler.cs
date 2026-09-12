@@ -9,39 +9,39 @@ namespace ET
         protected override async ETTask Run(Scene scene, M2R_RankTrialRequest request, R2M_RankTrialResponse response, Action reply)
         {
             RankSceneComponent rankSceneComponent = scene.GetComponent<RankSceneComponent>();
-            List<LongLongPair> rankRunRace = rankSceneComponent.DBRankInfo.rankingTrial;
+            List<LongLongPair> rankTrial = rankSceneComponent.DBRankInfo.rankingTrial;
 
             bool have = false;
-            for (int i = 0; i < rankRunRace.Count; i++)
+            for (int i = 0; i < rankTrial.Count; i++)
             {
-                if (rankRunRace[i].KeyId != request.RankingInfo.KeyId)
+                if (rankTrial[i].KeyId != request.RankingInfo.KeyId)
                 {
                     continue;
                 }
-                if (rankRunRace[i].Value2 > request.RankingInfo.Value2)
+                if (rankTrial[i].Value2 > request.RankingInfo.Value2)
                 {
                     continue;
                 }
 
-                if (rankRunRace[i].Value2 < request.RankingInfo.Value2)
+                if (rankTrial[i].Value2 < request.RankingInfo.Value2)
                 {
-                    rankRunRace[i].Value = request.RankingInfo.Value;
-                    rankRunRace[i].Value2 = request.RankingInfo.Value2;
+                    rankTrial[i].Value = request.RankingInfo.Value;
+                    rankTrial[i].Value2 = request.RankingInfo.Value2;
                 }
                 else
                 {
-                    rankRunRace[i].Value = Math.Max(rankRunRace[i].Value, request.RankingInfo.Value);
+                    rankTrial[i].Value = Math.Max(rankTrial[i].Value, request.RankingInfo.Value);
                 }
                 have = true;
             }
 
             if (!have)
             {
-                rankRunRace.Add(request.RankingInfo);
+                rankTrial.Add(request.RankingInfo);
             }
 
             ///试炼之塔排行先按照层树排序,层序一样按照秒伤 试炼排行榜得秒伤处也显示层数和秒伤,比如40层50000秒伤 显示格式为: 40层(50000/秒)
-            rankRunRace.Sort(delegate (LongLongPair a, LongLongPair b)
+            rankTrial.Sort(delegate (LongLongPair a, LongLongPair b)
             {
                 if (b.Value2 == a.Value2)
                 {
@@ -53,8 +53,8 @@ namespace ET
                 }
             });
 
-            int maxnumber = Math.Min(rankRunRace.Count, CommonConfig.RankNumber);
-            rankSceneComponent.DBRankInfo.rankingTrial = rankRunRace.GetRange(0, maxnumber);
+            int maxnumber = Math.Min(rankTrial.Count, CommonConfig.RankNumber);
+            rankSceneComponent.DBRankInfo.rankingTrial = rankTrial.GetRange(0, maxnumber);
             response.RankId = rankSceneComponent.GetTrialRank(request.RankingInfo.KeyId);
             reply();
             await ETTask.CompletedTask;

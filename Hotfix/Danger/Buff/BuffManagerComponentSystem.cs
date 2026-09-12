@@ -220,19 +220,10 @@ namespace ET
         public static void OnRevive(this BuffManagerComponent self)
         {
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
-            if (mapComponent.MapTypeEnum != MapTypeEnum.RunRace)
-            {
-                self.InitBaoShiBuff();
-                self.InitDonationBuff();
-                self.InitMaoXianJiaBuff();
-                self.InitCombatRankBuff();
-
-                //99002003
-                BuffData buffData_2 = new BuffData();
-                buffData_2.SkillId = 67000278;
-                buffData_2.BuffId = 99002003;
-                self.BuffFactory(buffData_2, self.GetParent<Unit>(), null);
-            }
+            self.InitBaoShiBuff();
+            self.InitDonationBuff();
+            self.InitMaoXianJiaBuff();
+            self.InitCombatRankBuff();
         }
 
         //DeadNoRemove 0移除   1 不移除
@@ -766,24 +757,15 @@ namespace ET
                 self.BuffFactory(buffData_1, self.GetParent<Unit>(), null, true);
             }
             unitInfoComponentServer.Buffs.Clear();
-
-            if (sceneType != MapTypeEnum.RunRace)
-            {
-                self.InitBaoShiBuff();
-                self.InitDonationBuff();
-                self.InitSoloBuff(sceneType);
-                self.InitMaoXianJiaBuff();
-                self.InitCombatRankBuff();
-            }
+            self.InitBaoShiBuff();
+            self.InitDonationBuff();
+            self.InitSoloBuff(sceneType);
+            self.InitMaoXianJiaBuff();
+            self.InitCombatRankBuff();
         }
 
         public static void InitSoloBuff(this BuffManagerComponent self, int sceneType)
         {
-            if (sceneType != MapTypeEnum.Solo)
-            {
-                return;
-            }
-
             Unit unit = self.GetParent<Unit>();
             if (unit.Type != UnitType.Player)
             {
@@ -796,6 +778,7 @@ namespace ET
             long max_hp = numericComponent.GetAsLong(NumericType.HP_Max_10);
             numericComponent.SetValueNoSync(NumericType.HP_Current_8, 0);
             numericComponent.ApplyChange(null, NumericType.HP_Current_8, max_hp, 0);
+
         }
 
         public static void InitDonationBuff(this BuffManagerComponent self)

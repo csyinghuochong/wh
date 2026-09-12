@@ -79,9 +79,6 @@ namespace ET
 
                 MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();        
                 LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(request.SkillID);
-                if (mapComponent.MapTypeEnum != MapTypeEnum.RunRace && !CommonHelper.IsInnerNet())
-                {
-                }
                 dbSaveComponent.NoFindPath = 0;
                 unit.GetComponent<MountComponentServer>().Dismount();
 

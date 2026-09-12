@@ -71,10 +71,6 @@ namespace ET
             }
             if (unit.Type == UnitType.Player)
             {
-                if (unit.SceneType == MapTypeEnum.RunRace)
-                {
-                    return;
-                }
                 int equipId = unit.GetWuqiItemID();
             }
 
