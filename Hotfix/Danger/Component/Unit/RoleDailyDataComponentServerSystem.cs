@@ -74,7 +74,6 @@ namespace ET
             data.RechargeSign = 0;
             data.TeamDungeonTimes = 0;
             data.HongBao = 0;
-            data.NowXiLian = 0;
             data.YueKaAwardTime = 0;
             data.TiLiKillNumber = 0;
             data.ChouKaNumber = 0;
@@ -405,23 +404,6 @@ namespace ET
 
         #endregion
 
-        #region 今日洗练 NowXiLian
-
-        public static int GetNowXiLian(this RoleDailyDataComponentServer self)
-        {
-            return self.GetDailyData().NowXiLian;
-        }
-
-        public static void AddNowXiLian(this RoleDailyDataComponentServer self, int add = 1, bool notice = true)
-        {
-            self.GetDailyData().NowXiLian += add;
-            if (notice)
-            {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
-            }
-        }
-
-        #endregion
 
         #region 月卡今日领取 YueKaAwardTime
 
@@ -566,7 +548,6 @@ namespace ET
                 RechargeSign = src.RechargeSign,
                 TeamDungeonTimes = src.TeamDungeonTimes,
                 HongBao = src.HongBao,
-                NowXiLian = src.NowXiLian,
                 YueKaAwardTime = src.YueKaAwardTime,
                 TiLiKillNumber = src.TiLiKillNumber,
                 ChouKaNumber = src.ChouKaNumber,

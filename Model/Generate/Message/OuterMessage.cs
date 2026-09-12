@@ -12146,4 +12146,37 @@ namespace ET
 	}
 
 //Mail  end####################################################
+	[Message(OuterOpcode.M2C_HitFly)]
+	[ProtoContract]
+	public partial class M2C_HitFly: Object, IActorMessage
+	{
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public float StartX { get; set; }
+
+		[ProtoMember(3)]
+		public float StartY { get; set; }
+
+		[ProtoMember(4)]
+		public float StartZ { get; set; }
+
+		[ProtoMember(5)]
+		public float DestX { get; set; }
+
+		[ProtoMember(6)]
+		public float DestY { get; set; }
+
+		[ProtoMember(7)]
+		public float DestZ { get; set; }
+
+		[ProtoMember(8)]
+		public int DurationMs { get; set; }
+
+	}
+
 }

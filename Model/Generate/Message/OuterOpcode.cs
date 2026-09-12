@@ -641,5 +641,6 @@ namespace ET
 		 public const ushort M2C_DeleteAllMailResponse = 10638;
 		 public const ushort C2Mail_GetAllMailRequest = 10639;
 		 public const ushort Mail2C_GetAllMailResponse = 10640;
+		 public const ushort M2C_HitFly = 10641;
 	}
 }

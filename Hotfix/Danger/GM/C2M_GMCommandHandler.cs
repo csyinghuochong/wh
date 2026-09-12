@@ -97,6 +97,11 @@ namespace ET
 					}
 					return;
 				}
+                if (message.GMMsg.Contains("jitui"))
+                {
+                    HitFlyServerHelper.GmNearbyMonsters(unit);
+                    return;
+                }
                 if (message.GMMsg.Contains("addspeed#"))
                 {
 					int addspeed = int.Parse(message.GMMsg.Split("#")[1]);
