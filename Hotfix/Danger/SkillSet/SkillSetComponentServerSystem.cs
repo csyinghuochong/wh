@@ -488,14 +488,6 @@ namespace ET
             
 		}
 
-		
-        public static void OnActiveTianfu(this SkillSetComponentServer self, C2M_TianFuActiveRequest request)
-        {
-            Unit unit = self.GetParent<Unit>();
-            SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
-            skillPassiveComponent.UpdatePassiveSkill();
-        }
-
 		/// <summary>
 		/// 觉醒
 		/// </summary>

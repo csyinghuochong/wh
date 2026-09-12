@@ -83,7 +83,6 @@ namespace ET
             }
 
             unit.AddDataComponent<TaskComponentServer>();
-            unit.AddDataComponent<ChengJiuComponentServer>();
             unit.AddDataComponent<PetComponentServer>();
             unit.AddDataComponent<MountComponentServer>();
             unit.AddDataComponent<SkillSetComponentServer>();

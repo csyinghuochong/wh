@@ -94,17 +94,11 @@ namespace ET
 						MessageHelper.SendToClient(unit, m2CCreateUnits);
 						// 加入aoi
 						unit.AddComponent<AOIEntity, int, Vector3>(40 * 1000, unit.Position);
-						if (request.SceneType == (int)MapTypeEnum.PetDungeon)
-						{
-							scene.GetComponent<PetFubenSceneComponent>().MainUnit = unit;
-							scene.GetComponent<PetFubenSceneComponent>().GeneratePetFuben(unit, int.Parse(request.ParamInfo));
-						}
 						if (request.SceneType == (int)MapTypeEnum.PetTianTi)
 						{
 							scene.GetComponent<PetTianTiComponent>().MainUnit = unit;
 							scene.GetComponent<PetTianTiComponent>().GeneratePetFuben().Coroutine();
 						}
-
 						break;
 					case (int)MapTypeEnum.LocalDungeon:
 						LDScene dungeonConfig = LDSceneCategory.Instance.Get(request.ChapterId);

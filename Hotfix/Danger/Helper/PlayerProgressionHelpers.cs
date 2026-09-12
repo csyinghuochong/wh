@@ -90,7 +90,7 @@ namespace ET
     }
 
     /// <summary>
-    /// 宠物获得后的任务/成就推进，避免 Pet 与 Task/ChengJiu 在多处各写一遍。
+    /// 宠物获得后的任务/成就推进，避免 Pet 与 Task 在多处各写一遍。
     /// </summary>
     public static class PetProgressionHelper
     {
@@ -100,8 +100,6 @@ namespace ET
             {
                 return;
             }
-
-            unit.GetComponent<ChengJiuComponentServer>()?.OnGetPet(newpet);
             unit.GetComponent<TaskComponentServer>()?.OnGetPet(newpet);
         }
     }
@@ -155,7 +153,6 @@ namespace ET
                 return;
             }
             unit.GetComponent<TaskComponentServer>()?.OnTeamDungeonSettle(sceneId, hurtRate);
-            unit.GetComponent<ChengJiuComponentServer>()?.OnTeamDungeonSettle(shenYuan);
         }
     }
 }

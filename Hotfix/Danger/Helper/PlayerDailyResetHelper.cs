@@ -30,7 +30,6 @@ namespace ET
    
             taskComponentServer.OnDailyReset(resetType);
 
-            unit.GetComponent<ChengJiuComponentServer>().OnDailyReset();
             unit.GetComponent<HomeComponentServer>().OnDailyReset(resetType == 2);
             unit.GetComponent<DataCollationComponent>().OnDailyReset(resetType == 2);
 

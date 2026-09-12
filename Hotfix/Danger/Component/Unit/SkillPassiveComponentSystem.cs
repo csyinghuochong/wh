@@ -456,17 +456,7 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
 
-            if (unit.Type == UnitType.Player)
-            {
-                ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
-                if (chengJiuComponentServer.JingLingUnitId != 0 && unit.GetParent<UnitComponent>().Get(chengJiuComponentServer.JingLingUnitId) != null)
-                {
-                    Unit jingling = unit.GetParent<UnitComponent>().Get(chengJiuComponentServer.JingLingUnitId);
-                    jingling.GetComponent<SkillPassiveComponent>().OnTrigegerPassiveSkill(skillPassiveTypeEnum, targetId, skillid);
-                }
-            }
 
-         
             using ListComponent<SkillPassiveInfo> skillPassiveInfos = ListComponent<SkillPassiveInfo>.Create();
             for (int i = 0; i < self.SkillPassiveInfos.Count; i++)
             {

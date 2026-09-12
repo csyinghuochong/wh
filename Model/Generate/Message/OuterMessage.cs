@@ -203,6 +203,37 @@ namespace ET
 
 	}
 
+	[ResponseType(nameof(R2C_DeleteAccountResponse))]
+	[Message(OuterOpcode.C2R_DeleteAccountRequest)]
+	[ProtoContract]
+	public partial class C2R_DeleteAccountRequest: Object, IRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public string Account { get; set; }
+
+		[ProtoMember(2)]
+		public string Password { get; set; }
+
+	}
+
+	[Message(OuterOpcode.R2C_DeleteAccountResponse)]
+	[ProtoContract]
+	public partial class R2C_DeleteAccountResponse: Object, IResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 	[ResponseType(nameof(R2C_DeleteRoleData))]
 	[Message(OuterOpcode.C2R_DeleteRoleData)]
 	[ProtoContract]
@@ -580,9 +611,6 @@ namespace ET
 
 		[ProtoMember(26)]
 		public List<int> CompleteGuideIds = new List<int>();
-
-		[ProtoMember(39)]
-		public List<IntStringPair> FirstWinSelf = new List<IntStringPair>();
 
 		[ProtoMember(41)]
 		public int ServerMailIdCur { get; set; }
@@ -1289,144 +1317,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_TestActorResponse))]
-	[Message(OuterOpcode.C2M_TestActorRequest)]
-	[ProtoContract]
-	public partial class C2M_TestActorRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public string Info { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TestActorResponse)]
-	[ProtoContract]
-	public partial class M2C_TestActorResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public string Info { get; set; }
-
-	}
-
-	[ResponseType(nameof(G2C_PlayerInfo))]
-	[Message(OuterOpcode.C2G_PlayerInfo)]
-	[ProtoContract]
-	public partial class C2G_PlayerInfo: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.G2C_PlayerInfo)]
-	[ProtoContract]
-	public partial class G2C_PlayerInfo: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(3)]
-		public List<string> TestRepeatedString = new List<string>();
-
-		[ProtoMember(4)]
-		public List<int> TestRepeatedInt32 = new List<int>();
-
-		[ProtoMember(5)]
-		public List<long> TestRepeatedInt64 = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.C2M_Move)]
-	[ProtoContract]
-	public partial class C2M_Move: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(94)]
-		public long Id { get; set; }
-
-		[ProtoMember(1)]
-		public float X { get; set; }
-
-		[ProtoMember(2)]
-		public float Y { get; set; }
-
-		[ProtoMember(3)]
-		public float Z { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_MoveResult)]
-	[ProtoContract]
-	public partial class M2C_MoveResult: Object, IActorMessage
-	{
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long Id { get; set; }
-
-		[ProtoMember(2)]
-		public float X { get; set; }
-
-		[ProtoMember(3)]
-		public float Y { get; set; }
-
-		[ProtoMember(4)]
-		public float Z { get; set; }
-
-	}
-
-	[ResponseType(nameof(G2C_HeartBeat))]
-	[Message(OuterOpcode.C2G_HeartBeat)]
-	[ProtoContract]
-	public partial class C2G_HeartBeat: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.G2C_HeartBeat)]
-	[ProtoContract]
-	public partial class G2C_HeartBeat: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(C2R_TestCall))]
 	[Message(OuterOpcode.C2R_TestCall)]
 	[ProtoContract]
@@ -1686,339 +1576,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_SkillCmd))]
-	[Message(OuterOpcode.C2M_SkillCmd)]
-	[ProtoContract]
-	public partial class C2M_SkillCmd: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int SkillID { get; set; }
-
-		[ProtoMember(2)]
-		public long TargetID { get; set; }
-
-		[ProtoMember(3)]
-		public int TargetAngle { get; set; }
-
-		[ProtoMember(4)]
-		public float TargetDistance { get; set; }
-
-		[ProtoMember(5)]
-		public int WeaponSkillID { get; set; }
-
-		[ProtoMember(6)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(7)]
-		public float SingValue { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillCmd)]
-	[ProtoContract]
-	public partial class M2C_SkillCmd: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public long CDEndTime { get; set; }
-
-		[ProtoMember(2)]
-		public long PublicCDTime { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_UnitUseSkill)]
-	[ProtoContract]
-	public partial class M2C_UnitUseSkill: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(94)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(1)]
-		public int SkillID { get; set; }
-
-		[ProtoMember(3)]
-		public int TargetAngle { get; set; }
-
-		[ProtoMember(4)]
-		public List<SkillInfo> SkillInfos = new List<SkillInfo>();
-
-		[ProtoMember(6)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(7)]
-		public long CDEndTime { get; set; }
-
-		[ProtoMember(8)]
-		public long PublicCDTime { get; set; }
-
-	}
-
-//通知客户端命中
-	[Message(OuterOpcode.M2C_InformClientHit)]
-	[ProtoContract]
-	public partial class M2C_InformClientHit: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public int HitType { get; set; }
-
-		[ProtoMember(3)]
-		public int HitValue { get; set; }
-
-	}
-
-	[Message(OuterOpcode.SkillInfo)]
-	[ProtoContract]
-	public partial class SkillInfo: Object
-	{
-		[ProtoMember(2)]
-		public long TargetID { get; set; }
-
-		[ProtoMember(3)]
-		public int TargetAngle { get; set; }
-
-		[ProtoMember(5)]
-		public int WeaponSkillID { get; set; }
-
-		[ProtoMember(6)]
-		public float PosX { get; set; }
-
-		[ProtoMember(7)]
-		public float PosY { get; set; }
-
-		[ProtoMember(8)]
-		public float PosZ { get; set; }
-
-		[ProtoMember(11)]
-		public long SkillBeginTime { get; set; }
-
-		[ProtoMember(12)]
-		public long SkillEndTime { get; set; }
-
-		[ProtoMember(13)]
-		public float SingValue { get; set; }
-
-		[ProtoMember(14)]
-		public int SkillID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.C2M_CreateSpiling)]
-	[ProtoContract]
-	public partial class C2M_CreateSpiling: Object, IActorLocationMessage
-	{
-		[ProtoMember(2)]
-		public float X { get; set; }
-
-		[ProtoMember(3)]
-		public float Y { get; set; }
-
-		[ProtoMember(4)]
-		public float Z { get; set; }
-
-//所归属的父实体id
-		[ProtoMember(5)]
-		public long ParentUnitId { get; set; }
-
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(94)]
-		public long Id { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_UnitNumericUpdate)]
-	[ProtoContract]
-	public partial class M2C_UnitNumericUpdate: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(94)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(1)]
-		public int SkillId { get; set; }
-
-		[ProtoMember(2)]
-		public int NumericType { get; set; }
-
-		[ProtoMember(3)]
-		public long OldValue { get; set; }
-
-		[ProtoMember(4)]
-		public long NewValue { get; set; }
-
-		[ProtoMember(5)]
-		public int DamgeType { get; set; }
-
-		[ProtoMember(6)]
-		public long AttackId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SyncUnitPos)]
-	[ProtoContract]
-	public partial class M2C_SyncUnitPos: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(94)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public float PosX { get; set; }
-
-		[ProtoMember(3)]
-		public float PosY { get; set; }
-
-		[ProtoMember(4)]
-		public float PosZ { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_CreateDropItems)]
-	[ProtoContract]
-	public partial class M2C_CreateDropItems: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(94)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(1)]
-		public List<DropInfo> Drops = new List<DropInfo>();
-
-	}
-
-	[Message(OuterOpcode.DropInfo)]
-	[ProtoContract]
-	public partial class DropInfo: Object
-	{
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public int ItemID { get; set; }
-
-		[ProtoMember(4)]
-		public int ItemNum { get; set; }
-
-		[ProtoMember(5)]
-		public float X { get; set; }
-
-		[ProtoMember(6)]
-		public float Y { get; set; }
-
-		[ProtoMember(7)]
-		public float Z { get; set; }
-
-		[ProtoMember(8)]
-		public int DropType { get; set; }
-
-		[ProtoMember(9)]
-		public int CellIndex { get; set; }
-
-		[ProtoMember(10)]
-		public long BeKillId { get; set; }
-
-		[ProtoMember(11)]
-		public int ItemType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.TeleportInfo)]
-	[ProtoContract]
-	public partial class TeleportInfo: Object
-	{
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public int Direction { get; set; }
-
-		[ProtoMember(3)]
-		public int CellIndex { get; set; }
-
-		[ProtoMember(5)]
-		public float X { get; set; }
-
-		[ProtoMember(6)]
-		public float Y { get; set; }
-
-		[ProtoMember(7)]
-		public float Z { get; set; }
-
-		[ProtoMember(8)]
-		public int TransferId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.NpcInfo)]
-	[ProtoContract]
-	public partial class NpcInfo: Object
-	{
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public int NpcID { get; set; }
-
-		[ProtoMember(5)]
-		public float X { get; set; }
-
-		[ProtoMember(6)]
-		public float Y { get; set; }
-
-		[ProtoMember(7)]
-		public float Z { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_TestRobotCase))]
 	[Message(OuterOpcode.C2M_TestRobotCase)]
 	[ProtoContract]
@@ -2050,166 +1607,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public int N { get; set; }
-
-	}
-
-// 吟唱同步（开箱动作暂仍走此协议）。Buff 加的状态不走这里，客户端/服务器各自 StateTypeAdd/Remove。
-	[Message(OuterOpcode.C2M_SingingUpdate)]
-	[ProtoContract]
-	public partial class C2M_SingingUpdate: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public long StateType { get; set; }
-
-		[ProtoMember(3)]
-		public int StateOperateType { get; set; }
-
-		[ProtoMember(4)]
-		public int StateTime { get; set; }
-
-		[ProtoMember(5)]
-		public string StateValue { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SingingUpdate)]
-	[ProtoContract]
-	public partial class M2C_SingingUpdate: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public long StateType { get; set; }
-
-		[ProtoMember(3)]
-		public int StateOperateType { get; set; }
-
-		[ProtoMember(4)]
-		public int StateTime { get; set; }
-
-		[ProtoMember(5)]
-		public string StateValue { get; set; }
-
-	}
-
-	[Message(OuterOpcode.UnitBuffInfo)]
-	[ProtoContract]
-	public partial class UnitBuffInfo: Object
-	{
-		[ProtoMember(1)]
-		public int BuffID { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitIdBelongTo { get; set; }
-
-		[ProtoMember(4)]
-		public int BuffOperateType { get; set; }
-
-		[ProtoMember(5)]
-		public List<float> TargetPostion = new List<float>();
-
-		[ProtoMember(6)]
-		public long BuffEndTime { get; set; }
-
-		[ProtoMember(7)]
-		public string Spellcaster { get; set; }
-
-		[ProtoMember(8)]
-		public int UnitType { get; set; }
-
-		[ProtoMember(9)]
-		public int UnitConfigId { get; set; }
-
-		[ProtoMember(10)]
-		public int SkillId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_UnitBuffUpdate)]
-	[ProtoContract]
-	public partial class M2C_UnitBuffUpdate: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public int BuffID { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitIdBelongTo { get; set; }
-
-		[ProtoMember(4)]
-		public int BuffOperateType { get; set; }
-
-		[ProtoMember(5)]
-		public List<float> TargetPostion = new List<float>();
-
-		[ProtoMember(6)]
-		public long BuffEndTime { get; set; }
-
-		[ProtoMember(7)]
-		public string Spellcaster { get; set; }
-
-		[ProtoMember(8)]
-		public int UnitType { get; set; }
-
-		[ProtoMember(9)]
-		public int UnitConfigId { get; set; }
-
-		[ProtoMember(10)]
-		public int SkillId { get; set; }
-
-		[ProtoMember(11)]
-		public long UnitIdFrom { get; set; }
-
-		[ProtoMember(12)]
-		public int InstanceId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_UnitBuffRemove)]
-	[ProtoContract]
-	public partial class M2C_UnitBuffRemove: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public int BuffID { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitIdBelongTo { get; set; }
-
-		[ProtoMember(12)]
-		public int InstanceId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_UnitBuffStatus)]
-	[ProtoContract]
-	public partial class M2C_UnitBuffStatus: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public int BuffID { get; set; }
-
-		[ProtoMember(2)]
-		public string FlyText { get; set; }
-
-		[ProtoMember(3)]
-		public int FlyType { get; set; }
-
-		[ProtoMember(4)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(12)]
-		public int InstanceId { get; set; }
 
 	}
 
@@ -2413,196 +1810,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_SkillInitResponse))]
-//技能升级
-	[Message(OuterOpcode.C2M_SkillInitRequest)]
-	[ProtoContract]
-	public partial class C2M_SkillInitRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillInitResponse)]
-	[ProtoContract]
-	public partial class M2C_SkillInitResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public SkillSetInfo SkillSetInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_SkillUp))]
-//技能升级
-	[Message(OuterOpcode.C2M_SkillUp)]
-	[ProtoContract]
-	public partial class C2M_SkillUp: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int SkillID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillUp)]
-	[ProtoContract]
-	public partial class M2C_SkillUp: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public int NewSkillID { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_SkillSet))]
-//技能设置（天下3：装配到 Position+Direction；同一技能可装多个槽；SkillID=0 表示卸下该槽）
-	[Message(OuterOpcode.C2M_SkillSet)]
-	[ProtoContract]
-	public partial class C2M_SkillSet: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int SkillID { get; set; }
-
-		[ProtoMember(2)]
-		public int Position { get; set; }
-
-		[ProtoMember(3)]
-		public int SkillType { get; set; }
-
-		[ProtoMember(4)]
-		public int Direction { get; set; }
-
-		[ProtoMember(5)]
-		public long BagInfoId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillSet)]
-	[ProtoContract]
-	public partial class M2C_SkillSet: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_SkillOperation))]
-//技能操作
-	[Message(OuterOpcode.C2M_SkillOperation)]
-	[ProtoContract]
-	public partial class C2M_SkillOperation: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int SkillID { get; set; }
-
-		[ProtoMember(3)]
-		public int OperationType { get; set; }
-
-		[ProtoMember(4)]
-		public string OperationValue { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillOperation)]
-	[ProtoContract]
-	public partial class M2C_SkillOperation: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-//技能列表（拥有的技能；栏位占用见 SkillBarSlot）
-	[Message(OuterOpcode.SkillPro)]
-	[ProtoContract]
-	public partial class SkillPro: Object
-	{
-		[ProtoMember(1)]
-		public int SkillID { get; set; }
-
-		[ProtoMember(3)]
-		public int SkillSetType { get; set; }
-
-		[ProtoMember(4)]
-		public int Actived { get; set; }
-
-		[ProtoMember(5)]
-		public int SkillSource { get; set; }
-
-		[ProtoMember(6)]
-		public int ParamId { get; set; }
-
-		[ProtoMember(7)]
-		public int MagicQulity { get; set; }
-
-		[ProtoMember(8)]
-		public long BagInfoId { get; set; }
-
-		[ProtoMember(9)]
-		public int Level { get; set; }
-
-	}
-
-//技能栏装配槽（天下3：同一技能可占用多个 Position/Direction）
-	[Message(OuterOpcode.SkillBarSlot)]
-	[ProtoContract]
-	public partial class SkillBarSlot: Object
-	{
-		[ProtoMember(1)]
-		public int Position { get; set; }
-
-		[ProtoMember(2)]
-		public int Direction { get; set; }
-
-		[ProtoMember(3)]
-		public int SkillID { get; set; }
-
-		[ProtoMember(4)]
-		public int SkillType { get; set; }
-
-		[ProtoMember(5)]
-		public long BagInfoId { get; set; }
-
-	}
-
 	[Message(OuterOpcode.RechargePro)]
 	[ProtoContract]
 	public partial class RechargePro: Object
@@ -2725,65 +1932,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_TianFuActiveResponse))]
-	[Message(OuterOpcode.C2M_TianFuActiveRequest)]
-	[ProtoContract]
-	public partial class C2M_TianFuActiveRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int TianFuId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TianFuActiveResponse)]
-	[ProtoContract]
-	public partial class M2C_TianFuActiveResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RealNameRewardResponse))]
-	[Message(OuterOpcode.C2M_RealNameRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_RealNameRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RealNameRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_RealNameRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_YueKaOpenResponse))]
 	[Message(OuterOpcode.C2M_YueKaOpenRequest)]
 	[ProtoContract]
@@ -2901,38 +2049,6 @@ namespace ET
 
 	}
 
-//开启宝箱
-	[ResponseType(nameof(Actor_OpenBoxResponse))]
-	[Message(OuterOpcode.Actor_OpenBoxRequest)]
-	[ProtoContract]
-	public partial class Actor_OpenBoxRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.Actor_OpenBoxResponse)]
-	[ProtoContract]
-	public partial class Actor_OpenBoxResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //GM数据
 	[ResponseType(nameof(R2C_GMInfoResponse))]
 	[Message(OuterOpcode.C2R_GMInfoRequest)]
@@ -2994,38 +2110,6 @@ namespace ET
 	[Message(OuterOpcode.R2C_GMCommonResponse)]
 	[ProtoContract]
 	public partial class R2C_GMCommonResponse: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//GM邮件
-	[ResponseType(nameof(E2C_GMEMailResponse))]
-	[Message(OuterOpcode.C2E_GMEMailRequest)]
-	[ProtoContract]
-	public partial class C2E_GMEMailRequest: Object, IMailActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public string MailInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.E2C_GMEMailResponse)]
-	[ProtoContract]
-	public partial class E2C_GMEMailResponse: Object, IMailActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -4087,68 +3171,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_YeWaiSceneResponse))]
-	[Message(OuterOpcode.C2M_YeWaiSceneRequest)]
-	[ProtoContract]
-	public partial class C2M_YeWaiSceneRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int SceneId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_YeWaiSceneResponse)]
-	[ProtoContract]
-	public partial class M2C_YeWaiSceneResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_YeWaiSceneQuitResponse))]
-	[Message(OuterOpcode.C2M_YeWaiSceneQuitRequest)]
-	[ProtoContract]
-	public partial class C2M_YeWaiSceneQuitRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int MapIndex { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_YeWaiSceneQuitResponse)]
-	[ProtoContract]
-	public partial class M2C_YeWaiSceneQuitResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_RoleAddPointResponse))]
 	[Message(OuterOpcode.C2M_RoleAddPointRequest)]
 	[ProtoContract]
@@ -4291,58 +3313,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.FirstWinInfo)]
-	[ProtoContract]
-	public partial class FirstWinInfo: Object
-	{
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-		[ProtoMember(2)]
-		public int FirstWinId { get; set; }
-
-		[ProtoMember(3)]
-		public string PlayerName { get; set; }
-
-		[ProtoMember(4)]
-		public long KillTime { get; set; }
-
-		[ProtoMember(5)]
-		public int Difficulty { get; set; }
-
-	}
-
-	[ResponseType(nameof(A2C_FirstWinInfoResponse))]
-	[Message(OuterOpcode.C2A_FirstWinInfoRequest)]
-	[ProtoContract]
-	public partial class C2A_FirstWinInfoRequest: Object, IActivityActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.A2C_FirstWinInfoResponse)]
-	[ProtoContract]
-	public partial class A2C_FirstWinInfoResponse: Object, IActivityActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<FirstWinInfo> FirstWinInfos = new List<FirstWinInfo>();
-
-	}
-
 	[ResponseType(nameof(M2C_GemHeChengQuickResponse))]
 //宝石一键合成
 	[Message(OuterOpcode.C2M_GemHeChengQuickRequest)]
@@ -4413,19 +3383,6 @@ namespace ET
 
 	}
 
-//重连成功刷新Unit
-	[Message(OuterOpcode.C2M_RefreshUnitRequest)]
-	[ProtoContract]
-	public partial class C2M_RefreshUnitRequest: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
 	[Message(OuterOpcode.M2C_BattleInfoResult)]
 	[ProtoContract]
 	public partial class M2C_BattleInfoResult: Object, IActorMessage
@@ -4475,44 +3432,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public int Need { get; set; }
-
-	}
-
-	[ResponseType(nameof(G2C_LoginRobotResponse))]
-	[Message(OuterOpcode.C2G_LoginRobotRequest)]
-	[ProtoContract]
-	public partial class C2G_LoginRobotRequest: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string Key { get; set; }
-
-		[ProtoMember(2)]
-		public long RoleId { get; set; }
-
-		[ProtoMember(3)]
-		public long Account { get; set; }
-
-	}
-
-	[Message(OuterOpcode.G2C_LoginRobotResponse)]
-	[ProtoContract]
-	public partial class G2C_LoginRobotResponse: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-// 自己的unit id
-		[ProtoMember(1)]
-		public long PlayerId { get; set; }
 
 	}
 
@@ -4712,60 +3631,6 @@ namespace ET
 
 	}
 
-//通用协议 应急用
-	[ResponseType(nameof(M2C_FubenMessageResponse))]
-	[Message(OuterOpcode.C2M_FubenMessageRequest)]
-	[ProtoContract]
-	public partial class C2M_FubenMessageRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int SceneType { get; set; }
-
-		[ProtoMember(2)]
-		public int MessageType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_FubenMessageResponse)]
-	[ProtoContract]
-	public partial class M2C_FubenMessageResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public string MessageValue { get; set; }
-
-	}
-
-///////Max OpcodeID
-	[Message(OuterOpcode.M2C_UpdateVersion)]
-	[ProtoContract]
-	public partial class M2C_UpdateVersion: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int Version { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_ShareSucessResponse))]
 	[Message(OuterOpcode.C2M_ShareSucessRequest)]
 	[ProtoContract]
@@ -4834,37 +3699,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(R2C_DeleteAccountResponse))]
-	[Message(OuterOpcode.C2R_DeleteAccountRequest)]
-	[ProtoContract]
-	public partial class C2R_DeleteAccountRequest: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string Account { get; set; }
-
-		[ProtoMember(2)]
-		public string Password { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_DeleteAccountResponse)]
-	[ProtoContract]
-	public partial class R2C_DeleteAccountResponse: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2C_IOSPayVerifyResponse))]
 	[Message(OuterOpcode.C2R_IOSPayVerifyRequest)]
 	[ProtoContract]
@@ -4905,77 +3739,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(R2C_GooglePayVerifyResponse))]
-	[Message(OuterOpcode.C2R_GooglePayVerifyRequest)]
-	[ProtoContract]
-	public partial class C2R_GooglePayVerifyRequest: Object, IRechargeActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public string payMessage { get; set; }
-
-		[ProtoMember(3)]
-		public string UnitName { get; set; }
-
-		[ProtoMember(4)]
-		public int RechargeType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_GooglePayVerifyResponse)]
-	[ProtoContract]
-	public partial class R2C_GooglePayVerifyResponse: Object, IRechargeActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//技能打断
-	[Message(OuterOpcode.C2M_SkillInterruptRequest)]
-	[ProtoContract]
-	public partial class C2M_SkillInterruptRequest: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int SkillID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillInterruptResult)]
-	[ProtoContract]
-	public partial class M2C_SkillInterruptResult: Object, IActorMessage
-	{
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public int SkillId { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2C_PhoneBinging))]
 //手机号绑定
 	[Message(OuterOpcode.C2R_PhoneBinging)]
@@ -5011,47 +3774,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ItemTreasureOpenResponse))]
-//藏宝图开启
-	[Message(OuterOpcode.C2M_ItemTreasureOpenRequest)]
-	[ProtoContract]
-	public partial class C2M_ItemTreasureOpenRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long OperateBagID { get; set; }
-
-		[ProtoMember(3)]
-		public string OperatePar { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ItemTreasureOpenResponse)]
-	[ProtoContract]
-	public partial class M2C_ItemTreasureOpenResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public string OperatePar { get; set; }
-
-		[ProtoMember(5)]
-		public RewardItem ReardItem { get; set; }
 
 	}
 
@@ -5136,25 +3858,7 @@ namespace ET
 
 	}
 
-//副本击杀boss
-	[Message(OuterOpcode.M2C_TeamDungeonKillBossMessage)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonKillBossMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<int> KillBossList = new List<int>();
-
-	}
-
+//玩家被踢
 	[Message(OuterOpcode.M2C_KickPlayerMessage)]
 	[ProtoContract]
 	public partial class M2C_KickPlayerMessage: Object, IActorMessage
@@ -5167,199 +3871,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
-
-	}
-
-//出战精灵
-	[ResponseType(nameof(M2C_JingLingUseResponse))]
-	[Message(OuterOpcode.C2M_JingLingUseRequest)]
-	[ProtoContract]
-	public partial class C2M_JingLingUseRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int JingLingId { get; set; }
-
-		[ProtoMember(2)]
-		public int OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JingLingUseResponse)]
-	[ProtoContract]
-	public partial class M2C_JingLingUseResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int JingLingId { get; set; }
-
-	}
-
-//抓捕精灵
-	[ResponseType(nameof(M2C_JingLingCatchResponse))]
-	[Message(OuterOpcode.C2M_JingLingCatchRequest)]
-	[ProtoContract]
-	public partial class C2M_JingLingCatchRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long JingLingId { get; set; }
-
-		[ProtoMember(2)]
-		public int ItemId { get; set; }
-
-		[ProtoMember(5)]
-		public string OperateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JingLingCatchResponse)]
-	[ProtoContract]
-	public partial class M2C_JingLingCatchResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//精灵掉落
-	[ResponseType(nameof(M2C_JingLingDropResponse))]
-	[Message(OuterOpcode.C2M_JingLingDropRequest)]
-	[ProtoContract]
-	public partial class C2M_JingLingDropRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JingLingDropResponse)]
-	[ProtoContract]
-	public partial class M2C_JingLingDropResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_TianFuPlanResponse))]
-	[Message(OuterOpcode.C2M_TianFuPlanRequest)]
-	[ProtoContract]
-	public partial class C2M_TianFuPlanRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int TianFuPlan { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TianFuPlanResponse)]
-	[ProtoContract]
-	public partial class M2C_TianFuPlanResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.SkillSetInfo)]
-	[ProtoContract]
-	public partial class SkillSetInfo: Object
-	{
-		[ProtoMember(1)]
-		public List<SkillPro> SkillList = new List<SkillPro>();
-
-		[ProtoMember(2)]
-		public List<int> TianFuList = new List<int>();
-
-		[ProtoMember(4)]
-		public List<int> TianFuList1 = new List<int>();
-
-		[ProtoMember(5)]
-		public int TianFuPlan { get; set; }
-
-		[ProtoMember(6)]
-		public List<SkillBarSlot> SkillBarList = new List<SkillBarSlot>();
-
-		[ProtoMember(7)]
-		public List<SkillBarSlot> SkillBarList1 = new List<SkillBarSlot>();
-
-		[ProtoMember(8)]
-		public int SkillBarPlan { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_SkillBarPlanResponse))]
-//切换技能栏方案
-	[Message(OuterOpcode.C2M_SkillBarPlanRequest)]
-	[ProtoContract]
-	public partial class C2M_SkillBarPlanRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int SkillBarPlan { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillBarPlanResponse)]
-	[ProtoContract]
-	public partial class M2C_SkillBarPlanResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//技能天赋更新
-	[Message(OuterOpcode.M2C_SkillSetMessage)]
-	[ProtoContract]
-	public partial class M2C_SkillSetMessage: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public SkillSetInfo SkillSetInfo { get; set; }
 
 	}
 
@@ -5398,38 +3909,6 @@ namespace ET
 
 		[ProtoMember(3)]
 		public List<PopularizeInfo> MyPopularizeList = new List<PopularizeInfo>();
-
-	}
-
-	[ResponseType(nameof(Popularize2C_UploadResponse))]
-//内存占用
-	[Message(OuterOpcode.C2Popularize_UploadRequest)]
-	[ProtoContract]
-	public partial class C2Popularize_UploadRequest: Object, IPopularizeActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public string MemoryInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.Popularize2C_UploadResponse)]
-	[ProtoContract]
-	public partial class Popularize2C_UploadResponse: Object, IPopularizeActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
 
 	}
 
@@ -5544,61 +4023,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_FirstWinSelfRewardResponse))]
-	[Message(OuterOpcode.C2M_FirstWinSelfRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_FirstWinSelfRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int FirstWinId { get; set; }
-
-		[ProtoMember(2)]
-		public int Difficulty { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_FirstWinSelfRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_FirstWinSelfRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<IntStringPair> FirstWinInfos = new List<IntStringPair>();
-
-	}
-
-	[Message(OuterOpcode.M2C_FirstWinSelfUpdateMessage)]
-	[ProtoContract]
-	public partial class M2C_FirstWinSelfUpdateMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<IntStringPair> FirstWinInfos = new List<IntStringPair>();
 
 	}
 
@@ -6000,55 +4424,6 @@ namespace ET
 
 		[ProtoMember(4)]
 		public int OffHandId { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_SkillXuanZhuanResponse))]
-	[Message(OuterOpcode.C2M_SkillXuanZhuanRequest)]
-	[ProtoContract]
-	public partial class C2M_SkillXuanZhuanRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int Angle { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillXuanZhuanResponse)]
-	[ProtoContract]
-	public partial class M2C_SkillXuanZhuanResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public int Angle { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SkillXuanZhuanMessage)]
-	[ProtoContract]
-	public partial class M2C_SkillXuanZhuanMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int Angle { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitID { get; set; }
 
 	}
 
@@ -6662,68 +5037,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_LevelRewardResponse))]
-	[Message(OuterOpcode.C2M_LevelRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_LevelRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int LvKey { get; set; }
-
-		[ProtoMember(2)]
-		public int Index { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_LevelRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_LevelRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_KillMonsterRewardResponse))]
-	[Message(OuterOpcode.C2M_KillMonsterRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_KillMonsterRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int Key { get; set; }
-
-		[ProtoMember(2)]
-		public int Index { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_KillMonsterRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_KillMonsterRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
 	[Message(OuterOpcode.RankSeasonTowerInfo)]
 	[ProtoContract]
 	public partial class RankSeasonTowerInfo: Object
@@ -6814,77 +5127,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(E2C_AccountWarehousInfoResponse))]
-	[Message(OuterOpcode.C2E_AccountWarehousInfoRequest)]
-	[ProtoContract]
-	public partial class C2E_AccountWarehousInfoRequest: Object, IMailActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long AccInfoID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.E2C_AccountWarehousInfoResponse)]
-	[ProtoContract]
-	public partial class E2C_AccountWarehousInfoResponse: Object, IMailActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<BagInfo> BagInfos = new List<BagInfo>();
-
-	}
-
-	[ResponseType(nameof(M2C_AccountWarehousOperateResponse))]
-	[Message(OuterOpcode.C2M_AccountWarehousOperateRequest)]
-	[ProtoContract]
-	public partial class C2M_AccountWarehousOperateRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public int OperatateType { get; set; }
-
-		[ProtoMember(3)]
-		public long OperateBagID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_AccountWarehousOperateResponse)]
-	[ProtoContract]
-	public partial class M2C_AccountWarehousOperateResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(2)]
-		public BagInfo BagInfo { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_OneChallengeResponse))]
 	[Message(OuterOpcode.C2M_OneChallengeRequest)]
 	[ProtoContract]
@@ -6940,62 +5182,6 @@ namespace ET
 
 	}
 
-//二段技能
-	[Message(OuterOpcode.M2C_SkillSecondResult)]
-	[ProtoContract]
-	public partial class M2C_SkillSecondResult: Object, IActorMessage
-	{
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public int SkillId { get; set; }
-
-		[ProtoMember(3)]
-		public List<long> HurtIds = new List<long>();
-
-	}
-
-	[ResponseType(nameof(R2C_LoginGatemCheck))]
-	[Message(OuterOpcode.C2R_LoginGateCheck)]
-	[ProtoContract]
-	public partial class C2R_LoginGateCheck: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long AccountId { get; set; }
-
-		[ProtoMember(2)]
-		public string RealmTokenKey { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_LoginGatemCheck)]
-	[ProtoContract]
-	public partial class R2C_LoginGatemCheck: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public string GateSessionKey { get; set; }
-
-		[ProtoMember(2)]
-		public string GateAddress { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_ChangeOccResponse))]
 //转换第一职业
 	[Message(OuterOpcode.C2M_ChangeOccRequest)]
@@ -7019,34 +5205,6 @@ namespace ET
 	[Message(OuterOpcode.M2C_ChangeOccResponse)]
 	[ProtoContract]
 	public partial class M2C_ChangeOccResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RelinkRecordResponse))]
-	[Message(OuterOpcode.C2M_RelinkRecordRequest)]
-	[ProtoContract]
-	public partial class C2M_RelinkRecordRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string MessageValue { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RelinkRecordResponse)]
-	[ProtoContract]
-	public partial class M2C_RelinkRecordResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -7254,42 +5412,6 @@ namespace ET
 // 1=全量 2=仅商店限购 3=零点清空后全量
 		[ProtoMember(3)]
 		public int Reason { get; set; }
-
-	}
-
-////////////////////////////////////////////////
-//#################一定要放在最后
-	[ResponseType(nameof(R2C_QueryAccountResponse))]
-	[Message(OuterOpcode.C2R_QueryAccountRequest)]
-	[ProtoContract]
-	public partial class C2R_QueryAccountRequest: Object, IRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public string UserName { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_QueryAccountResponse)]
-	[ProtoContract]
-	public partial class R2C_QueryAccountResponse: Object, IResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public string Account { get; set; }
-
-		[ProtoMember(2)]
-		public string Password { get; set; }
 
 	}
 
@@ -9597,95 +7719,6 @@ namespace ET
 	}
 
 //Pet   end####################################################
-//ChengJiu   start####################################################
-	[ResponseType(nameof(M2C_ChengJiuListResponse))]
-	[Message(OuterOpcode.C2M_ChengJiuListRequest)]
-	[ProtoContract]
-	public partial class C2M_ChengJiuListRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ChengJiuListResponse)]
-	[ProtoContract]
-	public partial class M2C_ChengJiuListResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(5)]
-		public List<int> JingLingList = new List<int>();
-
-		[ProtoMember(6)]
-		public int JingLingId { get; set; }
-
-		[ProtoMember(7)]
-		public int RandomDrop { get; set; }
-
-	}
-
-//激活成就
-	[Message(OuterOpcode.M2C_ChengJiuActiveMessage)]
-	[ProtoContract]
-	public partial class M2C_ChengJiuActiveMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int ChengJiuId { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ChengJiuRewardResponse))]
-	[Message(OuterOpcode.C2M_ChengJiuRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_ChengJiuRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RewardId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ChengJiuRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_ChengJiuRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//ChengJiu end####################################################
 //Mount start####################################################
 // 坐骑实例。资质结构复用 PetAptitudeInfo（D最低 E当前 F强化 G上限 Z最终）
 // 表 LDMount.Aptitude_1~6：长度为1时 D=E=Z=该值；长度为3时按宠物 A/B/C 初始化
@@ -12055,6 +10088,38 @@ namespace ET
 
 	}
 
+//GM邮件
+	[ResponseType(nameof(E2C_GMEMailResponse))]
+	[Message(OuterOpcode.C2E_GMEMailRequest)]
+	[ProtoContract]
+	public partial class C2E_GMEMailRequest: Object, IMailActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(2)]
+		public string MailInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.E2C_GMEMailResponse)]
+	[ProtoContract]
+	public partial class E2C_GMEMailResponse: Object, IMailActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 	[ResponseType(nameof(M2C_ReceiveMailResponse))]
 	[Message(OuterOpcode.C2M_ReceiveMailRequest)]
 	[ProtoContract]
@@ -12146,6 +10211,8 @@ namespace ET
 	}
 
 //Mail  end####################################################
+//Battle  end####################################################
+// 击退/击飞表现包。服务器已落到终点，客户端按时长自己插值，不走寻路。
 	[Message(OuterOpcode.M2C_HitFly)]
 	[ProtoContract]
 	public partial class M2C_HitFly: Object, IActorMessage
@@ -12176,6 +10243,903 @@ namespace ET
 
 		[ProtoMember(8)]
 		public int DurationMs { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_SkillCmd))]
+	[Message(OuterOpcode.C2M_SkillCmd)]
+	[ProtoContract]
+	public partial class C2M_SkillCmd: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillID { get; set; }
+
+		[ProtoMember(2)]
+		public long TargetID { get; set; }
+
+		[ProtoMember(3)]
+		public int TargetAngle { get; set; }
+
+		[ProtoMember(4)]
+		public float TargetDistance { get; set; }
+
+		[ProtoMember(5)]
+		public int WeaponSkillID { get; set; }
+
+		[ProtoMember(6)]
+		public int ItemId { get; set; }
+
+		[ProtoMember(7)]
+		public float SingValue { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillCmd)]
+	[ProtoContract]
+	public partial class M2C_SkillCmd: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long CDEndTime { get; set; }
+
+		[ProtoMember(2)]
+		public long PublicCDTime { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnitUseSkill)]
+	[ProtoContract]
+	public partial class M2C_UnitUseSkill: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(94)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillID { get; set; }
+
+		[ProtoMember(3)]
+		public int TargetAngle { get; set; }
+
+		[ProtoMember(4)]
+		public List<SkillInfo> SkillInfos = new List<SkillInfo>();
+
+		[ProtoMember(6)]
+		public int ItemId { get; set; }
+
+		[ProtoMember(7)]
+		public long CDEndTime { get; set; }
+
+		[ProtoMember(8)]
+		public long PublicCDTime { get; set; }
+
+	}
+
+//通知客户端命中
+	[Message(OuterOpcode.M2C_InformClientHit)]
+	[ProtoContract]
+	public partial class M2C_InformClientHit: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int HitType { get; set; }
+
+		[ProtoMember(3)]
+		public int HitValue { get; set; }
+
+	}
+
+	[Message(OuterOpcode.SkillInfo)]
+	[ProtoContract]
+	public partial class SkillInfo: Object
+	{
+		[ProtoMember(2)]
+		public long TargetID { get; set; }
+
+		[ProtoMember(3)]
+		public int TargetAngle { get; set; }
+
+		[ProtoMember(5)]
+		public int WeaponSkillID { get; set; }
+
+		[ProtoMember(6)]
+		public float PosX { get; set; }
+
+		[ProtoMember(7)]
+		public float PosY { get; set; }
+
+		[ProtoMember(8)]
+		public float PosZ { get; set; }
+
+		[ProtoMember(11)]
+		public long SkillBeginTime { get; set; }
+
+		[ProtoMember(12)]
+		public long SkillEndTime { get; set; }
+
+		[ProtoMember(13)]
+		public float SingValue { get; set; }
+
+		[ProtoMember(14)]
+		public int SkillID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.C2M_CreateSpiling)]
+	[ProtoContract]
+	public partial class C2M_CreateSpiling: Object, IActorLocationMessage
+	{
+		[ProtoMember(2)]
+		public float X { get; set; }
+
+		[ProtoMember(3)]
+		public float Y { get; set; }
+
+		[ProtoMember(4)]
+		public float Z { get; set; }
+
+//所归属的父实体id
+		[ProtoMember(5)]
+		public long ParentUnitId { get; set; }
+
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(94)]
+		public long Id { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnitNumericUpdate)]
+	[ProtoContract]
+	public partial class M2C_UnitNumericUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(94)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillId { get; set; }
+
+		[ProtoMember(2)]
+		public int NumericType { get; set; }
+
+		[ProtoMember(3)]
+		public long OldValue { get; set; }
+
+		[ProtoMember(4)]
+		public long NewValue { get; set; }
+
+		[ProtoMember(5)]
+		public int DamgeType { get; set; }
+
+		[ProtoMember(6)]
+		public long AttackId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SyncUnitPos)]
+	[ProtoContract]
+	public partial class M2C_SyncUnitPos: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(94)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public float PosX { get; set; }
+
+		[ProtoMember(3)]
+		public float PosY { get; set; }
+
+		[ProtoMember(4)]
+		public float PosZ { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_CreateDropItems)]
+	[ProtoContract]
+	public partial class M2C_CreateDropItems: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(94)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(1)]
+		public List<DropInfo> Drops = new List<DropInfo>();
+
+	}
+
+	[Message(OuterOpcode.DropInfo)]
+	[ProtoContract]
+	public partial class DropInfo: Object
+	{
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemID { get; set; }
+
+		[ProtoMember(4)]
+		public int ItemNum { get; set; }
+
+		[ProtoMember(5)]
+		public float X { get; set; }
+
+		[ProtoMember(6)]
+		public float Y { get; set; }
+
+		[ProtoMember(7)]
+		public float Z { get; set; }
+
+		[ProtoMember(8)]
+		public int DropType { get; set; }
+
+		[ProtoMember(9)]
+		public int CellIndex { get; set; }
+
+		[ProtoMember(10)]
+		public long BeKillId { get; set; }
+
+		[ProtoMember(11)]
+		public int ItemType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.TeleportInfo)]
+	[ProtoContract]
+	public partial class TeleportInfo: Object
+	{
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int Direction { get; set; }
+
+		[ProtoMember(3)]
+		public int CellIndex { get; set; }
+
+		[ProtoMember(5)]
+		public float X { get; set; }
+
+		[ProtoMember(6)]
+		public float Y { get; set; }
+
+		[ProtoMember(7)]
+		public float Z { get; set; }
+
+		[ProtoMember(8)]
+		public int TransferId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.NpcInfo)]
+	[ProtoContract]
+	public partial class NpcInfo: Object
+	{
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int NpcID { get; set; }
+
+		[ProtoMember(5)]
+		public float X { get; set; }
+
+		[ProtoMember(6)]
+		public float Y { get; set; }
+
+		[ProtoMember(7)]
+		public float Z { get; set; }
+
+	}
+
+// 吟唱同步（开箱动作暂仍走此协议）。Buff 加的状态不走这里，客户端/服务器各自 StateTypeAdd/Remove。
+	[Message(OuterOpcode.C2M_SingingUpdate)]
+	[ProtoContract]
+	public partial class C2M_SingingUpdate: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(2)]
+		public long StateType { get; set; }
+
+		[ProtoMember(3)]
+		public int StateOperateType { get; set; }
+
+		[ProtoMember(4)]
+		public int StateTime { get; set; }
+
+		[ProtoMember(5)]
+		public string StateValue { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SingingUpdate)]
+	[ProtoContract]
+	public partial class M2C_SingingUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public long StateType { get; set; }
+
+		[ProtoMember(3)]
+		public int StateOperateType { get; set; }
+
+		[ProtoMember(4)]
+		public int StateTime { get; set; }
+
+		[ProtoMember(5)]
+		public string StateValue { get; set; }
+
+	}
+
+	[Message(OuterOpcode.UnitBuffInfo)]
+	[ProtoContract]
+	public partial class UnitBuffInfo: Object
+	{
+		[ProtoMember(1)]
+		public int BuffID { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitIdBelongTo { get; set; }
+
+		[ProtoMember(4)]
+		public int BuffOperateType { get; set; }
+
+		[ProtoMember(5)]
+		public List<float> TargetPostion = new List<float>();
+
+		[ProtoMember(6)]
+		public long BuffEndTime { get; set; }
+
+		[ProtoMember(7)]
+		public string Spellcaster { get; set; }
+
+		[ProtoMember(8)]
+		public int UnitType { get; set; }
+
+		[ProtoMember(9)]
+		public int UnitConfigId { get; set; }
+
+		[ProtoMember(10)]
+		public int SkillId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnitBuffUpdate)]
+	[ProtoContract]
+	public partial class M2C_UnitBuffUpdate: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public int BuffID { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitIdBelongTo { get; set; }
+
+		[ProtoMember(4)]
+		public int BuffOperateType { get; set; }
+
+		[ProtoMember(5)]
+		public List<float> TargetPostion = new List<float>();
+
+		[ProtoMember(6)]
+		public long BuffEndTime { get; set; }
+
+		[ProtoMember(7)]
+		public string Spellcaster { get; set; }
+
+		[ProtoMember(8)]
+		public int UnitType { get; set; }
+
+		[ProtoMember(9)]
+		public int UnitConfigId { get; set; }
+
+		[ProtoMember(10)]
+		public int SkillId { get; set; }
+
+		[ProtoMember(11)]
+		public long UnitIdFrom { get; set; }
+
+		[ProtoMember(12)]
+		public int InstanceId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnitBuffRemove)]
+	[ProtoContract]
+	public partial class M2C_UnitBuffRemove: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public int BuffID { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitIdBelongTo { get; set; }
+
+		[ProtoMember(12)]
+		public int InstanceId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnitBuffStatus)]
+	[ProtoContract]
+	public partial class M2C_UnitBuffStatus: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public int BuffID { get; set; }
+
+		[ProtoMember(2)]
+		public string FlyText { get; set; }
+
+		[ProtoMember(3)]
+		public int FlyType { get; set; }
+
+		[ProtoMember(4)]
+		public long UnitID { get; set; }
+
+		[ProtoMember(12)]
+		public int InstanceId { get; set; }
+
+	}
+
+//开启宝箱
+	[ResponseType(nameof(M2C_OpenBoxResponse))]
+	[Message(OuterOpcode.C2M_OpenBoxRequest)]
+	[ProtoContract]
+	public partial class C2M_OpenBoxRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_OpenBoxResponse)]
+	[ProtoContract]
+	public partial class M2C_OpenBoxResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//技能打断
+	[Message(OuterOpcode.C2M_SkillInterruptRequest)]
+	[ProtoContract]
+	public partial class C2M_SkillInterruptRequest: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillInterruptResult)]
+	[ProtoContract]
+	public partial class M2C_SkillInterruptResult: Object, IActorMessage
+	{
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int SkillId { get; set; }
+
+	}
+
+//重连成功刷新Unit
+	[Message(OuterOpcode.C2M_RefreshUnitRequest)]
+	[ProtoContract]
+	public partial class C2M_RefreshUnitRequest: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+//Battle  end####################################################
+	[ResponseType(nameof(M2C_SkillXuanZhuanResponse))]
+	[Message(OuterOpcode.C2M_SkillXuanZhuanRequest)]
+	[ProtoContract]
+	public partial class C2M_SkillXuanZhuanRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int Angle { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillXuanZhuanResponse)]
+	[ProtoContract]
+	public partial class M2C_SkillXuanZhuanResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public int Angle { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillXuanZhuanMessage)]
+	[ProtoContract]
+	public partial class M2C_SkillXuanZhuanMessage: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int Angle { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitID { get; set; }
+
+	}
+
+//SkillSet begin####################################################
+	[Message(OuterOpcode.SkillSetInfo)]
+	[ProtoContract]
+	public partial class SkillSetInfo: Object
+	{
+		[ProtoMember(1)]
+		public List<SkillPro> SkillList = new List<SkillPro>();
+
+		[ProtoMember(2)]
+		public List<int> TianFuList = new List<int>();
+
+		[ProtoMember(4)]
+		public List<int> TianFuList1 = new List<int>();
+
+		[ProtoMember(5)]
+		public int TianFuPlan { get; set; }
+
+		[ProtoMember(6)]
+		public List<SkillBarSlot> SkillBarList = new List<SkillBarSlot>();
+
+		[ProtoMember(7)]
+		public List<SkillBarSlot> SkillBarList1 = new List<SkillBarSlot>();
+
+		[ProtoMember(8)]
+		public int SkillBarPlan { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_SkillInitResponse))]
+//技能升级
+	[Message(OuterOpcode.C2M_SkillInitRequest)]
+	[ProtoContract]
+	public partial class C2M_SkillInitRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillInitResponse)]
+	[ProtoContract]
+	public partial class M2C_SkillInitResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public SkillSetInfo SkillSetInfo { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_SkillUp))]
+//技能升级
+	[Message(OuterOpcode.C2M_SkillUp)]
+	[ProtoContract]
+	public partial class C2M_SkillUp: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillUp)]
+	[ProtoContract]
+	public partial class M2C_SkillUp: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public int NewSkillID { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_SkillSet))]
+//技能设置（天下3：装配到 Position+Direction；同一技能可装多个槽；SkillID=0 表示卸下该槽）
+	[Message(OuterOpcode.C2M_SkillSet)]
+	[ProtoContract]
+	public partial class C2M_SkillSet: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillID { get; set; }
+
+		[ProtoMember(2)]
+		public int Position { get; set; }
+
+		[ProtoMember(3)]
+		public int SkillType { get; set; }
+
+		[ProtoMember(4)]
+		public int Direction { get; set; }
+
+		[ProtoMember(5)]
+		public long BagInfoId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillSet)]
+	[ProtoContract]
+	public partial class M2C_SkillSet: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_SkillOperation))]
+//技能操作
+	[Message(OuterOpcode.C2M_SkillOperation)]
+	[ProtoContract]
+	public partial class C2M_SkillOperation: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillID { get; set; }
+
+		[ProtoMember(3)]
+		public int OperationType { get; set; }
+
+		[ProtoMember(4)]
+		public string OperationValue { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillOperation)]
+	[ProtoContract]
+	public partial class M2C_SkillOperation: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+//技能列表（拥有的技能；栏位占用见 SkillBarSlot）
+	[Message(OuterOpcode.SkillPro)]
+	[ProtoContract]
+	public partial class SkillPro: Object
+	{
+		[ProtoMember(1)]
+		public int SkillID { get; set; }
+
+		[ProtoMember(3)]
+		public int SkillSetType { get; set; }
+
+		[ProtoMember(4)]
+		public int Actived { get; set; }
+
+		[ProtoMember(5)]
+		public int SkillSource { get; set; }
+
+		[ProtoMember(6)]
+		public int ParamId { get; set; }
+
+		[ProtoMember(7)]
+		public int MagicQulity { get; set; }
+
+		[ProtoMember(8)]
+		public long BagInfoId { get; set; }
+
+		[ProtoMember(9)]
+		public int Level { get; set; }
+
+	}
+
+//技能栏装配槽（天下3：同一技能可占用多个 Position/Direction）
+	[Message(OuterOpcode.SkillBarSlot)]
+	[ProtoContract]
+	public partial class SkillBarSlot: Object
+	{
+		[ProtoMember(1)]
+		public int Position { get; set; }
+
+		[ProtoMember(2)]
+		public int Direction { get; set; }
+
+		[ProtoMember(3)]
+		public int SkillID { get; set; }
+
+		[ProtoMember(4)]
+		public int SkillType { get; set; }
+
+		[ProtoMember(5)]
+		public long BagInfoId { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_SkillBarPlanResponse))]
+//切换技能栏方案
+	[Message(OuterOpcode.C2M_SkillBarPlanRequest)]
+	[ProtoContract]
+	public partial class C2M_SkillBarPlanRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int SkillBarPlan { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_SkillBarPlanResponse)]
+	[ProtoContract]
+	public partial class M2C_SkillBarPlanResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//技能天赋更新
+	[Message(OuterOpcode.M2C_SkillSetMessage)]
+	[ProtoContract]
+	public partial class M2C_SkillSetMessage: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public SkillSetInfo SkillSetInfo { get; set; }
+
+	}
+
+//SkillSet  end####################################################
+//PetFuben begin####################################################
+//PetFuben  end####################################################
+////////////////////////////////////////////////
+//#################一定要放在最后
+///////Max OpcodeID    放在最后
+	[Message(OuterOpcode.M2C_UpdateVersion)]
+	[ProtoContract]
+	public partial class M2C_UpdateVersion: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int Version { get; set; }
 
 	}
 

@@ -12,7 +12,6 @@ namespace ET
 			//读取数据库
 			PetComponentServer pet = unit.GetComponent<PetComponentServer>();
 			BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-			ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
 			TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 			PetInfo petInfo = pet.GetPetInfo(request.PetInfoId);
 			if (petInfo == null)
@@ -104,7 +103,6 @@ namespace ET
             if (ifCost)
 			{
 				bag.OnCostItemData($"{bagInfo.ItemID};{costNum}", (ItemLocType)bagInfo.Loc, itemGetWay);		
-				chengJiuComponentServer.OnPetXiLian(petInfo);		//激活成就
 				taskComponentServer.OnPetXiLian(petInfo);                    //激活任务
 
             }

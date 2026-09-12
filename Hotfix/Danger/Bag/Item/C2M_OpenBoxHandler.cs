@@ -4,10 +4,10 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class Actor_OpenBoxHandler : AMActorLocationRpcHandler<Unit, Actor_OpenBoxRequest, Actor_OpenBoxResponse>
+    public class C2M_OpenBoxHandler : AMActorLocationRpcHandler<Unit, C2M_OpenBoxRequest, M2C_OpenBoxResponse>
     {
 
-        protected override async ETTask Run(Unit unit, Actor_OpenBoxRequest request, Actor_OpenBoxResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_OpenBoxRequest request, M2C_OpenBoxResponse response, Action reply)
         {
             Unit boxUnit = unit.GetParent<UnitComponent>().Get(request.UnitId);
             if (boxUnit == null)

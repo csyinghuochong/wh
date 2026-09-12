@@ -35,7 +35,7 @@ namespace ET
 				return;
 			}
             
-            if (OuterOpcode.C2R_QueryAccountRequest != request.Version)
+            if (OuterOpcode.M2C_UpdateVersion != request.Version)
             {
 				response.Error = ErrorCode.ERR_VersionNoMatch;
                 reply();

@@ -10,7 +10,6 @@ namespace ET
         {
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-            ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             if (request.ShareType != 1 && request.ShareType != 2 && request.ShareType != 8)

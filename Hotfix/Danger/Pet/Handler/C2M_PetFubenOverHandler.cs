@@ -11,16 +11,6 @@ namespace ET
             await ETTask.CompletedTask;
             Scene domainScene = unit.DomainScene();
             MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
-            if (mapComponent.MapTypeEnum == MapTypeEnum.PetDungeon)
-            {
-                domainScene.GetComponent<PetFubenSceneComponent>().OnGameOver();
-            }
-            if (mapComponent.MapTypeEnum == MapTypeEnum.PetTianTi)
-            {
-                int result = domainScene.GetComponent<PetTianTiComponent>().GetCombatResult();
-                result = result == CombatResultEnum.None ? CombatResultEnum.Fail : result;
-                domainScene.GetComponent<PetTianTiComponent>().OnGameOver(result);
-            }
         }
     }
 }

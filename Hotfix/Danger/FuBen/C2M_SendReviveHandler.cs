@@ -23,10 +23,8 @@ namespace ET
                     return;
                 }
 
-
                 unit.SetBornPosition(unit.Position, true);
                 unit.GetComponent<UnitLifeComponent>()?.OnRevive();
-                unit.GetComponent<ChengJiuComponentServer>().OnRevive();
             }
             else
             {

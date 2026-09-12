@@ -958,7 +958,6 @@ namespace ET
                     }
 
                     //击败boss>3返回（MonsterRevives 已移除）
-                    int killmonsterNumber = 0;
                     //if (killmonsterNumber >= 3)
                     //{
                     //    continue;
@@ -1002,39 +1001,6 @@ namespace ET
                     //    continue;
                     //}
 
-                    List<ChengJiuComponentServer> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponentServer>(pyzone, d => d.Id == roleInfoComponentServer.Id);
-                    if (chengJiuComponents == null || chengJiuComponents.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    int chengjiuTask = 0;
-                    //3.游戏内成就4個擊殺boss都沒完成 10000002 - 10000005
-                    //if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000002)
-                    //    || chengJiuComponents[0].ChengJiuCompleteList.Contains(10000003)
-                    //    || chengJiuComponents[0].ChengJiuCompleteList.Contains(10000004)
-                    //    || chengJiuComponents[0].ChengJiuCompleteList.Contains(10000005))
-                    //{
-                    //    continue;
-                    //}
-                    if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000002))
-                    {
-                        chengjiuTask++;
-                    }
-                    if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000003))
-                    {
-                        chengjiuTask++;
-                    }
-                    if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000004))
-                    {
-                        chengjiuTask++;
-                    }
-                    if (chengJiuComponents[0].ChengJiuCompleteList.Contains(10000005))
-                    {
-                        chengjiuTask++;
-                    }
-
-
                     List<TaskComponentServer> taskComponents = await Game.Scene.GetComponent<DBComponent>().Query<TaskComponentServer>(pyzone, d => d.Id == roleInfoComponentServer.Id);
                     if (taskComponents == null || taskComponents.Count == 0)
                     {
@@ -1063,16 +1029,6 @@ namespace ET
                     }
 
                     //等级 充值  活跃度 体力 当前金币   成就点数  当前主线任务
-                    gongzuoshiInfo += $"账号: {roleInfoComponentServer.Account}  \t名称：{roleInfoComponentServer.RoleInfo.Name}  \t等级:{roleInfoComponentServer.RoleInfo.Lv}   \t充值:{dataCollations[0].Recharge}" +
-                            $"\t体力:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.TiLi)}  \t金币:{RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.Gold)}   \t成就值:{chengJiuComponents[0].TotalChengJiuPoint}   \t拍卖消耗:{dataCollations[0].GetCostByType(ItemGetWay.PaiMaiBuy)}" +
-                            $"\t当前主线:{dataCollations[0].MainTask}  \t角色天数:{roleInfoComponentServer.GetCrateDay()}  \t金币获取:{dataCollations[0].GoldGet}  \t金币消耗:{dataCollations[0].GoldCost}   \t成就任务:{chengjiuTask}" + 
-                            $"\t金币获取总值:{dataCollations[0].GetGoldGetTotal()}  \t金币消耗总值:{dataCollations[0].GetGoldCostTotal()} 今日在线:{dataCollations[0].TodayOnLine}  \t击杀boos:{killmonsterNumber} \t设备:{dataCollations[0].GetDeviceID()}" +
-                            $"\tIP:{roleInfoComponentServer.RemoteAddress}  身份证:{idcard} \n";
-                    
-                    if (!accountNumber.ContainsKey(roleInfoComponentServer.Account))
-                    {
-                        accountNumber.Add(roleInfoComponentServer.Account, 0);
-                    }
                     accountNumber[roleInfoComponentServer.Account]++;
                 }
                 LogHelper.GongZuoShi(gongzuoshiInfo);

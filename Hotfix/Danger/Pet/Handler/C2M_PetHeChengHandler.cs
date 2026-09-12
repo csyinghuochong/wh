@@ -8,7 +8,6 @@ namespace ET
 		protected override async ETTask Run(Unit unit, C2M_PetHeCheng request, M2C_PetHeCheng response, Action reply)
 		{
 			PetComponentServer petComponentServer = unit.GetComponent<PetComponentServer>();
-			ChengJiuComponentServer chengJiuComponentServer = unit.GetComponent<ChengJiuComponentServer>();
 			TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
 			PetInfo petinfo_1 = petComponentServer.GetPetInfo(request.PetInfoId1);
@@ -46,7 +45,6 @@ namespace ET
 			long deletePetId = petinfo_2.Id;
 			petComponentServer.RemovePet(deletePetId, 1);
 			petComponentServer.UpdatePetAttribute(petinfo_1, true);
-			chengJiuComponentServer.OnPetHeCheng(petinfo_1);
 			taskComponentServer.OnPetHeCheng(petinfo_1);
 
 

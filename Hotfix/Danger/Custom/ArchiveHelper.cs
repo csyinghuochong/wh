@@ -29,13 +29,7 @@ namespace ET
                 return;
             }
 
-            ChengJiuComponentServer oldChengJiuComponentServer = GetDBComponent<ChengJiuComponentServer>(zone, unitid, day);
-            if (oldChengJiuComponentServer == null)
-            {
-                Console.WriteLine($"OnArchiveHandler  chengJiuComponent==null:   {zone} {unitid}");
-                return;
-            }
-
+         
             DBFriendInfo old_dBFriendInfo = GetDBComponent<DBFriendInfo>(zone, unitid, day);
             if (old_dBFriendInfo == null)
             {
@@ -264,7 +258,7 @@ namespace ET
                 Console.WriteLine($"AllUnitComponent:  {allComponets[i]}！！！");
                 //个人数据组件
                 //
-                //ActivityComponentServer    BagComponentServer     ChengJiuComponent    DBFriendInfo 
+                //BagComponentServer       DBFriendInfo 
                 //DBMailInfo    DBPopularizeInfo     DataCollationComponent  EnergyComponent 
                 //HomeComponent    NumericComponent     PetComponent     RechargeComponent 
                 //ReddotComponent     ShoujiComponent     SkillSetComponent    TaskComponent 
@@ -277,7 +271,6 @@ namespace ET
             //导入DB数据
             await SaveDBComponent(zone, oldActivityComponentServer);
             await SaveDBComponent(zone, oldBagComponentServer);
-            await SaveDBComponent(zone, oldChengJiuComponentServer);
             await SaveDBComponent(zone, old_dBFriendInfo);
             await SaveDBComponent(zone, old_dBMailInfo);
 
@@ -380,7 +373,6 @@ namespace ET
             Console.WriteLine($"ExecuteBatchAllComponent:  zone: {zone}   number: {saveuserids.Count}");
             await ExecuteBatchSingleComponent<ActivityComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<BagComponentServer>(zone, saveuserids);
-            await ExecuteBatchSingleComponent<ChengJiuComponentServer>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DBFriendInfo>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DBMailInfo>(zone, saveuserids);
             await ExecuteBatchSingleComponent<DataCollationComponent>(zone, saveuserids);

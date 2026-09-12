@@ -18,7 +18,7 @@ namespace ET
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             SkillSetComponentServer skillSet = unit.GetComponent<SkillSetComponentServer>();
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
-            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
+         
             long bagInfoID = request.OperateBagID;
             int occ = useInfo.Occ;
             //通知客户端背包刷新

@@ -115,26 +115,14 @@ namespace ET
                         continue;
                     }
                     TaskComponentServer taskComponent = attackUnit.GetComponent<TaskComponentServer>();
-                    ChengJiuComponentServer chengJiuComponent = attackUnit.GetComponent<ChengJiuComponentServer>();
                     PetComponentServer petComponent = attackUnit.GetComponent<PetComponentServer>();
                     RoleInfoComponentServer roleInfoComponent = attackUnit.GetComponent<RoleInfoComponentServer>();
                     taskComponent.OnKillUnit(defendUnit, sceneTypeEnum);
-                    chengJiuComponent.OnKillUnit(defendUnit);
                     petComponent.OnKillUnit(defendUnit);
                     roleInfoComponent.OnKillUnit(defendUnit, sceneTypeEnum, sceneId);
                 }
 
                 UnitFactory.CreateDropItems(defendUnit, mainAttack, sceneTypeEnum, sceneId, realPlayer);
-
-                if (mainAttack.Type == UnitType.Player)
-                {
-                    ChengJiuComponentServer mainChengJiu = mainAttack.GetComponent<ChengJiuComponentServer>();
-                    int jinglingid = mainChengJiu.JingLingId;
-                    if (jinglingid != 0)
-                    {
-                        LDElf ldElf = LDElfCategory.Instance.Get(jinglingid);
-                    }
-                }
 
                 if (mainAttack.Type == UnitType.Player && defendUnit.Type == UnitType.Player
                  && SceneConfigHelper.UseSceneConfig(sceneTypeEnum))
@@ -160,9 +148,6 @@ namespace ET
 
             switch (sceneTypeEnum)
             {
-                case MapTypeEnum.PetDungeon:
-                    domainScene.GetComponent<PetFubenSceneComponent>().OnKillEvent();
-                    break;
                 case MapTypeEnum.PetTianTi:
                     domainScene.GetComponent<PetTianTiComponent>().OnKillEvent();
                     break;

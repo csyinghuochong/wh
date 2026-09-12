@@ -515,8 +515,7 @@ namespace ET
 
             await TimerComponent.Instance.WaitFrameAsync();
             await TransferComponent<BagComponentServer>(unit, sceneInstanceId);
-            await TransferComponent<ChengJiuComponentServer>(unit, sceneInstanceId);
-
+        
             M2M_UnitTransferRequest request = new M2M_UnitTransferRequest();
             request.Unit = unit;
             foreach ((Type key, Entity entity) in unit.Components)
@@ -525,8 +524,7 @@ namespace ET
                 {
                     continue;
                 }
-                if (key == typeof(BagComponentServer)
-                 || key == typeof(ChengJiuComponentServer))
+                if (key == typeof(BagComponentServer))
                 {
                     continue;
                 }
@@ -570,13 +568,6 @@ namespace ET
                 petComponent.UpdatePetAttribute(fightId, false);
                 UnitFactory.CreatePet(unit, fightId);
             }
-            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-            int jinglingid  = chengJiu.JingLingId;
-            if (jinglingid != 0)
-            {
-                long JingLingUnitId = UnitFactory.CreateJingLing(unit, jinglingid).Id;
-                chengJiu.JingLingUnitId = JingLingUnitId;
-            }
         }
 
 
@@ -612,13 +603,6 @@ namespace ET
             {
                 unitComponent.Remove(fightId.Id);
             }
-            ChengJiuComponentServer chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-            long jinglingUnitId = chengJiu.JingLingUnitId;
-            if (jinglingUnitId != 0 && unitComponent.Get(jinglingUnitId) != null)
-            {
-                unitComponent.Remove(jinglingUnitId);
-            }
-            chengJiu.JingLingUnitId = 0;
         }
 
         /// <summary>

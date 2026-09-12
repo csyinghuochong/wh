@@ -118,7 +118,6 @@ namespace ET
             {
                 if (rankid > 0)
                 {
-                    self.MainUnit.GetComponent<ChengJiuComponentServer>().OnPetTianTiRank(rankid);
                     self.MainUnit.GetComponent<TaskComponentServer>().OnPetTianTiRank(rankid);
                 }
                 MessageHelper.SendToClient(self.MainUnit, m2C_FubenSettlement);

@@ -223,37 +223,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Center2A_CenterServerList))]
-	[Message(InnerOpcode.A2Center_CenterServerList)]
-	[ProtoContract]
-	public partial class A2Center_CenterServerList: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Center2A_CenterServerList)]
-	[ProtoContract]
-	public partial class Center2A_CenterServerList: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<ServerItem> ServerItems = new List<ServerItem>();
-
-	}
-
 	[ResponseType(nameof(R2Other_CheckAccount))]
 	[Message(InnerOpcode.Other2R_CheckAccount)]
 	[ProtoContract]
@@ -776,6 +745,37 @@ namespace ET
 	[Message(InnerOpcode.G2L_DisconnectGateUnit)]
 	[ProtoContract]
 	public partial class G2L_DisconnectGateUnit: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(L2A_LoginAccountResponse))]
+	[Message(InnerOpcode.A2L_LoginAccountRequest)]
+	[ProtoContract]
+	public partial class A2L_LoginAccountRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long AccountId { get; set; }
+
+		[ProtoMember(5)]
+		public bool Relink { get; set; }
+
+	}
+
+	[Message(InnerOpcode.L2A_LoginAccountResponse)]
+	[ProtoContract]
+	public partial class L2A_LoginAccountResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -1583,59 +1583,6 @@ namespace ET
 
 	}
 
-//通知其他服务进程刷新肝帝
-	[ResponseType(nameof(M2F_ServerInfoUpdateResponse))]
-	[Message(InnerOpcode.F2M_ServerInfoUpdateRequest)]
-	[ProtoContract]
-	public partial class F2M_ServerInfoUpdateRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public ServerInfo ServerInfo { get; set; }
-
-		[ProtoMember(2)]
-		public int operareType { get; set; }
-
-		[ProtoMember(3)]
-		public string operateValue { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2F_ServerInfoUpdateResponse)]
-	[ProtoContract]
-	public partial class M2F_ServerInfoUpdateResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2A_FirstWinInfoMessage)]
-	[ProtoContract]
-	public partial class M2A_FirstWinInfoMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public FirstWinInfo FirstWinInfo { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2Other_RechargeResponse))]
 	[Message(InnerOpcode.Other2R_RechargeRequest)]
 	[ProtoContract]
@@ -1777,38 +1724,7 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(L2A_LoginAccountResponse))]
-	[Message(InnerOpcode.A2L_LoginAccountRequest)]
-	[ProtoContract]
-	public partial class A2L_LoginAccountRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long AccountId { get; set; }
-
-		[ProtoMember(5)]
-		public bool Relink { get; set; }
-
-	}
-
-	[Message(InnerOpcode.L2A_LoginAccountResponse)]
-	[ProtoContract]
-	public partial class L2A_LoginAccountResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//进入战场
+//进入战场 [fubencenter-fubenwork]
 	[ResponseType(nameof(FubenCenter2M_BattleEnterResponse))]
 	[Message(InnerOpcode.M2FubenCenter_BattleEnterRequest)]
 	[ProtoContract]
@@ -1899,7 +1815,7 @@ namespace ET
 
 	}
 
-//野外副本Id
+//公共地图Id
 	[ResponseType(nameof(F2M_YeWaiSceneIdResponse))]
 	[Message(InnerOpcode.M2F_YeWaiSceneIdRequest)]
 	[ProtoContract]

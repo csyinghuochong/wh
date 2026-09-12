@@ -4,7 +4,7 @@ namespace ET
 {
     /// <summary>
     /// 经济变更副作用：拍卖成就、金币任务/成就、等级/战力/家园等级推进。
-    /// RoleInfo 只负责改数值与协议；进度通知走本 Helper，避免 RoleInfo↔Task/ChengJiu 搅在一起。
+    /// RoleInfo 只负责改数值与协议；进度通知走本 Helper，避免 RoleInfo↔Task 搅在一起。
     /// </summary>
     public static class PlayerEconomyHelper
     {
@@ -32,37 +32,29 @@ namespace ET
             }
 
             TaskComponentServer task = null;
-            ChengJiuComponentServer chengJiu = null;
 
             switch (type)
             {
                 case UserDataType.HomeLv:
                     task = unit.GetComponent<TaskComponentServer>();
-                    chengJiu = unit.GetComponent<ChengJiuComponentServer>();
                     int homeLv = unit.GetComponent<HomeComponentServer>()?.HomeLv ?? 1;
                     int homeShowLv = homeLv - 10000;
                     task?.OnHomeLevel(homeShowLv);
-                    chengJiu?.OnHomeLevel(homeShowLv);
                     break;
 
                 case UserDataType.Level:
                     task = unit.GetComponent<TaskComponentServer>();
-                    chengJiu = unit.GetComponent<ChengJiuComponentServer>();
                     task?.OnUpdateLevel(roleInfo.Lv);
-                    chengJiu?.OnUpdateLevel(roleInfo.Lv);
+ 
                     break;
 
                 case UserDataType.Gold:
                     task = unit.GetComponent<TaskComponentServer>();
-                    chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-                    chengJiu?.OnGetGold((int)delta);
                     task?.OnCostCoin((int)delta);
                     break;
 
                 case UserDataType.Combat:
                     task = unit.GetComponent<TaskComponentServer>();
-                    chengJiu = unit.GetComponent<ChengJiuComponentServer>();
-                    chengJiu?.OnCombatToValue(roleInfo.Combat);
                     task?.OnCombatToValue(roleInfo.Combat, (int)delta);
                     break;
 

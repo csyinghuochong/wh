@@ -28,7 +28,6 @@ namespace ET
             unit.GetComponent<MountComponentServer>().OnLogin();
             unit.GetComponent<ActivityComponentServer>().OnLogin(roleInfo.Lv);
             unit.GetComponent<TitleComponentServer>().OnCheckTitle(false);
-            unit.GetComponent<ChengJiuComponentServer>().OnLogin();
             unit.GetComponent<HomeComponentServer>().OnLogin();
             unit.GetComponent<SkillSetComponentServer>().OnLogin(roleInfo.Occ);
             // RoleDailyData 全量由客户端 LoginHelper 请求，此处只做迁移准备

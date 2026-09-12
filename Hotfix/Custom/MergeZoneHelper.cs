@@ -574,23 +574,7 @@ namespace ET
             }
             await TimerComponent.Instance.WaitFrameAsync();
             Log.Console("BagComponentServer Complelte");
-            //ChengJiuComponen
-            dbcount = 0;
-            List<ChengJiuComponentServer> chengJiuComponents = await Game.Scene.GetComponent<DBComponent>().Query<ChengJiuComponentServer>(oldzone, d => d.Id > 0);
-            foreach (var entity in chengJiuComponents)
-            {
-                if (invalidPlayers.Contains(entity.Id))
-                {
-                    continue;
-                }
-                dbcount++;
-                if (dbcount % onecount == 0)
-                {
-                    await TimerComponent.Instance.WaitFrameAsync();
-                }
-                await Game.Scene.GetComponent<DBComponent>().Save(newzone, entity);
-            }
-            Log.Console("ChengJiuComponent Complelte");
+
             //DBAccountInfo.  问清楚规则 不能全部合并
             dbcount = 0;
             /*List<DBAccountBagInfo> dBAccountInfos_old = await Game.Scene.GetComponent<DBComponent>().Query<DBAccountBagInfo>(oldzone, d => d.Id > 0);

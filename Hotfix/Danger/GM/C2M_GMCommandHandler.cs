@@ -173,7 +173,6 @@ namespace ET
 								unit.GetComponent<MountComponentServer>().OnAddMount(ItemGetWay.GM, itemId);
 								break;
                             case ItemBigType.Type_Elf:
-                                unit.GetComponent<ChengJiuComponentServer>().OnActiveJingLing(itemId);
                                 break;
                         }
 						break;
