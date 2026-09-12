@@ -20,11 +20,6 @@
                 TeamSceneComponent teamSceneComponent = scene.GetParent<TeamSceneComponent>();
                 teamSceneComponent.OnUnitDisconnect(scene, userId);
             }
-            if (sceneTypeEnum == (int)MapTypeEnum.Arena)
-            {
-                ArenaDungeonComponent areneSceneComponent = scene.GetComponent<ArenaDungeonComponent>();
-                areneSceneComponent.OnUnitDisconnect(userId);
-            }
             if (sceneTypeEnum == (int)MapTypeEnum.Home)
             {
                 HomeSceneComponent homeSceneComponent = scene.GetParent<HomeSceneComponent>();

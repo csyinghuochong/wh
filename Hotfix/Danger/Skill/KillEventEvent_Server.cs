@@ -154,9 +154,6 @@ namespace ET
                 case MapTypeEnum.TeamDungeon:
                     domainScene.GetComponent<TeamDungeonComponent>().OnKillEvent(defendUnit);
                     break;
-                case MapTypeEnum.BaoZangZhiDi:
-                    ;
-                    break;
                 case MapTypeEnum.Solo:
                     domainScene.GetComponent<SoloDungeonComponent>().OnKillEvent(mainAttack,defendUnit);
                     break;
@@ -168,9 +165,6 @@ namespace ET
                     break;
                 case MapTypeEnum.Battle:
                     domainScene.GetComponent<BattleDungeonComponent>().OnKillEvent(defendUnit, mainAttack);
-                    break;
-                case MapTypeEnum.Arena:
-                    domainScene.GetComponent<ArenaDungeonComponent>().OnKillEvent(defendUnit, mainAttack);
                     break;
                 case MapTypeEnum.Union:
                     domainScene.GetParent<UnionSceneComponent>().OnKillEvent(domainScene, defendUnit);

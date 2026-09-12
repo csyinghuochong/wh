@@ -24,8 +24,7 @@ namespace ET
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             if (mapComponent.MapTypeEnum == MapTypeEnum.Happy
              || mapComponent.MapTypeEnum == MapTypeEnum.PetTianTi
-             || mapComponent.MapTypeEnum == MapTypeEnum.PetDungeon
-             || mapComponent.MapTypeEnum == MapTypeEnum.PetMing)
+             || mapComponent.MapTypeEnum == MapTypeEnum.PetDungeon)
             {
                 return;
             }

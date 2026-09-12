@@ -128,9 +128,7 @@ namespace ET
                     //scene.AddComponent<RecastPathComponent>();
                     break;
                 case SceneType.FubenWork:
-                    
                     scene.AddComponent<HappySceneComponent>();
-                    scene.AddComponent<ArenaSceneComponent>();
                     scene.AddComponent<SoloSceneComponent>();
                     break;
                 case SceneType.Popularize:

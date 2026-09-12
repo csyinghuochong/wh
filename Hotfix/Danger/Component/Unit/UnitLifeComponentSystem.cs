@@ -111,8 +111,7 @@ namespace ET
             {
                 int sceneTypeEnum = unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum;
                 if (sceneTypeEnum != (int)MapTypeEnum.PetTianTi
-                    && sceneTypeEnum != (int)MapTypeEnum.PetDungeon
-                    && sceneTypeEnum != (int)MapTypeEnum.PetMing)
+                    && sceneTypeEnum != (int)MapTypeEnum.PetDungeon)
                 {
                     long masterId = numericComponent.GetAsLong(NumericType.MasterId);
                     Unit master = unit.GetParent<UnitComponent>().Get(masterId);

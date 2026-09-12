@@ -111,10 +111,6 @@ namespace ET
                 case SceneType.FubenWork:
                     //Log.Console($"Arena定时刷新: {scene.DomainZone()} {hour}");
                     LogHelper.LogWarning($"Arena定时刷新: {scene.DomainZone()} {hour}", true);
-                    if (hour == 0)
-                    {
-                        scene.GetComponent<ArenaSceneComponent>().OnZeroClockUpdate();
-                    }
                     if (request.FunctionId == 1055 && request.FunctionType == 1)
                     {
                         scene.GetComponent<HappySceneComponent>().OnHappyBegin();

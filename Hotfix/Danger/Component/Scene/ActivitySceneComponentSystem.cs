@@ -50,10 +50,6 @@ namespace ET
             self.MapIdList.Add(DBHelper.GetPaiMaiServerId(self.DomainZone()));
             self.MapIdList.Add(DBHelper.GetRankServerId(self.DomainZone()));
             self.MapIdList.Add(DBHelper.GetFubenCenterId(self.DomainZone()));
-            //self.MapIdList.Add(DBHelper.GetArenaServerId(self.DomainZone()));
-            //self.MapIdList.Add(DBHelper.GetBattleServerId(self.DomainZone()));
-            //self.MapIdList.Add(DBHelper.GetUnionServerId(self.DomainZone()));
-            //self.MapIdList.Add(DBHelper.GetSoloServerId(self.DomainZone()));
             self.MapIdList.Add(DBHelper.GetDbCacheId(self.DomainZone()));
             self.InitDayActivity().Coroutine();
             self.InitFunctionButton();

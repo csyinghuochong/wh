@@ -230,24 +230,6 @@ namespace ET
                         //    await TransferHelper.LocalDungeonTransfer_Old(unit, request.SceneId, int.Parse(request.paramInfo), request.Difficulty);
                         //}
                         break;
-                    case MapTypeEnum.BaoZangZhiDi:
-                    case MapTypeEnum.MiJing:
-                        F2M_YeWaiSceneIdResponse f2M_YeWaiSceneIdResponse = (F2M_YeWaiSceneIdResponse)await ActorMessageSenderComponent.Instance.Call(
-                        DBHelper.GetFubenCenterId(unit), new M2F_YeWaiSceneIdRequest() { SceneId = request.SceneId });
-                        if (f2M_YeWaiSceneIdResponse.FubenInstanceId == 0)
-                        {
-                            return ErrorCode.ERR_MapLimit;
-                        }
-
-                        LDScene ldScene = LDSceneCategory.Instance.Get(request.SceneId);
-                        int curPlayerNum = int.Parse(f2M_YeWaiSceneIdResponse.Message); // UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Player).Count;
-                        /*if (ldScene.PlayerLimit > 0 && ldScene.PlayerLimit <= curPlayerNum)
-                        {
-                            return ErrorCode.ERR_MapLimit;
-                        }*/
-                        TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, f2M_YeWaiSceneIdResponse.FubenInstanceId, ldScene.Scene_Type, request.SceneId, 0, "0");
-                        break;
                     case MapTypeEnum.Solo:
                         long soloServerId = DBHelper.GetSoloServerId(unit);
                         S2M_SoloEnterResponse d2GGetUnit = (S2M_SoloEnterResponse)await ActorMessageSenderComponent.Instance.Call(soloServerId, new M2S_SoloEnterRequest()
@@ -320,24 +302,6 @@ namespace ET
 
                         TransferHelper.BeforeTransfer(unit);
                         await TransferHelper.Transfer(unit, battleEnter.FubenInstanceId, (int)MapTypeEnum.Battle, request.SceneId, FubenDifficulty.Normal, battleEnter.Camp.ToString());
-                        break;
-                    case MapTypeEnum.Arena:
-                        roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-                        ldScene = LDSceneCategory.Instance.Get(request.SceneId);
-                        /*if (roleInfoComponent.RoleInfo.Lv < ldScene.EnterLv)
-                        {
-                            return ErrorCode.ERR_LevelIsNot;
-                        }*/
-
-                        mapInstanceId = DBHelper.GetArenaServerId(unit);
-                        Arena2M_ArenaEnterResponse areneEnter = (Arena2M_ArenaEnterResponse)await ActorMessageSenderComponent.Instance.Call(
-                        mapInstanceId, new M2Arena_ArenaEnterRequest() { UserID = unit.Id, SceneId = request.SceneId });
-                        if (areneEnter.Error != ErrorCode.ERR_Success || areneEnter.FubenInstanceId == 0)
-                        {
-                            return ErrorCode.ERR_AlreadyFinish;
-                        }
-                        TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, areneEnter.FubenInstanceId, (int)MapTypeEnum.Arena, request.SceneId, FubenDifficulty.Normal, "0");
                         break;
                     case (int)MapTypeEnum.TeamDungeon:
                         oldscene = unit.DomainScene();

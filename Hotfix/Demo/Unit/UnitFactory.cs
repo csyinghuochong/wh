@@ -385,7 +385,6 @@ namespace ET
             {
                 case (int)MapTypeEnum.PetDungeon:
                 case (int)MapTypeEnum.PetTianTi:
-                case (int)MapTypeEnum.PetMing:
                     aIComponent.InitTianTiPet(petinfo.ConfigId);
                     break;
                 default:

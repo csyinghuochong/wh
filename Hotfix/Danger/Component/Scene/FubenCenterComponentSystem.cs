@@ -13,8 +13,6 @@ namespace ET
             self.YeWaiFubenList.Clear();
             self.BattleInfos.Clear();
             self.BattleOpen = true;
-
-            self.InitYeWaiScene().Coroutine();
         }
     }
 
@@ -325,12 +323,6 @@ namespace ET
            
             foreach (LDScene sceneConfig in LDSceneCategory.Instance.GetAll().Values)
             {
-                if (sceneConfig.Scene_Type != MapTypeEnum.BaoZangZhiDi 
-                && sceneConfig.Scene_Type != MapTypeEnum.MiJing )
-                {
-                    continue;
-                }
-
                 //动态创建副本.....RecastPathComponent.awake寻路
                 long fubenid = IdGenerater.Instance.GenerateId();
                 long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
@@ -344,12 +336,7 @@ namespace ET
                 mapComponent.NavMeshId = sceneConfig.GetNavMeshId(); 
                 YeWaiRefreshComponent yeWaiRefreshComponen = fubnescene.AddComponent<YeWaiRefreshComponent>();
                 yeWaiRefreshComponen.SceneId = sceneConfig.Id;
-                
-                switch (sceneConfig.Scene_Type)
-                {
-                    default:
-                        break;
-                }
+              
 
                 //FubenHelp.CreateMonsterList(fubnescene, sceneConfigs[i].CreateMonster);
                 //FubenHelp.CreateMonsterList(fubnescene, sceneConfigs[i].CreateMonsterPosi);

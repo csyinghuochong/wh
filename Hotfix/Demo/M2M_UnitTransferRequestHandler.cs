@@ -73,7 +73,6 @@ namespace ET
                 //客户端收到创建Unit之后会请求数据。 不用通知
                 switch (request.SceneType)
 				{
-					case (int)MapTypeEnum.PetMing:
 					case (int)MapTypeEnum.PetDungeon:
 					case (int)MapTypeEnum.PetTianTi:
 						LDScene ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
@@ -176,21 +175,6 @@ namespace ET
 
 						TransferHelper.AfterTransfer(unit);
                         break;
-					case MapTypeEnum.Arena:
-						unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
-						ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
-						unit.Position = ldScene.GetBornPos();
-						unit.Rotation = Quaternion.identity;
-
-						// 通知客户端创建My Unit
-						m2CCreateUnits = new M2C_CreateMyUnit();
-						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-						MessageHelper.SendToClient(unit, m2CCreateUnits);
-						// 加入aoi
-						unit.AddComponent<AOIEntity, int, Vector3>(4 * 1000, unit.Position);
-						TransferHelper.AfterTransfer(unit);
-						unit.DomainScene().GetComponent<ArenaDungeonComponent>().OnUpdateRank();
-						break;
 					case MapTypeEnum.UnionRace:
 						unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
 						ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
@@ -260,11 +244,8 @@ namespace ET
                         break;
                     case MapTypeEnum.Home:
 					case MapTypeEnum.Union:
-					case MapTypeEnum.BaoZangZhiDi:
-					case MapTypeEnum.MiJing:
 					case MapTypeEnum.TowerDungeon:
                     case MapTypeEnum.TeamDungeon:
-                    case MapTypeEnum.RandomTower:
                     case MapTypeEnum.TrialDungeon:
                     case MapTypeEnum.SeasonTower:
                         unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
