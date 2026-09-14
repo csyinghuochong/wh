@@ -14,6 +14,8 @@ namespace ET
             response.RoleTaskList_1 = taskComponentServer.RoleTaskList_1;
             response.RoleComoleteTaskList_1 = taskComponentServer.RoleComoleteTaskList_1;
             response.NextTask1_Id = taskComponentServer.NextTask1_Id;
+            taskComponentServer.EnsureNextUnionWorkTaskId();
+            response.NextUnionWorkTaskId = taskComponentServer.NextUnionWorkTaskId;
             reply();
             await ETTask.CompletedTask;
         }

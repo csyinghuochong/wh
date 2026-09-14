@@ -573,6 +573,12 @@ namespace ET
 		 public const ushort C2M_SkillBarPlanRequest = 10570;
 		 public const ushort M2C_SkillBarPlanResponse = 10571;
 		 public const ushort M2C_SkillSetMessage = 10572;
-		 public const ushort M2C_UpdateVersion = 10573;
+		 public const ushort C2M_UnionWarehousePasswordRequest = 10573;
+		 public const ushort M2C_UnionWarehousePasswordResponse = 10574;
+		 public const ushort C2M_UnionWarehousePutRequest = 10575;
+		 public const ushort M2C_UnionWarehousePutResponse = 10576;
+		 public const ushort C2M_UnionWarehouseTakeRequest = 10577;
+		 public const ushort M2C_UnionWarehouseTakeResponse = 10578;
+		 public const ushort M2C_UpdateVersion = 10579;
 	}
 }

@@ -8694,6 +8694,15 @@ namespace ET
 		[ProtoMember(21)]
 		public List<RewardItem> ResourceList = new List<RewardItem>();
 
+		[ProtoMember(22)]
+		public List<BagInfo> WarehouseList = new List<BagInfo>();
+
+		[ProtoMember(23)]
+		public long WarehouseGold { get; set; }
+
+		[ProtoMember(24)]
+		public int HasWarehousePassword { get; set; }
+
 	}
 
 	[Message(OuterOpcode.DonationRecord)]
@@ -9706,6 +9715,9 @@ namespace ET
 		[ProtoMember(5)]
 		public int NextTask1_Id { get; set; }
 
+		[ProtoMember(6)]
+		public int NextUnionWorkTaskId { get; set; }
+
 	}
 
 //接取任务
@@ -9899,6 +9911,9 @@ namespace ET
 		[ProtoMember(3)]
 		public int NextTask1_Id { get; set; }
 
+		[ProtoMember(4)]
+		public int NextUnionWorkTaskId { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_TaskUpdate)]
@@ -9926,6 +9941,9 @@ namespace ET
 
 		[ProtoMember(6)]
 		public int NextTask1_Id { get; set; }
+
+		[ProtoMember(7)]
+		public int NextUnionWorkTaskId { get; set; }
 
 	}
 
@@ -11044,6 +11062,133 @@ namespace ET
 //SkillSet  end####################################################
 //PetFuben begin####################################################
 //PetFuben  end####################################################
+//公会仓库：会长设密；放入/取出道具与存取款各一条。取货币必须密码，只允许非绑 Gold=4
+	[ResponseType(nameof(M2C_UnionWarehousePasswordResponse))]
+	[Message(OuterOpcode.C2M_UnionWarehousePasswordRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionWarehousePasswordRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public string OldPassword { get; set; }
+
+		[ProtoMember(2)]
+		public string NewPassword { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionWarehousePasswordResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionWarehousePasswordResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int HasWarehousePassword { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_UnionWarehousePutResponse))]
+	[Message(OuterOpcode.C2M_UnionWarehousePutRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionWarehousePutRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemID { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemNum { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionWarehousePutResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionWarehousePutResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<BagInfo> WarehouseList = new List<BagInfo>();
+
+		[ProtoMember(2)]
+		public long WarehouseGold { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_UnionWarehouseTakeResponse))]
+	[Message(OuterOpcode.C2M_UnionWarehouseTakeRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionWarehouseTakeRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemID { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemNum { get; set; }
+
+		[ProtoMember(4)]
+		public string Password { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionWarehouseTakeResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionWarehouseTakeResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<BagInfo> WarehouseList = new List<BagInfo>();
+
+		[ProtoMember(2)]
+		public long WarehouseGold { get; set; }
+
+	}
+
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

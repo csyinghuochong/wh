@@ -18,6 +18,7 @@ namespace ET
                 response.RoleComoleteTaskList_2 = taskComponentServer.RoleComoleteTaskList_2;
                 response.RoleComoleteTaskList_1 = taskComponentServer.RoleComoleteTaskList_1;
                 response.NextTask1_Id = taskComponentServer.NextTask1_Id;
+                response.NextUnionWorkTaskId = taskComponentServer.NextUnionWorkTaskId;
                 reply();
                 await ETTask.CompletedTask;
                 return;
@@ -41,6 +42,7 @@ namespace ET
             response.RoleComoleteTaskList_2 = taskComponentServer.RoleComoleteTaskList_2;
             response.RoleComoleteTaskList_1 = taskComponentServer.RoleComoleteTaskList_1;
             response.NextTask1_Id = taskComponentServer.NextTask1_Id;
+            response.NextUnionWorkTaskId = taskComponentServer.NextUnionWorkTaskId;
             reply();
             await ETTask.CompletedTask;
         }

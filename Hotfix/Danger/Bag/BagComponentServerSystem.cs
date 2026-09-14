@@ -31,6 +31,7 @@ namespace ET
         public static void OnInit(this BagComponentServer self,  CreateRoleInfo createRoleInfo)
         {
             self.EnsureItemLists();
+            self.GrantCreateRoleInitialResources();
 
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
             int[] equipInit = ldOccupation.Equip_Init;
@@ -78,6 +79,49 @@ namespace ET
 
                 self.OnChangeItemLoc(bagInfos[0], ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
             }
+        }
+
+        /// <summary>
+        /// 创角发放 Global_Initial_Resources。货币走 ExtraCurrencies（创角时 DataCollation 尚未挂上，不能走 UpdateRoleData）。
+        /// </summary>
+        public static void GrantCreateRoleInitialResources(this BagComponentServer self)
+        {
+            if (LDGlobalValueCategory.Instance == null
+                || !LDGlobalValueCategory.Instance.ContainKey(GlobalValueKey.Global_Initial_Resources))
+            {
+                return;
+            }
+
+            string raw = LDGlobalValueCategory.Instance.GetByKey(GlobalValueKey.Global_Initial_Resources).Value;
+            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(raw);
+            if (rewardItems == null || rewardItems.Count == 0)
+            {
+                return;
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            RoleInfoComponentServer roleInfoComponent = unit?.GetComponent<RoleInfoComponentServer>();
+            List<RewardItem> bagItems = new List<RewardItem>();
+            for (int i = 0; i < rewardItems.Count; i++)
+            {
+                RewardItem item = rewardItems[i];
+                int dataType = ItemNewHelper.GetItemToUserDataType(item);
+                if (dataType != UserDataType.None && roleInfoComponent != null)
+                {
+                    RoleCurrencyHelper.Add(roleInfoComponent.RoleInfo, dataType, item.ItemNum);
+                    continue;
+                }
+
+                bagItems.Add(item);
+            }
+
+            if (bagItems.Count == 0)
+            {
+                return;
+            }
+
+            string getWay = $"{ItemGetWay.System}_{TimeHelper.ServerNow()}";
+            self.OnAddItemData(bagItems, string.Empty, getWay, false);
         }
 
 

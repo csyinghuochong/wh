@@ -17,6 +17,7 @@ namespace ET
             }
 
             UnionInfo src = dBUnionInfo.UnionInfo;
+            src.HasWarehousePassword = string.IsNullOrEmpty(dBUnionInfo.WarehousePassword) ? 0 : 1;
             response.UnionMyInfo = CopyUnionInfoWithoutKeJiJingXuan(src);
 
             HashSet<long> onlineIds = await ServerMessageHelper.GetChatOnlineUnitIds(scene.DomainZone());
@@ -65,6 +66,9 @@ namespace ET
             info.ActiveRecord = src.ActiveRecord;
             info.UnionBanner = src.UnionBanner;
             info.UnionPattern = src.UnionPattern;
+            info.WarehouseList = src.WarehouseList ?? new List<BagInfo>();
+            info.WarehouseGold = src.WarehouseGold;
+            info.HasWarehousePassword = src.HasWarehousePassword;
             return info;
         }
     }

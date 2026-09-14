@@ -608,6 +608,12 @@ namespace ET
             {
                 roleInfoComponent.Role_AddExp(exp, true);
             }
+
+            if (UnionHelper.IsUnionWorkTask(taskid))
+            {
+                self.RollNextUnionWorkTaskId();
+            }
+
             self.SendToUpdateTask(commitLdTask.Group);
             return ErrorCode.ERR_Success;
         }
@@ -1597,6 +1603,7 @@ namespace ET
             M2C_TaskUpdate m2C_TaskUpdate = self.M2C_TaskUpdate;
             m2C_TaskUpdate.GroupIds.Clear();
             m2C_TaskUpdate.NextTask1_Id = self.NextTask1_Id;
+            m2C_TaskUpdate.NextUnionWorkTaskId = self.NextUnionWorkTaskId;
 
             List<TaskPro> task1List = new List<TaskPro>(self.RoleTaskList_1.Count);
             for (int i = 0; i < self.RoleTaskList_1.Count; i++)
@@ -1635,6 +1642,8 @@ namespace ET
         {
             self.OnLineTime = 0;
             self.ClearTasksByResetType(TaskGroupResetType.Daily);
+            self.NextUnionWorkTaskId = 0;
+            self.EnsureNextUnionWorkTaskId();
             self.InitAllTaskGroups();
             self.TriggerDailyLoginTaskEvents();
             if (resetType == 2)
@@ -1689,7 +1698,7 @@ namespace ET
             }
         }
 
-        /// <summary>接取工会打工（Task_2）。一次只能接一个；TaskId=0 时从池子随机（可重复）。次数看 Global_Union_Work_Times。</summary>
+        /// <summary>接取工会打工（Task_2）。一次只能接一个；只接已随机的 NextUnionWorkTaskId，开始时不重抽。次数看 Global_Union_Work_Times。</summary>
         public static (TaskPro, int) OnAcceptUnionWork(this TaskComponentServer self, int taskId)
         {
             Unit unit = self.GetParent<Unit>();
@@ -1708,12 +1717,19 @@ namespace ET
                 return (null, ErrorCode.ERR_TaskNoComplete);
             }
 
-            if (taskId <= 0)
+            self.EnsureNextUnionWorkTaskId();
+            if (self.NextUnionWorkTaskId <= 0)
             {
-                taskId = UnionHelper.PickNextUnionWorkTaskId();
+                return (null, ErrorCode.ERR_TaskLimited);
             }
 
-            if (taskId <= 0 || !UnionHelper.IsUnionWorkTask(taskId))
+            if (taskId > 0 && taskId != self.NextUnionWorkTaskId)
+            {
+                return (null, ErrorCode.ERR_TaskCanNotGet);
+            }
+
+            taskId = self.NextUnionWorkTaskId;
+            if (!UnionHelper.IsUnionWorkTask(taskId))
             {
                 return (null, ErrorCode.ERR_TaskCanNotGet);
             }
@@ -1735,6 +1751,44 @@ namespace ET
             ResetUnionWorkTaskPro(taskPro);
             self.SendToUpdateTask(LDTask_2Category.Instance.Get(taskId).Group);
             return (taskPro, ErrorCode.ERR_Success);
+        }
+
+        /// <summary>
+        /// 登录/日清补一条预览。次数用完则保持 0。已接未领时跟当前任务对齐；已有合法预览不重抽。
+        /// </summary>
+        public static void EnsureNextUnionWorkTaskId(this TaskComponentServer self)
+        {
+            if (UnionHelper.IsUnionWorkAllCompleted(self.RoleComoleteTaskList_2))
+            {
+                self.NextUnionWorkTaskId = 0;
+                return;
+            }
+
+            TaskPro accepted = UnionHelper.GetAcceptedUnionWorkTask(self.RoleTaskList_2);
+            if (accepted != null)
+            {
+                self.NextUnionWorkTaskId = accepted.taskID;
+                return;
+            }
+
+            if (self.NextUnionWorkTaskId > 0 && UnionHelper.IsUnionWorkTask(self.NextUnionWorkTaskId))
+            {
+                return;
+            }
+
+            self.NextUnionWorkTaskId = UnionHelper.PickNextUnionWorkTaskId();
+        }
+
+        /// <summary>交付打工后重抽下一条。今日次数用完则置 0。</summary>
+        public static void RollNextUnionWorkTaskId(this TaskComponentServer self)
+        {
+            if (UnionHelper.IsUnionWorkAllCompleted(self.RoleComoleteTaskList_2))
+            {
+                self.NextUnionWorkTaskId = 0;
+                return;
+            }
+
+            self.NextUnionWorkTaskId = UnionHelper.PickNextUnionWorkTaskId();
         }
 
         private static void ResetUnionWorkTaskPro(TaskPro taskPro)

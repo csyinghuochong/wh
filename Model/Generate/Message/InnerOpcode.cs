@@ -199,5 +199,11 @@ namespace ET
 		 public const ushort Mail2M_SendServerMailItem = 20196;
 		 public const ushort G2Mail_EnterMail = 20197;
 		 public const ushort Mail2G_EnterMail = 20198;
+		 public const ushort M2U_UnionWarehousePasswordRequest = 20199;
+		 public const ushort U2M_UnionWarehousePasswordResponse = 20200;
+		 public const ushort M2U_UnionWarehousePutRequest = 20201;
+		 public const ushort U2M_UnionWarehousePutResponse = 20202;
+		 public const ushort M2U_UnionWarehouseTakeRequest = 20203;
+		 public const ushort U2M_UnionWarehouseTakeResponse = 20204;
 	}
 }

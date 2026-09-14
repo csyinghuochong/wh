@@ -32,6 +32,9 @@ namespace ET
         /// <summary>Commit 时随机写入的下一个 Task_1。0=尚未交付过，按链头可接。</summary>
         public int NextTask1_Id;
 
+        /// <summary>已随机的下一条公会打工。0=今日打工次数已用完。</summary>
+        public int NextUnionWorkTaskId;
+
         [BsonIgnore]
         public M2C_TaskUpdate M2C_TaskUpdate = new M2C_TaskUpdate();
 
