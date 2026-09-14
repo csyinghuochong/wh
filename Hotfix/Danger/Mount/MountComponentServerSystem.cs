@@ -290,6 +290,7 @@ namespace ET
                 return;
             }
 
+            MountHelper.AddAptitudeByLevel(mountInfo, mountInfo.MountLv - oldLv);
             MountHelper.ApplyAptitudeAttributes(mountInfo);
             if (self.GetRideMount()?.Id == mountInfo.Id)
             {

@@ -293,6 +293,35 @@ namespace ET
             await Game.Scene.GetComponent<DBComponent>().Save(zone, entity);
         }
 
+        /// <summary>
+        /// 离线读玩家组件：先 DBCache，没有再 Mongo。登录走缓存，刚下线必须以缓存为准。
+        /// 公会文档等非 IUnitCache 不要走这里。
+        /// </summary>
+        public static async ETTask<T> GetPlayerComponent<T>(long unitId) where T : Entity, IUnitCache
+        {
+            int homeZone = UnitZoneHelper.GetHomeZone(unitId);
+            T entity = await GetComponentCache<T>(homeZone, unitId);
+            if (entity != null)
+            {
+                return entity;
+            }
+            return await GetComponent<T>(homeZone, unitId);
+        }
+
+        /// <summary>
+        /// 离线写玩家组件：Mongo 和 DBCache 一起改。在线请打 Unit，不要走这里。
+        /// </summary>
+        public static async ETTask SavePlayerComponent(long unitId, Entity entity)
+        {
+            if (entity == null)
+            {
+                return;
+            }
+            int homeZone = UnitZoneHelper.GetHomeZone(unitId);
+            await SaveComponent(homeZone, unitId, entity);
+            await SaveComponentCache(homeZone, unitId, entity);
+        }
+
         public static async ETTask UpdateLastGameTime(string oaid, string lastgametime, long accoutid, string ip, int level, int onlinetime)
         {
             if (string.IsNullOrEmpty(oaid))

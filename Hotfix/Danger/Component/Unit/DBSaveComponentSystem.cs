@@ -103,16 +103,19 @@ namespace ET
 
         public static void OnRelogin(this DBSaveComponent self, long gateSessionId)
         {
+            Console.WriteLine($"OnRelogin:  {self.Id}");
             PlayerSessionLifecycleHelper.OnRelogin(self, gateSessionId);
         }
 
         public static  void OnOffLine(this DBSaveComponent self)
         {
+            Console.WriteLine($"OnOffLine:  {self.Id}");
             PlayerSessionLifecycleHelper.OnOffLine(self);
         }
 
         public static void OnLogin(this DBSaveComponent self)
         {
+            Console.WriteLine($"OnLogin:  {self.Id}");
             PlayerSessionLifecycleHelper.OnLogin(self);
         }
 
@@ -129,6 +132,7 @@ namespace ET
 
         public static int OnDisconnect(this DBSaveComponent self)
         {
+            Console.WriteLine($"OnDisconnect:  {self.Id}");
             return PlayerSessionLifecycleHelper.OnDisconnect(self);
         }
 

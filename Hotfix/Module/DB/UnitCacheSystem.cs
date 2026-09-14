@@ -54,10 +54,6 @@ namespace ET
                 {
                     self.AddOrUpdate(entity);
                 }
-                if (self.DomainZone() == 5)
-                {
-                    //Console.WriteLine($"Get.UnitCache :{entity!=null}  {self.DomainZone()} {unitId}  {self.key}");
-                }
             }
 
             if (entity!= null && entity.Id == DBHelper.DebugUnitId)

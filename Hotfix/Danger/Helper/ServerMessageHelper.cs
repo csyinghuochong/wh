@@ -43,9 +43,13 @@ namespace ET
             }
             else
             {
-                NumericComponent numericComponent_3 = await DBHelper.GetComponentCache<NumericComponent>(zone, unitid);
-                numericComponent_3.Set(NumericType.UnionLeader, leader, false);
-                DBHelper.SaveComponentCache(zone, unitid, numericComponent_3).Coroutine();
+                NumericComponent numericComponent_3 = await DBHelper.GetPlayerComponent<NumericComponent>(unitid);
+                if (numericComponent_3 == null)
+                {
+                    return;
+                }
+                numericComponent_3.ApplyValue(NumericType.UnionLeader, leader, false);
+                await DBHelper.SavePlayerComponent(unitid, numericComponent_3);
             }
         }
 
@@ -67,15 +71,14 @@ namespace ET
                     continue;
                 }
 
-                int homeZone = UnitZoneHelper.GetHomeZone(userId);
-                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, userId);
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(userId);
                 if (roleInfoComponentServer == null)
                 {
                     continue;
                 }
 
-                roleInfoComponentServer.SetUnionName(unionName);
-                await DBHelper.SaveComponent(homeZone, userId, roleInfoComponentServer);
+                roleInfoComponentServer.SetUnionName(unionName, false);
+                await DBHelper.SavePlayerComponent(userId, roleInfoComponentServer);
             }
         }
 

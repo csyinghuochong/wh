@@ -212,8 +212,8 @@ namespace ET
                 dBUnionInfo.UnionInfo.ApplyList.Remove(unitid);
             }
             //判断玩家是否已经有家族了
-            NumericComponent numericComponent_0 = await DBHelper.GetComponent<NumericComponent>(UnitZoneHelper.GetHomeZone(unitid), unitid);
-            if (numericComponent_0.GetAsLong(NumericType.UnionId_0) > 0)
+            NumericComponent numericComponent_0 = await DBHelper.GetPlayerComponent<NumericComponent>(unitid);
+            if (numericComponent_0 != null && numericComponent_0.GetAsLong(NumericType.UnionId_0) > 0)
             {
                 return ErrorCode.ERR_PlayerHaveUnion;
             }
@@ -251,27 +251,20 @@ namespace ET
                 {
                     Log.Warning($"加入帮会不在线: {unitid}: {self.DomainZone()} {unitid}");
 
-                    //公会身份是立刻生效的权威数据，不是邮件那种可延后的通知。
-                    //入会当下就要改 UnionId、公会名。后面「是否已有会」、申请列表、人数上限、再入会，读的都是这份数据。
-                    //只把人加进 UnionPlayerList，玩家身上的 UnionId 留到上线再写：中间他还能再申请别的会，两边对不上。
-                    //上线队列还要做登录钩子、去重、失败重试，入会这种低频操作不值得新开一套
-                    //DBCache 也不是待办队列，是玩家组件缓存。离线写进去，上线读档时容易和 Mongo 打架，所以踢人刻意避开了它。
-                    //邮件、奖励、公告才适合「记下、上线再发」。公会身份不行。
-
                     operateSucess = true;
-                    int homeZone = UnitZoneHelper.GetHomeZone(unitid);
-                    NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, unitid);
+                    NumericComponent numericComponent = await DBHelper.GetPlayerComponent<NumericComponent>(unitid);
                     if (numericComponent != null)
                     {
-                        numericComponent.Set(NumericType.UnionId_0, unionid, false);
-                        await DBHelper.SaveComponent(homeZone, unitid, numericComponent);
+                        numericComponent.ApplyValue(NumericType.UnionId_0, unionid, false);
+                        numericComponent.ApplyValue(NumericType.UnionLeader, 0, false);
+                        await DBHelper.SavePlayerComponent(unitid, numericComponent);
                     }
 
-                    joinRoleInfo = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, unitid);
+                    joinRoleInfo = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(unitid);
                     if (joinRoleInfo != null)
                     {
                         joinRoleInfo.SetUnionName(dBUnionInfo.UnionInfo.UnionName, false);
-                        await DBHelper.SaveComponent(homeZone, unitid, joinRoleInfo);
+                        await DBHelper.SavePlayerComponent(unitid, joinRoleInfo);
                     }
                 }
 
@@ -279,7 +272,7 @@ namespace ET
                 {
                     if (joinRoleInfo == null)
                     {
-                        joinRoleInfo = await DBHelper.GetComponent<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(unitid), unitid);
+                        joinRoleInfo = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(unitid);
                     }
                     dBUnionInfo.UnionInfo.UnionPlayerList.Add(UnionHelper.CreateUnionPlayerSnapshot(joinRoleInfo?.RoleInfo, unitid, TimeHelper.ServerNow()));
                 }

@@ -97,6 +97,9 @@ namespace ET
 		/// <summary>模型</summary>
 		[ProtoMember(6)]
 		public string Model { get; set; }
+		/// <summary>Z偏移</summary>
+		[ProtoMember(7)]
+		public int Off_Z { get; set; }
 
 	}
 }

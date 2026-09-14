@@ -32,24 +32,24 @@ namespace ET
 
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
 
-            // 在线走 Location；失败（含离线 ERR_NotFoundActor）直连归属服 Mongo，不进 DBCache
+            // 在线走 Location；失败（含离线 ERR_NotFoundActor）走玩家组件 Helper（Mongo + DBCache）
             U2M_UnionKickOutRequest kickRequest = new U2M_UnionKickOutRequest() { UserId = request.UserId };
             M2U_UnionKickOutResponse kickResponse = (M2U_UnionKickOutResponse)await ActorLocationSenderComponent.Instance.Call(request.UserId, kickRequest);
             if (kickResponse.Error != ErrorCode.ERR_Success)
             {
-                int homeZone = UnitZoneHelper.GetHomeZone(request.UserId);
-                NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, request.UserId);
+                NumericComponent numericComponent = await DBHelper.GetPlayerComponent<NumericComponent>(request.UserId);
                 if (numericComponent != null)
                 {
-                    numericComponent.Set(NumericType.UnionId_0, 0, false);
-                    await DBHelper.SaveComponent(homeZone, request.UserId, numericComponent);
+                    numericComponent.ApplyValue(NumericType.UnionId_0, 0, false);
+                    numericComponent.ApplyValue(NumericType.UnionLeader, 0, false);
+                    await DBHelper.SavePlayerComponent(request.UserId, numericComponent);
                 }
 
-                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, request.UserId);
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(request.UserId);
                 if (roleInfoComponentServer != null)
                 {
-                    roleInfoComponentServer.SetUnionName(string.Empty);
-                    await DBHelper.SaveComponent(homeZone, request.UserId, roleInfoComponentServer);
+                    roleInfoComponentServer.SetUnionName(string.Empty, false);
+                    await DBHelper.SavePlayerComponent(request.UserId, roleInfoComponentServer);
                 }
             }
             reply();

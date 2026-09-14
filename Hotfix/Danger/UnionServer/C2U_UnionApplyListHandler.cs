@@ -16,16 +16,15 @@ namespace ET
             for(int i = dBUnionInfo.UnionInfo.ApplyList.Count - 1; i >= 0; i--)
             {
                 long applicantId = dBUnionInfo.UnionInfo.ApplyList[i];
-                int homeZone = UnitZoneHelper.GetHomeZone(applicantId);
                 //判断玩家是否已经有家族了
-                NumericComponent numericComponent_0 = await DBHelper.GetComponent<NumericComponent>(homeZone, applicantId);
+                NumericComponent numericComponent_0 = await DBHelper.GetPlayerComponent<NumericComponent>(applicantId);
                 if (numericComponent_0 == null ||  numericComponent_0.GetAsLong(NumericType.UnionId_0) > 0)
                 {
                     dBUnionInfo.UnionInfo.ApplyList.RemoveAt(i);
                     continue;
                 }
 
-                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, applicantId);
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(applicantId);
                 if (roleInfoComponentServer == null)
                 {
                     continue;

@@ -147,13 +147,11 @@ namespace ET
             if (m2G_RechargeResponse.Error != ErrorCode.ERR_Success)
             {
                 Log.Warning($"充值OnPaySucess PlayerState.None: {zone}   {userId}  rechargeNumber:{rechargeNumber}");
-                int homeZone = UnitZoneHelper.GetHomeZone(userId);
- 
-                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, userId);
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(userId);
                 if (roleInfoComponentServer != null)
                 {
                     roleInfoComponentServer.RechargeBuChang = 1;
-                    await DBHelper.SaveComponent(homeZone, userId, roleInfoComponentServer);
+                    await DBHelper.SavePlayerComponent(userId, roleInfoComponentServer);
 
                     long accountId = roleInfoComponentServer.RoleInfo.AccInfoID;
                     SendToAccountCenter(accountId, userId, rechargeNumber, orderInfo, rechargeType).Coroutine();
