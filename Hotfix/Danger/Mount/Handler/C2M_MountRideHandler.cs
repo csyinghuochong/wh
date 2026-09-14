@@ -13,6 +13,7 @@ namespace ET
                 mountComponentServer.WantRide = false;
                 mountComponentServer.Dismount();
                 response.RideConfigId = 0;
+                response.RideLv = 0;
                 reply();
                 await ETTask.CompletedTask;
                 return;
@@ -29,6 +30,7 @@ namespace ET
             mountComponentServer.WantRide = true;
             mountComponentServer.SetRide(true);
             response.RideConfigId = mountComponentServer.GetRideConfigId();
+            response.RideLv = mountComponentServer.GetRideLv();
             reply();
             await ETTask.CompletedTask;
         }

@@ -70,6 +70,7 @@ namespace ET
                     unitInfo.OffHandId = bagComponentServer.GetFuShouItemId();
                     MountComponentServer mountComponentServer = unit.GetComponent<MountComponentServer>();
                     unitInfo.RideConfigId = mountComponentServer != null ? mountComponentServer.GetRideConfigId() : 0;
+                    unitInfo.RideLv = mountComponentServer != null ? mountComponentServer.GetRideLv() : 0;
                     break;
                 case UnitType.Monster:
                     unitInfo.MasterName = unitInfoComponent.MasterName;

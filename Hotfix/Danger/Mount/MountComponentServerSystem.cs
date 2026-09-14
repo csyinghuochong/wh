@@ -62,6 +62,12 @@ namespace ET
             return ride != null ? ride.ConfigId : 0;
         }
 
+        public static int GetRideLv(this MountComponentServer self)
+        {
+            MountInfo ride = self.GetRideMount();
+            return ride == null ? 0 : MountHelper.GetDisplayLv(ride.MountLv);
+        }
+
         public static List<MountInfo> GetAllMounts(this MountComponentServer self)
         {
             return self.MountInfos;
@@ -249,6 +255,7 @@ namespace ET
                 return;
             }
 
+            int oldLv = mountInfo.MountLv <= 0 ? 1 : mountInfo.MountLv;
             int newExp = mountInfo.MountExp + addExp;
             bool levelChanged = false;
             while (true)
@@ -286,7 +293,14 @@ namespace ET
             MountHelper.ApplyAptitudeAttributes(mountInfo);
             if (self.GetRideMount()?.Id == mountInfo.Id)
             {
-                self.RefreshRideSpeed();
+                if (MountHelper.IsMountModelChanged(mountInfo.ConfigId, oldLv, mountInfo.MountLv))
+                {
+                    self.BroadcastRide();
+                }
+                else
+                {
+                    self.RefreshRideSpeed();
+                }
             }
         }
 
@@ -305,10 +319,13 @@ namespace ET
         static void BroadcastRide(this MountComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
+            MountInfo ride = self.GetRideMount();
             MessageHelper.Broadcast(unit, new M2C_MountRideUpdate
             {
                 UnitId = unit.Id,
-                RideConfigId = self.GetRideConfigId()
+                RideMountId = ride != null ? ride.Id : 0,
+                RideConfigId = ride != null ? ride.ConfigId : 0,
+                RideLv = ride == null ? 0 : MountHelper.GetDisplayLv(ride.MountLv)
             });
             self.RefreshRideSpeed();
         }

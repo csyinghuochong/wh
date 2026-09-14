@@ -792,6 +792,9 @@ namespace ET
 		[ProtoMember(29)]
 		public int OffHandId { get; set; }
 
+		[ProtoMember(30)]
+		public int RideLv { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_CreateUnits)]
@@ -7846,6 +7849,9 @@ namespace ET
 		[ProtoMember(2)]
 		public int RideConfigId { get; set; }
 
+		[ProtoMember(3)]
+		public int RideLv { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_MountRideUpdate)]
@@ -7860,6 +7866,9 @@ namespace ET
 
 		[ProtoMember(3)]
 		public int RideConfigId { get; set; }
+
+		[ProtoMember(4)]
+		public int RideLv { get; set; }
 
 	}
 
