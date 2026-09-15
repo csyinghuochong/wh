@@ -79,6 +79,9 @@ namespace ET
 
             // 创角 Global_Initial_Resources 含 Type_Mount，Bag.OnInit 会 OnAddMount，须先挂坐骑组件
             unit.AddDataComponent<MountComponentServer>();
+            unit.AddDataComponent<PetComponentServer>();
+            unit.AddDataComponent<TitleComponentServer>();
+
             if (unit.GetComponent<BagComponentServer>() == null)
             {
                 BagComponentServer bagComponentServer = unit.AddComponent<BagComponentServer>();
@@ -86,12 +89,10 @@ namespace ET
             }
 
             unit.AddDataComponent<TaskComponentServer>();
-            unit.AddDataComponent<PetComponentServer>();
             unit.AddDataComponent<SkillSetComponentServer>();
             unit.AddDataComponent<ActivityComponentServer>();
             unit.AddDataComponent<RechargeComponentServer>();
             unit.AddDataComponent<ReddotComponentServer>();
-            unit.AddDataComponent<TitleComponentServer>();
             unit.AddDataComponent<HomeComponentServer>();
             unit.AddDataComponent<DataCollationComponent>();
             unit.AddDataComponent<RoleDailyDataComponentServer>();

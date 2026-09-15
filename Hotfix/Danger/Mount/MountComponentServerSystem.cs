@@ -115,7 +115,7 @@ namespace ET
             }
         }
 
-        public static MountInfo OnAddMount(this MountComponentServer self, int getWay, int configId)
+        public static MountInfo OnAddMount(this MountComponentServer self, int getWay, int configId, bool notice = true)
         {
             if (!LDMountCategory.Instance.Contain(configId))
             {
@@ -137,10 +137,13 @@ namespace ET
                 self.SetUse(mountInfo, MountHelper.StatusUse);
             }
 
-            M2C_MountListUpdate update = new M2C_MountListUpdate();
-            update.MountInfoAdd.Add(mountInfo);
-            update.GetWay = 1;
-            MessageHelper.SendToClient(unit, update);
+            if (notice)
+            {
+                M2C_MountListUpdate update = new M2C_MountListUpdate();
+                update.MountInfoAdd.Add(mountInfo);
+                update.GetWay = 1;
+                MessageHelper.SendToClient(unit, update);
+            }
 
             if (Log.IsDebugEnabled)
             {

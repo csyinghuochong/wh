@@ -692,7 +692,7 @@ namespace ET
 
             if (item.ItemType == ItemBigType.Type_Mount)
             {
-                unit.GetComponent<MountComponentServer>().OnAddMount(getType, item.ItemID);
+                unit.GetComponent<MountComponentServer>().OnAddMount(getType, item.ItemID, notice);
                 return true;
             }
 
