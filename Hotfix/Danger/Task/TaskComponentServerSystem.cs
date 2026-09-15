@@ -659,15 +659,7 @@ namespace ET
                 return ErrorCode.ERR_TaskCanNotGet;
             }
 
-            bool noRequirement = TaskHelper.HasNoTask1Requirement(ldTask);
-            if (noRequirement)
-            {
-                if (taskPro.taskStatus != (int)TaskStatuEnum.Accepted && taskPro.taskStatus != (int)TaskStatuEnum.Completed)
-                {
-                    return ErrorCode.Pre_Condition_Error;
-                }
-            }
-            else if (taskPro.taskStatus != (int)TaskStatuEnum.Completed)
+            if (!TaskHelper.HasNoTask1Requirement(ldTask) && taskPro.taskStatus != (int)TaskStatuEnum.Completed)
             {
                 return ErrorCode.Pre_Condition_Error;
             }

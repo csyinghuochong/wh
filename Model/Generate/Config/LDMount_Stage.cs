@@ -100,6 +100,9 @@ namespace ET
 		/// <summary>Z偏移</summary>
 		[ProtoMember(7)]
 		public int Off_Z { get; set; }
+		/// <summary>模型缩放</summary>
+		[ProtoMember(8)]
+		public double Scale { get; set; }
 
 	}
 }

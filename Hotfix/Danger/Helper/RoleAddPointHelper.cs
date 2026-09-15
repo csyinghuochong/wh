@@ -92,9 +92,10 @@ namespace ET
             return cumulative;
         }
 
+        /// <summary>职业表 Id，只用 Occ。OccTwo 是转职表，不能拿来查 Occupation。</summary>
         public static int GetOccupationId(RoleInfo roleInfo)
         {
-            return roleInfo.OccTwo > 0 ? roleInfo.OccTwo : roleInfo.Occ;
+            return roleInfo.Occ;
         }
 
         public static int[] GetDefaultFreeDistribution(RoleInfo roleInfo)
