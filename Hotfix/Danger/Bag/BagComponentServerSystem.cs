@@ -774,7 +774,11 @@ namespace ET
                 int maxPileSum = ItemNewHelper.GetNewItemPileSum(item);
                 ItemLocType toLocType = ResolveAddItemLoc(specLocType, item);
                 List<BagInfo> itemList = self.GetItemByLoc(toLocType);
+
+                //先检测是否有现成的格子可以插入
                 int leftNum = FillExistPile(itemList, item, maxPileSum, bagUpdate);
+
+                //插入新格子
                 CreateNewCells(itemList, item, leftNum, maxPileSum, toLocType, makeUserID, getWay, bagUpdate);
                 BagSortHelper.SortIfNeeded(itemList, toLocType);
                 if (notice)
