@@ -11,14 +11,7 @@ namespace ET
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             SkillSetComponentServer skillSet = unit.GetComponent<SkillSetComponentServer>();
             RoleInfo roleInfoData = roleInfo.RoleInfo;
-            //判断当前角色等级是否达到
-            if (roleInfoData.Lv < 18) 
-            {
-                response.Error = ErrorCode.ERR_Occ_Hint_1;
-                reply();
-                return;
-            }
-
+            
             int OccTwo = roleInfoData.OccTwo;
             ////判断当前角色是否已经进行转职
             if (OccTwo != 0 )
@@ -35,25 +28,34 @@ namespace ET
                 reply();
                 return;
             }
-            DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
+
+            LDOccupation occupation = LDOccupationCategory.Instance.Get(roleInfoData.Occ);
+            bool canTransfer = false;
+            int[] transferIds = occupation.TransferId;
+            if (transferIds != null)
+            {
+                for (int i = 0; i < transferIds.Length; i++)
+                {
+                    if (transferIds[i] == request.OccTwoID)
+                    {
+                        canTransfer = true;
+                        break;
+                    }
+                }
+            }
+            if (!canTransfer)
+            {
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
+
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
-            skillSet.OnChangeJueXing(dataCollationComponent.OccTwoOld, request.OccTwoID);
             skillSet.OnChangeOccTwoRequest(request.OccTwoID);
             taskComponentServer.OnChangeOccTwo();
 
-            if (OccTwo == 0)
-            {
-                string userName = roleInfoData.Name;
-                LDOccupation_Transfer occTransfer = LDOccupation_TransferCategory.Instance.Get(request.OccTwoID);
-                string occtwoname = WordHelper.GetShowText(occTransfer.Name, 0);
-                string occtwonameen = WordHelper.GetShowText(occTransfer.Name, 1);
-                
-                string noticeContent = $"{userName} 在主城转职大师处成功转职:<color=#C4FF00>{occtwoname}</color>";
-                string noticeContentEn = $"{userName} at main city Job Change Master transfer successful:<color=#C4FF00>{occtwonameen}</color>";
-                ServerMessageHelper.SendBroadMessage(UnitZoneHelper.GetHomeZone(unit), NoticeType.Notice, noticeContent, noticeContentEn);
-            }
-
+         
             reply();
             await ETTask.CompletedTask;
         }

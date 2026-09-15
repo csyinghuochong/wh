@@ -53,28 +53,6 @@ namespace ET
                         reply();
                         return;
                     }
-
-
-                    string ChangeOccItem = "10000178;1";
-                    BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();  
-                    if (!bagComponentServer.CheckNeedItem(ChangeOccItem))
-                    {
-                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                        reply();
-                        return;
-                    }
-
-                    if (roleInfo.OccTwo != 0)
-                    {
-                        skillSetComponentServer.OnChangeJueXing(roleInfo.OccTwo, toOcc);
-                    }
-
-                    sp = skillSetComponentServer.OnOccReset();
-					roleInfoComponentServer.UpdateRoleData(UserDataType.Sp, sp.ToString());
-                    bagComponentServer.OnCostItemData(ChangeOccItem, ItemLocType.ItemLocBag, ItemGetWay.SkillMake);
-                    
-                    skillSetComponentServer.OnChangeOccTwoRequest(toOcc);
-                    skillSetComponentServer.AsyncUpdateSkillSet().Coroutine();
                     break;
                 case 3:
                    

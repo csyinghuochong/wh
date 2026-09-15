@@ -329,19 +329,28 @@ namespace ET
 			}
 			Unit unit = self.GetParent<Unit>();
 			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+			// 已经转职则不能再转
+			if (roleInfoComponentServer.RoleInfo.OccTwo != 0)
+			{
+				return;
+			}
+
+			if (!LDOccupation_TransferCategory.Instance.Contain(occTwo))
+			{
+				return;
+			}
+
 			roleInfoComponentServer.RoleInfo.OccTwo = occTwo;
 
-			//新增技能
+			//新增技能：Occupation_Transfer.Skill
 			LDOccupation_Transfer occupationTransfer = LDOccupation_TransferCategory.Instance.Get(occTwo);
-		
-			if (!unit.IsRobot())
-			{
-				SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
-				self.UpdateSkillSet();
-				Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-				skillPassiveComponent.UpdatePassiveSkill();
-			}
-		}
+			self.AddOccTwoSkills(occupationTransfer.Skill);
+
+            SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
+            self.UpdateSkillSet();
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+            skillPassiveComponent.UpdatePassiveSkill();
+        }
 
 		public static async ETTask AsyncUpdateSkillSet(this SkillSetComponentServer self)
 		{
@@ -939,36 +948,6 @@ namespace ET
 			return false;
 		}
 
-
-		public static void OnChangeJueXing(this SkillSetComponentServer self, int occOld, int occNew)
-		{
-			Unit unit = self.GetParent<Unit>();
-			//Console.WriteLine($"OnChangeJueXing:  {unit.Id}  {occOld}  {occNew}");
-
-			if (occOld == occNew || occOld == 0 || occNew == 0)
-			{
-				return;
-			}
-
-			List<int> openjuexing = self.GetJueSkillIds(occOld);
-			if (openjuexing.Count <= 0)
-			{
-				return;
-			}
-
-			self.OnRmItemSkill( openjuexing, 0 );
-
-			List<int> newjuexing = new List<int>();
-            LDOccupation_Transfer occupationConfig = LDOccupation_TransferCategory.Instance.Get(occNew);
-            int[] juexingids = null;//
-			for (int i = 0; i < openjuexing.Count; i++ )
-			{
-				newjuexing.Add(juexingids[i]);
-            }
-
-			self.OnAddItemSkill(newjuexing);
-        }
-
         /// <summary>
         /// 重置第二职业
         /// </summary>
@@ -1025,6 +1004,32 @@ namespace ET
 		}
 		
 		
+		public static void AddOccTwoSkills(this SkillSetComponentServer self, int[] skills)
+		{
+			if (skills == null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < skills.Length; i++)
+			{
+				int skillId = skills[i];
+				if (skillId == 0 || self.GetBySkillID(skillId) != null)
+				{
+					continue;
+				}
+
+				if (!LDSkill_BattleCategory.Instance.Contain(skillId))
+				{
+					continue;
+				}
+
+				SkillPro skillPro = self.AddSkillPro(skillId, SkillSetEnum.Skill, SkillSourceEnum.Occupation);
+				skillPro.Actived = 0;
+				skillPro.Level = 1;
+			}
+		}
+
 		public static void CheckOccSkill(this SkillSetComponentServer self, int occ)
 		{
 			LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(occ);
@@ -1032,6 +1037,22 @@ namespace ET
 			for (int s = 0; s < ldOccupation.Skill.Length; s++)
 			{
 				occSkilld.Add(ldOccupation.Skill[s]);
+			}
+
+			int occTwo = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
+			if (occTwo != 0 && LDOccupation_TransferCategory.Instance.Contain(occTwo))
+			{
+				int[] twoSkills = LDOccupation_TransferCategory.Instance.Get(occTwo).Skill;
+				if (twoSkills != null)
+				{
+					for (int s = 0; s < twoSkills.Length; s++)
+					{
+						if (twoSkills[s] != 0)
+						{
+							occSkilld.Add(twoSkills[s]);
+						}
+					}
+				}
 			}
 
 			List<int> haveSkillid = new List<int>();

@@ -1862,35 +1862,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ChangeOccTwoResponse))]
-//转换第二职业
-	[Message(OuterOpcode.C2M_ChangeOccTwoRequest)]
-	[ProtoContract]
-	public partial class C2M_ChangeOccTwoRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int OccTwoID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ChangeOccTwoResponse)]
-	[ProtoContract]
-	public partial class M2C_ChangeOccTwoResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_GameSettingResponse))]
 //游戏设置
 	[Message(OuterOpcode.C2M_GameSettingRequest)]
@@ -5100,41 +5071,6 @@ namespace ET
 
 		[ProtoMember(3)]
 		public string OtherName { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_ChangeOccResponse))]
-//转换第一职业
-	[Message(OuterOpcode.C2M_ChangeOccRequest)]
-	[ProtoContract]
-	public partial class C2M_ChangeOccRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long BagInfoID { get; set; }
-
-		[ProtoMember(2)]
-		public int Occ { get; set; }
-
-		[ProtoMember(3)]
-		public int OccTwo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ChangeOccResponse)]
-	[ProtoContract]
-	public partial class M2C_ChangeOccResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
 
 	}
 
@@ -10983,6 +10919,35 @@ namespace ET
 
 		[ProtoMember(8)]
 		public int SkillBarPlan { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ChangeOccTwoResponse))]
+//转换第二职业
+	[Message(OuterOpcode.C2M_ChangeOccTwoRequest)]
+	[ProtoContract]
+	public partial class C2M_ChangeOccTwoRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int OccTwoID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ChangeOccTwoResponse)]
+	[ProtoContract]
+	public partial class M2C_ChangeOccTwoResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
 
 	}
 
