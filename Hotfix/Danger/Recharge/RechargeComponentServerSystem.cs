@@ -1,4 +1,4 @@
-﻿namespace ET
+namespace ET
 {
 
     public static class RechargeComponentServerSystem
@@ -29,6 +29,9 @@
             {
                 return;
             }
+
+            self.RechargePro ??= new RechargePro();
+            VipHelp.EnsureLists(self.RechargePro);
 
             MessageHelper.SendToClient(unit, new M2C_RechargeUpdate()
             {

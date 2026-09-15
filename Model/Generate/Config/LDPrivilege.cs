@@ -82,6 +82,21 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
+		/// <summary>组</summary>
+		[ProtoMember(2)]
+		public int Group { get; set; }
+		/// <summary>效果Id</summary>
+		[ProtoMember(3)]
+		public int Effect_Id { get; set; }
+		/// <summary>效果值</summary>
+		[ProtoMember(4)]
+		public int Effect_Value { get; set; }
+		/// <summary>0-新 1-亮 2-无 3-藏</summary>
+		[ProtoMember(5)]
+		public int Show_Type { get; set; }
+		/// <summary>排序</summary>
+		[ProtoMember(6)]
+		public int Order_SL { get; set; }
 
 	}
 }

@@ -75,6 +75,7 @@ namespace ET
             data.TeamDungeonTimes = 0;
             data.HongBao = 0;
             data.YueKaAwardTime = 0;
+            data.VipDailyClaimed = 0;
             data.TiLiKillNumber = 0;
             data.ChouKaNumber = 0;
             data.HappyMoveNumber = 0;
@@ -423,6 +424,24 @@ namespace ET
 
         #endregion
 
+        #region VIP专属福利今日领取 VipDailyClaimed 0未领 1已领
+
+        public static int GetVipDailyClaimed(this RoleDailyDataComponentServer self)
+        {
+            return self.GetDailyData().VipDailyClaimed;
+        }
+
+        public static void SetVipDailyClaimed(this RoleDailyDataComponentServer self, int value, bool notice = true)
+        {
+            self.GetDailyData().VipDailyClaimed = value;
+            if (notice)
+            {
+                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+            }
+        }
+
+        #endregion
+
         #region 体力击杀计数 TiLiKillNumber
 
         public static int GetTiLiKillNumber(this RoleDailyDataComponentServer self)
@@ -549,6 +568,7 @@ namespace ET
                 TeamDungeonTimes = src.TeamDungeonTimes,
                 HongBao = src.HongBao,
                 YueKaAwardTime = src.YueKaAwardTime,
+                VipDailyClaimed = src.VipDailyClaimed,
                 TiLiKillNumber = src.TiLiKillNumber,
                 ChouKaNumber = src.ChouKaNumber,
                 HappyMoveNumber = src.HappyMoveNumber,

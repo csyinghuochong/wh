@@ -3086,6 +3086,156 @@ namespace ET
 
 	}
 
+//公会仓库 Map→Union
+	[ResponseType(nameof(U2M_UnionWarehousePasswordResponse))]
+	[Message(InnerOpcode.M2U_UnionWarehousePasswordRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionWarehousePasswordRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public string OldPassword { get; set; }
+
+		[ProtoMember(4)]
+		public string NewPassword { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionWarehousePasswordResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionWarehousePasswordResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int HasWarehousePassword { get; set; }
+
+	}
+
+//存入道具 / 存款
+	[ResponseType(nameof(U2M_UnionWarehousePutResponse))]
+	[Message(InnerOpcode.M2U_UnionWarehousePutRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionWarehousePutRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public BagInfo BagInfo { get; set; }
+
+		[ProtoMember(4)]
+		public int ItemID { get; set; }
+
+		[ProtoMember(5)]
+		public int ItemNum { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionWarehousePutResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionWarehousePutResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<BagInfo> WarehouseList = new List<BagInfo>();
+
+		[ProtoMember(2)]
+		public long WarehouseGold { get; set; }
+
+	}
+
+//取出道具 / 取款
+	[ResponseType(nameof(U2M_UnionWarehouseTakeResponse))]
+	[Message(InnerOpcode.M2U_UnionWarehouseTakeRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionWarehouseTakeRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(4)]
+		public int ItemID { get; set; }
+
+		[ProtoMember(5)]
+		public int ItemNum { get; set; }
+
+		[ProtoMember(6)]
+		public string Password { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionWarehouseTakeResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionWarehouseTakeResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<BagInfo> WarehouseList = new List<BagInfo>();
+
+		[ProtoMember(2)]
+		public long WarehouseGold { get; set; }
+
+		[ProtoMember(3)]
+		public BagInfo BagInfo { get; set; }
+
+	}
+
 	[ResponseType(nameof(Union2G_EnterUnion))]
 	[Message(InnerOpcode.G2Union_EnterUnion)]
 	[ProtoContract]
@@ -3627,151 +3777,4 @@ namespace ET
 	}
 
 //Mail  end####################################################
-//公会仓库 Map→Union
-	[ResponseType(nameof(U2M_UnionWarehousePasswordResponse))]
-	[Message(InnerOpcode.M2U_UnionWarehousePasswordRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionWarehousePasswordRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public string OldPassword { get; set; }
-
-		[ProtoMember(4)]
-		public string NewPassword { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionWarehousePasswordResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionWarehousePasswordResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int HasWarehousePassword { get; set; }
-
-	}
-
-	[ResponseType(nameof(U2M_UnionWarehousePutResponse))]
-	[Message(InnerOpcode.M2U_UnionWarehousePutRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionWarehousePutRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public BagInfo BagInfo { get; set; }
-
-		[ProtoMember(4)]
-		public int ItemID { get; set; }
-
-		[ProtoMember(5)]
-		public int ItemNum { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionWarehousePutResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionWarehousePutResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<BagInfo> WarehouseList = new List<BagInfo>();
-
-		[ProtoMember(2)]
-		public long WarehouseGold { get; set; }
-
-	}
-
-	[ResponseType(nameof(U2M_UnionWarehouseTakeResponse))]
-	[Message(InnerOpcode.M2U_UnionWarehouseTakeRequest)]
-	[ProtoContract]
-	public partial class M2U_UnionWarehouseTakeRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public long BagInfoID { get; set; }
-
-		[ProtoMember(4)]
-		public int ItemID { get; set; }
-
-		[ProtoMember(5)]
-		public int ItemNum { get; set; }
-
-		[ProtoMember(6)]
-		public string Password { get; set; }
-
-	}
-
-	[Message(InnerOpcode.U2M_UnionWarehouseTakeResponse)]
-	[ProtoContract]
-	public partial class U2M_UnionWarehouseTakeResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<BagInfo> WarehouseList = new List<BagInfo>();
-
-		[ProtoMember(2)]
-		public long WarehouseGold { get; set; }
-
-		[ProtoMember(3)]
-		public BagInfo BagInfo { get; set; }
-
-	}
 }

@@ -1827,6 +1827,20 @@ namespace ET
 		[ProtoMember(3)]
 		public List<int> FirstBuyPayIds = new List<int>();
 
+		[ProtoMember(4)]
+		public int VipLevel { get; set; }
+
+		[ProtoMember(5)]
+		public long VipExp { get; set; }
+
+// 已领取特权福利的 VIP 等级（一次性）
+		[ProtoMember(6)]
+		public List<int> VipPrivilegeClaimed = new List<int>();
+
+// 已购买特权礼包的 VIP 等级（一次性）
+		[ProtoMember(7)]
+		public List<int> VipGiftBought = new List<int>();
+
 	}
 
 //通过奖励
@@ -5264,6 +5278,10 @@ namespace ET
 // 会日清/周清的 Item 货币 Key=Item.Id（日活跃21、周活跃22）
 		[ProtoMember(18)]
 		public List<IntLongPair> Currencies = new List<IntLongPair>();
+
+// VIP专属福利今日领取 0未领 1已领
+		[ProtoMember(19)]
+		public int VipDailyClaimed { get; set; }
 
 	}
 
@@ -8714,6 +8732,135 @@ namespace ET
 
 	}
 
+//公会仓库：会长设密；放入/取出道具与存取款各一条。取货币必须密码，只允许非绑 Gold=4
+	[ResponseType(nameof(M2C_UnionWarehousePasswordResponse))]
+	[Message(OuterOpcode.C2M_UnionWarehousePasswordRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionWarehousePasswordRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public string OldPassword { get; set; }
+
+		[ProtoMember(2)]
+		public string NewPassword { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionWarehousePasswordResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionWarehousePasswordResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int HasWarehousePassword { get; set; }
+
+	}
+
+//存入道具 / 存款
+	[ResponseType(nameof(M2C_UnionWarehousePutResponse))]
+	[Message(OuterOpcode.C2M_UnionWarehousePutRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionWarehousePutRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemID { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemNum { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionWarehousePutResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionWarehousePutResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<BagInfo> WarehouseList = new List<BagInfo>();
+
+		[ProtoMember(2)]
+		public long WarehouseGold { get; set; }
+
+	}
+
+//取出道具 / 取款
+	[ResponseType(nameof(M2C_UnionWarehouseTakeResponse))]
+	[Message(OuterOpcode.C2M_UnionWarehouseTakeRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionWarehouseTakeRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(2)]
+		public int ItemID { get; set; }
+
+		[ProtoMember(3)]
+		public int ItemNum { get; set; }
+
+		[ProtoMember(4)]
+		public string Password { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionWarehouseTakeResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionWarehouseTakeResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<BagInfo> WarehouseList = new List<BagInfo>();
+
+		[ProtoMember(2)]
+		public long WarehouseGold { get; set; }
+
+	}
+
 	[Message(OuterOpcode.DonationRecord)]
 	[ProtoContract]
 	public partial class DonationRecord: Object
@@ -11071,29 +11218,21 @@ namespace ET
 //SkillSet  end####################################################
 //PetFuben begin####################################################
 //PetFuben  end####################################################
-//公会仓库：会长设密；放入/取出道具与存取款各一条。取货币必须密码，只允许非绑 Gold=4
-	[ResponseType(nameof(M2C_UnionWarehousePasswordResponse))]
-	[Message(OuterOpcode.C2M_UnionWarehousePasswordRequest)]
+//VIP begin####################################################
+	[ResponseType(nameof(M2C_VipDailyClaimResponse))]
+//VIP专属福利每日领取
+	[Message(OuterOpcode.C2M_VipDailyClaimRequest)]
 	[ProtoContract]
-	public partial class C2M_UnionWarehousePasswordRequest: Object, IActorLocationRequest
+	public partial class C2M_VipDailyClaimRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
 
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public string OldPassword { get; set; }
-
-		[ProtoMember(2)]
-		public string NewPassword { get; set; }
-
 	}
 
-	[Message(OuterOpcode.M2C_UnionWarehousePasswordResponse)]
+	[Message(OuterOpcode.M2C_VipDailyClaimResponse)]
 	[ProtoContract]
-	public partial class M2C_UnionWarehousePasswordResponse: Object, IActorLocationResponse
+	public partial class M2C_VipDailyClaimResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11104,36 +11243,25 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
-		[ProtoMember(1)]
-		public int HasWarehousePassword { get; set; }
-
 	}
 
-	[ResponseType(nameof(M2C_UnionWarehousePutResponse))]
-	[Message(OuterOpcode.C2M_UnionWarehousePutRequest)]
+	[ResponseType(nameof(M2C_VipPrivilegeClaimResponse))]
+//VIP特权福利领取（一次性，按等级）
+	[Message(OuterOpcode.C2M_VipPrivilegeClaimRequest)]
 	[ProtoContract]
-	public partial class C2M_UnionWarehousePutRequest: Object, IActorLocationRequest
+	public partial class C2M_VipPrivilegeClaimRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
 
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
 		[ProtoMember(1)]
-		public long BagInfoID { get; set; }
-
-		[ProtoMember(2)]
-		public int ItemID { get; set; }
-
-		[ProtoMember(3)]
-		public int ItemNum { get; set; }
+		public int VipLevel { get; set; }
 
 	}
 
-	[Message(OuterOpcode.M2C_UnionWarehousePutResponse)]
+	[Message(OuterOpcode.M2C_VipPrivilegeClaimResponse)]
 	[ProtoContract]
-	public partial class M2C_UnionWarehousePutResponse: Object, IActorLocationResponse
+	public partial class M2C_VipPrivilegeClaimResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11144,42 +11272,25 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
-		[ProtoMember(1)]
-		public List<BagInfo> WarehouseList = new List<BagInfo>();
-
-		[ProtoMember(2)]
-		public long WarehouseGold { get; set; }
-
 	}
 
-	[ResponseType(nameof(M2C_UnionWarehouseTakeResponse))]
-	[Message(OuterOpcode.C2M_UnionWarehouseTakeRequest)]
+	[ResponseType(nameof(M2C_VipGiftBuyResponse))]
+//VIP特权礼包购买（一次性，按等级）
+	[Message(OuterOpcode.C2M_VipGiftBuyRequest)]
 	[ProtoContract]
-	public partial class C2M_UnionWarehouseTakeRequest: Object, IActorLocationRequest
+	public partial class C2M_VipGiftBuyRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
 
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
 		[ProtoMember(1)]
-		public long BagInfoID { get; set; }
-
-		[ProtoMember(2)]
-		public int ItemID { get; set; }
-
-		[ProtoMember(3)]
-		public int ItemNum { get; set; }
-
-		[ProtoMember(4)]
-		public string Password { get; set; }
+		public int VipLevel { get; set; }
 
 	}
 
-	[Message(OuterOpcode.M2C_UnionWarehouseTakeResponse)]
+	[Message(OuterOpcode.M2C_VipGiftBuyResponse)]
 	[ProtoContract]
-	public partial class M2C_UnionWarehouseTakeResponse: Object, IActorLocationResponse
+	public partial class M2C_VipGiftBuyResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11190,14 +11301,9 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
-		[ProtoMember(1)]
-		public List<BagInfo> WarehouseList = new List<BagInfo>();
-
-		[ProtoMember(2)]
-		public long WarehouseGold { get; set; }
-
 	}
 
+//VIP  end####################################################
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

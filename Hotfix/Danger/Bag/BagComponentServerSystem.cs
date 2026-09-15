@@ -600,7 +600,7 @@ namespace ET
             {
                 return false;
             }
-
+            
             if (rewardItems_init[0].ItemType == ItemBigType.Type_None)
             {
                 Log.Error("rewardItems_init[0].ItemType == ItemBigType.Type_None");
@@ -657,14 +657,15 @@ namespace ET
             for (int i = 0; i < srcList.Count; i++)
             {
                 RewardItem src = srcList[i];
-                long key = ((long)src.ItemFlags << 48) | ((long)src.ItemType << 32) | (uint)src.ItemID;
+                int itemFlags = ItemNewHelper.ResolveAddItemFlags(src);
+                long key = ((long)itemFlags << 48) | ((long)src.ItemType << 32) | (uint)src.ItemID;
                 if (map.TryGetValue(key, out RewardItem merged))
                 {
                     merged.ItemNum += src.ItemNum;
                     continue;
                 }
 
-                map[key] = new RewardItem { ItemType = src.ItemType, ItemID = src.ItemID, ItemNum = src.ItemNum, ItemFlags = src.ItemFlags };
+                map[key] = new RewardItem { ItemType = src.ItemType, ItemID = src.ItemID, ItemNum = src.ItemNum, ItemFlags = itemFlags };
             }
 
             return map;
@@ -832,14 +833,7 @@ namespace ET
                     MakePlayer = makeUserID
                 };
                 leftNum -= bagInfo.ItemNum;
-                if (item.ItemFlags != 0)
-                {
-                    bagInfo.ItemFlags = item.ItemFlags;
-                }
-                else
-                {
-                    bagInfo.SetTradeStatus(ItemNewHelper.CheckItemIfBound(item)? ItemFlagEnum.NonTradable : ItemFlagEnum.None);
-                }
+                bagInfo.ItemFlags = ItemNewHelper.ResolveAddItemFlags(item);
                 if (item.ItemType == ItemBigType.Type_Equip && bagInfo.BaseAttrList.Count <= 0)
                 {
                     LDEquip equipConfig = LDEquipCategory.Instance.Get(item.ItemID);

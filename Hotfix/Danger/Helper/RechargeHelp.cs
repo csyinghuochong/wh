@@ -98,6 +98,8 @@ namespace ET
             rechargeComponentServer.RechargePro.LastRechargeTime = serverTime;
             rechargeComponentServer.RechargePro.TotalRechargeNum += rechargeNumber;
 
+            VipHelp.OnVipExpAdd(unit, rechargeNumber * 10);
+
             taskComponentServer.OnRechargeDay();
 
             RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
