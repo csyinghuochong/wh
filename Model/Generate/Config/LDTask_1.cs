@@ -103,10 +103,10 @@ namespace ET
 		/// <summary>难度</summary>
 		[ProtoMember(8)]
 		public int Difficult { get; set; }
-		/// <summary>接取 等级</summary>
+		/// <summary>接取 等级 Min</summary>
 		[ProtoMember(9)]
 		public int Accept_Lv_Min { get; set; }
-		/// <summary>接取 等级</summary>
+		/// <summary>接取 等级 Max</summary>
 		[ProtoMember(10)]
 		public int Accept_Lv_Max { get; set; }
 		/// <summary>其他 接取 要求</summary>

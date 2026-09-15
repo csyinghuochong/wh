@@ -735,6 +735,21 @@ namespace ET
             return true;
         }
 
+        /// <summary>
+        /// 入包前检查对应背包还够不够格子，不够就整批 OnAddItemData 失败，不会先加一部分。
+        /// 它不是按「几种道具 = 几格」硬算，而是：
+        /// 先定要进哪个背包（装备/材料等 Loc）。
+        /// 看该背包还剩多少空格：总容量 - 已占用格。
+        /// 用 CalcNeedNewCells 算这次还要新开几格：能叠进已有堆的先扣掉，剩下的才占新格。
+        /// 需要新开的格 > 剩余空格 → false。
+        /// 够的话，把这次占掉的格记进 leftCellByLoc。同一批多个道具会累计扣，避免前面刚占的格后面又当空的用。
+        /// 货币、自动使用、不进包的道具不会走到这里。
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="item"></param>
+        /// <param name="specLocType"></param>
+        /// <param name="leftCellByLoc"></param>
+        /// <returns></returns>
         private static bool TryReserveBagCell(BagComponentServer self, RewardItem item, ItemLocType specLocType, Dictionary<int, int> leftCellByLoc)
         {
             ItemLocType toLocType = ResolveAddItemLoc(specLocType, item);

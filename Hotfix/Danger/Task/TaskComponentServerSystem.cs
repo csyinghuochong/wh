@@ -247,12 +247,23 @@ namespace ET
             return exist != null && exist.taskStatus != TaskStatuEnum.UnActive;
         }
 
+        /// <summary>
+        /// Requirement_1~4 全空：接取即为完成，可直接去交付 NPC。
+        /// </summary>
         public static TaskPro CreateTask_1(this TaskComponentServer self, int taskid)
         {
+            int status = (int)TaskStatuEnum.Accepted;
+            if (LDTask_1Category.Instance != null
+                && LDTask_1Category.Instance.Contain(taskid)
+                && TaskHelper.HasNoTask1Requirement(LDTask_1Category.Instance.Get(taskid)))
+            {
+                status = (int)TaskStatuEnum.Completed;
+            }
+
             TaskPro exist = self.GetTaskById_1(taskid);
             if (exist != null)
             {
-                exist.taskStatus = (int)TaskStatuEnum.Accepted;
+                exist.taskStatus = status;
                 exist.TrackStatus = 1;
                 TaskHelper.ResetTask1Progress(exist);
                 return exist;
@@ -260,8 +271,9 @@ namespace ET
 
             TaskPro taskPro = new TaskPro();
             taskPro.taskID = taskid;
-            taskPro.taskStatus = (int)TaskStatuEnum.Accepted;
+            taskPro.taskStatus = status;
             taskPro.TrackStatus = 1;
+
             TaskHelper.ResetTask1Progress(taskPro);
             self.RoleTaskList_1.Add(taskPro);
             return taskPro;
@@ -679,6 +691,8 @@ namespace ET
                 self.RoleComoleteTaskList_1.Add(taskid);
             }
 
+            self.RoleTaskList_1.Remove(taskPro);
+
             TaskRewardHelper.GrantTaskCommitRewards(unit, rewardItems);
             int exp = ExpHelper.EvaluateRewardFormula(
                     ldTask.Exp_Role_Param1,
@@ -992,7 +1006,10 @@ namespace ET
             {
                 for (int i = self.RoleTaskList_1.Count - 1; i >= 0; i--)
                 {
-                    if (!LDTask_1Category.Instance.Contain(self.RoleTaskList_1[i].taskID))
+                    TaskPro taskPro = self.RoleTaskList_1[i];
+                    if (!LDTask_1Category.Instance.Contain(taskPro.taskID)
+                        || taskPro.taskStatus == (int)TaskStatuEnum.Commited
+                        || self.RoleComoleteTaskList_1.Contains(taskPro.taskID))
                     {
                         self.RoleTaskList_1.RemoveAt(i);
                     }
