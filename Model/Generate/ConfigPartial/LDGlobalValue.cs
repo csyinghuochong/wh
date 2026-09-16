@@ -31,6 +31,9 @@ namespace ET
         
         public List<int> Add_Point_Level_UP_Fixed = new List<int>();
 
+        /// <summary>新人等级：该等级及以下不受世界等级影响。</summary>
+        public int NewRoleLv;
+
         /// <summary>升级自由点：下标=角色等级，值=升到该级本次获得的自由点（1 级为 0）。</summary>
         public int[] Add_Point_Level_UP_Free_ByLevel = Array.Empty<int>();
 
@@ -59,6 +62,10 @@ namespace ET
 
         private void ParseBaseData()
         {
+            this.NewRoleLv = this.ContainKey(GlobalValueKey.Global_New_Role_Lv)
+                ? this.GetInt(GlobalValueKey.Global_New_Role_Lv)
+                : 0;
+
             this.BagInitCapacity.Clear();
             this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120021);
             this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120022);
@@ -85,10 +92,10 @@ namespace ET
             }
 
             string rawValue = this.GetByKey(GlobalValueKey.Global_Add_Point_Level_UP_Free).Value;
-            
+            int maxLevel = GlobalValueLevelPointParser.GetMaxLevelInRaw(rawValue);
             Add_Point_Level_UP_Free_ByLevel = GlobalValueLevelPointParser.ParseToLevelTable(
                 rawValue,
-                this.MaxLevel,
+                maxLevel,
                 GlobalValueKey.Global_Add_Point_Level_UP_Free);
         }
 

@@ -96,20 +96,10 @@ namespace ET
                 return;
             }
 
-            List<int> indexids_1 = roleInfoComponentServer.GetTiLiIndexsNew(lastdateTime.Hour, 23);
-            List<int> indexids_2 = roleInfoComponentServer.GetTiLiIndexsNew(0, dateTime.Hour);
-            List<int> indexids = new List<int>();
-            indexids.Add(0);
-            indexids.AddRange(indexids_1);
-            indexids.AddRange(indexids_2);
-            if (indexids.Count <= 0)
-            {
-                return;
-            }
 
-            int recoverTili = roleInfoComponentServer.GetTiliRecover(indexids);
+            int recoverTili = 0;
             roleInfoComponentServer.RecoverPiLao(recoverTili, false);
-            AntiCheatAuditHelper.LogPiLaoRecover(unit, "two day", lastdateTime.Hour, dateTime.Hour, indexids, recoverTili);
+            AntiCheatAuditHelper.LogPiLaoRecover(unit, "two day", lastdateTime.Hour, dateTime.Hour,  recoverTili);
         }
 
         private static void RecoverPiLaoSameDay(
@@ -118,15 +108,10 @@ namespace ET
             int hour_1,
             int hour_2)
         {
-            List<int> indexids = roleInfoComponentServer.GetTiLiIndexsNew(hour_1, hour_2);
-            if (indexids.Count <= 0)
-            {
-                return;
-            }
 
-            int recoverTili = roleInfoComponentServer.GetTiliRecover(indexids);
+            int recoverTili = 0;
             roleInfoComponentServer.RecoverPiLao(recoverTili, false);
-            AntiCheatAuditHelper.LogPiLaoRecover(unit, "one day", hour_1, hour_2, indexids, recoverTili);
+            AntiCheatAuditHelper.LogPiLaoRecover(unit, "one day", hour_1, hour_2, recoverTili);
         }
     }
 }

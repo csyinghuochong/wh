@@ -76,24 +76,14 @@ namespace ET
             }
         }
 
-        public static void LogPiLaoRecover(Unit unit, string tag, int hour1, int hour2, List<int> indexids, int recoverTili)
+        public static void LogPiLaoRecover(Unit unit, string tag, int hour1, int hour2,  int recoverTili)
         {
             if (unit == null)
             {
                 return;
             }
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append(unit.Id).Append(' ').Append(tag)
-                .Append(" : hour_1: ").Append(hour1)
-                .Append("  hour_2:").Append(hour2)
-                .Append("   indexs: ");
-            for (int i = 0; i < indexids.Count; i++)
-            {
-                sb.Append(indexids[i]).Append("   ");
-            }
-            sb.Append("recover: ").Append(recoverTili);
-            Log.Debug(sb.ToString());
+          
         }
 
         public static void LogShenShouSuspect(Unit unit, RoleInfo roleInfo, int rechargeNumber)
