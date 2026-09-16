@@ -262,36 +262,6 @@ namespace ET
 						// 加入aoi
 						unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
 
-						if (!unit.IsRobot() && request.SceneType == MapTypeEnum.TeamDungeon)
-						{
-							TeamDungeonComponent teamDungeonComponent = unit.DomainScene().GetComponent<TeamDungeonComponent>();
-							int fubenType = teamDungeonComponent.FubenType;
-							bool firstEnter = !teamDungeonComponent.EnterPlayers.Contains(unit.Id);
-							if (firstEnter)
-							{
-                                teamDungeonComponent.EnterPlayers.Add(unit.Id);
-                                if (fubenType == TeamFubenType.XieZhu && unit.Id == teamDungeonComponent.TeamInfo.TeamId)
-                                {
-                                    int times_2 = unit.GetTeamDungeonXieZhu();
-                                    int totalTimes_2 = int.Parse(LDGlobalValueCategory.Instance.Get(74).Value);
-                                    if (totalTimes_2 > times_2)
-                                    {
-                                    }
-                                    else
-                                    {
-                                        unit.GetComponent<RoleDailyDataComponentServer>()?.AddTeamDungeonTimes();
-                                    }
-                                }
-                                else
-                                {
-                                    unit.GetComponent<RoleDailyDataComponentServer>()?.AddTeamDungeonTimes();
-                                }
-                                if (fubenType == TeamFubenType.ShenYuan && unit.Id == teamDungeonComponent.TeamInfo.TeamId)
-                                {
-                                    unit.GetComponent<BagComponentServer>().OnCostItemData($"{CommonConfig.ShenYuanCostId};1", ItemLocType.ItemLocBag, ItemGetWay.FubenGetReward);
-                                }
-                            }
-                        }
 						if (request.SceneType == (int)MapTypeEnum.TowerDungeon)
 						{
 							MapComponent towerMapComponent = scene.GetComponent<MapComponent>();

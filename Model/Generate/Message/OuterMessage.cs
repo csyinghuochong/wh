@@ -1920,56 +1920,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_YueKaOpenResponse))]
-	[Message(OuterOpcode.C2M_YueKaOpenRequest)]
-	[ProtoContract]
-	public partial class C2M_YueKaOpenRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_YueKaOpenResponse)]
-	[ProtoContract]
-	public partial class M2C_YueKaOpenResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_YueKaRewardResponse))]
-	[Message(OuterOpcode.C2M_YueKaRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_YueKaRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_YueKaRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_YueKaRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2C_RankListResponse))]
 	[Message(OuterOpcode.C2R_RankListRequest)]
 	[ProtoContract]
@@ -2611,59 +2561,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
-
-	}
-
-//副本选择奖励
-	[ResponseType(nameof(M2C_TeamDungeonBoxRewardResponse))]
-	[Message(OuterOpcode.C2M_TeamDungeonBoxRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_TeamDungeonBoxRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int BoxIndex { get; set; }
-
-		[ProtoMember(2)]
-		public RewardItem RewardItem { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamDungeonBoxRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonBoxRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int Mail { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamDungeonBoxRewardResult)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonBoxRewardResult: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-		[ProtoMember(2)]
-		public int BoxIndex { get; set; }
-
-		[ProtoMember(3)]
-		public string PlayerName { get; set; }
 
 	}
 
@@ -5156,21 +5053,6 @@ namespace ET
 		[ProtoMember(1)]
 		public List<IntLongPair> DayFubenTimes = new List<IntLongPair>();
 
-		[ProtoMember(2)]
-		public List<int> ChouKaRewardIds = new List<int>();
-
-		[ProtoMember(3)]
-		public List<IntLongPair> MysteryItems = new List<IntLongPair>();
-
-		[ProtoMember(4)]
-		public List<IntLongPair> DayItemUse = new List<IntLongPair>();
-
-		[ProtoMember(5)]
-		public List<IntLongPair> DayMonsters = new List<IntLongPair>();
-
-		[ProtoMember(6)]
-		public List<int> DayJingLing = new List<int>();
-
 // 商店本次限购 Key=LDShop_Goods.Id
 		[ProtoMember(7)]
 		public List<IntLongPair> BuyStoreItems = new List<IntLongPair>();
@@ -5182,34 +5064,6 @@ namespace ET
 // 周活跃点数（Item/UserDataType=12），周刷新清零
 		[ProtoMember(9)]
 		public int WeeklyActivePoint { get; set; }
-
-// 签到充值奖励，每日重置 0不能领取 1可以领取 2已领取
-		[ProtoMember(10)]
-		public int RechargeSign { get; set; }
-
-// 已进入组队副本次数，每日重置
-		[ProtoMember(11)]
-		public int TeamDungeonTimes { get; set; }
-
-// 今日红包 0未领 1已领
-		[ProtoMember(12)]
-		public int HongBao { get; set; }
-
-// 月卡今日领取 0未领 1已领
-		[ProtoMember(14)]
-		public int YueKaAwardTime { get; set; }
-
-// 单人副本击杀计数（满5扣1体力）
-		[ProtoMember(15)]
-		public int TiLiKillNumber { get; set; }
-
-// 今日抽卡次数
-		[ProtoMember(16)]
-		public int ChouKaNumber { get; set; }
-
-// 欢乐副本今日移动次数
-		[ProtoMember(17)]
-		public int HappyMoveNumber { get; set; }
 
 // 会日清/周清的 Item 货币 Key=Item.Id（日活跃21、周活跃22）
 		[ProtoMember(18)]

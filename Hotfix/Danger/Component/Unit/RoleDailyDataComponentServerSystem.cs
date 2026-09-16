@@ -27,11 +27,6 @@ namespace ET
         {
             RoleDailyData data = self.Data ??= new RoleDailyData();
             data.DayFubenTimes ??= new List<IntLongPair>();
-            data.ChouKaRewardIds ??= new List<int>();
-            data.MysteryItems ??= new List<IntLongPair>();
-            data.DayItemUse ??= new List<IntLongPair>();
-            data.DayMonsters ??= new List<IntLongPair>();
-            data.DayJingLing ??= new List<int>();
             data.BuyStoreItems ??= new List<IntLongPair>();
             self.PersonalRandomShops ??= new Dictionary<int, List<ShopGoodsItem>>();
         }
@@ -63,22 +58,10 @@ namespace ET
 
             // 默认日清：不含周活跃
             data.DayFubenTimes.Clear();
-            data.ChouKaRewardIds.Clear();
-            data.MysteryItems.Clear();
-            data.DayItemUse.Clear();
-            data.DayMonsters.Clear();
-            data.DayJingLing.Clear();
             data.BuyStoreItems.Clear();
             data.DailyActivePoint = 0;
             SetCount(data.Currencies, UserDataType.DailyActive, 0);
-            data.RechargeSign = 0;
-            data.TeamDungeonTimes = 0;
-            data.HongBao = 0;
-            data.YueKaAwardTime = 0;
             data.VipDailyClaimed = 0;
-            data.TiLiKillNumber = 0;
-            data.ChouKaNumber = 0;
-            data.HappyMoveNumber = 0;
             self.PersonalRandomShops.Clear();
         }
 
@@ -258,51 +241,6 @@ namespace ET
 
         #endregion
 
-        #region 神秘店 MysteryItems
-
-        public static int GetMysteryBuy(this RoleDailyDataComponentServer self, int mysteryId)
-        {
-            return GetCount(self.GetDailyData().MysteryItems, mysteryId);
-        }
-
-        public static void OnMysteryBuy(this RoleDailyDataComponentServer self, int mysteryId)
-        {
-            AddCount(self.GetDailyData().MysteryItems, mysteryId, 1);
-        }
-
-        #endregion
-
-        #region 每日道具 DayItemUse
-
-        public static int GetDayItemUse(this RoleDailyDataComponentServer self, int itemId)
-        {
-            return GetCount(self.GetDailyData().DayItemUse, itemId);
-        }
-
-        public static void OnDayItemUse(this RoleDailyDataComponentServer self, int itemId)
-        {
-            AddCount(self.GetDailyData().DayItemUse, itemId, 1);
-        }
-
-        #endregion
-
-        #region 抽卡奖励 ChouKaRewardIds
-
-        public static bool HasChouKaReward(this RoleDailyDataComponentServer self, int rewardId)
-        {
-            return self.GetDailyData().ChouKaRewardIds.Contains(rewardId);
-        }
-
-        public static void AddChouKaReward(this RoleDailyDataComponentServer self, int rewardId)
-        {
-            List<int> list = self.GetDailyData().ChouKaRewardIds;
-            if (!list.Contains(rewardId))
-            {
-                list.Add(rewardId);
-            }
-        }
-
-        #endregion
 
         #region 商店限购
 
@@ -351,71 +289,16 @@ namespace ET
 
         #endregion
 
-        #region 签到充值 RechargeSign 0不能领取 1可以领取 2已领取
-
-        public static int GetRechargeSign(this RoleDailyDataComponentServer self)
-        {
-            return self.GetDailyData().RechargeSign;
-        }
-
-        public static void SetRechargeSign(this RoleDailyDataComponentServer self, int value, bool notice = true)
-        {
-            self.GetDailyData().RechargeSign = value;
-            if (notice)
-            {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
-            }
-        }
-
-        #endregion
-
         #region 组队副本次数 TeamDungeonTimes
 
         public static int GetTeamDungeonTimes(this RoleDailyDataComponentServer self)
         {
-            return self.GetDailyData().TeamDungeonTimes;
+            return 0;
         }
 
         public static void AddTeamDungeonTimes(this RoleDailyDataComponentServer self, bool notice = true)
         {
-            self.GetDailyData().TeamDungeonTimes++;
-            if (notice)
-            {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
-            }
-        }
-
-        #endregion
-
-        #region 红包 HongBao 0未领 1已领
-
-        public static int GetHongBao(this RoleDailyDataComponentServer self)
-        {
-            return self.GetDailyData().HongBao;
-        }
-
-        public static void SetHongBao(this RoleDailyDataComponentServer self, int value, bool notice = true)
-        {
-            self.GetDailyData().HongBao = value;
-            if (notice)
-            {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
-            }
-        }
-
-        #endregion
-
-
-        #region 月卡今日领取 YueKaAwardTime
-
-        public static int GetYueKaAwardTime(this RoleDailyDataComponentServer self)
-        {
-            return self.GetDailyData().YueKaAwardTime;
-        }
-
-        public static void SetYueKaAwardTime(this RoleDailyDataComponentServer self, int value, bool notice = true)
-        {
-            self.GetDailyData().YueKaAwardTime = value;
+            
             if (notice)
             {
                 self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
@@ -442,77 +325,7 @@ namespace ET
 
         #endregion
 
-        #region 体力击杀计数 TiLiKillNumber
 
-        public static int GetTiLiKillNumber(this RoleDailyDataComponentServer self)
-        {
-            return self.GetDailyData().TiLiKillNumber;
-        }
-
-        public static void SetTiLiKillNumber(this RoleDailyDataComponentServer self, int value, bool notice = false)
-        {
-            self.GetDailyData().TiLiKillNumber = value;
-            if (notice)
-            {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
-            }
-        }
-
-        public static void AddTiLiKillNumber(this RoleDailyDataComponentServer self, bool notice = false)
-        {
-            self.GetDailyData().TiLiKillNumber++;
-            if (notice)
-            {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
-            }
-        }
-
-        #endregion
-
-        #region 今日抽卡 ChouKaNumber
-
-        public static int GetChouKaNumber(this RoleDailyDataComponentServer self)
-        {
-            return self.GetDailyData().ChouKaNumber;
-        }
-
-        public static void AddChouKaNumber(this RoleDailyDataComponentServer self, int add = 1, bool notice = true)
-        {
-            self.GetDailyData().ChouKaNumber += add;
-            if (notice)
-            {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
-            }
-        }
-
-        #endregion
-
-        #region 欢乐副本移动 HappyMoveNumber
-
-        public static int GetHappyMoveNumber(this RoleDailyDataComponentServer self)
-        {
-            return self.GetDailyData().HappyMoveNumber;
-        }
-
-        public static void AddHappyMoveNumber(this RoleDailyDataComponentServer self, bool notice = true)
-        {
-            self.GetDailyData().HappyMoveNumber++;
-            if (notice)
-            {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
-            }
-        }
-
-        public static void SetHappyMoveNumber(this RoleDailyDataComponentServer self, int value, bool notice = true)
-        {
-            self.GetDailyData().HappyMoveNumber = value;
-            if (notice)
-            {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
-            }
-        }
-
-        #endregion
 
         public static void OnLogin(this RoleDailyDataComponentServer self)
         {
@@ -556,22 +369,10 @@ namespace ET
             return new RoleDailyData
             {
                 DayFubenTimes = CloneKvList(src.DayFubenTimes),
-                ChouKaRewardIds = src.ChouKaRewardIds != null ? new List<int>(src.ChouKaRewardIds) : new List<int>(),
-                MysteryItems = CloneKvList(src.MysteryItems),
-                DayItemUse = CloneKvList(src.DayItemUse),
-                DayMonsters = CloneKvList(src.DayMonsters),
-                DayJingLing = src.DayJingLing != null ? new List<int>(src.DayJingLing) : new List<int>(),
                 BuyStoreItems = CloneKvList(src.BuyStoreItems),
                 DailyActivePoint = src.DailyActivePoint,
                 WeeklyActivePoint = src.WeeklyActivePoint,
-                RechargeSign = src.RechargeSign,
-                TeamDungeonTimes = src.TeamDungeonTimes,
-                HongBao = src.HongBao,
-                YueKaAwardTime = src.YueKaAwardTime,
                 VipDailyClaimed = src.VipDailyClaimed,
-                TiLiKillNumber = src.TiLiKillNumber,
-                ChouKaNumber = src.ChouKaNumber,
-                HappyMoveNumber = src.HappyMoveNumber,
             };
         }
 

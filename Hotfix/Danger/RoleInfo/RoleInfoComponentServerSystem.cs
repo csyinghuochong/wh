@@ -365,26 +365,6 @@ namespace ET
             NumericComponent numericComponent = main.GetComponent<NumericComponent>();
 
             RoleDailyDataComponentServer dailyData = main.GetComponent<RoleDailyDataComponentServer>();
-            int tiliKillNumber = dailyData?.GetTiLiKillNumber() ?? 0;
-            if (sceneType == MapTypeEnum.LocalDungeon && !showlieopen && RoleCurrencyHelper.Get(self.RoleInfo, UserDataType.TiLi) > 0)
-            {
-                if (tiliKillNumber >= 4)
-                {
-                    dailyData?.SetTiLiKillNumber(0, false);
-                    //if ( CommonHelper.IsZhuBoZone(UnitZoneHelper.GetHomeZone(main)) && self.RoleInfo.PiLao < 2)
-                    //{
-                    //    self.UpdateRoleData(UserDataType.PiLao, "100", true);
-                    //}
-                    //else
-                    //{
-                    //    self.UpdateRoleData(UserDataType.PiLao, "-1", true);
-                    //}
-                }
-                else
-                {
-                    dailyData?.AddTiLiKillNumber();
-                }
-            }
 
             bool drop = true;
             if (SceneConfigHelper.IsSingleFuben(sceneType))
@@ -430,16 +410,6 @@ namespace ET
                 }
             }
             return -1;
-        }
-
-        public static int GetMysteryBuy(this RoleInfoComponentServer self, int mysteryId)
-        {
-            return self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.GetMysteryBuy(mysteryId) ?? 0;
-        }
-
-        public static void OnMysteryBuy(this RoleInfoComponentServer self, int mysteryId)
-        {
-            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.OnMysteryBuy(mysteryId);
         }
 
         public static int GetStoreBuy(this RoleInfoComponentServer self, int mysteryId)

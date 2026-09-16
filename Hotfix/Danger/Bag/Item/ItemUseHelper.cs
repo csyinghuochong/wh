@@ -22,11 +22,6 @@ namespace ET
                 return ErrorCode.ERR_Success;
             }
 
-            if (ldItem.DayUseNum > 0 && (daily?.GetDayItemUse(ldItem.Id) ?? 0) >= ldItem.DayUseNum)
-            {
-                return ErrorCode.ERR_ItemNoUseTime;
-            }
-
             if (ldItem.SumUseNum > 0 && roleInfoComponentServer.GetTotalUseTimes(ldItem.Id) >= ldItem.SumUseNum)
             {
                 return ErrorCode.ERR_ItemNoUseTime;
@@ -59,10 +54,6 @@ namespace ET
                 }
             }
 
-            if (ldItem.DayUseNum > 0)
-            {
-                daily?.OnDayItemUse(ldItem.Id);
-            }
 
             if (ldItem.SumUseNum > 0)
             {

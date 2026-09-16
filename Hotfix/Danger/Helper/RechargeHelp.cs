@@ -62,11 +62,6 @@ namespace ET
         
             RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
 
-            if (Log.IsDebugEnabled)
-            {
-                Log.Debug($"OnRechage: {unit.Id}   {rechargetType}  {playId}  rechargetType:{rechargetType}");
-            }
-
             int homeZone = UnitZoneHelper.GetHomeZone(unit);
             bool canFirstBuy = false;
             if (LDActivity_1Category.Instance.Contain(playId))
@@ -103,11 +98,6 @@ namespace ET
             taskComponentServer.OnRechargeDay();
 
             RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
-            if (daily != null && daily.GetRechargeSign() != 2)
-            {
-                daily.SetRechargeSign(1, notice);
-            }
-
             rechargeComponentServer.NotifyClient();
         }
 

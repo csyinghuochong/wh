@@ -76,8 +76,14 @@ namespace ET
                 return;
             }
 
+            int oldLevel = pro.VipLevel;
             pro.VipExp += addExp;
             pro.VipLevel = CalcLevel(pro.VipExp);
+            if (pro.VipLevel != oldLevel)
+            {
+                RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
+                daily?.SetVipDailyClaimed(0);
+            }
         }
 
         public static bool HasPrivilegeClaimed(RechargePro pro, int vipLevel)
