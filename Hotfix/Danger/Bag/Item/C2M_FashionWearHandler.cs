@@ -9,6 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_FashionWearRequest request, M2C_FashionWearResponse response, Action reply)
         {
+
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             if (!bagComponentServer.FashionActiveIds.Contains(request.FashionId))
@@ -19,14 +20,27 @@ namespace ET
                 return;
             }
 
-            int occ = roleInfoComponentServer.RoleInfo.Occ;
-            LDFashion ldFashion = LDFashionCategory.Instance.Get(request.FashionId);
-
-            bool canwear = false;
-           
-            if (!canwear)
+            if (!LDFashionCategory.Instance.Contain(request.FashionId))
             {
                 Log.Error($"C2M_FashionWearRequest.2");
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
+
+            LDFashion ldFashion = LDFashionCategory.Instance.Get(request.FashionId);
+            if (ldFashion.Part <= 0)
+            {
+                Log.Error($"C2M_FashionWearRequest.3");
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
+
+            int roleSex = roleInfoComponentServer.RoleInfo.Sex;
+            if (ldFashion.Sex != SexEnum.None && ldFashion.Sex != roleSex)
+            {
+                Log.Error($"C2M_FashionWearRequest.4");
                 response.Error = ErrorCode.ERR_ModifyData;
                 reply();
                 return;
@@ -39,6 +53,21 @@ namespace ET
                     response.Error = ErrorCode.ERR_AlreadyLearn;
                     reply();
                     return;
+                }
+
+                for (int i = bagComponentServer.FashionEquipList.Count - 1; i >= 0; i--)
+                {
+                    int wearId = bagComponentServer.FashionEquipList[i];
+                    if (!LDFashionCategory.Instance.Contain(wearId))
+                    {
+                        bagComponentServer.FashionEquipList.RemoveAt(i);
+                        continue;
+                    }
+
+                    if (LDFashionCategory.Instance.Get(wearId).Part == ldFashion.Part)
+                    {
+                        bagComponentServer.FashionEquipList.RemoveAt(i);
+                    }
                 }
 
                 bagComponentServer.FashionEquipList.Add(request.FashionId);

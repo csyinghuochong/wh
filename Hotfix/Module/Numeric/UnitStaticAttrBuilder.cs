@@ -8,9 +8,10 @@ namespace ET
     ///
     /// 流水线：
     /// 1) 职业初始 + 装备
-    /// 2) 六维加点 → 战斗分项
+    /// 2) 六维加点（含称号六维） → 战斗分项
     /// 3) 体 → 生命上限固定值
-    /// 4) 坐骑列表按骑乘/非骑乘比例叠加
+    /// 4) 称号非六维属性
+    /// 5) 坐骑列表按骑乘/非骑乘比例叠加
     /// </summary>
     public static class UnitStaticAttrBuilder
     {
@@ -22,6 +23,7 @@ namespace ET
 
             MergeOccupationAndEquip(unit, roleInfo.Occ, dic);
             int[] pointValues = CalcTotalPointValues(numeric, roleInfo.Lv);
+            MergeTitleAttributes(unit, pointValues, dic);
             MergePointConvertAttrs(pointValues, dic);
             MergeBodyHpFixed(roleInfo, roleInfo.Lv, pointValues, dic);
             MergeMountAttributes(unit, dic);
@@ -39,6 +41,56 @@ namespace ET
             }
 
             MountHelper.MergeMountListAttributes(mountComponent.GetAllMounts(), dic);
+        }
+
+        /// <summary>TitleList 全部有效称号：六维点并入 pointValues，其余属性写入 dic。</summary>
+        static void MergeTitleAttributes(Unit unit, int[] pointValues, Dictionary<int, long> dic)
+        {
+            TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
+            if (titleComponent == null)
+            {
+                return;
+            }
+
+            List<AttributeItem> items = titleComponent.GetTitlePro();
+            if (items == null || items.Count == 0)
+            {
+                return;
+            }
+
+            List<AttributeItem> combatItems = new List<AttributeItem>();
+            for (int i = 0; i < items.Count; i++)
+            {
+                AttributeItem item = items[i];
+                if (item == null)
+                {
+                    continue;
+                }
+
+                int pointIndex = GetPointIndex(item.AttributeID);
+                if (pointIndex >= 0)
+                {
+                    pointValues[pointIndex] += (int)item.AttributeValue;
+                    continue;
+                }
+
+                combatItems.Add(item);
+            }
+
+            NumericConvert.MergeAttributes(combatItems, dic);
+        }
+
+        static int GetPointIndex(int attributeId)
+        {
+            for (int i = 0; i < RoleAddPointHelper.PointNumericTypes.Length; i++)
+            {
+                if (RoleAddPointHelper.PointNumericTypes[i] == attributeId)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         /// <summary>职业初始属性 + 当前装备属性。</summary>

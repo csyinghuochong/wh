@@ -10,7 +10,7 @@ namespace ET
     {
 
         /// <summary>
-        /// 全量重算角色静态战斗属性（职业+装备+加点+坐骑），保留战斗 Buff 层。
+        /// 全量重算角色静态战斗属性（职业+装备+加点+称号+坐骑），保留战斗 Buff 层。
         /// </summary>
         public static void UnitUpdateProperty_Base(Unit unit, bool notice, bool rank)
         {
