@@ -94,15 +94,15 @@ namespace ET
 		/// <summary>图标</summary>
 		[ProtoMember(5)]
 		public string Icon { get; set; }
-		/// <summary>模型</summary>
+		/// <summary>模型缩放</summary>
 		[ProtoMember(6)]
+		public double Scale { get; set; }
+		/// <summary>模型</summary>
+		[ProtoMember(7)]
 		public string Model { get; set; }
 		/// <summary>Z偏移</summary>
-		[ProtoMember(7)]
-		public int Off_Z { get; set; }
-		/// <summary>模型缩放</summary>
 		[ProtoMember(8)]
-		public double Scale { get; set; }
+		public int Off_Z { get; set; }
 
 	}
 }
