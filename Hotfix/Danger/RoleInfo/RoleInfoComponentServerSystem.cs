@@ -6,21 +6,7 @@ using UnityEngine;
 namespace ET
 {
 
-    //[Timer(TimerType.ShouLieUpLoadTimer)]
-    //public class ShouLieUpLoadTimer : ATimer<RoleInfoComponentServer>
-    //{
-    //    public override void Run(RoleInfoComponentServer self)
-    //    {
-    //        try
-    //        {
-    //            self.UpdateShowLie().Coroutine();
-    //        }
-    //        catch (Exception e)
-    //        {
-    //            Log.Error($"move timer error: {self.Id}\n{e}");
-    //        }
-    //    }
-    //}
+ 
 
     [ObjectSystem]
     public class RoleInfoComponentAwake : AwakeSystem<RoleInfoComponentServer>
@@ -87,91 +73,6 @@ namespace ET
                 self.UploadCombat().Coroutine();
             }
         }
-        public static void OnRongyuChanChu(this RoleInfoComponentServer self, int coefficient, bool notice)
-        {
-            if (coefficient == 0)
-            {
-                return;
-            }
-          //  LingDiConfig lingDiConfig = LingDiConfigCategory.Instance.Get(lingdiLv);
-
-            //unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Exp, (coefficient *lingDiConfig.HoureExp).ToString(), notice).Coroutine();
-           // self.UpdateRoleData(UserDataType.FangRong, (coefficient * lingDiConfig.HoureExp).ToString(), notice);
-           // self.UpdateRoleData(UserDataType.RongYu, (coefficient * lingDiConfig.HoureHonor).ToString(), notice);
-        }
-
-        public static void OpenAll(this RoleInfoComponentServer self)
-        {
-
-            /*Dictionary<int, ChapterConfig> keyValuePairs = ChapterConfigCategory.Instance.GetAll();
-            foreach (var item in keyValuePairs)
-            {
-                self.RoleInfo.FubenPassList.Add(new FubenPassInfo()
-                {
-                    FubenId = item.Key,
-                    Difficulty = (int)FubenDifficulty.DiYu
-                });
-            }*/
-        }
-
-
-        public static int GetTiLiTimes(this RoleInfoComponentServer self, int hour_1, int hour_2)
-        {
-            int index_1 = self.GetTiLiIndex(hour_1);
-            int index_2 = self.GetTiLiIndex(hour_2);
-            if (index_1 > index_2)
-            {
-                return 0;
-            }
-            return index_2 - index_1;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="hour_1"></param>
-        /// <param name="hour_2"></param>  0 6 12 20
-        /// <returns></returns>
-        public static List<int> GetTiLiIndexsNew(this RoleInfoComponentServer self, int hour_1, int hour_2)
-        {
-            List<int> indexs = new  List<int>();    
-            if (hour_1 >= hour_2)
-            {
-
-                return indexs;
-            }
-            if (hour_1 < 6 && hour_2 >= 6)
-            {
-                indexs.Add(6);
-            }
-            if (hour_1 < 12 && hour_2 >= 12)
-            {
-                indexs.Add(12);
-            }
-            if (hour_1 < 20 && hour_2 >= 20)
-            {
-                indexs.Add(20);
-            }
-
-            return indexs;
-        }
-
-        public static int GetTowerId(RoleInfo roleInfo, int sceneType)
-        {
-            if (roleInfo?.TowerIds == null)
-            {
-                return 0;
-            }
-            for (int i = 0; i < roleInfo.TowerIds.Count; i++)
-            {
-                if (roleInfo.TowerIds[i].KeyId == sceneType)
-                {
-                    return (int)roleInfo.TowerIds[i].Value;
-                }
-            }
-            return 0;
-        }
 
         public static void ApplyTowerId(RoleInfo roleInfo, string sceneTypeAndTowerId)
         {
@@ -231,27 +132,6 @@ namespace ET
             return totalTili;
         }
 
-        public static int GetTiLiIndex(this RoleInfoComponentServer self, int hour_1)
-        {
-            if (hour_1 < 6)
-            {
-                return 1;
-            }
-            if (hour_1 < 12)
-            {
-                return 2;
-            }
-            if (hour_1 < 20)
-            {
-                return 3;
-            }
-            if (hour_1 < 24)
-            {
-                return 4;
-            }
-            return 5;
-        }
-
         public static void CheckData(this RoleInfoComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
@@ -288,15 +168,6 @@ namespace ET
             return 0;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="notice"></param>
-        public static void OnHourUpdate(this RoleInfoComponentServer self, int hour, bool notice)
-        {
-          
-        }
 
         public static void RecoverPiLao(this RoleInfoComponentServer self, int addValue, bool notice)
         {
@@ -323,18 +194,6 @@ namespace ET
             return self.RoleInfo;
         }
 
-        public static void OnShowLieKill(this RoleInfoComponentServer self)
-        {
-           
-            //if (self.ShouLieUpLoadTimer == 0)
-            //{
-            //    self.ShouLieUpLoadTimer = TimerComponent.Instance.NewOnceTimer(TimeHelper.ServerNow() + 5 * TimeHelper.Second, TimerType.ShouLieUpLoadTimer, self);
-            //}
-            //else
-            //{
-            //    self.UpdateShowLie().Coroutine();
-            //}
-        }
 
         /// <summary>
         /// 杀怪经验
@@ -351,17 +210,7 @@ namespace ET
 
             bool showlieopen = ConfigData.ShowLieOpen;
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(beKill.ConfigId);
-            if (showlieopen && ( ldMonster.Lv >= 60 || Mathf.Abs(self.RoleInfo.Lv - ldMonster.Lv) <= 9) )
-            {
-                self.OnShowLieKill();
-           
-            }
-
-            if (SeasonHelper.GetOpenSeason(self.RoleInfo.Lv)!=null && beKill.IsBoss() && ldMonster.Lv >= 40)
-            {
-                int seasonExp = RandomHelper.RandomNumber(1, 6);
-            }
-
+            
             NumericComponent numericComponent = main.GetComponent<NumericComponent>();
 
             RoleDailyDataComponentServer dailyData = main.GetComponent<RoleDailyDataComponentServer>();
@@ -689,22 +538,12 @@ namespace ET
 
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
-            //等级达到上限,则无法获得经验. 经验最多200%
-            int maxlevel = 1000; //读表
-            if (addValue > 0 &&self.RoleInfo.Lv >= maxlevel)
-            {
-                long maxExp = upNeedExp * 2;
-            }
+            //等级达到上限, 不升级 但是可以继续获得经验
+            int maxlevel = CommonHelper.GetPlayerMaxLevel(); //读表
 
             self.RoleInfo.Exp = self.RoleInfo.Exp + (int)(addValue * (1.0f + expAdd));
 
             if (self.RoleInfo.Lv >= maxlevel)
-            {
-                return;
-            }
-
-            //判定是否升级
-            if (self.RoleInfo.Lv >= serverInfo.WorldLv)
             {
                 return;
             }

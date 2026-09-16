@@ -7,27 +7,10 @@ using System.Threading.Tasks;
 namespace ET
 {
     
-    public struct DayMonsters
-    {
-        public int MonsterId;
-        public float GaiLv;
-        public int TotalNumber;
-    }
-
-    public struct DayJingLing
-    {
-        public List<int> MonsterId;
-        public List<int> Weights;
-        public float GaiLv;
-        public int TotalNumber;
-    }
-
-    
+  
     public partial class LDGlobalValueCategory
     {
         private Dictionary<string, LDGlobalValue> keyDict = new Dictionary<string, LDGlobalValue>(StringComparer.Ordinal);
-
-        public int JianDingFuQulity = 0;
 
 
         public Dictionary<int, int> BagInitCapacity = new Dictionary<int, int>();
@@ -35,9 +18,6 @@ namespace ET
         public int GemStoreInitCapacity = 0;
         public int GemStoreMaxCapacity = 0;
 
-        public int OnLineLimit = 0;
-
-        public int AccountBagMax = 0;
 
         /// <summary>默认已开 1 页仓库。</summary>
         public int DefaultCangKuNumber = 1;
@@ -45,13 +25,7 @@ namespace ET
 
         public int MaxLevel = 100;
         
-        public int TempValue = 0;
 
-        public List<DayMonsters> DayMonsterList = new List<DayMonsters>();
-
-        public List<DayJingLing> DayJingLingList = new List<DayJingLing>();
-
-        public Dictionary<int, int> ZhuaPuItem = new Dictionary<int, int>();
         ////上面的全部废弃掉////
 
         

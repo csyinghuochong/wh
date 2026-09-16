@@ -37,7 +37,7 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-            int maxLv = LDGlobalValueCategory.Instance.TempValue;
+          
             for (int i = 0; i < self.PetInfos.Count; i++)
             {
                 PetInfo rolePetInfo = self.PetInfos[i];
@@ -242,11 +242,10 @@ namespace ET
                 return;
             }
             Unit unit = self.GetParent<Unit>();
-
-            int maxLv = LDGlobalValueCategory.Instance.TempValue;
+            int maxlv = LDExp_LvCategory.Instance.GetAll().Values.Count;
             int newExp = rolePetInfo.PetExp + exp;
             LDExp_Lv xiulianconf1 = LDExp_LvCategory.Instance.Get(rolePetInfo.PetLv);
-            if (newExp >= xiulianconf1.Exp_Role && rolePetInfo.PetLv < maxLv)
+            if (newExp >= xiulianconf1.Exp_Role && rolePetInfo.PetLv < maxlv)
             {
                 self.PetAddLv(rolePetInfo, 1);
                 newExp -= xiulianconf1.Exp_Role;
