@@ -26,14 +26,12 @@ namespace ET
 
             if (request.BagInfo != null)
             {
-                if (UnionWarehouseHelper.IsWarehouseFull(unionInfo, request.BagInfo))
+                if (!UnionWarehouseHelper.TryPutItem(unionInfo, request.BagInfo))
                 {
                     response.Error = ErrorCode.ERR_WarehouseIsFull;
                     reply();
                     return;
                 }
-
-                unionInfo.WarehouseList.Add(request.BagInfo);
             }
             else
             {
