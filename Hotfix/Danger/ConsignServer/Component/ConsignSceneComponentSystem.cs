@@ -401,7 +401,7 @@ namespace ET
         }
 
         //零点刷新
-        public static void OnZeroClockUpdate(this ConsignSceneComponent self)
+        public static void OnDailyReset(this ConsignSceneComponent self)
         {
         }
 

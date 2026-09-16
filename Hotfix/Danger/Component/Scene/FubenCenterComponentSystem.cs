@@ -342,7 +342,7 @@ namespace ET
                 //FubenHelp.CreateMonsterList(fubnescene, sceneConfigs[i].CreateMonsterPosi);
 
                 int openDay = DBHelper.GetOpenServerDay(self.DomainZone());
-                yeWaiRefreshComponen.OnZeroClockUpdate(openDay);
+                yeWaiRefreshComponen.OnDailyReset(openDay);
             }
         }
     }

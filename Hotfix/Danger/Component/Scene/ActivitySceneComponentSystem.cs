@@ -70,13 +70,7 @@ namespace ET
     {
         public static void OnCheck(this ActivitySceneComponent self)
         {
-            DateTime dateTime = TimeHelper.DateTimeNow();
-
-            if (self.DBDayActivityInfo.LastHour != dateTime.Hour)
-            {
-                self.DBDayActivityInfo.LastHour = dateTime.Hour;
-                self.NoticeActivityUpdate_Hour(dateTime).Coroutine();
-            }
+            self.CheckDailyReset();
 
             self.CheckIndex += 1000;
             if (self.CheckIndex >= TimeHelper.Minute * 5)
@@ -110,6 +104,7 @@ namespace ET
                 self.InitGlobalRandomShop();
             }
 
+            self.CheckDailyReset();
             self.SaveDB();
             self.CreateRobot(openServerDay).Coroutine();     
 
@@ -326,25 +321,47 @@ namespace ET
             MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = NoticeType.CreateRobot, Message = $"1#{createRobotNumber}" });
         }
 
-        public static async ETTask NoticeActivityUpdate_Hour(this ActivitySceneComponent self, DateTime dateTime)
+        /// <summary>
+        /// 跨 Global_Reset_Time（不必整点）触发日清。首次启动只打时间戳，避免起服立刻扇出。
+        /// </summary>
+        public static void CheckDailyReset(this ActivitySceneComponent self)
         {
-            DayOfWeek dayOfWeek = dateTime.DayOfWeek;
-            int hour = dateTime.Hour;
-            int openServerDay = DBHelper.GetOpenServerDay(self.DomainZone());
-            LogHelper.LogWarning($"NoticeActivityUpdate_Hour: zone: {self.DomainZone()} openday: {openServerDay}  {hour}", true);
-
-            for (int i = 0; i < self.MapIdList.Count; i++)
+            long now = TimeHelper.ServerNow();
+            if (self.DBDayActivityInfo.LastDailyResetTime <= 0)
             {
-                Other2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (Other2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                        (self.MapIdList[i], new A2Other_ActivityUpdateRequest() { Hour = hour, OpenDay = openServerDay });
+                self.DBDayActivityInfo.LastDailyResetTime = now;
+                return;
             }
 
-            // 日清点刷新商店、开启活动定时器（Global_Reset_Time，默认 5 点）
-            if (hour == ActivityHelper.GetDailyResetHour())
+            if (ActivityHelper.IsSameGameResetDay(self.DBDayActivityInfo.LastDailyResetTime, now))
             {
-                LogHelper.LogWarning($"全服随机商店刷新: {self.DomainZone()}", true);
-                self.InitGlobalRandomShop();
-                self.InitFunctionButton();
+                return;
+            }
+
+            self.DBDayActivityInfo.LastDailyResetTime = now;
+            self.NoticeDailyReset().Coroutine();
+        }
+
+        public static async ETTask NoticeDailyReset(this ActivitySceneComponent self)
+        {
+            int openServerDay = DBHelper.GetOpenServerDay(self.DomainZone());
+            LogHelper.LogWarning($"NoticeDailyReset: zone: {self.DomainZone()} openday: {openServerDay} reset: {ActivityHelper.GetDailyResetTimeOfDay()}", true);
+
+            self.InitGlobalRandomShop();
+            self.InitFunctionButton();
+            self.SaveDB();
+
+            List<long> serverIds = new List<long>(self.MapIdList);
+            long unionServerId = DBHelper.GetUnionServerId(self.DomainZone());
+            if (unionServerId != 0 && !serverIds.Contains(unionServerId))
+            {
+                serverIds.Add(unionServerId);
+            }
+
+            for (int i = 0; i < serverIds.Count; i++)
+            {
+                Other2A_DailyResetResponse response = (Other2A_DailyResetResponse)await ActorMessageSenderComponent.Instance.Call(
+                    serverIds[i], new A2Other_DailyResetRequest() { OpenDay = openServerDay });
             }
         }
     }

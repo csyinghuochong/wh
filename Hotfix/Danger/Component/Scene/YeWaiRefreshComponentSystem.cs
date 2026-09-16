@@ -183,7 +183,7 @@ namespace ET
         /// </summary>
         /// <param name="self"></param>
         /// <param name="openDay"></param>
-        public static void OnZeroClockUpdate(this YeWaiRefreshComponent self, int openDay)
+        public static void OnDailyReset(this YeWaiRefreshComponent self, int openDay)
         {
             if (openDay <= 0)
             {

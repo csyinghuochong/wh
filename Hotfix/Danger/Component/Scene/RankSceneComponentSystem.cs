@@ -105,10 +105,9 @@ namespace ET
             }
             //初始化参数
             self.DBServerInfo = dBServerInfo;
-            self.UpdateExchangeGold(DBHelper.GetOpenServerDay(self.DomainZone()));
-            //上午重启不刷新世界等级
+            // 日清点前重启不刷新世界等级，等 DailyReset
             DateTime dateTime = TimeHelper.DateTimeNow();
-            if (self.DBServerInfo.ServerInfo.WorldLv == 0|| dateTime.Hour >= 12 || CommonHelper.IsInnerNet())
+            if (self.DBServerInfo.ServerInfo.WorldLv == 0 || dateTime.TimeOfDay >= ActivityHelper.GetDailyResetTimeOfDay() || CommonHelper.IsInnerNet())
             {
                 self.UpdateWorldLv();
             }
@@ -117,7 +116,6 @@ namespace ET
 
         public static void UpdateWorldLv(this RankSceneComponent self)
         {
-            //第二天并且超过12点才刷新
             int openserverDay = DBHelper.GetOpenServerDay(self.DomainZone());
             int worldLv = WorldLvHelper.GetWorldLv(openserverDay);
             self.DBServerInfo.ServerInfo.WorldLv = worldLv;
@@ -145,110 +143,17 @@ namespace ET
             }
         }
 
-        //3287042516137869312  半心心心
-        //未来
-        public static void ClearRankingTrialById(this RankSceneComponent self, long unitid)
-        {
-            DateTime dateTime = TimeHelper.DateTimeNow();
-            for (int i = self.DBRankInfo.rankingTrial.Count - 1; i >= 0; i--)
-            {
-                if (self.DBRankInfo.rankingTrial[i].KeyId == unitid)
-                {
-                    self.DBRankInfo.rankingTrial.RemoveAt(i);
-                }
-            }
-        }
 
-        public static void ClearRankingTrial(this RankSceneComponent self)
-        {
-            DateTime dateTime = TimeHelper.DateTimeNow();
-            if ((self.DomainZone() == 190) && dateTime.Year == 26 && dateTime.Month == 12 && dateTime.Day == 30)
-            {
-                self.DBRankInfo.rankingTrial.Clear();
-                Log.Warning("self.DBRankInfo.rankingTrial.Clear");
-            }
-        }
-
-        public static void OnHour12Update(this RankSceneComponent self)
-        {
-            DateTime dateTime = TimeHelper.DateTimeNow();
-            
-            self.UpdateWorldLv();
-            self.BroadcastWorldLv().Coroutine();
-        }
-
-        public static void OnZeroClockUpdate(this RankSceneComponent self)
+        public static void OnDailyReset(this RankSceneComponent self)
         {
             //Console.WriteLine($"RankSceneComponent.OnZeroClockUpdate:  {self.DomainZone()} {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}");
-
-            //更新服务器拍卖行数据
             //TimeHelper. self.OpenServiceTime
-            self.UpdateExchangeGold(DBHelper.GetOpenServerDay(self.DomainZone()));
+            self.UpdateWorldLv();
             self.SendCombatReward().Coroutine();
             self.SendPetReward().Coroutine();
             self.SendTrialReward().Coroutine();
             self.SendSeasonTowerReward().Coroutine();
             self.BroadcastWorldLv(1).Coroutine();
-        }
-
-        //更新兑换金币
-        public static void UpdateExchangeGold(this RankSceneComponent self, int dayTime)
-        {
-            int duihuan_baseGold = 1500;       //基础兑换值
-            float duihuanPro = 0.05f;
-            //最多计算20天后的物价
-            if (dayTime > 30)
-            {
-                dayTime = 30;
-            }
-
-            //计算物价
-            int duihuanDay = dayTime;
-            if (duihuanDay >= 30) {
-                duihuanDay = 30;
-            }
-            duihuanPro = duihuanPro * duihuanDay;
-            /*
-            if (dayTime > 0 && dayTime <= 7)
-            {
-                duihuanPro = duihuanPro * dayTime;
-            }
-
-            //计算物价
-            if (dayTime > 7 && dayTime <= 18)
-            {
-                duihuanPro = 7 * 0.05f + (dayTime - 7) * 0.1f;
-            }
-
-            //计算物价
-            if (dayTime > 18)
-            {
-                duihuanPro = 7 * 0.15f + 11 * 0.1f + (dayTime - 18) * 0.05f;
-            }
-            */
-
-            int nowDuiHuanGold = (int)(duihuan_baseGold + duihuan_baseGold * duihuanPro);
-
-            //随机值5%浮动
-            Random random = new Random();
-            float duihuan_randomValue = random.Next(10);
-            duihuan_randomValue = duihuan_randomValue / 100f;
-            if (duihuan_randomValue >= 0.1f) {
-                duihuan_randomValue = 0.1f;
-            }
-            int duihuan_nowGold = (int)((float)nowDuiHuanGold * (0.95f + duihuan_randomValue));
-
-            Log.Info("今日货币兑换值:" + duihuan_nowGold + " dayTime = " + dayTime);
-            //最低不能低于昨天的兑换值
-            if (duihuan_nowGold >= self.DBServerInfo.ServerInfo.ExChangeGold)
-            {
-                if (duihuan_nowGold < 500)
-                {
-                    duihuan_nowGold = 500;
-                }
-                self.DBServerInfo.ServerInfo.ExChangeGold = duihuan_nowGold;
-                Log.Info("更新货币兑换值:" + self.DBServerInfo.ServerInfo.ExChangeGold);
-            }
         }
 
         public static async ETTask InitDBRankInfo(this RankSceneComponent self)

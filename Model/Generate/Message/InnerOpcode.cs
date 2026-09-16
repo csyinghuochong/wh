@@ -54,7 +54,7 @@ namespace ET
 		 public const ushort R2G_GetLoginGateKey = 20051;
 		 public const ushort G2R_GetLoginGateKey = 20052;
 		 public const ushort G2M_SessionDisconnect = 20053;
-		 public const ushort G2M_ActivityUpdate = 20054;
+		 public const ushort InnerReserved_20054 = 20054;
 		 public const ushort A2Other_ActivityUpdateRequest = 20055;
 		 public const ushort Other2A_ActivityUpdateResponse = 20056;
 		 public const ushort A2Other_ServerMessageRequest = 20057;
@@ -205,5 +205,8 @@ namespace ET
 		 public const ushort Mail2M_SendServerMailItem = 20202;
 		 public const ushort G2Mail_EnterMail = 20203;
 		 public const ushort Mail2G_EnterMail = 20204;
+		 public const ushort A2Other_DailyResetRequest = 20205;
+		 public const ushort Other2A_DailyResetResponse = 20206;
+		 public const ushort G2M_DailyReset = 20207;
 	}
 }

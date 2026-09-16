@@ -282,7 +282,7 @@ namespace ET
             return ErrorCode.ERR_Success;
         }
 
-        public static void OnZeroClockUpdate(this UnionSceneComponent self)
+        public static void OnDailyReset(this UnionSceneComponent self)
         {
             self.DBUnionManager.rankingDonation.Clear();
             self.UnionBossList.Clear();

@@ -12,7 +12,7 @@ namespace ET
         /// <summary>
         /// resetType 初始化 1 登录检测  2 在线推送
         /// </summary>
-        public static void RunDailyReset(Unit unit, int resetType)
+        public static void OnDailyReset(Unit unit, int resetType)
         {
             if (unit == null || unit.IsDisposed)
             {
@@ -20,27 +20,23 @@ namespace ET
             }
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+            RoleDailyDataComponentServer roleDailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+            bool notice = resetType == 2;
 
-            unit.GetComponent<RoleDailyDataComponentServer>().OnDailyReset(resetType == 2);
-           
-            unit.GetComponent<ActivityComponentServer>().OnDailyReset(roleInfo.Lv);
-
-            TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
-   
-            taskComponentServer.OnDailyReset(resetType);
-
-            unit.GetComponent<HomeComponentServer>().OnDailyReset(resetType == 2);
-            unit.GetComponent<DataCollationComponent>().OnDailyReset(resetType == 2);
+            roleDailyData.OnDailyReset();
+            unit.GetComponent<ActivityComponentServer>().OnDailyReset(roleInfoComponentServer.RoleInfo.Lv);
+            unit.GetComponent<TaskComponentServer>().OnDailyReset(resetType);
+            unit.GetComponent<HomeComponentServer>().OnDailyReset(notice);
+            unit.GetComponent<DataCollationComponent>().OnDailyReset(notice);
 
             // 日清列表已在 RoleDailyData.OnDailyReset 清过；这里只做 RoleInfo 其它跨天逻辑
-            //LastLoginTime 放在最后执行 防止其他有地方用到
-            roleInfoComponentServer.OnDailyReset(resetType == 2);
+            // LastLoginTime 放在最后执行 防止其他有地方用到
+            roleInfoComponentServer.OnDailyReset(notice);
 
             // 在线日清：用 M2C_RoleDailyDataUpdate 替代 NumericType.ZeroClock
-            if (resetType == 2)
+            if (notice)
             {
-                unit.GetComponent<RoleDailyDataComponentServer>().NotifyUpdate(RoleDailyDataComponentServer.ReasonZeroClock);
+                roleDailyData.NotifyUpdate(RoleDailyDataComponentServer.ReasonZeroClock);
             }
         }
 
@@ -61,7 +57,7 @@ namespace ET
             if (lastLoginTime == 0)
             {
                 Log.Debug($"OnDailyReset [数据初始化]: {unit.Id}");
-                RunDailyReset(unit, 0);
+                OnDailyReset(unit, 0);
                 return;
             }
 
@@ -77,7 +73,7 @@ namespace ET
                     unit.GetComponent<TaskComponentServer>().OnWeeklyReset(false);
                 }
 
-                RunDailyReset(unit, 1);
+                OnDailyReset(unit, 1);
             }
             else
             {

@@ -918,18 +918,15 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.G2M_ActivityUpdate)]
+	[Message(InnerOpcode.InnerReserved_20054)]
 	[ProtoContract]
-	public partial class G2M_ActivityUpdate: Object, IActorLocationMessage
+	public partial class InnerReserved_20054: Object, IActorLocationMessage
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
 
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ActivityType { get; set; }
 
 	}
 
@@ -3777,4 +3774,49 @@ namespace ET
 	}
 
 //Mail  end####################################################
+
+	[ResponseType(nameof(Other2A_DailyResetResponse))]
+	[Message(InnerOpcode.A2Other_DailyResetRequest)]
+	[ProtoContract]
+	public partial class A2Other_DailyResetRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int OpenDay { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Other2A_DailyResetResponse)]
+	[ProtoContract]
+	public partial class Other2A_DailyResetResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[Message(InnerOpcode.G2M_DailyReset)]
+	[ProtoContract]
+	public partial class G2M_DailyReset: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+//DailyReset  end####################################################
 }

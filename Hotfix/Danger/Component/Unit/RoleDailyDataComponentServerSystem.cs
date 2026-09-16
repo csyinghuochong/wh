@@ -31,7 +31,7 @@ namespace ET
             self.PersonalRandomShops ??= new Dictionary<int, List<ShopGoodsItem>>();
         }
 
-        public static void OnDailyReset(this RoleDailyDataComponentServer self, bool notice = false)
+        public static void OnDailyReset(this RoleDailyDataComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
             if (unit == null || unit.Type != UnitType.Player)

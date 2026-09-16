@@ -9,7 +9,8 @@ namespace ET
     [BsonIgnoreExtraElements]
 	public class DBDayActivityInfo : Entity, IAwake
 	{
-		public int LastHour;
+		/// <summary>上次日清触发的服务器时间（跨 Global_Reset_Time 判定）。</summary>
+		public long LastDailyResetTime;
 		
 
         /// <summary>
