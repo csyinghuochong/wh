@@ -10,7 +10,7 @@ namespace ET
     /// 1) 职业初始 + 装备
     /// 2) 六维加点 → 战斗分项
     /// 3) 体 → 生命上限固定值
-    /// 4) 骑乘中按坐骑等级叠加 Mount_Speed
+    /// 4) 坐骑列表按骑乘/非骑乘比例叠加
     /// </summary>
     public static class UnitStaticAttrBuilder
     {
@@ -24,26 +24,21 @@ namespace ET
             int[] pointValues = CalcTotalPointValues(numeric, roleInfo.Lv);
             MergePointConvertAttrs(pointValues, dic);
             MergeBodyHpFixed(roleInfo, roleInfo.Lv, pointValues, dic);
-            MergeRideMountSpeed(unit, dic);
+            MergeMountAttributes(unit, dic);
 
             return dic;
         }
 
-        /// <summary>骑乘中按坐骑当前等级叠加 Mount_Speed 移动速度。</summary>
-        static void MergeRideMountSpeed(Unit unit, Dictionary<int, long> dic)
+        /// <summary>MountComponent 坐骑列表：骑乘中的坐骑用骑乘比例，其余用非骑乘比例。</summary>
+        static void MergeMountAttributes(Unit unit, Dictionary<int, long> dic)
         {
-            MountInfo ride = unit.GetComponent<MountComponentServer>()?.GetRideMount();
-            if (ride == null)
+            MountComponentServer mountComponent = unit.GetComponent<MountComponentServer>();
+            if (mountComponent == null)
             {
                 return;
             }
 
-            int lv = ride.MountLv <= 0 ? 1 : ride.MountLv;
-            int speed = MountHelper.GetSpeedByLv(lv);
-            if (speed > 0)
-            {
-                AttrConfigManager.MergeAttributeValue(NumericType.Speed_Fixed_16, speed, dic);
-            }
+            MountHelper.MergeMountListAttributes(mountComponent.GetAllMounts(), dic);
         }
 
         /// <summary>职业初始属性 + 当前装备属性。</summary>

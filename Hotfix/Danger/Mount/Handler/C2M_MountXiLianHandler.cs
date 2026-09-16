@@ -71,6 +71,7 @@ namespace ET
 
             bag.OnCostItemData($"{bagInfo.ItemID};{costNum}", (ItemLocType)bagInfo.Loc, ItemGetWay.ItemXiLian);
             mountComponentServer.NotifyMountUpdate(mountInfo);
+            mountComponentServer.RefreshPlayerMountAttrs();
             response.MountInfo = mountInfo;
             reply();
             await ETTask.CompletedTask;

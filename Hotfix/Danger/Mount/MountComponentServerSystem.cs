@@ -145,6 +145,7 @@ namespace ET
                 MessageHelper.SendToClient(unit, update);
             }
 
+            self.RefreshPlayerMountAttrs();
             if (Log.IsDebugEnabled)
             {
                 Log.Debug($"AddMount: unitid:{unit.Id} configId:{configId} getWay:{getWay}");
@@ -295,20 +296,23 @@ namespace ET
 
             MountHelper.AddAptitudeByLevel(mountInfo, mountInfo.MountLv - oldLv);
             MountHelper.ApplyAptitudeAttributes(mountInfo);
-            if (self.GetRideMount()?.Id == mountInfo.Id)
+            if (self.GetRideMount()?.Id == mountInfo.Id
+                && MountHelper.IsMountModelChanged(mountInfo.ConfigId, oldLv, mountInfo.MountLv))
             {
-                if (MountHelper.IsMountModelChanged(mountInfo.ConfigId, oldLv, mountInfo.MountLv))
-                {
-                    self.BroadcastRide();
-                }
-                else
-                {
-                    self.RefreshRideSpeed();
-                }
+                self.BroadcastRide();
+            }
+            else
+            {
+                self.RefreshPlayerMountAttrs();
             }
         }
 
         public static void RefreshRideSpeed(this MountComponentServer self)
+        {
+            self.RefreshPlayerMountAttrs();
+        }
+
+        public static void RefreshPlayerMountAttrs(this MountComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
             if (unit?.GetComponent<NumericComponent>() == null)
