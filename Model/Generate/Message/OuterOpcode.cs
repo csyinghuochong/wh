@@ -576,6 +576,7 @@ namespace ET
 		 public const ushort M2C_VipPrivilegeClaimResponse = 10573;
 		 public const ushort C2M_VipGiftBuyRequest = 10574;
 		 public const ushort M2C_VipGiftBuyResponse = 10575;
-		 public const ushort M2C_UpdateVersion = 10576;
+		 public const ushort M2C_ActivityInfoUpdate = 10576;
+		 public const ushort M2C_UpdateVersion = 10577;
 	}
 }

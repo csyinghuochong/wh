@@ -24,7 +24,7 @@ namespace ET
             bool notice = resetType == 2;
 
             roleDailyData.OnDailyReset();
-            unit.GetComponent<ActivityComponentServer>().OnDailyReset(roleInfoComponentServer.RoleInfo.Lv);
+            unit.GetComponent<ActivityComponentServer>().OnDailyReset(roleInfoComponentServer.RoleInfo.Lv, notice);
             unit.GetComponent<TaskComponentServer>().OnDailyReset(resetType);
             unit.GetComponent<HomeComponentServer>().OnDailyReset(notice);
             unit.GetComponent<DataCollationComponent>().OnDailyReset(notice);

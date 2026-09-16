@@ -25,7 +25,7 @@ namespace ET
         {
         }
 
-        public static void OnDailyReset(this ActivityComponentServer self, int level)
+        public static void OnDailyReset(this ActivityComponentServer self, int level, bool notice = false)
         {
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
@@ -57,6 +57,30 @@ namespace ET
             for (int i = self.ActivityReceiveIds.Count - 1; i >= 0; i--)
             {
             }
+
+            if (notice)
+            {
+                self.NotifyUpdate();
+            }
+        }
+
+        public static void NotifyUpdate(this ActivityComponentServer self)
+        {
+            Unit unit = self.GetParent<Unit>();
+            if (unit == null || unit.GetComponent<UnitGateComponent>() == null)
+            {
+                return;
+            }
+
+            ActivityInfo src = self.ActivityInfo ?? new ActivityInfo();
+            MessageHelper.SendToClient(unit, new M2C_ActivityInfoUpdate()
+            {
+                ActivityInfo = new ActivityInfo()
+                {
+                    SignInLoginDays = src.SignInLoginDays,
+                    SignInReceivedId = src.SignInReceivedId,
+                },
+            });
         }
 
         public static void ClearJieRiActivty(this ActivityComponentServer self)

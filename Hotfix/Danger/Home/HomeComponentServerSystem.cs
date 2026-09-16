@@ -18,25 +18,11 @@ namespace ET
 
 
 
-        public static void CheckDaShiPro(this HomeComponentServer self)
-        {
-        }
-
-
         public static void OnGmGaoJi(this HomeComponentServer self)
         {
 
         }
 
-        public static bool IsMyHome(this HomeComponentServer self, long selfId)
-        {
-#if !SERVER
-            return self.MasterId == selfId;
-#else
-            return false;
-#endif
-
-        }
 
         /// <summary>
         /// 老的农场作物 过了24个小时自动去掉
@@ -171,48 +157,12 @@ namespace ET
         /// </summary>
         /// <param name="self"></param>
         public static void OnDailyReset(this HomeComponentServer self, bool notice)
-        {
-            self.UpdatePlanGoodList();
-            self.UpdatePurchaseItemList(notice);
-            self.CheckDaShiPro();
-        }
-
-
-        public static void UpdatePlanGoodList(this HomeComponentServer self)
-        {
+        { 
 
         }
 
-        /// <summary>
-        /// 整点刷新
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="hour_1"></param>
-        /// <param name="hour_2"></param>
-        public static void OnHourUpdate(this HomeComponentServer self, int hour_1, bool notice)
-        {
-#if SERVER
-            ///收购12点刷新
-            if (hour_1 == 12)
-            {
-                self.UpdatePurchaseItemList(true);
-            }
-            if (hour_1 == 6 || hour_1 == 12 || hour_1 == 18)
-            {
-                self.UpdatePlanGoodList();
-            }
-#endif
-        }
 
-        public static void UpdatePurchaseItemList_2(this HomeComponentServer self)
-        {
 
-        }
-
-        public static void UpdatePurchaseItemList(this HomeComponentServer self, bool notice)
-        {
-
-        }
 
         public static void UprootPasture(this HomeComponentServer self, long unitid)
         {

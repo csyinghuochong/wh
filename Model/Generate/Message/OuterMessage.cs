@@ -11123,6 +11123,18 @@ namespace ET
 	}
 
 //VIP  end####################################################
+	[Message(OuterOpcode.M2C_ActivityInfoUpdate)]
+	[ProtoContract]
+	public partial class M2C_ActivityInfoUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public ActivityInfo ActivityInfo { get; set; }
+
+	}
+
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后
