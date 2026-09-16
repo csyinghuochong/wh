@@ -1,8 +1,31 @@
 namespace ET
 {
+    [ObjectSystem]
+    public class RechargeComponentAwakeSystem : AwakeSystem<RechargeComponentServer>
+    {
+        public override void Awake(RechargeComponentServer self)
+        {
+            self.InitRechargePro();
+        }
+    }
+
+    [ObjectSystem]
+    public class RechargeComponentDeserializeSystem : DeserializeSystem<RechargeComponentServer>
+    {
+        public override void Deserialize(RechargeComponentServer self)
+        {
+            self.InitRechargePro();
+        }
+    }
 
     public static class RechargeComponentServerSystem
     {
+        /// <summary>仅 Awake / Deserialize 调用，业务接口不要再补列表。</summary>
+        public static void InitRechargePro(this RechargeComponentServer self)
+        {
+            self.RechargePro ??= new RechargePro();
+            VipHelp.EnsureLists(self.RechargePro);
+        }
 
         public static bool HasFirstBuy(this RechargeComponentServer self, int payId)
         {
@@ -29,9 +52,6 @@ namespace ET
             {
                 return;
             }
-
-            self.RechargePro ??= new RechargePro();
-            VipHelp.EnsureLists(self.RechargePro);
 
             MessageHelper.SendToClient(unit, new M2C_RechargeUpdate()
             {

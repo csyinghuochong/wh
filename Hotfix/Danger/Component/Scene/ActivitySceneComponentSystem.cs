@@ -81,73 +81,9 @@ namespace ET
             self.CheckIndex += 1000;
             if (self.CheckIndex >= TimeHelper.Minute * 5)
             {
-                self.CheckPetMine();
                 self.SaveDB();
                 self.CheckIndex = 0;
             }
-
-            //self.TeamUpdateHandler().Coroutine();
-        }
-
-
-        public static void CheckPetMine(this ActivitySceneComponent self)
-        {
-#if false // TODO: migrate to LD config
-            {
-                int openDay = ServerHelper.GetOpenServerDay(false, self.DomainZone());
-
-                List<PetMingPlayerInfo> petMingPlayers = self.DBDayActivityInfo.PetMingList;
-
-                Dictionary<long, long> playerLimitList = new Dictionary<long, long>();
-                for (int i = 0; i < petMingPlayers.Count; i++)
-                {
-                    MineBattleConfig mineBattleConfig = MineBattleConfigCategory.Instance.Get(petMingPlayers[i].MineType);
-                    int chanchu = mineBattleConfig.ChanChuLimit;
-
-                    if (!playerLimitList.ContainsKey(petMingPlayers[i].UnitId))
-                    {
-                        playerLimitList.Add(petMingPlayers[i].UnitId, 0);
-                    }
-                    playerLimitList[petMingPlayers[i].UnitId] += chanchu;
-                }
-
-                for (int i = 0; i < petMingPlayers.Count; i++)
-                {
-                    long playerLimit = playerLimitList[petMingPlayers[i].UnitId];
-
-                    float coffi = CommonHelper.GetMineCoefficient(openDay, petMingPlayers[i].MineType, petMingPlayers[i].Postion, self.DBDayActivityInfo.PetMingHexinList);
-
-                    MineBattleConfig mineBattleConfig = MineBattleConfigCategory.Instance.Get(petMingPlayers[i].MineType);
-                    int chanchu = (int)(mineBattleConfig.GoldOutPut * coffi * (self.CheckIndex * 1f/ TimeHelper.Hour));
-
-                    if (!self.DBDayActivityInfo.PetMingChanChu.ContainsKey(petMingPlayers[i].UnitId))
-                    {
-                        self.DBDayActivityInfo.PetMingChanChu.Add(petMingPlayers[i].UnitId, chanchu);
-                    }
-                    else
-                    {
-                        long oldValue = self.DBDayActivityInfo.PetMingChanChu[petMingPlayers[i].UnitId];
-                        oldValue += chanchu;
-                        oldValue = Math.Min(oldValue, playerLimit);
-
-                        self.DBDayActivityInfo.PetMingChanChu[petMingPlayers[i].UnitId] = oldValue;
-                    }
-                }
-            }
-#endif
-        }
-
-        public static async ETTask TeamUpdateHandler(this ActivitySceneComponent self)
-        {
-            DateTime dateTime = TimeHelper.DateTimeNow();
-
-            //if (dateTime.Year == 24 && dateTime.Month == 1 && dateTime.Day == 5 && dateTime.Hour == 15 && dateTime.Minute == 19)
-            //{
-
-            //    A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-            //             (DBHelper.GetRankServerId(self.DomainZone()), new A2A_ActivityUpdateRequest() { Hour = 16, OpenDay = 1 });
-            //}
-            await ETTask.CompletedTask;
         }
 
         public static async ETTask InitDayActivity(this ActivitySceneComponent self)
@@ -403,14 +339,13 @@ namespace ET
                         (self.MapIdList[i], new A2Other_ActivityUpdateRequest() { Hour = hour, OpenDay = openServerDay });
             }
 
-            //五点刷新商店 开启 活动定时器
-            if (hour == 5)
+            // 日清点刷新商店、开启活动定时器（Global_Reset_Time，默认 5 点）
+            if (hour == ActivityHelper.GetDailyResetHour())
             {
                 LogHelper.LogWarning($"全服随机商店刷新: {self.DomainZone()}", true);
                 self.InitGlobalRandomShop();
                 self.InitFunctionButton();
             }
-       
         }
     }
 }

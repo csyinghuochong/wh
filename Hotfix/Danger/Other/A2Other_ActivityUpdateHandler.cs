@@ -22,13 +22,7 @@ namespace ET
                     {
                         PrintAllEntity();
                     }
-                    
-                    if (CommonHelper.IsInnerNet())
-                    {
-                        //TestSmss(scene).Coroutine();
-                        //TestSmssNew(scene).Coroutine();
-                    }
-
+                 
                     Player[] players = scene.GetComponent<PlayerComponent>().GetAll();
                     for (int i = 0; i < players.Length; i++)
                     {
@@ -39,41 +33,9 @@ namespace ET
                         ActorLocationSenderComponent.Instance.Send(players[i].UnitId, new G2M_ActivityUpdate() { ActivityType = hour });
                     }
 
-
-                    if (request.Hour == 23 && scene.DomainZone() == 3)
-                    {
-                        //打印所有拍卖大于特定值
-                        string command = "paimai2 0 50000000";
-                        Console.WriteLine(command);
-                        Game.EventSystem.Publish(new EventType.GMCommonRequest() { Context = command });
-
-                        //清理今日拍卖
-                        string filePath = "../Logs/WJ_PaiMai.txt";
-                        LogHelper.WriteLogList(new List<string>() { "" }, filePath, false);
-
-                        //清理聊天记录
-                        //string filePath_2 = "../Logs/WJ_Chat.txt";
-                        //LogHelper.WriteLogList(new List<string>() { "" }, filePath_2, false);
-                    }
-                  
                     break;
                 case SceneType.Map:
-                    //Log.Console($"{scene.Name}  {scene.DomainZone()}  request.FunctionType: {request.FunctionId} {request.FunctionType}");
-                    if (request.FunctionId == 1057 && request.FunctionType == 1)
-                    {
-                        
-                    }
-                    if (request.FunctionId == 1057 && request.FunctionType == 2)
-                    {
-                        List<Unit> units = UnitHelper.GetUnitList(scene, UnitType.Npc);
-                        for (int i = units.Count - 1; i >= 0; i--)
-                        {
-                            if (units[i].ConfigId >= 20099007 && units[i].ConfigId <= 20099010)
-                            {
-                                scene.GetComponent<UnitComponent>().Remove(units[i].Id);
-                            }
-                        }
-                    }
+                   
                     break;
                 case SceneType.Rank:
                     //Log.Console($"排行榜定时刷新: {scene.DomainZone()} {hour}");
@@ -91,21 +53,6 @@ namespace ET
                         //Log.Console("OnShowLieBegin");
                         Log.Warning("OnShowLieBegin");
                         scene.GetComponent<RankSceneComponent>().OnShowLieBegin();
-                    }
-                    if (request.FunctionId == 1052 && request.FunctionType == 2)
-                    {
-                        //Log.Console("OnShowLieOver");
-                        Log.Warning("OnShowLieOver");
-                    }
-                    if (request.FunctionId == 1044 && request.FunctionType == 2)
-                    {
-                        //Log.Console("RankSceneComponent.OnUnionRaceOver");
-                        scene.GetComponent<RankSceneComponent>().OnUnionRaceOver().Coroutine();
-                    }
-                    if (request.FunctionId == 1059 && request.FunctionType == 2)
-                    {
-                        Log.Warning("RankSceneComponent.OnDemonOver");
-                        scene.GetComponent<RankSceneComponent>().OnDemonOver().Coroutine();
                     }
                     break;
                 case SceneType.FubenWork:
@@ -199,27 +146,7 @@ namespace ET
                     }
                     break;
                 case SceneType.Realm:
-
                     Log.Error($"SceneType.Realm -1");
-
-                    /*if (hour == 0 && self.DomainZone() == 3) //通知中心服
-                    {
-                        Console.WriteLine($"通知中心服:  {hour}");
-                        long centerid = DBHelper.GetRealmCenter();
-                        A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                                (centerid, new A2A_ActivityUpdateRequest() { Hour = hour });
-                    }
-                    if ((hour == 0 || hour == 21) && self.DomainZone() == 3) //通知账号中心服
-                    {
-                        Console.WriteLine($"通知账号中心服:  {hour}");
-                        long centerid = DBHelper.GetRealmCenter();
-                        A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                                (centerid, new A2A_ActivityUpdateRequest() { Hour = hour });
-                    }*/
-                    
-                    ///可以移动到CenterServerComponent
-                    //if (hour == 0)
-                   
                     break;
                 default:
                     break;

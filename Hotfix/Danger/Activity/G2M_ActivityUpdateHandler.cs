@@ -10,20 +10,15 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, G2M_ActivityUpdate message)
         {
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            switch (message.ActivityType)
+            if (message.ActivityType == ActivityHelper.GetDailyResetHour())
             {
-                case 5:
-                    Console.WriteLine($"OnDailyReset [日清]: {unit.Id}");
-                    if (ActivityHelper.IsGameWeekResetDay(TimeHelper.ServerNow()))
-                    {
-                        unit.GetComponent<TaskComponentServer>().OnWeeklyReset(true);
-                    }
+                Console.WriteLine($"OnDailyReset [日清]: {unit.Id}");
+                if (ActivityHelper.IsGameWeekResetDay(TimeHelper.ServerNow()))
+                {
+                    unit.GetComponent<TaskComponentServer>().OnWeeklyReset(true);
+                }
 
-                    PlayerDailyResetHelper.RunDailyReset(unit, 2);
-                    break;
-                default:
-                    break;
+                PlayerDailyResetHelper.RunDailyReset(unit, 2);
             }
    
             await ETTask.CompletedTask;

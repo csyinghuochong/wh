@@ -21,14 +21,7 @@ namespace ET
 
         public static RechargePro GetPro(Unit unit)
         {
-            RechargeComponentServer recharge = unit?.GetComponent<RechargeComponentServer>();
-            if (recharge == null)
-            {
-                return null;
-            }
-
-            recharge.RechargePro ??= new RechargePro();
-            return recharge.RechargePro;
+            return unit?.GetComponent<RechargeComponentServer>()?.RechargePro;
         }
 
         public static LDVIP GetConfig(int vipLevel)

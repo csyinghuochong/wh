@@ -2,7 +2,7 @@
 
 namespace ET
 {
-    public class RechargeComponentServer : Entity, IAwake, ITransfer, IUnitCache
+    public class RechargeComponentServer : Entity, IAwake, ITransfer, IUnitCache, IDeserialize
     {
 
         public RechargePro RechargePro = new RechargePro();
