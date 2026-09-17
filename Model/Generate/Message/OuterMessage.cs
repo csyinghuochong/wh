@@ -4097,38 +4097,6 @@ namespace ET
 
 	}
 
-//邀请组队
-	[ResponseType(nameof(T2C_TeamRobotResponse))]
-	[Message(OuterOpcode.C2T_TeamRobotRequest)]
-	[ProtoContract]
-	public partial class C2T_TeamRobotRequest: Object, ITeamActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.T2C_TeamRobotResponse)]
-	[ProtoContract]
-	public partial class T2C_TeamRobotResponse: Object, ITeamActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_FindNearMonsterResponse))]
 	[Message(OuterOpcode.C2M_FindNearMonsterRequest)]
 	[ProtoContract]
@@ -5127,47 +5095,6 @@ namespace ET
 // 1=全量 2=仅商店限购 3=零点清空后全量
 		[ProtoMember(3)]
 		public int Reason { get; set; }
-
-	}
-
-// ========== 每日签到 Activity_Sign_In（ActivityId=101）==========
-	[ResponseType(nameof(M2C_ActivitySignInListResponse))]
-	[Message(OuterOpcode.C2M_ActivitySignInListRequest)]
-	[ProtoContract]
-	public partial class C2M_ActivitySignInListRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ActivityId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ActivitySignInListResponse)]
-	[ProtoContract]
-	public partial class M2C_ActivitySignInListResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<int> SignInIds = new List<int>();
-
-		[ProtoMember(2)]
-		public int SignInLoginDays { get; set; }
-
-		[ProtoMember(3)]
-		public int SignInReceivedId { get; set; }
 
 	}
 
@@ -6616,6 +6543,60 @@ namespace ET
 
 		[ProtoMember(2)]
 		public int SignInReceivedId { get; set; }
+
+	}
+
+// ========== 每日签到 Activity_Sign_In（ActivityId=101）==========
+	[ResponseType(nameof(M2C_ActivitySignInListResponse))]
+	[Message(OuterOpcode.C2M_ActivitySignInListRequest)]
+	[ProtoContract]
+	public partial class C2M_ActivitySignInListRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ActivityId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ActivitySignInListResponse)]
+	[ProtoContract]
+	public partial class M2C_ActivitySignInListResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<int> SignInIds = new List<int>();
+
+		[ProtoMember(2)]
+		public int SignInLoginDays { get; set; }
+
+		[ProtoMember(3)]
+		public int SignInReceivedId { get; set; }
+
+	}
+
+// 在线日清：活动信息推送（签到登录天数等）
+	[Message(OuterOpcode.M2C_ActivityInfoUpdate)]
+	[ProtoContract]
+	public partial class M2C_ActivityInfoUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public ActivityInfo ActivityInfo { get; set; }
 
 	}
 
@@ -11123,18 +11104,6 @@ namespace ET
 	}
 
 //VIP  end####################################################
-	[Message(OuterOpcode.M2C_ActivityInfoUpdate)]
-	[ProtoContract]
-	public partial class M2C_ActivityInfoUpdate: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public ActivityInfo ActivityInfo { get; set; }
-
-	}
-
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

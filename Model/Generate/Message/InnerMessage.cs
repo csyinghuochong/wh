@@ -918,18 +918,6 @@ namespace ET
 
 	}
 
-	[Message(InnerOpcode.InnerReserved_20054)]
-	[ProtoContract]
-	public partial class InnerReserved_20054: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
 	[ResponseType(nameof(Other2A_ActivityUpdateResponse))]
 	[Message(InnerOpcode.A2Other_ActivityUpdateRequest)]
 	[ProtoContract]
@@ -3774,7 +3762,8 @@ namespace ET
 	}
 
 //Mail  end####################################################
-
+//DailyReset begin####################################################
+// 日清：ActivityScene 跨 Global_Reset_Time 后通知各服，与活动开关 A2Other_ActivityUpdateRequest 分离
 	[ResponseType(nameof(Other2A_DailyResetResponse))]
 	[Message(InnerOpcode.A2Other_DailyResetRequest)]
 	[ProtoContract]

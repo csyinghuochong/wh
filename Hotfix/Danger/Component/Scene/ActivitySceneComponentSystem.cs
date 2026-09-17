@@ -316,7 +316,7 @@ namespace ET
         {
             await TimerComponent.Instance.WaitAsync(TimeHelper.Second * 10 + self.DomainZone());
 
-            int createRobotNumber = 10;
+            int createRobotNumber = 5;
             long robotSceneId = DBHelper.GetRobotServerId();
             MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = NoticeType.CreateRobot, Message = $"1#{createRobotNumber}" });
         }

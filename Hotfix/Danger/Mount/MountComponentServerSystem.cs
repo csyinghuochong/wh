@@ -145,7 +145,8 @@ namespace ET
                 MessageHelper.SendToClient(unit, update);
             }
 
-            self.RefreshPlayerMountAttrs();
+            // 创角 OnInit 传 notice=false：此时尚未挂 UnitGateComponent，不能推属性
+            self.RefreshPlayerMountAttrs(notice);
             if (Log.IsDebugEnabled)
             {
                 Log.Debug($"AddMount: unitid:{unit.Id} configId:{configId} getWay:{getWay}");
@@ -312,7 +313,7 @@ namespace ET
             self.RefreshPlayerMountAttrs();
         }
 
-        public static void RefreshPlayerMountAttrs(this MountComponentServer self)
+        public static void RefreshPlayerMountAttrs(this MountComponentServer self, bool notice = true)
         {
             Unit unit = self.GetParent<Unit>();
             if (unit?.GetComponent<NumericComponent>() == null)
@@ -320,7 +321,7 @@ namespace ET
                 return;
             }
 
-            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+            Function_Fight.UnitUpdateProperty_Base(unit, notice, true);
             unit.GetComponent<MoveComponent>()?.ChangeSpeed(unit.GetSpeedNow());
         }
 

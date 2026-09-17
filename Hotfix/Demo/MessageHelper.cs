@@ -172,7 +172,7 @@ namespace ET
                 return;
             }
             UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            if (unitGateComponent.PlayerState != PlayerState.Game)
+            if (unitGateComponent == null || unitGateComponent.PlayerState != PlayerState.Game)
             {
                 return;
             }
@@ -195,7 +195,7 @@ namespace ET
                 return;
             }
             UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            if (unitGateComponent.PlayerState != PlayerState.Game)
+            if (unitGateComponent == null || unitGateComponent.PlayerState != PlayerState.Game)
             {
                 return;
 
@@ -220,7 +220,7 @@ namespace ET
                 return;
             }
             UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            if (unitGateComponent.PlayerState != PlayerState.Game)
+            if (unitGateComponent == null || unitGateComponent.PlayerState != PlayerState.Game)
             {
                 return;
             }
