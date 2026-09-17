@@ -82,20 +82,23 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>描述</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
+		public int Name { get; set; }
+		/// <summary>描述</summary>
+		[ProtoMember(3)]
 		public int Desc { get; set; }
 		/// <summary>模式 0-累计 1-覆盖</summary>
-		[ProtoMember(3)]
+		[ProtoMember(4)]
 		public int Type { get; set; }
 		/// <summary>进度显示 0-否 1-是</summary>
-		[ProtoMember(4)]
+		[ProtoMember(5)]
 		public int Progress_Show { get; set; }
 		/// <summary>检测 道具</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public int Inspect { get; set; }
 		/// <summary>数字处理 0-否 1-是</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int Digit_Deal { get; set; }
 
 	}

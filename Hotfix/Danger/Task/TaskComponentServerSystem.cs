@@ -979,6 +979,11 @@ namespace ET
             self.NotifyCondition(TastConditionType.PlayerLv_1, rolelv);
         }
 
+        public static void OnUpdateVipLevel(this TaskComponentServer self, int vipLevel)
+        {
+            self.NotifyCondition(TastConditionType.VipLevel_5, vipLevel);
+        }
+
 
         /// <summary>
         /// 每次登录：清无效任务，缺的 Group 补建。进度只在数值变化时刷，登录不回填。

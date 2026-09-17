@@ -88,44 +88,47 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(3)]
 		public int Name { get; set; }
-		/// <summary>类型</summary>
+		/// <summary>称谓</summary>
 		[ProtoMember(4)]
+		public int Title { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(5)]
 		public int Type { get; set; }
 		/// <summary>职业</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public int Occupation { get; set; }
 		/// <summary>模型</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public string Model { get; set; }
 		/// <summary>缩放</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public double Scale { get; set; }
 		/// <summary>行为</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public string AI { get; set; }
 		/// <summary>索敌 范围</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int AI_Param1 { get; set; }
 		/// <summary>追击 范围</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int AI_Param2 { get; set; }
 		/// <summary>出生点 脱战</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int AI_Param3 { get; set; }
 		/// <summary>仇恨 切换</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int AI_Param4 { get; set; }
 		/// <summary>血条 层数</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public int Hp_Stack { get; set; }
 		/// <summary>雷达 显示</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public int Rader { get; set; }
 		/// <summary>技能组</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int[] Skill { get; set; }
 		/// <summary>属性</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public string Attribute { get; set; }
 
 	}

@@ -88,7 +88,7 @@ namespace ET
 		/// <summary>页内 排序</summary>
 		[ProtoMember(3)]
 		public int Order_SL { get; set; }
-		/// <summary>子组 0-99</summary>
+		/// <summary>子组 0-999</summary>
 		[ProtoMember(4)]
 		public int Sub_Group { get; set; }
 		/// <summary>子组 编号 0-999</summary>
@@ -133,7 +133,7 @@ namespace ET
 		/// <summary>非绑 钱币</summary>
 		[ProtoMember(18)]
 		public int Gold_2 { get; set; }
-		/// <summary>奖励选择 0-全拿 1-任选</summary>
+		/// <summary>奖励 0-全拿 1-任选</summary>
 		[ProtoMember(19)]
 		public int Reward_Option { get; set; }
 		/// <summary>共用 奖励</summary>

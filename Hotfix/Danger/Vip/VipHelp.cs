@@ -77,6 +77,8 @@ namespace ET
                 RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
                 daily?.SetVipDailyClaimed(0);
             }
+
+            unit.GetComponent<TaskComponentServer>().OnUpdateVipLevel(pro.VipLevel);
         }
 
         public static bool HasPrivilegeClaimed(RechargePro pro, int vipLevel)

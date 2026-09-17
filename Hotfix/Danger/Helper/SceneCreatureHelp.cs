@@ -162,7 +162,7 @@ namespace ET
 				string[] mondels = monsters[i].Split(';');
 				int monsterid = int.Parse(mondels[2]);
 				LDMonster ldMonster = LDMonsterCategory.Instance.Get(monsterid);
-				if (ldMonster.Type != MonsterTypeEnum.Normal ) //&& ldMonster.MonsterSonType != 55)
+				if (ldMonster.Type != MonsterTypeEnum.Normal ) 
 				{
 					continue;
 				}
