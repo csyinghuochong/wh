@@ -15,7 +15,6 @@ namespace ET
 
         public Dictionary<long, List<long>> UnionRaceUnits = new Dictionary<long, List<long>>();
 
-        public Dictionary<long, long> UnionBossList = new Dictionary<long, long>(); 
 
         public Dictionary<long, long> UnionFubens = new Dictionary<long, long>();   //fubenid->fubeninstanceid
 

@@ -62,7 +62,6 @@ namespace ET
 
         public static async ETTask InitServerInfo(this UnionSceneComponent self)
         {
-            await TimerComponent.Instance.WaitAsync( RandomHelper.RandomNumber(2000, 4000) );
             DBUnionManager dBServerInfo = await DBHelper.GetComponent<DBUnionManager>(self.DomainZone(), self.DomainZone());
             if (dBServerInfo == null)
             {
@@ -284,23 +283,9 @@ namespace ET
 
         public static void OnDailyReset(this UnionSceneComponent self)
         {
+            Console.WriteLine($"RankSceneComponent OnDailyReset");
             self.DBUnionManager.rankingDonation.Clear();
-            self.UnionBossList.Clear();
-        }
 
-        public static void OnUnionBoss(this UnionSceneComponent self)
-        {
-            foreach ((long unionid, long instanceid) in self.UnionFubens)
-            {
-                Scene scene = self.GetChild<Scene>(unionid);
-                if (scene == null)
-                {
-                    Log.Debug($"{self.DomainZone()} {unionid} scene == null");
-                    continue;
-                }
-
-                self.GenerateUnionBoss(scene, unionid);
-            }
         }
 
         public static async ETTask CheckWinUnion(this UnionSceneComponent self, Scene fubnescene, int minite)
@@ -546,39 +531,6 @@ namespace ET
             }
         }
 
-        public static void GenerateUnionBoss(this UnionSceneComponent self, Scene scene , long unionid)
-        {
-            //获取开服天数
-            int openDay = ServerHelper.GetOpenServerDay(false, self.DomainZone());
-            
-            int monsterID = 72000021;
-            //根据开服天数创建怪物
-            if (openDay >= 2)
-            {
-                monsterID = 72000022;
-            }
-            if (openDay >= 4)
-            {
-                monsterID = 72000023;
-            }
-            if (openDay >= 6)
-            {
-                monsterID = 72000024;
-            }
-            if (openDay >= 8)
-            {
-                monsterID = 72000025;
-            }
-
-            long serverTime = TimeHelper.ServerNow();
-            Vector3 initPosi = new Vector3(0f, 0.5f, 0f);
-            LDScene ldScene = LDSceneCategory.Instance.Get(2000009);
-            Unit unitMonster = UnitFactory.CreateMonster(scene, monsterID, initPosi, new CreateMonsterInfo()
-            { Camp = CampEnum.CampMonster1, MasterID = 0, AttributeParams = String.Empty });
-
-            self.UnionBossList[unionid] = serverTime;
-        }
-        
         /// <summary>
         /// 家族boss击杀
         /// </summary>
@@ -630,38 +582,6 @@ namespace ET
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
             self.UnionRaceSceneId = fubenid;
             self.UnionRaceSceneInstanceId = fubenInstanceId;    
-        }
-
-        public static long GetUnionFubenId(this UnionSceneComponent self, long unionid, long unitid)
-        {
-            //需要判读一下unitid 是否属于这个家族！
-            if (self.UnionFubens.TryGetValue(unionid, out long fubenId))
-            {
-                return fubenId;
-            }
-            int unionsceneid = 2000009;
-            long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-            Scene fubnescene = SceneFactory.Create(self, unionid, fubenInstanceId, self.DomainZone(), "Union" + unionid.ToString(), SceneType.Map);
-           
-            MapComponent mapComponent = fubnescene.GetComponent<MapComponent>();
-            mapComponent.SetMapInfo((int)MapTypeEnum.Union, unionsceneid, 0);
-            mapComponent.NavMeshId = LDSceneCategory.Instance.Get(unionsceneid).GetNavMeshId();
-            Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
-            TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
-            self.UnionFubens.TryAdd(unionid, fubenInstanceId);
-
-            if (!self.UnionBossList.ContainsKey(unionid))
-            {
-                DateTime dateTime = TimeHelper.DateTimeNow();
-                long curTime = (dateTime.Hour * 60 + dateTime.Minute) * 60 + dateTime.Second;
-                long openTime = FunctionHelp.BossOpenTime();
-                if (curTime >= openTime && curTime <= openTime + 300)
-                {
-                    self.GenerateUnionBoss(fubnescene, unionid);
-                }
-            }
-           
-            return fubenInstanceId;
         }
 
         public static  void SaveDB(this UnionSceneComponent self)

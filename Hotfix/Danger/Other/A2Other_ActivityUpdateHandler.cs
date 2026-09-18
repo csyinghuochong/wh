@@ -39,18 +39,6 @@ namespace ET
                     break;
                 case SceneType.Union:
                     LogHelper.LogWarning($"Union活动刷新: {scene.DomainZone()} FunctionId: {request.FunctionId}", true);
-                    if (request.FunctionId == 1043 && request.FunctionType == 1)
-                    {
-                        scene.GetComponent<UnionSceneComponent>().OnUnionBoss();
-                    }
-                    if (request.FunctionId == 1044 && request.FunctionType == 1)
-                    {
-                        scene.GetComponent<UnionSceneComponent>().OnUnionRaceBegin().Coroutine();
-                    }
-                    if (request.FunctionId == 1044 && request.FunctionType == 2)
-                    {
-                        //scene.GetComponent<UnionSceneComponent>().OnUnionRaceOver().Coroutine();
-                    }
                     break;
                 case SceneType.FubenCenter:
                     if (request.FunctionId > 0 && request.FunctionType == 1)

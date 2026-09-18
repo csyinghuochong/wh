@@ -146,6 +146,7 @@ namespace ET
 
         public static void OnDailyReset(this RankSceneComponent self)
         {
+            Console.WriteLine($"RankSceneComponent OnDailyReset");
             //Console.WriteLine($"RankSceneComponent.OnZeroClockUpdate:  {self.DomainZone()} {TimeInfo.Instance.ToDateTime(TimeHelper.ServerNow())}");
             //TimeHelper. self.OpenServiceTime
             self.UpdateWorldLv();

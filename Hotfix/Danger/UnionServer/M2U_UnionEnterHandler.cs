@@ -15,7 +15,7 @@ namespace ET
             }
             else
             {
-                response.FubenInstanceId = unionSceneComponent.GetUnionFubenId(request.UnionId, request.UnitId);
+                //response.FubenInstanceId = unionSceneComponent.GetUnionFubenId(request.UnionId, request.UnitId);
             }
             
             reply();
