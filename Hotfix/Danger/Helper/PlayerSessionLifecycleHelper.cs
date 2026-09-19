@@ -143,7 +143,7 @@ namespace ET
             int sceneTypeEnum = scene.GetComponent<MapComponent>().MapTypeEnum;
             if (sceneTypeEnum == MapTypeEnum.MainCityScene)
             {
-                unit.RecordPostion(sceneTypeEnum, CommonHelper.MainCityID());
+                unit.RecordPostion(sceneTypeEnum, SceneConfigHelper.MainCityID());
             }
 
             TransferHelper.BeforeTransfer(unit, 2);

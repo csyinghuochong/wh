@@ -341,7 +341,7 @@ namespace ET
             long mapInstanceId = DBHelper.GetMainCityServerId(UnitZoneHelper.GetHomeZone(unit));
             //动态删除副本
             TransferHelper.BeforeTransfer(unit);
-            await TransferHelper.Transfer(unit, mapInstanceId, (int)MapTypeEnum.MainCityScene, CommonHelper.MainCityID(), 0, "0");
+            await TransferHelper.Transfer(unit, mapInstanceId, (int)MapTypeEnum.MainCityScene, SceneConfigHelper.MainCityID(), 0, "0");
 
             Game.EventSystem.Publish(new EventType.ReturnMainCity() { DomainScene = scene, UnitId = userId });
         }

@@ -2091,540 +2091,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.TeamInfo)]
-	[ProtoContract]
-	public partial class TeamInfo: Object
-	{
-		[ProtoMember(1)]
-		public int SceneId { get; set; }
-
-		[ProtoMember(2)]
-		public List<TeamPlayerInfo> PlayerList = new List<TeamPlayerInfo>();
-
-		[ProtoMember(3)]
-		public long TeamId { get; set; }
-
-		[ProtoMember(4)]
-		public long FubenInstanceId { get; set; }
-
-		[ProtoMember(5)]
-		public long FubenUUId { get; set; }
-
-		[ProtoMember(6)]
-		public int FubenType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.TeamPlayerInfo)]
-	[ProtoContract]
-	public partial class TeamPlayerInfo: Object
-	{
-		[ProtoMember(1)]
-		public int HeadId { get; set; }
-
-		[ProtoMember(2)]
-		public int PlayerLv { get; set; }
-
-		[ProtoMember(3)]
-		public int WeaponId { get; set; }
-
-		[ProtoMember(4)]
-		public string PlayerName { get; set; }
-
-		[ProtoMember(5)]
-		public long UserID { get; set; }
-
-		[ProtoMember(6)]
-		public int Damage { get; set; }
-
-		[ProtoMember(7)]
-		public long Combat { get; set; }
-
-		[ProtoMember(8)]
-		public int Occ { get; set; }
-
-		[ProtoMember(9)]
-		public int InFuben { get; set; }
-
-		[ProtoMember(10)]
-		public int RobotId { get; set; }
-
-		[ProtoMember(11)]
-		public int OccTwo { get; set; }
-
-		[ProtoMember(12)]
-		public int Prepare { get; set; }
-
-		[ProtoMember(13)]
-		public List<int> FashionIds = new List<int>();
-
-	}
-
-//邀请组队
-	[ResponseType(nameof(T2C_TeamInviteResponse))]
-	[Message(OuterOpcode.C2T_TeamInviteRequest)]
-	[ProtoContract]
-	public partial class C2T_TeamInviteRequest: Object, ITeamActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-		[ProtoMember(2)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.T2C_TeamInviteResponse)]
-	[ProtoContract]
-	public partial class T2C_TeamInviteResponse: Object, ITeamActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//同意组队
-	[ResponseType(nameof(T2C_TeamAgreeResponse))]
-	[Message(OuterOpcode.C2T_TeamAgreeRequest)]
-	[ProtoContract]
-	public partial class C2T_TeamAgreeRequest: Object, ITeamActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public TeamPlayerInfo TeamPlayerInfo_1 { get; set; }
-
-		[ProtoMember(2)]
-		public TeamPlayerInfo TeamPlayerInfo_2 { get; set; }
-
-	}
-
-	[Message(OuterOpcode.T2C_TeamAgreeResponse)]
-	[ProtoContract]
-	public partial class T2C_TeamAgreeResponse: Object, ITeamActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//离开组队
-	[ResponseType(nameof(T2C_TeamLeaveResponse))]
-	[Message(OuterOpcode.C2T_TeamLeaveRequest)]
-	[ProtoContract]
-	public partial class C2T_TeamLeaveRequest: Object, ITeamActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.T2C_TeamLeaveResponse)]
-	[ProtoContract]
-	public partial class T2C_TeamLeaveResponse: Object, ITeamActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//踢出队伍
-	[ResponseType(nameof(T2C_TeamKickOutResponse))]
-	[Message(OuterOpcode.C2T_TeamKickOutRequest)]
-	[ProtoContract]
-	public partial class C2T_TeamKickOutRequest: Object, ITeamActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.T2C_TeamKickOutResponse)]
-	[ProtoContract]
-	public partial class T2C_TeamKickOutResponse: Object, ITeamActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//组队副本
-	[ResponseType(nameof(T2C_TeamDungeonInfoResponse))]
-	[Message(OuterOpcode.C2T_TeamDungeonInfoRequest)]
-	[ProtoContract]
-	public partial class C2T_TeamDungeonInfoRequest: Object, ITeamActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.T2C_TeamDungeonInfoResponse)]
-	[ProtoContract]
-	public partial class T2C_TeamDungeonInfoResponse: Object, ITeamActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<TeamInfo> TeamList = new List<TeamInfo>();
-
-	}
-
-//组队副本申请
-	[ResponseType(nameof(T2C_TeamDungeonApplyResponse))]
-	[Message(OuterOpcode.C2T_TeamDungeonApplyRequest)]
-	[ProtoContract]
-	public partial class C2T_TeamDungeonApplyRequest: Object, ITeamActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long TeamId { get; set; }
-
-		[ProtoMember(2)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.T2C_TeamDungeonApplyResponse)]
-	[ProtoContract]
-	public partial class T2C_TeamDungeonApplyResponse: Object, ITeamActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//同意组队副本申请
-	[ResponseType(nameof(T2C_TeamDungeonAgreeResponse))]
-	[Message(OuterOpcode.C2T_TeamDungeonAgreeRequest)]
-	[ProtoContract]
-	public partial class C2T_TeamDungeonAgreeRequest: Object, ITeamActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long TeamId { get; set; }
-
-		[ProtoMember(2)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.T2C_TeamDungeonAgreeResponse)]
-	[ProtoContract]
-	public partial class T2C_TeamDungeonAgreeResponse: Object, ITeamActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//创建组队副本
-	[ResponseType(nameof(M2C_TeamDungeonCreateResponse))]
-	[Message(OuterOpcode.C2M_TeamDungeonCreateRequest)]
-	[ProtoContract]
-	public partial class C2M_TeamDungeonCreateRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int FubenId { get; set; }
-
-		[ProtoMember(2)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
-
-		[ProtoMember(3)]
-		public int FubenType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamDungeonCreateResponse)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonCreateResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public TeamInfo TeamInfo { get; set; }
-
-		[ProtoMember(3)]
-		public int FubenType { get; set; }
-
-	}
-
-//开启组队副本
-	[ResponseType(nameof(M2C_TeamDungeonOpenResponse))]
-	[Message(OuterOpcode.C2M_TeamDungeonOpenRequest)]
-	[ProtoContract]
-	public partial class C2M_TeamDungeonOpenRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-		[ProtoMember(2)]
-		public int FubenType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamDungeonOpenResponse)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonOpenResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(3)]
-		public int FubenType { get; set; }
-
-	}
-
-//副本开启
-	[Message(OuterOpcode.M2C_TeamDungeonOpenResult)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonOpenResult: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public TeamInfo TeamInfo { get; set; }
-
-	}
-
-//请求准备
-	[ResponseType(nameof(M2C_TeamDungeonPrepareResponse))]
-	[Message(OuterOpcode.C2M_TeamDungeonPrepareRequest)]
-	[ProtoContract]
-	public partial class C2M_TeamDungeonPrepareRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public TeamInfo TeamInfo { get; set; }
-
-		[ProtoMember(2)]
-		public int Prepare { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamDungeonPrepareResponse)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonPrepareResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//玩家准备
-	[Message(OuterOpcode.M2C_TeamDungeonPrepareResult)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonPrepareResult: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public TeamInfo TeamInfo { get; set; }
-
-		[ProtoMember(2)]
-		public int ErrorCode { get; set; }
-
-	}
-
-//退出组队广播
-	[Message(OuterOpcode.M2C_TeamDungeonQuitMessage)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonQuitMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//组队副本结算
-	[Message(OuterOpcode.M2C_TeamDungeonSettlement)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonSettlement: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long PassTime { get; set; }
-
-		[ProtoMember(2)]
-		public List<TeamPlayerInfo> PlayerList = new List<TeamPlayerInfo>();
-
-		[ProtoMember(4)]
-		public List<RewardItem> RewardExtraItem = new List<RewardItem>();
-
-		[ProtoMember(5)]
-		public List<RewardItem> ReardList = new List<RewardItem>();
-
-		[ProtoMember(6)]
-		public List<RewardItem> ReardListExcess = new List<RewardItem>();
-
-		[ProtoMember(7)]
-		public int Star { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamInviteResult)]
-	[ProtoContract]
-	public partial class M2C_TeamInviteResult: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamDungeonApplyResult)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonApplyResult: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamUpdateResult)]
-	[ProtoContract]
-	public partial class M2C_TeamUpdateResult: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public TeamInfo TeamInfo { get; set; }
-
-	}
-
 	[ResponseType(nameof(F2C_WatchPlayerResponse))]
 	[Message(OuterOpcode.C2F_WatchPlayerRequest)]
 	[ProtoContract]
@@ -3286,37 +2752,6 @@ namespace ET
 
 		[ProtoMember(5)]
 		public int SceneType { get; set; }
-
-	}
-
-//紫色道具判断是否需要拾取
-	[Message(OuterOpcode.M2C_TeamPickMessage)]
-	[ProtoContract]
-	public partial class M2C_TeamPickMessage: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public List<DropInfo> DropItems = new List<DropInfo>();
-
-	}
-
-	[Message(OuterOpcode.C2M_TeamPickRequest)]
-	[ProtoContract]
-	public partial class C2M_TeamPickRequest: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public DropInfo DropItem { get; set; }
-
-		[ProtoMember(2)]
-		public int Need { get; set; }
 
 	}
 
@@ -4367,34 +3802,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public List<RankingTrialInfo> RankList = new List<RankingTrialInfo>();
-
-	}
-
-	[ResponseType(nameof(M2C_TeamerPositionResponse))]
-	[Message(OuterOpcode.C2M_TeamerPositionRequest)]
-	[ProtoContract]
-	public partial class C2M_TeamerPositionRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamerPositionResponse)]
-	[ProtoContract]
-	public partial class M2C_TeamerPositionResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<UnitInfo> UnitList = new List<UnitInfo>();
 
 	}
 
@@ -11104,6 +10511,635 @@ namespace ET
 	}
 
 //VIP  end####################################################
+//Team begin####################################################
+	[Message(OuterOpcode.TeamInfo)]
+	[ProtoContract]
+	public partial class TeamInfo: Object
+	{
+		[ProtoMember(1)]
+		public int SceneId { get; set; }
+
+		[ProtoMember(2)]
+		public List<TeamPlayerInfo> PlayerList = new List<TeamPlayerInfo>();
+
+		[ProtoMember(3)]
+		public long TeamId { get; set; }
+
+		[ProtoMember(4)]
+		public long FubenInstanceId { get; set; }
+
+		[ProtoMember(5)]
+		public long FubenUUId { get; set; }
+
+		[ProtoMember(6)]
+		public int FubenType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.TeamPlayerInfo)]
+	[ProtoContract]
+	public partial class TeamPlayerInfo: Object
+	{
+		[ProtoMember(1)]
+		public int HeadId { get; set; }
+
+		[ProtoMember(2)]
+		public int PlayerLv { get; set; }
+
+		[ProtoMember(3)]
+		public int WeaponId { get; set; }
+
+		[ProtoMember(4)]
+		public string PlayerName { get; set; }
+
+		[ProtoMember(5)]
+		public long UserID { get; set; }
+
+		[ProtoMember(6)]
+		public int Damage { get; set; }
+
+		[ProtoMember(7)]
+		public long Combat { get; set; }
+
+		[ProtoMember(8)]
+		public int Occ { get; set; }
+
+		[ProtoMember(9)]
+		public int InFuben { get; set; }
+
+		[ProtoMember(10)]
+		public int RobotId { get; set; }
+
+		[ProtoMember(11)]
+		public int OccTwo { get; set; }
+
+		[ProtoMember(12)]
+		public int Prepare { get; set; }
+
+		[ProtoMember(13)]
+		public List<int> FashionIds = new List<int>();
+
+	}
+
+	[ResponseType(nameof(M2C_TeamerPositionResponse))]
+	[Message(OuterOpcode.C2M_TeamerPositionRequest)]
+	[ProtoContract]
+	public partial class C2M_TeamerPositionRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TeamerPositionResponse)]
+	[ProtoContract]
+	public partial class M2C_TeamerPositionResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<UnitInfo> UnitList = new List<UnitInfo>();
+
+	}
+
+//紫色道具判断是否需要拾取
+	[Message(OuterOpcode.M2C_TeamPickMessage)]
+	[ProtoContract]
+	public partial class M2C_TeamPickMessage: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public List<DropInfo> DropItems = new List<DropInfo>();
+
+	}
+
+	[Message(OuterOpcode.C2M_TeamPickRequest)]
+	[ProtoContract]
+	public partial class C2M_TeamPickRequest: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public DropInfo DropItem { get; set; }
+
+		[ProtoMember(2)]
+		public int Need { get; set; }
+
+	}
+
+//邀请组队
+	[ResponseType(nameof(T2C_TeamInviteResponse))]
+	[Message(OuterOpcode.C2T_TeamInviteRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamInviteRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+		[ProtoMember(2)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamInviteResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamInviteResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//同意组队
+	[ResponseType(nameof(T2C_TeamAgreeResponse))]
+	[Message(OuterOpcode.C2T_TeamAgreeRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamAgreeRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public TeamPlayerInfo TeamPlayerInfo_1 { get; set; }
+
+		[ProtoMember(2)]
+		public TeamPlayerInfo TeamPlayerInfo_2 { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamAgreeResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamAgreeResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//离开组队
+	[ResponseType(nameof(T2C_TeamLeaveResponse))]
+	[Message(OuterOpcode.C2T_TeamLeaveRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamLeaveRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamLeaveResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamLeaveResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//踢出队伍
+	[ResponseType(nameof(T2C_TeamKickOutResponse))]
+	[Message(OuterOpcode.C2T_TeamKickOutRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamKickOutRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamKickOutResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamKickOutResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TeamUpdateResult)]
+	[ProtoContract]
+	public partial class M2C_TeamUpdateResult: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public TeamInfo TeamInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TeamInviteResult)]
+	[ProtoContract]
+	public partial class M2C_TeamInviteResult: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+//创建队伍
+	[ResponseType(nameof(T2C_TeamCreateResponse))]
+	[Message(OuterOpcode.C2T_TeamCreateRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamCreateRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamCreateResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamCreateResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//申请回复（队长同意/拒绝入队申请）
+	[ResponseType(nameof(T2C_TeamApplyReplyResponse))]
+	[Message(OuterOpcode.C2T_TeamApplyReplyRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamApplyReplyRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long TeamId { get; set; }
+
+		[ProtoMember(2)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamApplyReplyResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamApplyReplyResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//Team  end####################################################
+//TeamDungeon  begin####################################################
+//创建组队副本
+	[ResponseType(nameof(M2C_TeamDungeonCreateResponse))]
+	[Message(OuterOpcode.C2M_TeamDungeonCreateRequest)]
+	[ProtoContract]
+	public partial class C2M_TeamDungeonCreateRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int FubenId { get; set; }
+
+		[ProtoMember(2)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+		[ProtoMember(3)]
+		public int FubenType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TeamDungeonCreateResponse)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonCreateResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public TeamInfo TeamInfo { get; set; }
+
+		[ProtoMember(3)]
+		public int FubenType { get; set; }
+
+	}
+
+//开启组队副本
+	[ResponseType(nameof(M2C_TeamDungeonOpenResponse))]
+	[Message(OuterOpcode.C2M_TeamDungeonOpenRequest)]
+	[ProtoContract]
+	public partial class C2M_TeamDungeonOpenRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+		[ProtoMember(2)]
+		public int FubenType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TeamDungeonOpenResponse)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonOpenResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(3)]
+		public int FubenType { get; set; }
+
+	}
+
+//副本开启
+	[Message(OuterOpcode.M2C_TeamDungeonOpenResult)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonOpenResult: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public TeamInfo TeamInfo { get; set; }
+
+	}
+
+//请求准备
+	[ResponseType(nameof(M2C_TeamDungeonPrepareResponse))]
+	[Message(OuterOpcode.C2M_TeamDungeonPrepareRequest)]
+	[ProtoContract]
+	public partial class C2M_TeamDungeonPrepareRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public TeamInfo TeamInfo { get; set; }
+
+		[ProtoMember(2)]
+		public int Prepare { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TeamDungeonPrepareResponse)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonPrepareResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//玩家准备
+	[Message(OuterOpcode.M2C_TeamDungeonPrepareResult)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonPrepareResult: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public TeamInfo TeamInfo { get; set; }
+
+		[ProtoMember(2)]
+		public int ErrorCode { get; set; }
+
+	}
+
+//退出组队广播
+	[Message(OuterOpcode.M2C_TeamDungeonQuitMessage)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonQuitMessage: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//组队副本结算
+	[Message(OuterOpcode.M2C_TeamDungeonSettlement)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonSettlement: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long PassTime { get; set; }
+
+		[ProtoMember(2)]
+		public List<TeamPlayerInfo> PlayerList = new List<TeamPlayerInfo>();
+
+		[ProtoMember(4)]
+		public List<RewardItem> RewardExtraItem = new List<RewardItem>();
+
+		[ProtoMember(5)]
+		public List<RewardItem> ReardList = new List<RewardItem>();
+
+		[ProtoMember(6)]
+		public List<RewardItem> ReardListExcess = new List<RewardItem>();
+
+		[ProtoMember(7)]
+		public int Star { get; set; }
+
+	}
+
+//组队副本
+	[ResponseType(nameof(T2C_TeamDungeonInfoResponse))]
+	[Message(OuterOpcode.C2T_TeamDungeonInfoRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamDungeonInfoRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamDungeonInfoResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamDungeonInfoResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<TeamInfo> TeamList = new List<TeamInfo>();
+
+	}
+
+//组队副本申请
+	[ResponseType(nameof(T2C_TeamDungeonApplyResponse))]
+	[Message(OuterOpcode.C2T_TeamDungeonApplyRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamDungeonApplyRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long TeamId { get; set; }
+
+		[ProtoMember(2)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamDungeonApplyResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamDungeonApplyResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TeamDungeonApplyResult)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonApplyResult: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+//TeamDungeon end####################################################
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

@@ -279,9 +279,9 @@ namespace ET
 
                         reply();
 
-                        int tomap = CommonHelper.MainCityID();
+                        int tomap = SceneConfigHelper.MainCityID();
 						StartSceneConfig startSceneConfig = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), $"Map{tomap}");
-						await TransferHelper.Transfer(unit, startSceneConfig.InstanceId, (int)MapTypeEnum.MainCityScene, CommonHelper.MainCityID(), 0, "0");
+						await TransferHelper.Transfer(unit, startSceneConfig.InstanceId, (int)MapTypeEnum.MainCityScene, SceneConfigHelper.MainCityID(), 0, "0");
 
 						player.PlayerState = PlayerState.Game;
 						player.UnitId = request.UserID;

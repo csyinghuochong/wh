@@ -71,7 +71,7 @@ namespace ET
                 {
                     return self.HomeFubens[masterid];
                 }
-                int homesceneid = CommonHelper.HomeSceneID();
+                int homesceneid = SceneConfigHelper.HomeSceneID();
                 long fubenid = IdGenerater.Instance.GenerateId();
                 long fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
                 Scene fubnescene = SceneFactory.Create(self, fubenid, fubenInstanceId, self.DomainZone(), "Home" + masterid.ToString(), SceneType.Map);

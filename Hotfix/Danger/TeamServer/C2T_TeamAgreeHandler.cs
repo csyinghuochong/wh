@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace ET
 {
     /// <summary>
-    /// 同意组队邀请
+    /// 玩家同意别人的组队邀请
     /// </summary>
     [ActorMessageHandler]
     public class C2T_TeamAgreeHandler : AMActorRpcHandler<Scene, C2T_TeamAgreeRequest, T2C_TeamAgreeResponse>

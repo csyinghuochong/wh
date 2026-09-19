@@ -28,17 +28,7 @@ namespace ET
                 int oldzone = (int)request.PopularizeId / 1000000;
                 int xuhao = (int)request.PopularizeId % 1000000;
                 int newzone = CommonHelper.GetNewServerId(ServerHelper.GetServerList(), oldzone);
-                if (newzone < 5)
-                {
-                    reply();
-                    return;
-                }
-                if (newzone > ServerHelper.GetServerList().Count + 10)
-                {
-                    Log.Warning($"C2Popularize_PlayerRequest: {request.PopularizeId}");
-                    reply();
-                    return;
-                }
+               
 
                 List<DBPopularizeInfo> dBPopularizeInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBPopularizeInfo>(newzone, d => d.PopularizeCode == request.PopularizeId);
                 if (dBPopularizeInfoList.Count == 0)

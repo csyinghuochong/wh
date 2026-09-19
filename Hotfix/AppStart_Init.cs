@@ -118,7 +118,7 @@ namespace ET
 
                             if (startConfig.Type == SceneType.Map)
                             {
-                                LDScene ldScene = LDSceneCategory.Instance.Get(CommonHelper.MainCityID());
+                                LDScene ldScene = LDSceneCategory.Instance.Get(SceneConfigHelper.MainCityID());
                                 MapComponent mapComponent = scene.GetComponent<MapComponent>();
                                 mapComponent.SetMapInfo((int)MapTypeEnum.MainCityScene, ldScene.Id, 0);
                                 mapComponent.NavMeshId = ldScene.GetNavMeshId();

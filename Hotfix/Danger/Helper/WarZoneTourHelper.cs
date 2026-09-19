@@ -30,7 +30,7 @@ namespace ET
                 return ErrorCode.ERR_RequestRepeatedly;
             }
 
-            if (!StartSceneConfigCategory.Instance.TryGetBySceneName(targetZone, $"Map{CommonHelper.MainCityID()}", out StartSceneConfig mapConfig))
+            if (!StartSceneConfigCategory.Instance.TryGetBySceneName(targetZone, $"Map{SceneConfigHelper.MainCityID()}", out StartSceneConfig mapConfig))
             {
                 Log.Error($"[WarZoneTour] 目标服无主城 Map unit={unit.Id} target={targetZone}");
                 return ErrorCode.ERR_RequestRepeatedly;
@@ -47,7 +47,7 @@ namespace ET
             Log.Console($"[WarZoneTour] {unit.Id} home={homeZone} {currentZone} → {targetZone} map={mapConfig.InstanceId}");
 
             TransferHelper.BeforeTransfer(unit);
-            await TransferHelper.Transfer(unit, mapConfig.InstanceId, (int)MapTypeEnum.MainCityScene, CommonHelper.MainCityID(), 0, "0");
+            await TransferHelper.Transfer(unit, mapConfig.InstanceId, (int)MapTypeEnum.MainCityScene, SceneConfigHelper.MainCityID(), 0, "0");
             return ErrorCode.ERR_Success;
         }
     }

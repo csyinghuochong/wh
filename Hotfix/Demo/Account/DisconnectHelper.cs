@@ -109,7 +109,7 @@ namespace ET
 
             List<long> mapIdList = new List<long>()
             {
-                StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{CommonHelper.MainCityID()}").InstanceId
+                StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{SceneConfigHelper.MainCityID()}").InstanceId
             };
             mapIdList.AddRange(response.FubenInstanceList);
 
@@ -125,7 +125,7 @@ namespace ET
                     {
                         continue;
                     }
-                    if (StartSceneConfigCategory.Instance.TryGetBySceneName(memberZone, $"Map{CommonHelper.MainCityID()}", out StartSceneConfig mapCfg))
+                    if (StartSceneConfigCategory.Instance.TryGetBySceneName(memberZone, $"Map{SceneConfigHelper.MainCityID()}", out StartSceneConfig mapCfg))
                     {
                         mapIdList.Add(mapCfg.InstanceId);
                     }

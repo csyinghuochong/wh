@@ -287,25 +287,13 @@ namespace ET
                         break;
 
 					case (int)MapTypeEnum.MainCityScene:
-						ldScene = LDSceneCategory.Instance.Get(CommonHelper.MainCityID());
+						ldScene = LDSceneCategory.Instance.Get(SceneConfigHelper.MainCityID());
 						numericComponent = unit.GetComponent<NumericComponent>();
-						/*if (numericComponent.GetAsFloat(NumericType.MainCity_X) != 0f)
-						{
-							unit.Position = new Vector3(numericComponent.GetAsFloat(NumericType.MainCity_X),
-								numericComponent.GetAsFloat(NumericType.MainCity_Y),
-								numericComponent.GetAsFloat(NumericType.MainCity_Z));
-						}
-						else
-						{
-							
-						}*/
-						//unit.Position = new Vector3(sceneConfig.InitPos[0] * 0.01f + RandomHelper.RandFloat01(),
-						//	sceneConfig.InitPos[1] * 0.01f, sceneConfig.InitPos[2] * 0.01f + RandomHelper.RandFloat01());
-						unit.Position = new Vector3(-10f, 0f, 0f);
-						if (unit.IsRobot())
-						{
-                            unit.Position = new Vector3(-26f + RandomHelper.RandFloat01() * 2f , -4f, -8f + RandomHelper.RandFloat01() * 2f);
-                        }
+
+                        aoiValue = (CommonHelper.IsInnerNet() ? 400 : 10) * 1000;
+
+						unit.Position = ldScene.GetBornPos();
+
 						unitComponent.AddPlayer(unit);		
 						unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
 						unit.OnReturn();
@@ -315,7 +303,7 @@ namespace ET
 						MessageHelper.SendToClient(unit, m2CCreateUnits);
 
 						// 加入aoi
-						unit.AddComponent<AOIEntity, int, Vector3>(4 * 1000, unit.Position);
+						unit.AddComponent<AOIEntity, int, Vector3>(aoiValue, unit.Position);
 						TransferHelper.AfterTransfer(unit);
 						TransferHelper.RemoveStall(unit);
 

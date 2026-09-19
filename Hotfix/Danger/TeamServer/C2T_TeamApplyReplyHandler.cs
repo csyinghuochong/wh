@@ -1,11 +1,14 @@
-﻿using System;
+using System;
 
 namespace ET
 {
+    /// <summary>
+    /// 队长回复入队申请
+    /// </summary>
     [ActorMessageHandler]
-    public class C2T_TeamDungeonAgreeHandler : AMActorRpcHandler<Scene, C2T_TeamDungeonAgreeRequest, T2C_TeamDungeonAgreeResponse>
+    public class C2T_TeamApplyReplyHandler : AMActorRpcHandler<Scene, C2T_TeamApplyReplyRequest, T2C_TeamApplyReplyResponse>
     {
-        protected override async ETTask Run(Scene scene, C2T_TeamDungeonAgreeRequest request, T2C_TeamDungeonAgreeResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, C2T_TeamApplyReplyRequest request, T2C_TeamApplyReplyResponse response, Action reply)
         {
             TeamSceneComponent teamSceneComponent = scene.GetComponent<TeamSceneComponent>();
             if (teamSceneComponent.GetTeamInfo(request.TeamPlayerInfo.UserID) != null)

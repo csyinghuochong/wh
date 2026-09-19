@@ -3,6 +3,9 @@
 namespace ET
 {
 
+    /// <summary>
+    /// 
+    /// </summary>
     [ActorMessageHandler]
     public class C2T_TeamDungeonApplyHandler : AMActorRpcHandler<Scene, C2T_TeamDungeonApplyRequest, T2C_TeamDungeonApplyResponse>
     {

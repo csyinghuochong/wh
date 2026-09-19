@@ -121,7 +121,7 @@ namespace ET
 		/// <summary>禁用 小地图</summary>
 		[ProtoMember(14)]
 		public int MiniMap_Close { get; set; }
-		/// <summary>允许坐骑 0-否 1-是</summary>
+		/// <summary>允许 坐骑</summary>
 		[ProtoMember(15)]
 		public int If_Mount { get; set; }
 		/// <summary>摄像机</summary>

@@ -106,7 +106,7 @@ namespace ET
 
         public static long GetMainCityServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{CommonHelper.MainCityID()}").InstanceId;
+            return StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{SceneConfigHelper.MainCityID()}").InstanceId;
         }
 
         public static long GetMailServerId(int zone)
@@ -133,7 +133,7 @@ namespace ET
 
         public static long MapCityServerId(int zone)
         {
-            return StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{CommonHelper.MainCityID()}").InstanceId;
+            return StartSceneConfigCategory.Instance.GetBySceneName(zone, $"Map{SceneConfigHelper.MainCityID()}").InstanceId;
         }
 
         public static long GetArenaServerId(int zone)

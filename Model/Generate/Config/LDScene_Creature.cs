@@ -97,12 +97,12 @@ namespace ET
 		/// <summary>刷新时间</summary>
 		[ProtoMember(6)]
 		public int Refresh { get; set; }
-		/// <summary>位置</summary>
-		[ProtoMember(7)]
-		public double[] Position { get; set; }
 		/// <summary>朝向</summary>
-		[ProtoMember(8)]
+		[ProtoMember(7)]
 		public int Rotation { get; set; }
+		/// <summary>位置</summary>
+		[ProtoMember(8)]
+		public double[] Position { get; set; }
 		/// <summary>小地图 0-不显示 1-NPC 2-首领</summary>
 		[ProtoMember(9)]
 		public int MiniMap_Type { get; set; }
