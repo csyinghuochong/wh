@@ -19,12 +19,24 @@ namespace ET
             return new HashSet<long>(chatOnline.OnlineUnitIdList);
         }
 
+        /// <summary>问 Gate：PlayerState==Game 且有 Session。只判断在线用这个；Location 是地图 Unit 是否注册。</summary>
+        public static async ETTask<bool> IsInGame(int zone, long userId)
+        {
+            G2T_GateUnitInfoResponse gateInfo = await GetGateUnitInfo(zone, userId);
+            return gateInfo != null && gateInfo.PlayerState == (int)PlayerState.Game && gateInfo.SessionInstanceId > 0;
+        }
+
+        public static async ETTask<G2T_GateUnitInfoResponse> GetGateUnitInfo(int zone, long userId)
+        {
+            return (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call(
+                DBHelper.GetGateServerId(zone),
+                new T2G_GateUnitInfoRequest() { UserID = userId });
+        }
+
         /// <summary>在线则推到 Gate Session。返回是否发出。离线分支由调用方自己处理。</summary>
         public static async ETTask<bool> SendToClient(int zone, long userId, IActorMessage message)
         {
-            G2T_GateUnitInfoResponse gateInfo = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call(
-                DBHelper.GetGateServerId(zone),
-                new T2G_GateUnitInfoRequest() { UserID = userId });
+            G2T_GateUnitInfoResponse gateInfo = await GetGateUnitInfo(zone, userId);
             if (gateInfo == null || gateInfo.PlayerState != (int)PlayerState.Game || gateInfo.SessionInstanceId <= 0)
             {
                 return false;

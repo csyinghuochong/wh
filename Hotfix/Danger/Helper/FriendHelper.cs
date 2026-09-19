@@ -36,5 +36,32 @@ namespace ET
 
             return friendInfos;
         }
+
+        public static async ETTask<List<FriendInfo>> GetOnlineFriends(int zone, long userId)
+        {
+            List<FriendInfo> empty = new List<FriendInfo>();
+            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(zone, userId);
+            if (dBFriendInfo?.FriendList == null)
+            {
+                return empty;
+            }
+
+            HashSet<long> onlineIds = await ServerMessageHelper.GetChatOnlineUnitIds(zone);
+            List<long> onlineFriends = new List<long>();
+            for (int i = 0; i < dBFriendInfo.FriendList.Count; i++)
+            {
+                long friendId = dBFriendInfo.FriendList[i];
+                if (friendId == userId)
+                {
+                    continue;
+                }
+                if (onlineIds.Contains(friendId))
+                {
+                    onlineFriends.Add(friendId);
+                }
+            }
+
+            return await GetFriendInfos(onlineFriends, onlineIds);
+        }
     }
 }

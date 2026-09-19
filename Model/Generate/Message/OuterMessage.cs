@@ -10675,11 +10675,11 @@ namespace ET
 
 	}
 
-//同意组队
-	[ResponseType(nameof(T2C_TeamAgreeResponse))]
-	[Message(OuterOpcode.C2T_TeamAgreeRequest)]
+//邀请回复
+	[ResponseType(nameof(T2C_TeamInviteReplyResponse))]
+	[Message(OuterOpcode.C2T_TeamInviteReplyRequest)]
 	[ProtoContract]
-	public partial class C2T_TeamAgreeRequest: Object, ITeamActorRequest
+	public partial class C2T_TeamInviteReplyRequest: Object, ITeamActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -10693,11 +10693,14 @@ namespace ET
 		[ProtoMember(2)]
 		public TeamPlayerInfo TeamPlayerInfo_2 { get; set; }
 
+		[ProtoMember(3)]
+		public int ReplyCode { get; set; }
+
 	}
 
-	[Message(OuterOpcode.T2C_TeamAgreeResponse)]
+	[Message(OuterOpcode.T2C_TeamInviteReplyResponse)]
 	[ProtoContract]
-	public partial class T2C_TeamAgreeResponse: Object, ITeamActorResponse
+	public partial class T2C_TeamInviteReplyResponse: Object, ITeamActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11136,6 +11139,79 @@ namespace ET
 	{
 		[ProtoMember(1)]
 		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+//邀请列表：在线好友
+	[ResponseType(nameof(F2C_FriendOnlineResponse))]
+	[Message(OuterOpcode.C2F_FriendOnlineRequest)]
+	[ProtoContract]
+	public partial class C2F_FriendOnlineRequest: Object, IFriendActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.F2C_FriendOnlineResponse)]
+	[ProtoContract]
+	public partial class F2C_FriendOnlineResponse: Object, IFriendActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<FriendInfo> FriendList = new List<FriendInfo>();
+
+	}
+
+//邀请列表：在线公会成员
+	[ResponseType(nameof(U2C_UnionOnlineResponse))]
+	[Message(OuterOpcode.C2U_UnionOnlineRequest)]
+	[ProtoContract]
+	public partial class C2U_UnionOnlineRequest: Object, IUnionActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.U2C_UnionOnlineResponse)]
+	[ProtoContract]
+	public partial class U2C_UnionOnlineResponse: Object, IUnionActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<UnionPlayerInfo> PlayerList = new List<UnionPlayerInfo>();
 
 	}
 

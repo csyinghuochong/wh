@@ -550,8 +550,8 @@ namespace ET
 		 public const ushort C2M_TeamPickRequest = 10547;
 		 public const ushort C2T_TeamInviteRequest = 10548;
 		 public const ushort T2C_TeamInviteResponse = 10549;
-		 public const ushort C2T_TeamAgreeRequest = 10550;
-		 public const ushort T2C_TeamAgreeResponse = 10551;
+		 public const ushort C2T_TeamInviteReplyRequest = 10550;
+		 public const ushort T2C_TeamInviteReplyResponse = 10551;
 		 public const ushort C2T_TeamLeaveRequest = 10552;
 		 public const ushort T2C_TeamLeaveResponse = 10553;
 		 public const ushort C2T_TeamKickOutRequest = 10554;
@@ -577,6 +577,10 @@ namespace ET
 		 public const ushort C2T_TeamDungeonApplyRequest = 10574;
 		 public const ushort T2C_TeamDungeonApplyResponse = 10575;
 		 public const ushort M2C_TeamDungeonApplyResult = 10576;
-		 public const ushort M2C_UpdateVersion = 10577;
+		 public const ushort C2F_FriendOnlineRequest = 10577;
+		 public const ushort F2C_FriendOnlineResponse = 10578;
+		 public const ushort C2U_UnionOnlineRequest = 10579;
+		 public const ushort U2C_UnionOnlineResponse = 10580;
+		 public const ushort M2C_UpdateVersion = 10581;
 	}
 }

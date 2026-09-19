@@ -18,9 +18,8 @@ namespace ET
                 return;
             }
 
-            if (!await PlayerOnlineHelper.IsInLocation(request.TeamPlayerInfo.UserID))
+            if (!await ServerMessageHelper.IsInGame(scene.DomainZone(), request.TeamPlayerInfo.UserID))
             {
-                //对方已下线
                 reply();
                 return;
             }
