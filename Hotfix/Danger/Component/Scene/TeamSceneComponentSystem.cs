@@ -107,22 +107,52 @@ namespace ET
 
         public static async ETTask SyncTeamInfo(this TeamSceneComponent self, TeamInfo teamInfo, List<TeamPlayerInfo> userIds)
         {
-            M2C_TeamUpdateResult m2C_HorseNoticeInfo = self.m2C_TeamUpdateResult;
-            m2C_HorseNoticeInfo.TeamInfo = teamInfo;
-            T2M_TeamUpdateRequest t2M_TeamUpdateRequest = self.t2M_TeamUpdateRequest;
+            if (userIds == null || userIds.Count == 0)
+            {
+                return;
+            }
 
-            int zone = self.DomainZone();
-            for (int i = 0; i < userIds.Count; i++)
+            int count = userIds.Count;
+            long[] notifyUserIds = new long[count];
+            long[] notifyTeamIds = new long[count];
+            for (int i = 0; i < count; i++)
             {
                 long userId = userIds[i].UserID;
-                if (!await ServerMessageHelper.SendToClient(zone, userId, m2C_HorseNoticeInfo))
-                {
-                    continue;
-                }
-
-                t2M_TeamUpdateRequest.TeamId = self.GetTeamInfoId(userId);
-                MessageHelper.SendToLocationActor(userId, t2M_TeamUpdateRequest);
+                notifyUserIds[i] = userId;
+                notifyTeamIds[i] = self.GetTeamInfoId(userId);
             }
+
+            M2C_TeamUpdateResult m2C_TeamUpdateResult = new M2C_TeamUpdateResult()
+            {
+                TeamInfo = CloneTeamInfo(teamInfo),
+            };
+
+            int zone = self.DomainZone();
+            for (int i = 0; i < count; i++)
+            {
+                long userId = notifyUserIds[i];
+                await ServerMessageHelper.SendToClient(zone, userId, m2C_TeamUpdateResult);
+                MessageHelper.SendToLocationActor(userId, new T2M_TeamUpdateRequest() { TeamId = notifyTeamIds[i] });
+            }
+        }
+
+        private static TeamInfo CloneTeamInfo(TeamInfo teamInfo)
+        {
+            if (teamInfo == null)
+            {
+                return null;
+            }
+
+            TeamInfo clone = new TeamInfo()
+            {
+                SceneId = teamInfo.SceneId,
+                TeamId = teamInfo.TeamId,
+                FubenInstanceId = teamInfo.FubenInstanceId,
+                FubenUUId = teamInfo.FubenUUId,
+                FubenType = teamInfo.FubenType,
+            };
+            clone.PlayerList.AddRange(teamInfo.PlayerList);
+            return clone;
         }
 
         /// <summary>
@@ -212,10 +242,9 @@ namespace ET
                 {
                     List<TeamPlayerInfo> userIDList = new List<TeamPlayerInfo>();
                     userIDList.AddRange(teamInfo.PlayerList);
-                    self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
-
-                    teamInfo.PlayerList.Clear();   //队伍解算
+                    teamInfo.PlayerList.Clear();
                     self.TeamList.Remove(teamInfo);
+                    self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
                 }
             }
 
