@@ -159,35 +159,20 @@ namespace ET
         }
 
         /// <summary>
-        /// 离开队伍
+        /// 离开队伍。队员离队只移除自己；队长离队且仍有成员则 TeamId 顺位给下一名；没人则解散。
         /// </summary>
-        /// <param name="self"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public static  void OnRecvUnitLeave(this TeamSceneComponent self, long userId, bool exitgame = false)
+        public static  void OnRecvUnitLeave(this TeamSceneComponent self, long userId)
         {
-            Log.Debug($"TeamSceneComponent Leave {userId} {exitgame}");
-
-            if (self.DomainZone() == 5)
-            {
-                //Console.WriteLine($"TeamSceneComponent.OnRecvUnitLeave:  {userId}");
-            }
+            Log.Debug($"TeamSceneComponent Leave {userId}");
 
             TeamInfo teamInfo = self.GetTeamInfo(userId);
             if (teamInfo == null)
             {
                 return;
             }
-            //玩家Id
+
             List<TeamPlayerInfo> userIDList = new List<TeamPlayerInfo>();
             userIDList.AddRange(teamInfo.PlayerList);
-            for (int i = userIDList.Count - 1; i >= 0; i--)
-            {
-                if (exitgame && userIDList[i].UserID == userId)
-                {
-                    userIDList.RemoveAt(i);
-                }
-            }
 
             for (int k = teamInfo.PlayerList.Count - 1; k >= 0; k--)
             {
@@ -198,14 +183,65 @@ namespace ET
                 }
             }
 
-            if (teamInfo.PlayerList.Count == 0 || teamInfo.TeamId == userId)
+            if (teamInfo.PlayerList.Count == 0)
             {
                 long teamId = teamInfo.TeamId;
-                teamInfo.PlayerList.Clear();
                 self.TeamList.Remove(teamInfo);
                 self.ClearApply(teamId);
+                self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
+                return;
             }
 
+            if (teamInfo.TeamId == userId)
+            {
+                long oldTeamId = teamInfo.TeamId;
+                TeamPlayerInfo newLeader = teamInfo.PlayerList[0];
+                teamInfo.TeamId = newLeader.UserID;
+                newLeader.Followe = 0;
+
+                if (self.ApplyDict.TryGetValue(oldTeamId, out List<TeamPlayerInfo> applyList))
+                {
+                    self.ApplyDict.Remove(oldTeamId);
+                    self.ApplyDict[newLeader.UserID] = applyList;
+                }
+
+                TeamPlayerInfo leaver = null;
+                for (int i = userIDList.Count - 1; i >= 0; i--)
+                {
+                    if (userIDList[i].UserID == userId)
+                    {
+                        leaver = userIDList[i];
+                        userIDList.RemoveAt(i);
+                        break;
+                    }
+                }
+
+                if (leaver != null)
+                {
+                    self.SyncTeamInfo(new TeamInfo() { TeamId = oldTeamId }, new List<TeamPlayerInfo> { leaver }).Coroutine();
+                }
+            }
+
+            self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
+        }
+
+        /// <summary>
+        /// 队长解散队伍：清空成员并同步 M2C_TeamUpdateResult。
+        /// </summary>
+        public static void OnRecvTeamDismiss(this TeamSceneComponent self, long userId)
+        {
+            TeamInfo teamInfo = self.GetTeamInfo(userId);
+            if (teamInfo == null || teamInfo.TeamId != userId)
+            {
+                return;
+            }
+
+            List<TeamPlayerInfo> userIDList = new List<TeamPlayerInfo>();
+            userIDList.AddRange(teamInfo.PlayerList);
+            long teamId = teamInfo.TeamId;
+            teamInfo.PlayerList.Clear();
+            self.TeamList.Remove(teamInfo);
+            self.ClearApply(teamId);
             self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
         }
 

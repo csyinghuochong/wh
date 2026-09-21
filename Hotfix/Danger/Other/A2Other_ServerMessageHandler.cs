@@ -28,7 +28,7 @@ namespace ET
                     case SceneType.Team:
                         if (request.MessageType == NoticeType.PlayerExit)
                         {
-                            scene.GetComponent<TeamSceneComponent>().OnRecvUnitLeave(long.Parse(request.MessageValue), true);
+                            scene.GetComponent<TeamSceneComponent>().OnRecvUnitLeave(long.Parse(request.MessageValue));
                         }
                         break;
                     case SceneType.FubenWork:

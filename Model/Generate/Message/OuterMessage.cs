@@ -10906,6 +10906,38 @@ namespace ET
 
 	}
 
+//解散队伍（队长）
+	[ResponseType(nameof(T2C_TeamDismissResponse))]
+	[Message(OuterOpcode.C2T_TeamDismissRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamDismissRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamDismissResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamDismissResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 //踢出队伍
 	[ResponseType(nameof(T2C_TeamKickOutResponse))]
 	[Message(OuterOpcode.C2T_TeamKickOutRequest)]
@@ -11022,6 +11054,16 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+	}
+
+//队长全员跟随：广播给队友，客户端弹窗是否跟随
+	[Message(OuterOpcode.M2C_TeamFollowResult)]
+	[ProtoContract]
+	public partial class M2C_TeamFollowResult: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
 
 	}
 
@@ -11409,15 +11451,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public List<UnionPlayerInfo> PlayerList = new List<UnionPlayerInfo>();
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamFollowResult)]
-	[ProtoContract]
-	public partial class M2C_TeamFollowResult: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
 
 	}
 
