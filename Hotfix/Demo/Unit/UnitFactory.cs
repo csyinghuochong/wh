@@ -109,30 +109,45 @@ namespace ET
             //unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
         }
 
-        //创建一个子弹unit（旧接口，UnitType.Bullet；ConfigId=LDSkill.Id。技能体请用 CreateSkillEntity）
-        public static Unit CreateBullet(Scene scene, long masterid, int skillid, int starangle, Vector3 vector3, CreateMonsterInfo createMonsterInfo)
+        /// <summary>
+        /// 创建子弹 UnitType.Bullet，ConfigId=LDSkill_Battle.Id。
+        /// 特效读 Effect.Resource（Bullet_Effect），速度读 Bullet_Speed；与技能体 CreateSkillEntity 分开。
+        /// </summary>
+        public static Unit CreateBullet(Scene scene, long masterId, int skillId, Vector3 position, Quaternion rotation, long targetId, SkillInfo skillInfo)
         {
-            Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), skillid);  //创建一个Unit
+            if (!LDSkill_BattleCategory.Instance.Contain(skillId))
+            {
+                Log.Error($"CreateBullet 技能配置不存在: {skillId}");
+                return null;
+            }
+
+            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillId);
+            Unit unit = scene.GetComponent<UnitComponent>().AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), skillId);
             scene.GetComponent<UnitComponent>().Add(unit);
             unit.AddComponent<ObjectWait>();
-            
             unit.AddComponent<MoveComponent>();
-            unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<UnitInfoComponent>();
+
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
-            unit.ConfigId = skillid;
-            unit.Position = vector3;
-            unit.Type = UnitType.Bullet;            //子弹Unity,根据这个类型会实例化出特效
-            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillid);
-            numericComponent.Set(NumericType.Speed_Current_15, 1, false);
-            numericComponent.Set(NumericType.MasterId, masterid, false);
-            numericComponent.Set(NumericType.StartAngle, starangle, false);
-            numericComponent.Set(NumericType.GatherStartTime, TimeHelper.ServerNow(), false);
-            unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);        //添加视野
+            unit.ConfigId = skillId;
+            unit.Position = position;
+            unit.Rotation = rotation;
+            unit.Type = UnitType.Bullet;
+            unit.MasterId = masterId;
+
+            float speed = LDSkillHelper.GetBulletSpeed(ldSkill);
+            numericComponent.ApplyValue(NumericType.Speed_Current_15, NumericConvert.DisplayToStored(NumericType.Speed_Current_15, speed), false);
+            numericComponent.ApplyValue(NumericType.MasterId, masterId, false);
+            numericComponent.SetStartAngle(rotation, false);
+            numericComponent.ApplyValue(NumericType.GatherStartTime, TimeHelper.ServerNow(), false);
+
+            BulletComponent bullet = unit.AddComponent<BulletComponent>();
+            bullet.Init(masterId, ldSkill, targetId, skillInfo);
+            unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             return unit;
         }
 
-        /// <summary>创建技能体 UnitType.SkillEntity，ConfigId=LDSummon.Id；行为挂 SkillEntityComponent。</summary>
+        /// <summary>创建技能体 UnitType.SkillEntity，ConfigId=LDSummon.Id；行为挂 SkillEntityComponent。子弹请用 CreateBullet。</summary>
         public static Unit CreateSkillEntity(Scene scene, long masterId, int summonId, Vector3 position, Quaternion rotation)
         {
             if (!LDSummonCategory.Instance.Contain(summonId))
@@ -156,7 +171,7 @@ namespace ET
             unit.Type = UnitType.SkillEntity;
             unit.MasterId = masterId;
 
-            float speed = summonConfig.Speed > 0 ? summonConfig.Speed / 1000f : 1f;
+            float speed = summonConfig.Speed > 0 ? (float)summonConfig.Speed : 1f;
             // Speed_Current 是复合属性，Set 会失败；自定义字段与速度一律 ApplyValue
             numericComponent.ApplyValue(NumericType.Speed_Current_15, NumericConvert.DisplayToStored(NumericType.Speed_Current_15, speed), false);
             numericComponent.ApplyValue(NumericType.MasterId, masterId, false);

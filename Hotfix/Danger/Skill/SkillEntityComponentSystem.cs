@@ -275,7 +275,7 @@ namespace ET
             // 优先 LDSummon.Speed（1000=1m/s），与表一致
             if (self.SummonConfig != null && self.SummonConfig.Speed > 0)
             {
-                return self.SummonConfig.Speed / 1000f;
+                return (float)self.SummonConfig.Speed;
             }
 
             float speed = unit.GetComponent<NumericComponent>()?.GetAsFloat(NumericType.Speed_Current_15) ?? 0f;

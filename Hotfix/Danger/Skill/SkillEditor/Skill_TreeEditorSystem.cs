@@ -78,11 +78,81 @@ namespace ET
 
         static void ExecuteSkillTreeOnce(this Skill_TreeEditor self)
         {
-            self.CollectSkillTargets();
+            if (LDSkillHelper.IsBulletSkill(self.LdSkillConf))
+            {
+                self.LaunchBullet();
+                return;
+            }
 
+            self.CollectSkillTargets();
             if (SkillEditorTreeRegistry.TryGetTree(self.LdSkillConf.Id, out SkillEditorSkillLogic logic))
             {
                 SkillEditorTreeExecutor.Execute(self, logic);
+            }
+        }
+
+        /// <summary>Time_1 只发射子弹；选目标 / 技能树放到命中时，对齐技能体 FireSkill1。</summary>
+        static void LaunchBullet(this Skill_TreeEditor self)
+        {
+            Unit caster = self.TheUnitFrom;
+            if (caster == null || caster.IsDisposed || self.LdSkillConf == null)
+            {
+                return;
+            }
+
+            Scene scene = caster.DomainScene();
+            if (scene?.GetComponent<UnitComponent>() == null)
+            {
+                return;
+            }
+
+            long targetId = 0;
+            Unit target = null;
+            if (self.SkillInfo != null && self.SkillInfo.TargetID > 0)
+            {
+                target = scene.GetComponent<UnitComponent>().Get(self.SkillInfo.TargetID);
+                if (target != null && !target.IsDisposed)
+                {
+                    targetId = target.Id;
+                }
+                else
+                {
+                    target = null;
+                }
+            }
+
+            Vector3 forward;
+            if (target != null)
+            {
+                forward = target.Position - caster.Position;
+                forward.y = 0f;
+            }
+            else if (self.SkillInfo != null)
+            {
+                forward = Quaternion.Euler(0f, self.SkillInfo.TargetAngle, 0f) * Vector3.forward;
+            }
+            else
+            {
+                forward = caster.Rotation * Vector3.forward;
+            }
+
+            forward.y = 0f;
+            if (forward.sqrMagnitude <= 1e-6f)
+            {
+                forward = caster.Rotation * Vector3.forward;
+                forward.y = 0f;
+            }
+
+            if (forward.sqrMagnitude <= 1e-6f)
+            {
+                forward = Vector3.forward;
+            }
+
+            Quaternion rotation = Quaternion.LookRotation(forward.normalized, Vector3.up);
+            Unit bullet = UnitFactory.CreateBullet(scene, caster.Id, self.LdSkillConf.Id, caster.Position, rotation, targetId, self.SkillInfo);
+            if (bullet == null)
+            {
+                Log.Error($"LaunchBullet 创建失败 skill={self.LdSkillConf.Id} caster={caster.Id}");
             }
         }
 

@@ -157,13 +157,13 @@ namespace ET
 		/// <summary>基础点 0-自身 1-目标</summary>
 		[ProtoMember(26)]
 		public int Base_Position { get; set; }
-		/// <summary>范围类型 0-单体 1-圆形 2-扇形 3-单侧矩形 4-中心矩形</summary>
+		/// <summary>范围 类型</summary>
 		[ProtoMember(27)]
 		public int Range_Type { get; set; }
-		/// <summary>范围参数1 0-无 1-半径 2-半径 3-长 4-长</summary>
+		/// <summary>范围 参数1 0-无 1-半径 2-半径 3-长 4-长</summary>
 		[ProtoMember(28)]
 		public double Range_Type_Param1 { get; set; }
-		/// <summary>范围参数2 0-无 1-无 2-角度 3-宽 4-宽</summary>
+		/// <summary>范围 参数2 0-无 1-无 2-角度 3-宽 4-宽</summary>
 		[ProtoMember(29)]
 		public double Range_Type_Param2 { get; set; }
 		/// <summary>目标 过滤</summary>
@@ -250,15 +250,15 @@ namespace ET
 		/// <summary>受击 震动强度 1-9</summary>
 		[ProtoMember(57)]
 		public int Vibrate_Hit_Intensity { get; set; }
-		/// <summary>子弹 特效</summary>
+		/// <summary>子弹 特效 Id</summary>
 		[ProtoMember(58)]
 		public int Bullet_Effect { get; set; }
 		/// <summary>子弹 速度</summary>
 		[ProtoMember(59)]
-		public int Bullet_Speed { get; set; }
+		public double Bullet_Speed { get; set; }
 		/// <summary>子弹 时间</summary>
 		[ProtoMember(60)]
-		public int Bullet_Time_Max { get; set; }
+		public double Bullet_Time_Max { get; set; }
 
 	}
 }

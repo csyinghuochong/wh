@@ -91,9 +91,6 @@ namespace ET
 		/// <summary>缩放值</summary>
 		[ProtoMember(4)]
 		public double Scale { get; set; }
-		/// <summary>绝对</summary>
-		[ProtoMember(5)]
-		public int Absolute { get; set; }
 
 	}
 }

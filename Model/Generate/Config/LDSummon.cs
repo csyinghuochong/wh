@@ -96,7 +96,7 @@ namespace ET
 		public int Skill_2 { get; set; }
 		/// <summary>速度</summary>
 		[ProtoMember(6)]
-		public int Speed { get; set; }
+		public double Speed { get; set; }
 
 	}
 }
