@@ -100,7 +100,7 @@ namespace ET
 		/// <summary>类型 0-无 1-增益 2-减益</summary>
 		[ProtoMember(7)]
 		public int Type_Effect { get; set; }
-		/// <summary>添加类型 0-替换 1-叠加 2-延长 3-共存</summary>
+		/// <summary>添加 类型</summary>
 		[ProtoMember(8)]
 		public int Type_Add { get; set; }
 		/// <summary>类型参数 0-无 1-上限数 2-无 3-共存数</summary>

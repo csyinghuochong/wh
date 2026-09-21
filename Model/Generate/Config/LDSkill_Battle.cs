@@ -142,10 +142,10 @@ namespace ET
 		/// <summary>眩晕 释放 0-否 1-是</summary>
 		[ProtoMember(21)]
 		public int Use_Stun { get; set; }
-		/// <summary>目标对象 0-无需目标 1-需要目标 2-强制释放</summary>
+		/// <summary>目标 对象</summary>
 		[ProtoMember(22)]
 		public int NeedTarget { get; set; }
-		/// <summary>目标类型 0-自身 1-友军 2-已方 3-敌人 9-全部</summary>
+		/// <summary>目标 类型</summary>
 		[ProtoMember(23)]
 		public int Target_Type { get; set; }
 		/// <summary>释法 距离</summary>

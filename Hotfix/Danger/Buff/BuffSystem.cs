@@ -92,6 +92,11 @@ namespace ET
         public static  void OnFinished(this Buff self)
         {
             self.RemoveBuffControl();
+            if (self.MBuff != null && self.MBuff.Skill_Remove > 0)
+            {
+                SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_Remove, self.TheUnitFrom, self.TheUnitBelongto);
+            }
+
             if (!self.IsTrigger)
             {
                 return;

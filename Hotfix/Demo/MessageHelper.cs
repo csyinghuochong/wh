@@ -25,20 +25,6 @@ namespace ET
 
             foreach (AOIEntity u in dict.Values)
             {
-                //bool isself = false;
-                //if (unit.Type == UnitType.Player)
-                //{
-                //    isself = u.Unit.Id == unit.Id;
-                //}
-                //else
-                //{
-                //    isself = u.Unit.Id == unit.Id || u.Unit.Id == unit.MasterId;
-                //}
-                //if (!isself && !unitComponent.AoI.Contains(u.Unit.Id))
-                //{
-                //    continue;
-                //}
-
                 SendToClientNew(u.Unit, message, opcode, stream);
 
                 //数据量日志打印
@@ -47,8 +33,8 @@ namespace ET
                     num222++;
                     messagelenght222 += stream.Length;
                 }
-
             }
+
             if (LogStatus)
             {
                 playerBroadcast222++;
@@ -120,39 +106,20 @@ namespace ET
 
         public static void BroadcastBuff(Unit unit, IActorMessage message, LDSkill_Battle_Buff buff, int sceneType)
         {
-            //主城只给自己广播
+            // 主城玩家只给自己
             if (unit.Type == UnitType.Player && sceneType == MapTypeEnum.MainCityScene)
             {
                 SendToClient(unit, message);
                 return;
             }
 
-            ///0 全部 1 队友
-            Dictionary<long, AOIEntity> dict = unit.GetBeSeePlayers();
-            (ushort opcode, MemoryStream stream) = MessageSerializeHelper.MessageToStream(message);
-
-            foreach (AOIEntity u in dict.Values)
+            // BeSeePlayers 不含自己，玩家身上的 buff 自己必收
+            if (unit.Type == UnitType.Player)
             {
-                bool broadcast = unit.Id == u.Unit.Id;
-
-                if (!broadcast)
-                {
-                   
-                }
-
-                if (!broadcast)
-                {
-                    continue;
-                }
-
-                SendToClientNew(u.Unit, message, opcode, stream);
-
-                if (LogStatus)
-                {
-                    num++;
-                    messagelenght += stream.Length;
-                } 
+                SendToClient(unit, message);
             }
+
+            Broadcast(unit, message);
         }
 
         /// <summary>

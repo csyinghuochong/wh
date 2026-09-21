@@ -21,7 +21,6 @@ namespace ET
         public long ItemPublicCDTime;
         public int FangunComboNumber;
         public long FangunLastTime;
-        public int FangunSkillId;
         public long LastLianJiTime = 0;
         public long Timer;
 

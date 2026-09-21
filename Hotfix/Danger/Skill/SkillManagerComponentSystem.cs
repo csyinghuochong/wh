@@ -29,7 +29,7 @@ namespace ET
             self.Skills.Clear();
             self.DelaySkillList.Clear();
             self.SkillCDs.Clear();
-            self.FangunSkillId = 0;////int.Parse(LDGlobalValueCategory.Instance.Get(2).Value);
+         
             self.SelfUnitComponent = self.DomainScene().GetComponent<UnitComponent>();
             self.SelfUnit = self.GetParent<Unit>();
              self.SingSkillCmd = new C2M_SkillCmd();
@@ -474,46 +474,6 @@ namespace ET
             return skillcd;
         }
 
-        //冲锋逻辑
-        //1.连续释放3次技能,进入冷却状态
-        //2.每次释放之间有5秒间隔时间,未超过间隔时间触发连击，如果超过时间重置为初始状态
-        //初始状态 最开始的0次连击
-        //冷却状态 10秒钟
-        public static SkillCDItem UpdateFangunSkillCD(this SkillManagerComponent self)
-        {
-            SkillCDItem skillcd = null;
-            long newTime = TimeHelper.ServerNow();
-            if (newTime - self.FangunLastTime <= 5000)
-            {
-                self.FangunComboNumber++;
-            }
-            else
-            {
-                self.FangunComboNumber = 1;
-            }
-
-            if (self.FangunComboNumber >= 3)
-            {
-                int fangunskill = self.FangunSkillId;
-                if (self.SkillCDs.ContainsKey(fangunskill))
-                {
-                    self.SkillCDs.Remove(fangunskill);  
-                }
-                self.FangunComboNumber = 0;
-                skillcd = new SkillCDItem();
-                skillcd.SkillID = fangunskill;
-                skillcd.CDEndTime = newTime + 10000;
-                self.SkillCDs.Add(fangunskill, skillcd);
-                //Unit unit = self.GetParent<Unit>();
-                //BuffData buffData_2 = new BuffData();
-                //buffData_2.BuffConfig = SkillBuffConfigCategory.Instance.Get(90106003);
-                //buffData_2.BuffClassScript = buffData_2.BuffConfig.BuffScript;
-                //unit.GetComponent<BuffManagerComponent>().BuffFactory(buffData_2, unit, null);
-            }
-            self.FangunLastTime = newTime;
-            return skillcd;
-        }
-
         //技能是否可以使用
         public static int IsCanUseSkill(this SkillManagerComponent self, C2M_SkillCmd skillcmd, bool zhudong = true, bool checkDead = true)
         {
@@ -613,6 +573,58 @@ namespace ET
             Skill_TreeEditor skillHandler = (Skill_TreeEditor)ObjectPool.Instance.Fetch(typeof(Skill_TreeEditor));
             skillHandler.OnInit(skillcmd, from);
             return skillHandler;
+        }
+
+        /// <summary>
+        /// Buff 关联技能（Skill_Init / Skill_Remove）：立刻跑技能树，不走 OnUseSkill（无 CD / 动作 / Time_1）。
+        /// TheUnitFrom=caster，TheUnitTarget=target，供树里 caster / target 使用。
+        /// </summary>
+        public static void ExecuteLinkedSkill(int skillId, Unit caster, Unit target)
+        {
+            if (skillId <= 0 || !LDSkill_BattleCategory.Instance.Contain(skillId))
+            {
+                return;
+            }
+
+            if (target == null || target.IsDisposed)
+            {
+                return;
+            }
+
+            Unit from = caster != null && !caster.IsDisposed ? caster : target;
+            SkillManagerComponent skillManager = from.GetComponent<SkillManagerComponent>()
+                                                ?? target.GetComponent<SkillManagerComponent>();
+            if (skillManager == null)
+            {
+                return;
+            }
+
+            Vector3 center = target.Position;
+            SkillInfo skillInfo = new SkillInfo
+            {
+                SkillID = skillId,
+                WeaponSkillID = skillId,
+                TargetID = target.Id,
+                PosX = center.x,
+                PosY = center.y,
+                PosZ = center.z,
+                TargetAngle = AngleHelper.GetQuaternionAngle(from.Rotation),
+            };
+
+            Skill_TreeEditor handler = skillManager.SkillFactory(skillInfo, from);
+            handler.TheUnitTarget = target;
+            handler.ActionPosition = center;
+            handler.HurtIds.Clear();
+            handler.OnAddHurtIds(target.Id);
+
+            if (SkillEditorTreeRegistry.TryGetTree(skillId, out SkillEditorSkillLogic logic))
+            {
+                SkillEditorTreeExecutor.Execute(handler, logic);
+            }
+
+            handler.SetSkillState(SkillState.Finished);
+            handler.OnFinished();
+            ObjectPool.Instance.Recycle(handler);
         }
 
         public static List<SkillInfo> GetMessageSkill(this SkillManagerComponent self)
