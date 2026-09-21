@@ -10534,6 +10534,15 @@ namespace ET
 		[ProtoMember(6)]
 		public int FubenType { get; set; }
 
+		[ProtoMember(7)]
+		public int LevelMin { get; set; }
+
+		[ProtoMember(8)]
+		public int LevelMax { get; set; }
+
+		[ProtoMember(9)]
+		public string RecruitMsg { get; set; }
+
 	}
 
 	[Message(OuterOpcode.TeamPlayerInfo)]
@@ -10578,6 +10587,85 @@ namespace ET
 
 		[ProtoMember(13)]
 		public List<int> FashionIds = new List<int>();
+
+	}
+
+//创建队伍
+	[ResponseType(nameof(T2C_TeamCreateResponse))]
+	[Message(OuterOpcode.C2T_TeamCreateRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamCreateRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamCreateResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamCreateResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//发布招募：无队伍则创建。Shout=0 只改队伍信息不发世界聊天，=1 发世界频道
+	[ResponseType(nameof(T2C_TeamRecruitResponse))]
+	[Message(OuterOpcode.C2T_TeamRecruitRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamRecruitRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int SceneId { get; set; }
+
+		[ProtoMember(2)]
+		public int LevelMin { get; set; }
+
+		[ProtoMember(3)]
+		public int LevelMax { get; set; }
+
+		[ProtoMember(4)]
+		public string RecruitMsg { get; set; }
+
+		[ProtoMember(5)]
+		public int Shout { get; set; }
+
+		[ProtoMember(6)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamRecruitResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamRecruitResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
 
 	}
 
@@ -10795,38 +10883,6 @@ namespace ET
 
 	}
 
-//创建队伍
-	[ResponseType(nameof(T2C_TeamCreateResponse))]
-	[Message(OuterOpcode.C2T_TeamCreateRequest)]
-	[ProtoContract]
-	public partial class C2T_TeamCreateRequest: Object, ITeamActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.T2C_TeamCreateResponse)]
-	[ProtoContract]
-	public partial class T2C_TeamCreateResponse: Object, ITeamActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //申请回复（队长同意/拒绝入队申请）
 	[ResponseType(nameof(T2C_TeamApplyReplyResponse))]
 	[Message(OuterOpcode.C2T_TeamApplyReplyRequest)]
@@ -11013,22 +11069,6 @@ namespace ET
 
 	}
 
-//退出组队广播
-	[Message(OuterOpcode.M2C_TeamDungeonQuitMessage)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonQuitMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //组队副本结算
 	[Message(OuterOpcode.M2C_TeamDungeonSettlement)]
 	[ProtoContract]
@@ -11063,11 +11103,11 @@ namespace ET
 
 	}
 
-//组队副本
-	[ResponseType(nameof(T2C_TeamDungeonInfoResponse))]
-	[Message(OuterOpcode.C2T_TeamDungeonInfoRequest)]
+//队伍列表
+	[ResponseType(nameof(T2C_TeamListResponse))]
+	[Message(OuterOpcode.C2T_TeamListRequest)]
 	[ProtoContract]
-	public partial class C2T_TeamDungeonInfoRequest: Object, ITeamActorRequest
+	public partial class C2T_TeamListRequest: Object, ITeamActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11080,9 +11120,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.T2C_TeamDungeonInfoResponse)]
+	[Message(OuterOpcode.T2C_TeamListResponse)]
 	[ProtoContract]
-	public partial class T2C_TeamDungeonInfoResponse: Object, ITeamActorResponse
+	public partial class T2C_TeamListResponse: Object, ITeamActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11142,6 +11182,7 @@ namespace ET
 
 	}
 
+//TeamDungeon end####################################################
 //邀请列表：在线好友
 	[ResponseType(nameof(F2C_FriendOnlineResponse))]
 	[Message(OuterOpcode.C2F_FriendOnlineRequest)]
@@ -11215,7 +11256,41 @@ namespace ET
 
 	}
 
-//TeamDungeon end####################################################
+//获取自己的队伍
+	[ResponseType(nameof(T2C_TeamInfoResponse))]
+	[Message(OuterOpcode.C2T_TeamInfoRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamInfoRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamInfoResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamInfoResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public TeamInfo TeamInfo { get; set; }
+
+	}
+
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

@@ -344,7 +344,7 @@ namespace ET
 
         public static async ETTask NoticeDailyReset(this ActivitySceneComponent self)
         {
-
+            await TimerComponent.Instance.WaitAsync(TimeHelper.Second);
             Console.WriteLine($"ActivitySceneComponent NoticeDailyReset");
 
             int openServerDay = DBHelper.GetOpenServerDay(self.DomainZone());

@@ -77,13 +77,6 @@ namespace ET
                 case 1:
                     response.Name = roleInfo.Name;
                     break;
-                case 2:
-                    long teamServerId = DBHelper.GetTeamServerId(UnitZoneHelper.GetHomeZone(request.UserId));
-                    T2C_GetTeamInfoResponse g_SendChatRequest1 = (T2C_GetTeamInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                        (teamServerId, new C2T_GetTeamInfoRequest() { UserID = request.UserId });
-
-                    response.TeamId = g_SendChatRequest1.TeamInfo != null ? g_SendChatRequest1.TeamInfo.TeamId : 0;
-                    break;
                 default:
                     break;
             }

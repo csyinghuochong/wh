@@ -54,7 +54,7 @@ namespace ET
                             //通知游戏逻辑服下线Unit角色逻辑，并将数据存入数据库
                             var m2GRequestExitGame = (M2G_RequestExitGame)await MessageHelper.CallLocationActor(player.UnitId, new G2M_RequestExitGame());
 
-                            //通知组队服
+                            // 暂时不做离线自动退队，不通知组队服移除玩家
                             //await ServerMessageHelper.SendServerMessage(player.TeamServerID, NoticeType.PlayerExit, player.UnitId.ToString());
 
                             //通知Solo服

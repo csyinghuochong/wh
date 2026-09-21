@@ -6,7 +6,5 @@ namespace ET
     {
 
         public List<TeamInfo> TeamList = new List<TeamInfo>();
-
-        public M2C_TeamDungeonQuitMessage M2C_TeamDungeonQuitMessage = new M2C_TeamDungeonQuitMessage();
     }
 }

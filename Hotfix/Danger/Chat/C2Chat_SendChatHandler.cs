@@ -97,8 +97,8 @@ namespace ET
                         break;
                     case (int)ChannelEnum.Team:
                         long teamServerId = StartSceneConfigCategory.Instance.GetBySceneName(chatInfoUnit.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
-                        T2C_GetTeamInfoResponse g_SendChatRequest1 = (T2C_GetTeamInfoResponse)await ActorMessageSenderComponent.Instance.Call
-                            (teamServerId, new C2T_GetTeamInfoRequest() { UserID = request.ChatInfo.UserId });
+                        T2Chat_GetTeamInfoResponse g_SendChatRequest1 = (T2Chat_GetTeamInfoResponse)await ActorMessageSenderComponent.Instance.Call
+                            (teamServerId, new Chat2T_GetTeamInfoRequest() { UserID = request.ChatInfo.UserId });
 
                         if (g_SendChatRequest1.Error == 0 && g_SendChatRequest1.TeamInfo != null)
                         {

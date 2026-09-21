@@ -82,8 +82,6 @@ namespace ET
 
         public static async ETTask InitServerInfo(this RankSceneComponent self)
         {
-            await TimerComponent.Instance.WaitAsync(TimeHelper.Second);
-
             // 战区共享 Rank：不做单服开服天数/世界等级逻辑（无 ServerItem、无本服 FubenCenter）
             if (StartZoneConfigCategory.Instance.IsWarShareZone(self.DomainZone()))
             {

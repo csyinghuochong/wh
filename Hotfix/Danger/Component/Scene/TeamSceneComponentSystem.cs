@@ -150,6 +150,9 @@ namespace ET
                 FubenInstanceId = teamInfo.FubenInstanceId,
                 FubenUUId = teamInfo.FubenUUId,
                 FubenType = teamInfo.FubenType,
+                LevelMin = teamInfo.LevelMin,
+                LevelMax = teamInfo.LevelMax,
+                RecruitMsg = teamInfo.RecruitMsg,
             };
             clone.PlayerList.AddRange(teamInfo.PlayerList);
             return clone;
@@ -213,7 +216,6 @@ namespace ET
         public static void  OnUnitReturn(this TeamSceneComponent self, Scene fubnescene, long unitId)
         {
             int realPlayerNumber = 0;
-            int robotNumber = 0;
             TeamInfo teamInfo = self.GetTeamInfo(unitId);
 
             List<Unit> allunits = UnitHelper.GetUnitList(fubnescene, UnitType.Player);
@@ -223,12 +225,6 @@ namespace ET
                 if (allunits[i].GetComponent<RoleInfoComponentServer>().RoleInfo.RobotId == 0)
                 {
                     realPlayerNumber++;
-                    continue;
-                }
-                if (teamInfo != null && unitId == teamInfo.TeamId)
-                {
-                    robotNumber++;
-                    MessageHelper.SendToClient(allunits[i], self.M2C_TeamDungeonQuitMessage);
                 }
             }
 
