@@ -2,15 +2,25 @@ using System;
 
 namespace ET
 {
-    /// <summary>
-    /// 队长回复入队申请
-    /// </summary>
     [ActorMessageHandler]
     public class C2T_TeamApplyReplyHandler : AMActorRpcHandler<Scene, C2T_TeamApplyReplyRequest, T2C_TeamApplyReplyResponse>
     {
         protected override async ETTask Run(Scene scene, C2T_TeamApplyReplyRequest request, T2C_TeamApplyReplyResponse response, Action reply)
         {
+            if (request.TeamPlayerInfo == null)
+            {
+                reply();
+                return;
+            }
+
             TeamSceneComponent teamSceneComponent = scene.GetComponent<TeamSceneComponent>();
+            teamSceneComponent.RemoveApply(request.TeamId, request.TeamPlayerInfo.UserID);
+            if (request.ReplyCode != 1)
+            {
+                reply();
+                return;
+            }
+
             if (teamSceneComponent.GetTeamInfo(request.TeamPlayerInfo.UserID) != null)
             {
                 response.Error = ErrorCode.ERR_IsHaveTeam;
@@ -25,11 +35,12 @@ namespace ET
             }
 
             TeamInfo teamInfo = teamSceneComponent.GetTeamInfo(request.TeamId);
-            if (teamInfo == null || teamInfo.PlayerList.Count == 3)
+            if (teamInfo == null || teamInfo.TeamId != request.TeamId || teamInfo.PlayerList.Count == 3)
             {
                 reply();
                 return;
             }
+
             bool haveplayer = false;
             for (int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
@@ -43,7 +54,8 @@ namespace ET
             {
                 teamInfo.PlayerList.Add(request.TeamPlayerInfo);
             }
-            teamSceneComponent.SyncTeamInfo(teamInfo,teamInfo.PlayerList).Coroutine();
+
+            teamSceneComponent.SyncTeamInfo(teamInfo, teamInfo.PlayerList).Coroutine();
             reply();
         }
     }

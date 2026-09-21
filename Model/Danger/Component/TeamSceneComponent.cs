@@ -6,5 +6,7 @@ namespace ET
     {
 
         public List<TeamInfo> TeamList = new List<TeamInfo>();
+
+        public Dictionary<long, List<TeamPlayerInfo>> ApplyDict = new Dictionary<long, List<TeamPlayerInfo>>();
     }
 }

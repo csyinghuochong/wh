@@ -10974,6 +10974,9 @@ namespace ET
 		[ProtoMember(2)]
 		public TeamPlayerInfo TeamPlayerInfo { get; set; }
 
+		[ProtoMember(3)]
+		public int ReplyCode { get; set; }
+
 	}
 
 	[Message(OuterOpcode.T2C_TeamApplyReplyResponse)]
@@ -11036,6 +11039,9 @@ namespace ET
 		[ProtoMember(1)]
 		public long UserId { get; set; }
 
+		[ProtoMember(2)]
+		public int Followe { get; set; }
+
 	}
 
 	[Message(OuterOpcode.T2C_TeamFollowResponse)]
@@ -11094,6 +11100,40 @@ namespace ET
 	{
 		[ProtoMember(1)]
 		public TeamPlayerInfo TeamPlayerInfo { get; set; }
+
+	}
+
+	[ResponseType(nameof(T2C_TeamApplyListResponse))]
+	[Message(OuterOpcode.C2T_TeamApplyListRequest)]
+	[ProtoContract]
+	public partial class C2T_TeamApplyListRequest: Object, ITeamActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.T2C_TeamApplyListResponse)]
+	[ProtoContract]
+	public partial class T2C_TeamApplyListResponse: Object, ITeamActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<TeamPlayerInfo> PlayerList = new List<TeamPlayerInfo>();
 
 	}
 
@@ -11369,6 +11409,15 @@ namespace ET
 
 		[ProtoMember(1)]
 		public List<UnionPlayerInfo> PlayerList = new List<UnionPlayerInfo>();
+
+	}
+
+	[Message(OuterOpcode.M2C_TeamFollowResult)]
+	[ProtoContract]
+	public partial class M2C_TeamFollowResult: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public TeamPlayerInfo TeamPlayerInfo { get; set; }
 
 	}
 

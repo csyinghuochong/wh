@@ -26,7 +26,7 @@ namespace ET
             {
                 if (teamInfo.PlayerList[i].UserID == request.UserId)
                 {
-                    teamInfo.PlayerList[i].Followe = 1;
+                    teamInfo.PlayerList[i].Followe = request.Followe ;
                     break;
                 }
             }

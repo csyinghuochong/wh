@@ -200,8 +200,10 @@ namespace ET
 
             if (teamInfo.PlayerList.Count == 0 || teamInfo.TeamId == userId)
             {
-                teamInfo.PlayerList.Clear();   //队伍解算
+                long teamId = teamInfo.TeamId;
+                teamInfo.PlayerList.Clear();
                 self.TeamList.Remove(teamInfo);
+                self.ClearApply(teamId);
             }
 
             self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
@@ -238,8 +240,10 @@ namespace ET
                 {
                     List<TeamPlayerInfo> userIDList = new List<TeamPlayerInfo>();
                     userIDList.AddRange(teamInfo.PlayerList);
+                    long teamId = teamInfo.TeamId;
                     teamInfo.PlayerList.Clear();
                     self.TeamList.Remove(teamInfo);
+                    self.ClearApply(teamId);
                     self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
                 }
             }
@@ -274,6 +278,73 @@ namespace ET
             Log.Debug($"TeamDungeonDispose {teamDungeonComponent.TeamInfo.TeamId}{fubnescene.InstanceId}");
             TransferHelper.NoticeFubenCenter(fubnescene, 2).Coroutine();
             fubnescene.Dispose();
+        }
+
+        public static void AddApply(this TeamSceneComponent self, long teamId, TeamPlayerInfo teamPlayerInfo)
+        {
+            if (teamId == 0 || teamPlayerInfo == null || teamPlayerInfo.UserID == 0)
+            {
+                return;
+            }
+
+            if (!self.ApplyDict.TryGetValue(teamId, out List<TeamPlayerInfo> applyList))
+            {
+                applyList = new List<TeamPlayerInfo>();
+                self.ApplyDict.Add(teamId, applyList);
+            }
+
+            for (int i = 0; i < applyList.Count; i++)
+            {
+                if (applyList[i].UserID == teamPlayerInfo.UserID)
+                {
+                    applyList[i] = teamPlayerInfo;
+                    return;
+                }
+            }
+
+            if (applyList.Count >= 10)
+            {
+                return;
+            }
+
+            applyList.Add(teamPlayerInfo);
+        }
+
+        public static void RemoveApply(this TeamSceneComponent self, long teamId, long userId)
+        {
+            if (!self.ApplyDict.TryGetValue(teamId, out List<TeamPlayerInfo> applyList))
+            {
+                return;
+            }
+
+            for (int i = applyList.Count - 1; i >= 0; i--)
+            {
+                if (applyList[i].UserID == userId)
+                {
+                    applyList.RemoveAt(i);
+                    break;
+                }
+            }
+
+            if (applyList.Count == 0)
+            {
+                self.ApplyDict.Remove(teamId);
+            }
+        }
+
+        public static List<TeamPlayerInfo> GetApplyList(this TeamSceneComponent self, long teamId)
+        {
+            if (!self.ApplyDict.TryGetValue(teamId, out List<TeamPlayerInfo> applyList) || applyList == null)
+            {
+                return new List<TeamPlayerInfo>();
+            }
+
+            return applyList;
+        }
+
+        public static void ClearApply(this TeamSceneComponent self, long teamId)
+        {
+            self.ApplyDict.Remove(teamId);
         }
     }
 }

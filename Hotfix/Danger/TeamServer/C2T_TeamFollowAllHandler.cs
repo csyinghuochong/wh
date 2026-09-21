@@ -16,15 +16,29 @@ namespace ET
                 return;
             }
 
+            TeamPlayerInfo leaderInfo = null;
             for (int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
-                if (teamInfo.PlayerList[i].UserID != teamInfo.TeamId)
+                if (teamInfo.PlayerList[i].UserID == teamInfo.TeamId)
                 {
-                    teamInfo.PlayerList[i].Followe = 1;
+                    leaderInfo = teamInfo.PlayerList[i];
+                    break;
                 }
             }
 
-            teamSceneComponent.SyncTeamInfo(teamInfo, teamInfo.PlayerList).Coroutine();
+            int zone = scene.DomainZone();
+            for (int i = 0; i < teamInfo.PlayerList.Count; i++)
+            {
+                TeamPlayerInfo playerInfo = teamInfo.PlayerList[i];
+                if (playerInfo.UserID == teamInfo.TeamId)
+                {
+                    continue;
+                }
+
+                await ServerMessageHelper.SendToClient(zone, playerInfo.UserID,
+                    new M2C_TeamFollowResult() { TeamPlayerInfo = leaderInfo });
+            }
+
             reply();
             await ETTask.CompletedTask;
         }

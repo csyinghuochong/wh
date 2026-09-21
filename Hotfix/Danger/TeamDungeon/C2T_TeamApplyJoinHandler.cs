@@ -27,9 +27,9 @@ namespace ET
                 return;
             }
 
-            //需要判断次数就添加C2M
-            M2C_TeamApplyJoinMessage m2C_HorseNoticeInfo = new M2C_TeamApplyJoinMessage() { TeamPlayerInfo = request.TeamPlayerInfo };
-            await ServerMessageHelper.SendToClient(scene.DomainZone(), teamInfo.TeamId, m2C_HorseNoticeInfo);
+            teamSceneComponent.AddApply(teamInfo.TeamId, request.TeamPlayerInfo);
+            M2C_TeamApplyJoinMessage m2C_TeamApplyJoin = new M2C_TeamApplyJoinMessage() { TeamPlayerInfo = request.TeamPlayerInfo };
+            await ServerMessageHelper.SendToClient(scene.DomainZone(), teamInfo.TeamId, m2C_TeamApplyJoin);
 
             reply();
         }
