@@ -19,6 +19,7 @@ namespace ET
                 {
                     OccInitAttribute.Add(occupation.Id, new List<AttributeItem>());
                     OccInitAttribute[occupation.Id].Add(new AttributeItem() { AttributeID = NumericType.Speed_Fixed_16, AttributeValue = occupation.Speed });
+                    OccInitAttribute[occupation.Id].Add(new AttributeItem() { AttributeID = NumericType.P_HIT_Fixed_66, AttributeValue = 950 });
                 }
             }
         }

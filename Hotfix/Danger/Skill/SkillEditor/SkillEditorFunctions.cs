@@ -399,12 +399,9 @@ namespace ET
 
             long rs = (long)SkillEditorHitResult.Hit;
 
-            if (canCrit && RandomHelper.RandomNumber(0, 10000) < 500 + critRateAdd)
-
+            if (canCrit && SkillEditorContionHelper.RollCrit(caster, target, critRateAdd))
             {
-
                 rs = (long)SkillEditorHitResult.Crit;
-
             }
 
             ctx.SetVariable("rs", rs);
@@ -662,7 +659,6 @@ namespace ET
         /// <param name="canBlockAsImmune"></param>
         private static void RunDamageCheck(SkillEditorFunctionContext ctx, bool canBlockAsImmune)
         {
-
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
 
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
@@ -697,20 +693,15 @@ namespace ET
             bool canImmune = canBlockAsImmune && canBlock;
 
             long rs = SkillEditorContionHelper.EvaluateDirectHit(
-
                 ctx, caster, target, skillId,
+                canCrit, canHeavy, canDodge,
+                critRateAdd, heavyRateAdd, hitRateAdd,
+                level, 0f, 0f, true);
 
-                canCrit, canImmune, canDodge,
-
-                critRateAdd + (canHeavy ? heavyRateAdd : 0),
-
-                hitRateAdd, level, 0f, 0f, true);
-
-            // Miss=0 Hit=1 Immune=2 Dodge=3 Crit=11
             ctx.SetVariable("rs", rs);
-
-            // 仅写判定结果；瓢字由技能树 INFORM_CLIENT_HIT_SUCCESS 负责，判定节点不通知客户端
-            bool hitOk = rs == (long)SkillEditorHitResult.Hit || rs >= (long)SkillEditorHitResult.Crit;
+            bool hitOk = rs == (long)SkillEditorHitResult.Hit
+                || rs == (long)SkillEditorHitResult.Heavy
+                || rs == (long)SkillEditorHitResult.Crit;
             ctx.LastConditionResult = hitOk;
         }
 
@@ -1444,12 +1435,18 @@ namespace ET
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
             int numericType = ctx.ResolveNumericType(ctx.GetParamRaw(2), 0);
             double deltaDisplay = SkillEditorFunctionContext.ParseDouble(ctx.ResolveParam(ctx.GetParamRaw(3)), 0d);
+
+
             if (target == null || numericType <= 0 || Math.Abs(deltaDisplay) < 1e-9)
             {
                 return;
             }
 
+            Console.WriteLine($"ChangeUnitAttributeAdd1  numericType : {numericType}  deltaDisplay:{deltaDisplay}");
+
             target.GetComponent<NumericComponent>()?.ChangeAttrFixed(caster, numericType, deltaDisplay, ctx.SkillId);
+
+            Console.WriteLine($"ChangeUnitAttributeAdd2  numericValue : {target.GetComponent<NumericComponent>().GetAsInt(NumericType.P_HIT_Fixed_66) }");
         }
 
         /// <summary>技能：百分比改属性，percent=10 表示 +10%（21→100212，80→100802）。</summary>

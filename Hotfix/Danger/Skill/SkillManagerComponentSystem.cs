@@ -204,8 +204,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 打断吟唱中。ifStop=true 时仅打断 Interrupt_2=1 的施法类技能（移动/受控等）。
-        /// 怪物前摇未进 Skills 列表，一并清掉。
+        /// 移动等：清吟唱读条，并打断 Time_1 前、Interrupt_2=1 的技能。
         /// </summary>
         public static void InterruptSing(this SkillManagerComponent self,int skillId,bool ifStop)
         {
@@ -215,18 +214,20 @@ namespace ET
             }
 
             self.InterruptPendingSing(skillId);
+            self.InterruptSkillsBeforeTime1(skillId);
+        }
 
-            Unit unit =self.GetParent<Unit>();
+        /// <summary>
+        /// Time_1 生效前可被打断：Interrupt_2=1。吟唱未释放的不在这里（走 InterruptPendingSing）。
+        /// </summary>
+        public static void InterruptSkillsBeforeTime1(this SkillManagerComponent self, int skillId = 0)
+        {
+            Unit unit = self.GetParent<Unit>();
             for (int i = self.Skills.Count - 1; i >= 0; i--)
             {
                 Skill_TreeEditor skillHandler = self.Skills[i];
                 LDSkill_Battle running = skillHandler.LdSkillConf;
-                if (running == null || running.Type != SkillTypeEnum.SkillTypeCast_2)
-                {
-                    continue;
-                }
-
-                if (!LDSkillHelper.CanBeInterrupted(running))
+                if (running == null || !LDSkillHelper.CanBeInterrupted(running))
                 {
                     continue;
                 }
@@ -236,9 +237,13 @@ namespace ET
                     continue;
                 }
 
+                if (!skillHandler.IsBeforeTime1())
+                {
+                    continue;
+                }
+
                 skillHandler.SetSkillState(SkillState.Finished);
-                M2C_SkillInterruptResult m2C_SkillInterruptResult = new M2C_SkillInterruptResult() { UnitId = unit.Id, SkillId = running.Id };
-                self.BroadcastSkill(unit, m2C_SkillInterruptResult);
+                self.BroadcastSkill(unit, new M2C_SkillInterruptResult() { UnitId = unit.Id, SkillId = running.Id });
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
@@ -305,6 +305,23 @@ namespace ET
         public static SkillState GetSkillState(this Skill_TreeEditor self)
         {
             return self.SkillState;
+        }
+
+        /// <summary>Time_1 尚未到点，技能树还没生效。</summary>
+        public static bool IsBeforeTime1(this Skill_TreeEditor self)
+        {
+            if (self == null || self.LdSkillConf == null || self.IsFinished())
+            {
+                return false;
+            }
+
+            long delayMs = (long)(1000 * self.LdSkillConf.Time_1);
+            if (delayMs < 0)
+            {
+                delayMs = 0;
+            }
+
+            return TimeHelper.ServerNow() < self.SkillBeginTime + delayMs;
         }
 
         public static bool IsFinished(this Skill_TreeEditor self)

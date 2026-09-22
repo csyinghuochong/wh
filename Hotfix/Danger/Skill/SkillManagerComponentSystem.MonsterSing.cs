@@ -117,7 +117,13 @@ namespace ET
 
             C2M_SkillCmd cmd = new C2M_SkillCmd();
             CopySkillCmd(self.SingSkillCmd, cmd);
-            self.ClearMonsterSing();
+            TimerComponent.Instance?.Remove(ref self.SingTimer);
+            if (self.SingSkillCmd != null)
+            {
+                self.SingSkillCmd.SkillID = 0;
+            }
+
+            // 读满出手：不停条，客户端接着播同一条 Attack_Animation
             self.OnUseSkill(cmd, true);
         }
 

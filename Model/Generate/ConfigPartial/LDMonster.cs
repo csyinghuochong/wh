@@ -32,6 +32,21 @@ namespace ET
                     int value = int.Parse(attribute[1]);
                     monsterAttrs.Add(new AttributeItem() { AttributeID = key, AttributeValue = value });
                 }
+
+                bool hasHit = false;
+                for (int i = 0; i < monsterAttrs.Count; i++)
+                {
+                    if (monsterAttrs[i].AttributeID == NumericType.P_HIT_Fixed_66)
+                    {
+                        hasHit = true;
+                        break;
+                    }
+                }
+
+                if (!hasHit)
+                {
+                    monsterAttrs.Add(new AttributeItem() { AttributeID = NumericType.P_HIT_Fixed_66, AttributeValue = 950 });
+                }
             }
         }
 

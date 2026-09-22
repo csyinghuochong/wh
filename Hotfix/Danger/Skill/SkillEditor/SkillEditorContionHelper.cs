@@ -1,24 +1,27 @@
 namespace ET
 {
     /// <summary>
-    /// Direct hit / condition evaluation for function.contion_1 (phyDirectRes-like).
+    /// 技能伤害判定。默认暴击 0.05；命中走自身 66（职业/怪初始 950=/1000→0.95）。技能加成 /10000。
     /// </summary>
     public static class SkillEditorContionHelper
     {
+        private const double DefaultCritRate = 0.05d;
+
         public static long EvaluateDirectHit(
-          SkillEditorFunctionContext ctx,
-          Unit caster,
-          Unit target,
-          int skillId,
-          bool canCrit,
-          bool canImmune,
-          bool canDodge,
-          int critRateAdd,
-          int hitRateAdd,
-          int skillLevel,
-          float hateInit,
-          float hateGrowth,
-          bool sendHitMsg)
+            SkillEditorFunctionContext ctx,
+            Unit caster,
+            Unit target,
+            int skillId,
+            bool canCrit,
+            bool canHeavy,
+            bool canDodge,
+            int critRateAdd,
+            int heavyRateAdd,
+            int hitRateAdd,
+            int skillLevel,
+            float hateInit,
+            float hateGrowth,
+            bool sendHitMsg)
         {
             if (caster == null || target == null || caster.IsDisposed || target.IsDisposed)
             {
@@ -30,75 +33,75 @@ namespace ET
                 return (long)SkillEditorHitResult.Miss;
             }
 
+            NumericComponent casterNumeric = caster.GetComponent<NumericComponent>();
+            NumericComponent targetNumeric = target.GetComponent<NumericComponent>();
+            int x = RandomHelper.RandomNumber(0, 10001);
 
-            float hitRate = 10000 + hitRateAdd;
-            if (hitRate < 0)
+            if (canDodge)
             {
-                hitRate = 0;
-            }
-
-            if (hitRate < 10000f && RandomHelper.RandFloat01() > hitRate / 10000f)
-            {
-                return (long)SkillEditorHitResult.Miss;
-            }
-
-            if (canDodge && RollDodge(caster, target))
-            {
-                return (long)SkillEditorHitResult.Dodge;
+                double hitRate = hitRateAdd / 10000d
+                    + Attr(casterNumeric, NumericType.P_HIT_Fixed_66) / 1000d
+                    - Attr(targetNumeric, NumericType.P_DODGE_Fixed_68) / 1000d;
+                if (x > hitRate * 10000d)
+                {
+                    return (long)SkillEditorHitResult.Dodge;
+                }
             }
 
             long result = (long)SkillEditorHitResult.Hit;
-            if (canCrit && RollCrit(caster, target, critRateAdd))
+            if (canCrit)
             {
-                result = (long)SkillEditorHitResult.Crit;
+                double critRate = DefaultCritRate
+                    + critRateAdd / 10000d
+                    + Attr(casterNumeric, NumericType.P_CRI_Fixed_70) / 1000d
+                    - Attr(targetNumeric, NumericType.P_CRI_RES_Fixed_74) / 1000d;
+                if (x <= critRate * 10000d)
+                {
+                    result = (long)SkillEditorHitResult.Crit;
+                }
+            }
+
+            if (result == (long)SkillEditorHitResult.Hit && canHeavy)
+            {
+                double heavyRate = DefaultCritRate
+                    + heavyRateAdd / 10000d
+                    + Attr(casterNumeric, NumericType.SMASH_Fixed_80) / 1000d
+                    - Attr(targetNumeric, NumericType.SMASH_RES_Fixed_82) / 1000d;
+                if (x <= heavyRate * 10000d)
+                {
+                    result = (long)SkillEditorHitResult.Heavy;
+                }
+            }
+
+            if (result == (long)SkillEditorHitResult.Crit)
+            {
+                target.GetComponent<SkillManagerComponent>()?.InterruptSkillsBeforeTime1();
             }
 
             ApplyHate(caster, target, hateInit, hateGrowth, skillLevel);
-
-            if (sendHitMsg)
+            if (sendHitMsg && Log.IsDebugEnabled)
             {
-                if (Log.IsDebugEnabled) Log.Debug($"SkillEditor hit skill={skillId} caster={caster.Id} target={target.Id} rs={result}");
+                Log.Debug($"SkillEditor hit skill={skillId} caster={caster.Id} target={target.Id} x={x} rs={result}");
             }
 
             return result;
         }
 
-        private static bool RollDodge(Unit caster, Unit target)
+        public static bool RollCrit(Unit caster, Unit target, int critRateAdd)
         {
             NumericComponent casterNumeric = caster?.GetComponent<NumericComponent>();
             NumericComponent targetNumeric = target?.GetComponent<NumericComponent>();
-            if (targetNumeric == null)
-            {
-                return false;
-            }
-
-            // 闪避率 = 基础 + 受击方闪避(68) - 攻击方命中(66)，万分率
-            long dodgeRate = 500
-                + NumericConvert.GetRatePoints(targetNumeric, NumericType.P_DODGE_Fixed_68)
-                - NumericConvert.GetRatePoints(casterNumeric, NumericType.P_HIT_Fixed_66);
-            if (dodgeRate <= 0)
-            {
-                return false;
-            }
-
-            return RandomHelper.RandomNumber(0, 10000) < dodgeRate;
+            double critRate = DefaultCritRate
+                + critRateAdd / 10000d
+                + Attr(casterNumeric, NumericType.P_CRI_Fixed_70) / 1000d
+                - Attr(targetNumeric, NumericType.P_CRI_RES_Fixed_74) / 1000d;
+            int x = RandomHelper.RandomNumber(0, 10001);
+            return x <= critRate * 10000d;
         }
 
-        private static bool RollCrit(Unit caster, Unit target, int critRateAdd)
+        private static long Attr(NumericComponent numeric, int attrId)
         {
-            NumericComponent casterNumeric = caster?.GetComponent<NumericComponent>();
-            NumericComponent targetNumeric = target?.GetComponent<NumericComponent>();
-            // 暴击率 = 基础 + 攻击方暴击(70) - 受击方抗暴(74) + 技能附加，万分率
-            long critRate = 500
-                + critRateAdd
-                + NumericConvert.GetRatePoints(casterNumeric, NumericType.P_CRI_Fixed_70)
-                - NumericConvert.GetRatePoints(targetNumeric, NumericType.P_CRI_RES_Fixed_74);
-            if (critRate <= 0)
-            {
-                return false;
-            }
-
-            return RandomHelper.RandomNumber(0, 10000) < critRate;
+            return numeric?.GetAsLong(attrId) ?? 0;
         }
 
         private static void ApplyHate(Unit caster, Unit target, float hateInit, float hateGrowth, int skillLevel)
@@ -109,13 +112,12 @@ namespace ET
             }
 
             float hate = hateInit + hateGrowth * (skillLevel - 1);
-            if (hate <= 0f)
+            if (hate <= 0f || !Log.IsDebugEnabled)
             {
                 return;
             }
 
-            // TODO: integrate with monster hate/threat component
-            if (Log.IsDebugEnabled) Log.Debug($"SkillEditor hate caster={caster.Id} target={target.Id} value={hate}");
+            Log.Debug($"SkillEditor hate caster={caster.Id} target={target.Id} value={hate}");
         }
     }
 }

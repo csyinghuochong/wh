@@ -156,7 +156,13 @@ namespace ET
                 unit.Stop(0);        //停止当前移动
             }
 
-            unit.GetComponent<SkillManagerComponent>()?.InterruptSing(0, true);
+            SkillManagerComponent skillManager = unit.GetComponent<SkillManagerComponent>();
+            skillManager?.InterruptPendingSing();
+            if (StateTypeEnum.IsHardControl(nowStateType))
+            {
+                skillManager?.InterruptSkillsBeforeTime1();
+            }
+
             unit.GetComponent<SkillPassiveComponent>().StateTypeAdd(nowStateType);
         }
 
