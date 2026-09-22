@@ -80,6 +80,7 @@ namespace ET
             };
 
         /// <summary>计算物理/法术伤害主入口。</summary>
+        /// E:\LDYQU3DProject\trunk\Server\Hotfix\Danger\Skill\SkillEditor\Document\技能编辑器计算物理伤害
         public static void CalculateDamage(SkillEditorFunctionContext ctx, SkillEditorDamageKind kind)
         {
             // 参数 0~3：施法者、目标、技能 ID、技能等级

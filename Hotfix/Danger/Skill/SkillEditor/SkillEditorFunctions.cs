@@ -703,6 +703,10 @@ namespace ET
                 || rs == (long)SkillEditorHitResult.Heavy
                 || rs == (long)SkillEditorHitResult.Crit;
             ctx.LastConditionResult = hitOk;
+            if (!hitOk)
+            {
+                SendNumbericChangeHelper.InformClientHit(caster, target, rs, 0);
+            }
         }
 
 
