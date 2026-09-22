@@ -1,7 +1,7 @@
 namespace ET
 {
     /// <summary>
-    /// 技能伤害判定。默认暴击 0.05；命中走自身 66（职业/怪初始 950=/1000→0.95）。技能加成 /10000。
+    /// 技能伤害判定。命中/暴击走自身 66/70（职业/怪/宠初始 950、50，/1000）。技能加成 /10000。重击默认 0.05。
     /// </summary>
     public static class SkillEditorContionHelper
     {
@@ -51,8 +51,7 @@ namespace ET
             long result = (long)SkillEditorHitResult.Hit;
             if (canCrit)
             {
-                double critRate = DefaultCritRate
-                    + critRateAdd / 10000d
+                double critRate = critRateAdd / 10000d
                     + Attr(casterNumeric, NumericType.P_CRI_Fixed_70) / 1000d
                     - Attr(targetNumeric, NumericType.P_CRI_RES_Fixed_74) / 1000d;
                 if (x <= critRate * 10000d)
@@ -91,8 +90,7 @@ namespace ET
         {
             NumericComponent casterNumeric = caster?.GetComponent<NumericComponent>();
             NumericComponent targetNumeric = target?.GetComponent<NumericComponent>();
-            double critRate = DefaultCritRate
-                + critRateAdd / 10000d
+            double critRate = critRateAdd / 10000d
                 + Attr(casterNumeric, NumericType.P_CRI_Fixed_70) / 1000d
                 - Attr(targetNumeric, NumericType.P_CRI_RES_Fixed_74) / 1000d;
             int x = RandomHelper.RandomNumber(0, 10001);

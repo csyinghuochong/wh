@@ -34,18 +34,27 @@ namespace ET
                 }
 
                 bool hasHit = false;
+                bool hasCrit = false;
                 for (int i = 0; i < monsterAttrs.Count; i++)
                 {
                     if (monsterAttrs[i].AttributeID == NumericType.P_HIT_Fixed_66)
                     {
                         hasHit = true;
-                        break;
+                    }
+                    else if (monsterAttrs[i].AttributeID == NumericType.P_CRI_Fixed_70)
+                    {
+                        hasCrit = true;
                     }
                 }
 
                 if (!hasHit)
                 {
                     monsterAttrs.Add(new AttributeItem() { AttributeID = NumericType.P_HIT_Fixed_66, AttributeValue = 950 });
+                }
+
+                if (!hasCrit)
+                {
+                    monsterAttrs.Add(new AttributeItem() { AttributeID = NumericType.P_CRI_Fixed_70, AttributeValue = 50 });
                 }
             }
         }
