@@ -795,6 +795,9 @@ namespace ET
 		[ProtoMember(30)]
 		public int RideLv { get; set; }
 
+		[ProtoMember(31)]
+		public int Sex { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_CreateUnits)]
@@ -2158,6 +2161,9 @@ namespace ET
 
 		[ProtoMember(14)]
 		public List<BagInfo> PetEquipList = new List<BagInfo>();
+
+		[ProtoMember(15)]
+		public int Sex { get; set; }
 
 	}
 

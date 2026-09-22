@@ -43,6 +43,7 @@ namespace ET
             //roleInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
             roleInfo.CreateTime = TimeHelper.ServerNow();
             roleInfo.Occ = createRoleInfo.PlayerOcc;
+            roleInfo.Sex = createRoleInfo.Sex;
             roleInfo.CreateTime = createRoleInfo.CreateTime;
 
             if (createRoleInfo.RobotId > 0)

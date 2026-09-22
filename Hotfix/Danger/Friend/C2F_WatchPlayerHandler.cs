@@ -72,6 +72,7 @@ namespace ET
                     }
 
                     response.FashionIds = bagComponentsServer.FashionEquipList;
+                    response.Sex = roleInfo.Sex;
                     break;
                 //只返回名字
                 case 1:

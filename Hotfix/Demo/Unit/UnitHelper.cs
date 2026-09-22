@@ -63,6 +63,7 @@ namespace ET
                     RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                     unitInfo.UnitName = roleInfoComponentServer.RoleInfo.Name;
                     unitInfo.ConfigId = roleInfoComponentServer.RoleInfo.Occ;
+                    unitInfo.Sex = roleInfoComponentServer.RoleInfo.Sex;
                     unitInfo.UnionName = string.IsNullOrWhiteSpace(roleInfoComponentServer.RoleInfo.UnionName) ? string.Empty : roleInfoComponentServer.RoleInfo.UnionName;
                     BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                     unitInfo.FashionEquipList = bagComponentServer.FashionEquipList;
