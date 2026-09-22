@@ -86,47 +86,6 @@ namespace ET
             return days;
         }
 
-
-        public const string LogicServer = "weijinggameserver.weijinggame.com";//"weijinggameserver.weijinggame.com"
-
-        //ec2-52-35-43-8.us-west-2.compute.amazonaws.com    52.35.43.8      172.31.44.172  亚马逊 美国 -俄勒冈州
-        //ec2-23-20-18-54.compute-1.amazonaws.com           23.20.18.54     172.31.21.19   亚马逊 美国 -弗吉尼亚州
-        //othercountry2.weijinggame.com                     8.221.119.18    172.31.183.49  阿里云 美国 -弗吉尼亚州
-        //                                                  47.251.252.96   172.20.250.253 阿里云  美国 -加利福尼亚州  距离俄勒冈州 近一点  玩家ip也在俄勒冈州
-        //                                                  47.86.59.101    172.20.227.82 阿里云  香港
-        public const string LogicServerGoogle = "47.86.59.101"; //"8.221.110.80"; ///"47.77.221.152"; //"47.86.59.101";香港    //"othercountry.weijinggame.com";  
-        public const string LogicServerBanHao = "43.139.108.125";
-
-        public static string GetLogicServer(bool innerNet)
-        {
-            if (Platform == -1)
-            {
-                Console.WriteLine("Platform == -1");
-            }
-
-            if (innerNet)
-            {
-                return LocalIp;
-            }
-
-            if (Platform == 7)
-            {
-                return LogicServerGoogle;
-            }
-
-            return VersionMode == 1 ? LogicServer : LogicServerBanHao;
-
-            //switch (versionMode)
-            //{
-            //    case VersionMode.BanHao:
-            //        return innerNet ? ComHelp.LocalIp : LogicServerBanHao;
-            //    default:
-            //        return innerNet ? ComHelp.LocalIp : LogicServer;
-
-            //}
-        }
-
-      
         /// <summary>
         /// 
         /// </summary>
