@@ -93,7 +93,8 @@ namespace ET
 
             if (unit != null && rt.MoveType != SkillEntityMoveType.Still_0)
             {
-                unit.Position = FlyHeightHelper.WithFlyYFromFlyer(unit.Position, unit, self.StartPosition.y);
+                Unit caster = unit.GetParent<UnitComponent>()?.Get(masterId) ?? FlyHeightHelper.GetCaster(unit);
+                unit.Position = FlyHeightHelper.Apply(unit.Position, caster, null, self.StartPosition.y, 0f);
             }
         }
 
@@ -236,7 +237,7 @@ namespace ET
             float traveled = speed * (self.PassTime * 0.001f);
             Vector3 next;
             Vector3 dir;
-            float flyY = FlyHeightHelper.GetFlyY(master, self.StartPosition.y);
+            float fallbackY = self.StartPosition.y;
 
             if (rt.MoveType == SkillEntityMoveType.Track_2)
             {
@@ -252,7 +253,7 @@ namespace ET
                 if (total <= 1e-4f)
                 {
                     Vector3 at = trackTarget.Position;
-                    at.y = flyY;
+                    at.y = FlyHeightHelper.GetFlyY(master, trackTarget, fallbackY, 1f);
                     unit.Position = at;
                     return;
                 }
@@ -261,6 +262,7 @@ namespace ET
                 float maxTravel = Math.Max(0f, total - CollideReach);
                 float move = Math.Min(traveled, maxTravel);
                 next = move >= maxTravel ? trackTarget.Position - dir * CollideReach : start + dir * move;
+                next.y = FlyHeightHelper.GetFlyY(master, trackTarget, fallbackY, Math.Min(1f, traveled / total));
             }
             else
             {
@@ -278,9 +280,9 @@ namespace ET
 
                 dir.Normalize();
                 next = self.StartPosition + dir * traveled;
+                next.y = FlyHeightHelper.GetStartY(master, fallbackY);
             }
 
-            next.y = flyY;
             unit.Position = next;
             unit.Rotation = Quaternion.LookRotation(dir, Vector3.up);
         }

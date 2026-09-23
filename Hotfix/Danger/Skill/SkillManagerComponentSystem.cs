@@ -574,7 +574,6 @@ namespace ET
         
         public static Skill_TreeEditor SkillFactory(this SkillManagerComponent self, SkillInfo skillcmd, Unit from)
         {
-            LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillcmd.WeaponSkillID);
             Skill_TreeEditor skillHandler = (Skill_TreeEditor)ObjectPool.Instance.Fetch(typeof(Skill_TreeEditor));
             skillHandler.OnInit(skillcmd, from);
             return skillHandler;
@@ -583,10 +582,16 @@ namespace ET
         /// <summary>
         /// Buff / 技能体关联技能：立刻跑技能树，不走 OnUseSkill（无 CD / 动作 / Time_1）。
         /// TheUnitFrom=caster，TheUnitTarget=target。技能体 caster 无 SkillManager 时用 MasterId 主人。
+        /// 子技能必须有 Skill_Battle 行，没有直接 return。
         /// </summary>
         public static void ExecuteLinkedSkill(int skillId, Unit caster, Unit target)
         {
-            if (skillId <= 0 || !LDSkill_BattleCategory.Instance.Contain(skillId))
+            if (skillId <= 0)
+            {
+                return;
+            }
+
+            if (!LDSkill_BattleCategory.Instance.Contain(skillId))
             {
                 return;
             }

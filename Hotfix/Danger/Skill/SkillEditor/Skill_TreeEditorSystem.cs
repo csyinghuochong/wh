@@ -25,11 +25,9 @@ namespace ET
 
             self.SkillExcuteHurtTime = self.SkillBeginTime + (long)(1000 * firstDelay);
 
-            // 技能结束时间统一：Begin + Time_3
             double endSec = ldSkill.Time_3 > 0 ? ldSkill.Time_3 : 1;
             self.SkillEndTime = self.SkillBeginTime + (long)(1000 * endSec);
 
-            // 引导：Time_Interval 跳伤间隔（总窗口以 SkillEndTime/Time_3 为准；5s/1s → 0,1,2,3,4 共五次）
             if (ldSkill.Type == SkillTypeEnum.SkillTypeGuide_3 && ldSkill.Time_Interval > 0)
             {
                 self.GuideIntervalMs = (long)(1000 * ldSkill.Time_Interval);

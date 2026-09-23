@@ -90,7 +90,8 @@ namespace ET
 
             if (unit != null)
             {
-                unit.Position = FlyHeightHelper.WithFlyYFromFlyer(unit.Position, unit, self.StartPosition.y);
+                Unit caster = FlyHeightHelper.GetCaster(unit);
+                unit.Position = FlyHeightHelper.Apply(unit.Position, caster, null, self.StartPosition.y, 0f);
             }
 
             if (Log.IsDebugEnabled)
@@ -145,8 +146,8 @@ namespace ET
         private static void Fly(BulletComponent self, Unit unit, Unit trackTarget)
         {
             float traveled = self.Speed * (self.PassTime * 0.001f);
-            Unit master = FlyHeightHelper.GetPerson(unit);
-            float flyY = FlyHeightHelper.GetFlyY(master, self.StartPosition.y);
+            Unit caster = FlyHeightHelper.GetCaster(unit);
+            float fallbackY = self.StartPosition.y;
 
             if (self.TrackTargetId > 0)
             {
@@ -162,7 +163,7 @@ namespace ET
                 if (total <= 1e-4f)
                 {
                     Vector3 at = trackTarget.Position;
-                    at.y = flyY;
+                    at.y = FlyHeightHelper.GetFlyY(caster, trackTarget, fallbackY, 1f);
                     unit.Position = at;
                     return;
                 }
@@ -173,7 +174,7 @@ namespace ET
                 Vector3 next = move >= maxTravel
                     ? trackTarget.Position - dir * CollideReach
                     : start + dir * move;
-                next.y = flyY;
+                next.y = FlyHeightHelper.GetFlyY(caster, trackTarget, fallbackY, Math.Min(1f, traveled / total));
                 unit.Position = next;
                 unit.Rotation = Quaternion.LookRotation(dir, Vector3.up);
                 return;
@@ -193,7 +194,7 @@ namespace ET
 
             forward.Normalize();
             Vector3 straight = self.StartPosition + forward * traveled;
-            straight.y = flyY;
+            straight.y = FlyHeightHelper.GetStartY(caster, fallbackY);
             unit.Position = straight;
             unit.Rotation = Quaternion.LookRotation(forward, Vector3.up);
         }
