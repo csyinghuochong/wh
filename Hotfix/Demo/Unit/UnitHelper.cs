@@ -79,7 +79,7 @@ namespace ET
                     unitInfo.Buffs = unit.GetComponent<BuffManagerComponent>().GetMessageBuff();
                     unitInfo.Skills = unit.GetComponent<SkillManagerComponent>().GetMessageSkill();
                     break;
-                case UnitType.JingLing:
+                case UnitType.Elf:
                 case UnitType.Pasture:
                 case UnitType.Plant:
                 case UnitType.Pet:
@@ -136,7 +136,7 @@ namespace ET
             switch (sendUnit.Type)
             {
                 case UnitType.Player:
-                case UnitType.JingLing:
+                case UnitType.Elf:
                 case UnitType.Pasture:
                 case UnitType.Plant:
                 case UnitType.Pet:

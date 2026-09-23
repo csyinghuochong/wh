@@ -1135,7 +1135,7 @@ namespace ET
                 return unit.GetComponent<RoleInfoComponentServer>()?.RoleInfo?.Lv ?? 0;
             }
 
-            if (unit.Type == UnitType.Pet || unit.Type == UnitType.JingLing)
+            if (unit.Type == UnitType.Pet || unit.Type == UnitType.Elf)
             {
                 Unit master = unit.GetParent<UnitComponent>()?.Get(unit.MasterId);
                 if (master != null && !master.IsDisposed && master.Type == UnitType.Player)

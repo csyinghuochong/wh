@@ -4,7 +4,7 @@ namespace ET
 {
 
     [AIHandler]
-    public class AI_JingLing : AAIHandler
+    public class AI_Elf : AAIHandler
     {
 
         public override bool Check(AIComponent aiComponent, LDAI ldai)

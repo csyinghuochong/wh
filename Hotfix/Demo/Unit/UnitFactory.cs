@@ -187,7 +187,7 @@ namespace ET
          
             //精灵不能作为主人
             Unit master = scene.GetComponent<UnitComponent>().Get(createMonsterInfo.MasterID);
-            if (master != null && master.Type == UnitType.JingLing)
+            if (master != null && master.Type == UnitType.Elf)
             {
                 createMonsterInfo.MasterID = master.MasterId;
             }
@@ -574,7 +574,7 @@ namespace ET
             unit.AddComponent<BuffManagerComponent>();
             unit.AddComponent<UnitLifeComponent>();
             unit.Position = new Vector3(master.Position.x + RandomHelper.RandFloat01() * 1f, master.Position.y, master.Position.z + RandomHelper.RandFloat01() * 1f);
-            unit.Type = UnitType.JingLing;
+            unit.Type = UnitType.Elf;
 
             AIComponent aIComponent = unit.AddComponent<AIComponent, int>(10);     //AI行为树序号
             aIComponent.InitJingLing(jinglingId);
