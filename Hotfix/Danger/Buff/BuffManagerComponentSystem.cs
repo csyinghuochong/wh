@@ -58,31 +58,50 @@ namespace ET
 
         public static void OnDeadRemoveBuffBy(this BuffManagerComponent self, long unitId)
         {
-            int buffcnt = self.m_Buffs.Count;
-            for (int i = buffcnt - 1; i >= 0; i--)
-            {
-                if (self.m_Buffs[i].TheUnitFrom.Id == unitId)
-                {
-                    self.OnRemoveBuffItem(self.m_Buffs[i]);
-                    self.m_Buffs.RemoveAt(i);
-                }
-            }
+            self.MarkFinishedFromUnit(unitId);
+            self.Check();
         }
 
         public static void OnRetreatRemoveBuff(this BuffManagerComponent self, long unitId)
         {
-            int buffcnt = self.m_Buffs.Count;
-            for (int i = buffcnt - 1; i >= 0; i--)
+            self.MarkFinishedFromUnit(unitId);
+            self.Check();
+        }
+
+        private static void MarkFinishedFromUnit(this BuffManagerComponent self, long unitId)
+        {
+            for (int i = 0; i < self.m_Buffs.Count; i++)
             {
-                if (self.m_Buffs[i].TheUnitFrom.Id == unitId)
+                Buff buff = self.m_Buffs[i];
+                if (buff.BuffState == BuffState.Finished)
                 {
-                    self.OnRemoveBuffItem(self.m_Buffs[i]);
-                    self.m_Buffs.RemoveAt(i);
+                    continue;
+                }
+
+                if (GetFromUnitId(buff) == unitId)
+                {
+                    buff.BuffState = BuffState.Finished;
                 }
             }
         }
 
-        /// <summary>先 OnFinished（Skill_Remove）再回收。</summary>
+        private static void MarkInterrupt(Buff buff)
+        {
+            buff.BuffState = BuffState.Finished;
+            buff.IsInterrupt = true;
+        }
+
+        private static long GetFromUnitId(Buff buff)
+        {
+            if (buff.TheUnitFrom != null)
+            {
+                return buff.TheUnitFrom.Id;
+            }
+
+            return buff.BuffData.UnitIdFrom;
+        }
+
+        /// <summary>先 OnFinished 再回收。Skill_Remove 仅 IsInterrupt。</summary>
         private static void FinishAndRemoveBuff(this BuffManagerComponent self, Buff buffHandler, int index, bool notice)
         {
             int buffId = buffHandler.BuffData.BuffId;
@@ -96,7 +115,7 @@ namespace ET
 
             buffHandler.BuffState = BuffState.Finished;
             self.m_Buffs.RemoveAt(index);
-            buffHandler.OnFinished();
+            buffHandler.OnFinished(buffHandler.IsInterrupt);
             ObjectPool.Instance.Recycle(buffHandler);
             self.AddBuffRecord(0, buffId);
         }
@@ -144,7 +163,7 @@ namespace ET
             MessageHelper.BroadcastBuff(self.GetParent<Unit>(), m2C_UnitBuffUpdate, buffHandler.MBuff, self.SceneType);
 
             buffHandler.BuffState = BuffState.Finished;
-            buffHandler.OnFinished();
+            buffHandler.OnFinished(true);
             int buffId = buffHandler.BuffData.BuffId;
             ObjectPool.Instance.Recycle(buffHandler);
             self.AddBuffRecord(0, buffId);
@@ -173,24 +192,29 @@ namespace ET
         // Remove_Dead 暂不处理，死亡先全清
         public static void OnDead(this BuffManagerComponent self, Unit attack)
         {
-            for (int i = self.m_Buffs.Count - 1; i >= 0; i--)
+            for (int i = 0; i < self.m_Buffs.Count; i++)
             {
-                self.FinishAndRemoveBuff(self.m_Buffs[i], i, true);
+                self.m_Buffs[i].BuffState = BuffState.Finished;
             }
-            TimerComponent.Instance?.Remove(ref self.Timer);
+            self.Check();
         }
 
         public static void BuffRemoveByUnit(this BuffManagerComponent self, long unitId, int buffId)
         {
-            for (int i = self.m_Buffs.Count - 1; i >= 0; i--)
+            for (int i = 0; i < self.m_Buffs.Count; i++)
             {
                 Buff buffHandler = self.m_Buffs[i];
-                if (buffHandler.MBuff.Id == buffId &&
-                    (buffHandler.TheUnitFrom.Id == unitId || unitId == 0))
+                if (buffHandler.BuffState == BuffState.Finished || buffHandler.MBuff.Id != buffId)
                 {
-                    buffHandler.BuffState = BuffState.Finished;
+                    continue;
+                }
+
+                if (unitId == 0 || GetFromUnitId(buffHandler) == unitId)
+                {
+                    MarkInterrupt(buffHandler);
                 }
             }
+            self.Check();
         }
 
 
@@ -198,12 +222,12 @@ namespace ET
         {
             if (self.Timer == 0)
             {
-                self.Timer = TimerComponent.Instance.NewRepeatedTimer(500, TimerType.BuffTimer, self);
+                self.Timer = TimerComponent.Instance.NewRepeatedTimer(100, TimerType.BuffTimer, self);
             }
         }
 
 
-        public static bool BuffFactory(this BuffManagerComponent self, BuffData buffData, Unit from, Skill_TreeEditor skillHandler, bool notice = true, bool ignoreImmune = false)
+        public static bool BuffFactory(this BuffManagerComponent self, BuffData buffData, Unit from, Skill_TreeEditor skillHandler, bool notice = true, bool ignoreImmune = false, long intervalMs = 0)
         {
             if (buffData.BuffId <= 0)
             {
@@ -233,7 +257,7 @@ namespace ET
 
                 if (NeedMutexRemove(ldSkillBuff, oldBuff.MBuff))
                 {
-                    oldBuff.BuffState = BuffState.Finished;
+                    MarkInterrupt(oldBuff);
                 }
             }
 
@@ -256,23 +280,23 @@ namespace ET
             switch (addType)
             {
                 case BuffAddType.Replace_0:
-                    buffHandler = self.AddNewBuff(buffData, from, unit, skillHandler, ldSkillBuff);
+                    buffHandler = self.AddNewBuff(buffData, from, unit, skillHandler, ldSkillBuff, intervalMs);
  
                     break;
                 case BuffAddType.Extend_2:
                     buffHandler = self.FindSameIdBuff(ldSkillBuff.Id);
                     if (buffHandler != null)
                     {
-                        self.RefreshBuff(buffHandler, buffData, from, unit, ldSkillBuff);
+                        self.RefreshBuff(buffHandler, buffData, from, unit, ldSkillBuff, intervalMs);
                         operateType = 3;
                     }
                     else
                     {
-                        buffHandler = self.AddNewBuff(buffData, from, unit, skillHandler, ldSkillBuff);
+                        buffHandler = self.AddNewBuff(buffData, from, unit, skillHandler, ldSkillBuff, intervalMs);
                     }
                     break;
                 default:
-                    buffHandler = self.AddNewBuff(buffData, from, unit, skillHandler, ldSkillBuff);
+                    buffHandler = self.AddNewBuff(buffData, from, unit, skillHandler, ldSkillBuff, intervalMs);
    
                     break;
             }
@@ -304,22 +328,30 @@ namespace ET
             return true;
         }
 
-        private static Buff AddNewBuff(this BuffManagerComponent self, BuffData buffData, Unit from, Unit unit, Skill_TreeEditor skillHandler, LDSkill_Battle_Buff ldSkillBuff)
+        private static Buff AddNewBuff(this BuffManagerComponent self, BuffData buffData, Unit from, Unit unit, Skill_TreeEditor skillHandler, LDSkill_Battle_Buff ldSkillBuff, long intervalMs)
         {
             Buff buffHandler = self.AddChild<Buff>();
             self.m_Buffs.Insert(0, buffHandler);
-            buffHandler.OnInit(buffData, from, unit, skillHandler);
+            buffHandler.OnInit(buffData, from, unit, skillHandler, intervalMs);
             self.AddTimer();
             self.AddBuffRecord(1, buffHandler.BuffData.BuffId);
             SkillManagerComponentSystem.ExecuteLinkedSkill(ldSkillBuff.Skill_Init, from, unit);
             return buffHandler;
         }
 
-        private static void RefreshBuff(this BuffManagerComponent self, Buff buffHandler, BuffData buffData, Unit from, Unit unit, LDSkill_Battle_Buff ldSkillBuff)
+        private static void RefreshBuff(this BuffManagerComponent self, Buff buffHandler, BuffData buffData, Unit from, Unit unit, LDSkill_Battle_Buff ldSkillBuff, long intervalMs)
         {
             buffHandler.BuffData = buffData;
             buffHandler.TheUnitFrom = from;
             buffHandler.BeginTime = TimeHelper.ServerNow();
+            buffHandler.IsTimeEnd = false;
+            buffHandler.IsInterrupt = false;
+            buffHandler.IsTrigger = false;
+            buffHandler.InterValTime = intervalMs;
+            if (buffHandler.InterValTime > 0)
+            {
+                buffHandler.InterValTimeBegin = buffHandler.BeginTime + buffHandler.InterValTime;
+            }
             if (buffData.BuffEndTime > 0)
             {
                 buffHandler.BuffEndTime = buffData.BuffEndTime;
@@ -362,6 +394,7 @@ namespace ET
                 }
 
                 buff.BuffState = BuffState.Finished;
+                buff.IsInterrupt = true;
                 remain--;
             }
         }
@@ -535,7 +568,12 @@ namespace ET
             int buffcnt = self.m_Buffs.Count;
             for (int i = buffcnt - 1; i >= 0; i--)
             {
-                self.m_Buffs[i].OnUpdate();
+                Buff buffHandler = self.m_Buffs[i];
+                if (buffHandler.BuffState != BuffState.Finished)
+                {
+                    buffHandler.OnUpdate();
+                }
+
                 if (self.m_Buffs.Count == 0)
                 {
                     break;
@@ -548,7 +586,6 @@ namespace ET
                 if (self.m_Buffs[i].BuffState == BuffState.Finished)
                 {
                     self.FinishAndRemoveBuff(self.m_Buffs[i], i, true);
-                    continue;
                 }
             }
             if (self.m_Buffs.Count == 0)
@@ -591,7 +628,7 @@ namespace ET
             for (int i = buffcnt - 1; i >= 0; i--)
             {
                 Buff buffHandler = self.m_Buffs[i];
-                buffHandler.OnFinished();
+                buffHandler.OnFinished(false);
                 ObjectPool.Instance.Recycle(buffHandler);
                 self.m_Buffs.RemoveAt(i);
                

@@ -88,14 +88,20 @@ namespace ET
 		/// <summary>特效ID</summary>
 		[ProtoMember(3)]
 		public int Effect_ID { get; set; }
-		/// <summary>技能1</summary>
+		/// <summary>初始技能</summary>
 		[ProtoMember(4)]
 		public int Skill_1 { get; set; }
-		/// <summary>技能2</summary>
+		/// <summary>作用技能</summary>
 		[ProtoMember(5)]
 		public int Skill_2 { get; set; }
-		/// <summary>速度</summary>
+		/// <summary>追踪技能</summary>
 		[ProtoMember(6)]
+		public int Skill_3 { get; set; }
+		/// <summary>消亡技能</summary>
+		[ProtoMember(7)]
+		public int Skill_4 { get; set; }
+		/// <summary>速度</summary>
+		[ProtoMember(8)]
 		public double Speed { get; set; }
 
 	}

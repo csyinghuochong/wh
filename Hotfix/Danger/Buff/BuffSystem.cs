@@ -12,17 +12,19 @@ namespace ET
       
 
 
-        public static void OnInit(this Buff self,BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null)
+        public static void OnInit(this Buff self,BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null, long intervalMs = 0)
         {
-            self.OnBaseBuffInit(buffData,  theUnitFrom, theUnitBelongto);
+            self.OnBaseBuffInit(buffData,  theUnitFrom, theUnitBelongto, intervalMs);
 
             self.OnUpdate();
         }
 
-        public static void OnBaseBuffInit(this Buff self, BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto)
+        public static void OnBaseBuffInit(this Buff self, BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, long intervalMs = 0)
         {
             self.PassTime = 0;
             self.IsTrigger = false;
+            self.IsTimeEnd = false;
+            self.IsInterrupt = false;
             self.BuffData = buffData;
             self.TheUnitFrom = theUnitFrom;
             self.TheUnitBelongto = theUnitBelongto;
@@ -32,8 +34,9 @@ namespace ET
             self.MBuff = LDSkill_Battle_BuffCategory.Instance.Get(buffData.BuffId);
             //self.DelayTime = self.MBuff.BuffDelayTime;
             self.BuffEndTime = buffData.BuffEndTime > 0 ? buffData.BuffEndTime : self.BuffEndTime;
-            //self.InterValTime = self.MBuff.BuffLoopTime * 1000;
-            self.InterValTimeBegin = TimeHelper.ServerNow();
+            self.InterValTime = intervalMs;
+            // 首次作用在 Begin+间隔：0=Init，1000/2000/...=Trigger
+            self.InterValTimeBegin = self.BeginTime + (self.InterValTime > 0 ? self.InterValTime : 0);
             self.NowBuffValue = 0f;
             self.ApplyBuffControl();
         }
@@ -53,6 +56,11 @@ namespace ET
 
         public static void OnUpdate(this Buff self)
         {
+            if (self.BuffState == BuffState.Finished)
+            {
+                return;
+            }
+
             NumericComponent heroCom = self.TheUnitBelongto.GetComponent<NumericComponent>();
             if (heroCom == null)
             {
@@ -64,35 +72,48 @@ namespace ET
             long serverTime = TimeHelper.ServerNow();
             self.PassTime = serverTime - self.BeginTime;
 
-            //buff是否为循环触发的
-            if (self.InterValTime > 0)
+            // 到点打一发 Trigger；定时器 100ms，一次只跳一格
+            if (self.InterValTime > 0 && self.MBuff != null && self.MBuff.Skill_Trigger > 0)
             {
-                long InterValTimePass = serverTime - self.InterValTimeBegin;
-                if (InterValTimePass >= self.InterValTime)
+                long endTime = self.BuffEndTime > 0 ? self.BuffEndTime : long.MaxValue;
+                if (self.InterValTimeBegin <= serverTime && self.InterValTimeBegin <= endTime)
                 {
-                    self.InterValTimeBegin = serverTime;
-                    self.IsTrigger = false;
+                    long fireAt = self.InterValTimeBegin;
+                    SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_Trigger, self.TheUnitFrom, self.TheUnitBelongto);
+                    if (self.TheUnitBelongto == null || self.TheUnitBelongto.IsDisposed || self.BuffState == BuffState.Finished)
+                    {
+                        return;
+                    }
+
+                    if (self.InterValTime > 0 && self.InterValTimeBegin == fireAt)
+                    {
+                        self.InterValTimeBegin += self.InterValTime;
+                    }
                 }
             }
 
-            //执行buff
-            if (!self.IsTrigger && self.PassTime >= self.DelayTime)
+            if (self.BuffEndTime > 0 && serverTime >= self.BuffEndTime)
             {
-                ///移动才触发
-              
-            }
-
-            //buff执行结束
-            if (serverTime >= self.BuffEndTime)
-            {
+                self.IsTimeEnd = true;
                 self.BuffState = BuffState.Finished;
             }
         }
 
-        public static  void OnFinished(this Buff self)
+        /// <param name="interrupt">被中断才发 Skill_Remove。切场景 / 到期 / 死亡传 false。</param>
+        public static void OnFinished(this Buff self, bool interrupt = false)
         {
             self.RemoveBuffControl();
-            if (self.MBuff != null && self.MBuff.Skill_Remove > 0)
+            if (self.MBuff == null)
+            {
+                return;
+            }
+
+            if (self.IsTimeEnd && self.MBuff.Skill_TimeEnd > 0)
+            {
+                SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_TimeEnd, self.TheUnitFrom, self.TheUnitBelongto);
+            }
+
+            if (interrupt && self.MBuff.Skill_Remove > 0)
             {
                 SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_Remove, self.TheUnitFrom, self.TheUnitBelongto);
             }
@@ -101,56 +122,6 @@ namespace ET
             {
                 return;
             }
-
-            /*
-            //移除相关属性
-            switch (this.MBuff.BuffType)
-            {
-                case 1:
-                    //Log.Debug("执行buff移除属性...");
-                    int NowBuffParameterType = this.MBuff.buffParameterType;
-                    if (NowBuffParameterType == 3001)
-                    {
-                        //血量不进行移除
-                    }
-                    else if (NowBuffParameterType == 3164)
-                    {
-                        this.TheUnitBelongto.GetComponent<NumericComponent>().ApplyValue(NowBuffParameterType, 0);
-                    }
-                    else if (NowBuffParameterType == 3134)
-                    {
-                        //怒气不进行移除
-                    }
-                    else
-                    {
-                        int ValueType = this.MBuff.buffParameterValueDef;      //0 表示整数  1表示浮点数
-
-                        //整数
-                        if (ValueType == 0)
-                        {
-                            // FightBuffNumericHelper removed; use NumericComponent.ChangeAttrFixed/Percent. Was: FightBuffNumericHelper.BuffPropertyUpdate_Long(this.TheUnitBelongto, NowBuffParameterType, (long)this.NowBuffValue * -1);
-                        }
-
-                        //浮点数
-                        if (ValueType == 1)
-                        {
-                            // FightBuffNumericHelper removed; use NumericComponent.ChangeAttrFixed/Percent. Was: FightBuffNumericHelper.BuffPropertyUpdate_Float(this.TheUnitBelongto, NowBuffParameterType, (float)this.NowBuffValue * -1);
-                        }
-                    }
-                    break;
-                case 2:
-                    NowBuffParameterType = this.MBuff.buffParameterType;
-                    this.TheUnitBelongto.GetComponent<StateComponent>().StateTypeRemove(1<<NowBuffParameterType);
-                    break;
-                case 4:
-                    this.TheUnitBelongto.GetComponent<SkillPassiveComponent>().RemovePassiveSkill(this.MBuff.buffParameterType);
-                    break;
-                case 7:
-                    break;
-                default:
-                    break;
-            }
-            */
         }
 
         public static void ApplyBuffControl(this Buff self)

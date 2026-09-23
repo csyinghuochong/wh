@@ -581,8 +581,8 @@ namespace ET
         }
 
         /// <summary>
-        /// Buff 关联技能（Skill_Init / Skill_Remove）：立刻跑技能树，不走 OnUseSkill（无 CD / 动作 / Time_1）。
-        /// TheUnitFrom=caster，TheUnitTarget=target，供树里 caster / target 使用。
+        /// Buff / 技能体关联技能：立刻跑技能树，不走 OnUseSkill（无 CD / 动作 / Time_1）。
+        /// TheUnitFrom=caster，TheUnitTarget=target。技能体 caster 无 SkillManager 时用 MasterId 主人。
         /// </summary>
         public static void ExecuteLinkedSkill(int skillId, Unit caster, Unit target)
         {
@@ -591,14 +591,20 @@ namespace ET
                 return;
             }
 
-            if (target == null || target.IsDisposed)
+            Unit from = caster != null && !caster.IsDisposed ? caster : target;
+            if (from == null || from.IsDisposed)
             {
                 return;
             }
 
-            Unit from = caster != null && !caster.IsDisposed ? caster : target;
+            if (target == null || target.IsDisposed)
+            {
+                target = from;
+            }
+
             SkillManagerComponent skillManager = from.GetComponent<SkillManagerComponent>()
-                                                ?? target.GetComponent<SkillManagerComponent>();
+                                                ?? target.GetComponent<SkillManagerComponent>()
+                                                ?? ResolveMasterSkillManager(from);
             if (skillManager == null)
             {
                 return;
@@ -630,6 +636,23 @@ namespace ET
             handler.SetSkillState(SkillState.Finished);
             handler.OnFinished();
             ObjectPool.Instance.Recycle(handler);
+        }
+
+        private static SkillManagerComponent ResolveMasterSkillManager(Unit from)
+        {
+            long masterId = from.MasterId;
+            if (masterId <= 0)
+            {
+                masterId = from.GetComponent<NumericComponent>()?.GetAsLong(NumericType.MasterId) ?? 0;
+            }
+
+            if (masterId <= 0)
+            {
+                return null;
+            }
+
+            Unit master = from.GetParent<UnitComponent>()?.Get(masterId);
+            return master != null && !master.IsDisposed ? master.GetComponent<SkillManagerComponent>() : null;
         }
 
         public static List<SkillInfo> GetMessageSkill(this SkillManagerComponent self)

@@ -47,6 +47,12 @@ namespace ET
         public long InterValTime;
         public long InterValTimeBegin;
 
+        /// <summary>OnUpdate 判定到期后为 true，OnFinished 发 Skill_TimeEnd。</summary>
+        public bool IsTimeEnd;
+
+        /// <summary>被驱散/顶掉/技能移除。切场景、到期、死亡不加。</summary>
+        public bool IsInterrupt;
+
         public float NowBuffValue;
 
     }

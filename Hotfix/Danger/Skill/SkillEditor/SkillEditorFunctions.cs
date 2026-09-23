@@ -1002,7 +1002,7 @@ namespace ET
                 buffData.BuffEndTime = TimeHelper.ServerNow() + intervalMs * tickCount;
             }
 
-            if (!buffMgr.BuffFactory(buffData, caster, ctx.Handler, true, ignoreImmune))
+            if (!buffMgr.BuffFactory(buffData, caster, ctx.Handler, true, ignoreImmune, intervalMs))
             {
                 return false;
             }
@@ -1681,67 +1681,47 @@ namespace ET
                 runtime.TrackTargetId = ctx.Handler.TheUnitTarget?.Id ?? 0;
             }
 
-            // 碰撞作用技能固定用表 Skill_1
-            if (summonConfig.Skill_1 > 0)
-            {
-                runtime.ActionSkillId = summonConfig.Skill_1;
-            }
-
             SkillEntityComponent skillEntity = summonUnit.AddComponent<SkillEntityComponent>();
             skillEntity.Init(ctx.Handler, caster.Id, summonConfig, runtime);
             summonUnit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, summonUnit.Position);
+            skillEntity.FireCreateSkill();
 
             ctx.SetVariable("createSummon", summonUnit.Id.ToString(CultureInfo.InvariantCulture));
-            Log.Info($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} unit={summonUnit.Id} skill_1={runtime.ActionSkillId} move={runtime.MoveType} track={runtime.TrackTargetId}");
+            if (Log.IsDebugEnabled)
+            {
+                Log.Debug($"CREATE_SUMMON skill={ctx.SkillId} summonId={summonId} unit={summonUnit.Id} create={runtime.CreateSkillId} action={runtime.ActionSkillId} track={runtime.TrackSkillId} destroy={runtime.DestroySkillId} move={runtime.MoveType}");
+            }
         }
 
         private static SummonRuntimeData ParseCreateSummonRuntime(SkillEditorFunctionContext ctx, LDSummon summonConfig)
         {
-            // 与 DocEditor「创建技能体」参数顺序一致（从 0 起）：
-            // 0技能体ID 1施法者 2x 3z 4dirX 5dirZ 6作用类型 7运动类型 8追踪目标
-            // 9碰到阻挡删除 10最大持续时间ms 11作用间隔ms 12作用次数 13创建时触发
-            // 14作用技能 15作用等级 16消亡-次数 17消亡-施法者死亡 18消亡-目标死亡 19消亡技能 20消亡等级
+            // DocEditor「创建技能体」：0ID 1施法者 2x 3z 4dirX 5dirZ 6运动类型 7追踪目标 8碰到阻挡删除
+            // 9最大持续时间ms 10作用间隔ms 11作用次数
+            // 12创建技能 13创建LV 14作用技能 15作用LV 16追踪技能 17追踪LV 18消亡技能 19消亡LV
+            // 20消亡-次数 21消亡-追踪消亡 22消亡-施法者死亡 23消亡-目标死亡
             SummonRuntimeData runtime = new SummonRuntimeData
             {
-                ActionType = ctx.GetParamInt(6, 0),
-                MoveType = ctx.GetParamInt(7, 0),
-                DeleteOnBlock = ctx.GetParamBool(9, false),
-                MaxDurationMs = ctx.GetParamInt(10, 0),
-                IntervalMs = ctx.GetParamInt(11, 0),
-                MaxActionCount = ctx.GetParamInt(12, 0),
-                TriggerOnCreate = ctx.GetParamBool(13, false),
-                ActionSkillId = ResolveSummonSkillId(ctx, 14, summonConfig, summonConfig.Skill_1),
+                MoveType = ctx.GetParamInt(6, 0),
+                DeleteOnBlock = ctx.GetParamBool(8, false),
+                MaxDurationMs = ctx.GetParamInt(9, 0),
+                IntervalMs = ctx.GetParamInt(10, 0),
+                MaxActionCount = ctx.GetParamInt(11, 0),
+                CreateSkillId = ResolveSummonSkillId(ctx, 12, summonConfig, summonConfig.Skill_1),
+                CreateSkillLevel = ctx.GetParamInt(13, ctx.SkillLevel),
+                ActionSkillId = ResolveSummonSkillId(ctx, 14, summonConfig, summonConfig.Skill_2),
                 ActionSkillLevel = ctx.GetParamInt(15, ctx.SkillLevel),
-                DestroySkillId = ResolveSummonSkillId(ctx, 19, summonConfig, summonConfig.Skill_2),
-                DestroySkillLevel = ctx.GetParamInt(20, ctx.SkillLevel),
+                TrackSkillId = ResolveSummonSkillId(ctx, 16, summonConfig, summonConfig.Skill_3),
+                TrackSkillLevel = ctx.GetParamInt(17, ctx.SkillLevel),
+                DestroySkillId = ResolveSummonSkillId(ctx, 18, summonConfig, summonConfig.Skill_4),
+                DestroySkillLevel = ctx.GetParamInt(19, ctx.SkillLevel),
+                DestroyOnCount = ctx.GetParamBool(20, true),
+                DeleteOnTrackReach = ctx.GetParamBool(21, true),
+                DestroyOnMasterDead = ctx.GetParamBool(22, false),
+                DestroyOnTargetDead = ctx.GetParamBool(23, false),
             };
 
-            bool destroyOnCount = ctx.GetParamBool(16, true);
-            bool destroyOnCasterDead = ctx.GetParamBool(17, false);
-            if (destroyOnCount && destroyOnCasterDead)
-            {
-                runtime.DestroyMode = SkillEntityDestroyMode.OnActionCountOrMasterDead_11;
-            }
-            else if (destroyOnCasterDead)
-            {
-                runtime.DestroyMode = SkillEntityDestroyMode.OnMasterDead_10;
-            }
-            else if (destroyOnCount)
-            {
-                runtime.DestroyMode = SkillEntityDestroyMode.OnActionCount_1;
-            }
-            else
-            {
-                runtime.DestroyMode = SkillEntityDestroyMode.None_0;
-            }
-
-            Unit trackTarget = ctx.ResolveUnit(ctx.GetParamRaw(8));
+            Unit trackTarget = ctx.ResolveUnit(ctx.GetParamRaw(7));
             runtime.TrackTargetId = trackTarget?.Id ?? 0;
-            if (runtime.ActionSkillId <= 0)
-            {
-                runtime.ActionSkillId = summonConfig.Skill_1;
-            }
-
             return runtime;
         }
 
@@ -1767,6 +1747,10 @@ namespace ET
             };
 
             runtime.TrackTargetId = ctx.Handler?.TheUnitTarget?.Id ?? 0;
+            runtime.DestroyOnCount = runtime.DestroyMode == SkillEntityDestroyMode.OnActionCount_1
+                || runtime.DestroyMode == SkillEntityDestroyMode.OnActionCountOrMasterDead_11;
+            runtime.DestroyOnMasterDead = runtime.DestroyMode == SkillEntityDestroyMode.OnMasterDead_10
+                || runtime.DestroyMode == SkillEntityDestroyMode.OnActionCountOrMasterDead_11;
             return runtime;
         }
 
@@ -1806,6 +1790,12 @@ namespace ET
                 case "skill_2":
                 case "skill2":
                     return summonConfig.Skill_2;
+                case "skill_3":
+                case "skill3":
+                    return summonConfig.Skill_3;
+                case "skill_4":
+                case "skill4":
+                    return summonConfig.Skill_4;
                 case "skillid":
                 case "skill_id":
                     return ctx.SkillId;

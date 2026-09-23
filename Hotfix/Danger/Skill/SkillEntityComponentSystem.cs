@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
 {
+    /// <summary>服务端技能体 100ms 心跳，转调 OnUpdate。</summary>
     [Timer(TimerType.SkillEntityTimer)]
     public class SkillEntityTimer : ATimer<SkillEntityComponent>
     {
+        /// <summary>定时器回调：驱动飞行、Skill_2/3/4。</summary>
         public override void Run(SkillEntityComponent self)
         {
             try
@@ -20,32 +21,36 @@ namespace ET
         }
     }
 
+    /// <summary>技能体挂上 Unit 时的占位 Awake，真正初始化走 Init。</summary>
     [ObjectSystem]
     public class SkillEntityComponentAwake : AwakeSystem<SkillEntityComponent>
     {
+        /// <summary>组件创建，逻辑在 Init。</summary>
         public override void Awake(SkillEntityComponent self)
         {
         }
     }
 
+    /// <summary>技能体销毁时摘掉心跳。</summary>
     [ObjectSystem]
     public class SkillEntityComponentDestroy : DestroySystem<SkillEntityComponent>
     {
+        /// <summary>移除 SkillEntityTimer，避免 Unit 删后还 Tick。</summary>
         public override void Destroy(SkillEntityComponent self)
         {
             TimerComponent.Instance?.Remove(ref self.Timer);
         }
     }
 
-    /// <summary>
-    /// 技能体：按 Summon.Speed 飞向 1535 指定目标 → 碰撞后释放 Summon.Skill_1 →
-    /// Skill_1 以目标为圆心（Base_Position=1）按 Range_Type_Param1 范围造成伤害。
-    /// </summary>
+    /// <summary>Skill_1 创建 / Skill_2 间隔 / Skill_3 追到 / Skill_4 消亡。间隔与 Buff 同一套时间轴。</summary>
     public static class SkillEntityComponentSystem
     {
-        /// <summary>与目标 XZ 贴身判定（米），仅用于「碰到」再放 Skill_1；与客户端一致</summary>
+        /// <summary>贴身判定距离（米），追踪飞到此距离停下。</summary>
         private const float CollideReach = 0.5f;
 
+        /// <summary>
+        /// 创建后初始化：时间轴、出生点、同步 Numeric（MoveType/Track/StartTime），飞行类抬到人物高度+1。
+        /// </summary>
         public static void Init(
             this SkillEntityComponent self,
             Skill_TreeEditor skillHandler,
@@ -54,20 +59,17 @@ namespace ET
             SummonRuntimeData runtime)
         {
             long now = TimeHelper.ServerNow();
-            self.PassTime = 0;
             self.Masterid = masterId;
             self.BuffState = BuffState.Running;
             self.SkillHandler = skillHandler;
             self.SummonConfig = summonConfig;
             self.Runtime = runtime ?? new SummonRuntimeData();
-            self.DelayTime = 0;
             self.BeginTime = now;
-            self.LastActionTime = now;
-            self.LastUpdateTime = now;
+            self.PassTime = 0;
 
             Unit unit = self.GetParent<Unit>();
             self.StartPosition = unit != null ? unit.Position : default;
-            self.FlyDirection = unit != null ? (unit.Rotation * UnityEngine.Vector3.forward) : UnityEngine.Vector3.forward;
+            self.FlyDirection = unit != null ? unit.Rotation * Vector3.forward : Vector3.forward;
             self.FlyDirection.y = 0f;
             if (self.FlyDirection.sqrMagnitude > 1e-6f)
             {
@@ -75,42 +77,47 @@ namespace ET
             }
             else
             {
-                self.FlyDirection = UnityEngine.Vector3.forward;
+                self.FlyDirection = Vector3.forward;
             }
 
-            // 碰撞后必放表 Skill_1
-            if (summonConfig != null && summonConfig.Skill_1 > 0)
-            {
-                self.Runtime.ActionSkillId = summonConfig.Skill_1;
-            }
-
-            long durationMs = self.Runtime.MaxDurationMs > 0 ? self.Runtime.MaxDurationMs : 60000;
-            self.BuffEndTime = now + durationMs;
-
-            // 伤害范围仅作非追踪兜底；真正 AOE 半径读 Skill_1.Range_Type_Param1
-            self.DamageRange = CollideReach;
-            if (self.Runtime.ActionSkillId > 0 && LDSkill_BattleCategory.Instance.Contain(self.Runtime.ActionSkillId))
-            {
-                LDSkill_Battle actionSkill = LDSkill_BattleCategory.Instance.Get(self.Runtime.ActionSkillId);
-                if (actionSkill.Range_Type_Param1 > 0)
-                {
-                    self.DamageRange = (float)actionSkill.Range_Type_Param1;
-                }
-            }
-
-            self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.SkillEntityTimer, self);
+            SummonRuntimeData rt = self.Runtime;
+            self.BuffEndTime = now + (rt.MaxDurationMs > 0 ? rt.MaxDurationMs : 60000);
+            self.InterValTime = rt.IntervalMs;
+            self.InterValTimeBegin = self.BeginTime + (self.InterValTime > 0 ? self.InterValTime : 0);
+            self.Timer = TimerComponent.Instance.NewRepeatedTimer(100, TimerType.SkillEntityTimer, self);
 
             NumericComponent numeric = unit?.GetComponent<NumericComponent>();
-            numeric?.ApplyValue(NumericType.SkillEntity_MoveType, self.Runtime.MoveType, false);
-            numeric?.ApplyValue(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
-            // 与客户端共用同一 BeginTime
-            numeric?.ApplyValue(NumericType.GatherStartTime, now, false);
+            numeric?.ApplyValue(NumericType.SkillEntity_MoveType, rt.MoveType, false);
+            numeric?.ApplyValue(NumericType.SkillEntity_TrackTargetId, rt.TrackTargetId, false);
+            numeric?.ApplyValue(NumericType.SkillEntity_StartTime, now, false);
 
-            Log.Info(
-                $"SkillEntity Init unit={unit?.Id} summon={self.Runtime.SummonId} skill_1={self.Runtime.ActionSkillId} " +
-                $"move={self.Runtime.MoveType} track={self.Runtime.TrackTargetId} speed={summonConfig?.Speed}");
+            if (unit != null && rt.MoveType != SkillEntityMoveType.Still_0)
+            {
+                unit.Position = FlyHeightHelper.WithFlyYFromFlyer(unit.Position, unit, self.StartPosition.y);
+            }
         }
 
+        /// <summary>Skill_1：创建时立刻打一发创建技能（CreateSkillId，否则旧版 TriggerOnCreate 用 ActionSkillId）。</summary>
+        public static void FireCreateSkill(this SkillEntityComponent self)
+        {
+            Unit unit = self.GetParent<Unit>();
+            SummonRuntimeData rt = self.Runtime;
+            if (unit == null || rt == null)
+            {
+                return;
+            }
+
+            int skillId = rt.CreateSkillId > 0 ? rt.CreateSkillId : (rt.TriggerOnCreate ? rt.ActionSkillId : 0);
+            if (skillId <= 0)
+            {
+                return;
+            }
+
+            Unit target = ResolveTrackTarget(self, unit.GetParent<UnitComponent>(), rt);
+            SkillManagerComponentSystem.ExecuteLinkedSkill(skillId, unit, target ?? unit);
+        }
+
+        /// <summary>运行中改追踪目标，并同步 Numeric 给客户端。</summary>
         public static void SetTrackTarget(this SkillEntityComponent self, Unit target, bool lockTarget)
         {
             if (self.Runtime == null)
@@ -124,6 +131,9 @@ namespace ET
                 ?.ApplyValue(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
         }
 
+        /// <summary>
+        /// 心跳：飞 → Skill_2 间隔 → Skill_3 追到 → 到期/次数/死亡则 Skill_4 删除。
+        /// </summary>
         public static void OnUpdate(this SkillEntityComponent self)
         {
             if (self.BuffState == BuffState.Finished)
@@ -139,57 +149,94 @@ namespace ET
                 return;
             }
 
-            if (rt.ActionSkillId <= 0 && self.SummonConfig != null && self.SummonConfig.Skill_1 > 0)
-            {
-                rt.ActionSkillId = self.SummonConfig.Skill_1;
-            }
-
             long now = TimeHelper.ServerNow();
             self.PassTime = now - self.BeginTime;
             UnitComponent uc = unit.GetParent<UnitComponent>();
             Unit master = uc?.Get(self.Masterid);
             Unit trackTarget = ResolveTrackTarget(self, uc, rt);
 
-            self.LastUpdateTime = now;
+            Fly(self, unit, rt, trackTarget, master);
 
-            // —— 飞行（按 BeginTime 时间轴，与客户端同一公式）——
-            Fly(self, unit, rt, trackTarget);
-
-            // —— 碰撞 / 间隔放 Skill_1（须在超时销毁前再判一次，避免最后一帧飞到却不结算）——
-            if (rt.ActionType == SkillEntityActionType.Interval_0)
+            // Skill_2：任意运动类型（静止/直线/追踪）飞行途中都按间隔打
+            if (self.InterValTime > 0 && rt.ActionSkillId > 0
+                && (rt.MaxActionCount <= 0 || rt.ActionCount < rt.MaxActionCount))
             {
-                TryIntervalFire(self, rt, now);
-            }
-            else
-            {
-                TryCollideFire(self, unit, rt, trackTarget, master, uc);
+                long endTime = self.BuffEndTime > 0 ? self.BuffEndTime : long.MaxValue;
+                if (self.InterValTimeBegin <= now && self.InterValTimeBegin <= endTime)
+                {
+                    long fireAt = self.InterValTimeBegin;
+                    SkillManagerComponentSystem.ExecuteLinkedSkill(rt.ActionSkillId, unit, trackTarget ?? unit);
+                    rt.ActionCount++;
+                    if (self.BuffState == BuffState.Finished)
+                    {
+                        return;
+                    }
+
+                    if (self.InterValTimeBegin == fireAt)
+                    {
+                        self.InterValTimeBegin += self.InterValTime;
+                    }
+                }
             }
 
-            bool expired = NeedDestroyByMasterDead(rt, master) || now >= self.BuffEndTime;
-            bool countDone = rt.MaxActionCount > 0 && rt.ActionCount >= rt.MaxActionCount
-                && (rt.DestroyMode == SkillEntityDestroyMode.OnActionCount_1
-                    || rt.DestroyMode == SkillEntityDestroyMode.OnActionCountOrMasterDead_11);
-
-            if (!expired && !countDone)
+            if (self.BuffState == BuffState.Finished)
             {
                 return;
             }
 
-            // 超时/次数满：直接移除（不再超时补放 Skill_1）；客户端随 Unit Remove 同步消失
-            FinishAndRemove(self, unit, rt.DestroySkillId);
+            // Skill_3：追到目标一次
+            if (rt.MoveType == SkillEntityMoveType.Track_2 && !rt.TrackSkillFired && Reached(unit, trackTarget))
+            {
+                rt.TrackSkillFired = true;
+                if (rt.TrackSkillId > 0)
+                {
+                    SkillManagerComponentSystem.ExecuteLinkedSkill(rt.TrackSkillId, unit, trackTarget);
+                }
+
+                if (self.BuffState == BuffState.Finished)
+                {
+                    return;
+                }
+
+                if (rt.DeleteOnTrackReach)
+                {
+                    FinishAndRemove(self, unit);
+                    return;
+                }
+            }
+
+            bool timeEnd = self.BuffEndTime > 0 && now >= self.BuffEndTime;
+            bool countEnd = rt.DestroyOnCount && rt.MaxActionCount > 0 && rt.ActionCount >= rt.MaxActionCount;
+            bool masterDead = rt.DestroyOnMasterDead && IsDead(master);
+            bool targetDead = rt.DestroyOnTargetDead && rt.TrackTargetId > 0 && IsDead(trackTarget);
+            if (timeEnd || countEnd || masterDead || targetDead)
+            {
+                FinishAndRemove(self, unit);
+            }
         }
 
-        // ==================== 飞行 ====================
-
-        private static void Fly(SkillEntityComponent self, Unit unit, SummonRuntimeData rt, Unit trackTarget)
+        /// <summary>
+        /// 按 PassTime * Speed 从出生点算位置。静止不飞；直线沿朝向；追踪沿出生点到目标 XZ，高度走 FlyHeightHelper。
+        /// </summary>
+        private static void Fly(SkillEntityComponent self, Unit unit, SummonRuntimeData rt, Unit trackTarget, Unit master)
         {
             if (rt.MoveType == SkillEntityMoveType.Still_0)
             {
                 return;
             }
 
-            float speed = GetFlySpeed(self, unit);
+            float speed = self.SummonConfig != null && self.SummonConfig.Speed > 0
+                ? (float)self.SummonConfig.Speed
+                : (unit.GetComponent<NumericComponent>()?.GetAsFloat(NumericType.Speed_Current_15) ?? 1f);
+            if (speed <= 0f)
+            {
+                speed = 1f;
+            }
+
             float traveled = speed * (self.PassTime * 0.001f);
+            Vector3 next;
+            Vector3 dir;
+            float flyY = FlyHeightHelper.GetFlyY(master, self.StartPosition.y);
 
             if (rt.MoveType == SkillEntityMoveType.Track_2)
             {
@@ -198,301 +245,68 @@ namespace ET
                     return;
                 }
 
-                // 与客户端同一公式：从出生点沿当前目标方向飞 traveled，贴身后停
                 Vector3 start = self.StartPosition;
                 float dx = trackTarget.Position.x - start.x;
                 float dz = trackTarget.Position.z - start.z;
                 float total = (float)Math.Sqrt(dx * dx + dz * dz);
                 if (total <= 1e-4f)
                 {
-                    unit.Position = new Vector3(trackTarget.Position.x, trackTarget.Position.y, trackTarget.Position.z);
+                    Vector3 at = trackTarget.Position;
+                    at.y = flyY;
+                    unit.Position = at;
                     return;
                 }
 
-                Vector3 dir = new Vector3(dx / total, 0f, dz / total);
+                dir = new Vector3(dx / total, 0f, dz / total);
                 float maxTravel = Math.Max(0f, total - CollideReach);
                 float move = Math.Min(traveled, maxTravel);
-                Vector3 next;
-                if (move >= maxTravel)
-                {
-                    // 贴在碰撞半径上，避免 float 导致永远 spr > CollideReach²
-                    next = trackTarget.Position - dir * CollideReach;
-                }
-                else
-                {
-                    next = start + dir * move;
-                }
-
-                next.y = trackTarget.Position.y;
-                ApplyMove(self, unit, rt, next, dir);
-                return;
+                next = move >= maxTravel ? trackTarget.Position - dir * CollideReach : start + dir * move;
             }
-
-            // 直线：出生点 + 朝向 * traveled
-            Vector3 forward = unit.Rotation * Vector3.forward;
-            forward.y = 0f;
-            if (forward.sqrMagnitude <= 1e-6f)
+            else
             {
-                forward = self.FlyDirection;
+                dir = unit.Rotation * Vector3.forward;
+                dir.y = 0f;
+                if (dir.sqrMagnitude <= 1e-6f)
+                {
+                    dir = self.FlyDirection;
+                }
+
+                if (dir.sqrMagnitude <= 1e-6f)
+                {
+                    return;
+                }
+
+                dir.Normalize();
+                next = self.StartPosition + dir * traveled;
             }
 
-            if (forward.sqrMagnitude <= 1e-6f)
-            {
-                return;
-            }
-
-            forward.Normalize();
-            Vector3 straight = self.StartPosition + forward * (speed * (self.PassTime * 0.001f));
-            straight.y = unit.Position.y;
-            ApplyMove(self, unit, rt, straight, forward);
-        }
-
-        private static void ApplyMove(SkillEntityComponent self, Unit unit, SummonRuntimeData rt, Vector3 next, Vector3 dir)
-        {
-            //碰到阻挡物删除 先不处理
-            //if (rt.DeleteOnBlock)
-            //{
-            //    MapComponent map = unit.DomainScene()?.GetComponent<MapComponent>();
-            //    if (map != null)
-            //    {
-            //        Vector3 blocked = map.GetCanChongJiPath(unit, unit.Position, next);
-            //        if ((blocked - next).sqrMagnitude > 0.01f)
-            //        {
-            //            FinishAndRemove(self, unit, rt.DestroySkillId);
-            //            return;
-            //        }
-
-            //        next = blocked;
-            //    }
-            //}
-
+            next.y = flyY;
             unit.Position = next;
             unit.Rotation = Quaternion.LookRotation(dir, Vector3.up);
         }
 
-        private static float GetFlySpeed(SkillEntityComponent self, Unit unit)
+        /// <summary>Skill_4：停心跳、打消亡技能、从场景删 Unit。</summary>
+        private static void FinishAndRemove(SkillEntityComponent self, Unit unit)
         {
-            // 优先 LDSummon.Speed（1000=1m/s），与表一致
-            if (self.SummonConfig != null && self.SummonConfig.Speed > 0)
+            if (self.BuffState == BuffState.Finished)
             {
-                return (float)self.SummonConfig.Speed;
+                return;
             }
 
-            float speed = unit.GetComponent<NumericComponent>()?.GetAsFloat(NumericType.Speed_Current_15) ?? 0f;
-            return speed > 0f ? speed : 1f;
+            self.BuffState = BuffState.Finished;
+            TimerComponent.Instance?.Remove(ref self.Timer);
+
+            int destroySkillId = self.Runtime?.DestroySkillId ?? 0;
+            if (destroySkillId > 0)
+            {
+                Unit target = ResolveTrackTarget(self, unit.GetParent<UnitComponent>(), self.Runtime);
+                SkillManagerComponentSystem.ExecuteLinkedSkill(destroySkillId, unit, target ?? unit);
+            }
+
+            unit.GetParent<UnitComponent>()?.Remove(unit.Id);
         }
 
-        // ==================== 触发 Skill_1 ====================
-
-        private static void TryIntervalFire(SkillEntityComponent self, SummonRuntimeData rt, long now)
-        {
-            if (rt.ActionSkillId <= 0)
-            {
-                return;
-            }
-
-            long interval = rt.IntervalMs > 0 ? rt.IntervalMs : 1000;
-            if (now - self.LastActionTime < interval)
-            {
-                return;
-            }
-
-            FireSkill1(self, rt.TrackTargetId);
-            self.LastActionTime = now;
-        }
-
-        private static void TryCollideFire(
-            SkillEntityComponent self,
-            Unit unit,
-            SummonRuntimeData rt,
-            Unit trackTarget,
-            Unit master,
-            UnitComponent uc)
-        {
-            if (rt.ActionSkillId <= 0)
-            {
-                return;
-            }
-
-            float spr = XZSqr(unit.Position, trackTarget.Position);
-            float rangeSq = CollideReach * CollideReach;
-
-            // 追踪：必须碰到指定目标
-            if (rt.MoveType == SkillEntityMoveType.Track_2)
-            {
-                if (trackTarget == null || trackTarget.IsDisposed || trackTarget.Id == self.Masterid)
-                {
-                    return;
-                }
-
-                // 略放宽容差，与 Fly 贴停配合，避免浮点卡在半径外
-                if (spr > rangeSq + 0.01f)
-                {
-                    return;
-                }
-
-                FireSkill1(self, trackTarget.Id);
-                return;
-            }
-
-            // 非追踪：碰到任意可攻击单位
-            List<Unit> all = uc?.GetAll();
-            if (all == null || master == null)
-            {
-                return;
-            }
-
-          
-            for (int i = all.Count - 1; i >= 0; i--)
-            {
-                Unit other = all[i];
-                if (other == null || other.IsDisposed || other.Id == unit.Id || other.Id == self.Masterid)
-                {
-                    continue;
-                }
-
-                if (XZSqr(unit.Position, other.Position) > rangeSq)
-                {
-                    continue;
-                }
-
-                if (!master.IsCanAttackUnit(other, false, false))
-                {
-                    continue;
-                }
-
-                FireSkill1(self, other.Id);
-                if (rt.MaxActionCount > 0 && rt.ActionCount >= rt.MaxActionCount)
-                {
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 释放 Summon.Skill_1：圆心=碰撞目标，半径=Skill.Range_Type_Param1（153501 为 3）。
-        /// </summary>
-        public static void FireSkill1(this SkillEntityComponent self, long hitTargetId)
-        {
-            SummonRuntimeData rt = self.Runtime;
-            Unit skillEntity = self.GetParent<Unit>();
-            UnitComponent uc = skillEntity?.GetParent<UnitComponent>();
-            Unit master = uc?.Get(self.Masterid);
-
-            if (rt == null || skillEntity == null || master == null || master.IsDisposed)
-            {
-                Log.Error($"FireSkill1 abort master/unit missing masterId={self.Masterid}");
-                return;
-            }
-
-            if (rt.ActionSkillId <= 0 && self.SummonConfig != null)
-            {
-                rt.ActionSkillId = self.SummonConfig.Skill_1;
-            }
-
-            int skill1 = rt.ActionSkillId;
-            if (skill1 <= 0 || !LDSkill_BattleCategory.Instance.Contain(skill1))
-            {
-                Log.Error($"FireSkill1 abort skill_1 invalid={skill1} summon={rt.SummonId}");
-                return;
-            }
-
-            SkillManagerComponent skillManager = master.GetComponent<SkillManagerComponent>();
-            if (skillManager == null)
-            {
-                return;
-            }
-
-            long tid = hitTargetId > 0 ? hitTargetId : rt.TrackTargetId;
-            Unit hitTarget = tid > 0 ? uc.Get(tid) : null;
-            // Base_Position=1：范围圆心在目标
-            Vector3 center = hitTarget != null ? hitTarget.Position : skillEntity.Position;
-            LDSkill_Battle actionSkill = LDSkill_BattleCategory.Instance.Get(skill1);
-            float aoeRadius = actionSkill.Range_Type_Param1 > 0 ? (float)actionSkill.Range_Type_Param1 : 3f;
-
-            SkillInfo skillInfo = new SkillInfo
-            {
-                SkillID = skill1,
-                WeaponSkillID = skill1,
-                TargetID = tid,
-                PosX = center.x,
-                PosY = center.y,
-                PosZ = center.z,
-                TargetAngle = AngleHelper.GetQuaternionAngle(skillEntity.Rotation),
-            };
-
-            // TheUnitFrom=技能体 → 树里 caster.parent = 主人
-            Skill_TreeEditor handler = skillManager.SkillFactory(skillInfo, skillEntity);
-            handler.TheUnitTarget = hitTarget;
-            handler.ActionPosition = center;
-            handler.ICheckShape = handler.CreateCheckShape(skillInfo.TargetAngle);
-            handler.HurtIds.Clear();
-
-            // 收集目标：圆心=碰撞目标，半径=Skill_1 范围参数1（3）
-            CollectAoeTargets(handler, master, uc, actionSkill, center, aoeRadius, tid);
-
-            if (SkillEditorTreeRegistry.TryGetTree(skill1, out SkillEditorSkillLogic logic))
-            {
-                SkillEditorTreeExecutor.Execute(handler, logic);
-            }
-            else
-            {
-                Log.Error($"FireSkill1 tree missing skill_1={skill1}");
-            }
-
-            int hurtCount = handler.HurtIds?.Count ?? 0;
-            handler.SetSkillState(SkillState.Finished);
-            handler.OnFinished();
-            ObjectPool.Instance.Recycle(handler);
-            rt.ActionCount++;
-
-            Log.Info(
-                $"FireSkill1 ok entity={skillEntity.Id} skill_1={skill1} hit={tid} " +
-                $"aoeR={aoeRadius} hurtCount={hurtCount} actionCount={rt.ActionCount}");
-        }
-
-        /// <summary>以 center 为圆心、radius 为半径（XZ），用主人阵营筛敌，填入 HurtIds 供 for_root 遍历。</summary>
-        private static void CollectAoeTargets(
-            Skill_TreeEditor handler,
-            Unit master,
-            UnitComponent uc,
-            LDSkill_Battle actionSkill,
-            Vector3 center,
-            float radius,
-            long primaryTargetId)
-        {
-            float radiusSq = radius * radius;
-            List<Unit> all = uc.GetAll();
-            for (int i = 0; i < all.Count; i++)
-            {
-                Unit u = all[i];
-                if (u == null || u.IsDisposed || u.Id == master.Id)
-                {
-                    continue;
-                }
-
-                if (XZSqr(center, u.Position) > radiusSq)
-                {
-                    continue;
-                }
-
-                if (!LDSkillHelper.IsValidTarget(master, u, actionSkill))
-                {
-                    continue;
-                }
-
-                handler.OnAddHurtIds(u.Id);
-            }
-
-            // 保证主目标一定进列表
-            if (primaryTargetId > 0 && !handler.HurtIds.Contains(primaryTargetId))
-            {
-                handler.OnAddHurtIds(primaryTargetId);
-            }
-        }
-
-        // ==================== 工具 ====================
-
+        /// <summary>解析追踪目标：Runtime.TrackTargetId，没有则技能树当前目标。</summary>
         private static Unit ResolveTrackTarget(SkillEntityComponent self, UnitComponent uc, SummonRuntimeData rt)
         {
             if (rt.TrackTargetId > 0)
@@ -508,49 +322,31 @@ namespace ET
             return fallback != null && !fallback.IsDisposed ? fallback : null;
         }
 
+        /// <summary>XZ 距离是否已进入贴身范围。</summary>
+        private static bool Reached(Unit unit, Unit trackTarget)
+        {
+            return unit != null && trackTarget != null && !trackTarget.IsDisposed
+                   && XZSqr(unit.Position, trackTarget.Position) <= CollideReach * CollideReach + 0.01f;
+        }
+
+        /// <summary>Unit 为空、已销毁、Now_Dead 或 HP≤0 视为死亡。</summary>
+        private static bool IsDead(Unit unit)
+        {
+            if (unit == null || unit.IsDisposed)
+            {
+                return true;
+            }
+
+            NumericComponent n = unit.GetComponent<NumericComponent>();
+            return n != null && (n.GetAsInt(NumericType.Now_Dead) == 1 || n.GetAsLong(NumericType.HP_Current_8) <= 0);
+        }
+
+        /// <summary>XZ 平面距离平方，忽略高度。</summary>
         private static float XZSqr(Vector3 a, Vector3 b)
         {
             float dx = a.x - b.x;
             float dz = a.z - b.z;
             return dx * dx + dz * dz;
-        }
-
-        private static bool NeedDestroyByMasterDead(SummonRuntimeData rt, Unit master)
-        {
-            if (rt.DestroyMode != SkillEntityDestroyMode.OnMasterDead_10
-                && rt.DestroyMode != SkillEntityDestroyMode.OnActionCountOrMasterDead_11)
-            {
-                return false;
-            }
-
-            if (master == null || master.IsDisposed)
-            {
-                return true;
-            }
-
-            NumericComponent n = master.GetComponent<NumericComponent>();
-            return n != null && (n.GetAsInt(NumericType.Now_Dead) == 1 || n.GetAsLong(NumericType.HP_Current_8) <= 0);
-        }
-
-        private static void FinishAndRemove(SkillEntityComponent self, Unit unit, int destroySkillId)
-        {
-            if (self.BuffState == BuffState.Finished)
-            {
-                return;
-            }
-
-            self.BuffState = BuffState.Finished;
-            TimerComponent.Instance?.Remove(ref self.Timer);
-
-            if (destroySkillId > 0 && LDSkill_BattleCategory.Instance.Contain(destroySkillId))
-            {
-                int old = self.Runtime.ActionSkillId;
-                self.Runtime.ActionSkillId = destroySkillId;
-                FireSkill1(self, self.Runtime.TrackTargetId);
-                self.Runtime.ActionSkillId = old;
-            }
-
-            unit.GetParent<UnitComponent>()?.Remove(unit.Id);
         }
     }
 }

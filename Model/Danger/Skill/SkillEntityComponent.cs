@@ -4,53 +4,61 @@ namespace ET
     public class SummonRuntimeData
     {
         public int SummonId;
-        /// <summary><see cref="SkillEntityActionType"/></summary>
+        /// <summary>旧版 UNIT_ADD_SUMMON「作用类型」。</summary>
         public int ActionType;
-        /// <summary><see cref="SkillEntityMoveType"/></summary>
+        /// <summary>0静止 1直线 2追踪。</summary>
         public int MoveType;
         public long TrackTargetId;
         public bool DeleteOnBlock;
+        /// <summary>追到目标后删除。</summary>
         public bool DeleteOnTrackReach;
         public long MaxDurationMs;
         public long IntervalMs;
         public int MaxActionCount;
         public bool TriggerOnCreate;
+        /// <summary>Skill_1 创建技能。</summary>
+        public int CreateSkillId;
+        public int CreateSkillLevel;
+        /// <summary>Skill_2 间隔/碰撞技能。</summary>
         public int ActionSkillId;
         public int ActionSkillLevel;
-        /// <summary><see cref="SkillEntityDestroyMode"/></summary>
+        /// <summary>Skill_3 追到技能。</summary>
+        public int TrackSkillId;
+        public int TrackSkillLevel;
         public int DestroyMode;
+        /// <summary>Skill_4 消亡技能。</summary>
         public int DestroySkillId;
         public int DestroySkillLevel;
+        public bool DestroyOnCount;
+        public bool DestroyOnMasterDead;
+        public bool DestroyOnTargetDead;
         public bool LockTarget;
-
         public int ActionCount;
-        public long LastActionTime;
+        public bool TrackSkillFired;
     }
 
-    /// <summary>
-    /// 技能体（UnitType.SkillEntity）服务端运行时：移动 / 碰撞 / 作用技能 / 消亡。
-    /// 客户端表现见 Unity SkillEntityComponent（本地飞行）。
-    /// </summary>
+    /// <summary>技能体服务端运行时。客户端表现见 Unity SkillEntityComponent。</summary>
     public class SkillEntityComponent : Entity, IAwake, IDestroy
     {
-        public long PassTime;
-        public long BuffEndTime;
+        public BuffState BuffState;
+        public long Timer;
+        /// <summary>创建时刻 ServerNow。</summary>
         public long BeginTime;
-        public long DelayTime;
-        public float DamageRange;
+        /// <summary>已运行毫秒：Now - BeginTime。</summary>
+        public long PassTime;
+        /// <summary>到期时刻，超时走 Skill_4。</summary>
+        public long BuffEndTime;
+        /// <summary>Skill_2 间隔毫秒，与 Buff 同一套轴。</summary>
+        public long InterValTime;
+        /// <summary>下一次 Skill_2 可触发的绝对时间。</summary>
+        public long InterValTimeBegin;
         public long Masterid;
         public Skill_TreeEditor SkillHandler;
         public LDSummon SummonConfig;
         public SummonRuntimeData Runtime;
-
-        public BuffState BuffState;
-        public long Timer;
-        public long DamgeChiXuLastTime;
-        public long LastActionTime;
-        /// <summary>上次移动结算时间，用于按真实 dt 飞行（服务端 FrameTimer=100ms）</summary>
-        public long LastUpdateTime;
-        /// <summary>出生点（与客户端 StartPosition 对齐，用于时间轴飞行）</summary>
+        /// <summary>出生点（人物脚底），XZ 飞行起点；Y 作飞行高度回退。</summary>
         public UnityEngine.Vector3 StartPosition;
+        /// <summary>直线飞行方向（XZ）。</summary>
         public UnityEngine.Vector3 FlyDirection;
     }
 }

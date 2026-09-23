@@ -139,7 +139,7 @@ namespace ET
             numericComponent.ApplyValue(NumericType.Speed_Current_15, NumericConvert.DisplayToStored(NumericType.Speed_Current_15, speed), false);
             numericComponent.ApplyValue(NumericType.MasterId, masterId, false);
             numericComponent.SetStartAngle(rotation, false);
-            numericComponent.ApplyValue(NumericType.GatherStartTime, TimeHelper.ServerNow(), false);
+            numericComponent.ApplyValue(NumericType.SkillEntity_StartTime, TimeHelper.ServerNow(), false);
 
             BulletComponent bullet = unit.AddComponent<BulletComponent>();
             bullet.Init(masterId, ldSkill, targetId, skillInfo);
@@ -168,7 +168,7 @@ namespace ET
             unit.ConfigId = summonId;
             unit.Position = position;
             unit.Rotation = rotation;
-            unit.Type = UnitType.SkillEntity;
+            unit.Type = UnitType.Summon;
             unit.MasterId = masterId;
 
             float speed = summonConfig.Speed > 0 ? (float)summonConfig.Speed : 1f;
@@ -176,7 +176,7 @@ namespace ET
             numericComponent.ApplyValue(NumericType.Speed_Current_15, NumericConvert.DisplayToStored(NumericType.Speed_Current_15, speed), false);
             numericComponent.ApplyValue(NumericType.MasterId, masterId, false);
             numericComponent.SetStartAngle(rotation, false);
-            numericComponent.ApplyValue(NumericType.GatherStartTime, TimeHelper.ServerNow(), false);
+            numericComponent.ApplyValue(NumericType.SkillEntity_StartTime, TimeHelper.ServerNow(), false);
             // AOI 由 CreateSummon 在 SkillEntityComponent.Init 写完 MoveType/TrackTarget 后再挂，避免客户端缺参数
             return unit;
         }

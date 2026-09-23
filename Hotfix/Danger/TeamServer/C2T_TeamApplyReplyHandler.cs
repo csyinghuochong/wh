@@ -30,6 +30,7 @@ namespace ET
 
             if (!await ServerMessageHelper.IsInGame(scene.DomainZone(), request.TeamPlayerInfo.UserID))
             {
+                response.Error = ErrorCode.ERR_PlayerNotOnline;
                 reply();
                 return;
             }

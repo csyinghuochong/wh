@@ -1,0 +1,31 @@
+buff技能相关：
+
+举例：
+1000   5  （ 5 秒的buff )
+
+0 = 初始化技能         Skill_Battle_Buff.Skill_Init
+1000ms = 作用         Skill_Battle_Buff.Skill_Trigger
+2000ms = 作用         Skill_Battle_Buff.Skill_Trigger	
+3000ms = 作用         Skill_Battle_Buff.Skill_Trigger
+4000ms = 作用         Skill_Battle_Buff.Skill_Trigger
+5000ms = 作用         Skill_Battle_Buff.Skill_Trigger
+5000ms = 时间结束   正常结束 Skill_Battle_Buff.Skill_TimeEnd
+如果我BUFF消失了，不管什么时间消失的， = 消失技能    Skill_Battle_Buff.Skill_Remove
+
+如果是刷新了 就是第二个buff覆盖第一个buff
+这个已经做了
+private static void RefreshBuff(this BuffManagerComponent self,
+SkillManagerComponentSystem.ExecuteLinkedSkill(ldSkillBuff.Skill_Refresh, from, unit);
+刷新之后时间加长   但是不会再触发  初始化技能  但是作用技能要继续。结束技能和消亡技能继续
+
+0  
+1000 
+2000
+2500 	被人刷新了 = skill_refresh
+3500 	= 作用         Skill_Battle_Buff.Skill_Trigger
+4500	= 作用         Skill_Battle_Buff.Skill_Trigger
+5500	= 作用         Skill_Battle_Buff.Skill_Trigger
+6500	= 作用         Skill_Battle_Buff.Skill_Trigger
+7500	= 作用         Skill_Battle_Buff.Skill_Trigger
+
+

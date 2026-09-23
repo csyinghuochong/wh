@@ -84,9 +84,14 @@ namespace ET
             int moveType = targetId > 0 ? SkillEntityMoveType.Track_2 : SkillEntityMoveType.Straight_1;
             numeric?.ApplyValue(NumericType.SkillEntity_MoveType, moveType, false);
             numeric?.ApplyValue(NumericType.SkillEntity_TrackTargetId, targetId, false);
-            numeric?.ApplyValue(NumericType.GatherStartTime, now, false);
+            numeric?.ApplyValue(NumericType.SkillEntity_StartTime, now, false);
 
             self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.BulletTimer, self);
+
+            if (unit != null)
+            {
+                unit.Position = FlyHeightHelper.WithFlyYFromFlyer(unit.Position, unit, self.StartPosition.y);
+            }
 
             if (Log.IsDebugEnabled)
             {
@@ -140,6 +145,8 @@ namespace ET
         private static void Fly(BulletComponent self, Unit unit, Unit trackTarget)
         {
             float traveled = self.Speed * (self.PassTime * 0.001f);
+            Unit master = FlyHeightHelper.GetPerson(unit);
+            float flyY = FlyHeightHelper.GetFlyY(master, self.StartPosition.y);
 
             if (self.TrackTargetId > 0)
             {
@@ -154,7 +161,9 @@ namespace ET
                 float total = (float)Math.Sqrt(dx * dx + dz * dz);
                 if (total <= 1e-4f)
                 {
-                    unit.Position = new Vector3(trackTarget.Position.x, trackTarget.Position.y, trackTarget.Position.z);
+                    Vector3 at = trackTarget.Position;
+                    at.y = flyY;
+                    unit.Position = at;
                     return;
                 }
 
@@ -164,7 +173,7 @@ namespace ET
                 Vector3 next = move >= maxTravel
                     ? trackTarget.Position - dir * CollideReach
                     : start + dir * move;
-                next.y = trackTarget.Position.y;
+                next.y = flyY;
                 unit.Position = next;
                 unit.Rotation = Quaternion.LookRotation(dir, Vector3.up);
                 return;
@@ -184,7 +193,7 @@ namespace ET
 
             forward.Normalize();
             Vector3 straight = self.StartPosition + forward * traveled;
-            straight.y = unit.Position.y;
+            straight.y = flyY;
             unit.Position = straight;
             unit.Rotation = Quaternion.LookRotation(forward, Vector3.up);
         }
