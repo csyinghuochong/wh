@@ -121,7 +121,7 @@ namespace ET
 		/// <summary>进入CD 0-立即 1-结束</summary>
 		[ProtoMember(14)]
 		public int Enter_CD { get; set; }
-		/// <summary>打断自身 普通攻击 0-否 1-是</summary>
+		/// <summary>打断 自身 普攻 0-否 1-是</summary>
 		[ProtoMember(15)]
 		public int Stop_Normal_Attack { get; set; }
 		/// <summary>限制 移动 0-否 1-是</summary>

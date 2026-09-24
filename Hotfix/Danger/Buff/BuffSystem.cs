@@ -99,7 +99,7 @@ namespace ET
             }
         }
 
-        /// <param name="interrupt">被中断才发 Skill_Remove。切场景 / 到期 / 死亡传 false。</param>
+        /// <param name="interrupt">被驱散、顶掉、技能移除为 true。切场景 / 死亡传 false。到期看 IsTimeEnd。</param>
         public static void OnFinished(this Buff self, bool interrupt = false)
         {
             self.RemoveBuffControl();
@@ -113,7 +113,8 @@ namespace ET
                 SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_TimeEnd, self.TheUnitFrom, self.TheUnitBelongto);
             }
 
-            if (interrupt && self.MBuff.Skill_Remove > 0)
+            // 到期和被提前清掉都放消失技能（延时结算、属性还原）。切场景、死亡不放。
+            if ((self.IsTimeEnd || interrupt) && self.MBuff.Skill_Remove > 0)
             {
                 SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_Remove, self.TheUnitFrom, self.TheUnitBelongto);
             }

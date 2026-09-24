@@ -101,7 +101,7 @@ namespace ET
             return buff.BuffData.UnitIdFrom;
         }
 
-        /// <summary>先 OnFinished 再回收。Skill_Remove 仅 IsInterrupt。</summary>
+        /// <summary>先移出列表再 OnFinished。到期或 IsInterrupt 才放 Skill_Remove。</summary>
         private static void FinishAndRemoveBuff(this BuffManagerComponent self, Buff buffHandler, int index, bool notice)
         {
             int buffId = buffHandler.BuffData.BuffId;
