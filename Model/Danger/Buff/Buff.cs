@@ -23,25 +23,19 @@ namespace ET
         public BuffData BuffData;
 
         public LDSkill_Battle_Buff MBuff;
-        public LDSkill_Battle MLdSkillConf;
-        public Skill_TreeEditor mSkillHandler;
 
         /// <summary>
         /// 来自哪个Unit
         /// </summary>
         public Unit TheUnitFrom;
 
-        /// <summary>
-        /// 寄生于哪个Unit，并不代表当前Buff实际寄居者，需要通过GetBuffTarget来获取，因为它赋值于Buff链起源的地方，具体值取决于那个起源Buff
-        /// </summary>
-        public Unit TheUnitBelongto;
+        /// <summary>寄居 Unit：Buff → BuffManager → Unit。不存字段。</summary>
+        public Unit TheUnitBelongto => this.GetParent<BuffManagerComponent>()?.GetParent<Unit>();
 
         public bool IsTrigger;
-        public long DelayTime;
         public long BeginTime;
         public long PassTime;
 
-        public Vector3 StartPosition;
         public Vector3 TargetPosition;
 
         public long InterValTime;
@@ -52,8 +46,5 @@ namespace ET
 
         /// <summary>被驱散/顶掉/技能移除。切场景、到期、死亡不加。到期另看 IsTimeEnd，同样放消失技能。</summary>
         public bool IsInterrupt;
-
-        public float NowBuffValue;
-
     }
 }

@@ -12,14 +12,14 @@ namespace ET
       
 
 
-        public static void OnInit(this Buff self,BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, Skill_TreeEditor skillHandler = null, long intervalMs = 0)
+        public static void OnInit(this Buff self,BuffData buffData, Unit theUnitFrom, Skill_TreeEditor skillHandler = null, long intervalMs = 0)
         {
-            self.OnBaseBuffInit(buffData,  theUnitFrom, theUnitBelongto, intervalMs);
+            self.OnBaseBuffInit(buffData,  theUnitFrom, intervalMs);
 
             self.OnUpdate();
         }
 
-        public static void OnBaseBuffInit(this Buff self, BuffData buffData, Unit theUnitFrom, Unit theUnitBelongto, long intervalMs = 0)
+        public static void OnBaseBuffInit(this Buff self, BuffData buffData, Unit theUnitFrom, long intervalMs = 0)
         {
             self.PassTime = 0;
             self.IsTrigger = false;
@@ -27,17 +27,14 @@ namespace ET
             self.IsInterrupt = false;
             self.BuffData = buffData;
             self.TheUnitFrom = theUnitFrom;
-            self.TheUnitBelongto = theUnitBelongto;
             self.BuffState = BuffState.Running;
             self.BeginTime = TimeHelper.ServerNow();
-            self.MLdSkillConf = LDSkill_BattleCategory.Instance.Get(buffData.SkillId);
             self.MBuff = LDSkill_Battle_BuffCategory.Instance.Get(buffData.BuffId);
             //self.DelayTime = self.MBuff.BuffDelayTime;
             self.BuffEndTime = buffData.BuffEndTime > 0 ? buffData.BuffEndTime : self.BuffEndTime;
             self.InterValTime = intervalMs;
             // 首次作用在 Begin+间隔：0=Init，1000/2000/...=Trigger
             self.InterValTimeBegin = self.BeginTime + (self.InterValTime > 0 ? self.InterValTime : 0);
-            self.NowBuffValue = 0f;
             self.ApplyBuffControl();
         }
 

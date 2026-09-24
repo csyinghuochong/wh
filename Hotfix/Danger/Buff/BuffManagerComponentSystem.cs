@@ -280,7 +280,7 @@ namespace ET
             switch (addType)
             {
                 case BuffAddType.Replace_0:
-                    buffHandler = self.AddNewBuff(buffData, from, unit, skillHandler, ldSkillBuff, intervalMs);
+                    buffHandler = self.AddNewBuff(buffData, from, skillHandler, ldSkillBuff, intervalMs);
  
                     break;
                 case BuffAddType.Extend_2:
@@ -292,11 +292,11 @@ namespace ET
                     }
                     else
                     {
-                        buffHandler = self.AddNewBuff(buffData, from, unit, skillHandler, ldSkillBuff, intervalMs);
+                        buffHandler = self.AddNewBuff(buffData, from, skillHandler, ldSkillBuff, intervalMs);
                     }
                     break;
                 default:
-                    buffHandler = self.AddNewBuff(buffData, from, unit, skillHandler, ldSkillBuff, intervalMs);
+                    buffHandler = self.AddNewBuff(buffData, from, skillHandler, ldSkillBuff, intervalMs);
    
                     break;
             }
@@ -328,11 +328,12 @@ namespace ET
             return true;
         }
 
-        private static Buff AddNewBuff(this BuffManagerComponent self, BuffData buffData, Unit from, Unit unit, Skill_TreeEditor skillHandler, LDSkill_Battle_Buff ldSkillBuff, long intervalMs)
+        private static Buff AddNewBuff(this BuffManagerComponent self, BuffData buffData, Unit from, Skill_TreeEditor skillHandler, LDSkill_Battle_Buff ldSkillBuff, long intervalMs)
         {
+            Unit unit = self.GetParent<Unit>();
             Buff buffHandler = self.AddChild<Buff>();
             self.m_Buffs.Insert(0, buffHandler);
-            buffHandler.OnInit(buffData, from, unit, skillHandler, intervalMs);
+            buffHandler.OnInit(buffData, from, skillHandler, intervalMs);
             self.AddTimer();
             self.AddBuffRecord(1, buffHandler.BuffData.BuffId);
             SkillManagerComponentSystem.ExecuteLinkedSkill(ldSkillBuff.Skill_Init, from, unit);
