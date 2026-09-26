@@ -784,7 +784,6 @@ namespace ET
             Log.Debug($"发放本服战力排行榜奖励： {zone}");
             long serverTime = TimeHelper.ServerNow();
             List<RankingInfo> rankingInfos = self.DBRankInfo.rankingInfos;
-            long mailServerId = DBHelper.GetMailServerId(zone);
             int mailConfigId = LDMailCategory.Instance.GetMailByKey(MailKey.Mail_Exchange_Failure);
             if (mailConfigId <= 0 && LDMailCategory.Instance.Contain(1))
             {
@@ -821,12 +820,7 @@ namespace ET
                     Log.Debug($"本服战力榜发奖: zone={zone} rank={i + 1} userId={rankingInfo.UserId}");
                 }
 
-                await ActorMessageSenderComponent.Instance.Call(mailServerId, new M2Mail_SendMailRequest()
-                {
-                    Id = rankingInfo.UserId,
-                    MailInfo = mailInfo,
-                    GetWay = ItemGetWay.RankReward
-                });
+                await MailHelp.SendUserMail(zone, rankingInfo.UserId, mailInfo);
             }
         }
 

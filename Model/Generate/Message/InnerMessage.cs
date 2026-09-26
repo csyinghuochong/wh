@@ -3327,6 +3327,22 @@ namespace ET
 
 	}
 
+// 聊天发言成功后通知地图记任务。910 任意频道，911 指定频道。
+	[Message(InnerOpcode.Chat2M_SendChat)]
+	[ProtoContract]
+	public partial class Chat2M_SendChat: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ChannelId { get; set; }
+
+	}
+
 	[ResponseType(nameof(Chat2G_RequestExitChat))]
 	[Message(InnerOpcode.G2Chat_RequestExitChat)]
 	[ProtoContract]
@@ -3422,43 +3438,6 @@ namespace ET
 
 //Chat   end####################################################
 //Mail begin####################################################
-	[ResponseType(nameof(Mail2M_SendMailResponse))]
-	[Message(InnerOpcode.M2Mail_SendMailRequest)]
-	[ProtoContract]
-	public partial class M2Mail_SendMailRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long Id { get; set; }
-
-		[ProtoMember(3)]
-		public MailInfo MailInfo { get; set; }
-
-		[ProtoMember(4)]
-		public int GetWay { get; set; }
-
-	}
-
-	[Message(InnerOpcode.Mail2M_SendMailResponse)]
-	[ProtoContract]
-	public partial class Mail2M_SendMailResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(E2M_GMEMailSendResponse))]
 	[Message(InnerOpcode.M2E_GMEMailSendRequest)]
 	[ProtoContract]

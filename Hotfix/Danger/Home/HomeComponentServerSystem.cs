@@ -99,7 +99,7 @@ namespace ET
             }
             Unit unit = self.GetParent<Unit>();
             RoleInfo roleInfo = unit?.GetComponent<RoleInfoComponentServer>()?.RoleInfo;
-            PlayerEconomyHelper.NotifyRoleDataProgression(unit, UserDataType.HomeLv, roleInfo);
+            PlayerEconomyHelper.NotifyRoleDataProgression(unit, UserDataType.HomeLv, roleInfo, delta);
         }
 
         public static void OnLogin(this HomeComponentServer self)

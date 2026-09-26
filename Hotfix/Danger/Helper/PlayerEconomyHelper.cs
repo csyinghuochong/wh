@@ -38,8 +38,7 @@ namespace ET
                 case UserDataType.HomeLv:
                     task = unit.GetComponent<TaskComponentServer>();
                     int homeLv = unit.GetComponent<HomeComponentServer>()?.HomeLv ?? 1;
-                    int homeShowLv = homeLv - 10000;
-                    task?.OnHomeLevel(homeShowLv);
+                    task?.OnHomeLevel(homeLv, (int)delta);
                     break;
 
                 case UserDataType.Level:

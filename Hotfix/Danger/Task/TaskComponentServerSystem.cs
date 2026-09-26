@@ -728,10 +728,7 @@ namespace ET
 
         public static void OnPetHeCheng(this TaskComponentServer self, PetInfo rolePetInfo)
         {
-            using (self.TaskEventBatch())
-            {
-                int combat = PetHelper.PetPingFen(rolePetInfo);
-            }
+            int combat = PetHelper.PetPingFen(rolePetInfo);
         }
 
         /// <summary>
@@ -740,10 +737,6 @@ namespace ET
         /// <param name="self"></param>
         public static void OnGetPet(this TaskComponentServer self, PetInfo rolePetInfo)
         {
-            using (self.TaskEventBatch())
-            {
-               
-            }
         }
 
         /// <summary>
@@ -758,10 +751,6 @@ namespace ET
         /// </summary>
         public static void OnPetEggOpen(this TaskComponentServer self, int eggItemId)
         {
-            using (self.TaskEventBatch())
-            {
-              
-            }
         }
 
         /// <summary>
@@ -769,18 +758,30 @@ namespace ET
         /// </summary>
         public static void OnMakeEquip(this TaskComponentServer self, int quality)
         {
-            using (self.TaskEventBatch())
-            {
             
-            }
+        }
+
+
+        public static void OnConsignShangJia(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.ConsignShangJiaCount_842, 1, 0);
         }
 
         /// <summary>
-        /// 充值天数任务（入包请走 Bag.OnAddItemData，由其内部自行 batch）
+        /// 111/112 按本次金额累计。113 累计充值天数：同一游戏日只记 1 次。
         /// </summary>
-        public static void OnRechargeDay(this TaskComponentServer self)
+        public static void OnRechargeDay(this TaskComponentServer self, int rechargeNumber = 0, bool newRechargeDay = false)
         {
-            self.TriggerTaskEvent(TastConditionType.RechageDayNumber_113, 1, 30);
+            if (rechargeNumber > 0)
+            {
+                self.TriggerTaskEvent(TastConditionType.DayRechageNumber_111, rechargeNumber, 0);
+                self.TriggerTaskEvent(TastConditionType.DayTotalRecharge_112, rechargeNumber, 0);
+            }
+
+            if (newRechargeDay)
+            {
+                self.TriggerTaskEvent(TastConditionType.RechageDayNumber_113, 1, 0);
+            }
         }
 
         /// <summary>
@@ -809,10 +810,7 @@ namespace ET
         /// </summary>
         public static void OnTeamDungeonSettle(this TaskComponentServer self, int sceneId, int hurtRate)
         {
-            using (self.TaskEventBatch())
-            {
-                self.OnPassTeamFuben();
-            }
+            self.OnPassTeamFuben();
         }
 
         /// <summary>在线时长，一分钟一次。</summary>
@@ -840,14 +838,22 @@ namespace ET
                 return;
         }
 
-        public static void OnHomeLevel(this TaskComponentServer self, int homeLv)
+        public static void OnHomeLevel(this TaskComponentServer self, int homeLv, int delta = 0)
         {
+            self.NotifyCondition(TastConditionType.HomeLevel_861, homeLv, delta);
         }
 
+        /// <summary>
+        /// 121 战力达到：覆盖为当前战力。122 战力提升：只累计本次比上次增加的部分，下降不记。
+        /// delta 由 UpdateRoleData 传入，值为新战力减旧战力。
+        /// </summary>
         public static void OnCombatToValue(this TaskComponentServer self, int combat, int delta = 0)
         {
-            self.NotifyCondition(TastConditionType.CombatRechage_121, combat, delta);
-            self.NotifyCondition(TastConditionType.CombatIncrease_122, combat, delta);
+            self.NotifyCondition(TastConditionType.CombatRechage_121, combat, 0);
+            if (delta > 0)
+            {
+                self.NotifyCondition(TastConditionType.CombatIncrease_122, combat, delta);
+            }
         }
 
         /// <summary>
@@ -859,10 +865,6 @@ namespace ET
         /// <param name="star"></param>
         public static void OnPassFuben(this TaskComponentServer self, int difficulty, int chapterid, int star)
         {
-            using (self.TaskEventBatch())
-            {
-                
-            }
         }
 
         public static void OnWinCampBattle(this TaskComponentServer self)
@@ -887,7 +889,19 @@ namespace ET
 
         public static void OnJoinUnion(this TaskComponentServer self)
         {
-            
+            self.TriggerTaskEvent(TastConditionType.JionUnion_880, 1, 0);
+        }
+
+        public static void OnWearEquip(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.WearEquip_401, 1, 0);
+        }
+
+        /// <summary>发言已通过聊天服校验。910 任意频道，911 按 ChannelId。</summary>
+        public static void OnSendChat(this TaskComponentServer self, int channelId)
+        {
+            self.TriggerTaskEvent(TastConditionType.SendChat_910, 1, 0);
+            self.TriggerTaskEvent(TastConditionType.SendChannelChat_911, 1, channelId);
         }
 
         public static void OnFriendPassFuben(this TaskComponentServer self)
@@ -897,10 +911,6 @@ namespace ET
 
         public static void OnPetMineBattle(this TaskComponentServer self, int result)
         {
-            using (self.TaskEventBatch())
-            {
-                
-            }
         }
 
         public static void OnDuiHuanGold(this TaskComponentServer self, int diamond)
@@ -935,6 +945,11 @@ namespace ET
             await ETTask.CompletedTask;
         }
 
+        public static void OnConsignBuy(this TaskComponentServer self)
+        { 
+            
+        }
+
         //击杀怪物可触发多种类型的任务
         public static void OnKillUnit(this TaskComponentServer self, Unit bekill, int sceneType)
         {
@@ -952,24 +967,35 @@ namespace ET
                 self.UpdateUnionRaceRank().Coroutine();
             }
 
-            using (self.TaskEventBatch())
+            if (bekill.Type == UnitType.Monster)
             {
-                if (bekill.Type == UnitType.Monster)
+                int unitconfigId = bekill.ConfigId;
+                LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
+                int monsterType = ldMonster.Type;
+                Scene domainScene = unit.DomainScene();
+                MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
+                int fubenDifficulty = FubenDifficulty.None;
+                if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
                 {
-                    int unitconfigId = bekill.ConfigId;
-                    LDMonster ldMonster = LDMonsterCategory.Instance.Get(unitconfigId);
-                    bool isBoss = ldMonster.Type == (int)MonsterTypeEnum.Boss;
-                    Scene domainScene = unit.DomainScene();
-                    MapComponent mapComponent = domainScene.GetComponent<MapComponent>();
-                    int fubenDifficulty = FubenDifficulty.None;
-                    if (mapComponent.MapTypeEnum == (int)MapTypeEnum.LocalDungeon)
-                    {
-                        fubenDifficulty = domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
-                    }
-
-                    self.TriggerTaskEvent(TastConditionType.KillMonsterByNumber_210, 1, 0);
-
+                    fubenDifficulty = domainScene.GetComponent<LocalDungeonComponent>().FubenDifficulty;
                 }
+
+                self.TriggerTaskEvent(TastConditionType.KillMonsterByNumber_210, 1, 0);
+                if (monsterType == MonsterTypeEnum.Elite)
+                {
+                    self.TriggerTaskEvent(TastConditionType.KillEliteMonster_212, 1, 0);
+                }
+                else if (monsterType == MonsterTypeEnum.Boss)
+                {
+                    self.TriggerTaskEvent(TastConditionType.KillBossMonster_213, 1, 0);
+                }
+                else
+                {
+                    self.TriggerTaskEvent(TastConditionType.KillNormalMonster_211, 1, 0);
+                }
+
+                self.TriggerTaskEvent(TastConditionType.KillMonsterShowNumber_215, 1, unitconfigId);
+                self.TriggerTaskEvent(TastConditionType.KillMonsterNoShowNumber_216, 1, unitconfigId);
             }
         }
 
@@ -1033,11 +1059,8 @@ namespace ET
         /// </summary>
         public static void TriggerDailyLoginTaskEvents(this TaskComponentServer self)
         {
-            using (self.TaskEventBatch())
-            {
-                self.TriggerTaskEvent(TastConditionType.LoginDayNymber_101, 1, 0);
-                self.TriggerTaskEvent(TastConditionType.LoginToday_102, 1, 0);
-            }
+            self.TriggerTaskEvent(TastConditionType.LoginDayNymber_101, 1, 0);
+            self.TriggerTaskEvent(TastConditionType.LoginToday_102, 1, 0);
         }
 
         //收集道具

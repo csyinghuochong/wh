@@ -90,12 +90,14 @@ namespace ET
 
             int rechargeNumber = GetRechargeNumber(playId, homeZone);
             long serverTime = TimeHelper.ServerNow();
+            long lastRechargeTime = rechargeComponentServer.RechargePro.LastRechargeTime;
+            bool newRechargeDay = !ActivityHelper.IsSameGameResetDay(lastRechargeTime, serverTime);
             rechargeComponentServer.RechargePro.LastRechargeTime = serverTime;
             rechargeComponentServer.RechargePro.TotalRechargeNum += rechargeNumber;
 
             VipHelp.OnVipExpAdd(unit, rechargeNumber * 10);
 
-            taskComponentServer.OnRechargeDay();
+            taskComponentServer.OnRechargeDay(rechargeNumber, newRechargeDay);
 
             RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
             rechargeComponentServer.NotifyClient();

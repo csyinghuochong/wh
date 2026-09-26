@@ -134,9 +134,12 @@ namespace ET
 
 				if (r_GameStatusResponse.Error == ErrorCode.ERR_Success)
 				{
-					//扣除对应道具
-					bagComponentServer.OnCostItemData(request.ConsignItemInfo.BagInfo.BagInfoID, request.ConsignItemInfo.BagInfo.ItemNum);
-					response.ConsignItemInfo = request.ConsignItemInfo;
+                    unit.GetComponent<TaskComponentServer>().OnConsignShangJia();
+
+                    //扣除对应道具
+                    bagComponentServer.OnCostItemData(request.ConsignItemInfo.BagInfo.BagInfoID, request.ConsignItemInfo.BagInfo.ItemNum);
+					
+                    response.ConsignItemInfo = request.ConsignItemInfo;
 					LogHelper.LogWarning(response.ConsignItemInfo.PlayerName + "上架道具：" + request.ConsignItemInfo.BagInfo.ItemID + "数量" + request.ConsignItemInfo.BagInfo.ItemNum + "时间戳:" + currentTime.ToString(), true);
                 }
                 response.Error = r_GameStatusResponse.Error;

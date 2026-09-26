@@ -41,6 +41,7 @@ namespace ET
                 m2C_SyncChatInfo.ChatInfo = request.ChatInfo;
                 ChatSceneComponent chatScene = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
                 int zone = chatInfoUnit.DomainZone();
+                bool chatSent = false;
                 switch (request.ChatInfo.ChannelId)
                 {
                     case (int)ChannelEnum.WarZone:
@@ -55,6 +56,7 @@ namespace ET
 
                         LogHelper.ChatInfo($"战区:{chatInfoUnit.DomainZone()}    {request.ChatInfo.PlayerName}:  {request.ChatInfo.ChatMsg} ");
                         wzChat.BroadcastWarChat(request.ChatInfo);
+                        chatSent = true;
                         break;
                     }
                     case (int)ChannelEnum.PaiMai:
@@ -94,6 +96,8 @@ namespace ET
                                 chatScene.WordChatInfos.RemoveAt(chatScene.WordChatInfos.Count - 1);
                             }
                         }
+
+                        chatSent = true;
                         break;
                     case (int)ChannelEnum.Team:
                         long teamServerId = StartSceneConfigCategory.Instance.GetBySceneName(chatInfoUnit.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
@@ -107,6 +111,8 @@ namespace ET
                                 await ServerMessageHelper.SendToClient(zone, g_SendChatRequest1.TeamInfo.PlayerList[i].UserID, m2C_SyncChatInfo);
                             }
                         }
+
+                        chatSent = true;
                         break;
                     case (int)ChannelEnum.Union:
                         long unionid = request.ChatInfo.ParamId;
@@ -123,6 +129,8 @@ namespace ET
                                 MessageHelper.SendActor(otherUnit.GateSessionActorId, m2C_SyncChatInfo);
                             }
                         }
+
+                        chatSent = true;
                         break;
 
                     case (int)ChannelEnum.Friend:
@@ -137,7 +145,16 @@ namespace ET
                         }
 
                         await ServerMessageHelper.SendToClient(zone, request.ChatInfo.UserId, m2C_SyncChatInfo);
+                        chatSent = true;
                         break;
+                }
+
+                if (chatSent)
+                {
+                    MessageHelper.SendToLocationActor(chatInfoUnit.Id, new Chat2M_SendChat()
+                    {
+                        ChannelId = request.ChatInfo.ChannelId,
+                    });
                 }
 
                 reply();

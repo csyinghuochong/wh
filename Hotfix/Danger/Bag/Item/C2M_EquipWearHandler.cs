@@ -74,7 +74,8 @@ namespace ET
                     bag.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocEquip, ItemLocType.ItemLocBag);
                     skillSet.OnWearEquip(useBagInfo);
                 }
-               
+
+                unit.GetComponent<TaskComponentServer>()?.OnWearEquip();
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 useBagInfo.SetTradeStatus(ItemFlagEnum.NonTradable);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
