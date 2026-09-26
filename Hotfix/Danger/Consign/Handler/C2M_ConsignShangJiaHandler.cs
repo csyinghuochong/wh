@@ -122,6 +122,15 @@ namespace ET
 					return;
 				}
 
+                int serviceFee = ConsignHelper.GetConsignServiceFee(days);
+                if (serviceFee > 0
+                    && bagComponentServer.GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < serviceFee)
+                {
+                    response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                    reply();
+                    return;
+                }
+
 				//发送对应拍卖行信息
 				long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
 				Consign2M_ShangJiaResponse r_GameStatusResponse = (Consign2M_ShangJiaResponse)await ActorMessageSenderComponent.Instance.Call
@@ -135,6 +144,11 @@ namespace ET
 				if (r_GameStatusResponse.Error == ErrorCode.ERR_Success)
 				{
                     unit.GetComponent<TaskComponentServer>().OnConsignShangJia();
+
+                    if (serviceFee > 0)
+                    {
+                        roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, (-serviceFee).ToString(), true, ItemGetWay.PaiMaiSell);
+                    }
 
                     //扣除对应道具
                     bagComponentServer.OnCostItemData(request.ConsignItemInfo.BagInfo.BagInfoID, request.ConsignItemInfo.BagInfo.ItemNum);
