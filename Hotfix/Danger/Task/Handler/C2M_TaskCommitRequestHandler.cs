@@ -14,7 +14,7 @@ namespace ET
 
             if (taskTable == TaskTableType.Task_1)
             {
-                response.Error = taskComponentServer.OnCommitTask_1(request);
+                response.Error = taskComponentServer.OnCommitTask_1(request, response.RewardList);
                 response.RoleComoleteTaskList_2 = taskComponentServer.RoleComoleteTaskList_2;
                 response.RoleComoleteTaskList_1 = taskComponentServer.RoleComoleteTaskList_1;
                 response.NextTask1_Id = taskComponentServer.NextTask1_Id;
@@ -38,7 +38,7 @@ namespace ET
                 return;
             }
             
-            response.Error = taskComponentServer.OnCommitTask_2(request);
+            response.Error = taskComponentServer.OnCommitTask_2(request, response.RewardList);
             response.RoleComoleteTaskList_2 = taskComponentServer.RoleComoleteTaskList_2;
             response.RoleComoleteTaskList_1 = taskComponentServer.RoleComoleteTaskList_1;
             response.NextTask1_Id = taskComponentServer.NextTask1_Id;

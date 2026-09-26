@@ -31,6 +31,10 @@ namespace ET
                 DBHelper.SaveComponent(scene.DomainZone(), dBFriendInfo.Id, dBFriendInfo).Coroutine();
                 await ServerMessageHelper.SendToClient(scene.DomainZone(), request.UserID,
                     new M2C_FriendApplyResult() { FriendInfo = request.RoleInfo });
+                if (applyUserId > 0)
+                {
+                    MessageHelper.SendToLocationActor(applyUserId, new Friend2M_SendApply());
+                }
             }
 
             reply();

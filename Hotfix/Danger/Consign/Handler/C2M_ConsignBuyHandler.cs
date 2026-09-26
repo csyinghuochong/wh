@@ -101,7 +101,7 @@ namespace ET
                     Log.Warning($"拍卖购买出错: {unit.Id} {bag.GetBagLeftCell()}  {paiMaiItemInfo.BagInfo.ItemID}  {paiMaiItemInfo.BagInfo.ItemNum}");
                 }
 
-                unit.GetComponent<TaskComponentServer>().OnConsignBuy();
+                unit.GetComponent<TaskComponentServer>().OnConsignBuy(r_GameStatusResponse.ConsignItemInfo.BagInfo);
 
                 //给出售者邮件发送金币
                 MailHelp.SendPaiMaiEmail(

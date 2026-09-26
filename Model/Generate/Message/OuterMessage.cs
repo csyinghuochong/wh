@@ -9226,6 +9226,9 @@ namespace ET
 		[ProtoMember(4)]
 		public int NextUnionWorkTaskId { get; set; }
 
+		[ProtoMember(5)]
+		public List<RewardItem> RewardList = new List<RewardItem>();
+
 	}
 
 	[Message(OuterOpcode.M2C_TaskUpdate)]

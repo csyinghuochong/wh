@@ -3798,4 +3798,17 @@ namespace ET
 	}
 
 //DailyReset  end####################################################
+// 发送好友申请成功后通知地图记任务 901。
+	[Message(InnerOpcode.Friend2M_SendApply)]
+	[ProtoContract]
+	public partial class Friend2M_SendApply: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
 }

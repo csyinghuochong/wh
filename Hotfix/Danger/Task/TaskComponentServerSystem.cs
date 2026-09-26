@@ -544,8 +544,21 @@ namespace ET
             //return ErrorCode.ERR_Success; 
         }
 
+        static void AppendCommitRewards(List<RewardItem> rewardOut, List<RewardItem> rewardItems)
+        {
+            if (rewardOut == null || rewardItems == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < rewardItems.Count; i++)
+            {
+                rewardOut.Add(rewardItems[i]);
+            }
+        }
+
         //领取奖励
-        public static int OnCommitTask_2(this TaskComponentServer self, C2M_TaskCommitRequest request)
+        public static int OnCommitTask_2(this TaskComponentServer self, C2M_TaskCommitRequest request, List<RewardItem> rewardOut)
         {
             int taskid = request.TaskId;
             Unit unit = self.GetParent<Unit>();
@@ -611,6 +624,7 @@ namespace ET
             }
 
             TaskRewardHelper.GrantTaskCommitRewards(unit, rewardItems);
+            AppendCommitRewards(rewardOut, rewardItems);
             int exp = ExpHelper.EvaluateRewardFormula(
                     commitLdTask.Exp_Role_Param1,
                     commitLdTask.Exp_Role_Param2,
@@ -630,7 +644,7 @@ namespace ET
             return ErrorCode.ERR_Success;
         }
 
-        public static int OnCommitTask_1(this TaskComponentServer self, C2M_TaskCommitRequest request)
+        public static int OnCommitTask_1(this TaskComponentServer self, C2M_TaskCommitRequest request, List<RewardItem> rewardOut)
         {
             int taskid = request.TaskId;
             if (LDTask_1Category.Instance == null || !LDTask_1Category.Instance.Contain(taskid))
@@ -686,6 +700,7 @@ namespace ET
             self.RoleTaskList_1.Remove(taskPro);
 
             TaskRewardHelper.GrantTaskCommitRewards(unit, rewardItems);
+            AppendCommitRewards(rewardOut, rewardItems);
             int exp = ExpHelper.EvaluateRewardFormula(
                     ldTask.Exp_Role_Param1,
                     ldTask.Exp_Role_Param2,
@@ -904,6 +919,12 @@ namespace ET
             self.TriggerTaskEvent(TastConditionType.SendChannelChat_911, 1, channelId);
         }
 
+        /// <summary>好友申请已写入对方申请列表。</summary>
+        public static void OnSendFriendRequest(this TaskComponentServer self)
+        {
+            self.TriggerTaskEvent(TastConditionType.SendFriendRequest, 1, 0);
+        }
+
         public static void OnFriendPassFuben(this TaskComponentServer self)
         {
             
@@ -945,9 +966,16 @@ namespace ET
             await ETTask.CompletedTask;
         }
 
-        public static void OnConsignBuy(this TaskComponentServer self)
-        { 
-            
+        public static void OnConsignBuy(this TaskComponentServer self, BagInfo bagInfo)
+        {
+            if (bagInfo.ItemType == ItemBigType.Type_Item && bagInfo.ItemID == UserDataType.Gold)
+            {
+                self.TriggerTaskEvent(TastConditionType.ConsignBuyCoinCount_841, bagInfo.ItemNum, 0);
+            }
+            else
+            {
+                self.TriggerTaskEvent(TastConditionType.ConsignBuyItemCount_840, 1, 0);
+            }
         }
 
         //击杀怪物可触发多种类型的任务

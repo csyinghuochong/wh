@@ -207,5 +207,6 @@ namespace ET
 		 public const ushort A2Other_DailyResetRequest = 20204;
 		 public const ushort Other2A_DailyResetResponse = 20205;
 		 public const ushort G2M_DailyReset = 20206;
+		 public const ushort Friend2M_SendApply = 20207;
 	}
 }
