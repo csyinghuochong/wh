@@ -7,17 +7,11 @@ namespace ET
         public long Timer;
         public int SceneType;
 
-#if !SERVER
-        public List<IntStringPair> t_Buffs = new List<IntStringPair>();
-        public List<ABuffHandler> m_Buffs = new List<ABuffHandler>();
-#else
-
         public List<Buff> m_Buffs = new List<Buff>();
 
         public List<LongLongPair> m_BuffRecord = new List<LongLongPair>();  //buffid_增删_
         public readonly M2C_UnitBuffUpdate m2C_UnitBuffUpdate = new M2C_UnitBuffUpdate();
         public readonly M2C_UnitBuffRemove m2C_UnitBuffRemove = new M2C_UnitBuffRemove();   
-#endif
 
     }
 }
