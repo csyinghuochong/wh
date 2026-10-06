@@ -193,13 +193,41 @@ namespace ET
         /// <summary>可打书技能池（ItemType=97 的 ItemTypeParam1）。</summary>
         public List<int> PetBookSkillIds = new List<int>();
 
+        /// <summary>组 Id -> 组 CD（秒）。同组技能共享，初始化时从技能表汇总。</summary>
+        public Dictionary<int, double> GroupCDDict = new Dictionary<int, double>();
+
         public override void AfterEndInit()
         {
             this.PetBookSkillIds.Clear();
+            this.GroupCDDict.Clear();
             foreach (LDSkill_Battle skillconfig in this.GetAll().Values)
             {
                 skillconfig.ParseRuntimeData();
+                this.RecordGroupCD(skillconfig);
             }
+        }
+
+        /// <summary>组 CD（秒）。未配置组返回 0。</summary>
+        public double GetGroupCD(int groupId)
+        {
+            if (groupId <= 0)
+            {
+                return 0d;
+            }
+
+            this.GroupCDDict.TryGetValue(groupId, out double groupCd);
+            return groupCd;
+        }
+
+        /// <summary>同组只记一份 GroupCD。后出现的正数覆盖，0 不写入。</summary>
+        void RecordGroupCD(LDSkill_Battle skillconfig)
+        {
+            if (skillconfig.Group <= 0 || skillconfig.GroupCD <= 0d)
+            {
+                return;
+            }
+
+            this.GroupCDDict[skillconfig.Group] = skillconfig.GroupCD;
         }
 
         /// <summary>Pet表备注：排除后从剩余普通技能池随机不重复抽取；特技表未配齐，池暂为全部技能书技能。</summary>

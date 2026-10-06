@@ -540,7 +540,7 @@ namespace ET
         }
 
 		/// <summary>
-		/// 登录默认：背包给道具 3000，并装配到技能栏 Position=9（道具位）。
+		/// 登录默认：背包给道具 4000（ItemType=3），并装配到 Slots 里第一个道具位。
 		/// 栏位已有其它道具时不覆盖。
 		/// </summary>
 		public static void EnsureDefaultPotionBar(this SkillSetComponentServer self)
@@ -551,8 +551,8 @@ namespace ET
 			}
 
 			int itemId = SkillBarConfig.DefaultPotionItemId;
-			int positionId = SkillBarConfig.DefaultPotionPositionId;
-			if (!LDItemCategory.Instance.Contain(itemId))
+			int positionId = SkillBarConfig.GetFirstItemPositionId();
+			if (positionId <= 0 || !LDItemCategory.Instance.Contain(itemId))
 			{
 				return;
 			}
@@ -1060,6 +1060,11 @@ namespace ET
 			for (int i = self.SkillList.Count - 1; i >= 0; i--)
 			{
 				SkillPro skillPro = self.SkillList[i];
+				if (skillPro.SkillSetType == SkillSetEnum.Item)
+				{
+					continue;
+				}
+
 				if (skillPro.SkillSource != SkillSourceEnum.Occupation)
 				{
 					continue;

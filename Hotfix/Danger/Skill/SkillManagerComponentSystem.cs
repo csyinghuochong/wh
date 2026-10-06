@@ -29,6 +29,7 @@ namespace ET
             self.Skills.Clear();
             self.DelaySkillList.Clear();
             self.SkillCDs.Clear();
+            self.GroupCDEndTimes.Clear();
          
             self.SelfUnitComponent = self.DomainScene().GetComponent<UnitComponent>();
             self.SelfUnit = self.GetParent<Unit>();
@@ -93,6 +94,7 @@ namespace ET
                 ObjectPool.Instance.Recycle(skillHandler);
             }
             self.SkillCDs.Clear();
+            self.GroupCDEndTimes.Clear();
             self.ClearMonsterSing();
             TimerComponent.Instance?.Remove(ref self.Timer);
         }
@@ -319,11 +321,12 @@ namespace ET
             }
 
             //添加技能CD列表  给客户端发送消息 我创建了一个技能,客户端创建特效等相关功能
-            SkillCDItem skillCd = self.AddSkillCD(skillcmd.ItemId, skillcmd.SkillID,  weaponLdSkill, zhudong);
+            SkillCDItem skillCd = self.AddSkillCD(skillcmd.SkillID, weaponLdSkill, zhudong);
             m2C_Skill.Error = ErrorCode.ERR_Success;
             m2C_Skill.CDEndTime = skillCd != null ? skillCd.CDEndTime : 0;
-            // ItemId>0：下发道具公共CD；否则下发技能公共CD（复用 PublicCDTime 字段）
-            m2C_Skill.PublicCDTime = skillcmd.ItemId > 0 ? self.ItemPublicCDTime : self.SkillPublicCDTime;
+            // PublicCDTime 复用为本次技能所在组的组 CD 结束时间
+            long groupCdEnd = self.GetGroupCDEndTime(weaponLdSkill.Group);
+            m2C_Skill.PublicCDTime = groupCdEnd;
             
             M2C_UnitUseSkill useSkill = MessageHelper.m2C_UnitUseSkill;
             useSkill.UnitId = unit.Id;
@@ -332,7 +335,7 @@ namespace ET
             useSkill.TargetAngle = skillcmd.TargetAngle;
             useSkill.SkillInfos = skillList;
             useSkill.CDEndTime = skillCd != null ? skillCd.CDEndTime : 0;
-            useSkill.PublicCDTime = skillcmd.ItemId > 0 ? self.ItemPublicCDTime : self.SkillPublicCDTime;
+            useSkill.PublicCDTime = groupCdEnd;
             self.BroadcastSkill(unit, useSkill);
 
             for (int i = 0; i < handlerList.Count; i++)
@@ -373,33 +376,47 @@ namespace ET
             }
         }
 
-        public static SkillCDItem AddSkillCD(this SkillManagerComponent self, int itemid, int skillid, LDSkill_Battle weapon, bool zhudong)
+        public static SkillCDItem AddSkillCD(this SkillManagerComponent self, int skillid, LDSkill_Battle weapon, bool zhudong)
         {
-            self.ApplyPublicCD(itemid, weapon, zhudong);
-            SkillCDItem skillCd = self.UpdateSkillCD(itemid, skillid, weapon.Id, zhudong);
+            self.ApplyGroupCD(weapon, zhudong);
+            SkillCDItem skillCd = self.UpdateSkillCD(0, skillid, weapon.Id, zhudong);
             return skillCd;
         }
 
         /// <summary>
-        /// 公共CD：按表 PublicCD（秒）写入结束时间。
-        /// 道具技能 → ItemPublicCDTime；普通技能 → SkillPublicCDTime。
+        /// 组 CD：按初始化记下的 GroupCD（秒）写入该组结束时间。组内技能全部进入这段 CD。
+        /// SkillCD 仍只作用于当前技能。
         /// </summary>
-        public static void ApplyPublicCD(this SkillManagerComponent self, int itemId, LDSkill_Battle ldSkill, bool zhudong)
+        public static void ApplyGroupCD(this SkillManagerComponent self, LDSkill_Battle ldSkill, bool zhudong)
         {
-            if (!zhudong || ldSkill == null || ldSkill.PublicCD <= 0f)
+            if (!zhudong || ldSkill == null || ldSkill.Group <= 0)
             {
                 return;
             }
 
-            long endTime = TimeHelper.ServerNow() + (long)(ldSkill.PublicCD * 1000d);
-            if (itemId > 0)
+            double groupCd = LDSkill_BattleCategory.Instance.GetGroupCD(ldSkill.Group);
+            if (groupCd <= 0d)
             {
-                self.ItemPublicCDTime = endTime;
+                return;
             }
-            else
+
+            self.GroupCDEndTimes[ldSkill.Group] = TimeHelper.ServerNow() + (long)(groupCd * 1000d);
+        }
+
+        public static long GetGroupCDEndTime(this SkillManagerComponent self, int groupId)
+        {
+            if (groupId <= 0)
             {
-                self.SkillPublicCDTime = endTime;
+                return 0;
             }
+
+            self.GroupCDEndTimes.TryGetValue(groupId, out long endTime);
+            return endTime;
+        }
+
+        public static bool IsInGroupCD(this SkillManagerComponent self, int groupId, long now)
+        {
+            return self.GetGroupCDEndTime(groupId) > now;
         }
 
         public static async ETTask TriggerBuffSkill(this SkillManagerComponent self, LongLongPair4 keyValuePair, long targetId, int buffNum)
@@ -446,7 +463,7 @@ namespace ET
             SkillCDItem skillcd = null;
             LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(weaponSkill);
 
-            // 表未配个人CD：不上个人CD（公共CD由 AddSkillCD 统一 ApplyPublicCD）
+            // 表未配个人CD：不上个人CD（组 CD 由 AddSkillCD 统一 ApplyGroupCD）
             if (ldSkill.SkillCD <= 0)
             {
                 return null;
@@ -546,15 +563,12 @@ namespace ET
 
             //}
 
-            if (unit.Type == UnitType.Monster)
+            // 组 CD：该组内所有技能共享。组 1 对应原技能公共 CD，组 2 对应药水 CD，其它组同样。
+            if (self.IsInGroupCD(ldSkill.Group, serverNow))
             {
- 
-                //判定是否再公共冷却时间
-                if (serverNow < self.SkillPublicCDTime)
-                {
-                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Skill_CD);
-                }
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Skill_CD);
             }
+
             if (unit.Type != UnitType.Player)
             {
                 //判断当前眩晕状态
@@ -562,11 +576,6 @@ namespace ET
                 if (ErrorCode.ERR_Success!= errorCode)
                 {
                     return errorCode;
-                }
-                //判定是否再公共冷却时间
-                if (serverNow < self.SkillPublicCDTime)
-                {
-                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Skill_CD);
                 }
             }
             return ErrorCode.ERR_Success;

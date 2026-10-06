@@ -312,7 +312,6 @@ namespace ET
             if (exist != null)
             {
                 exist.taskStatus = status;
-                exist.TrackStatus = 1;
                 TaskHelper.ResetTask1Progress(exist);
                 return exist;
             }
@@ -320,7 +319,6 @@ namespace ET
             TaskPro taskPro = new TaskPro();
             taskPro.taskID = taskid;
             taskPro.taskStatus = status;
-            taskPro.TrackStatus = 1;
 
             TaskHelper.ResetTask1Progress(taskPro);
             self.RoleTaskList_1.Add(taskPro);

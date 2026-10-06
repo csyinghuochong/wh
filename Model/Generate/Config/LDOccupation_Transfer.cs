@@ -87,15 +87,18 @@ namespace ET
 		public int Name { get; set; }
 		/// <summary>描述</summary>
 		[ProtoMember(3)]
-		public int Desc { get; set; }
-		/// <summary>图标</summary>
+		public int Desc_1 { get; set; }
+		/// <summary>描述</summary>
 		[ProtoMember(4)]
+		public int Desc_2 { get; set; }
+		/// <summary>图标</summary>
+		[ProtoMember(5)]
 		public string Icon { get; set; }
 		/// <summary>技能</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public int[] Skill { get; set; }
 		/// <summary>技能组名</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int Name_Skill_Group_Transfer { get; set; }
 
 	}

@@ -1311,8 +1311,11 @@ namespace ET
                 return;
             }
 
-            skillMgr.SkillPublicCDTime += deltaMs;
-            if (Log.IsDebugEnabled) Log.Debug($"CHANGE_GLOBAL_CD unit={unit.Id} deltaMs={deltaMs} publicCd={skillMgr.SkillPublicCDTime}");
+            // 原公共 CD 对应组 1
+            const int globalGroup = 1;
+            skillMgr.GroupCDEndTimes.TryGetValue(globalGroup, out long endTime);
+            skillMgr.GroupCDEndTimes[globalGroup] = endTime + deltaMs;
+            if (Log.IsDebugEnabled) Log.Debug($"CHANGE_GLOBAL_CD unit={unit.Id} deltaMs={deltaMs} publicCd={skillMgr.GroupCDEndTimes[globalGroup]}");
         }
 
         private static void ChangeSkillCurrentCd(SkillEditorFunctionContext ctx)
