@@ -394,7 +394,7 @@ namespace ET
                 return;
             }
 
-            double groupCd = LDSkill_BattleCategory.Instance.GetGroupCD(ldSkill.Group);
+            double groupCd = ldSkill.GroupCD;
             if (groupCd <= 0d)
             {
                 return;
