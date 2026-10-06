@@ -1128,7 +1128,7 @@ namespace ET
                 }
 
                 LDEquip_Suit ldEquipSuitCof = LDEquip_SuitCategory.Instance.Get(suitPoints.Key);
-                List<int> suitEffectIds = GetActiveEquipSuitEffectIds(suitPoints.Value, ldEquipSuitCof.Effect_Id);
+                List<int> suitEffectIds = GetActiveEquipSuitEffectIds(suitPoints.Value, ldEquipSuitCof.Effect_Id_1);
                 if (suitEffectIds.Count > 0)
                 {
                     // 效果表未配置，暂不写入属性

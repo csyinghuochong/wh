@@ -9108,6 +9108,41 @@ namespace ET
 
 	}
 
+//追踪任务 / 取消追踪
+	[ResponseType(nameof(M2C_TaskTrackResponse))]
+	[Message(OuterOpcode.C2M_TaskTrackRequest)]
+	[ProtoContract]
+	public partial class C2M_TaskTrackRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int TaskId { get; set; }
+
+		[ProtoMember(2)]
+		public int TaskTable { get; set; }
+
+		[ProtoMember(3)]
+		public int TrackStatus { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TaskTrackResponse)]
+	[ProtoContract]
+	public partial class M2C_TaskTrackResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 //任务通知【目前用于对话完成】
 	[ResponseType(nameof(M2C_TaskNoticeResponse))]
 	[Message(OuterOpcode.C2M_TaskNoticeRequest)]

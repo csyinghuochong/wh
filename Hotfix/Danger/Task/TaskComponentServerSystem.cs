@@ -197,6 +197,54 @@ namespace ET
         }
 
         /// <summary>
+        /// 追踪 / 取消追踪。trackStatus：0 取消，1 追踪。只改已接或已完成的任务。
+        /// </summary>
+        public static int OnTrackTask(this TaskComponentServer self, int taskId, int taskTable, int trackStatus)
+        {
+            if (trackStatus != 0 && trackStatus != 1)
+            {
+                return ErrorCode.ERR_ModifyData;
+            }
+
+            TaskPro taskPro = null;
+            if (taskTable == TaskTableType.Task_1)
+            {
+                taskPro = self.GetTaskById_1(taskId);
+            }
+            else if (taskTable == TaskTableType.Task_2)
+            {
+                taskPro = self.GetTaskById_2(taskId);
+            }
+            else
+            {
+                return ErrorCode.ERR_ModifyData;
+            }
+
+            if (taskPro == null
+                || taskPro.taskStatus == (int)TaskStatuEnum.UnActive
+                || taskPro.taskStatus == (int)TaskStatuEnum.Commited)
+            {
+                return ErrorCode.ERR_TaskCanNotGet;
+            }
+
+            taskPro.TrackStatus = trackStatus;
+            if (taskTable == TaskTableType.Task_1)
+            {
+                self.SendToUpdateTask(new HashSet<int>());
+            }
+            else if (LDTask_2Category.Instance != null && LDTask_2Category.Instance.Contain(taskId))
+            {
+                self.SendToUpdateTask(LDTask_2Category.Instance.Get(taskId).Group);
+            }
+            else
+            {
+                self.SendToUpdateTask();
+            }
+
+            return ErrorCode.ERR_Success;
+        }
+
+        /// <summary>
         /// 接取任务
         /// </summary>
         /// <param name="self"></param>

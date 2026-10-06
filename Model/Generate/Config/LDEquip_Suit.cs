@@ -91,9 +91,15 @@ namespace ET
 		/// <summary>装备ID</summary>
 		[ProtoMember(4)]
 		public int[] Equip_Id { get; set; }
-		/// <summary>效果组</summary>
+		/// <summary>效果组1</summary>
 		[ProtoMember(5)]
-		public string Effect_Id { get; set; }
+		public string Effect_Id_1 { get; set; }
+		/// <summary>效果组2</summary>
+		[ProtoMember(6)]
+		public string Effect_Id_2 { get; set; }
+		/// <summary>效果组3</summary>
+		[ProtoMember(7)]
+		public string Effect_Id_3 { get; set; }
 
 	}
 }

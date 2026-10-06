@@ -7,50 +7,50 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDSectionCategory : ProtoObject, IMerge
+    public partial class LDSkill_TagCategory : ProtoObject, IMerge
     {
-        public static LDSectionCategory Instance;
+        public static LDSkill_TagCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDSection> dict = new Dictionary<int, LDSection>();
+        private Dictionary<int, LDSkill_Tag> dict = new Dictionary<int, LDSkill_Tag>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDSection> list = new List<LDSection>();
+        private List<LDSkill_Tag> list = new List<LDSkill_Tag>();
 		
-        public LDSectionCategory()
+        public LDSkill_TagCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDSectionCategory s = o as LDSectionCategory;
+            LDSkill_TagCategory s = o as LDSkill_TagCategory;
             this.list.AddRange(s.list);
         }
 		
 		public override void EndInit()
 		{
-			foreach (LDSection config in list)
+			foreach (LDSkill_Tag config in list)
 			{
 				config.EndInit();
 				if (this.dict.ContainsKey(config.Id))
 				{
-					throw new Exception($"配置表重复Id: 表={nameof(LDSection)} Id={config.Id}");
+					throw new Exception($"配置表重复Id: 表={nameof(LDSkill_Tag)} Id={config.Id}");
 				}
 				this.dict.Add(config.Id, config);
 			}
 			this.AfterEndInit();
 		}
 		
-        public LDSection Get(int id)
+        public LDSkill_Tag Get(int id)
         {
-            this.dict.TryGetValue(id, out LDSection item);
+            this.dict.TryGetValue(id, out LDSkill_Tag item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDSection)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDSkill_Tag)}，配置id: {id}");
             }
 
             return item;
@@ -61,12 +61,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDSection> GetAll()
+        public Dictionary<int, LDSkill_Tag> GetAll()
         {
             return this.dict;
         }
 
-        public LDSection GetOne()
+        public LDSkill_Tag GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -77,7 +77,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDSection: ProtoObject, IConfig
+	public partial class LDSkill_Tag: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
@@ -85,15 +85,9 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>描述</summary>
+		/// <summary>底图颜色</summary>
 		[ProtoMember(3)]
-		public int Desc { get; set; }
-		/// <summary>图标</summary>
-		[ProtoMember(4)]
-		public string Icon { get; set; }
-		/// <summary>场景ID</summary>
-		[ProtoMember(5)]
-		public int[] Scene_Id { get; set; }
+		public int Color { get; set; }
 
 	}
 }

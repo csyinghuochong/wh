@@ -109,6 +109,9 @@ namespace ET
 		/// <summary>小地图 排序</summary>
 		[ProtoMember(10)]
 		public int MiniMap_Order_SL { get; set; }
+		/// <summary>小地图 图标</summary>
+		[ProtoMember(11)]
+		public string MiniMap_Icon { get; set; }
 
 	}
 }

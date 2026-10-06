@@ -1083,8 +1083,8 @@ namespace ET
 
 				SkillPro skillPro = self.AddSkillPro(skillId, SkillSetEnum.Skill, SkillSourceEnum.Occupation);
 				skillPro.Actived = skillId == ldOccupation.Skill_Normal_Default? 1 : 0;
-				skillPro.Level = 1;
-				if (skillId == ldOccupation.Skill_Normal_Default)
+				skillPro.Level = skillId == ldOccupation.Skill_Normal_Default ? 1 : 0;
+                if (skillId == ldOccupation.Skill_Normal_Default)
 				{
 					List<SkillBarSlot> barList = self.CurrentSkillBarList();
 					SkillBarSlot barSlot = self.GetBarSlot(1, 0);

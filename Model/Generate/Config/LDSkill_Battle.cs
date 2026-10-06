@@ -85,12 +85,12 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>简述</summary>
-		[ProtoMember(3)]
-		public int Desc_Brief { get; set; }
 		/// <summary>图标</summary>
-		[ProtoMember(4)]
+		[ProtoMember(3)]
 		public string Icon { get; set; }
+		/// <summary>技能 标签</summary>
+		[ProtoMember(4)]
+		public int[] Skill_Tag { get; set; }
 		/// <summary>BUFF 替换技能 前置优先</summary>
 		[ProtoMember(5)]
 		public string Replace_Skill { get; set; }
