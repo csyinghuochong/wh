@@ -15,7 +15,7 @@ namespace ET
                 switch (scene.SceneType)
                 {
                     case SceneType.Gate:
-                        if (request.MessageType == NoticeType.Archive)
+                        if (request.MessageType == ServerNoticeType.Archive)
                         {
                             // MessageValue = $"{acccout} {unitid} {archive}",
                             string[] sssvalue = request.MessageValue.Split(' ');
@@ -26,44 +26,44 @@ namespace ET
                         }
                         break;
                     case SceneType.Team:
-                        if (request.MessageType == NoticeType.PlayerExit)
+                        if (request.MessageType == ServerNoticeType.PlayerExit)
                         {
                             scene.GetComponent<TeamSceneComponent>().OnRecvUnitLeave(long.Parse(request.MessageValue));
                         }
                         break;
                     case SceneType.FubenWork:
-                        if (request.MessageType == NoticeType.PlayerExit)
+                        if (request.MessageType == ServerNoticeType.PlayerExit)
                         {
                             scene.GetComponent<SoloSceneComponent>().OnRecvUnitLeave(long.Parse(request.MessageValue));
                         }
                         break;
                     case SceneType.Rank:
-                        if (request.MessageType == NoticeType.RankRefresh)
+                        if (request.MessageType == ServerNoticeType.RankRefresh)
                         {
                            
                         }
-                        if (request.MessageType == NoticeType.StopSever)
+                        if (request.MessageType == ServerNoticeType.StopSever)
                         {
                             scene.GetComponent<RankSceneComponent>().SaveDB().Coroutine();
                             Log.Debug($"数据落地:  Rank: {scene.DomainZone()}");
                         }
                         break;
                     case SceneType.WZRank:
-                        if (request.MessageType == NoticeType.StopSever)
+                        if (request.MessageType == ServerNoticeType.StopSever)
                         {
                             scene.GetComponent<WZRankSceneComponent>().SaveDB().Coroutine();
                             Log.Debug($"数据落地:  WZRank: {scene.DomainZone()}");
                         }
                         break;
                     case SceneType.Consign:
-                        if (request.MessageType == NoticeType.StopSever)
+                        if (request.MessageType == ServerNoticeType.StopSever)
                         {
                             scene.GetComponent<ConsignSceneComponent>().SaveDB().Coroutine();
                             Log.Debug($"数据落地:  PaiMai: {scene.DomainZone()}");
                         }
                         break;
                     case SceneType.Union:
-                        if (request.MessageType == NoticeType.StopSever)
+                        if (request.MessageType == ServerNoticeType.StopSever)
                         {
                             scene.GetComponent<UnionSceneComponent>().SaveDB();
                             Log.Debug($"数据落地:  Union: {scene.DomainZone()}");
@@ -71,7 +71,7 @@ namespace ET
                         break;
                     case SceneType.WZChat:
                         WZChatSceneComponent wzChat = scene.GetComponent<WZChatSceneComponent>();
-                        if (request.MessageType == NoticeType.PlayerExit)
+                        if (request.MessageType == ServerNoticeType.PlayerExit)
                         {
                             long wzUnitId = long.Parse(request.MessageValue);
                             if (wzChat.Get(wzUnitId) != null)
@@ -82,7 +82,7 @@ namespace ET
                         break;
                     case SceneType.Chat:
                         ChatSceneComponent chatInfoUnitsComponent = scene.GetComponent<ChatSceneComponent>();
-                        if (request.MessageType == NoticeType.PlayerExit)
+                        if (request.MessageType == ServerNoticeType.PlayerExit)
                         {
                             long unitid = long.Parse(request.MessageValue);
                             if (chatInfoUnitsComponent.Get(unitid) != null)
@@ -90,12 +90,12 @@ namespace ET
                                 chatInfoUnitsComponent.Remove(unitid);
                             }
                         }
-                        else if (request.MessageType == NoticeType.ClearChat)
+                        else if (request.MessageType == ServerNoticeType.ClearChat)
                         {
                             Console.WriteLine("清空聊天:  " + scene.DomainZone());
                             chatInfoUnitsComponent.WordChatInfos.Clear();
                         }
-                        else if (request.MessageType == NoticeType.JinYan)
+                        else if (request.MessageType == ServerNoticeType.JinYan)
                         {
                             BeReportedInfo bePortedNumber;
                             string[] jinyaninfo = request.MessageValue.Split(' ');
@@ -108,19 +108,6 @@ namespace ET
                                 chatInfoUnitsComponent.BeReportedNumber.Add(JinYanId, bePortedNumber);
                             }
                             bePortedNumber.JinYanTime = TimeHelper.ServerNow() + TimeHelper.OneDay * 3;
-                        }
-                        else
-                        {
-                            M2C_HorseNoticeInfo m2C_HorseNoticeInfo = new M2C_HorseNoticeInfo()
-                            {
-                                NoticeType = request.MessageType,
-                                NoticeText = request.MessageValue,
-                                NoticeTextEn = request.MessageValueEn
-                            };
-                            foreach (var otherUnit in chatInfoUnitsComponent.ChatInfoUnitsDict.Values)
-                            {
-                                MessageHelper.SendActor(otherUnit.GateSessionActorId, m2C_HorseNoticeInfo);
-                            }
                         }
                         reply();
                         break;

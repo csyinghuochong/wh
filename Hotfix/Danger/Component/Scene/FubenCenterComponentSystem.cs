@@ -190,7 +190,7 @@ namespace ET
             self.BattleOpen = false;
             LogHelper.LogDebug($"OnBattleOver : {self.DomainZone()}");
             long robotSceneId = DBHelper.GetRobotServerId();
-            MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = NoticeType.BattleOver });
+            MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = ServerNoticeType.BattleOver });
 
             for (int i = 0; i < self.BattleInfos.Count; i++)
             {

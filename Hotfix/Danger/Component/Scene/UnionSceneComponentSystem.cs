@@ -338,7 +338,7 @@ namespace ET
             {
                 string messageContent = $"恭喜 <color=#{CommonHelper.QualityReturnColor(2)}>{dBUnionInfo.UnionInfo.UnionName}</color>家族占领了家族争霸赛地图!";
                 string messageContentEn = $"Congratulations <color=#{CommonHelper.QualityReturnColor(2)}>{dBUnionInfo.UnionInfo.UnionName}</color>Family Take over Family Fight Map!";
-                ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, messageContent, messageContentEn);
+                //ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, messageContent, messageContentEn);
             }
         }
 
@@ -521,14 +521,6 @@ namespace ET
                 playerlist.AddRange(dBUnionInfo.UnionInfo.UnionPlayerList);
             }
             int zone = self.DomainZone();
-            M2C_HorseNoticeInfo m2C_HorseNoticeInfo = new M2C_HorseNoticeInfo()
-            {
-                NoticeType = NoticeType.UnionRace,
-            };
-            for (int i = 0; i < playerlist.Count; i++)
-            {
-                await ServerMessageHelper.SendToClient(zone, playerlist[i].UserID, m2C_HorseNoticeInfo);
-            }
         }
 
         /// <summary>

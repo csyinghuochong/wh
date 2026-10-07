@@ -343,7 +343,7 @@ namespace ET
             long realmserver = DBHelper.GetRealmCenter();
 
             Other2A_ServerMessageRResponse trasferUnitResponse = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                            (realmserver, new A2Other_ServerMessageRequest() { MessageType = NoticeType.StopSever });
+                            (realmserver, new A2Other_ServerMessageRequest() { MessageType = ServerNoticeType.StopSever });
 
            
             await TimerComponent.Instance.WaitAsync(10 * TimeHelper.Minute);
@@ -359,7 +359,7 @@ namespace ET
                 for (int map = 0; map < mapids.Count; map++)
                 {
                     Other2A_ServerMessageRResponse m2m_TrasferUnitResponse = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                            (mapids[map], new A2Other_ServerMessageRequest() { MessageType = NoticeType.StopSever });
+                            (mapids[map], new A2Other_ServerMessageRequest() { MessageType = ServerNoticeType.StopSever });
                 }
             }
 
@@ -403,7 +403,7 @@ namespace ET
                     Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
                         (chatServerId, new A2Other_ServerMessageRequest()
                         {
-                            MessageType = NoticeType.StopSever,
+                            MessageType = ServerNoticeType.StopSever,
                             MessageValue = "停服维护"
                         });
                 }
@@ -413,7 +413,7 @@ namespace ET
             Other2A_ServerMessageRResponse response = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
                 (realmServerId, new A2Other_ServerMessageRequest()
                 {
-                    MessageType = NoticeType.StopSever,
+                    MessageType = ServerNoticeType.StopSever,
                     MessageValue = $"{ss[2]}_{ss[3]}"
                 });
 
@@ -622,7 +622,7 @@ namespace ET
             Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
                 (chatServerId, new A2Other_ServerMessageRequest()
                 {
-                    MessageType = NoticeType.ClearChat,
+                    MessageType = ServerNoticeType.ClearChat,
                     MessageValue = "清空聊天"
                 });
 #endif
@@ -646,7 +646,7 @@ namespace ET
             Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
                 (chatServerId, new A2Other_ServerMessageRequest()
                 {
-                    MessageType = NoticeType.JinYan,
+                    MessageType = ServerNoticeType.JinYan,
                     MessageValue = content
                 });
         }
@@ -1884,7 +1884,7 @@ namespace ET
             for (int i = 0; i < zoneList.Count; i++)
             {
                 long rankServerId = StartSceneConfigCategory.Instance.GetBySceneName(zoneList[i], "Rank").InstanceId;
-                await ServerMessageHelper.SendServerMessage(rankServerId, NoticeType.RankRefresh, String.Empty);
+                await ServerMessageHelper.SendServerMessage(rankServerId, ServerNoticeType.RankRefresh, String.Empty);
                 await TimerComponent.Instance.WaitAsync(10000);
             }
 #endif
@@ -2253,7 +2253,13 @@ namespace ET
 
             for (int i = 0; i < zones.Count; i++)
             {
-                ServerMessageHelper.SendBroadMessage(zones[i], NoticeType.Notice, mailInfo[2]);
+                long expireTime = 0;
+                if (mailInfo.Length >= 4 && int.TryParse(mailInfo[3], out int expireMinutes) && expireMinutes > 0)
+                {
+                    expireTime = TimeHelper.ServerNow() + expireMinutes * TimeHelper.Minute;
+                }
+
+                //ServerMessageHelper.SendBroadMessage(zones[i], NoticeType.Notice, mailInfo[2], "", 0, expireTime);
             }
 #endif
             return ErrorCode.ERR_Success;

@@ -1748,27 +1748,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_HorseNoticeInfo)]
-	[ProtoContract]
-	public partial class M2C_HorseNoticeInfo: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public string NoticeText { get; set; }
-
-		[ProtoMember(2)]
-		public int NoticeType { get; set; }
-
-		[ProtoMember(3)]
-		public string NoticeTextEn { get; set; }
-
-	}
-
 	[Message(OuterOpcode.BagInfo)]
 	[ProtoContract]
 	public partial class BagInfo: Object
@@ -2164,229 +2143,6 @@ namespace ET
 
 		[ProtoMember(15)]
 		public int Sex { get; set; }
-
-	}
-
-//好友列表
-	[ResponseType(nameof(F2C_FriendInfoResponse))]
-	[Message(OuterOpcode.C2F_FriendInfoRequest)]
-	[ProtoContract]
-	public partial class C2F_FriendInfoRequest: Object, IFriendActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.F2C_FriendInfoResponse)]
-	[ProtoContract]
-	public partial class F2C_FriendInfoResponse: Object, IFriendActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(2)]
-		public List<FriendInfo> FriendList = new List<FriendInfo>();
-
-		[ProtoMember(3)]
-		public List<FriendInfo> ApplyList = new List<FriendInfo>();
-
-		[ProtoMember(4)]
-		public List<FriendInfo> Blacklist = new List<FriendInfo>();
-
-		[ProtoMember(5)]
-		public List<ChatInfo> FriendChats = new List<ChatInfo>();
-
-	}
-
-//好友申请
-	[ResponseType(nameof(F2C_FriendApplyResponse))]
-	[Message(OuterOpcode.C2F_FriendApplyRequest)]
-	[ProtoContract]
-	public partial class C2F_FriendApplyRequest: Object, IFriendActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public long UserID { get; set; }
-
-		[ProtoMember(1)]
-		public FriendInfo RoleInfo { get; set; }
-
-	}
-
-	[Message(OuterOpcode.F2C_FriendApplyResponse)]
-	[ProtoContract]
-	public partial class F2C_FriendApplyResponse: Object, IFriendActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//黑名单
-	[ResponseType(nameof(F2C_FriendBlacklistResponse))]
-	[Message(OuterOpcode.C2F_FriendBlacklistRequest)]
-	[ProtoContract]
-	public partial class C2F_FriendBlacklistRequest: Object, IFriendActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long UserID { get; set; }
-
-		[ProtoMember(3)]
-		public long FriendId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.F2C_FriendBlacklistResponse)]
-	[ProtoContract]
-	public partial class F2C_FriendBlacklistResponse: Object, IFriendActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_FriendApplyResult)]
-	[ProtoContract]
-	public partial class M2C_FriendApplyResult: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public FriendInfo FriendInfo { get; set; }
-
-	}
-
-//好友申请回复
-	[ResponseType(nameof(F2C_FriendApplyReplyResponse))]
-	[Message(OuterOpcode.C2F_FriendApplyReplyRequest)]
-	[ProtoContract]
-	public partial class C2F_FriendApplyReplyRequest: Object, IFriendActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-		[ProtoMember(2)]
-		public long FriendID { get; set; }
-
-		[ProtoMember(3)]
-		public int ReplyCode { get; set; }
-
-	}
-
-	[Message(OuterOpcode.F2C_FriendApplyReplyResponse)]
-	[ProtoContract]
-	public partial class F2C_FriendApplyReplyResponse: Object, IFriendActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//好友删除
-	[ResponseType(nameof(F2C_FriendDeleteResponse))]
-	[Message(OuterOpcode.C2F_FriendDeleteRequest)]
-	[ProtoContract]
-	public partial class C2F_FriendDeleteRequest: Object, IFriendActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-		[ProtoMember(2)]
-		public long FriendID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.F2C_FriendDeleteResponse)]
-	[ProtoContract]
-	public partial class F2C_FriendDeleteResponse: Object, IFriendActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[Message(OuterOpcode.FriendInfo)]
-	[ProtoContract]
-	public partial class FriendInfo: Object
-	{
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-		[ProtoMember(2)]
-		public int PlayerLevel { get; set; }
-
-		[ProtoMember(3)]
-		public string PlayerName { get; set; }
-
-		[ProtoMember(4)]
-		public long OnLineTime { get; set; }
-
-		[ProtoMember(5)]
-		public List<string> ChatMsgList = new List<string>();
-
-		[ProtoMember(6)]
-		public int Occ { get; set; }
 
 	}
 
@@ -4231,41 +3987,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public List<RankSeasonTowerInfo> RankList = new List<RankSeasonTowerInfo>();
-
-	}
-
-//好友列表
-	[ResponseType(nameof(F2C_FriendChatRead))]
-	[Message(OuterOpcode.C2F_FriendChatRead)]
-	[ProtoContract]
-	public partial class C2F_FriendChatRead: Object, IFriendActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-		[ProtoMember(2)]
-		public long FriendID { get; set; }
-
-	}
-
-	[Message(OuterOpcode.F2C_FriendChatRead)]
-	[ProtoContract]
-	public partial class F2C_FriendChatRead: Object, IFriendActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 
@@ -7130,6 +6851,44 @@ namespace ET
 
 		[ProtoMember(1)]
 		public long UnionId { get; set; }
+
+	}
+
+//邀请列表：在线公会成员
+	[ResponseType(nameof(U2C_UnionOnlineResponse))]
+	[Message(OuterOpcode.C2U_UnionOnlineRequest)]
+	[ProtoContract]
+	public partial class C2U_UnionOnlineRequest: Object, IUnionActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UserId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.U2C_UnionOnlineResponse)]
+	[ProtoContract]
+	public partial class U2C_UnionOnlineResponse: Object, IUnionActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<UnionPlayerInfo> PlayerList = new List<UnionPlayerInfo>();
 
 	}
 
@@ -11397,6 +11156,42 @@ namespace ET
 	}
 
 //TeamDungeon end####################################################
+//Friend begin####################################################
+//好友列表
+	[ResponseType(nameof(F2C_FriendChatRead))]
+	[Message(OuterOpcode.C2F_FriendChatRead)]
+	[ProtoContract]
+	public partial class C2F_FriendChatRead: Object, IFriendActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+		[ProtoMember(2)]
+		public long FriendID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.F2C_FriendChatRead)]
+	[ProtoContract]
+	public partial class F2C_FriendChatRead: Object, IFriendActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 //邀请列表：在线好友
 	[ResponseType(nameof(F2C_FriendOnlineResponse))]
 	[Message(OuterOpcode.C2F_FriendOnlineRequest)]
@@ -11432,11 +11227,11 @@ namespace ET
 
 	}
 
-//邀请列表：在线公会成员
-	[ResponseType(nameof(U2C_UnionOnlineResponse))]
-	[Message(OuterOpcode.C2U_UnionOnlineRequest)]
+//好友列表
+	[ResponseType(nameof(F2C_FriendInfoResponse))]
+	[Message(OuterOpcode.C2F_FriendInfoRequest)]
 	[ProtoContract]
-	public partial class C2U_UnionOnlineRequest: Object, IUnionActorRequest
+	public partial class C2F_FriendInfoRequest: Object, IFriendActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11445,16 +11240,282 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(1)]
-		public long UnionId { get; set; }
-
-		[ProtoMember(2)]
-		public long UserId { get; set; }
+		public long UserID { get; set; }
 
 	}
 
-	[Message(OuterOpcode.U2C_UnionOnlineResponse)]
+	[Message(OuterOpcode.F2C_FriendInfoResponse)]
 	[ProtoContract]
-	public partial class U2C_UnionOnlineResponse: Object, IUnionActorResponse
+	public partial class F2C_FriendInfoResponse: Object, IFriendActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(2)]
+		public List<FriendInfo> FriendList = new List<FriendInfo>();
+
+		[ProtoMember(3)]
+		public List<FriendInfo> ApplyList = new List<FriendInfo>();
+
+		[ProtoMember(4)]
+		public List<FriendInfo> Blacklist = new List<FriendInfo>();
+
+		[ProtoMember(5)]
+		public List<ChatInfo> FriendChats = new List<ChatInfo>();
+
+	}
+
+//好友申请
+	[ResponseType(nameof(F2C_FriendApplyResponse))]
+	[Message(OuterOpcode.C2F_FriendApplyRequest)]
+	[ProtoContract]
+	public partial class C2F_FriendApplyRequest: Object, IFriendActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(2)]
+		public long UserID { get; set; }
+
+		[ProtoMember(1)]
+		public FriendInfo RoleInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.F2C_FriendApplyResponse)]
+	[ProtoContract]
+	public partial class F2C_FriendApplyResponse: Object, IFriendActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//黑名单
+	[ResponseType(nameof(F2C_FriendBlacklistResponse))]
+	[Message(OuterOpcode.C2F_FriendBlacklistRequest)]
+	[ProtoContract]
+	public partial class C2F_FriendBlacklistRequest: Object, IFriendActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(2)]
+		public long UserID { get; set; }
+
+		[ProtoMember(3)]
+		public long FriendId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.F2C_FriendBlacklistResponse)]
+	[ProtoContract]
+	public partial class F2C_FriendBlacklistResponse: Object, IFriendActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_FriendApplyResult)]
+	[ProtoContract]
+	public partial class M2C_FriendApplyResult: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public FriendInfo FriendInfo { get; set; }
+
+	}
+
+//好友申请回复
+	[ResponseType(nameof(F2C_FriendApplyReplyResponse))]
+	[Message(OuterOpcode.C2F_FriendApplyReplyRequest)]
+	[ProtoContract]
+	public partial class C2F_FriendApplyReplyRequest: Object, IFriendActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+		[ProtoMember(2)]
+		public long FriendID { get; set; }
+
+		[ProtoMember(3)]
+		public int ReplyCode { get; set; }
+
+	}
+
+	[Message(OuterOpcode.F2C_FriendApplyReplyResponse)]
+	[ProtoContract]
+	public partial class F2C_FriendApplyReplyResponse: Object, IFriendActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//好友删除
+	[ResponseType(nameof(F2C_FriendDeleteResponse))]
+	[Message(OuterOpcode.C2F_FriendDeleteRequest)]
+	[ProtoContract]
+	public partial class C2F_FriendDeleteRequest: Object, IFriendActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+		[ProtoMember(2)]
+		public long FriendID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.F2C_FriendDeleteResponse)]
+	[ProtoContract]
+	public partial class F2C_FriendDeleteResponse: Object, IFriendActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[Message(OuterOpcode.FriendInfo)]
+	[ProtoContract]
+	public partial class FriendInfo: Object
+	{
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+		[ProtoMember(2)]
+		public int PlayerLevel { get; set; }
+
+		[ProtoMember(3)]
+		public string PlayerName { get; set; }
+
+		[ProtoMember(4)]
+		public long OnLineTime { get; set; }
+
+		[ProtoMember(5)]
+		public List<string> ChatMsgList = new List<string>();
+
+		[ProtoMember(6)]
+		public int Occ { get; set; }
+
+	}
+
+//Friend end####################################################
+//Marquee跑马灯 begin####################################################
+	[Message(OuterOpcode.M2C_NoticeMessage)]
+	[ProtoContract]
+	public partial class M2C_NoticeMessage: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(2)]
+		public int NoticeType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MarqueeMessage)]
+	[ProtoContract]
+	public partial class M2C_MarqueeMessage: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(2)]
+		public int NoticeType { get; set; }
+
+		[ProtoMember(3)]
+		public MarqueeInfo MarqueeInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.MarqueeInfo)]
+	[ProtoContract]
+	public partial class MarqueeInfo: Object
+	{
+		[ProtoMember(1)]
+		public int MarqueeId { get; set; }
+
+		[ProtoMember(2)]
+		public long StartTime { get; set; }
+
+		[ProtoMember(10)]
+		public List<string> ParamList = new List<string>();
+
+	}
+
+	[ResponseType(nameof(Chat2C_MarqueeResponse))]
+	[Message(OuterOpcode.C2Chat_MarqueeRequest)]
+	[ProtoContract]
+	public partial class C2Chat_MarqueeRequest: Object, IChatActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.Chat2C_MarqueeResponse)]
+	[ProtoContract]
+	public partial class Chat2C_MarqueeResponse: Object, IChatActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11466,10 +11527,11 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
-		public List<UnionPlayerInfo> PlayerList = new List<UnionPlayerInfo>();
+		public List<MarqueeInfo> MarqueeInfoList = new List<MarqueeInfo>();
 
 	}
 
+//Marquee跑马灯	end####################################################
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

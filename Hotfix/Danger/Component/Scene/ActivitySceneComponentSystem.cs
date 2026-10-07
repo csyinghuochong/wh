@@ -318,7 +318,7 @@ namespace ET
 
             int createRobotNumber = 5;
             long robotSceneId = DBHelper.GetRobotServerId();
-            MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = NoticeType.CreateRobot, Message = $"1#{createRobotNumber}" });
+            MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = self.DomainZone(), MessageType = ServerNoticeType.CreateRobot, Message = $"1#{createRobotNumber}" });
         }
 
         /// <summary>

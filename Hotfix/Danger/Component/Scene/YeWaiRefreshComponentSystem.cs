@@ -427,15 +427,6 @@ namespace ET
                 });
                 await TimerComponent.Instance.WaitFrameAsync();
             }
-
-
-            if (ldMonster.Id == 72009021 || ldMonster.Id == 72009022 || ldMonster.Id == 72009023 || ldMonster.Id == 72009024 || ldMonster.Id == 72009021)
-            {
-
-                string noticeContent = $"神器活动!<color=#B6FF00>{ldMonster.Name}</color>携带神器出现在地图<color=#FFA313>{"宝藏之地"}</color>,想要挑战的玩家请在主城宝藏之地处进入!";
-                string noticeContentEn = $"Artifact Activity!<color=#B6FF00>{ldMonster.Name}</color>Appeared on the<color=#FFA313>{"Treasure Land"}with the Artifact</color>,Players who wish to challenge (it), please enter at the Treasure Land in the main city!";
-                ServerMessageHelper.SendBroadMessage(self.DomainZone(), NoticeType.Notice, noticeContent, noticeContentEn);
-            }
         }
     }
 }

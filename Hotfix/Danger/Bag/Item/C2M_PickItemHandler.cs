@@ -93,13 +93,7 @@ namespace ET
                             removeIds.Add(pendingMeta[i].unitId);
                         }
                         LDItem ldItemOne = LDItemCategory.Instance.Get(pendingMeta[i].itemId);
-                        if (sceneTypeEnum == MapTypeEnum.Happy && ldItemOne.Quality >= 5)
-                        {
-                            string uername = roleInfoComponent.RoleInfo.Name;
-                            string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItemOne.Name}</color>";
-                            string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItemOne.Name}</color> from  A blessing from the heavens";
-                            ServerMessageHelper.SendBroadMessage(UnitZoneHelper.GetHomeZone(unit), NoticeType.Notice, getmessage, getmessageEn);
-                        }
+                        
                     }
                 }
                 else
@@ -125,13 +119,6 @@ namespace ET
                             removeIds.Add(pendingMeta[i].unitId);
                         }
                         LDItem ldItem = LDItemCategory.Instance.Get(pendingMeta[i].itemId);
-                        if (sceneTypeEnum == MapTypeEnum.Happy && ldItem.Quality >= 5)
-                        {
-                            string uername = roleInfoComponent.RoleInfo.Name;
-                            string getmessage = $"{uername}在喜从天降活动这种获得: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color>";
-                            string getmessageEn = $"{uername}Get: <color=#{CommonHelper.QualityReturnColor(5)}>{ldItem.Name}</color> from  A blessing from the heavens";
-                            ServerMessageHelper.SendBroadMessage(UnitZoneHelper.GetHomeZone(unit), NoticeType.Notice, getmessage, getmessageEn);
-                        }
                     }
                 }
             }

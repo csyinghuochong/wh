@@ -82,6 +82,21 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(2)]
+		public int Type { get; set; }
+		/// <summary>类型 参数</summary>
+		[ProtoMember(3)]
+		public int Param1 { get; set; }
+		/// <summary>类型 参数</summary>
+		[ProtoMember(4)]
+		public string Param2 { get; set; }
+		/// <summary>有效期 单位：秒</summary>
+		[ProtoMember(5)]
+		public int Lifespan { get; set; }
+		/// <summary>中文</summary>
+		[ProtoMember(6)]
+		public string CN { get; set; }
 
 	}
 }

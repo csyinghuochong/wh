@@ -304,7 +304,7 @@ namespace ET
             Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
               (gateinstanceid, new A2Other_ServerMessageRequest()
               {
-                  MessageType = NoticeType.Archive,
+                  MessageType = ServerNoticeType.Archive,
                   MessageValue = $"{acccout} {unitid} {archive}",
               });
         }

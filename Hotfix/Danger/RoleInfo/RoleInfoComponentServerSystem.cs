@@ -148,7 +148,7 @@ namespace ET
 
         public static void OnOffLine(this RoleInfoComponentServer self)
         {
-            //self.LastLoginTime = TimeHelper.ServerNow();
+            self.LastOfflineTime = TimeHelper.ServerNow();
         }
 
         public static void OnLogin(this RoleInfoComponentServer self, string remoteIp)

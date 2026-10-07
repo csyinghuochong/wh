@@ -19,6 +19,9 @@ namespace ET
           /// </summary>
         public long LastLoginTime;
 
+        /// <summary>上次离线时间。重要跑马灯按这个时间和本次上线补播。</summary>
+        public long LastOfflineTime;
+
 
         /// <summary>
         /// 今日在线时长

@@ -48,14 +48,44 @@ namespace ET
 						await TimerComponent.Instance.WaitAsync(1);
 						Vector3 pos = unit.Position;
 						Vector3 vector3 = new Vector3(pos.x + RandomHelper.RandFloat01() * 1, pos.y, pos.z + RandomHelper.RandFloat01() * 1);
-						Unit monster = UnitFactory.CreateMonster(unit.DomainScene(), monsterConfig.Id, vector3,  new CreateMonsterInfo()
-						{ 
-							Camp  = CampEnum.CampMonster1
+						Unit monster = UnitFactory.CreateMonster(unit.DomainScene(), monsterConfig.Id, vector3, new CreateMonsterInfo()
+						{
+							Camp = CampEnum.CampMonster1
 						});
 					}
 					return;
 				}
-				if (message.GMMsg .Contains ("testmail#"))
+				if (message.GMMsg.Contains("marquee#"))
+				{
+                    //marquee#跑马灯Id#VIP等级
+                    if (commands.Length < 3)
+                    {
+                        return;
+                    }
+
+                    if (!int.TryParse(commands[1], out int marqueeId) || !int.TryParse(commands[2], out int vipLevel))
+                    {
+                        return;
+                    }
+
+                    if (!LDMarqueeCategory.Instance.Contain(marqueeId))
+                    {
+                        return;
+                    }
+
+                    LDMarquee ldMarquee = LDMarqueeCategory.Instance.Get(marqueeId);
+                    string roleName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
+                    _ = string.Format(ldMarquee.CN, vipLevel, roleName);
+                    long expireTime = 0;
+                    if (ldMarquee.Lifespan > 0)
+                    {
+                        expireTime = TimeHelper.ServerNow() + ldMarquee.Lifespan * 1000;
+                    }
+      
+                    ServerMessageHelper.SendMarquee(UnitZoneHelper.GetCurrentZone(unit), marqueeId, expireTime, vipLevel.ToString(), roleName);
+                    return;
+                }
+                if (message.GMMsg .Contains ("testmail#"))
 				{
                     //testmail#1
                     //testmail#2

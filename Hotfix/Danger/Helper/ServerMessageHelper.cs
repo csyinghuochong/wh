@@ -122,6 +122,29 @@ namespace ET
             return chat2G_EnterChat.Error;
         }
 
+        public static void SendMarquee(int zone, int marqueeId, long expireTime, params string[] paramList)
+        {
+            M2Chat_SendMarquee request = new M2Chat_SendMarquee()
+            {
+                MarqueeId = marqueeId,
+                ExpireTime = expireTime,
+            };
+            if (paramList != null)
+            {
+                for (int i = 0; i < paramList.Length; i++)
+                {
+                    if (string.IsNullOrEmpty(paramList[i]))
+                    {
+                        continue;
+                    }
+
+                    request.ParamList.Add(paramList[i]);
+                }
+            }
+
+            MessageHelper.CallActor(DBHelper.GetChatServerId(zone), request).Coroutine();
+        }
+
         public static void SendBroadMessage(int zone, int messageType, string message, string messageEn = "")
         {
             long chatServerId = DBHelper.GetChatServerId(zone);
@@ -135,7 +158,7 @@ namespace ET
                {
                    MessageType = messageType,
                    MessageValue = message,
-                   MessageValueEn = messageEn   
+                   MessageValueEn = messageEn
                });
         }
 

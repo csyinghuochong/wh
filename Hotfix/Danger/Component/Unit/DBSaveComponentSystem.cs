@@ -148,7 +148,7 @@ namespace ET
             if (other)
             {
                 //通知Chat服
-                await ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(unit), NoticeType.PlayerExit, unit.Id.ToString());
+                await ServerMessageHelper.SendServerMessage(DBHelper.GetChatServerId(unit), ServerNoticeType.PlayerExit, unit.Id.ToString());
                 //通知其他服
             }
 

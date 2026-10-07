@@ -26,14 +26,26 @@ namespace ET
     {
         public long Timer;
 
-        public List<WorldSayConfig> WordSayList = new List<WorldSayConfig> ();
-
         //全服玩家GateSessionActorId
         public Dictionary<long, ChatInfoUnit> ChatInfoUnitsDict = new Dictionary<long, ChatInfoUnit>();
 
         //世界列表记录
         public List<ChatInfo> WordChatInfos = new List<ChatInfo> ();    
 
-        public Dictionary<long, BeReportedInfo> BeReportedNumber = new Dictionary<long, BeReportedInfo> ();   
+        public Dictionary<long, BeReportedInfo> BeReportedNumber = new Dictionary<long, BeReportedInfo> ();
+
+        /// <summary>本服重要跑马灯。Id = 区服号。</summary>
+        public DBMarqueeInfo DBMarqueeInfo;
+
+        public ETTask MarqueeInitTask;
+
+        public List<MarqueePlan> MarqueePlanList = new List<MarqueePlan>();
+    }
+
+    public class MarqueePlan
+    {
+        public int Id;
+        public long FireTime;
+        public long ExpireTime;
     }
 }

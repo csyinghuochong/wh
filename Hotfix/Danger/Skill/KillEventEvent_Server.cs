@@ -132,7 +132,7 @@ namespace ET
                     string defendname = defendUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
                     string killtext = $"<color=#B6FF00>{attackname}</color> 在<color=#FFA313>{ldScene.Name}</color> 击败了 <color=#00F6E6>{defendname}</color>";
                     string killtextEn = $"<color=#B6FF00>{attackname}</color> 在<color=#FFA313>{ldScene.Name}</color> Defeated <color=#00F6E6>{defendname}</color>";
-                    ServerMessageHelper.SendBroadMessage(defendUnit.DomainZone(), NoticeType.KillEvent, killtext, killtextEn);
+                    //ServerMessageHelper.SendBroadMessage(defendUnit.DomainZone(), NoticeType.KillEvent, killtext, killtextEn);
                 }
             }
 

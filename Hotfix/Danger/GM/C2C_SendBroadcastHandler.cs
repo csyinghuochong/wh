@@ -20,7 +20,7 @@ namespace ET
 
             for (int  i= 0; i < zones.Count; i++)
             {
-                ServerMessageHelper.SendBroadMessage(zones[i], NoticeType.Notice, request.ChatInfo.ChatMsg);
+                //ServerMessageHelper.SendBroadMessage(zones[i], NoticeType.Notice, request.ChatInfo.ChatMsg);
             }
 
             reply();

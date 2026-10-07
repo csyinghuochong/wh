@@ -978,6 +978,12 @@ namespace ET
 		[ProtoMember(6)]
 		public string MessageValueEn { get; set; }
 
+		[ProtoMember(7)]
+		public int MarqueeId { get; set; }
+
+		[ProtoMember(8)]
+		public long ExpireTime { get; set; }
+
 	}
 
 	[Message(InnerOpcode.Other2A_ServerMessageRResponse)]
@@ -3276,6 +3282,12 @@ namespace ET
 		[ProtoMember(5)]
 		public int Level { get; set; }
 
+		[ProtoMember(6)]
+		public long LastOfflineTime { get; set; }
+
+		[ProtoMember(7)]
+		public long CreateTime { get; set; }
+
 	}
 
 	[Message(InnerOpcode.Chat2G_EnterChat)]
@@ -3808,6 +3820,43 @@ namespace ET
 
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
+
+	}
+
+	[ResponseType(nameof(Chat2M_SendMarqueeResponse))]
+	[Message(InnerOpcode.M2Chat_SendMarquee)]
+	[ProtoContract]
+	public partial class M2Chat_SendMarquee: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int MarqueeId { get; set; }
+
+		[ProtoMember(2)]
+		public long ExpireTime { get; set; }
+
+		[ProtoMember(3)]
+		public List<string> ParamList = new List<string>();
+
+	}
+
+	[Message(InnerOpcode.Chat2M_SendMarqueeResponse)]
+	[ProtoContract]
+	public partial class Chat2M_SendMarqueeResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
 
 	}
 
