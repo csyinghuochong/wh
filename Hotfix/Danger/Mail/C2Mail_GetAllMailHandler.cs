@@ -1,14 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Net;
-using System.Threading;
-using System.Web;
+﻿using System;
 
 namespace ET
 {
@@ -23,6 +13,12 @@ namespace ET
             DBMailInfo dBMailInfo = await DBHelper.GetComponent<DBMailInfo>(scene.DomainZone(), request.ActorId);
             if (dBMailInfo != null)
             {
+                bool changed = MailHelp.RemoveExpiredMails(dBMailInfo.MailInfoList, TimeHelper.ServerNow());
+                if (changed)
+                {
+                    await DBHelper.SaveComponent(scene.DomainZone(), request.ActorId, dBMailInfo);
+                }
+
                 response.MailInfos = dBMailInfo.MailInfoList;
             }
             reply();

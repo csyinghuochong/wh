@@ -82,7 +82,7 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>int</summary>
+		/// <summary>关键字</summary>
 		[ProtoMember(2)]
 		public string Key { get; set; }
 		/// <summary>中文</summary>

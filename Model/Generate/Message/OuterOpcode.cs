@@ -598,6 +598,10 @@ namespace ET
 		 public const ushort MarqueeInfo = 10595;
 		 public const ushort C2Chat_MarqueeRequest = 10596;
 		 public const ushort Chat2C_MarqueeResponse = 10597;
-		 public const ushort M2C_UpdateVersion = 10598;
+		 public const ushort C2Mail_ReadMailRequest = 10598;
+		 public const ushort Mail2C_ReadMailResponse = 10599;
+		 public const ushort C2M_ReceiveAllMailRequest = 10600;
+		 public const ushort M2C_ReceiveAllMailResponse = 10601;
+		 public const ushort M2C_UpdateVersion = 10602;
 	}
 }

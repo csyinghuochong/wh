@@ -33,6 +33,12 @@ namespace ET
             }
             response.ServerMailIdMax = mailScene.GetMaxMaild();
 
+            DBMailInfo dBMailInfo = await DBHelper.GetComponent<DBMailInfo>(scene.DomainZone(), request.UnitId);
+            if (dBMailInfo != null && MailHelp.RemoveExpiredMails(dBMailInfo.MailInfoList, TimeHelper.ServerNow()))
+            {
+                await DBHelper.SaveComponent(scene.DomainZone(), request.UnitId, dBMailInfo);
+            }
+
             reply();
             await ETTask.CompletedTask;
         }

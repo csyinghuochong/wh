@@ -11,10 +11,24 @@ namespace ET
             {
                 int zone = UnitZoneHelper.GetHomeZone(unit);
                 DBMailInfo dBMailInfo = await DBHelper.GetComponent<DBMailInfo>(zone, unit.Id);
-                if (dBMailInfo != null && dBMailInfo.MailInfoList.Count > 0)
+                if (dBMailInfo != null && request.BelongId > 0 && dBMailInfo.MailInfoList.Count > 0)
                 {
-                    dBMailInfo.MailInfoList.Clear();
-                    await DBHelper.SaveComponent(zone, unit.Id, dBMailInfo);
+                    bool changed = false;
+                    for (int i = dBMailInfo.MailInfoList.Count - 1; i >= 0; i--)
+                    {
+                        if (MailHelp.GetMailTab(dBMailInfo.MailInfoList[i]) != request.BelongId)
+                        {
+                            continue;
+                        }
+
+                        dBMailInfo.MailInfoList.RemoveAt(i);
+                        changed = true;
+                    }
+
+                    if (changed)
+                    {
+                        await DBHelper.SaveComponent(zone, unit.Id, dBMailInfo);
+                    }
                 }
             }
 

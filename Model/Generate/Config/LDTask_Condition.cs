@@ -97,8 +97,11 @@ namespace ET
 		/// <summary>检测 道具</summary>
 		[ProtoMember(6)]
 		public int Inspect { get; set; }
-		/// <summary>数字处理 0-否 1-是</summary>
+		/// <summary>跳转</summary>
 		[ProtoMember(7)]
+		public int Jump { get; set; }
+		/// <summary>数字处理 0-否 1-是</summary>
+		[ProtoMember(8)]
 		public int Digit_Deal { get; set; }
 
 	}

@@ -82,14 +82,20 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>开启首购</summary>
+		/// <summary>支付ID</summary>
 		[ProtoMember(2)]
-		public int Is_First { get; set; }
-		/// <summary>首购额外奖励</summary>
+		public int Pay { get; set; }
+		/// <summary>开启首购</summary>
 		[ProtoMember(3)]
+		public int Is_First { get; set; }
+		/// <summary>图标</summary>
+		[ProtoMember(4)]
+		public string Icon { get; set; }
+		/// <summary>首购额外奖励</summary>
+		[ProtoMember(5)]
 		public string First_Reward { get; set; }
 		/// <summary>非首购额外奖励</summary>
-		[ProtoMember(4)]
+		[ProtoMember(6)]
 		public string Extra_Reward { get; set; }
 
 	}

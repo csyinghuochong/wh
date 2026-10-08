@@ -9138,6 +9138,15 @@ namespace ET
 		[ProtoMember(10)]
 		public List<string> ParamList = new List<string>();
 
+		[ProtoMember(11)]
+		public bool IsRead { get; set; }
+
+		[ProtoMember(12)]
+		public bool RewardReceived { get; set; }
+
+		[ProtoMember(13)]
+		public int BelongId { get; set; }
+
 	}
 
 //GM邮件
@@ -9213,6 +9222,9 @@ namespace ET
 
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int BelongId { get; set; }
 
 	}
 
@@ -11538,6 +11550,70 @@ namespace ET
 	}
 
 //Marquee跑马灯	end####################################################
+//一键领取当前页签：发放未领奖励并标已读，不删除邮件
+	[ResponseType(nameof(M2C_ReceiveAllMailResponse))]
+	[Message(OuterOpcode.C2M_ReceiveAllMailRequest)]
+	[ProtoContract]
+	public partial class C2M_ReceiveAllMailRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int BelongId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ReceiveAllMailResponse)]
+	[ProtoContract]
+	public partial class M2C_ReceiveAllMailResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//已读邮件，直达邮件服
+	[ResponseType(nameof(Mail2C_ReadMailResponse))]
+	[Message(OuterOpcode.C2Mail_ReadMailRequest)]
+	[ProtoContract]
+	public partial class C2Mail_ReadMailRequest: Object, IMailActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long MailId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.Mail2C_ReadMailResponse)]
+	[ProtoContract]
+	public partial class Mail2C_ReadMailResponse: Object, IMailActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

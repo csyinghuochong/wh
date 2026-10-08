@@ -179,7 +179,6 @@ namespace ET
         //指定玩家发送邮件
         public static async ETTask<int> SendUserMail(int zone,long userID, MailInfo mailInfo )
         {
-            long dbCacheId = DBHelper.GetDbCacheId(zone);
             DBMailInfo dBMainInfo = await DBHelper.GetComponent<DBMailInfo>(zone, userID);
             if (dBMainInfo == null)
             {
@@ -193,16 +192,205 @@ namespace ET
             }
 
             List<MailInfo> mailinfolist = dBMainInfo.MailInfoList;
-
-            //存储邮件
-            if (mailinfolist.Count > 150)
+            if (mailInfo.BelongId <= 0)
             {
-                mailinfolist.RemoveAt(0);
+                mailInfo.BelongId = mailInfo.GetBelongId();
             }
+
+            TrimForNewMail(mailinfolist, mailInfo, userID);
             mailinfolist.Add(mailInfo);
 
             DBHelper.SaveComponent(zone, userID, dBMainInfo).Coroutine();
             return ErrorCode.ERR_Success;
+        }
+
+        /// <summary>
+        /// 删掉已过期邮件。ValidTime 小于等于 0 视为永久；小于 1000000 是剩余天数，没有发送时间无法换算，不删。
+        /// </summary>
+        public static bool RemoveExpiredMails(List<MailInfo> mailList, long now)
+        {
+            if (mailList == null || mailList.Count == 0)
+            {
+                return false;
+            }
+
+            bool changed = false;
+            for (int i = mailList.Count - 1; i >= 0; i--)
+            {
+                if (IsMailExpired(mailList[i], now))
+                {
+                    mailList.RemoveAt(i);
+                    changed = true;
+                }
+            }
+
+            return changed;
+        }
+
+        public static MailInfo FindMail(List<MailInfo> mailList, long mailId)
+        {
+            if (mailList == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < mailList.Count; i++)
+            {
+                MailInfo mailInfo = mailList[i];
+                if (mailInfo != null && mailInfo.MailId == mailId)
+                {
+                    return mailInfo;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>有附件且还没领。</summary>
+        public static bool HasUnclaimedReward(MailInfo mailInfo)
+        {
+            if (mailInfo == null || mailInfo.RewardReceived)
+            {
+                return false;
+            }
+
+            return mailInfo.ItemList != null && mailInfo.ItemList.Count > 0;
+        }
+
+        /// <summary>页签。创建时已经写入 BelongId。</summary>
+        public static int GetMailTab(MailInfo mailInfo)
+        {
+            return mailInfo == null ? 0 : mailInfo.BelongId;
+        }
+
+        public static void GrantMailReward(BagComponentServer bag, MailInfo mailInfo)
+        {
+            if (bag == null || !HasUnclaimedReward(mailInfo))
+            {
+                return;
+            }
+
+            long receiveMailTime = TimeHelper.ServerNow();
+            List<BagInfo> mailItems = mailInfo.ItemList;
+            for (int i = mailItems.Count - 1; i >= 0; i--)
+            {
+                BagInfo item = mailItems[i];
+                if (item == null)
+                {
+                    continue;
+                }
+
+                if (!string.IsNullOrEmpty(item.GetWay))
+                {
+                    bag.OnAddItemData(item, item.GetWay);
+                }
+                else
+                {
+                    bag.OnAddItemData(item, $"{ItemGetWay.ReceieMail}_{receiveMailTime}");
+                }
+            }
+
+            mailInfo.RewardReceived = true;
+        }
+
+        public static int GetMailMaxNum()
+        {
+            const int fallback = 100;
+            if (LDGlobalValueCategory.Instance == null || !LDGlobalValueCategory.Instance.ContainKey(GlobalValueKey.Global_Mail_Max_Num))
+            {
+                return fallback;
+            }
+
+            int maxNum = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Mail_Max_Num);
+            return maxNum > 0 ? maxNum : fallback;
+        }
+
+        /// <summary>
+        /// 新邮件入库前：先删过期，再按该邮件所属页签腾位。
+        /// 优先删最老的【没有奖励 / 奖励已领取】；该页签全是未领奖励时，删最老的一封。
+        /// </summary>
+        public static void TrimForNewMail(List<MailInfo> mailList, MailInfo newMail, long userId)
+        {
+            if (mailList == null)
+            {
+                return;
+            }
+
+            RemoveExpiredMails(mailList, TimeHelper.ServerNow());
+            int tab = GetMailTab(newMail);
+            int maxNum = GetMailMaxNum();
+            while (CountTab(mailList, tab) >= maxNum)
+            {
+                int index = FindEvictIndex(mailList, tab);
+                if (index < 0)
+                {
+                    break;
+                }
+
+                MailInfo removed = mailList[index];
+                if (HasUnclaimedReward(removed))
+                {
+                    Log.Warning($"邮箱已满且该页签都是未领奖励，删除最老邮件 userId={userId} tab={tab} mailId={removed.MailId}");
+                }
+
+                mailList.RemoveAt(index);
+            }
+        }
+
+        public static bool IsMailExpired(MailInfo mailInfo, long now)
+        {
+            if (mailInfo == null)
+            {
+                return true;
+            }
+
+            long validTime = mailInfo.ValidTime;
+            if (validTime <= 0 || validTime < 1000000)
+            {
+                return false;
+            }
+
+            long expireTime = validTime > 1000000000000L ? validTime : validTime * 1000;
+            return now >= expireTime;
+        }
+
+        private static int CountTab(List<MailInfo> mailList, int tab)
+        {
+            int count = 0;
+            for (int i = 0; i < mailList.Count; i++)
+            {
+                if (GetMailTab(mailList[i]) == tab)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>列表顺序即入库顺序，下标靠前的更老。</summary>
+        private static int FindEvictIndex(List<MailInfo> mailList, int tab)
+        {
+            int oldest = -1;
+            for (int i = 0; i < mailList.Count; i++)
+            {
+                if (GetMailTab(mailList[i]) != tab)
+                {
+                    continue;
+                }
+
+                if (oldest < 0)
+                {
+                    oldest = i;
+                }
+
+                if (!HasUnclaimedReward(mailList[i]))
+                {
+                    return i;
+                }
+            }
+
+            return oldest;
         }
     }
 }

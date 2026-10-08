@@ -14,7 +14,7 @@ namespace ET
     {
         /// <summary>
         /// 提取第二个#后面的整数
-        /// 样例: //#testmail#12 → 12
+        /// 样例: //testmail#12 → 12
         /// </summary>
         public static bool TryGetSecondHashNumber(string source, out int result)
         {
@@ -104,11 +104,15 @@ namespace ET
                     //mailInfo.Title = "系统通知";
                     mailInfo.MailId = IdGenerater.Instance.GenerateId();
                     mailInfo.Form = "官方xxx";
-                    mailInfo.ValidTime = TimeHelper.ServerNow() + RandomHelper.RandomNumber(2000, 80000);
+                    mailInfo.ValidTime = TimeHelper.ServerNow() + TimeHelper.OneDay * 30;
 					mailInfo.ParamList.Add("AAAA");
                     mailInfo.ParamList.Add("BBBB");
-                    mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1000100, ItemNum = 1 });
-                    mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1000100, ItemNum = 1 });
+
+                    if (RandomHelper.RandFloat01() < 0.5f)
+                    {
+                        mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1001100, ItemNum = 1 });
+                        mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1002100, ItemNum = 1 });
+                    }
                     await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo);
                 }
                
