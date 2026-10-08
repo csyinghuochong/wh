@@ -58,6 +58,7 @@ namespace ET
             info.UnionPurpose = src.UnionPurpose;
             info.ApplyList = src.ApplyList;
             info.UnionId = src.UnionId;
+            info.UnionNo = src.UnionNo;
             info.Level = src.Level < 1 ? 1 : src.Level;
             info.Exp = src.Exp;
             info.UnionPlayerList = src.UnionPlayerList;

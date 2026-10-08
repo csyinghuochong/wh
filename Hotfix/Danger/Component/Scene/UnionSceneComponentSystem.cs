@@ -155,7 +155,44 @@ namespace ET
             unionListItem.UnionPattern = unionInfo.UnionPattern;
             unionListItem.UnionPurpose = unionInfo.UnionPurpose;
             unionListItem.LeaderId = unionInfo.LeaderId;
+            unionListItem.UnionNo = unionInfo.UnionNo;
             return unionListItem;
+        }
+
+        /// <summary>新公会编号：1001 + 当前已有工会数量。已占用则顺延。</summary>
+        public static int AllocUnionNo(this UnionSceneComponent self)
+        {
+            int count = 0;
+            foreach (DBUnionInfo info in self.DBUnionInfos.Values)
+            {
+                if (info?.UnionInfo == null || info.UnionInfo.LeaderId == 0)
+                {
+                    continue;
+                }
+
+                count++;
+            }
+
+            int unionNo = 1001 + count;
+            while (self.ContainsUnionNo(unionNo))
+            {
+                unionNo++;
+            }
+
+            return unionNo;
+        }
+
+        private static bool ContainsUnionNo(this UnionSceneComponent self, int unionNo)
+        {
+            foreach (DBUnionInfo info in self.DBUnionInfos.Values)
+            {
+                if (info?.UnionInfo != null && info.UnionInfo.UnionNo == unionNo)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static async ETTask<DBUnionInfo> GetDBUnionInfo(this UnionSceneComponent self, long unionId)

@@ -7645,6 +7645,9 @@ namespace ET
 		[ProtoMember(24)]
 		public int HasWarehousePassword { get; set; }
 
+		[ProtoMember(25)]
+		public int UnionNo { get; set; }
+
 	}
 
 //公会仓库：会长设密；放入/取出道具与存取款各一条。取货币必须密码，只允许非绑 Gold=4
@@ -7881,6 +7884,9 @@ namespace ET
 
 		[ProtoMember(10)]
 		public long LeaderId { get; set; }
+
+		[ProtoMember(11)]
+		public int UnionNo { get; set; }
 
 	}
 
