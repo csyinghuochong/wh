@@ -200,7 +200,7 @@ namespace ET
             TrimForNewMail(mailinfolist, mailInfo, userID);
             mailinfolist.Add(mailInfo);
 
-            DBHelper.SaveComponent(zone, userID, dBMainInfo).Coroutine();
+            await DBHelper.SaveComponent(zone, userID, dBMainInfo);
             return ErrorCode.ERR_Success;
         }
 

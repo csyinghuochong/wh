@@ -602,6 +602,8 @@ namespace ET
 		 public const ushort Mail2C_ReadMailResponse = 10599;
 		 public const ushort C2M_ReceiveAllMailRequest = 10600;
 		 public const ushort M2C_ReceiveAllMailResponse = 10601;
-		 public const ushort M2C_UpdateVersion = 10602;
+		 public const ushort C2U_UnionSearchRequest = 10602;
+		 public const ushort U2C_UnionSearchResponse = 10603;
+		 public const ushort M2C_UpdateVersion = 10604;
 	}
 }

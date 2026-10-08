@@ -145,18 +145,103 @@ namespace ET
         public static UnionListItem ToUnionListItem(this DBUnionInfo dBUnionInfo)
         {
             UnionInfo unionInfo = dBUnionInfo.UnionInfo;
+            int unionLevel = Math.Max(unionInfo.Level, 1);
             UnionListItem unionListItem = new UnionListItem();
             unionListItem.UnionName = unionInfo.UnionName;
-            unionListItem.PlayerNumber = unionInfo.UnionPlayerList.Count;
+            unionListItem.PlayerNumber = unionInfo.UnionPlayerList?.Count ?? 0;
             unionListItem.UnionId = unionInfo.UnionId;
-            unionListItem.UnionLevel = Math.Max(unionInfo.Level, 1);
+            unionListItem.LevelLimit = unionInfo.LevelLimit;
+            unionListItem.UnionLevel = unionLevel;
             unionListItem.UnionLeader = unionInfo.LeaderName;
             unionListItem.UnionBanner = unionInfo.UnionBanner;
             unionListItem.UnionPattern = unionInfo.UnionPattern;
             unionListItem.UnionPurpose = unionInfo.UnionPurpose;
             unionListItem.LeaderId = unionInfo.LeaderId;
             unionListItem.UnionNo = unionInfo.UnionNo;
+            unionListItem.CombatLimit = unionInfo.CombatLimit;
+            unionListItem.PlayerLimit = GetPlayerLimit(unionLevel);
+            FillViceLeaders(unionListItem, unionInfo);
             return unionListItem;
+        }
+
+        /// <summary>名称包含或编号包含。keyword 空表示全部。</summary>
+        public static bool MatchUnionKeyword(UnionInfo unionInfo, string keyword)
+        {
+            if (string.IsNullOrEmpty(keyword))
+            {
+                return true;
+            }
+
+            if (unionInfo.UnionName != null && unionInfo.UnionName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return true;
+            }
+
+            return unionInfo.UnionNo.ToString().IndexOf(keyword, StringComparison.Ordinal) >= 0;
+        }
+
+        public static void CollectUnionList(this UnionSceneComponent self, List<UnionListItem> unionList, string keyword)
+        {
+            unionList.Clear();
+            string key = keyword?.Trim() ?? string.Empty;
+            foreach (DBUnionInfo dBUnionInfo in self.DBUnionInfos.Values)
+            {
+                UnionInfo unionInfo = dBUnionInfo?.UnionInfo;
+                if (unionInfo == null || unionInfo.LeaderId == 0)
+                {
+                    continue;
+                }
+
+                if (!MatchUnionKeyword(unionInfo, key))
+                {
+                    continue;
+                }
+
+                unionList.Add(dBUnionInfo.ToUnionListItem());
+            }
+        }
+
+        private static int GetPlayerLimit(int unionLevel)
+        {
+            if (LDUnionCategory.Instance == null || !LDUnionCategory.Instance.Contain(unionLevel))
+            {
+                return 0;
+            }
+
+            return LDUnionCategory.Instance.Get(unionLevel).Limit_Player;
+        }
+
+        private const int ViceLeaderShowCount = 3;
+
+        private static void FillViceLeaders(UnionListItem unionListItem, UnionInfo unionInfo)
+        {
+            List<UnionPlayerInfo> players = unionInfo.UnionPlayerList;
+            if (players == null)
+            {
+                return;
+            }
+
+            int added = 0;
+            for (int i = 0; i < players.Count && added < ViceLeaderShowCount; i++)
+            {
+                UnionPlayerInfo player = players[i];
+                if (player == null || player.Position != UnionPosition.ViceLeader || player.UserID == 0)
+                {
+                    continue;
+                }
+
+                unionListItem.ViceLeaderList.Add(new UnionPlayerInfo()
+                {
+                    PlayerName = player.PlayerName,
+                    PlayerLevel = player.PlayerLevel,
+                    Position = player.Position,
+                    UserID = player.UserID,
+                    Combat = player.Combat,
+                    Occ = player.Occ,
+                    OccTwo = player.OccTwo,
+                });
+                added++;
+            }
         }
 
         /// <summary>新公会编号：1001 + 当前已有工会数量。已占用则顺延。</summary>

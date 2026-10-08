@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ET
 {
@@ -11,17 +10,7 @@ namespace ET
             UnionSceneComponent unionScene = scene.GetComponent<UnionSceneComponent>();
             await unionScene.LoadAllUnionInfos();
 
-            List<UnionListItem> unionList = response.UnionList;
-            unionList.Clear();
-            foreach (DBUnionInfo dBUnionInfo in unionScene.DBUnionInfos.Values)
-            {
-                if (dBUnionInfo == null || dBUnionInfo.UnionInfo == null || dBUnionInfo.UnionInfo.LeaderId == 0)
-                {
-                    continue;
-                }
-
-                unionList.Add(dBUnionInfo.ToUnionListItem());
-            }
+            unionScene.CollectUnionList(response.UnionList, null);
 
             reply();
         }

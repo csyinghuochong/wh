@@ -7582,6 +7582,7 @@ namespace ET
 		[ProtoMember(3)]
 		public string LeaderName { get; set; }
 
+		/// <summary>准入等级，0=不限</summary>
 		[ProtoMember(4)]
 		public int LevelLimit { get; set; }
 
@@ -7647,6 +7648,10 @@ namespace ET
 
 		[ProtoMember(25)]
 		public int UnionNo { get; set; }
+
+		/// <summary>准入战力，0=不限</summary>
+		[ProtoMember(26)]
+		public int CombatLimit { get; set; }
 
 	}
 
@@ -7864,6 +7869,7 @@ namespace ET
 		[ProtoMember(3)]
 		public int PlayerNumber { get; set; }
 
+		/// <summary>准入等级，0=不限</summary>
 		[ProtoMember(4)]
 		public int LevelLimit { get; set; }
 
@@ -7887,6 +7893,18 @@ namespace ET
 
 		[ProtoMember(11)]
 		public int UnionNo { get; set; }
+
+		/// <summary>准入战力，0=不限</summary>
+		[ProtoMember(12)]
+		public int CombatLimit { get; set; }
+
+		/// <summary>人数上限，展示 当前/上限</summary>
+		[ProtoMember(13)]
+		public int PlayerLimit { get; set; }
+
+		/// <summary>副会长，最多3人。头像点击走通用观察</summary>
+		[ProtoMember(14)]
+		public List<UnionPlayerInfo> ViceLeaderList = new List<UnionPlayerInfo>();
 
 	}
 
@@ -11611,6 +11629,41 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+	}
+
+//按名称或编号搜索公会。Keyword 空则返回全部
+	[ResponseType(nameof(U2C_UnionSearchResponse))]
+	[Message(OuterOpcode.C2U_UnionSearchRequest)]
+	[ProtoContract]
+	public partial class C2U_UnionSearchRequest: Object, IUnionActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public string Keyword { get; set; }
+
+	}
+
+	[Message(OuterOpcode.U2C_UnionSearchResponse)]
+	[ProtoContract]
+	public partial class U2C_UnionSearchResponse: Object, IUnionActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<UnionListItem> UnionList = new List<UnionListItem>();
 
 	}
 
