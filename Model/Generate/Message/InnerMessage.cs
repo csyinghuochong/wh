@@ -3823,6 +3823,7 @@ namespace ET
 
 	}
 
+//Marquee跑马灯	begin####################################################
 	[ResponseType(nameof(Chat2M_SendMarqueeResponse))]
 	[Message(InnerOpcode.M2Chat_SendMarquee)]
 	[ProtoContract]
@@ -3860,4 +3861,5 @@ namespace ET
 
 	}
 
+//Marquee跑马灯	end####################################################
 }

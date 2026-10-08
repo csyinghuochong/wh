@@ -6854,6 +6854,41 @@ namespace ET
 
 	}
 
+//按名称或编号搜索公会。Keyword 空则返回全部
+	[ResponseType(nameof(U2C_UnionSearchResponse))]
+	[Message(OuterOpcode.C2U_UnionSearchRequest)]
+	[ProtoContract]
+	public partial class C2U_UnionSearchRequest: Object, IUnionActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public string Keyword { get; set; }
+
+	}
+
+	[Message(OuterOpcode.U2C_UnionSearchResponse)]
+	[ProtoContract]
+	public partial class U2C_UnionSearchResponse: Object, IUnionActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<UnionListItem> UnionList = new List<UnionListItem>();
+
+	}
+
 //邀请列表：在线公会成员
 	[ResponseType(nameof(U2C_UnionOnlineResponse))]
 	[Message(OuterOpcode.C2U_UnionOnlineRequest)]
@@ -7582,7 +7617,6 @@ namespace ET
 		[ProtoMember(3)]
 		public string LeaderName { get; set; }
 
-		/// <summary>准入等级，0=不限</summary>
 		[ProtoMember(4)]
 		public int LevelLimit { get; set; }
 
@@ -7649,7 +7683,6 @@ namespace ET
 		[ProtoMember(25)]
 		public int UnionNo { get; set; }
 
-		/// <summary>准入战力，0=不限</summary>
 		[ProtoMember(26)]
 		public int CombatLimit { get; set; }
 
@@ -7869,7 +7902,6 @@ namespace ET
 		[ProtoMember(3)]
 		public int PlayerNumber { get; set; }
 
-		/// <summary>准入等级，0=不限</summary>
 		[ProtoMember(4)]
 		public int LevelLimit { get; set; }
 
@@ -7894,15 +7926,12 @@ namespace ET
 		[ProtoMember(11)]
 		public int UnionNo { get; set; }
 
-		/// <summary>准入战力，0=不限</summary>
 		[ProtoMember(12)]
 		public int CombatLimit { get; set; }
 
-		/// <summary>人数上限，展示 当前/上限</summary>
 		[ProtoMember(13)]
 		public int PlayerLimit { get; set; }
 
-		/// <summary>副会长，最多3人。头像点击走通用观察</summary>
 		[ProtoMember(14)]
 		public List<UnionPlayerInfo> ViceLeaderList = new List<UnionPlayerInfo>();
 
@@ -9164,6 +9193,73 @@ namespace ET
 
 		[ProtoMember(13)]
 		public int BelongId { get; set; }
+
+		[ProtoMember(14)]
+		public long SendTime { get; set; }
+
+	}
+
+//一键领取当前页签：发放未领奖励并标已读，不删除邮件
+	[ResponseType(nameof(M2C_ReceiveAllMailResponse))]
+	[Message(OuterOpcode.C2M_ReceiveAllMailRequest)]
+	[ProtoContract]
+	public partial class C2M_ReceiveAllMailRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int BelongId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ReceiveAllMailResponse)]
+	[ProtoContract]
+	public partial class M2C_ReceiveAllMailResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//已读邮件，直达邮件服
+	[ResponseType(nameof(Mail2C_ReadMailResponse))]
+	[Message(OuterOpcode.C2Mail_ReadMailRequest)]
+	[ProtoContract]
+	public partial class C2Mail_ReadMailRequest: Object, IMailActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long MailId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.Mail2C_ReadMailResponse)]
+	[ProtoContract]
+	public partial class Mail2C_ReadMailResponse: Object, IMailActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
 
 	}
 
@@ -11568,43 +11664,11 @@ namespace ET
 	}
 
 //Marquee跑马灯	end####################################################
-//一键领取当前页签：发放未领奖励并标已读，不删除邮件
-	[ResponseType(nameof(M2C_ReceiveAllMailResponse))]
-	[Message(OuterOpcode.C2M_ReceiveAllMailRequest)]
+//删除当前邮件
+	[ResponseType(nameof(M2C_DeleteMailResponse))]
+	[Message(OuterOpcode.C2M_DeleteMailRequest)]
 	[ProtoContract]
-	public partial class C2M_ReceiveAllMailRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int BelongId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_ReceiveAllMailResponse)]
-	[ProtoContract]
-	public partial class M2C_ReceiveAllMailResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//已读邮件，直达邮件服
-	[ResponseType(nameof(Mail2C_ReadMailResponse))]
-	[Message(OuterOpcode.C2Mail_ReadMailRequest)]
-	[ProtoContract]
-	public partial class C2Mail_ReadMailRequest: Object, IMailActorRequest
+	public partial class C2M_DeleteMailRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11617,9 +11681,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.Mail2C_ReadMailResponse)]
+	[Message(OuterOpcode.M2C_DeleteMailResponse)]
 	[ProtoContract]
-	public partial class Mail2C_ReadMailResponse: Object, IMailActorResponse
+	public partial class M2C_DeleteMailResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11629,41 +11693,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
-
-	}
-
-//按名称或编号搜索公会。Keyword 空则返回全部
-	[ResponseType(nameof(U2C_UnionSearchResponse))]
-	[Message(OuterOpcode.C2U_UnionSearchRequest)]
-	[ProtoContract]
-	public partial class C2U_UnionSearchRequest: Object, IUnionActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public string Keyword { get; set; }
-
-	}
-
-	[Message(OuterOpcode.U2C_UnionSearchResponse)]
-	[ProtoContract]
-	public partial class U2C_UnionSearchResponse: Object, IUnionActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<UnionListItem> UnionList = new List<UnionListItem>();
 
 	}
 

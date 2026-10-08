@@ -197,6 +197,11 @@ namespace ET
                 mailInfo.BelongId = mailInfo.GetBelongId();
             }
 
+            if (mailInfo.SendTime <= 0)
+            {
+                mailInfo.SendTime = TimeHelper.ServerNow();
+            }
+
             TrimForNewMail(mailinfolist, mailInfo, userID);
             mailinfolist.Add(mailInfo);
 
