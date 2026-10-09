@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -25,6 +25,15 @@ namespace ET
                 return;
             }
 
+            // Limit_Condition_1：购买所需角色等级。0 表示不限制。条件 2/3 暂未定义。
+            int needLv = storeSellConfig.Limit_Condition_1;
+            if (needLv > 0 && (roleInfoComponentServer?.RoleInfo?.Lv ?? 0) < needLv)
+            {
+                response.Error = ErrorCode.ERR_LevelNoEnough;
+                reply();
+                return;
+            }
+
             int shopId = request.ShopId > 0 ? request.ShopId : storeSellConfig.Shop_Id;
             bool isGlobalShop = LDShopCategory.Instance.Contain(shopId)
                     && LDShopCategory.Instance.Get(shopId).Type == ShopType.GlobalRandom;
@@ -39,7 +48,7 @@ namespace ET
                 buyNumber = 100;
             }
 
-            int periodBought = daily?.GetBuyStorePeriod(storeSellConfig.Id) ?? roleInfoComponentServer.GetStoreBuy(storeSellConfig.Id);
+            int periodBought = daily?.GetBuyStorePeriod(storeSellConfig.Id) ?? 0;
             if (storeSellConfig.Limit_Num > 0 && buyNumber + periodBought > storeSellConfig.Limit_Num)
             {
                 response.Error = ErrorCode.ERR_BuyMaxLimit;

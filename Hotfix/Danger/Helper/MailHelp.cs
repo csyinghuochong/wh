@@ -298,18 +298,6 @@ namespace ET
             mailInfo.RewardReceived = true;
         }
 
-        public static int GetMailMaxNum()
-        {
-            const int fallback = 100;
-            if (LDGlobalValueCategory.Instance == null || !LDGlobalValueCategory.Instance.ContainKey(GlobalValueKey.Global_Mail_Max_Num))
-            {
-                return fallback;
-            }
-
-            int maxNum = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Mail_Max_Num);
-            return maxNum > 0 ? maxNum : fallback;
-        }
-
         /// <summary>
         /// 新邮件入库前：先删过期，再按该邮件所属页签腾位。
         /// 优先删最老的【没有奖励 / 奖励已领取】；该页签全是未领奖励时，删最老的一封。
@@ -323,7 +311,7 @@ namespace ET
 
             RemoveExpiredMails(mailList, TimeHelper.ServerNow());
             int tab = GetMailTab(newMail);
-            int maxNum = GetMailMaxNum();
+            int maxNum = LDGlobalValueCategory.Instance.MailMaxNum;
             while (CountTab(mailList, tab) >= maxNum)
             {
                 int index = FindEvictIndex(mailList, tab);

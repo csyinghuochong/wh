@@ -34,6 +34,9 @@ namespace ET
         /// <summary>新人等级：该等级及以下不受世界等级影响。</summary>
         public int NewRoleLv;
 
+        /// <summary>每个邮件页签的最大数量。</summary>
+        public int MailMaxNum = 100;
+
         /// <summary>升级自由点：下标=角色等级，值=升到该级本次获得的自由点（1 级为 0）。</summary>
         public int[] Add_Point_Level_UP_Free_ByLevel = Array.Empty<int>();
 
@@ -65,6 +68,16 @@ namespace ET
             this.NewRoleLv = this.ContainKey(GlobalValueKey.Global_New_Role_Lv)
                 ? this.GetInt(GlobalValueKey.Global_New_Role_Lv)
                 : 0;
+
+            this.MailMaxNum = 100;
+            if (this.ContainKey(GlobalValueKey.Global_Mail_Max_Num))
+            {
+                int maxNum = this.GetInt(GlobalValueKey.Global_Mail_Max_Num);
+                if (maxNum > 0)
+                {
+                    this.MailMaxNum = maxNum;
+                }
+            }
 
             this.BagInitCapacity.Clear();
             this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120021);
