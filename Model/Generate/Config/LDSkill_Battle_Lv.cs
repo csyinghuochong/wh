@@ -100,6 +100,9 @@ namespace ET
 		/// <summary>释放消耗</summary>
 		[ProtoMember(7)]
 		public string Consume { get; set; }
+		/// <summary>战力</summary>
+		[ProtoMember(8)]
+		public int CP { get; set; }
 
 	}
 }

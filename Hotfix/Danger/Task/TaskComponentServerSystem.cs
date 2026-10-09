@@ -905,15 +905,15 @@ namespace ET
         }
 
         /// <summary>
-        /// 121 战力达到：覆盖为当前战力。122 战力提升：只累计本次比上次增加的部分，下降不记。
-        /// delta 由 UpdateRoleData 传入，值为新战力减旧战力。
+        /// 121 战力：覆盖为历史最高战力。
+        /// 122 战力提升：只累计历史最高被抬高的部分。接取时进度为 0，相当于以当时的最高值为初始值，回落不记。
         /// </summary>
-        public static void OnCombatToValue(this TaskComponentServer self, int combat, int delta = 0)
+        public static void OnCombatToValue(this TaskComponentServer self, int maxCombat, int delta = 0)
         {
-            self.NotifyCondition(TastConditionType.CombatRechage_121, combat, 0);
+            self.NotifyCondition(TastConditionType.CombatRechage_121, maxCombat, 0);
             if (delta > 0)
             {
-                self.NotifyCondition(TastConditionType.CombatIncrease_122, combat, delta);
+                self.NotifyCondition(TastConditionType.CombatIncrease_122, maxCombat, delta);
             }
         }
 

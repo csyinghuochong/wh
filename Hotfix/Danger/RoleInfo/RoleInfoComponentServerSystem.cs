@@ -402,10 +402,19 @@ namespace ET
                     break;
          
                 case UserDataType.Combat:
+                    int newCombat = int.Parse(value);
                     int oldCombat = self.RoleInfo.Combat;
-                    self.RoleInfo.Combat = int.Parse(value);
+                    int oldMax = self.MaxCombat;
+                    self.RoleInfo.Combat = newCombat;
+                    if (newCombat > self.MaxCombat)
+                    {
+                        self.MaxCombat = newCombat;
+                    }
+
                     saveValue = self.RoleInfo.Combat.ToString();
-                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo, self.RoleInfo.Combat - oldCombat);
+                    // 老档只有当前战力、没有历史最高：先补档，不把存量算成 122。
+                    int maxDelta = oldMax <= 0 && oldCombat > 0 ? 0 : self.MaxCombat - oldMax;
+                    PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo, maxDelta);
                     break;
 
                 default:

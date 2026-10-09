@@ -34,7 +34,10 @@ namespace ET
             }
 
             // 4. 刷新战力
-            UpdateCombat(unit, numeric, notice);
+
+            int zhanliValue = CalcCombat(unit);
+            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Combat, zhanliValue.ToString(), notice);
+
         }
 
         /// <summary>快照 ForwardMap 一级属性存储值（Reset 前调用）。</summary>
@@ -80,19 +83,47 @@ namespace ET
             });
         }
         
-        public  static void UpdateCombat(Unit unit, NumericComponent numericComponent, bool notice)
+ 
+
+        /// <summary>
+        /// 当前战力 = 当前等级 Exp_Lv.CP_Role（取该级一行，不按等级累加）
+        /// + SkillList 里每个技能当前等级 Skill_Battle_Lv.CP。
+        /// </summary>
+        private static int CalcCombat(Unit unit)
         {
-            //战力计算
-
-            int zhanliValue = numericComponent.GetAsInt(NumericType.PATK_Max_22);
-            //更新战力
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Combat, zhanliValue.ToString(), notice);
-
-            if (zhanliValue < 0 || zhanliValue > 500000)
+            int combat = 0;
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+            if (LDExp_LvCategory.Instance != null
+                && LDExp_LvCategory.Instance.Contain(roleInfo.Lv))
             {
-                Log.Error($"战力异常: {unit.DomainZone()}  {unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}  {zhanliValue}");
+                combat += LDExp_LvCategory.Instance.Get(roleInfo.Lv).CP_Role;
             }
 
+            SkillSetComponentServer skillSet = unit.GetComponent<SkillSetComponentServer>();
+            if (skillSet == null || LDSkill_Battle_LvCategory.Instance == null)
+            {
+                return combat;
+            }
+
+            List<SkillPro> skillList = skillSet.SkillList;
+            for (int i = 0; i < skillList.Count; i++)
+            {
+                SkillPro skill = skillList[i];
+                if (skill == null || skill.Level <= 0)
+                {
+                    continue;
+                }
+
+                LDSkill_Battle_Lv skillLv = LDSkill_Battle_LvCategory.Instance.GetLDSkillLv(skill.SkillID, skill.Level);
+                if (skillLv == null)
+                {
+                    continue;
+                }
+
+                combat += skillLv.CP;
+            }
+
+            return combat;
         }
     }
 

@@ -35,6 +35,12 @@ namespace ET
 
         public long UpdateCombatTime;
 
+        /// <summary>
+        /// 历史最高战力。当前战力在 RoleInfo.Combat。
+        /// 121 读这个值；122 只累计它被抬高的差值。
+        /// </summary>
+        public int MaxCombat;
+
         public int RechargeBuChang; //充值补偿  目前主要用于玩家充值成功但是掉线的情况上线后给与补偿
 
         [BsonIgnore]

@@ -54,7 +54,14 @@ namespace ET
 
                 case UserDataType.Combat:
                     task = unit.GetComponent<TaskComponentServer>();
-                    task?.OnCombatToValue(roleInfo.Combat, (int)delta);
+                    RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
+                    int maxCombat = roleInfoComponent.MaxCombat;
+                    if (maxCombat <= 0)
+                    {
+                        maxCombat = roleInfo.Combat;
+                    }
+
+                    task?.OnCombatToValue(maxCombat, (int)delta);
                     break;
 
                 default:

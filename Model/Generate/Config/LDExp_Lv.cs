@@ -88,8 +88,11 @@ namespace ET
 		/// <summary>角色 标准生命</summary>
 		[ProtoMember(3)]
 		public int Hp_Standard { get; set; }
-		/// <summary>坐骑 升级经验</summary>
+		/// <summary>角色 战力</summary>
 		[ProtoMember(4)]
+		public int CP_Role { get; set; }
+		/// <summary>坐骑 升级经验</summary>
+		[ProtoMember(5)]
 		public int Exp_Mount { get; set; }
 
 	}
