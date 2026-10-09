@@ -1614,7 +1614,7 @@ namespace ET
                 dailyData.ClearDayLists(RoleDailyClearType.Week);
                 if (notice)
                 {
-                    dailyData.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+                    dailyData.NotifyUpdate();
                 }
             }
 

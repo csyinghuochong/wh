@@ -18,8 +18,10 @@ namespace ET
             }
 
             LDShop shop = LDShopCategory.Instance.Get(shopId);
+            RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
+            daily.TryRefreshShop(shopId);
 
-            // Type1 固定：服务端按配置生成货架
+            // Type1 固定：货架读配置。本次购买数量已在 TryRefreshShop 里按刷新点清过。
             if (shop.Type == ShopType.Fixed)
             {
                 response.ShopGoodsItems = RandomShopHelper.InitShopItemInfos(shopId);
@@ -53,7 +55,7 @@ namespace ET
                 return;
             }
 
-            // 个人随机 Type 2/3：日清货架
+            // 个人随机 Type 2/3：到刷新点后重抽货架
             if (shop.Type != ShopType.RandomRepeat && shop.Type != ShopType.RandomUnique)
             {
                 response.Error = ErrorCode.ERR_Error;
@@ -62,7 +64,6 @@ namespace ET
                 return;
             }
 
-            RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
             response.ShopGoodsItems = daily.GetOrInitPersonalRandomShop(shopId);
             response.Error = ErrorCode.ERR_Success;
             reply();

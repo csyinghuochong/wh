@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -27,7 +27,7 @@ namespace ET
 
             // Limit_Condition_1：购买所需角色等级。0 表示不限制。条件 2/3 暂未定义。
             int needLv = storeSellConfig.Limit_Condition_1;
-            if (needLv > 0 && (roleInfoComponentServer?.RoleInfo?.Lv ?? 0) < needLv)
+            if (needLv > 0 && roleInfoComponentServer.RoleInfo.Lv < needLv)
             {
                 response.Error = ErrorCode.ERR_LevelNoEnough;
                 reply();
@@ -37,18 +37,16 @@ namespace ET
             int shopId = request.ShopId > 0 ? request.ShopId : storeSellConfig.Shop_Id;
             bool isGlobalShop = LDShopCategory.Instance.Contain(shopId)
                     && LDShopCategory.Instance.Get(shopId).Type == ShopType.GlobalRandom;
+            daily.TryRefreshShop(shopId);
 
             int buyNumber = request.BuyNumber;
             if (buyNumber <= 0)
             {
                 buyNumber = 1;
             }
-            else if (buyNumber > 100)
-            {
-                buyNumber = 100;
-            }
 
-            int periodBought = daily?.GetBuyStorePeriod(storeSellConfig.Id) ?? 0;
+            // 本次购买数量：本刷新周期已购。上限 Limit_Num，商店刷新时清空。
+            int periodBought = daily.GetBuyStorePeriod(storeSellConfig.Id);
             if (storeSellConfig.Limit_Num > 0 && buyNumber + periodBought > storeSellConfig.Limit_Num)
             {
                 response.Error = ErrorCode.ERR_BuyMaxLimit;
@@ -56,7 +54,8 @@ namespace ET
                 return;
             }
 
-            int foreverBought = daily?.GetBuyStoreForever(storeSellConfig.Id) ?? 0;
+            // 终身购买数量：累计已购，不随商店刷新清空。上限 Limit_Num_Forever。
+            int foreverBought = daily.GetBuyStoreForever(storeSellConfig.Id);
             if (storeSellConfig.Limit_Num_Forever > 0 && buyNumber + foreverBought > storeSellConfig.Limit_Num_Forever)
             {
                 response.Error = ErrorCode.ERR_BuyMaxLimit;
@@ -120,18 +119,12 @@ namespace ET
                 bag.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{storeBuyTime}");
             }
 
+            // needPeriod：记入本次购买数量。needForever：记入终身购买数量。
             bool needPeriod = storeSellConfig.Limit_Num > 0;
             bool needForever = storeSellConfig.Limit_Num_Forever > 0;
             if (needPeriod || needForever)
             {
-                if (daily != null)
-                {
-                    daily.AddShopBuy(storeSellConfig.Id, buyNumber, needPeriod, needForever);
-                }
-                else if (needPeriod)
-                {
-                    roleInfoComponentServer.OnShopBuy(storeSellConfig.Id, buyNumber);
-                }
+                daily.AddShopBuy(storeSellConfig.Id, buyNumber, needPeriod, needForever);
             }
 
             reply();

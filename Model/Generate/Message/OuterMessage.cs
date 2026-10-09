@@ -625,7 +625,7 @@ namespace ET
 		[ProtoMember(51)]
 		public List<IntLongPair> TowerIds = new List<IntLongPair>();
 
-//商店终身限购次数 Key=LDShop_Goods.Id
+// 终身购买数量 Key=LDShop_Goods.Id。不随商店刷新清空。上限见 LDShop_Goods.Limit_Num_Forever。
 		[ProtoMember(68)]
 		public List<IntLongPair> BuyStoreItemsForever = new List<IntLongPair>();
 
@@ -4119,7 +4119,7 @@ namespace ET
 
 	}
 
-/// <summary>角色日清/本次周期数据（零点清空；不含终身）</summary>
+/// <summary>角色周期数据。本次购买数量不在日清里整表清空，按各商店 Auto_Refresh 刷新。</summary>
 	[Message(OuterOpcode.RoleDailyData)]
 	[ProtoContract]
 	public partial class RoleDailyData: Object
@@ -4127,7 +4127,7 @@ namespace ET
 		[ProtoMember(1)]
 		public List<IntLongPair> DayFubenTimes = new List<IntLongPair>();
 
-// 商店本次限购 Key=LDShop_Goods.Id
+// 本次购买数量 Key=LDShop_Goods.Id。商店刷新时清空：1每天凌晨5点 2每周一凌晨5点 3每月1日凌晨5点，9特殊不处理。上限见 Limit_Num。不是终身购买数量。
 		[ProtoMember(7)]
 		public List<IntLongPair> BuyStoreItems = new List<IntLongPair>();
 
@@ -4198,7 +4198,7 @@ namespace ET
 		[ProtoMember(2)]
 		public List<IntLongPair> BuyStoreItemsForever = new List<IntLongPair>();
 
-// 1=全量 2=仅商店限购 3=零点清空后全量
+// 3=在线跨过日清点，客户端再刷任务和活动。其它值只覆盖本地缓存。
 		[ProtoMember(3)]
 		public int Reason { get; set; }
 

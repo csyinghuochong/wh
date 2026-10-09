@@ -19,6 +19,10 @@ namespace ET
         [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
         public Dictionary<int, List<ShopGoodsItem>> GlobalRandomShops = new Dictionary<int, List<ShopGoodsItem>>();
 
+        /// <summary>全服商店上次刷新时间 Key=ShopId。1每天5点 2每周一5点 3每月1日5点，9特殊不刷。</summary>
+        [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
+        public Dictionary<int, long> GlobalShopRefreshTime = new Dictionary<int, long>();
+
     }
 
 }

@@ -29,6 +29,7 @@ namespace ET
             data.DayFubenTimes ??= new List<IntLongPair>();
             data.BuyStoreItems ??= new List<IntLongPair>();
             self.PersonalRandomShops ??= new Dictionary<int, List<ShopGoodsItem>>();
+            self.ShopRefreshTime ??= new Dictionary<int, long>();
         }
 
         public static void OnDailyReset(this RoleDailyDataComponentServer self)
@@ -56,13 +57,11 @@ namespace ET
                 return;
             }
 
-            // 默认日清：不含周活跃
+            // 日清不含商店。本次购买数量按各商店 Auto_Refresh 清，终身购买数量不清。
             data.DayFubenTimes.Clear();
-            data.BuyStoreItems.Clear();
             data.DailyActivePoint = 0;
             SetCount(data.Currencies, UserDataType.DailyActive, 0);
             data.VipDailyClaimed = 0;
-            self.PersonalRandomShops.Clear();
         }
 
         /// <summary>增加日/周活跃点数并推送</summary>
@@ -92,7 +91,7 @@ namespace ET
 
             if (notice)
             {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+                self.NotifyUpdate();
             }
         }
 
@@ -133,8 +132,68 @@ namespace ET
         }
 
         /// <summary>
-        /// 个人随机商店（Type 2/3）货架：当日首次打开时生成，零点 Clear 后重新生成。
+        /// 请求时刷新。到点清该店本次购买数量；Type 2/3 重抽货架。
+        /// Type 9 只清玩家本次购买数量，货架在 ActivityScene。
         /// </summary>
+        public static void TryRefreshShop(this RoleDailyDataComponentServer self, int shopId)
+        {
+            if (!LDShopCategory.Instance.Contain(shopId))
+            {
+                return;
+            }
+
+            LDShop shop = LDShopCategory.Instance.Get(shopId);
+            long now = TimeHelper.ServerNow();
+            self.ShopRefreshTime.TryGetValue(shopId, out long last);
+            bool refresh = ActivityHelper.IsShopRefreshDue(shop.Auto_Refresh, last, now);
+            if (last > 0 && !refresh)
+            {
+                return;
+            }
+
+            if (refresh && self.ClearShopPeriodBuys(shopId))
+            {
+                self.NotifyUpdate();
+            }
+
+            self.EnsurePersonalShelf(shop, refresh);
+            self.ShopRefreshTime[shopId] = now;
+        }
+
+        /// <summary>清空该商店商品的本次购买数量。终身购买数量不动。</summary>
+        public static bool ClearShopPeriodBuys(this RoleDailyDataComponentServer self, int shopId)
+        {
+            List<LDShop_Goods> goodsList = LDShop_GoodsCategory.Instance.GetShopGoodsList(shopId);
+            HashSet<int> goodsIds = new HashSet<int>();
+            for (int i = 0; i < goodsList.Count; i++)
+            {
+                goodsIds.Add(goodsList[i].Id);
+            }
+
+            List<IntLongPair> buys = self.GetDailyData().BuyStoreItems;
+            return buys.RemoveAll(pair => goodsIds.Contains(pair.KeyId)) > 0;
+        }
+
+        /// <summary>Type 2/3 个人货架。forceRegen 为 true 时按刷新重抽。</summary>
+        private static void EnsurePersonalShelf(this RoleDailyDataComponentServer self, LDShop shop, bool forceRegen)
+        {
+            if (shop.Type != ShopType.RandomRepeat && shop.Type != ShopType.RandomUnique)
+            {
+                return;
+            }
+
+            if (!forceRegen
+                && self.PersonalRandomShops.TryGetValue(shop.Id, out List<ShopGoodsItem> list)
+                && list != null
+                && list.Count > 0)
+            {
+                return;
+            }
+
+            self.PersonalRandomShops[shop.Id] = RandomShopHelper.InitShopItemInfos(shop.Id);
+        }
+
+        /// <summary>个人随机商店（Type 2/3）货架。先走 TryRefreshShop，再取已生成的列表。</summary>
         public static List<ShopGoodsItem> GetOrInitPersonalRandomShop(this RoleDailyDataComponentServer self, int shopId)
         {
             if (self.PersonalRandomShops.TryGetValue(shopId, out List<ShopGoodsItem> list)
@@ -244,11 +303,13 @@ namespace ET
 
         #region 商店限购
 
+        /// <summary>本次购买数量。本刷新周期已购，商店按 Auto_Refresh 刷新时清空。上限 Limit_Num。</summary>
         public static int GetBuyStorePeriod(this RoleDailyDataComponentServer self, int goodsId)
         {
             return GetCount(self.GetDailyData().BuyStoreItems, goodsId);
         }
 
+        /// <summary>终身购买数量。不随商店刷新清空。上限 Limit_Num_Forever。</summary>
         public static int GetBuyStoreForever(this RoleDailyDataComponentServer self, int goodsId)
         {
             RoleInfo roleInfo = self.GetParent<Unit>()?.GetComponent<RoleInfoComponentServer>()?.RoleInfo;
@@ -284,7 +345,7 @@ namespace ET
                 }
             }
 
-            self.NotifyUpdate(RoleDailyDataComponentServer.ReasonShopLimit);
+            self.NotifyUpdate();
         }
 
         #endregion
@@ -301,7 +362,7 @@ namespace ET
             
             if (notice)
             {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+                self.NotifyUpdate();
             }
         }
 
@@ -319,7 +380,7 @@ namespace ET
             self.GetDailyData().VipDailyClaimed = value;
             if (notice)
             {
-                self.NotifyUpdate(RoleDailyDataComponentServer.ReasonFull);
+                self.NotifyUpdate();
             }
         }
 
@@ -345,7 +406,7 @@ namespace ET
             // 保留空实现避免旧调用编译失败；请走 C2M_RoleDailyDataRequest
         }
 
-        public static void NotifyUpdate(this RoleDailyDataComponentServer self, int reason)
+        public static void NotifyUpdate(this RoleDailyDataComponentServer self, int reason = 0)
         {
             Unit unit = self.GetParent<Unit>();
             if (unit == null || unit.GetComponent<UnitGateComponent>() == null)

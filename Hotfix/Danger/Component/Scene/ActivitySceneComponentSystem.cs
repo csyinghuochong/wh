@@ -99,10 +99,7 @@ namespace ET
             int openServerDay = DBHelper.GetOpenServerDay(zone);
             LogHelper.LogDebug($"InitDayActivity: {zone}  {openServerDay}");
           
-            if (self.DBDayActivityInfo.GlobalRandomShops == null || self.DBDayActivityInfo.GlobalRandomShops.Count == 0)
-            {
-                self.InitGlobalRandomShop();
-            }
+            self.TryRefreshGlobalShops();
 
             self.CheckDailyReset();
             self.SaveDB();
@@ -112,24 +109,59 @@ namespace ET
             self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Second, TimerType.ActivitySceneTimer, self);
         }
 
-        public static void InitGlobalRandomShop(this ActivitySceneComponent self)
+        /// <summary>
+        /// 全服货架按 Auto_Refresh 刷新。1 每天 5 点，2 每周一 5 点，3 每月 1 日 5 点，9 不刷。
+        /// 玩家本次购买数量在 Map 请求时清。
+        /// </summary>
+        public static void TryRefreshGlobalShops(this ActivitySceneComponent self)
         {
-            self.DBDayActivityInfo.GlobalRandomShops = RandomShopHelper.InitGlobalRandomShops();
+            DBDayActivityInfo db = self.DBDayActivityInfo;
+            if (db.GlobalRandomShops == null)
+            {
+                db.GlobalRandomShops = new Dictionary<int, List<ShopGoodsItem>>();
+            }
+
+            if (db.GlobalShopRefreshTime == null)
+            {
+                db.GlobalShopRefreshTime = new Dictionary<int, long>();
+            }
+
+            long now = TimeHelper.ServerNow();
+            bool changed = false;
+            foreach (LDShop shop in LDShopCategory.Instance.GetAll().Values)
+            {
+                if (shop.Type != ShopType.GlobalRandom)
+                {
+                    continue;
+                }
+
+                db.GlobalShopRefreshTime.TryGetValue(shop.Id, out long last);
+                bool hasShelf = db.GlobalRandomShops.TryGetValue(shop.Id, out List<ShopGoodsItem> list) && list != null && list.Count > 0;
+                bool refresh = ActivityHelper.IsShopRefreshDue(shop.Auto_Refresh, last, now);
+                if (last > 0 && !refresh && hasShelf)
+                {
+                    continue;
+                }
+
+                if (refresh || !hasShelf)
+                {
+                    db.GlobalRandomShops[shop.Id] = RandomShopHelper.InitShopItemInfos(shop.Id);
+                }
+
+                db.GlobalShopRefreshTime[shop.Id] = now;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                self.SaveDB();
+            }
         }
 
         public static List<ShopGoodsItem> GetGlobalRandomShopList(this ActivitySceneComponent self, int shopId)
         {
-            if (self.DBDayActivityInfo.GlobalRandomShops == null)
-            {
-                self.DBDayActivityInfo.GlobalRandomShops = new Dictionary<int, List<ShopGoodsItem>>();
-            }
-
-            if (self.DBDayActivityInfo.GlobalRandomShops.Count == 0)
-            {
-                self.InitGlobalRandomShop();
-            }
-
-            if (self.DBDayActivityInfo.GlobalRandomShops.TryGetValue(shopId, out List<ShopGoodsItem> list))
+            self.TryRefreshGlobalShops();
+            if (self.DBDayActivityInfo.GlobalRandomShops.TryGetValue(shopId, out List<ShopGoodsItem> list) && list != null)
             {
                 return list;
             }
@@ -267,6 +299,7 @@ namespace ET
 
         public static int OnGlobalShopBuyRequest(this ActivitySceneComponent self, int shopId, ShopGoodsItem mysteryInfo)
         {
+            self.TryRefreshGlobalShops();
             if (mysteryInfo == null || self.DBDayActivityInfo.GlobalRandomShops == null)
             {
                 return ErrorCode.ERR_ItemNotEnoughError;
@@ -350,7 +383,7 @@ namespace ET
             int openServerDay = DBHelper.GetOpenServerDay(self.DomainZone());
             LogHelper.LogWarning($"NoticeDailyReset: zone: {self.DomainZone()} openday: {openServerDay} reset: {ActivityHelper.GetDailyResetTimeOfDay()}", true);
 
-            self.InitGlobalRandomShop();
+            self.TryRefreshGlobalShops();
             self.InitFunctionButton();
             self.SaveDB();
 
