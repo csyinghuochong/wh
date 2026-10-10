@@ -597,11 +597,6 @@ namespace ET
 					continue;
 				}
 
-				if (barList[i].Direction == 0)
-				{
-					barList[i].Direction = SkillBarConfig.ItemDirectionBegin;
-				}
-
 				if (barList[i].Direction == SkillBarConfig.ItemDirectionBegin)
 				{
 					slot = barList[i];
