@@ -717,6 +717,15 @@ namespace ET
 		[ProtoMember(15)]
 		public int Sex { get; set; }
 
+		[ProtoMember(16)]
+		public int HeadIconId { get; set; }
+
+		[ProtoMember(17)]
+		public long LastLoginTime { get; set; }
+
+		[ProtoMember(18)]
+		public int LoginTag { get; set; }
+
 	}
 
 	[Message(OuterOpcode.UnitInfo)]
@@ -1375,6 +1384,12 @@ namespace ET
 
 		[ProtoMember(7)]
 		public List<int> PlatformList = new List<int>();
+
+		[ProtoMember(8)]
+		public int State { get; set; }
+
+		[ProtoMember(9)]
+		public int Tag { get; set; }
 
 	}
 
@@ -6825,6 +6840,9 @@ namespace ET
 		[ProtoMember(1)]
 		public string UnionName { get; set; }
 
+		[ProtoMember(5)]
+		public string UnionNotice { get; set; }
+
 		[ProtoMember(2)]
 		public string UnionPurpose { get; set; }
 
@@ -7686,6 +7704,9 @@ namespace ET
 		[ProtoMember(26)]
 		public int CombatLimit { get; set; }
 
+		[ProtoMember(27)]
+		public string UnionNotice { get; set; }
+
 	}
 
 //公会仓库：会长设密；放入/取出道具与存取款各一条。取货币必须密码，只允许非绑 Gold=4
@@ -7933,6 +7954,12 @@ namespace ET
 		public int PlayerLimit { get; set; }
 
 		[ProtoMember(14)]
+		public int HeadId { get; set; }
+
+		[ProtoMember(15)]
+		public int Occ { get; set; }
+
+		[ProtoMember(20)]
 		public List<UnionPlayerInfo> ViceLeaderList = new List<UnionPlayerInfo>();
 
 	}
@@ -9219,6 +9246,38 @@ namespace ET
 	[Message(OuterOpcode.M2C_ReceiveAllMailResponse)]
 	[ProtoContract]
 	public partial class M2C_ReceiveAllMailResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//删除当前邮件
+	[ResponseType(nameof(M2C_DeleteMailResponse))]
+	[Message(OuterOpcode.C2M_DeleteMailRequest)]
+	[ProtoContract]
+	public partial class C2M_DeleteMailRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long MailId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_DeleteMailResponse)]
+	[ProtoContract]
+	public partial class M2C_DeleteMailResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11664,38 +11723,6 @@ namespace ET
 	}
 
 //Marquee跑马灯	end####################################################
-//删除当前邮件
-	[ResponseType(nameof(M2C_DeleteMailResponse))]
-	[Message(OuterOpcode.C2M_DeleteMailRequest)]
-	[ProtoContract]
-	public partial class C2M_DeleteMailRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long MailId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_DeleteMailResponse)]
-	[ProtoContract]
-	public partial class M2C_DeleteMailResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

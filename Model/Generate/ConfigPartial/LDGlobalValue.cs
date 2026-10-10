@@ -37,6 +37,18 @@ namespace ET
         /// <summary>每个邮件页签的最大数量。</summary>
         public int MailMaxNum = 100;
 
+        /// <summary>拥挤统计窗口，秒。表未配或小于等于 0 时按 24 小时。</summary>
+        public int ServerCrowdTimeSeconds = 24 * 3600;
+
+        /// <summary>拥挤统计窗口毫秒。由秒换算。</summary>
+        public long ServerCrowdWindowMs = 24L * TimeHelper.Hour;
+
+        /// <summary>拥挤人数线。0|100|200 取 100。未配为 0，按流畅。</summary>
+        public int ServerCrowdBusy;
+
+        /// <summary>爆满人数线。0|100|200 取 200。</summary>
+        public int ServerCrowdFull;
+
         /// <summary>升级自由点：下标=角色等级，值=升到该级本次获得的自由点（1 级为 0）。</summary>
         public int[] Add_Point_Level_UP_Free_ByLevel = Array.Empty<int>();
 
@@ -87,6 +99,51 @@ namespace ET
             this.BagInitCapacity[(int)ItemLocType.ItemLocBagLife] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1200251);
             this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1200252);
             this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome2] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1200253);
+            this.ParseServerCrowd();
+        }
+
+        private void ParseServerCrowd()
+        {
+            int seconds = 24 * 3600;
+            if (this.ContainKey(GlobalValueKey.Global_Server_Crowd_Time))
+            {
+                int value = this.GetInt(GlobalValueKey.Global_Server_Crowd_Time);
+                if (value > 0)
+                {
+                    seconds = value;
+                }
+            }
+
+            this.ServerCrowdTimeSeconds = seconds;
+            this.ServerCrowdWindowMs = seconds * 1000L;
+            this.ServerCrowdBusy = 0;
+            this.ServerCrowdFull = 0;
+            if (!this.ContainKey(GlobalValueKey.Global_Server_Crowd_Role))
+            {
+                return;
+            }
+
+            // 0|100|200：[0,100) 流畅，[100,200) 拥挤，[200,+∞) 爆满
+            int[] values = this.GetIntArray(GlobalValueKey.Global_Server_Crowd_Role);
+            Array.Sort(values);
+            if (values.Length >= 3)
+            {
+                this.ServerCrowdBusy = values[values.Length - 2];
+                this.ServerCrowdFull = values[values.Length - 1];
+                return;
+            }
+
+            if (values.Length == 2)
+            {
+                this.ServerCrowdBusy = values[0];
+                this.ServerCrowdFull = values[1];
+                return;
+            }
+
+            if (values.Length == 1)
+            {
+                this.ServerCrowdFull = values[0];
+            }
         }
 
         private void ParseAddPoint()

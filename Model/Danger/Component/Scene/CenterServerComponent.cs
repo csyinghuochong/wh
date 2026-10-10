@@ -20,5 +20,10 @@ namespace ET
         public DBCenterSerialInfo DBCenterSerialInfo;
 
         public Dictionary<string, KeyValuePair<long, string>> PhoneVerification = new Dictionary<string, KeyValuePair<long, string>>();
+
+        /// <summary>区服 Id → 窗口内去重登录。人数在 DBCenterZoneCrowdInfo.Count。</summary>
+        public Dictionary<int, DBCenterZoneCrowdInfo> ZoneCrowdInfos = new Dictionary<int, DBCenterZoneCrowdInfo>();
+
+        public int CrowdTick;
     }
 }

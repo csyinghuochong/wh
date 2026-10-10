@@ -262,8 +262,8 @@ namespace ET
             return mailInfo.ItemList != null && mailInfo.ItemList.Count > 0;
         }
 
-        /// <summary>页签。创建时已经写入 BelongId。</summary>
-        public static int GetMailTab(MailInfo mailInfo)
+        /// <summary>邮件所属 BelongId。空邮件返回 0。</summary>
+        public static int GetBelongId(MailInfo mailInfo)
         {
             return mailInfo == null ? 0 : mailInfo.BelongId;
         }
@@ -310,11 +310,11 @@ namespace ET
             }
 
             RemoveExpiredMails(mailList, TimeHelper.ServerNow());
-            int tab = GetMailTab(newMail);
+            int belongId = GetBelongId(newMail);
             int maxNum = LDGlobalValueCategory.Instance.MailMaxNum;
-            while (CountTab(mailList, tab) >= maxNum)
+            while (CountTab(mailList, belongId) >= maxNum)
             {
-                int index = FindEvictIndex(mailList, tab);
+                int index = FindEvictIndex(mailList, belongId);
                 if (index < 0)
                 {
                     break;
@@ -323,7 +323,7 @@ namespace ET
                 MailInfo removed = mailList[index];
                 if (HasUnclaimedReward(removed))
                 {
-                    Log.Warning($"邮箱已满且该页签都是未领奖励，删除最老邮件 userId={userId} tab={tab} mailId={removed.MailId}");
+                    Log.Warning($"邮箱已满且该页签都是未领奖励，删除最老邮件 userId={userId} belongId={belongId} mailId={removed.MailId}");
                 }
 
                 mailList.RemoveAt(index);
@@ -347,12 +347,12 @@ namespace ET
             return now >= expireTime;
         }
 
-        private static int CountTab(List<MailInfo> mailList, int tab)
+        private static int CountTab(List<MailInfo> mailList, int belongId)
         {
             int count = 0;
             for (int i = 0; i < mailList.Count; i++)
             {
-                if (GetMailTab(mailList[i]) == tab)
+                if (GetBelongId(mailList[i]) == belongId)
                 {
                     count++;
                 }
@@ -362,12 +362,12 @@ namespace ET
         }
 
         /// <summary>列表顺序即入库顺序，下标靠前的更老。</summary>
-        private static int FindEvictIndex(List<MailInfo> mailList, int tab)
+        private static int FindEvictIndex(List<MailInfo> mailList, int belongId)
         {
             int oldest = -1;
             for (int i = 0; i < mailList.Count; i++)
             {
-                if (GetMailTab(mailList[i]) != tab)
+                if (GetBelongId(mailList[i]) != belongId)
                 {
                     continue;
                 }

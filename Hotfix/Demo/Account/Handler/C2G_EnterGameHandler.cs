@@ -238,6 +238,14 @@ namespace ET
 						//unit.GetComponent<DBSaveComponent>().LastDBTime = TimeHelper.ServerNow();
                         dbSaveComponent.UpdateCacheDB();
                         unit.OnLogin(session.RemoteAddress.ToString());
+                        try
+                        {
+                            await SyncCenterRoleOnEnter(session.DomainZone(), request.AccountId, request.UserID, unit);
+                        }
+                        catch (Exception syncException)
+                        {
+                            Log.Error($"同步角色最近登录失败 {request.UserID} {syncException}");
+                        }
 
                         long unitId = unit.Id;
                         await EnterRankServer(unit);
@@ -308,7 +316,47 @@ namespace ET
 		}
 
 
-        private async ETTask<long> EnterWorldChatServer(Unit unit)
+        private static async ETTask SyncCenterRoleOnEnter(int zone, long accountId, long userId, Unit unit)
+        {
+            List<DBCenterAccountInfo> accounts = await Game.Scene.GetComponent<DBComponent>()
+                    .Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id == accountId);
+            if (accounts == null || accounts.Count == 0)
+            {
+                return;
+            }
+
+            DBCenterAccountInfo account = accounts[0];
+            try
+            {
+                CreateRoleInfo createRoleInfo = account.GetRoleInfo(zone, userId);
+                if (createRoleInfo == null)
+                {
+                    return;
+                }
+
+                RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+                long loginTime = TimeHelper.ServerNow();
+                createRoleInfo.LastLoginTime = loginTime;
+                createRoleInfo.PlayerLv = roleInfo.Lv;
+                createRoleInfo.PlayerName = roleInfo.Name;
+                createRoleInfo.PlayerOcc = roleInfo.Occ;
+                createRoleInfo.OccTwo = roleInfo.OccTwo;
+                createRoleInfo.Sex = roleInfo.Sex;
+                createRoleInfo.HeadIconId = roleInfo.HeadIconId;
+                createRoleInfo.FashionIds = new List<int>();
+                BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+                createRoleInfo.FashionIds.AddRange(bag.FashionEquipList);
+
+                await Game.Scene.GetComponent<DBComponent>().Save(CommonConfig.CenterZoneId, account);
+                await CenterServerCrowdSystem.SaveRoleLogin(zone, userId, loginTime);
+            }
+            finally
+            {
+                account.Dispose();
+            }
+        }
+
+		private async ETTask<long> EnterWorldChatServer(Unit unit)
 		{
 			long chatServerId = DBHelper.GetChatServerId(unit);
 			RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;

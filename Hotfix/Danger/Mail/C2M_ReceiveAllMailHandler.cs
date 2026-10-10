@@ -31,7 +31,7 @@ namespace ET
                 for (int i = 0; i < dBMailInfo.MailInfoList.Count; i++)
                 {
                     MailInfo mailInfo = dBMailInfo.MailInfoList[i];
-                    if (mailInfo == null || MailHelp.GetMailTab(mailInfo) != request.BelongId)
+                    if (mailInfo == null || MailHelp.GetBelongId(mailInfo) != request.BelongId)
                     {
                         continue;
                     }

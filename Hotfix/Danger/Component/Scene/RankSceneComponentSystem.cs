@@ -808,7 +808,7 @@ namespace ET
                 mailInfo.Status = 0;
                 mailInfo.ConfigId = mailConfigId;
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                mailInfo.ValidTime = serverTime + TimeHelper.OneDay * 7;
+                mailInfo.ValidTime = serverTime + TimeHelper.OneDay * 30;
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);
                 if (mailInfo.ItemList == null || mailInfo.ItemList.Count == 0)
                 {

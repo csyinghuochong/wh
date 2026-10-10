@@ -43,6 +43,7 @@ namespace ET
             
             self.UpdateServerInfo().Coroutine();
             self.InitDBRankInfo().Coroutine();
+            self.LoadZoneCrowd().Coroutine();
             self.UpdateTianQi();
             self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Second, TimerType.AccountCenterTimer, self);
         }
@@ -306,6 +307,13 @@ namespace ET
             {
                 self.TianQITime = 0;
                 self.UpdateTianQi();
+            }
+
+            self.CrowdTick++;
+            if (self.CrowdTick >= CenterServerCrowdSystem.RefreshSeconds)
+            {
+                self.CrowdTick = 0;
+                self.LoadZoneCrowd().Coroutine();
             }
         }
     }
