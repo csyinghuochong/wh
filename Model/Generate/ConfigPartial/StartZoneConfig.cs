@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace ET
 {
@@ -111,8 +112,7 @@ namespace ET
             {
                 StartZoneConfig config = gameZones[i];
                 int port = GameZoneListPortStart + (config.Id - 1) * 10;
-                long openTime = config.OpenTime > 0 ? config.OpenTime : DefaultServerOpenTime;
-                _serverItems.Add(GetServerItem(config.Id, $"{outerIp}:{port}", GetZoneDisplayName(config), openTime, 1));
+                _serverItems.Add(GetServerItem(config.Id, $"{outerIp}:{port}", GetZoneDisplayName(config), ToOpenTimeStamp(config.OpenTime), 1));
             }
         }
 
@@ -142,6 +142,17 @@ namespace ET
             }
 
             return "127.0.0.1";
+        }
+
+        static long ToOpenTimeStamp(string openTime)
+        {
+            if (string.IsNullOrEmpty(openTime))
+            {
+                return DefaultServerOpenTime;
+            }
+
+            DateTime dateTime = DateTime.ParseExact(openTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            return TimeInfo.Instance.Transition(dateTime);
         }
 
         static string GetZoneDisplayName(StartZoneConfig config)

@@ -90,7 +90,7 @@ namespace ET
 		public string Name { get; set; }
 		/// <summary>开服时间</summary>
 		[ProtoMember(4)]
-		public long OpenTime { get; set; }
+		public string OpenTime { get; set; }
 		/// <summary>战区</summary>
 		[ProtoMember(5)]
 		public int WarZone { get; set; }

@@ -94,15 +94,7 @@ namespace ET
 
         public static int GetMainTaskNumber(this TaskComponentServer self)
         {
-            int mainTaskNumber = 0;
-            for (int i = 0; i < self.RoleComoleteTaskList_2.Count; i++)
-            {
-                /*if (ldTask.TaskType == TaskTypeEnum.Main)
-                {
-                    mainTaskNumber++;
-                }*/
-            }
-            return mainTaskNumber;
+            return 0;
         }
 
         public static void Check(this TaskComponentServer self)
@@ -424,21 +416,7 @@ namespace ET
 
         public static string GetMainTaskId(this TaskComponentServer self)
         {
-            string maintask = string.Empty;
-            List<TaskPro> taskPros = self.GetTaskList_2( TaskTypeEnum.Main );
-            for (int i = 0; i < taskPros.Count; i++)
-            {
-                LDTask_2 ldTask = LDTask_2Category.Instance.Get(taskPros[i].taskID );
-                //maintask += $"{ldTask.Special_Word}_";
-            }
-            if (string.IsNullOrEmpty(maintask))
-            {
-                return "无";
-            }
-            else
-            {
-                return maintask;
-            }
+            return "无";
         }
 
         public static List<TaskPro> GetTaskList_2(this TaskComponentServer self, int taskType)
