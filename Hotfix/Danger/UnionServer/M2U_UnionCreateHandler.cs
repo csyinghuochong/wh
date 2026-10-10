@@ -9,7 +9,7 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, M2U_UnionCreateRequest request, U2M_UnionCreateResponse response, Action reply)
         {
-            if (request.UnionName.Length > 10 || !StringHelper.IsSpecialChar(request.UnionName))
+            if (request.UnionName.Length > 12 || !StringHelper.IsSpecialChar(request.UnionName))
             {
                 response.Error = ErrorCode.ERR_Union_NameValied;
                 reply();
