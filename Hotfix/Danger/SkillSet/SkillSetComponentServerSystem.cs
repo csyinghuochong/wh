@@ -597,7 +597,7 @@ namespace ET
 					continue;
 				}
 
-				if (barList[i].Direction == SkillBarConfig.ItemDirectionBegin)
+				if (barList[i].Direction == SkillBarDirection.Dir0)
 				{
 					slot = barList[i];
 				}
@@ -608,7 +608,7 @@ namespace ET
 				barList.Add(new SkillBarSlot
 				{
 					Position = positionId,
-					Direction = SkillBarConfig.ItemDirectionBegin,
+					Direction = SkillBarDirection.Dir0,
 					SkillID = itemId,
 					SkillType = SkillSetEnum.Item,
 				});
