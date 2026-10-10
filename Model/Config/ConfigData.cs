@@ -6,14 +6,9 @@ namespace ET
     {
         public static int PackageLimit = 500;
 
-        public static bool AccountOldLogic = true;
-
-        public static bool CleanSkill = true;
-
         public static bool LogRechargeNumber = false;
 
         public static bool ShowLieOpen = false;
-
 
         public static Dictionary<int , ServerInfo> ServerInfoList = new Dictionary<int , ServerInfo>();
 
