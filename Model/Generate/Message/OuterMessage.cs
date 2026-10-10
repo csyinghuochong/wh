@@ -7265,7 +7265,7 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(10)]
-		public List<UnionPlayerInfo> UnionPlayerList = new List<UnionPlayerInfo>();
+		public List<UnionApplyItem> ApplyList = new List<UnionApplyItem>();
 
 	}
 
@@ -7875,6 +7875,18 @@ namespace ET
 		[ProtoMember(3)]
 		public int Combat { get; set; }
 
+		[ProtoMember(4)]
+		public int HeadId { get; set; }
+
+		[ProtoMember(5)]
+		public int Occ { get; set; }
+
+		[ProtoMember(6)]
+		public long UserID { get; set; }
+
+		[ProtoMember(7)]
+		public int OccTwo { get; set; }
+
 	}
 
 	[Message(OuterOpcode.UnionPlayerInfo)]
@@ -7907,6 +7919,18 @@ namespace ET
 
 		[ProtoMember(9)]
 		public long JoinTime { get; set; }
+
+		[ProtoMember(10)]
+		public int WeekGongXianDu { get; set; }
+
+		[ProtoMember(11)]
+		public int TotalGongXianDu { get; set; }
+
+		[ProtoMember(12)]
+		public long LastOfflineTime { get; set; }
+
+		[ProtoMember(13)]
+		public int HeadId { get; set; }
 
 	}
 
@@ -10241,9 +10265,6 @@ namespace ET
 		[ProtoMember(4)]
 		public int Direction { get; set; }
 
-		[ProtoMember(5)]
-		public long BagInfoId { get; set; }
-
 	}
 
 	[Message(OuterOpcode.M2C_SkillSet)]
@@ -10343,9 +10364,6 @@ namespace ET
 
 		[ProtoMember(4)]
 		public int SkillType { get; set; }
-
-		[ProtoMember(5)]
-		public long BagInfoId { get; set; }
 
 	}
 

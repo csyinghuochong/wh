@@ -12,7 +12,7 @@ namespace ET
         {
             DBUnionInfo dBUnionInfo =await scene.GetComponent<UnionSceneComponent>().GetDBUnionInfo(request.UnionId);
 
-            List<UnionPlayerInfo> unionPlayers = new List<UnionPlayerInfo>();
+            List<UnionApplyItem> applyList = new List<UnionApplyItem>();
             for(int i = dBUnionInfo.UnionInfo.ApplyList.Count - 1; i >= 0; i--)
             {
                 long applicantId = dBUnionInfo.UnionInfo.ApplyList[i];
@@ -29,18 +29,21 @@ namespace ET
                 {
                     continue;
                 }
-                unionPlayers.Add( new UnionPlayerInfo() 
-                {  
-                    PlayerLevel = roleInfoComponentServer.RoleInfo.Lv,
-                    PlayerName = roleInfoComponentServer.RoleInfo.Name,
-                    Combat  = roleInfoComponentServer.RoleInfo.Combat,
-                    UserID = roleInfoComponentServer.RoleInfo.UserId,
-                    Occ = roleInfoComponentServer.RoleInfo.Occ,
-                    OccTwo = roleInfoComponentServer.RoleInfo.OccTwo, 
-                } );
+
+                RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+                applyList.Add(new UnionApplyItem()
+                {
+                    PlayerName = roleInfo.Name,
+                    PlayerLevel = roleInfo.Lv,
+                    Combat = roleInfo.Combat,
+                    HeadId = roleInfo.HeadIconId,
+                    Occ = roleInfo.Occ,
+                    UserID = roleInfo.UserId,
+                    OccTwo = roleInfo.OccTwo,
+                });
             }
 
-            response.UnionPlayerList = unionPlayers;
+            response.ApplyList = applyList;
             reply();
         }
     }

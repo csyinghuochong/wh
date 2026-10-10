@@ -841,7 +841,6 @@ namespace ET
 			slot.Direction = request.Direction;
 			slot.SkillID = request.SkillID;
 			slot.SkillType = request.SkillType;
-			slot.BagInfoId = request.BagInfoId;
 
 			return ErrorCode.ERR_Success;
 		}
