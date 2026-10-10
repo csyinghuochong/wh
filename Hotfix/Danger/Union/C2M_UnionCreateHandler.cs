@@ -53,7 +53,8 @@ namespace ET
             long dbCacheId = DBHelper.GetUnionServerId(unit);
             U2M_UnionCreateResponse d2GGetUnit = (U2M_UnionCreateResponse)await ActorMessageSenderComponent.Instance.Call(dbCacheId, new M2U_UnionCreateRequest() 
             {
-                UnionName =request.UnionName,
+                UnionName = request.UnionName,
+                UnionNotice = request.UnionNotice ?? string.Empty,
                 UnionPurpose = request.UnionPurpose,
                 UserID = roleInfo.UserId,
                 UnionBanner = request.UnionBanner,

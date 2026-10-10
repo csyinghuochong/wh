@@ -2551,6 +2551,9 @@ namespace ET
 		[ProtoMember(1)]
 		public string UnionName { get; set; }
 
+		[ProtoMember(7)]
+		public string UnionNotice { get; set; }
+
 		[ProtoMember(2)]
 		public string UnionPurpose { get; set; }
 

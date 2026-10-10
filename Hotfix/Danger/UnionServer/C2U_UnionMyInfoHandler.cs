@@ -57,6 +57,7 @@ namespace ET
             info.LevelLimit = src.LevelLimit;
             info.CombatLimit = src.CombatLimit;
             info.UnionPurpose = src.UnionPurpose;
+            info.UnionNotice = src.UnionNotice;
             info.ApplyList = src.ApplyList;
             info.UnionId = src.UnionId;
             info.UnionNo = src.UnionNo;

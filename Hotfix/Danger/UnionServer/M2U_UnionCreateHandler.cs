@@ -36,6 +36,7 @@ namespace ET
             unionInfo.UnionInfo.LeaderId = request.UserID;       
             unionInfo.UnionInfo.UnionName = request.UnionName;
             unionInfo.UnionInfo.UnionNo = unionSceneComponent.AllocUnionNo();
+            unionInfo.UnionInfo.UnionNotice = request.UnionNotice ?? string.Empty;
             unionInfo.UnionInfo.UnionPurpose = request.UnionPurpose;
             unionInfo.UnionInfo.UnionBanner = request.UnionBanner;
             unionInfo.UnionInfo.UnionPattern = request.UnionPattern;
