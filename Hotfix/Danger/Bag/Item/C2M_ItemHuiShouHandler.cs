@@ -10,98 +10,47 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_ItemHuiShouRequest request, M2C_ItemHuiShouResponse response, Action reply)
         {
-            try
+            List<long> huishouList = request.OperateBagID;
+            if (huishouList.Count == 0)
             {
-                List<long> huishouList = request.OperateBagID;
-                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-                TaskComponentServer task = unit.GetComponent<TaskComponentServer>();
-              
-                Dictionary<int, RewardItem> huishouGet = new Dictionary<int, RewardItem>();
-                List<long> bagsList = new List<long>();
-                List<long> petHexin = new List<long>();
-
-                for (int i = 0; i < huishouList.Count; i++)
-                {
-                    bool fromPetHexin = false;
-                    BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, huishouList[i]);
-                  
-                    if (bagInfo == null)
-                    {
-                        continue;
-                    }
-
-                    LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-                    // LD：Sell_ID / Sell_Num 为回收所得；无配置则跳过且不扣该道具
-                    if (ldItem.Sell_ID <= 0 || ldItem.Sell_Num <= 0)
-                    {
-                        continue;
-                    }
-
-                    if (fromPetHexin)
-                    {
-                        petHexin.Add(huishouList[i]);
-                    }
-                    else
-                    {
-                        bagsList.Add(huishouList[i]);
-                    }
-
-                    int itemId = ldItem.Sell_ID;
-                    int itemNum = ldItem.Sell_Num * bagInfo.ItemNum;
-                    if (huishouGet.TryGetValue(itemId, out RewardItem rewardItem))
-                    {
-                        rewardItem.ItemNum += itemNum;
-                    }
-                    else
-                    {
-                        huishouGet.Add(itemId, new RewardItem()
-                        {
-                            ItemType = ItemBigType.Type_Item,
-                            ItemID = itemId,
-                            ItemNum = itemNum
-                        });
-                    }
-                }
-
-                if (huishouGet.Count == 0)
-                {
-                    response.Error = ErrorCode.ERR_ItemUseError;
-                    reply();
-                    return;
-                }
-
-                List<RewardItem> huishouRewards = new List<RewardItem>(huishouGet.Count);
-                foreach (RewardItem rewardItem in huishouGet.Values)
-                {
-                    huishouRewards.Add(rewardItem);
-                }
-
-                if (bagComponentServer.GetBagLeftCell() < ItemNewHelper.GetNeedCell(huishouRewards))
-                {
-                    response.Error = ErrorCode.ERR_BagIsFull;
-                    reply();
-                    return;
-                }
-
-                if (!bagComponentServer.OnCostItemData(bagsList, ItemLocType.ItemLocBag))
-                {
-                    response.Error = ErrorCode.ERR_ItemNotExist;
-                    reply();
-                    return;
-                }
-
-                bagComponentServer.OnAddItemData(huishouRewards, string.Empty, $"{ItemGetWay.HuiShou}_{TimeHelper.ServerNow()}");
-                task.OnItemHuiShow(bagsList.Count + petHexin.Count);
-             
+                response.Error = ErrorCode.ERR_ItemUseError;
                 reply();
-                await ETTask.CompletedTask;
+                return;
             }
-            catch (Exception ex)
+
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            Dictionary<int, List<long>> idsByLoc = new Dictionary<int, List<long>>();
+            for (int i = 0; i < huishouList.Count; i++)
             {
-                Log.Error(ex.ToString());
-                response.Error = ErrorCode.ERR_Error;
-                reply();
+                BagInfo bagInfo = bag.GetItemByUId(huishouList[i]);
+                if (bagInfo == null)
+                {
+                    continue;
+                }
+
+                if (!idsByLoc.TryGetValue(bagInfo.Loc, out List<long> ids))
+                {
+                    ids = new List<long>();
+                    idsByLoc[bagInfo.Loc] = ids;
+                }
+
+                ids.Add(bagInfo.BagInfoID);
             }
+
+            if (idsByLoc.Count == 0)
+            {
+                response.Error = ErrorCode.ERR_ItemNotExist;
+                reply();
+                return;
+            }
+
+            foreach (KeyValuePair<int, List<long>> kv in idsByLoc)
+            {
+                bag.OnCostItemData(kv.Value, (ItemLocType)kv.Key);
+            }
+
+            reply();
+            await ETTask.CompletedTask;
         }
     }
 }

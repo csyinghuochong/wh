@@ -29,24 +29,14 @@ namespace ET
 			}
 
 			int errorcode = ErrorCode.ERR_Success;
-			//判断队长是否有深渊票
 			Unit leader = unit.GetParent<UnitComponent>().Get(request.TeamInfo.TeamId);
-			if (leader != null)
+			if (request.TeamInfo.FubenType == TeamFubenType.ShenYuan)
 			{
-				BagComponentServer bagComponentServer = leader.GetComponent<BagComponentServer>();
-				if (request.TeamInfo.FubenType == TeamFubenType.ShenYuan && bagComponentServer.GetItemNumber(ItemBigType.Type_Item, CommonConfig.ShenYuanCostId) < 1)
+				if (leader == null || leader.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, CommonConfig.ShenYuanCostId) < 1)
 				{
 					errorcode = ErrorCode.Err_ShenYuanItemError;
 				}
-                //if (request.FubenType == TeamFubenType.Normal)
-                //{
-                //    float value = RandomHelper.RandFloat01();
-                //    if (value <= 0.05f)
-                //    {
-                //        request.FubenType = TeamFubenType.ShenYuan;
-                //    }
-                //}
-            }
+			}
 
 			//判断副本次数
 			long teamServerId = DBHelper.GetTeamServerId(unit);

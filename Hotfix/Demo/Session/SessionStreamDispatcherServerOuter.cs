@@ -190,6 +190,14 @@ namespace ET
 						}
 						else if (actorRequest is ITeamActorRequest iTeamActorRequest)
 						{
+                            if (actorRequest is C2T_TeamCreateRequest teamCreate && teamCreate.TeamPlayerInfo != null)
+                            {
+                                teamCreate.TeamPlayerInfo.UserID = player.UnitId;
+                            }
+                            if (actorRequest is C2T_TeamDismissRequest teamDismiss)
+                            {
+                                teamDismiss.UserId = player.UnitId;
+                            }
 							long teamServerID = player.TeamServerID;
 							response = await ActorMessageSenderComponent.Instance.Call(teamServerID, iTeamActorRequest);
 						}
@@ -200,6 +208,7 @@ namespace ET
 						}
 						else if (actorRequest is IUnionActorRequest iUnionActorRequest)
 						{
+                            // ActorId / UnitId 用会话上的角色，客户端传的身份不采用
                             if (actorRequest is C2U_UnionKeJiActiteRequest infoRequest)
                             {
                                 infoRequest.ActorId = player.UnitId;
@@ -207,6 +216,18 @@ namespace ET
                             if (actorRequest is C2U_UnionKeJiQuickRequest infoRequest2)
                             {
                                 infoRequest2.ActorId = player.UnitId;
+                            }
+                            if (actorRequest is C2U_UnionKickOutRequest kickRequest)
+                            {
+                                kickRequest.ActorId = player.UnitId;
+                            }
+                            if (actorRequest is C2U_UnionApplyReplyRequest applyReplyRequest)
+                            {
+                                applyReplyRequest.ActorId = player.UnitId;
+                            }
+                            if (actorRequest is C2U_UnionOperatateRequest operateRequest)
+                            {
+                                operateRequest.UnitId = player.UnitId;
                             }
                             long unionServerID = player.UnionServerID;
 							response = await ActorMessageSenderComponent.Instance.Call(unionServerID, iUnionActorRequest);

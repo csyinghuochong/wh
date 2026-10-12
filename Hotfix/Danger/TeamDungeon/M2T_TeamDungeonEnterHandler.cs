@@ -17,6 +17,15 @@ namespace ET
             }
             if (teamInfo.FubenInstanceId == 0)
             {
+                for (int i = 0; i < teamInfo.PlayerList.Count; i++)
+                {
+                    if (teamInfo.PlayerList[i].Prepare != 1)
+                    {
+                        response.Error = ErrorCode.Err_HaveNotPrepare;
+                        reply();
+                        return;
+                    }
+                }
                 scene.GetComponent<TeamSceneComponent>().CreateTeamDungeon(teamInfo);
             }
 

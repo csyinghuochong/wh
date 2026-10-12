@@ -14,6 +14,22 @@ namespace ET
                 reply();
                 return;
             }
+
+            UnionPlayerInfo operatorInfo = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.ActorId);
+            UnionPlayerInfo targetInfo = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.UserId);
+            if (operatorInfo == null || targetInfo == null || request.ActorId == request.UserId)
+            {
+                response.Error = ErrorCode.ERR_Union_NoLimits;
+                reply();
+                return;
+            }
+            if (targetInfo.UserID == dBUnionInfo.UnionInfo.LeaderId || !CanKick(operatorInfo.Position, targetInfo.Position))
+            {
+                response.Error = ErrorCode.ERR_Union_NoLimits;
+                reply();
+                return;
+            }
+
             bool have = false;
             for (int i = dBUnionInfo.UnionInfo.UnionPlayerList.Count -1; i >= 0; i--)
             {
@@ -54,6 +70,24 @@ namespace ET
             }
             reply();
             await ETTask.CompletedTask;
+        }
+
+        /// <summary>族长可踢除族长外的人。副族长可踢长老和族员。长老只能踢族员。</summary>
+        static bool CanKick(int operatorPosition, int targetPosition)
+        {
+            if (operatorPosition == UnionPosition.Leader)
+            {
+                return true;
+            }
+            if (operatorPosition == UnionPosition.ViceLeader)
+            {
+                return targetPosition == UnionPosition.Elder || targetPosition == UnionPosition.Member;
+            }
+            if (operatorPosition == UnionPosition.Elder)
+            {
+                return targetPosition == UnionPosition.Member;
+            }
+            return false;
         }
     }
 }

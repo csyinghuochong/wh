@@ -19,7 +19,17 @@ namespace ET
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.UnionOperate, request.UnionId))
             {
-                //1改名  2改宣言 3任职 
+                //1改名  2改宣言 3任职
+                if (request.Operatate == 1 || request.Operatate == 2)
+                {
+                    UnionPlayerInfo operatorInfo = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.UnitId);
+                    if (operatorInfo == null || operatorInfo.UserID != dBUnionInfo.UnionInfo.LeaderId)
+                    {
+                        response.Error = ErrorCode.ERR_Union_NoLimits;
+                        reply();
+                        return;
+                    }
+                }
                 switch (request.Operatate)
                 {
                     case 1:

@@ -16,6 +16,12 @@ namespace ET
                 reply();
                 return;
             }
+            if (teamInfo.TeamId != request.UserID)
+            {
+                response.Error = ErrorCode.ERR_IsNotLeader;
+                reply();
+                return;
+            }
             for (int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
                 teamInfo.PlayerList[i].Prepare = teamInfo.PlayerList[i].UserID == teamInfo.TeamId ? 1 : 0;

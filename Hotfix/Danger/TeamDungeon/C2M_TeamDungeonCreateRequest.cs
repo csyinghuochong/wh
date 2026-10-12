@@ -25,6 +25,10 @@ namespace ET
             }
 
             long teamServerId = DBHelper.GetTeamServerId(unit);
+            if (request.TeamPlayerInfo != null)
+            {
+                request.TeamPlayerInfo.UserID = unit.Id;
+            }
             T2M_TeamDungeonCreateResponse createResponse = (T2M_TeamDungeonCreateResponse)await MessageHelper.CallActor(teamServerId, new M2T_TeamDungeonCreateRequest()
             {
                 FubenId = request.FubenId,
