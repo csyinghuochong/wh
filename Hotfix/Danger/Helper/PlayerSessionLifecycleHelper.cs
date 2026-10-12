@@ -104,6 +104,10 @@ namespace ET
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             AntiCheatAuditHelper.LogSession(unit, roleInfo, "二次登陆");
             UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
+            if (gateSessionId != 0)
+            {
+                unitGateComponent.GateSessionActorId = gateSessionId;
+            }
             unitGateComponent.PlayerState = PlayerState.Game;
         }
 

@@ -21,7 +21,13 @@ namespace ET
             {
                 int loc = (int)ItemLocType.ItemLocBag;
                 int addcell = BagCellNumHelper.Get(bagComponentServer.AddedCellNum, loc);
-                BuyCellCost buyCellCost = new BuyCellCost();    
+                BuyCellCost buyCellCost = new BuyCellCost();
+                if (string.IsNullOrEmpty(buyCellCost.Cost))
+                {
+                    response.Error = ErrorCode.ERR_ModifyData;
+                    reply();
+                    return;
+                }
                 if (!bagComponentServer.OnCostItemData(buyCellCost.Cost, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -48,6 +54,12 @@ namespace ET
 
                 int addcell = BagCellNumHelper.Get(bagComponentServer.AddedCellNum, storeindex);
                 BuyCellCost buyCellCost = new BuyCellCost();
+                if (string.IsNullOrEmpty(buyCellCost.Cost))
+                {
+                    response.Error = ErrorCode.ERR_ModifyData;
+                    reply();
+                    return;
+                }
                 if (!bagComponentServer.OnCostItemData(buyCellCost.Cost,ItemLocType.ItemLocBag, ItemGetWay.CostItem))
                 {
                     response.Error = ErrorCode.ERR_ItemNotEnoughError;

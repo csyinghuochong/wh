@@ -569,14 +569,10 @@ namespace ET
                 return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Skill_CD);
             }
 
-            if (unit.Type != UnitType.Player)
+            int stateError = stateComponent.CanUseSkill(ldSkill, checkDead);
+            if (stateError != ErrorCode.ERR_Success)
             {
-                //判断当前眩晕状态
-                int errorCode = stateComponent.CanUseSkill(ldSkill, checkDead);
-                if (ErrorCode.ERR_Success!= errorCode)
-                {
-                    return errorCode;
-                }
+                return stateError;
             }
             return ErrorCode.ERR_Success;
         }

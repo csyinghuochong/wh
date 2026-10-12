@@ -93,7 +93,7 @@ namespace ET
                             chatScene.WordChatInfos.Add(request.ChatInfo);
                             if (chatScene.WordChatInfos.Count > 10)
                             {
-                                chatScene.WordChatInfos.RemoveAt(chatScene.WordChatInfos.Count - 1);
+                                chatScene.WordChatInfos.RemoveAt(0);
                             }
                         }
 

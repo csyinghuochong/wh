@@ -216,7 +216,7 @@ namespace ET
                         break;
                 }
 
-                if (todayopen)
+                if (todayopen && sceneserverid != 0)
                 {
                     Other2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (Other2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                                     (sceneserverid, new A2Other_ActivityUpdateRequest() { Hour = -1, FunctionId = functionId, FunctionType = self.ActivityTimerList[0].FunctionType });

@@ -1,4 +1,4 @@
-﻿using Alipay.AopSdk.Core.Domain;
+using Alipay.AopSdk.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -241,8 +241,12 @@ namespace ET
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
+            if (caster == null || target == null)
+            {
+                return;
+            }
 
-            target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(
+            target.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(
                     SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
 
             if (Log.IsDebugEnabled) Log.Debug($"INFORM_EVENT_ATTACK skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
@@ -893,7 +897,7 @@ namespace ET
                     continue;
                 }
 
-                int idx = RandomHelper.RandomNumber(0, candidates.Count - 1);
+                int idx = RandomHelper.RandomNumber(0, candidates.Count);
 
                 int buffId = candidates[idx];
 
@@ -1192,7 +1196,7 @@ namespace ET
                 return;
             }
 
-            int index = RandomHelper.RandomNumber(0, targetIds.Count - 1);
+            int index = RandomHelper.RandomNumber(0, targetIds.Count);
             UnitComponent unitComponent = ctx.Handler?.TheUnitFrom?.GetParent<UnitComponent>();
             Unit randomTarget = unitComponent?.Get(targetIds[index]);
             if (randomTarget == null)
@@ -1448,8 +1452,6 @@ namespace ET
             {
                 return;
             }
-
-            Console.WriteLine($"ChangeUnitAttributeAdd1  numericType : {numericType}  deltaDisplay:{deltaDisplay}");
 
             target.GetComponent<NumericComponent>()?.ChangeAttrFixed(caster, numericType, deltaDisplay, ctx.SkillId);
 

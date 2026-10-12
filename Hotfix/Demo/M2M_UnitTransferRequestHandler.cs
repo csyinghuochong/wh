@@ -10,6 +10,7 @@ namespace ET
 	{
 		protected override async ETTask Run(Scene scene, M2M_UnitTransferRequest request, M2M_UnitTransferResponse response, Action reply)
 		{
+			bool replied = false;
 			try
 			{
 				UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
@@ -23,6 +24,7 @@ namespace ET
                     }
 					response.Error = ErrorCode.ERR_OperationOften;
 					reply();
+					replied = true;
 					return;
 				}
 				else
@@ -318,11 +320,17 @@ namespace ET
                 //Function_Fight.UnitUpdateProperty_Base(unit, false, true);
                 response.NewInstanceId = unit.InstanceId;
 				reply();
+				replied = true;
                 await ETTask.CompletedTask;
             }
 			catch (Exception ex)
 			{
-				Log.Debug($"LoginTest M2M_UnitTransfer Exception  {request.Unit.Id} {ex.ToString()}");
+				Log.Error($"M2M_UnitTransfer Exception unitId={request.Unit.Id} {ex}");
+				if (!replied)
+				{
+					response.Error = ErrorCode.ERR_TransferFailError;
+					reply();
+				}
 			}
 		}
 	}

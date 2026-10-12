@@ -602,7 +602,7 @@ namespace ET
             {
                 Buff buffHandler = self.m_Buffs[i];
                 LDSkill_Battle_Buff ldSkillBuff = buffHandler.MBuff;
-                if (ldSkillBuff == null || ldSkillBuff.Id < 10) //子弹
+                if (ldSkillBuff == null)
                 {
                     continue;
                 }
@@ -629,11 +629,17 @@ namespace ET
             for (int i = buffcnt - 1; i >= 0; i--)
             {
                 Buff buffHandler = self.m_Buffs[i];
+                int buffId = buffHandler.MBuff != null ? buffHandler.MBuff.Id : 0;
+                long buffEndTime = buffHandler.BuffEndTime;
                 buffHandler.OnFinished(false);
                 ObjectPool.Instance.Recycle(buffHandler);
                 self.m_Buffs.RemoveAt(i);
-               
-                unitInfoComponentServer.Buffs.Add(new IntStringPair() { KeyId = buffHandler.MBuff.Id, Value2 = buffHandler.BuffEndTime.ToString() });
+                if (buffId <= 0)
+                {
+                    continue;
+                }
+
+                unitInfoComponentServer.Buffs.Add(new IntStringPair() { KeyId = buffId, Value2 = buffEndTime.ToString() });
             }
         }
     }

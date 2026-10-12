@@ -35,7 +35,7 @@ namespace ET
             chatScene.WordChatInfos.Add(message.ChatInfo);
             if (chatScene.WordChatInfos.Count > 10)
             {
-                chatScene.WordChatInfos.RemoveAt(chatScene.WordChatInfos.Count - 1);
+                chatScene.WordChatInfos.RemoveAt(0);
             }
 
             await ETTask.CompletedTask;

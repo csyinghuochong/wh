@@ -279,10 +279,6 @@ namespace ET
             return GetCount(self.GetDailyData().DayFubenTimes, sceneId);
         }
 
-        public static void AddSceneFubenTimes(this RoleDailyDataComponentServer self, int sceneId)
-        {
-            AddCount(self.GetDailyData().DayFubenTimes, sceneId, 1);
-        }
 
         public static long GetSceneWeekFubenTimes(this RoleDailyDataComponentServer self, int sceneId)
         {

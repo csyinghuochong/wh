@@ -131,7 +131,7 @@ namespace ET
             }
 
             TitleComponentServer oldTitleComponentServer = GetDBComponent<TitleComponentServer>(zone, unitid, day);
-            if (oldTaskComponentServer == null)
+            if (oldTitleComponentServer == null)
             {
                 Console.WriteLine($"OnArchiveHandler  titleComponent==null:   {zone} {unitid}");
                 return;

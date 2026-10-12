@@ -10,7 +10,20 @@ namespace ET
         protected override async ETTask Run(Scene scene, C2F_FriendApplyReplyRequest request, F2C_FriendApplyReplyResponse response, Action reply)
         {
             DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
-            dBFriendInfo.ApplyList.Remove(request.FriendID);
+            if (dBFriendInfo == null)
+            {
+                response.Error = ErrorCode.ERR_UserNoFind;
+                reply();
+                return;
+            }
+
+            bool pending = dBFriendInfo.ApplyList.Remove(request.FriendID);
+            if (request.ReplyCode == 1 && !pending)
+            {
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
 
             if (request.ReplyCode == 1) //同意
             {

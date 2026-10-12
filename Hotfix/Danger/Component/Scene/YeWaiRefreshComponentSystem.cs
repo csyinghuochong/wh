@@ -390,7 +390,8 @@ namespace ET
                 }
                 else
                 {
-                    refreshMonster.NextTime = refreshMonster.NextTime + refreshMonster.Interval;
+                    int interval = refreshMonster.Interval > 0 ? refreshMonster.Interval : 1000;
+                    refreshMonster.NextTime = time + interval;
                     self.RefreshMonsters[i] = refreshMonster;
                 }
 

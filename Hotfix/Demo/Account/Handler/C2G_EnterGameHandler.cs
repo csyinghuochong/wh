@@ -138,6 +138,7 @@ namespace ET
                     if (createRoleInfo == null)
                     {
 	                    response.Error = ErrorCode.ERR_NotFindAccount;
+	                    reply();
 	                    return;
                     }
                     
