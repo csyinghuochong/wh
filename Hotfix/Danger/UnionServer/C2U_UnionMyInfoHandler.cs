@@ -37,6 +37,12 @@ namespace ET
                         player.Position = UnionPosition.Leader;
                     }
 
+                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(player.UserID);
+                    if (roleInfoComponentServer != null)
+                    {
+                        player.LastOfflineTime = roleInfoComponentServer.LastOfflineTime;
+                    }
+
                     if (onlineIds.Contains(player.UserID))
                     {
                         response.OnLinePlayer.Add(player.UserID);

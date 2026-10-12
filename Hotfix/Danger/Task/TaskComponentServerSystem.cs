@@ -1580,22 +1580,11 @@ namespace ET
         }
 
         /// <summary>
-        /// 周清：Type=2 的任务 + 周活跃。打工 Type=1 不走这里。
+        /// 周任务：清掉 Type=2，再按组重新接。周活跃和每周进入次数不在这里清。
         /// </summary>
         public static void OnWeeklyReset(this TaskComponentServer self, bool notice)
         {
             self.ClearTasksByResetType(TaskGroupResetType.Weekly);
-
-            RoleDailyDataComponentServer dailyData = self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>();
-            if (dailyData != null)
-            {
-                dailyData.ClearDayLists(RoleDailyClearType.Week);
-                if (notice)
-                {
-                    dailyData.NotifyUpdate();
-                }
-            }
-
             self.InitTasksByResetType(TaskGroupResetType.Weekly);
             if (!notice)
             {

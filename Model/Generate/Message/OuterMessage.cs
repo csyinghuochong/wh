@@ -4162,6 +4162,10 @@ namespace ET
 		[ProtoMember(19)]
 		public int VipDailyClaimed { get; set; }
 
+		/// <summary>场景每周进入次数。每周一凌晨5点清空。</summary>
+		[ProtoMember(20)]
+		public List<IntLongPair> WeekFubenTimes = new List<IntLongPair>();
+
 	}
 
 	[ResponseType(nameof(M2C_RoleDailyDataInit))]

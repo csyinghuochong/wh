@@ -27,6 +27,7 @@ namespace ET
         {
             RoleDailyData data = self.Data ??= new RoleDailyData();
             data.DayFubenTimes ??= new List<IntLongPair>();
+            data.WeekFubenTimes ??= new List<IntLongPair>();
             data.BuyStoreItems ??= new List<IntLongPair>();
             self.PersonalRandomShops ??= new Dictionary<int, List<ShopGoodsItem>>();
             self.ShopRefreshTime ??= new Dictionary<int, long>();
@@ -54,10 +55,12 @@ namespace ET
             {
                 data.WeeklyActivePoint = 0;
                 SetCount(data.Currencies, UserDataType.WeeklyActive, 0);
+                data.WeekFubenTimes.Clear();
                 return;
             }
 
             // 日清不含商店。本次购买数量按各商店 Auto_Refresh 清，终身购买数量不清。
+            // 每日进入次数凌晨 5 点清。每周进入次数在周一凌晨 5 点的周清里清。
             data.DayFubenTimes.Clear();
             data.DailyActivePoint = 0;
             SetCount(data.Currencies, UserDataType.DailyActive, 0);
@@ -281,6 +284,95 @@ namespace ET
             AddCount(self.GetDailyData().DayFubenTimes, sceneId, 1);
         }
 
+        public static long GetSceneWeekFubenTimes(this RoleDailyDataComponentServer self, int sceneId)
+        {
+            return GetCount(self.GetDailyData().WeekFubenTimes, sceneId);
+        }
+
+        /// <summary>有每日或每周上限才记次，并推给客户端。0 不限制，不记。</summary>
+        public static bool AddSceneEnterTimes(this RoleDailyDataComponentServer self, int sceneId)
+        {
+            return self.ChangeSceneEnterTimes(sceneId, 1);
+        }
+
+        public static bool RollbackSceneEnterTimes(this RoleDailyDataComponentServer self, int sceneId)
+        {
+            return self.ChangeSceneEnterTimes(sceneId, -1);
+        }
+
+        private static bool ChangeSceneEnterTimes(this RoleDailyDataComponentServer self, int sceneId, int delta)
+        {
+            if (sceneId <= 0 || !LDSceneCategory.Instance.Contain(sceneId) || delta == 0)
+            {
+                return false;
+            }
+
+            LDScene scene = LDSceneCategory.Instance.Get(sceneId);
+            RoleDailyData data = self.GetDailyData();
+            bool changed = false;
+            if (scene.GetDayEnterNum() > 0)
+            {
+                data.DayFubenTimes ??= new List<IntLongPair>();
+                if (delta > 0)
+                {
+                    AddCount(data.DayFubenTimes, sceneId, delta);
+                }
+                else
+                {
+                    SubCount(data.DayFubenTimes, sceneId);
+                }
+
+                changed = true;
+            }
+
+            if (scene.GetWeekEnterNum() > 0)
+            {
+                data.WeekFubenTimes ??= new List<IntLongPair>();
+                if (delta > 0)
+                {
+                    AddCount(data.WeekFubenTimes, sceneId, delta);
+                }
+                else
+                {
+                    SubCount(data.WeekFubenTimes, sceneId);
+                }
+
+                changed = true;
+            }
+
+            if (!changed)
+            {
+                return false;
+            }
+
+            self.NotifyUpdate();
+            return true;
+        }
+
+        private static void SubCount(List<IntLongPair> list, int keyId)
+        {
+            if (list == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].KeyId != keyId)
+                {
+                    continue;
+                }
+
+                list[i].Value -= 1;
+                if (list[i].Value < 0)
+                {
+                    list[i].Value = 0;
+                }
+
+                return;
+            }
+        }
+
         public static void ClearFubenTimes(this RoleDailyDataComponentServer self, int sceneId)
         {
             SetCount(self.GetDailyData().DayFubenTimes, sceneId, 0);
@@ -430,6 +522,7 @@ namespace ET
             return new RoleDailyData
             {
                 DayFubenTimes = CloneKvList(src.DayFubenTimes),
+                WeekFubenTimes = CloneKvList(src.WeekFubenTimes),
                 BuyStoreItems = CloneKvList(src.BuyStoreItems),
                 DailyActivePoint = src.DailyActivePoint,
                 WeeklyActivePoint = src.WeeklyActivePoint,

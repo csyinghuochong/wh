@@ -15,15 +15,18 @@ namespace ET
 				return;
 			}
 
-		;
 			LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
-			
-			/*if (ldScene.DayEnterNum > 0 && ldScene.DayEnterNum <= RoleInfoComponent.GetSceneFubenTimes(sceneid))
+			RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+			int enterError = ldScene.CheckSceneEnter(
+				unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv,
+				dailyData.GetSceneFubenTimes(sceneid),
+				dailyData.GetSceneWeekFubenTimes(sceneid));
+			if (enterError != ErrorCode.ERR_Success)
 			{
-				response.Error = ErrorCode.ERR_TimesIsNot;
+				response.Error = enterError;
 				reply();
 				return;
-			}*/
+			}
 
 			int errorcode = ErrorCode.ERR_Success;
 			//判断队长是否有深渊票

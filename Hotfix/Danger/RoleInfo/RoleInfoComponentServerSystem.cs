@@ -669,14 +669,6 @@ namespace ET
             }
         }
 
-        public static void OnResetSeason(this RoleInfoComponentServer self, bool notice)
-        {
-            //self.RoleInfo.SeasonLevel = 1;
-            //self.RoleInfo.SeasonExp = 0;
-            //self.RoleInfo.SeasonCoin = 0;
-            //self.RoleInfo.OpenJingHeIds.Clear();
-        }
-
 
         public static int GetMonsterKillNumber(this RoleInfoComponentServer self, int monsterId)
         {
@@ -688,21 +680,6 @@ namespace ET
             return 0;
         }
        
-        public static long GetSceneFubenTimes(this RoleInfoComponentServer self, int sceneId)
-        {
-            return self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.GetSceneFubenTimes(sceneId) ?? 0;
-        }
-
-        public static void AddSceneFubenTimes(this RoleInfoComponentServer self, int sceneId)
-        {
-            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.AddSceneFubenTimes(sceneId);
-        }
-
-        public static void ClearFubenTimes(this RoleInfoComponentServer self, int sceneId)
-        {
-            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.ClearFubenTimes(sceneId);
-        }
-
         public static int GetMaxLevel(this RoleInfoComponentServer self, List<int> compeltetask)
         {
             if (compeltetask.Contains(30080019))
@@ -715,35 +692,6 @@ namespace ET
             }
         }
 
-        public static void AddFubenTimes(this RoleInfoComponentServer self, int sceneId, int times)
-        {
-            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.AddFubenTimes(sceneId, times);
-        }
-
-        
-        public static bool IsChapterOpen(this RoleInfoComponentServer self, int chapterid)
-        {
-            if (chapterid == 1)
-            {
-                return true;
-            }
-            /*if (!ChapterSectionConfigCategory.Instance.Contain(chapterid))
-            {
-                return false;
-            }
-
-            ChapterSectionConfig chapterSectionConfig = ChapterSectionConfigCategory.Instance.Get(chapterid - 1);
-            int[] RandomArea = chapterSectionConfig.RandomArea;
-
-            for (int i = 0; i < RandomArea.Length; i++)
-            {
-                if (!self.IsLevelPassed(RandomArea[i]))
-                {
-                    return false;
-                }
-            }*/
-            return true;
-        }
 
         public static int GetCrateDay(this RoleInfoComponentServer self)
         {
@@ -778,11 +726,6 @@ namespace ET
           
             self.RoleInfo.SeasonLevel = maxseason.Id;
         */
-        }
-
-        public static void ClearDayData(this RoleInfoComponentServer self)
-        {
-            self.GetParent<Unit>()?.GetComponent<RoleDailyDataComponentServer>()?.ClearDayLists(RoleDailyClearType.Day);
         }
 
     }

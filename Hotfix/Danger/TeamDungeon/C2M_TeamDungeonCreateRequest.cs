@@ -7,7 +7,23 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_TeamDungeonCreateRequest request, M2C_TeamDungeonCreateResponse response, Action reply)
         {
-           
+            int enterError = ErrorCode.ERR_Success;
+            if (request.FubenId > 0 && LDSceneCategory.Instance.Contain(request.FubenId))
+            {
+                LDScene ldScene = LDSceneCategory.Instance.Get(request.FubenId);
+                RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+                enterError = ldScene.CheckSceneEnter(
+                    unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv,
+                    dailyData.GetSceneFubenTimes(request.FubenId),
+                    dailyData.GetSceneWeekFubenTimes(request.FubenId));
+            }
+            if (enterError != ErrorCode.ERR_Success)
+            {
+                response.Error = enterError;
+                reply();
+                return;
+            }
+
             long teamServerId = DBHelper.GetTeamServerId(unit);
             T2M_TeamDungeonCreateResponse createResponse = (T2M_TeamDungeonCreateResponse)await MessageHelper.CallActor(teamServerId, new M2T_TeamDungeonCreateRequest()
             {

@@ -31,9 +31,8 @@ namespace ET
             //    return;
             //}
             //int sceneId = BattleHelper.GetSceneIdByType(request.SceneType);
-            //RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             //numericComponent.ApplyChange(null, NumericType.FubenTimesReset, 1, 0);
-            //roleInfoComponentServer.ClearFubenTimes(sceneId);
+            //unit.GetComponent<RoleDailyDataComponentServer>().ClearFubenTimes(sceneId);
 
             reply();
             await ETTask.CompletedTask;

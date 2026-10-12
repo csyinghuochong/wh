@@ -41,6 +41,27 @@ namespace ET
         }
 
         /// <summary>
+        /// 周清。调用方决定要不要清：在线周一凌晨 5 点，或登录时已经跨周。notice 为 true 时推送。
+        /// </summary>
+        public static void OnWeeklyReset(Unit unit, bool notice)
+        {
+            if (unit == null || unit.IsDisposed)
+            {
+                return;
+            }
+
+            RoleDailyDataComponentServer roleDailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+            roleDailyData.ClearDayLists(RoleDailyClearType.Week);
+            unit.GetComponent<TaskComponentServer>().OnWeeklyReset(notice);
+            if (!notice)
+            {
+                return;
+            }
+
+            roleDailyData.NotifyUpdate();
+        }
+
+        /// <summary>
         /// 登录时按上次登录时间补刷跨天/同天体力与家园经验。切日以 Global_Reset_Time（默认 5 点）为准。
         /// </summary>
         public static void LoginCheckCrossDay(Unit unit, long currentTime)
@@ -70,7 +91,7 @@ namespace ET
 
                 if (!ActivityHelper.IsSameGameResetWeek(lastLoginTime, currentTime))
                 {
-                    unit.GetComponent<TaskComponentServer>().OnWeeklyReset(false);
+                    OnWeeklyReset(unit, false);
                 }
 
                 OnDailyReset(unit, 1);
