@@ -42,7 +42,12 @@ namespace ET
                     return;
                 }
 
-                MailHelp.GrantMailReward(unit.GetComponent<BagComponentServer>(), mailInfo);
+                if (!MailHelp.GrantMailReward(unit.GetComponent<BagComponentServer>(), mailInfo))
+                {
+                    response.Error = ErrorCode.ERR_BagIsFull;
+                    reply();
+                    return;
+                }
                 await DBHelper.SaveComponent(zone, unit.Id, dBMailInfo);
             }
 

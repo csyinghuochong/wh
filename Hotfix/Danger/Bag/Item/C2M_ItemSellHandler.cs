@@ -43,23 +43,20 @@ namespace ET
             }
             
             useBagInfo.ItemNum -= request.SellNum;
-            
-            //通知客户端背包刷新
+
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-            
             if (useBagInfo.ItemNum <= 0)
             {
                 m2c_bagUpdate.BagInfoDelete.Add(useBagInfo);
-                bag.GetItemByLoc(locType)?.Remove(useBagInfo);
+                bag.GetItemByLoc(locType).Remove(useBagInfo);
             }
             else
             {
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
-            
+
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
             reply();
-            
             await ETTask.CompletedTask;
         }
     }

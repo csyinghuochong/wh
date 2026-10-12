@@ -34,130 +34,16 @@ namespace ET
             // 通知客户端背包刷新
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
 
-            LDItem ldItem = LDItemCategory.Instance.Get(useBagInfo.ItemID);
-
             //镶嵌宝石
             if (request.OperateType == 9)
             {
-                //宝石镶嵌
-                string[] geminfos = request.OperatePar.Split('_');
-                long equipid = long.Parse(geminfos[0]);
-                int gemIndex = int.Parse(geminfos[1]);
-
-                BagInfo equipInfo = bagcComponentServer.GetItemByLoc(ItemLocType.ItemLocEquip, equipid);
-
-                //获取装备baginfo
-                if (equipInfo == null)
-                {
-                    equipInfo = bagcComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, equipid);
-                }
-                if (equipInfo == null)
-                {
-                    Log.Warning($"equipInfo == null {equipid}");
-                    reply();
-                    return;
-                }
-
-                //判断孔位是否相符
-                //string[] equipGeminfos = equipInfo.GemHole.Split('_');
-
-                //if (string.IsNullOrEmpty(equipInfo.GemHole) || equipInfo.GemHole.Equals(ItemNewHelper.GetDefaultGem()))
-                //{
-                //    response.Error = ErrorCode.ERR_ItemUseError;
-                //    reply();
-                //    return;
-                //}
-
-                //if (equipGeminfos[gemIndex] != ldItem.ItemType.ToString() && ldItem.ItemType != 110 && ldItem.ItemType != 111)
-                //{
-                //    response.Error = ErrorCode.ERR_ItemUseError;
-                //    reply();
-                //    return;
-                //}
-
-                ////史诗宝石最多镶嵌4个
-                //if (ldItem.ItemType == 110) 
-                //{
-                //    int equipShiShiGemNum = 0;
-                //    bool isTihuan = false;
-                //    List<BagInfo> EquipList = bagcComponentServer.EquipList;
-                //    for (int i = 0; i < EquipList.Count; i++)
-                //    {
-                //        string[] gemList = EquipList[i].GemIDNew.Split('_');
-                //        for (int y = 0; y < gemList.Length; y++) 
-                //        {
-                //            if (CommonHelper.IfNull(gemList[y]) == false)
-                //            {
-                //                LDItem gemLdItemCof = LDItemCategory.Instance.Get(int.Parse(gemList[y]));
-                //                if (gemLdItemCof.ItemType == 110)
-                //                {
-                //                    equipShiShiGemNum += 1;
-                //                }
-                //            }
-                //            if (EquipList[i].BagInfoID == equipid && gemIndex == y)
-                //            {
-                //                isTihuan = true;
-                //                break;
-                //            }
-                //        }
-                //    }
-
-                //    if (!isTihuan && equipShiShiGemNum >= 4)
-                //    {
-                //        response.Error = ErrorCode.ERR_GemShiShiNumFull;
-                //        reply();
-                //        return;
-                //    }
-                //}
-
-
-                //string[] gemIdList = equipInfo.GemIDNew.Split('_');
-                //gemIdList[gemIndex] = useBagInfo.ItemID.ToString();
-                //equipInfo.GemIDNew = string.Join("_", gemIdList);
-                //equipInfo.SetBinding(true);
-                //m2c_bagUpdate.BagInfoUpdate.Add(equipInfo);
-                //消耗宝石
                 bagcComponentServer.OnCostItemData(useBagInfo.BagInfoID, 1);
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
             }
 
-            //卸下宝石
             if (request.OperateType == 10)
             {
                 int gemIndex = int.Parse(request.OperatePar);
-                //string[] gemIdList = useBagInfo.GemIDNew.Split('_');
-                //int gemItemId = int.Parse(gemIdList[gemIndex]);
-
-                ////类型110的不能卸
-                //if (!LDItemCategory.Instance.Contain(gemItemId))
-                //{
-                //    response.Error = ErrorCode.ERR_GemNoError;
-                //    reply();
-                //    return;
-                //}
-                //LDItem gemLdItemConfig = LDItemCategory.Instance.Get(gemItemId);
-                //if (gemLdItemConfig.ItemType == 110)
-                //{
-                //    response.Error = ErrorCode.ERR_GemNoError;
-                //    reply();
-                //    return;
-                //}
-
-                //gemIdList[gemIndex] = "0";
-                //useBagInfo.GemIDNew = string.Join("_", gemIdList);
-                //m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
-
-                //回收宝石
-                //if (gemItemId != 0)
-                //{
-                //    bool ret =   bagcComponentServer.OnAddItemData($"{gemItemId};1", $"{ItemGetWay.GemHuiShou}_{TimeHelper.ServerNow()}");
-                //    Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-
-                //    if (!ret)
-                //    {
-                //        Log.Error($"回收宝石出错: {unit.Id} {gemItemId}");
-                //    }
-                //}
             }
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
             reply();

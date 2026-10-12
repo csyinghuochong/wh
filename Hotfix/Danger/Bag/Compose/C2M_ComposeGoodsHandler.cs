@@ -92,9 +92,15 @@ namespace ET
             }
 
             const int getWay = ItemGetWay.SkillMake;
+            if (mainBagInfo != null && !bag.OnCostItemData(mainBagInfo.BagInfoID, cfg.Consume_Num_1, mainLoc))
+            {
+                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                reply();
+                return;
+            }
+
             if (mainBagInfo != null)
             {
-                bag.OnCostItemData(mainBagInfo.BagInfoID, cfg.Consume_Num_1, mainLoc);
                 ItemAddHelper.OnCostItem(unit, mainBagInfo.ItemType, mainBagInfo.ItemID);
             }
 
@@ -115,10 +121,9 @@ namespace ET
                 }
             }
 
-            if (rewardItems.Count > 0
-                && !bag.OnAddItemData(rewardItems, string.Empty, $"{getWay}_{TimeHelper.ServerNow()}"))
+            if (rewardItems.Count > 0)
             {
-                Log.Warning($"C2M_ComposeGoods add fail unit={unit.Id} goods={cfg.Id}");
+                bag.OnAddItemData(rewardItems, string.Empty, $"{getWay}_{TimeHelper.ServerNow()}");
             }
 
             reply();

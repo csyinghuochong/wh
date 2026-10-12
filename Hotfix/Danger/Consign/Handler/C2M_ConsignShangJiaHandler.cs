@@ -122,6 +122,7 @@ namespace ET
 					return;
 				}
 
+				//上架需要需要的金币
                 int serviceFee = ConsignHelper.GetConsignServiceFee(days);
                 if (serviceFee > 0
                     && bagComponentServer.GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < serviceFee)
@@ -130,6 +131,20 @@ namespace ET
                     reply();
                     return;
                 }
+
+				int sellNum = request.ConsignItemInfo.BagInfo.ItemNum;
+				int sellItemId = bagInfo.ItemID;
+				if (!bagComponentServer.OnCostItemData(bagInfoId, sellNum))
+				{
+					response.Error = ErrorCode.ERR_ItemNotEnoughError;
+					reply();
+					return;
+				}
+
+				if (serviceFee > 0)
+				{
+					roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, (-serviceFee).ToString(), true, ItemGetWay.PaiMaiSell);
+				}
 
 				//发送对应拍卖行信息
 				long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
@@ -141,21 +156,36 @@ namespace ET
 						PaiMaiTodayGold = 0,
 					});
 
-				if (r_GameStatusResponse.Error == ErrorCode.ERR_Success)
+				if (r_GameStatusResponse.Error != ErrorCode.ERR_Success)
 				{
-                    unit.GetComponent<TaskComponentServer>().OnConsignShangJia();
+					BagInfo current = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoId);
+					M2C_RoleBagUpdate bagUpdate = new M2C_RoleBagUpdate();
+					if (current != null)
+					{
+						current.ItemNum += sellNum;
+						bagUpdate.BagInfoUpdate.Add(current);
+					}
+					else
+					{
+						bagInfo.ItemNum = sellNum;
+						bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag).Add(bagInfo);
+						bagUpdate.BagInfoAdd.Add(bagInfo);
+					}
 
-                    if (serviceFee > 0)
-                    {
-                        roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, (-serviceFee).ToString(), true, ItemGetWay.PaiMaiSell);
-                    }
+					MessageHelper.SendToClient(unit, bagUpdate);
+					if (serviceFee > 0)
+					{
+						roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, serviceFee.ToString(), true, ItemGetWay.PaiMaiSell);
+					}
 
-                    //扣除对应道具
-                    bagComponentServer.OnCostItemData(request.ConsignItemInfo.BagInfo.BagInfoID, request.ConsignItemInfo.BagInfo.ItemNum);
-					
-                    response.ConsignItemInfo = request.ConsignItemInfo;
-					LogHelper.LogWarning(response.ConsignItemInfo.PlayerName + "上架道具：" + request.ConsignItemInfo.BagInfo.ItemID + "数量" + request.ConsignItemInfo.BagInfo.ItemNum + "时间戳:" + currentTime.ToString(), true);
-                }
+					response.Error = r_GameStatusResponse.Error;
+					reply();
+					return;
+				}
+
+				unit.GetComponent<TaskComponentServer>().OnConsignShangJia();
+				response.ConsignItemInfo = request.ConsignItemInfo;
+				LogHelper.LogWarning(response.ConsignItemInfo.PlayerName + "上架道具：" + sellItemId + "数量" + sellNum + "时间戳:" + currentTime.ToString(), true);
                 response.Error = r_GameStatusResponse.Error;
 				reply();
 				await ETTask.CompletedTask;

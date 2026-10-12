@@ -93,9 +93,7 @@ namespace ET
                 needGold = (long)r_GameStatusResponse.ConsignItemInfo.Price * r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemNum;
                
                 roleInfoComponentServer.UpdateRoleData(UserDataType.Gold, (needGold * -1).ToString(), true, ItemGetWay.PaiMaiBuy);
-                //背包添加道具
                 bool ret = bag.OnAddItemData(r_GameStatusResponse.ConsignItemInfo.BagInfo, $"{ItemGetWay.PaiMaiBuy}_{TimeHelper.ServerNow()}");
-
                 if (!ret)
                 {
                     Log.Warning($"拍卖购买出错: {unit.Id} {bag.GetBagLeftCell()}  {paiMaiItemInfo.BagInfo.ItemID}  {paiMaiItemInfo.BagInfo.ItemNum}");

@@ -70,12 +70,26 @@ namespace ET
                     return;
                 }
 
-                bagComponentServer.OnCostItemData(bagsList, ItemLocType.ItemLocBag);
                 List<RewardItem> huishouRewards = new List<RewardItem>(huishouGet.Count);
                 foreach (RewardItem rewardItem in huishouGet.Values)
                 {
                     huishouRewards.Add(rewardItem);
                 }
+
+                if (bagComponentServer.GetBagLeftCell() < ItemNewHelper.GetNeedCell(huishouRewards))
+                {
+                    response.Error = ErrorCode.ERR_BagIsFull;
+                    reply();
+                    return;
+                }
+
+                if (!bagComponentServer.OnCostItemData(bagsList, ItemLocType.ItemLocBag))
+                {
+                    response.Error = ErrorCode.ERR_ItemNotExist;
+                    reply();
+                    return;
+                }
+
                 bagComponentServer.OnAddItemData(huishouRewards, string.Empty, $"{ItemGetWay.HuiShou}_{TimeHelper.ServerNow()}");
                 task.OnItemHuiShow(bagsList.Count + petHexin.Count);
              
@@ -84,7 +98,9 @@ namespace ET
             }
             catch (Exception ex)
             {
-                Log.Debug(ex.ToString());
+                Log.Error(ex.ToString());
+                response.Error = ErrorCode.ERR_Error;
+                reply();
             }
         }
     }

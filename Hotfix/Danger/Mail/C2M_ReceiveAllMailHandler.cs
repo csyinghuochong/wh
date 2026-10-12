@@ -44,7 +44,12 @@ namespace ET
 
                     if (MailHelp.HasUnclaimedReward(mailInfo))
                     {
-                        MailHelp.GrantMailReward(bag, mailInfo);
+                        if (!MailHelp.GrantMailReward(bag, mailInfo))
+                        {
+                            response.Error = ErrorCode.ERR_BagIsFull;
+                            break;
+                        }
+
                         changed = true;
                     }
                 }

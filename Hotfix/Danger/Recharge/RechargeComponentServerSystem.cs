@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ET
 {
     [ObjectSystem]
@@ -24,6 +26,7 @@ namespace ET
         public static void InitRechargePro(this RechargeComponentServer self)
         {
             self.RechargePro ??= new RechargePro();
+            self.PaidOrderIds ??= new List<string>();
             VipHelp.EnsureLists(self.RechargePro);
         }
 

@@ -331,6 +331,7 @@ namespace ET
                 {
                     continue;
                 }
+
                 // ItemNumber>0 时扣全服库存；0 表示不限
                 if (mysteryItemInfo1.ItemNumber > 0)
                 {

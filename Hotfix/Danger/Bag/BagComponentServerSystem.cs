@@ -513,31 +513,28 @@ namespace ET
         public static bool OnAddItemData(this BagComponentServer self, BagInfo bagInfo, string getType)
         {
             int maxPileSum = ItemNewHelper.GetNewItemPileSum(bagInfo);
-
             if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
             {
-                return self.OnAddItemData($"{bagInfo.ItemType}~{bagInfo.ItemID}~{bagInfo.ItemNum}", string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay);
+                string getWay = string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay;
+                return self.OnAddItemData($"{bagInfo.ItemType}~{bagInfo.ItemID}~{bagInfo.ItemNum}", getWay);
             }
-            else
-            {
-                int itemType = bagInfo.ItemType != 0 ? bagInfo.ItemType : ItemBigType.Type_Item;
-                ItemLocType toLoc = ItemNewHelper.GetToItemLocType(itemType, bagInfo.ItemID);
-                bagInfo.ItemType = itemType;
-                bagInfo.Loc = (int)toLoc;
-                List<BagInfo> locList = self.GetItemByLoc(toLoc);
-                locList.Add(bagInfo);
-                BagSortHelper.SortIfNeeded(locList, toLoc);
 
-                Unit parentUnit = self.GetParent<Unit>();
-                M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-                m2c_bagUpdate.BagInfoAdd.Add(bagInfo);
-                MessageHelper.SendToClient(parentUnit, m2c_bagUpdate);
+            int itemType = bagInfo.ItemType != 0 ? bagInfo.ItemType : ItemBigType.Type_Item;
+            ItemLocType toLoc = ItemNewHelper.GetToItemLocType(itemType, bagInfo.ItemID);
+            bagInfo.ItemType = itemType;
+            bagInfo.Loc = (int)toLoc;
+            List<BagInfo> locList = self.GetItemByLoc(toLoc);
+            locList.Add(bagInfo);
+            BagSortHelper.SortIfNeeded(locList, toLoc);
 
-                string[] getWayParts = getType.Split('_');
-                int getTypeValue = int.Parse(getWayParts[0]);
-                ItemAddHelper.OnGetItem(parentUnit, getTypeValue, bagInfo);
-                return true;
-            }
+            Unit parentUnit = self.GetParent<Unit>();
+            M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
+            m2c_bagUpdate.BagInfoAdd.Add(bagInfo);
+            MessageHelper.SendToClient(parentUnit, m2c_bagUpdate);
+
+            int getTypeValue = int.Parse(getType.Split('_')[0]);
+            ItemAddHelper.OnGetItem(parentUnit, getTypeValue, bagInfo);
+            return true;
         }
 
         public static void OnAddItemToStore(this BagComponentServer self, int itemlockType, int itemid, int itemnumber, string getType)
@@ -713,12 +710,14 @@ namespace ET
             }
 
             LDItem ldItem = LDItemCategory.Instance.Get(item.ItemID);
-            if (ldItem.IfAutoUse != 1 && ldItem.IfBag != 0)
+            bool autoUse = ldItem.IfAutoUse == 1;
+            bool enterBag = ldItem.IfBag != 0;
+            if (!autoUse && enterBag)
             {
                 return false;
             }
 
-            if (ldItem.IfAutoUse == 1)
+            if (autoUse)
             {
                 int useTimes = item.ItemNum > 0 ? item.ItemNum : 1;
                 for (int n = 0; n < useTimes; n++)
@@ -735,21 +734,7 @@ namespace ET
             return true;
         }
 
-        /// <summary>
-        /// 入包前检查对应背包还够不够格子，不够就整批 OnAddItemData 失败，不会先加一部分。
-        /// 它不是按「几种道具 = 几格」硬算，而是：
-        /// 先定要进哪个背包（装备/材料等 Loc）。
-        /// 看该背包还剩多少空格：总容量 - 已占用格。
-        /// 用 CalcNeedNewCells 算这次还要新开几格：能叠进已有堆的先扣掉，剩下的才占新格。
-        /// 需要新开的格 > 剩余空格 → false。
-        /// 够的话，把这次占掉的格记进 leftCellByLoc。同一批多个道具会累计扣，避免前面刚占的格后面又当空的用。
-        /// 货币、自动使用、不进包的道具不会走到这里。
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="item"></param>
-        /// <param name="specLocType"></param>
-        /// <param name="leftCellByLoc"></param>
-        /// <returns></returns>
+        /// <summary>本批还要新开的格子超过该背包剩余空格则失败。能叠进旧堆的不占新格。</summary>
         private static bool TryReserveBagCell(BagComponentServer self, RewardItem item, ItemLocType specLocType, Dictionary<int, int> leftCellByLoc)
         {
             ItemLocType toLocType = ResolveAddItemLoc(specLocType, item);
@@ -808,6 +793,7 @@ namespace ET
             }
         }
 
+        /// <summary>先叠进已有格子。同道具、同标记、没满堆才叠。返回还没放进去、需要新开格子的数量。</summary>
         private static int FillExistPile(List<BagInfo> itemList, RewardItem item, int maxPileSum, M2C_RoleBagUpdate bagUpdate)
         {
             int leftNum = item.ItemNum;
@@ -819,18 +805,10 @@ namespace ET
                     continue;
                 }
 
-                int newNum = leftNum + bagInfo.ItemNum;
-                if (newNum > maxPileSum)
-                {
-                    leftNum = newNum - maxPileSum;
-                    newNum = maxPileSum;
-                }
-                else
-                {
-                    leftNum = 0;
-                }
-
-                bagInfo.ItemNum = newNum;
+                int room = maxPileSum - bagInfo.ItemNum;
+                int add = leftNum < room ? leftNum : room;
+                bagInfo.ItemNum += add;
+                leftNum -= add;
                 bagUpdate.BagInfoUpdate.Add(bagInfo);
             }
 
@@ -901,110 +879,114 @@ namespace ET
             return self.OnCostItemData(costItems, itemLocType, itemGetWay);
         }
 
-        //删除背包道具道具[支持同时添加多个]
         public static bool OnCostItemData(this BagComponentServer self, long bagInfoId, ItemLocType itemLocType = ItemLocType.ItemLocBag)
         {
-            M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-            List<BagInfo> itemTypeList = self.GetItemByLoc(itemLocType);
-            for (int k = itemTypeList.Count - 1; k >= 0; k--)
+            List<BagInfo> itemList = self.GetItemByLoc(itemLocType);
+            BagInfo bagInfo = FindBagById(itemList, bagInfoId);
+            if (bagInfo == null)
             {
-                if (itemTypeList[k].BagInfoID == bagInfoId)
-                {
-                    m2c_bagUpdate.BagInfoDelete.Add(itemTypeList[k]);
-                    itemTypeList.RemoveAt(k);
-                    break;
-                }
+                return false;
             }
 
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
+            itemList.Remove(bagInfo);
+            M2C_RoleBagUpdate update = new M2C_RoleBagUpdate();
+            update.BagInfoDelete.Add(bagInfo);
+            MessageHelper.SendToClient(self.GetParent<Unit>(), update);
             return true;
         }
 
         public static bool OnCostItemData(this BagComponentServer self, List<long> costItems, ItemLocType itemLocType = ItemLocType.ItemLocBag)
         {
-            //通知客户端背包刷新
-            M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
+            if (costItems == null || costItems.Count == 0)
+            {
+                return false;
+            }
 
-            List<BagInfo> ItemTypeList = self.GetItemByLoc(itemLocType);
-
+            List<BagInfo> itemList = self.GetItemByLoc(itemLocType);
+            List<BagInfo> removeList = new List<BagInfo>();
             for (int i = 0; i < costItems.Count; i++)
             {
-                for (int k = ItemTypeList.Count - 1; k >= 0; k--)
-                {
-                    if (ItemTypeList[k].BagInfoID == costItems[i])
-                    {
-                        m2c_bagUpdate.BagInfoDelete.Add(ItemTypeList[k]);
-                        ItemTypeList.RemoveAt(k);
-                        break;
-                    }
-                }
-            }
-
-            //通知客户端背包道具发生改变
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
-            return true;
-        }
-
-        //指定某一个格子的ID
-        public static bool OnCostItemData(this BagComponentServer self, long uid, int number, ItemLocType itemLocType = ItemLocType.ItemLocBag)
-        {
-            //通知客户端背包刷新
-            M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-
-            List<BagInfo> ItemTypeList = self.GetItemByLoc(itemLocType);
-            for (int k = ItemTypeList.Count - 1; k >= 0; k--)
-            {
-                if (ItemTypeList[k].BagInfoID == uid)
-                {
-                    ItemTypeList[k].ItemNum -= number;
-
-                    if (ItemTypeList[k].ItemNum <= 0)
-                    {
-                        m2c_bagUpdate.BagInfoDelete.Add(ItemTypeList[k]);
-                        ItemTypeList.RemoveAt(k);
-                    }
-                    else
-                    {
-                        m2c_bagUpdate.BagInfoUpdate.Add(ItemTypeList[k]);
-                    }
-                    break;
-                }
-            }
-            //通知客户端背包道具发生改变
-            MessageHelper.SendToClient(self.GetParent<Unit>(), m2c_bagUpdate);
-            return true;
-        }
-
-        //删除背包道具道具[支持同时添加多个]
-        public static bool OnCostItemData(this BagComponentServer self, List<RewardItem> costItems, ItemLocType itemLocType, int itemGetWay)
-        {
-            for (int i = costItems.Count - 1; i >= 0; i--)
-            {
-                int itemType = costItems[i].ItemType > 0 ? costItems[i].ItemType : ItemBigType.Type_Item;
-                int itemID = costItems[i].ItemID;
-                int itemNum = costItems[i].ItemNum;
-
-                if (self.GetItemNumberForCost(itemType, itemID, itemLocType) < itemNum)
+                BagInfo bagInfo = FindBagById(itemList, costItems[i]);
+                if (bagInfo == null)
                 {
                     return false;
                 }
+
+                if (removeList.Contains(bagInfo))
+                {
+                    continue;
+                }
+
+                removeList.Add(bagInfo);
+            }
+
+            M2C_RoleBagUpdate update = new M2C_RoleBagUpdate();
+            for (int i = 0; i < removeList.Count; i++)
+            {
+                itemList.Remove(removeList[i]);
+                update.BagInfoDelete.Add(removeList[i]);
+            }
+
+            MessageHelper.SendToClient(self.GetParent<Unit>(), update);
+            return true;
+        }
+
+        public static bool OnCostItemData(this BagComponentServer self, long uid, int number, ItemLocType itemLocType = ItemLocType.ItemLocBag)
+        {
+            if (number <= 0)
+            {
+                return false;
+            }
+
+            List<BagInfo> itemList = self.GetItemByLoc(itemLocType);
+            BagInfo bagInfo = FindBagById(itemList, uid);
+            if (bagInfo == null || bagInfo.ItemNum < number)
+            {
+                return false;
+            }
+
+            bagInfo.ItemNum -= number;
+            M2C_RoleBagUpdate update = new M2C_RoleBagUpdate();
+            if (bagInfo.ItemNum <= 0)
+            {
+                itemList.Remove(bagInfo);
+                update.BagInfoDelete.Add(bagInfo);
+            }
+            else
+            {
+                update.BagInfoUpdate.Add(bagInfo);
+            }
+
+            MessageHelper.SendToClient(self.GetParent<Unit>(), update);
+            return true;
+        }
+
+        public static bool OnCostItemData(this BagComponentServer self, List<RewardItem> costItems, ItemLocType itemLocType, int itemGetWay)
+        {
+            if (costItems == null || costItems.Count == 0)
+            {
+                return false;
+            }
+
+            if (!self.CanCostRewardItems(costItems, itemLocType))
+            {
+                return false;
             }
 
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-            M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-            m2c_bagUpdate.BagInfoAdd = new List<BagInfo>();
-
+            M2C_RoleBagUpdate update = new M2C_RoleBagUpdate();
+            update.BagInfoAdd = new List<BagInfo>();
             for (int i = costItems.Count - 1; i >= 0; i--)
             {
                 int itemType = costItems[i].ItemType > 0 ? costItems[i].ItemType : ItemBigType.Type_Item;
-                int itemID = costItems[i].ItemID;
-                int itemNum = costItems[i].ItemNum;
-                int remain = self.CostOneItemId(itemType, itemID, itemNum, itemLocType, itemGetWay, roleInfo, m2c_bagUpdate);
-                int fallbackId = ItemNewHelper.GetCostFallbackItemId(itemType, itemID);
+                int itemId = costItems[i].ItemID;
+                int remain = self.CostOneItemId(itemType, itemId, costItems[i].ItemNum, itemLocType, itemGetWay, roleInfo, update);
+                // Same_Id：本 ID 不够时，再用这个道具补扣。
+                int fallbackId = ItemNewHelper.GetCostFallbackItemId(itemType, itemId);
                 if (remain > 0 && fallbackId > 0)
                 {
-                    remain = self.CostOneItemId(itemType, fallbackId, remain, itemLocType, itemGetWay, roleInfo, m2c_bagUpdate);
+                    remain = self.CostOneItemId(itemType, fallbackId, remain, itemLocType, itemGetWay, roleInfo, update);
                     ItemAddHelper.OnCostItem(unit, ItemBigType.Type_Item, fallbackId);
                 }
 
@@ -1013,11 +995,67 @@ namespace ET
                     return false;
                 }
 
-                ItemAddHelper.OnCostItem(unit, ItemBigType.Type_Item, itemID);
+                ItemAddHelper.OnCostItem(unit, ItemBigType.Type_Item, itemId);
             }
 
-            MessageHelper.SendToClient(unit, m2c_bagUpdate);
+            MessageHelper.SendToClient(unit, update);
             return true;
+        }
+
+        private static BagInfo FindBagById(List<BagInfo> itemList, long bagInfoId)
+        {
+            for (int i = itemList.Count - 1; i >= 0; i--)
+            {
+                if (itemList[i].BagInfoID == bagInfoId)
+                {
+                    return itemList[i];
+                }
+            }
+
+            return null;
+        }
+
+        private static bool CanCostRewardItems(this BagComponentServer self, List<RewardItem> costItems, ItemLocType itemLocType)
+        {
+            Dictionary<long, long> costLeft = new Dictionary<long, long>();
+            for (int i = costItems.Count - 1; i >= 0; i--)
+            {
+                int itemType = costItems[i].ItemType > 0 ? costItems[i].ItemType : ItemBigType.Type_Item;
+                int remain = costItems[i].ItemNum;
+                if (remain <= 0)
+                {
+                    continue;
+                }
+
+                remain = self.TakeCostLeft(costLeft, itemType, costItems[i].ItemID, remain, itemLocType);
+                // Same_Id：本 ID 不够时，再用这个道具补扣。
+                int fallbackId = ItemNewHelper.GetCostFallbackItemId(itemType, costItems[i].ItemID);
+                if (remain > 0 && fallbackId > 0)
+                {
+                    remain = self.TakeCostLeft(costLeft, itemType, fallbackId, remain, itemLocType);
+                }
+
+                if (remain > 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>预扣：同一份剩余数量里扣，不够就原数返回。不改背包。</summary>
+        private static int TakeCostLeft(this BagComponentServer self, Dictionary<long, long> costLeft, int itemType, int itemId, int itemNum, ItemLocType itemLocType)
+        {
+            long key = ((long)itemType << 32) | (uint)itemId;
+            if (!costLeft.TryGetValue(key, out long have))
+            {
+                have = self.GetItemNumber(itemType, itemId, itemLocType);
+            }
+
+            long take = have < itemNum ? have : itemNum;
+            costLeft[key] = have - take;
+            return itemNum - (int)take;
         }
 
         /// <summary>扣指定 ID，返回仍未扣完的数量。货币走 RoleData，背包走格子。</summary>
@@ -1033,25 +1071,20 @@ namespace ET
             if (userDataType != UserDataType.None)
             {
                 long have = self.GetItemNumber(itemType, itemId, itemLocType);
-                int costThis = itemNum;
-                if (have < costThis)
+                int costThis = have < itemNum ? (int)have : itemNum;
+                if (costThis <= 0)
                 {
-                    costThis = (int)have;
+                    return itemNum;
                 }
 
-                if (costThis > 0)
-                {
-                    roleInfo.UpdateRoleData(userDataType, (-costThis).ToString(), true, itemGetWay);
-                    itemNum -= costThis;
-                }
-
-                return itemNum;
+                roleInfo.UpdateRoleData(userDataType, (-costThis).ToString(), true, itemGetWay);
+                return itemNum - costThis;
             }
 
             Unit unit = self.GetParent<Unit>();
             LogHelper.LogWarning($"消耗道具: {unit.Id} {itemId} {itemNum}", false);
             List<BagInfo> bagInfos = self.GetItemByLoc(itemLocType);
-            for (int k = bagInfos.Count - 1; k >= 0; k--)
+            for (int k = bagInfos.Count - 1; k >= 0 && itemNum > 0; k--)
             {
                 BagInfo userBagInfo = bagInfos[k];
                 if (userBagInfo.ItemID != itemId)
@@ -1059,21 +1092,17 @@ namespace ET
                     continue;
                 }
 
-                if (userBagInfo.ItemNum > itemNum)
+                int costThis = userBagInfo.ItemNum < itemNum ? userBagInfo.ItemNum : itemNum;
+                userBagInfo.ItemNum -= costThis;
+                itemNum -= costThis;
+                if (userBagInfo.ItemNum <= 0)
                 {
-                    userBagInfo.ItemNum -= itemNum;
-                    m2c_bagUpdate.BagInfoUpdate.Add(userBagInfo);
-                    return 0;
+                    m2c_bagUpdate.BagInfoDelete.Add(userBagInfo);
+                    bagInfos.RemoveAt(k);
+                    continue;
                 }
 
-                itemNum -= userBagInfo.ItemNum;
-                userBagInfo.ItemNum = 0;
-                m2c_bagUpdate.BagInfoDelete.Add(userBagInfo);
-                bagInfos.RemoveAt(k);
-                if (itemNum <= 0)
-                {
-                    return 0;
-                }
+                m2c_bagUpdate.BagInfoUpdate.Add(userBagInfo);
             }
 
             return itemNum;
@@ -1247,24 +1276,20 @@ namespace ET
 
         public static bool OnCostItemData(this BagComponentServer self, BagInfo bagInfo, ItemLocType locType, int number)
         {
-            List<BagInfo> bagInfos = self.GetItemByLoc(locType);
-            Unit unit = self.GetParent<Unit>();
-
-            if (bagInfo.ItemNum >= number)
-            {
-                bagInfo.ItemNum -= number;
-
-                if (bagInfo.ItemNum <= 0)
-                {
-                    bagInfos.Remove(bagInfo);
-                }
-                LogHelper.LogWarning($"消耗道具: {unit.Id} {bagInfo.ItemID} {number}", false);
-                return true;
-            }
-            else
+            if (bagInfo.ItemNum < number)
             {
                 return false;
             }
+
+            bagInfo.ItemNum -= number;
+            if (bagInfo.ItemNum <= 0)
+            {
+                self.GetItemByLoc(locType).Remove(bagInfo);
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            LogHelper.LogWarning($"消耗道具: {unit.Id} {bagInfo.ItemID} {number}", false);
+            return true;
         }
 
         private static List<RewardItem> ParseSemicolonRewardItems(string rewardItems)

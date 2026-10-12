@@ -268,15 +268,52 @@ namespace ET
             return mailInfo == null ? 0 : mailInfo.BelongId;
         }
 
-        public static void GrantMailReward(BagComponentServer bag, MailInfo mailInfo)
+        public static bool GrantMailReward(BagComponentServer bag, MailInfo mailInfo)
         {
             if (bag == null || !HasUnclaimedReward(mailInfo))
             {
-                return;
+                return false;
+            }
+
+            List<BagInfo> mailItems = mailInfo.ItemList;
+            Dictionary<int, int> needByLoc = new Dictionary<int, int>();
+            for (int i = 0; i < mailItems.Count; i++)
+            {
+                BagInfo item = mailItems[i];
+                if (item == null)
+                {
+                    continue;
+                }
+
+                if (ItemNewHelper.GetItemToUserDataType(item.ItemType, item.ItemID) != UserDataType.None)
+                {
+                    continue;
+                }
+
+                ItemLocType toLoc = ItemNewHelper.GetToItemLocType(item.ItemType, item.ItemID);
+                List<BagInfo> locList = bag.GetItemByLoc(toLoc);
+                int pileSum = ItemNewHelper.GetNewItemPileSum(item);
+                int need = ItemNewHelper.CalcNeedNewCells(locList, item.ItemType, item.ItemID, item.ItemNum, pileSum, item.ItemFlags);
+                int locKey = (int)toLoc;
+                if (needByLoc.TryGetValue(locKey, out int exist))
+                {
+                    needByLoc[locKey] = exist + need;
+                }
+                else
+                {
+                    needByLoc[locKey] = need;
+                }
+            }
+
+            foreach (KeyValuePair<int, int> kv in needByLoc)
+            {
+                if (bag.GetBagLeftCell(kv.Key) < kv.Value)
+                {
+                    return false;
+                }
             }
 
             long receiveMailTime = TimeHelper.ServerNow();
-            List<BagInfo> mailItems = mailInfo.ItemList;
             for (int i = mailItems.Count - 1; i >= 0; i--)
             {
                 BagInfo item = mailItems[i];
@@ -285,17 +322,14 @@ namespace ET
                     continue;
                 }
 
-                if (!string.IsNullOrEmpty(item.GetWay))
-                {
-                    bag.OnAddItemData(item, item.GetWay);
-                }
-                else
-                {
-                    bag.OnAddItemData(item, $"{ItemGetWay.ReceieMail}_{receiveMailTime}");
-                }
+                string getWay = string.IsNullOrEmpty(item.GetWay)
+                        ? $"{ItemGetWay.ReceieMail}_{receiveMailTime}"
+                        : item.GetWay;
+                bag.OnAddItemData(item, getWay);
             }
 
             mailInfo.RewardReceived = true;
+            return true;
         }
 
         /// <summary>

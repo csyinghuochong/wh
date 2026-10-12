@@ -84,12 +84,7 @@ namespace ET
             }
 
             List<RewardItem> rewards = new List<RewardItem> { reward };
-            if (!bag.OnAddItemData(rewards, string.Empty, $"{getWay}_{TimeHelper.ServerNow()}"))
-            {
-                Log.Warning($"C2M_SkillMake add fail unit={unit.Id} makeId={cfg.Id} item={reward.ItemID}");
-                response.Error = ErrorCode.ERR_BagIsFull;
-            }
-
+            bag.OnAddItemData(rewards, string.Empty, $"{getWay}_{TimeHelper.ServerNow()}");
             reply();
             await ETTask.CompletedTask;
         }

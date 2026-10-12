@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,7 +32,12 @@ namespace ET
             }
 
             //道具鉴定，扣除道具
-            bagComponentServer.OnCostItemData(request.CostItemId, 1);
+            if (!bagComponentServer.OnCostItemData(request.CostItemId, 1))
+            {
+                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                reply();
+                return;
+            }
 
 
             //通知客户端背包刷新
@@ -75,6 +80,7 @@ namespace ET
             m2c_bagUpdate.BagInfoUpdate.Add(baginfoOpera);
 
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
+            reply();
         }
     }
 

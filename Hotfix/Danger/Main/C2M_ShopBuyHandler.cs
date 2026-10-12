@@ -80,7 +80,15 @@ namespace ET
                 return;
             }
 
-            // 全服商店：先向活动服扣全服货架库存
+            if (costItems.Count > 0
+                && !bag.OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy))
+            {
+                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                reply();
+                return;
+            }
+
+            // 全服商店：先扣钱，再扣货架。货架失败把钱退回。
             if (isGlobalShop)
             {
                 long activityServerId = DBHelper.GetActivityServerId(unit);
@@ -99,18 +107,15 @@ namespace ET
 
                 if (a2MResponse == null || a2MResponse.Error != ErrorCode.ERR_Success)
                 {
+                    if (costItems.Count > 0)
+                    {
+                        bag.OnAddItemData(costItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
+                    }
+
                     response.Error = a2MResponse?.Error ?? ErrorCode.ERR_NetWorkError;
                     reply();
                     return;
                 }
-            }
-
-            if (costItems.Count > 0
-                && !bag.OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy))
-            {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                reply();
-                return;
             }
 
             long storeBuyTime = TimeHelper.ServerNow();

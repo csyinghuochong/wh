@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -6,5 +6,7 @@ namespace ET
     {
 
         public RechargePro RechargePro = new RechargePro();
+
+        public List<string> PaidOrderIds = new List<string>();
     }
 }

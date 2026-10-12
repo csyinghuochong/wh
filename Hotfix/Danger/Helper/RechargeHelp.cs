@@ -9,7 +9,7 @@ namespace ET
 
         public static void  SendDiamondToUnit(Unit unit, int payid, int rechargeType, string orderInfo)
         {
-            OnRechage(unit, payid, rechargeType, true);
+            OnRechage(unit, payid, rechargeType, true, orderInfo);
             unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
         }
 
@@ -47,7 +47,7 @@ namespace ET
         }
 
 
-        public static void OnRechage(Unit unit, int playId, int rechargetType, bool notice)
+        public static void OnRechage(Unit unit, int playId, int rechargetType, bool notice, string orderInfo = null)
         {
             if (playId <= 0)
             { 
@@ -61,6 +61,15 @@ namespace ET
             }
         
             RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
+            if (!string.IsNullOrEmpty(orderInfo))
+            {
+                if (rechargeComponentServer.PaidOrderIds.Contains(orderInfo))
+                {
+                    return;
+                }
+
+                rechargeComponentServer.PaidOrderIds.Add(orderInfo);
+            }
 
             int homeZone = UnitZoneHelper.GetHomeZone(unit);
             bool canFirstBuy = false;
