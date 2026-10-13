@@ -113,12 +113,21 @@ namespace ET
             }
 
             float hate = hateInit + hateGrowth * (skillLevel - 1);
-            if (hate <= 0f || !Log.IsDebugEnabled)
+            if (hate <= 0f)
             {
                 return;
             }
 
-            Log.Debug($"SkillEditor hate caster={caster.Id} target={target.Id} value={hate}");
+            long hateValue = (long)hate;
+            if (hateValue <= 0)
+            {
+                hateValue = 1;
+            }
+            target.GetComponent<AttackRecordComponent>()?.BeAttacking(caster, -hateValue);
+            if (Log.IsDebugEnabled)
+            {
+                Log.Debug($"SkillEditor hate caster={caster.Id} target={target.Id} value={hate}");
+            }
         }
     }
 }

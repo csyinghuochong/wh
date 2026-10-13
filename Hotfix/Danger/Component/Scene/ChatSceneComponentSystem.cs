@@ -232,6 +232,7 @@ namespace ET
                 return;
             }
             self.ChatInfoUnitsDict.Add(chatInfoUnit.Id, chatInfoUnit);
+            self.JoinUnionIndex(chatInfoUnit);
         }
 
 
@@ -246,8 +247,53 @@ namespace ET
         {
             if (self.ChatInfoUnitsDict.TryGetValue(id, out ChatInfoUnit chatInfoUnit))
             {
+                self.LeaveUnionIndex(chatInfoUnit);
                 self.ChatInfoUnitsDict.Remove(id);
                 chatInfoUnit?.Dispose();
+            }
+        }
+
+        public static void SetUnion(this ChatSceneComponent self, ChatInfoUnit unit, long unionId)
+        {
+            self.LeaveUnionIndex(unit);
+            unit.UnionId = unionId;
+            self.JoinUnionIndex(unit);
+        }
+
+        static void JoinUnionIndex(this ChatSceneComponent self, ChatInfoUnit unit)
+        {
+            if (unit.UnionId == 0)
+            {
+                return;
+            }
+
+            if (!self.UnionUnits.TryGetValue(unit.UnionId, out List<ChatInfoUnit> members))
+            {
+                members = new List<ChatInfoUnit>();
+                self.UnionUnits[unit.UnionId] = members;
+            }
+            if (!members.Contains(unit))
+            {
+                members.Add(unit);
+            }
+        }
+
+        static void LeaveUnionIndex(this ChatSceneComponent self, ChatInfoUnit unit)
+        {
+            if (unit.UnionId == 0)
+            {
+                return;
+            }
+
+            if (!self.UnionUnits.TryGetValue(unit.UnionId, out List<ChatInfoUnit> members))
+            {
+                return;
+            }
+
+            members.Remove(unit);
+            if (members.Count == 0)
+            {
+                self.UnionUnits.Remove(unit.UnionId);
             }
         }
 

@@ -287,7 +287,10 @@ namespace ET
                     {
                         leftTime += TimeHelper.OneDay;
                     }
-                    Log.Debug($"野外怪定时刷新ccccc  {self.DomainZone()}  区：MonsterID： {monsterid} ");
+                    if (Log.IsDebugEnabled)
+                    {
+                        Log.Debug($"野外怪定时刷新ccccc  {self.DomainZone()}  区：MonsterID： {monsterid} ");
+                    }
 
                     self.RefreshMonsters.Add(new RefreshMonster()
                     {

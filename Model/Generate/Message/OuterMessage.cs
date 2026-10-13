@@ -1761,6 +1761,10 @@ namespace ET
 		[ProtoMember(1)]
 		public RechargePro RechargePro { get; set; }
 
+		/// <summary>本次到账奖励。Pay 在前，Activity 在后。登录同步为空。</summary>
+		[ProtoMember(2)]
+		public List<RewardItem> RewardList = new List<RewardItem>();
+
 	}
 
 	[Message(OuterOpcode.BagInfo)]

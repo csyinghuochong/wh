@@ -74,7 +74,10 @@ namespace ET
                     Player player = playerComponent.Get(request.Account);
                     if (player != null && player.Id != request.RoleId)
                     {
-                        Log.Debug($"LoginTest C2G_LoginGameGate  player.Id:{player.Id}  request.RoleId: {request.RoleId}");
+                        if (Log.IsDebugEnabled)
+                        {
+                            Log.Debug($"LoginTest C2G_LoginGameGate  player.Id:{player.Id}  request.RoleId: {request.RoleId}");
+                        }
                     }
                     if (player == null)
                     {
@@ -85,7 +88,10 @@ namespace ET
                         player.AddComponent<MailBoxComponent, MailboxType>(MailboxType.GateSession);                    //ET-UWA
                         player.PlayerState = PlayerState.Gate;
                         player.RemoteAddress = session.RemoteAddress.ToString();
-                        Log.Debug($"LoginTest C2G_LoginGameGate  player.Id: {player.Id} player.InstanceId:{player.InstanceId} unitId: {request.RoleId}");
+                        if (Log.IsDebugEnabled)
+                        {
+                            Log.Debug($"LoginTest C2G_LoginGameGate  player.Id: {player.Id} player.InstanceId:{player.InstanceId} unitId: {request.RoleId}");
+                        }
 
                         session.AddComponent<SessionPlayerComponent>().PlayerId = player.Id;
                         session.GetComponent<SessionPlayerComponent>().PlayerInstanceId = player.InstanceId;
@@ -96,7 +102,10 @@ namespace ET
                     {
                         //移除倒计时下线组件   //断线重连、
                         player.RemoveComponent<PlayerOfflineOutTimeComponent>();
-                        Log.Debug($"LoginTest C2G_LoginGameGate player!=null player.Id: {player.Id} player.InstanceId:{player.InstanceId} unitId: {request.RoleId}");
+                        if (Log.IsDebugEnabled)
+                        {
+                            Log.Debug($"LoginTest C2G_LoginGameGate player!=null player.Id: {player.Id} player.InstanceId:{player.InstanceId} unitId: {request.RoleId}");
+                        }
                         Game.EventSystem.Publish(new EventType.PlayerReLink() { Session = session, Player = player, AccountId = request.Account });
                     }
                 }

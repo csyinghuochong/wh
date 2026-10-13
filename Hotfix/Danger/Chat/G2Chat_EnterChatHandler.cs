@@ -24,7 +24,7 @@ namespace ET
             {
                 unit.Name = request.Name;
                 unit.Level = request.Level;
-                unit.UnionId = request.UnionId;
+                chatInfoUnitsComponent.SetUnion(unit, request.UnionId);
                 unit.GateSessionActorId = request.GateSessionActorId;
                 response.ChatInfoUnitInstanceId = unit.InstanceId;
                 reply();

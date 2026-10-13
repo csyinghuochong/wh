@@ -12,6 +12,13 @@ namespace ET
         /// <summary>
         /// resetType 初始化 1 登录检测  2 在线推送
         /// </summary>
+        public static bool AlreadyResetThisGameDay(Unit unit)
+        {
+            RoleDailyDataComponentServer roleDailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+            long now = TimeHelper.ServerNow();
+            return roleDailyData.LastResetTime > 0 && ActivityHelper.IsSameGameResetDay(roleDailyData.LastResetTime, now);
+        }
+
         public static void OnDailyReset(Unit unit, int resetType)
         {
             if (unit == null || unit.IsDisposed)
@@ -21,6 +28,12 @@ namespace ET
 
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleDailyDataComponentServer roleDailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+            long now = TimeHelper.ServerNow();
+            if (roleDailyData.LastResetTime > 0 && ActivityHelper.IsSameGameResetDay(roleDailyData.LastResetTime, now))
+            {
+                return;
+            }
+            roleDailyData.LastResetTime = now;
             bool notice = resetType == 2;
 
             roleDailyData.OnDailyReset();
@@ -77,7 +90,10 @@ namespace ET
 
             if (lastLoginTime == 0)
             {
-                Log.Debug($"OnDailyReset [数据初始化]: {unit.Id}");
+                if (Log.IsDebugEnabled)
+                {
+                    Log.Debug($"OnDailyReset [数据初始化]: {unit.Id}");
+                }
                 OnDailyReset(unit, 0);
                 return;
             }
@@ -85,7 +101,14 @@ namespace ET
             DateTime lastdateTime = TimeInfo.Instance.ToDateTime(lastLoginTime);
             if (!ActivityHelper.IsSameGameResetDay(lastLoginTime, currentTime))
             {
-                Log.Debug($"OnDailyReset [登录刷新]: {unit.Id}");
+                if (AlreadyResetThisGameDay(unit))
+                {
+                    return;
+                }
+                if (Log.IsDebugEnabled)
+                {
+                    Log.Debug($"OnDailyReset [登录刷新]: {unit.Id}");
+                }
                 float passhour = (currentTime - lastLoginTime) * 1f / TimeHelper.Hour;
                 RecoverPiLaoAcrossDays(roleInfoComponentServer, unit, lastdateTime, dateTime, passhour, currentTime, lastLoginTime);
 

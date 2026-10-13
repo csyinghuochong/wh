@@ -14,6 +14,9 @@ namespace ET
         public List<SkillInfo> BroadcastSkillInfos = new List<SkillInfo>(4);
         /// <summary>同步给客户端的当前技能列表（复用）。</summary>
         public List<SkillInfo> MessageSkillInfos = new List<SkillInfo>(8);
+        public List<Skill_TreeEditor> TempSkillHandlers = new List<Skill_TreeEditor>(4);
+        public List<int> TempRemoveCdIds = new List<int>(8);
+
         public Dictionary<int, SkillCDItem> SkillCDs = new Dictionary<int, SkillCDItem>();  //技能CD列表
         /// <summary>组 Id -> 组 CD 结束时间。同组技能共享（组1=原技能公共CD，组2=药水CD）。</summary>
         public Dictionary<int, long> GroupCDEndTimes = new Dictionary<int, long>();

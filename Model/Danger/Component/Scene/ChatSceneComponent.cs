@@ -29,6 +29,9 @@ namespace ET
         //全服玩家GateSessionActorId
         public Dictionary<long, ChatInfoUnit> ChatInfoUnitsDict = new Dictionary<long, ChatInfoUnit>();
 
+        /// <summary>家族 Id -> 在线成员。家族频道只扫这一份。</summary>
+        public Dictionary<long, List<ChatInfoUnit>> UnionUnits = new Dictionary<long, List<ChatInfoUnit>>();
+
         //世界列表记录
         public List<ChatInfo> WordChatInfos = new List<ChatInfo> ();    
 

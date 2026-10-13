@@ -145,7 +145,10 @@ namespace ET
                     
                     if (instanceId != session.InstanceId || player.IsDisposed)
 					{
-                        Log.Debug($"LoginTest C2G_EnterGameHandler: instanceId： {instanceId}  session.InstanceId： {session.InstanceId} {player.IsDisposed} ");
+                        if (Log.IsDebugEnabled)
+                        {
+                            Log.Debug($"LoginTest C2G_EnterGameHandler: instanceId： {instanceId}  session.InstanceId： {session.InstanceId} {player.IsDisposed} ");
+                        }
 						response.Error = ErrorCode.ERR_PlayerSessionError;
 						reply();
 						return;
@@ -156,7 +159,10 @@ namespace ET
 					if (sessionStateComponent != null
 						&& sessionStateComponent.State == SessionState.Game)
 					{
-						Log.Debug("LoginTest C2G_EnterGameHandler: SessionStateComponent.State == SessionState.Game");
+						if (Log.IsDebugEnabled)
+						{
+							Log.Debug("LoginTest C2G_EnterGameHandler: SessionStateComponent.State == SessionState.Game");
+						}
 						response.Error = ErrorCode.ERR_SessionStateError;
 						reply();
 						return;
@@ -181,7 +187,10 @@ namespace ET
 						try
 						{
                             //重连 [二次登录不成功可能导致Unit没移除]
-                            Log.Debug($"LoginTest C2G_EnterGame 二次登录开始; player.Id： {player.Id} request.UserID{request.UserID}  player.UnitId: {player.UnitId}");
+                            if (Log.IsDebugEnabled)
+                            {
+                                Log.Debug($"LoginTest C2G_EnterGame 二次登录开始; player.Id： {player.Id} request.UserID{request.UserID}  player.UnitId: {player.UnitId}");
+                            }
 							//主要判断unit还在不在
 							IActorResponse reqEnter =(M2G_RequestEnterGameState) await MessageHelper.CallLocationActor(player.GetActorId(), new G2M_RequestEnterGameState()
 							{
@@ -189,7 +198,10 @@ namespace ET
 							});
                             if (reqEnter.Error == ErrorCode.ERR_Success)
                             {
-                                Log.Debug($"LoginTest C2G_EnterGame 二次登录成功; player.Id： {player.Id} request.UserID:{request.UserID}");
+                                if (Log.IsDebugEnabled)
+                                {
+                                    Log.Debug($"LoginTest C2G_EnterGame 二次登录成功; player.Id： {player.Id} request.UserID:{request.UserID}");
+                                }
                                 reply();
                                 return;
                             }
@@ -258,13 +270,19 @@ namespace ET
 
                         if (session.DomainZone() == 0)
                         {
-                            Log.Debug($"LoginTest C2G_EnterGame session.DomainZone() == 0 player.Id： {player.Id} request.UserID{request.UserID}  player.UnitId: {player.UnitId}");
+                            if (Log.IsDebugEnabled)
+                            {
+                                Log.Debug($"LoginTest C2G_EnterGame session.DomainZone() == 0 player.Id： {player.Id} request.UserID{request.UserID}  player.UnitId: {player.UnitId}");
+                            }
                             response.Error = ErrorCode.ERR_SessionStateError;
                             reply();
                             return;
                         }
 
-                        Log.Debug($"LoginTest C2G_EnterGame TransferHelper.Transfer; unitid: {request.UserID} player.Id {player.Id} player.InstanceId: {player.InstanceId} {session.DomainZone()}");
+                        if (Log.IsDebugEnabled)
+                        {
+                            Log.Debug($"LoginTest C2G_EnterGame TransferHelper.Transfer; unitid: {request.UserID} player.Id {player.Id} player.InstanceId: {player.InstanceId} {session.DomainZone()}");
+                        }
                         player.DBCacheId = DBHelper.GetDbCacheId(session.DomainZone());
 						player.MailServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Mail)).InstanceId;
 						player.RankServerID = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), Enum.GetName(SceneType.Rank)).InstanceId;

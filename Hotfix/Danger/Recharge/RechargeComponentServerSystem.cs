@@ -48,7 +48,8 @@ namespace ET
             return self.RechargePro.TotalRechargeNum;
         }
 
-        public static void NotifyClient(this RechargeComponentServer self)
+        /// <param name="rewardList">本次发放的原始列表。不要传入合并后的结果。</param>
+        public static void NotifyClient(this RechargeComponentServer self, List<RewardItem> rewardList = null)
         {
             Unit unit = self.GetParent<Unit>();
             if (unit == null || unit.IsDisposed)
@@ -56,10 +57,16 @@ namespace ET
                 return;
             }
 
-            MessageHelper.SendToClient(unit, new M2C_RechargeUpdate()
+            M2C_RechargeUpdate message = new M2C_RechargeUpdate()
             {
                 RechargePro = self.RechargePro,
-            });
+            };
+            if (rewardList != null)
+            {
+                message.RewardList.AddRange(rewardList);
+            }
+
+            MessageHelper.SendToClient(unit, message);
         }
 
         public static void OnLogin(this RechargeComponentServer self)

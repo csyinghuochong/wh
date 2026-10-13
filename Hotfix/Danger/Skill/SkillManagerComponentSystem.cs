@@ -305,12 +305,13 @@ namespace ET
             self.InterruptSkillsByNewCast(weaponLdSkill);
 
             SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
-            if (skillPassiveComponent == null)
+            if (skillPassiveComponent == null && Log.IsDebugEnabled)
             {
                 Log.Debug($"skillPassiveComponent == null: {unit.Type}");
             }
 
-            List<Skill_TreeEditor> handlerList = new List<Skill_TreeEditor>();  
+            List<Skill_TreeEditor> handlerList = self.TempSkillHandlers;
+            handlerList.Clear();  
             for (int i = 0; i < skillList.Count; i++)
             {
                 skillList[i].SingValue = skillcmd.SingValue;
@@ -735,7 +736,8 @@ namespace ET
             if (self.SkillCDs.Count >= 1)
             {
                 long nowTime = TimeHelper.ServerNow();
-                List<int> removeList = new List<int>();
+                List<int> removeList = self.TempRemoveCdIds;
+                removeList.Clear();
                 foreach (SkillCDItem skillcd in self.SkillCDs.Values)
                 {
                     if (nowTime >= skillcd.CDEndTime

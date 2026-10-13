@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -123,11 +124,11 @@ namespace ET
                             reply();
                             return;
                         }
-                        foreach (var otherUnit in chatScene.ChatInfoUnitsDict.Values)
+                        if (chatScene.UnionUnits.TryGetValue(unionid, out List<ChatInfoUnit> members))
                         {
-                            if (otherUnit.UnionId == unionid)
+                            for (int i = 0; i < members.Count; i++)
                             {
-                                MessageHelper.SendActor(otherUnit.GateSessionActorId, m2C_SyncChatInfo);
+                                MessageHelper.SendActor(members[i].GateSessionActorId, m2C_SyncChatInfo);
                             }
                         }
 

@@ -109,7 +109,8 @@ namespace ET
             taskComponentServer.OnRechargeDay(rechargeNumber, newRechargeDay);
 
             RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
-            rechargeComponentServer.NotifyClient();
+            List<RewardItem> grantRewards = rechargetType == RechargeBizTypeEnum.Diamond ? rewardItems : null;
+            rechargeComponentServer.NotifyClient(grantRewards);
         }
 
         public static async ETTask SendToAccountCenter(long accountId, long userId, int rechargeNumber, string ordinfo, int rechargeType)

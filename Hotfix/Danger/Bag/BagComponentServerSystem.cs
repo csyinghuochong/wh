@@ -516,7 +516,14 @@ namespace ET
             if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
             {
                 string getWay = string.IsNullOrEmpty(bagInfo.GetWay) ? getType : bagInfo.GetWay;
-                return self.OnAddItemData($"{bagInfo.ItemType}~{bagInfo.ItemID}~{bagInfo.ItemNum}", getWay);
+                RewardItem rewardItem = new RewardItem
+                {
+                    ItemType = bagInfo.ItemType,
+                    ItemID = bagInfo.ItemID,
+                    ItemNum = bagInfo.ItemNum,
+                    ItemFlags = bagInfo.ItemFlags,
+                };
+                return self.OnAddItemData(new List<RewardItem> { rewardItem }, string.Empty, getWay);
             }
 
             int itemType = bagInfo.ItemType != 0 ? bagInfo.ItemType : ItemBigType.Type_Item;

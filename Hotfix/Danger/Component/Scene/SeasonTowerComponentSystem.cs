@@ -28,6 +28,8 @@ namespace ET
                 m2C_FubenSettlement.StarInfos = new List<int> { 1, 1, 1 };
                 MessageHelper.SendToClient(players[0], m2C_FubenSettlement);
 
+                int towerId = self.TowerId;
+                players[0].GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.TowerId, $"{MapTypeEnum.SeasonTower};{towerId}");
                 self.UploadHurtValue(players[0]).Coroutine();
             }
         }

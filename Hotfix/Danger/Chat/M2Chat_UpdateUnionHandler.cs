@@ -17,7 +17,7 @@ namespace ET
                 return;
             }
 
-            chatInfoUnit.UnionId = request.UnionId;
+            chatInfoUnitsComponent.SetUnion(chatInfoUnit, request.UnionId);
             reply();
             await ETTask.CompletedTask;
         }

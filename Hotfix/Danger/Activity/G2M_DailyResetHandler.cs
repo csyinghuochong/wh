@@ -8,6 +8,10 @@ namespace ET
         protected override async ETTask Run(Unit unit, G2M_DailyReset message)
         {
             Console.WriteLine($"OnDailyReset [日清]: {unit.Id}");
+            if (PlayerDailyResetHelper.AlreadyResetThisGameDay(unit))
+            {
+                return;
+            }
             if (ActivityHelper.IsGameWeekResetDay(TimeHelper.ServerNow()))
             {
                 PlayerDailyResetHelper.OnWeeklyReset(unit, true);

@@ -112,8 +112,8 @@ namespace ET
                         break;
                     case MapTypeEnum.SeasonTower:
 
-                        //计算赛季之塔下一关
-                        int seasonTowerid = 0;
+                        // 进度在 RoleInfo.TowerIds，Key = MapTypeEnum.SeasonTower
+                        int seasonTowerid = TowerHelper.GetTowerId(unit.GetComponent<RoleInfoComponentServer>().RoleInfo, MapTypeEnum.SeasonTower);
                         if (seasonTowerid == 0)
                         {
                             request.paramInfo = TowerHelper.GetFirstTowerIdByScene(MapTypeEnum.SeasonTower).ToString();
@@ -474,6 +474,10 @@ namespace ET
             }
             request_0.ParamInfo = component;
             M2M_UnitTransfer_0_Response response_0 = await ActorMessageSenderComponent.Instance.Call(sceneInstanceId, request_0) as M2M_UnitTransfer_0_Response;
+            if (response_0 == null)
+            {
+                return ErrorCode.ERR_TransferFailError;
+            }
             return response_0.Error;
         }
 
@@ -490,6 +494,17 @@ namespace ET
         /// <returns></returns>
         public static async ETTask Transfer(Unit unit, long sceneInstanceId, int sceneType, int sceneId, int fubenDifficulty,  string paramInfo)
         {
+            int bagError = await TransferComponent<BagComponentServer>(unit, sceneInstanceId);
+            if (bagError != ErrorCode.ERR_Success)
+            {
+                Log.Error($"背包预传送失败，留在原场景: {unit.Id} {bagError}");
+                if (unit.GetComponent<MailBoxComponent>() == null)
+                {
+                    unit.AddComponent<MailBoxComponent>();
+                }
+                return;
+            }
+
             // 删除Mailbox,让发给Unit的ActorLocation消息重发
             unit.RemoveComponent<MailBoxComponent>();
 
@@ -498,7 +513,6 @@ namespace ET
             MessageHelper.SendToClient(unit, m2CStartSceneChange);
 
             await TimerComponent.Instance.WaitFrameAsync();
-            await TransferComponent<BagComponentServer>(unit, sceneInstanceId);
         
             M2M_UnitTransferRequest request = new M2M_UnitTransferRequest();
             request.Unit = unit;
