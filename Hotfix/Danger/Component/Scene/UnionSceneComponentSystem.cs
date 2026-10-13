@@ -239,7 +239,7 @@ namespace ET
                     Combat = player.Combat,
                     Occ = player.Occ,
                     OccTwo = player.OccTwo,
-                    HeadId = player.HeadId,
+                    RoleHeadId = player.RoleHeadId,
                 });
                 added++;
             }

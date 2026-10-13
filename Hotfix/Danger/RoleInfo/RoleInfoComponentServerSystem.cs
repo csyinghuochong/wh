@@ -32,6 +32,8 @@ namespace ET
         {
             self.Account = account;
 
+            LDOccupation lDOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
+
             RoleInfo roleInfo = self.RoleInfo;
             RoleCurrencyHelper.Set(roleInfo, UserDataType.Sp, 1);
             roleInfo.UserId = userId;
@@ -45,6 +47,8 @@ namespace ET
             roleInfo.Occ = createRoleInfo.PlayerOcc;
             roleInfo.Sex = createRoleInfo.Sex;
             roleInfo.CreateTime = createRoleInfo.CreateTime;
+            roleInfo.RoleHeadId = createRoleInfo.Sex == SexEnum.Man ? lDOccupation.RoleHead_Man : lDOccupation.RoleHead_Woman;
+            roleInfo.RoleHeadFrame = 1;
 
             if (createRoleInfo.RobotId > 0)
             {

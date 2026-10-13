@@ -36,7 +36,7 @@ namespace ET
                     PlayerName = roleInfo.Name,
                     PlayerLevel = roleInfo.Lv,
                     Combat = roleInfo.Combat,
-                    HeadId = roleInfo.HeadIconId,
+                    RoleHeadId = roleInfo.RoleHeadId,
                     Occ = roleInfo.Occ,
                     UserID = roleInfo.UserId,
                     OccTwo = roleInfo.OccTwo,

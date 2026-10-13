@@ -574,13 +574,14 @@ namespace ET
 
 //头像id
 		[ProtoMember(8)]
-		public int HeadIconId { get; set; }
+		public int RoleHeadId { get; set; }
 
+//头像框
 		[ProtoMember(9)]
-		public int Sex { get; set; }
+		public int RoleHeadFrame { get; set; }
 
 		[ProtoMember(10)]
-		public int Combat { get; set; }
+		public int Sex { get; set; }
 
 		[ProtoMember(11)]
 		public int RobotId { get; set; }
@@ -604,9 +605,12 @@ namespace ET
 		public int OccTwo { get; set; }
 
 		[ProtoMember(20)]
+		public int Combat { get; set; }
+
+		[ProtoMember(24)]
 		public List<int> MakeTypeList = new List<int>();
 
-		[ProtoMember(21)]
+		[ProtoMember(25)]
 		public List<int> MakeIdList = new List<int>();
 
 		[ProtoMember(26)]
@@ -722,13 +726,16 @@ namespace ET
 		public int Sex { get; set; }
 
 		[ProtoMember(16)]
-		public int HeadIconId { get; set; }
+		public int RoleHeadId { get; set; }
 
 		[ProtoMember(17)]
 		public long LastLoginTime { get; set; }
 
 		[ProtoMember(18)]
 		public int LoginTag { get; set; }
+
+		[ProtoMember(19)]
+		public int RoleHeadFrame { get; set; }
 
 	}
 
@@ -7486,7 +7493,7 @@ namespace ET
 		public int Combat { get; set; }
 
 		[ProtoMember(4)]
-		public int HeadId { get; set; }
+		public int RoleHeadId { get; set; }
 
 		[ProtoMember(5)]
 		public int Occ { get; set; }
@@ -7496,6 +7503,9 @@ namespace ET
 
 		[ProtoMember(7)]
 		public int OccTwo { get; set; }
+
+		[ProtoMember(8)]
+		public int RoleHeadFrame { get; set; }
 
 	}
 
@@ -7540,7 +7550,10 @@ namespace ET
 		public long LastOfflineTime { get; set; }
 
 		[ProtoMember(13)]
-		public int HeadId { get; set; }
+		public int RoleHeadId { get; set; }
+
+		[ProtoMember(14)]
+		public int RoleHeadFrame { get; set; }
 
 	}
 
@@ -7588,9 +7601,12 @@ namespace ET
 		public int PlayerLimit { get; set; }
 
 		[ProtoMember(14)]
-		public int HeadId { get; set; }
+		public int RoleHeadId { get; set; }
 
 		[ProtoMember(15)]
+		public int RoleHeadFrame { get; set; }
+
+		[ProtoMember(16)]
 		public int Occ { get; set; }
 
 		[ProtoMember(20)]
@@ -10160,7 +10176,7 @@ namespace ET
 	public partial class TeamPlayerInfo: Object
 	{
 		[ProtoMember(1)]
-		public int HeadId { get; set; }
+		public int RoleHeadId { get; set; }
 
 		[ProtoMember(2)]
 		public int PlayerLv { get; set; }
@@ -10197,6 +10213,9 @@ namespace ET
 
 		[ProtoMember(13)]
 		public int Followe { get; set; }
+
+		[ProtoMember(14)]
+		public int RoleHeadFrame { get; set; }
 
 		[ProtoMember(15)]
 		public List<int> FashionIds = new List<int>();

@@ -82,12 +82,30 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>类型</summary>
+		/// <summary>名称</summary>
 		[ProtoMember(2)]
-		public int Type { get; set; }
-		/// <summary>头像</summary>
+		public int Name { get; set; }
+		/// <summary>描述</summary>
 		[ProtoMember(3)]
+		public int Desc { get; set; }
+		/// <summary>来源</summary>
+		[ProtoMember(4)]
+		public int Desc_Access_Method { get; set; }
+		/// <summary>头像</summary>
+		[ProtoMember(5)]
 		public string Icon { get; set; }
+		/// <summary>职业</summary>
+		[ProtoMember(6)]
+		public int Occupation { get; set; }
+		/// <summary>性别</summary>
+		[ProtoMember(7)]
+		public int Sex { get; set; }
+		/// <summary>排序</summary>
+		[ProtoMember(8)]
+		public int Order_LS { get; set; }
+		/// <summary>跳转</summary>
+		[ProtoMember(9)]
+		public int Jump { get; set; }
 
 	}
 }
