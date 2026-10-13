@@ -55,6 +55,38 @@ namespace ET
 					}
 					return;
 				}
+				if (message.GMMsg.Contains("roleHeadId#"))
+				{
+					//roleHeadId#头像Id
+					if (!TryGetSecondHashNumber(message.GMMsg, out int roleHeadId))
+					{
+						return;
+					}
+					if (!LDRoleHeadCategory.Instance.Contain(roleHeadId))
+					{
+						return;
+					}
+					RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+					roleInfoComponentServer.RoleInfo.AddRoleHead(roleHeadId);
+					MessageHelper.SendToClient(unit, new M2C_UpdateRoleInfoMessage { RoleInfo = roleInfoComponentServer.RoleInfo });
+					return;
+				}
+				if (message.GMMsg.Contains("roleHeadFrame#"))
+				{
+					//roleHeadFrame#头像框Id
+					if (!TryGetSecondHashNumber(message.GMMsg, out int roleHeadFrame))
+					{
+						return;
+					}
+					if (!LDRoleHeadFrameCategory.Instance.Contain(roleHeadFrame))
+					{
+						return;
+					}
+					RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+					roleInfoComponentServer.RoleInfo.AddRoleHeadFrame(roleHeadFrame);
+					MessageHelper.SendToClient(unit, new M2C_UpdateRoleInfoMessage { RoleInfo = roleInfoComponentServer.RoleInfo });
+					return;
+				}
 				if (message.GMMsg.Contains("marquee#"))
 				{
                     //marquee#跑马灯Id#VIP等级

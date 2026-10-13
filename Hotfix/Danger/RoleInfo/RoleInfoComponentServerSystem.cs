@@ -49,6 +49,8 @@ namespace ET
             roleInfo.CreateTime = createRoleInfo.CreateTime;
             roleInfo.RoleHeadId = createRoleInfo.Sex == SexEnum.Man ? lDOccupation.RoleHead_Man : lDOccupation.RoleHead_Woman;
             roleInfo.RoleHeadFrame = 1;
+            roleInfo.AddRoleHead(roleInfo.RoleHeadId);
+            roleInfo.AddRoleHeadFrame(roleInfo.RoleHeadFrame);
 
             if (createRoleInfo.RobotId > 0)
             {

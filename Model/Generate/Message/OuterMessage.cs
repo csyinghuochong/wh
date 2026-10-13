@@ -641,6 +641,14 @@ namespace ET
 		[ProtoMember(70)]
 		public string Sign { get; set; }
 
+// 已拥有头像
+		[ProtoMember(71)]
+		public List<IntLongPair> RoleHeadIdList = new List<IntLongPair>();
+
+// 已拥有头像框
+		[ProtoMember(72)]
+		public List<IntLongPair> RoleHeadFrameList = new List<IntLongPair>();
+
 	}
 
 	[Message(OuterOpcode.IntStringPair)]
@@ -667,7 +675,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public long Value { get; set; }
-
 	}
 
 	[Message(OuterOpcode.LongLongPair)]
@@ -11421,6 +11428,64 @@ namespace ET
 
 		[ProtoMember(6)]
 		public List<IntLongPair> TitleList = new List<IntLongPair>();
+
+	}
+
+	[ResponseType(nameof(M2C_RoleHeadUseResponse))]
+//穿戴头像。RoleHeadId 为 LDRoleHead.Id，写入 RoleInfo.RoleHeadId
+	[Message(OuterOpcode.C2M_RoleHeadUseRequest)]
+	[ProtoContract]
+	public partial class C2M_RoleHeadUseRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int RoleHeadId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RoleHeadUseResponse)]
+	[ProtoContract]
+	public partial class M2C_RoleHeadUseResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_RoleHeadFrameUseResponse))]
+//穿戴头像框。RoleHeadFrame 为 LDRoleHeadFrame.Id，写入 RoleInfo.RoleHeadFrame
+	[Message(OuterOpcode.C2M_RoleHeadFrameUseRequest)]
+	[ProtoContract]
+	public partial class C2M_RoleHeadFrameUseRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int RoleHeadFrame { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RoleHeadFrameUseResponse)]
+	[ProtoContract]
+	public partial class M2C_RoleHeadFrameUseResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
 
 	}
 
