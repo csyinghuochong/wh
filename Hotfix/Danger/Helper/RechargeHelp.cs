@@ -14,32 +14,6 @@ namespace ET
         }
 
 
-        /// <summary>
-        /// 充值发奖串：Pay.Reward 为基础；首购追加 Activity_1.First_Reward；非首购追加 Extra_Reward（钻石数）。
-        /// </summary>
-        public static string GetDiamondNumber(int payId, int zone, bool isFirstBuy = false)
-        {
-            LDPay ldPay = LDPayCategory.Instance.Get(payId);
-            string reward = ldPay.Reward;
-            if (!LDActivity_1Category.Instance.Contain(payId))
-            {
-                return reward;
-            }
-
-            LDActivity_1 ldActivity1 = LDActivity_1Category.Instance.Get(payId);
-            if (isFirstBuy && ldActivity1.Is_First > 0 && !string.IsNullOrEmpty(ldActivity1.First_Reward))
-            {
-                return reward + "|" + ldActivity1.First_Reward;
-            }
-
-            if (!isFirstBuy && !string.IsNullOrEmpty(ldActivity1.Extra_Reward))
-            {
-                return reward + "|" + ldActivity1.Extra_Reward;
-            }
-
-            return reward;
-        }
-
         public static int GetRechargeNumber(int payId, int zone)
         {
             LDPay ldPay = LDPayCategory.Instance.Get(payId);
@@ -72,15 +46,27 @@ namespace ET
             }
 
             int homeZone = UnitZoneHelper.GetHomeZone(unit);
+            LDPay ldPay = LDPayCategory.Instance.Get(playId);
+            string reward = ldPay.Reward;
+            LDActivity_1 activity1 = null;
             bool canFirstBuy = false;
             if (LDActivity_1Category.Instance.Contain(playId))
             {
-                LDActivity_1 activity1 = LDActivity_1Category.Instance.Get(playId);
+                activity1 = LDActivity_1Category.Instance.Get(playId);
                 canFirstBuy = activity1.Is_First > 0 && !rechargeComponentServer.HasFirstBuy(playId);
             }
 
-            string diamondNumber = GetDiamondNumber(playId, homeZone, canFirstBuy);
-            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(diamondNumber);
+            if (canFirstBuy && !string.IsNullOrEmpty(activity1.First_Reward))
+            {
+                reward = reward + "|" + activity1.First_Reward;
+            }
+
+            if (!canFirstBuy && activity1 != null && !string.IsNullOrEmpty(activity1.Extra_Reward))
+            {
+                reward = reward + "|" + activity1.Extra_Reward;
+            }
+
+            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(reward);
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
 
             //0 钻石  1周卡

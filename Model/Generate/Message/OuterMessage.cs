@@ -11434,6 +11434,32 @@ namespace ET
 
 	}
 
+	[ResponseType(nameof(M2C_RoleLevelUpResponse))]
+//角色升级
+	[Message(OuterOpcode.C2M_RoleLevelUpRequest)]
+	[ProtoContract]
+	public partial class C2M_RoleLevelUpRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RoleLevelUpResponse)]
+	[ProtoContract]
+	public partial class M2C_RoleLevelUpResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 	[ResponseType(nameof(M2C_FubenTimesResetResponse))]
 	[Message(OuterOpcode.C2M_FubenTimesResetRequest)]
 	[ProtoContract]

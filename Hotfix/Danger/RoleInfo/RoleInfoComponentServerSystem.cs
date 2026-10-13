@@ -562,6 +562,17 @@ namespace ET
                 return;
             }
 
+            if (upNeedExp < 0)
+            {
+                return;
+            }
+
+            // 到达自动等级后不再自动升级，等手动升级协议。
+            if (RoleLevelHelper.NeedManualLevelUp(self.RoleInfo.Lv))
+            {
+                return;
+            }
+
             if (self.RoleInfo.Exp >= upNeedExp)
             {
                 self.RoleInfo.Exp -= upNeedExp;
