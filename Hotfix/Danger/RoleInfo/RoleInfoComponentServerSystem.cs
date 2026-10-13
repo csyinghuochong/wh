@@ -371,6 +371,10 @@ namespace ET
                     self.RoleInfo.Name = value;
                     saveValue = self.RoleInfo.Name;
                     break;
+                case UserDataType.Sign:
+                    self.RoleInfo.Sign = value;
+                    saveValue = self.RoleInfo.Sign;
+                    break;
                 case UserDataType.Exp:
                   
                     self.Role_AddExp(long.Parse(value), notice);
@@ -680,19 +684,6 @@ namespace ET
             return 0;
         }
        
-        public static int GetMaxLevel(this RoleInfoComponentServer self, List<int> compeltetask)
-        {
-            if (compeltetask.Contains(30080019))
-            {
-                return LDGlobalValueCategory.Instance.MaxLevel;
-            }
-            else
-            {
-                return 70;
-            }
-        }
-
-
         public static int GetCrateDay(this RoleInfoComponentServer self)
         {
             return ServerHelper.DateDiff_Time(TimeHelper.ServerNow(), self.RoleInfo.CreateTime);

@@ -11,7 +11,6 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, C2M_ModifyNameRequest request, M2C_ModifyNameResponse response, Action reply)
         {
-            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             Log.Warning($"C2M_ModifyNameRequest:  {unit.DomainZone()} {unit.Id}");
             if (!StringHelper.IsSafeSqlString(request.NewName))
@@ -53,21 +52,13 @@ namespace ET
                 reply();
                 return;
             }
-            Console.WriteLine("修改名字未配置消耗！！");
-       
-            if (bag.OnCostItemData("", ItemLocType.ItemLocBag, ItemGetWay.CostItem))
-            {
-                roleInfo.UpdateRoleData(UserDataType.Name, request.NewName);
-                M2C_RoleDataBroadcast m2C_BroadcastRoleData = new M2C_RoleDataBroadcast();
-                m2C_BroadcastRoleData.UnitId = unit.Id;
-                m2C_BroadcastRoleData.UpdateType = (int)UserDataType.Name;
-                m2C_BroadcastRoleData.UpdateTypeValue = request.NewName;
-                MessageHelper.Broadcast(unit, m2C_BroadcastRoleData);
-            }
-            else
-            {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
-            }
+            roleInfo.UserName = request.NewName;
+            roleInfo.UpdateRoleData(UserDataType.Name, request.NewName);
+            M2C_RoleDataBroadcast m2C_BroadcastRoleData = new M2C_RoleDataBroadcast();
+            m2C_BroadcastRoleData.UnitId = unit.Id;
+            m2C_BroadcastRoleData.UpdateType = (int)UserDataType.Name;
+            m2C_BroadcastRoleData.UpdateTypeValue = request.NewName;
+            MessageHelper.Broadcast(unit, m2C_BroadcastRoleData);
 
             reply();
             await ETTask.CompletedTask;

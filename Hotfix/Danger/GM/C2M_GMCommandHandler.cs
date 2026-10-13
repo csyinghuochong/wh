@@ -235,7 +235,7 @@ namespace ET
 						RoleInfoComponentServer roleInfoComponentServer =  unit.GetComponent<RoleInfoComponentServer>();
 						TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();	
                         //if (newLevel <= roleInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList_2))
-						if(newLevel <= LDGlobalValueCategory.Instance.MaxLevel)
+						if(newLevel <= 80)
 						{
 							int level = newLevel - roleInfoComponentServer.RoleInfo.Lv;
                             roleInfoComponentServer.UpdateRoleData(UserDataType.Level, level.ToString());

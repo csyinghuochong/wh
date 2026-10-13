@@ -10,7 +10,7 @@ namespace ET
 
         public override void Awake(BagComponentServer self)
         {
-            self.CangKuNumber = LDGlobalValueCategory.Instance.DefaultCangKuNumber;
+            self.CangKuNumber = 1;
             self.EnsureItemLists();
         }
     }

@@ -12,23 +12,8 @@ namespace ET
     {
         private Dictionary<string, LDGlobalValue> keyDict = new Dictionary<string, LDGlobalValue>(StringComparer.Ordinal);
 
-
         public Dictionary<int, int> BagInitCapacity = new Dictionary<int, int>();
-      
-        public int GemStoreInitCapacity = 0;
-        public int GemStoreMaxCapacity = 0;
 
-
-        /// <summary>默认已开 1 页仓库。</summary>
-        public int DefaultCangKuNumber = 1;
-
-
-        public int MaxLevel = 100;
-        
-
-        ////上面的全部废弃掉////
-
-        
         public List<int> Add_Point_Level_UP_Fixed = new List<int>();
 
         /// <summary>新人等级：该等级及以下不受世界等级影响。</summary>

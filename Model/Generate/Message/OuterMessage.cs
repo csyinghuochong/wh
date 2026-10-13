@@ -633,6 +633,10 @@ namespace ET
 		[ProtoMember(69)]
 		public List<IntLongPair> ExtraCurrencies = new List<IntLongPair>();
 
+// 个性签名
+		[ProtoMember(70)]
+		public string Sign { get; set; }
+
 	}
 
 	[Message(OuterOpcode.IntStringPair)]
@@ -1522,54 +1526,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_RoleDataUpdate)]
-	[ProtoContract]
-	public partial class M2C_RoleDataUpdate: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int UpdateType { get; set; }
-
-		[ProtoMember(2)]
-		public string UpdateTypeValue { get; set; }
-
-		[ProtoMember(3)]
-		public long UpdateValueLong { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RoleDataBroadcast)]
-	[ProtoContract]
-	public partial class M2C_RoleDataBroadcast: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int UpdateType { get; set; }
-
-		[ProtoMember(2)]
-		public string UpdateTypeValue { get; set; }
-
-		[ProtoMember(3)]
-		public long UnitId { get; set; }
-
-	}
-
 	[Message(OuterOpcode.AttributeRandom)]
 	[ProtoContract]
 	public partial class AttributeRandom: Object
@@ -1705,65 +1661,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public string Account { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RechargeResponse))]
-	[Message(OuterOpcode.C2M_RechargeRequest)]
-	[ProtoContract]
-	public partial class C2M_RechargeRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int PayID { get; set; }
-
-		[ProtoMember(2)]
-		public long PayWay { get; set; }
-
-		[ProtoMember(3)]
-		public string RiskControlInfo { get; set; }
-
-		[ProtoMember(4)]
-		public int RechargeBizType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RechargeResponse)]
-	[ProtoContract]
-	public partial class M2C_RechargeResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public string PayMessage { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RechargeUpdate)]
-	[ProtoContract]
-	public partial class M2C_RechargeUpdate: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public RechargePro RechargePro { get; set; }
-
-		/// <summary>本次到账奖励。Pay 在前，Activity 在后。登录同步为空。</summary>
-		[ProtoMember(2)]
-		public List<RewardItem> RewardList = new List<RewardItem>();
 
 	}
 
@@ -2165,43 +2062,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_RoleInfoInitResponse))]
-	[Message(OuterOpcode.C2M_RoleInfoRequest)]
-	[ProtoContract]
-	public partial class C2M_RoleInfoRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RoleInfoInitResponse)]
-	[ProtoContract]
-	public partial class M2C_RoleInfoInitResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public RoleInfo RoleInfo { get; set; }
-
-		[ProtoMember(3)]
-		public List<IntStringPair> ReddontList = new List<IntStringPair>();
-
-		[ProtoMember(6)]
-		public List<IntLongPair> TitleList = new List<IntLongPair>();
-
-	}
-
 	[Message(OuterOpcode.RechargeInfo)]
 	[ProtoContract]
 	public partial class RechargeInfo: Object
@@ -2300,87 +2160,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RoleAddPointResponse))]
-	[Message(OuterOpcode.C2M_RoleAddPointRequest)]
-	[ProtoContract]
-	public partial class C2M_RoleAddPointRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(6)]
-		public List<int> PointList = new List<int>();
-
-	}
-
-	[Message(OuterOpcode.M2C_RoleAddPointResponse)]
-	[ProtoContract]
-	public partial class M2C_RoleAddPointResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RolePointResetResponse))]
-	[Message(OuterOpcode.C2M_RolePointResetRequest)]
-	[ProtoContract]
-	public partial class C2M_RolePointResetRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RolePointResetResponse)]
-	[ProtoContract]
-	public partial class M2C_RolePointResetResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_RoleOpenCangKuResponse))]
-	[Message(OuterOpcode.C2M_RoleOpenCangKuRequest)]
-	[ProtoContract]
-	public partial class C2M_RoleOpenCangKuRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RoleOpenCangKuResponse)]
-	[ProtoContract]
-	public partial class M2C_RoleOpenCangKuResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(1)]
-		public int CangKuNumber { get; set; }
 
 	}
 
@@ -2639,53 +2418,6 @@ namespace ET
 	[Message(OuterOpcode.M2C_TowerExitResponse)]
 	[ProtoContract]
 	public partial class M2C_TowerExitResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//终止技能
-	[Message(OuterOpcode.M2C_UnitFinishSkill)]
-	[ProtoContract]
-	public partial class M2C_UnitFinishSkill: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_FubenTimesResetResponse))]
-	[Message(OuterOpcode.C2M_FubenTimesResetRequest)]
-	[ProtoContract]
-	public partial class C2M_FubenTimesResetRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int SceneType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_FubenTimesResetResponse)]
-	[ProtoContract]
-	public partial class M2C_FubenTimesResetResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3647,38 +3379,6 @@ namespace ET
 
 	}
 
-//累计充值奖励
-	[ResponseType(nameof(M2C_RechargeRewardResponse))]
-	[Message(OuterOpcode.C2M_RechargeRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_RechargeRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RechargeNumber { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_RechargeRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_RechargeRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2C_TikTokVerifyUser))]
 	[Message(OuterOpcode.C2R_TikTokVerifyUser)]
 	[ProtoContract]
@@ -3945,15 +3645,6 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_UpdateRoleInfoMessage)]
-	[ProtoContract]
-	public partial class M2C_UpdateRoleInfoMessage: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public RoleInfo RoleInfo { get; set; }
-
-	}
-
 	[Message(OuterOpcode.RankSeasonTowerInfo)]
 	[ProtoContract]
 	public partial class RankSeasonTowerInfo: Object
@@ -4135,95 +3826,6 @@ namespace ET
 
 		[ProtoMember(1)]
 		public int Code { get; set; }
-
-	}
-
-/// <summary>角色周期数据。本次购买数量不在日清里整表清空，按各商店 Auto_Refresh 刷新。</summary>
-	[Message(OuterOpcode.RoleDailyData)]
-	[ProtoContract]
-	public partial class RoleDailyData: Object
-	{
-		[ProtoMember(1)]
-		public List<IntLongPair> DayFubenTimes = new List<IntLongPair>();
-
-// 本次购买数量 Key=LDShop_Goods.Id。商店刷新时清空：1每天凌晨5点 2每周一凌晨5点 3每月1日凌晨5点，9特殊不处理。上限见 Limit_Num。不是终身购买数量。
-		[ProtoMember(7)]
-		public List<IntLongPair> BuyStoreItems = new List<IntLongPair>();
-
-// 日活跃点数（Item/UserDataType=11），零点清零
-		[ProtoMember(8)]
-		public int DailyActivePoint { get; set; }
-
-// 周活跃点数（Item/UserDataType=12），周刷新清零
-		[ProtoMember(9)]
-		public int WeeklyActivePoint { get; set; }
-
-// 会日清/周清的 Item 货币 Key=Item.Id（日活跃21、周活跃22）
-		[ProtoMember(18)]
-		public List<IntLongPair> Currencies = new List<IntLongPair>();
-
-// VIP专属福利今日领取 0未领 1已领
-		[ProtoMember(19)]
-		public int VipDailyClaimed { get; set; }
-
-		/// <summary>场景每周进入次数。每周一凌晨5点清空。</summary>
-		[ProtoMember(20)]
-		public List<IntLongPair> WeekFubenTimes = new List<IntLongPair>();
-
-	}
-
-	[ResponseType(nameof(M2C_RoleDailyDataInit))]
-	[Message(OuterOpcode.C2M_RoleDailyDataRequest)]
-	[ProtoContract]
-	public partial class C2M_RoleDailyDataRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-/// <summary>登录后客户端主动请求的日清全量初始化</summary>
-	[Message(OuterOpcode.M2C_RoleDailyDataInit)]
-	[ProtoContract]
-	public partial class M2C_RoleDailyDataInit: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public RoleDailyData Data { get; set; }
-
-		[ProtoMember(2)]
-		public List<IntLongPair> BuyStoreItemsForever = new List<IntLongPair>();
-
-	}
-
-/// <summary>日清或限购变更后主动推送</summary>
-	[Message(OuterOpcode.M2C_RoleDailyDataUpdate)]
-	[ProtoContract]
-	public partial class M2C_RoleDailyDataUpdate: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public RoleDailyData Data { get; set; }
-
-		[ProtoMember(2)]
-		public List<IntLongPair> BuyStoreItemsForever = new List<IntLongPair>();
-
-// 3=在线跨过日清点，客户端再刷任务和活动。其它值只覆盖本地缓存。
-		[ProtoMember(3)]
-		public int Reason { get; set; }
 
 	}
 
@@ -9515,6 +9117,22 @@ namespace ET
 
 	}
 
+//终止技能
+	[Message(OuterOpcode.M2C_UnitFinishSkill)]
+	[ProtoContract]
+	public partial class M2C_UnitFinishSkill: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+	}
+
 	[ResponseType(nameof(M2C_SkillCmd))]
 	[Message(OuterOpcode.C2M_SkillCmd)]
 	[ProtoContract]
@@ -11749,6 +11367,397 @@ namespace ET
 	}
 
 //Marquee跑马灯	end####################################################
+//Role角色	begin####################################################
+	[ResponseType(nameof(M2C_RoleInfoInitResponse))]
+	[Message(OuterOpcode.C2M_RoleInfoRequest)]
+	[ProtoContract]
+	public partial class C2M_RoleInfoRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RoleInfoInitResponse)]
+	[ProtoContract]
+	public partial class M2C_RoleInfoInitResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public RoleInfo RoleInfo { get; set; }
+
+		[ProtoMember(3)]
+		public List<IntStringPair> ReddontList = new List<IntStringPair>();
+
+		[ProtoMember(6)]
+		public List<IntLongPair> TitleList = new List<IntLongPair>();
+
+	}
+
+	[ResponseType(nameof(M2C_ModifySignResponse))]
+//改个性签名
+	[Message(OuterOpcode.C2M_ModifySignRequest)]
+	[ProtoContract]
+	public partial class C2M_ModifySignRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public string Sign { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_ModifySignResponse)]
+	[ProtoContract]
+	public partial class M2C_ModifySignResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_FubenTimesResetResponse))]
+	[Message(OuterOpcode.C2M_FubenTimesResetRequest)]
+	[ProtoContract]
+	public partial class C2M_FubenTimesResetRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int SceneType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_FubenTimesResetResponse)]
+	[ProtoContract]
+	public partial class M2C_FubenTimesResetResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_RolePointResetResponse))]
+	[Message(OuterOpcode.C2M_RolePointResetRequest)]
+	[ProtoContract]
+	public partial class C2M_RolePointResetRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RolePointResetResponse)]
+	[ProtoContract]
+	public partial class M2C_RolePointResetResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_RoleAddPointResponse))]
+	[Message(OuterOpcode.C2M_RoleAddPointRequest)]
+	[ProtoContract]
+	public partial class C2M_RoleAddPointRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(6)]
+		public List<int> PointList = new List<int>();
+
+	}
+
+	[Message(OuterOpcode.M2C_RoleAddPointResponse)]
+	[ProtoContract]
+	public partial class M2C_RoleAddPointResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RoleDataUpdate)]
+	[ProtoContract]
+	public partial class M2C_RoleDataUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int UpdateType { get; set; }
+
+		[ProtoMember(2)]
+		public string UpdateTypeValue { get; set; }
+
+		[ProtoMember(3)]
+		public long UpdateValueLong { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RoleDataBroadcast)]
+	[ProtoContract]
+	public partial class M2C_RoleDataBroadcast: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int UpdateType { get; set; }
+
+		[ProtoMember(2)]
+		public string UpdateTypeValue { get; set; }
+
+		[ProtoMember(3)]
+		public long UnitId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UpdateRoleInfoMessage)]
+	[ProtoContract]
+	public partial class M2C_UpdateRoleInfoMessage: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public RoleInfo RoleInfo { get; set; }
+
+	}
+
+/// <summary>角色周期数据。本次购买数量不在日清里整表清空，按各商店 Auto_Refresh 刷新。</summary>
+	[Message(OuterOpcode.RoleDailyData)]
+	[ProtoContract]
+	public partial class RoleDailyData: Object
+	{
+		[ProtoMember(1)]
+		public List<IntLongPair> DayFubenTimes = new List<IntLongPair>();
+
+// 本次购买数量 Key=LDShop_Goods.Id。商店刷新时清空：1每天凌晨5点 2每周一凌晨5点 3每月1日凌晨5点，9特殊不处理。上限见 Limit_Num。不是终身购买数量。
+		[ProtoMember(7)]
+		public List<IntLongPair> BuyStoreItems = new List<IntLongPair>();
+
+// 日活跃点数（Item/UserDataType=11），零点清零
+		[ProtoMember(8)]
+		public int DailyActivePoint { get; set; }
+
+// 周活跃点数（Item/UserDataType=12），周刷新清零
+		[ProtoMember(9)]
+		public int WeeklyActivePoint { get; set; }
+
+// 会日清/周清的 Item 货币 Key=Item.Id（日活跃21、周活跃22）
+		[ProtoMember(18)]
+		public List<IntLongPair> Currencies = new List<IntLongPair>();
+
+// VIP专属福利今日领取 0未领 1已领
+		[ProtoMember(19)]
+		public int VipDailyClaimed { get; set; }
+
+// 场景每周进入次数 Key=LDScene.Id。每周一凌晨5点清空。上限见 Limit_Times_Week，0不限制。
+		[ProtoMember(20)]
+		public List<IntLongPair> WeekFubenTimes = new List<IntLongPair>();
+
+	}
+
+	[ResponseType(nameof(M2C_RoleDailyDataInit))]
+	[Message(OuterOpcode.C2M_RoleDailyDataRequest)]
+	[ProtoContract]
+	public partial class C2M_RoleDailyDataRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+/// <summary>登录后客户端主动请求的日清全量初始化</summary>
+	[Message(OuterOpcode.M2C_RoleDailyDataInit)]
+	[ProtoContract]
+	public partial class M2C_RoleDailyDataInit: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public RoleDailyData Data { get; set; }
+
+		[ProtoMember(2)]
+		public List<IntLongPair> BuyStoreItemsForever = new List<IntLongPair>();
+
+	}
+
+/// <summary>日清或限购变更后主动推送</summary>
+	[Message(OuterOpcode.M2C_RoleDailyDataUpdate)]
+	[ProtoContract]
+	public partial class M2C_RoleDailyDataUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public RoleDailyData Data { get; set; }
+
+		[ProtoMember(2)]
+		public List<IntLongPair> BuyStoreItemsForever = new List<IntLongPair>();
+
+// 3=在线跨过日清点，客户端再刷任务和活动。其它值只覆盖本地缓存。
+		[ProtoMember(3)]
+		public int Reason { get; set; }
+
+	}
+
+//Role角色	end####################################################
+//Recharge充值	begin####################################################
+//累计充值奖励
+	[ResponseType(nameof(M2C_RechargeRewardResponse))]
+	[Message(OuterOpcode.C2M_RechargeRewardRequest)]
+	[ProtoContract]
+	public partial class C2M_RechargeRewardRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int RechargeNumber { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RechargeRewardResponse)]
+	[ProtoContract]
+	public partial class M2C_RechargeRewardResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_RechargeResponse))]
+	[Message(OuterOpcode.C2M_RechargeRequest)]
+	[ProtoContract]
+	public partial class C2M_RechargeRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int PayID { get; set; }
+
+		[ProtoMember(2)]
+		public long PayWay { get; set; }
+
+		[ProtoMember(3)]
+		public string RiskControlInfo { get; set; }
+
+		[ProtoMember(4)]
+		public int RechargeBizType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RechargeResponse)]
+	[ProtoContract]
+	public partial class M2C_RechargeResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public string PayMessage { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_RechargeUpdate)]
+	[ProtoContract]
+	public partial class M2C_RechargeUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public RechargePro RechargePro { get; set; }
+
+// 本次到账奖励。Pay.Reward 在前，Activity 首充/福利在后。不合并（非绑玉、绑玉分开）。登录同步为空。
+		[ProtoMember(2)]
+		public List<RewardItem> RewardList = new List<RewardItem>();
+
+	}
+
+//Recharge充值 end####################################################
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后
