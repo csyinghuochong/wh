@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -34,7 +34,8 @@ namespace ET
             }
 
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            List<RewardItem> consumeItems = ItemNewHelper.GetRewardItems(cfg.Consume);
+            List<RewardItem> consumeItems = new List<RewardItem>();
+            SkillMakeHelper.CollectConsumeItems(cfg, roleInfo.MakeIdList, 1, consumeItems, out int vitalityCost, out int bindGoldCost);
             if (consumeItems.Count > 0 && !bag.CheckNeedItem(consumeItems))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -42,7 +43,6 @@ namespace ET
                 return;
             }
 
-            int vitalityCost = cfg.Consume_Item_12;
             if (vitalityCost > 0 && unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.HuoLi) < vitalityCost)
             {
                 response.Error = ErrorCode.ERR_VitalityNotEnoughError;
@@ -50,7 +50,6 @@ namespace ET
                 return;
             }
 
-            int bindGoldCost = cfg.Consume_Item_5;
             if (bindGoldCost > 0 && unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.BindGold) < bindGoldCost)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;

@@ -37,12 +37,11 @@ namespace ET
             RechargeComponentServer rechargeComponentServer = unit.GetComponent<RechargeComponentServer>();
             if (!string.IsNullOrEmpty(orderInfo))
             {
-                if (rechargeComponentServer.PaidOrderIds.Contains(orderInfo))
-                {
-                    return;
-                }
-
-                rechargeComponentServer.PaidOrderIds.Add(orderInfo);
+                //if (rechargeComponentServer.PaidOrderIds.Contains(orderInfo))
+                //{
+                //    return;
+                //}
+                //rechargeComponentServer.PaidOrderIds.Add(orderInfo);
             }
 
             int homeZone = UnitZoneHelper.GetHomeZone(unit);

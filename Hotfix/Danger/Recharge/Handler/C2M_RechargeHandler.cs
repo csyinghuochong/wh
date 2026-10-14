@@ -22,14 +22,14 @@ namespace ET
                 {
                     LogHelper.LogWarning($"充值[版号服]SendDiamondToUnit: {unit.Id}");
                     Console.WriteLine($"充值[版号服]SendDiamondToUnit: {unit.Id}");
-                    RechargeHelp.SendDiamondToUnit(unit, request.PayID, request.RechargeBizType, "版号服");
+                    RechargeHelp.SendDiamondToUnit(unit, request.PayID, request.RechargeBizType, string.Empty);
                     reply();
                     return;
                 }
 
                 if (CommonHelper.IsInnerNet())
                 {
-                    RechargeHelp.SendDiamondToUnit(unit, request.PayID, request.RechargeBizType, "内测服");
+                    RechargeHelp.SendDiamondToUnit(unit, request.PayID, request.RechargeBizType, string.Empty);
                     reply();
                     return;
                 }
