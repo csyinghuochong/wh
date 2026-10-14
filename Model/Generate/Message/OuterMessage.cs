@@ -1724,6 +1724,9 @@ namespace ET
 		[ProtoMember(16)]
 		public string MakePlayer { get; set; }
 
+		[ProtoMember(17)]
+		public long MakeTime { get; set; }
+
 		[ProtoMember(18)]
 		public List<int> GemIdList = new List<int>();
 

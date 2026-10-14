@@ -62,14 +62,14 @@ namespace ET
 
             if (pendingRewards.Count > 0)
             {
-                bool batchOk = bag.OnAddItemData(pendingRewards, string.Empty, pickGetWay);
+                bool batchOk = bag.OnAddItemData(pendingRewards, pickGetWay);
                 if (!batchOk)
                 {
                     // 背包空间不足时回退逐个添加，保留部分成功语义
                     for (int i = 0; i < pendingRewards.Count; i++)
                     {
                         List<RewardItem> one = new List<RewardItem> { pendingRewards[i] };
-                        if (!bag.OnAddItemData(one, string.Empty, pickGetWay))
+                        if (!bag.OnAddItemData(one, pickGetWay))
                         {
                             errorCode = ErrorCode.ERR_BagIsFull;
                             continue;
@@ -341,7 +341,7 @@ namespace ET
                 }
 
                 BagComponentServer ownerBag = owner.GetComponent<BagComponentServer>();
-                bool batchOk = ownerBag.OnAddItemData(ownerRewards, string.Empty, pickGetWay);
+                bool batchOk = ownerBag.OnAddItemData(ownerRewards, pickGetWay);
                 if (!batchOk)
                 {
                     // 背包空间不足时回退逐个添加，保留部分成功语义
@@ -354,7 +354,7 @@ namespace ET
                         }
                         List<RewardItem> one = new List<RewardItem> { ownerRewards[rewardIndex] };
                         rewardIndex++;
-                        if (!ownerBag.OnAddItemData(one, string.Empty, pickGetWay))
+                        if (!ownerBag.OnAddItemData(one, pickGetWay))
                         {
                             errorCode = ownerId == unit.Id ? ErrorCode.ERR_BagIsFull : ErrorCode.ERR_ItemBelongOther;
                             continue;

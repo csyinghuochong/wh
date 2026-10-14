@@ -57,7 +57,9 @@ namespace ET
                 return;
             }
 
-            if (!HasBagSpace(bag, reward))
+            long makeTime = TimeHelper.ServerNow();
+            string makePlayer = roleInfo.Name ?? string.Empty;
+            if (!HasBagSpace(bag, reward, makePlayer, makeTime))
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -83,7 +85,11 @@ namespace ET
             }
 
             List<RewardItem> rewards = new List<RewardItem> { reward };
-            bag.OnAddItemData(rewards, string.Empty, $"{getWay}_{TimeHelper.ServerNow()}");
+            bag.OnAddItemData(rewards, new AddItemArg($"{getWay}_{makeTime}")
+            {
+                MakePlayer = makePlayer,
+                MakeTime = makeTime,
+            });
             reply();
             await ETTask.CompletedTask;
         }
@@ -130,7 +136,7 @@ namespace ET
             return true;
         }
 
-        private static bool HasBagSpace(BagComponentServer bag, RewardItem reward)
+        private static bool HasBagSpace(BagComponentServer bag, RewardItem reward, string makePlayer, long makeTime)
         {
             if (ItemNewHelper.GetItemToUserDataType(reward) != UserDataType.None)
             {
@@ -145,7 +151,7 @@ namespace ET
             }
 
             int pileSum = ItemNewHelper.GetNewItemPileSum(reward);
-            int need = ItemNewHelper.CalcNeedNewCells(locList, reward.ItemType, reward.ItemID, reward.ItemNum, pileSum, reward.ItemFlags);
+            int need = ItemNewHelper.CalcNeedNewCells(locList, reward.ItemType, reward.ItemID, reward.ItemNum, pileSum, reward.ItemFlags, makePlayer, makeTime);
             return need <= bag.GetBagLeftCell((int)toLoc);
         }
     }

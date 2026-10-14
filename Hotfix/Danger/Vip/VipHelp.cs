@@ -131,7 +131,7 @@ namespace ET
                 return ErrorCode.ERR_BagIsFull;
             }
 
-            bag.OnAddItemData(items, string.Empty, $"{itemGetWay}_{TimeHelper.ServerNow()}");
+            bag.OnAddItemData(items, $"{itemGetWay}_{TimeHelper.ServerNow()}");
             return ErrorCode.ERR_Success;
         }
 
@@ -170,7 +170,7 @@ namespace ET
                 return ErrorCode.ERR_ItemNotEnoughError;
             }
 
-            bag.OnAddItemData(rewards, string.Empty, $"{ItemGetWay.VipGift}_{TimeHelper.ServerNow()}");
+            bag.OnAddItemData(rewards, $"{ItemGetWay.VipGift}_{TimeHelper.ServerNow()}");
             return ErrorCode.ERR_Success;
         }
     }

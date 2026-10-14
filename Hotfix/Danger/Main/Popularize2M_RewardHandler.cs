@@ -11,7 +11,7 @@ namespace ET
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             long now = TimeHelper.ServerNow();
-            bag.OnAddItemData( request.ReardList, string.Empty, $"{ItemGetWay.Popularize}_{now}" );
+            bag.OnAddItemData( request.ReardList, $"{ItemGetWay.Popularize}_{now}" );
 
             reply();
             await ETTask.CompletedTask;

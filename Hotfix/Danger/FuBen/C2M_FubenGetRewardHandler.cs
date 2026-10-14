@@ -13,7 +13,7 @@ namespace ET
 
             List<RewardItem> rewardItems = new List<RewardItem>();
             rewardItems.Add(request.RewardItem);
-            unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.FubenGetReward}_{TimeHelper.ServerNow()}");
+            unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, $"{ItemGetWay.FubenGetReward}_{TimeHelper.ServerNow()}");
 
             response.Error = ErrorCode.ERR_Success;
             reply();

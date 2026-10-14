@@ -131,7 +131,7 @@ namespace ET
                 rewardList.Add(reward);
 
                 MessageHelper.SendToClient(attackUnit, new M2C_SoloDungeon() { RewardItem = rewardList, SoloResult = 1 });
-                attackUnit.GetComponent<BagComponentServer>().OnAddItemData(rewardList, string.Empty, $"{ItemGetWay.SoloReward}_{TimeHelper.ServerNow()}");
+                attackUnit.GetComponent<BagComponentServer>().OnAddItemData(rewardList, $"{ItemGetWay.SoloReward}_{TimeHelper.ServerNow()}");
             }
 
             if (defendUnit != null && defendUnit.Type == UnitType.Player)
@@ -160,7 +160,7 @@ namespace ET
 
                 rewardListFail.Add(rewardFail);
                 MessageHelper.SendToClient(defendUnit, new M2C_SoloDungeon() { RewardItem = rewardListFail, SoloResult = 0 });
-                defendUnit.GetComponent<BagComponentServer>().OnAddItemData(rewardListFail, string.Empty, $"{ItemGetWay.SoloReward}_{TimeHelper.ServerNow()}");
+                defendUnit.GetComponent<BagComponentServer>().OnAddItemData(rewardListFail, $"{ItemGetWay.SoloReward}_{TimeHelper.ServerNow()}");
             }
         }
 

@@ -377,10 +377,6 @@ namespace ET
                     self.RoleInfo.Name = value;
                     saveValue = self.RoleInfo.Name;
                     break;
-                case UserDataType.Sign:
-                    self.RoleInfo.Sign = value;
-                    saveValue = self.RoleInfo.Sign;
-                    break;
                 case UserDataType.Exp:
                   
                     self.Role_AddExp(long.Parse(value), notice);

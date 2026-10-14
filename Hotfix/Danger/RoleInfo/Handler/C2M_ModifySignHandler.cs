@@ -24,7 +24,7 @@ namespace ET
                 return;
             }
 
-            unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(UserDataType.Sign, sign);
+            unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Sign = sign;
             reply();
             await ETTask.CompletedTask;
         }

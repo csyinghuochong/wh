@@ -47,7 +47,7 @@ namespace ET
                 return;
             }
 
-            if (!unit.GetComponent<BagComponentServer>().OnAddItemData(rewards, string.Empty, $"{ItemGetWay.Activity}_{now}"))
+            if (!unit.GetComponent<BagComponentServer>().OnAddItemData(rewards, $"{ItemGetWay.Activity}_{now}"))
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();

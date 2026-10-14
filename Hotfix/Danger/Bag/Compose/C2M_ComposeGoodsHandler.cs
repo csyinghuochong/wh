@@ -84,7 +84,9 @@ namespace ET
             int inheritSourceFlags = mainBagInfo != null ? mainBagInfo.ItemFlags : 0;
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(cfg.Goods, inheritSourceFlags);
             bool freeMainCell = mainBagInfo != null && mainBagInfo.ItemNum <= cfg.Consume_Num_1;
-            if (!HasEnoughSpace(bag, rewardItems, mainLoc, freeMainCell))
+            long makeTime = TimeHelper.ServerNow();
+            string makePlayer = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name ?? string.Empty;
+            if (!HasEnoughSpace(bag, rewardItems, mainLoc, freeMainCell, makePlayer, makeTime))
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -123,7 +125,11 @@ namespace ET
 
             if (rewardItems.Count > 0)
             {
-                bag.OnAddItemData(rewardItems, string.Empty, $"{getWay}_{TimeHelper.ServerNow()}");
+                bag.OnAddItemData(rewardItems, new AddItemArg($"{getWay}_{makeTime}")
+                {
+                    MakePlayer = makePlayer,
+                    MakeTime = makeTime,
+                });
             }
 
             reply();
@@ -188,7 +194,7 @@ namespace ET
             return true;
         }
 
-        private static bool HasEnoughSpace(BagComponentServer bag, List<RewardItem> rewards, ItemLocType freedLoc, bool freeOneCell)
+        private static bool HasEnoughSpace(BagComponentServer bag, List<RewardItem> rewards, ItemLocType freedLoc, bool freeOneCell, string makePlayer, long makeTime)
         {
             if (rewards == null || rewards.Count == 0)
             {
@@ -212,7 +218,7 @@ namespace ET
                 }
 
                 int pileSum = ItemNewHelper.GetNewItemPileSum(reward);
-                int need = ItemNewHelper.CalcNeedNewCells(locList, reward.ItemType, reward.ItemID, reward.ItemNum, pileSum, reward.ItemFlags);
+                int need = ItemNewHelper.CalcNeedNewCells(locList, reward.ItemType, reward.ItemID, reward.ItemNum, pileSum, reward.ItemFlags, makePlayer, makeTime);
                 int locKey = (int)toLoc;
                 if (needByLoc.TryGetValue(locKey, out int exist))
                 {

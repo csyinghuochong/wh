@@ -14,7 +14,7 @@ namespace ET
             {
                 return;
             }
-            unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, getWay);
+            unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, getWay);
         }
 
         public static void GrantTaskCommitRewards(Unit unit, List<RewardItem> rewardItems)

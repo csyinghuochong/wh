@@ -64,7 +64,7 @@ namespace ET
                 return;
             }
 
-            if (!self.OnAddItemData(rewardItems, string.Empty, getWay, false))
+            if (!self.OnAddItemData(rewardItems, getWay, false))
             {
                 return;
             }
@@ -121,7 +121,7 @@ namespace ET
             }
 
             string getWay = $"{ItemGetWay.System}_{TimeHelper.ServerNow()}";
-            self.OnAddItemData(bagItems, string.Empty, getWay, false);
+            self.OnAddItemData(bagItems, getWay, false);
         }
 
 
@@ -497,17 +497,17 @@ namespace ET
             return bagInfo != null ? bagInfo.ItemID : 0;
         }
 
-        //字符串添加道具 
+        //字符串添加道具
         public static bool OnAddItemData(this BagComponentServer self, string rewardItems, string getType, bool notice = true)
         {
             List<RewardItem> costItems = ItemNewHelper.GetRewardItems(rewardItems);
-            return self.OnAddItemData(costItems, string.Empty, getType, notice);
+            return self.OnAddItemData(costItems, getType, notice);
         }
 
         public static bool OnAddItemData(this BagComponentServer self, string rewardItems, string getType, bool notice, ItemLocType useLocType)
         {
             List<RewardItem> costItems = ItemNewHelper.GetRewardItems(rewardItems);
-            return self.OnAddItemData(costItems, string.Empty, getType, notice, false, useLocType);
+            return self.OnAddItemData(costItems, new AddItemArg(getType, notice) { Loc = useLocType });
         }
 
         public static bool OnAddItemData(this BagComponentServer self, BagInfo bagInfo, string getType)
@@ -523,7 +523,11 @@ namespace ET
                     ItemNum = bagInfo.ItemNum,
                     ItemFlags = bagInfo.ItemFlags,
                 };
-                return self.OnAddItemData(new List<RewardItem> { rewardItem }, string.Empty, getWay);
+                return self.OnAddItemData(new List<RewardItem> { rewardItem }, new AddItemArg(getWay)
+                {
+                    MakePlayer = bagInfo.MakePlayer ?? string.Empty,
+                    MakeTime = bagInfo.MakeTime,
+                });
             }
 
             int itemType = bagInfo.ItemType != 0 ? bagInfo.ItemType : ItemBigType.Type_Item;
@@ -576,6 +580,8 @@ namespace ET
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
             useBagInfo.GetWay = bagInfo.GetWay;
             useBagInfo.ItemFlags = bagInfo.ItemFlags;
+            useBagInfo.MakePlayer = bagInfo.MakePlayer;
+            useBagInfo.MakeTime = bagInfo.MakeTime;
             List<BagInfo> bagList = self.GetItemByLoc(ItemLocType.ItemLocBag);
             bagList.Add(useBagInfo);
             BagSortHelper.SortIfNeeded(bagList, ItemLocType.ItemLocBag);
@@ -597,44 +603,49 @@ namespace ET
             return specLocType;
         }
 
-        //添加背包道具道具[支持同时添加多个]
-        public static bool OnAddItemData(this BagComponentServer self, List<RewardItem> rewardItems_init, string makeUserID, string getWay, bool notice = true, bool gm = false, ItemLocType specLocType = ItemLocType.ItemLocMax)
+        public static bool OnAddItemData(this BagComponentServer self, List<RewardItem> rewardItems, string getWay, bool notice = true)
         {
-            if (rewardItems_init.Count <= 0)
+            return self.OnAddItemData(rewardItems, new AddItemArg(getWay, notice));
+        }
+
+        //添加背包道具[支持同时添加多个]。落点、制作人、制作时间走 AddItemArg。
+        public static bool OnAddItemData(this BagComponentServer self, List<RewardItem> rewardItems, AddItemArg arg)
+        {
+            if (rewardItems.Count <= 0)
             {
-                return false;
-            }
-            
-            if (rewardItems_init[0].ItemType == ItemBigType.Type_None)
-            {
-                Log.Error("rewardItems_init[0].ItemType == ItemBigType.Type_None");
                 return false;
             }
 
-            int getType = int.Parse(getWay.Split('_')[0]);
+            if (rewardItems[0].ItemType == ItemBigType.Type_None)
+            {
+                Log.Error("rewardItems[0].ItemType == ItemBigType.Type_None");
+                return false;
+            }
+
+            int getType = int.Parse(arg.GetWay.Split('_')[0]);
             Unit unit = self.GetParent<Unit>();
             List<RewardItem> bagItems = new List<RewardItem>();
             List<RewardItem> unionItems = new List<RewardItem>();
             Dictionary<int, int> leftCellByLoc = new Dictionary<int, int>();
 
-            foreach (RewardItem item in MergeRewardItems(rewardItems_init).Values)
+            foreach (RewardItem item in MergeRewardItems(rewardItems).Values)
             {
                 if (UnionHelper.IsUnionResourceItem(item))
                 {
                     unionItems.Add(item);
-                    if (notice)
+                    if (arg.Notice)
                     {
                         ItemAddHelper.OnGetItem(unit, getType, item.ItemType, item.ItemID, item.ItemNum);
                     }
                     continue;
                 }
 
-                if (TryAddCurrency(unit, item, getType, notice) || TrySkipBag(unit, item, getType, notice))
+                if (TryAddCurrency(unit, item, getType, arg.Notice) || TrySkipBag(unit, item, getType, arg.Notice))
                 {
                     continue;
                 }
 
-                if (!TryReserveBagCell(self, item, specLocType, leftCellByLoc))
+                if (!TryReserveBagCell(self, item, arg, leftCellByLoc))
                 {
                     return false;
                 }
@@ -649,7 +660,7 @@ namespace ET
 
             if (bagItems.Count > 0)
             {
-                InsertBagItems(self, unit, bagItems, makeUserID, getWay, getType, notice, specLocType);
+                InsertBagItems(self, unit, bagItems, arg, getType);
             }
 
             return true;
@@ -742,9 +753,9 @@ namespace ET
         }
 
         /// <summary>本批还要新开的格子超过该背包剩余空格则失败。能叠进旧堆的不占新格。</summary>
-        private static bool TryReserveBagCell(BagComponentServer self, RewardItem item, ItemLocType specLocType, Dictionary<int, int> leftCellByLoc)
+        private static bool TryReserveBagCell(BagComponentServer self, RewardItem item, AddItemArg arg, Dictionary<int, int> leftCellByLoc)
         {
-            ItemLocType toLocType = ResolveAddItemLoc(specLocType, item);
+            ItemLocType toLocType = ResolveAddItemLoc(arg.Loc, item);
             List<BagInfo> locList = self.GetItemByLoc(toLocType);
             if (locList == null)
             {
@@ -758,7 +769,7 @@ namespace ET
                 leftCell = self.GetBagLeftCell(locKey);
             }
 
-            int needCells = ItemNewHelper.CalcNeedNewCells(locList, item.ItemType, item.ItemID, item.ItemNum, ItemNewHelper.GetNewItemPileSum(item), item.ItemFlags);
+            int needCells = ItemNewHelper.CalcNeedNewCells(locList, item.ItemType, item.ItemID, item.ItemNum, ItemNewHelper.GetNewItemPileSum(item), item.ItemFlags, arg.MakePlayer, arg.MakeTime);
             if (needCells > leftCell)
             {
                 return false;
@@ -768,7 +779,7 @@ namespace ET
             return true;
         }
 
-        private static void InsertBagItems(BagComponentServer self, Unit unit, List<RewardItem> bagItems, string makeUserID, string getWay, int getType, bool notice, ItemLocType specLocType)
+        private static void InsertBagItems(BagComponentServer self, Unit unit, List<RewardItem> bagItems, AddItemArg arg, int getType)
         {
             M2C_RoleBagUpdate bagUpdate = self.message;
             bagUpdate.BagInfoAdd.Clear();
@@ -779,35 +790,35 @@ namespace ET
             {
                 RewardItem item = bagItems[i];
                 int maxPileSum = ItemNewHelper.GetNewItemPileSum(item);
-                ItemLocType toLocType = ResolveAddItemLoc(specLocType, item);
+                ItemLocType toLocType = ResolveAddItemLoc(arg.Loc, item);
                 List<BagInfo> itemList = self.GetItemByLoc(toLocType);
 
                 //先检测是否有现成的格子可以插入
-                int leftNum = FillExistPile(itemList, item, maxPileSum, bagUpdate);
+                int leftNum = FillExistPile(itemList, item, maxPileSum, bagUpdate, arg);
 
                 //插入新格子
-                CreateNewCells(itemList, item, leftNum, maxPileSum, toLocType, makeUserID, getWay, bagUpdate);
+                CreateNewCells(itemList, item, leftNum, maxPileSum, toLocType, arg, bagUpdate);
                 BagSortHelper.SortIfNeeded(itemList, toLocType);
-                if (notice)
+                if (arg.Notice)
                 {
                     ItemAddHelper.OnGetItem(unit, getType, item.ItemType, item.ItemID, item.ItemNum);
                 }
             }
 
-            if (notice)
+            if (arg.Notice)
             {
                 MessageHelper.SendToClient(unit, bagUpdate);
             }
         }
 
-        /// <summary>先叠进已有格子。同道具、同标记、没满堆才叠。返回还没放进去、需要新开格子的数量。</summary>
-        private static int FillExistPile(List<BagInfo> itemList, RewardItem item, int maxPileSum, M2C_RoleBagUpdate bagUpdate)
+        /// <summary>先叠进已有格子。同道具、同标记、同制作信息、没满堆才叠。返回还没放进去、需要新开格子的数量。</summary>
+        private static int FillExistPile(List<BagInfo> itemList, RewardItem item, int maxPileSum, M2C_RoleBagUpdate bagUpdate, AddItemArg arg)
         {
             int leftNum = item.ItemNum;
             for (int k = 0; k < itemList.Count && leftNum > 0; k++)
             {
                 BagInfo bagInfo = itemList[k];
-                if (bagInfo.ItemID != item.ItemID || bagInfo.ItemType != item.ItemType || !ItemFlagEnum.CanPileTogether(bagInfo.ItemFlags, item.ItemFlags) || bagInfo.ItemNum >= maxPileSum)
+                if (bagInfo.ItemID != item.ItemID || bagInfo.ItemType != item.ItemType || !ItemFlagEnum.CanPileTogether(bagInfo.ItemFlags, item.ItemFlags) || bagInfo.ItemNum >= maxPileSum || !ItemNewHelper.SameMakeInfo(bagInfo.MakePlayer, bagInfo.MakeTime, arg.MakePlayer, arg.MakeTime))
                 {
                     continue;
                 }
@@ -822,7 +833,7 @@ namespace ET
             return leftNum;
         }
 
-        private static void CreateNewCells(List<BagInfo> itemList, RewardItem item, int leftNum, int maxPileSum, ItemLocType toLocType, string makeUserID, string getWay, M2C_RoleBagUpdate bagUpdate)
+        private static void CreateNewCells(List<BagInfo> itemList, RewardItem item, int leftNum, int maxPileSum, ItemLocType toLocType, AddItemArg arg, M2C_RoleBagUpdate bagUpdate)
         {
             while (leftNum > 0)
             {
@@ -833,8 +844,9 @@ namespace ET
                     ItemNum = leftNum > maxPileSum ? maxPileSum : leftNum,
                     Loc = (int)toLocType,
                     BagInfoID = IdGenerater.Instance.GenerateId(),
-                    GetWay = getWay,
-                    MakePlayer = makeUserID
+                    GetWay = arg.GetWay,
+                    MakePlayer = arg.MakePlayer ?? string.Empty,
+                    MakeTime = arg.MakeTime,
                 };
                 leftNum -= bagInfo.ItemNum;
                 bagInfo.ItemFlags = ItemNewHelper.ResolveAddItemFlags(item);

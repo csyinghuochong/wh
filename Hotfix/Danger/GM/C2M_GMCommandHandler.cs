@@ -36,6 +36,9 @@ namespace ET
 			try
 			{
 				string[] commands = message.GMMsg.Split('#');
+
+				Console.WriteLine($"C2M_GMCommandRequest: {message.GMMsg}");
+
 				if (commands.Length == 0)
 				{
 					return;
@@ -87,14 +90,18 @@ namespace ET
 					MessageHelper.SendToClient(unit, new M2C_UpdateRoleInfoMessage { RoleInfo = roleInfoComponentServer.RoleInfo });
 					return;
 				}
+
 				if (message.GMMsg.Contains("title#"))
 				{
-					//title#称号Id
-					if (!TryGetSecondHashNumber(message.GMMsg, out int titleId))
+                    //title#称号Id
+                    if (!TryGetSecondHashNumber(message.GMMsg, out int titleId))
 					{
 						return;
 					}
-					if (!LDTitleCategory.Instance.Contain(titleId))
+
+                    Console.WriteLine($"C2M_GMCommandRequest: titleId; {titleId}");
+
+                    if (!LDTitleCategory.Instance.Contain(titleId))
 					{
 						return;
 					}
@@ -252,6 +259,13 @@ namespace ET
 								unit.GetComponent<MountComponentServer>().OnAddMount(ItemGetWay.GM, itemId);
 								break;
                             case ItemBigType.Type_Elf:
+                                break;
+							case ItemBigType.Type_Title:
+                                TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
+                                titleComponent.OnActiveTile(itemId);
+                                titleComponent.TitleUpdateResult.TitleList = titleComponent.TitleList;
+                                MessageHelper.SendToClient(unit, titleComponent.TitleUpdateResult);
+                                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                                 break;
                         }
 						break;

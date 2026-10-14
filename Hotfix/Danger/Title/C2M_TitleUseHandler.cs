@@ -9,7 +9,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_TitleUseRequest request, M2C_TitleUseResponse response, Action reply)
         {
             TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
-            if (!titleComponent.IsHaveTitle(request.TitleId))
+            if (request.TitleId   >  0  && !titleComponent.IsHaveTitle(request.TitleId))
             {
                 response.Error = ErrorCode.ERR_TitleNoActived;
                 reply();

@@ -138,8 +138,10 @@ namespace ET
 
             if (rewardItems.Count > 0)
             {
-                bool ret = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.GemHeCheng}_{TimeHelper.ServerNow()}",
-                UseLocType: (ItemLocType)request.LocType);
+                bool ret = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, new AddItemArg($"{ItemGetWay.GemHeCheng}_{TimeHelper.ServerNow()}")
+                {
+                    Loc = (ItemLocType)request.LocType,
+                });
 
                 if (!ret)
                 {

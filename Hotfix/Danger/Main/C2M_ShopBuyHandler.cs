@@ -109,7 +109,7 @@ namespace ET
                 {
                     if (costItems.Count > 0)
                     {
-                        bag.OnAddItemData(costItems, string.Empty, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
+                        bag.OnAddItemData(costItems, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
                     }
 
                     response.Error = a2MResponse?.Error ?? ErrorCode.ERR_NetWorkError;
@@ -121,7 +121,7 @@ namespace ET
             long storeBuyTime = TimeHelper.ServerNow();
             if (rewardItems.Count > 0)
             {
-                bag.OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.StoreBuy}_{storeBuyTime}");
+                bag.OnAddItemData(rewardItems, $"{ItemGetWay.StoreBuy}_{storeBuyTime}");
             }
 
             // needPeriod：记入本次购买数量。needForever：记入终身购买数量。

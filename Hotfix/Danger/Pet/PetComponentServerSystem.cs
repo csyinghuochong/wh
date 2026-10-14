@@ -344,7 +344,7 @@ namespace ET
                 if (refund.Count > 0)
                 {
                     BagComponentServer bag = self.GetParent<Unit>().GetComponent<BagComponentServer>();
-                    if (!bag.OnAddItemData(refund, string.Empty, $"{ItemGetWay.PetHeCheng}_{TimeHelper.ServerNow()}"))
+                    if (!bag.OnAddItemData(refund, $"{ItemGetWay.PetHeCheng}_{TimeHelper.ServerNow()}"))
                     {
                         return false;
                     }

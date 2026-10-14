@@ -71,7 +71,7 @@ namespace ET
             //0 钻石  1周卡
             if (rechargetType == RechargeBizTypeEnum.Diamond)
             {
-                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.Recharge}_{TimeHelper.ServerNow()}");
+                unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, $"{ItemGetWay.Recharge}_{TimeHelper.ServerNow()}");
                 if (canFirstBuy)
                 {
                     rechargeComponentServer.AddFirstBuy(playId);

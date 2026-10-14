@@ -140,7 +140,7 @@ namespace ET
                 {
                     List<RewardItem> rewardItems = new List<RewardItem>();
                     rewardItems.Add(new RewardItem() { ItemID = teamDropItem.DropInfo.ItemID, ItemNum = teamDropItem.DropInfo.ItemNum });
-                    bool ret = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, string.Empty, $"{ItemGetWay.PickItem}_{serverTime}");
+                    bool ret = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, $"{ItemGetWay.PickItem}_{serverTime}");
                     //Log.Warning($"TeamDungeonComponent.DropInfo：{ret}  {unit.Id} {teamDropItem.DropInfo.ItemID} {teamDropItem.DropInfo.ItemNum}");
                     if (ret)
                     {
