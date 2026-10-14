@@ -9,7 +9,6 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_TitleUseRequest request, M2C_TitleUseResponse response, Action reply)
         {
             TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (!titleComponent.IsHaveTitle(request.TitleId))
             {
                 response.Error = ErrorCode.ERR_TitleNoActived;
@@ -17,8 +16,8 @@ namespace ET
                 return;
             }
 
-            numericComponent.ApplyValue(NumericType.TitleID, request.TitleId);
-            Function_Fight.UnitUpdateProperty_Base(unit,true, true);
+            titleComponent.TitleId = request.TitleId;
+            UnitHelper.SyncUnitAppear(unit);
 
             reply();
             await ETTask.CompletedTask;

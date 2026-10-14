@@ -12,6 +12,9 @@ namespace ET
         //称号
         public List<IntLongPair> TitleList = new List<IntLongPair>();
 
+        /// <summary>当前穿戴 LDTitle.Id。场景同步走 UnitInfo，不进 Numeric。</summary>
+        public int TitleId;
+
 #if SERVER
         [BsonIgnore]
         public M2C_TitleUpdateResult TitleUpdateResult = new M2C_TitleUpdateResult();

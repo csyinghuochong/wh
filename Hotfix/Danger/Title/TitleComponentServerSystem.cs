@@ -70,11 +70,13 @@ namespace ET
                 self.TitleUpdateResult.TitleList = self.TitleList;
                 MessageHelper.SendToClient(unit, self.TitleUpdateResult);
             }
-            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            int title = numericComponent.GetAsInt(NumericType.TitleID);
-            if (title > 0 && !self.IsHaveTitle(title))
+            if (self.TitleId > 0 && !self.IsHaveTitle(self.TitleId))
             {
-                numericComponent.ApplyValue(NumericType.TitleID, 0, notice);
+                self.TitleId = 0;
+                if (notice)
+                {
+                    UnitHelper.SyncUnitAppear(unit);
+                }
             }
 
             Function_Fight.UnitUpdateProperty_Base(unit, notice, true);

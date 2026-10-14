@@ -200,7 +200,6 @@ namespace ET
             unit.AddComponent<AttackRecordComponent>();
             NumericComponent numericComponent = unit.AddComponent<NumericComponent>();
             UnitInfoComponent unitInfoComponent = unit.AddComponent<UnitInfoComponent>();
-            unitInfoComponent.EnergySkillId = createMonsterInfo.SkillId;
             unitInfoComponent.UnitName = ldMonster.Name.ToString();
             unitInfoComponent.Scene_Creature = createMonsterInfo.SceneCreateId;
             unit.Type = UnitType.Monster;

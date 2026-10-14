@@ -825,6 +825,9 @@ namespace ET
 		[ProtoMember(31)]
 		public int Sex { get; set; }
 
+		[ProtoMember(32)]
+		public int TitleId { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_CreateUnits)]
@@ -3179,6 +3182,9 @@ namespace ET
 
 		[ProtoMember(4)]
 		public int OffHandId { get; set; }
+
+		[ProtoMember(5)]
+		public int TitleId { get; set; }
 
 	}
 

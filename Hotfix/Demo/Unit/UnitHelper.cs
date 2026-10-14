@@ -69,6 +69,9 @@ namespace ET
                     unitInfo.FashionEquipList = bagComponentServer.FashionEquipList;
                     unitInfo.WeaponId = bagComponentServer.GetWuqiItemId();
                     unitInfo.OffHandId = bagComponentServer.GetFuShouItemId();
+                    TitleComponentServer titleComponentServer = unit.GetComponent<TitleComponentServer>();
+                    unitInfo.TitleId = titleComponentServer != null ? titleComponentServer.TitleId : 0;
+                    unitInfoComponent.TitleId = unitInfo.TitleId;
                     MountComponentServer mountComponentServer = unit.GetComponent<MountComponentServer>();
                     unitInfo.RideConfigId = mountComponentServer != null ? mountComponentServer.GetRideConfigId() : 0;
                     unitInfo.RideLv = mountComponentServer != null ? mountComponentServer.GetRideLv() : 0;
@@ -355,19 +358,47 @@ namespace ET
 
         public static void BroadcastUnitAppear(Unit unit)
         {
-            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            if (bag == null)
+            M2C_FashionUpdate message = CreateAppearMessage(unit);
+            if (message == null)
             {
                 return;
             }
 
-            MessageHelper.Broadcast(unit, new M2C_FashionUpdate()
+            MessageHelper.Broadcast(unit, message);
+        }
+
+        /// <summary>自己和视野内玩家都收。BeSeePlayers 不含自己。</summary>
+        public static void SyncUnitAppear(Unit unit)
+        {
+            M2C_FashionUpdate message = CreateAppearMessage(unit);
+            if (message == null)
+            {
+                return;
+            }
+
+            MessageHelper.SendToClient(unit, message);
+            MessageHelper.Broadcast(unit, message);
+        }
+
+        static M2C_FashionUpdate CreateAppearMessage(Unit unit)
+        {
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            if (bag == null)
+            {
+                return null;
+            }
+
+            TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
+            int titleId = titleComponent != null ? titleComponent.TitleId : 0;
+            unit.GetComponent<UnitInfoComponent>().TitleId = titleId;
+            return new M2C_FashionUpdate()
             {
                 UnitID = unit.Id,
                 FashionEquipList = bag.FashionEquipList,
                 WeaponId = bag.GetWuqiItemId(),
                 OffHandId = bag.GetFuShouItemId(),
-            });
+                TitleId = titleId,
+            };
         }
     }
 }

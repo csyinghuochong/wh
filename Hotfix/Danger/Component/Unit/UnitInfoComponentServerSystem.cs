@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -30,10 +30,10 @@ namespace ET
 
         public static void ResetData(this UnitInfoComponent self)
         {
-            self.EnergySkillId = 0;
             self.ZhaohuanIds.Clear();
             self.FashionEquipList.Clear();
             self.Sex = 0;
+            self.TitleId = 0;
             self.Drops.Clear();
         }
 
