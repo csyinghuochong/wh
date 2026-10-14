@@ -14,6 +14,7 @@ namespace ET
             response.RoleInfo = roleInfoComponentServer.RoleInfo;
             response.ReddontList = reddotComponentServer.ReddontList;
             response.TitleList = titleComponentServer.TitleList;
+            response.TitleId = titleComponentServer.TitleId;
 
             reply();
             await ETTask.CompletedTask;

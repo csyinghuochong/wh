@@ -641,11 +641,11 @@ namespace ET
 		[ProtoMember(70)]
 		public string Sign { get; set; }
 
-// 已拥有头像
+// 已拥有头像 Key=LDRoleHead.Id Value=激活时间
 		[ProtoMember(71)]
 		public List<IntLongPair> RoleHeadIdList = new List<IntLongPair>();
 
-// 已拥有头像框
+// 已拥有头像框 Key=LDRoleHeadFrame.Id Value=激活时间
 		[ProtoMember(72)]
 		public List<IntLongPair> RoleHeadFrameList = new List<IntLongPair>();
 
@@ -675,6 +675,7 @@ namespace ET
 
 		[ProtoMember(2)]
 		public long Value { get; set; }
+
 	}
 
 	[Message(OuterOpcode.LongLongPair)]
@@ -1887,6 +1888,9 @@ namespace ET
 
 		[ProtoMember(5)]
 		public int Occ { get; set; }
+
+		[ProtoMember(6)]
+		public string UnionName { get; set; }
 
 	}
 
@@ -11435,10 +11439,13 @@ namespace ET
 		[ProtoMember(6)]
 		public List<IntLongPair> TitleList = new List<IntLongPair>();
 
+		[ProtoMember(7)]
+		public int TitleId { get; set; }
+
 	}
 
 	[ResponseType(nameof(M2C_RoleHeadUseResponse))]
-//穿戴头像。RoleHeadId 为 LDRoleHead.Id，写入 RoleInfo.RoleHeadId
+//穿戴头像。RoleHeadId 为 Key=LDRoleHead.Id Value=激活时间，写入 RoleInfo.RoleHeadId
 	[Message(OuterOpcode.C2M_RoleHeadUseRequest)]
 	[ProtoContract]
 	public partial class C2M_RoleHeadUseRequest: Object, IActorLocationRequest
@@ -11467,7 +11474,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_RoleHeadFrameUseResponse))]
-//穿戴头像框。RoleHeadFrame 为 LDRoleHeadFrame.Id，写入 RoleInfo.RoleHeadFrame
+//穿戴头像框。RoleHeadFrame 为 Key=LDRoleHeadFrame.Id Value=激活时间，写入 RoleInfo.RoleHeadFrame
 	[Message(OuterOpcode.C2M_RoleHeadFrameUseRequest)]
 	[ProtoContract]
 	public partial class C2M_RoleHeadFrameUseRequest: Object, IActorLocationRequest

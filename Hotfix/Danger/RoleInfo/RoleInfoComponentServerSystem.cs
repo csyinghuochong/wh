@@ -405,6 +405,7 @@ namespace ET
                 case UserDataType.UnionName:
                     self.RoleInfo.UnionName = value;
                     saveValue = self.RoleInfo.UnionName;
+                    self.UpdateRankInfo();
                     break;
                 case UserDataType.TowerId:
                     ApplyTowerId(self.RoleInfo, value);
@@ -478,6 +479,7 @@ namespace ET
             rankPetInfo.PlayerLv = self.RoleInfo.Lv;
             rankPetInfo.Combat = self.RoleInfo.Combat;
             rankPetInfo.Occ = self.RoleInfo.Occ;
+            rankPetInfo.UnionName = self.RoleInfo.UnionName ?? string.Empty;
 
             R2M_RankUpdateResponse Response = (R2M_RankUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankUpdateRequest()
@@ -517,6 +519,7 @@ namespace ET
             warRankInfo.PlayerLv = homeRankInfo.PlayerLv;
             warRankInfo.Combat = homeRankInfo.Combat;
             warRankInfo.Occ = homeRankInfo.Occ;
+            warRankInfo.UnionName = homeRankInfo.UnionName ?? string.Empty;
             int homeZone = UnitZoneHelper.GetHomeZone(unit);
             ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), homeZone);
             string serverName = serverItem != null ? serverItem.ServerName : homeZone.ToString();
