@@ -87,6 +87,24 @@ namespace ET
 					MessageHelper.SendToClient(unit, new M2C_UpdateRoleInfoMessage { RoleInfo = roleInfoComponentServer.RoleInfo });
 					return;
 				}
+				if (message.GMMsg.Contains("title#"))
+				{
+					//title#称号Id
+					if (!TryGetSecondHashNumber(message.GMMsg, out int titleId))
+					{
+						return;
+					}
+					if (!LDTitleCategory.Instance.Contain(titleId))
+					{
+						return;
+					}
+					TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
+					titleComponent.OnActiveTile(titleId);
+					titleComponent.TitleUpdateResult.TitleList = titleComponent.TitleList;
+					MessageHelper.SendToClient(unit, titleComponent.TitleUpdateResult);
+					Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+					return;
+				}
 				if (message.GMMsg.Contains("marquee#"))
 				{
                     //marquee#跑马灯Id#VIP等级
