@@ -43,14 +43,14 @@ namespace ET
                 return;
             }
 
-            if (vitalityCost > 0 && unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.HuoLi) < vitalityCost)
+            if (vitalityCost > 0 && bag.GetItemNumber(ItemBigType.Type_Item, UserDataType.HuoLi) < vitalityCost)
             {
                 response.Error = ErrorCode.ERR_VitalityNotEnoughError;
                 reply();
                 return;
             }
 
-            if (bindGoldCost > 0 && unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.BindGold) < bindGoldCost)
+            if (bindGoldCost > 0 && bag.GetItemNumber(ItemBigType.Type_Item, UserDataType.BindGold) < bindGoldCost)
             {
                 response.Error = ErrorCode.ERR_GoldNotEnoughError;
                 reply();
@@ -84,8 +84,7 @@ namespace ET
                 roleInfoComponent.UpdateRoleData(UserDataType.BindGold, (-bindGoldCost).ToString(), true, getWay);
             }
 
-            List<RewardItem> rewards = new List<RewardItem> { reward };
-            bag.OnAddItemData(rewards, new AddItemArg($"{getWay}_{makeTime}")
+            bag.OnAddItemData(new List<RewardItem> { reward }, new AddItemArg($"{getWay}_{makeTime}")
             {
                 MakePlayer = makePlayer,
                 MakeTime = makeTime,

@@ -58,7 +58,22 @@ namespace ET
 					}
 					return;
 				}
-				if (message.GMMsg.Contains("roleHeadId#"))
+                if (message.GMMsg.Contains("skillmakeId#"))
+                {
+                    //roleHeadId#头像Id
+                    if (!TryGetSecondHashNumber(message.GMMsg, out int skillmakeId))
+                    {
+                        return;
+                    }
+
+                    RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+					if (!roleInfoComponentServer.RoleInfo.MakeIdList.Contains(skillmakeId))
+					{
+                        roleInfoComponentServer.RoleInfo.MakeIdList.Add(skillmakeId);
+                    }
+                    return;
+                }
+                if (message.GMMsg.Contains("roleHeadId#"))
 				{
 					//roleHeadId#头像Id
 					if (!TryGetSecondHashNumber(message.GMMsg, out int roleHeadId))

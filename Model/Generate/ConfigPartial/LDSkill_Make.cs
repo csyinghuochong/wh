@@ -118,6 +118,26 @@ namespace ET
         }
 
         /// <summary>
+        /// 材料是否是某条配方的产物（Make_Type/Make_Id），不看是否已学。
+        /// 对不上返回 0，对上取 Id 最小的配方。
+        /// </summary>
+        public int GetProductMakeId(int itemType, int itemId)
+        {
+            if (this.productMakeIds == null)
+            {
+                return 0;
+            }
+
+            long key = MakeProductKey(itemType, itemId);
+            if (!this.productMakeIds.TryGetValue(key, out List<int> makeIds) || makeIds.Count == 0)
+            {
+                return 0;
+            }
+
+            return makeIds[0];
+        }
+
+        /// <summary>
         /// 材料类型和 Id 对上 Make_Type/Make_Id，且玩家已学会时，返回那条 Skill_Make.Id。
         /// 对不上或没学会返回 0。同一产物有多行时取 Id 最小的已学行。
         /// </summary>
