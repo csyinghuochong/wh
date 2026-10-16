@@ -103,21 +103,17 @@ namespace ET
             }
             //初始化参数
             self.DBServerInfo = dBServerInfo;
-            // 日清点前重启不刷新世界等级，等 DailyReset
-            DateTime dateTime = TimeHelper.DateTimeNow();
-            if (self.DBServerInfo.ServerInfo.WorldLv == 0 || dateTime.TimeOfDay >= ActivityHelper.GetDailyResetTimeOfDay() || CommonHelper.IsInnerNet())
-            {
-                self.UpdateWorldLv();
-            }
+            // GetWorldLv 按重置点切天，5 点前调用也不会提前进下一天。
+            self.UpdateWorldLv();
             self.BroadcastWorldLv(1).Coroutine();
         }
 
         public static void UpdateWorldLv(this RankSceneComponent self)
         {
-            int openserverDay = DBHelper.GetOpenServerDay(self.DomainZone());
-            int worldLv = WorldLvHelper.GetWorldLv(openserverDay);
+            long openTime = ServerHelper.GetOpenServerTime(CommonHelper.IsInnerNet(), self.DomainZone());
+            int worldLv = WorldLvHelper.GetWorldLv(openTime);
             self.DBServerInfo.ServerInfo.WorldLv = worldLv;
-            Log.Debug($"UpdateWorldLv: {self.DomainZone()} {worldLv}");
+            Console.WriteLine($"UpdateWorldLv: zone:{self.DomainZone()}   worldLv: {worldLv}");
         }
 
         public static async ETTask BroadcastWorldLv(this RankSceneComponent self, int updatetype = 0)

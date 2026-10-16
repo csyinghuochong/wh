@@ -549,8 +549,8 @@ namespace ET
                 Log.Warning($"ServerInfo==null: home={homeZone} map={scene.GetComponent<MapComponent>()?.MapTypeEnum} {self.Id}");
                 return;
             }
-        
-            float expAdd = CommonHelper.GetExpAdd(self.RoleInfo.Lv, serverInfo);
+
+            float expAdd = RoleLevelHelper.GetExpAdd(self.RoleInfo.Lv, self.RoleInfo.Exp, serverInfo.WorldLv);
 
             LDExp_Lv xiulianconf1 = LDExp_LvCategory.Instance.Get(self.RoleInfo.Lv);
             long upNeedExp = xiulianconf1.Exp_Role;

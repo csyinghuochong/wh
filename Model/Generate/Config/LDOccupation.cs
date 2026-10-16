@@ -91,44 +91,47 @@ namespace ET
 		/// <summary>图标</summary>
 		[ProtoMember(4)]
 		public string Icon { get; set; }
-		/// <summary>男头</summary>
+		/// <summary>虚图标</summary>
 		[ProtoMember(5)]
+		public string Icon_Blur { get; set; }
+		/// <summary>男头</summary>
+		[ProtoMember(6)]
 		public int RoleHead_Man { get; set; }
 		/// <summary>女头</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int RoleHead_Woman { get; set; }
 		/// <summary>男时装</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int[] Fashion_Id_Man { get; set; }
 		/// <summary>女时装</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int[] Fashion_Id_Woman { get; set; }
 		/// <summary>生命系数</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public double Hp_Param { get; set; }
 		/// <summary>速度</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int Speed { get; set; }
 		/// <summary>默认普攻</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int Skill_Normal_Default { get; set; }
 		/// <summary>技能</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int[] Skill { get; set; }
 		/// <summary>技能组名1</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public int Name_Skill_Group_1 { get; set; }
 		/// <summary>技能组名2</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public int Name_Skill_Group_2 { get; set; }
 		/// <summary>默认加点</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int[] Add_Point_Default { get; set; }
 		/// <summary>转职ID</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public int[] TransferId { get; set; }
 		/// <summary>初始装备</summary>
-		[ProtoMember(17)]
+		[ProtoMember(18)]
 		public int[] Equip_Init { get; set; }
 
 	}

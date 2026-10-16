@@ -17,6 +17,20 @@ namespace ET
         public HashSet<int> WarShareZones = new HashSet<int>();
         
         
+        public ServerItem FindServerItem(int zone)
+        {
+            for (int i = 0; i < this._serverItems.Count; i++)
+            {
+                ServerItem item = this._serverItems[i];
+                if (item.ServerId == zone)
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+
         public ServerItem GetServerItem(int id, string ip, string name, long openTime, int show)
         {
             ServerItem serverItem = new ServerItem();

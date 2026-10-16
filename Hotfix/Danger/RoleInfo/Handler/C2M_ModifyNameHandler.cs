@@ -37,7 +37,7 @@ namespace ET
             }
             request.NewName = request.NewName.Trim();   
 
-            if (request.NewName.Length >= 8)
+            if (request.NewName.Length >= 12)
             {
                 response.Error = ErrorCode.ERR_CreateRoleName;
                 response.Message = "角色名字过长!";
