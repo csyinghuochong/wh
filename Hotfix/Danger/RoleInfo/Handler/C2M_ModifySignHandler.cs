@@ -16,7 +16,8 @@ namespace ET
                 return;
             }
 
-            if (sign.Length > 30)
+            int maxSignLength = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Sign_Character_Length);
+            if (sign.Length > maxSignLength)
             {
                 response.Error = ErrorCode.ERR_ModifyData;
                 response.Message = "个性签名过长!";

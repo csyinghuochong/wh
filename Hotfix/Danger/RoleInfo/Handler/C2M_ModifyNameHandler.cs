@@ -37,7 +37,8 @@ namespace ET
             }
             request.NewName = request.NewName.Trim();   
 
-            if (request.NewName.Length >= 12)
+            int maxNameLength = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Role_Name_Character_Length);
+            if (request.NewName.Length > maxNameLength)
             {
                 response.Error = ErrorCode.ERR_CreateRoleName;
                 response.Message = "角色名字过长!";

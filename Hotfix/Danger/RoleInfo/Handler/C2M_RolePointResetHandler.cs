@@ -21,18 +21,13 @@ namespace ET
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            int resetNumber = numericComponent.GetAsInt(NumericType.PointResetTimes);
-
-            if (resetNumber >= LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Add_Point_Free_Resets))
+            List<RewardItem> costs = ItemNewHelper.GetRewardItems(ReadGlobalCost(GlobalValueKey.Global_Role_Potential_Points_Reset_consume));
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            if (costs.Count > 0 && !bag.OnCostItemData(costs, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
             {
-                List<RewardItem> costs = ItemNewHelper.GetRewardItems(ReadGlobalCost(GlobalValueKey.Global_Role_Potential_Points_Reset_consume));
-                BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-                if (costs.Count > 0 && !bag.OnCostItemData(costs, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
-                {
-                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                    reply();
-                    return;
-                }
+                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                reply();
+                return;
             }
 
             numericComponent.ApplyValue(NumericType.Point_Ti_1, 0);
@@ -45,7 +40,6 @@ namespace ET
             int remainPoint = RoleAddPointHelper.GetTotalFreePointByLevel(roleInfo.Lv);
 
             numericComponent.ApplyValue(NumericType.PointRemain, remainPoint);
-            numericComponent.ApplyChange(null, NumericType.PointResetTimes, 1, 0);
 
             response.Error = ErrorCode.ERR_Success;
             reply();
