@@ -52,6 +52,16 @@ namespace ET
                 reply();
                 return;
             }
+
+            List<RewardItem> costs = ItemNewHelper.GetRewardItems(ReadGlobalCost(GlobalValueKey.Global_Role_Name_Reset_consume));
+            BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            if (costs.Count > 0 && !bag.OnCostItemData(costs, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
+            {
+                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                reply();
+                return;
+            }
+
             roleInfo.UserName = request.NewName;
             roleInfo.UpdateRoleData(UserDataType.Name, request.NewName);
             M2C_RoleDataBroadcast m2C_BroadcastRoleData = new M2C_RoleDataBroadcast();
@@ -62,6 +72,23 @@ namespace ET
 
             reply();
             await ETTask.CompletedTask;
+        }
+
+        static string ReadGlobalCost(string key)
+        {
+            string raw = LDGlobalValueCategory.Instance.GetByKey(key).Value;
+            if (string.IsNullOrEmpty(raw))
+            {
+                return raw;
+            }
+
+            raw = raw.Trim();
+            if (raw.Length >= 2 && raw[0] == '{' && raw[raw.Length - 1] == '}')
+            {
+                return raw.Substring(1, raw.Length - 2).Trim();
+            }
+
+            return raw;
         }
     }
 }

@@ -25,10 +25,16 @@ namespace ET
 
             if (resetNumber >= LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Add_Point_Free_Resets))
             {
-                //扣除消耗
+                List<RewardItem> costs = ItemNewHelper.GetRewardItems(ReadGlobalCost(GlobalValueKey.Global_Role_Potential_Points_Reset_consume));
+                BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+                if (costs.Count > 0 && !bag.OnCostItemData(costs, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
+                {
+                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                    reply();
+                    return;
+                }
             }
 
-              
             numericComponent.ApplyValue(NumericType.Point_Ti_1, 0);
             numericComponent.ApplyValue(NumericType.Point_Li_2, 0);
             numericComponent.ApplyValue(NumericType.Point_Zhi_3, 0);
@@ -44,6 +50,23 @@ namespace ET
             response.Error = ErrorCode.ERR_Success;
             reply();
             await ETTask.CompletedTask;
+        }
+
+        static string ReadGlobalCost(string key)
+        {
+            string raw = LDGlobalValueCategory.Instance.GetByKey(key).Value;
+            if (string.IsNullOrEmpty(raw))
+            {
+                return raw;
+            }
+
+            raw = raw.Trim();
+            if (raw.Length >= 2 && raw[0] == '{' && raw[raw.Length - 1] == '}')
+            {
+                return raw.Substring(1, raw.Length - 2).Trim();
+            }
+
+            return raw;
         }
     }
 }
