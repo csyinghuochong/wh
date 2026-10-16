@@ -38,6 +38,7 @@ namespace ET
 
                             ServerItem copy = CopyServerItem(serverItem);
                             copy.State = centerServer.GetServerCrowdState(copy.ServerId);
+                            FillWarZone(copy);
                             response.ServerItems.Add(copy);
                         }
 
@@ -157,6 +158,23 @@ namespace ET
             }
 
             return copy;
+        }
+
+        private static void FillWarZone(ServerItem serverItem)
+        {
+            if (!StartZoneConfigCategory.Instance.Contain(serverItem.ServerId))
+            {
+                return;
+            }
+
+            int warZone = StartZoneConfigCategory.Instance.Get(serverItem.ServerId).WarZone;
+            serverItem.WarZone = warZone;
+            if (warZone <= 0 || !StartZoneConfigCategory.Instance.Contain(warZone))
+            {
+                return;
+            }
+
+            serverItem.WarZoneName = StartZoneConfigCategory.Instance.Get(warZone).Name;
         }
 
         private static void ApplyServerTags(List<ServerItem> servers)

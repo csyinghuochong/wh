@@ -1413,6 +1413,12 @@ namespace ET
 		[ProtoMember(9)]
 		public int Tag { get; set; }
 
+		[ProtoMember(10)]
+		public int WarZone { get; set; }
+
+		[ProtoMember(11)]
+		public string WarZoneName { get; set; }
+
 	}
 
 	[ResponseType(nameof(R2C_ServerList))]
