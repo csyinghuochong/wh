@@ -54,7 +54,7 @@ namespace ET
                 return;
             }
 
-            List<RewardItem> costs = ItemNewHelper.GetRewardItems(ReadGlobalCost(GlobalValueKey.Global_Role_Name_Reset_consume));
+            List<RewardItem> costs = ItemNewHelper.GetRewardItems(ReadGlobalCost(GlobalValueKey.Global_Role_Name_Reset_Consume));
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             if (costs.Count > 0 && !bag.OnCostItemData(costs, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
             {
