@@ -19,7 +19,6 @@ namespace ET
                 return;
             }
             bagInfo.IsLocked = request.IsLocked;
-            ItemAddHelper.OnItemUpdate(unit, bagInfo);
             reply();
             await ETTask.CompletedTask;
         }
