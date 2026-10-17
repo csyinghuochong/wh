@@ -649,6 +649,10 @@ namespace ET
 		[ProtoMember(72)]
 		public List<IntLongPair> RoleHeadFrameList = new List<IntLongPair>();
 
+// 转职次数。0 未转过，首次免费，之后每次消耗 Global_Occupation_Transfer_Comsume
+		[ProtoMember(73)]
+		public int OccTransferCount { get; set; }
+
 	}
 
 	[Message(OuterOpcode.IntStringPair)]
@@ -1723,6 +1727,9 @@ namespace ET
 
 		[ProtoMember(11)]
 		public int ItemFlags { get; set; }
+
+		[ProtoMember(12)]
+		public bool IsLocked { get; set; }
 
 		[ProtoMember(15)]
 		public string GetWay { get; set; }
@@ -4927,7 +4934,7 @@ namespace ET
 		public long OperateBagID { get; set; }
 
 		[ProtoMember(2)]
-		public bool IsProtect { get; set; }
+		public bool IsLocked { get; set; }
 
 	}
 

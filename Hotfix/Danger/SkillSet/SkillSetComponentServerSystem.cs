@@ -320,7 +320,7 @@ namespace ET
 		}
 
 
-        //转换职业
+        //转换职业。次数在 RoleInfo.OccTransferCount，已转过的旧号次数为 0 时按 1 次计。
         public static void OnChangeOccTwoRequest(this SkillSetComponentServer self, int occTwo)
 		{
 			if (occTwo == 0)
@@ -329,8 +329,8 @@ namespace ET
 			}
 			Unit unit = self.GetParent<Unit>();
 			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-			// 已经转职则不能再转
-			if (roleInfoComponentServer.RoleInfo.OccTwo != 0)
+			RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+			if (roleInfo.OccTwo == occTwo)
 			{
 				return;
 			}
@@ -340,10 +340,21 @@ namespace ET
 				return;
 			}
 
-			roleInfoComponentServer.RoleInfo.OccTwo = occTwo;
-
-			//新增技能：Occupation_Transfer.Skill
 			LDOccupation_Transfer occupationTransfer = LDOccupation_TransferCategory.Instance.Get(occTwo);
+			int oldOccTwo = roleInfo.OccTwo;
+			if (oldOccTwo != 0 && LDOccupation_TransferCategory.Instance.Contain(oldOccTwo))
+			{
+				self.RemoveOccTwoSkills(LDOccupation_TransferCategory.Instance.Get(oldOccTwo).Skill, occupationTransfer.Skill);
+			}
+
+			if (oldOccTwo != 0 && roleInfo.OccTransferCount <= 0)
+			{
+				roleInfo.OccTransferCount = 1;
+			}
+
+			roleInfo.OccTwo = occTwo;
+			roleInfo.OccTransferCount++;
+
 			self.AddOccTwoSkills(occupationTransfer.Skill);
 
             SkillPassiveComponent skillPassiveComponent = unit.GetComponent<SkillPassiveComponent>();
@@ -1007,6 +1018,89 @@ namespace ET
 		}
 		
 		
+		public static void RemoveOccTwoSkills(this SkillSetComponentServer self, int[] oldSkills, int[] newSkills)
+		{
+			if (oldSkills == null)
+			{
+				return;
+			}
+
+			HashSet<int> removeIds = new HashSet<int>();
+			for (int i = 0; i < oldSkills.Length; i++)
+			{
+				if (oldSkills[i] != 0)
+				{
+					removeIds.Add(oldSkills[i]);
+				}
+			}
+
+			if (newSkills != null)
+			{
+				for (int i = 0; i < newSkills.Length; i++)
+				{
+					removeIds.Remove(newSkills[i]);
+				}
+			}
+
+			Unit unit = self.GetParent<Unit>();
+			int[] baseSkills = LDOccupationCategory.Instance.Get(unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ).Skill;
+			if (baseSkills != null)
+			{
+				for (int i = 0; i < baseSkills.Length; i++)
+				{
+					removeIds.Remove(baseSkills[i]);
+				}
+			}
+
+			if (removeIds.Count == 0)
+			{
+				return;
+			}
+
+			for (int i = self.SkillList.Count - 1; i >= 0; i--)
+			{
+				SkillPro skillPro = self.SkillList[i];
+				if (skillPro.SkillSource != SkillSourceEnum.Occupation)
+				{
+					continue;
+				}
+
+				if (!removeIds.Contains(skillPro.SkillID))
+				{
+					continue;
+				}
+
+				self.SkillList.RemoveAt(i);
+			}
+
+			ClearBarSkills(self.SkillBarList0, removeIds);
+			ClearBarSkills(self.SkillBarList1, removeIds);
+		}
+
+		static void ClearBarSkills(List<SkillBarSlot> barList, HashSet<int> skillIds)
+		{
+			if (barList == null)
+			{
+				return;
+			}
+
+			for (int i = barList.Count - 1; i >= 0; i--)
+			{
+				SkillBarSlot slot = barList[i];
+				if (slot.SkillType != SkillSetEnum.Skill)
+				{
+					continue;
+				}
+
+				if (!skillIds.Contains(slot.SkillID))
+				{
+					continue;
+				}
+
+				barList.RemoveAt(i);
+			}
+		}
+
 		public static void AddOccTwoSkills(this SkillSetComponentServer self, int[] skills)
 		{
 			if (skills == null)
