@@ -82,6 +82,11 @@ namespace ET
                 return this.Make_Num_5;
             }
 
+            if (this.Make_Type_6 == itemType && this.Make_Id_6 == itemId)
+            {
+                return this.Make_Num_6;
+            }
+
             return 0;
         }
     }
@@ -114,6 +119,7 @@ namespace ET
                 this.AddProduct(make.Make_Type_3, make.Make_Id_3, make.Make_Num_3, make.Id);
                 this.AddProduct(make.Make_Type_4, make.Make_Id_4, make.Make_Num_4, make.Id);
                 this.AddProduct(make.Make_Type_5, make.Make_Id_5, make.Make_Num_5, make.Id);
+                this.AddProduct(make.Make_Type_6, make.Make_Id_6, make.Make_Num_6, make.Id);
             }
         }
 

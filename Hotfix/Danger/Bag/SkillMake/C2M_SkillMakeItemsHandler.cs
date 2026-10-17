@@ -96,14 +96,15 @@ namespace ET
         private static bool TryRollMakeItem(LDSkill_Make cfg, out RewardItem reward)
         {
             reward = null;
-            int[] types = { cfg.Make_Type_1, cfg.Make_Type_2, cfg.Make_Type_3, cfg.Make_Type_4, cfg.Make_Type_5 };
-            int[] ids = { cfg.Make_Id_1, cfg.Make_Id_2, cfg.Make_Id_3, cfg.Make_Id_4, cfg.Make_Id_5 };
-            int[] nums = { cfg.Make_Num_1, cfg.Make_Num_2, cfg.Make_Num_3, cfg.Make_Num_4, cfg.Make_Num_5 };
-            int[] weights = { cfg.Make_Weight_1, cfg.Make_Weight_2, cfg.Make_Weight_3, cfg.Make_Weight_4, cfg.Make_Weight_5 };
+            int[] types = { cfg.Make_Type_1, cfg.Make_Type_2, cfg.Make_Type_3, cfg.Make_Type_4, cfg.Make_Type_5, cfg.Make_Type_6 };
+            int[] ids = { cfg.Make_Id_1, cfg.Make_Id_2, cfg.Make_Id_3, cfg.Make_Id_4, cfg.Make_Id_5, cfg.Make_Id_6 };
+            int[] nums = { cfg.Make_Num_1, cfg.Make_Num_2, cfg.Make_Num_3, cfg.Make_Num_4, cfg.Make_Num_5, cfg.Make_Num_6 };
+            int[] weights = { cfg.Make_Weight_1, cfg.Make_Weight_2, cfg.Make_Weight_3, cfg.Make_Weight_4, cfg.Make_Weight_5, cfg.Make_Weight_6 };
+            int[] trades = { cfg.Trade_Type_1, cfg.Trade_Type_2, cfg.Trade_Type_3, cfg.Trade_Type_4, cfg.Trade_Type_5, cfg.Trade_Type_6 };
 
-            List<int> validIndex = new List<int>(5);
-            List<int> validWeights = new List<int>(5);
-            for (int i = 0; i < 5; i++)
+            List<int> validIndex = new List<int>(6);
+            List<int> validWeights = new List<int>(6);
+            for (int i = 0; i < ids.Length; i++)
             {
                 if (types[i] <= 0 || ids[i] <= 0 || nums[i] <= 0 || weights[i] <= 0)
                 {
@@ -130,7 +131,8 @@ namespace ET
             {
                 ItemType = types[slot],
                 ItemID = ids[slot],
-                ItemNum = nums[slot]
+                ItemNum = nums[slot],
+                ItemFlags = trades[slot]
             };
             return true;
         }

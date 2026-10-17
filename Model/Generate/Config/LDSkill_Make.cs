@@ -87,75 +87,108 @@ namespace ET
 		public int Group { get; set; }
 		/// <summary>制造 时间</summary>
 		[ProtoMember(3)]
-		public int Make_Time { get; set; }
-		/// <summary>类型</summary>
+		public double Make_Time { get; set; }
+		/// <summary>禁用</summary>
 		[ProtoMember(4)]
+		public int Is_Close { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(5)]
 		public int Make_Type_1 { get; set; }
 		/// <summary>Id</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public int Make_Id_1 { get; set; }
 		/// <summary>数量</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int Make_Num_1 { get; set; }
 		/// <summary>权重</summary>
-		[ProtoMember(7)]
-		public int Make_Weight_1 { get; set; }
-		/// <summary>类型</summary>
 		[ProtoMember(8)]
+		public int Make_Weight_1 { get; set; }
+		/// <summary>交易 类型</summary>
+		[ProtoMember(9)]
+		public int Trade_Type_1 { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(10)]
 		public int Make_Type_2 { get; set; }
 		/// <summary>Id</summary>
-		[ProtoMember(9)]
+		[ProtoMember(11)]
 		public int Make_Id_2 { get; set; }
 		/// <summary>数量</summary>
-		[ProtoMember(10)]
+		[ProtoMember(12)]
 		public int Make_Num_2 { get; set; }
 		/// <summary>权重</summary>
-		[ProtoMember(11)]
+		[ProtoMember(13)]
 		public int Make_Weight_2 { get; set; }
+		/// <summary>交易 类型</summary>
+		[ProtoMember(14)]
+		public int Trade_Type_2 { get; set; }
 		/// <summary>类型</summary>
-		[ProtoMember(12)]
+		[ProtoMember(15)]
 		public int Make_Type_3 { get; set; }
 		/// <summary>Id</summary>
-		[ProtoMember(13)]
+		[ProtoMember(16)]
 		public int Make_Id_3 { get; set; }
 		/// <summary>数量</summary>
-		[ProtoMember(14)]
+		[ProtoMember(17)]
 		public int Make_Num_3 { get; set; }
 		/// <summary>权重</summary>
-		[ProtoMember(15)]
-		public int Make_Weight_3 { get; set; }
-		/// <summary>类型</summary>
-		[ProtoMember(16)]
-		public int Make_Type_4 { get; set; }
-		/// <summary>Id</summary>
-		[ProtoMember(17)]
-		public int Make_Id_4 { get; set; }
-		/// <summary>数量</summary>
 		[ProtoMember(18)]
-		public int Make_Num_4 { get; set; }
-		/// <summary>权重</summary>
+		public int Make_Weight_3 { get; set; }
+		/// <summary>交易 类型</summary>
 		[ProtoMember(19)]
-		public int Make_Weight_4 { get; set; }
+		public int Trade_Type_3 { get; set; }
 		/// <summary>类型</summary>
 		[ProtoMember(20)]
-		public int Make_Type_5 { get; set; }
+		public int Make_Type_4 { get; set; }
 		/// <summary>Id</summary>
 		[ProtoMember(21)]
-		public int Make_Id_5 { get; set; }
+		public int Make_Id_4 { get; set; }
 		/// <summary>数量</summary>
 		[ProtoMember(22)]
-		public int Make_Num_5 { get; set; }
+		public int Make_Num_4 { get; set; }
 		/// <summary>权重</summary>
 		[ProtoMember(23)]
-		public int Make_Weight_5 { get; set; }
-		/// <summary>消耗 活力</summary>
+		public int Make_Weight_4 { get; set; }
+		/// <summary>交易 类型</summary>
 		[ProtoMember(24)]
+		public int Trade_Type_4 { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(25)]
+		public int Make_Type_5 { get; set; }
+		/// <summary>Id</summary>
+		[ProtoMember(26)]
+		public int Make_Id_5 { get; set; }
+		/// <summary>数量</summary>
+		[ProtoMember(27)]
+		public int Make_Num_5 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(28)]
+		public int Make_Weight_5 { get; set; }
+		/// <summary>交易 类型</summary>
+		[ProtoMember(29)]
+		public int Trade_Type_5 { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(30)]
+		public int Make_Type_6 { get; set; }
+		/// <summary>Id</summary>
+		[ProtoMember(31)]
+		public int Make_Id_6 { get; set; }
+		/// <summary>数量</summary>
+		[ProtoMember(32)]
+		public int Make_Num_6 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(33)]
+		public int Make_Weight_6 { get; set; }
+		/// <summary>交易 类型</summary>
+		[ProtoMember(34)]
+		public int Trade_Type_6 { get; set; }
+		/// <summary>消耗 活力</summary>
+		[ProtoMember(35)]
 		public int Consume_Item_12 { get; set; }
 		/// <summary>消耗 金钱</summary>
-		[ProtoMember(25)]
+		[ProtoMember(36)]
 		public int Consume_Item_5 { get; set; }
 		/// <summary>消耗</summary>
-		[ProtoMember(26)]
+		[ProtoMember(37)]
 		public string Consume { get; set; }
 
 	}
