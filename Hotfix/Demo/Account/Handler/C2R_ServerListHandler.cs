@@ -36,7 +36,7 @@ namespace ET
                                 continue;
                             }
 
-                            ServerItem copy = CopyServerItem(serverItem);
+                            ServerItem copy = CloneHelper.DeepClone(serverItem);
                             copy.State = centerServer.GetServerCrowdState(copy.ServerId);
                             FillWarZone(copy);
                             response.ServerItems.Add(copy);
@@ -141,25 +141,6 @@ namespace ET
             }
         }
 
-        private static ServerItem CopyServerItem(ServerItem src)
-        {
-            ServerItem copy = new ServerItem
-            {
-                ServerId = src.ServerId,
-                ServerIp = src.ServerIp,
-                ServerName = src.ServerName,
-                ServerOpenTime = src.ServerOpenTime,
-                Show = src.Show,
-                New = src.New,
-            };
-            if (src.PlatformList != null && src.PlatformList.Count > 0)
-            {
-                copy.PlatformList.AddRange(src.PlatformList);
-            }
-
-            return copy;
-        }
-
         private static void FillWarZone(ServerItem serverItem)
         {
             if (!StartZoneConfigCategory.Instance.Contain(serverItem.ServerId))
@@ -199,7 +180,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 最新登录一个，然后 30 天内按登录时间，其余按服务器顺序、等级从高到低、创建时间从早到晚。
+        /// 最新登录一个，然后 30 天内按登录时间，其余按服务器 id 从大到小、等级从高到低、创建时间从早到晚。
         /// </summary>
         private static void SortAccountRoles(List<CreateRoleInfo> roles)
         {
@@ -238,13 +219,6 @@ namespace ET
                 }
             }
 
-            Dictionary<int, int> serverOrder = new Dictionary<int, int>();
-            List<ServerItem> serverItems = ServerHelper.GetServerList();
-            for (int i = 0; i < serverItems.Count; i++)
-            {
-                serverOrder[serverItems[i].ServerId] = i;
-            }
-
             roles.Sort((a, b) =>
             {
                 int groupCmp = RoleGroup(a).CompareTo(RoleGroup(b));
@@ -259,7 +233,7 @@ namespace ET
                     return timeCmp != 0 ? timeCmp : a.UserID.CompareTo(b.UserID);
                 }
 
-                int serverCmp = ServerRank(a.ServerId).CompareTo(ServerRank(b.ServerId));
+                int serverCmp = b.ServerId.CompareTo(a.ServerId);
                 if (serverCmp != 0)
                 {
                     return serverCmp;
@@ -283,11 +257,6 @@ namespace ET
                 }
 
                 return role.LoginTag == RoleLoginTag.Recent ? 1 : 2;
-            }
-
-            int ServerRank(int serverId)
-            {
-                return serverOrder.TryGetValue(serverId, out int order) ? order : int.MaxValue;
             }
         }
     }

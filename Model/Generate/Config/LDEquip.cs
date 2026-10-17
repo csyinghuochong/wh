@@ -85,110 +85,113 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>图标</summary>
+		/// <summary>描述</summary>
 		[ProtoMember(3)]
+		public int Desc { get; set; }
+		/// <summary>图标</summary>
+		[ProtoMember(4)]
 		public string Icon { get; set; }
 		/// <summary>模型</summary>
-		[ProtoMember(4)]
+		[ProtoMember(5)]
 		public int Fashion_Id { get; set; }
 		/// <summary>类型</summary>
-		[ProtoMember(5)]
+		[ProtoMember(6)]
 		public int Sub_Type { get; set; }
 		/// <summary>穿戴 等级</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int UseLv { get; set; }
 		/// <summary>品质</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int Quality { get; set; }
 		/// <summary>职业</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int[] Occupation { get; set; }
 		/// <summary>套装ID</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int EquipSuitID { get; set; }
 		/// <summary>套装 点数</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int EquipSuitParam { get; set; }
 		/// <summary>必有属性</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public string Attribute { get; set; }
 		/// <summary>加入 数量</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int Att_Rand_Num { get; set; }
 		/// <summary>组1 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public int[] Att_Rand_Param11 { get; set; }
 		/// <summary>组1 最大 个数</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public int Att_Rand_Param12 { get; set; }
 		/// <summary>组1 加入</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int Att_Rand_Param13 { get; set; }
 		/// <summary>组2 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public string Att_Rand_Param21 { get; set; }
 		/// <summary>组2 最大 个数</summary>
-		[ProtoMember(17)]
+		[ProtoMember(18)]
 		public int Att_Rand_Param22 { get; set; }
 		/// <summary>组2 加入</summary>
-		[ProtoMember(18)]
+		[ProtoMember(19)]
 		public int Att_Rand_Param23 { get; set; }
 		/// <summary>组3 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
-		[ProtoMember(19)]
+		[ProtoMember(20)]
 		public string Att_Rand_Param31 { get; set; }
 		/// <summary>组3 最大 个数</summary>
-		[ProtoMember(20)]
+		[ProtoMember(21)]
 		public int Att_Rand_Param32 { get; set; }
 		/// <summary>组3 加入</summary>
-		[ProtoMember(21)]
+		[ProtoMember(22)]
 		public int Att_Rand_Param33 { get; set; }
 		/// <summary>组4 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
-		[ProtoMember(22)]
+		[ProtoMember(23)]
 		public string Att_Rand_Param41 { get; set; }
 		/// <summary>组4 最大个数</summary>
-		[ProtoMember(23)]
+		[ProtoMember(24)]
 		public int Att_Rand_Param42 { get; set; }
 		/// <summary>组4 加入</summary>
-		[ProtoMember(24)]
+		[ProtoMember(25)]
 		public int Att_Rand_Param43 { get; set; }
 		/// <summary>组5 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
-		[ProtoMember(25)]
+		[ProtoMember(26)]
 		public string Att_Rand_Param51 { get; set; }
 		/// <summary>组5 最大个数</summary>
-		[ProtoMember(26)]
+		[ProtoMember(27)]
 		public int Att_Rand_Param52 { get; set; }
 		/// <summary>组5 加入</summary>
-		[ProtoMember(27)]
+		[ProtoMember(28)]
 		public int Att_Rand_Param53 { get; set; }
 		/// <summary>属性 必中1</summary>
-		[ProtoMember(28)]
+		[ProtoMember(29)]
 		public int[] Att_Rand_1 { get; set; }
 		/// <summary>属性 必中2</summary>
-		[ProtoMember(29)]
+		[ProtoMember(30)]
 		public int[] Att_Rand_2 { get; set; }
 		/// <summary>属性 必中3</summary>
-		[ProtoMember(30)]
+		[ProtoMember(31)]
 		public int[] Att_Rand_3 { get; set; }
 		/// <summary>属性 必中4</summary>
-		[ProtoMember(31)]
+		[ProtoMember(32)]
 		public int[] Att_Rand_4 { get; set; }
 		/// <summary>属性 必中5</summary>
-		[ProtoMember(32)]
+		[ProtoMember(33)]
 		public int[] Att_Rand_5 { get; set; }
 		/// <summary>属性 必中6</summary>
-		[ProtoMember(33)]
+		[ProtoMember(34)]
 		public int[] Att_Rand_6 { get; set; }
 		/// <summary>强化上限 0：无强化 -1：禁强化</summary>
-		[ProtoMember(34)]
+		[ProtoMember(35)]
 		public int Enhance { get; set; }
 		/// <summary>强化属性</summary>
-		[ProtoMember(35)]
+		[ProtoMember(36)]
 		public string Enhance_Attribute { get; set; }
 		/// <summary>鉴定等级 0：无鉴定 -1：禁鉴定</summary>
-		[ProtoMember(36)]
+		[ProtoMember(37)]
 		public int Appraise_Lv { get; set; }
 		/// <summary>可鉴定 属性类型</summary>
-		[ProtoMember(37)]
+		[ProtoMember(38)]
 		public int[] Appraise_Attribute { get; set; }
 
 	}
