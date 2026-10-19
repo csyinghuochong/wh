@@ -11897,6 +11897,74 @@ namespace ET
 	}
 
 //Recharge充值 end####################################################
+
+	[ResponseType(nameof(M2C_PetBestExchangeResponse))]
+//神兽兑换。消耗读 GlobalValue.Global_Pet_Best_Exchange
+	[Message(OuterOpcode.C2M_PetBestExchangeRequest)]
+	[ProtoContract]
+	public partial class C2M_PetBestExchangeRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int PetConfigId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_PetBestExchangeResponse)]
+	[ProtoContract]
+	public partial class M2C_PetBestExchangeResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public PetInfo PetInfo { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_PetBestConvertResponse))]
+//神兽转换。消耗读 Pet_Star.Best_Convert，按神兽 Star 取
+	[Message(OuterOpcode.C2M_PetBestConvertRequest)]
+	[ProtoContract]
+	public partial class C2M_PetBestConvertRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long PetInfoId { get; set; }
+
+		[ProtoMember(2)]
+		public int TargetConfigId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_PetBestConvertResponse)]
+	[ProtoContract]
+	public partial class M2C_PetBestConvertResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public PetInfo PetInfo { get; set; }
+
+	}
+
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

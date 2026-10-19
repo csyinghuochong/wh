@@ -612,6 +612,10 @@ namespace ET
 		 public const ushort C2M_RechargeRequest = 10609;
 		 public const ushort M2C_RechargeResponse = 10610;
 		 public const ushort M2C_RechargeUpdate = 10611;
-		 public const ushort M2C_UpdateVersion = 10612;
+		 public const ushort C2M_PetBestExchangeRequest = 10612;
+		 public const ushort M2C_PetBestExchangeResponse = 10613;
+		 public const ushort C2M_PetBestConvertRequest = 10614;
+		 public const ushort M2C_PetBestConvertResponse = 10615;
+		 public const ushort M2C_UpdateVersion = 10616;
 	}
 }
