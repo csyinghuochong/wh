@@ -210,5 +210,7 @@ namespace ET
 		 public const ushort Friend2M_SendApply = 20207;
 		 public const ushort M2Chat_SendMarquee = 20208;
 		 public const ushort Chat2M_SendMarqueeResponse = 20209;
+		 public const ushort M2U_UnionMemberSyncRequest = 20210;
+		 public const ushort U2M_UnionMemberSyncResponse = 20211;
 	}
 }

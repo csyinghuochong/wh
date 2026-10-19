@@ -164,6 +164,38 @@ namespace ET
             self.UserName = self.RoleInfo.Name;
         }
 
+        /// <summary>名字、等级、战力、职业、转职、头像、头像框变更时写入公会成员快照。登录不推。</summary>
+        public static void SyncUnionMember(this RoleInfoComponentServer self)
+        {
+            Unit unit = self.GetParent<Unit>();
+            if (unit == null)
+            {
+                return;
+            }
+
+            long unionId = unit.GetUnionId();
+            if (unionId == 0)
+            {
+                return;
+            }
+
+            RoleInfo roleInfo = self.RoleInfo;
+            ActorMessageSenderComponent.Instance.Call(
+                DBHelper.GetUnionServerId(unit),
+                new M2U_UnionMemberSyncRequest()
+                {
+                    UnionId = unionId,
+                    UnitId = unit.Id,
+                    PlayerName = roleInfo.Name,
+                    PlayerLevel = roleInfo.Lv,
+                    Combat = roleInfo.Combat,
+                    Occ = roleInfo.Occ,
+                    OccTwo = roleInfo.OccTwo,
+                    RoleHeadId = roleInfo.RoleHeadId,
+                    RoleHeadFrame = roleInfo.RoleHeadFrame,
+                }).Coroutine();
+        }
+
         /// <summary>
         /// 体力
         /// </summary>
@@ -456,6 +488,11 @@ namespace ET
                 m2C_RoleDataUpdate1.UpdateTypeValue = saveValue;
                 m2C_RoleDataUpdate1.UpdateValueLong = longValue;
                 MessageHelper.SendToClient(unit, m2C_RoleDataUpdate1);
+            }
+
+            if (Type == UserDataType.Name || Type == UserDataType.Level || Type == UserDataType.Combat)
+            {
+                self.SyncUnionMember();
             }
         }
 

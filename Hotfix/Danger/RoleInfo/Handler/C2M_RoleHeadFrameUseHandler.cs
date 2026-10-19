@@ -7,7 +7,9 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_RoleHeadFrameUseRequest request, M2C_RoleHeadFrameUseResponse response, Action reply)
         {
-            unit.GetComponent<RoleInfoComponentServer>().RoleInfo.RoleHeadFrame = request.RoleHeadFrame;
+            RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
+            roleInfo.RoleInfo.RoleHeadFrame = request.RoleHeadFrame;
+            roleInfo.SyncUnionMember();
             reply();
             await ETTask.CompletedTask;
         }

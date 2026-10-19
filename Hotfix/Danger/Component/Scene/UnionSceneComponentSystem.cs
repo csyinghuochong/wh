@@ -160,6 +160,28 @@ namespace ET
             unionListItem.UnionNo = unionInfo.UnionNo;
             unionListItem.CombatLimit = unionInfo.CombatLimit;
             unionListItem.PlayerLimit = GetPlayerLimit(unionLevel);
+            UnionPlayerInfo leader = null;
+            List<UnionPlayerInfo> players = unionInfo.UnionPlayerList;
+            if (players != null)
+            {
+                for (int i = 0; i < players.Count; i++)
+                {
+                    UnionPlayerInfo player = players[i];
+                    if (player != null && player.UserID == unionInfo.LeaderId)
+                    {
+                        leader = player;
+                        break;
+                    }
+                }
+            }
+
+            if (leader != null)
+            {
+                unionListItem.Occ = leader.Occ;
+                unionListItem.RoleHeadId = leader.RoleHeadId;
+                unionListItem.RoleHeadFrame = leader.RoleHeadFrame;
+            }
+
             FillViceLeaders(unionListItem, unionInfo);
             return unionListItem;
         }
@@ -240,6 +262,7 @@ namespace ET
                     Occ = player.Occ,
                     OccTwo = player.OccTwo,
                     RoleHeadId = player.RoleHeadId,
+                    RoleHeadFrame = player.RoleHeadFrame,
                 });
                 added++;
             }

@@ -354,6 +354,7 @@ namespace ET
 
 			roleInfo.OccTwo = occTwo;
 			roleInfo.OccTransferCount++;
+			roleInfoComponentServer.SyncUnionMember();
 
 			self.AddOccTwoSkills(occupationTransfer.Skill);
 
@@ -980,6 +981,7 @@ namespace ET
 
 		
 			roleInfoComponentServer.RoleInfo.OccTwo = 0;
+			roleInfoComponentServer.SyncUnionMember();
 
 			self.UpdateSkillSet();
 			return sp;
