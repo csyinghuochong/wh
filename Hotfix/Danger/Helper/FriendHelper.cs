@@ -28,9 +28,12 @@ namespace ET
                 {
                     UserId = friendId,
                     PlayerLevel = roleInfo.Lv,
-                    OnLineTime = onlineIds != null && onlineIds.Contains(friendId) ? 1 : 0,
+                    OnLineTime = onlineIds != null && onlineIds.Contains(friendId) ? 1 : roleInfoComponentServer.LastOfflineTime,
                     PlayerName = roleInfo.Name,
-                    Occ = roleInfo.Occ
+                    Occ = roleInfo.Occ,
+                    RoleHeadId = roleInfo.RoleHeadId,
+                    RoleHeadFrame = roleInfo.RoleHeadFrame,
+                    Combat = roleInfo.Combat,
                 });
             }
 
