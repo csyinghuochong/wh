@@ -14,11 +14,9 @@ namespace ET
             List<int> shenshouIds = PetHelper.GetAllShenShou();
             if (shenshouIds.Count == 0)
             {
-                response.Error = ErrorCode.ERR_Pet_HeCheng_IdError;
-                reply();
-                return;
+                Console.WriteLine("shenshouIds.Count == 0");
             }
-
+           
             List<RewardItem> costs = ItemNewHelper.GetRewardItems(
                     LDGlobalValueCategory.Instance.GetByKey(GlobalValueKey.Global_Pet_Best_Exchange).Value);
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
