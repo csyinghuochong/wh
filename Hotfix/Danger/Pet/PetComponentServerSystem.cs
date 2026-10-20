@@ -58,7 +58,7 @@ namespace ET
             newpet.ConfigId = ldPetConfig.Id;
             newpet.PetLv = 1;/// ldPetConfig.l;
             newpet.PetExp = 0;
-            newpet.PetName = ldPetConfig.Name.ToString();
+            newpet.PetName = WordHelper.GetShowText(ldPetConfig.Name, 0);
             newpet.IfChange = ldPetConfig.Is_Best == 1 ? 1 :0;
             newpet.AddPropretyNum = 0;
             // 先天 Skill / 异化 Skill_Change 读 LDPet，不入库。Pet表备注：固定技能1：3个先天技能；固定技能2：1个异化技能（异化后才激活）

@@ -67,10 +67,33 @@ namespace ET
                     }
 
                     RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-					if (!roleInfoComponentServer.RoleInfo.MakeIdList.Contains(skillmakeId))
-					{
-                        roleInfoComponentServer.RoleInfo.MakeIdList.Add(skillmakeId);
+                    roleInfoComponentServer.LearnRecipe(skillmakeId);
+                    return;
+                }
+                if (message.GMMsg.Contains("skillmakeall#"))
+                {
+                    RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
+                    RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
+                    for (int makeType = 1; makeType <= 5; makeType++)
+                    {
+                        if (roleInfo.MakeTypeList.Contains(makeType))
+                        {
+                            continue;
+                        }
+                        roleInfo.MakeTypeList.Add(makeType);
                     }
+
+                    foreach (LDSkill_Make config in LDSkill_MakeCategory.Instance.GetAll().Values)
+                    {
+                        if (roleInfo.MakeIdList.Contains(config.Id))
+                        {
+                            continue;
+                        }
+                        roleInfo.MakeIdList.Add(config.Id);
+                    }
+
+                    MessageHelper.SendToClient(unit, new M2C_UpdateRoleInfoMessage { RoleInfo = roleInfo });
+                    DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, roleInfoComponentServer).Coroutine();
                     return;
                 }
                 if (message.GMMsg.Contains("roleHeadId#"))

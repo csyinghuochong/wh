@@ -47,11 +47,22 @@ namespace ET
 
             List<RewardItem> costs = ItemNewHelper.GetRewardItems(LDPet_StarCategory.Instance.Get(rolePetInfo.Star).Best_Convert);
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            if (costs.Count > 0 && !bag.OnCostItemData(costs, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
+            Dictionary<int, List<RewardItem>> locCosts = GroupCostByLoc(costs);
+            if (!CanCostByLoc(bag, locCosts))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;
+            }
+
+            foreach (KeyValuePair<int, List<RewardItem>> kv in locCosts)
+            {
+                if (!bag.OnCostItemData(kv.Value, (ItemLocType)kv.Key, ItemGetWay.CostItem))
+                {
+                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                    reply();
+                    return;
+                }
             }
 
             rolePetInfo.ConfigId = request.TargetConfigId;
@@ -64,6 +75,45 @@ namespace ET
             response.PetInfo = rolePetInfo;
             reply();
             await ETTask.CompletedTask;
+        }
+
+        static Dictionary<int, List<RewardItem>> GroupCostByLoc(List<RewardItem> costs)
+        {
+            Dictionary<int, List<RewardItem>> locCosts = new Dictionary<int, List<RewardItem>>();
+            for (int i = 0; i < costs.Count; i++)
+            {
+                RewardItem cost = costs[i];
+                int itemType = cost.ItemType > 0 ? cost.ItemType : ItemBigType.Type_Item;
+                int loc = (int)ItemNewHelper.GetToItemLocType(itemType, cost.ItemID);
+                if (!locCosts.TryGetValue(loc, out List<RewardItem> list))
+                {
+                    list = new List<RewardItem>();
+                    locCosts.Add(loc, list);
+                }
+
+                list.Add(cost);
+            }
+
+            return locCosts;
+        }
+
+        static bool CanCostByLoc(BagComponentServer bag, Dictionary<int, List<RewardItem>> locCosts)
+        {
+            foreach (KeyValuePair<int, List<RewardItem>> kv in locCosts)
+            {
+                ItemLocType loc = (ItemLocType)kv.Key;
+                for (int i = 0; i < kv.Value.Count; i++)
+                {
+                    RewardItem cost = kv.Value[i];
+                    int itemType = cost.ItemType > 0 ? cost.ItemType : ItemBigType.Type_Item;
+                    if (bag.GetItemNumberForCost(itemType, cost.ItemID, loc) < cost.ItemNum)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }
