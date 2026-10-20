@@ -94,6 +94,9 @@ namespace ET
 		/// <summary>坐骑 升级经验</summary>
 		[ProtoMember(5)]
 		public int Exp_Mount { get; set; }
+		/// <summary>技能制造</summary>
+		[ProtoMember(6)]
+		public int Exp_Skill_Make { get; set; }
 
 	}
 }

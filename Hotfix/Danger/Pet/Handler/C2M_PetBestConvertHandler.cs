@@ -20,27 +20,21 @@ namespace ET
                 return;
             }
 
-            if (rolePetInfo.PetStatus == 1)
-            {
-                response.Error = ErrorCode.ERR_Pet_HeCheng_FightError;
-                reply();
-                return;
-            }
-
+     
             if (request.TargetConfigId == rolePetInfo.ConfigId
                 || !LDPetCategory.Instance.Contain(rolePetInfo.ConfigId)
                 || !PetHelper.IsShenShou(rolePetInfo.ConfigId)
                 || !LDPetCategory.Instance.Contain(request.TargetConfigId)
                 || !PetHelper.IsShenShou(request.TargetConfigId))
             {
-                response.Error = ErrorCode.ERR_Pet_HeCheng_IdError;
+                response.Error = ErrorCode.ERR_Pet_Convert_Error;
                 reply();
                 return;
             }
 
             if (!LDPet_StarCategory.Instance.Contain(rolePetInfo.Star))
             {
-                response.Error = ErrorCode.ERR_Pet_HeCheng_StarError;
+                response.Error = ErrorCode.ERR_Pet_Convert_Error;
                 reply();
                 return;
             }

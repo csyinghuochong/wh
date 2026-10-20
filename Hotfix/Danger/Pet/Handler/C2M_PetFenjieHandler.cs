@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -33,7 +33,7 @@ namespace ET
 			}
             if (rolePetInfo.PetStatus != 0)
 			{
-                response.Error = ErrorCode.ERR_Pet_HeCheng_FightError;
+                response.Error = ErrorCode.ERR_Pet_HeCheng_Error;
                 reply();
                 return;
             }

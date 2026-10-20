@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -21,7 +21,7 @@ namespace ET
 
             if (petinfo_1.PetStatus == 1 || petinfo_2.PetStatus == 1)
             {
-                response.Error = ErrorCode.ERR_Pet_HeCheng_FightError;
+                response.Error = ErrorCode.ERR_Pet_HeCheng_Error;
                 reply();
                 return;
             }
