@@ -771,7 +771,13 @@ namespace ET
                     continue;
                 }
 
-                if (config.Lv_AutoLearn > roleInfo.MakeLevelList[makeType])
+                int typeLevel = roleInfo.MakeLevelList[makeType];
+                if (typeLevel <= 0)
+                {
+                    typeLevel = 1;
+                }
+
+                if (config.Lv_AutoLearn > typeLevel)
                 {
                     continue;
                 }
