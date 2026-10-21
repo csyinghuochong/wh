@@ -575,8 +575,8 @@ namespace ET
 		 public const ushort F2C_FriendInfoResponse = 10572;
 		 public const ushort C2F_FriendApplyRequest = 10573;
 		 public const ushort F2C_FriendApplyResponse = 10574;
-		 public const ushort C2F_FriendBlacklistRequest = 10575;
-		 public const ushort F2C_FriendBlacklistResponse = 10576;
+		 public const ushort C2F_FriendBlackOperateRequest = 10575;
+		 public const ushort F2C_FriendBlackOperateResponse = 10576;
 		 public const ushort M2C_FriendApplyResult = 10577;
 		 public const ushort M2C_FriendSendApplyChange = 10578;
 		 public const ushort C2F_FriendApplyReplyRequest = 10579;

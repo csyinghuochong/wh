@@ -11278,10 +11278,10 @@ namespace ET
 	}
 
 //黑名单
-	[ResponseType(nameof(F2C_FriendBlacklistResponse))]
-	[Message(OuterOpcode.C2F_FriendBlacklistRequest)]
+	[ResponseType(nameof(F2C_FriendBlackOperateResponse))]
+	[Message(OuterOpcode.C2F_FriendBlackOperateRequest)]
 	[ProtoContract]
-	public partial class C2F_FriendBlacklistRequest: Object, IFriendActorRequest
+	public partial class C2F_FriendBlackOperateRequest: Object, IFriendActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -11300,9 +11300,9 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.F2C_FriendBlacklistResponse)]
+	[Message(OuterOpcode.F2C_FriendBlackOperateResponse)]
 	[ProtoContract]
-	public partial class F2C_FriendBlacklistResponse: Object, IFriendActorResponse
+	public partial class F2C_FriendBlackOperateResponse: Object, IFriendActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

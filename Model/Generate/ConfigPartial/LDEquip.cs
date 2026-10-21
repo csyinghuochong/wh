@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -36,16 +36,11 @@ namespace ET
                         continue;
                     }
 
-                    string[] attributeInfolist = attributeInfo.Split('_');
-                    if (attributeInfolist.Length < 2
-                        || !int.TryParse(attributeInfolist[0], out int attriId))
-                    {
-                        continue;
-                    }
 
-                    string[] attributeValue = attributeInfolist[1].Split('~');
-                    if (attributeValue.Length == 1
-                        && int.TryParse(attributeValue[0], out int fixedValue))
+                    string[] attributeValue = attributeInfo.Split('~');
+                    int attriId = int.Parse(attributeValue[0]);
+                    if (attributeValue.Length == 2
+                        && int.TryParse(attributeValue[1], out int fixedValue))
                     {
                         equipAttribute.Add(new AttributeRandom
                         {
@@ -54,9 +49,9 @@ namespace ET
                             AttributeValueMax = fixedValue,
                         });
                     }
-                    else if (attributeValue.Length == 2
-                             && int.TryParse(attributeValue[0], out int minValue)
-                             && int.TryParse(attributeValue[1], out int maxValue))
+                    else if (attributeValue.Length == 3
+                             && int.TryParse(attributeValue[1], out int minValue)
+                             && int.TryParse(attributeValue[2], out int maxValue))
                     {
                         equipAttribute.Add(new AttributeRandom
                         {

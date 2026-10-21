@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace ET
 {
     [ActorMessageHandler]
-    public class C2F_FriendBlacklistHandler : AMActorRpcHandler<Scene, C2F_FriendBlacklistRequest, F2C_FriendBlacklistResponse>
+    public class C2F_FriendBlackOperateHandler : AMActorRpcHandler<Scene, C2F_FriendBlackOperateRequest, F2C_FriendBlackOperateResponse>
     {
-        protected override async ETTask Run(Scene scene, C2F_FriendBlacklistRequest request, F2C_FriendBlacklistResponse response, Action reply)
+        protected override async ETTask Run(Scene scene, C2F_FriendBlackOperateRequest request, F2C_FriendBlackOperateResponse response, Action reply)
         {
             DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
             if (dBFriendInfo.FriendList.Contains(request.FriendId))
