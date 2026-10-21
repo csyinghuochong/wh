@@ -85,15 +85,15 @@ namespace ET
 		/// <summary>组</summary>
 		[ProtoMember(2)]
 		public int Group { get; set; }
-		/// <summary>经验</summary>
-		[ProtoMember(3)]
-		public int Exp { get; set; }
 		/// <summary>制造 时间</summary>
-		[ProtoMember(4)]
+		[ProtoMember(3)]
 		public double Make_Time { get; set; }
-		/// <summary>禁用</summary>
+		/// <summary>经验</summary>
+		[ProtoMember(4)]
+		public int Exp { get; set; }
+		/// <summary>自动 学习</summary>
 		[ProtoMember(5)]
-		public int Is_Close { get; set; }
+		public int Lv_AutoLearn { get; set; }
 		/// <summary>类型</summary>
 		[ProtoMember(6)]
 		public int Make_Type_1 { get; set; }
@@ -196,6 +196,9 @@ namespace ET
 		/// <summary>排序</summary>
 		[ProtoMember(39)]
 		public int Order_LS { get; set; }
+		/// <summary>禁用</summary>
+		[ProtoMember(40)]
+		public int Is_Close { get; set; }
 
 	}
 }

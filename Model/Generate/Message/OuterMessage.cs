@@ -653,6 +653,14 @@ namespace ET
 		[ProtoMember(73)]
 		public int OccTransferCount { get; set; }
 
+// 各制造类型等级。下标 = LDSkill_Make_Group.Type，0 不用。默认 1，不能超过角色等级
+		[ProtoMember(76)]
+		public List<int> MakeLevelList = new List<int>();
+
+// 各制造类型经验。下标与 MakeLevel 相同。等级被角色等级卡住时继续累计，上限 20 亿
+		[ProtoMember(77)]
+		public List<int> MakeExpList = new List<int>();
+
 	}
 
 	[Message(OuterOpcode.IntStringPair)]
@@ -4581,6 +4589,12 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<int> MakeLevel = new List<int>();
+
+		[ProtoMember(2)]
+		public List<int> MakeExp = new List<int>();
 
 	}
 
@@ -11374,6 +11388,44 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+	}
+
+//按名字或角色ID搜索玩家。名字模糊匹配 UserName；整段是数字时再按ID精确查。
+	[ResponseType(nameof(F2C_FriendSearchResponse))]
+	[Message(OuterOpcode.C2F_FriendSearchRequest)]
+	[ProtoContract]
+	public partial class C2F_FriendSearchRequest: Object, IFriendActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+		[ProtoMember(2)]
+		public string Keyword { get; set; }
+
+	}
+
+	[Message(OuterOpcode.F2C_FriendSearchResponse)]
+	[ProtoContract]
+	public partial class F2C_FriendSearchResponse: Object, IFriendActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<FriendInfo> RoleList = new List<FriendInfo>();
 
 	}
 

@@ -9,7 +9,7 @@ namespace ET
 
         public void GetAllConfigBytes(Dictionary<string, byte[]> output)
         {
-            foreach (string file in Directory.GetFiles($"../Config", "*.bytes"))
+            foreach (string file in Directory.GetFiles($"../Config/Excel", "*.bytes"))
             {
                 string key = Path.GetFileNameWithoutExtension(file);
                 output[key] = File.ReadAllBytes(file);
@@ -51,7 +51,7 @@ namespace ET
             {
                 configName = configName.Substring(3, configName.Length - 3);
             }
-            byte[] configBytes = File.ReadAllBytes($"../Config/{configName}.bytes");
+            byte[] configBytes = File.ReadAllBytes($"../Config/Excel/{configName}.bytes");
             return configBytes;
         }
     }

@@ -36,7 +36,7 @@ namespace ET
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             List<RewardItem> consumeItems = new List<RewardItem>();
             SkillMakeHelper.CollectConsumeItems(cfg, roleInfo.MakeIdList, 1, consumeItems, out int vitalityCost, out int bindGoldCost);
-            if (consumeItems.Count > 0 && !bag.CheckNeedItem(consumeItems))
+            if (consumeItems.Count > 0 && !HasEnoughByBagType(bag, consumeItems))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
@@ -67,7 +67,7 @@ namespace ET
             }
 
             const int getWay = ItemGetWay.SkillMake;
-            if (consumeItems.Count > 0 && !bag.OnCostItemData(consumeItems, ItemLocType.ItemLocBag, getWay))
+            if (consumeItems.Count > 0 && !CostByBagType(bag, consumeItems, getWay))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
@@ -89,8 +89,58 @@ namespace ET
                 MakePlayer = makePlayer,
                 MakeTime = makeTime,
             });
+            int makeType = RoleInfoComponentServerSystem.GetSkillMakeType(cfg);
+            roleInfoComponent.AddMakeExp(makeType, cfg.Exp);
+            response.MakeLevel = roleInfo.MakeLevelList;
+            response.MakeExp = roleInfo.MakeExpList;
             reply();
             await ETTask.CompletedTask;
+        }
+
+        /// <summary>按道具 BagType 对应的背包栏检查数量。CheckNeedItem 默认只查普通背包。</summary>
+        private static bool HasEnoughByBagType(BagComponentServer bag, List<RewardItem> consumeItems)
+        {
+            for (int i = 0; i < consumeItems.Count; i++)
+            {
+                RewardItem item = consumeItems[i];
+                int itemType = item.ItemType > 0 ? item.ItemType : ItemBigType.Type_Item;
+                ItemLocType loc = ItemNewHelper.GetToItemLocType(itemType, item.ItemID);
+                if (bag.GetItemNumberForCost(itemType, item.ItemID, loc) < item.ItemNum)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>同一背包栏的材料一起扣。不同 BagType 不能共用一次 ItemLocBag 扣除。</summary>
+        private static bool CostByBagType(BagComponentServer bag, List<RewardItem> consumeItems, int getWay)
+        {
+            Dictionary<int, List<RewardItem>> locCosts = new Dictionary<int, List<RewardItem>>();
+            for (int i = 0; i < consumeItems.Count; i++)
+            {
+                RewardItem item = consumeItems[i];
+                int itemType = item.ItemType > 0 ? item.ItemType : ItemBigType.Type_Item;
+                int loc = (int)ItemNewHelper.GetToItemLocType(itemType, item.ItemID);
+                if (!locCosts.TryGetValue(loc, out List<RewardItem> list))
+                {
+                    list = new List<RewardItem>();
+                    locCosts.Add(loc, list);
+                }
+
+                list.Add(item);
+            }
+
+            foreach (KeyValuePair<int, List<RewardItem>> kv in locCosts)
+            {
+                if (!bag.OnCostItemData(kv.Value, (ItemLocType)kv.Key, getWay))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static bool TryRollMakeItem(LDSkill_Make cfg, out RewardItem reward)

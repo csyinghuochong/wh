@@ -139,9 +139,45 @@ namespace ET
             return totalTili;
         }
 
+        public const int MakeExpMax = 2000000000;
+        public const int MakeTypeCount = 5;
+
         public static void CheckData(this RoleInfoComponentServer self)
         {
+            RoleInfo roleInfo = self.RoleInfo;
+            bool makeChanged = false;
+            EnsureMakeProgress(roleInfo);
+            for (int type = 1; type <= MakeTypeCount; type++)
+            {
+                if (roleInfo.MakeLevelList[type] <= 0)
+                {
+                    roleInfo.MakeLevelList[type] = 1;
+                    makeChanged = true;
+                }
+
+                if (roleInfo.MakeExpList[type] > MakeExpMax)
+                {
+                    roleInfo.MakeExpList[type] = MakeExpMax;
+                    makeChanged = true;
+                }
+                else if (roleInfo.MakeExpList[type] < 0)
+                {
+                    roleInfo.MakeExpList[type] = 0;
+                    makeChanged = true;
+                }
+            }
+
+            if (self.AutoLearnMakeByLevel())
+            {
+                makeChanged = true;
+            }
+
             Unit unit = self.GetParent<Unit>();
+            if (makeChanged)
+            {
+                DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, self).Coroutine();
+            }
+
             RoleAddPointHelper.EnsureLevel1InitPoints(unit, self.RoleInfo.Lv);
 
             DataCollationComponent dataCollationComponent = unit.GetComponent<DataCollationComponent>();
@@ -620,6 +656,174 @@ namespace ET
                 self.RoleInfo.Exp -= upNeedExp;
                 self.UpdateRoleData(UserDataType.Level, "1", notice);
             }
+        }
+
+        /// <summary>
+        /// 给指定制造类型加经验。该类型等级不超过角色等级；经验继续累计，上限 20 亿。
+        /// Exp_Skill_Make 为当前级升下一级所需经验，小于等于 0 表示不能再升级。
+        /// </summary>
+        public static void AddMakeExp(this RoleInfoComponentServer self, int makeType, int addExp)
+        {
+            if (makeType <= 0 || makeType > MakeTypeCount)
+            {
+                return;
+            }
+
+            RoleInfo roleInfo = self.RoleInfo;
+            EnsureMakeProgress(roleInfo);
+            int oldLevel = roleInfo.MakeLevelList[makeType];
+            if (roleInfo.MakeLevelList[makeType] == 0)
+            {
+                roleInfo.MakeLevelList[makeType] = 1;
+            }
+
+            int oldExp = roleInfo.MakeExpList[makeType];
+            long exp = roleInfo.MakeExpList[makeType];
+            if (addExp > 0)
+            {
+                exp += addExp;
+            }
+
+            if (exp > MakeExpMax)
+            {
+                exp = MakeExpMax;
+            }
+
+            if (exp < 0)
+            {
+                exp = 0;
+            }
+
+            roleInfo.MakeExpList[makeType] = (int)exp;
+            int roleLv = roleInfo.Lv;
+            while (roleInfo.MakeLevelList[makeType] < roleLv)
+            {
+                if (!LDExp_LvCategory.Instance.Contain(roleInfo.MakeLevelList[makeType]))
+                {
+                    break;
+                }
+
+                int need = LDExp_LvCategory.Instance.Get(roleInfo.MakeLevelList[makeType]).Exp_Skill_Make;
+                if (need <= 0 || roleInfo.MakeExpList[makeType] < need)
+                {
+                    break;
+                }
+
+                roleInfo.MakeExpList[makeType] -= need;
+                roleInfo.MakeLevelList[makeType]++;
+            }
+
+            bool learned = false;
+            if (roleInfo.MakeLevelList[makeType] > oldLevel)
+            {
+                learned = self.AutoLearnMakeByLevel();
+            }
+
+            if (!learned && roleInfo.MakeLevelList[makeType] == oldLevel && roleInfo.MakeExpList[makeType] == oldExp)
+            {
+                return;
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            if (learned)
+            {
+                MessageHelper.SendToClient(unit, new M2C_UpdateRoleInfoMessage { RoleInfo = roleInfo });
+            }
+
+            DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, self).Coroutine();
+        }
+
+        /// <summary>
+        /// 配方所属类型的制造等级达到 Skill_Make.Lv_AutoLearn，且已学会该类型时，自动加入 MakeIdList。
+        /// Lv_AutoLearn 小于等于 0 不自动学。
+        /// </summary>
+        public static bool AutoLearnMakeByLevel(this RoleInfoComponentServer self)
+        {
+            RoleInfo roleInfo = self.RoleInfo;
+            List<int> makeTypeList = roleInfo.MakeTypeList;
+            if (makeTypeList == null || makeTypeList.Count == 0)
+            {
+                return false;
+            }
+
+            EnsureMakeProgress(roleInfo);
+            if (roleInfo.MakeIdList == null)
+            {
+                roleInfo.MakeIdList = new List<int>();
+            }
+
+            bool learned = false;
+            foreach (LDSkill_Make config in LDSkill_MakeCategory.Instance.GetAll().Values)
+            {
+                if (config.Lv_AutoLearn <= 0)
+                {
+                    continue;
+                }
+
+                if (!LDSkill_Make_GroupCategory.Instance.Contain(config.Group))
+                {
+                    continue;
+                }
+
+                int makeType = LDSkill_Make_GroupCategory.Instance.Get(config.Group).Type;
+                if (makeType <= 0 || makeType > MakeTypeCount)
+                {
+                    continue;
+                }
+
+                if (config.Lv_AutoLearn > roleInfo.MakeLevelList[makeType])
+                {
+                    continue;
+                }
+
+                if (!makeTypeList.Contains(makeType))
+                {
+                    continue;
+                }
+
+                if (roleInfo.MakeIdList.Contains(config.Id))
+                {
+                    continue;
+                }
+
+                roleInfo.MakeIdList.Add(config.Id);
+                learned = true;
+            }
+
+            return learned;
+        }
+
+        static void EnsureMakeProgress(RoleInfo roleInfo)
+        {
+            if (roleInfo.MakeLevelList == null)
+            {
+                roleInfo.MakeLevelList = new List<int>();
+            }
+
+            if (roleInfo.MakeExpList == null)
+            {
+                roleInfo.MakeExpList = new List<int>();
+            }
+
+            while (roleInfo.MakeLevelList.Count <= MakeTypeCount)
+            {
+                roleInfo.MakeLevelList.Add(0);
+            }
+
+            while (roleInfo.MakeExpList.Count <= MakeTypeCount)
+            {
+                roleInfo.MakeExpList.Add(0);
+            }
+        }
+
+        public static int GetSkillMakeType(LDSkill_Make cfg)
+        {
+            if (cfg == null || !LDSkill_Make_GroupCategory.Instance.Contain(cfg.Group))
+            {
+                return 0;
+            }
+
+            return LDSkill_Make_GroupCategory.Instance.Get(cfg.Group).Type;
         }
 
         public static void OnMakeItem(this RoleInfoComponentServer self, int makeId)
