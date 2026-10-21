@@ -16,18 +16,18 @@ namespace ET
     /// CALCULATE_PHYSICS_DAMAGE / CALCULATE_MAGIC_DAMAGE / CALCULATE_HEAL_DAMAGE 实现。
     /// 公式来源：
     ///   - Document/属性计算/属性公式.txt（威力/分摊/附伤/生命附伤）
-    ///   - Document/属性计算/属性作用.txt（破防 x、生效防御 y、减伤比例）
+    ///   - Document/技能编辑器计算物理伤害.txt（破防 x、生效防御 y、伤害率）
     /// </summary>
     internal static class SkillEditorDamageHelper
     {
         /// <summary>暴击默认倍率 1.5（文档外，技能编辑器参数 21 可再加成）。</summary>
         private const double DefaultCritMultiplier = 1.5d;
 
-        /// <summary>属性作用：y/135 中的除数。</summary>
-        private const double DefenseMitigationDivisor = 135d;
+        /// <summary>伤害率分母基数：135 + 45×攻击方等级。</summary>
+        private const double DefenseRateBase = 135d;
 
-        /// <summary>属性作用：减伤公式中 45×攻击方等级 的系数。</summary>
-        private const double DefenseMitigationLevelFactor = 45d;
+        /// <summary>伤害率分母中，攻击方每级增加的防御刻度。</summary>
+        private const double DefenseRateLevelFactor = 45d;
 
         /// <summary>五系附伤：技能参数索引 + 攻击方附伤属性 ID + 防御方抵抗属性 ID。</summary>
         private readonly struct ElementalDamageConfig
@@ -142,7 +142,7 @@ namespace ET
             // 【属性公式】在 [221, 334.5] 间随机得到分摊后攻击值（尚未扣防）
             double rawNormalDamage = RollDouble(normalMin, normalMax);
 
-            // 【属性作用】破防 x → 生效防御 y → 减伤比例 → 常规伤害 × (1-减伤比例)
+            // 【属性作用】破防 x → 生效防御 y → 伤害率 → 常规伤害 × 伤害率
             ResolveDefenseMitigation(
                 ctx,
                 caster,
@@ -150,8 +150,8 @@ namespace ET
                 targetNumeric,
                 kind,
                 out double effectiveDefenseY,
-                out double damageReductionRatio);
-            double mitigatedNormalDamage = ApplyDamageReduction(rawNormalDamage, damageReductionRatio);
+                out double damageRate);
+            double mitigatedNormalDamage = ApplyDamageRate(rawNormalDamage, damageRate);
             long normalDamage = FloorPositiveDamage(mitigatedNormalDamage);
 
             // 暴击（技能参数 21 + 攻击方爆伤属性 72）
@@ -167,12 +167,12 @@ namespace ET
             // 【文档第二段】五系附伤，分摊后逐系 max(0, 攻击附伤+技能附伤/分摊-抵抗)，求和=185
             long elementalDamage = ResolveElementalDamage(ctx, caster, target, 36);
 
-            // 【文档第三段】生命比例附伤；参数 31=true 时同样套用属性作用的减伤比例
+            // 【文档第三段】生命比例附伤；参数 31=true 时同样乘伤害率
             long hpDamage = ResolveHpDamage(
                 ctx,
                 casterNumeric,
                 targetNumeric,
-                damageReductionRatio,
+                damageRate,
                 GetParamBool(ctx, 31, true));
 
             // 总伤害 = 常规 + 五系 + 生命
@@ -206,7 +206,7 @@ namespace ET
             if (Log.IsDebugEnabled)
             {
                 Log.Debug(
-                    $"CALCULATE_{(kind == SkillEditorDamageKind.Physics ? "PHYSICS" : "MAGIC")}_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} rs={rs} y={effectiveDefenseY.ToString(CultureInfo.InvariantCulture)} reduction={damageReductionRatio.ToString(CultureInfo.InvariantCulture)} normal={normalDamage} elemental={elementalDamage} hp={hpDamage} total={totalDamage}");
+                    $"CALCULATE_{(kind == SkillEditorDamageKind.Physics ? "PHYSICS" : "MAGIC")}_DAMAGE skill={skillId} level={level} caster={caster.Id} target={target.Id} rs={rs} y={effectiveDefenseY.ToString(CultureInfo.InvariantCulture)} rate={damageRate.ToString(CultureInfo.InvariantCulture)} normal={normalDamage} elemental={elementalDamage} hp={hpDamage} total={totalDamage}");
             }
         }
 
@@ -456,13 +456,13 @@ namespace ET
         /// <summary>
         /// 【文档第三段】最大生命比例附伤。
         /// 施法者部分=min(HP_Max*比例,上限)/生命分摊数；目标部分=min(HP_Max*比例,上限)。
-        /// 参数 31=true 时，再乘 (1-减伤比例)（属性作用文档）。
+        /// 参数 31=true 时，再乘伤害率。
         /// </summary>
         private static long ResolveHpDamage(
             SkillEditorFunctionContext ctx,
             NumericComponent casterNumeric,
             NumericComponent targetNumeric,
-            double damageReductionRatio,
+            double damageRate,
             bool useReduction)
         {
             // 施法者/目标最大生命（文档：10000 / 5000）
@@ -489,10 +489,10 @@ namespace ET
                 return 0;
             }
 
-            // 【属性作用 / 属性公式】是否套用减伤比例，由 skill 参数 31 传入
+            // 【属性作用】是否乘伤害率，由 skill 参数 31 传入
             if (useReduction)
             {
-                hpDamage = ApplyDamageReduction(hpDamage, damageReductionRatio);
+                hpDamage = ApplyDamageRate(hpDamage, damageRate);
             }
 
             if (hpDamage <= 0d)
@@ -504,7 +504,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 【属性作用】常规段防御减免：破防 x → 生效防御 y → 减伤比例。
+        /// 【属性作用】常规段防御减免：破防 x → 生效防御 y → 伤害率。
         /// </summary>
         private static void ResolveDefenseMitigation(
             SkillEditorFunctionContext ctx,
@@ -513,15 +513,15 @@ namespace ET
             NumericComponent targetNumeric,
             SkillEditorDamageKind kind,
             out double effectiveDefenseY,
-            out double damageReductionRatio)
+            out double damageRate)
         {
             // x = max(0, 攻击方 62|63 + 无视防御比例(18) - 受击方 64|65)
             double breakRatioX = ResolvePenetrationBreakRatio(ctx, casterNumeric, targetNumeric, kind);
             // y = max(0, (1-x)*受击方防御 - 攻击方 60|61 - 无视最小~最大防御(19~20))，在区间内随机
             effectiveDefenseY = ResolveEffectiveDefenseY(ctx, casterNumeric, targetNumeric, kind, breakRatioX);
-            // 减伤比例 = 1 / (1 + y/135 + 45×攻击方等级)
+            // 伤害率 = 1 / (1 + y / (135 + 45×攻击方等级))
             int attackerLevel = ResolveUnitLevel(caster);
-            damageReductionRatio = ResolveDamageReductionRatio(effectiveDefenseY, attackerLevel);
+            damageRate = ResolveDamageRate(effectiveDefenseY, attackerLevel);
         }
 
         /// <summary>
@@ -588,11 +588,17 @@ namespace ET
             return RollDouble(yMin, yMax);
         }
 
-        /// <summary>【属性作用】减伤比例 = 1 / (1 + y/135 + 45×攻击方等级)。</summary>
-        private static double ResolveDamageReductionRatio(double effectiveDefenseY, int attackerLevel)
+        /// <summary>【属性作用】伤害率 = 1 / (1 + y / (135 + 45×攻击方等级))。</summary>
+        private static double ResolveDamageRate(double effectiveDefenseY, int attackerLevel)
         {
             double level = Math.Max(0, attackerLevel);
-            double denominator = 1d + effectiveDefenseY / DefenseMitigationDivisor + DefenseMitigationLevelFactor * level;
+            double defenseScale = DefenseRateBase + DefenseRateLevelFactor * level;
+            if (defenseScale <= 0d)
+            {
+                return 0d;
+            }
+
+            double denominator = 1d + Math.Max(0d, effectiveDefenseY) / defenseScale;
             if (denominator <= 0d)
             {
                 return 0d;
@@ -601,15 +607,15 @@ namespace ET
             return Clamp01(1d / denominator);
         }
 
-        /// <summary>【属性作用】最终伤害 = 攻击 × (1 - 减伤比例)。</summary>
-        private static double ApplyDamageReduction(double rawDamage, double damageReductionRatio)
+        /// <summary>【属性作用】最终伤害 = 攻击 × 伤害率。</summary>
+        private static double ApplyDamageRate(double rawDamage, double damageRate)
         {
             if (rawDamage <= 0d)
             {
                 return 0d;
             }
 
-            return Math.Max(0d, rawDamage * (1d - Clamp01(damageReductionRatio)));
+            return Math.Max(0d, rawDamage * Clamp01(damageRate));
         }
 
         /// <summary>
