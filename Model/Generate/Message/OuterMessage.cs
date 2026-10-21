@@ -4596,6 +4596,9 @@ namespace ET
 		[ProtoMember(2)]
 		public List<int> MakeExp = new List<int>();
 
+		[ProtoMember(3)]
+		public List<int> MakeIdList = new List<int>();
+
 	}
 
 //制造  end####################################################

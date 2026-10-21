@@ -93,6 +93,7 @@ namespace ET
             roleInfoComponent.AddMakeExp(makeType, cfg.Exp);
             response.MakeLevel = roleInfo.MakeLevelList;
             response.MakeExp = roleInfo.MakeExpList;
+            response.MakeIdList = roleInfo.MakeIdList;
             reply();
             await ETTask.CompletedTask;
         }
