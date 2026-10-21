@@ -4,6 +4,7 @@ using System;
 namespace ET
 {
 
+    //回复别人的好友申请
     [ActorMessageHandler]
     public class C2F_FriendApplyReplyHandler : AMActorRpcHandler<Scene, C2F_FriendApplyReplyRequest, F2C_FriendApplyReplyResponse>
     {
@@ -25,26 +26,35 @@ namespace ET
                 return;
             }
 
-            if (request.ReplyCode == 1) //同意
+            DBFriendInfo applicantInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.FriendID);
+            bool applicantChanged = false;
+            if (request.ReplyCode == 1)
             {
                 if (!dBFriendInfo.FriendList.Contains(request.FriendID))
                 {
                     dBFriendInfo.FriendList.Add(request.FriendID);
                 }
 
-                //对方也同样标记
-                DBFriendInfo dBFriendInfo_2 = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.FriendID);
-                if (dBFriendInfo_2 != null)
+                if (applicantInfo != null && !applicantInfo.FriendList.Contains(request.UserID))
                 {
-                    if (!dBFriendInfo_2.FriendList.Contains(request.UserID))
-                    {
-                        dBFriendInfo_2.FriendList.Add(request.UserID);
-                    }
-                    await DBHelper.SaveComponent(scene.DomainZone(), request.FriendID,dBFriendInfo_2 );
+                    applicantInfo.FriendList.Add(request.UserID);
+                    applicantChanged = true;
                 }
             }
-            
-            await DBHelper.SaveComponent(scene.DomainZone(),  request.UserID, dBFriendInfo);
+
+            if (applicantInfo != null && applicantInfo.SendApplyList.Remove(request.UserID))
+            {
+                applicantChanged = true;
+                await ServerMessageHelper.SendToClient(scene.DomainZone(), request.FriendID,
+                    new M2C_FriendSendApplyChange() { UserId = request.UserID, ReplyCode = request.ReplyCode });
+            }
+
+            if (applicantChanged)
+            {
+                await DBHelper.SaveComponent(scene.DomainZone(), request.FriendID, applicantInfo);
+            }
+
+            await DBHelper.SaveComponent(scene.DomainZone(), request.UserID, dBFriendInfo);
             reply();
         }
     }

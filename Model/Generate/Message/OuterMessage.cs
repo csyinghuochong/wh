@@ -11237,6 +11237,9 @@ namespace ET
 		[ProtoMember(5)]
 		public List<ChatInfo> FriendChats = new List<ChatInfo>();
 
+		[ProtoMember(6)]
+		public List<long> SendApplyList = new List<long>();
+
 	}
 
 //好友申请
@@ -11252,7 +11255,7 @@ namespace ET
 		public long ActorId { get; set; }
 
 		[ProtoMember(2)]
-		public long UserID { get; set; }
+		public long FriendId { get; set; }
 
 		[ProtoMember(1)]
 		public FriendInfo RoleInfo { get; set; }
@@ -11318,6 +11321,18 @@ namespace ET
 	{
 		[ProtoMember(1)]
 		public FriendInfo FriendInfo { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_FriendSendApplyChange)]
+	[ProtoContract]
+	public partial class M2C_FriendSendApplyChange: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+		[ProtoMember(2)]
+		public int ReplyCode { get; set; }
 
 	}
 
@@ -11462,6 +11477,9 @@ namespace ET
 
 		[ProtoMember(9)]
 		public int Combat { get; set; }
+
+		[ProtoMember(10)]
+		public int Applied { get; set; }
 
 	}
 

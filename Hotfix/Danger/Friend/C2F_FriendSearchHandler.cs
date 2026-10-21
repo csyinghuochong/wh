@@ -19,6 +19,18 @@ namespace ET
             List<long> ids = await FriendHelper.SearchPlayerIds(scene.DomainZone(), request.UserID, keyword);
             HashSet<long> onlineIds = await ServerMessageHelper.GetChatOnlineUnitIds(scene.DomainZone());
             response.RoleList = await FriendHelper.GetFriendInfos(ids, onlineIds);
+            DBFriendInfo myFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
+            if (myFriendInfo != null)
+            {
+                for (int i = 0; i < response.RoleList.Count; i++)
+                {
+                    if (myFriendInfo.SendApplyList.Contains(response.RoleList[i].UserId))
+                    {
+                        response.RoleList[i].Applied = 1;
+                    }
+                }
+            }
+
             reply();
         }
     }

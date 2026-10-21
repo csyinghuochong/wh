@@ -3,17 +3,20 @@
 namespace ET
 {
 
+    /// <summary>
+    /// 申请添加别人好友
+    /// </summary>
     [ActorMessageHandler]
     public class C2F_FriendApplyHandler : AMActorRpcHandler<Scene, C2F_FriendApplyRequest, F2C_FriendApplyResponse>
     {
 
         protected override async ETTask Run(Scene scene, C2F_FriendApplyRequest request, F2C_FriendApplyResponse response, Action reply)
         {
-            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
+            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.FriendId);
 
             if (dBFriendInfo == null)
             {
-                ///dBFriendInfo = (DBFriendInfo)await DBHelper.AddDataComponent<DBFriendInfo>(scene.DomainZone(), request.UserID, DBHelper.DBFriendInfo);
+                ///dBFriendInfo = (DBFriendInfo)await DBHelper.AddDataComponent<DBFriendInfo>(scene.DomainZone(), request.FriendId, DBHelper.DBFriendInfo);
                 //Log.Error($"C2F_FriendApplyRequest.1");
                 response.Error = ErrorCode.ERR_NonePlayerError;
                 reply();
@@ -29,12 +32,19 @@ namespace ET
             {
                 dBFriendInfo.ApplyList.Add(applyUserId);
                 DBHelper.SaveComponent(scene.DomainZone(), dBFriendInfo.Id, dBFriendInfo).Coroutine();
-                await ServerMessageHelper.SendToClient(scene.DomainZone(), request.UserID,
+                await ServerMessageHelper.SendToClient(scene.DomainZone(), request.FriendId,
                     new M2C_FriendApplyResult() { FriendInfo = request.RoleInfo });
                 if (applyUserId > 0)
                 {
                     MessageHelper.SendToLocationActor(applyUserId, new Friend2M_SendApply());
                 }
+            }
+
+            DBFriendInfo applicantInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), applyUserId);
+            if (applicantInfo != null && !applicantInfo.SendApplyList.Contains(request.FriendId))
+            {
+                applicantInfo.SendApplyList.Add(request.FriendId);
+                DBHelper.SaveComponent(scene.DomainZone(), applicantInfo.Id, applicantInfo).Coroutine();
             }
 
             reply();

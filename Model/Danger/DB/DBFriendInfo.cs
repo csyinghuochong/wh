@@ -14,9 +14,14 @@ namespace ET
         public List<long> FriendList = new List<long>();
 
         /// <summary>
-        /// 申请列表
+        /// 别人申请我的列表
         /// </summary>
         public List<long> ApplyList = new List<long>();
+
+        /// <summary>
+        /// 我发起、对方未处理的申请
+        /// </summary>
+        public List<long> SendApplyList = new List<long>();
 
         /// <summary>
         /// 黑名单

@@ -37,6 +37,7 @@ namespace ET
             }
 
             response.FriendChats = dBFriendInfo.FriendChats;
+            response.SendApplyList.AddRange(dBFriendInfo.SendApplyList);
             reply();
         }
     }
