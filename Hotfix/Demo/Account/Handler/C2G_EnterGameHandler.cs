@@ -443,7 +443,6 @@ namespace ET
 
 			long unionid = unit.GetUnionId();
 			numericComponent.ApplyValue(NumericType.CombatRankID, chat2G_EnterChat.RankId, false,false);
-            numericComponent.ApplyValue(NumericType.OccCombatRankID, chat2G_EnterChat.OccRankId, false, false);
             numericComponent.ApplyValue(NumericType.SoloRankId, chat2G_EnterChat.SoloRankId, false, false);
       
             long unionsceneid = DBHelper.GetUnionServerId(unit);

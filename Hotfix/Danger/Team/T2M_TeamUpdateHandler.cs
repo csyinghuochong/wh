@@ -8,7 +8,9 @@ namespace ET
         protected override async ETTask Run(Unit unit, T2M_TeamUpdateRequest message)
         {
             Log.Debug($"T2M_TeamUpdate  {unit.Id}  {message.TeamId}");
-            unit.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamId, message.TeamId);
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            numericComponent.ApplyValue(NumericType.TeamId, message.TeamId);
+            await DBHelper.SavePlayerComponent(unit.Id, numericComponent);
 
             long rolePetId = unit.GetComponent<PetComponentServer>().GetFightPetId();
             Unit unitpet = unit.GetParent<UnitComponent>().Get(rolePetId);

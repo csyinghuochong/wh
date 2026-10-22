@@ -561,7 +561,6 @@ namespace ET
                 return;
             }
             numericComponent.ApplyValue(NumericType.CombatRankID, Response.RankId);
-            numericComponent.ApplyValue(NumericType.OccCombatRankID, Response.OccRankId);
             numericComponent.ApplyValue(NumericType.SoloRankId, Response.SoloRankId);
 
             // 同步上报战区排行（不影响本服名次）

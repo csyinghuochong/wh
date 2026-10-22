@@ -55,6 +55,7 @@ namespace ET
             numericComponent.Set((int)NumericType.Now_Dead, 0, false);
 
             numericComponent.Set((int)NumericType.TeamId, 0, false);
+            DBHelper.SavePlayerComponent(unit.Id, numericComponent).Coroutine();
             numericComponent.Set((int)NumericType.HP_Current_8, numericComponent.GetAsLong((int)NumericType.HP_Max_10), false);
         }
 

@@ -48,13 +48,7 @@ namespace ET
                     response.FashionIds = bagComponentsServer.FashionEquipList;
                     response.MainHandId = bagComponentsServer.GetWuqiItemId();
                     response.OffHandId = bagComponentsServer.GetFuShouItemId();
-                    long teamServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
-                    T2Chat_GetTeamInfoResponse teamResponse = (T2Chat_GetTeamInfoResponse)await ActorMessageSenderComponent.Instance.Call(
-                        teamServerId, new Chat2T_GetTeamInfoRequest() { UserID = request.UserId });
-                    if (teamResponse.Error == ErrorCode.ERR_Success && teamResponse.TeamInfo != null)
-                    {
-                        response.TeamId = teamResponse.TeamInfo.TeamId;
-                    }
+                    response.TeamId = numericComponent.GetAsLong(NumericType.TeamId);
                     break;
                 //只返回名字
                 case 1:
