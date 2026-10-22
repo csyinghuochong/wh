@@ -56,7 +56,7 @@ namespace ET
                     ChatInfo = new ChatInfo()
                     {
                         UserId = request.TeamPlayerInfo.UserID,
-                        ChannelId = (int)ChannelEnum.Word,
+                        ChannelId = (int)ChannelEnum.Zone,
                         ChatMsg = string.IsNullOrEmpty(recruitMsg) ? link : $"{recruitMsg} {link}",
                         ChatMsg_EN = string.IsNullOrEmpty(recruitMsg) ? link : $"{recruitMsg} {link}",
                         PlayerName = request.TeamPlayerInfo.PlayerName,

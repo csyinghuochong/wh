@@ -211,7 +211,7 @@ namespace ET
                 m2C_SyncChatInfo.ChatInfo = new ChatInfo();
                 m2C_SyncChatInfo.ChatInfo.PlayerLevel = roleInfoComponent.RoleInfo.Lv;
                 m2C_SyncChatInfo.ChatInfo.Occ = roleInfoComponent.RoleInfo.Occ;
-                m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Pick;
+                m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Team;
                 m2C_SyncChatInfo.ChatInfo.Time = serverTime;
                 string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);
                 string numShow = "";

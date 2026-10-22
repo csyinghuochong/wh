@@ -8327,6 +8327,9 @@ namespace ET
 		[ProtoMember(9)]
 		public string ChatMsg_EN { get; set; }
 
+		[ProtoMember(10)]
+		public int ServerId { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_SyncChatInfo)]

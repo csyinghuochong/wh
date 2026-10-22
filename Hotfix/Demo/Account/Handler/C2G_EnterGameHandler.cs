@@ -401,21 +401,16 @@ namespace ET
 				return 0;
 			}
 
-			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-			RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-			string roleName = roleInfo.Name;
-			int homeZone = UnitZoneHelper.GetHomeZone(unit);
-			ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), homeZone);
-			string serverName = serverItem != null ? serverItem.ServerName : homeZone.ToString();
+			RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
 			NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-			UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
+			long gateSessionActorId = unit.GetComponent<UnitGateComponent>().GateSessionActorId;
 			Chat2G_EnterChat chat2G_EnterChat = (Chat2G_EnterChat)await MessageHelper.CallActor(warChatServerId, new G2Chat_EnterChat()
 			{
 				UnitId = unit.Id,
-				Name = $"[{serverName}]{roleName}",
+				Name = roleInfo.Name,
 				Level = roleInfo.Lv,
 				UnionId = numericComponent.GetAsLong(NumericType.UnionId_0),
-				GateSessionActorId = unitGateComponent.GateSessionActorId
+				GateSessionActorId = gateSessionActorId
 			});
 			return chat2G_EnterChat.ChatInfoUnitInstanceId;
 		}

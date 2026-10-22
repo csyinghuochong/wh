@@ -21,25 +21,13 @@ namespace ET
                 }
 
                 long serverTime = TimeHelper.ServerNow();
-                if (serverTime - chatInfoUnit.LastSendChat < TimeHelper.Second * 10)
-                {
-                    response.Error = ErrorCode.ERR_WordChat;
-                    reply();
-                    return;
-                }
-
-                if (!ServerHelper.IsBanHaoZone(chatInfoUnit.DomainZone()) && chatInfoUnit.Level < 20 - 1)
-                {
-                    response.Error = ErrorCode.ERR_LevelIsNot;
-                    reply();
-                    return;
-                }
-
+              
                 chatInfoUnit.LastSendChat = serverTime;
                 request.ChatInfo.UserId = chatInfoUnit.Id;
                 M2C_SyncChatInfo m2C_SyncChatInfo = new M2C_SyncChatInfo();
                 request.ChatInfo.Time = serverTime;
                 request.ChatInfo.PlayerName = chatInfoUnit.Name;
+                request.ChatInfo.ServerId = UnitZoneHelper.GetHomeZone(chatInfoUnit.Id);
                 m2C_SyncChatInfo.ChatInfo = request.ChatInfo;
                 ChatSceneComponent chatScene = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
                 int zone = chatInfoUnit.DomainZone();
@@ -61,44 +49,36 @@ namespace ET
                         chatSent = true;
                         break;
                     }
-                    case (int)ChannelEnum.PaiMai:
-                    case (int)ChannelEnum.Word:
-                        if (request.ChatInfo.ChannelId == ChannelEnum.Word)
+                    case (int)ChannelEnum.Zone:
+                        BeReportedInfo bePortedNumber = null;
+                        chatScene.BeReportedNumber.TryGetValue(request.ChatInfo.UserId, out bePortedNumber);
+                        if (bePortedNumber != null && bePortedNumber.JinYanTime > serverTime)
                         {
-                            BeReportedInfo bePortedNumber = null;
-                            chatScene.BeReportedNumber.TryGetValue(request.ChatInfo.UserId, out bePortedNumber);
-                            if (bePortedNumber != null && bePortedNumber.JinYanTime > serverTime)
-                            {
-                                long leftTime = bePortedNumber.JinYanTime - serverTime;
-                                int hour = (int)(leftTime * 1f / TimeHelper.Hour);
-                                hour = Math.Max(hour, 1);
-                                response.Error = ErrorCode.ERR_Chat_JinYan_3;
-                                response.Message = $"你当前已经被禁言，{hour}小时后解封！";
-                                reply();
-                                return;
-                            }
-                            if (bePortedNumber != null && bePortedNumber.JinYanTime != 0 && bePortedNumber.JinYanTime <= serverTime)
-                            {
-                                chatScene.BeReportedNumber.Remove(request.ChatInfo.UserId);
-                            }
-
-                            LogHelper.ChatInfo( $"区:{chatInfoUnit.DomainZone()}    {request.ChatInfo.PlayerName}:  {request.ChatInfo.ChatMsg} ");
+                            long leftTime = bePortedNumber.JinYanTime - serverTime;
+                            int hour = (int)(leftTime * 1f / TimeHelper.Hour);
+                            hour = Math.Max(hour, 1);
+                            response.Error = ErrorCode.ERR_Chat_JinYan_3;
+                            response.Message = $"你当前已经被禁言，{hour}小时后解封！";
+                            reply();
+                            return;
                         }
+                        if (bePortedNumber != null && bePortedNumber.JinYanTime != 0 && bePortedNumber.JinYanTime <= serverTime)
+                        {
+                            chatScene.BeReportedNumber.Remove(request.ChatInfo.UserId);
+                        }
+
+                        LogHelper.ChatInfo($"区:{chatInfoUnit.DomainZone()}    {request.ChatInfo.PlayerName}:  {request.ChatInfo.ChatMsg} ");
 
                         foreach (var otherUnit in chatScene.ChatInfoUnitsDict.Values)
                         {
                             MessageHelper.SendActor(otherUnit.GateSessionActorId, m2C_SyncChatInfo);
                         }
 
-                        if (request.ChatInfo.ChannelId == (int)ChannelEnum.Word)
+                        chatScene.WordChatInfos.Add(request.ChatInfo);
+                        if (chatScene.WordChatInfos.Count > 10)
                         {
-                            chatScene.WordChatInfos.Add(request.ChatInfo);
-                            if (chatScene.WordChatInfos.Count > 10)
-                            {
-                                chatScene.WordChatInfos.RemoveAt(0);
-                            }
+                            chatScene.WordChatInfos.RemoveAt(0);
                         }
-
                         chatSent = true;
                         break;
                     case (int)ChannelEnum.Team:
