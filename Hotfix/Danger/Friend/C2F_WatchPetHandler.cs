@@ -9,7 +9,13 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_WatchPetRequest request, F2C_WatchPetResponse response, Action reply)
         {
-            int homeZone = UnitZoneHelper.GetHomeZone(request.UnitID);
+            int homeZone = FriendHelper.PrepareHomeZone(request.UnitID);
+            if (homeZone == 0)
+            {
+                response.Error = ErrorCode.ERR_Error;
+                reply();
+                return;
+            }
             PetComponentServer petComponentServer = await DBHelper.GetComponent<PetComponentServer>(homeZone, request.UnitID);
             if (petComponentServer == null)
             {

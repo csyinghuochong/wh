@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -26,7 +26,7 @@ namespace ET
                 List<RoleInfoComponentServer> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(zone, _account => _account.UserName == userName);
                 if (result == null || result.Count == 0)
                 {
-                    errorCode = ErrorCode.ERR_NonePlayerError;
+                    errorCode = ErrorCode.ERR_PlayerNoFind;
                     response.Error = errorCode;
                     reply();
                     return;

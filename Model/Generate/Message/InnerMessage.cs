@@ -3347,6 +3347,12 @@ namespace ET
 		[ProtoMember(7)]
 		public long CreateTime { get; set; }
 
+		[ProtoMember(8)]
+		public int RoleHeadId { get; set; }
+
+		[ProtoMember(9)]
+		public int RoleHeadFrame { get; set; }
+
 	}
 
 	[Message(InnerOpcode.Chat2G_EnterChat)]

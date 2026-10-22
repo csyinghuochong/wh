@@ -10,10 +10,17 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_FriendApplyReplyRequest request, F2C_FriendApplyReplyResponse response, Action reply)
         {
-            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
+            int selfZone = FriendHelper.PrepareHomeZone(request.UserID);
+            if (selfZone == 0)
+            {
+                response.Error = ErrorCode.ERR_PlayerNoFind;
+                reply();
+                return;
+            }
+            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(selfZone, request.UserID);
             if (dBFriendInfo == null)
             {
-                response.Error = ErrorCode.ERR_UserNoFind;
+                response.Error = ErrorCode.ERR_PlayerNoFind;
                 reply();
                 return;
             }
@@ -26,7 +33,8 @@ namespace ET
                 return;
             }
 
-            DBFriendInfo applicantInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.FriendID);
+            int friendZone = FriendHelper.PrepareHomeZone(request.FriendID);
+            DBFriendInfo applicantInfo = friendZone == 0 ? null : await DBHelper.GetComponent<DBFriendInfo>(friendZone, request.FriendID);
             bool applicantChanged = false;
             if (request.ReplyCode == 1)
             {
@@ -45,16 +53,16 @@ namespace ET
             if (applicantInfo != null && applicantInfo.SendApplyList.Remove(request.UserID))
             {
                 applicantChanged = true;
-                await ServerMessageHelper.SendToClient(scene.DomainZone(), request.FriendID,
+                await ServerMessageHelper.SendToClient(friendZone, request.FriendID,
                     new M2C_FriendSendApplyChange() { UserId = request.UserID, ReplyCode = request.ReplyCode });
             }
 
             if (applicantChanged)
             {
-                await DBHelper.SaveComponent(scene.DomainZone(), request.FriendID, applicantInfo);
+                await DBHelper.SaveComponent(friendZone, request.FriendID, applicantInfo);
             }
 
-            await DBHelper.SaveComponent(scene.DomainZone(), request.UserID, dBFriendInfo);
+            await DBHelper.SaveComponent(selfZone, request.UserID, dBFriendInfo);
             reply();
         }
     }

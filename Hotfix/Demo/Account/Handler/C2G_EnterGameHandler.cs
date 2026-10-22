@@ -61,7 +61,7 @@ namespace ET
             Player player = Game.EventSystem.Get(sessionPlayerComponent.PlayerInstanceId) as Player;
             if (player == null || player.IsDisposed)
             {
-                response.Error = ErrorCode.ERR_NonePlayerError;
+                response.Error = ErrorCode.ERR_PlayerNoFind;
                 reply();
                 return;
             }
@@ -71,28 +71,14 @@ namespace ET
 				player.RemoteAddress = $"{ip}_{request.DeviceName}";
             }
 
-            if (request.Simulator == 1 && request.DeviceName.Contains("2220:1080"))
-            {
-                if (request.IsRecharge == 0)
-                {
-                    Log.Warning($"工作室登录2: {request.UserID} {request.DeviceName}");
-                    response.Error = ErrorCode.ERR_RequestRepeatedly;
-                    reply();
-                    return;
-                }
-            }
-
 			if (!string.IsNullOrEmpty(request.DeviceName) && ip.Length > 1)
 			{
                 PlayerComponent playerComponent = session.DomainScene().GetComponent<PlayerComponent>();
                 int sameIpNumber = playerComponent.GetSameIpNumber(request.AccountId, player.RemoteAddress);
 
-				if (sameIpNumber >= 20)
+				if (sameIpNumber >= 20) 
 				{
-					Log.Warning($"同ip玩家超过20个: {sameIpNumber} {request.UserID}");
-				}
-				if (sameIpNumber >= 20) /////temp && request.Simulator == 1)
-				{
+					Console.WriteLine($"sameIpNumber >= 20:  {player.RemoteAddress}");
                     response.Error = ErrorCode.ERR_RequestRepeatedly;
                     reply();
                     return;
@@ -389,7 +375,9 @@ namespace ET
 				Name = roleInfo.Name,
 				Level = roleInfo.Lv,
                 UnionId = numericComponent.GetAsLong(NumericType.UnionId_0),
-				GateSessionActorId = gateSessionActorId
+				GateSessionActorId = gateSessionActorId,
+				RoleHeadId = roleInfo.RoleHeadId,
+				RoleHeadFrame = roleInfo.RoleHeadFrame,
 			});
 			return chat2G_EnterChat.ChatInfoUnitInstanceId;
 		}
@@ -411,7 +399,9 @@ namespace ET
 				Name = roleInfo.Name,
 				Level = roleInfo.Lv,
 				UnionId = numericComponent.GetAsLong(NumericType.UnionId_0),
-				GateSessionActorId = gateSessionActorId
+				GateSessionActorId = gateSessionActorId,
+				RoleHeadId = roleInfo.RoleHeadId,
+				RoleHeadFrame = roleInfo.RoleHeadFrame,
 			});
 			return chat2G_EnterChat.ChatInfoUnitInstanceId;
 		}

@@ -14,6 +14,10 @@ namespace ET
         public string Name;
 
         public int Level;
+
+        public int RoleHeadId;
+
+        public int RoleHeadFrame;
     }
 
     public class BeReportedInfo

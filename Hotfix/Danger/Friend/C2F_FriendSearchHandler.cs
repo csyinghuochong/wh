@@ -17,9 +17,10 @@ namespace ET
             }
 
             List<long> ids = await FriendHelper.SearchPlayerIds(scene.DomainZone(), request.UserID, keyword);
-            HashSet<long> onlineIds = await ServerMessageHelper.GetChatOnlineUnitIds(scene.DomainZone());
+            HashSet<long> onlineIds = await FriendHelper.CollectOnlineIds(ids);
             response.RoleList = await FriendHelper.GetFriendInfos(ids, onlineIds);
-            DBFriendInfo myFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
+            int myZone = FriendHelper.PrepareHomeZone(request.UserID);
+            DBFriendInfo myFriendInfo = myZone == 0 ? null : await DBHelper.GetComponent<DBFriendInfo>(myZone, request.UserID);
             if (myFriendInfo != null)
             {
                 for (int i = 0; i < response.RoleList.Count; i++)

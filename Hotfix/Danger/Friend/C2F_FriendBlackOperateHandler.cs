@@ -7,7 +7,13 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_FriendBlackOperateRequest request, F2C_FriendBlackOperateResponse response, Action reply)
         {
-            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
+            int selfZone = FriendHelper.PrepareHomeZone(request.UserID);
+            if (selfZone == 0)
+            {
+                reply();
+                return;
+            }
+            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(selfZone, request.UserID);
             if (dBFriendInfo.FriendList.Contains(request.FriendId))
             {
                 //在好友列表
@@ -33,7 +39,7 @@ namespace ET
                 }
             }
             
-            await DBHelper.SaveComponent(scene.DomainZone(), request.UserID,dBFriendInfo );
+            await DBHelper.SaveComponent(selfZone, request.UserID, dBFriendInfo);
             reply();
         }
     }

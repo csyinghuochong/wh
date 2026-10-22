@@ -8336,6 +8336,12 @@ namespace ET
 		[ProtoMember(10)]
 		public int ServerId { get; set; }
 
+		[ProtoMember(11)]
+		public int RoleHeadId { get; set; }
+
+		[ProtoMember(12)]
+		public int RoleHeadFrame { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_SyncChatInfo)]
@@ -11419,7 +11425,7 @@ namespace ET
 
 	}
 
-//按名字或 RoleNo 搜索。Keyword 填名字或角色编号。名字模糊匹配；整段是数字时按 RoleNo 精确查。
+//全服按名字或 RoleNo 搜索。Keyword 填名字或角色编号。名字各区模糊匹配；整段是数字时按 RoleNo 精确查编号里的那个区。
 	[ResponseType(nameof(F2C_FriendSearchResponse))]
 	[Message(OuterOpcode.C2F_FriendSearchRequest)]
 	[ProtoContract]

@@ -59,7 +59,7 @@ namespace ET
                             .Query<RoleInfoComponentServer>(homeZone, d => d.RoleInfo.Name == targetName);
                     if (targetRoles == null || targetRoles.Count == 0)
                     {
-                        response.Error = ErrorCode.ERR_NonePlayerError;
+                        response.Error = ErrorCode.ERR_PlayerNoFind;
                         reply();
                         return;
                     }

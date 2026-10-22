@@ -9,14 +9,24 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_FriendInfoRequest request, F2C_FriendInfoResponse response, Action reply)
         {
-            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
+            int selfZone = FriendHelper.PrepareHomeZone(request.UserID);
+            if (selfZone == 0)
+            {
+                reply();
+                return;
+            }
+            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(selfZone, request.UserID);
             if (dBFriendInfo == null)
             {
                 Log.Warning($"C2F_FriendInfo==null: {request.UserID}");
                 reply();
                 return;
             }
-            HashSet<long> onlineIds = await ServerMessageHelper.GetChatOnlineUnitIds(scene.DomainZone());
+            List<long> watchIds = new List<long>();
+            watchIds.AddRange(dBFriendInfo.FriendList);
+            watchIds.AddRange(dBFriendInfo.ApplyList);
+            watchIds.AddRange(dBFriendInfo.Blacklist);
+            HashSet<long> onlineIds = await FriendHelper.CollectOnlineIds(watchIds);
             response.FriendList = await FriendHelper.GetFriendInfos(dBFriendInfo.FriendList, onlineIds);
             response.ApplyList = await FriendHelper.GetFriendInfos(dBFriendInfo.ApplyList, onlineIds);
             response.Blacklist = await FriendHelper.GetFriendInfos(dBFriendInfo.Blacklist, onlineIds);

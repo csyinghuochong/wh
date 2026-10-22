@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_FriendOnlineRequest request, F2C_FriendOnlineResponse response, Action reply)
         {
-            response.FriendList = await FriendHelper.GetOnlineFriends(scene.DomainZone(), request.UserID);
+            response.FriendList = await FriendHelper.GetOnlineFriends(request.UserID);
             reply();
         }
     }

@@ -28,6 +28,8 @@ namespace ET
                 request.ChatInfo.Time = serverTime;
                 request.ChatInfo.PlayerName = chatInfoUnit.Name;
                 request.ChatInfo.ServerId = UnitZoneHelper.GetHomeZone(chatInfoUnit.Id);
+                request.ChatInfo.RoleHeadId = chatInfoUnit.RoleHeadId;
+                request.ChatInfo.RoleHeadFrame = chatInfoUnit.RoleHeadFrame;
                 m2C_SyncChatInfo.ChatInfo = request.ChatInfo;
                 ChatSceneComponent chatScene = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
                 int zone = chatInfoUnit.DomainZone();
@@ -111,30 +113,30 @@ namespace ET
                                 MessageHelper.SendActor(members[i].GateSessionActorId, m2C_SyncChatInfo);
                             }
                         }
-
                         chatSent = true;
                         break;
-
                     case (int)ChannelEnum.Friend:
                         long friendId = request.ChatInfo.ParamId;
-                        DBFriendInfo myFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(UnitZoneHelper.GetHomeZone(chatInfoUnit.Id), chatInfoUnit.Id);
+                        int myZone = FriendHelper.PrepareHomeZone(chatInfoUnit.Id);
+                        DBFriendInfo myFriendInfo = myZone == 0 ? null : await DBHelper.GetComponent<DBFriendInfo>(myZone, chatInfoUnit.Id);
                         if (friendId == 0 || myFriendInfo == null || !myFriendInfo.FriendList.Contains(friendId))
                         {
                             response.Error = ErrorCode.ERR_ModifyData;
                             reply();
                             return;
                         }
-                        if (!await ServerMessageHelper.SendToClient(zone, friendId, m2C_SyncChatInfo))
+                        int friendZone = FriendHelper.PrepareHomeZone(friendId);
+                        if (friendZone == 0 || !await ServerMessageHelper.SendToClient(friendZone, friendId, m2C_SyncChatInfo))
                         {
-                            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(UnitZoneHelper.GetHomeZone(friendId), friendId);
+                            DBFriendInfo dBFriendInfo = friendZone == 0 ? null : await DBHelper.GetComponent<DBFriendInfo>(friendZone, friendId);
                             if (dBFriendInfo != null && dBFriendInfo.FriendChats.Count < 10)
                             {
                                 dBFriendInfo.FriendChats.Add(request.ChatInfo);
-                                DBHelper.SaveComponent(UnitZoneHelper.GetHomeZone(friendId), friendId, dBFriendInfo).Coroutine();
+                                DBHelper.SaveComponent(friendZone, friendId, dBFriendInfo).Coroutine();
                             }
                         }
 
-                        await ServerMessageHelper.SendToClient(zone, chatInfoUnit.Id, m2C_SyncChatInfo);
+                        await ServerMessageHelper.SendToClient(myZone, chatInfoUnit.Id, m2C_SyncChatInfo);
                         chatSent = true;
                         break;
                 }

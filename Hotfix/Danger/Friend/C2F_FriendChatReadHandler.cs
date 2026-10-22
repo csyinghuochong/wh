@@ -7,7 +7,13 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2F_FriendChatRead request, F2C_FriendChatRead response, Action reply)
         {
-            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(scene.DomainZone(), request.UserID);
+            int selfZone = FriendHelper.PrepareHomeZone(request.UserID);
+            if (selfZone == 0)
+            {
+                reply();
+                return;
+            }
+            DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(selfZone, request.UserID);
             if (dBFriendInfo == null)
             {
                 Log.Warning($"C2F_FriendInfo==null: {request.UserID}");
@@ -21,7 +27,7 @@ namespace ET
                     dBFriendInfo.FriendChats.RemoveAt(i);   
                 }
             }
-            DBHelper.SaveComponent(scene.DomainZone(), request.UserID, dBFriendInfo).Coroutine();
+            DBHelper.SaveComponent(selfZone, request.UserID, dBFriendInfo).Coroutine();
             reply();
         }
     }

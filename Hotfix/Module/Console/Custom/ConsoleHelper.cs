@@ -2191,19 +2191,19 @@ namespace ET
             List<RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.RoleInfo.Name.Equals(mailInfo[2]));
             if (RoleInfoComponentList.Count == 0)
             {
-                return ErrorCode.ERR_PlayerIsNot;
+                return ErrorCode.ERR_PlayerNumerIsNotEnongh;
             }
 
             RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[0];
             if (RoleInfoComponentList.Count == 0)
             {
-                return ErrorCode.ERR_PlayerIsNot;
+                return ErrorCode.ERR_PlayerNumerIsNotEnongh;
             }
 
             List<DBCenterAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id.Equals(roleInfoComponentServer.RoleInfo.AccInfoID));
             if (dBAccountInfos.Count == 0)
             {
-                return ErrorCode.ERR_PlayerIsNot;
+                return ErrorCode.ERR_PlayerNumerIsNotEnongh;
             }
 
             DBCenterAccountInfo dbCenterAccountInfo = dBAccountInfos[0];

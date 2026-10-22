@@ -24,6 +24,8 @@ namespace ET
             {
                 unit.Name = request.Name;
                 unit.Level = request.Level;
+                unit.RoleHeadId = request.RoleHeadId;
+                unit.RoleHeadFrame = request.RoleHeadFrame;
                 chatInfoUnitsComponent.SetUnion(unit, request.UnionId);
                 unit.GateSessionActorId = request.GateSessionActorId;
                 response.ChatInfoUnitInstanceId = unit.InstanceId;
@@ -38,6 +40,8 @@ namespace ET
             unit.AddComponent<MailBoxComponent>();
             unit.Name = request.Name;
             unit.Level = request.Level;
+            unit.RoleHeadId = request.RoleHeadId;
+            unit.RoleHeadFrame = request.RoleHeadFrame;
             unit.UnionId = request.UnionId;
             unit.GateSessionActorId = request.GateSessionActorId;
             response.ChatInfoUnitInstanceId = unit.InstanceId;
