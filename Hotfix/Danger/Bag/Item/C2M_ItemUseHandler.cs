@@ -10,9 +10,15 @@ namespace ET
             try
             {
                 M2C_RoleBagUpdate bagUpdate = new M2C_RoleBagUpdate();
-                BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID);
-                response.Error = ItemUseHelper.UseItem(unit, 0, useBagInfo, bagUpdate, out string usePar);
-                response.OperatePar = usePar;
+                ItemLocType locType = (ItemLocType)request.Loc;
+                BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, request.OperateBagID);
+                if (useBagInfo == null)
+                {
+                    response.Error = ErrorCode.ERR_ItemNotExist;
+                    reply();
+                    return;
+                }
+                response.Error = ItemUseHelper.UseItem(unit, 0, useBagInfo, bagUpdate, request.UseNum, locType);
                 if (bagUpdate.BagInfoDelete.Count > 0 || bagUpdate.BagInfoUpdate.Count > 0)
                 {
                     MessageHelper.SendToClient(unit, bagUpdate);

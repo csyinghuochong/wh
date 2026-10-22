@@ -640,7 +640,7 @@ namespace ET
                     continue;
                 }
 
-                if (TryAddCurrency(unit, item, getType, arg.Notice) || TrySkipBag(unit, item, getType, arg.Notice))
+                if (TryAddCurrency(unit, item, getType, arg.Notice) || TrySkipBag(unit, item, getType, arg))
                 {
                     continue;
                 }
@@ -698,8 +698,9 @@ namespace ET
             return true;
         }
 
-        private static bool TrySkipBag(Unit unit, RewardItem item, int getType, bool notice)
+        private static bool TrySkipBag(Unit unit, RewardItem item, int getType, AddItemArg arg)
         {
+            bool notice = arg.Notice;
             if (item.ItemType == ItemBigType.Type_Exp)
             {
                 return true;
@@ -737,10 +738,11 @@ namespace ET
 
             if (autoUse)
             {
+                ItemLocType locType = ResolveAddItemLoc(arg.Loc, item);
                 int useTimes = item.ItemNum > 0 ? item.ItemNum : 1;
                 for (int n = 0; n < useTimes; n++)
                 {
-                    ItemUseHelper.UseItem(unit, item.ItemID, null, null, out _);
+                    ItemUseHelper.UseItem(unit, item.ItemID, null, null, 1, locType);
                 }
             }
 

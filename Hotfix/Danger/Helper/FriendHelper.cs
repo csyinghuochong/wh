@@ -70,16 +70,21 @@ namespace ET
             return await GetFriendInfos(onlineFriends, onlineIds);
         }
 
-        /// <summary>名字模糊匹配 UserName。整段是数字时先按角色ID精确查。不含自己，最多 SearchMaxCount。</summary>
+        /// <summary>名字模糊匹配 UserName。整段是数字时先按 RoleNo 精确查。不含自己，最多 SearchMaxCount。</summary>
         public static async ETTask<List<long>> SearchPlayerIds(int zone, long selfId, string keyword)
         {
             List<long> ids = new List<long>();
-            if (long.TryParse(keyword, out long userId) && userId > 0 && userId != selfId)
+            if (long.TryParse(keyword, out long roleNo) && roleNo > 0)
             {
-                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(userId);
-                if (roleInfoComponentServer != null)
+                List<RoleInfoComponentServer> byNo = await QueryByRoleNo(zone, roleNo);
+                for (int i = 0; i < byNo.Count; i++)
                 {
-                    ids.Add(PlayerId(roleInfoComponentServer, userId));
+                    long id = PlayerId(byNo[i], 0);
+                    if (id == 0 || id == selfId || ids.Contains(id))
+                    {
+                        continue;
+                    }
+                    ids.Add(id);
                 }
             }
 
@@ -122,6 +127,18 @@ namespace ET
             }
 
             return fallback;
+        }
+
+        static async ETTask<List<RoleInfoComponentServer>> QueryByRoleNo(int zone, long roleNo)
+        {
+            DBComponent db = Game.Scene.GetComponent<DBComponent>();
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.DB, RandomHelper.RandInt64() % DBComponent.TaskCount))
+            {
+                FindOptions<RoleInfoComponentServer> options = new FindOptions<RoleInfoComponentServer> { Limit = SearchMaxCount };
+                IAsyncCursor<RoleInfoComponentServer> cursor = await db.GetCollection<RoleInfoComponentServer>(zone)
+                        .FindAsync(d => d.RoleInfo.RoleNo == roleNo, options);
+                return await cursor.ToListAsync();
+            }
         }
 
         static async ETTask<List<RoleInfoComponentServer>> QueryByName(int zone, string keyword)

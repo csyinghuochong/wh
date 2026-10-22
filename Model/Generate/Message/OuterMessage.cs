@@ -616,6 +616,9 @@ namespace ET
 		[ProtoMember(26)]
 		public List<int> CompleteGuideIds = new List<int>();
 
+		[ProtoMember(27)]
+		public long RoleNo { get; set; }
+
 		[ProtoMember(41)]
 		public int ServerMailIdCur { get; set; }
 
@@ -756,6 +759,9 @@ namespace ET
 
 		[ProtoMember(19)]
 		public int RoleHeadFrame { get; set; }
+
+		[ProtoMember(20)]
+		public long RoleNo { get; set; }
 
 	}
 
@@ -5019,6 +5025,12 @@ namespace ET
 
 		[ProtoMember(2)]
 		public string OperatePar { get; set; }
+
+		[ProtoMember(3)]
+		public int Loc { get; set; }
+
+		[ProtoMember(4)]
+		public int UseNum { get; set; }
 
 	}
 
@@ -11407,7 +11419,7 @@ namespace ET
 
 	}
 
-//按名字或角色ID搜索玩家。名字模糊匹配 UserName；整段是数字时再按ID精确查。
+//按名字或 RoleNo 搜索。Keyword 填名字或角色编号。名字模糊匹配；整段是数字时按 RoleNo 精确查。
 	[ResponseType(nameof(F2C_FriendSearchResponse))]
 	[Message(OuterOpcode.C2F_FriendSearchRequest)]
 	[ProtoContract]

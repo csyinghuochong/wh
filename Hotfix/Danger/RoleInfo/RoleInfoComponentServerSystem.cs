@@ -37,6 +37,7 @@ namespace ET
             RoleInfo roleInfo = self.RoleInfo;
             RoleCurrencyHelper.Set(roleInfo, UserDataType.Sp, 1);
             roleInfo.UserId = userId;
+            roleInfo.RoleNo = createRoleInfo.RoleNo;
             roleInfo.AccInfoID =accountId;
             roleInfo.Name = createRoleInfo.PlayerName;
             roleInfo.ServerMailIdCur = -1;
@@ -198,6 +199,33 @@ namespace ET
             self.CheckData();
             self.RemoteAddress = remoteIp;
             self.UserName = self.RoleInfo.Name;
+            self.FillRoleNo();
+        }
+
+        static void FillRoleNo(this RoleInfoComponentServer self)
+        {
+            if (self.RoleInfo.RoleNo != 0)
+            {
+                return;
+            }
+            Unit unit = self.GetParent<Unit>();
+            if (unit.IsRobot())
+            {
+                return;
+            }
+            long roleNo = RoleNoHelper.Allocate(self.DomainZone());
+            if (roleNo == 0)
+            {
+                return;
+            }
+            self.RoleInfo.RoleNo = roleNo;
+            DBSaveComponent dbSave = unit.GetComponent<DBSaveComponent>();
+            if (dbSave == null)
+            {
+                return;
+            }
+            dbSave.AddChange(typeof(RoleInfoComponentServer));
+            dbSave.UpdateCacheDB();
         }
 
         /// <summary>名字、等级、战力、职业、转职、头像、头像框变更时写入公会成员快照。登录不推。</summary>

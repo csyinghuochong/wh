@@ -5,15 +5,20 @@ namespace ET
     public static class ItemUseHelper
     {
         /// <param name="useBagInfo">背包使用传道具，获得后自动使用传空（不扣背包、不推 bagUpdate）。</param>
-        public static int UseItem(Unit unit, int itemId, BagInfo useBagInfo, M2C_RoleBagUpdate bagUpdate, out string responsePar)
+        /// <param name="useNum">使用数量。有格子时不能小于 1，也不能大于该格子 ItemNum。</param>
+        /// <param name="locType">道具所在 ItemLocType，与客户端传入一致。</param>
+        public static int UseItem(Unit unit, int itemId, BagInfo useBagInfo, M2C_RoleBagUpdate bagUpdate, int useNum, ItemLocType locType)
         {
-            responsePar = null;
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             if (useBagInfo != null)
             {
                 itemId = useBagInfo.ItemID;
+                if (useNum < 1 || useNum > useBagInfo.ItemNum)
+                {
+                    return ErrorCode.ERR_ItemNotEnoughError;
+                }
             }
 
             LDItem ldItem = LDItemCategory.Instance.Get(itemId);
@@ -37,7 +42,7 @@ namespace ET
                 }
             }
 
-            if (useBagInfo != null && !bagComponentServer.OnCostItemData(useBagInfo, ItemLocType.ItemLocBag, 1))
+            if (useBagInfo != null && !bagComponentServer.OnCostItemData(useBagInfo, locType, useNum))
             {
                 return ErrorCode.ERR_Success;
             }

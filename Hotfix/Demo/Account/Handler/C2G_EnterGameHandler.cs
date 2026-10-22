@@ -363,6 +363,7 @@ namespace ET
                 createRoleInfo.Sex = roleInfo.Sex;
                 createRoleInfo.RoleHeadId = roleInfo.RoleHeadId;
                 createRoleInfo.RoleHeadFrame = roleInfo.RoleHeadFrame;
+                createRoleInfo.RoleNo = roleInfo.RoleNo;
                 createRoleInfo.FashionIds = new List<int>();
                 BagComponentServer bag = unit.GetComponent<BagComponentServer>();
                 createRoleInfo.FashionIds.AddRange(bag.FashionEquipList);

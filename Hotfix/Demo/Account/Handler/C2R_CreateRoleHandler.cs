@@ -100,8 +100,17 @@ namespace ET
 							robotId = int.Parse(centerAccountList[0].Account.Split('_')[0]);
 						}
 						
+						long roleNo = RoleNoHelper.Allocate(request.ServerId);
+						if (roleNo == 0)
+						{
+							response.Error = ErrorCode.ERR_Error;
+							reply();
+							return;
+						}
+
 						CreateRoleInfo createRoleInfo = new CreateRoleInfo();
 						createRoleInfo.UserID = IdGenerater.Instance.GenerateUnitId(request.ServerId);
+						createRoleInfo.RoleNo = roleNo;
 						createRoleInfo.PlayerLv = 1;
 						createRoleInfo.PlayerOcc = request.CreateOcc;
 						createRoleInfo.PlayerName = request.CreateName;
