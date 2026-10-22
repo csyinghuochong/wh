@@ -106,10 +106,10 @@ namespace ET
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
 
-            // 穿脱结束后统一同步当前武器 Numeric，避免分支内重复写
-            BagInfo equip_0 = bag.GetEquipBySubType(ItemLocType.ItemLocEquip, (int)EquipCaoWeiTypeEnum.Wuqi_1);
-            //numeric.ApplyValue(NumericType.Now_Weapon, equip_0 !=null ? equip_0.ItemID : 0);
-            
+            UnitInfoComponent unitInfoComponent = unit.GetComponent<UnitInfoComponent>();
+            unitInfoComponent.MainHandId = bag.GetWuqiItemId();
+            unitInfoComponent.OffHandId = bag.GetFuShouItemId();
+
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
             UnitHelper.BroadcastUnitAppear(unit);
             

@@ -71,7 +71,7 @@ namespace ET
             }
             if (unit.Type == UnitType.Player)
             {
-                int equipId = unit.GetWuqiItemID();
+               
             }
 
             bool xueliangcheck = false;

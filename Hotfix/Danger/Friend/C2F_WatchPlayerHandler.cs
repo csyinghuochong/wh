@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -25,6 +25,11 @@ namespace ET
                 case 0:
                     response.Lv = roleInfo.Lv;
                     response.Name = roleInfo.Name;
+                    response.Occ = roleInfo.Occ;
+                    response.RoleHeadId = roleInfo.RoleHeadId;
+                    response.RoleHeadFrame = roleInfo.RoleHeadFrame;
+                    response.UnionName = string.IsNullOrWhiteSpace(roleInfo.UnionName) ? string.Empty : roleInfo.UnionName;
+                    response.Sex = roleInfo.Sex;
                     BagComponentServer bagComponentsServer = await DBHelper.GetComponent<BagComponentServer>(homeZone, request.UserId);
                     if (bagComponentsServer == null)
                     {
@@ -33,27 +38,6 @@ namespace ET
                         return;
                     }
 
-                    response.EquipList = bagComponentsServer.GetItemByLoc(ItemLocType.ItemLocEquip);
-                    response.Occ = roleInfo.Occ;
-                    PetComponentServer petComponentServer = await DBHelper.GetComponent<PetComponentServer>(homeZone, request.UserId);
-                    if (petComponentServer == null)
-                    {
-                        response.Error = ErrorCode.ERR_Error;
-                        reply();
-                        return;
-                    }
-                    List<PetInfo> rolePetInfos = petComponentServer.PetInfos;
-                    List<PetInfo> rolePetInfosResponse = new List<PetInfo>();
-                    for (int pet = rolePetInfos.Count - 1; pet >= 0; pet-- )
-                    {
-                        if (rolePetInfos[pet].PetStatus < 2)
-                        {
-                            rolePetInfosResponse.Add(rolePetInfos[pet]);
-                        }
-                    }
-
-                    response.PetInfos = rolePetInfosResponse;
-                 
                     NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, request.UserId);
                     if (numericComponent == null)
                     {
@@ -61,18 +45,16 @@ namespace ET
                         reply();
                         return;
                     }
-                    foreach ((int key, long value) in numericComponent.NumericDic)
-                    {
-                        if (key >= (int)NumericType.Max)
-                        {
-                            continue;
-                        }
-                        response.Ks.Add(key);
-                        response.Vs.Add(value);
-                    }
-
                     response.FashionIds = bagComponentsServer.FashionEquipList;
-                    response.Sex = roleInfo.Sex;
+                    response.MainHandId = bagComponentsServer.GetWuqiItemId();
+                    response.OffHandId = bagComponentsServer.GetFuShouItemId();
+                    long teamServerId = StartSceneConfigCategory.Instance.GetBySceneName(scene.DomainZone(), Enum.GetName(SceneType.Team)).InstanceId;
+                    T2Chat_GetTeamInfoResponse teamResponse = (T2Chat_GetTeamInfoResponse)await ActorMessageSenderComponent.Instance.Call(
+                        teamServerId, new Chat2T_GetTeamInfoRequest() { UserID = request.UserId });
+                    if (teamResponse.Error == ErrorCode.ERR_Success && teamResponse.TeamInfo != null)
+                    {
+                        response.TeamId = teamResponse.TeamInfo.TeamId;
+                    }
                     break;
                 //只返回名字
                 case 1:

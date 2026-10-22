@@ -69,6 +69,8 @@ namespace ET
                     unitInfo.FashionEquipList = bagComponentServer.FashionEquipList;
                     unitInfo.WeaponId = bagComponentServer.GetWuqiItemId();
                     unitInfo.OffHandId = bagComponentServer.GetFuShouItemId();
+                    unitInfoComponent.MainHandId = unitInfo.WeaponId;
+                    unitInfoComponent.OffHandId = unitInfo.OffHandId;
                     TitleComponentServer titleComponentServer = unit.GetComponent<TitleComponentServer>();
                     unitInfo.TitleId = titleComponentServer != null ? titleComponentServer.TitleId : 0;
                     unitInfoComponent.TitleId = unitInfo.TitleId;
@@ -268,15 +270,7 @@ namespace ET
 
         public static int GetWeaponSkill(this Unit self, int skillId, List<SkillPro> skillPros)
         {
-            //int EquipType = self.GetEquipType();
-            //return SkillHelp.GetWeaponSkill(skillId, EquipType, skillPros);
             return skillId;
-        }
-
-
-        public static int GetWuqiItemID(this Unit self)
-        {
-            return 0;
         }
 
 
@@ -390,13 +384,14 @@ namespace ET
 
             TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
             int titleId = titleComponent != null ? titleComponent.TitleId : 0;
-            unit.GetComponent<UnitInfoComponent>().TitleId = titleId;
+            UnitInfoComponent unitInfoComponent = unit.GetComponent<UnitInfoComponent>();
+            unitInfoComponent.TitleId = titleId;
             return new M2C_FashionUpdate()
             {
                 UnitID = unit.Id,
                 FashionEquipList = bag.FashionEquipList,
-                WeaponId = bag.GetWuqiItemId(),
-                OffHandId = bag.GetFuShouItemId(),
+                WeaponId = unitInfoComponent.MainHandId,
+                OffHandId = unitInfoComponent.OffHandId,
                 TitleId = titleId,
             };
         }

@@ -2073,7 +2073,7 @@ namespace ET
 		public int Lv { get; set; }
 
 		[ProtoMember(3)]
-		public List<BagInfo> EquipList = new List<BagInfo>();
+		public int Sex { get; set; }
 
 		[ProtoMember(4)]
 		public long TeamId { get; set; }
@@ -2081,29 +2081,23 @@ namespace ET
 		[ProtoMember(5)]
 		public int Occ { get; set; }
 
+		[ProtoMember(6)]
+		public int MainHandId { get; set; }
+
 		[ProtoMember(7)]
-		public List<PetInfo> PetInfos = new List<PetInfo>();
+		public int OffHandId { get; set; }
 
-		[ProtoMember(8)]
-		public List<IntStringPair> PetSkinList = new List<IntStringPair>();
+		[ProtoMember(16)]
+		public int RoleHeadId { get; set; }
 
-		[ProtoMember(9)]
-		public List<BagInfo> PetHeXinList = new List<BagInfo>();
+		[ProtoMember(17)]
+		public int RoleHeadFrame { get; set; }
 
-		[ProtoMember(11)]
-		public List<int> Ks = new List<int>();
-
-		[ProtoMember(12)]
-		public List<long> Vs = new List<long>();
+		[ProtoMember(18)]
+		public string UnionName { get; set; }
 
 		[ProtoMember(13)]
 		public List<int> FashionIds = new List<int>();
-
-		[ProtoMember(14)]
-		public List<BagInfo> PetEquipList = new List<BagInfo>();
-
-		[ProtoMember(15)]
-		public int Sex { get; set; }
 
 	}
 
@@ -11280,7 +11274,7 @@ namespace ET
 
 	}
 
-//黑名单
+//黑名单操作。OperateType：1添加 2移除
 	[ResponseType(nameof(F2C_FriendBlackOperateResponse))]
 	[Message(OuterOpcode.C2F_FriendBlackOperateRequest)]
 	[ProtoContract]
@@ -11327,6 +11321,7 @@ namespace ET
 
 	}
 
+//我发起的申请被回复。客户端从 SendApplyList 去掉 UserId。
 	[Message(OuterOpcode.M2C_FriendSendApplyChange)]
 	[ProtoContract]
 	public partial class M2C_FriendSendApplyChange: Object, IActorMessage
