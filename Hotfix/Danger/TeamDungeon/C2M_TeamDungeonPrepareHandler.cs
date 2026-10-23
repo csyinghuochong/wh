@@ -30,14 +30,6 @@ namespace ET
 
 			int errorcode = ErrorCode.ERR_Success;
 			Unit leader = unit.GetParent<UnitComponent>().Get(request.TeamInfo.TeamId);
-			if (request.TeamInfo.FubenType == TeamFubenType.ShenYuan)
-			{
-				if (leader == null || leader.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, CommonConfig.ShenYuanCostId) < 1)
-				{
-					errorcode = ErrorCode.Err_ShenYuanItemError;
-				}
-			}
-
 			//判断副本次数
 			long teamServerId = DBHelper.GetTeamServerId(unit);
 			T2M_TeamDungeonPrepareResponse createResponse = (T2M_TeamDungeonPrepareResponse)await MessageHelper.CallActor(teamServerId, new M2T_TeamDungeonPrepareRequest()

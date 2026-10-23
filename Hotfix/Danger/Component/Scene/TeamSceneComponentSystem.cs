@@ -26,19 +26,6 @@ namespace ET
             teamInfo.FubenInstanceId = fubenInstanceId;
             teamInfo.FubenUUId = fubenid;
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
-        
-            if (teamInfo.FubenType == TeamFubenType.ShenYuan)
-            {
-                /*if (CommonConfig.ShenYuanCreateConfig.ContainsKey(teamInfo.SceneId))
-                {
-                    int postionid = CommonConfig.ShenYuanCreateConfig[teamInfo.SceneId];
-                    FubenHelp.CreateMonsterByPos(fubnescene, postionid);
-                }
-                else
-                {
-                    Console.WriteLine($"ConfigHelper.ShenYuanCreateConfig.error: {teamInfo.SceneId}");
-                }*/
-            }
 
             //69和 72的2个副本 有10%概率 在每个BOSS附近刷新出 80002010 这个宝箱，
             //这个宝箱的掉落是只有自己的可以拾取的，并且宝箱和掉落只有自己可见，

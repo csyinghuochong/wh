@@ -306,19 +306,7 @@ namespace ET
             if (unit.IsBoss())
             {
                 Unit leader = unit.GetParent<UnitComponent>().Get(self.TeamInfo.TeamId);
-                if (leader != null && self.FubenType == TeamFubenType.XieZhu)
-                {
-                    //协助副本掉落
-                    int dropId = int.Parse(LDGlobalValueCategory.Instance.Get(75).Value);
-                    UnitFactory.CreateDropItems(leader, unit, 1, dropId, "1");
-                }
-                if (self.FubenType == TeamFubenType.ShenYuan)
-                {
-                    //深渊副本掉落
-                    int dropId = int.Parse(LDGlobalValueCategory.Instance.Get(77).Value);
-                    UnitFactory.CreateDropItems(null, unit, 0, dropId, "1");
-                }
-
+  
                 self.BossDeadPosition = unit.Position;
             }
 
@@ -366,7 +354,7 @@ namespace ET
                 hurtList.TryGetValue(unititem.Id, out int hurtvalue);
                 int hurtRate = (int)(hurtvalue * 100f / damageTotal);
                 DungeonSettlementHelper.SettleTeamDungeon(
-                    unititem, self.TeamInfo.SceneId, hurtRate, self.FubenType == TeamFubenType.ShenYuan);
+                    unititem, self.TeamInfo.SceneId, hurtRate);
                 RoleInfoComponentServer roleInfoComponentServer = unititem.GetComponent<RoleInfoComponentServer>();
                 if (roleInfoComponentServer.RoleInfo.UserId == idExtra && m2C_FubenSettlement.RewardExtraItem.Count > 0)
                 {

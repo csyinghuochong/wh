@@ -146,7 +146,7 @@ namespace ET
             }
         }
 
-        public static void SettleTeamDungeon(Unit unit, int sceneId, int hurtRate, bool shenYuan)
+        public static void SettleTeamDungeon(Unit unit, int sceneId, int hurtRate)
         {
             if (unit == null || unit.IsDisposed)
             {
