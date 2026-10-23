@@ -44,6 +44,21 @@ namespace ET
 					return;
 				}
 
+                if (message.GMMsg == "chatsystem#")
+                {
+                    M2C_SyncChatInfo m2C_SyncChatInfo = new M2C_SyncChatInfo()
+                    {
+                        ChatInfo = new ChatInfo()
+                        {
+                            UserId = unit.Id,
+                            ChannelId = ChannelEnum.System,
+                            ChatMsg = $"测试系统消息:{TimeHelper.ServerNow()}",
+                            Time = TimeHelper.ServerNow(),
+                        }
+                    };
+                    MessageHelper.SendToClient(unit, m2C_SyncChatInfo);
+                }
+
 				if (message.GMMsg == "allmonster#")
 				{
 					foreach (LDMonster monsterConfig in LDMonsterCategory.Instance.GetAll().Values)

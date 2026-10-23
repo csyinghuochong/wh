@@ -63,6 +63,20 @@ namespace ET
             }
 
             await DBHelper.SaveComponent(selfZone, request.UserID, dBFriendInfo);
+            if (request.ReplyCode == 1)
+            {
+                M2C_SyncChatInfo m2C_SyncChatInfo = new M2C_SyncChatInfo()
+                {
+                    ChatInfo = new ChatInfo()
+                    {
+                        UserId = request.UserID,
+                        ChannelId = ChannelEnum.System,
+                        ChatMsg = "添加好友成功",
+                        Time = TimeHelper.ServerNow(),
+                    }
+                };
+                await ServerMessageHelper.SendToClient(selfZone, request.UserID, m2C_SyncChatInfo);
+            }
             reply();
         }
     }
