@@ -22,6 +22,9 @@ namespace ET
         /// <summary>每个邮件页签的最大数量。</summary>
         public int MailMaxNum = 100;
 
+        /// <summary>队伍人数上限。表未配或小于等于 0 时按 3。</summary>
+        public int TeamMemberMax = 3;
+
         /// <summary>拥挤统计窗口，秒。表未配或小于等于 0 时按 24 小时。</summary>
         public int ServerCrowdTimeSeconds = 24 * 3600;
 
@@ -73,6 +76,16 @@ namespace ET
                 if (maxNum > 0)
                 {
                     this.MailMaxNum = maxNum;
+                }
+            }
+
+            this.TeamMemberMax = 3;
+            if (this.ContainKey(GlobalValueKey.Global_Team_Member_Max))
+            {
+                int teamMax = this.GetInt(GlobalValueKey.Global_Team_Member_Max);
+                if (teamMax > 0)
+                {
+                    this.TeamMemberMax = teamMax;
                 }
             }
 

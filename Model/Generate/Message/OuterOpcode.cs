@@ -619,6 +619,7 @@ namespace ET
 		 public const ushort C2M_RechargeRequest = 10616;
 		 public const ushort M2C_RechargeResponse = 10617;
 		 public const ushort M2C_RechargeUpdate = 10618;
-		 public const ushort M2C_UpdateVersion = 10619;
+		 public const ushort RecruitChat = 10619;
+		 public const ushort M2C_UpdateVersion = 10620;
 	}
 }

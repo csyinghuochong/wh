@@ -39,7 +39,7 @@ namespace ET
                 return;
             }
 
-            if (inviterTeam != null && inviterTeam.PlayerList.Count >= 3)
+            if (inviterTeam != null && inviterTeam.PlayerList.Count >= LDGlobalValueCategory.Instance.TeamMemberMax)
             {
                 response.Error = ErrorCode.ERR_TeamIsFull;
                 reply();

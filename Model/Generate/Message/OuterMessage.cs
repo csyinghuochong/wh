@@ -8342,6 +8342,30 @@ namespace ET
 		[ProtoMember(12)]
 		public int RoleHeadFrame { get; set; }
 
+		[ProtoMember(13)]
+		public RecruitChat Recruit { get; set; }
+
+	}
+
+	[Message(OuterOpcode.RecruitChat)]
+	[ProtoContract]
+	public partial class RecruitChat: Object
+	{
+		[ProtoMember(1)]
+		public int SceneId { get; set; }
+
+		[ProtoMember(2)]
+		public int LevelMin { get; set; }
+
+		[ProtoMember(3)]
+		public int LevelMax { get; set; }
+
+		[ProtoMember(4)]
+		public int MemberCount { get; set; }
+
+		[ProtoMember(5)]
+		public int MemberMax { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_SyncChatInfo)]

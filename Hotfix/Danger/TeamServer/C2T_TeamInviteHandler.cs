@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace ET
 {
@@ -20,7 +20,7 @@ namespace ET
             teamInfo = teamSceneComponent.GetTeamInfo(request.TeamPlayerInfo.UserID);
             if (teamInfo != null)
             {
-                if (teamInfo.TeamId != request.TeamPlayerInfo.UserID || teamInfo.PlayerList.Count == 3)
+                if (teamInfo.TeamId != request.TeamPlayerInfo.UserID || teamInfo.PlayerList.Count >= LDGlobalValueCategory.Instance.TeamMemberMax)
                 {
                     reply();
                     return;
