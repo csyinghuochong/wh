@@ -80,14 +80,14 @@ namespace ET
             }
 
             this.TeamMemberMax = 3;
-            if (this.ContainKey(GlobalValueKey.Global_Team_Member_Max))
-            {
-                int teamMax = this.GetInt(GlobalValueKey.Global_Team_Member_Max);
-                if (teamMax > 0)
-                {
-                    this.TeamMemberMax = teamMax;
-                }
-            }
+            //if (this.ContainKey(GlobalValueKey.Global_Team_Member_Max))
+            //{
+            //    int teamMax = this.GetInt(GlobalValueKey.Global_Team_Member_Max);
+            //    if (teamMax > 0)
+            //    {
+            //        this.TeamMemberMax = teamMax;
+            //    }
+            //}
 
             this.BagInitCapacity.Clear();
             this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120021);
