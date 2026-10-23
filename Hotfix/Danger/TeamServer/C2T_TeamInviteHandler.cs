@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -35,7 +35,8 @@ namespace ET
                 }
             }
 
-            await ServerMessageHelper.SendToClient(scene.DomainZone(), request.UserID,
+            int targetZone = UnitZoneHelper.GetHomeZone(request.UserID);
+            await ServerMessageHelper.SendToClient(targetZone, request.UserID,
                 new M2C_TeamInviteResult() { TeamPlayerInfo = request.TeamPlayerInfo });
 
             reply();
