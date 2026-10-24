@@ -307,6 +307,58 @@ namespace ET
             return number;
         }
 
+        /// <summary>按道具所在背包栏把消耗分组。同一栏才能一次扣除。</summary>
+        public static Dictionary<int, List<RewardItem>> GroupCostByLoc(this List<RewardItem> costs)
+        {
+            Dictionary<int, List<RewardItem>> locCosts = new Dictionary<int, List<RewardItem>>();
+            for (int i = 0; i < costs.Count; i++)
+            {
+                RewardItem cost = costs[i];
+                int itemType = cost.ItemType > 0 ? cost.ItemType : ItemBigType.Type_Item;
+                int loc = (int)ItemNewHelper.GetToItemLocType(itemType, cost.ItemID);
+                if (!locCosts.TryGetValue(loc, out List<RewardItem> list))
+                {
+                    list = new List<RewardItem>();
+                    locCosts.Add(loc, list);
+                }
+
+                list.Add(cost);
+            }
+
+            return locCosts;
+        }
+
+        public static bool CanCostByLoc(this BagComponentServer self, Dictionary<int, List<RewardItem>> locCosts)
+        {
+            foreach (KeyValuePair<int, List<RewardItem>> kv in locCosts)
+            {
+                ItemLocType loc = (ItemLocType)kv.Key;
+                for (int i = 0; i < kv.Value.Count; i++)
+                {
+                    RewardItem cost = kv.Value[i];
+                    int itemType = cost.ItemType > 0 ? cost.ItemType : ItemBigType.Type_Item;
+                    if (self.GetItemNumberForCost(itemType, cost.ItemID, loc) < cost.ItemNum)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public static bool CostByLoc(this BagComponentServer self, Dictionary<int, List<RewardItem>> locCosts, int itemGetWay)
+        {
+            foreach (KeyValuePair<int, List<RewardItem>> kv in locCosts)
+            {
+                if (!self.OnCostItemData(kv.Value, (ItemLocType)kv.Key, itemGetWay))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public static bool IsBagFullByLoc(this BagComponentServer self, int hourseId)
         {

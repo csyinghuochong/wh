@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -15,7 +15,13 @@ namespace ET
                 reply();
                 return;
             }
-            
+            if (request.IdCardNO.Length != 18)
+            {
+                response.Error = ErrorCode.ERR_RealNameFail;
+                reply();
+                return;
+            }
+
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.LoginAccount, 1))
             {
                 if (session.IsDisposed)
@@ -38,50 +44,43 @@ namespace ET
                 testCard.Add("500233200809108742");
                 //内网
 
-                if (testCard.Contains(request.IdCardNO))
-                {
-                    result_check.errcode = 0;
-                    result_check.data.result.status = 0;
-                }
-                else if (CommonHelper.IsInnerNet())
-                {
-                    result_check.errcode = 0;
-                    result_check.data.result.status = 0;
-                }
-                else if (ServerHelper.IsBanHaoZone(0))
-                {
-                    result_check.errcode = 0;
-                    result_check.data.result.status = 0;
-                }
-                else
-                {
-                    string ai = dbCenterAccountInfo.Id + "_";
-                    if (ai.Length < 32)
-                    {
-                        for (int i = ai.Length; i < 32; i++)
-                        {
-                            ai += "a";
-                        }
-                    }
+                result_check.errcode = 0;
+                result_check.data.result.status = 0;
 
-                    Scene accountScene = session.DomainScene();
-                    Game.EventSystem.Publish(new EventType.RealName() { AccountScene = accountScene, ai = ai, name = request.Name, idNum = request.IdCardNO });
-                    WaitType.WaitRealNameCode waitCreateMyUnit = await accountScene.GetComponent<ObjectWait>().Wait<WaitType.WaitRealNameCode>();
-                    result_check = waitCreateMyUnit.Message;
-                }
-                if (result_check == null || result_check.data == null || result_check.data.result == null)
-                {
-                    response.Error = ErrorCode.ERR_RealNameFail;
-                    reply();
-                    return;
-                }
+                //if (ServerHelper.IsBanHaoServer(0) || CommonHelper.IsInnerNet())
+                //{
+                //    result_check.errcode = 0;
+                //    result_check.data.result.status = 0;
+                //}
+                //else
+                //{
+                //    string ai = dbCenterAccountInfo.Id + "_";
+                //    if (ai.Length < 32)
+                //    {
+                //        for (int i = ai.Length; i < 32; i++)
+                //        {
+                //            ai += "a";
+                //        }
+                //    }
+
+                //    Scene accountScene = session.DomainScene();
+                //    Game.EventSystem.Publish(new EventType.RealName() { AccountScene = accountScene, ai = ai, name = request.Name, idNum = request.IdCardNO });
+                //    WaitType.WaitRealNameCode waitCreateMyUnit = await accountScene.GetComponent<ObjectWait>().Wait<WaitType.WaitRealNameCode>();
+                //    result_check = waitCreateMyUnit.Message;
+                //}
+                //if (result_check == null || result_check.data == null || result_check.data.result == null)
+                //{
+                //    response.Error = ErrorCode.ERR_RealNameFail;
+                //    reply();
+                //    return;
+                //}
 
                 if (result_check.errcode == 0 && result_check.data.result.status == 0)  //认证成功
                 {
                     PlayerInfo playerInfo = dbCenterAccountInfo.PlayerInfo;
                     playerInfo.Name = request.Name;
                     playerInfo.IdCardNo = request.IdCardNO;
-                    playerInfo.RealName = 1;
+                    playerInfo.RealNameV2 = 1;
                     DBHelper.SaveComponent(CommonConfig.CenterZoneId, dbCenterAccountInfo.Id, dbCenterAccountInfo).Coroutine();
                     
                     response.Error = ErrorCode.ERR_Success;

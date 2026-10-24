@@ -1,4 +1,4 @@
-﻿namespace ET
+namespace ET
 {
 	public enum PlayerState : int
 	{
@@ -47,6 +47,9 @@
 		public long ActivityServerID { get; set; }
 		
 		public long TeamServerID { get; set; }
+
+		/// <summary>所在队伍的组队服 InstanceId。0 表示不在跨服队伍里，请求仍走归属服 TeamServerID。</summary>
+		public long JoinedTeamServerID { get; set; }
 
 		public long FriendServerID { get; set; }
 

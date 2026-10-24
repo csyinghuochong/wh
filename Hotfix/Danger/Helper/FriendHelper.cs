@@ -31,7 +31,7 @@ namespace ET
                 }
 
                 RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
-                friendInfos.Add(new FriendInfo()
+                FriendInfo friendInfo = new FriendInfo()
                 {
                     UserId = friendId,
                     PlayerLevel = roleInfo.Lv,
@@ -41,10 +41,37 @@ namespace ET
                     RoleHeadId = roleInfo.RoleHeadId,
                     RoleHeadFrame = roleInfo.RoleHeadFrame,
                     Combat = roleInfo.Combat,
-                });
+                };
+                FillOldRoleHead(roleInfo, friendInfo);
+                friendInfos.Add(friendInfo);
             }
 
             return friendInfos;
+        }
+
+        /// <summary>旧号创角时没有头像字段，库里是 0。只补下发，不写回角色数据。</summary>
+        static void FillOldRoleHead(RoleInfo roleInfo, FriendInfo friendInfo)
+        {
+            if (friendInfo.RoleHeadId > 0 && friendInfo.RoleHeadFrame > 0)
+            {
+                return;
+            }
+
+            if (!LDOccupationCategory.Instance.Contain(roleInfo.Occ))
+            {
+                return;
+            }
+
+            LDOccupation occupation = LDOccupationCategory.Instance.Get(roleInfo.Occ);
+            if (friendInfo.RoleHeadId <= 0)
+            {
+                friendInfo.RoleHeadId = roleInfo.Sex == SexEnum.Man ? occupation.RoleHead_Man : occupation.RoleHead_Woman;
+            }
+
+            if (friendInfo.RoleHeadFrame <= 0)
+            {
+                friendInfo.RoleHeadFrame = 1;
+            }
         }
 
         public static async ETTask<List<FriendInfo>> GetOnlineFriends(long userId)

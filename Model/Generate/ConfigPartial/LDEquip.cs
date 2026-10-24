@@ -103,9 +103,10 @@ namespace ET
         }
 
         /// <summary>
-        /// 4~6 位：id + min(3)，max=min；7~9 位：id + min(3) + max(3)
+        /// 11 位：属性ID(3) + 最小值(4) + 最大值(4)。10 位左侧补 0 后同样拆。
+        /// 4~9 位仍是旧码（必中 Att_Rand_1~6）：id + 最小值(3)，有最大值时再加 3 位。
         /// </summary>
-        public static bool TryParsePackedAttr(int code, out int attrId, out int minValue, out int maxValue)
+        public static bool TryParsePackedAttr(long code, out int attrId, out int minValue, out int maxValue)
         {
             attrId = 0;
             minValue = 0;
@@ -116,33 +117,70 @@ namespace ET
             }
 
             string s = code.ToString();
+            if (s.Length > 11)
+            {
+                return false;
+            }
+
+            if (s.Length >= 10)
+            {
+                s = s.PadLeft(11, '0');
+                if (!int.TryParse(s.Substring(0, 3), out attrId))
+                {
+                    return false;
+                }
+
+                if (!int.TryParse(s.Substring(3, 4), out minValue))
+                {
+                    return false;
+                }
+
+                if (!int.TryParse(s.Substring(7, 4), out maxValue))
+                {
+                    return false;
+                }
+
+                return attrId > 0;
+            }
+
             int len = s.Length;
-            if (len < 4 || len > 9)
+            if (len < 4)
             {
                 return false;
             }
 
-            try
+            if (len <= 6)
             {
-                if (len <= 6)
+                if (!int.TryParse(s.Substring(0, len - 3), out attrId))
                 {
-                    attrId = int.Parse(s.Substring(0, len - 3));
-                    minValue = int.Parse(s.Substring(len - 3, 3));
-                    maxValue = minValue;
-                }
-                else
-                {
-                    attrId = int.Parse(s.Substring(0, len - 6));
-                    minValue = int.Parse(s.Substring(len - 6, 3));
-                    maxValue = int.Parse(s.Substring(len - 3, 3));
+                    return false;
                 }
 
-                return true;
+                if (!int.TryParse(s.Substring(len - 3, 3), out minValue))
+                {
+                    return false;
+                }
+
+                maxValue = minValue;
+                return attrId > 0;
             }
-            catch
+
+            if (!int.TryParse(s.Substring(0, len - 6), out attrId))
             {
                 return false;
             }
+
+            if (!int.TryParse(s.Substring(len - 6, 3), out minValue))
+            {
+                return false;
+            }
+
+            if (!int.TryParse(s.Substring(len - 3, 3), out maxValue))
+            {
+                return false;
+            }
+
+            return attrId > 0;
         }
 
         /// <summary>
@@ -220,9 +258,9 @@ namespace ET
             }
 
             // 组1~5 的属性码池
-            List<int>[] groupCodes =
+            List<long>[] groupCodes =
             {
-                new List<int>(), new List<int>(), new List<int>(), new List<int>(), new List<int>(),
+                new List<long>(), new List<long>(), new List<long>(), new List<long>(), new List<long>(),
             };
             // 该组最多抽几条（0=不限）；抽满后本轮起不再进池
             int[] groupMax = { e.Att_Rand_Param12, e.Att_Rand_Param22, e.Att_Rand_Param32, e.Att_Rand_Param42, e.Att_Rand_Param52 };
@@ -231,32 +269,23 @@ namespace ET
             // 该组已抽出条数
             int[] groupPicked = { 0, 0, 0, 0, 0 };
 
-            // 组1：表字段是 int[]；组2~5：字符串用 | 分隔
-            if (e.Att_Rand_Param11 != null)
+            long[][] groupPools =
             {
-                for (int i = 0; i < e.Att_Rand_Param11.Length; i++)
-                {
-                    if (e.Att_Rand_Param11[i] > 0)
-                    {
-                        groupCodes[0].Add(e.Att_Rand_Param11[i]);
-                    }
-                }
-            }
-
-            string[] strPools = { null, e.Att_Rand_Param21, e.Att_Rand_Param31, e.Att_Rand_Param41, e.Att_Rand_Param51 };
-            for (int g = 1; g < 5; g++)
+                e.Att_Rand_Param11, e.Att_Rand_Param21, e.Att_Rand_Param31, e.Att_Rand_Param41, e.Att_Rand_Param51,
+            };
+            for (int g = 0; g < groupPools.Length; g++)
             {
-                if (string.IsNullOrEmpty(strPools[g]))
+                long[] pool = groupPools[g];
+                if (pool == null)
                 {
                     continue;
                 }
 
-                string[] parts = strPools[g].Split('|');
-                for (int i = 0; i < parts.Length; i++)
+                for (int i = 0; i < pool.Length; i++)
                 {
-                    if (int.TryParse(parts[i], out int code) && code > 0)
+                    if (pool[i] > 0)
                     {
-                        groupCodes[g].Add(code);
+                        groupCodes[g].Add(pool[i]);
                     }
                 }
             }
@@ -283,7 +312,7 @@ namespace ET
                         continue;
                     }
 
-                    List<int> codes = groupCodes[g];
+                    List<long> codes = groupCodes[g];
                     for (int i = 0; i < codes.Count; i++)
                     {
                         if (!TryParsePackedAttr(codes[i], out int id, out int min, out int max))

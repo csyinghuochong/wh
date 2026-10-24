@@ -1340,9 +1340,7 @@ namespace ET
 	[ProtoContract]
 	public partial class PlayerInfo: Object
 	{
-		[ProtoMember(1)]
-		public int RealName { get; set; }
-
+//int32 RealName = 1;	//0 游客 1 已认证
 		[ProtoMember(2)]
 		public string Name { get; set; }
 
@@ -1369,6 +1367,9 @@ namespace ET
 
 		[ProtoMember(10)]
 		public string TikTokGuanFuAccount { get; set; }
+
+		[ProtoMember(1)]
+		public int RealNameV2 { get; set; }
 
 	}
 
@@ -2232,40 +2233,6 @@ namespace ET
 
 		[ProtoMember(9)]
 		public int WeeklyIndex { get; set; }
-
-	}
-
-	[ResponseType(nameof(R2C_WorldLvResponse))]
-	[Message(OuterOpcode.C2R_WorldLvRequest)]
-	[ProtoContract]
-	public partial class C2R_WorldLvRequest: Object, IRankActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int RankType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_WorldLvResponse)]
-	[ProtoContract]
-	public partial class R2C_WorldLvResponse: Object, IRankActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public ServerInfo ServerInfo { get; set; }
 
 	}
 
@@ -3395,38 +3362,6 @@ namespace ET
 
 	}
 
-//开启晶核
-	[ResponseType(nameof(M2C_SeasonOpenJingHeResponse))]
-	[Message(OuterOpcode.C2M_SeasonOpenJingHeRequest)]
-	[ProtoContract]
-	public partial class C2M_SeasonOpenJingHeRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int JingHeId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SeasonOpenJingHeResponse)]
-	[ProtoContract]
-	public partial class M2C_SeasonOpenJingHeResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2C_TikTokVerifyUser))]
 	[Message(OuterOpcode.C2R_TikTokVerifyUser)]
 	[ProtoContract]
@@ -3591,105 +3526,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public int Error { get; set; }
-
-	}
-
-//晶核注入
-	[ResponseType(nameof(M2C_JingHeZhuruResponse))]
-	[Message(OuterOpcode.C2M_JingHeZhuruRequest)]
-	[ProtoContract]
-	public partial class C2M_JingHeZhuruRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long BagInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public List<long> OperateBagID = new List<long>();
-
-	}
-
-	[Message(OuterOpcode.M2C_JingHeZhuruResponse)]
-	[ProtoContract]
-	public partial class M2C_JingHeZhuruResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//晶核激活
-	[ResponseType(nameof(M2C_JingHeActivateResponse))]
-	[Message(OuterOpcode.C2M_JingHeActivateRequest)]
-	[ProtoContract]
-	public partial class C2M_JingHeActivateRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long BagInfoId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JingHeActivateResponse)]
-	[ProtoContract]
-	public partial class M2C_JingHeActivateResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-//晶核使用方案
-	[ResponseType(nameof(M2C_JingHePlanResponse))]
-	[Message(OuterOpcode.C2M_JingHePlanRequest)]
-	[ProtoContract]
-	public partial class C2M_JingHePlanRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int JingHePlan { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_JingHePlanResponse)]
-	[ProtoContract]
-	public partial class M2C_JingHePlanResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 
@@ -8265,43 +8101,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(C2C_ChatJinYanResponse))]
-	[Message(OuterOpcode.C2C_ChatJinYanRequest)]
-	[ProtoContract]
-	public partial class C2C_ChatJinYanRequest: Object, IChatActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(2)]
-		public long JinYanId { get; set; }
-
-		[ProtoMember(3)]
-		public string JinYanPlayer { get; set; }
-
-	}
-
-	[Message(OuterOpcode.C2C_ChatJinYanResponse)]
-	[ProtoContract]
-	public partial class C2C_ChatJinYanResponse: Object, IChatActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[Message(OuterOpcode.ChatInfo)]
 	[ProtoContract]
 	public partial class ChatInfo: Object
@@ -8330,9 +8129,6 @@ namespace ET
 		[ProtoMember(8)]
 		public int PlayerLevel { get; set; }
 
-		[ProtoMember(9)]
-		public string ChatMsg_EN { get; set; }
-
 		[ProtoMember(10)]
 		public int ServerId { get; set; }
 
@@ -8345,26 +8141,8 @@ namespace ET
 		[ProtoMember(13)]
 		public RecruitChat Recruit { get; set; }
 
-	}
-
-	[Message(OuterOpcode.RecruitChat)]
-	[ProtoContract]
-	public partial class RecruitChat: Object
-	{
-		[ProtoMember(1)]
-		public int SceneId { get; set; }
-
-		[ProtoMember(2)]
-		public int LevelMin { get; set; }
-
-		[ProtoMember(3)]
-		public int LevelMax { get; set; }
-
-		[ProtoMember(4)]
-		public int MemberCount { get; set; }
-
-		[ProtoMember(5)]
-		public int MemberMax { get; set; }
+		[ProtoMember(20)]
+		public string ChatMsg_EN { get; set; }
 
 	}
 
@@ -12083,6 +11861,27 @@ namespace ET
 	}
 
 //Recharge充值 end####################################################
+	[Message(OuterOpcode.RecruitChat)]
+	[ProtoContract]
+	public partial class RecruitChat: Object
+	{
+		[ProtoMember(1)]
+		public int SceneId { get; set; }
+
+		[ProtoMember(2)]
+		public int LevelMin { get; set; }
+
+		[ProtoMember(3)]
+		public int LevelMax { get; set; }
+
+		[ProtoMember(4)]
+		public int MemberCount { get; set; }
+
+		[ProtoMember(5)]
+		public int MemberMax { get; set; }
+
+	}
+
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

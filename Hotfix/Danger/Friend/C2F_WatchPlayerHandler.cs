@@ -10,6 +10,7 @@ namespace ET
         protected override async ETTask Run(Scene scene, C2F_WatchPlayerRequest request, F2C_WatchPlayerResponse response, Action reply)
         {
             int homeZone = FriendHelper.PrepareHomeZone(request.UserId);
+            Console.WriteLine($"request.UserId:  {homeZone}");
             if (homeZone == 0)
             {
                 response.Error = ErrorCode.ERR_Error;

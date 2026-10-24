@@ -29,10 +29,10 @@ namespace ET
 
             teamInfo.FubenType = request.FubenType;
             M2C_TeamDungeonOpenResult m2C_HorseNoticeInfo = new M2C_TeamDungeonOpenResult() { TeamInfo = teamInfo  };
-            int zone = scene.DomainZone();
             for (int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
-                await ServerMessageHelper.SendToClient(zone, teamInfo.PlayerList[i].UserID, m2C_HorseNoticeInfo);
+                long userId = teamInfo.PlayerList[i].UserID;
+                await ServerMessageHelper.SendToClient(UnitZoneHelper.GetHomeZone(userId), userId, m2C_HorseNoticeInfo);
             }
 
             reply();

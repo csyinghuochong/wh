@@ -128,101 +128,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(R2M_RechargeResponse))]
-	[Message(InnerOpcode.M2R_RechargeRequest)]
-	[ProtoContract]
-	public partial class M2R_RechargeRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(1)]
-		public int RechargeNumber { get; set; }
-
-		[ProtoMember(2)]
-		public long PayType { get; set; }
-
-		[ProtoMember(3)]
-		public int Zone { get; set; }
-
-		[ProtoMember(4)]
-		public string payMessage { get; set; }
-
-		[ProtoMember(5)]
-		public string UnitName { get; set; }
-
-		[ProtoMember(6)]
-		public string Account { get; set; }
-
-		[ProtoMember(7)]
-		public string ClientIp { get; set; }
-
-		[ProtoMember(8)]
-		public int RechargeType { get; set; }
-
-	}
-
-	[Message(InnerOpcode.R2M_RechargeResponse)]
-	[ProtoContract]
-	public partial class R2M_RechargeResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public string PayMessage { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2G_RechargeResultResponse))]
-	[Message(InnerOpcode.G2M_RechargeResultRequest)]
-	[ProtoContract]
-	public partial class G2M_RechargeResultRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long Id { get; set; }
-
-		[ProtoMember(2)]
-		public int RechargeNumber { get; set; }
-
-		[ProtoMember(4)]
-		public string OrderInfo { get; set; }
-
-		[ProtoMember(7)]
-		public int RechargeType { get; set; }
-
-	}
-
-	[Message(InnerOpcode.M2G_RechargeResultResponse)]
-	[ProtoContract]
-	public partial class M2G_RechargeResultResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2Other_CheckAccount))]
 	[Message(InnerOpcode.Other2R_CheckAccount)]
 	[ProtoContract]
@@ -1087,75 +992,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(A2M_GlobalShopBuyResponse))]
-	[Message(InnerOpcode.M2A_GlobalShopBuyRequest)]
-	[ProtoContract]
-	public partial class M2A_GlobalShopBuyRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ShopId { get; set; }
-
-		[ProtoMember(2)]
-		public ShopGoodsItem ShopGoodsItem { get; set; }
-
-	}
-
-	[Message(InnerOpcode.A2M_GlobalShopBuyResponse)]
-	[ProtoContract]
-	public partial class A2M_GlobalShopBuyResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
-	[ResponseType(nameof(A2M_GoldShopListResponse))]
-// Map 拉全服随机商店货架
-	[Message(InnerOpcode.M2A_GoldShopListRequest)]
-	[ProtoContract]
-	public partial class M2A_GoldShopListRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int ShopId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.A2M_GoldShopListResponse)]
-	[ProtoContract]
-	public partial class A2M_GoldShopListResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
-
-	}
-
 	[ResponseType(nameof(G2G_UnitListResponse))]
 	[Message(InnerOpcode.G2G_UnitListRequest)]
 	[ProtoContract]
@@ -1301,112 +1137,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(F2M_FubenCenterListResponse))]
-	[Message(InnerOpcode.M2F_FubenCenterListRequest)]
-	[ProtoContract]
-	public partial class M2F_FubenCenterListRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.F2M_FubenCenterListResponse)]
-	[ProtoContract]
-	public partial class F2M_FubenCenterListResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<long> FubenInstanceList = new List<long>();
-
-	}
-
-//副本分配中心服
-	[ResponseType(nameof(F2M_FubenCenterOpenResponse))]
-	[Message(InnerOpcode.M2F_FubenCenterOperateRequest)]
-	[ProtoContract]
-	public partial class M2F_FubenCenterOperateRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
-		[ProtoMember(2)]
-		public long FubenInstanceId { get; set; }
-
-		[ProtoMember(3)]
-		public int SceneType { get; set; }
-
-	}
-
-	[Message(InnerOpcode.F2M_FubenCenterOpenResponse)]
-	[ProtoContract]
-	public partial class F2M_FubenCenterOpenResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public ServerInfo ServerInfo { get; set; }
-
-	}
-
-	[ResponseType(nameof(R2Other_RechargeResponse))]
-	[Message(InnerOpcode.Other2R_RechargeRequest)]
-	[ProtoContract]
-	public partial class Other2R_RechargeRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long AccountId { get; set; }
-
-		[ProtoMember(2)]
-		public RechargeInfo RechargeInfo { get; set; }
-
-	}
-
-	[Message(InnerOpcode.R2Other_RechargeResponse)]
-	[ProtoContract]
-	public partial class R2Other_RechargeResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2M_ShareSucessResponse))]
 	[Message(InnerOpcode.M2R_ShareSucessRequest)]
 	[ProtoContract]
@@ -1514,47 +1244,6 @@ namespace ET
 
 	}
 
-//进入战场 [fubencenter-fubenwork]
-	[ResponseType(nameof(FubenCenter2M_BattleEnterResponse))]
-	[Message(InnerOpcode.M2FubenCenter_BattleEnterRequest)]
-	[ProtoContract]
-	public partial class M2FubenCenter_BattleEnterRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-		[ProtoMember(2)]
-		public int SceneId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.FubenCenter2M_BattleEnterResponse)]
-	[ProtoContract]
-	public partial class FubenCenter2M_BattleEnterResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(2)]
-		public long FubenInstanceId { get; set; }
-
-		[ProtoMember(3)]
-		public int Camp { get; set; }
-
-	}
-
 //通知机器人进程
 	[Message(InnerOpcode.G2Robot_MessageRequest)]
 	[ProtoContract]
@@ -1640,24 +1329,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public long FubenInstanceId { get; set; }
-
-	}
-
-	[Message(InnerOpcode.T2M_TeamUpdateRequest)]
-	[ProtoContract]
-	public partial class T2M_TeamUpdateRequest: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public long TeamId { get; set; }
 
 	}
 
@@ -1912,100 +1583,6 @@ namespace ET
 
 	}
 
-//进入副本 不走副本中心服
-	[ResponseType(nameof(FubenWork2M_EnterResponse))]
-	[Message(InnerOpcode.M2FubenWork_EnterRequest)]
-	[ProtoContract]
-	public partial class M2FubenWork_EnterRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-		[ProtoMember(2)]
-		public int SceneId { get; set; }
-
-		[ProtoMember(3)]
-		public int TransferId { get; set; }
-
-		[ProtoMember(4)]
-		public int Difficulty { get; set; }
-
-		[ProtoMember(5)]
-		public int SceneType { get; set; }
-
-	}
-
-	[Message(InnerOpcode.FubenWork2M_EnterResponse)]
-	[ProtoContract]
-	public partial class FubenWork2M_EnterResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(2)]
-		public long FubenInstanceId { get; set; }
-
-		[ProtoMember(3)]
-		public long FubenId { get; set; }
-
-	}
-
-//退出副本
-	[ResponseType(nameof(FubenWork2M_ExitResponse))]
-	[Message(InnerOpcode.M2FubenWork_ExitRequest)]
-	[ProtoContract]
-	public partial class M2FubenWork_ExitRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int SceneType { get; set; }
-
-		[ProtoMember(2)]
-		public long FubenInstanceId { get; set; }
-
-		[ProtoMember(3)]
-		public long FubenId { get; set; }
-
-		[ProtoMember(4)]
-		public List<long> Camp1Player = new List<long>();
-
-		[ProtoMember(5)]
-		public List<long> Camp2Player = new List<long>();
-
-	}
-
-	[Message(InnerOpcode.FubenWork2M_ExitResponse)]
-	[ProtoContract]
-	public partial class FubenWork2M_ExitResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 //进入喜从天降
 	[ResponseType(nameof(H2M_HapplyEnterResponse))]
 	[Message(InnerOpcode.M2H_HapplyEnterRequest)]
@@ -2257,6 +1834,215 @@ namespace ET
 
 	}
 
+//Fuben副本  begin####################################################
+	[ResponseType(nameof(F2M_FubenCenterListResponse))]
+	[Message(InnerOpcode.M2F_FubenCenterListRequest)]
+	[ProtoContract]
+	public partial class M2F_FubenCenterListRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.F2M_FubenCenterListResponse)]
+	[ProtoContract]
+	public partial class F2M_FubenCenterListResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<long> FubenInstanceList = new List<long>();
+
+	}
+
+//进入战场 [fubencenter-fubenwork]
+	[ResponseType(nameof(FubenCenter2M_BattleEnterResponse))]
+	[Message(InnerOpcode.M2FubenCenter_BattleEnterRequest)]
+	[ProtoContract]
+	public partial class M2FubenCenter_BattleEnterRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+		[ProtoMember(2)]
+		public int SceneId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.FubenCenter2M_BattleEnterResponse)]
+	[ProtoContract]
+	public partial class FubenCenter2M_BattleEnterResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(2)]
+		public long FubenInstanceId { get; set; }
+
+		[ProtoMember(3)]
+		public int Camp { get; set; }
+
+	}
+
+//副本分配中心服
+	[ResponseType(nameof(F2M_FubenCenterOpenResponse))]
+	[Message(InnerOpcode.M2F_FubenCenterOperateRequest)]
+	[ProtoContract]
+	public partial class M2F_FubenCenterOperateRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int OperateType { get; set; }
+
+		[ProtoMember(2)]
+		public long FubenInstanceId { get; set; }
+
+		[ProtoMember(3)]
+		public int SceneType { get; set; }
+
+	}
+
+	[Message(InnerOpcode.F2M_FubenCenterOpenResponse)]
+	[ProtoContract]
+	public partial class F2M_FubenCenterOpenResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public ServerInfo ServerInfo { get; set; }
+
+	}
+
+//进入副本 不走副本中心服
+	[ResponseType(nameof(FubenWork2M_EnterResponse))]
+	[Message(InnerOpcode.M2FubenWork_EnterRequest)]
+	[ProtoContract]
+	public partial class M2FubenWork_EnterRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+		[ProtoMember(2)]
+		public int SceneId { get; set; }
+
+		[ProtoMember(3)]
+		public int TransferId { get; set; }
+
+		[ProtoMember(4)]
+		public int Difficulty { get; set; }
+
+		[ProtoMember(5)]
+		public int SceneType { get; set; }
+
+	}
+
+	[Message(InnerOpcode.FubenWork2M_EnterResponse)]
+	[ProtoContract]
+	public partial class FubenWork2M_EnterResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(2)]
+		public long FubenInstanceId { get; set; }
+
+		[ProtoMember(3)]
+		public long FubenId { get; set; }
+
+	}
+
+//退出副本
+	[ResponseType(nameof(FubenWork2M_ExitResponse))]
+	[Message(InnerOpcode.M2FubenWork_ExitRequest)]
+	[ProtoContract]
+	public partial class M2FubenWork_ExitRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int SceneType { get; set; }
+
+		[ProtoMember(2)]
+		public long FubenInstanceId { get; set; }
+
+		[ProtoMember(3)]
+		public long FubenId { get; set; }
+
+		[ProtoMember(4)]
+		public List<long> Camp1Player = new List<long>();
+
+		[ProtoMember(5)]
+		public List<long> Camp2Player = new List<long>();
+
+	}
+
+	[Message(InnerOpcode.FubenWork2M_ExitResponse)]
+	[ProtoContract]
+	public partial class FubenWork2M_ExitResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//Fuben副本  end####################################################
 //寄售begin####################################################
 	[ResponseType(nameof(Consign2M_ShangJiaResponse))]
 	[Message(InnerOpcode.M2Consign_ShangJiaRequest)]
@@ -3828,6 +3614,59 @@ namespace ET
 
 	}
 
+// 跨服组队：把玩家后续的离队、跟随、查队伍指到队伍所在的组队服。TeamServerId 为 0 时改回归属服。
+	[ResponseType(nameof(G2T_SetTeamServerResponse))]
+	[Message(InnerOpcode.T2G_SetTeamServerRequest)]
+	[ProtoContract]
+	public partial class T2G_SetTeamServerRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UserID { get; set; }
+
+		[ProtoMember(2)]
+		public long TeamServerId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.G2T_SetTeamServerResponse)]
+	[ProtoContract]
+	public partial class G2T_SetTeamServerResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[Message(InnerOpcode.T2M_TeamUpdateRequest)]
+	[ProtoContract]
+	public partial class T2M_TeamUpdateRequest: Object, IActorLocationMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public long TeamId { get; set; }
+
+	}
+
 //Team  end####################################################
 //DailyReset begin####################################################
 // 日清：ActivityScene 跨 Global_Reset_Time 后通知各服，与活动开关 A2Other_ActivityUpdateRequest 分离
@@ -3927,4 +3766,206 @@ namespace ET
 	}
 
 //Marquee跑马灯	end####################################################
+//Recharge充值	begin####################################################
+	[ResponseType(nameof(R2M_RechargeResponse))]
+	[Message(InnerOpcode.M2R_RechargeRequest)]
+	[ProtoContract]
+	public partial class M2R_RechargeRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(1)]
+		public int RechargeNumber { get; set; }
+
+		[ProtoMember(2)]
+		public long PayType { get; set; }
+
+		[ProtoMember(3)]
+		public int Zone { get; set; }
+
+		[ProtoMember(4)]
+		public string payMessage { get; set; }
+
+		[ProtoMember(5)]
+		public string UnitName { get; set; }
+
+		[ProtoMember(6)]
+		public string Account { get; set; }
+
+		[ProtoMember(7)]
+		public string ClientIp { get; set; }
+
+		[ProtoMember(8)]
+		public int RechargeType { get; set; }
+
+	}
+
+	[Message(InnerOpcode.R2M_RechargeResponse)]
+	[ProtoContract]
+	public partial class R2M_RechargeResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public string PayMessage { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2G_RechargeResultResponse))]
+	[Message(InnerOpcode.G2M_RechargeResultRequest)]
+	[ProtoContract]
+	public partial class G2M_RechargeResultRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long Id { get; set; }
+
+		[ProtoMember(2)]
+		public int RechargeNumber { get; set; }
+
+		[ProtoMember(4)]
+		public string OrderInfo { get; set; }
+
+		[ProtoMember(7)]
+		public int RechargeType { get; set; }
+
+	}
+
+	[Message(InnerOpcode.M2G_RechargeResultResponse)]
+	[ProtoContract]
+	public partial class M2G_RechargeResultResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(R2Other_RechargeResponse))]
+	[Message(InnerOpcode.Other2R_RechargeRequest)]
+	[ProtoContract]
+	public partial class Other2R_RechargeRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long AccountId { get; set; }
+
+		[ProtoMember(2)]
+		public RechargeInfo RechargeInfo { get; set; }
+
+	}
+
+	[Message(InnerOpcode.R2Other_RechargeResponse)]
+	[ProtoContract]
+	public partial class R2Other_RechargeResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//Recharge充值	end####################################################
+//Shop商店	begin####################################################
+	[ResponseType(nameof(A2M_GlobalShopBuyResponse))]
+	[Message(InnerOpcode.M2A_GlobalShopBuyRequest)]
+	[ProtoContract]
+	public partial class M2A_GlobalShopBuyRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ShopId { get; set; }
+
+		[ProtoMember(2)]
+		public ShopGoodsItem ShopGoodsItem { get; set; }
+
+	}
+
+	[Message(InnerOpcode.A2M_GlobalShopBuyResponse)]
+	[ProtoContract]
+	public partial class A2M_GlobalShopBuyResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(A2M_GoldShopListResponse))]
+// Map 拉全服随机商店货架
+	[Message(InnerOpcode.M2A_GoldShopListRequest)]
+	[ProtoContract]
+	public partial class M2A_GoldShopListRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int ShopId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.A2M_GoldShopListResponse)]
+	[ProtoContract]
+	public partial class A2M_GoldShopListResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<ShopGoodsItem> ShopGoodsItems = new List<ShopGoodsItem>();
+
+	}
+
+//Shop商店	end####################################################
 }

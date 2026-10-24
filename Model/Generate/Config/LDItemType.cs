@@ -88,6 +88,15 @@ namespace ET
 		/// <summary>可装配</summary>
 		[ProtoMember(3)]
 		public int Is_Configure { get; set; }
+		/// <summary>可使用</summary>
+		[ProtoMember(4)]
+		public int Is_Usable { get; set; }
+		/// <summary>可批量</summary>
+		[ProtoMember(5)]
+		public int Is_Batch_Usable { get; set; }
+		/// <summary>使用跳转</summary>
+		[ProtoMember(6)]
+		public int Usable_Point { get; set; }
 
 	}
 }

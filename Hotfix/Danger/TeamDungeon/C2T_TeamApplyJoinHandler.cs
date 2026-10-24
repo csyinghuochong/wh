@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -29,7 +29,7 @@ namespace ET
 
             teamSceneComponent.AddApply(teamInfo.TeamId, request.TeamPlayerInfo);
             M2C_TeamApplyJoinMessage m2C_TeamApplyJoin = new M2C_TeamApplyJoinMessage() { TeamPlayerInfo = request.TeamPlayerInfo };
-            await ServerMessageHelper.SendToClient(scene.DomainZone(), teamInfo.TeamId, m2C_TeamApplyJoin);
+            await ServerMessageHelper.SendToClient(UnitZoneHelper.GetHomeZone(teamInfo.TeamId), teamInfo.TeamId, m2C_TeamApplyJoin);
 
             reply();
         }

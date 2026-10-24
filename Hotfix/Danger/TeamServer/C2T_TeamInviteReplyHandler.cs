@@ -46,7 +46,7 @@ namespace ET
                 return;
             }
 
-            if (!await ServerMessageHelper.IsInGame(scene.DomainZone(), request.TeamPlayerInfo_1.UserID))
+            if (!await ServerMessageHelper.IsInGame(UnitZoneHelper.GetHomeZone(request.TeamPlayerInfo_1.UserID), request.TeamPlayerInfo_1.UserID))
             {
                 reply();
                 return;
@@ -71,7 +71,7 @@ namespace ET
                 inviterTeam.PlayerList.Add(request.TeamPlayerInfo_2);
             }
 
-            teamSceneComponent.SyncTeamInfo(inviterTeam, inviterTeam.PlayerList).Coroutine();
+            await teamSceneComponent.SyncTeamInfo(inviterTeam, inviterTeam.PlayerList);
             reply();
         }
     }

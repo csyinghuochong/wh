@@ -28,7 +28,7 @@ namespace ET
                 return;
             }
 
-            if (!await ServerMessageHelper.IsInGame(scene.DomainZone(), request.TeamPlayerInfo.UserID))
+            if (!await ServerMessageHelper.IsInGame(UnitZoneHelper.GetHomeZone(request.TeamPlayerInfo.UserID), request.TeamPlayerInfo.UserID))
             {
                 response.Error = ErrorCode.ERR_PlayerNotOnline;
                 reply();
@@ -56,7 +56,7 @@ namespace ET
                 teamInfo.PlayerList.Add(request.TeamPlayerInfo);
             }
 
-            teamSceneComponent.SyncTeamInfo(teamInfo, teamInfo.PlayerList).Coroutine();
+            await teamSceneComponent.SyncTeamInfo(teamInfo, teamInfo.PlayerList);
             reply();
         }
     }

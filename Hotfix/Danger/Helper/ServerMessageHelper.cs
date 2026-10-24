@@ -46,6 +46,16 @@ namespace ET
             return true;
         }
 
+        /// <summary>记下玩家所在队伍的组队服。teamServerId 为 0 时清掉，后续请求改回归属服。</summary>
+        public static async ETTask SetTeamServer(int zone, long userId, long teamServerId)
+        {
+            await MessageHelper.CallActor(DBHelper.GetGateServerId(zone), new T2G_SetTeamServerRequest()
+            {
+                UserID = userId,
+                TeamServerId = teamServerId,
+            });
+        }
+
         public static async ETTask NoticeUnionLeader(int zone, long unitid, int leader)
         {
             HashSet<long> onlineIds = await GetChatOnlineUnitIds(zone);

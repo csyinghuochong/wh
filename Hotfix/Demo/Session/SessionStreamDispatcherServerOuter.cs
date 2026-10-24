@@ -126,9 +126,28 @@ namespace ET
 							chatActorId = player.WarChatInfoInstanceId;
 						}
 
+
+						//这段代码在网关把本区聊天记录和战区聊天记录拼成一次回包，客户端只发一条 C2Chat_GetChatRequest 就能拿到两边的历史。
+						//玩家进游戏时会同时登上两个聊天服：ChatInfoInstanceId 是本区聊天，WarChatInfoInstanceId 是战区聊天。拉记录时，请求默认先打到本区聊天服，本区服只返回本区频道（世界等）的最近记录。
+						//紧接着这段判断做三件事：
+						//请求必须是拉记录（C2Chat_GetChatRequest）。发消息不会走这里；战区发言在上面已经单独改投到 WarChatInfoInstanceId。
+						//玩家已经登上战区聊天服（WarChatInfoInstanceId != 0）。
+						//本区回包是 Chat2C_GetChatResponse。
+						//三个条件都满足，就用同一条请求再调一次战区聊天服。战区回包 Error == 0 且 ChatInfos 有内容时，用 AddRange 追加进本区回包的 ChatInfos。最后仍用原来的 rpcId，通过 session.Reply 把合并后的这一份回给客户端。
+						//战区调用失败、报错，或没有消息时，本区记录照常返回，这次拉取不会因此失败。
 						int rpcId = actorChatInfoRequest.RpcId; // 这里要保存客户端的rpcId
 						long instanceId = session.InstanceId;
 						IResponse response = await ActorMessageSenderComponent.Instance.Call(chatActorId, actorChatInfoRequest);
+						if (actorChatInfoRequest is C2Chat_GetChatRequest
+						    && player.WarChatInfoInstanceId != 0
+						    && response is Chat2C_GetChatResponse zoneChat)
+						{
+							IResponse warResponse = await ActorMessageSenderComponent.Instance.Call(player.WarChatInfoInstanceId, actorChatInfoRequest);
+							if (warResponse is Chat2C_GetChatResponse warChat && warChat.Error == 0 && warChat.ChatInfos != null)
+							{
+								zoneChat.ChatInfos.AddRange(warChat.ChatInfos);
+							}
+						}
 						response.RpcId = rpcId;
 						// session可能已经断开了，所以这里需要判断
 						if (session.InstanceId == instanceId)
@@ -199,6 +218,22 @@ namespace ET
                                 teamDismiss.UserId = player.UnitId;
                             }
 							long teamServerID = player.TeamServerID;
+							if (actorRequest is C2T_TeamInviteReplyRequest inviteReply
+								&& inviteReply.TeamPlayerInfo_1 != null
+								&& inviteReply.TeamPlayerInfo_1.UserID != 0)
+							{
+								teamServerID = DBHelper.GetTeamServerId(UnitZoneHelper.GetHomeZone(inviteReply.TeamPlayerInfo_1.UserID));
+							}
+							else if (actorRequest is C2T_TeamApplyJoinRequest applyJoin && applyJoin.TeamId != 0)
+							{
+								teamServerID = DBHelper.GetTeamServerId(UnitZoneHelper.GetHomeZone(applyJoin.TeamId));
+							}
+							else if (player.JoinedTeamServerID != 0
+								&& !(actorRequest is C2T_TeamListRequest)
+								&& !(actorRequest is C2T_TeamRecruitRequest))
+							{
+								teamServerID = player.JoinedTeamServerID;
+							}
 							response = await ActorMessageSenderComponent.Instance.Call(teamServerID, iTeamActorRequest);
 						}
 						else if (actorRequest is IFriendActorRequest iFriendActorRequest)

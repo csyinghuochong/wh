@@ -54,13 +54,6 @@ namespace ET
                     return;
                 }
                 
-                if (session.RemoteAddress.ToString().Contains("42.177.217.71"))
-                {
-                    response.Error = ErrorCode.ERR_LoginInfoIsNull;
-                    reply();
-                    session.Disconnect().Coroutine();
-                    return;
-                }
 
                 if (request.Password == "3" || request.Password == "4")
                 {
@@ -145,13 +138,7 @@ namespace ET
                         
                         PlayerInfo centerPlayerInfo = dbcenterAccountInfo.PlayerInfo;
 
-                        if (CommonHelper.IsInnerNet())
-                        {
-                            centerPlayerInfo.RealName = 1;
-                            centerPlayerInfo.IdCardNo = "429001198512282996";
-                        }
-
-                        if (centerPlayerInfo.RealName == 0)
+                        if (centerPlayerInfo.RealNameV2 == 0)
                         {
                             response.Error = ErrorCode.ERR_NotRealName;
                             response.AccountId = dbcenterAccountInfo.Id;

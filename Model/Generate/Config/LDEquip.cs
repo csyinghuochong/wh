@@ -118,45 +118,45 @@ namespace ET
 		/// <summary>加入 数量</summary>
 		[ProtoMember(13)]
 		public int Att_Rand_Num { get; set; }
-		/// <summary>组1 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
+		/// <summary>组1 属性 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
 		[ProtoMember(14)]
-		public int[] Att_Rand_Param11 { get; set; }
+		public long[] Att_Rand_Param11 { get; set; }
 		/// <summary>组1 最大 个数</summary>
 		[ProtoMember(15)]
 		public int Att_Rand_Param12 { get; set; }
 		/// <summary>组1 加入</summary>
 		[ProtoMember(16)]
 		public int Att_Rand_Param13 { get; set; }
-		/// <summary>组2 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
+		/// <summary>组2 属性 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
 		[ProtoMember(17)]
-		public string Att_Rand_Param21 { get; set; }
+		public long[] Att_Rand_Param21 { get; set; }
 		/// <summary>组2 最大 个数</summary>
 		[ProtoMember(18)]
 		public int Att_Rand_Param22 { get; set; }
 		/// <summary>组2 加入</summary>
 		[ProtoMember(19)]
 		public int Att_Rand_Param23 { get; set; }
-		/// <summary>组3 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
+		/// <summary>组3 属性 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
 		[ProtoMember(20)]
-		public string Att_Rand_Param31 { get; set; }
+		public long[] Att_Rand_Param31 { get; set; }
 		/// <summary>组3 最大 个数</summary>
 		[ProtoMember(21)]
 		public int Att_Rand_Param32 { get; set; }
 		/// <summary>组3 加入</summary>
 		[ProtoMember(22)]
 		public int Att_Rand_Param33 { get; set; }
-		/// <summary>组4 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
+		/// <summary>组4 属性 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
 		[ProtoMember(23)]
-		public string Att_Rand_Param41 { get; set; }
+		public long[] Att_Rand_Param41 { get; set; }
 		/// <summary>组4 最大个数</summary>
 		[ProtoMember(24)]
 		public int Att_Rand_Param42 { get; set; }
 		/// <summary>组4 加入</summary>
 		[ProtoMember(25)]
 		public int Att_Rand_Param43 { get; set; }
-		/// <summary>组5 属性 (12)3 - 属性ID 456 - 值 / 最小值 (789) - 最大值</summary>
+		/// <summary>组5 属性 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
 		[ProtoMember(26)]
-		public string Att_Rand_Param51 { get; set; }
+		public long[] Att_Rand_Param51 { get; set; }
 		/// <summary>组5 最大个数</summary>
 		[ProtoMember(27)]
 		public int Att_Rand_Param52 { get; set; }

@@ -26,7 +26,6 @@ namespace ET
                 }
             }
 
-            int zone = scene.DomainZone();
             for (int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
                 TeamPlayerInfo playerInfo = teamInfo.PlayerList[i];
@@ -35,7 +34,7 @@ namespace ET
                     continue;
                 }
 
-                await ServerMessageHelper.SendToClient(zone, playerInfo.UserID,
+                await ServerMessageHelper.SendToClient(UnitZoneHelper.GetHomeZone(playerInfo.UserID), playerInfo.UserID,
                     new M2C_TeamFollowResult() { TeamPlayerInfo = leaderInfo });
             }
 

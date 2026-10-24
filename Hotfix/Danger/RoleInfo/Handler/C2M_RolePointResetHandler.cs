@@ -23,7 +23,8 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             List<RewardItem> costs = ItemNewHelper.GetRewardItems(ReadGlobalCost(GlobalValueKey.Global_Role_Potential_Points_Reset_Consume));
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            if (costs.Count > 0 && !bag.OnCostItemData(costs, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
+            Dictionary<int, List<RewardItem>> locCosts = costs.GroupCostByLoc();
+            if (!bag.CanCostByLoc(locCosts) || !bag.CostByLoc(locCosts, ItemGetWay.CostItem))
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
@@ -37,9 +38,10 @@ namespace ET
             numericComponent.ApplyValue(NumericType.Point_Min_5, 0);
             numericComponent.ApplyValue(NumericType.Point_Xun_6, 0);
 
-            int remainPoint = RoleAddPointHelper.GetTotalFreePointByLevel(roleInfo.Lv);
-
+            int remainPoint = RoleAddPointHelper.GetAllocatablePointByLevel(roleInfo.Lv);
             numericComponent.ApplyValue(NumericType.PointRemain, remainPoint);
+
+            Function_Fight.UnitUpdateProperty_Base(unit, true, true);
 
             response.Error = ErrorCode.ERR_Success;
             reply();

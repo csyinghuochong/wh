@@ -126,6 +126,20 @@ namespace ET
             return GetTotalFreePointByLevel(level);
         }
 
+        /// <summary>
+        /// 当前等级总共可以自由分配的属性点。
+        /// 未到 AutoLevel 不能手动分配，返回 0；达到后与洗点写入 PointRemain 的值相同。
+        /// </summary>
+        public static int GetAllocatablePointByLevel(int level)
+        {
+            if (!CanManualAddPoint(level))
+            {
+                return 0;
+            }
+
+            return GetTotalFreePointByLevel(level);
+        }
+
         /// <summary>界面/协议用的展示点数 = 初始 + 累计固定 + Numeric 中已分配自由点。</summary>
         public static int GetDisplayPoint(NumericComponent numericComponent, int level, int statIndex)
         {

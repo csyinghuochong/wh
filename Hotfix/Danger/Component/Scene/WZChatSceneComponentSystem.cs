@@ -96,7 +96,7 @@ namespace ET
             }
 
             self.WarChatInfos.Add(chatInfo);
-            if (self.WarChatInfos.Count > 20)
+            if (self.WarChatInfos.Count > 10)
             {
                 self.WarChatInfos.RemoveAt(0);
             }

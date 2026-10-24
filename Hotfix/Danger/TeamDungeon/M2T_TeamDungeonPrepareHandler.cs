@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -45,10 +45,10 @@ namespace ET
                 TeamInfo = teamInfo,
                 ErrorCode = errorCode,
             };
-            int zone = scene.DomainZone();
             for (int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
-                await ServerMessageHelper.SendToClient(zone, teamInfo.PlayerList[i].UserID, m2C_HorseNoticeInfo);
+                long userId = teamInfo.PlayerList[i].UserID;
+                await ServerMessageHelper.SendToClient(UnitZoneHelper.GetHomeZone(userId), userId, m2C_HorseNoticeInfo);
             }
             response.TeamInfo = teamInfo;
             reply();

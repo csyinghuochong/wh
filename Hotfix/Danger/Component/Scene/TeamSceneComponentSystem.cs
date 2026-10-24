@@ -114,12 +114,15 @@ namespace ET
                 TeamInfo = CloneTeamInfo(teamInfo),
             };
 
-            int zone = self.DomainZone();
+            long teamSceneId = self.DomainScene().InstanceId;
             for (int i = 0; i < count; i++)
             {
                 long userId = notifyUserIds[i];
-                await ServerMessageHelper.SendToClient(zone, userId, m2C_TeamUpdateResult);
+                int homeZone = UnitZoneHelper.GetHomeZone(userId);
+                await ServerMessageHelper.SendToClient(homeZone, userId, m2C_TeamUpdateResult);
                 MessageHelper.SendToLocationActor(userId, new T2M_TeamUpdateRequest() { TeamId = notifyTeamIds[i] });
+                long bindTeamServer = notifyTeamIds[i] == 0 ? 0 : teamSceneId;
+                await ServerMessageHelper.SetTeamServer(homeZone, userId, bindTeamServer);
             }
         }
 

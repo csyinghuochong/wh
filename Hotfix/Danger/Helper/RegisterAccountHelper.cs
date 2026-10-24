@@ -33,19 +33,19 @@ namespace ET
                     || loginType == LoginTypeEnum.QuDao)
                 {
                     newAccount.PlayerInfo.Name = "loginType_" + loginType;
-                    newAccount.PlayerInfo.RealName = 1;
+                    newAccount.PlayerInfo.RealNameV2 = 1;
                     newAccount.PlayerInfo.IdCardNo =  "429001199012282996";
                 }
                 else
                 {
                     newAccount.PlayerInfo.Name ="loginType_" + loginType;
-                    newAccount.PlayerInfo.RealName = 0;
+                    newAccount.PlayerInfo.RealNameV2 = 0;
                     newAccount.PlayerInfo.IdCardNo = string.Empty;
                 }
                 
                 if (password == CommonConfig.RobotPassWord)
                 {
-                    newAccount.PlayerInfo.RealName = 1;
+                    newAccount.PlayerInfo.RealNameV2 = 1;
                     newAccount.PlayerInfo.Name = accountName;
                     newAccount.PlayerInfo.IdCardNo = "429001198010232399";
                 }
