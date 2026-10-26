@@ -20,14 +20,7 @@ namespace ET
                 reply();
                 return;
             }
-            //NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
-            //if (numericComponent.GetAsInt(NumericType.SerialNumber) >= 5)
-            //{
-            //    response.Error = ErrorCode.ERR_TimesIsNot;
-            //    reply();
-            //    return;
-            //}
-
+          
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
             {
                 long centerid = DBHelper.GetRealmCenter();
@@ -43,7 +36,7 @@ namespace ET
                 }
 
                 int serialIndex = queryResponse.SerialIndex;
-                if (serialIndex <= 0)
+                if (serialIndex < 0)
                 {
                     response.Error = ErrorCode.ERR_SerialNoExist;
                     reply();
@@ -70,7 +63,7 @@ namespace ET
                     return;
                 }
 
-                string reward = null;
+                string reward = "3~1210~8";
                 bag.OnAddItemData(reward, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}");
                 //numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
             }

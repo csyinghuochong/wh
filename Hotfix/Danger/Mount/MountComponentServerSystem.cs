@@ -90,6 +90,7 @@ namespace ET
             mountInfo.Aptitude_5 = new PetAptitudeInfo();
             mountInfo.Aptitude_6 = new PetAptitudeInfo();
             MountHelper.InitMountAptitude(mountInfo);
+            MountHelper.InitAddPoint(mountInfo);
             MountHelper.ApplyAptitudeAttributes(mountInfo);
             return mountInfo;
         }
@@ -106,6 +107,7 @@ namespace ET
 
             for (int i = 0; i < self.MountInfos.Count; i++)
             {
+                MountHelper.EnsureAddPoint(self.MountInfos[i]);
                 MountHelper.ApplyAptitudeAttributes(self.MountInfos[i]);
             }
 
@@ -295,7 +297,9 @@ namespace ET
                 return;
             }
 
-            MountHelper.AddAptitudeByLevel(mountInfo, mountInfo.MountLv - oldLv);
+            int addLv = mountInfo.MountLv - oldLv;
+            MountHelper.AddAptitudeByLevel(mountInfo, addLv);
+            MountHelper.AddLevelUpPotential(mountInfo, addLv);
             MountHelper.ApplyAptitudeAttributes(mountInfo);
             if (self.GetRideMount()?.Id == mountInfo.Id
                 && MountHelper.IsMountModelChanged(mountInfo.ConfigId, oldLv, mountInfo.MountLv))

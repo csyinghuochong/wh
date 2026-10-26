@@ -43,6 +43,7 @@ namespace ET
             self.InitDBRankInfo().Coroutine();
             self.LoadZoneCrowd().Coroutine();
             self.UpdateTianQi();
+
             self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Second, TimerType.AccountCenterTimer, self);
         }
     }
@@ -109,7 +110,7 @@ namespace ET
 
                 return (dBCenterSerialInfo.SerialList[i].KeyId, int.Parse(dBCenterSerialInfo.SerialList[i].Value2));
             }
-            return (0, 0);
+            return (-1, -1);
         }
 
         public static int GetSerialReward(this CenterServerComponent self, string serial)
@@ -145,6 +146,8 @@ namespace ET
                 self.DBCenterSerialInfo = d2GGetUnit[0];
             }
 
+            self.CheckIndex = 300;
+            self.GenerateSerials(0);
             self.SaveDB().Coroutine();
         }
 
@@ -237,7 +240,6 @@ namespace ET
                 if (dBCenterSerialInfo.SerialList[i].KeyId == sindex)
                 {
                     Log.Warning("生成序列号: 重复");
-                    Console.WriteLine("生成序列号: 重复");
                     return;
                 }
             }
@@ -247,8 +249,8 @@ namespace ET
             string codelist = string.Empty;
             self.DBCenterSerialInfo.SerialIndex = sindex;
             SerialHelper serialHelper = new SerialHelper();
-            serialHelper.rep = sindex * 1000;  //累加.每次生成1000
-            for (int i = 0; i < 1000; i++)
+            serialHelper.rep = sindex * 10;  //累加.10
+            for (int i = 0; i < 10; i++)
             {
                 string code = serialHelper.GenerateCheckCode(6);
                 dBCenterSerialInfo.SerialList.Add(new IntStringPair() { KeyId = sindex, Value = code, Value2 = "0" });

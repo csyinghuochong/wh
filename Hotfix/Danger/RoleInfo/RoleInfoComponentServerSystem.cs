@@ -942,25 +942,7 @@ namespace ET
 
         public static string GetGameSettingValue(this RoleInfoComponentServer self, GameSettingEnum gameSettingEnum)
         {
-            for (int i = 0; i < self.RoleInfo.GameSettingInfos.Count; i++)
-            {
-                if (self.RoleInfo.GameSettingInfos[i].KeyId == (int)gameSettingEnum)
-                    return self.RoleInfo.GameSettingInfos[i].Value;
-            }
-            switch (gameSettingEnum)
-            {
-                case GameSettingEnum.Music:
-                    return "1";
-                case GameSettingEnum.Sound:
-                    return "0";
-                // 0 固定 1移动
-                case GameSettingEnum.YanGan:
-                    return "0";
-                case GameSettingEnum.FenBianlLv:
-                    return "1";
-                default:
-                    return "0";
-            }
+            return self.RoleInfo.GetGameSettingValue(gameSettingEnum);
         }
 
 

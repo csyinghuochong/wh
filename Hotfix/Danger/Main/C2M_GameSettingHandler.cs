@@ -23,21 +23,6 @@ namespace ET
 
 			for (int i = 0; i < request.GameSettingInfos.Count; i++)
 			{
-				if (request.GameSettingInfos[i].KeyId == (int)GameSettingEnum.AttackMode)
-				{
-					int attackMode = int.Parse(request.GameSettingInfos[i].Value);
-					numericComponent.ApplyValue(NumericType.AttackMode, attackMode);
-
-					List<Unit> unitlist = unitComponent.GetAll();
-                    for (int u = 0; u < unitlist.Count; u++)
-					{
-						if (unitlist[u].MasterId == unit.Id)
-						{
-                            unitlist[u].GetComponent<NumericComponent>().ApplyValue(NumericType.AttackMode, attackMode);
-                        }
-					}
-				}
-				
 				if (settingIndexMap.TryGetValue(request.GameSettingInfos[i].KeyId, out int settingIndex))
 				{
 					roleInfo.GameSettingInfos[settingIndex].Value = request.GameSettingInfos[i].Value;

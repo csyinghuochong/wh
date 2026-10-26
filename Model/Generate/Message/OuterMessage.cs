@@ -6134,6 +6134,12 @@ namespace ET
 		[ProtoMember(6)]
 		public string MountName { get; set; }
 
+		[ProtoMember(10)]
+		public int AddPropretyNum { get; set; }
+
+		[ProtoMember(11)]
+		public List<int> AddPropretyValue = new List<int>();
+
 		[ProtoMember(13)]
 		public PetAptitudeInfo Aptitude_1 { get; set; }
 
@@ -6381,6 +6387,73 @@ namespace ET
 	[Message(OuterOpcode.M2C_MountXiLian)]
 	[ProtoContract]
 	public partial class M2C_MountXiLian: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public MountInfo MountInfo { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MountAddPoint))]
+// 坐骑潜力点分配。AddPropretyValue 为六维已分配点数；剩余点 = (Lv-1)×Global_Mount_LevelUp_Potential_Points - 已分配总和
+	[Message(OuterOpcode.C2M_MountAddPoint)]
+	[ProtoContract]
+	public partial class C2M_MountAddPoint: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long MountInfoId { get; set; }
+
+		[ProtoMember(2)]
+		public List<int> AddPropretyValue = new List<int>();
+
+	}
+
+	[Message(OuterOpcode.M2C_MountAddPoint)]
+	[ProtoContract]
+	public partial class M2C_MountAddPoint: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public MountInfo MountInfo { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MountPointReset))]
+// 坐骑洗点。消耗读 Global_Mount_Potential_Points_Reset_Consume，清空已分配并返还全部潜力点
+	[Message(OuterOpcode.C2M_MountPointReset)]
+	[ProtoContract]
+	public partial class C2M_MountPointReset: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long MountInfoId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountPointReset)]
+	[ProtoContract]
+	public partial class M2C_MountPointReset: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

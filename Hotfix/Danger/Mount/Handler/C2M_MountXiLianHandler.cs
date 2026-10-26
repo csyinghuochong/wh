@@ -50,7 +50,6 @@ namespace ET
             {
                 case ItemTypeEnum.SubType_Mount_XiLian_30:
                     MountHelper.ResetMountAptitude(mountInfo);
-                    MountHelper.ApplyAptitudeAttributes(mountInfo);
                     break;
                 case ItemTypeEnum.SubType_Mount_Exp_31:
                     int addExp = ldItem.GetTypeParam1() * costNum;
@@ -68,6 +67,10 @@ namespace ET
                     reply();
                     return;
             }
+
+            // 资质/等级变化后潜力点剩余与 Ks/Vs 一并算好，整包 MountInfo 回客户端
+            MountHelper.EnsureAddPoint(mountInfo);
+            MountHelper.ApplyAptitudeAttributes(mountInfo);
 
             bag.OnCostItemData($"{bagInfo.ItemID};{costNum}", (ItemLocType)bagInfo.Loc, ItemGetWay.ItemXiLian);
             mountComponentServer.NotifyMountUpdate(mountInfo);
