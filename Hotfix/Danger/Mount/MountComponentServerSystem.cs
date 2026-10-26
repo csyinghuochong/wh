@@ -82,7 +82,7 @@ namespace ET
             mountInfo.ConfigId = ldMount.Id;
             mountInfo.MountLv = 1;
             mountInfo.MountExp = 0;
-            mountInfo.MountName = ldMount.Name.ToString();
+            mountInfo.MountName = WordHelper.GetShowText(ldMount.Name);
             mountInfo.Aptitude_1 = new PetAptitudeInfo();
             mountInfo.Aptitude_2 = new PetAptitudeInfo();
             mountInfo.Aptitude_3 = new PetAptitudeInfo();
