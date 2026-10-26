@@ -10,13 +10,13 @@ namespace ET
         protected override async ETTask Run(Scene scene, C2F_WatchPlayerRequest request, F2C_WatchPlayerResponse response, Action reply)
         {
             int homeZone = FriendHelper.PrepareHomeZone(request.UserId);
-            Console.WriteLine($"request.UserId:  {homeZone}");
             if (homeZone == 0)
             {
                 response.Error = ErrorCode.ERR_Error;
                 reply();
                 return;
             }
+
             RoleInfoComponentServer userinfo = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, request.UserId);
             if (userinfo == null)
             {
@@ -24,6 +24,7 @@ namespace ET
                 reply();
                 return;
             }
+
             RoleInfo roleInfo = userinfo.RoleInfo;
             //根据类型返回不同的值
             switch (request.WatchType) 
@@ -38,6 +39,7 @@ namespace ET
                     response.UnionName = string.IsNullOrWhiteSpace(roleInfo.UnionName) ? string.Empty : roleInfo.UnionName;
                     response.Sex = roleInfo.Sex;
                     BagComponentServer bagComponentsServer = await DBHelper.GetComponent<BagComponentServer>(homeZone, request.UserId);
+
                     if (bagComponentsServer == null)
                     {
                         response.Error = ErrorCode.ERR_Error;
@@ -52,6 +54,9 @@ namespace ET
                         reply();
                         return;
                     }
+
+                    Console.WriteLine($"request.UserId ff: {request.UserId} {homeZone}");
+
                     response.FashionIds = bagComponentsServer.FashionEquipList;
                     response.MainHandId = bagComponentsServer.GetWuqiItemId();
                     response.OffHandId = bagComponentsServer.GetFuShouItemId();

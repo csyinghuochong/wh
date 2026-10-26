@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ET
 {
     
-    public class RecastPathComponent : Entity, IAwake, ILoad
+    public class RecastPathComponent : Entity, IAwake
     {
         public const string Map1NavDataPath = "../Config/RecastNavData/1.bin";
 

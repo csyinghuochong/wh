@@ -235,8 +235,9 @@ namespace ET
                         dataCollationComponent.UpdatePlatName(request.Platform, request.PlatformTwo, request.Simulator, request.Root, request.DeviceID, request.UnityVersion, request.BigVersion, request.DeviceName, request.OAID);
                         unit.AddComponent<SkillPassiveComponent>().UpdatePassiveSkill();
 						//unit.GetComponent<DBSaveComponent>().LastDBTime = TimeHelper.ServerNow();
-                        dbSaveComponent.UpdateCacheDB();
                         unit.OnLogin(session.RemoteAddress.ToString());
+                        // OnLogin 里 GetComponent 才把新建的背包等标脏，须在这之后落库
+                        dbSaveComponent.UpdateCacheDB();
                         try
                         {
                             await SyncCenterRoleOnEnter(session.DomainZone(), request.AccountId, request.UserID, unit);

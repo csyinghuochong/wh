@@ -54,6 +54,16 @@ namespace ET
         {
             DateTime dateTime = TimeHelper.DateTimeNow();
             self.IsHoliday = await HttpHelper.IsHolidayByDate(dateTime);
+
+            Console.WriteLine($"CheckHoliday.1 :  {self.IsHoliday}");
+
+            if (CommonHelper.IsInnerNet() && !self.IsHoliday)
+            {
+                DayOfWeek day = dateTime.DayOfWeek;
+                self.IsHoliday = day == DayOfWeek.Saturday || day == DayOfWeek.Sunday;
+
+                Console.WriteLine($"CheckHoliday.2 :  {self.IsHoliday}");
+            }
         }
         
         public static async ETTask UpdateServerInfo(this CenterServerComponent self)
