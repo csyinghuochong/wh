@@ -2869,6 +2869,9 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
+		[ProtoMember(5)]
+		public List<RewardItem> ReardList = new List<RewardItem>();
+
 	}
 
 	[ResponseType(nameof(M2C_SoloMatchResponse))]
@@ -6364,8 +6367,9 @@ namespace ET
 	[ResponseType(nameof(M2C_MountXiLian))]
 // 坐骑洗练/经验丹。按消耗道具 ItemType 分支：
 // 30 洗练丹 → 重置资质（按 LDMount.Aptitude 重随 D/E）
-// 31 经验丹 → ItemTypeParam1 为经验值
+// 31 经验丹 → ItemTypeParam1 为经验值；升级会变潜力点剩余
 // BagInfoID=消耗道具；CostItemNum=数量（默认 1）
+// 回包 MountInfo 含资质、AddPropretyValue/Num、Ks/Vs（有变化一并带回）
 	[Message(OuterOpcode.C2M_MountXiLian)]
 	[ProtoContract]
 	public partial class C2M_MountXiLian: Object, IActorLocationRequest
@@ -6403,7 +6407,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_MountAddPoint))]
-// 坐骑潜力点分配。AddPropretyValue 为六维已分配点数；剩余点 = (Lv-1)×Global_Mount_LevelUp_Potential_Points - 已分配总和
+// 坐骑潜力点分配。AddPropretyValue 为六维已分配（体~迅）；每维独立，上限均为 (Lv-1)×Global_Mount_LevelUp_Potential_Points
 	[Message(OuterOpcode.C2M_MountAddPoint)]
 	[ProtoContract]
 	public partial class C2M_MountAddPoint: Object, IActorLocationRequest

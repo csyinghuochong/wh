@@ -18,6 +18,8 @@ namespace ET
 
             int status = request.Status == MountHelper.StatusUse ? MountHelper.StatusUse : MountHelper.StatusRest;
             mountComponentServer.SetUse(mountInfo, status);
+            // 使用中合六维转换属性，切换使用/休息需重算
+            mountComponentServer.RefreshPlayerMountAttrs();
             reply();
             await ETTask.CompletedTask;
         }

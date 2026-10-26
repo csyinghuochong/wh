@@ -11,7 +11,7 @@ namespace ET
     /// 2) 六维加点（含称号六维） → 战斗分项
     /// 3) 体 → 生命上限固定值
     /// 4) 称号非六维属性
-    /// 5) 坐骑列表按骑乘/非骑乘比例叠加
+    /// 5) 坐骑：每只按骑乘/非骑乘比例分开算再累加；速度仅骑乘
     /// </summary>
     public static class UnitStaticAttrBuilder
     {
@@ -31,7 +31,7 @@ namespace ET
             return dic;
         }
 
-        /// <summary>MountComponent 坐骑列表：骑乘中的坐骑用骑乘比例，其余用非骑乘比例。</summary>
+        /// <summary>MountComponent：列表每只按 Ride/No_Ride 比例合转换属性后累加；速度仅骑乘。</summary>
         static void MergeMountAttributes(Unit unit, Dictionary<int, long> dic)
         {
             MountComponentServer mountComponent = unit.GetComponent<MountComponentServer>();

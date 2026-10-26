@@ -66,6 +66,12 @@ namespace ET
                 string reward = "3~1210~8";
                 bag.OnAddItemData(reward, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}");
                 //numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
+                response.ReardList.Add( new RewardItem()
+                {
+                    ItemType = 3,
+                    ItemID = 1210,
+                    ItemNum = 8
+                });
             }
 
             reply();
