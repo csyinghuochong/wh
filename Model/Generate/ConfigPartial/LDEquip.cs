@@ -238,16 +238,22 @@ namespace ET
                     continue;
                 }
 
-                // 随机一条，值在 [min, max]
+                // 随机一条，值在 [min, max]；0 不生成
                 int idx = RandomHelper.RandomNumber(0, ids.Count);
                 int pickMin = mins[idx];
                 int pickMax = maxs[idx] < pickMin ? pickMin : maxs[idx];
+                int value = RandomHelper.RandomNumber(pickMin, pickMax + 1);
+                used.Add(ids[idx]);
+                if (value == 0)
+                {
+                    continue;
+                }
+
                 result.Add(new AttributeItem
                 {
                     AttributeID = ids[idx],
-                    AttributeValue = RandomHelper.RandomNumber(pickMin, pickMax + 1),
+                    AttributeValue = value,
                 });
-                used.Add(ids[idx]);
             }
 
             // ---------- 随机附加：共 Att_Rand_Num 次 ----------
@@ -340,13 +346,19 @@ namespace ET
                 int idx = RandomHelper.RandomNumber(0, ids.Count);
                 int pickMin = mins[idx];
                 int pickMax = maxs[idx] < pickMin ? pickMin : maxs[idx];
+                int value = RandomHelper.RandomNumber(pickMin, pickMax + 1);
+                used.Add(ids[idx]);
+                groupPicked[fromGroup[idx]]++;
+                if (value == 0)
+                {
+                    continue;
+                }
+
                 result.Add(new AttributeItem
                 {
                     AttributeID = ids[idx],
-                    AttributeValue = RandomHelper.RandomNumber(pickMin, pickMax + 1),
+                    AttributeValue = value,
                 });
-                used.Add(ids[idx]);
-                groupPicked[fromGroup[idx]]++;
             }
 
             return result;
