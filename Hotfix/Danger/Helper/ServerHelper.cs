@@ -156,14 +156,16 @@ namespace ET
         }
 
 
-        /// <summary>
-        /// 获取合区后的新区id.  todo
-        /// </summary>
-        /// <param name="zoneid"></param>
-        /// <returns></returns>
+        /// <summary>创角区换成 StartZoneConfig.PhysicZone。没有合区记录时仍是原区。</summary>
         public static int GetNewServerId(int zoneid)
         {
-            return zoneid;
+            StartZoneConfigCategory zones = StartZoneConfigCategory.Instance;
+            if (zones == null)
+            {
+                return zoneid;
+            }
+
+            return CommonHelper.GetMergedServerId(zones.ZoneMergeMap, zoneid);
         }
 
         public static void SetServerList(List<ServerItem> serverItems)

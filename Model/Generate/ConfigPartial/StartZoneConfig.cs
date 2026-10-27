@@ -15,6 +15,9 @@ namespace ET
 
         /// <summary>已配置的战区共享 ZoneId 集合（如 2001、2002）</summary>
         public HashSet<int> WarShareZones = new HashSet<int>();
+
+        /// <summary>旧游戏服 Id → PhysicZone。只含已经合走的服。</summary>
+        public Dictionary<int, int> ZoneMergeMap = new Dictionary<int, int>();
         
         
         public ServerItem FindServerItem(int zone)
@@ -102,7 +105,28 @@ namespace ET
             }
 
             this.RebuildServerItems();
+            this.BuildZoneMergeMap();
             StartSceneConfigCategory.Instance?.EnsureGameZonesExpanded();
+        }
+
+        /// <summary>PhysicZone 不等于自身的游戏服，记入旧服到新服的表。</summary>
+        public void BuildZoneMergeMap()
+        {
+            this.ZoneMergeMap.Clear();
+            foreach (StartZoneConfig config in this.GetAll().Values)
+            {
+                if (config.Id <= 0 || config.Id >= StartSceneConfigCategory.GameZoneIdMax)
+                {
+                    continue;
+                }
+
+                if (config.PhysicZone <= 0 || config.PhysicZone == config.Id)
+                {
+                    continue;
+                }
+
+                this.ZoneMergeMap.Add(config.Id, config.PhysicZone);
+            }
         }
 
         public void RebuildServerItems()

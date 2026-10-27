@@ -43,6 +43,7 @@ namespace ET
                         }
 
                         ApplyServerTags(response.ServerItems);
+                        FillZoneMergeList(response);
 
                         response.Message = centerServer.TianQiValue.ToString();
                         string[] stringxxx = LogHelper.GetNoticeNew().Split('@');
@@ -138,6 +139,16 @@ namespace ET
             finally
             {
                 dbCenterAccountInfo.Dispose();
+            }
+        }
+
+        /// <summary>旧服 Id → PhysicZone。只下发已经合走的游戏服，可见服列表里没有这些 Id。</summary>
+        private static void FillZoneMergeList(R2C_ServerList response)
+        {
+            Dictionary<int, int> zoneMergeMap = StartZoneConfigCategory.Instance.ZoneMergeMap;
+            foreach (KeyValuePair<int, int> pair in zoneMergeMap)
+            {
+                response.ZoneMergeList.Add(new IntLongPair() { KeyId = pair.Key, Value = pair.Value });
             }
         }
 

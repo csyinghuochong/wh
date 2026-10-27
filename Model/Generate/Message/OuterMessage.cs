@@ -1502,6 +1502,9 @@ namespace ET
 		[ProtoMember(11)]
 		public List<CreateRoleInfo> RoleList = new List<CreateRoleInfo>();
 
+		[ProtoMember(12)]
+		public List<IntLongPair> ZoneMergeList = new List<IntLongPair>();
+
 	}
 
 	[ResponseType(nameof(Realm2C_SendSmsVerifyCode))]
