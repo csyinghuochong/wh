@@ -379,7 +379,10 @@ namespace ET
 				GateSessionActorId = gateSessionActorId,
 				RoleHeadId = roleInfo.RoleHeadId,
 				RoleHeadFrame = roleInfo.RoleHeadFrame,
-			});
+				VipLevel = unit.GetComponent<RechargeComponentServer>().RechargePro.VipLevel,
+				TitleId = unit.GetComponent<TitleComponentServer>().TitleId,
+
+            });
 			return chat2G_EnterChat.ChatInfoUnitInstanceId;
 		}
 
@@ -403,6 +406,8 @@ namespace ET
 				GateSessionActorId = gateSessionActorId,
 				RoleHeadId = roleInfo.RoleHeadId,
 				RoleHeadFrame = roleInfo.RoleHeadFrame,
+				VipLevel = unit.GetComponent<RechargeComponentServer>().RechargePro.VipLevel,
+				TitleId = unit.GetComponent<TitleComponentServer>().TitleId,
 			});
 			return chat2G_EnterChat.ChatInfoUnitInstanceId;
 		}

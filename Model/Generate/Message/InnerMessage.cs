@@ -3139,6 +3139,12 @@ namespace ET
 		[ProtoMember(9)]
 		public int RoleHeadFrame { get; set; }
 
+		[ProtoMember(10)]
+		public int VipLevel { get; set; }
+
+		[ProtoMember(11)]
+		public int TitleId { get; set; }
+
 	}
 
 	[Message(InnerOpcode.Chat2G_EnterChat)]
@@ -3219,6 +3225,41 @@ namespace ET
 	[Message(InnerOpcode.Chat2G_RequestExitChat)]
 	[ProtoContract]
 	public partial class Chat2G_RequestExitChat: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+	[ResponseType(nameof(Chat2M_UpdateChatShow))]
+// VIP 或当前称号变化后，刷新聊天服上的展示数据。
+	[Message(InnerOpcode.M2Chat_UpdateChatShow)]
+	[ProtoContract]
+	public partial class M2Chat_UpdateChatShow: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(1)]
+		public int VipLevel { get; set; }
+
+		[ProtoMember(3)]
+		public int TitleId { get; set; }
+
+	}
+
+	[Message(InnerOpcode.Chat2M_UpdateChatShow)]
+	[ProtoContract]
+	public partial class Chat2M_UpdateChatShow: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

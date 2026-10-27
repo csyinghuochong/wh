@@ -18,6 +18,7 @@ namespace ET
 
             titleComponent.TitleId = request.TitleId;
             UnitHelper.SyncUnitAppear(unit);
+            ChatShowHelper.Sync(unit);
 
             reply();
             await ETTask.CompletedTask;

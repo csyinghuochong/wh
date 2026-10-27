@@ -77,6 +77,7 @@ namespace ET
                 {
                     UnitHelper.SyncUnitAppear(unit);
                 }
+                ChatShowHelper.Sync(unit);
             }
 
             Function_Fight.UnitUpdateProperty_Base(unit, notice, true);

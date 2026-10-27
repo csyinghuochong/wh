@@ -26,6 +26,8 @@ namespace ET
                 unit.Level = request.Level;
                 unit.RoleHeadId = request.RoleHeadId;
                 unit.RoleHeadFrame = request.RoleHeadFrame;
+                unit.VipLevel = request.VipLevel;
+                unit.TitleId = request.TitleId;
                 chatInfoUnitsComponent.SetUnion(unit, request.UnionId);
                 unit.GateSessionActorId = request.GateSessionActorId;
                 response.ChatInfoUnitInstanceId = unit.InstanceId;
@@ -42,6 +44,8 @@ namespace ET
             unit.Level = request.Level;
             unit.RoleHeadId = request.RoleHeadId;
             unit.RoleHeadFrame = request.RoleHeadFrame;
+            unit.VipLevel = request.VipLevel;
+            unit.TitleId = request.TitleId;
             unit.UnionId = request.UnionId;
             unit.GateSessionActorId = request.GateSessionActorId;
             response.ChatInfoUnitInstanceId = unit.InstanceId;

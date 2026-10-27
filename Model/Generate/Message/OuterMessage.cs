@@ -8218,6 +8218,12 @@ namespace ET
 		[ProtoMember(13)]
 		public RecruitChat Recruit { get; set; }
 
+		[ProtoMember(14)]
+		public int VipLevel { get; set; }
+
+		[ProtoMember(15)]
+		public int TitleId { get; set; }
+
 		[ProtoMember(20)]
 		public string ChatMsg_EN { get; set; }
 
@@ -10227,6 +10233,12 @@ namespace ET
 
 		[ProtoMember(15)]
 		public List<int> FashionIds = new List<int>();
+
+		[ProtoMember(16)]
+		public int VipLevel { get; set; }
+
+		[ProtoMember(17)]
+		public int TitleId { get; set; }
 
 	}
 

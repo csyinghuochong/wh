@@ -30,6 +30,8 @@ namespace ET
                 request.ChatInfo.ServerId = UnitZoneHelper.GetHomeZone(chatInfoUnit.Id);
                 request.ChatInfo.RoleHeadId = chatInfoUnit.RoleHeadId;
                 request.ChatInfo.RoleHeadFrame = chatInfoUnit.RoleHeadFrame;
+                request.ChatInfo.VipLevel = chatInfoUnit.VipLevel;
+                request.ChatInfo.TitleId = chatInfoUnit.TitleId;
                 m2C_SyncChatInfo.ChatInfo = request.ChatInfo;
                 ChatSceneComponent chatScene = chatInfoUnit.DomainScene().GetComponent<ChatSceneComponent>();
                 int zone = chatInfoUnit.DomainZone();

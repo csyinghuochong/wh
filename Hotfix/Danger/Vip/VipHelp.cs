@@ -76,6 +76,7 @@ namespace ET
             {
                 RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
                 daily?.SetVipDailyClaimed(0);
+                ChatShowHelper.Sync(unit);
             }
 
             unit.GetComponent<TaskComponentServer>().OnUpdateVipLevel(pro.VipLevel);

@@ -71,6 +71,8 @@ namespace ET
                         ServerId = UnitZoneHelper.GetHomeZone(teamInfo.TeamId),
                         RoleHeadId = request.TeamPlayerInfo.RoleHeadId,
                         RoleHeadFrame = request.TeamPlayerInfo.RoleHeadFrame,
+                        VipLevel = request.TeamPlayerInfo.VipLevel,
+                        TitleId = request.TeamPlayerInfo.TitleId,
                         Time = TimeHelper.ServerNow(),
                     }
                 });

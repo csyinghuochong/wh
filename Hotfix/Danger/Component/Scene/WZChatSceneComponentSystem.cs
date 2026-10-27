@@ -63,6 +63,8 @@ namespace ET
                 chatInfoUnit.Level = request.Level;
                 chatInfoUnit.RoleHeadId = request.RoleHeadId;
                 chatInfoUnit.RoleHeadFrame = request.RoleHeadFrame;
+                chatInfoUnit.VipLevel = request.VipLevel;
+                chatInfoUnit.TitleId = request.TitleId;
                 chatInfoUnit.UnionId = request.UnionId;
                 chatInfoUnit.GateSessionActorId = request.GateSessionActorId;
                 return chatInfoUnit;
@@ -77,6 +79,8 @@ namespace ET
             chatInfoUnit.Level = request.Level;
             chatInfoUnit.RoleHeadId = request.RoleHeadId;
             chatInfoUnit.RoleHeadFrame = request.RoleHeadFrame;
+            chatInfoUnit.VipLevel = request.VipLevel;
+            chatInfoUnit.TitleId = request.TitleId;
             chatInfoUnit.UnionId = request.UnionId;
             chatInfoUnit.GateSessionActorId = request.GateSessionActorId;
             self.Add(chatInfoUnit);

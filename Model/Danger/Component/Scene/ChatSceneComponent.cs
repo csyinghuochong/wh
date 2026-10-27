@@ -18,6 +18,10 @@ namespace ET
         public int RoleHeadId;
 
         public int RoleHeadFrame;
+
+        public int VipLevel;
+
+        public int TitleId;
     }
 
     public class BeReportedInfo
