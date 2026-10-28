@@ -31,6 +31,9 @@ namespace ET
             if (request.OperatateType == 2)
             {
                 roleInfo.MakeTypeList.Remove(request.SkillMakeType);
+                roleInfoComponent.RemoveMakeIdsByType(request.SkillMakeType);
+                MessageHelper.SendToClient(unit, new M2C_UpdateRoleInfoMessage { RoleInfo = roleInfo });
+                DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, roleInfoComponent).Coroutine();
             }
             reply();
             await ETTask.CompletedTask;

@@ -859,6 +859,35 @@ namespace ET
             return LDSkill_Make_GroupCategory.Instance.Get(cfg.Group).Type;
         }
 
+        /// <summary>
+        /// 清掉 MakeIdList 里属于该制造类型的配方。makeId → Skill_Make.Group → Skill_Make_Group.Type。
+        /// </summary>
+        public static void RemoveMakeIdsByType(this RoleInfoComponentServer self, int makeType)
+        {
+            List<int> makeIdList = self.RoleInfo.MakeIdList;
+            if (makeIdList == null || makeIdList.Count == 0)
+            {
+                return;
+            }
+
+            for (int i = makeIdList.Count - 1; i >= 0; i--)
+            {
+                int makeId = makeIdList[i];
+                if (!LDSkill_MakeCategory.Instance.Contain(makeId))
+                {
+                    continue;
+                }
+
+                LDSkill_Make cfg = LDSkill_MakeCategory.Instance.Get(makeId);
+                if (GetSkillMakeType(cfg) != makeType)
+                {
+                    continue;
+                }
+
+                makeIdList.RemoveAt(i);
+            }
+        }
+
         public static void OnMakeItem(this RoleInfoComponentServer self, int makeId)
         {
             //LDMake equipMakeConfig = LDMakeCategory.Instance.Get(makeId);
