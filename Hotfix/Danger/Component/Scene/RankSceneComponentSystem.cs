@@ -113,7 +113,7 @@ namespace ET
             long openTime = ServerHelper.GetOpenServerTime(CommonHelper.IsInnerNet(), self.DomainZone());
             int worldLv = WorldLvHelper.GetWorldLv(openTime);
             self.DBServerInfo.ServerInfo.WorldLv = worldLv;
-            Console.WriteLine($"UpdateWorldLv: zone:{self.DomainZone()}   worldLv: {worldLv}");
+            //Console.WriteLine($"UpdateWorldLv: zone:{self.DomainZone()}   worldLv: {worldLv}");
         }
 
         public static async ETTask BroadcastWorldLv(this RankSceneComponent self, int updatetype = 0)

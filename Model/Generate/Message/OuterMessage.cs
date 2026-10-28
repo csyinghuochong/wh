@@ -6170,6 +6170,9 @@ namespace ET
 		[ProtoMember(31)]
 		public List<long> Vs = new List<long>();
 
+		[ProtoMember(32)]
+		public MountXiLianResult XiLianResult { get; set; }
+
 	}
 
 	[ResponseType(nameof(M2C_MountList))]
@@ -6368,11 +6371,9 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_MountXiLian))]
-// 坐骑洗练/经验丹。按消耗道具 ItemType 分支：
-// 30 洗练丹 → 重置资质（按 LDMount.Aptitude 重随 D/E）
-// 31 经验丹 → ItemTypeParam1 为经验值；升级会变潜力点剩余
-// BagInfoID=消耗道具；CostItemNum=数量（默认 1）
-// 回包 MountInfo 含资质、AddPropretyValue/Num、Ks/Vs（有变化一并带回）
+// 坐骑洗练丹 SubType_Mount_XiLian_30。只出结果，不改当前资质、不刷属性
+// 结果写入 MountInfo.XiLianResult，重登仍在；C2M_MountXiLianSave 才写入并置空
+// 吃经验走 C2M_MountExp（协议定义在文件末尾、M2C_UpdateVersion 之前）
 	[Message(OuterOpcode.C2M_MountXiLian)]
 	[ProtoContract]
 	public partial class C2M_MountXiLian: Object, IActorLocationRequest
@@ -6394,6 +6395,104 @@ namespace ET
 	[Message(OuterOpcode.M2C_MountXiLian)]
 	[ProtoContract]
 	public partial class M2C_MountXiLian: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public MountInfo MountInfo { get; set; }
+
+		[ProtoMember(2)]
+		public MountXiLianResult XiLianResult { get; set; }
+
+	}
+
+// 未保存的坐骑洗练结果。六个资质，保存成功后整段置空
+	[Message(OuterOpcode.MountXiLianResult)]
+	[ProtoContract]
+	public partial class MountXiLianResult: Object
+	{
+		[ProtoMember(1)]
+		public PetAptitudeInfo Aptitude_1 { get; set; }
+
+		[ProtoMember(2)]
+		public PetAptitudeInfo Aptitude_2 { get; set; }
+
+		[ProtoMember(3)]
+		public PetAptitudeInfo Aptitude_3 { get; set; }
+
+		[ProtoMember(4)]
+		public PetAptitudeInfo Aptitude_4 { get; set; }
+
+		[ProtoMember(5)]
+		public PetAptitudeInfo Aptitude_5 { get; set; }
+
+		[ProtoMember(6)]
+		public PetAptitudeInfo Aptitude_6 { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MountXiLianSave))]
+// 保存洗练结果：写入资质并刷新属性，成功后 XiLianResult 置空
+	[Message(OuterOpcode.C2M_MountXiLianSave)]
+	[ProtoContract]
+	public partial class C2M_MountXiLianSave: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long MountInfoId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountXiLianSave)]
+	[ProtoContract]
+	public partial class M2C_MountXiLianSave: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public MountInfo MountInfo { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_MountEatExp))]
+// 坐骑经验丹 SubType_Mount_Exp_31。ItemTypeParam1 为单颗经验，CostItemNum 为数量
+	[Message(OuterOpcode.C2M_MountEatExp)]
+	[ProtoContract]
+	public partial class C2M_MountEatExp: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long MountInfoId { get; set; }
+
+		[ProtoMember(2)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(3)]
+		public int CostItemNum { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_MountEatExp)]
+	[ProtoContract]
+	public partial class M2C_MountEatExp: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -8229,6 +8328,27 @@ namespace ET
 
 		[ProtoMember(20)]
 		public string ChatMsg_EN { get; set; }
+
+	}
+
+	[Message(OuterOpcode.RecruitChat)]
+	[ProtoContract]
+	public partial class RecruitChat: Object
+	{
+		[ProtoMember(1)]
+		public int SceneId { get; set; }
+
+		[ProtoMember(2)]
+		public int LevelMin { get; set; }
+
+		[ProtoMember(3)]
+		public int LevelMax { get; set; }
+
+		[ProtoMember(4)]
+		public int MemberCount { get; set; }
+
+		[ProtoMember(5)]
+		public int MemberMax { get; set; }
 
 	}
 
@@ -11953,27 +12073,6 @@ namespace ET
 	}
 
 //Recharge充值 end####################################################
-	[Message(OuterOpcode.RecruitChat)]
-	[ProtoContract]
-	public partial class RecruitChat: Object
-	{
-		[ProtoMember(1)]
-		public int SceneId { get; set; }
-
-		[ProtoMember(2)]
-		public int LevelMin { get; set; }
-
-		[ProtoMember(3)]
-		public int LevelMax { get; set; }
-
-		[ProtoMember(4)]
-		public int MemberCount { get; set; }
-
-		[ProtoMember(5)]
-		public int MemberMax { get; set; }
-
-	}
-
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

@@ -13,6 +13,7 @@ namespace ET
         {
             ParseEquipAttri();
             ParseEnhance_AttributeList();
+            CheckRandParamPacked();
         }
 
         private void ParseEquipAttri()
@@ -103,8 +104,9 @@ namespace ET
         }
 
         /// <summary>
-        /// 11 位：属性ID(3) + 最小值(4) + 最大值(4)。10 位左侧补 0 后同样拆。
-        /// 4~9 位仍是旧码（必中 Att_Rand_1~6）：id + 最小值(3)，有最大值时再加 3 位。
+        /// long 打包码：属性ID + 最小值(4) + 最大值(4)。
+        /// 9 位是 144，10 位是 244，11 位是 344。属性 id 不足 3 位时前导 0 会被丢掉。
+        /// 左侧补 0 到 11 位后再按 3+4+4 拆。其它位数是配置错误。
         /// </summary>
         public static bool TryParsePackedAttr(long code, out int attrId, out int minValue, out int maxValue)
         {
@@ -117,32 +119,45 @@ namespace ET
             }
 
             string s = code.ToString();
-            if (s.Length > 11)
+            if (s.Length < 9 || s.Length > 11)
             {
                 return false;
             }
 
-            if (s.Length >= 10)
+            s = s.PadLeft(11, '0');
+            if (!int.TryParse(s.Substring(0, 3), out attrId))
             {
-                s = s.PadLeft(11, '0');
-                if (!int.TryParse(s.Substring(0, 3), out attrId))
-                {
-                    return false;
-                }
-
-                if (!int.TryParse(s.Substring(3, 4), out minValue))
-                {
-                    return false;
-                }
-
-                if (!int.TryParse(s.Substring(7, 4), out maxValue))
-                {
-                    return false;
-                }
-
-                return attrId > 0;
+                return false;
             }
 
+            if (!int.TryParse(s.Substring(3, 4), out minValue))
+            {
+                return false;
+            }
+
+            if (!int.TryParse(s.Substring(7, 4), out maxValue))
+            {
+                return false;
+            }
+
+            return attrId > 0;
+        }
+
+        /// <summary>
+        /// 必中 Att_Rand_1~6 是 int，装不下 11 位 3+4+4。
+        /// 短码：id + 最小值(3)，有最大值时再加 3 位。
+        /// </summary>
+        private static bool TryParseShortPackedAttr(int code, out int attrId, out int minValue, out int maxValue)
+        {
+            attrId = 0;
+            minValue = 0;
+            maxValue = 0;
+            if (code <= 0)
+            {
+                return false;
+            }
+
+            string s = code.ToString();
             int len = s.Length;
             if (len < 4)
             {
@@ -183,6 +198,42 @@ namespace ET
             return attrId > 0;
         }
 
+        private void CheckRandParamPacked()
+        {
+            foreach (LDEquip e in this.GetAll().Values)
+            {
+                LogBadPacked(e.Id, "Att_Rand_Param11", e.Att_Rand_Param11);
+                LogBadPacked(e.Id, "Att_Rand_Param21", e.Att_Rand_Param21);
+                LogBadPacked(e.Id, "Att_Rand_Param31", e.Att_Rand_Param31);
+                LogBadPacked(e.Id, "Att_Rand_Param41", e.Att_Rand_Param41);
+                LogBadPacked(e.Id, "Att_Rand_Param51", e.Att_Rand_Param51);
+            }
+        }
+
+        private static void LogBadPacked(int equipId, string field, long[] codes)
+        {
+            if (codes == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < codes.Length; i++)
+            {
+                long code = codes[i];
+                if (code <= 0)
+                {
+                    continue;
+                }
+
+                if (TryParsePackedAttr(code, out _, out _, out _))
+                {
+                    continue;
+                }
+
+                Console.WriteLine($"LDEquip[{equipId}] {field}[{i}] 不是 144/244/344 : {code}");
+            }
+        }
+
         /// <summary>
         /// 装备随机属性：
         /// 1) 必中 Att_Rand_1~6：每个池各抽 1 条（池空则跳过）
@@ -218,7 +269,7 @@ namespace ET
                 List<int> maxs = new List<int>();
                 for (int i = 0; i < pool.Length; i++)
                 {
-                    if (!TryParsePackedAttr(pool[i], out int id, out int min, out int max))
+                    if (!TryParseShortPackedAttr(pool[i], out int id, out int min, out int max))
                     {
                         continue;
                     }

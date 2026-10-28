@@ -33,49 +33,33 @@ namespace ET
             }
 
             LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-            int costNum = request.CostItemNum > 0 ? request.CostItemNum : 1;
-            if (ldItem.ItemType == ItemTypeEnum.SubType_Mount_XiLian_30)
+            if (ldItem.ItemType != ItemTypeEnum.SubType_Mount_XiLian_30)
             {
-                costNum = 1;
+                response.Error = ErrorCode.ERR_Mount_NoUseItem;
+                reply();
+                return;
             }
 
-            if (bagInfo.ItemNum < costNum)
+            if (bagInfo.ItemNum < 1)
             {
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
                 reply();
                 return;
             }
 
-            switch (ldItem.ItemType)
+            MountXiLianResult result = MountHelper.BuildXiLianResult(mountInfo);
+            if (result == null)
             {
-                case ItemTypeEnum.SubType_Mount_XiLian_30:
-                    MountHelper.ResetMountAptitude(mountInfo);
-                    break;
-                case ItemTypeEnum.SubType_Mount_Exp_31:
-                    int addExp = ldItem.GetTypeParam1() * costNum;
-                    if (addExp <= 0)
-                    {
-                        response.Error = ErrorCode.ERR_Mount_NoUseItem;
-                        reply();
-                        return;
-                    }
-
-                    mountComponentServer.MountAddExp(mountInfo, addExp);
-                    break;
-                default:
-                    response.Error = ErrorCode.ERR_Mount_NoUseItem;
-                    reply();
-                    return;
+                response.Error = ErrorCode.ERR_Mount_NoUseItem;
+                reply();
+                return;
             }
 
-            // 资质/等级变化后潜力点剩余与 Ks/Vs 一并算好，整包 MountInfo 回客户端
-            MountHelper.EnsureAddPoint(mountInfo);
-            MountHelper.ApplyAptitudeAttributes(mountInfo);
-
-            bag.OnCostItemData($"{bagInfo.ItemID};{costNum}", (ItemLocType)bagInfo.Loc, ItemGetWay.ItemXiLian);
+            mountInfo.XiLianResult = result;
+            bag.OnCostItemData($"{bagInfo.ItemID};1", (ItemLocType)bagInfo.Loc, ItemGetWay.ItemXiLian);
             mountComponentServer.NotifyMountUpdate(mountInfo);
-            mountComponentServer.RefreshPlayerMountAttrs();
             response.MountInfo = mountInfo;
+            response.XiLianResult = result;
             reply();
             await ETTask.CompletedTask;
         }
