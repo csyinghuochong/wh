@@ -59,7 +59,44 @@ namespace ET
                     MessageHelper.SendToClient(unit, m2C_SyncChatInfo);
                 }
 
-				if (message.GMMsg == "allmonster#")
+                if (message.GMMsg.Contains("testequip#"))
+                {
+                    // testequip#1010500
+                    if (!TryGetSecondHashNumber(message.GMMsg, out int equipId))
+                    {
+                        return;
+                    }
+
+                    if (!LDEquipCategory.Instance.Contain(equipId))
+                    {
+                        Log.Warning($"testequip equip not found:{equipId}");
+                        return;
+                    }
+
+                    List<string> lines = new List<string>();
+                    for (int i = 0; i < 1000; i++)
+                    {
+                        List<AttributeItem> attrs = LDEquipCategory.Instance.GetEquipAttribute(equipId);
+                        string line = string.Empty;
+                        for (int a = 0; a < attrs.Count; a++)
+                        {
+                            if (a > 0)
+                            {
+                                line += "\t";
+                            }
+
+                            line += $"{attrs[a].AttributeID}:{attrs[a].AttributeValue}";
+                        }
+
+                        lines.Add(line);
+                    }
+
+                    LogHelper.WriteLogList(lines, "../Logs/WJ_EquipAttri.txt", false);
+                    Log.Warning($"testequip {equipId} count:{lines.Count} -> ../Logs/WJ_EquipAttri.txt");
+                    return;
+                }
+
+                if (message.GMMsg == "allmonster#")
 				{
 					foreach (LDMonster monsterConfig in LDMonsterCategory.Instance.GetAll().Values)
 					{

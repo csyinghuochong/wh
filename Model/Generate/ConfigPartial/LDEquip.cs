@@ -241,6 +241,7 @@ namespace ET
         ///    - ParamX1：组属性码（打包 id/min/max）
         ///    - ParamX2：该组最多抽几条，超过则该组不再进池（0=不限）
         ///    - ParamX3：从第几次附加才加入该组；Num=1 且 ParamX3=2 则永远抽不到
+        ///    - ParamX4：组权重。本轮每条剩余属性的权重=该组权重，按权重抽 1 条。0 不进池
         /// </summary>
         public List<AttributeItem> GetRandomAttribute(int equipId)
         {
@@ -323,6 +324,8 @@ namespace ET
             int[] groupMax = { e.Att_Rand_Param12, e.Att_Rand_Param22, e.Att_Rand_Param32, e.Att_Rand_Param42, e.Att_Rand_Param52 };
             // 从第几次附加才加入该组（1=第一次就进池；2=第二次才进池）
             int[] groupJoin = { e.Att_Rand_Param13, e.Att_Rand_Param23, e.Att_Rand_Param33, e.Att_Rand_Param43, e.Att_Rand_Param53 };
+            // 组权重。本轮该组总权重 = 剩余条数 × 组权重
+            int[] groupWeight = { e.Att_Rand_Param14, e.Att_Rand_Param24, e.Att_Rand_Param34, e.Att_Rand_Param44, e.Att_Rand_Param54 };
             // 该组已抽出条数
             int[] groupPicked = { 0, 0, 0, 0, 0 };
 
@@ -347,12 +350,13 @@ namespace ET
                 }
             }
 
-            // 第 round 次附加：合并 JoinRound<=round 且未达上限的组，抽 1 条
+            // 第 round 次附加：合并已到加入轮次、未达上限、权重大于 0 的组，按权重抽 1 条
             for (int round = 1; round <= addNum; round++)
             {
                 List<int> ids = new List<int>();
                 List<int> mins = new List<int>();
                 List<int> maxs = new List<int>();
+                List<int> weights = new List<int>();
                 List<int> fromGroup = new List<int>(); // 候选来自哪一组，抽中后给该组 Picked++
 
                 for (int g = 0; g < 5; g++)
@@ -365,6 +369,13 @@ namespace ET
 
                     // 已达该组最大个数
                     if (groupMax[g] > 0 && groupPicked[g] >= groupMax[g])
+                    {
+                        continue;
+                    }
+
+                    // 权重 0 的组不进池。每条剩余属性的权重就是组权重
+                    int weight = groupWeight[g];
+                    if (weight <= 0)
                     {
                         continue;
                     }
@@ -385,6 +396,7 @@ namespace ET
                         ids.Add(id);
                         mins.Add(min);
                         maxs.Add(max);
+                        weights.Add(weight);
                         fromGroup.Add(g);
                     }
                 }
@@ -394,7 +406,11 @@ namespace ET
                     continue;
                 }
 
-                int idx = RandomHelper.RandomNumber(0, ids.Count);
+                int idx = RandomHelper.RandomByWeight(weights);
+                if (idx < 0)
+                {
+                    continue;
+                }
                 int pickMin = mins[idx];
                 int pickMax = maxs[idx] < pickMin ? pickMin : maxs[idx];
                 int value = RandomHelper.RandomNumber(pickMin, pickMax + 1);
