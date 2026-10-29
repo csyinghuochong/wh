@@ -1,4 +1,4 @@
-﻿using CommandLine;
+using CommandLine;
 using NLog;
 using System;
 using System.Diagnostics;
@@ -50,7 +50,7 @@ namespace ET
 
 				Options.Instance = options;
 
-				// 仅内网/版号：StartConfig 含 Localhost 或 BanHao 时清理旧 Server 日志
+				// Localhost/BanHao 删除旧 Server 日志；Beta 按分钟归档到 Logs/yyyyMMddHHmm
 				ClearServerLogFilesIfInner();
 
 				Log.ILog = new NLogger(Game.Options.AppType.ToString());
@@ -86,13 +86,16 @@ namespace ET
 		}
 
 		/// <summary>
-		/// 仅 Localhost / BanHao 环境清理 Server. 日志（此时 CommonHelper.IsInnerNet 配置尚未加载）。
+		/// Localhost / BanHao：删除 Logs 根目录下的 Server.*。
+		/// Beta：移到 Logs/yyyyMMddHHmm/（分钟）。此时 CommonHelper.IsInnerNet 尚未加载。
 		/// </summary>
 		private static void ClearServerLogFilesIfInner()
 		{
 			string startConfig = Options.Instance?.StartConfig ?? string.Empty;
-			if (startConfig.IndexOf("Localhost", StringComparison.OrdinalIgnoreCase) < 0
-			    && startConfig.IndexOf("BanHao", StringComparison.OrdinalIgnoreCase) < 0)
+			bool isBeta = startConfig.IndexOf("Beta", StringComparison.OrdinalIgnoreCase) >= 0;
+			bool clearOld = startConfig.IndexOf("Localhost", StringComparison.OrdinalIgnoreCase) >= 0
+			    || startConfig.IndexOf("BanHao", StringComparison.OrdinalIgnoreCase) >= 0;
+			if (!isBeta && !clearOld)
 			{
 				return;
 			}
@@ -105,7 +108,14 @@ namespace ET
 					return;
 				}
 
-				foreach (string file in Directory.GetFiles(logsDir, "Server.*"))
+				string[] files = Directory.GetFiles(logsDir, "Server.*");
+				if (isBeta)
+				{
+					ArchiveServerLogs(logsDir, files);
+					return;
+				}
+
+				foreach (string file in files)
 				{
 					try
 					{
@@ -120,6 +130,34 @@ namespace ET
 			catch
 			{
 				// 清理失败不影响启动
+			}
+		}
+
+		private static void ArchiveServerLogs(string logsDir, string[] files)
+		{
+			if (files.Length == 0)
+			{
+				return;
+			}
+
+			string archiveDir = Path.Combine(logsDir, DateTime.Now.ToString("yyyyMMddHHmm"));
+			Directory.CreateDirectory(archiveDir);
+			foreach (string file in files)
+			{
+				try
+				{
+					string dest = Path.Combine(archiveDir, Path.GetFileName(file));
+					if (File.Exists(dest))
+					{
+						File.Delete(dest);
+					}
+
+					File.Move(file, dest);
+				}
+				catch
+				{
+					// 单个文件占用则跳过，不影响启动
+				}
 			}
 		}
 	}
