@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,11 @@ namespace ET
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-            if (bag.GetBagLeftCell() < 5)
+
+            string reward = "3~4000~10|3~4401~10|3~4501~10|3~4530~10";
+            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(reward);
+
+            if (bag.GetBagLeftCell() < rewardItems.Count)
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -23,55 +27,52 @@ namespace ET
           
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
             {
-                long centerid = DBHelper.GetRealmCenter();
-                M2R_SerialQueryRequest queryRequest = new M2R_SerialQueryRequest() { SerialNumber = request.SerialNumber };
-                R2M_SerialQueryResponse queryResponse = (R2M_SerialQueryResponse)await ActorMessageSenderComponent.Instance.Call
-                          (centerid, queryRequest);
+                if (!CommonHelper.IsInnerNet())
+                {
+                    long centerid = DBHelper.GetRealmCenter();
+                    M2R_SerialQueryRequest queryRequest = new M2R_SerialQueryRequest() { SerialNumber = request.SerialNumber };
+                    R2M_SerialQueryResponse queryResponse = (R2M_SerialQueryResponse)await ActorMessageSenderComponent.Instance.Call
+                              (centerid, queryRequest);
 
-                if (queryResponse.Error != ErrorCode.ERR_Success)
-                {
-                    response.Error = queryResponse.Error;
-                    reply();
-                    return;
-                }
+                    if (queryResponse.Error != ErrorCode.ERR_Success)
+                    {
+                        response.Error = queryResponse.Error;
+                        reply();
+                        return;
+                    }
 
-                int serialIndex = queryResponse.SerialIndex;
-                if (serialIndex < 0)
-                {
-                    response.Error = ErrorCode.ERR_SerialNoExist;
-                    reply();
-                    return;
-                }
-                if (queryResponse.IsRewarded == 1)
-                {
-                    response.Error = ErrorCode.ERR_AlreadyReceived;
-                    reply();
-                    return;
+                    int serialIndex = queryResponse.SerialIndex;
+                    if (serialIndex < 0)
+                    {
+                        response.Error = ErrorCode.ERR_SerialNoExist;
+                        reply();
+                        return;
+                    }
+                    if (queryResponse.IsRewarded == 1)
+                    {
+                        response.Error = ErrorCode.ERR_AlreadyReceived;
+                        reply();
+                        return;
+                    }
+
+                    // SerialRewards 已从 RoleInfo 移除，重复领取由中心服 IsRewarded 校验
+
+                    M2R_SerialReardRequest m2Center_Serial = new M2R_SerialReardRequest() { SerialNumber = request.SerialNumber };
+                    R2M_SerialReardResponse m2m_TrasferUnitResponse = (R2M_SerialReardResponse)await ActorMessageSenderComponent.Instance.Call
+                              (centerid, m2Center_Serial);
+
+                    if (m2m_TrasferUnitResponse.Error != ErrorCode.ERR_Success)
+                    {
+                        response.Error = m2m_TrasferUnitResponse.Error;
+                        reply();
+                        return;
+                    }
                 }
 
                
-                // SerialRewards 已从 RoleInfo 移除，重复领取由中心服 IsRewarded 校验
-
-                M2R_SerialReardRequest m2Center_Serial = new M2R_SerialReardRequest() { SerialNumber = request.SerialNumber };
-                R2M_SerialReardResponse m2m_TrasferUnitResponse = (R2M_SerialReardResponse)await ActorMessageSenderComponent.Instance.Call
-                          (centerid, m2Center_Serial);
-
-                if (m2m_TrasferUnitResponse.Error != ErrorCode.ERR_Success)
-                {
-                    response.Error = m2m_TrasferUnitResponse.Error;
-                    reply();
-                    return;
-                }
-
-                string reward = "3~1210~8";
                 bag.OnAddItemData(reward, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}");
                 //numericComponent.ApplyChange(null, NumericType.SerialNumber, 1, 0);
-                response.ReardList.Add( new RewardItem()
-                {
-                    ItemType = 3,
-                    ItemID = 1210,
-                    ItemNum = 8
-                });
+                response.ReardList.AddRange(rewardItems);
             }
 
             reply();
