@@ -85,6 +85,34 @@ namespace ET
                     roleInfoComponentServer.LearnRecipe(skillmakeId);
                     return;
                 }
+                if (message.GMMsg.Contains("realnamereset#"))
+                {
+                    long accountId = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.AccInfoID;
+                    if (accountId <= 0)
+                    {
+                        Log.Warning($"realnamereset AccInfoID invalid unit:{unit.Id}");
+                        return;
+                    }
+
+                    if (!StartZoneConfigCategory.Instance.Contain(CommonConfig.CenterZoneId))
+                    {
+                        Log.Warning($"realnamereset center zone missing account:{accountId}");
+                        return;
+                    }
+
+                    Game.Scene.GetComponent<DBComponent>().InitDatabase(StartZoneConfigCategory.Instance.Get(CommonConfig.CenterZoneId));
+                    DBCenterAccountInfo dbCenterAccountInfo = await DBHelper.GetComponent<DBCenterAccountInfo>(CommonConfig.CenterZoneId, accountId);
+                    if (dbCenterAccountInfo == null || dbCenterAccountInfo.PlayerInfo == null)
+                    {
+                        Log.Warning($"realnamereset account not found:{accountId}");
+                        return;
+                    }
+
+                    dbCenterAccountInfo.PlayerInfo.RealNameV2 = 0;
+                    await DBHelper.SaveComponent(CommonConfig.CenterZoneId, dbCenterAccountInfo.Id, dbCenterAccountInfo);
+                    Log.Warning($"realnamereset RealNameV2=0 account:{accountId} unit:{unit.Id}");
+                    return;
+                }
                 if (message.GMMsg.Contains("skillmakeall#"))
                 {
                     RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
