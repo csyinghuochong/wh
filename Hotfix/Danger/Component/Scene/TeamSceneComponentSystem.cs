@@ -306,11 +306,11 @@ namespace ET
             fubnescene.Dispose();
         }
 
-        public static void AddApply(this TeamSceneComponent self, long teamId, TeamPlayerInfo teamPlayerInfo)
+        public static bool AddApply(this TeamSceneComponent self, long teamId, TeamPlayerInfo teamPlayerInfo)
         {
             if (teamId == 0 || teamPlayerInfo == null || teamPlayerInfo.UserID == 0)
             {
-                return;
+                return false;
             }
 
             if (!self.ApplyDict.TryGetValue(teamId, out List<TeamPlayerInfo> applyList))
@@ -324,16 +324,17 @@ namespace ET
                 if (applyList[i].UserID == teamPlayerInfo.UserID)
                 {
                     applyList[i] = teamPlayerInfo;
-                    return;
+                    return true;
                 }
             }
 
-            if (applyList.Count >= 10)
+            if (applyList.Count >= TeamSceneComponent.ApplyMaxCount)
             {
-                return;
+                return false;
             }
 
             applyList.Add(teamPlayerInfo);
+            return true;
         }
 
         public static void RemoveApply(this TeamSceneComponent self, long teamId, long userId)

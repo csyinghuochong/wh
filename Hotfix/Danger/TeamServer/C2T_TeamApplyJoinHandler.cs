@@ -27,7 +27,12 @@ namespace ET
                 return;
             }
 
-            teamSceneComponent.AddApply(teamInfo.TeamId, request.TeamPlayerInfo);
+            if (!teamSceneComponent.AddApply(teamInfo.TeamId, request.TeamPlayerInfo))
+            {
+                response.Error = ErrorCode.ERR_TeamApplyLimit;
+                reply();
+                return;
+            }
             M2C_TeamApplyJoinMessage m2C_TeamApplyJoin = new M2C_TeamApplyJoinMessage() { TeamPlayerInfo = request.TeamPlayerInfo };
             await ServerMessageHelper.SendToClient(UnitZoneHelper.GetHomeZone(teamInfo.TeamId), teamInfo.TeamId, m2C_TeamApplyJoin);
 
