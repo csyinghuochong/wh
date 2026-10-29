@@ -30,8 +30,8 @@ namespace ET
             //data.Add("auth_code", "auth_code");
             //HttpHelper.OnWebRequestPostBody(url, null,  data).Coroutine();
 
-            //游戏服务器生成�?�应角色的验证码
-            //发送验证码到公众号，推送到游戏服务�?，游戏服务器验证验证�? 并返回消�?�?
+            //娓告垙鏈嶅姟鍣ㄧ敓鎴愬?瑰簲瑙掕壊鐨勯獙璇佺爜
+            //鍙戦€侀獙璇佺爜鍒板叕浼楀彿锛屾帹閫佸埌娓告垙鏈嶅姟鍣?锛屾父鎴忔湇鍔″櫒楠岃瘉楠岃瘉鐮? 骞惰繑鍥炴秷鎭?銆?
 
             Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
             keyValuePairs.Add("grant_type", "client_credential");
@@ -65,6 +65,7 @@ namespace ET
 
             StartProcessConfig processConfig = StartProcessConfigCategory.Instance.Get(Game.Options.Process);
 
+
             Game.Scene.AddComponent<OpcodeTypeComponent>();
             Game.Scene.AddComponent<MessageDispatcherComponent>();
             Game.Scene.AddComponent<SessionStreamDispatcher>();
@@ -73,10 +74,10 @@ namespace ET
             Game.Scene.AddComponent<ActorMessageSenderComponent>();
             // 发送location actor消息
             Game.Scene.AddComponent<ActorLocationSenderComponent>();
-            // 访问location server的组�?
+            // 访问location server的组件
             Game.Scene.AddComponent<LocationProxyComponent>();
             Game.Scene.AddComponent<ActorMessageDispatcherComponent>();
-            // 数值�?�阅组件
+            // 数值订阅组件
             Game.Scene.AddComponent<NumericWatcherComponent>();
             
             Game.Scene.AddComponent<NetThreadComponent>();
@@ -131,7 +132,7 @@ namespace ET
                         break;
                 }
                 case AppType.MergeZone:
-                    //Parameters=31_30   31区合并到30�?
+                    //Parameters=31_30    31区合并到30区
                     string[] zones =  Game.Options.Parameters.Split('_');
                     int oldzone = int.Parse(zones[0]);
                     int newzone = int.Parse(zones[1]);
@@ -171,7 +172,7 @@ namespace ET
                                     equiptianfuids.AddRange(skillSetComponentServer.TianFuAddition);
                                 }
 
-                                //0没有天赋技�?  1技能找不到天赋id 2�?�?丢失天赋 3成功找到天赋
+                                //0没有天赋技能  1技能找不到天赋id 2自身丢失天赋 3成功找到天赋
                                 int errorcode = skillSetComponentServer.CheckSkillToTalent(equiptianfuids);
                                 number_list[errorcode]++;
                                 if (errorcode == 2 ||  errorcode == 3)
@@ -193,7 +194,7 @@ namespace ET
                 case AppType.DeleteZone:
                     int delezone = int.Parse(Game.Options.Parameters);
                     await DeleteZoneHelper.DeletionZone(delezone);
-                    Log.Warning("DeleteZone完成�?");
+                    Log.Warning("DeleteZone完成！");
                     break;
                 case AppType.Watcher:
                 {
