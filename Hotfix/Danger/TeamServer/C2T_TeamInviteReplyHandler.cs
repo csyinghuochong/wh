@@ -39,7 +39,7 @@ namespace ET
                 return;
             }
 
-            if (inviterTeam != null && inviterTeam.PlayerList.Count >= LDGlobalValueCategory.Instance.TeamMemberMax)
+            if (inviterTeam != null && inviterTeam.PlayerList.Count >= SceneConfigHelper.GetTeamMemberMax(inviterTeam.SceneId))
             {
                 response.Error = ErrorCode.ERR_TeamIsFull;
                 reply();

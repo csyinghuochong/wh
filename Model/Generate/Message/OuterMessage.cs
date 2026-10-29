@@ -269,6 +269,46 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
+		[ProtoMember(1)]
+		public long Cooldown { get; set; }
+
+	}
+
+	[ResponseType(nameof(R2C_RestoreRoleData))]
+	[Message(OuterOpcode.C2R_RestoreRoleData)]
+	[ProtoContract]
+	public partial class C2R_RestoreRoleData: Object, IRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(3)]
+		public long DeleUserID { get; set; }
+
+		[ProtoMember(4)]
+		public long AccountId { get; set; }
+
+		[ProtoMember(5)]
+		public int ServerId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.R2C_RestoreRoleData)]
+	[ProtoContract]
+	public partial class R2C_RestoreRoleData: Object, IResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long Cooldown { get; set; }
+
 	}
 
 	[ResponseType(nameof(Q2C_EnterQueue))]
@@ -749,19 +789,22 @@ namespace ET
 		public int Sex { get; set; }
 
 		[ProtoMember(16)]
-		public int RoleHeadId { get; set; }
-
-		[ProtoMember(17)]
 		public long LastLoginTime { get; set; }
 
-		[ProtoMember(18)]
+		[ProtoMember(17)]
 		public int LoginTag { get; set; }
+
+		[ProtoMember(18)]
+		public int RoleHeadId { get; set; }
 
 		[ProtoMember(19)]
 		public int RoleHeadFrame { get; set; }
 
 		[ProtoMember(20)]
 		public long RoleNo { get; set; }
+
+		[ProtoMember(21)]
+		public long Cooldown { get; set; }
 
 	}
 

@@ -47,7 +47,7 @@ namespace ET
             if (request.Shout == 1)
             {
                 int leaderLv = request.TeamPlayerInfo.PlayerLv;
-                int memberMax = LDGlobalValueCategory.Instance.TeamMemberMax;
+                int memberMax = SceneConfigHelper.GetTeamMemberMax(teamInfo.SceneId);
                 MessageHelper.SendActor(DBHelper.GetChatServerId(scene.DomainZone()), new T2Chat_WorldChatMessage()
                 {
                     ChatInfo = new ChatInfo()

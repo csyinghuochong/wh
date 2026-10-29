@@ -20,7 +20,7 @@ namespace ET
             teamInfo = teamSceneComponent.GetTeamInfo(request.TeamPlayerInfo.UserID);
             if (teamInfo != null)
             {
-                if (teamInfo.TeamId != request.TeamPlayerInfo.UserID || teamInfo.PlayerList.Count >= LDGlobalValueCategory.Instance.TeamMemberMax)
+                if (teamInfo.TeamId != request.TeamPlayerInfo.UserID || teamInfo.PlayerList.Count >= SceneConfigHelper.GetTeamMemberMax(teamInfo.SceneId))
                 {
                     reply();
                     return;

@@ -20,7 +20,7 @@ namespace ET
             }
 
             TeamInfo teamInfo = teamSceneComponent.GetTeamInfo(request.TeamId);
-            if (teamInfo == null || teamInfo.PlayerList.Count >= LDGlobalValueCategory.Instance.TeamMemberMax)
+            if (teamInfo == null || teamInfo.PlayerList.Count >= SceneConfigHelper.GetTeamMemberMax(teamInfo.SceneId))
             {
                 response.Error = ErrorCode.ERR_TeamIsFull;
                 reply();

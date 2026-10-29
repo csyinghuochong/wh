@@ -221,9 +221,19 @@ namespace ET
                         tokenComponent.Add(dbcenterAccountInfo.Id, Token);
 
                         response.RoleLists.Clear();
+                        bool cooldownExpired = false;
+                        long now = TimeHelper.ServerNow();
                         for (int i = 0; i < dbcenterAccountInfo.RoleList.Count; i++)
                         {
                             CreateRoleInfo createRoleInfo = dbcenterAccountInfo.RoleList[i];
+                            if (createRoleInfo.State != (int)RoleInfoState.Freeze
+                                && createRoleInfo.Cooldown > 0
+                                && now >= createRoleInfo.Cooldown)
+                            {
+                                createRoleInfo.State = (int)RoleInfoState.Freeze;
+                                cooldownExpired = true;
+                            }
+
                             if (createRoleInfo.ServerId != request.ServerId
                                 || createRoleInfo.State == (int)RoleInfoState.Freeze)
                             {
@@ -258,6 +268,11 @@ namespace ET
                             roleList.FashionIds = bagComponentServer.FashionEquipList;
                             
                             response.RoleLists.Add(roleList);
+                        }
+
+                        if (cooldownExpired)
+                        {
+                            await Game.Scene.GetComponent<DBComponent>().Save(CommonConfig.CenterZoneId, dbcenterAccountInfo);
                         }
                       
                         response.RelinkRecord = CommonConfig.RelinkRecordUsers.Contains(request.AccountName) ? 1 : 0;

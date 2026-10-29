@@ -8,74 +8,100 @@ namespace ET
 	{
 		protected override async ETTask Run(Session session, C2R_DeleteRoleData request, R2C_DeleteRoleData response, Action reply)
 		{
-            try
+            if (session.GetComponent<SessionLockingComponent>() != null)
             {
-                if (session.GetComponent<SessionLockingComponent>() != null)
+                response.Error = ErrorCode.ERR_RequestRepeatedly;
+                reply();
+                session.Disconnect().Coroutine();
+                return;
+            }
+
+            using (session.AddComponent<SessionLockingComponent>())
+            {
+                List<DBCenterAccountInfo> newAccountList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(session.DomainZone(), d => d.Id == request.AccountId);
+                if (newAccountList.Count == 0)
                 {
-                    response.Error = ErrorCode.ERR_RequestRepeatedly;
+                    response.Error = ErrorCode.ERR_NotFindAccount;
                     reply();
-                    session.Disconnect().Coroutine();
                     return;
                 }
 
-                using (session.AddComponent<SessionLockingComponent>())
+                DBCenterAccountInfo newAccount = newAccountList[0];
+                CreateRoleInfo roleInfo = null;
+                for (int i = 0; i < newAccount.RoleList.Count; i++)
                 {
-                    //存储账号信息
-                    List<DBCenterAccountInfo> newAccountList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(session.DomainZone(), d => d.Id == request.AccountId);
-                    if (newAccountList.Count == 0)
+                    if (newAccount.RoleList[i].UserID != request.DeleUserID)
                     {
-                        response.Error = ErrorCode.ERR_NotFindAccount;
-                        reply();
-                        return;
+                        continue;
                     }
-                    
-                    DBCenterAccountInfo newAccount = newAccountList[0];
-                    //移除角色
-                    if (newAccount.RoleList.Count > 0)
-                    {
-                        for (int i = newAccount.RoleList.Count - 1; i >= 0; i--)
-                        {
-                            if (newAccount.RoleList[i].UserID == request.DeleUserID)
-                            {
-                                newAccount.RoleList[i].State = (int)RoleInfoState.Freeze;
-                            }
-                        }
-                    }
-                    
-                    await Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(session.DomainZone(), newAccount);
-                    long mapInstanceId = DBHelper.GetRankServerId(request.ServerId);
-                    Rank2R_DeleteRoleData deleteResponse = (Rank2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
-                    (mapInstanceId, new R2Rank_DeleteRoleData()
-                    {
-                        DeleUserID = request.DeleUserID,
-                        AccountId = request.AccountId
-                    });
-                    long paimaiInstanceid = DBHelper.GetPaiMaiServerId(request.ServerId);
-                    Consign2R_DeleteRoleData deleteResponse2 = (Consign2R_DeleteRoleData)await ActorMessageSenderComponent.Instance.Call
-                   (paimaiInstanceid, new R2Consign_DeleteRoleData()
-                   {
-                       DeleUserID = request.DeleUserID,
-                       AccountId = request.AccountId,
-                       DeleteType = 0,
-                   });
 
-                    DBHelper.DeleteUnitCache(request.ServerId, request.DeleUserID).Coroutine();
-                    RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(request.ServerId, request.DeleUserID);
-                    if (roleInfoComponentServer != null && roleInfoComponentServer.RoleInfo.Lv <= 10)
-                    {
-                        List<string> allComponets = DBHelper.GetAllUnitComponent();
-                        for (int i = 0; i < allComponets.Count; i++)
-                        {
-                            Game.Scene.GetComponent<DBComponent>().Remove<Entity>(request.ServerId, request.DeleUserID, allComponets[i]).Coroutine();
-                        }
-                    }
-                    reply();
+                    roleInfo = newAccount.RoleList[i];
+                    break;
                 }
-            }
-            catch(Exception ex) 
-            {
-                Log.Error(ex.ToString());
+
+                if (roleInfo == null || roleInfo.State == (int)RoleInfoState.Freeze)
+                {
+                    response.Error = ErrorCode.ERR_Error;
+                    reply();
+                    return;
+                }
+
+                int roleLv = roleInfo.PlayerLv;
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(request.ServerId, request.DeleUserID);
+                if (roleInfoComponentServer != null)
+                {
+                    roleLv = roleInfoComponentServer.RoleInfo.Lv;
+                }
+
+                int waitLevel = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Role_Delete_Wait_Level);
+                if (roleLv >= waitLevel)
+                {
+                    if (roleInfo.Cooldown <= 0)
+                    {
+                        int waitDays = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Role_Delete_Wait_Time);
+                        roleInfo.Cooldown = TimeHelper.ServerNow() + waitDays * TimeHelper.OneDay;
+                        await Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(session.DomainZone(), newAccount);
+                    }
+
+                    response.Cooldown = roleInfo.Cooldown;
+                    reply();
+                    return;
+                }
+
+                roleInfo.State = (int)RoleInfoState.Freeze;
+                roleInfo.Cooldown = 0;
+                await Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(session.DomainZone(), newAccount);
+                await RemoveRoleRuntime(request.ServerId, request.DeleUserID, request.AccountId);
+                if (roleInfoComponentServer != null)
+                {
+                    List<string> allComponets = DBHelper.GetAllUnitComponent();
+                    for (int i = 0; i < allComponets.Count; i++)
+                    {
+                        Game.Scene.GetComponent<DBComponent>().Remove<Entity>(request.ServerId, request.DeleUserID, allComponets[i]).Coroutine();
+                    }
+                }
+
+                response.Cooldown = 0;
+                reply();
             }
 		}
+
+        private static async ETTask RemoveRoleRuntime(int serverId, long userId, long accountId)
+        {
+            long mapInstanceId = DBHelper.GetRankServerId(serverId);
+            await ActorMessageSenderComponent.Instance.Call(mapInstanceId, new R2Rank_DeleteRoleData()
+            {
+                DeleUserID = userId,
+                AccountId = accountId
+            });
+            long paimaiInstanceid = DBHelper.GetPaiMaiServerId(serverId);
+            await ActorMessageSenderComponent.Instance.Call(paimaiInstanceid, new R2Consign_DeleteRoleData()
+            {
+                DeleUserID = userId,
+                AccountId = accountId,
+                DeleteType = 0,
+            });
+            DBHelper.DeleteUnitCache(serverId, userId).Coroutine();
+        }
 	}
 }
