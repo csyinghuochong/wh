@@ -298,7 +298,6 @@ namespace ET
             }
 
             int addLv = mountInfo.MountLv - oldLv;
-            MountHelper.AddAptitudeByLevel(mountInfo, addLv);
             MountHelper.AddLevelUpPotential(mountInfo, addLv);
             MountHelper.ApplyAptitudeAttributes(mountInfo);
             if (self.GetRideMount()?.Id == mountInfo.Id
