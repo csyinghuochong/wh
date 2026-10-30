@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -14,9 +14,6 @@ namespace ET
 
         public long RankingTrialLastTime = 0;
         public List<RankingTrialInfo> RankingTrials = new List<RankingTrialInfo>();
-
-        public long RankSeasonTowerLastTime = 0;
-        public List<RankSeasonTowerInfo> RankSeasonTowers = new List<RankSeasonTowerInfo>();
 
         public int UpdateCombat = 0;
     }

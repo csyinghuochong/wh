@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -17,16 +17,11 @@ namespace ET
 
             switch (request.SceneType)
             {
-                case MapTypeEnum.SeasonTower:
-                    unit.DomainScene().GetComponent<SeasonTowerComponent>()?.BeginTower();
-                    break;
                 case MapTypeEnum.TowerDungeon:
                     unit.DomainScene().GetComponent<TowerComponent>()?.BeginTower();
                     break;
                 default:
-                    unit.DomainScene().GetComponent<SeasonTowerComponent>()?.BeginTower();
-                    unit.DomainScene().GetComponent<TowerComponent>()?.BeginTower();
-                    Log.Error($"C2M_TowerFightBeginRequest22 request.SceneType={request.SceneType}");
+                  
                     break;
             }
           

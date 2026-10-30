@@ -17,15 +17,39 @@ namespace ET
                 return;
             }
             
-            //0未选择 1同意 2拒绝
-            int errorCode = request.ErrorCode;
+            // 队长发起：自己准备，其余清成未准备，方便重新确认。队员只改自己。
+            bool leaderStart = teamInfo.TeamId == request.UnitID && request.Prepare == 1;
+            bool found = false;
             for (int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
-                if (teamInfo.PlayerList[i].UserID == request.UnitID)
+                if (leaderStart)
                 {
-                    teamInfo.PlayerList[i].Prepare = request.Prepare;
+                    teamInfo.PlayerList[i].Prepare = teamInfo.PlayerList[i].UserID == teamInfo.TeamId ? 1 : 0;
+                    if (teamInfo.PlayerList[i].UserID == request.UnitID)
+                    {
+                        found = true;
+                    }
+                    continue;
                 }
+
+                if (teamInfo.PlayerList[i].UserID != request.UnitID)
+                {
+                    continue;
+                }
+
+                teamInfo.PlayerList[i].Prepare = request.Prepare;
+                found = true;
             }
+
+            if (!found)
+            {
+                response.Error = ErrorCode.Err_TeamIsNull;
+                reply();
+                return;
+            }
+
+            //0未选择 1同意 2拒绝
+            int errorCode = request.ErrorCode;
             for(int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
                 if (teamInfo.PlayerList[i].Prepare == 2)

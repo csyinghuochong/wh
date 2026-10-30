@@ -110,30 +110,7 @@ namespace ET
                         await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.TrialDungeon, request.SceneId, FubenDifficulty.None, request.paramInfo);
                         TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
                         break;
-                    case MapTypeEnum.SeasonTower:
 
-                        // 进度在 RoleInfo.TowerIds，Key = MapTypeEnum.SeasonTower
-                        int seasonTowerid = TowerHelper.GetTowerId(unit.GetComponent<RoleInfoComponentServer>().RoleInfo, MapTypeEnum.SeasonTower);
-                        if (seasonTowerid == 0)
-                        {
-                            request.paramInfo = TowerHelper.GetFirstTowerIdByScene(MapTypeEnum.SeasonTower).ToString();
-                        }
-                        else
-                        {
-                            request.paramInfo = (seasonTowerid + 1).ToString();
-                        }
-
-                        fubenid = IdGenerater.Instance.GenerateId();
-                        fubenInstanceId = IdGenerater.Instance.GenerateInstanceId();
-                        fubnescene = SceneFactory.Create(Game.Scene, fubenid, fubenInstanceId, UnitZoneHelper.GetHomeZone(unit), "SeasonTower" + fubenid.ToString(), SceneType.Map);
-                        fubnescene.AddComponent<SeasonTowerComponent>();
-                        mapComponent = fubnescene.GetComponent<MapComponent>();
-                        mapComponent.SetMapInfo((int)MapTypeEnum.SeasonTower, request.SceneId, int.Parse(request.paramInfo));
-                        mapComponent.NavMeshId = LDSceneCategory.Instance.Get(request.SceneId).GetNavMeshId();
-                        TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, fubenInstanceId, (int)MapTypeEnum.SeasonTower, request.SceneId, FubenDifficulty.None, request.paramInfo);
-                        TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
-                        break;
                     case (int)MapTypeEnum.Union:
                         long unionid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0);
                         if (unionid == 0)

@@ -249,7 +249,6 @@ namespace ET
 					case MapTypeEnum.TowerDungeon:
                     case MapTypeEnum.TeamDungeon:
                     case MapTypeEnum.TrialDungeon:
-                    case MapTypeEnum.SeasonTower:
                         unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
 						ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
 						unit.Position = ldScene.GetBornPos();
@@ -278,13 +277,7 @@ namespace ET
 							scene.GetComponent<TrialDungeonComponent>().GenerateFuben(int.Parse(request.ParamInfo));
 						
 						}
-						if(request.SceneType == MapTypeEnum.SeasonTower)
-						{
-                            MapComponent seasonTowerMapComponent = scene.GetComponent<MapComponent>();
-                            Game.Scene.GetComponent<RecastPathComponent>().Update(seasonTowerMapComponent.NavMeshId);
-							scene.GetComponent<SeasonTowerComponent>().TowerId = int.Parse(request.ParamInfo);
-                        }
-						
+					
                         TransferHelper.AfterTransfer(unit);
                         break;
 

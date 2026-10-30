@@ -1662,41 +1662,6 @@ namespace ET
 
 	}
 
-//赛季副本
-	[ResponseType(nameof(R2M_RankSeasonTowerResponse))]
-	[Message(InnerOpcode.M2R_RankSeasonTowerRequest)]
-	[ProtoContract]
-	public partial class M2R_RankSeasonTowerRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public LongLongPair RankingInfo { get; set; }
-
-	}
-
-	[Message(InnerOpcode.R2M_RankSeasonTowerResponse)]
-	[ProtoContract]
-	public partial class R2M_RankSeasonTowerResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public int RankId { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2M_AllPlayerListResponse))]
 	[Message(InnerOpcode.M2M_AllPlayerListRequest)]
 	[ProtoContract]
@@ -3454,85 +3419,6 @@ namespace ET
 
 //Mail  end####################################################
 //Team  begin####################################################
-//创建组队副本
-	[ResponseType(nameof(T2M_TeamDungeonCreateResponse))]
-	[Message(InnerOpcode.M2T_TeamDungeonCreateRequest)]
-	[ProtoContract]
-	public partial class M2T_TeamDungeonCreateRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int FubenId { get; set; }
-
-		[ProtoMember(2)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
-
-		[ProtoMember(3)]
-		public int FubenType { get; set; }
-
-	}
-
-	[Message(InnerOpcode.T2M_TeamDungeonCreateResponse)]
-	[ProtoContract]
-	public partial class T2M_TeamDungeonCreateResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public TeamInfo TeamInfo { get; set; }
-
-	}
-
-//开启组队副本
-	[ResponseType(nameof(T2M_TeamDungeonOpenResponse))]
-	[Message(InnerOpcode.M2T_TeamDungeonOpenRequest)]
-	[ProtoContract]
-	public partial class M2T_TeamDungeonOpenRequest: Object, IActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-		[ProtoMember(3)]
-		public int FubenType { get; set; }
-
-	}
-
-	[Message(InnerOpcode.T2M_TeamDungeonOpenResponse)]
-	[ProtoContract]
-	public partial class T2M_TeamDungeonOpenResponse: Object, IActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(3)]
-		public int FubenType { get; set; }
-
-	}
-
 //请求准备
 	[ResponseType(nameof(T2M_TeamDungeonPrepareResponse))]
 	[Message(InnerOpcode.M2T_TeamDungeonPrepareRequest)]

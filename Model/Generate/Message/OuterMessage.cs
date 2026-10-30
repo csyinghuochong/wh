@@ -3379,38 +3379,6 @@ namespace ET
 
 	}
 
-//赛季等级奖励
-	[ResponseType(nameof(M2C_SeasonLevelRewardResponse))]
-	[Message(OuterOpcode.C2M_SeasonLevelRewardRequest)]
-	[ProtoContract]
-	public partial class C2M_SeasonLevelRewardRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int SeasonLevel { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_SeasonLevelRewardResponse)]
-	[ProtoContract]
-	public partial class M2C_SeasonLevelRewardResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-	}
-
 	[ResponseType(nameof(R2C_TikTokVerifyUser))]
 	[Message(OuterOpcode.C2R_TikTokVerifyUser)]
 	[ProtoContract]
@@ -3575,61 +3543,6 @@ namespace ET
 
 		[ProtoMember(92)]
 		public int Error { get; set; }
-
-	}
-
-	[Message(OuterOpcode.RankSeasonTowerInfo)]
-	[ProtoContract]
-	public partial class RankSeasonTowerInfo: Object
-	{
-		[ProtoMember(1)]
-		public long UserId { get; set; }
-
-		[ProtoMember(2)]
-		public string PlayerName { get; set; }
-
-		[ProtoMember(3)]
-		public int Occ { get; set; }
-
-		[ProtoMember(4)]
-		public int PlayerLv { get; set; }
-
-		[ProtoMember(5)]
-		public int FubenId { get; set; }
-
-		[ProtoMember(6)]
-		public long TotalTime { get; set; }
-
-	}
-
-	[ResponseType(nameof(R2C_RankSeasonTowerResponse))]
-	[Message(OuterOpcode.C2R_RankSeasonTowerRequest)]
-	[ProtoContract]
-	public partial class C2R_RankSeasonTowerRequest: Object, IRankActorRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.R2C_RankSeasonTowerResponse)]
-	[ProtoContract]
-	public partial class R2C_RankSeasonTowerResponse: Object, IRankActorResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public List<RankSeasonTowerInfo> RankList = new List<RankSeasonTowerInfo>();
 
 	}
 
@@ -10996,98 +10909,6 @@ namespace ET
 
 //Team  end####################################################
 //TeamDungeon  begin####################################################
-//创建组队副本
-	[ResponseType(nameof(M2C_TeamDungeonCreateResponse))]
-	[Message(OuterOpcode.C2M_TeamDungeonCreateRequest)]
-	[ProtoContract]
-	public partial class C2M_TeamDungeonCreateRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public int FubenId { get; set; }
-
-		[ProtoMember(2)]
-		public TeamPlayerInfo TeamPlayerInfo { get; set; }
-
-		[ProtoMember(3)]
-		public int FubenType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamDungeonCreateResponse)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonCreateResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(1)]
-		public TeamInfo TeamInfo { get; set; }
-
-		[ProtoMember(3)]
-		public int FubenType { get; set; }
-
-	}
-
-//开启组队副本
-	[ResponseType(nameof(M2C_TeamDungeonOpenResponse))]
-	[Message(OuterOpcode.C2M_TeamDungeonOpenRequest)]
-	[ProtoContract]
-	public partial class C2M_TeamDungeonOpenRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UserID { get; set; }
-
-		[ProtoMember(2)]
-		public int FubenType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_TeamDungeonOpenResponse)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonOpenResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
-
-		[ProtoMember(3)]
-		public int FubenType { get; set; }
-
-	}
-
-//副本开启
-	[Message(OuterOpcode.M2C_TeamDungeonOpenResult)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonOpenResult: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public TeamInfo TeamInfo { get; set; }
-
-	}
-
 //请求准备
 	[ResponseType(nameof(M2C_TeamDungeonPrepareResponse))]
 	[Message(OuterOpcode.C2M_TeamDungeonPrepareRequest)]
@@ -11142,22 +10963,6 @@ namespace ET
 
 		[ProtoMember(2)]
 		public int ErrorCode { get; set; }
-
-	}
-
-//退出组队广播
-	[Message(OuterOpcode.M2C_TeamDungeonQuitMessage)]
-	[ProtoContract]
-	public partial class M2C_TeamDungeonQuitMessage: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public int Error { get; set; }
-
-		[ProtoMember(92)]
-		public string Message { get; set; }
 
 	}
 

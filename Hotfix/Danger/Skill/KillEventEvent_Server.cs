@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -172,9 +172,7 @@ namespace ET
                 case MapTypeEnum.TrialDungeon:
                     domainScene.GetComponent<TrialDungeonComponent>().OnKillEvent(defendUnit);
                     break;
-                case MapTypeEnum.SeasonTower:
-                    domainScene.GetComponent<SeasonTowerComponent>().OnKillEvent(defendUnit);
-                    break;
+ 
                 default:
                     break;
             }
