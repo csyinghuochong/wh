@@ -297,8 +297,7 @@ namespace ET
                 return;
             }
 
-            int addLv = mountInfo.MountLv - oldLv;
-            MountHelper.AddLevelUpPotential(mountInfo, addLv);
+            MountHelper.SyncAddPropretyNum(mountInfo);
             MountHelper.ApplyAptitudeAttributes(mountInfo);
             if (self.GetRideMount()?.Id == mountInfo.Id
                 && MountHelper.IsMountModelChanged(mountInfo.ConfigId, oldLv, mountInfo.MountLv))
