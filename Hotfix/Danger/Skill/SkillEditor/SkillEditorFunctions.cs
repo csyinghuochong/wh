@@ -264,6 +264,7 @@ namespace ET
 
             //target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.None);
+            Console.WriteLine($"被动类型未定义!!!");
             if (Log.IsDebugEnabled) Log.Debug($"INFORM_EVENT_DEFENSE skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
 
@@ -285,6 +286,12 @@ namespace ET
             {
                 healTotal = ctx.GetVariable("damageTotal", 0);
             }
+
+            //计算治疗量
+            //ctx.SetVariable("damageTotal", totalHeal);
+            //ctx.SetVariable("healTotal", totalHeal);
+            Console.WriteLine($"被动类型未定义!!!");
+            Console.WriteLine($"应该需要加上通知客户端命中!!!");
 
             if (healTotal > 0)
             {
@@ -357,20 +364,23 @@ namespace ET
         }
 
 
+        /// <summary>
+        /// 物理技能判定
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void SkillDamageCheckPhysics(SkillEditorFunctionContext ctx)
         {
-            RunDamageCheck(ctx, canBlockAsImmune: true);
+            RunDamageCheck(ctx);
         }
 
-
+        /// <summary>
+        /// 法术技能判定
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void SkillDamageCheckMagic(SkillEditorFunctionContext ctx)
-
         {
-
-            RunDamageCheck(ctx, canBlockAsImmune: true);
-
+            RunDamageCheck(ctx);
         }
-
 
 
         private static void SkillDamageCheckHeal(SkillEditorFunctionContext ctx)
@@ -415,7 +425,6 @@ namespace ET
             if (Log.IsDebugEnabled) Log.Debug($"SKILL_DAMAGE_CHECK_HEAL skill={skillId} level={level} caster={caster.Id} target={target.Id} rs={rs}");
 
         }
-
 
 
         private static void AddBuff(SkillEditorFunctionContext ctx)
@@ -656,12 +665,7 @@ namespace ET
             RemoveBuffGroupInternal(target, buffFromUnitId, buffGroup, forceRemove, triggerFadeSkill);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ctx"></param>
-        /// <param name="canBlockAsImmune"></param>
-        private static void RunDamageCheck(SkillEditorFunctionContext ctx, bool canBlockAsImmune)
+        private static void RunDamageCheck(SkillEditorFunctionContext ctx)
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
 
@@ -676,8 +680,6 @@ namespace ET
             bool canHeavy = ctx.GetParamBool(5, true);
 
             bool canDodge = ctx.GetParamBool(6, true);
-
-            bool canBlock = ctx.GetParamBool(7, true);
 
             int critRateAdd = ctx.GetParamInt(8, 0);
 
@@ -694,8 +696,6 @@ namespace ET
                 return;
             }
 
-            bool canImmune = canBlockAsImmune && canBlock;
-
             long rs = SkillEditorContionHelper.EvaluateDirectHit(
                 ctx, caster, target, skillId,
                 canCrit, canHeavy, canDodge,
@@ -709,6 +709,8 @@ namespace ET
             ctx.LastConditionResult = hitOk;
             if (!hitOk)
             {
+                //hitOk 只认三种结果：普通命中、重击、暴击。这三种为真，后面的 IF 结果才会走「算伤害」和 INFORM_CLIENT_HIT_SUCCESS，由那个节点把伤害量发给客户端。
+                //为假时，rs 是 Miss、Dodge 或 Immune。IF 结果整段不执行，INFORM_CLIENT_HIT_SUCCESS 不会跑。不在判定里发一次，客户端就看不到「闪避」或「Miss」。所以这里用伤害量 0，只把 rs 送出去，头顶按 HitType 飘字。
                 SendNumbericChangeHelper.InformClientHit(caster, target, rs, 0);
             }
         }
@@ -1026,21 +1028,35 @@ namespace ET
             if (Log.IsDebugEnabled) Log.Debug($"DESTROY_UNIT unit={unit.Id}");
         }
 
+        /// <summary>
+        /// 计算物理伤害
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void CalculatePhysicsDamage(SkillEditorFunctionContext ctx)
         {
             SkillEditorDamageHelper.CalculateDamage(ctx, SkillEditorDamageKind.Physics);
         }
 
+
+        /// <summary>
+        /// 计算法术伤害
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void CalculateMagicDamage(SkillEditorFunctionContext ctx)
         {
             SkillEditorDamageHelper.CalculateDamage(ctx, SkillEditorDamageKind.Magic);
         }
 
+        /// <summary>
+        /// 计算治疗量
+        /// </summary>
+        /// <param name="ctx"></param>
         private static void CalculateHealDamage(SkillEditorFunctionContext ctx)
         {
             SkillEditorDamageHelper.CalculateHeal(ctx);
         }
 
+        //
         private static void BuffDataSet(SkillEditorFunctionContext ctx)
         {
             Unit owner = ctx.ResolveUnit(ctx.GetParamRaw(1));
