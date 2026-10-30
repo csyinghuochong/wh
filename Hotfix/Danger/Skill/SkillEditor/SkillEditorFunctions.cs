@@ -1072,32 +1072,26 @@ namespace ET
         }
 
         /// <summary>
-        /// 获取随机目标（GET_RANDOM_TARGET）
-        /// 0 变量（默认 [目标] target）
-        /// 1 对象列表（默认 [目标列表] targets）
-        /// 2 优先级是否生效（默认 [是] true）
-        /// 同时注册旧名 GET_RANDOM_UNIT。
+        /// 获取随机目标。对象列表只认 targets，为空直接结束。
+        /// 优先级生效取第一个，否则随机。结果只写入变量。
         /// </summary>
         private static void GetRandomUnit(SkillEditorFunctionContext ctx)
         {
-            bool usePriority = ctx.GetParamBool(2, true);
-            List<long> targetIds = CollectTargetIds(ctx, usePriority, ctx.GetParamRaw(1));
-            if (targetIds.Count == 0)
+            string listName = ctx.ResolveVarName(ctx.GetParamRaw(1), string.Empty);
+            if (!string.Equals(listName, "targets", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            int index = RandomHelper.RandomNumber(0, targetIds.Count);
-            UnitComponent unitComponent = ctx.Handler?.TheUnitFrom?.GetParent<UnitComponent>();
-            Unit randomTarget = unitComponent?.Get(targetIds[index]);
-            if (randomTarget == null)
+            List<long> hurtIds = ctx.Handler.HurtIds;
+            if (hurtIds.Count == 0)
             {
                 return;
             }
 
-            ctx.Handler.TheUnitTarget = randomTarget;
+            int index = ctx.GetParamBool(2, true) ? 0 : RandomHelper.RandomNumber(0, hurtIds.Count);
             string varName = ctx.ResolveVarName(ctx.GetParamRaw(0), "target");
-            ctx.SetVariable(varName, randomTarget.Id.ToString(CultureInfo.InvariantCulture));
+            ctx.SetVariable(varName, hurtIds[index]);
         }
 
         /// <summary>
@@ -2559,109 +2553,5 @@ namespace ET
             //return !(buffConfig.Remove.Length == 1 && buffConfig.Remove[0] == 0);
         }
 
-        /// <summary>
-        /// 收集随机目标用的单位 Id。参数列表为空时用当前伤害目标。
-        /// </summary>
-        private static List<long> CollectTargetIds(SkillEditorFunctionContext ctx, bool usePriority, string targetsParam = null)
-        {
-            List<long> targetIds = ParseTargetIdList(ctx, targetsParam);
-            if (targetIds.Count > 0)
-            {
-                return targetIds;
-            }
-
-            if (ctx.Handler?.HurtIds != null && ctx.Handler.HurtIds.Count > 0)
-            {
-                targetIds.AddRange(ctx.Handler.HurtIds);
-                return targetIds;
-            }
-
-            long targetId = ctx.Handler?.SkillInfo?.TargetID ?? 0;
-            if (targetId > 0)
-            {
-                targetIds.Add(targetId);
-            }
-
-            return targetIds;
-        }
-
-        /// <summary>
-        /// 从参数解析目标 Id 列表。targets 表示当前目标列表。
-        /// </summary>
-        private static List<long> ParseTargetIdList(SkillEditorFunctionContext ctx, string raw)
-        {
-            List<long> targetIds = new List<long>();
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                return targetIds;
-            }
-
-            string resolved = ctx.ResolveParam(raw).Trim();
-            string token = ExtractListToken(raw);
-            if (resolved.Equals("targets", StringComparison.OrdinalIgnoreCase)
-                || token.Equals("targets", StringComparison.OrdinalIgnoreCase))
-            {
-                if (ctx.Handler?.HurtIds != null && ctx.Handler.HurtIds.Count > 0)
-                {
-                    targetIds.AddRange(ctx.Handler.HurtIds);
-                }
-
-                return targetIds;
-            }
-
-            if (ctx.Variables.TryGetValue(token, out string variableValue))
-            {
-                AppendParsedIds(variableValue, targetIds);
-                if (targetIds.Count > 0)
-                {
-                    return targetIds;
-                }
-            }
-
-            AppendParsedIds(resolved, targetIds);
-            return targetIds;
-        }
-
-        /// <summary>
-        /// 从带中文前缀的参数里取出末尾 token。
-        /// </summary>
-        private static string ExtractListToken(string raw)
-        {
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                return string.Empty;
-            }
-
-            string trimmed = raw.Trim();
-            int space = trimmed.LastIndexOf(' ');
-            if (space >= 0 && space < trimmed.Length - 1)
-            {
-                return trimmed.Substring(space + 1).Trim();
-            }
-
-            return trimmed;
-        }
-
-        /// <summary>
-        /// 按逗号、竖线、分号拆出单位 Id，去重后追加。
-        /// </summary>
-        private static void AppendParsedIds(string raw, List<long> targetIds)
-        {
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                return;
-            }
-
-            string[] parts = raw.Split(new[] { ',', '|', ';' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < parts.Length; i++)
-            {
-                if (long.TryParse(parts[i].Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out long id)
-                    && id > 0
-                    && !targetIds.Contains(id))
-                {
-                    targetIds.Add(id);
-                }
-            }
-        }
     }
 }
