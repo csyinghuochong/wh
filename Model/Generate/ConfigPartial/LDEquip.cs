@@ -207,6 +207,7 @@ namespace ET
                 LogBadPacked(e.Id, "Att_Rand_Param31", e.Att_Rand_Param31);
                 LogBadPacked(e.Id, "Att_Rand_Param41", e.Att_Rand_Param41);
                 LogBadPacked(e.Id, "Att_Rand_Param51", e.Att_Rand_Param51);
+                LogBadPacked(e.Id, "Att_Rand_Param61", e.Att_Rand_Param61);
             }
         }
 
@@ -315,23 +316,23 @@ namespace ET
                 return result;
             }
 
-            // 组1~5 的属性码池
+            // 组1~6 的属性码池
             List<long>[] groupCodes =
             {
-                new List<long>(), new List<long>(), new List<long>(), new List<long>(), new List<long>(),
+                new List<long>(), new List<long>(), new List<long>(), new List<long>(), new List<long>(), new List<long>(),
             };
             // 该组最多抽几条（0=不限）；抽满后本轮起不再进池
-            int[] groupMax = { e.Att_Rand_Param12, e.Att_Rand_Param22, e.Att_Rand_Param32, e.Att_Rand_Param42, e.Att_Rand_Param52 };
+            int[] groupMax = { e.Att_Rand_Param12, e.Att_Rand_Param22, e.Att_Rand_Param32, e.Att_Rand_Param42, e.Att_Rand_Param52, e.Att_Rand_Param62 };
             // 从第几次附加才加入该组（1=第一次就进池；2=第二次才进池）
-            int[] groupJoin = { e.Att_Rand_Param13, e.Att_Rand_Param23, e.Att_Rand_Param33, e.Att_Rand_Param43, e.Att_Rand_Param53 };
+            int[] groupJoin = { e.Att_Rand_Param13, e.Att_Rand_Param23, e.Att_Rand_Param33, e.Att_Rand_Param43, e.Att_Rand_Param53, e.Att_Rand_Param63 };
             // 组权重。本轮该组总权重 = 剩余条数 × 组权重
-            int[] groupWeight = { e.Att_Rand_Param14, e.Att_Rand_Param24, e.Att_Rand_Param34, e.Att_Rand_Param44, e.Att_Rand_Param54 };
+            int[] groupWeight = { e.Att_Rand_Param14, e.Att_Rand_Param24, e.Att_Rand_Param34, e.Att_Rand_Param44, e.Att_Rand_Param54, e.Att_Rand_Param64 };
             // 该组已抽出条数
-            int[] groupPicked = { 0, 0, 0, 0, 0 };
+            int[] groupPicked = { 0, 0, 0, 0, 0, 0 };
 
             long[][] groupPools =
             {
-                e.Att_Rand_Param11, e.Att_Rand_Param21, e.Att_Rand_Param31, e.Att_Rand_Param41, e.Att_Rand_Param51,
+                e.Att_Rand_Param11, e.Att_Rand_Param21, e.Att_Rand_Param31, e.Att_Rand_Param41, e.Att_Rand_Param51, e.Att_Rand_Param61,
             };
             for (int g = 0; g < groupPools.Length; g++)
             {
@@ -359,7 +360,7 @@ namespace ET
                 List<int> weights = new List<int>();
                 List<int> fromGroup = new List<int>(); // 候选来自哪一组，抽中后给该组 Picked++
 
-                for (int g = 0; g < 5; g++)
+                for (int g = 0; g < groupCodes.Length; g++)
                 {
                     // 未配置加入轮次，或还没到该组加入轮次
                     if (groupJoin[g] <= 0 || groupJoin[g] > round)

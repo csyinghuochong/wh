@@ -118,7 +118,7 @@ namespace ET
 		/// <summary>加入 数量</summary>
 		[ProtoMember(13)]
 		public int Att_Rand_Num { get; set; }
-		/// <summary>组1 基础属性 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
+		/// <summary>组1 装备专属 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
 		[ProtoMember(14)]
 		public long[] Att_Rand_Param11 { get; set; }
 		/// <summary>组1 最大 个数</summary>
@@ -130,7 +130,7 @@ namespace ET
 		/// <summary>组1 权重</summary>
 		[ProtoMember(17)]
 		public int Att_Rand_Param14 { get; set; }
-		/// <summary>组2 附加伤害 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
+		/// <summary>组2 六维属性 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
 		[ProtoMember(18)]
 		public long[] Att_Rand_Param21 { get; set; }
 		/// <summary>组2 最大 个数</summary>
@@ -142,7 +142,7 @@ namespace ET
 		/// <summary>组2 权重</summary>
 		[ProtoMember(21)]
 		public int Att_Rand_Param24 { get; set; }
-		/// <summary>组3 属性 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
+		/// <summary>组3 附加伤害 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
 		[ProtoMember(22)]
 		public long[] Att_Rand_Param31 { get; set; }
 		/// <summary>组3 最大 个数</summary>
@@ -178,35 +178,47 @@ namespace ET
 		/// <summary>组5 权重</summary>
 		[ProtoMember(33)]
 		public int Att_Rand_Param54 { get; set; }
-		/// <summary>属性 必中1</summary>
+		/// <summary>组6 属性 (12)3 - 属性ID 4567 - 值 / 最小值 (8901) - 最大值</summary>
 		[ProtoMember(34)]
+		public long[] Att_Rand_Param61 { get; set; }
+		/// <summary>组6 最大个数</summary>
+		[ProtoMember(35)]
+		public int Att_Rand_Param62 { get; set; }
+		/// <summary>组6 加入</summary>
+		[ProtoMember(36)]
+		public int Att_Rand_Param63 { get; set; }
+		/// <summary>组6 权重</summary>
+		[ProtoMember(37)]
+		public int Att_Rand_Param64 { get; set; }
+		/// <summary>属性 必中1</summary>
+		[ProtoMember(38)]
 		public int[] Att_Rand_1 { get; set; }
 		/// <summary>属性 必中2</summary>
-		[ProtoMember(35)]
+		[ProtoMember(39)]
 		public int[] Att_Rand_2 { get; set; }
 		/// <summary>属性 必中3</summary>
-		[ProtoMember(36)]
+		[ProtoMember(40)]
 		public int[] Att_Rand_3 { get; set; }
 		/// <summary>属性 必中4</summary>
-		[ProtoMember(37)]
+		[ProtoMember(41)]
 		public int[] Att_Rand_4 { get; set; }
 		/// <summary>属性 必中5</summary>
-		[ProtoMember(38)]
+		[ProtoMember(42)]
 		public int[] Att_Rand_5 { get; set; }
 		/// <summary>属性 必中6</summary>
-		[ProtoMember(39)]
+		[ProtoMember(43)]
 		public int[] Att_Rand_6 { get; set; }
 		/// <summary>强化上限 0：无强化 -1：禁强化</summary>
-		[ProtoMember(40)]
+		[ProtoMember(44)]
 		public int Enhance { get; set; }
 		/// <summary>强化属性</summary>
-		[ProtoMember(41)]
+		[ProtoMember(45)]
 		public string Enhance_Attribute { get; set; }
 		/// <summary>鉴定等级 0：无鉴定 -1：禁鉴定</summary>
-		[ProtoMember(42)]
+		[ProtoMember(46)]
 		public int Appraise_Lv { get; set; }
 		/// <summary>可鉴定 属性类型</summary>
-		[ProtoMember(43)]
+		[ProtoMember(47)]
 		public int[] Appraise_Attribute { get; set; }
 
 	}
