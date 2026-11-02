@@ -10,6 +10,7 @@ namespace ET
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             roleInfo.RoleInfo.RoleHeadFrame = request.RoleHeadFrame;
             roleInfo.SyncUnionMember();
+            roleInfo.SaveRoleInfo();
             reply();
             await ETTask.CompletedTask;
         }

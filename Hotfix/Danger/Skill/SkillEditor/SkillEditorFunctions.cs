@@ -327,7 +327,7 @@ namespace ET
 
             //target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.None);
-            Console.WriteLine($"被动类型未定义!!!");
+            Console.WriteLine($"被动类型未定义!!!：通知防御事件");
             if (Log.IsDebugEnabled) Log.Debug($"INFORM_EVENT_DEFENSE skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
 

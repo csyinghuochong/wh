@@ -228,6 +228,25 @@ namespace ET
             dbSave.UpdateCacheDB();
         }
 
+        /// <summary>立刻写入缓存和库。别人查看头像、头像框读的是库里的 RoleInfo。</summary>
+        public static void SaveRoleInfo(this RoleInfoComponentServer self)
+        {
+            Unit unit = self.GetParent<Unit>();
+            if (unit == null)
+            {
+                return;
+            }
+
+            DBSaveComponent dbSave = unit.GetComponent<DBSaveComponent>();
+            if (dbSave == null)
+            {
+                return;
+            }
+
+            dbSave.AddChange(typeof(RoleInfoComponentServer));
+            dbSave.UpdateCacheDB();
+        }
+
         /// <summary>名字、等级、战力、职业、转职、头像、头像框变更时写入公会成员快照。登录不推。</summary>
         public static void SyncUnionMember(this RoleInfoComponentServer self)
         {
