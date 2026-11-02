@@ -167,8 +167,8 @@ namespace ET
 		 public const ushort M2M_HomeOperateResponse = 20164;
 		 public const ushort G2Chat_EnterChat = 20165;
 		 public const ushort Chat2G_EnterChat = 20166;
-		 public const ushort M2Chat_UpdateLevel = 20167;
-		 public const ushort Chat2M_UpdateLevel = 20168;
+		 public const ushort M2Chat_UpdateRole = 20167;
+		 public const ushort Chat2M_UpdateRole = 20168;
 		 public const ushort Chat2M_SendChat = 20169;
 		 public const ushort G2Chat_RequestExitChat = 20170;
 		 public const ushort Chat2G_RequestExitChat = 20171;

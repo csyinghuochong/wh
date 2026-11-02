@@ -12,6 +12,7 @@ namespace ET
             roleInfo.SyncUnionMember();
             roleInfo.UpdateRankInfo();
             roleInfo.SaveRoleInfo();
+            roleInfo.SyncChatRole().Coroutine();
             reply();
             await ETTask.CompletedTask;
         }

@@ -3130,10 +3130,11 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(Chat2M_UpdateLevel))]
-	[Message(InnerOpcode.M2Chat_UpdateLevel)]
+	[ResponseType(nameof(Chat2M_UpdateRole))]
+// 等级、头像、头像框变化后，刷新本服和战区聊天服上的展示数据。
+	[Message(InnerOpcode.M2Chat_UpdateRole)]
 	[ProtoContract]
-	public partial class M2Chat_UpdateLevel: Object, IActorRequest
+	public partial class M2Chat_UpdateRole: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3144,11 +3145,17 @@ namespace ET
 		[ProtoMember(5)]
 		public int Level { get; set; }
 
+		[ProtoMember(6)]
+		public int RoleHeadId { get; set; }
+
+		[ProtoMember(7)]
+		public int RoleHeadFrame { get; set; }
+
 	}
 
-	[Message(InnerOpcode.Chat2M_UpdateLevel)]
+	[Message(InnerOpcode.Chat2M_UpdateRole)]
 	[ProtoContract]
-	public partial class Chat2M_UpdateLevel: Object, IActorResponse
+	public partial class Chat2M_UpdateRole: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }

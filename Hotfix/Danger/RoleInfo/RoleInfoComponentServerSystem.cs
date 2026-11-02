@@ -413,14 +413,45 @@ namespace ET
                             serverod, new M2U_UnionOperationRequest() { OperateType = 1, UnionId = unionid, Par = $"{playerName}_{getWay}_{dataType}_{dataValue}" });
         }
 
-        public static async ETTask BroadcastLevel(this RoleInfoComponentServer self, int level)
+        /// <summary>等级、头像、头像框变化后，推到本服和战区聊天服。</summary>
+        public static async ETTask SyncChatRole(this RoleInfoComponentServer self)
         {
             Unit unit = self.GetParent<Unit>();
+            if (unit == null)
+            {
+                return;
+            }
+
+            RoleInfo roleInfo = self.RoleInfo;
             long chatServerId = DBHelper.GetChatServerId(unit);
-            Chat2M_UpdateLevel chat2G_EnterChat = (Chat2M_UpdateLevel)await MessageHelper.CallActor(chatServerId, new M2Chat_UpdateLevel()
+            if (chatServerId != 0)
+            {
+                await MessageHelper.CallActor(chatServerId, new M2Chat_UpdateRole()
+                {
+                    UnitId = unit.Id,
+                    Level = roleInfo.Lv,
+                    RoleHeadId = roleInfo.RoleHeadId,
+                    RoleHeadFrame = roleInfo.RoleHeadFrame,
+                });
+            }
+
+            if (unit.IsDisposed)
+            {
+                return;
+            }
+
+            long warChatServerId = DBHelper.GetWarChatServerId(unit);
+            if (warChatServerId == 0)
+            {
+                return;
+            }
+
+            await MessageHelper.CallActor(warChatServerId, new M2Chat_UpdateRole()
             {
                 UnitId = unit.Id,
-                Level = level,
+                Level = roleInfo.Lv,
+                RoleHeadId = roleInfo.RoleHeadId,
+                RoleHeadFrame = roleInfo.RoleHeadFrame,
             });
         }
 
@@ -509,7 +540,7 @@ namespace ET
                     Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                     numericComponent.Set(NumericType.HP_Current_8, numericComponent.GetAsLong(NumericType.HP_Max_10), true);
                     self.UpdateRankInfo();
-                    self.BroadcastLevel(self.RoleInfo.Lv).Coroutine();
+                    self.SyncChatRole().Coroutine();
                     break;
                 case UserDataType.Occ:
                     break;
