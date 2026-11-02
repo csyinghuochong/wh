@@ -1969,6 +1969,12 @@ namespace ET
 		[ProtoMember(6)]
 		public string UnionName { get; set; }
 
+		[ProtoMember(7)]
+		public int RoleHeadId { get; set; }
+
+		[ProtoMember(8)]
+		public int RoleHeadFrame { get; set; }
+
 	}
 
 	[Message(OuterOpcode.ShopGoodsItem)]
@@ -3143,92 +3149,6 @@ namespace ET
 
 		[ProtoMember(5)]
 		public long MonsterID { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_FashionActiveResponse))]
-	[Message(OuterOpcode.C2M_FashionActiveRequest)]
-	[ProtoContract]
-	public partial class C2M_FashionActiveRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int FashionId { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_FashionActiveResponse)]
-	[ProtoContract]
-	public partial class M2C_FashionActiveResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[ResponseType(nameof(M2C_FashionWearResponse))]
-	[Message(OuterOpcode.C2M_FashionWearRequest)]
-	[ProtoContract]
-	public partial class C2M_FashionWearRequest: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public int FashionId { get; set; }
-
-		[ProtoMember(2)]
-		public int OperatateType { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_FashionWearResponse)]
-	[ProtoContract]
-	public partial class M2C_FashionWearResponse: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-	}
-
-	[Message(OuterOpcode.M2C_FashionUpdate)]
-	[ProtoContract]
-	public partial class M2C_FashionUpdate: Object, IActorMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(93)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(1)]
-		public long UnitID { get; set; }
-
-		[ProtoMember(2)]
-		public List<int> FashionEquipList = new List<int>();
-
-		[ProtoMember(3)]
-		public int WeaponId { get; set; }
-
-		[ProtoMember(4)]
-		public int OffHandId { get; set; }
-
-		[ProtoMember(5)]
-		public int TitleId { get; set; }
 
 	}
 
@@ -11921,6 +11841,94 @@ namespace ET
 	}
 
 //Recharge充值 end####################################################
+//Fashion时装 begin####################################################
+	[ResponseType(nameof(M2C_FashionActiveResponse))]
+	[Message(OuterOpcode.C2M_FashionActiveRequest)]
+	[ProtoContract]
+	public partial class C2M_FashionActiveRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int FashionId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_FashionActiveResponse)]
+	[ProtoContract]
+	public partial class M2C_FashionActiveResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_FashionWearResponse))]
+	[Message(OuterOpcode.C2M_FashionWearRequest)]
+	[ProtoContract]
+	public partial class C2M_FashionWearRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int FashionId { get; set; }
+
+		[ProtoMember(2)]
+		public int OperatateType { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_FashionWearResponse)]
+	[ProtoContract]
+	public partial class M2C_FashionWearResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_FashionUpdate)]
+	[ProtoContract]
+	public partial class M2C_FashionUpdate: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitID { get; set; }
+
+		[ProtoMember(2)]
+		public List<int> FashionEquipList = new List<int>();
+
+		[ProtoMember(3)]
+		public int WeaponId { get; set; }
+
+		[ProtoMember(4)]
+		public int OffHandId { get; set; }
+
+		[ProtoMember(5)]
+		public int TitleId { get; set; }
+
+	}
+
+//Fashion时装 end####################################################
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

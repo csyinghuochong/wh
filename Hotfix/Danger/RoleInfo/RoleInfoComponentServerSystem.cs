@@ -537,6 +537,10 @@ namespace ET
                     // 老档只有当前战力、没有历史最高：先补档，不把存量算成 122。
                     int maxDelta = oldMax <= 0 && oldCombat > 0 ? 0 : self.MaxCombat - oldMax;
                     PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo, maxDelta);
+                    if (newCombat != oldCombat)
+                    {
+                        self.UpdateRankInfo();
+                    }
                     break;
 
                 default:
@@ -596,6 +600,8 @@ namespace ET
             rankPetInfo.Combat = self.RoleInfo.Combat;
             rankPetInfo.Occ = self.RoleInfo.Occ;
             rankPetInfo.UnionName = self.RoleInfo.UnionName ?? string.Empty;
+            rankPetInfo.RoleHeadId = self.RoleInfo.RoleHeadId;
+            rankPetInfo.RoleHeadFrame = self.RoleInfo.RoleHeadFrame;
 
             R2M_RankUpdateResponse Response = (R2M_RankUpdateResponse)await ActorMessageSenderComponent.Instance.Call
                      (mapInstanceId, new M2R_RankUpdateRequest()
@@ -635,6 +641,8 @@ namespace ET
             warRankInfo.Combat = homeRankInfo.Combat;
             warRankInfo.Occ = homeRankInfo.Occ;
             warRankInfo.UnionName = homeRankInfo.UnionName ?? string.Empty;
+            warRankInfo.RoleHeadId = homeRankInfo.RoleHeadId;
+            warRankInfo.RoleHeadFrame = homeRankInfo.RoleHeadFrame;
             int homeZone = UnitZoneHelper.GetHomeZone(unit);
             ServerItem serverItem = ServerHelper.GetGetServerItem(CommonHelper.IsInnerNet(), homeZone);
             string serverName = serverItem != null ? serverItem.ServerName : homeZone.ToString();
