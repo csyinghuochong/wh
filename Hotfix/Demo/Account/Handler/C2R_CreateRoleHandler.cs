@@ -62,14 +62,42 @@ namespace ET
                             return;
                         }
 
-						if (!ServerHelper.IsBanHaoZone(session.DomainZone())
-                            && !GMHelp.GmAccount.Contains(centerAccountList[0].Account)
-                            && CommonHelper.GetTodayCreateRoleNumber(centerAccountList[0].RoleList) >= 20)
-						{
-                            response.Error = ErrorCode.ERR_CreateRole_Limit;
+                        int maxRoleLimit = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Max_Role_Limit);
+                        int currentRoleCount = 0;
+                        long now = TimeHelper.ServerNow();
+                        bool cooldownExpired = false;
+                        List<CreateRoleInfo> roleList = centerAccountList[0].RoleList;
+                        for (int i = 0; i < roleList.Count; i++)
+                        {
+                            CreateRoleInfo roleInfo = roleList[i];
+                            if (roleInfo.State != (int)RoleInfoState.Freeze
+                                && roleInfo.Cooldown > 0
+                                && now >= roleInfo.Cooldown)
+                            {
+                                roleInfo.State = (int)RoleInfoState.Freeze;
+                                cooldownExpired = true;
+                            }
+
+                            if (roleInfo.ServerId != request.ServerId || roleInfo.State == (int)RoleInfoState.Freeze)
+                            {
+                                continue;
+                            }
+
+                            currentRoleCount++;
+                        }
+
+                        if (cooldownExpired)
+                        {
+                            await Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(CommonConfig.CenterZoneId, centerAccountList[0]);
+                        }
+
+                        if (currentRoleCount >= maxRoleLimit)
+                        {
+                            response.Error = ErrorCode.ERR_CreateRole_Max;
                             reply();
                             return;
                         }
+
 
 						long accountCreateTime = centerAccountList[0].CreateTime;
 						long serverNowTime = TimeHelper.ServerNow();
