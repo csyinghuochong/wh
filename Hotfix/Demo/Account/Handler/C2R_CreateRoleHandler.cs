@@ -62,7 +62,7 @@ namespace ET
                             return;
                         }
 
-                        int maxRoleLimit = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Max_Role_Limit);
+						int maxRoleLimit = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Max_Role_Limit);
                         int currentRoleCount = 0;
                         long now = TimeHelper.ServerNow();
                         bool cooldownExpired = false;
