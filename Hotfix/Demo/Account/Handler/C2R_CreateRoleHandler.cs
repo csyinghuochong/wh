@@ -145,7 +145,11 @@ namespace ET
 						createRoleInfo.ServerId = request.ServerId;
 						createRoleInfo.RobotId = robotId;
 						createRoleInfo.Sex = request.Sex;
+						LDOccupation occupation = LDOccupationCategory.Instance.Get(request.CreateOcc);
+						createRoleInfo.RoleHeadId = request.Sex == SexEnum.Man ? occupation.RoleHead_Man : occupation.RoleHead_Woman;
+						createRoleInfo.RoleHeadFrame = 1;
 						createRoleInfo.CreateTime = TimeHelper.ServerNow();
+                      
                         centerAccountList[0].RoleList.Add(createRoleInfo);
                         Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(CommonConfig.CenterZoneId, centerAccountList[0]).Coroutine();
                         
