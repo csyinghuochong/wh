@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace ET
 {
+    /// <summary>
+    /// 只要招募的才进组队大厅
+    /// </summary>
     [ActorMessageHandler]
     public class C2T_TeamListHandler : AMActorRpcHandler<Scene, C2T_TeamListRequest, T2C_TeamListResponse>
     {
@@ -18,7 +21,7 @@ namespace ET
                     teamList.RemoveAt(i);
                     continue;
                 }
-                if (teamInfo.SceneId > 0)
+                if (teamInfo.SceneId > 0 && teamInfo.LevelMax > 0)
                 {
                     teamInfos.Add(teamInfo);
                 }

@@ -8,7 +8,8 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, M2T_TeamDungeonPrepareRequest request, T2M_TeamDungeonPrepareResponse response, Action reply)
         {
-            TeamInfo teamInfo = scene.GetComponent<TeamSceneComponent>().GetTeamInfo(request.TeamId);
+            TeamSceneComponent teamSceneComponent = scene.GetComponent<TeamSceneComponent>();
+            TeamInfo teamInfo = teamSceneComponent.GetTeamInfo(request.UnitID);
             if (teamInfo == null)
             {
                 Log.Debug($"M2T_TeamDungeonPrepare: teamInfo == null");
@@ -16,9 +17,16 @@ namespace ET
                 reply();
                 return;
             }
-            
+
             // 队长发起：自己准备，其余清成未准备，方便重新确认。队员只改自己。
             bool leaderStart = teamInfo.TeamId == request.UnitID && request.Prepare == 1;
+            bool sceneChanged = false;
+            if (leaderStart && request.SceneId > 0 && teamInfo.SceneId != request.SceneId)
+            {
+                teamInfo.SceneId = request.SceneId;
+                sceneChanged = true;
+            }
+
             bool found = false;
             for (int i = 0; i < teamInfo.PlayerList.Count; i++)
             {
@@ -46,6 +54,11 @@ namespace ET
                 response.Error = ErrorCode.Err_TeamIsNull;
                 reply();
                 return;
+            }
+
+            if (sceneChanged)
+            {
+                await teamSceneComponent.SyncTeamInfo(teamInfo, teamInfo.PlayerList);
             }
 
             //0未选择 1同意 2拒绝

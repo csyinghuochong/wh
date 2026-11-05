@@ -25,7 +25,7 @@ namespace ET
             }
 
             TeamInfo teamInfo = teamSceneComponent.CreateTeamInfo(request.TeamPlayerInfo, 0);
-            teamSceneComponent.SyncTeamInfo(teamInfo, teamInfo.PlayerList).Coroutine();
+            await teamSceneComponent.SyncTeamInfo(teamInfo, teamInfo.PlayerList);
             reply();
             await ETTask.CompletedTask;
         }

@@ -3450,6 +3450,9 @@ namespace ET
 		[ProtoMember(4)]
 		public int ErrorCode { get; set; }
 
+		[ProtoMember(5)]
+		public int SceneId { get; set; }
+
 	}
 
 	[Message(InnerOpcode.T2M_TeamDungeonPrepareResponse)]

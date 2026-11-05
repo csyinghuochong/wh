@@ -10308,7 +10308,7 @@ namespace ET
 
 	}
 
-//队伍列表（只返回 SceneId > 0
+//队伍列表。只返回已发布招募的队伍：SceneId > 0 且 LevelMax > 0
 	[ResponseType(nameof(T2C_TeamListResponse))]
 	[Message(OuterOpcode.C2T_TeamListRequest)]
 	[ProtoContract]
