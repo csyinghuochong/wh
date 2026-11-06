@@ -1,7 +1,8 @@
 namespace ET
 {
     /// <summary>
-    /// 技能伤害判定。命中/暴击走自身 66/70（职业/怪/宠初始 950、50，/1000）。技能加成 /10000。重击默认 0.05。
+    /// 技能伤害判定。命中/暴击走自身 66/70（职业/怪/宠初始 950、50，/1000，即默认 95% / 5%）。
+    /// 命中等级项与伤害二次项相同：a×Lv² + b×Lv + c，和命中、闪避同一单位后再 /1000。技能加成 /10000。重击默认 0.05。
     /// </summary>
     public static class SkillEditorContionHelper
     {
@@ -22,6 +23,9 @@ namespace ET
             int heavyRateAdd,
             int hitRateAdd,
             int skillLevel,
+            double hitQuad,
+            double hitLinear,
+            double hitConst,
             float hateInit,
             float hateGrowth,
             bool sendHitMsg)
@@ -42,9 +46,11 @@ namespace ET
 
             if (canDodge)
             {
-                double hitRate = hitRateAdd / 10000d
-                    + Attr(casterNumeric, NumericType.P_HIT_Fixed_66) / 1000d
-                    - Attr(targetNumeric, NumericType.P_DODGE_Fixed_68) / 1000d;
+                // 默认 95%：命中初始 950/1000。等级项 a×Lv²+b×Lv+c 与命中、闪避同单位，再 /1000。命中加成 /10000。
+                double hitGrowth = EvalLevelGrowth(skillLevel, hitQuad, hitLinear, hitConst);
+                double hitRate = (Attr(casterNumeric, NumericType.P_HIT_Fixed_66) + hitGrowth
+                    - Attr(targetNumeric, NumericType.P_DODGE_Fixed_68)) / 1000d
+                    + hitRateAdd / 10000d;
                 if (x > hitRate * 10000d)
                 {
                     return (long)SkillEditorHitResult.Dodge;
@@ -98,6 +104,13 @@ namespace ET
                 - Attr(targetNumeric, NumericType.P_CRI_RES_Fixed_74) / 1000d;
             int x = RandomHelper.RandomNumber(0, 10001);
             return x <= critRate * 10000d;
+        }
+
+        /// <summary>等级成长：a×Lv² + b×Lv + c。Lv 为技能等级。</summary>
+        private static double EvalLevelGrowth(int level, double quad, double linear, double constant)
+        {
+            double lv = level < 0 ? 0d : level;
+            return quad * lv * lv + linear * lv + constant;
         }
 
         private static long Attr(NumericComponent numeric, int attrId)

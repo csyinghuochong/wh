@@ -445,6 +445,16 @@ namespace ET
         /// 8 暴击加成 0.01%（默认 0）
         /// 9 重击加成 0.01%（默认 0）
         /// 10 命中加成 0.01%（默认 0）
+        /// 11 暴击 二次项（默认 0）
+        /// 12 暴击 一次项（默认 0）
+        /// 13 暴击 常数项（默认 0）
+        /// 14 重击 二次项（默认 0）
+        /// 15 重击 一次项（默认 0）
+        /// 16 重击 常数项（默认 0）
+        /// 17 命中 二次项（默认 0）
+        /// 18 命中 一次项（默认 0）
+        /// 19 命中 常数项（默认 0）
+        /// 命中率 = (命中 + 二次项×Lv² + 一次项×Lv + 常数项 - 闪避) / 1000 + 命中加成 / 10000。Lv 为技能等级。默认命中 950 即 95%。
         /// 与法术判定共用 RunDamageCheck。
         /// </summary>
         private static void SkillDamageCheckPhysics(SkillEditorFunctionContext ctx)
@@ -465,6 +475,7 @@ namespace ET
         /// 8 暴击加成 0.01%（默认 0）
         /// 9 重击加成 0.01%（默认 0）
         /// 10 命中加成 0.01%（默认 0）
+        /// 11~19 与物理判定相同（暴击/重击/命中的二次项、一次项、常数项）
         /// 与物理判定共用 RunDamageCheck。
         /// </summary>
         private static void SkillDamageCheckMagic(SkillEditorFunctionContext ctx)
@@ -1764,6 +1775,12 @@ namespace ET
 
             int hitRateAdd = ctx.GetParamInt(10, 0);
 
+            double hitQuad = SkillEditorFunctionContext.ParseDouble(ctx.ResolveParam(ctx.GetParamRaw(17)), 0d);
+
+            double hitLinear = SkillEditorFunctionContext.ParseDouble(ctx.ResolveParam(ctx.GetParamRaw(18)), 0d);
+
+            double hitConst = SkillEditorFunctionContext.ParseDouble(ctx.ResolveParam(ctx.GetParamRaw(19)), 0d);
+
             if (caster == null || target == null)
             {
                 ctx.SetVariable("rs", (long)SkillEditorHitResult.Miss);
@@ -1777,7 +1794,8 @@ namespace ET
                 ctx, caster, target, skillId,
                 canCrit, canHeavy, canDodge,
                 critRateAdd, heavyRateAdd, hitRateAdd,
-                level, 0f, 0f, true);
+                level, hitQuad, hitLinear, hitConst,
+                0f, 0f, true);
 
             ctx.SetVariable("rs", rs);
             bool hitOk = rs == (long)SkillEditorHitResult.Hit
