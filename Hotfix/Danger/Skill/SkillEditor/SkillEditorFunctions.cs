@@ -327,7 +327,7 @@ namespace ET
 
             //target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.None);
-            Console.WriteLine($"被动类型未定义!!!：通知防御事件");
+            //Console.WriteLine($"被动类型未定义!!!：通知防御事件");
             if (Log.IsDebugEnabled) Log.Debug($"INFORM_EVENT_DEFENSE skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
 
@@ -356,8 +356,8 @@ namespace ET
             //计算治疗量
             //ctx.SetVariable("damageTotal", totalHeal);
             //ctx.SetVariable("healTotal", totalHeal);
-            Console.WriteLine($"被动类型未定义!!!");
-            Console.WriteLine($"应该需要加上通知客户端命中!!!");
+            Console.WriteLine($"被动类型未定义_治疗事件");
+            Console.WriteLine($"技能编辑器应该需要加上通知客户端命中!!!");
 
             if (healTotal > 0)
             {
