@@ -35,12 +35,12 @@ namespace ET
             LDOccupation lDOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
 
             RoleInfo roleInfo = self.RoleInfo;
-            RoleCurrencyHelper.Set(roleInfo, UserDataType.Sp, 1);
             roleInfo.UserId = userId;
             roleInfo.RoleNo = createRoleInfo.RoleNo;
             roleInfo.AccInfoID =accountId;
             roleInfo.Name = createRoleInfo.PlayerName;
             roleInfo.ServerMailIdCur = -1;
+            RoleCurrencyHelper.Set(roleInfo, UserDataType.Sp, 1);
             RoleCurrencyHelper.Set(roleInfo, UserDataType.TiLi, 120);     //初始化体力
             RoleCurrencyHelper.Set(roleInfo, UserDataType.HuoLi, 120);     //初始化活力
             //roleInfo.MakeList.AddRange(CommonHelper.StringArrToIntList(LDGlobalValueCategory.Instance.Get(18).Value.Split(';')));
@@ -535,6 +535,11 @@ namespace ET
                     self.RoleInfo.Lv += addLevel;
                     saveValue = self.RoleInfo.Lv.ToString();
                     RoleAddPointHelper.AddPointsForLevelRange(unit, oldLevel, self.RoleInfo.Lv);
+                    // 技能点不随升级发放。这里加的是潜能点（力敏魂念体疾），不是 UserDataType.Sp。
+                    // if (addLevel > 0)
+                    // {
+                    //     self.UpdateRoleData(UserDataType.Sp, addLevel.ToString(), notice);
+                    // }
                     numericComponent ??= unit.GetComponent<NumericComponent>();
                     PlayerEconomyHelper.NotifyRoleDataProgression(unit, Type, self.RoleInfo);
                     Function_Fight.UnitUpdateProperty_Base(unit, true, true);
