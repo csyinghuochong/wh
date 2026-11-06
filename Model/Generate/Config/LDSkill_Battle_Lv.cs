@@ -97,7 +97,7 @@ namespace ET
 		/// <summary>学习 消耗</summary>
 		[ProtoMember(6)]
 		public string Cost { get; set; }
-		/// <summary>释放消耗</summary>
+		/// <summary>释放 消耗</summary>
 		[ProtoMember(7)]
 		public string Consume { get; set; }
 		/// <summary>战力</summary>
