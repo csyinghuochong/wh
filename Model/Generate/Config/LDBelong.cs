@@ -115,6 +115,9 @@ namespace ET
 		/// <summary>关系 0-且 1-或</summary>
 		[ProtoMember(12)]
 		public int Relationship { get; set; }
+		/// <summary>禁用</summary>
+		[ProtoMember(13)]
+		public int Is_Close { get; set; }
 
 	}
 }

@@ -995,6 +995,9 @@ namespace ET
 		[ProtoMember(9)]
 		public int SpeedRate { get; set; }
 
+		[ProtoMember(10)]
+		public int SceneId { get; set; }
+
 	}
 
 ///客户端寻路...
@@ -1016,6 +1019,9 @@ namespace ET
 
 		[ProtoMember(8)]
 		public long ServerTime { get; set; }
+
+		[ProtoMember(9)]
+		public int SceneId { get; set; }
 
 	}
 
@@ -1049,6 +1055,9 @@ namespace ET
 
 		[ProtoMember(11)]
 		public long ServerTime { get; set; }
+
+		[ProtoMember(12)]
+		public int SceneId { get; set; }
 
 	}
 
@@ -1166,6 +1175,9 @@ namespace ET
 
 		[ProtoMember(10)]
 		public long FaceTargetId { get; set; }
+
+		[ProtoMember(11)]
+		public int SceneId { get; set; }
 
 	}
 

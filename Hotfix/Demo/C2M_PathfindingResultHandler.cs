@@ -14,10 +14,14 @@ namespace ET
                 return;
             }
 
+            MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
+            if (message.SceneId != mapComponent.SceneId)
+            {
+                return;
+            }
+
             unit.GetComponent<MoveComponent>().SyncPosition();
             unit.GetComponent<SkillPassiveComponent>().OnPlayerMove();
-
-            MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             if (mapComponent.MapTypeEnum == MapTypeEnum.Happy
              || mapComponent.MapTypeEnum == MapTypeEnum.PetTianTi
              || mapComponent.MapTypeEnum == MapTypeEnum.PetDungeon)
@@ -45,6 +49,7 @@ namespace ET
             m2C_PathfindingResult.X = unit.Position.x;
             m2C_PathfindingResult.Y = unit.Position.y;
             m2C_PathfindingResult.Z = unit.Position.z;
+            m2C_PathfindingResult.SceneId = mapComponent.SceneId;
             MessageHelper.Broadcast(unit, m2C_PathfindingResult);
 
             using (ListComponent<Vector3> list = ListComponent<Vector3>.Create())

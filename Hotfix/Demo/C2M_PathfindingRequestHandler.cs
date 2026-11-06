@@ -12,6 +12,13 @@ namespace ET
             {
                 return;
             }
+
+            MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
+            if (message.SceneId != mapComponent.SceneId)
+            {
+                return;
+            }
+
             //else
             //{
             //    unit.GetComponent<BuffManagerComponent>()?.AddBuffRecord(0, 0);
@@ -20,7 +27,6 @@ namespace ET
             unit.GetComponent<MoveComponent>().SyncPosition();
             unit.GetComponent<SkillPassiveComponent>().OnPlayerMove();
             unit.GetComponent<BuffManagerComponent>()?.AddBuffRecord(0, 0);
-            MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             if (mapComponent.MapTypeEnum == MapTypeEnum.Happy
              || mapComponent.MapTypeEnum == MapTypeEnum.PetTianTi
              || mapComponent.MapTypeEnum == MapTypeEnum.PetDungeon)

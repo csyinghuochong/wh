@@ -61,6 +61,7 @@ namespace ET
                 m2CPathfindingResult.SpeedRate = speedrate;
                 m2CPathfindingResult.MoveFlags = moveFlags;
                 m2CPathfindingResult.FaceTargetId = faceTargetId;
+                m2CPathfindingResult.SceneId = mapComponent.SceneId;
                 if (path.Count < 2)
                 {
                     LogHelper.LogWarning("path.Count < 2");
@@ -145,6 +146,7 @@ namespace ET
             list.Add(unit.Position + (target - unit.Position) * 0.5f);
             list.Add(target);
 
+            MapComponent mapComponent = unit.Domain.GetComponent<MapComponent>();
             // 广播寻路路径
             Vector3 lastvector = new Vector3(-100f, -100f, -100f);
             M2C_PathfindingRequest m2CPathfindingResult = new M2C_PathfindingRequest();
@@ -157,6 +159,7 @@ namespace ET
                 m2CPathfindingResult.Zs.Add(vector3.z);
             }
             m2CPathfindingResult.SpeedRate = 100;
+            m2CPathfindingResult.SceneId = mapComponent.SceneId;
             MessageHelper.Broadcast(unit, m2CPathfindingResult);
             MoveComponent moveComponent = unit.GetComponent<MoveComponent>();
             bool ret = await moveComponent.MoveToAsync(list, speed, 0, null);
