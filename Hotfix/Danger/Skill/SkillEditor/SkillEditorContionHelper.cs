@@ -2,7 +2,7 @@ namespace ET
 {
     /// <summary>
     /// 技能伤害判定。命中/暴击走自身 66/70（职业/怪/宠初始 950、50，/1000，即默认 95% / 5%）。
-    /// 命中等级项与伤害二次项相同：a×Lv² + b×Lv + c，和命中、闪避同一单位后再 /1000。技能加成 /10000。重击默认 0.05。
+    /// 命中、暴击的等级项与伤害二次项相同：a×Lv² + b×Lv + c，和对应属性同一单位后再 /1000。技能加成 /10000。重击默认 0.05。
     /// </summary>
     public static class SkillEditorContionHelper
     {
@@ -23,6 +23,9 @@ namespace ET
             int heavyRateAdd,
             int hitRateAdd,
             int skillLevel,
+            double critQuad,
+            double critLinear,
+            double critConst,
             double hitQuad,
             double hitLinear,
             double hitConst,
@@ -60,9 +63,11 @@ namespace ET
             long result = (long)SkillEditorHitResult.Hit;
             if (canCrit)
             {
-                double critRate = critRateAdd / 10000d
-                    + Attr(casterNumeric, NumericType.P_CRI_Fixed_70) / 1000d
-                    - Attr(targetNumeric, NumericType.P_CRI_RES_Fixed_74) / 1000d;
+                // 默认 5%：暴击初始 50/1000。等级项与暴击、抗暴同单位，再 /1000。暴击加成 /10000。
+                double critGrowth = EvalLevelGrowth(skillLevel, critQuad, critLinear, critConst);
+                double critRate = (Attr(casterNumeric, NumericType.P_CRI_Fixed_70) + critGrowth
+                    - Attr(targetNumeric, NumericType.P_CRI_RES_Fixed_74)) / 1000d
+                    + critRateAdd / 10000d;
                 if (x <= critRate * 10000d)
                 {
                     result = (long)SkillEditorHitResult.Crit;
