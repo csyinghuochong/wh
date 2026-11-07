@@ -58,7 +58,8 @@ namespace ET
             activity.ActivityInfo.SignInReceivedId = signInId;
             unit.GetComponent<DBSaveComponent>()?.UpdateCacheDB();
 
-            response.SignInLoginDays = activity.ActivityInfo.SignInLoginDays;
+            int group = ActivityHelper.GetCurrentSignInGroup(role.RoleInfo.CreateTime, activityId);
+            response.SignInLoginDays = ActivityHelper.GetSignInLoginDays(activity.ActivityInfo, group, activityId);
             response.SignInReceivedId = signInId;
             response.Error = ErrorCode.ERR_Success;
             reply();

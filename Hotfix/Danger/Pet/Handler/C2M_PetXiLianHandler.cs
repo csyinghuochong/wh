@@ -102,7 +102,7 @@ namespace ET
             //扣除相关道具
             if (ifCost)
 			{
-				bag.OnCostItemData($"{bagInfo.ItemID};{costNum}", (ItemLocType)bagInfo.Loc, itemGetWay);		
+				bag.OnCostItemData($"{ItemBigType.Type_Item}~{bagInfo.ItemID}~{costNum}", (ItemLocType)bagInfo.Loc, itemGetWay);		
 				taskComponentServer.OnPetXiLian(petInfo);                    //激活任务
 
             }

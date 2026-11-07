@@ -56,7 +56,7 @@ namespace ET
             }
 
             mountInfo.XiLianResult = result;
-            bag.OnCostItemData($"{bagInfo.ItemID};1", (ItemLocType)bagInfo.Loc, ItemGetWay.ItemXiLian);
+            bag.OnCostItemData($"{ItemBigType.Type_Item}~{bagInfo.ItemID}~1", (ItemLocType)bagInfo.Loc, ItemGetWay.ItemXiLian);
             mountComponentServer.NotifyMountUpdate(mountInfo);
             response.MountInfo = mountInfo;
             response.XiLianResult = result;

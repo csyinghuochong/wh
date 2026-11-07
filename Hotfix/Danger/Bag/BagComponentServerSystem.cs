@@ -919,16 +919,7 @@ namespace ET
 
         public static bool CheckNeedItem(this BagComponentServer self, string rewardItems)
         {
-            List<RewardItem> needItems = ParseSemicolonRewardItems(rewardItems);
-            for (int i = 0; i < needItems.Count; i++)
-            {
-                RewardItem itemInfo = needItems[i];
-                if (self.GetItemNumberForCost(ItemBigType.Type_Item, itemInfo.ItemID) < itemInfo.ItemNum)
-                {
-                    return false;
-                }
-            }
-            return true;
+            return self.CheckNeedItem(ItemNewHelper.GetRewardItems(rewardItems));
         }
 
         public static bool CheckNeedItem(this BagComponentServer self, List<RewardItem> rewardItems)
@@ -945,11 +936,10 @@ namespace ET
             return true;
         }
 
-        //字符串删除道具
+        //字符串删除道具，格式 itemType~itemId~itemNum，多项用 |
         public static bool OnCostItemData(this BagComponentServer self, string rewardItems, ItemLocType itemLocType, int itemGetWay)
         {
-            List<RewardItem> costItems = ParseSemicolonRewardItems(rewardItems);
-            return self.OnCostItemData(costItems, itemLocType, itemGetWay);
+            return self.OnCostItemData(ItemNewHelper.GetRewardItems(rewardItems), itemLocType, itemGetWay);
         }
 
         public static bool OnCostItemData(this BagComponentServer self, long bagInfoId, ItemLocType itemLocType = ItemLocType.ItemLocBag)
@@ -1363,11 +1353,6 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             LogHelper.LogWarning($"消耗道具: {unit.Id} {bagInfo.ItemID} {number}", false);
             return true;
-        }
-
-        private static List<RewardItem> ParseSemicolonRewardItems(string rewardItems)
-        {
-            return ItemNewHelper.GetRewardItemsAtSemicolon(rewardItems);
         }
 
         private static List<int> GetActiveEquipSuitEffectIds(int suitPoints, string effectIdStr)

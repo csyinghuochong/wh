@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -30,7 +30,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
 
-            // 每个游戏日首次进入时登录天数 +1；跨组（进度组 != 当前组）时重置
+            // 每个游戏日 +1，最多停在本组最后一天。跨组时从 1 重新计，下一组要等这次日清才能领。
             long createTime = role.RoleInfo.CreateTime;
             long lastLoginTime = role.LastLoginTime;
             long now = TimeHelper.ServerNow();
@@ -48,7 +48,14 @@ namespace ET
             }
             else
             {
-                self.ActivityInfo.SignInLoginDays += 1;
+                int lastDay = ActivityHelper.GetSignInGroupLastDay(groupNow, ActivityHelper.DailySignActivityId);
+                int nextDays = self.ActivityInfo.SignInLoginDays + 1;
+                if (nextDays > lastDay)
+                {
+                    nextDays = lastDay;
+                }
+
+                self.ActivityInfo.SignInLoginDays = nextDays;
             }
 
             Console.WriteLine($"SignInLoginDays: {self.ActivityInfo.SignInLoginDays}");

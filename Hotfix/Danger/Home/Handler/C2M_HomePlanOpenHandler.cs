@@ -21,7 +21,7 @@ namespace ET
 
             int costNumber = 0;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            if (!bagComponentServer.CheckNeedItem($"13;{costNumber}"))
+            if (!bagComponentServer.CheckNeedItem($"{ItemBigType.Type_Item}~13~{costNumber}"))
             {
                 response.PlanOpenList = PlanOpenList_2;
                 response.Error = ErrorCode.ERR_ItemNotEnoughError;
@@ -31,7 +31,7 @@ namespace ET
 
             PlanOpenList_2.Add(request.CellIndex);
             response.PlanOpenList = PlanOpenList_2;
-            bagComponentServer.OnCostItemData($"13;{costNumber}", ItemLocType.ItemLocBag, ItemGetWay.HomeCost);
+            bagComponentServer.OnCostItemData($"{ItemBigType.Type_Item}~13~{costNumber}", ItemLocType.ItemLocBag, ItemGetWay.HomeCost);
             DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, homeComponentServer).Coroutine();
             reply();
             await ETTask.CompletedTask;

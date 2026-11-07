@@ -6371,7 +6371,7 @@ namespace ET
 		public long MountInfoId { get; set; }
 
 		[ProtoMember(2)]
-		public long BagInfoID { get; set; }
+		public int ItemID { get; set; }
 
 		[ProtoMember(3)]
 		public int CostItemNum { get; set; }

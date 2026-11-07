@@ -88,7 +88,7 @@ namespace ET
                 {
                     if (request.ItemId > 0)
                     {
-                        bag.OnCostItemData($"{request.ItemId};1", itemLoc, ItemGetWay.GM);
+                        bag.OnCostItemData($"{ItemBigType.Type_Item}~{request.ItemId}~1", itemLoc, ItemGetWay.GM);
                     }
                 }
                 

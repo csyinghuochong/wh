@@ -61,10 +61,6 @@ namespace ET
             if (!rewardCache.TryGetValue(reward, out List<RewardItem> rewardItems))
             {
                 rewardItems = ItemNewHelper.GetRewardItems(reward);
-                if (rewardItems.Count == 0)
-                {
-                    rewardItems = ItemNewHelper.GetRewardItemsAtSemicolon(reward);
-                }
                 rewardCache.Add(reward, rewardItems);
             }
 

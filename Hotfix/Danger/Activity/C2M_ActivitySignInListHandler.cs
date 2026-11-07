@@ -13,7 +13,7 @@ namespace ET
             ActivityInfo info = activity.ActivityInfo;
             int group = ActivityHelper.GetCurrentSignInGroup(role.RoleInfo.CreateTime, activityId);
             response.SignInIds = ActivityHelper.GetSignInIdsByGroup(activityId, group);
-            response.SignInLoginDays = info.SignInLoginDays;
+            response.SignInLoginDays = ActivityHelper.GetSignInLoginDays(info, group, activityId);
             response.SignInReceivedId = info.SignInReceivedId;
             response.Error = ErrorCode.ERR_Success;
             reply();

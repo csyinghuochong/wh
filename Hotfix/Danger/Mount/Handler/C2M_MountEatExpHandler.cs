@@ -17,22 +17,15 @@ namespace ET
                 return;
             }
 
-            BagInfo bagInfo = bag.GetItemByUId(request.BagInfoID);
-            if (bagInfo == null || !ItemNewHelper.IsValideBagLoc(bagInfo.Loc))
+            int itemId = request.ItemID;
+            if (!LDItemCategory.Instance.Contain(itemId))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
                 return;
             }
 
-            if (!LDItemCategory.Instance.Contain(bagInfo.ItemID))
-            {
-                response.Error = ErrorCode.ERR_ItemNotExist;
-                reply();
-                return;
-            }
-
-            LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
+            LDItem ldItem = LDItemCategory.Instance.Get(itemId);
             if (ldItem.ItemType != ItemTypeEnum.SubType_Mount_Exp_31)
             {
                 response.Error = ErrorCode.ERR_Mount_NoUseItem;
@@ -41,13 +34,6 @@ namespace ET
             }
 
             int costNum = request.CostItemNum > 0 ? request.CostItemNum : 1;
-            if (bagInfo.ItemNum < costNum)
-            {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
-                reply();
-                return;
-            }
-
             int addExp = ldItem.GetTypeParam1() * costNum;
             if (addExp <= 0)
             {
@@ -56,8 +42,23 @@ namespace ET
                 return;
             }
 
+            ItemLocType loc = ItemNewHelper.GetToItemLocType(ItemBigType.Type_Item, itemId);
+            if (bag.GetItemNumber(ItemBigType.Type_Item, itemId, loc) < costNum)
+            {
+                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                reply();
+                return;
+            }
+
+            // 按配置 Id 扣。同一 Id 分在多个格子时，一次扣完。
+            if (!bag.OnCostItemData($"{ItemBigType.Type_Item}~{itemId}~{costNum}", loc, ItemGetWay.ItemXiLian))
+            {
+                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                reply();
+                return;
+            }
+
             mountComponentServer.MountAddExp(mountInfo, addExp);
-            bag.OnCostItemData($"{bagInfo.ItemID};{costNum}", (ItemLocType)bagInfo.Loc, ItemGetWay.ItemXiLian);
             mountComponentServer.NotifyMountUpdate(mountInfo);
             response.MountInfo = mountInfo;
             reply();
