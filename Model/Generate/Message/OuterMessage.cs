@@ -12093,9 +12093,6 @@ namespace ET
 		[ProtoMember(1)]
 		public PetInfo PetInfo { get; set; }
 
-		[ProtoMember(2)]
-		public PetRefinedResult XiLianResult { get; set; }
-
 	}
 
 	[ResponseType(nameof(M2C_PetRefinedSave))]

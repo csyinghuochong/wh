@@ -91,7 +91,6 @@ namespace ET
 			petInfo.XiLianResult = result;
 			unit.GetComponent<TaskComponentServer>().OnPetXiLian(petInfo);
 			response.PetInfo = petInfo;
-			response.XiLianResult = result;
 			reply();
 			await ETTask.CompletedTask;
 		}
