@@ -1013,13 +1013,77 @@ namespace ET
             return 0;
         }
 
+        /// <summary>累计已用。不清空。上限 LDItem.SumUseNum。</summary>
+        public static int GetTotalItemUse(this RoleInfoComponentServer self, int itemId)
+        {
+            self.RoleInfo.ItemUseTimes ??= new List<IntLongPair>();
+            int index = FindKeyValuePairIndex(self.RoleInfo.ItemUseTimes, itemId);
+            if (index < 0)
+            {
+                return 0;
+            }
+
+            return (int)self.RoleInfo.ItemUseTimes[index].Value;
+        }
+
+        /// <summary>SumUseNum 大于 0 才限制。0 不限制。不写次数。</summary>
+        public static int CheckTotalItemUse(this RoleInfoComponentServer self, LDItem ldItem, int num)
+        {
+            if (ldItem == null || num <= 0)
+            {
+                return ErrorCode.ERR_ModifyData;
+            }
+
+            if (ldItem.SumUseNum > 0 && self.GetTotalItemUse(ldItem.Id) + num > ldItem.SumUseNum)
+            {
+                return ErrorCode.ERR_ItemNoUseTime;
+            }
+
+            return ErrorCode.ERR_Success;
+        }
+
+        /// <summary>SumUseNum 大于 0 才记累计次数，并推 M2C_UpdateRoleInfoMessage。0 不限制，不记，不同步。</summary>
+        public static void AddTotalItemUse(this RoleInfoComponentServer self, int itemId, int num)
+        {
+            if (itemId <= 0 || num <= 0 || !LDItemCategory.Instance.Contain(itemId))
+            {
+                return;
+            }
+
+            LDItem ldItem = LDItemCategory.Instance.Get(itemId);
+            if (ldItem.SumUseNum <= 0)
+            {
+                return;
+            }
+
+            self.RoleInfo.ItemUseTimes ??= new List<IntLongPair>();
+            int index = FindKeyValuePairIndex(self.RoleInfo.ItemUseTimes, itemId);
+            if (index >= 0)
+            {
+                self.RoleInfo.ItemUseTimes[index].Value += num;
+            }
+            else
+            {
+                self.RoleInfo.ItemUseTimes.Add(new IntLongPair { KeyId = itemId, Value = num });
+            }
+
+            Unit unit = self.GetParent<Unit>();
+            if (unit == null || unit.GetComponent<UnitGateComponent>() == null)
+            {
+                return;
+            }
+
+            MessageHelper.SendToClient(unit, new M2C_UpdateRoleInfoMessage { RoleInfo = self.RoleInfo });
+        }
+
         public static int GetTotalUseTimes(this RoleInfoComponentServer self, int itemId)
         {
-            return 0;
+            return self.GetTotalItemUse(itemId);
         }
 
         public static void OnTotalUseTimes(this RoleInfoComponentServer self, int itemId)
         {
+            self.AddTotalItemUse(itemId, 1);
         }
 
         public static void OnCleanBossCD(this RoleInfoComponentServer self)

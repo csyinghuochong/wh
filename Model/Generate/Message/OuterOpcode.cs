@@ -291,8 +291,8 @@ namespace ET
 		 public const ushort M2C_PetAddPoint = 10288;
 		 public const ushort C2M_PetHeCheng = 10289;
 		 public const ushort M2C_PetHeCheng = 10290;
-		 public const ushort C2M_PetXiLian = 10291;
-		 public const ushort M2C_PetXiLian = 10292;
+		 public const ushort C2M_PetCultivate = 10291;
+		 public const ushort M2C_PetCultivate = 10292;
 		 public const ushort PetAptitudeInfo = 10293;
 		 public const ushort PetInfo = 10294;
 		 public const ushort C2R_RankPetListRequest = 10295;
@@ -608,6 +608,15 @@ namespace ET
 		 public const ushort C2M_FashionWearRequest = 10605;
 		 public const ushort M2C_FashionWearResponse = 10606;
 		 public const ushort M2C_FashionUpdate = 10607;
-		 public const ushort M2C_UpdateVersion = 10608;
+		 public const ushort C2M_PetLearnSkill = 10608;
+		 public const ushort M2C_PetLearnSkill = 10609;
+		 public const ushort C2M_PetEatExp = 10610;
+		 public const ushort M2C_PetEatExp = 10611;
+		 public const ushort PetRefinedResult = 10612;
+		 public const ushort C2M_PetRefined = 10613;
+		 public const ushort M2C_PetRefined = 10614;
+		 public const ushort C2M_PetRefinedSave = 10615;
+		 public const ushort M2C_PetRefinedSave = 10616;
+		 public const ushort M2C_UpdateVersion = 10617;
 	}
 }

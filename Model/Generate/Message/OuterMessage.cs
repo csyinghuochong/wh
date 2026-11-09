@@ -704,6 +704,10 @@ namespace ET
 		[ProtoMember(77)]
 		public List<int> MakeExpList = new List<int>();
 
+// 道具累计使用次数 Key=LDItem.Id。不清空。上限见 LDItem.SumUseNum，0 不限制。
+		[ProtoMember(78)]
+		public List<IntLongPair> ItemUseTimes = new List<IntLongPair>();
+
 	}
 
 	[Message(OuterOpcode.IntStringPair)]
@@ -5674,15 +5678,11 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_PetXiLian))]
-// 宠物洗练/打书共用。按消耗道具 ItemType 分支：
-// 97 技能书 → LearnSkillByBook。Pet表备注：消耗技能书学习技能：已有技能或已有技能的低级不能学。有空槽则占空槽。没有空槽则随机顶掉一个已有技能（目前完全随机）
-// 96 洗练石 → XiLianExtraSkills。Pet表备注：洗练时，会同时随机 槽位 和 A
-// 94 / 95 → EatAptitudeItem。稀有记 F、超稀有记 G，吃过记 EatItems；达最终值后不能再吃
-// BagInfoID=消耗道具；CostItemNum=数量（洗练石可用 4）；二次确认后续用 ParamInfo
-	[Message(OuterOpcode.C2M_PetXiLian)]
+	[ResponseType(nameof(M2C_PetCultivate))]
+// 培养。只收 ItemType 38、380。38 当场加 G，380 当场加 F。不写 XiLianResult，不需要保存。洗练 35 走 C2M_PetRefined
+	[Message(OuterOpcode.C2M_PetCultivate)]
 	[ProtoContract]
-	public partial class C2M_PetXiLian: Object, IActorLocationRequest
+	public partial class C2M_PetCultivate: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -5696,14 +5696,11 @@ namespace ET
 		[ProtoMember(3)]
 		public int CostItemNum { get; set; }
 
-		[ProtoMember(4)]
-		public string ParamInfo { get; set; }
-
 	}
 
-	[Message(OuterOpcode.M2C_PetXiLian)]
+	[Message(OuterOpcode.M2C_PetCultivate)]
 	[ProtoContract]
-	public partial class M2C_PetXiLian: Object, IActorLocationResponse
+	public partial class M2C_PetCultivate: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -5716,6 +5713,9 @@ namespace ET
 
 		[ProtoMember(1)]
 		public PetInfo PetInfo { get; set; }
+
+		[ProtoMember(2)]
+		public PetRefinedResult XiLianResult { get; set; }
 
 	}
 
@@ -5800,7 +5800,7 @@ namespace ET
 		[ProtoMember(19)]
 		public int IfChange { get; set; }
 
-// Pet表备注：打书/洗练技能才入库。洗练时，会同时随机 槽位 和 A。洗练结果需二次确认后再覆盖（后续完善）
+// Pet表备注：打书/洗练技能才入库。洗练时，会同时随机 槽位 和 A。结果在 XiLianResult，保存后才覆盖
 		[ProtoMember(22)]
 		public int Skill_Extra_Position_Num { get; set; }
 
@@ -5818,6 +5818,9 @@ namespace ET
 
 		[ProtoMember(31)]
 		public List<long> Vs = new List<long>();
+
+		[ProtoMember(32)]
+		public PetRefinedResult XiLianResult { get; set; }
 
 		[ProtoMember(33)]
 		public string PlayerName { get; set; }
@@ -11702,6 +11705,10 @@ namespace ET
 		[ProtoMember(20)]
 		public List<IntLongPair> WeekFubenTimes = new List<IntLongPair>();
 
+// 道具今日使用次数 Key=LDItem.Id。凌晨 5 点清空。上限见 LDItem.DayUseNum，0 不限制。
+		[ProtoMember(21)]
+		public List<IntLongPair> DayItemUseTimes = new List<IntLongPair>();
+
 	}
 
 	[ResponseType(nameof(M2C_RoleDailyDataInit))]
@@ -11941,6 +11948,188 @@ namespace ET
 	}
 
 //Fashion时装 end####################################################
+	[ResponseType(nameof(M2C_PetLearnSkill))]
+// 宠物技能书 SubType_PetSkillBook_39。只学这一本，直接写入 Skill_Extra_B
+	[Message(OuterOpcode.C2M_PetLearnSkill)]
+	[ProtoContract]
+	public partial class C2M_PetLearnSkill: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long PetInfoId { get; set; }
+
+		[ProtoMember(2)]
+		public long BagInfoID { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_PetLearnSkill)]
+	[ProtoContract]
+	public partial class M2C_PetLearnSkill: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public PetInfo PetInfo { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_PetEatExp))]
+// 宠物经验丹 SubType_Pet_Exp_36。ItemTypeParam1 为单颗经验，CostItemNum 为数量，扣道具并加经验
+	[Message(OuterOpcode.C2M_PetEatExp)]
+	[ProtoContract]
+	public partial class C2M_PetEatExp: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long PetInfoId { get; set; }
+
+		[ProtoMember(2)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(3)]
+		public int CostItemNum { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_PetEatExp)]
+	[ProtoContract]
+	public partial class M2C_PetEatExp: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public PetInfo PetInfo { get; set; }
+
+	}
+
+// 未保存的宠物洗练结果。保存成功后整段置空
+// 技能：槽位、A 重随；B 为裁剪后的打书技能，保存时才覆盖
+// 资质：E 在 D~C 间重随，保留 F/G。D 增加概率未配置，当前不增加 D
+	[Message(OuterOpcode.PetRefinedResult)]
+	[ProtoContract]
+	public partial class PetRefinedResult: Object
+	{
+		[ProtoMember(1)]
+		public int Skill_Extra_Position_Num { get; set; }
+
+		[ProtoMember(2)]
+		public List<int> Skill_Extra_A = new List<int>();
+
+		[ProtoMember(3)]
+		public List<int> Skill_Extra_B = new List<int>();
+
+		[ProtoMember(4)]
+		public PetAptitudeInfo Aptitude_1 { get; set; }
+
+		[ProtoMember(5)]
+		public PetAptitudeInfo Aptitude_2 { get; set; }
+
+		[ProtoMember(6)]
+		public PetAptitudeInfo Aptitude_3 { get; set; }
+
+		[ProtoMember(7)]
+		public PetAptitudeInfo Aptitude_4 { get; set; }
+
+		[ProtoMember(8)]
+		public PetAptitudeInfo Aptitude_5 { get; set; }
+
+		[ProtoMember(9)]
+		public PetAptitudeInfo Aptitude_6 { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_PetRefined))]
+// 洗练。只收 ItemType 35。只出结果，不改当前技能和资质。保存走 C2M_PetRefinedSave
+	[Message(OuterOpcode.C2M_PetRefined)]
+	[ProtoContract]
+	public partial class C2M_PetRefined: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long PetInfoId { get; set; }
+
+		[ProtoMember(2)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(3)]
+		public int CostItemNum { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_PetRefined)]
+	[ProtoContract]
+	public partial class M2C_PetRefined: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public PetInfo PetInfo { get; set; }
+
+		[ProtoMember(2)]
+		public PetRefinedResult XiLianResult { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_PetRefinedSave))]
+// 洗练保存：写入技能和资质并刷新属性，成功后 XiLianResult 置空
+	[Message(OuterOpcode.C2M_PetRefinedSave)]
+	[ProtoContract]
+	public partial class C2M_PetRefinedSave: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public long PetInfoId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_PetRefinedSave)]
+	[ProtoContract]
+	public partial class M2C_PetRefinedSave: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public PetInfo PetInfo { get; set; }
+
+	}
+
 ////////////////////////////////////////////////
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后

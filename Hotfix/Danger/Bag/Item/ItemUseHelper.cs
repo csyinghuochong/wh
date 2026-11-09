@@ -27,9 +27,16 @@ namespace ET
                 return ErrorCode.ERR_Success;
             }
 
-            if (ldItem.SumUseNum > 0 && roleInfoComponentServer.GetTotalUseTimes(ldItem.Id) >= ldItem.SumUseNum)
+            int useError = daily.CheckDayItemUse(ldItem, useNum);
+            if (useError != ErrorCode.ERR_Success)
             {
-                return ErrorCode.ERR_ItemNoUseTime;
+                return useError;
+            }
+
+            useError = roleInfoComponentServer.CheckTotalItemUse(ldItem, useNum);
+            if (useError != ErrorCode.ERR_Success)
+            {
+                return useError;
             }
 
             int recipeMakeId = 0;
@@ -60,10 +67,8 @@ namespace ET
             }
 
 
-            if (ldItem.SumUseNum > 0)
-            {
-                roleInfoComponentServer.OnTotalUseTimes(ldItem.Id);
-            }
+            daily.AddDayItemUse(ldItem.Id, useNum);
+            roleInfoComponentServer.AddTotalItemUse(ldItem.Id, useNum);
 
             if (recipeMakeId > 0)
             {

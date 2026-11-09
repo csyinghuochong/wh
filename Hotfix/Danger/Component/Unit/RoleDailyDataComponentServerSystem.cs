@@ -28,6 +28,7 @@ namespace ET
             RoleDailyData data = self.Data ??= new RoleDailyData();
             data.DayFubenTimes ??= new List<IntLongPair>();
             data.WeekFubenTimes ??= new List<IntLongPair>();
+            data.DayItemUseTimes ??= new List<IntLongPair>();
             data.BuyStoreItems ??= new List<IntLongPair>();
             self.PersonalRandomShops ??= new Dictionary<int, List<ShopGoodsItem>>();
             self.ShopRefreshTime ??= new Dictionary<int, long>();
@@ -62,6 +63,8 @@ namespace ET
             // 日清不含商店。本次购买数量按各商店 Auto_Refresh 清，终身购买数量不清。
             // 每日进入次数凌晨 5 点清。每周进入次数在周一凌晨 5 点的周清里清。
             data.DayFubenTimes.Clear();
+            data.DayItemUseTimes ??= new List<IntLongPair>();
+            data.DayItemUseTimes.Clear();
             data.DailyActivePoint = 0;
             SetCount(data.Currencies, UserDataType.DailyActive, 0);
             data.VipDailyClaimed = 0;
@@ -438,6 +441,52 @@ namespace ET
 
         #endregion
 
+        #region 道具今日使用次数
+
+        /// <summary>今日已用。凌晨 5 点随日清清空。上限 LDItem.DayUseNum。</summary>
+        public static int GetDayItemUse(this RoleDailyDataComponentServer self, int itemId)
+        {
+            return GetCount(self.GetDailyData().DayItemUseTimes, itemId);
+        }
+
+        /// <summary>DayUseNum 大于 0 才限制。0 不限制。不写次数。</summary>
+        public static int CheckDayItemUse(this RoleDailyDataComponentServer self, LDItem ldItem, int num)
+        {
+            if (ldItem == null || num <= 0)
+            {
+                return ErrorCode.ERR_ModifyData;
+            }
+
+            if (ldItem.DayUseNum > 0 && self.GetDayItemUse(ldItem.Id) + num > ldItem.DayUseNum)
+            {
+                return ErrorCode.ERR_ItemNoUseTime;
+            }
+
+            return ErrorCode.ERR_Success;
+        }
+
+        /// <summary>DayUseNum 大于 0 才记今日次数，并推日清包。0 不限制，不记，不同步。</summary>
+        public static void AddDayItemUse(this RoleDailyDataComponentServer self, int itemId, int num)
+        {
+            if (itemId <= 0 || num <= 0 || !LDItemCategory.Instance.Contain(itemId))
+            {
+                return;
+            }
+
+            LDItem ldItem = LDItemCategory.Instance.Get(itemId);
+            if (ldItem.DayUseNum <= 0)
+            {
+                return;
+            }
+
+            RoleDailyData data = self.GetDailyData();
+            data.DayItemUseTimes ??= new List<IntLongPair>();
+            AddCount(data.DayItemUseTimes, itemId, num);
+            self.NotifyUpdate();
+        }
+
+        #endregion
+
         #region 组队副本次数 TeamDungeonTimes
 
         public static int GetTeamDungeonTimes(this RoleDailyDataComponentServer self)
@@ -519,6 +568,7 @@ namespace ET
             {
                 DayFubenTimes = CloneKvList(src.DayFubenTimes),
                 WeekFubenTimes = CloneKvList(src.WeekFubenTimes),
+                DayItemUseTimes = CloneKvList(src.DayItemUseTimes),
                 BuyStoreItems = CloneKvList(src.BuyStoreItems),
                 DailyActivePoint = src.DailyActivePoint,
                 WeeklyActivePoint = src.WeeklyActivePoint,
