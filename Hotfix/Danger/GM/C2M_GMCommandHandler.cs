@@ -326,6 +326,25 @@ namespace ET
 					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.CompleteGuideIds.Clear();
 					return;
 				}
+                if (message.GMMsg == "dailyreset#")
+                {
+                    // 同一游戏日已清过会直接 return。每次 GM 都再走一遍玩家日清，先把上次日清时间拨回上一个游戏日。
+                    RoleDailyDataComponentServer roleDailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+                    long now = TimeHelper.ServerNow();
+                    if (roleDailyData.LastResetTime > 0 && ActivityHelper.IsSameGameResetDay(roleDailyData.LastResetTime, now))
+                    {
+                        roleDailyData.LastResetTime = now - TimeHelper.OneDay;
+                    }
+
+                    if (ActivityHelper.IsGameWeekResetDay(now))
+                    {
+                        PlayerDailyResetHelper.OnWeeklyReset(unit, true);
+                    }
+
+                    PlayerDailyResetHelper.OnDailyReset(unit, 2);
+                    Log.Warning($"dailyreset unit:{unit.Id}");
+                    return;
+                }
                 if (message.GMMsg == "petfight#")
                 {
                     //出战要清掉之前的
