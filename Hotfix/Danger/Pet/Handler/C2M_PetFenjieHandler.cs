@@ -33,7 +33,7 @@ namespace ET
 			}
             if (rolePetInfo.PetStatus != 0)
 			{
-                response.Error = ErrorCode.ERR_Pet_HeCheng_Error;
+                response.Error = ErrorCode.ERR_Pet_Fenjie_Error;
                 reply();
                 return;
             }

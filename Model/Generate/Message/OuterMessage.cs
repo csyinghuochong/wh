@@ -5679,7 +5679,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_PetCultivate))]
-// 培养。只收 ItemType 38、380。38 当场加 G，380 当场加 F。不写 XiLianResult，不需要保存。洗练 35 走 C2M_PetRefined
+// 培养。只收 ItemType 38、380。38 的 Param3：0 加当前 F，1 加上限 G；Param4：0 全部，1 随机。380 加 F。不写 XiLianResult，不需要保存。洗练 35 走 C2M_PetRefined
 	[Message(OuterOpcode.C2M_PetCultivate)]
 	[ProtoContract]
 	public partial class C2M_PetCultivate: Object, IActorLocationRequest
