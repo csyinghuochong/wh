@@ -97,9 +97,9 @@ namespace ET
 		/// <summary>模型</summary>
 		[ProtoMember(6)]
 		public string Model { get; set; }
-		/// <summary>x,y,z,旋转(y轴)</summary>
+		/// <summary>x,y,z,旋转(y轴),缩放</summary>
 		[ProtoMember(7)]
-		public int[] Offset { get; set; }
+		public double[] Offset { get; set; }
 		/// <summary>品质</summary>
 		[ProtoMember(8)]
 		public int Quality { get; set; }

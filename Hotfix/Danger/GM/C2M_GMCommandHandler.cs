@@ -34,6 +34,8 @@ namespace ET
 		{
 			try
 			{
+				// 输入框手误时末尾常多一个空行，先去掉再匹配和解析
+				message.GMMsg = message.GMMsg.TrimEnd();
 				string[] commands = message.GMMsg.Split('#');
 
 				Console.WriteLine($"C2M_GMCommandRequest: {message.GMMsg}");
