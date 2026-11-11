@@ -38,7 +38,7 @@ namespace ET
 			}
 
 			LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
-			if (ldItem.ItemType != ItemTypeEnum.SubType_PetZiZhi_G_38 && ldItem.ItemType != ItemTypeEnum.SubType_PetZiZhi_F_380)
+			if (ldItem.ItemType != ItemTypeEnum.SubType_PetZiZhi_FG_38)
 			{
 				response.Error = ErrorCode.ERR_Pet_NoUseItem;
 				reply();
