@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -26,10 +27,50 @@ namespace ET
                 return;
             }
 
+			if (petinfo_1.ConfigId != petinfo_2.ConfigId)
+			{
+				response.Error = ErrorCode.ERR_Pet_HeCheng_IdError;
+				reply();
+				return;
+			}
+
+			if (!LDPetCategory.Instance.Contain(petinfo_1.ConfigId))
+			{
+				response.Error = ErrorCode.ERR_Pet_NoExist;
+				reply();
+				return;
+			}
+
+			LDPet ldPet = LDPetCategory.Instance.Get(petinfo_1.ConfigId);
+			if (petinfo_1.Star != petinfo_2.Star || petinfo_1.Star >= ldPet.Star_Limit)
+			{
+				response.Error = ErrorCode.ERR_Pet_HeCheng_StarError;
+				reply();
+				return;
+			}
+
+			List<RewardItem> costs = ItemNewHelper.GetRewardItems(
+				LDGlobalValueCategory.Instance.GetByKey(GlobalValueKey.Global_Pet_Combine_Consume_Item).Value);
+			BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+			Dictionary<int, List<RewardItem>> locCosts = costs.GroupCostByLoc();
+			if (!bag.CanCostByLoc(locCosts))
+			{
+				response.Error = ErrorCode.ERR_ItemNotEnoughError;
+				reply();
+				return;
+			}
+
 			// Pet表备注：合体前对副宠进行重置，把药退出来
 			if (!petComponentServer.ResetSubPetRefundItems(petinfo_2))
 			{
 				response.Error = ErrorCode.ERR_BagIsFull;
+				reply();
+				return;
+			}
+
+			if (!bag.CostByLoc(locCosts, ItemGetWay.CostItem))
+			{
+				response.Error = ErrorCode.ERR_ItemNotEnoughError;
 				reply();
 				return;
 			}

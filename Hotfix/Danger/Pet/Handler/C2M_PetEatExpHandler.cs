@@ -49,14 +49,16 @@ namespace ET
 				return;
 			}
 
-			if (bagInfo.ItemNum < costNum)
+			ItemLocType loc = (ItemLocType)bagInfo.Loc;
+			long owned = bag.GetItemNumber(ItemBigType.Type_Item, bagInfo.ItemID, loc);
+			if (owned < costNum)
 			{
 				response.Error = ErrorCode.ERR_ItemNotEnoughError;
 				reply();
 				return;
 			}
 
-			if (!bag.OnCostItemData($"{ItemBigType.Type_Item}~{bagInfo.ItemID}~{costNum}", (ItemLocType)bagInfo.Loc, ItemGetWay.ItemXiLian))
+			if (!bag.OnCostItemData($"{ItemBigType.Type_Item}~{bagInfo.ItemID}~{costNum}", loc, ItemGetWay.ItemXiLian))
 			{
 				response.Error = ErrorCode.ERR_ItemNotEnoughError;
 				reply();
