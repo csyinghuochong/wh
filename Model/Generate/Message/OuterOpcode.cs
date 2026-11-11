@@ -547,9 +547,9 @@ namespace ET
 		 public const ushort M2C_TeamApplyJoinMessage = 10544;
 		 public const ushort C2T_TeamApplyListRequest = 10545;
 		 public const ushort T2C_TeamApplyListResponse = 10546;
-		 public const ushort C2M_TeamDungeonPrepareRequest = 10547;
-		 public const ushort M2C_TeamDungeonPrepareResponse = 10548;
-		 public const ushort M2C_TeamDungeonPrepareResult = 10549;
+		 public const ushort C2M_TeamDungeonApplyRequest = 10547;
+		 public const ushort M2C_TeamDungeonApplyResponse = 10548;
+		 public const ushort M2C_TeamDungeonApplyResult = 10549;
 		 public const ushort M2C_TeamDungeonSettlement = 10550;
 		 public const ushort C2F_FriendChatRead = 10551;
 		 public const ushort F2C_FriendChatRead = 10552;

@@ -297,7 +297,7 @@ namespace ET
                         mapComponent = oldscene.GetComponent<MapComponent>();
                         sceneTypeEnum = mapComponent.MapTypeEnum;
                         mapInstanceId = DBHelper.GetTeamServerId(unit);
-                        //[创建副本Scene]
+                        // 副本在申请等待结束时已创建，这里只取实例并传送。
                         T2M_TeamDungeonEnterResponse createUnit = (T2M_TeamDungeonEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = roleInfoComponentServer.RoleInfo.UserId });
                         if (createUnit.Error != ErrorCode.ERR_Success)

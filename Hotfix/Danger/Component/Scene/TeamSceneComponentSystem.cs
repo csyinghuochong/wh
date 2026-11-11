@@ -35,6 +35,52 @@ namespace ET
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
         }
 
+        /// <summary>申请后固定等 3 秒再创建副本。创建完 FubenInstanceId 非 0，再广播可进入。</summary>
+        public static async ETTask OpenTeamDungeonLater(this TeamSceneComponent self, long teamId)
+        {
+            await TimerComponent.Instance.WaitAsync(3000);
+            self.OpeningTeamIds.Remove(teamId);
+            if (self.IsDisposed)
+            {
+                return;
+            }
+
+            TeamInfo teamInfo = self.GetTeamInfo(teamId);
+            if (teamInfo == null || teamInfo.TeamId != teamId || teamInfo.FubenInstanceId != 0)
+            {
+                return;
+            }
+
+            if (teamInfo.SceneId == 0 || !LDSceneCategory.Instance.Contain(teamInfo.SceneId))
+            {
+                return;
+            }
+
+            self.CreateTeamDungeon(teamInfo);
+            await self.BroadcastDungeonApply(teamInfo);
+        }
+
+        /// <summary>同一条 M2C_TeamDungeonApplyResult 推给队长和队员。客户端用 FubenInstanceId 区分申请中和可进入。</summary>
+        public static async ETTask BroadcastDungeonApply(this TeamSceneComponent self, TeamInfo teamInfo)
+        {
+            M2C_TeamDungeonApplyResult message = new M2C_TeamDungeonApplyResult()
+            {
+                TeamInfo = teamInfo,
+                ErrorCode = ErrorCode.ERR_Success,
+            };
+            List<TeamPlayerInfo> players = teamInfo.PlayerList;
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players[i].RobotId != 0)
+                {
+                    continue;
+                }
+
+                long userId = players[i].UserID;
+                await ServerMessageHelper.SendToClient(UnitZoneHelper.GetHomeZone(userId), userId, message);
+            }
+        }
+
         public static void OnDungeonOver(this TeamSceneComponent self, long teamId)
         {
             TeamInfo teamInfo = self.GetTeamInfo(teamId);
@@ -373,6 +419,7 @@ namespace ET
         public static void ClearApply(this TeamSceneComponent self, long teamId)
         {
             self.ApplyDict.Remove(teamId);
+            self.OpeningTeamIds.Remove(teamId);
         }
     }
 }

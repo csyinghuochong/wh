@@ -10179,9 +10179,11 @@ namespace ET
 		[ProtoMember(3)]
 		public long TeamId { get; set; }
 
+//组队副本实例 Id。0=还没开本，客户端显示申请中；非0=副本已创建，客户端显示可进入。
 		[ProtoMember(4)]
 		public long FubenInstanceId { get; set; }
 
+//组队副本场景 Id。创建副本时和 FubenInstanceId 一起写入，副本结束清 0。
 		[ProtoMember(5)]
 		public long FubenUUId { get; set; }
 
@@ -10236,6 +10238,7 @@ namespace ET
 		[ProtoMember(11)]
 		public int OccTwo { get; set; }
 
+//旧的队员准备标记。申请副本不再读写。
 		[ProtoMember(12)]
 		public int Prepare { get; set; }
 
@@ -10844,11 +10847,11 @@ namespace ET
 
 //Team  end####################################################
 //TeamDungeon  begin####################################################
-//请求准备
-	[ResponseType(nameof(M2C_TeamDungeonPrepareResponse))]
-	[Message(OuterOpcode.C2M_TeamDungeonPrepareRequest)]
+//队长申请副本。地图服校验后转到组队服：先广播申请中，固定等 3 秒创建副本，再广播可进入。
+	[ResponseType(nameof(M2C_TeamDungeonApplyResponse))]
+	[Message(OuterOpcode.C2M_TeamDungeonApplyRequest)]
 	[ProtoContract]
-	public partial class C2M_TeamDungeonPrepareRequest: Object, IActorLocationRequest
+	public partial class C2M_TeamDungeonApplyRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -10856,17 +10859,19 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
+//要申请的副本，只用 SceneId。必须是队长。
 		[ProtoMember(1)]
 		public TeamInfo TeamInfo { get; set; }
 
+//1=发起申请。其它值拒绝。
 		[ProtoMember(2)]
-		public int Prepare { get; set; }
+		public int Apply { get; set; }
 
 	}
 
-	[Message(OuterOpcode.M2C_TeamDungeonPrepareResponse)]
+	[Message(OuterOpcode.M2C_TeamDungeonApplyResponse)]
 	[ProtoContract]
-	public partial class M2C_TeamDungeonPrepareResponse: Object, IActorLocationResponse
+	public partial class M2C_TeamDungeonApplyResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -10879,10 +10884,10 @@ namespace ET
 
 	}
 
-//玩家准备
-	[Message(OuterOpcode.M2C_TeamDungeonPrepareResult)]
+//推给队长和全部队员。用 TeamInfo.FubenInstanceId 区分阶段：0 申请中，非 0 可进入。
+	[Message(OuterOpcode.M2C_TeamDungeonApplyResult)]
 	[ProtoContract]
-	public partial class M2C_TeamDungeonPrepareResult: Object, IActorMessage
+	public partial class M2C_TeamDungeonApplyResult: Object, IActorMessage
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -10893,6 +10898,7 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
+//当前队伍。FubenInstanceId==0 申请中；非0 副本已创建，确定后走进本传送。
 		[ProtoMember(1)]
 		public TeamInfo TeamInfo { get; set; }
 

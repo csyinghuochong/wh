@@ -53,24 +53,6 @@ namespace ET
 				return;
 			}
 
-			RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
-			RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-			int useError = daily.CheckDayItemUse(ldItem, costNum);
-			if (useError != ErrorCode.ERR_Success)
-			{
-				response.Error = useError;
-				reply();
-				return;
-			}
-
-			useError = roleInfo.CheckTotalItemUse(ldItem, costNum);
-			if (useError != ErrorCode.ERR_Success)
-			{
-				response.Error = useError;
-				reply();
-				return;
-			}
-
 			PetRefinedResult result = PetHelper.BuildXiLianResult(petInfo);
 			if (result == null)
 			{
@@ -86,8 +68,6 @@ namespace ET
 				return;
 			}
 
-			daily.AddDayItemUse(ldItem.Id, costNum);
-			roleInfo.AddTotalItemUse(ldItem.Id, costNum);
 			petInfo.XiLianResult = result;
 			unit.GetComponent<TaskComponentServer>().OnPetXiLian(petInfo);
 			response.PetInfo = petInfo;

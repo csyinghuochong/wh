@@ -3426,11 +3426,11 @@ namespace ET
 
 //Mail  end####################################################
 //Team  begin####################################################
-//请求准备
-	[ResponseType(nameof(T2M_TeamDungeonPrepareResponse))]
-	[Message(InnerOpcode.M2T_TeamDungeonPrepareRequest)]
+//地图服把队长申请转到组队服。
+	[ResponseType(nameof(T2M_TeamDungeonApplyResponse))]
+	[Message(InnerOpcode.M2T_TeamDungeonApplyRequest)]
 	[ProtoContract]
-	public partial class M2T_TeamDungeonPrepareRequest: Object, IActorRequest
+	public partial class M2T_TeamDungeonApplyRequest: Object, IActorRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3441,23 +3441,26 @@ namespace ET
 		[ProtoMember(1)]
 		public long TeamId { get; set; }
 
+//申请人。组队服再校验必须是队长。
 		[ProtoMember(2)]
 		public long UnitID { get; set; }
 
+//1=发起申请。
 		[ProtoMember(3)]
-		public int Prepare { get; set; }
+		public int Apply { get; set; }
 
 		[ProtoMember(4)]
 		public int ErrorCode { get; set; }
 
+//要开启的副本场景 Id。
 		[ProtoMember(5)]
 		public int SceneId { get; set; }
 
 	}
 
-	[Message(InnerOpcode.T2M_TeamDungeonPrepareResponse)]
+	[Message(InnerOpcode.T2M_TeamDungeonApplyResponse)]
 	[ProtoContract]
-	public partial class T2M_TeamDungeonPrepareResponse: Object, IActorResponse
+	public partial class T2M_TeamDungeonApplyResponse: Object, IActorResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -3473,7 +3476,7 @@ namespace ET
 
 	}
 
-//进入组队副本
+//进本。副本在申请等待结束后已经创建，这里只返回实例，FubenInstanceId==0 则失败。
 	[ResponseType(nameof(T2M_TeamDungeonEnterResponse))]
 	[Message(InnerOpcode.M2T_TeamDungeonEnterRequest)]
 	[ProtoContract]

@@ -53,20 +53,9 @@ namespace ET
 				return;
 			}
 
-			RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
-			RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
-			int useError = daily.CheckDayItemUse(ldItem, costNum);
-			if (useError != ErrorCode.ERR_Success)
+			if (ldItem.SumUseNum > 0 && PetHelper.GetEatItemNum(petInfo, ldItem.Id) + costNum > ldItem.SumUseNum)
 			{
-				response.Error = useError;
-				reply();
-				return;
-			}
-
-			useError = roleInfo.CheckTotalItemUse(ldItem, costNum);
-			if (useError != ErrorCode.ERR_Success)
-			{
-				response.Error = useError;
+				response.Error = ErrorCode.ERR_ItemNoUseTime;
 				reply();
 				return;
 			}
@@ -86,8 +75,6 @@ namespace ET
 				return;
 			}
 
-			daily.AddDayItemUse(ldItem.Id, costNum);
-			roleInfo.AddTotalItemUse(ldItem.Id, costNum);
 			pet.UpdatePetAttribute(petInfo, true);
 			response.PetInfo = petInfo;
 			reply();

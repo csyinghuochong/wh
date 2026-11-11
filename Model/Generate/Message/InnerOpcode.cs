@@ -185,8 +185,8 @@ namespace ET
 		 public const ushort Mail2M_SendServerMailItem = 20182;
 		 public const ushort G2Mail_EnterMail = 20183;
 		 public const ushort Mail2G_EnterMail = 20184;
-		 public const ushort M2T_TeamDungeonPrepareRequest = 20185;
-		 public const ushort T2M_TeamDungeonPrepareResponse = 20186;
+		 public const ushort M2T_TeamDungeonApplyRequest = 20185;
+		 public const ushort T2M_TeamDungeonApplyResponse = 20186;
 		 public const ushort M2T_TeamDungeonEnterRequest = 20187;
 		 public const ushort T2M_TeamDungeonEnterResponse = 20188;
 		 public const ushort Chat2T_GetTeamInfoRequest = 20189;

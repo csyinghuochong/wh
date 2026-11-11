@@ -10,5 +10,7 @@ namespace ET
         public const int ApplyMaxCount = 99;
 
         public Dictionary<long, List<TeamPlayerInfo>> ApplyDict = new Dictionary<long, List<TeamPlayerInfo>>();
+
+        public HashSet<long> OpeningTeamIds = new HashSet<long>();
     }
 }

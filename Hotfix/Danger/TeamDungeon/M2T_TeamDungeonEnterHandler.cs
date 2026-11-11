@@ -15,18 +15,12 @@ namespace ET
                 reply();
                 return;
             }
+            // 申请流程里已经创建副本。这里不创建，没实例就不能进。
             if (teamInfo.FubenInstanceId == 0)
             {
-                for (int i = 0; i < teamInfo.PlayerList.Count; i++)
-                {
-                    if (teamInfo.PlayerList[i].Prepare != 1)
-                    {
-                        response.Error = ErrorCode.Err_HaveNotPrepare;
-                        reply();
-                        return;
-                    }
-                }
-                scene.GetComponent<TeamSceneComponent>().CreateTeamDungeon(teamInfo);
+                response.Error = ErrorCode.ERR_TransferFailError;
+                reply();
+                return;
             }
 
             response.FubenId = teamInfo.SceneId;
