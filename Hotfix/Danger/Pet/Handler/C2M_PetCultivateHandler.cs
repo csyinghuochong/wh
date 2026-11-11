@@ -75,6 +75,9 @@ namespace ET
 				return;
 			}
 
+			// 扣道具成功后记录吃丹情况（供合体退药、SumUseNum 限次统计）
+			PetHelper.AddEatItem(petInfo, ldItem.ItemType, ldItem.Id, costNum);
+
 			pet.UpdatePetAttribute(petInfo, true);
 			response.PetInfo = petInfo;
 			reply();
