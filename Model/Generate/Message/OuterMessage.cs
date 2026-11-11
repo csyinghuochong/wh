@@ -5679,7 +5679,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_PetCultivate))]
-// 培养。只收 ItemType 38、380。38 的 Param3：0 加当前 F，1 加上限 G；Param4：0 全部，1 随机。380 加 F。不写 XiLianResult，不需要保存。洗练 35 走 C2M_PetRefined
+// 培养。只收 ItemType 38。38 的 Param3：0 加当前 F，1 加上限 G；Param4：0 全部，1 随机。不写 XiLianResult，不需要保存。洗练 35 走 C2M_PetRefined
 	[Message(OuterOpcode.C2M_PetCultivate)]
 	[ProtoContract]
 	public partial class C2M_PetCultivate: Object, IActorLocationRequest
@@ -5722,8 +5722,9 @@ namespace ET
 // 单条资质运行时。A/B/C 读 LDPet.Aptitude_n（A初始最低值 B最低值上限 C最高值），不入库
 // 初始化：D=A，E=A~C 随机
 // 洗练：有概率增加 D（达到 B 不再增加），E=D~C 随机
-// 稀有道具记 F（ItemType=94），超稀有道具记 G（ItemType=95）；达最终值后不能再吃对应道具。吃过记 PetInfo.EatItems
-// Z 存储 E+F；面板显示 min(E+F, C+G)
+// 资质丹（ItemType=38）：Param3=0 记 F，Param3=1 记 G；吃过记 PetInfo.EatItems
+// F 全额累加可溢出，E+F >= C+G 后不能再吃 F 类；G 类只受 LDItem.SumUseNum 次数限制
+// 最终值由 E+F 派生；面板显示 min(E+F, C+G)
 // 异化效果二：A|B|C 用 LDPet.Aptitude_Add_Change 叠在配置上算，不另存
 // 合成后上限=主宠+LDPet.Aptitude_Add_Star；合成后当前值=主宠值+rand(副宠当前/上限,1)*提升上限
 	[Message(OuterOpcode.PetAptitudeInfo)]
@@ -5742,9 +5743,7 @@ namespace ET
 		[ProtoMember(4)]
 		public int G { get; set; }
 
-		[ProtoMember(5)]
-		public int Z { get; set; }
-
+// 字段 5 已废弃（原 Z=最终值，由 E+F 派生并显示封顶 C+G），勿复用
 	}
 
 	[Message(OuterOpcode.PetInfo)]
@@ -6007,8 +6006,8 @@ namespace ET
 
 //Pet   end####################################################
 //Mount start####################################################
-// 坐骑实例。资质结构复用 PetAptitudeInfo（D最低 E当前 F强化 G上限 Z最终）
-// 表 LDMount.Aptitude_1~6：长度为1时 D=E=Z=该值；长度为3时按宠物 A/B/C 初始化
+// 坐骑实例。资质结构复用 PetAptitudeInfo（D最低 E当前 F强化 G上限）
+// 表 LDMount.Aptitude_1~6：长度为1时 D=E=该值；长度为3时按宠物 A/B/C 初始化
 	[Message(OuterOpcode.MountInfo)]
 	[ProtoContract]
 	public partial class MountInfo: Object

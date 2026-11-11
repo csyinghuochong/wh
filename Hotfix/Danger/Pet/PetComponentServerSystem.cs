@@ -371,7 +371,6 @@ namespace ET
 
             apt.F = 0;
             apt.G = 0;
-            apt.Z = apt.E;
         }
 
         /// <summary>
