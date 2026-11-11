@@ -292,6 +292,23 @@ namespace ET
                     await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo);
                 }
                
+                if (message.GMMsg == "enddungeon#")
+                {
+                    MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
+                    if (mapComponent == null || mapComponent.MapTypeEnum != (int)MapTypeEnum.TeamDungeon)
+                    {
+                        return;
+                    }
+
+                    TeamDungeonComponent teamDungeon = unit.DomainScene().GetComponent<TeamDungeonComponent>();
+                    if (teamDungeon == null)
+                    {
+                        return;
+                    }
+
+                    teamDungeon.OnDungeonOver();
+                    return;
+                }
                 if (message.GMMsg == "killall#")
                 {
 					List<Unit> units = unit.GetParent<UnitComponent>().GetAll();

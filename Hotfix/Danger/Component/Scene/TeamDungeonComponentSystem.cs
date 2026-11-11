@@ -46,6 +46,9 @@ namespace ET
 
     public static class TeamDungeonComponentSystem
     {
+        private const int TeamDungeonStartMarqueeId = 101;
+        private const int TeamDungeonEndMarqueeId = 102;
+
         private static TeamDropItem FindTeamDropItem(this TeamDungeonComponent self, long dropId)
         {
             for (int i = self.TeamDropItems.Count - 1; i >= 0; i--)
@@ -276,14 +279,19 @@ namespace ET
                 return;
             }
 
+            self.OnDungeonOver();
+        }
+
+        public static void OnDungeonOver(this TeamDungeonComponent self)
+        {
             M2C_TeamDungeonSettlement m2C_FubenSettlement = new M2C_TeamDungeonSettlement();
-            m2C_FubenSettlement.PassTime = 5*60 * 1000;
+            m2C_FubenSettlement.PassTime = 5 * 60 * 1000;
             m2C_FubenSettlement.PlayerList = self.TeamInfo.PlayerList;
-            
+
             //最高伤害额外奖励
             long idExtra = 0;
             int damageMax = 0;
-            int damageTotal = 0;    
+            int damageTotal = 0;
             Dictionary<long, int> hurtList = new Dictionary<long, int>();
             for (int i = 0; i < m2C_FubenSettlement.PlayerList.Count; i++)
             {
@@ -299,7 +307,7 @@ namespace ET
 
 
             //TeamDungeonHurt_136
-            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+            UnitComponent unitComponent = self.DomainScene().GetComponent<UnitComponent>();
             List<Unit> units = unitComponent.GetAll();
             for (int i = 0; i < units.Count; i++)
             {
@@ -310,7 +318,11 @@ namespace ET
                 }
 
                 hurtList.TryGetValue(unititem.Id, out int hurtvalue);
-                int hurtRate = (int)(hurtvalue * 100f / damageTotal);
+                int hurtRate = 0;
+                if (damageTotal > 0)
+                {
+                    hurtRate = (int)(hurtvalue * 100f / damageTotal);
+                }
                 DungeonSettlementHelper.SettleTeamDungeon(
                     unititem, self.TeamInfo.SceneId, hurtRate);
                 RoleInfoComponentServer roleInfoComponentServer = unititem.GetComponent<RoleInfoComponentServer>();
@@ -321,6 +333,74 @@ namespace ET
             }
 
             (self.Parent.Parent as TeamSceneComponent).OnDungeonOver(self.TeamInfo.TeamId);
+            self.NotifyDungeonEndMarquee();
+        }
+
+        public static void NotifyDungeonStartMarquee(this TeamDungeonComponent self)
+        {
+            self.NotifyTeamMarquee(TeamDungeonStartMarqueeId);
+        }
+
+        public static void NotifyDungeonEndMarquee(this TeamDungeonComponent self)
+        {
+            self.NotifyTeamMarquee(TeamDungeonEndMarqueeId);
+        }
+
+        private static void NotifyTeamMarquee(this TeamDungeonComponent self, int marqueeId)
+        {
+            TeamInfo teamInfo = self.TeamInfo;
+            if (teamInfo == null)
+            {
+                return;
+            }
+
+            string sceneName = string.Empty;
+            int nameId = 0;
+            if (LDSceneCategory.Instance.Contain(teamInfo.SceneId))
+            {
+                nameId = LDSceneCategory.Instance.Get(teamInfo.SceneId).Name;
+            }
+
+            if (nameId != 0 && LDWordCategory.Instance.Contain(nameId))
+            {
+                sceneName = LDWordCategory.Instance.Get(nameId).CN ?? string.Empty;
+            }
+
+            M2C_MarqueeMessage message = new M2C_MarqueeMessage()
+            {
+                MarqueeInfo = new MarqueeInfo()
+                {
+                    MarqueeId = marqueeId,
+                    StartTime = TimeHelper.ServerNow(),
+                },
+            };
+            message.MarqueeInfo.ParamList.Add(sceneName);
+            SendMarqueeToTeam(teamInfo, message).Coroutine();
+        }
+
+        private static async ETTask SendMarqueeToTeam(TeamInfo teamInfo, M2C_MarqueeMessage message)
+        {
+            List<TeamPlayerInfo> players = teamInfo.PlayerList;
+            int count = players.Count;
+            long[] userIds = new long[count];
+            int realCount = 0;
+            for (int i = 0; i < count; i++)
+            {
+                TeamPlayerInfo player = players[i];
+                if (player.RobotId != 0)
+                {
+                    continue;
+                }
+
+                userIds[realCount] = player.UserID;
+                realCount++;
+            }
+
+            for (int i = 0; i < realCount; i++)
+            {
+                int homeZone = UnitZoneHelper.GetHomeZone(userIds[i]);
+                await ServerMessageHelper.SendToClient(homeZone, userIds[i], message);
+            }
         }
     }
 }

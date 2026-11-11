@@ -25,6 +25,7 @@ namespace ET
             teamDungeonComponent.InitPlayerList();
             teamInfo.FubenInstanceId = fubenInstanceId;
             teamInfo.FubenUUId = fubenid;
+            teamDungeonComponent.NotifyDungeonStartMarquee();
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
 
             //69和 72的2个副本 有10%概率 在每个BOSS附近刷新出 80002010 这个宝箱，
