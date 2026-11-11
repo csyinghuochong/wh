@@ -256,46 +256,6 @@ namespace ET
             List<Unit> allPlayer = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
         }
 
-        public static async ETTask CheckFriend(this TeamDungeonComponent self, Dictionary<long,int> hurts)
-        {
-            List<Unit> players = UnitHelper.GetUnitList( self.DomainScene(), UnitType.Player );
-            for (int i = 0; i < players.Count; i++)
-            {
-                Unit unit = players[i]; 
-                if (unit.IsRobot())
-                {
-                    continue;
-                }
-
-                DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(UnitZoneHelper.GetHomeZone(unit.Id), unit.Id);
-                if (dBFriendInfo == null)
-                {
-                    continue;
-                }
-                bool haveFriend = false;
-                for (  int friend = 0;  friend < dBFriendInfo.FriendList.Count; friend++  )
-                {
-                    if (hurts.ContainsKey(dBFriendInfo.FriendList[friend]))
-                    {
-                        haveFriend = true;
-                        break;
-                    }
-                }
-
-                //if (self.DomainZone() == 56 && unit.Id == 2122034524618555392)
-                //{
-                //    Log.Warning($"与好友完成组队副本： {unit.Id}   {dBFriendInfo.FriendList.Count}");
-                //}
-
-                if (haveFriend)
-                {
-                    unit.GetComponent<TaskComponentServer>().OnFriendPassFuben();
-                
-                }
-            }
-            await ETTask.CompletedTask;
-        }
-
         public static void OnKillEvent(this TeamDungeonComponent self, Unit unit)
         {
             if (unit.Type != UnitType.Monster)
@@ -337,8 +297,6 @@ namespace ET
                 hurtList.TryAdd(teamPlayerInfo.UserID, teamPlayerInfo.Damage);
             }
 
-
-            self.CheckFriend(hurtList).Coroutine();
 
             //TeamDungeonHurt_136
             UnitComponent unitComponent = unit.GetParent<UnitComponent>();
