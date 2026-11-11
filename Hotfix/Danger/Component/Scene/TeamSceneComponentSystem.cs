@@ -63,10 +63,12 @@ namespace ET
         /// <summary>同一条 M2C_TeamDungeonApplyResult 推给队长和队员。客户端用 FubenInstanceId 区分申请中和可进入。</summary>
         public static async ETTask BroadcastDungeonApply(this TeamSceneComponent self, TeamInfo teamInfo)
         {
+            // 申请中 FubenInstanceId 仍是 0。ErrorCode 不能填 Success，旧客户端看到 Success 会直接 RequestTransfer。
+            int errorCode = teamInfo.FubenInstanceId != 0 ? ErrorCode.ERR_Success : ErrorCode.Err_HaveNotPrepare;
             M2C_TeamDungeonApplyResult message = new M2C_TeamDungeonApplyResult()
             {
                 TeamInfo = teamInfo,
-                ErrorCode = ErrorCode.ERR_Success,
+                ErrorCode = errorCode,
             };
             List<TeamPlayerInfo> players = teamInfo.PlayerList;
             for (int i = 0; i < players.Count; i++)
