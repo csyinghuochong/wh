@@ -77,7 +77,7 @@ namespace ET
             long now = TimeHelper.ServerNow();
             for (int i = 0; i < defaultFashionIds.Length; i++)
             {
-                int fashionId = FashionHelper.ResolveFashionId(defaultFashionIds[i]);
+                int fashionId = defaultFashionIds[i];
                 if (fashionId <= 0 || !LDFashionCategory.Instance.Contain(fashionId))
                 {
                     continue;
@@ -114,7 +114,7 @@ namespace ET
             Dictionary<int, int> partToDefault = new Dictionary<int, int>();
             for (int i = 0; i < defaultFashionIds.Length; i++)
             {
-                int fashionId = FashionHelper.ResolveFashionId(defaultFashionIds[i]);
+                int fashionId = defaultFashionIds[i];
                 if (fashionId <= 0 || !LDFashionCategory.Instance.Contain(fashionId))
                 {
                     continue;
@@ -162,7 +162,7 @@ namespace ET
         /// 穿戴/卸下时装的唯一规则入口，返回 ErrorCode（0 成功）。
         /// C2M_FashionWearHandler 与 GM 命令共用，避免部位覆盖等规则两处维护。
         /// 成功后已调 EnsureFashionEquipList 保证列表完整；广播由调用方决定。
-        /// 前置的 id 规范化（ResolveFashionId）由调用方完成。
+        /// fashionId 就是 LDFashion.Id，不做跨表解析。
         /// </summary>
         public static int ApplyFashionWear(this BagComponentServer self, int fashionId, int operateType, int occ, int sex)
         {
@@ -235,7 +235,7 @@ namespace ET
                 {
                     for (int i = 0; i < defaultIds.Length; i++)
                     {
-                        if (FashionHelper.ResolveFashionId(defaultIds[i]) == fashionId)
+                        if (defaultIds[i] == fashionId)
                         {
                             return ErrorCode.ERR_ModifyData;
                         }

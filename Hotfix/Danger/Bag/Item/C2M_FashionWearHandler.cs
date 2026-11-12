@@ -12,7 +12,7 @@ namespace ET
 
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-            int fashionId = FashionHelper.ResolveFashionId(request.FashionId);
+            int fashionId = request.FashionId;
 
             // 穿戴规则只有一份，与 GM 命令共用 BagComponentServer.ApplyFashionWear
             response.Error = bagComponentServer.ApplyFashionWear(fashionId, request.OperatateType, roleInfo.Occ, roleInfo.Sex);

@@ -127,8 +127,7 @@ namespace ET
                         operateType = op;
                     }
 
-                    int realId = FashionHelper.ResolveFashionId(fashionId);
-                    if (!LDFashionCategory.Instance.Contain(realId))
+                    if (!LDFashionCategory.Instance.Contain(fashionId))
                     {
                         Log.Warning($"fashionwear 时装配置不存在 Id={fashionId}");
                         return;
@@ -139,20 +138,20 @@ namespace ET
 
                     // GM 特权：没有激活记录就补一条，正常途径仍走激活/获取。
                     // 只写服务端，客户端时装列表的持有状态在下次拉背包时刷新。
-                    if (bagComponentServer.GetFashionInfo(realId) == null)
+                    if (bagComponentServer.GetFashionInfo(fashionId) == null)
                     {
                         bagComponentServer.FashionActiveList.Add(new FashionInfo()
                         {
-                            FashionId = realId,
+                            FashionId = fashionId,
                             ActivteTime = TimeHelper.ServerNow()
                         });
                     }
 
                     // 部位覆盖、性别校验、卸下限制等规则与 C2M_FashionWearHandler 共用一份
-                    int error = bagComponentServer.ApplyFashionWear(realId, operateType, roleInfo.Occ, roleInfo.Sex);
+                    int error = bagComponentServer.ApplyFashionWear(fashionId, operateType, roleInfo.Occ, roleInfo.Sex);
                     if (error != ErrorCode.ERR_Success)
                     {
-                        Log.Warning($"fashionwear 失败 FashionId={realId} Operate={operateType} Error={error}");
+                        Log.Warning($"fashionwear 失败 FashionId={fashionId} Operate={operateType} Error={error}");
                         return;
                     }
 
@@ -161,7 +160,7 @@ namespace ET
                     // GM 由服务端直接改数据，客户端不会本地预更新，必须自己也收到 M2C_FashionUpdate
                     UnitHelper.SyncUnitAppear(unit);
 
-                    Log.Warning($"fashionwear 成功 FashionId={realId} Operate={operateType} EquipCount={bagComponentServer.FashionEquipList.Count}");
+                    Log.Warning($"fashionwear 成功 FashionId={fashionId} Operate={operateType} EquipCount={bagComponentServer.FashionEquipList.Count}");
                     return;
                 }
 
