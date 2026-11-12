@@ -112,8 +112,57 @@ namespace ET
 					return;
 				}
                 if (message.GMMsg.Contains("fashionwear#"))
-                { 
+                {
+                    // fashionwear#时装Id          穿戴（GM 自动激活，绕过获取途径与持有校验，方便试穿任意时装）
+                    // fashionwear#时装Id#1        穿戴；#2 卸下，不填操作类型默认穿戴
+                    if (!TryGetSecondHashNumber(message.GMMsg, out int fashionId))
+                    {
+                        Log.Warning("fashionwear 格式：fashionwear#时装Id[#1穿戴/2卸下]");
+                        return;
+                    }
 
+                    int operateType = 1;
+                    if (commands.Length >= 3 && int.TryParse(commands[2].Trim(), out int op))
+                    {
+                        operateType = op;
+                    }
+
+                    int realId = FashionHelper.ResolveFashionId(fashionId);
+                    if (!LDFashionCategory.Instance.Contain(realId))
+                    {
+                        Log.Warning($"fashionwear 时装配置不存在 Id={fashionId}");
+                        return;
+                    }
+
+                    BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+                    RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+
+                    // GM 特权：没有激活记录就补一条，正常途径仍走激活/获取。
+                    // 只写服务端，客户端时装列表的持有状态在下次拉背包时刷新。
+                    if (bagComponentServer.GetFashionInfo(realId) == null)
+                    {
+                        bagComponentServer.FashionActiveList.Add(new FashionInfo()
+                        {
+                            FashionId = realId,
+                            ActivteTime = TimeHelper.ServerNow()
+                        });
+                    }
+
+                    // 部位覆盖、性别校验、卸下限制等规则与 C2M_FashionWearHandler 共用一份
+                    int error = bagComponentServer.ApplyFashionWear(realId, operateType, roleInfo.Occ, roleInfo.Sex);
+                    if (error != ErrorCode.ERR_Success)
+                    {
+                        Log.Warning($"fashionwear 失败 FashionId={realId} Operate={operateType} Error={error}");
+                        return;
+                    }
+
+                    Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+
+                    // GM 由服务端直接改数据，客户端不会本地预更新，必须自己也收到 M2C_FashionUpdate
+                    UnitHelper.SyncUnitAppear(unit);
+
+                    Log.Warning($"fashionwear 成功 FashionId={realId} Operate={operateType} EquipCount={bagComponentServer.FashionEquipList.Count}");
+                    return;
                 }
 
                 if (message.GMMsg.Contains("skillmakeId#"))

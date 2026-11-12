@@ -158,6 +158,98 @@ namespace ET
             }
         }
 
+        /// <summary>
+        /// 穿戴/卸下时装的唯一规则入口，返回 ErrorCode（0 成功）。
+        /// C2M_FashionWearHandler 与 GM 命令共用，避免部位覆盖等规则两处维护。
+        /// 成功后已调 EnsureFashionEquipList 保证列表完整；广播由调用方决定。
+        /// 前置的 id 规范化（ResolveFashionId）由调用方完成。
+        /// </summary>
+        public static int ApplyFashionWear(this BagComponentServer self, int fashionId, int operateType, int occ, int sex)
+        {
+            // 只允许 1穿戴 / 2卸下，非法值不能落到 else 里当卸下处理
+            if (operateType != 1 && operateType != 2)
+            {
+                return ErrorCode.ERR_ModifyData;
+            }
+
+            // 持有状态统一走 GetState：未拥有、已过期都不允许操作，有激活记录不等于有效
+            if (FashionHelper.GetState(self.FashionActiveList, fashionId) != FashionState.Owned)
+            {
+                return ErrorCode.ERR_FashionNoActive;
+            }
+
+            bool worn = FashionHelper.IsWorn(self.FashionEquipList, fashionId);
+
+            if (operateType == 1)
+            {
+                if (worn)
+                {
+                    return ErrorCode.ERR_EquipRepeat;
+                }
+
+                if (!LDFashionCategory.Instance.Contain(fashionId))
+                {
+                    return ErrorCode.ERR_ModifyData;
+                }
+
+                LDFashion ldFashion = LDFashionCategory.Instance.Get(fashionId);
+                if (ldFashion.Part <= 0)
+                {
+                    return ErrorCode.ERR_ModifyData;
+                }
+
+                if (ldFashion.Sex != SexEnum.None && ldFashion.Sex != sex)
+                {
+                    return ErrorCode.ERR_ModifyData;
+                }
+
+                // 按部位覆盖：清掉同部位已穿的（含默认时装）和无效配置
+                for (int i = self.FashionEquipList.Count - 1; i >= 0; i--)
+                {
+                    int wearId = self.FashionEquipList[i];
+                    if (!LDFashionCategory.Instance.Contain(wearId))
+                    {
+                        self.FashionEquipList.RemoveAt(i);
+                        continue;
+                    }
+
+                    if (LDFashionCategory.Instance.Get(wearId).Part == ldFashion.Part)
+                    {
+                        self.FashionEquipList.RemoveAt(i);
+                    }
+                }
+
+                self.FashionEquipList.Add(fashionId);
+            }
+            else
+            {
+                // 没穿戴就不允许卸下，先判再删，避免静默 Remove 失败走成「网络错误」
+                if (!worn)
+                {
+                    return ErrorCode.ERR_FashionNoWear;
+                }
+
+                // 默认时装是整套打底，卸掉没有意义，UI 不应显示卸下按钮
+                int[] defaultIds = FashionHelper.GetDefaultFashionIds(occ, sex);
+                if (defaultIds != null)
+                {
+                    for (int i = 0; i < defaultIds.Length; i++)
+                    {
+                        if (FashionHelper.ResolveFashionId(defaultIds[i]) == fashionId)
+                        {
+                            return ErrorCode.ERR_ModifyData;
+                        }
+                    }
+                }
+
+                self.FashionEquipList.Remove(fashionId);
+            }
+
+            // 穿戴是按部位覆盖，卸下会空出部位；统一补齐一次，保证下发列表始终完整
+            self.EnsureFashionEquipList(occ, sex);
+            return ErrorCode.ERR_Success;
+        }
+
         /// <summary>创角入口，转发到 (occ, sex) 版本。</summary>
         public static void InitDefaultFashion(this BagComponentServer self, CreateRoleInfo createRoleInfo)
         {
