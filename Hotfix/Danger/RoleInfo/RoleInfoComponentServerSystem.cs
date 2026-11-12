@@ -399,18 +399,46 @@ namespace ET
                     ?.AddShopBuy(mysteryId, buyNumber, true, false);
         }
 
-        public static async ETTask SendUnionOperate(this RoleInfoComponentServer self, int getWay, int dataType,  long dataValue)
+        /// <summary>
+        /// 公会经验等公会数据不落在角色身上，转到公会服累加。无公会 / 公会服未配置时静默丢弃。
+        /// Par 保持旧格式 {playerName}_{getWay}_{dataType}_{dataValue}，公会服按尾部两个字段解析。
+        /// </summary>
+        public static async ETTask SendUnionOperate(this RoleInfoComponentServer self, int getWay, int dataType, long dataValue)
         {
             Unit unit = self.GetParent<Unit>();
-            long unionid = unit.GetUnionId();
-            if (unionid == 0)
+            if (unit == null || unit.IsDisposed || dataValue == 0)
             {
                 return;
             }
-            string playerName = self.RoleInfo.Name;
-            long serverod = DBHelper.GetUnionServerId(unit);
-            U2M_UnionOperationResponse responseUnionEnter = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
-                            serverod, new M2U_UnionOperationRequest() { OperateType = 1, UnionId = unionid, Par = $"{playerName}_{getWay}_{dataType}_{dataValue}" });
+
+            long unionId = unit.GetUnionId();
+            if (unionId == 0)
+            {
+                return;
+            }
+
+            long unionServerId = DBHelper.GetUnionServerId(unit);
+            if (unionServerId == 0)
+            {
+                Log.Warning($"[公会数据] 找不到公会服,丢弃本次变更: unionId={unionId} dataType={dataType} value={dataValue}");
+                return;
+            }
+
+            string playerName = self.RoleInfo.Name ?? string.Empty;
+            U2M_UnionOperationResponse response = (U2M_UnionOperationResponse)await ActorMessageSenderComponent.Instance.Call(
+                unionServerId,
+                new M2U_UnionOperationRequest()
+                {
+                    OperateType = 1,
+                    UnionId = unionId,
+                    UnitId = unit.Id,
+                    Par = $"{playerName}_{getWay}_{dataType}_{dataValue}",
+                });
+
+            if (response != null && response.Error != ErrorCode.ERR_Success)
+            {
+                Log.Warning($"[公会数据] 公会服处理失败: unionId={unionId} dataType={dataType} value={dataValue} error={response.Error}");
+            }
         }
 
         /// <summary>等级、头像、头像框变化后，推到本服和战区聊天服。</summary>
@@ -524,11 +552,18 @@ namespace ET
                     saveValue = self.RoleInfo.Name;
                     break;
                 case UserDataType.Exp:
-                  
                     self.Role_AddExp(long.Parse(value), notice);
                     longValue = self.RoleInfo.Exp;
                     saveValue = value;
                     break;
+                case UserDataType.UnionExp:
+                    // 公会经验属于公会数据，不在角色身上。道具发放(OnAddItemData -> TryAddCurrency)最终也走到这里，
+                    // 统一转交公会服累加；避免以前那样只给客户端推一条没有实际加值的通知。
+                    if (long.TryParse(value, out long unionExpValue) && unionExpValue != 0)
+                    {
+                        self.SendUnionOperate(getWay, Type, unionExpValue).Coroutine();
+                    }
+                    return;
                 case UserDataType.Level:
                     int addLevel = int.Parse(value);
                     int oldLevel = self.RoleInfo.Lv;

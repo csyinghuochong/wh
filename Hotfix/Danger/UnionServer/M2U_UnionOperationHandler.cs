@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 
 namespace ET
@@ -21,66 +22,54 @@ namespace ET
                
                 switch (request.OperateType)
                 {
-                    case 1:
-                        //Par = $"{playerName}_{getWay}_{dataType}_{dataValue}
-                        LDUnion ldUnion = null;
-                        string[] valuePararm = request.Par.Split('_');
-
-                        if (valuePararm[2] == "17") // UserDataType.UnionExp
+                    case 1: //增加公会经验
+                        // Par = $"{playerName}_{getWay}_{dataType}_{dataValue}"
+                        // 玩家名可能含下划线，固定从尾部取 dataType / dataValue，不能按固定下标取。
+                        if (!TryParseOperationPar(request.Par, out int dataType, out int dataValue))
                         {
-                            int addExp = int.Parse(valuePararm[3]);
-                            //增加经验
-                            if (dBUnionInfo.UnionInfo.Level == 0)
-                            {
-                                dBUnionInfo.UnionInfo.Level = 1;
-                            }
-                            int level = dBUnionInfo.UnionInfo.Level;
-                            dBUnionInfo.UnionInfo.Exp += addExp;
-                            ldUnion = LDUnionCategory.Instance.Get(level);
-                            if (dBUnionInfo.UnionInfo.Exp >= ldUnion.Exp && LDUnionCategory.Instance.Contain(level + 1))
-                            {
-                                dBUnionInfo.UnionInfo.Level++;
-                                dBUnionInfo.UnionInfo.Exp -= ldUnion.Exp;
-
-                                Log.Error("MailInfo mailInfo = new MailInfo");
-                                MailInfo mailInfo = new MailInfo();
-                                //mailInfo.Title = "家族升级";
-                                //mailInfo.Context = "恭喜您!您所在得家族等级获得提升,这是家族升级的奖励!";
-
-                                long serverTime = TimeHelper.ServerNow();
-                                LDUnion ldUnionCof = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
-                                string[] rewardStrList = null;// ldUnionCof.UpAllReward.Split(';');
-                                for (int i = 0; i < rewardStrList.Length; i++)
-                                {
-                                    string[] rewardList = rewardStrList[i].Split(',');
-                                    mailInfo.ItemList.Add(new BagInfo() { ItemID = int.Parse(rewardList[0]), ItemNum = int.Parse(rewardList[1]), GetWay = $"{ItemGetWay.UnionUpLv}_{serverTime}" });
-                                }
-
-                                for (int i = 0; i < dBUnionInfo.UnionInfo.UnionPlayerList.Count; i++)
-                                {
-                                    MailHelp.SendUserMail(scene.DomainZone(), dBUnionInfo.UnionInfo.UnionPlayerList[i].UserID, mailInfo).Coroutine();
-                                }
-                            }
-                        }
-                        else if (valuePararm[2] == "35") //UserDataType.UnionGold
-                        {
-                            ldUnion = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
-                            dBUnionInfo.UnionInfo.UnionGold += int.Parse(valuePararm[3]);
-                            /*if (dBUnionInfo.UnionInfo.UnionGold > ldUnion.UnionGoldLimit)
-                            {
-                                dBUnionInfo.UnionInfo.UnionGold = ldUnion.UnionGoldLimit;
-                            }*/
-                        }
-                        else
-                        {
+                            response.Error = ErrorCode.ERR_ModifyData;
                             reply();
                             return;
                         }
 
-                        dBUnionInfo.UnionInfo.ActiveRecord.Add(request.Par);
-                        if (dBUnionInfo.UnionInfo.ActiveRecord.Count >= 100)
+                        var unionInfo = dBUnionInfo.UnionInfo;
+                        if (unionInfo.Level == 0)
                         {
-                            dBUnionInfo.UnionInfo.ActiveRecord.RemoveAt(0);
+                            unionInfo.Level = 1;
+                        }
+
+                        if (dataType == UserDataType.UnionExp)
+                        {
+                            unionInfo.Exp += dataValue;
+                            // 一次加的经验可能跨多级；没有下一级配置时经验继续累计，不再升级。
+                            while (LDUnionCategory.Instance.Contain(unionInfo.Level)
+                                   && LDUnionCategory.Instance.Contain(unionInfo.Level + 1))
+                            {
+                                LDUnion levelConfig = LDUnionCategory.Instance.Get(unionInfo.Level);
+                                if (levelConfig.Exp <= 0 || unionInfo.Exp < levelConfig.Exp)
+                                {
+                                    break;
+                                }
+
+                                unionInfo.Exp -= levelConfig.Exp;
+                                unionInfo.Level++;
+                            }
+                            // 升级奖励邮件暂不发放：LDUnion 配置已无 UpAllReward 字段，原逻辑到升级时必空引用崩溃。
+                            // 补上奖励配置后在这里接回 MailHelp.SendUserMail。
+                        }
+                        else
+                        {
+                            // 旧工会资金 dataType=35 已废弃；工会资源统一走 OperateType=6 / UnionInfo.ResourceList。
+                            response.Error = ErrorCode.ERR_ModifyData;
+                            reply();
+                            return;
+                        }
+
+                        unionInfo.ActiveRecord ??= new List<string>();
+                        unionInfo.ActiveRecord.Add(request.Par);
+                        if (unionInfo.ActiveRecord.Count > MaxActiveRecord)
+                        {
+                            unionInfo.ActiveRecord.RemoveAt(0);
                         }
 
                         DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
@@ -88,57 +77,7 @@ namespace ET
                     case 2:  //获取等级
                         response.Par = dBUnionInfo.UnionInfo.Level.ToString();
                         break;
-                    case 3:  //金币捐献
-                        dBUnionInfo.UnionInfo.Level = Math.Max(dBUnionInfo.UnionInfo.Level, 1);
-                        response.Par = dBUnionInfo.UnionInfo.Level.ToString();
-                        ldUnion = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
-                        long selfgold = long.Parse(request.Par);
-                        /*if (selfgold < ldUnion.DonateGold)
-                        {
-                            response.Error = ErrorCode.ERR_GoldNotEnoughError;
-                            reply();
-                            return;
-                        }
-                        if (dBUnionInfo.UnionInfo.DonationRecords.Count >= 100)
-                        {
-                            dBUnionInfo.UnionInfo.DonationRecords.RemoveAt(0);
-                        }
-                        dBUnionInfo.UnionInfo.DonationRecords.Add( new DonationRecord()
-                        { 
-                            Gold = ldUnion.DonateGold,
-                            Time = TimeHelper.ServerNow(),
-                            UnitId = request.UnitId
-                        });*/
-                        DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
-                        break;
-                    case 4: //钻石捐献
-                        dBUnionInfo.UnionInfo.Level = Math.Max(dBUnionInfo.UnionInfo.Level, 1);
-                        response.Par = dBUnionInfo.UnionInfo.Level.ToString();
-                        ldUnion = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
-                        long selfDiamond = long.Parse(request.Par);
-                        /*if (selfDiamond < ldUnion.DonateDiamond)
-                        {
-                            response.Error = ErrorCode.ERR_DiamondNotEnoughError;
-                            reply();
-                            return;
-                        }
-                        if (dBUnionInfo.UnionInfo.DonationRecords.Count >= 100)
-                        {
-                            dBUnionInfo.UnionInfo.DonationRecords.RemoveAt(0);
-                        }
-                        dBUnionInfo.UnionInfo.DonationRecords.Add( new DonationRecord()
-                        { 
-                            Diamond = ldUnion.DonateDiamond,
-                            Time = TimeHelper.ServerNow(),
-                            UnitId = request.UnitId
-                        });*/
-                        DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
-                        break;
-                    case 5: //增加金币
-                        dBUnionInfo.UnionInfo.UnionGold += int.Parse(request.Par);
-                        DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
-                        break;
-                    case 6: //工会资源 ItemType=75
+                    case 6: //工会资源：由 UnionHelper.IsUnionResourceItem 识别后统一走这里写 UnionInfo.ResourceList
                         if (request.Items != null)
                         {
                             for (int i = 0; i < request.Items.Count; i++)
@@ -150,12 +89,35 @@ namespace ET
                         DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
                         break;
                     default:
+                        // 3/4/5(捐献、增加工会金币)已废弃；未知 OperateType 明确报错，不再静默成功。
+                        response.Error = ErrorCode.ERR_ModifyData;
                         break;
                 }
             }
 
             reply();
             await ETTask.CompletedTask;
+        }
+
+        private const int MaxActiveRecord = 100;
+
+        /// <summary>
+        /// 兼容 "{playerName}_{getWay}_{dataType}_{dataValue}"。玩家名可能带下划线，
+        /// 因此只解析尾部两个固定字段；非法 Par 直接拒绝，避免 handler 抛异常导致 RPC 不回包。
+        /// </summary>
+        private static bool TryParseOperationPar(string par, out int dataType, out int dataValue)
+        {
+            dataType = 0;
+            dataValue = 0;
+            if (string.IsNullOrEmpty(par))
+            {
+                return false;
+            }
+
+            string[] parts = par.Split('_');
+            return parts.Length >= 4
+                   && int.TryParse(parts[parts.Length - 2], out dataType)
+                   && int.TryParse(parts[parts.Length - 1], out dataValue);
         }
     }
 }

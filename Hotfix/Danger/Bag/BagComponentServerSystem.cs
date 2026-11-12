@@ -746,6 +746,7 @@ namespace ET
                 return false;
             }
 
+            // 公会经验(UserDataType.UnionExp)不是角色数据，由 UpdateRoleData 统一转交 SendUnionOperate 到公会服累加。
             unit.GetComponent<RoleInfoComponentServer>().UpdateRoleData(dataType, item.ItemNum.ToString(), true, getType);
             return true;
         }
