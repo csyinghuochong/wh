@@ -111,6 +111,11 @@ namespace ET
 					}
 					return;
 				}
+                if (message.GMMsg.Contains("fashionwear#"))
+                { 
+
+                }
+
                 if (message.GMMsg.Contains("skillmakeId#"))
                 {
                     //roleHeadId#头像Id

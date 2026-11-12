@@ -56,15 +56,15 @@ namespace ET
                 return;
             }
 
-            // TODO 广播外观与穿戴列表变化（M2C_FashionUpdate / UnitHelper.BroadcastUnitAppear）。
+            // TODO 接入到期时间后：先 self.EnsureFashionEquipList(occ, sex) 补回默认部位，
+            // 再广播外观与穿戴列表变化（M2C_FashionUpdate / UnitHelper.BroadcastUnitAppear）。
         }
 
         /// <summary>
-        /// 按 Occupation.Fashion_Id_Man / Fashion_Id_Woman 把默认时装写入 FashionActiveList，
-        /// 客户端直接按这份列表显示，不需要再单独维护一套默认时装。
-        /// 只写持有列表，绝不写 FashionEquipList：模型装配仍由 ChangeEquipComponent 走
-        /// FashionHelper.MergeWearFashionIds(occ, sex, 穿列表) 自行补默认部位，两条链路互不影响。
-        /// 幂等，已有记录跳过，可在创角和登录时重复调用，用于给老号补齐。
+        /// 默认时装初始化：FashionActiveList 写持有记录（供时装列表 UI 显示），
+        /// FashionEquipList 保证每个部位恰好一件（默认打底，客户端拿到直接渲染）。
+        /// 部位覆盖由穿戴协议处理，客户端不再自己合并默认时装。
+        /// 幂等，可在创角、登录、拉背包、穿戴协议里重复调用。
         /// </summary>
         public static void InitDefaultFashion(this BagComponentServer self, int occ, int sex)
         {
@@ -93,6 +93,68 @@ namespace ET
                     FashionId = fashionId,
                     ActivteTime = now
                 });
+            }
+
+            self.EnsureFashionEquipList(occ, sex);
+        }
+
+        /// <summary>
+        /// 保证 FashionEquipList 是完整一套：每个默认部位恰好一件，玩家主动穿的覆盖默认。
+        /// 顺带清掉无效配置和同部位重复项，缺失部位补回默认时装。幂等。
+        /// 穿戴/卸下协议操作后调一次，下发给客户端的列表就永远不为空、不缺部位。
+        /// </summary>
+        public static void EnsureFashionEquipList(this BagComponentServer self, int occ, int sex)
+        {
+            int[] defaultFashionIds = FashionHelper.GetDefaultFashionIds(occ, sex);
+            if (defaultFashionIds == null || defaultFashionIds.Length == 0)
+            {
+                return;
+            }
+
+            Dictionary<int, int> partToDefault = new Dictionary<int, int>();
+            for (int i = 0; i < defaultFashionIds.Length; i++)
+            {
+                int fashionId = FashionHelper.ResolveFashionId(defaultFashionIds[i]);
+                if (fashionId <= 0 || !LDFashionCategory.Instance.Contain(fashionId))
+                {
+                    continue;
+                }
+
+                int part = LDFashionCategory.Instance.Get(fashionId).Part;
+                if (part > 0)
+                {
+                    partToDefault[part] = fashionId;
+                }
+            }
+
+            if (partToDefault.Count == 0)
+            {
+                return;
+            }
+
+            HashSet<int> equippedParts = new HashSet<int>();
+            for (int i = self.FashionEquipList.Count - 1; i >= 0; i--)
+            {
+                int wearId = self.FashionEquipList[i];
+                if (!LDFashionCategory.Instance.Contain(wearId))
+                {
+                    self.FashionEquipList.RemoveAt(i);
+                    continue;
+                }
+
+                int part = LDFashionCategory.Instance.Get(wearId).Part;
+                if (part <= 0 || !equippedParts.Add(part))
+                {
+                    self.FashionEquipList.RemoveAt(i);
+                }
+            }
+
+            foreach (var kv in partToDefault)
+            {
+                if (!equippedParts.Contains(kv.Key))
+                {
+                    self.FashionEquipList.Add(kv.Value);
+                }
             }
         }
 

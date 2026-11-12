@@ -11,7 +11,10 @@ namespace ET
         {
 
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             int fashionId = FashionHelper.ResolveFashionId(request.FashionId);
+            int occ = roleInfo.Occ;
+            int sex = roleInfo.Sex;
 
             // 只允许 1穿戴 / 2卸下，非法值不能落到 else 里当卸下处理
             if (request.OperatateType != 1 && request.OperatateType != 2)
@@ -58,8 +61,7 @@ namespace ET
                     return;
                 }
 
-                int roleSex = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Sex;
-                if (ldFashion.Sex != SexEnum.None && ldFashion.Sex != roleSex)
+                if (ldFashion.Sex != SexEnum.None && ldFashion.Sex != sex)
                 {
                     Log.Error($"C2M_FashionWearRequest.4 FashionId={fashionId}");
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -95,8 +97,33 @@ namespace ET
                     return;
                 }
 
+                // 默认时装是整套打底，卸掉没有意义，UI 不应显示卸下按钮
+                int[] defaultIds = FashionHelper.GetDefaultFashionIds(occ, sex);
+                bool isDefault = false;
+                if (defaultIds != null)
+                {
+                    for (int i = 0; i < defaultIds.Length; i++)
+                    {
+                        if (FashionHelper.ResolveFashionId(defaultIds[i]) == fashionId)
+                        {
+                            isDefault = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (isDefault)
+                {
+                    response.Error = ErrorCode.ERR_ModifyData;
+                    reply();
+                    return;
+                }
+
                 bagComponentServer.FashionEquipList.Remove(fashionId);
             }
+
+            // 穿戴是按部位覆盖，卸下会空出部位；统一补齐一次，保证下发列表始终完整
+            bagComponentServer.EnsureFashionEquipList(occ, sex);
 
             UnitHelper.BroadcastUnitAppear(unit);
 

@@ -18,8 +18,10 @@ namespace ET
             int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
             int occTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
 
-            // 老号补齐默认时装（幂等），保证拉背包时 FashionActiveList 里一定有默认时装
-            bagComponentServer.InitDefaultFashion(occ, unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Sex);
+            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
+
+            // 老号补齐默认时装（幂等），保证 FashionActiveList 有记录、FashionEquipList 是完整一套
+            bagComponentServer.InitDefaultFashion(occ, roleInfo.Sex);
 
             List<BagInfo> bagInfos = bagComponentServer.GetAllItems();
 
@@ -35,12 +37,8 @@ namespace ET
             List<BagInfo> equipList = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocEquip);
             /*List<BagInfo> equipList_2 = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocEquip_2);*/
 
-            if (bagComponentServer.FashionEquipList.Count == 0)
-			{
-                LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(occ);
-             
-			}
-           
+            // 默认整套由 InitDefaultFashion -> EnsureFashionEquipList 补进 FashionEquipList，
+            // 下发的穿戴列表不为空、不缺部位，客户端直接渲染即可。
             List<int> fashionTypes = new List<int>();
 			for (int i = bagComponentServer.FashionEquipList.Count - 1; i >= 0; i--)
 			{
@@ -61,6 +59,9 @@ namespace ET
 					continue;
 				}
 			}
+
+            // 上面的清理循环可能移除无效项空出部位，下发前再补齐一次，保证客户端拿到完整一套
+            bagComponentServer.EnsureFashionEquipList(occ, roleInfo.Sex);
 
             response.BagInfos = bagInfos;
 			response.FashionActiveList = bagComponentServer.FashionActiveList;	
