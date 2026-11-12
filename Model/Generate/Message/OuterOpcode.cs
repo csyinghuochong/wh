@@ -607,16 +607,19 @@ namespace ET
 		 public const ushort M2C_FashionActiveResponse = 10604;
 		 public const ushort C2M_FashionWearRequest = 10605;
 		 public const ushort M2C_FashionWearResponse = 10606;
-		 public const ushort M2C_FashionUpdate = 10607;
-		 public const ushort C2M_PetLearnSkill = 10608;
-		 public const ushort M2C_PetLearnSkill = 10609;
-		 public const ushort C2M_PetEatExp = 10610;
-		 public const ushort M2C_PetEatExp = 10611;
-		 public const ushort PetRefinedResult = 10612;
-		 public const ushort C2M_PetRefined = 10613;
-		 public const ushort M2C_PetRefined = 10614;
-		 public const ushort C2M_PetRefinedSave = 10615;
-		 public const ushort M2C_PetRefinedSave = 10616;
-		 public const ushort M2C_UpdateVersion = 10617;
+		 public const ushort C2M_FashionRenewRequest = 10607;
+		 public const ushort M2C_FashionRenewResponse = 10608;
+		 public const ushort FashionInfo = 10609;
+		 public const ushort M2C_FashionUpdate = 10610;
+		 public const ushort C2M_PetLearnSkill = 10611;
+		 public const ushort M2C_PetLearnSkill = 10612;
+		 public const ushort C2M_PetEatExp = 10613;
+		 public const ushort M2C_PetEatExp = 10614;
+		 public const ushort PetRefinedResult = 10615;
+		 public const ushort C2M_PetRefined = 10616;
+		 public const ushort M2C_PetRefined = 10617;
+		 public const ushort C2M_PetRefinedSave = 10618;
+		 public const ushort M2C_PetRefinedSave = 10619;
+		 public const ushort M2C_UpdateVersion = 10620;
 	}
 }

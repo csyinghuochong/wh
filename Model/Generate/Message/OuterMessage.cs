@@ -4371,7 +4371,7 @@ namespace ET
 		public List<IntLongPair> AddedCellNum = new List<IntLongPair>();
 
 		[ProtoMember(6)]
-		public List<int> FashionActiveIds = new List<int>();
+		public List<FashionInfo> FashionActiveList = new List<FashionInfo>();
 
 		[ProtoMember(7)]
 		public List<int> FashionEquipList = new List<int>();
@@ -11866,6 +11866,7 @@ namespace ET
 
 //Recharge充值 end####################################################
 //Fashion时装 begin####################################################
+//激活
 	[ResponseType(nameof(M2C_FashionActiveResponse))]
 	[Message(OuterOpcode.C2M_FashionActiveRequest)]
 	[ProtoContract]
@@ -11894,6 +11895,7 @@ namespace ET
 
 	}
 
+//穿戴
 	[ResponseType(nameof(M2C_FashionWearResponse))]
 	[Message(OuterOpcode.C2M_FashionWearRequest)]
 	[ProtoContract]
@@ -11922,6 +11924,47 @@ namespace ET
 
 		[ProtoMember(92)]
 		public int Error { get; set; }
+
+	}
+
+//续费
+	[ResponseType(nameof(M2C_FashionRenewResponse))]
+	[Message(OuterOpcode.C2M_FashionRenewRequest)]
+	[ProtoContract]
+	public partial class C2M_FashionRenewRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int FashionId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_FashionRenewResponse)]
+	[ProtoContract]
+	public partial class M2C_FashionRenewResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+	}
+
+	[Message(OuterOpcode.FashionInfo)]
+	[ProtoContract]
+	public partial class FashionInfo: Object
+	{
+		[ProtoMember(1)]
+		public int FashionId { get; set; }
+
+		[ProtoMember(2)]
+		public long ActivteTime { get; set; }
 
 	}
 

@@ -11,46 +11,58 @@ namespace ET
         {
 
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            if (!bagComponentServer.FashionActiveIds.Contains(request.FashionId))
+            int fashionId = FashionHelper.ResolveFashionId(request.FashionId);
+
+            // 只允许 1穿戴 / 2卸下，非法值不能落到 else 里当卸下处理
+            if (request.OperatateType != 1 && request.OperatateType != 2)
             {
-                Log.Error($"C2M_FashionWearRequest.1");
                 response.Error = ErrorCode.ERR_ModifyData;
                 reply();
                 return;
             }
 
-            if (!LDFashionCategory.Instance.Contain(request.FashionId))
+            // 持有状态统一走 GetState：未拥有、已过期都不允许操作，有激活记录不等于有效
+            if (FashionHelper.GetState(bagComponentServer.FashionActiveList, fashionId) != FashionState.Owned)
             {
-                Log.Error($"C2M_FashionWearRequest.2");
-                response.Error = ErrorCode.ERR_ModifyData;
+                Log.Error($"C2M_FashionWearRequest.1 FashionId={fashionId}");
+                response.Error = ErrorCode.ERR_FashionNoActive;
                 reply();
                 return;
             }
 
-            LDFashion ldFashion = LDFashionCategory.Instance.Get(request.FashionId);
-            if (ldFashion.Part <= 0)
-            {
-                Log.Error($"C2M_FashionWearRequest.3");
-                response.Error = ErrorCode.ERR_ModifyData;
-                reply();
-                return;
-            }
-
-            int roleSex = roleInfoComponentServer.RoleInfo.Sex;
-            if (ldFashion.Sex != SexEnum.None && ldFashion.Sex != roleSex)
-            {
-                Log.Error($"C2M_FashionWearRequest.4");
-                response.Error = ErrorCode.ERR_ModifyData;
-                reply();
-                return;
-            }
+            bool worn = FashionHelper.IsWorn(bagComponentServer.FashionEquipList, fashionId);
 
             if (request.OperatateType == 1)
             {
-                if (bagComponentServer.FashionEquipList.Contains(request.FashionId))
+                if (worn)
                 {
-                    response.Error = ErrorCode.ERR_AlreadyLearn;
+                    response.Error = ErrorCode.ERR_EquipRepeat;
+                    reply();
+                    return;
+                }
+
+                if (!LDFashionCategory.Instance.Contain(fashionId))
+                {
+                    Log.Error($"C2M_FashionWearRequest.2 FashionId={fashionId}");
+                    response.Error = ErrorCode.ERR_ModifyData;
+                    reply();
+                    return;
+                }
+
+                LDFashion ldFashion = LDFashionCategory.Instance.Get(fashionId);
+                if (ldFashion.Part <= 0)
+                {
+                    Log.Error($"C2M_FashionWearRequest.3 FashionId={fashionId}");
+                    response.Error = ErrorCode.ERR_ModifyData;
+                    reply();
+                    return;
+                }
+
+                int roleSex = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Sex;
+                if (ldFashion.Sex != SexEnum.None && ldFashion.Sex != roleSex)
+                {
+                    Log.Error($"C2M_FashionWearRequest.4 FashionId={fashionId}");
+                    response.Error = ErrorCode.ERR_ModifyData;
                     reply();
                     return;
                 }
@@ -70,16 +82,20 @@ namespace ET
                     }
                 }
 
-                bagComponentServer.FashionEquipList.Add(request.FashionId);
+                bagComponentServer.FashionEquipList.Add(fashionId);
             }
             else
             {
-                if (!bagComponentServer.FashionEquipList.Remove(request.FashionId))
+                // 没穿戴就不允许卸下，先判再删，避免静默 Remove 失败走成「网络错误」
+                if (!worn)
                 {
-                    response.Error = ErrorCode.ERR_NetWorkError;
+                    Log.Error($"C2M_FashionWearRequest.5 FashionId={fashionId}");
+                    response.Error = ErrorCode.ERR_FashionNoWear;
                     reply();
                     return;
                 }
+
+                bagComponentServer.FashionEquipList.Remove(fashionId);
             }
 
             UnitHelper.BroadcastUnitAppear(unit);

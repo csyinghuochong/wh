@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Options;
 using System.Collections.Generic;
 
@@ -16,7 +16,7 @@ namespace ET
         /// <summary>
         /// 激活的时装
         /// </summary>
-        public List<int> FashionActiveIds = new List<int>();
+        public List<FashionInfo> FashionActiveList = new List<FashionInfo>();
 
         /// <summary>
         /// 穿戴的时装

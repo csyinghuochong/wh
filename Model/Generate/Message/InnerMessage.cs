@@ -2423,7 +2423,7 @@ namespace ET
 
 	}
 
-//家族操作  1增加经验  2获取等级  6增加工会资源
+//家族操作  1增加经验  2获取等级  6增加工会资源(Items)；3/4/5(捐献/工会金币)已废弃
 	[ResponseType(nameof(U2M_UnionOperationResponse))]
 	[Message(InnerOpcode.M2U_UnionOperationRequest)]
 	[ProtoContract]

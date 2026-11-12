@@ -26,12 +26,87 @@ namespace ET
 
     public static class BagComponentServerSystem
     {
+        /// <summary>按配置 id 查已激活时装记录，没有返回 null。当前不判断到期（FashionInfo 暂无到期字段）。</summary>
+        public static FashionInfo GetFashionInfo(this BagComponentServer self, int fashionId)
+        {
+            for (int i = 0; i < self.FashionActiveList.Count; i++)
+            {
+                if (self.FashionActiveList[i].FashionId == fashionId)
+                {
+                    return self.FashionActiveList[i];
+                }
+            }
 
+            return null;
+        }
+
+        /// <summary>
+        /// 时装到期检查：过期由服务端自动卸下（从 FashionEquipList 移除），持有记录保留，
+        /// 客户端才能显示 FashionState.Expired 的「已过期 / 续费」。
+        /// TODO 当前 FashionInfo 只有 ActivteTime、配置表没有 ValidityTime/EndTime，RemoveExpiredFromEquip 是空实现，
+        /// 所以这里暂时恒不改动任何数据。接入到期时间后只需实现 FashionHelper.RemoveExpiredFromEquip，
+        /// 再补 changed 时的 M2C_FashionUpdate + UnitHelper.BroadcastUnitAppear 广播即可。
+        /// 在线期间持续到期可再挂 PlayerTickOrchestrator.RunMinuteTick。
+        /// </summary>
+        public static void OnCheckFashionExpired(this BagComponentServer self)
+        {
+            bool changed = FashionHelper.RemoveExpiredFromEquip(self.FashionActiveList, self.FashionEquipList);
+            if (!changed)
+            {
+                return;
+            }
+
+            // TODO 广播外观与穿戴列表变化（M2C_FashionUpdate / UnitHelper.BroadcastUnitAppear）。
+        }
+
+        /// <summary>
+        /// 按 Occupation.Fashion_Id_Man / Fashion_Id_Woman 把默认时装写入 FashionActiveList，
+        /// 客户端直接按这份列表显示，不需要再单独维护一套默认时装。
+        /// 只写持有列表，绝不写 FashionEquipList：模型装配仍由 ChangeEquipComponent 走
+        /// FashionHelper.MergeWearFashionIds(occ, sex, 穿列表) 自行补默认部位，两条链路互不影响。
+        /// 幂等，已有记录跳过，可在创角和登录时重复调用，用于给老号补齐。
+        /// </summary>
+        public static void InitDefaultFashion(this BagComponentServer self, int occ, int sex)
+        {
+            int[] defaultFashionIds = FashionHelper.GetDefaultFashionIds(occ, sex);
+            if (defaultFashionIds == null || defaultFashionIds.Length == 0)
+            {
+                return;
+            }
+
+            long now = TimeHelper.ServerNow();
+            for (int i = 0; i < defaultFashionIds.Length; i++)
+            {
+                int fashionId = FashionHelper.ResolveFashionId(defaultFashionIds[i]);
+                if (fashionId <= 0 || !LDFashionCategory.Instance.Contain(fashionId))
+                {
+                    continue;
+                }
+
+                if (self.GetFashionInfo(fashionId) != null)
+                {
+                    continue;
+                }
+
+                self.FashionActiveList.Add(new FashionInfo()
+                {
+                    FashionId = fashionId,
+                    ActivteTime = now
+                });
+            }
+        }
+
+        /// <summary>创角入口，转发到 (occ, sex) 版本。</summary>
+        public static void InitDefaultFashion(this BagComponentServer self, CreateRoleInfo createRoleInfo)
+        {
+            self.InitDefaultFashion(createRoleInfo.PlayerOcc, createRoleInfo.Sex);
+        }
 
         public static void OnInit(this BagComponentServer self,  CreateRoleInfo createRoleInfo)
         {
             self.EnsureItemLists();
             self.GrantCreateRoleInitialResources();
+            self.InitDefaultFashion(createRoleInfo);
 
             LDOccupation ldOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
             int[] equipInit = ldOccupation.Equip_Init;
@@ -525,6 +600,13 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
            
             self.CheckAllItem( );
+
+            // 老号补齐默认时装：InitDefaultFashion 幂等，已拥有不会重复写
+            int sex = unit?.GetComponent<RoleInfoComponentServer>()?.RoleInfo?.Sex ?? 0;
+            self.InitDefaultFashion(occ, sex);
+
+            // 过期时装自动卸下（当前无到期配置，空跑；接入后此处自动生效）
+            self.OnCheckFashionExpired();
 
             ///old
             //int warehourseNumber = (int)ItemLocType.ItemLocMax - 5;

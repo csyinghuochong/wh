@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -17,26 +17,26 @@ namespace ET
             }
 
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            if (bagComponentServer.FashionActiveIds.Contains(request.FashionId))
+
+            // 没有记录则新增，激活时间为当前服务器时间；已有记录则把激活时间往后推一天
+            FashionInfo fashionInfo = bagComponentServer.GetFashionInfo(request.FashionId);
+            if (fashionInfo == null)
             {
-                response.Error = ErrorCode.ERR_AlreadyLearn;
-                reply();
-                return;
+                bagComponentServer.FashionActiveList.Add(new FashionInfo()
+                {
+                    FashionId = request.FashionId,
+                    ActivteTime = TimeHelper.ServerNow()
+                });
+            }
+            else
+            {
+                fashionInfo.ActivteTime += TimeHelper.OneDay;
             }
 
-            LDFashion ldFashion = LDFashionCategory.Instance.Get(request.FashionId  );
-            /*if (!bagComponentServer.CheckNeedItem(ldFashion.a))
-            {
-                response.Error = ErrorCode.ERR_HouBiNotEnough;
-                reply();
-                return;
-            }
+            // TODO 以后接入激活消耗：CheckNeedItem / OnCostItemData
 
             Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-
-            bagComponentServer.OnCostItemData(ldFashion.ActiveCost, ItemLocType.ItemLocBag, 98 );
-            bagComponentServer.FashionActiveIds.Add( request.FashionId );
-    */
+    
             reply();
             await ETTask.CompletedTask;
         }

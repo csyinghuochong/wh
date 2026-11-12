@@ -12,23 +12,18 @@ namespace ET
 
 			BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
 
-			//测试 送一个转职道具
-			//if (ComHelp.IsInnerNet() && bagComponentServer.GetItemNumber(90000014) < 10)
-			//{
-   //             bagComponentServer.OnAddItemData($"90000014;10", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", false);
-   //         }
+
 
             //读取数据库
             int occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
             int occTwo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.OccTwo;
+
+            // 老号补齐默认时装（幂等），保证拉背包时 FashionActiveList 里一定有默认时装
+            bagComponentServer.InitDefaultFashion(occ, unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Sex);
+
             List<BagInfo> bagInfos = bagComponentServer.GetAllItems();
 
-			/*
-			for (int i = 0; i < bagInfos.Count; i++) {
-				Log.Info("道具ID：" + bagInfos[i]  + bagInfos[i].GetWay);
-			}
-			*/
-
+			
 			
 			//初始化
 			for (int i = 0; i < bagInfos.Count; i++)
@@ -45,12 +40,7 @@ namespace ET
                 LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(occ);
              
 			}
-            if (bagComponentServer.FashionActiveIds.Count == 0)
-            {
-                LDOccupation ldOccupationConfig = LDOccupationCategory.Instance.Get(occ);
-              
-            }
-
+           
             List<int> fashionTypes = new List<int>();
 			for (int i = bagComponentServer.FashionEquipList.Count - 1; i >= 0; i--)
 			{
@@ -63,17 +53,17 @@ namespace ET
 				LDFashion ldFashion = LDFashionCategory.Instance.Get(bagComponentServer.FashionEquipList[i]);
 			
             }
-			for (int i = bagComponentServer.FashionActiveIds.Count - 1; i >= 0; i--)
+			for (int i = bagComponentServer.FashionActiveList.Count - 1; i >= 0; i--)
 			{
-				if (!LDFashionCategory.Instance.Contain(bagComponentServer.FashionActiveIds[i]))
+				if (!LDFashionCategory.Instance.Contain(bagComponentServer.FashionActiveList[i].FashionId))
 				{
-					bagComponentServer.FashionActiveIds.RemoveAt(i);
+					bagComponentServer.FashionActiveList.RemoveAt(i);
 					continue;
 				}
 			}
 
             response.BagInfos = bagInfos;
-			response.FashionActiveIds = bagComponentServer.FashionActiveIds;	
+			response.FashionActiveList = bagComponentServer.FashionActiveList;	
 			response.FashionEquipList = bagComponentServer.FashionEquipList;
             response.AddedCellNum = BagCellNumHelper.ToProto(bagComponentServer.AddedCellNum);
             response.CangKuNumber = bagComponentServer.CangKuNumber;
