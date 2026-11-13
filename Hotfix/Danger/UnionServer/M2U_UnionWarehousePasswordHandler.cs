@@ -30,8 +30,22 @@ namespace ET
                 return;
             }
 
-            dBUnionInfo.WarehousePassword = request.NewPassword ?? string.Empty;
-            dBUnionInfo.UnionInfo.HasWarehousePassword = string.IsNullOrEmpty(dBUnionInfo.WarehousePassword) ? 0 : 1;
+            if (string.IsNullOrEmpty(request.NewPassword))
+            {
+                response.Error = ErrorCode.ERR_Union_WarehousePassword;
+                reply();
+                return;
+            }
+
+            if (oldPwd == request.NewPassword)
+            {
+                response.Error = ErrorCode.ERR_Union_WarehousePasswordSame;
+                reply();
+                return;
+            }
+
+            dBUnionInfo.WarehousePassword = request.NewPassword;
+            dBUnionInfo.UnionInfo.HasWarehousePassword = UnionWarehouseHelper.GetWarehousePasswordState(dBUnionInfo.WarehousePassword);
             DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
             response.HasWarehousePassword = dBUnionInfo.UnionInfo.HasWarehousePassword;
             reply();

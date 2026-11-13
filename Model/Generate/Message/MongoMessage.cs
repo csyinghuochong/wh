@@ -30,22 +30,22 @@ namespace ET
 		public int RpcId { get; set; }
 
 		[ProtoMember(2)]
-		public Unit Unit { get; set; }
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public long TransferId { get; set; }
 
 		[ProtoMember(4)]
-		public int SceneType { get; set; }
+		public int ChunkIndex { get; set; }
+
+		[ProtoMember(5)]
+		public int ChunkCount { get; set; }
 
 		[ProtoMember(6)]
-		public int ChapterId { get; set; }
-
-		[ProtoMember(7)]
-		public int Difficulty { get; set; }
-
-		[ProtoMember(8)]
-		public string ParamInfo { get; set; }
+		public int TotalBytes { get; set; }
 
 		[ProtoMember(12)]
-		public List<byte[]> EntityBytes = new List<byte[]>();
+		public byte[] Data { get; set; }
 
 	}
 
@@ -76,7 +76,7 @@ namespace ET
 		public int RpcId { get; set; }
 
 		[ProtoMember(2)]
-		public Unit Unit { get; set; }
+		public long UnitId { get; set; }
 
 		[ProtoMember(4)]
 		public int SceneType { get; set; }
@@ -91,7 +91,7 @@ namespace ET
 		public string ParamInfo { get; set; }
 
 		[ProtoMember(12)]
-		public List<byte[]> EntityBytes = new List<byte[]>();
+		public long TransferId { get; set; }
 
 	}
 

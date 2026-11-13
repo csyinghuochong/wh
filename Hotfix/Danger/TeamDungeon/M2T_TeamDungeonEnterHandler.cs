@@ -29,7 +29,7 @@ namespace ET
 
             Scene dungeonScene = teamScene.GetChild<Scene>(teamInfo.FubenUUId);
             TeamDungeonComponent dungeon = dungeonScene?.GetComponent<TeamDungeonComponent>();
-            if (dungeon == null || dungeonScene.InstanceId != teamInfo.FubenInstanceId)
+            if (dungeon == null || dungeon.IsAbandoning || dungeonScene.InstanceId != teamInfo.FubenInstanceId)
             {
                 response.Error = ErrorCode.ERR_TransferFailError;
                 reply();

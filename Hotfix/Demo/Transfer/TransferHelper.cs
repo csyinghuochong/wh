@@ -76,7 +76,11 @@ namespace ET
                 switch (request.SceneType)
                 {
                     case MapTypeEnum.MainCityScene:
-                        await TransferHelper.MainCityTransfer(unit);
+                        int mainCityError = await TransferHelper.MainCityTransfer(unit);
+                        if (mainCityError != ErrorCode.ERR_Success)
+                        {
+                            return Fail(mainCityError);
+                        }
                         break;
                  
                     //宠物闯关
@@ -319,7 +323,11 @@ namespace ET
                         }
 
                         TransferHelper.BeforeTransfer(unit);
-                        await TransferHelper.Transfer(unit, createUnit.FubenInstanceId, (int)MapTypeEnum.TeamDungeon, createUnit.FubenId, createUnit.FubenType, "0");
+                        int teamTransferError = await TransferHelper.Transfer(unit, createUnit.FubenInstanceId, (int)MapTypeEnum.TeamDungeon, createUnit.FubenId, createUnit.FubenType, "0");
+                        if (teamTransferError != ErrorCode.ERR_Success)
+                        {
+                            return Fail(teamTransferError);
+                        }
                         if (SceneConfigHelper.IsSingleFuben(sceneTypeEnum))
                         {
                             TransferHelper.NoticeFubenCenter(oldscene, 2).Coroutine();
@@ -333,7 +341,7 @@ namespace ET
             return ErrorCode.ERR_Success;
         }
 
-        public static async ETTask MainCityTransfer(Unit unit)
+        public static async ETTask<int> MainCityTransfer(Unit unit)
         {
             Scene scene = unit.DomainScene();
             MapComponent mapComponent = scene.GetComponent<MapComponent>();
@@ -344,9 +352,14 @@ namespace ET
             long mapInstanceId = DBHelper.GetMainCityServerId(UnitZoneHelper.GetHomeZone(unit));
             //动态删除副本
             TransferHelper.BeforeTransfer(unit);
-            await TransferHelper.Transfer(unit, mapInstanceId, (int)MapTypeEnum.MainCityScene, SceneConfigHelper.MainCityID(), 0, "0");
+            int error = await TransferHelper.Transfer(unit, mapInstanceId, (int)MapTypeEnum.MainCityScene, SceneConfigHelper.MainCityID(), 0, "0");
+            if (error != ErrorCode.ERR_Success)
+            {
+                return error;
+            }
 
             Game.EventSystem.Publish(new EventType.ReturnMainCity() { DomainScene = scene, UnitId = userId });
+            return ErrorCode.ERR_Success;
         }
 
         public static async ETTask<int> LocalDungeonTransfer(Unit unit, int sceneId, int transferId, int difficulty)
@@ -426,33 +439,6 @@ namespace ET
             }
         }
 
-        public static async ETTask<int> TransferComponent<T>(Unit unit, long sceneInstanceId) where T : Entity
-        {
-            string component = typeof(T).Name;
-            M2M_UnitTransfer_0_Request request_0 = new M2M_UnitTransfer_0_Request();
-            request_0.Unit = unit;
-            foreach ((Type key, Entity entity) in unit.Components)
-            {
-                if (!(entity is ITransfer))
-                {
-                    continue;
-                }
-
-                //request.Entitys.Add(entity);
-                if (key.Name.Equals(component))
-                {
-                    request_0.EntityBytes.Add(MongoHelper.ToBson(entity));
-                }
-            }
-            request_0.ParamInfo = component;
-            M2M_UnitTransfer_0_Response response_0 = await ActorMessageSenderComponent.Instance.Call(sceneInstanceId, request_0) as M2M_UnitTransfer_0_Response;
-            if (response_0 == null)
-            {
-                return ErrorCode.ERR_TransferFailError;
-            }
-            return response_0.Error;
-        }
-
         /// <summary>
         /// 必须等待返回才能执行销毁场景的操作
         /// </summary>
@@ -464,69 +450,68 @@ namespace ET
         /// SceneTypeEnum.PetDungeon SceneTypeEnum.TrialDungeon是副本id  SceneTypeEnum.TowerOfSeal是副本id 
         /// SceneTypeEnum.LocalDungeon 是传送idSceneTypeEnum.Happy是位置 SceneTypeEnum.Battle是阵营
         /// <returns></returns>
-        public static async ETTask Transfer(Unit unit, long sceneInstanceId, int sceneType, int sceneId, int fubenDifficulty,  string paramInfo)
+        public static async ETTask<int> Transfer(Unit unit, long sceneInstanceId, int sceneType, int sceneId, int fubenDifficulty,  string paramInfo)
         {
-            int bagError = await TransferComponent<BagComponentServer>(unit, sceneInstanceId);
-            if (bagError != ErrorCode.ERR_Success)
+            try
             {
-                Log.Error($"背包预传送失败，留在原场景: {unit.Id} {bagError}");
-                if (unit.GetComponent<MailBoxComponent>() == null)
+                unit.RemoveComponent<MailBoxComponent>();
+                byte[] bytes = UnitTransferHelper.Serialize(unit);
+                if (bytes == null)
+                {
+                    return ErrorCode.ERR_TransferFailError;
+                }
+
+                long unitId = unit.Id;
+                long transferId = IdGenerater.Instance.GenerateId();
+                int transferError = await UnitTransferHelper.Send(unitId, sceneInstanceId, transferId, bytes);
+                if (transferError != ErrorCode.ERR_Success || unit.IsDisposed)
+                {
+                    return transferError != ErrorCode.ERR_Success ? transferError : ErrorCode.ERR_TransferFailError;
+                }
+
+                MessageHelper.SendToClient(unit, new M2C_StartSceneChange
+                {
+                    SceneInstanceId = sceneInstanceId, SceneType = sceneType, ChapterId = sceneId,
+                    Difficulty = fubenDifficulty, ParamInfo = paramInfo,
+                });
+                await TimerComponent.Instance.WaitFrameAsync();
+                if (unit.IsDisposed)
+                {
+                    return ErrorCode.ERR_TransferFailError;
+                }
+
+                UnitComponent unitComponent = unit.GetParent<UnitComponent>();
+                long oldInstanceId = unit.InstanceId;
+                bool sameScene = unit.DomainScene().InstanceId == sceneInstanceId;
+                await LocationProxyComponent.Instance.Lock(unitId, oldInstanceId);
+                // 同场景传送须先移除旧角色，目标 Handler 才能创建同 Id 的角色。
+                if (sameScene && unit.InstanceId == oldInstanceId)
+                {
+                    unitComponent.Remove(unitId);
+                }
+
+                M2M_UnitTransferResponse response = (M2M_UnitTransferResponse)await ActorMessageSenderComponent.Instance.Call(
+                    sceneInstanceId, new M2M_UnitTransferRequest
+                    {
+                        UnitId = unitId, TransferId = transferId, SceneType = sceneType,
+                        ChapterId = sceneId, Difficulty = fubenDifficulty, ParamInfo = paramInfo,
+                    });
+                long newInstanceId = response.Error == ErrorCode.ERR_Success ? response.NewInstanceId : oldInstanceId;
+                await LocationProxyComponent.Instance.UnLock(unitId, oldInstanceId, newInstanceId);
+                if (response.Error == ErrorCode.ERR_Success && unit.InstanceId == oldInstanceId)
+                {
+                    unitComponent.Remove(unitId);
+                }
+
+                return response.Error;
+            }
+            finally
+            {
+                if (!unit.IsDisposed && unit.GetComponent<MailBoxComponent>() == null)
                 {
                     unit.AddComponent<MailBoxComponent>();
                 }
-                return;
             }
-
-            // 删除Mailbox,让发给Unit的ActorLocation消息重发
-            unit.RemoveComponent<MailBoxComponent>();
-
-            // 通知客户端开始切场景
-            M2C_StartSceneChange m2CStartSceneChange = new M2C_StartSceneChange() {SceneInstanceId = sceneInstanceId, SceneType = sceneType, ChapterId = sceneId, Difficulty = fubenDifficulty, ParamInfo = paramInfo };
-            MessageHelper.SendToClient(unit, m2CStartSceneChange);
-
-            await TimerComponent.Instance.WaitFrameAsync();
-        
-            M2M_UnitTransferRequest request = new M2M_UnitTransferRequest();
-            request.Unit = unit;
-            foreach ((Type key, Entity entity) in unit.Components)
-            {
-                if (!(entity is ITransfer))
-                {
-                    continue;
-                }
-                if (key == typeof(BagComponentServer))
-                {
-                    continue;
-                }
-                //request.Entitys.Add(entity);
-                request.EntityBytes.Add(MongoHelper.ToBson(entity));
-            }
-            request.SceneType = sceneType;
-            request.ChapterId = sceneId;
-            request.Difficulty = fubenDifficulty;
-            request.ParamInfo = paramInfo;
-          
-            // location加锁
-            
-            //移到上面
-            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
-            long oldInstanceId = unit.InstanceId;
-            if (oldInstanceId == unit.InstanceId)
-            {
-                unitComponent.Remove(unit.Id);
-            }
-            //unit.Dispose();
-            
-            await LocationProxyComponent.Instance.Lock(unit.Id, oldInstanceId);
-            M2M_UnitTransferResponse response = await ActorMessageSenderComponent.Instance.Call(sceneInstanceId, request) as M2M_UnitTransferResponse;
-            await LocationProxyComponent.Instance.UnLock(unit.Id, oldInstanceId, response.NewInstanceId);
-            
-            /*long oldInstanceId = unit.InstanceId;
-            if (oldInstanceId == unit.InstanceId)
-            {
-                unitComponent.Remove(unit.Id);
-            }*/
-            //unit.Dispose();
         }
 
         public static void AfterTransfer(Unit unit)

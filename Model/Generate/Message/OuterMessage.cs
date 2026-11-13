@@ -10943,6 +10943,39 @@ namespace ET
 
 	}
 
+// 放弃组队副本：副本内任意玩家可发起，目标实例内全部玩家回主城出生点后销毁实例。
+	[ResponseType(nameof(M2C_TeamDungeonAbandonResponse))]
+	[Message(OuterOpcode.C2M_TeamDungeonAbandonRequest)]
+	[ProtoContract]
+	public partial class C2M_TeamDungeonAbandonRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+// 要放弃的副本场景实例，须与发起玩家当前所在的组队副本实例一致。
+		[ProtoMember(1)]
+		public long FubenInstanceId { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_TeamDungeonAbandonResponse)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonAbandonResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 //TeamDungeon end####################################################
 //Friend begin####################################################
 //好友列表

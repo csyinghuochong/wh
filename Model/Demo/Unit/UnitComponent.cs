@@ -10,7 +10,7 @@ namespace ET
 
 		public List<Unit> Units = new List<Unit>();
 
-		public Dictionary<long, List<byte[]>> UnitComponents = new Dictionary<long, List<byte[]>>();
+		public Dictionary<long, UnitTransferBuffer> UnitComponents = new Dictionary<long, UnitTransferBuffer>();
 
 		public List<long> AllPlayers = new List<long>();	
     }

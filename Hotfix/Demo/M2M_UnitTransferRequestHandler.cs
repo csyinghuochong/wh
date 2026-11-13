@@ -11,41 +11,38 @@ namespace ET
 		protected override async ETTask Run(Scene scene, M2M_UnitTransferRequest request, M2M_UnitTransferResponse response, Action reply)
 		{
 			bool replied = false;
+            long unitId = request.UnitId;
+            Unit unit = null;
+            bool added = false;
 			try
 			{
 				UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
-				if (unitComponent.Get(request.Unit.Id) != null)
+				if (unitComponent.Get(unitId) != null)
 				{
-					Log.Error($"LoginTest M2M_UnitTransfer   unitComponent.Get(unit.Id)!=null: {scene.DomainZone()} {request.Unit.Id}  request.SceneType： {request.SceneType}");
-
-					if (request.SceneType == MapTypeEnum.Home)
-					{
-						Log.Error($"Home: {scene.Id} {scene.InstanceId}");
-                    }
 					response.Error = ErrorCode.ERR_OperationOften;
 					reply();
 					replied = true;
 					return;
 				}
-				else
+				if (Log.IsDebugEnabled)
 				{
-					Log.Debug($"LoginTest M2M_UnitTransfer:  {scene.DomainZone()}  {request.Unit.Id} request.SceneType： {request.SceneType} request.Difficulty： {request.Difficulty}  request.ParamInfo：{request.ParamInfo}");
+					Log.Debug($"LoginTest M2M_UnitTransfer:  {scene.DomainZone()}  {unitId} request.SceneType： {request.SceneType} request.Difficulty： {request.Difficulty}  request.ParamInfo：{request.ParamInfo}");
 				}
                 
-                Unit unit = request.Unit;
+                if (!UnitTransferHelper.TryTake(unitComponent, unitId, request.TransferId, out unit, out List<Entity> entities))
+                {
+                    response.Error = ErrorCode.ERR_TransferFailError;
+                    reply();
+                    replied = true;
+                    return;
+                }
+
                 unitComponent.AddChild(unit);
+                added = true;
 				unitComponent.Add(unit);
                 
-                Dictionary<long, List<byte[]>> components = unitComponent.UnitComponents;
-				request.EntityBytes.AddRange(components[request.Unit.Id]);
-				components[request.Unit.Id].Clear();
-                foreach (byte[] bytes in request.EntityBytes)
+                foreach (Entity entity in entities)
 				{
-					Entity entity = MongoHelper.Deserialize<Entity>(bytes);
-                    if (bytes.Length > 300000)
-                    {
-						Log.Warning($"bytes.Length > too large: {unit.Id} {entity.GetType().Name} {bytes.Length}");
-                    }
                     unit.AddComponent(entity);
 				}
 				unit.AddComponent<MoveComponent>();
@@ -331,7 +328,11 @@ namespace ET
             }
 			catch (Exception ex)
 			{
-				Log.Error($"M2M_UnitTransfer Exception unitId={request.Unit.Id} {ex}");
+				Log.Error($"M2M_UnitTransfer Exception unitId={unitId} {ex}");
+                if (added && !replied)
+                {
+                    scene.GetComponent<UnitComponent>().Remove(unitId);
+                }
 				if (!replied)
 				{
 					response.Error = ErrorCode.ERR_TransferFailError;

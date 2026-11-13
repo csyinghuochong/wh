@@ -41,6 +41,10 @@ namespace ET
             unionInfo.UnionInfo.UnionBanner = request.UnionBanner;
             unionInfo.UnionInfo.UnionPattern = request.UnionPattern;
 
+            // 仓库初始使用默认密码。
+            unionInfo.WarehousePassword = UnionWarehouseHelper.DefaultWarehousePassword;
+            unionInfo.UnionInfo.HasWarehousePassword = UnionWarehouseHelper.GetWarehousePasswordState(unionInfo.WarehousePassword);
+
             RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(scene.DomainZone(), request.UserID);
             unionInfo.UnionInfo.LeaderName = roleInfoComponentServer.RoleInfo.Name;
             unionInfo.UnionInfo.UnionPlayerList.Add(UnionHelper.CreateUnionPlayerSnapshot(roleInfoComponentServer.RoleInfo, request.UserID, TimeHelper.ServerNow(), UnionPosition.Leader));

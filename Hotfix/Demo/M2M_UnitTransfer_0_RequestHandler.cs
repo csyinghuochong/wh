@@ -1,7 +1,4 @@
-using MongoDB.Driver.Linq;
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace ET
 {
@@ -10,17 +7,23 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, M2M_UnitTransfer_0_Request request, M2M_UnitTransfer_0_Response response, Action reply)
         {
-            Dictionary<long, List<byte[]>> components = scene.GetComponent<UnitComponent>().UnitComponents;
-            if (!components.ContainsKey(request.Unit.Id))
+            UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
+            bool continuing = unitComponent.UnitComponents.TryGetValue(request.UnitId, out UnitTransferBuffer buffer)
+                    && buffer.TransferId == request.TransferId && buffer.ExpireTime > TimeHelper.ServerNow();
+            if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TeamDungeon
+                && scene.GetComponent<TeamDungeonComponent>().IsAbandoning && !continuing)
             {
-                components.Add(request.Unit.Id, new List<byte[]>());
-            }
-            if (request.ParamInfo.Equals(typeof(BagComponentServer).Name))
-            {
-                components[request.Unit.Id].Clear();
+                response.Error = ErrorCode.ERR_AlreadyFinish;
+                reply();
+                return;
             }
 
-            components[request.Unit.Id].AddRange(request.EntityBytes);
+            response.Error = UnitTransferHelper.Receive(unitComponent, request, out bool started);
+            if (started)
+            {
+                TimerComponent.Instance.NewOnceTimer(TimeHelper.ServerNow() + UnitTransferHelper.Timeout,
+                    TimerType.UnitTransferTimeout, Tuple.Create(unitComponent, request.UnitId, request.TransferId));
+            }
             reply();
             await ETTask.CompletedTask;
         }

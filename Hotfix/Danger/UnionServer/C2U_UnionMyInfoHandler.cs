@@ -17,7 +17,7 @@ namespace ET
             }
 
             UnionInfo src = dBUnionInfo.UnionInfo;
-            src.HasWarehousePassword = string.IsNullOrEmpty(dBUnionInfo.WarehousePassword) ? 0 : 1;
+            src.HasWarehousePassword = UnionWarehouseHelper.GetWarehousePasswordState(dBUnionInfo.WarehousePassword);
             response.UnionMyInfo = CopyUnionInfoWithoutKeJiJingXuan(src);
 
             HashSet<long> onlineIds = await ServerMessageHelper.GetChatOnlineUnitIds(scene.DomainZone());

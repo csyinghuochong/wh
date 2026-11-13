@@ -27,6 +27,7 @@ namespace ET
         {
             self.EnterTime = 0;
             self.TeamInfo = null;
+            self.IsAbandoning = false;
             self.EnterPlayers.Clear();
             self.BoxReward.Clear();
             self.ItemFlags.Clear();
@@ -49,6 +50,90 @@ namespace ET
     {
         private const int TeamDungeonStartMarqueeId = 101;
         private const int TeamDungeonEndMarqueeId = 102;
+
+        /// <summary>放弃当前实例：停止新进入，全部玩家回主城后统一清理副本，保留队伍。</summary>
+        public static async ETTask<int> Abandon(this TeamDungeonComponent self)
+        {
+            if (self.IsAbandoning)
+            {
+                return ErrorCode.ERR_RequestRepeatedly;
+            }
+
+            Scene scene = self.DomainScene();
+            UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
+            self.IsAbandoning = true;
+            try
+            {
+                // 已开始分片传送的玩家仍须接收落地，避免销毁正在接收数据的实例。
+                long waitUntil = TimeHelper.ServerNow() + 10 * TimeHelper.Second;
+                while (HasPendingTransfers(unitComponent))
+                {
+                    if (TimeHelper.ServerNow() >= waitUntil)
+                    {
+                        return ErrorCode.ERR_TransferFailError;
+                    }
+
+                    await TimerComponent.Instance.WaitFrameAsync();
+                }
+
+                List<long> playerIds = UnitHelper.GetUnitList(scene, UnitType.Player).Select(player => player.Id).ToList();
+                int transferError = ErrorCode.ERR_Success;
+                for (int i = 0; i < playerIds.Count; i++)
+                {
+                    long playerId = playerIds[i];
+                    using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Transfer, playerId))
+                    {
+                        // 等锁期间玩家可能已正常回城或断线，重新从本实例取玩家。
+                        Unit player = unitComponent.Get(playerId);
+                        if (player == null)
+                        {
+                            continue;
+                        }
+
+                        int error = await TransferHelper.MainCityTransfer(player);
+                        if (error != ErrorCode.ERR_Success)
+                        {
+                            transferError = error;
+                        }
+                    }
+                }
+
+                if (transferError != ErrorCode.ERR_Success)
+                {
+                    return transferError;
+                }
+
+                if (self.IsHavePlayer() || HasPendingTransfers(unitComponent))
+                {
+                    return ErrorCode.ERR_TransferFailError;
+                }
+
+                TeamInfo teamInfo = self.TeamInfo;
+                if (teamInfo.FubenInstanceId == scene.InstanceId)
+                {
+                    TeamSceneComponent teamScene = scene.GetParent<TeamSceneComponent>();
+                    teamScene.OnDungeonOver(teamInfo.TeamId);
+                    teamScene.SyncTeamInfo(teamInfo, new List<TeamPlayerInfo>(teamInfo.PlayerList)).Coroutine();
+                }
+
+                TransferHelper.NoticeFubenCenter(scene, 2).Coroutine();
+                scene.Dispose();
+                return ErrorCode.ERR_Success;
+            }
+            finally
+            {
+                // 传送失败时保留副本和未离开的玩家，允许再次发起放弃。
+                if (!self.IsDisposed)
+                {
+                    self.IsAbandoning = false;
+                }
+            }
+        }
+
+        private static bool HasPendingTransfers(UnitComponent unitComponent)
+        {
+            return unitComponent.UnitComponents.Count > 0;
+        }
 
         private static TeamDropItem FindTeamDropItem(this TeamDungeonComponent self, long dropId)
         {
@@ -85,6 +170,11 @@ namespace ET
 
         public static void Check(this TeamDungeonComponent self)
         {
+            if (self.IsAbandoning)
+            {
+                return;
+            }
+
             if (self.TeamDropItems.Count == 0)
             {
                 //TimerComponent.Instance.Remove(ref self.Timer);
@@ -285,6 +375,11 @@ namespace ET
 
         public static void OnDungeonOver(this TeamDungeonComponent self)
         {
+            if (self.IsAbandoning)
+            {
+                return;
+            }
+
             M2C_TeamDungeonSettlement m2C_FubenSettlement = new M2C_TeamDungeonSettlement();
             m2C_FubenSettlement.PassTime = 5 * 60 * 1000;
             m2C_FubenSettlement.PlayerList = self.TeamInfo.PlayerList;

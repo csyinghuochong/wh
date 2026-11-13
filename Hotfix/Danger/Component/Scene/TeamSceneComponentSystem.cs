@@ -292,6 +292,12 @@ namespace ET
         /// <returns></returns>
         public static void  OnUnitReturn(this TeamSceneComponent self, Scene fubnescene, long unitId)
         {
+            // 批量放弃由 TeamDungeonComponent 统一销毁，不能因队长先回城而解散队伍。
+            if (fubnescene.GetComponent<TeamDungeonComponent>().IsAbandoning)
+            {
+                return;
+            }
+
             int realPlayerNumber = 0;
             TeamInfo teamInfo = self.GetTeamInfo(unitId);
 
@@ -344,6 +350,11 @@ namespace ET
         {
             TeamDungeonComponent teamDungeonComponent = fubnescene.GetComponent<TeamDungeonComponent>();
             TeamInfo teamInfo = teamDungeonComponent.TeamInfo;
+            if (teamDungeonComponent.IsAbandoning)
+            {
+                return;
+            }
+
             if (teamDungeonComponent.IsHavePlayer())
             {
                 return;
