@@ -5,6 +5,70 @@ namespace ET
 {
     public static class UnitHelper
     {
+        // 公共掉落实体销毁、私人掉落入包成功后统一更新尸体，最后一件消失时移除尸体。
+        public static void RemoveMonsterDrop(UnitComponent units, long monsterId, long dropId)
+        {
+            Unit monster = units.Get(monsterId);
+            if (monster == null || monster.Type != UnitType.Monster)
+            {
+                return;
+            }
+            List<DropInfo> drops = monster.GetComponent<UnitInfoComponent>().Drops;
+            if (drops.RemoveAll(drop => drop.UnitId == dropId) == 0 || drops.Count > 0
+                    || monster.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) != 1)
+            {
+                return;
+            }
+            units.Remove(monsterId);
+        }
+
+        public static void RemovePickedDrop(Unit picker, long dropId)
+        {
+            UnitComponent units = picker.GetParent<UnitComponent>();
+            List<DropInfo> privateDrops = picker.GetComponent<UnitInfoComponent>().Drops;
+            int index = privateDrops.FindIndex(drop => drop.UnitId == dropId);
+            if (index < 0)
+            {
+                units.Remove(dropId);
+                return;
+            }
+            DropInfo info = privateDrops[index];
+            privateDrops.RemoveAt(index);
+            RemoveMonsterDrop(units, info.BeKillId, dropId);
+        }
+
+        public static void ClearMonsterDrops(Unit monster)
+        {
+            UnitComponent units = monster.GetParent<UnitComponent>();
+            List<DropInfo> drops = monster.GetComponent<UnitInfoComponent>().Drops;
+            DropInfo[] expired = drops.ToArray();
+            drops.Clear();
+            foreach (DropInfo drop in expired)
+            {
+                if (drop.DropType != 1)
+                {
+                    units.Remove(drop.UnitId);
+                }
+            }
+            foreach (Unit player in GetUnitList(monster.DomainScene(), UnitType.Player))
+            {
+                List<DropInfo> privateDrops = player.GetComponent<UnitInfoComponent>().Drops;
+                M2C_RemoveUnits message = new M2C_RemoveUnits();
+                for (int i = privateDrops.Count - 1; i >= 0; i--)
+                {
+                    if (privateDrops[i].BeKillId != monster.Id)
+                    {
+                        continue;
+                    }
+                    message.Units.Add(privateDrops[i].UnitId);
+                    privateDrops.RemoveAt(i);
+                }
+                if (message.Units.Count > 0)
+                {
+                    MessageHelper.SendToClient(player, message);
+                }
+            }
+        }
        
         public static UnitInfo CreateUnitInfo(Unit unit)
         {

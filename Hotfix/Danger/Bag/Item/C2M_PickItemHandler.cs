@@ -87,11 +87,8 @@ namespace ET
                         {
                             SceneCreatureHelp.SendFubenPickMessage(unit, dropInfo);
                         }
-                        if (pendingMeta[i].dropType != 1)
-                        {
-                            unitComponent.Remove(pendingMeta[i].unitId);
-                            removeIds.Add(pendingMeta[i].unitId);
-                        }
+                        UnitHelper.RemovePickedDrop(unit, pendingMeta[i].unitId);
+                        removeIds.Add(pendingMeta[i].unitId);
                         LDItem ldItemOne = LDItemCategory.Instance.Get(pendingMeta[i].itemId);
                         
                     }
@@ -113,11 +110,8 @@ namespace ET
                         {
                             SceneCreatureHelp.SendFubenPickMessage(unit, dropInfo);
                         }
-                        if (pendingMeta[i].dropType != 1)
-                        {
-                            unitComponent.Remove(pendingMeta[i].unitId);
-                            removeIds.Add(pendingMeta[i].unitId);
-                        }
+                        UnitHelper.RemovePickedDrop(unit, pendingMeta[i].unitId);
+                        removeIds.Add(pendingMeta[i].unitId);
                         LDItem ldItem = LDItemCategory.Instance.Get(pendingMeta[i].itemId);
                     }
                 }
@@ -314,7 +308,7 @@ namespace ET
                         ownerRewards = new List<RewardItem>();
                         pendingByOwner[owner.Id] = ownerRewards;
                     }
-                    ownerRewards.Add(new RewardItem() { ItemID = addItemID, ItemNum = addItemNum });
+                    ownerRewards.Add(new RewardItem() { ItemType = drops[i].ItemType, ItemID = addItemID, ItemNum = addItemNum });
                     ChatInfo chatCopy = m2C_SyncChatInfo.ChatInfo;
                     pendingMeta.Add((owner.Id, drops[i].DropType, drops[i].UnitId, chatCopy));
                     // ChatInfo 已挂到 pending，下一轮新建，避免单例被覆盖
@@ -362,10 +356,8 @@ namespace ET
                         M2C_SyncChatInfo chatMsg = SceneCreatureHelp.m2C_SyncChatInfo;
                         chatMsg.ChatInfo = pendingMeta[p].chatInfo;
                         MessageHelper.SendToClient(players, chatMsg);
-                        if (pendingMeta[p].dropType != 1)
-                        {
-                            unitComponent.Remove(pendingMeta[p].dropUnitId);
-                        }
+                        UnitHelper.RemovePickedDrop(unit, pendingMeta[p].dropUnitId);
+                        removeIds.Add(pendingMeta[p].dropUnitId);
                     }
                 }
                 else
@@ -379,10 +371,8 @@ namespace ET
                         M2C_SyncChatInfo chatMsg = SceneCreatureHelp.m2C_SyncChatInfo;
                         chatMsg.ChatInfo = pendingMeta[p].chatInfo;
                         MessageHelper.SendToClient(players, chatMsg);
-                        if (pendingMeta[p].dropType != 1)
-                        {
-                            unitComponent.Remove(pendingMeta[p].dropUnitId);
-                        }
+                        UnitHelper.RemovePickedDrop(unit, pendingMeta[p].dropUnitId);
+                        removeIds.Add(pendingMeta[p].dropUnitId);
                     }
                 }
             }
@@ -393,45 +383,47 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_PickItemRequest request, M2C_PickItemResponse response, Action reply)
         {
             UnitInfoComponent unitInfoComponent = unit.GetComponent<UnitInfoComponent>();
-
-            //DropType ==  0 公共掉落 2保护掉落   1私有掉落
-            Dictionary<(int itemId, int itemNum), int> privateDropDict = null;
+            if (unit.Type != UnitType.Player || unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) == 1
+                    || request.ItemIds.Count > 100)
+            {
+                response.Error = ErrorCode.ERR_Parameter;
+                reply();
+                return;
+            }
+            UnitComponent units = unit.GetParent<UnitComponent>();
+            HashSet<long> seen = new HashSet<long>();
             for (int i = request.ItemIds.Count - 1; i >= 0; i--) 
             {
-                if (request.ItemIds[i].DropType != 1)
+                long dropId = request.ItemIds[i].UnitId;
+                if (!seen.Add(dropId))
                 {
+                    request.ItemIds.RemoveAt(i);
                     continue;
                 }
-                if (privateDropDict == null)
+                Unit dropUnit = units.Get(dropId);
+                DropInfo info = null;
+                if (dropUnit != null && dropUnit.Type == UnitType.DropItem)
                 {
-                    privateDropDict = new Dictionary<(int, int), int>();
-                    for (int d = 0; d < unitInfoComponent.Drops.Count; d++)
-                    {
-                        DropInfo dropInfo = unitInfoComponent.Drops[d];
-                        var key = (dropInfo.ItemID, dropInfo.ItemNum);
-                        privateDropDict.TryGetValue(key, out int count);
-                        privateDropDict[key] = count + 1;
-                    }
-                }
-                var lookupKey = (request.ItemIds[i].ItemID, request.ItemIds[i].ItemNum);
-                if (privateDropDict.TryGetValue(lookupKey, out int remain) && remain > 0)
-                {
-                    privateDropDict[lookupKey] = remain - 1;
-                    for (int d = unitInfoComponent.Drops.Count - 1; d >= 0; d--)
-                    {
-                        DropInfo dropInfo = unitInfoComponent.Drops[d]; 
-                        if (dropInfo.ItemID == lookupKey.Item1 && dropInfo.ItemNum == lookupKey.Item2)
-                        {
-                            unitInfoComponent.Drops.RemoveAt(d);
-                            break;
-                        }
-                    }
+                    info = dropUnit.GetComponent<DropComponent>().ToDropInfo(dropUnit);
                 }
                 else
                 {
-                    Log.Warning($"无效的私人掉落: {unit.DomainZone()}   {unit.Id}   {request.ItemIds[i].ItemID}   {request.ItemIds[i].ItemNum}");
-                    request.ItemIds.RemoveAt(i);
+                    info = unitInfoComponent.Drops.Find(drop => drop.UnitId == dropId);
                 }
+                if (info == null)
+                {
+                    response.RemoveIds.Add(dropId);
+                    request.ItemIds.RemoveAt(i);
+                    continue;
+                }
+                if (PositionHelper.Distance2D(unit.Position, new UnityEngine.Vector3(info.X, info.Y, info.Z)) > CommonConfig.PickDistance)
+                {
+                    response.Error = ErrorCode.ERR_Parameter;
+                    reply();
+                    return;
+                }
+                // 类型、数量和来源均采用服务端记录，私人掉落入包成功后才删除。
+                request.ItemIds[i] = info;
             }
 
             if (request.ItemIds.Count ==0)
@@ -453,6 +445,7 @@ namespace ET
                 response.Error = OnFubenPick(unit, request, sceneTypeEnum, removeIds);
             }
 
+            response.RemoveIds.AddRange(removeIds);
             reply();
             await ETTask.CompletedTask;
         }

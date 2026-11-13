@@ -8469,6 +8469,45 @@ namespace ET
 
 	}
 
+// 客户端 -> 地图服：点击死亡怪物，查询当前玩家有权查看的剩余掉落；不执行拾取。
+	[ResponseType(nameof(M2C_MonsterDropsResponse))]
+	[Message(OuterOpcode.C2M_MonsterDropsRequest)]
+	[ProtoContract]
+	public partial class C2M_MonsterDropsRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long MonsterId { get; set; }
+
+	}
+
+// 地图服 -> 客户端：返回该尸体的剩余掉落；成功且 Drops 为空表示没有可查看的掉落。
+	[Message(OuterOpcode.M2C_MonsterDropsResponse)]
+	[ProtoContract]
+	public partial class M2C_MonsterDropsResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public long MonsterId { get; set; }
+
+		[ProtoMember(2)]
+		public List<DropInfo> Drops = new List<DropInfo>();
+
+	}
+
 	[ResponseType(nameof(M2C_PickItemResponse))]
 	[Message(OuterOpcode.C2M_PickItemRequest)]
 	[ProtoContract]

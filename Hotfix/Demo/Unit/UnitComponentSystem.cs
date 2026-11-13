@@ -69,8 +69,17 @@ namespace ET
             self.AoI.Remove(id);
 
             Unit unit = self.GetChild<Unit>(id);
+            long monsterId = 0;
+            if (unit != null && unit.Type == UnitType.DropItem)
+            {
+                monsterId = unit.GetComponent<DropComponent>().DropInfo.BeKillId;
+            }
             self.Units.Remove(unit);
             unit?.Dispose();
+            if (monsterId != 0)
+            {
+                UnitHelper.RemoveMonsterDrop(self, monsterId, id);
+            }
         }
 
         public static List<Unit> GetAll(this UnitComponent self)

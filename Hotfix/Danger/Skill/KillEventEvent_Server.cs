@@ -11,13 +11,28 @@ namespace ET
         private async ETTask OnRemoveUnit(EventType.KillEvent args, long waittime)
         {
             Unit unitDefend = args.UnitDefend;
+            long instanceId = unitDefend.InstanceId;
+            bool keepDrops = unitDefend.Type == UnitType.Monster
+                    && unitDefend.GetComponent<UnitInfoComponent>().Drops.Count > 0;
+            if (keepDrops)
+            {
+                waittime = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Monster_Death_Refresh) * 1000L;
+            }
             await TimerComponent.Instance.WaitAsync(waittime);
-            if (unitDefend.IsDisposed)
+            if (unitDefend.IsDisposed || unitDefend.InstanceId != instanceId)
+            {
+                return;
+            }
+            if (keepDrops && unitDefend.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) != 1)
             {
                 return;
             }
             if (unitDefend.Type != UnitType.Player && args.WaitRevive == 0 && DllHelper.BattleCheck)
             {
+                if (keepDrops)
+                {
+                    UnitHelper.ClearMonsterDrops(unitDefend);
+                }
                 unitDefend.GetParent<UnitComponent>().Remove(unitDefend.Id);
             }
         }

@@ -717,8 +717,9 @@ namespace ET
                     float dropY = bekill.Position.y;
                     float dropZ = bekill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f);
                     dropitem.Position = new UnityEngine.Vector3(dropX, dropY, dropZ);
-                    dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
                     dropComponent.InitDropInfo(dropitem);
+                    bekill.GetComponent<UnitInfoComponent>().Drops.Add(dropComponent.DropInfo);
+                    dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
                 }
 
                 /*if (ldMonsterCof.DropType == 3)
@@ -763,6 +764,8 @@ namespace ET
                             DropType = 1,
                             ItemID = droplist[k].ItemID,
                             ItemNum = droplist[k].ItemNum,
+                            ItemType = droplist[k].ItemType,
+                            BeKillId = bekill.Id,
                             X = bekill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f),
                             Y = bekill.Position.y,
                             Z = bekill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f),
@@ -770,6 +773,7 @@ namespace ET
                         };
                         m2C_CreateDropItems.Drops.Add(dropInfo);
                         beAttack.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
+                        bekill.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
                     }                    
                     MessageHelper.SendToClient(beAttack, m2C_CreateDropItems);
                 }
@@ -828,11 +832,15 @@ namespace ET
                     float dropY = beKill.Position.y;
                     float dropZ = beKill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f);
                     dropitem.Position = new UnityEngine.Vector3(dropX, dropY, dropZ);
-                    dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
                     dropComponent.SetDropType(dropType);
                     dropComponent.SetBeKillId(beKill.Id);
                     dropitem.ConfigId = droplist[i].ItemID;
                     dropComponent.InitDropInfo(dropitem);
+                    if (beKill.Type == UnitType.Monster)
+                    {
+                        beKill.GetComponent<UnitInfoComponent>().Drops.Add(dropComponent.DropInfo);
+                    }
+                    dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
                 }
             }
             if (dropType == 1)
@@ -855,6 +863,7 @@ namespace ET
                         DropType = dropType,
                         ItemID = droplist[k].ItemID,
                         ItemNum = droplist[k].ItemNum,
+                        ItemType = droplist[k].ItemType,
                         X = beKill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f),
                         Y = beKill.Position.y,
                         Z = beKill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f),
@@ -863,6 +872,10 @@ namespace ET
                     };
                     m2C_CreateDropItems.Drops.Add(dropInfo);
                     main.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
+                    if (beKill.Type == UnitType.Monster)
+                    {
+                        beKill.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
+                    }
                 }
                 MessageHelper.SendToClient(main, m2C_CreateDropItems);
             }
