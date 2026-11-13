@@ -91,7 +91,7 @@ namespace ET
 		/// <summary>技能 标签</summary>
 		[ProtoMember(4)]
 		public int[] Skill_Tag { get; set; }
-		/// <summary>显示类型 0-无 1-物理 2-法术 3-混合 9-治疗</summary>
+		/// <summary>显示 类型 0-无 1-物理 2-法术 3-混合 9-治疗</summary>
 		[ProtoMember(5)]
 		public int Show_Battle_Type { get; set; }
 		/// <summary>BUFF 替换技能 前置优先</summary>
@@ -100,7 +100,7 @@ namespace ET
 		/// <summary>宠物技能 关联性</summary>
 		[ProtoMember(7)]
 		public int[] Pet_Relate { get; set; }
-		/// <summary>技能类型 0-无 1-瞬发 2-吟唱 3-引导 8-属性 9-被动</summary>
+		/// <summary>技能 类型 0-无 1-瞬发 2-吟唱 3-引导 8-属性 9-被动</summary>
 		[ProtoMember(8)]
 		public int Type { get; set; }
 		/// <summary>属性 值</summary>
@@ -151,27 +151,27 @@ namespace ET
 		/// <summary>目标 对象</summary>
 		[ProtoMember(24)]
 		public int NeedTarget { get; set; }
-		/// <summary>目标 类型</summary>
-		[ProtoMember(25)]
-		public int Target_Type { get; set; }
 		/// <summary>释法 距离</summary>
-		[ProtoMember(26)]
+		[ProtoMember(25)]
 		public double Cast_Range { get; set; }
 		/// <summary>索敌 距离</summary>
-		[ProtoMember(27)]
+		[ProtoMember(26)]
 		public double Search_Range { get; set; }
 		/// <summary>基础点 0-自身 1-目标</summary>
-		[ProtoMember(28)]
+		[ProtoMember(27)]
 		public int Base_Position { get; set; }
 		/// <summary>范围 类型</summary>
-		[ProtoMember(29)]
+		[ProtoMember(28)]
 		public int Range_Type { get; set; }
 		/// <summary>范围 参数1 0-无 1-半径 2-半径 3-长 4-长</summary>
-		[ProtoMember(30)]
+		[ProtoMember(29)]
 		public double Range_Type_Param1 { get; set; }
 		/// <summary>范围 参数2 0-无 1-无 2-角度 3-宽 4-宽</summary>
-		[ProtoMember(31)]
+		[ProtoMember(30)]
 		public double Range_Type_Param2 { get; set; }
+		/// <summary>目标 类型</summary>
+		[ProtoMember(31)]
+		public int Target_Type { get; set; }
 		/// <summary>目标 过滤</summary>
 		[ProtoMember(32)]
 		public int[] Target_Filter { get; set; }

@@ -14,6 +14,8 @@ namespace ET
             long unitId = request.UnitId;
             Unit unit = null;
             bool added = false;
+            bool taken = false;
+            bool committed = false;
 			try
 			{
 				UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
@@ -36,6 +38,7 @@ namespace ET
                     replied = true;
                     return;
                 }
+                taken = true;
 
                 unitComponent.AddChild(unit);
                 added = true;
@@ -46,7 +49,6 @@ namespace ET
                     unit.AddComponent(entity);
 				}
 				unit.AddComponent<MoveComponent>();
-				unit.AddComponent<MailBoxComponent>();
 				unit.AddComponent<ObjectWait>();
 				unit.AddComponent<SkillManagerComponent>();
 				unit.AddComponent<BuffManagerComponent>();
@@ -70,6 +72,8 @@ namespace ET
                 //await unit.AddLocation();                     
                 //注册消息机制的ID,可以通过消息ID让其他玩家对自己进行消息发送
                 //客户端收到创建Unit之后会请求数据。 不用通知
+
+                int aoiValue = 0;
                 switch (request.SceneType)
 				{
 					case (int)MapTypeEnum.PetDungeon:
@@ -83,16 +87,8 @@ namespace ET
 						unit.Position = ldScene.GetBornPos(); 
 						unit.Rotation = Quaternion.identity;
 
-                        M2C_CreateMyUnit m2CCreateUnits = new M2C_CreateMyUnit();
-						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-						MessageHelper.SendToClient(unit, m2CCreateUnits);
-						// 加入aoi
-						unit.AddComponent<AOIEntity, int, Vector3>(40 * 1000, unit.Position);
-						if (request.SceneType == (int)MapTypeEnum.PetTianTi)
-						{
-							scene.GetComponent<PetTianTiComponent>().MainUnit = unit;
-							scene.GetComponent<PetTianTiComponent>().GeneratePetFuben().Coroutine();
-						}
+						aoiValue = 40 * 1000;
+
 						break;
 					case (int)MapTypeEnum.LocalDungeon:
 						LDScene dungeonConfig = LDSceneCategory.Instance.Get(request.ChapterId);
@@ -100,7 +96,6 @@ namespace ET
 						RecastPathComponent recastPathComponent = Game.Scene.GetComponent<RecastPathComponent>();
 						unit.AddComponent<PathfindingComponent, string>(localMapComponent.NavMeshId);
 						recastPathComponent.Update(localMapComponent.NavMeshId);
-                        scene.GetComponent<LocalDungeonComponent>().MainUnit = unit;
 
                         //更新unit坐标
                         int transferId = int.Parse(request.ParamInfo);
@@ -116,17 +111,8 @@ namespace ET
                             unit.Rotation = Quaternion.Euler(0, (int)dungeonConfig.Born_Rotation, 0);
                         }
 
-						// 通知客户端创建My Unitda
-						m2CCreateUnits = new M2C_CreateMyUnit();
-						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-						MessageHelper.SendToClient(unit, m2CCreateUnits);
-						// 加入aoi
+						aoiValue = (CommonHelper.IsInnerNet() ? 100 : 10) * 1000;
 
-						int aoiValue = (CommonHelper.IsInnerNet() ? 100 : 10) * 1000;
-						unit.AddComponent<AOIEntity, int, Vector3>(aoiValue, unit.Position);
-						TransferHelper.AfterTransfer(unit);
-						SceneCreatureHelp.CreateSceneRole(scene, request.ChapterId);
-						SceneCreatureHelp.CreateSceneTeleport(scene, request.ChapterId);
 						break;
                     case MapTypeEnum.Happy:
                         unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
@@ -144,15 +130,9 @@ namespace ET
                             unit.Position = HappyFubenConfig.PositionList[randomPosition];
                         }
                         unit.Rotation = Quaternion.identity;
-                        // 通知客户端创建My Unit
-                        m2CCreateUnits = new M2C_CreateMyUnit();
-                        m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-                        MessageHelper.SendToClient(unit, m2CCreateUnits);
-                        // 加入aoi
-                        unit.AddComponent<AOIEntity, int, Vector3>(2 * 1000, unit.Position);
-                        //TransferHelper.AfterTransfer(unit);
 
-                        unit.DomainScene().GetComponent<HappyDungeonComponent>().NoticeRefreshTime(unit);
+                        aoiValue = 2 * 1000;
+
                         break;
                     case MapTypeEnum.Battle:
 						//int todayCamp = numericComponent.GetAsInt(NumericType.Numeric_Error);
@@ -165,14 +145,9 @@ namespace ET
 						int startIndex = todayCamp == 1 ? 0 : 3;
 						unit.Position = ldScene.GetBornPos();
 						unit.Rotation = Quaternion.identity;
-						// 通知客户端创建My Unit
-						m2CCreateUnits = new M2C_CreateMyUnit();
-						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-						MessageHelper.SendToClient(unit, m2CCreateUnits);
-						// 加入aoi
-						unit.AddComponent<AOIEntity, int, Vector3>(4 * 1000, unit.Position);
 
-						TransferHelper.AfterTransfer(unit);
+						aoiValue = 4 * 1000;
+
                         break;
 					case MapTypeEnum.UnionRace:
 						unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
@@ -180,13 +155,8 @@ namespace ET
 						unit.Position = ldScene.GetBornPos();
 						unit.Rotation = Quaternion.identity;
 
-						// 通知客户端创建My Unit
-						m2CCreateUnits = new M2C_CreateMyUnit();
-						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-						MessageHelper.SendToClient(unit, m2CCreateUnits);
-						// 加入aoi
-						unit.AddComponent<AOIEntity, int, Vector3>(4 * 1000, unit.Position);
-						TransferHelper.AfterTransfer(unit);
+						aoiValue = 4 * 1000;
+
 						break;
 					case MapTypeEnum.Solo:
                         unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
@@ -207,14 +177,8 @@ namespace ET
 
 						unit.Rotation = Quaternion.identity;
 
-                        // 通知客户端创建My Unit
-                        m2CCreateUnits = new M2C_CreateMyUnit();
-                        m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-                        MessageHelper.SendToClient(unit, m2CCreateUnits);
-                        // 加入aoi
-                        unit.AddComponent<AOIEntity, int, Vector3>(6 * 1000, unit.Position);
+                        aoiValue = 6 * 1000;
 
-                        TransferHelper.AfterTransfer(unit);
                         break;
                     case MapTypeEnum.OneChallenge:
                         unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
@@ -232,14 +196,8 @@ namespace ET
                             unit.Rotation = Quaternion.identity;
                         }
 
-                        // 通知客户端创建My Unit
-                        m2CCreateUnits = new M2C_CreateMyUnit();
-                        m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-                        MessageHelper.SendToClient(unit, m2CCreateUnits);
-                        // 加入aoi
-                        unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
+                        aoiValue = 9 * 1000;
 
-                        TransferHelper.AfterTransfer(unit);
                         break;
                     case MapTypeEnum.Home:
 					case MapTypeEnum.Union:
@@ -251,31 +209,8 @@ namespace ET
 						unit.Position = ldScene.GetBornPos();
 						unit.Rotation = Quaternion.identity;
 
-						// 通知客户端创建My Unit
-						m2CCreateUnits = new M2C_CreateMyUnit();
-						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-						m2CCreateUnits.SceneType = request.SceneType;
+						aoiValue = 9 * 1000;
 
-                        MessageHelper.SendToClient(unit, m2CCreateUnits);
-						// 加入aoi
-						unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
-
-						if (request.SceneType == (int)MapTypeEnum.TowerDungeon)
-						{
-							MapComponent towerMapComponent = scene.GetComponent<MapComponent>();
-							Game.Scene.GetComponent<RecastPathComponent>().Update(towerMapComponent.NavMeshId);
-						
-							scene.GetComponent<TowerComponent>().MainUnit = unit;
-						}
-						if (request.SceneType == MapTypeEnum.TrialDungeon)
-						{
-							MapComponent trialMapComponent = scene.GetComponent<MapComponent>();
-							Game.Scene.GetComponent<RecastPathComponent>().Update(trialMapComponent.NavMeshId);
-							scene.GetComponent<TrialDungeonComponent>().GenerateFuben(int.Parse(request.ParamInfo));
-						
-						}
-					
-                        TransferHelper.AfterTransfer(unit);
                         break;
 
 					case (int)MapTypeEnum.MainCityScene:
@@ -286,22 +221,42 @@ namespace ET
 
 						unit.Position = ldScene.GetBornPos();
 
-						unitComponent.AddPlayer(unit);		
 						unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
 						unit.OnReturn();
-						// 通知客户端创建My Unit
-						m2CCreateUnits = new M2C_CreateMyUnit();
-						m2CCreateUnits.Unit = UnitHelper.CreateUnitInfo(unit);
-						MessageHelper.SendToClient(unit, m2CCreateUnits);
-
-						// 加入aoi
-						unit.AddComponent<AOIEntity, int, Vector3>(aoiValue, unit.Position);
-						TransferHelper.AfterTransfer(unit);
-						TransferHelper.RemoveStall(unit);
 
                         break;
+
+                    default:
+                        unitComponent.Remove(unitId);
+                        added = false;
+                        response.Error = ErrorCode.ERR_ModifyData;
+                        reply();
+                        replied = true;
+                        return;
 				}
 
+                // 先构建客户端角色数据，初始化失败时仍可完整回退。
+                M2C_CreateMyUnit createMyUnit = new M2C_CreateMyUnit
+                {
+                    Unit = UnitHelper.CreateUnitInfo(unit), SceneType = request.SceneType,
+                };
+                // 以传送批次作为锁凭证。过期请求提交失败，不得覆盖后续传送。
+                committed = await UnitTransferHelper.Commit(unitId, request.TransferId, unit.InstanceId);
+                if (!committed)
+                {
+                    unitComponent.Remove(unitId);
+                    added = false;
+                    response.Error = ErrorCode.ERR_TransferFailError;
+                    reply();
+                    replied = true;
+                    return;
+                }
+
+                response.NewInstanceId = unit.InstanceId;
+                unit.AddComponent<MailBoxComponent>();
+                MessageHelper.SendToClient(unit, createMyUnit);
+                unit.AddComponent<AOIEntity, int, Vector3>(aoiValue, unit.Position);
+                AfterEnter(scene, unit, request);
                 //unit.GetComponent<DBSaveComponent>().Check_2();
                 unit.GetComponent<DBSaveComponent>().Activeted();
 
@@ -321,7 +276,6 @@ namespace ET
                     unit.GetComponent<RoleContextComponent>().SetLastTeamDungeonInstanceId(scene.InstanceId);
                 }
 
-                response.NewInstanceId = unit.InstanceId;
 				reply();
 				replied = true;
                 await ETTask.CompletedTask;
@@ -329,16 +283,59 @@ namespace ET
 			catch (Exception ex)
 			{
 				Log.Error($"M2M_UnitTransfer Exception unitId={unitId} {ex}");
-                if (added && !replied)
+                if (added && !committed)
                 {
                     scene.GetComponent<UnitComponent>().Remove(unitId);
                 }
 				if (!replied)
 				{
-					response.Error = ErrorCode.ERR_TransferFailError;
+					response.Error = committed ? ErrorCode.ERR_Success : ErrorCode.ERR_TransferFailError;
 					reply();
 				}
 			}
+            finally
+            {
+                UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
+                if (taken && unitComponent.UnitComponents.TryGetValue(unitId, out UnitTransferBuffer buffer)
+                    && buffer.TransferId == request.TransferId)
+                {
+                    unitComponent.UnitComponents.Remove(unitId);
+                }
+            }
 		}
+
+        private static void AfterEnter(Scene scene, Unit unit, M2M_UnitTransferRequest request)
+        {
+            switch (request.SceneType)
+            {
+                case MapTypeEnum.PetDungeon:
+                    return;
+                case MapTypeEnum.PetTianTi:
+                    scene.GetComponent<PetTianTiComponent>().MainUnit = unit;
+                    scene.GetComponent<PetTianTiComponent>().GeneratePetFuben().Coroutine();
+                    return;
+                case MapTypeEnum.Happy:
+                    scene.GetComponent<HappyDungeonComponent>().NoticeRefreshTime(unit);
+                    return;
+                case MapTypeEnum.LocalDungeon:
+                    scene.GetComponent<LocalDungeonComponent>().MainUnit = unit;
+                    SceneCreatureHelp.CreateSceneRole(scene, request.ChapterId);
+                    SceneCreatureHelp.CreateSceneTeleport(scene, request.ChapterId);
+                    break;
+                case MapTypeEnum.TowerDungeon:
+                    Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
+                    scene.GetComponent<TowerComponent>().MainUnit = unit;
+                    break;
+                case MapTypeEnum.TrialDungeon:
+                    Game.Scene.GetComponent<RecastPathComponent>().Update(scene.GetComponent<MapComponent>().NavMeshId);
+                    scene.GetComponent<TrialDungeonComponent>().GenerateFuben(int.Parse(request.ParamInfo));
+                    break;
+                case MapTypeEnum.MainCityScene:
+                    scene.GetComponent<UnitComponent>().AddPlayer(unit);
+                    TransferHelper.RemoveStall(unit);
+                    break;
+            }
+            TransferHelper.AfterTransfer(unit);
+        }
 	}
 }

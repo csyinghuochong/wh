@@ -619,26 +619,7 @@ namespace ET
             }
             bool drop = true;
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(bekill.ConfigId);
-            if (SceneConfigHelper.IsSingleFuben(sceneType) )
-            {
-                drop = RoleCurrencyHelper.Get(main.GetComponent<RoleInfoComponentServer>().RoleInfo, UserDataType.TiLi) > 0 || bekill.IsBoss();
-
-                //场景宝箱掉落和体力无关
-
-                if (main.IsRobot())
-                {
-                    drop = false;
-                }
-            }
-            if (ConfigData.ShowLieOpen && !drop && !main.IsRobot())
-            {
-                LDMonster ldMonster = LDMonsterCategory.Instance.Get(bekill.ConfigId);
-                int userlv = main.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
-                if( ldMonster.Lv >= 60 || Mathf.Abs(userlv - ldMonster.Lv) <= 9 ) 
-                {
-                    drop = true;
-                }
-            }
+           
 
             if (!drop)
             {
@@ -652,13 +633,13 @@ namespace ET
             DropHelper.DropIDToDropItem(dropID, droplist);
 
 
-            if (droplist.Count == 0)
+            // 内网测试时，无掉落则补 1 金币。
+            if (droplist.Count == 0 && CommonHelper.IsInnerNet())
             {
-                Console.WriteLine("测试掉落 ");
                 droplist.Add(new RewardItem()
                 {
                     ItemType = ItemBigType.Type_Item,
-                    ItemID = 1,
+                    ItemID = UserDataType.Gold,
                     ItemNum = 1,
                 });
             }

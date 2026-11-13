@@ -19,11 +19,12 @@ namespace ET
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.UnionOperate, request.UnionId))
             {
-                //1改名  2改宣言 3任职
-                if (request.Operatate == 1 || request.Operatate == 2)
+                // 1 改名已迁到地图服扣费入口；2 宣言，3 任职，4 对内公告。
+                if (request.Operatate == 2 || request.Operatate == 4)
                 {
                     UnionPlayerInfo operatorInfo = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.UnitId);
-                    if (operatorInfo == null || operatorInfo.UserID != dBUnionInfo.UnionInfo.LeaderId)
+                    if (operatorInfo == null || (operatorInfo.UserID != dBUnionInfo.UnionInfo.LeaderId
+                        && operatorInfo.Position != UnionPosition.ViceLeader))
                     {
                         response.Error = ErrorCode.ERR_Union_NoLimits;
                         reply();
@@ -33,22 +34,39 @@ namespace ET
                 switch (request.Operatate)
                 {
                     case 1:
-                        dBUnionInfo.UnionInfo.UnionName = request.Value;
-                        ServerMessageHelper.NoticeUnionName(dBUnionInfo, request.Value).Coroutine();
-                        break;
+                        response.Error = ErrorCode.ERR_ModifyData;
+                        reply();
+                        return;
                     case 2:
-                        dBUnionInfo.UnionInfo.UnionPurpose = request.Value;
-                        break;
-                    case 3:
-                        string[] operatevalue = request.Value.Split('_');
-                        if (operatevalue.Length != 2)
+                    case 4:
+                        string lengthKey = request.Operatate == 2
+                            ? GlobalValueKey.Global_Union_Declaration_Character_Length
+                            : GlobalValueKey.Global_Union_Notic_Character_Length;
+                        if (!UnionHelper.IsValidUnionText(request.Value, lengthKey))
                         {
                             response.Error = ErrorCode.ERR_ModifyData;
                             reply();
                             return;
                         }
-                        long operateid = long.Parse(operatevalue[0]);
-                        int position = int.Parse(operatevalue[1]);
+                        if (request.Operatate == 2)
+                        {
+                            dBUnionInfo.UnionInfo.UnionPurpose = request.Value ?? string.Empty;
+                        }
+                        else
+                        {
+                            dBUnionInfo.UnionInfo.UnionNotice = request.Value ?? string.Empty;
+                        }
+                        break;
+                    case 3:
+                        string[] operatevalue = (request.Value ?? string.Empty).Split('_');
+                        if (operatevalue.Length != 2 || !long.TryParse(operatevalue[0], out long operateid)
+                            || !int.TryParse(operatevalue[1], out int position)
+                            || (position != UnionPosition.Member && position != UnionPosition.ViceLeader && position != UnionPosition.Elder))
+                        {
+                            response.Error = ErrorCode.ERR_ModifyData;
+                            reply();
+                            return;
+                        }
 
                         UnionPlayerInfo unionPlayerInfo_1 = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.UnitId);
                         if (unionPlayerInfo_1 == null)
@@ -86,10 +104,12 @@ namespace ET
                         unionPlayerInfo_2.Position = position;
                         break;
                     default:
-                        break;
+                        response.Error = ErrorCode.ERR_ModifyData;
+                        reply();
+                        return;
                 }
 
-                DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
+                await DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo);
             }
             reply();
             await ETTask.CompletedTask;

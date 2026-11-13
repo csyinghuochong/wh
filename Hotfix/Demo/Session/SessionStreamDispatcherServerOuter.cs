@@ -244,6 +244,10 @@ namespace ET
 						else if (actorRequest is IUnionActorRequest iUnionActorRequest)
 						{
                             // ActorId / UnitId 用会话上的角色，客户端传的身份不采用
+                            if (actorRequest is C2U_UnionMyInfoRequest myInfoRequest)
+                            {
+                                myInfoRequest.ActorId = player.UnitId;
+                            }
                             if (actorRequest is C2U_UnionKeJiActiteRequest infoRequest)
                             {
                                 infoRequest.ActorId = player.UnitId;

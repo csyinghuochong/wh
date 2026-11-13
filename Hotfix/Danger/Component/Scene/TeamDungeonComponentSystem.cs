@@ -81,7 +81,7 @@ namespace ET
                 for (int i = 0; i < playerIds.Count; i++)
                 {
                     long playerId = playerIds[i];
-                    using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Transfer, playerId))
+                    using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Transfer, playerId, 0))
                     {
                         // 等锁期间玩家可能已正常回城或断线，重新从本实例取玩家。
                         Unit player = unitComponent.Get(playerId);

@@ -58,8 +58,23 @@ namespace ET
                         }
                     };
                     MessageHelper.SendToClient(unit, m2C_SyncChatInfo);
+                    return;
                 }
 
+                if (message.GMMsg.Contains("addbuff#"))
+                {
+                    if (!TryGetSecondHashNumber(message.GMMsg, out int buffid))
+                    {
+                        return;
+                    }
+
+                    BuffManagerComponent buffManager = unit.GetComponent<BuffManagerComponent>();
+                    BuffData buffData_2 = new BuffData();
+                    buffData_2.SkillId = 1;
+                    buffData_2.BuffId = buffid;
+                    buffManager.BuffFactory(buffData_2, unit, null);
+                    return;
+                }
                 if (message.GMMsg.Contains("testequip#"))
                 {
                     // testequip#1010500
@@ -593,15 +608,6 @@ namespace ET
                         Log.Warning("刷新机器人！！");
                         long robotSceneId = DBHelper.GetRobotServerId();
                         MessageHelper.SendActor(robotSceneId, new G2Robot_MessageRequest() { Zone = UnitZoneHelper.GetHomeZone(unit), MessageType = 18, Message = $"1001#{commands[1]}" });
-                        break;
-					case "11": //11#92041030   11#80002003   11#80002005  11#97050403
-                        {
-                            BuffManagerComponent buffManager = unit.GetComponent<BuffManagerComponent>();
-                            BuffData buffData_2 = new BuffData();
-                            buffData_2.SkillId = 67000278;
-                            buffData_2.BuffId = int.Parse(commands[1]); 
-                            buffManager.BuffFactory(buffData_2, unit, null);
-                        }
                         break;
 					case "12":
                         {

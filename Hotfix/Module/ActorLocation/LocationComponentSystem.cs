@@ -42,7 +42,9 @@
 
         public static async ETTask Lock(this LocationComponent self, long key, long instanceId, int time = 0)
         {
-            CoroutineLock coroutineLock = await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Location, key);
+            // 生命周期由下面的 Location 超时管理，避免协程锁先超时放行查询。
+            CoroutineLock coroutineLock = await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Location, key, 0);
+            self.locations.TryGetValue(key, out long originalInstanceId);
 
             LockInfo lockInfo = self.AddChild<LockInfo, long, CoroutineLock>(instanceId, coroutineLock);
             self.lockInfos.Add(key, lockInfo);
@@ -59,25 +61,24 @@
                     {
                         return;
                     }
-                    Log.Info($"location timeout unlock key: {key} instanceId: {instanceId} newInstanceId: {instanceId}");
-                    self.UnLock(key, instanceId, instanceId);
+                    Log.Info($"location timeout unlock key: {key} lockId: {instanceId} newInstanceId: {originalInstanceId}");
+                    self.UnLock(key, instanceId, originalInstanceId);
                 }
                 TimeWaitAsync().Coroutine();
             }
         }
 
-        public static void UnLock(this LocationComponent self, long key, long oldInstanceId, long newInstanceId)
+        public static bool UnLock(this LocationComponent self, long key, long oldInstanceId, long newInstanceId)
         {
             if (!self.lockInfos.TryGetValue(key, out LockInfo lockInfo))
             {
-                Log.Error($"location unlock not found key: {key} {oldInstanceId}");
-                return;
+                // 回包丢失后的重复解锁允许返回成功，但不能覆盖已经变化的路由。
+                return self.locations.TryGetValue(key, out long currentInstanceId) && currentInstanceId == newInstanceId;
             }
 
             if (oldInstanceId != lockInfo.LockInstanceId)
             {
-                Log.Error($"location unlock oldInstanceId is different: {key} {oldInstanceId}");
-                return;
+                return false;
             }
 
             Log.Info($"location unlock key: {key} instanceId: {oldInstanceId} newInstanceId: {newInstanceId}");
@@ -88,6 +89,7 @@
 
             // 解锁
             lockInfo.Dispose();
+            return true;
         }
 
         public static async ETTask<long> Get(this LocationComponent self, long key)

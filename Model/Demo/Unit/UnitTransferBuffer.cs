@@ -9,6 +9,7 @@ namespace ET
         public int TotalBytes;
         public int ReceivedBytes;
         public long ExpireTime;
+        public bool IsCommitting;
         public List<byte[]> Chunks = new List<byte[]>();
     }
 }

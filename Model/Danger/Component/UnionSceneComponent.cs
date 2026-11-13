@@ -24,5 +24,9 @@ namespace ET
         public bool AllUnionsLoaded;
 
         public ETTask LoadAllUnionsTask;
+
+        // 角色 -> 当前会话验密凭证；成员对象用于阻止退会重入后复用旧凭证。
+        public Dictionary<long, (long UnionId, string Token, UnionPlayerInfo Member)> WarehouseAccess
+            = new Dictionary<long, (long UnionId, string Token, UnionPlayerInfo Member)>();
     }
 }

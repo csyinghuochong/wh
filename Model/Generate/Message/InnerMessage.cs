@@ -2807,8 +2807,12 @@ namespace ET
 		[ProtoMember(5)]
 		public int ItemNum { get; set; }
 
-		[ProtoMember(6)]
-		public string Password { get; set; }
+// 字段 6 原密码字段停用。
+		[ProtoMember(8)]
+		public bool Preview { get; set; }
+
+		[ProtoMember(9)]
+		public string AccessToken { get; set; }
 
 	}
 
@@ -3949,6 +3953,91 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+	}
+
+//公会仓库独立验密
+	[ResponseType(nameof(U2M_UnionWarehouseVerifyResponse))]
+	[Message(InnerOpcode.M2U_UnionWarehouseVerifyRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionWarehouseVerifyRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public string Password { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionWarehouseVerifyResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionWarehouseVerifyResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public string AccessToken { get; set; }
+
+	}
+
+//公会改名：UnitId、UnionId 由地图服填写
+	[ResponseType(nameof(U2M_UnionRenameResponse))]
+	[Message(InnerOpcode.M2U_UnionRenameRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionRenameRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public string NewName { get; set; }
+
+		[ProtoMember(4)]
+		public bool Preview { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionRenameResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionRenameResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public string UnionName { get; set; }
 
 	}
 

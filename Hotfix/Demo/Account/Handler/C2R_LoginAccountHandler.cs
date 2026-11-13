@@ -88,6 +88,15 @@ namespace ET
                         }
                         if (dbcenterAccountInfo != null)
                         {
+                            if (dbcenterAccountInfo.Password != request.Password)
+                            {
+                                response.Error = ErrorCode.ERR_AccountOrPasswordError;
+                                reply();
+                                session.Disconnect().Coroutine();
+                                dbcenterAccountInfo.Dispose();
+                                return;
+                            }
+
                             for (int i = dbcenterAccountInfo.RoleList.Count- 1; i >= 0; i--)
                             {
                                 if (!LDOccupationCategory.Instance.Contain(dbcenterAccountInfo.RoleList[i].PlayerOcc))
@@ -154,14 +163,6 @@ namespace ET
                             session.Disconnect().Coroutine();
                             return;
                         }
-                        //if (!account.Password.Equals(request.Password))
-                        //{
-                        //    response.Error = ErrorCode.ERR_AccountOrPasswordError;
-                        //    reply();
-                        //    session.Disconnect().Coroutine();
-                        //    account?.Dispose();
-                        //    return;
-                        //}
                         //防沉迷相关
                         string idCardNo = centerPlayerInfo.IdCardNo;
                         int canLogin = CanLogin(idCardNo, IsHoliday, request.LoginType);

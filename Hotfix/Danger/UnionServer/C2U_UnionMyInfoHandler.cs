@@ -17,6 +17,13 @@ namespace ET
             }
 
             UnionInfo src = dBUnionInfo.UnionInfo;
+            if (UnionHelper.GetUnionPlayerInfo(src.UnionPlayerList, request.ActorId) == null)
+            {
+                response.Error = ErrorCode.ERR_Union_NoPlayer;
+                reply();
+                return;
+            }
+
             src.HasWarehousePassword = UnionWarehouseHelper.GetWarehousePasswordState(dBUnionInfo.WarehousePassword);
             response.UnionMyInfo = CopyUnionInfoWithoutKeJiJingXuan(src);
 

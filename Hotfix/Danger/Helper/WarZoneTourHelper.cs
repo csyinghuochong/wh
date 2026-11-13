@@ -47,8 +47,9 @@ namespace ET
             Log.Console($"[WarZoneTour] {unit.Id} home={homeZone} {currentZone} → {targetZone} map={mapConfig.InstanceId}");
 
             TransferHelper.BeforeTransfer(unit);
-            await TransferHelper.Transfer(unit, mapConfig.InstanceId, (int)MapTypeEnum.MainCityScene, SceneConfigHelper.MainCityID(), 0, "0");
-            return ErrorCode.ERR_Success;
+            return await TransferHelper.Transfer(unit, mapConfig.InstanceId,
+                new TransferArgs(sceneType: (int)MapTypeEnum.MainCityScene, sceneId: SceneConfigHelper.MainCityID(),
+                    difficulty: 0, paramInfo: "0"));
         }
     }
 }

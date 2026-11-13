@@ -7354,7 +7354,7 @@ namespace ET
 
 	}
 
-//公会仓库：会长设密；放入/取出道具与存取款各一条。取货币必须密码，只允许非绑 Gold=4
+//公会仓库：仅会长改密；会员先独立验密再取出，会长免验证；金额统一铜币 Gold=4
 	[ResponseType(nameof(M2C_UnionWarehousePasswordResponse))]
 	[Message(OuterOpcode.C2M_UnionWarehousePasswordRequest)]
 	[ProtoContract]
@@ -7457,9 +7457,7 @@ namespace ET
 		[ProtoMember(3)]
 		public int ItemNum { get; set; }
 
-		[ProtoMember(4)]
-		public string Password { get; set; }
-
+// 字段 4 原密码字段停用，取出通过服务端验证凭证授权。
 	}
 
 	[Message(OuterOpcode.M2C_UnionWarehouseTakeResponse)]
@@ -12263,6 +12261,73 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+	}
+
+//公会仓库独立验密；成功后服务器保存凭证，取出不再传密码；改密后重新验证
+	[ResponseType(nameof(M2C_UnionWarehouseVerifyResponse))]
+	[Message(OuterOpcode.C2M_UnionWarehouseVerifyRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionWarehouseVerifyRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public string Password { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionWarehouseVerifyResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionWarehouseVerifyResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+//公会改名由地图服扣除配置消耗，再由公会服校验权限与重名
+	[ResponseType(nameof(M2C_UnionRenameResponse))]
+	[Message(OuterOpcode.C2M_UnionRenameRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionRenameRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public string NewName { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionRenameResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionRenameResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public string UnionName { get; set; }
 
 	}
 

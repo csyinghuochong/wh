@@ -41,11 +41,12 @@ namespace ET
                 new ObjectLockRequest() { Key = key, InstanceId = instanceId, Time = time });
         }
 
-        public static async ETTask UnLock(this LocationProxyComponent self, long key, long oldInstanceId, long instanceId)
+        public static async ETTask<bool> UnLock(this LocationProxyComponent self, long key, long oldInstanceId, long instanceId)
         {
             Log.Info($"location proxy unlock {key}, {instanceId} {TimeHelper.ServerNow()}");
-            await MessageHelper.CallActor(GetLocationSceneId(key),
+            ObjectUnLockResponse response = (ObjectUnLockResponse)await MessageHelper.CallActor(GetLocationSceneId(key),
                 new ObjectUnLockRequest() { Key = key, OldInstanceId = oldInstanceId, InstanceId = instanceId });
+            return response.Error == ErrorCode.ERR_Success;
         }
 
         public static async ETTask Remove(this LocationProxyComponent self, long key)

@@ -625,6 +625,10 @@ namespace ET
 		 public const ushort M2C_PetRefinedSave = 10622;
 		 public const ushort C2M_UnionSendMailRequest = 10623;
 		 public const ushort M2C_UnionSendMailResponse = 10624;
-		 public const ushort M2C_UpdateVersion = 10625;
+		 public const ushort C2M_UnionWarehouseVerifyRequest = 10625;
+		 public const ushort M2C_UnionWarehouseVerifyResponse = 10626;
+		 public const ushort C2M_UnionRenameRequest = 10627;
+		 public const ushort M2C_UnionRenameResponse = 10628;
+		 public const ushort M2C_UpdateVersion = 10629;
 	}
 }

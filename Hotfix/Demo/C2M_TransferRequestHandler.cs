@@ -27,7 +27,9 @@ namespace ET
             //await Game.Scene.GetComponent<LocationProxyComponent>().UnLock(unitId, instanceId, m2m_TrasferUnitResponse.InstanceId);
             try
             {
-                response.Error = await TransferHelper.TransferUnit(unit, request);
+                TransferArgs args = new TransferArgs(sceneType: request.SceneType, sceneId: request.SceneId,
+                    difficulty: request.Difficulty, paramInfo: request.paramInfo);
+                response.Error = await TransferHelper.TransferUnit(unit, args);
                 reply();
                 await ETTask.CompletedTask;
             }

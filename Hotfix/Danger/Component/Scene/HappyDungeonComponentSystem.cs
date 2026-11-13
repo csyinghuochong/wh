@@ -65,10 +65,7 @@ namespace ET
         {
             TimerComponent.Instance.Remove(ref self.Timer);
             Scene fubnescene = self.DomainScene();
-            C2M_TransferRequest actor_Transfer = new C2M_TransferRequest()
-            {
-                SceneType = MapTypeEnum.MainCityScene,
-            };
+            TransferArgs args = new TransferArgs(sceneType: MapTypeEnum.MainCityScene, sceneId: 0);
 
             await TimerComponent.Instance.WaitAsync(TimeHelper.Minute);
             List<Unit> units = fubnescene.GetComponent<UnitComponent>().GetAll();
@@ -82,7 +79,7 @@ namespace ET
                 {
                     continue;
                 }
-                await TransferHelper.TransferUnit(units[i], actor_Transfer);
+                await TransferHelper.TransferUnit(units[i], args);
             }
             await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(10000, 20000));
             TransferHelper.NoticeFubenCenter(fubnescene, 2).Coroutine();

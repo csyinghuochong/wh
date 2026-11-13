@@ -16,6 +16,13 @@ namespace ET
                 return;
             }
 
+            if (buffer.IsCommitting)
+            {
+                TimerComponent.Instance.NewOnceTimer(TimeHelper.ServerNow() + UnitTransferHelper.Timeout,
+                    TimerType.UnitTransferTimeout, args);
+                return;
+            }
+
             if (buffer.ExpireTime > TimeHelper.ServerNow())
             {
                 TimerComponent.Instance.NewOnceTimer(buffer.ExpireTime, TimerType.UnitTransferTimeout, args);
@@ -31,6 +38,36 @@ namespace ET
         public const int ChunkSize = 256 * 1024;
         public const int MaxTransferBytes = 64 * 1024 * 1024;
         public const long Timeout = 60 * 1000;
+
+        // Location 是提交结果的依据；连接中断时等待恢复，不能猜测失败并启用原角色。
+        public static async ETTask<long> GetLocation(long unitId)
+        {
+            while (true)
+            {
+                try
+                {
+                    return await LocationProxyComponent.Instance.Get(unitId);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"transfer location retry unitId={unitId}: {ex.Message}");
+                    await TimerComponent.Instance.WaitAsync(1000);
+                }
+            }
+        }
+
+        public static async ETTask<bool> Commit(long unitId, long transferId, long instanceId)
+        {
+            try
+            {
+                return await LocationProxyComponent.Instance.UnLock(unitId, transferId, instanceId);
+            }
+            catch (Exception)
+            {
+                // 解锁回包丢失时，先确认路由，避免删除已经生效的目标角色。
+                return await GetLocation(unitId) == instanceId;
+            }
+        }
 
         // 每个实体单独编码长度，单个大组件也可以跨越多个网络分片。
         public static byte[] Serialize(Unit unit)
@@ -111,6 +148,10 @@ namespace ET
 
             long now = TimeHelper.ServerNow();
             owner.UnitComponents.TryGetValue(request.UnitId, out UnitTransferBuffer buffer);
+            if (buffer != null && buffer.IsCommitting)
+            {
+                return ErrorCode.ERR_OperationOften;
+            }
             if (buffer != null && buffer.ExpireTime <= now)
             {
                 owner.UnitComponents.Remove(request.UnitId);
@@ -157,13 +198,13 @@ namespace ET
             unit = null;
             entities = new List<Entity>();
             if (!owner.UnitComponents.TryGetValue(unitId, out UnitTransferBuffer buffer) || buffer.TransferId != transferId
-                || buffer.Chunks.Count != buffer.ChunkCount || buffer.ReceivedBytes != buffer.TotalBytes
+                || buffer.IsCommitting || buffer.Chunks.Count != buffer.ChunkCount || buffer.ReceivedBytes != buffer.TotalBytes
                 || buffer.ExpireTime <= TimeHelper.ServerNow())
             {
                 return false;
             }
 
-            owner.UnitComponents.Remove(unitId);
+            // 初始化和 Location 提交结束后才移除，关闭副本仍须等待这次传送。
             using MemoryStream stream = new MemoryStream(buffer.TotalBytes);
             foreach (byte[] chunk in buffer.Chunks)
             {
@@ -200,6 +241,7 @@ namespace ET
                 entities.Add(entity);
             }
 
+            buffer.IsCommitting = true;
             return true;
         }
 

@@ -606,14 +606,11 @@ namespace ET
             fubnescene = self.GetChild<Scene>(self.UnionRaceSceneId);
             if (fubnescene != null)
             {
-                C2M_TransferRequest actor_Transfer = new C2M_TransferRequest()
-                {
-                    SceneType = MapTypeEnum.MainCityScene,
-                };
+                TransferArgs args = new TransferArgs(sceneType: MapTypeEnum.MainCityScene, sceneId: 0);
                 List<Unit> units = UnitHelper.GetUnitList(fubnescene, UnitType.Player);
                 for (int i = 0; i < units.Count; i++)
                 {
-                    TransferHelper.TransferUnit(units[i], actor_Transfer).Coroutine();
+                    TransferHelper.TransferUnit(units[i], args).Coroutine();
                 }
 
                 await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 2000));

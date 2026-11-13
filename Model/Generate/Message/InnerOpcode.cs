@@ -212,5 +212,9 @@ namespace ET
 		 public const ushort A2M_GoldShopListResponse = 20209;
 		 public const ushort M2U_UnionSendMailRequest = 20210;
 		 public const ushort U2M_UnionSendMailResponse = 20211;
+		 public const ushort M2U_UnionWarehouseVerifyRequest = 20212;
+		 public const ushort U2M_UnionWarehouseVerifyResponse = 20213;
+		 public const ushort M2U_UnionRenameRequest = 20214;
+		 public const ushort U2M_UnionRenameResponse = 20215;
 	}
 }

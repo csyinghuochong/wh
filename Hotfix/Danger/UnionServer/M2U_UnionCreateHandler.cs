@@ -9,7 +9,17 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, M2U_UnionCreateRequest request, U2M_UnionCreateResponse response, Action reply)
         {
-            if (request.UnionName.Length > 12 || !StringHelper.IsSpecialChar(request.UnionName))
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.UnionCreate, scene.DomainZone()))
+            {
+                await Create(scene, request, response, reply);
+            }
+        }
+
+        private static async ETTask Create(Scene scene, M2U_UnionCreateRequest request, U2M_UnionCreateResponse response, Action reply)
+        {
+            if (!UnionHelper.IsValidUnionName(request.UnionName)
+                || !UnionHelper.IsValidUnionText(request.UnionPurpose, GlobalValueKey.Global_Union_Declaration_Character_Length)
+                || !UnionHelper.IsValidUnionText(request.UnionNotice, GlobalValueKey.Global_Union_Notic_Character_Length))
             {
                 response.Error = ErrorCode.ERR_Union_NameValied;
                 reply();

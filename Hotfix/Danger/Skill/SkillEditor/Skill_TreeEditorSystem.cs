@@ -28,7 +28,7 @@ namespace ET
             double endSec = ldSkill.Time_3 > 0 ? ldSkill.Time_3 : 1;
             self.SkillEndTime = self.SkillBeginTime + (long)(1000 * endSec);
 
-            // 引导：出手当帧跳第一次，之后每 Time_Interval 再跳，Skill_Time 那一跳也算。5 秒 / 0.5 秒 = 11 次
+            // 引导从 Time_1 开始跳伤，持续 Skill_Time，包含结束时刻；Time_3 不截断最后一跳。
             long guideIntervalMs = 0;
             if (ldSkill.Type == SkillTypeEnum.SkillTypeGuide_3 && ldSkill.Time_Interval > 0 && ldSkill.Skill_Time > 0)
             {
@@ -38,8 +38,11 @@ namespace ET
             if (guideIntervalMs > 0)
             {
                 self.GuideIntervalMs = guideIntervalMs;
-                self.SkillExcuteHurtTime = self.SkillBeginTime;
-                self.SkillEndTime = self.SkillBeginTime + (long)(1000 * ldSkill.Skill_Time);
+                long guideEndTime = self.SkillExcuteHurtTime + (long)(1000 * ldSkill.Skill_Time);
+                if (self.SkillEndTime < guideEndTime)
+                {
+                    self.SkillEndTime = guideEndTime;
+                }
             }
 
             self.ActionPosition = new Vector3(skillcmd.PosX, skillcmd.PosY, skillcmd.PosZ);
@@ -78,12 +81,17 @@ namespace ET
             self.SkillExcuteHurtTime = self.SkillEndTime;
         }
 
-        /// <summary>引导按间隔再跑一遍技能树。下一跳超过 Skill_Time 就结束。</summary>
+        /// <summary>引导在 Time_1 到 Time_1 + Skill_Time 内按间隔执行技能树，生命周期至少保留到 Time_3。</summary>
         static void UpdateGuideHurt(this Skill_TreeEditor self, long serverNow)
         {
-            if (self.SkillExcuteHurtTime > self.SkillEndTime)
+            long guideEndTime = self.SkillBeginTime + (long)(1000 * System.Math.Max(0, self.LdSkillConf.Time_1))
+                    + (long)(1000 * self.LdSkillConf.Skill_Time);
+            if (self.SkillExcuteHurtTime > guideEndTime)
             {
-                self.SetSkillState(SkillState.Finished);
+                if (serverNow >= self.SkillEndTime)
+                {
+                    self.SetSkillState(SkillState.Finished);
+                }
                 return;
             }
 
@@ -96,7 +104,7 @@ namespace ET
             self.ExecuteSkillTreeOnce();
             self.treeLogicExecuted = true;
             self.SkillExcuteHurtTime += self.GuideIntervalMs;
-            if (self.SkillExcuteHurtTime > self.SkillEndTime)
+            if (self.SkillExcuteHurtTime > guideEndTime && serverNow >= self.SkillEndTime)
             {
                 self.SetSkillState(SkillState.Finished);
             }

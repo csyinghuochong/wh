@@ -295,7 +295,15 @@ namespace ET
 
                         int tomap = SceneConfigHelper.MainCityID();
 						StartSceneConfig startSceneConfig = StartSceneConfigCategory.Instance.GetBySceneName(session.DomainZone(), $"Map{tomap}");
-						await TransferHelper.Transfer(unit, startSceneConfig.InstanceId, (int)MapTypeEnum.MainCityScene, SceneConfigHelper.MainCityID(), 0, "0");
+                        int transferError = await TransferHelper.Transfer(unit, startSceneConfig.InstanceId,
+                            new TransferArgs(sceneType: (int)MapTypeEnum.MainCityScene, sceneId: SceneConfigHelper.MainCityID(),
+                                difficulty: 0, paramInfo: "0"));
+                        if (transferError != ErrorCode.ERR_Success)
+                        {
+                            await DisconnectHelper.KickPlayer(player, true);
+                            session.Disconnect().Coroutine();
+                            return;
+                        }
 
 						player.PlayerState = PlayerState.Game;
 						player.UnitId = request.UserID;

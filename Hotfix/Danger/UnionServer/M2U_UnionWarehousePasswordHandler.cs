@@ -7,6 +7,14 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, M2U_UnionWarehousePasswordRequest request, U2M_UnionWarehousePasswordResponse response, Action reply)
         {
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.UnionOperate, request.UnionId))
+            {
+                await ChangePassword(scene, request, response, reply);
+            }
+        }
+
+        private static async ETTask ChangePassword(Scene scene, M2U_UnionWarehousePasswordRequest request, U2M_UnionWarehousePasswordResponse response, Action reply)
+        {
             DBUnionInfo dBUnionInfo = await scene.GetComponent<UnionSceneComponent>().GetDBUnionInfo(request.UnionId);
             if (dBUnionInfo?.UnionInfo == null)
             {
@@ -23,7 +31,7 @@ namespace ET
             }
 
             string oldPwd = dBUnionInfo.WarehousePassword ?? string.Empty;
-            if (!string.IsNullOrEmpty(oldPwd) && oldPwd != (request.OldPassword ?? string.Empty))
+            if (UnionWarehouseHelper.GetWarehousePasswordState(oldPwd) == 2 && oldPwd != request.OldPassword)
             {
                 response.Error = ErrorCode.ERR_Union_WarehousePassword;
                 reply();
@@ -45,8 +53,9 @@ namespace ET
             }
 
             dBUnionInfo.WarehousePassword = request.NewPassword;
+            UnionWarehouseServerHelper.RevokeAccess(scene.GetComponent<UnionSceneComponent>(), request.UnionId);
             dBUnionInfo.UnionInfo.HasWarehousePassword = UnionWarehouseHelper.GetWarehousePasswordState(dBUnionInfo.WarehousePassword);
-            DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
+            await DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo);
             response.HasWarehousePassword = dBUnionInfo.UnionInfo.HasWarehousePassword;
             reply();
             await ETTask.CompletedTask;
