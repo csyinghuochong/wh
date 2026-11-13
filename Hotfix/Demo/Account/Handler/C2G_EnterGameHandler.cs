@@ -351,9 +351,14 @@ namespace ET
                 createRoleInfo.RoleHeadId = roleInfo.RoleHeadId;
                 createRoleInfo.RoleHeadFrame = roleInfo.RoleHeadFrame;
                 createRoleInfo.RoleNo = roleInfo.RoleNo;
-                createRoleInfo.FashionIds = new List<int>();
                 BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-                createRoleInfo.FashionIds.AddRange(bag.FashionEquipList);
+                if (bag != null)
+                {
+                    createRoleInfo.FashionIds = new List<int>();
+                    createRoleInfo.FashionIds.AddRange(bag.FashionEquipList);
+                    // 中心服角色列表也要带当前武器，否则选角界面 ShowPlayerModel 拿到的是旧值
+                    createRoleInfo.WeaponId = bag.GetWuqiItemId();
+                }
 
                 await Game.Scene.GetComponent<DBComponent>().Save(CommonConfig.CenterZoneId, account);
                 await CenterServerCrowdSystem.SaveRoleLogin(zone, userId, loginTime);

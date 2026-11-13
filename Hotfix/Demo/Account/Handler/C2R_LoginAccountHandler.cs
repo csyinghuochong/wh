@@ -258,7 +258,7 @@ namespace ET
 
                             NumericComponent numericComponent =await DBHelper.GetComponent<NumericComponent>(createRoleInfo.ServerId,createRoleInfo.UserID);
                             BagComponentServer bagComponentServer =await DBHelper.GetComponent<BagComponentServer>(createRoleInfo.ServerId,createRoleInfo.UserID);
-                            if (numericComponent == null)
+                            if (numericComponent == null || bagComponentServer == null)
                             {
                                 response.RoleLists.Add(roleList);
                                 continue;
@@ -266,6 +266,8 @@ namespace ET
                             
                             roleList.PlayerLv = roleInfoComponentServer.RoleInfo.Lv;
                             roleList.FashionIds = bagComponentServer.FashionEquipList;
+                            // 角色列表里的 WeaponId 之前从没赋过值，恒为 0，选角界面因此不显示武器
+                            roleList.WeaponId = bagComponentServer.GetWuqiItemId();
                             
                             response.RoleLists.Add(roleList);
                         }

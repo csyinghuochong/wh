@@ -3908,4 +3908,45 @@ namespace ET
 	}
 
 //Shop商店	end####################################################
+//公会邮件：UnitId、UnionId 由地图服填写，公会服校验帮主身份
+	[ResponseType(nameof(U2M_UnionSendMailResponse))]
+	[Message(InnerOpcode.M2U_UnionSendMailRequest)]
+	[ProtoContract]
+	public partial class M2U_UnionSendMailRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnionId { get; set; }
+
+		[ProtoMember(2)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(3)]
+		public string Title { get; set; }
+
+		[ProtoMember(4)]
+		public string Content { get; set; }
+
+	}
+
+	[Message(InnerOpcode.U2M_UnionSendMailResponse)]
+	[ProtoContract]
+	public partial class U2M_UnionSendMailResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 }

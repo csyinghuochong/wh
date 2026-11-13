@@ -41,6 +41,37 @@ namespace ET
         }
 
         /// <summary>
+        /// 把服务端权威的时装持有列表同步给自己（只发自己，不广播）。
+        /// M2C_FashionUpdate 是广播给视野内玩家的外观消息，且不含 FashionActiveList，
+        /// 不能拿来同步激活数据；GM 添加 / 激活 / 续费等服务端改动统一走这里。
+        /// 全量下发，客户端直接替换本地列表，不再自己预更新。
+        /// </summary>
+        public static void SyncFashionActiveList(this BagComponentServer self, Unit unit)
+        {
+            if (unit == null || unit.IsDisposed)
+            {
+                return;
+            }
+
+            // 拷贝一份快照：消息在发送时序列化，避免之后续费又改到同一批对象
+            List<FashionInfo> snapshot = new List<FashionInfo>(self.FashionActiveList.Count);
+            for (int i = 0; i < self.FashionActiveList.Count; i++)
+            {
+                FashionInfo src = self.FashionActiveList[i];
+                snapshot.Add(new FashionInfo()
+                {
+                    FashionId = src.FashionId,
+                    ActivteTime = src.ActivteTime
+                });
+            }
+
+            MessageHelper.SendToClient(unit, new M2C_FashionActiveSync()
+            {
+                FashionActiveList = snapshot
+            });
+        }
+
+        /// <summary>
         /// 时装到期检查：过期由服务端自动卸下（从 FashionEquipList 移除），持有记录保留，
         /// 客户端才能显示 FashionState.Expired 的「已过期 / 续费」。
         /// TODO 当前 FashionInfo 只有 ActivteTime、配置表没有 ValidityTime/EndTime，RemoveExpiredFromEquip 是空实现，
@@ -200,7 +231,7 @@ namespace ET
 
                 if (ldFashion.Sex != SexEnum.None && ldFashion.Sex != sex)
                 {
-                    return ErrorCode.ERR_ModifyData;
+                    return ErrorCode.ERR_FashionSexErr;
                 }
 
                 // 按部位覆盖：清掉同部位已穿的（含默认时装）和无效配置
@@ -237,7 +268,7 @@ namespace ET
                     {
                         if (defaultIds[i] == fashionId)
                         {
-                            return ErrorCode.ERR_ModifyData;
+                            return ErrorCode.ERR_FashionDefault;
                         }
                     }
                 }

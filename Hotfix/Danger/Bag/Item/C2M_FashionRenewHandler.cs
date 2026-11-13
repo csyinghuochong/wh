@@ -26,6 +26,10 @@ namespace ET
 
             fashionInfo.ActivteTime += TimeHelper.OneDay;
 
+            // 与激活协议一致：续费后的服务端时间戳先同步给自己，再回 response，
+            // 客户端不再本地 +1 天，避免客户端/服务端时钟与天数漂移。
+            bagComponentServer.SyncFashionActiveList(unit);
+
             reply();
             await ETTask.CompletedTask;
         }

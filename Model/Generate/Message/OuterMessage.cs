@@ -11995,6 +11995,25 @@ namespace ET
 
 	}
 
+// 时装持有列表同步：只发给自己的 IActorMessage，不广播、不带外观数据。
+// M2C_FashionUpdate 是广播给视野内玩家的外观消息，且不含持有列表，不能用来同步激活数据。
+// 任何服务端改动 FashionActiveList 的入口（GM 添加、激活、续费）都全量下发，
+// 客户端不再本地预更新，一律以服务端列表为准。
+	[Message(OuterOpcode.M2C_FashionActiveSync)]
+	[ProtoContract]
+	public partial class M2C_FashionActiveSync: Object, IActorMessage
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public List<FashionInfo> FashionActiveList = new List<FashionInfo>();
+
+	}
+
 //Fashion时装 end####################################################
 	[ResponseType(nameof(M2C_PetLearnSkill))]
 // 宠物技能书 SubType_PetSkillBook_39。只学这一本，直接写入 Skill_Extra_B
@@ -12176,6 +12195,41 @@ namespace ET
 	}
 
 ////////////////////////////////////////////////
+//公会邮件：仅帮主可发送，通过玩家所在地图服校验身份并转发公会服
+	[ResponseType(nameof(M2C_UnionSendMailResponse))]
+	[Message(OuterOpcode.C2M_UnionSendMailRequest)]
+	[ProtoContract]
+	public partial class C2M_UnionSendMailRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public string Title { get; set; }
+
+		[ProtoMember(2)]
+		public string Content { get; set; }
+
+	}
+
+	[Message(OuterOpcode.M2C_UnionSendMailResponse)]
+	[ProtoContract]
+	public partial class M2C_UnionSendMailResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 //#################一定要放在最后
 ///////Max OpcodeID    放在最后
 	[Message(OuterOpcode.M2C_UpdateVersion)]

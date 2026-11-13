@@ -304,7 +304,7 @@ namespace ET
                         {
                             return Fail(ErrorCode.ERR_TransferFailError);
                         }
-
+                        TeamInfo.FubenInstanceId
                         if (createUnit.FubenId > 0 && createUnit.FubenId != recordSceneId && LDSceneCategory.Instance.Contain(createUnit.FubenId))
                         {
                             LDScene teamScene = LDSceneCategory.Instance.Get(createUnit.FubenId);

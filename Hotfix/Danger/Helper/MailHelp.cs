@@ -18,7 +18,7 @@ namespace ET
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
             paiMaiItemInfo.BagInfo.GetWay = $"{ItemGetWay.XiaJia}_{TimeHelper.ServerNow()}";
             mailInfo.ItemList.Add(paiMaiItemInfo.BagInfo);
-
+            
             int homeZone = UnitZoneHelper.GetHomeZone(paiMaiItemInfo.UserId);
             await SendUserMail(homeZone, paiMaiItemInfo.UserId, mailInfo);
         }

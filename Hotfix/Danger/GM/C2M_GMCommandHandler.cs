@@ -111,6 +111,33 @@ namespace ET
 					}
 					return;
 				}
+                if (message.GMMsg == "fashionallopen#")
+                {
+                    // fashionallopen#：激活全部时装，保留已有激活记录和当前穿戴。
+                    BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+                    long now = TimeHelper.ServerNow();
+                    int addedCount = 0;
+                    foreach (LDFashion fashionConfig in LDFashionCategory.Instance.GetAll().Values)
+                    {
+                        if (bagComponentServer.GetFashionInfo(fashionConfig.Id) != null)
+                        {
+                            continue;
+                        }
+
+                        bagComponentServer.FashionActiveList.Add(new FashionInfo()
+                        {
+                            FashionId = fashionConfig.Id,
+                            ActivteTime = now
+                        });
+                        addedCount++;
+                    }
+
+                    Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+                    bagComponentServer.SyncFashionActiveList(unit);
+                    Log.Warning($"fashionallopen 成功 新激活数={addedCount} 持有数={bagComponentServer.FashionActiveList.Count}");
+                    return;
+                }
+
                 if (message.GMMsg.Contains("fashionwear#"))
                 {
                     // fashionwear#时装Id          穿戴（GM 自动激活，绕过获取途径与持有校验，方便试穿任意时装）
@@ -137,7 +164,7 @@ namespace ET
                     RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
 
                     // GM 特权：没有激活记录就补一条，正常途径仍走激活/获取。
-                    // 只写服务端，客户端时装列表的持有状态在下次拉背包时刷新。
+                    bool fashionAdded = false;
                     if (bagComponentServer.GetFashionInfo(fashionId) == null)
                     {
                         bagComponentServer.FashionActiveList.Add(new FashionInfo()
@@ -145,6 +172,7 @@ namespace ET
                             FashionId = fashionId,
                             ActivteTime = TimeHelper.ServerNow()
                         });
+                        fashionAdded = true;
                     }
 
                     // 部位覆盖、性别校验、卸下限制等规则与 C2M_FashionWearHandler 共用一份
@@ -159,6 +187,13 @@ namespace ET
 
                     // GM 由服务端直接改数据，客户端不会本地预更新，必须自己也收到 M2C_FashionUpdate
                     UnitHelper.SyncUnitAppear(unit);
+
+                    // 外观广播与持有列表分开：补过激活记录就只给自己同步一次全量持有列表，
+                    // 客户端不用等到下次拉背包才知道这件时装已拥有。
+                    if (fashionAdded)
+                    {
+                        bagComponentServer.SyncFashionActiveList(unit);
+                    }
 
                     Log.Warning($"fashionwear 成功 FashionId={fashionId} Operate={operateType} EquipCount={bagComponentServer.FashionEquipList.Count}");
                     return;
@@ -475,6 +510,47 @@ namespace ET
                                 MessageHelper.SendToClient(unit, titleComponent.TitleUpdateResult);
                                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                                 break;
+                            case ItemBigType.Type_Fashion:
+                            {
+                                // 1#<Type_Fashion>#<时装Id>#<续期天数>
+                                // 规则与 C2M_FashionActiveHandler 一致：无记录则激活（ActivteTime=服务器当前时间），
+                                // 已有记录则按 itemNumber 续期（不填/非法时按 1 天）。GM 绕过获取途径与消耗。
+                                if (itemId <= 0 || !LDFashionCategory.Instance.Contain(itemId))
+                                {
+                                    Log.Warning($"GM 添加时装失败，配置不存在 Id={itemId}");
+                                    break;
+                                }
+
+                                BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
+                                if (bagComponentServer == null)
+                                {
+                                    break;
+                                }
+
+                                int renewDays = itemNumber > 0 ? itemNumber : 1;
+                                FashionInfo fashionInfo = bagComponentServer.GetFashionInfo(itemId);
+                                if (fashionInfo == null)
+                                {
+                                    bagComponentServer.FashionActiveList.Add(new FashionInfo()
+                                    {
+                                        FashionId = itemId,
+                                        ActivteTime = TimeHelper.ServerNow()
+                                    });
+                                }
+                                else
+                                {
+                                    fashionInfo.ActivteTime += (long)TimeHelper.OneDay * renewDays;
+                                }
+
+                                // 激活会加属性，与正常激活协议保持一致
+                                Function_Fight.UnitUpdateProperty_Base(unit, true, true);
+
+                                // 只同步给自己：GM 由服务端直接改数据，客户端不会本地预更新；
+                                // 持有列表是隐私数据，也不该像 M2C_FashionUpdate 那样广播给视野内玩家。
+                                bagComponentServer.SyncFashionActiveList(unit);
+                                Log.Warning($"GM 添加时装成功 FashionId={itemId} 持有数={bagComponentServer.FashionActiveList.Count}");
+                                break;
+                            }
                         }
 						break;
                     case "2":      //2#13091#1

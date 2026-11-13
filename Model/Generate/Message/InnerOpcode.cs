@@ -210,5 +210,7 @@ namespace ET
 		 public const ushort A2M_GlobalShopBuyResponse = 20207;
 		 public const ushort M2A_GoldShopListRequest = 20208;
 		 public const ushort A2M_GoldShopListResponse = 20209;
+		 public const ushort M2U_UnionSendMailRequest = 20210;
+		 public const ushort U2M_UnionSendMailResponse = 20211;
 	}
 }

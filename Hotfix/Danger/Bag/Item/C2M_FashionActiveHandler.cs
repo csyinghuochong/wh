@@ -36,7 +36,12 @@ namespace ET
             // TODO 以后接入激活消耗：CheckNeedItem / OnCostItemData
 
             Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-    
+
+            // 服务端权威下发全量持有列表，客户端不再本地预更新。
+            // 必须在 reply() 之前发：同一 Session 消息有序，客户端 Session.Call 返回时列表已是最新；
+            // 否则 UI 拿到 response 立刻读 GetState 会短暂显示「未拥有」。
+            bagComponentServer.SyncFashionActiveList(unit);
+
             reply();
             await ETTask.CompletedTask;
         }

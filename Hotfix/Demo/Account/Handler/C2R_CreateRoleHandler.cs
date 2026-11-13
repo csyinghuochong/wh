@@ -149,6 +149,12 @@ namespace ET
 						createRoleInfo.RoleHeadId = request.Sex == SexEnum.Man ? occupation.RoleHead_Man : occupation.RoleHead_Woman;
 						createRoleInfo.RoleHeadFrame = 1;
 						createRoleInfo.CreateTime = TimeHelper.ServerNow();
+						// Equip_Init 第一件是职业初始武器（进游戏时 BagComponentServer.OnInit 会发并穿上）。
+						// 创角这一刻角色数据/背包还没生成，先按配置预填，登录后 SyncCenterRoleOnEnter 再刷成真实装备。
+						if (occupation.Equip_Init != null && occupation.Equip_Init.Length > 0)
+						{
+							createRoleInfo.WeaponId = occupation.Equip_Init[0];
+						}
                       
                         centerAccountList[0].RoleList.Add(createRoleInfo);
                         Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(CommonConfig.CenterZoneId, centerAccountList[0]).Coroutine();
