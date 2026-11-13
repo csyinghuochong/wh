@@ -311,6 +311,19 @@ namespace ET
                 unit.GetComponent<SkillPassiveComponent>().Reset();
                 unit.GetComponent<SkillPassiveComponent>().Activeted();
                 //Function_Fight.UnitUpdateProperty_Base(unit, false, true);
+                if (request.SceneType == MapTypeEnum.TeamDungeon)
+                {
+                    TeamDungeonComponent teamDungeon = scene.GetComponent<TeamDungeonComponent>();
+                    RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
+                    if (!teamDungeon.EnterPlayers.Contains(unit.Id))
+                    {
+                        // 实际到达后才扣次数；目标实例保留进入记录，跨天重进也不重复扣次。
+                        dailyData.AddSceneEnterTimes(request.ChapterId);
+                        teamDungeon.EnterPlayers.Add(unit.Id);
+                    }
+                    unit.GetComponent<RoleContextComponent>().SetLastTeamDungeonInstanceId(scene.InstanceId);
+                }
+
                 response.NewInstanceId = unit.InstanceId;
 				reply();
 				replied = true;

@@ -37,7 +37,9 @@ namespace ET
                 }
 
                 int targetSceneId = SceneConfigHelper.ResolveTransferSceneId(request.SceneType, request.SceneId, request.paramInfo);
-                if (SceneConfigHelper.UseSceneConfig(request.SceneType) && targetSceneId > 0 && LDSceneCategory.Instance.Contain(targetSceneId))
+                // 组队副本按实际实例校验，在到达副本后记录首次进入次数。
+                if (request.SceneType != MapTypeEnum.TeamDungeon
+                    && SceneConfigHelper.UseSceneConfig(request.SceneType) && targetSceneId > 0 && LDSceneCategory.Instance.Contain(targetSceneId))
                 {
                     LDScene ldScene = LDSceneCategory.Instance.Get(targetSceneId);
                     int enterError = ldScene.CheckSceneEnter(
@@ -300,27 +302,20 @@ namespace ET
                         // 副本在申请等待结束时已创建，这里只取实例并传送。
                         T2M_TeamDungeonEnterResponse createUnit = (T2M_TeamDungeonEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = roleInfoComponentServer.RoleInfo.UserId });
-                        if (createUnit.Error != ErrorCode.ERR_Success)
+                        if (createUnit.Error != ErrorCode.ERR_Success || createUnit.FubenInstanceId == 0
+                            || createUnit.FubenId <= 0 || !LDSceneCategory.Instance.Contain(createUnit.FubenId))
                         {
                             return Fail(ErrorCode.ERR_TransferFailError);
                         }
-                        TeamInfo.FubenInstanceId
-                        if (createUnit.FubenId > 0 && createUnit.FubenId != recordSceneId && LDSceneCategory.Instance.Contain(createUnit.FubenId))
-                        {
-                            LDScene teamScene = LDSceneCategory.Instance.Get(createUnit.FubenId);
-                            int teamEnterError = teamScene.CheckSceneEnter(
-                                roleInfoComponentServer.RoleInfo.Lv,
-                                dailyData.GetSceneFubenTimes(createUnit.FubenId),
-                                dailyData.GetSceneWeekFubenTimes(createUnit.FubenId));
-                            if (teamEnterError != ErrorCode.ERR_Success)
-                            {
-                                return Fail(teamEnterError);
-                            }
 
-                            if (dailyData.AddSceneEnterTimes(createUnit.FubenId))
-                            {
-                                recordSceneId = createUnit.FubenId;
-                            }
+                        LDScene teamScene = LDSceneCategory.Instance.Get(createUnit.FubenId);
+                        int teamEnterError = teamScene.CheckSceneEnter(
+                            roleInfoComponentServer.RoleInfo.Lv,
+                            createUnit.HasEntered ? 0 : dailyData.GetSceneFubenTimes(createUnit.FubenId),
+                            createUnit.HasEntered ? 0 : dailyData.GetSceneWeekFubenTimes(createUnit.FubenId));
+                        if (teamEnterError != ErrorCode.ERR_Success)
+                        {
+                            return Fail(teamEnterError);
                         }
 
                         TransferHelper.BeforeTransfer(unit);

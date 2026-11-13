@@ -3518,6 +3518,9 @@ namespace ET
 		[ProtoMember(3)]
 		public int FubenType { get; set; }
 
+		[ProtoMember(4)]
+		public bool HasEntered { get; set; }
+
 	}
 
 	[ResponseType(nameof(T2Chat_GetTeamInfoResponse))]

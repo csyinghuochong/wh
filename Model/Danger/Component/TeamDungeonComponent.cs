@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET
@@ -19,7 +19,8 @@ namespace ET
         public long EnterTime;
         public TeamInfo TeamInfo;
 
-        public List<long> EnterPlayers = new List<long> { };    
+        // 当前副本场景实例中已成功进入的玩家；离开副本时保留，实例销毁时失效。
+        public List<long> EnterPlayers = new List<long>();
 
         public Dictionary<long, TeamPlayerInfo> TeamPlayers = new Dictionary<long, TeamPlayerInfo>();
        

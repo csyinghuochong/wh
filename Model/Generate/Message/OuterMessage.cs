@@ -5227,6 +5227,9 @@ namespace ET
 		[ProtoMember(2)]
 		public int RefuseUnionInvite { get; set; }
 
+		[ProtoMember(3)]
+		public long LastTeamDungeonInstanceId { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_RoleContextUpdate)]

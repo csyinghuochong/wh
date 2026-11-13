@@ -27,6 +27,7 @@ namespace ET
         {
             self.EnterTime = 0;
             self.TeamInfo = null;
+            self.EnterPlayers.Clear();
             self.BoxReward.Clear();
             self.ItemFlags.Clear();
             self.TeamDropItems.Clear();
