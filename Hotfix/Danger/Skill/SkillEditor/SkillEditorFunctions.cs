@@ -165,15 +165,33 @@ namespace ET
         /// <summary>
         /// 概率触发（CHANCE_TRIGGER）
         /// 0 概率 0.01%（默认 10000）
+        /// 1 是否受属性影响：0 否（默认），1 软控（180/184），2 硬控（181/185）。
+        /// 命中取原施法者，抵抗取当前目标；BUFF 回调仍取原施法者，不取 BUFF 持有者。
+        /// 最终万分率 = clamp(基础概率 * max(0, 1 + 命中 / 1000 - 抵抗 / 1000), 0, 10000)。
         /// </summary>
         private static void ChanceTrigger(SkillEditorFunctionContext ctx)
         {
-            int rate = ctx.GetParamInt(0, 10000);
+            double rate = ctx.GetParamInt(0, 10000);
+            int attributeMode = ctx.GetParamInt(1, 0);
+            if (attributeMode == 1 || attributeMode == 2)
+            {
+                Unit caster = ctx.Handler.TheUnitFrom;
+                Unit target = ctx.Handler.TheUnitTarget;
+                if (caster == null || target == null)
+                {
+                    ctx.LastConditionResult = false;
+                    ctx.SetVariable("rs", 0);
+                    return;
+                }
 
-            if (rate < 0) { rate = 0; }
+                int hitType = attributeMode == 1 ? NumericType.Attr_180 : NumericType.Attr_181;
+                int resistType = attributeMode == 1 ? NumericType.Attr_184 : NumericType.Attr_185;
+                long hitPoints = caster.GetComponent<NumericComponent>().GetAsLong(hitType);
+                long resistPoints = target.GetComponent<NumericComponent>().GetAsLong(resistType);
+                rate *= Math.Max(0d, 1d + hitPoints / 1000d - resistPoints / 1000d);
+            }
 
-            if (rate > 10000) { rate = 10000; }
-
+            rate = Math.Max(0d, Math.Min(rate, 10000d));
             bool hit = rate >= 10000 || RandomHelper.RandomNumber(0, 10000) < rate;
 
             ctx.LastConditionResult = hit;
@@ -739,14 +757,12 @@ namespace ET
         /// 添加负面BUFF（ADD_DEBUFF_NO_CONTROL）
         /// 0 施法者（默认 [自己] caster）
         /// 1 目标（默认 [目标] target）
-        /// 2 基础命中率（默认 10000）
-        /// 3 BUFF_ID
-        /// 4 作用间隔（毫秒）
-        /// 5 作用次数（默认 1）
-        /// 6 无视免疫（默认 [否] false）
-        /// 7 受属性影响命中率（默认 [是] true）
-        /// 8 受属性影响持续时间（默认 [是] true）
-        /// 9 BUFF等级（默认 level）
+        /// 2 BUFF_ID
+        /// 3 作用间隔（毫秒）
+        /// 4 作用次数（默认 1）
+        /// 5 无视免疫（默认 [否] false）
+        /// 6 受属性影响持续时间（默认 [是] true）
+        /// 7 BUFF等级（默认 level）
         /// </summary>
         private static void AddDebuffNoControl(SkillEditorFunctionContext ctx)
         {
@@ -757,14 +773,12 @@ namespace ET
         /// 添加控制BUFF（ADD_DEBUFF_CONTROL）
         /// 0 施法者（默认 [自己] caster）
         /// 1 目标（默认 [目标] target）
-        /// 2 基础命中率（默认 10000）
-        /// 3 BUFF_ID
-        /// 4 作用间隔（毫秒）
-        /// 5 作用次数
-        /// 6 无视免疫（默认 [否] false）
-        /// 7 受属性影响命中率（默认 [是] true）
-        /// 8 受属性影响持续时间（默认 [是] true）
-        /// 9 BUFF等级（默认 1）
+        /// 2 BUFF_ID
+        /// 3 作用间隔（毫秒）
+        /// 4 作用次数
+        /// 5 无视免疫（默认 [否] false）
+        /// 6 受属性影响持续时间（默认 [是] true）
+        /// 7 BUFF等级（默认 1）
         /// </summary>
         private static void AddDebuffControl(SkillEditorFunctionContext ctx)
         {
@@ -1656,23 +1670,14 @@ namespace ET
         {
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
-            int baseHitRate = ctx.GetParamInt(2, 10000);
-            int buffId = ctx.GetParamInt(3, 0);
-            int intervalMs = ctx.GetParamInt(4, 0);
-            int tickCount = ctx.GetParamInt(5, 1);
-            bool ignoreImmune = ctx.GetParamBool(7, false);
-            bool useAttrHitRate = ctx.GetParamBool(8, true);
-            bool useAttrDuration = ctx.GetParamBool(9, true);
-            int buffLevel = ctx.GetParamInt(10, ctx.SkillLevel);
+            int buffId = ctx.GetParamInt(2, 0);
+            int intervalMs = ctx.GetParamInt(3, 0);
+            int tickCount = ctx.GetParamInt(4, 1);
+            bool ignoreImmune = ctx.GetParamBool(5, false);
+            bool useAttrDuration = ctx.GetParamBool(6, true);
+            int buffLevel = ctx.GetParamInt(7, ctx.SkillLevel);
 
             if (target == null || buffId <= 0)
-            {
-                ctx.SetVariable("rs", 0);
-                ctx.LastConditionResult = false;
-                return;
-            }
-
-            if (!TryRollDebuffHit(caster, target, baseHitRate, useAttrHitRate))
             {
                 ctx.SetVariable("rs", 0);
                 ctx.LastConditionResult = false;
@@ -1688,7 +1693,7 @@ namespace ET
                 }
             }
 
-            if (!ApplyBuff(
+            bool applied = ApplyBuff(
                 ctx,
                 caster,
                 target,
@@ -1696,57 +1701,9 @@ namespace ET
                 intervalMs,
                 tickCount,
                 ignoreImmune,
-                buffLevel))
-            {
-                ctx.SetVariable("rs", 0);
-                ctx.LastConditionResult = false;
-                return;
-            }
-            ctx.SetVariable("rs", 1);
-            ctx.LastConditionResult = true;
-        }
-
-        /// <summary>
-        /// 按基础命中率掷是否命中；勾选受属性影响时，用双方等级差修正命中率。
-        /// </summary>
-        private static bool TryRollDebuffHit(Unit caster, Unit target, int baseHitRate, bool useAttrHitRate)
-        {
-            int hitRate = baseHitRate;
-            if (hitRate >= 10000)
-            {
-                return true;
-            }
-
-            if (hitRate <= 0)
-            {
-                return false;
-            }
-
-            if (useAttrHitRate && caster != null && target != null)
-            {
-                int casterLevel = ResolveUnitLevel(caster);
-                int targetLevel = ResolveUnitLevel(target);
-                if (casterLevel > targetLevel)
-                {
-                    hitRate += (casterLevel - targetLevel) * 100;
-                }
-                else if (targetLevel > casterLevel)
-                {
-                    hitRate -= (targetLevel - casterLevel) * 100;
-                }
-            }
-
-            if (hitRate >= 10000)
-            {
-                return true;
-            }
-
-            if (hitRate <= 0)
-            {
-                return false;
-            }
-
-            return RandomHelper.RandomNumber(0, 10000) < hitRate;
+                buffLevel);
+            ctx.SetVariable("rs", applied ? 1 : 0);
+            ctx.LastConditionResult = applied;
         }
 
         /// <summary>

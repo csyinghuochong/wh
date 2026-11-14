@@ -10954,7 +10954,8 @@ namespace ET
 
 //Team  end####################################################
 //TeamDungeon  begin####################################################
-//队长申请副本。地图服校验后转到组队服：先广播申请中，固定等 3 秒创建副本，再广播可进入。
+//客户端 -> 地图服：队长申请或取消副本，地图服校验后转到组队服。
+//申请先广播申请中，固定等 10 秒创建副本，再广播可进入；创建后拒绝再次申请或取消。
 	[ResponseType(nameof(M2C_TeamDungeonApplyResponse))]
 	[Message(OuterOpcode.C2M_TeamDungeonApplyRequest)]
 	[ProtoContract]
@@ -10966,16 +10967,17 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
-//要申请的副本，只用 SceneId。必须是队长。
+//Apply=1 时必填，只用 SceneId 指定申请的副本；取消时可不传。必须是队长。
 		[ProtoMember(1)]
 		public TeamInfo TeamInfo { get; set; }
 
-//1=发起申请。其它值拒绝。
+//1=发起申请，0=取消尚未创建的副本申请。其它值拒绝。
 		[ProtoMember(2)]
 		public int Apply { get; set; }
 
 	}
 
+//地图服 -> 客户端：Error=0 表示申请或取消已受理，非 0 表示拒绝原因；阶段通过结果推送同步。
 	[Message(OuterOpcode.M2C_TeamDungeonApplyResponse)]
 	[ProtoContract]
 	public partial class M2C_TeamDungeonApplyResponse: Object, IActorLocationResponse
@@ -10991,7 +10993,7 @@ namespace ET
 
 	}
 
-//推给队长和全部队员。用 TeamInfo.FubenInstanceId 区分阶段：0 申请中，非 0 可进入。
+//服务端 -> 队长和全部队员：同步申请、取消及副本可进入状态。先判断 IsCanceled，再判断实例 Id。
 	[Message(OuterOpcode.M2C_TeamDungeonApplyResult)]
 	[ProtoContract]
 	public partial class M2C_TeamDungeonApplyResult: Object, IActorMessage
@@ -11005,12 +11007,17 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
-//当前队伍。FubenInstanceId==0 申请中；非0 副本已创建，确定后走进本传送。
+//当前队伍。未取消时 FubenInstanceId==0 表示申请中，非 0 表示副本已创建，可走进本传送。
 		[ProtoMember(1)]
 		public TeamInfo TeamInfo { get; set; }
 
+//申请中为 Err_HaveNotPrepare；取消成功或副本可进入时为 ERR_Success。
 		[ProtoMember(2)]
 		public int ErrorCode { get; set; }
+
+//true=本次申请已取消，不再创建副本；false=申请中或可进入，由 FubenInstanceId 区分。
+		[ProtoMember(3)]
+		public bool IsCanceled { get; set; }
 
 	}
 

@@ -8,8 +8,6 @@ namespace ET
     {
         private const double DefaultCritRate = 0.05d;
 
-
-
         //E:\LDYQU3DProject\trunk\Server\Hotfix\Danger\Skill\SkillEditor\Document\技能编辑器暴击和命中
         public static long EvaluateDirectHit(
             SkillEditorFunctionContext ctx,

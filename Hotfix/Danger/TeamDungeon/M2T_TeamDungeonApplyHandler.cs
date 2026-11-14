@@ -17,49 +17,63 @@ namespace ET
                 return;
             }
 
-            // 只有队长能申请，Apply 必须为 1。
-            if (teamInfo.TeamId != request.UnitID || request.Apply != 1)
+            if (teamInfo.TeamId != request.UnitID)
             {
                 response.Error = ErrorCode.ERR_IsNotLeader;
                 reply();
                 return;
             }
 
-            // 副本已经开着：不再开第二本，只再广播一次可进入。
-            if (teamInfo.FubenInstanceId != 0)
-            {
-                await teamSceneComponent.BroadcastDungeonApply(teamInfo);
-                response.TeamInfo = teamInfo;
-                reply();
-                return;
-            }
-
-            // 还在 3 秒等待里，忽略重复申请。
-            if (teamSceneComponent.OpeningTeamIds.Contains(teamInfo.TeamId))
-            {
-                response.TeamInfo = teamInfo;
-                reply();
-                return;
-            }
-
-            if (request.SceneId > 0)
-            {
-                teamInfo.SceneId = request.SceneId;
-            }
-
-            if (teamInfo.SceneId == 0 || !LDSceneCategory.Instance.Contain(teamInfo.SceneId))
+            if (request.TeamId != teamInfo.TeamId || (request.Apply != 0 && request.Apply != 1))
             {
                 response.Error = ErrorCode.ERR_ModifyData;
                 reply();
                 return;
             }
 
-            // 先广播申请中（此时 FubenInstanceId 仍为 0），RPC 立刻返回。3 秒后再创建副本并广播可进入。
-            teamSceneComponent.OpeningTeamIds.Add(teamInfo.TeamId);
+            // 副本已经创建，不能再申请或取消申请。
+            if (teamInfo.FubenInstanceId != 0)
+            {
+                response.Error = ErrorCode.ERR_AlreadyOpen;
+                reply();
+                return;
+            }
+
+            if (request.Apply == 0)
+            {
+                if (teamSceneComponent.OpeningTeams.Remove(teamInfo.TeamId))
+                {
+                    await teamSceneComponent.BroadcastDungeonApply(teamInfo, true);
+                }
+
+                response.TeamInfo = teamInfo;
+                reply();
+                return;
+            }
+
+            // 还在 10 秒等待里，重复申请不重新计时。
+            if (teamSceneComponent.OpeningTeams.ContainsKey(teamInfo.TeamId))
+            {
+                response.TeamInfo = teamInfo;
+                reply();
+                return;
+            }
+
+            if (request.SceneId == 0 || !LDSceneCategory.Instance.Contain(request.SceneId))
+            {
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
+
+            // 申请计时独立于广播耗时；取消后重申会获得新的申请 Id。
+            teamInfo.SceneId = request.SceneId;
+            long applyId = IdGenerater.Instance.GenerateInstanceId();
+            teamSceneComponent.OpeningTeams.Add(teamInfo.TeamId, applyId);
+            teamSceneComponent.OpenTeamDungeonLater(teamInfo.TeamId, applyId).Coroutine();
             await teamSceneComponent.BroadcastDungeonApply(teamInfo);
             response.TeamInfo = teamInfo;
             reply();
-            teamSceneComponent.OpenTeamDungeonLater(teamInfo.TeamId).Coroutine();
         }
     }
 }

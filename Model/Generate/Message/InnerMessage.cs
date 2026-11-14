@@ -3430,7 +3430,7 @@ namespace ET
 
 //Mail  end####################################################
 //Team  begin####################################################
-//地图服把队长申请转到组队服。
+//地图服 -> 组队服：转发队长申请或取消。申请固定等待 10 秒，副本已创建时拒绝申请或取消。
 	[ResponseType(nameof(T2M_TeamDungeonApplyResponse))]
 	[Message(InnerOpcode.M2T_TeamDungeonApplyRequest)]
 	[ProtoContract]
@@ -3442,6 +3442,7 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
+//地图服确认的当前队伍 Id，必须与组队服记录一致。
 		[ProtoMember(1)]
 		public long TeamId { get; set; }
 
@@ -3449,19 +3450,21 @@ namespace ET
 		[ProtoMember(2)]
 		public long UnitID { get; set; }
 
-//1=发起申请。
+//1=发起申请，0=取消尚未创建的副本申请，其它值拒绝。
 		[ProtoMember(3)]
 		public int Apply { get; set; }
 
+//地图服预检结果，正常转发时为 ERR_Success。
 		[ProtoMember(4)]
 		public int ErrorCode { get; set; }
 
-//要开启的副本场景 Id。
+//Apply=1 时指定副本场景 Id；取消时为 0，不校验此字段。
 		[ProtoMember(5)]
 		public int SceneId { get; set; }
 
 	}
 
+//组队服 -> 地图服：Error=0 表示申请或取消已受理，非 0 为拒绝原因。
 	[Message(InnerOpcode.T2M_TeamDungeonApplyResponse)]
 	[ProtoContract]
 	public partial class T2M_TeamDungeonApplyResponse: Object, IActorResponse
@@ -3475,6 +3478,7 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
+//受理后的当前队伍，失败时不返回。
 		[ProtoMember(1)]
 		public TeamInfo TeamInfo { get; set; }
 

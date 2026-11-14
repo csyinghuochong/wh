@@ -35,16 +35,21 @@ namespace ET
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
         }
 
-        /// <summary>申请后固定等 3 秒再创建副本。创建完 FubenInstanceId 非 0，再广播可进入。</summary>
-        public static async ETTask OpenTeamDungeonLater(this TeamSceneComponent self, long teamId)
+        /// <summary>申请后固定等 10 秒再创建副本；取消或被新申请替代时终止。</summary>
+        public static async ETTask OpenTeamDungeonLater(this TeamSceneComponent self, long teamId, long applyId)
         {
-            await TimerComponent.Instance.WaitAsync(3000);
-            self.OpeningTeamIds.Remove(teamId);
+            await TimerComponent.Instance.WaitAsync(10000);
             if (self.IsDisposed)
             {
                 return;
             }
 
+            if (!self.OpeningTeams.TryGetValue(teamId, out long currentApplyId) || currentApplyId != applyId)
+            {
+                return;
+            }
+
+            self.OpeningTeams.Remove(teamId);
             TeamInfo teamInfo = self.GetTeamInfo(teamId);
             if (teamInfo == null || teamInfo.TeamId != teamId || teamInfo.FubenInstanceId != 0)
             {
@@ -60,17 +65,18 @@ namespace ET
             await self.BroadcastDungeonApply(teamInfo);
         }
 
-        /// <summary>同一条 M2C_TeamDungeonApplyResult 推给队长和队员。客户端用 FubenInstanceId 区分申请中和可进入。</summary>
-        public static async ETTask BroadcastDungeonApply(this TeamSceneComponent self, TeamInfo teamInfo)
+        /// <summary>向全队同步申请、取消或可进入；IsCanceled 优先于 FubenInstanceId 判断。</summary>
+        public static async ETTask BroadcastDungeonApply(this TeamSceneComponent self, TeamInfo teamInfo, bool isCanceled = false)
         {
             // 申请中 FubenInstanceId 仍是 0。ErrorCode 不能填 Success，旧客户端看到 Success 会直接 RequestTransfer。
-            int errorCode = teamInfo.FubenInstanceId != 0 ? ErrorCode.ERR_Success : ErrorCode.Err_HaveNotPrepare;
+            int errorCode = isCanceled || teamInfo.FubenInstanceId != 0 ? ErrorCode.ERR_Success : ErrorCode.Err_HaveNotPrepare;
             M2C_TeamDungeonApplyResult message = new M2C_TeamDungeonApplyResult()
             {
-                TeamInfo = teamInfo,
+                TeamInfo = CloneTeamInfo(teamInfo),
                 ErrorCode = errorCode,
+                IsCanceled = isCanceled,
             };
-            List<TeamPlayerInfo> players = teamInfo.PlayerList;
+            List<TeamPlayerInfo> players = message.TeamInfo.PlayerList;
             for (int i = 0; i < players.Count; i++)
             {
                 if (players[i].RobotId != 0)
@@ -234,6 +240,7 @@ namespace ET
             if (teamInfo.TeamId == userId)
             {
                 long oldTeamId = teamInfo.TeamId;
+                self.OpeningTeams.Remove(oldTeamId);
                 TeamPlayerInfo newLeader = teamInfo.PlayerList[0];
                 teamInfo.TeamId = newLeader.UserID;
                 newLeader.Followe = 0;
@@ -432,7 +439,7 @@ namespace ET
         public static void ClearApply(this TeamSceneComponent self, long teamId)
         {
             self.ApplyDict.Remove(teamId);
-            self.OpeningTeamIds.Remove(teamId);
+            self.OpeningTeams.Remove(teamId);
         }
     }
 }
