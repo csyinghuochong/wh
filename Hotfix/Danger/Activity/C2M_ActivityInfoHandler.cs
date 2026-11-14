@@ -8,6 +8,7 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ActivityInfoRequest request, M2C_ActivityInfoResponse response, Action reply)
         {
             response.ActivityInfo = unit.GetComponent<ActivityComponentServer>().ActivityInfo;
+            response.ActivityReceiveIds.AddRange(unit.GetComponent<ActivityComponentServer>().ActivityReceiveIds);
             reply();
             await ETTask.CompletedTask;
         }

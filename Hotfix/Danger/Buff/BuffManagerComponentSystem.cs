@@ -336,7 +336,7 @@ namespace ET
             buffHandler.OnInit(buffData, from, skillHandler, intervalMs);
             self.AddTimer();
             self.AddBuffRecord(1, buffHandler.BuffData.BuffId);
-            SkillManagerComponentSystem.ExecuteLinkedSkill(ldSkillBuff.Skill_Init, from, unit);
+            SkillManagerComponentSystem.ExecuteLinkedSkill(ldSkillBuff.Skill_Init, from, unit, isBuffSkill: true);
             return buffHandler;
         }
 
@@ -357,7 +357,7 @@ namespace ET
             {
                 buffHandler.BuffEndTime = buffData.BuffEndTime;
             }
-            SkillManagerComponentSystem.ExecuteLinkedSkill(ldSkillBuff.Skill_Refresh, from, unit);
+            SkillManagerComponentSystem.ExecuteLinkedSkill(ldSkillBuff.Skill_Refresh, from, unit, isBuffSkill: true);
         }
 
         private static Buff FindSameIdBuff(this BuffManagerComponent self, int buffId)

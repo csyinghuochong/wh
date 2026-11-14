@@ -588,9 +588,10 @@ namespace ET
         /// <summary>
         /// Buff / 技能体关联技能：立刻跑技能树，不走 OnUseSkill（无 CD / 动作 / Time_1）。
         /// TheUnitFrom=caster，TheUnitTarget=target。技能体 caster 无 SkillManager 时用 MasterId 主人。
+        /// BUFF 回调的脚本 caster 使用持有者 target，buff.parent 仍为原施法者。
         /// 子技能必须有 Skill_Battle 行，没有直接 return。
         /// </summary>
-        public static void ExecuteLinkedSkill(int skillId, Unit caster, Unit target)
+        public static void ExecuteLinkedSkill(int skillId, Unit caster, Unit target, bool isBuffSkill = false)
         {
             if (skillId <= 0)
             {
@@ -641,7 +642,7 @@ namespace ET
 
             if (SkillEditorTreeRegistry.TryGetTree(skillId, out SkillEditorSkillLogic logic))
             {
-                SkillEditorTreeExecutor.Execute(handler, logic);
+                SkillEditorTreeExecutor.Execute(handler, logic, isBuffSkill ? target : from);
             }
 
             handler.SetSkillState(SkillState.Finished);

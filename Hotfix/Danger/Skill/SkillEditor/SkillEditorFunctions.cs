@@ -1482,10 +1482,11 @@ namespace ET
         private static void DisplacementToDirection(SkillEditorFunctionContext ctx)
         {
             Unit mover = ctx.ResolveUnit(ctx.GetParamRaw(1));
-            float dirX = ctx.GetParamFloat(2, 0f);
-            float dirZ = ctx.GetParamFloat(3, 0f);
+            float dirX = ResolveDirectionParam(ctx, ctx.GetParamRaw(2), 'x');
+            float dirZ = ResolveDirectionParam(ctx, ctx.GetParamRaw(3), 'z');
             float distance = ctx.GetParamFloat(4, 0f);
-            int moveType = ctx.GetParamInt(6, 0);
+            int moveType = ctx.GetParamInt(5, 0);
+            float moveParam1 = ctx.GetParamFloat(6, 0f);
             if (mover == null || distance <= 0f)
             {
                 return;
@@ -1501,7 +1502,17 @@ namespace ET
                 dir.Normalize();
             }
 
-            MoveUnitToPosition(mover, mover.Position + dir * distance, moveType, 100);
+            int speedRate = 100;
+            if (moveType == 1 && moveParam1 > 0f)
+            {
+                float nowSpeed = mover.GetSpeedNow();
+                if (nowSpeed > 1e-6f)
+                {
+                    speedRate = (int)(100f * moveParam1 / nowSpeed);
+                }
+            }
+
+            MoveUnitToPositionAsync(mover, mover.Position + dir * distance, moveType, speedRate, PathMoveFlags.NoRunAnim).Coroutine();
         }
 
         /// <summary>

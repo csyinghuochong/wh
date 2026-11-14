@@ -4,7 +4,8 @@ namespace ET
 {
     public static class RegisterAccountHelper
     {
-        public static async ETTask<long> RegisterAccount(Scene scene, string accountName, string password, int loginType, string deviceId)
+        /// <summary>创建账号并返回账号 Id；failIfExists 为 true 时，已注册返回 0，否则返回已有账号 Id。</summary>
+        public static async ETTask<long> RegisterAccount(Scene scene, string accountName, string password, int loginType, string deviceId, bool failIfExists = false)
         {
             accountName  = accountName.Trim().ToLower();
             password  = password.Trim().ToLower();
@@ -16,7 +17,7 @@ namespace ET
                 //如果查询数据不为空,表示当前账号已经被注册
                 if (result.Count > 0)
                 {
-                    return result[0].Id;
+                    return failIfExists ? 0 : result[0].Id;
                 }
 
                 //创建一条数据库信息,创建账号信息

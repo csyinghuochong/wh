@@ -16,6 +16,9 @@ namespace ET
         public SkillEditorSkillLogic Logic;
         public SkillEditorTreeNode Node;
 
+        /// <summary>脚本中的 caster；BUFF 回调时为 BUFF 持有者。</summary>
+        public Unit Caster;
+
         /// <summary>Tree variables (rs, hasTarget, _hpPct, ...). Values kept as string.</summary>
         public readonly Dictionary<string, string> Variables = new Dictionary<string, string>(StringComparer.Ordinal);
 
@@ -126,8 +129,8 @@ namespace ET
             int dot = unitToken.LastIndexOf('.');
             if (dot >= 0 && dot < unitToken.Length - 1)
             {
-                char suffix = unitToken[dot + 1];
-                axis = suffix == 'x' ? 'x' : 'z';
+                string suffix = unitToken.Substring(dot + 1);
+                axis = suffix == "x" || suffix == "dir_x" ? 'x' : 'z';
                 unitToken = unitToken.Substring(0, dot);
             }
 
@@ -250,7 +253,7 @@ namespace ET
             switch (token)
             {
                 case "caster":
-                    return this.Handler?.TheUnitFrom;
+                    return this.Caster;
                 case "target":
                     return this.Handler?.TheUnitTarget;
                 case "buffcaster":
@@ -259,7 +262,7 @@ namespace ET
                 case "caster.parent":
                     // 编辑器「技能体施法者」：取技能体 MasterId，不是 Entity.Parent（那是 UnitComponent）
                     {
-                        Unit from = this.Handler?.TheUnitFrom;
+                        Unit from = this.Caster;
                         if (from == null)
                         {
                             return null;

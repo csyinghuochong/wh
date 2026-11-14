@@ -1929,6 +1929,7 @@ namespace ET
 
 	}
 
+// 客户端 -> 排行服：按页签查询排行榜，Scope 决定本服榜或战区榜。
 	[ResponseType(nameof(R2C_RankListResponse))]
 	[Message(OuterOpcode.C2R_RankListRequest)]
 	[ProtoContract]
@@ -1943,8 +1944,12 @@ namespace ET
 		[ProtoMember(1)]
 		public int Scope { get; set; }
 
+		[ProtoMember(2)]
+		public int BelongId { get; set; }
+
 	}
 
+// 排行服 -> 客户端：返回所请求页签的排行数据，未实现的页签返回成功及空列表。
 	[Message(OuterOpcode.R2C_RankListResponse)]
 	[ProtoContract]
 	public partial class R2C_RankListResponse: Object, IRankActorResponse
@@ -3165,6 +3170,62 @@ namespace ET
 
 		[ProtoMember(5)]
 		public long MonsterID { get; set; }
+
+	}
+
+// 客户端 -> 地图服：查询可手动选择的敌对活怪物，半径由 Global_Select_Target_Max_Radius（米）控制。
+// 无业务请求参数，使用当前玩家的服务端位置；返回数量由 Global_Select_Target_Repeat_Num 控制。
+	[ResponseType(nameof(M2C_GetTargetMonstersResponse))]
+	[Message(OuterOpcode.C2M_GetTargetMonstersRequest)]
+	[ProtoContract]
+	public partial class C2M_GetTargetMonstersRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+// 地图服 -> 客户端：按水平距离从近到远返回候选；同距离按 UnitId 升序，保证静止目标顺序稳定。
+	[Message(OuterOpcode.M2C_GetTargetMonstersResponse)]
+	[ProtoContract]
+	public partial class M2C_GetTargetMonstersResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<CombatTargetInfo> Targets = new List<CombatTargetInfo>();
+
+	}
+
+// 服务端查询时刻的怪物身份及位置快照，供客户端选择/轮换目标使用。
+	[Message(OuterOpcode.CombatTargetInfo)]
+	[ProtoContract]
+	public partial class CombatTargetInfo: Object
+	{
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int ConfigId { get; set; }
+
+		[ProtoMember(3)]
+		public float X { get; set; }
+
+		[ProtoMember(4)]
+		public float Y { get; set; }
+
+		[ProtoMember(5)]
+		public float Z { get; set; }
 
 	}
 
@@ -5060,6 +5121,9 @@ namespace ET
 		[ProtoMember(1)]
 		public ActivityInfo ActivityInfo { get; set; }
 
+		[ProtoMember(2)]
+		public List<int> ActivityReceiveIds = new List<int>();
+
 	}
 
 	[Message(OuterOpcode.ActivityInfo)]
@@ -5168,7 +5232,7 @@ namespace ET
 
 	}
 
-//领取奖励（通用）
+// 客户端 -> 当前角色所在地图服：领取活动奖励；全区通用兑换码每个角色每个 ID 仅可领取一次
 	[ResponseType(nameof(M2C_ActivityReceiveResponse))]
 	[Message(OuterOpcode.C2M_ActivityReceiveRequest)]
 	[ProtoContract]
@@ -5188,6 +5252,7 @@ namespace ET
 
 	}
 
+// 地图服 -> 客户端：活动奖励领取结果；成功时奖励已入包，失败时奖励列表为空且不记录领取
 	[Message(OuterOpcode.M2C_ActivityReceiveResponse)]
 	[ProtoContract]
 	public partial class M2C_ActivityReceiveResponse: Object, IActorLocationResponse
@@ -5200,6 +5265,9 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<RewardItem> ReardList = new List<RewardItem>();
 
 	}
 

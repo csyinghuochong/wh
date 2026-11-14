@@ -10,7 +10,7 @@ namespace ET
         /// <summary>已提示过「缺少 IF结果」的技能，避免热路径刷屏。</summary>
         private static readonly HashSet<int> MissingIfResultWarnedSkills = new HashSet<int>();
 
-        public static void Execute(Skill_TreeEditor handler, SkillEditorSkillLogic logic)
+        public static void Execute(Skill_TreeEditor handler, SkillEditorSkillLogic logic, Unit caster = null)
         {
             if (handler == null || logic?.Root == null)
             {
@@ -21,6 +21,7 @@ namespace ET
             {
                 Handler = handler,
                 Logic = logic,
+                Caster = caster ?? handler.TheUnitFrom,
             };
 
             ExecuteNode(ctx, logic.Root);
@@ -75,7 +76,7 @@ namespace ET
         }
 
         /// <summary>
-        /// IF根：先求全部 IF条件，全部通过才执行 IF结果。
+        /// IF根：按编辑器的 if / elseif / else 顺序，只执行首个命中的结果分支。
         /// 条件函数（如概率触发）会改写 rs；结束后还原，避免同级后续节点（计算伤害）把 rs=0 当成未命中。
         /// </summary>
         private static void ExecuteIfRoot(SkillEditorFunctionContext ctx, SkillEditorTreeNode node)
@@ -85,31 +86,29 @@ namespace ET
             long savedRs = ctx.GetVariable("rs", 0);
             bool savedCondition = ctx.LastConditionResult;
 
-            bool passed = true;
-            bool hasCondition = false;
+            bool passed = false;
             for (int i = 0; i < node.Children.Count; i++)
             {
                 SkillEditorTreeNode child = node.Children[i];
-                if (child.NodeType != SkillEditorNodeType.IfCondition)
+                if (child.NodeType == SkillEditorNodeType.IfCondition)
+                {
+                    passed = EvaluateCondition(ctx, child);
+                    continue;
+                }
+                if (child.NodeType != SkillEditorNodeType.IfResult)
                 {
                     continue;
                 }
 
-                bool childPassed = EvaluateCondition(ctx, child);
-                passed = hasCondition ? passed && childPassed : childPassed;
-                hasCondition = true;
-            }
-
-            if (passed)
-            {
-                for (int i = 0; i < node.Children.Count; i++)
+                // 连续两个 IF结果时，第二个是 else。
+                bool isElse = i > 0 && node.Children[i - 1].NodeType == SkillEditorNodeType.IfResult;
+                if (!passed && !isElse)
                 {
-                    SkillEditorTreeNode child = node.Children[i];
-                    if (child.NodeType == SkillEditorNodeType.IfResult)
-                    {
-                        ExecuteNode(ctx, child);
-                    }
+                    continue;
                 }
+
+                ExecuteNode(ctx, child);
+                break;
             }
 
             ctx.SetVariable("rs", savedRs);

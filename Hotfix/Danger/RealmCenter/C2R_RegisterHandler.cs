@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 
 namespace ET
 {
@@ -9,11 +8,11 @@ namespace ET
 
         protected override async ETTask Run(Session session, C2R_Register request, R2C_Register response, Action reply)
         {
-            Log.Warning($"C2Center_Register:{request.Account}");
             if (session.DomainScene().SceneType != SceneType.Realm)
             {
-                Log.Warning($"请求的Scene错误2，当前Scene为：{session.DomainScene().SceneType}");
-                session.Dispose();
+                response.Error = ErrorCode.ERR_RequestSceneTypeError;
+                reply();
+                session.Disconnect().Coroutine();
                 return;
             }
             session.RemoveComponent<SessionAcceptTimeoutComponent>();
@@ -26,7 +25,15 @@ namespace ET
                 return;
             }
 
-            if (string.IsNullOrEmpty(request.Account) || !StringHelper.IsSafeSqlString(request.Account))
+            if (string.IsNullOrWhiteSpace(request.Account) || string.IsNullOrWhiteSpace(request.Password))
+            {
+                response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                reply();
+                session.Disconnect().Coroutine();
+                return;
+            }
+
+            if (!StringHelper.IsSafeSqlString(request.Account))
             {
                 response.Error = ErrorCode.ERR_UnSafeSqlString;
                 reply();
@@ -36,8 +43,12 @@ namespace ET
 
             using (session.AddComponent<SessionLockingComponent>())
             {
-                await RegisterAccountHelper.RegisterAccount(session.DomainScene(), request.Account, request.Password,
-                    LoginTypeEnum.RegisterLogin, string.Empty);
+                long accountId = await RegisterAccountHelper.RegisterAccount(session.DomainScene(), request.Account, request.Password,
+                    LoginTypeEnum.RegisterLogin, string.Empty, true);
+                if (accountId == 0)
+                {
+                    response.Error = ErrorCode.ERR_AccountAlreadyRegister;
+                }
                     
                 //发送创建回执
                 reply();

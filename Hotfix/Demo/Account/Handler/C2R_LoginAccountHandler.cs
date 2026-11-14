@@ -5,6 +5,8 @@ namespace ET
 {
     public class C2R_LoginAccountHandler : AMRpcHandler<C2R_LoginAccount, R2C_LoginAccount>
     {
+        // 登录时是否自动创建不存在的账号；关闭时由客户端单独请求注册。
+        private const bool AutoRegisterOnLogin = false;
         
         protected override async ETTask Run(Session session, C2R_LoginAccount request, R2C_LoginAccount response, Action reply)
         {
@@ -109,13 +111,17 @@ namespace ET
                         }
 
                         
-                        //没有则注册
-                        if (dbcenterAccountInfo == null)
+                        if (dbcenterAccountInfo == null && !AutoRegisterOnLogin)
                         {
-                            /*response.NewRegister = 1;
+                            response.Error = ErrorCode.ERR_AccountUnRegister;
                             reply();
                             session.Disconnect().Coroutine();
-                            return;*/
+                            return;
+                        }
+
+                        // 开启自动注册时，没有账号则创建。
+                        if (dbcenterAccountInfo == null)
+                        {
                             await RegisterAccountHelper.RegisterAccount(session.DomainScene(), request.AccountName, request.Password,
                                 request.LoginType, request.DeviceID);
                             

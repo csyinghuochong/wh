@@ -76,7 +76,7 @@ namespace ET
                 if (self.InterValTimeBegin <= serverTime && self.InterValTimeBegin <= endTime)
                 {
                     long fireAt = self.InterValTimeBegin;
-                    SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_Trigger, self.TheUnitFrom, self.TheUnitBelongto);
+                    SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_Trigger, self.TheUnitFrom, self.TheUnitBelongto, isBuffSkill: true);
                     if (self.TheUnitBelongto == null || self.TheUnitBelongto.IsDisposed || self.BuffState == BuffState.Finished)
                     {
                         return;
@@ -107,13 +107,13 @@ namespace ET
 
             if (self.IsTimeEnd && self.MBuff.Skill_TimeEnd > 0)
             {
-                SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_TimeEnd, self.TheUnitFrom, self.TheUnitBelongto);
+                SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_TimeEnd, self.TheUnitFrom, self.TheUnitBelongto, isBuffSkill: true);
             }
 
             // 到期和被提前清掉都放消失技能（延时结算、属性还原）。切场景、死亡不放。
             if ((self.IsTimeEnd || interrupt) && self.MBuff.Skill_Remove > 0)
             {
-                SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_Remove, self.TheUnitFrom, self.TheUnitBelongto);
+                SkillManagerComponentSystem.ExecuteLinkedSkill(self.MBuff.Skill_Remove, self.TheUnitFrom, self.TheUnitBelongto, isBuffSkill: true);
             }
 
             if (!self.IsTrigger)

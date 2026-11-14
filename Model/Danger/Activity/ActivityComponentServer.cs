@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -12,6 +12,7 @@ namespace ET
         
         public int TimerChouKaReceiveIndex = 0;
 
+        /// <summary>已领取的全区通用兑换码 ID，1=TS666666、2=TS888888、3=TS666888；永久保存，不随日清重置。</summary>
         public List<int> ActivityReceiveIds = new List<int>();
         /// <summary>
         /// 令牌领取
