@@ -761,10 +761,11 @@ namespace ET
             }
         }
 
-        //技能广播：施法者必收（BeSeePlayers 不含自己）；主城只给自己，其他场景再广播给视野内玩家
+        // 技能广播：施法者必收；AOI 已包含自己时不重复单发，主城只给自己。
         public static void BroadcastSkill(this SkillManagerComponent self, Unit unit, IActorMessage message)
         {
-            if (unit.Type == UnitType.Player)
+            if (unit.Type == UnitType.Player
+                && (unit.SceneType == MapTypeEnum.MainCityScene || !unit.GetBeSeePlayers().ContainsKey(unit.Id)))
             {
                 MessageHelper.SendToClient(unit, message);
             }

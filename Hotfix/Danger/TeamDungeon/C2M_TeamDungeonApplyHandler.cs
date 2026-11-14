@@ -31,7 +31,7 @@ namespace ET
 			}
 
 			int sceneid = 0;
-			// 取消只校验队长身份，不受等级、次数或客户端场景数据限制。
+			// 申请只校验场景参数，不检查等级、次数和战力；取消不依赖客户端场景数据。
 			if (request.Apply == 1)
 			{
 				if (request.TeamInfo == null || request.TeamInfo.SceneId == 0 || !LDSceneCategory.Instance.Contain(request.TeamInfo.SceneId))
@@ -42,18 +42,6 @@ namespace ET
 				}
 
 				sceneid = request.TeamInfo.SceneId;
-				LDScene ldScene = LDSceneCategory.Instance.Get(sceneid);
-				RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
-				int enterError = ldScene.CheckSceneEnter(
-					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv,
-					dailyData.GetSceneFubenTimes(sceneid),
-					dailyData.GetSceneWeekFubenTimes(sceneid));
-				if (enterError != ErrorCode.ERR_Success)
-				{
-					response.Error = enterError;
-					reply();
-					return;
-				}
 			}
 
 			long teamServerId = DBHelper.GetTeamServerId(unit);
