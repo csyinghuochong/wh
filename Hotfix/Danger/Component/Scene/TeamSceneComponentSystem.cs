@@ -18,15 +18,24 @@ namespace ET
             LDScene ldScene = LDSceneCategory.Instance.Get(teamInfo.SceneId);
             mapComponent.SetMapInfo((int)MapTypeEnum.TeamDungeon, teamInfo.SceneId, 0);
             mapComponent.NavMeshId = ldScene.GetNavMeshId();
-            teamDungeonComponent.TeamInfo = teamInfo;
+
             teamDungeonComponent.EnterTime = TimeHelper.ServerNow();
             teamDungeonComponent.FubenType = teamInfo.FubenType;
             teamDungeonComponent.BossDeadPosition = new Vector3((float)ldScene.Born_Pos[0] , (float)ldScene.Born_Pos[1] , (float)ldScene.Born_Pos[2] );
-            teamDungeonComponent.InitPlayerList();
+
             teamInfo.FubenInstanceId = fubenInstanceId;
             teamInfo.FubenUUId = fubenid;
-            teamDungeonComponent.NotifyDungeonStartMarquee();
+            teamInfo.FubenState = (int)TeamDungeonState.Opened;
+            teamInfo.FubenApplyEndTime = 0;
+            teamInfo.FubenCreateTime = teamDungeonComponent.EnterTime;
+
+            // 实例使用独立快照；队伍通关后可再申请，旧实例不能跟随队伍修改。
+            teamDungeonComponent.TeamInfo = MongoHelper.Clone(teamInfo);
+            teamDungeonComponent.InitPlayerList();
+            teamDungeonComponent.Timer = TimerComponent.Instance.NewRepeatedTimer(1000, TimerType.TeamDropTimer, teamDungeonComponent);
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
+            SceneCreatureHelp.CreateSceneRole(fubnescene, teamInfo.SceneId);
+            teamDungeonComponent.NotifyDungeonStartMarquee();
 
             //69和 72的2个副本 有10%概率 在每个BOSS附近刷新出 80002010 这个宝箱，
             //这个宝箱的掉落是只有自己的可以拾取的，并且宝箱和掉落只有自己可见，
@@ -35,10 +44,15 @@ namespace ET
             TransferHelper.NoticeFubenCenter(fubnescene, 1).Coroutine();
         }
 
-        /// <summary>申请后固定等 10 秒再创建副本；取消或被新申请替代时终止。</summary>
+        /// <summary>等到申请结束时间后创建副本；取消或被新申请替代时终止。</summary>
         public static async ETTask OpenTeamDungeonLater(this TeamSceneComponent self, long teamId, long applyId)
         {
-            await TimerComponent.Instance.WaitAsync(10000);
+            TeamInfo applyingTeam = self.GetTeamInfo(teamId);
+            if (applyingTeam == null || applyingTeam.FubenState != (int)TeamDungeonState.Applying)
+            {
+                return;
+            }
+            await TimerComponent.Instance.WaitAsync(Math.Max(0, applyingTeam.FubenApplyEndTime - TimeHelper.ServerNow()));
             if (self.IsDisposed)
             {
                 return;
@@ -51,7 +65,7 @@ namespace ET
 
             self.OpeningTeams.Remove(teamId);
             TeamInfo teamInfo = self.GetTeamInfo(teamId);
-            if (teamInfo == null || teamInfo.TeamId != teamId || teamInfo.FubenInstanceId != 0)
+            if (teamInfo == null || teamInfo.TeamId != teamId || teamInfo.FubenState != (int)TeamDungeonState.Applying)
             {
                 return;
             }
@@ -65,7 +79,7 @@ namespace ET
             await self.BroadcastDungeonApply(teamInfo);
         }
 
-        /// <summary>向全队同步申请、取消或可进入；IsCanceled 优先于 FubenInstanceId 判断。</summary>
+        /// <summary>向全队同步申请、取消或已开启阶段；当前状态由 FubenState 判断。</summary>
         public static async ETTask BroadcastDungeonApply(this TeamSceneComponent self, TeamInfo teamInfo, bool isCanceled = false)
         {
             // 申请中 FubenInstanceId 仍是 0。ErrorCode 不能填 Success，旧客户端看到 Success 会直接 RequestTransfer。
@@ -84,22 +98,39 @@ namespace ET
                     continue;
                 }
 
+                // 广播过程中阶段可能已变化，停止发送过期快照。
+                if (teamInfo.FubenState != message.TeamInfo.FubenState
+                    || teamInfo.FubenInstanceId != message.TeamInfo.FubenInstanceId
+                    || teamInfo.FubenApplyEndTime != message.TeamInfo.FubenApplyEndTime)
+                {
+                    return;
+                }
                 long userId = players[i].UserID;
                 await ServerMessageHelper.SendToClient(UnitZoneHelper.GetHomeZone(userId), userId, message);
             }
         }
 
-        public static void OnDungeonOver(this TeamSceneComponent self, long teamId)
+        public static void OnDungeonOver(this TeamSceneComponent self, long fubenInstanceId)
         {
-            TeamInfo teamInfo = self.GetTeamInfo(teamId);
-            if (teamInfo != null)
+            // 仅清理仍指向该实例的队伍，旧实例结束不得覆盖新副本。
+            foreach (TeamInfo teamInfo in self.TeamList)
             {
-                for (int i = 0;i < teamInfo.PlayerList.Count; i++)
+                if (teamInfo.FubenInstanceId != fubenInstanceId)
                 {
-                    teamInfo.PlayerList[i].Damage = 0;
+                    continue;
                 }
+                teamInfo.FubenState = (int)TeamDungeonState.None;
+                teamInfo.FubenApplyEndTime = 0;
                 teamInfo.FubenUUId = 0;
                 teamInfo.FubenInstanceId = 0;
+                teamInfo.FubenCreateTime = 0;
+
+                foreach (TeamPlayerInfo player in teamInfo.PlayerList)
+                {
+                    player.Damage = 0;
+                }
+                self.SyncTeamInfo(teamInfo, new List<TeamPlayerInfo>(teamInfo.PlayerList)).Coroutine();
+                return;
             }
         }
 
@@ -194,6 +225,10 @@ namespace ET
                 TeamId = teamInfo.TeamId,
                 FubenInstanceId = teamInfo.FubenInstanceId,
                 FubenUUId = teamInfo.FubenUUId,
+                FubenCreateTime = teamInfo.FubenCreateTime,
+                FubenState = teamInfo.FubenState,
+                FubenApplyEndTime = teamInfo.FubenApplyEndTime,
+
                 FubenType = teamInfo.FubenType,
                 LevelMin = teamInfo.LevelMin,
                 LevelMax = teamInfo.LevelMax,
@@ -241,6 +276,11 @@ namespace ET
             {
                 long oldTeamId = teamInfo.TeamId;
                 self.OpeningTeams.Remove(oldTeamId);
+                if (teamInfo.FubenState == (int)TeamDungeonState.Applying)
+                {
+                    teamInfo.FubenState = (int)TeamDungeonState.None;
+                    teamInfo.FubenApplyEndTime = 0;
+                }
                 TeamPlayerInfo newLeader = teamInfo.PlayerList[0];
                 teamInfo.TeamId = newLeader.UserID;
                 newLeader.Followe = 0;
@@ -291,87 +331,7 @@ namespace ET
             self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
         }
 
-        /// <summary>
-        /// 组队副本返回主城
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="unitId"></param>
-        /// <returns></returns>
-        public static void  OnUnitReturn(this TeamSceneComponent self, Scene fubnescene, long unitId)
-        {
-            // 批量放弃由 TeamDungeonComponent 统一销毁，不能因队长先回城而解散队伍。
-            if (fubnescene.GetComponent<TeamDungeonComponent>().IsAbandoning)
-            {
-                return;
-            }
 
-            int realPlayerNumber = 0;
-            TeamInfo teamInfo = self.GetTeamInfo(unitId);
-
-            List<Unit> allunits = UnitHelper.GetUnitList(fubnescene, UnitType.Player);
-
-            for (int i = 0; i < allunits.Count; i++)
-            {
-                if (allunits[i].GetComponent<RoleInfoComponentServer>().RoleInfo.RobotId == 0)
-                {
-                    realPlayerNumber++;
-                }
-            }
-
-            //self.DomainZone() == 5 &&
-            //队长中途退出并且还有其他玩家才解算退伍。。。。
-            if ( teamInfo != null && teamInfo.FubenInstanceId > 0 && unitId == teamInfo.TeamId && realPlayerNumber >= 1)
-            {
-                Console.WriteLine($"TeamSceneComponent.OnUnitReturn [队长离开 解算队伍！]");
-                
-                if (teamInfo != null)
-                {
-                    List<TeamPlayerInfo> userIDList = new List<TeamPlayerInfo>();
-                    userIDList.AddRange(teamInfo.PlayerList);
-                    long teamId = teamInfo.TeamId;
-                    teamInfo.PlayerList.Clear();
-                    self.TeamList.Remove(teamInfo);
-                    self.ClearApply(teamId);
-                    self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
-                }
-            }
-
-            if (allunits.Count > 0)
-            {
-                return;
-            }
-            self.OnDungeonOver(unitId);
-            TeamDungeonComponent teamDungeonComponent = fubnescene.GetComponent<TeamDungeonComponent>();
-            Log.Debug($"TeamDungeonDispose {teamDungeonComponent.TeamInfo.TeamId}{fubnescene.InstanceId}");
-            TransferHelper.NoticeFubenCenter(fubnescene, 2).Coroutine();
-            fubnescene.Dispose();
-        }
-
-        /// <summary>
-        /// 玩家离线， unit已经移除了
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="unitId"></param>
-        /// <returns></returns>
-        public static void  OnUnitDisconnect(this TeamSceneComponent self, Scene fubnescene, long unitId)
-        {
-            TeamDungeonComponent teamDungeonComponent = fubnescene.GetComponent<TeamDungeonComponent>();
-            TeamInfo teamInfo = teamDungeonComponent.TeamInfo;
-            if (teamDungeonComponent.IsAbandoning)
-            {
-                return;
-            }
-
-            if (teamDungeonComponent.IsHavePlayer())
-            {
-                return;
-            }
-            self.OnDungeonOver(teamInfo.TeamId);
-            
-            Log.Debug($"TeamDungeonDispose {teamDungeonComponent.TeamInfo.TeamId}{fubnescene.InstanceId}");
-            TransferHelper.NoticeFubenCenter(fubnescene, 2).Coroutine();
-            fubnescene.Dispose();
-        }
 
         public static bool AddApply(this TeamSceneComponent self, long teamId, TeamPlayerInfo teamPlayerInfo)
         {

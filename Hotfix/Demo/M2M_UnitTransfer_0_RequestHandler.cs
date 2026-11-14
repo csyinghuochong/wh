@@ -10,12 +10,15 @@ namespace ET
             UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
             bool continuing = unitComponent.UnitComponents.TryGetValue(request.UnitId, out UnitTransferBuffer buffer)
                     && buffer.TransferId == request.TransferId && buffer.ExpireTime > TimeHelper.ServerNow();
-            if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TeamDungeon
-                && scene.GetComponent<TeamDungeonComponent>().IsAbandoning && !continuing)
+            if (scene.GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TeamDungeon && !continuing)
             {
-                response.Error = ErrorCode.ERR_AlreadyFinish;
-                reply();
-                return;
+                int enterError = scene.GetComponent<TeamDungeonComponent>().CheckEnter(request.UnitId);
+                if (enterError != ErrorCode.ERR_Success)
+                {
+                    response.Error = enterError;
+                    reply();
+                    return;
+                }
             }
 
             response.Error = UnitTransferHelper.Receive(unitComponent, request, out bool started);

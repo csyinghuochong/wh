@@ -15,11 +15,7 @@
                 TransferHelper.NoticeFubenCenter(scene, 2).Coroutine();
                 scene.Dispose();
             }
-            if (sceneTypeEnum == (int)MapTypeEnum.TeamDungeon)
-            {
-                TeamSceneComponent teamSceneComponent = scene.GetParent<TeamSceneComponent>();
-                teamSceneComponent.OnUnitDisconnect(scene, userId);
-            }
+
             if (sceneTypeEnum == (int)MapTypeEnum.Home)
             {
                 HomeSceneComponent homeSceneComponent = scene.GetParent<HomeSceneComponent>();

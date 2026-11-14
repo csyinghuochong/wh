@@ -28,6 +28,7 @@ namespace ET
             self.EnterTime = 0;
             self.TeamInfo = null;
             self.IsAbandoning = false;
+            self.IsCompleted = false;
             self.EnterPlayers.Clear();
             self.BoxReward.Clear();
             self.ItemFlags.Clear();
@@ -108,14 +109,14 @@ namespace ET
                     return ErrorCode.ERR_TransferFailError;
                 }
 
-                TeamInfo teamInfo = self.TeamInfo;
-                if (teamInfo.FubenInstanceId == scene.InstanceId)
+
+                if (!self.IsCompleted)
                 {
-                    TeamSceneComponent teamScene = scene.GetParent<TeamSceneComponent>();
-                    teamScene.OnDungeonOver(teamInfo.TeamId);
-                    teamScene.SyncTeamInfo(teamInfo, new List<TeamPlayerInfo>(teamInfo.PlayerList)).Coroutine();
+                    self.IsCompleted = true;
+                    self.NotifyDungeonEndMarquee();
                 }
 
+                scene.GetParent<TeamSceneComponent>().OnDungeonOver(scene.InstanceId);
                 TransferHelper.NoticeFubenCenter(scene, 2).Coroutine();
                 scene.Dispose();
                 return ErrorCode.ERR_Success;
@@ -127,6 +128,53 @@ namespace ET
                 {
                     self.IsAbandoning = false;
                 }
+            }
+        }
+
+        /// <summary>校验当前队伍、实例、通关/关闭和到期；未通关时允许同实例再次进入。</summary>
+        public static int CheckEnter(this TeamDungeonComponent self, long userId)
+        {
+            Scene scene = self.DomainScene();
+            TeamInfo teamInfo = scene.GetParent<TeamSceneComponent>().GetTeamInfo(userId);
+            if (teamInfo == null)
+            {
+                return ErrorCode.Err_TeamIsNull;
+            }
+            int limitTime = LDSceneCategory.Instance.Get(self.TeamInfo.SceneId).Limit_Time;
+            if (self.IsAbandoning || self.IsCompleted || teamInfo.FubenState != (int)TeamDungeonState.Opened
+                || teamInfo.FubenInstanceId != scene.InstanceId
+                || (limitTime > 0 && TimeHelper.ServerNow() >= self.TeamInfo.FubenCreateTime + (long)limitTime * TimeHelper.Second))
+            {
+                return ErrorCode.ERR_AlreadyFinish;
+            }
+            return self.CheckBattleEnter(userId);
+        }
+
+        /// <summary>预留实际交战时的进入限制；当前不限制，后续可返回 ERR_TeamDungeonInBattle。</summary>
+        public static int CheckBattleEnter(this TeamDungeonComponent self, long userId)
+        {
+            return ErrorCode.ERR_Success;
+        }
+
+        /// <summary>新增进入者使用独立信息，避免与队伍及后续副本共享伤害数据。</summary>
+        public static void RegisterPlayer(this TeamDungeonComponent self, long userId)
+        {
+            if (self.TeamPlayers.ContainsKey(userId))
+            {
+                return;
+            }
+            TeamInfo currentTeam = self.DomainScene().GetParent<TeamSceneComponent>().GetTeamInfo(userId);
+            foreach (TeamPlayerInfo player in currentTeam.PlayerList)
+            {
+                if (player.UserID != userId)
+                {
+                    continue;
+                }
+                TeamPlayerInfo snapshot = MongoHelper.Clone(player);
+                snapshot.Damage = 0;
+                self.TeamInfo.PlayerList.Add(snapshot);
+                self.TeamPlayers.Add(userId, snapshot);
+                return;
             }
         }
 
@@ -151,6 +199,7 @@ namespace ET
         {
             for (int i = 0; i < self.TeamInfo.PlayerList.Count; i++)
             {
+                self.TeamInfo.PlayerList[i].Damage = 0;
                 if (!self.TeamPlayers.TryAdd(self.TeamInfo.PlayerList[i].UserID, self.TeamInfo.PlayerList[i]))
                 {
                     Log.Warning($"InitPlayerList.Error: {self.TeamInfo.PlayerList[i].UserID}");
@@ -175,6 +224,14 @@ namespace ET
                 return;
             }
 
+            // 使用当前实例自己的创建时间，队伍申请新副本不改变旧实例期限。
+            int limitTime = LDSceneCategory.Instance.Get(self.TeamInfo.SceneId).Limit_Time;
+            if (limitTime > 0 && TimeHelper.ServerNow() >= self.TeamInfo.FubenCreateTime + (long)limitTime * TimeHelper.Second)
+            {
+                // 关闭失败时下一次 Tick 重试，关闭期间拒绝新传送。
+                self.Abandon().Coroutine();
+                return;
+            }
             if (self.TeamDropItems.Count == 0)
             {
                 //TimerComponent.Instance.Remove(ref self.Timer);
@@ -350,24 +407,26 @@ namespace ET
             List<Unit> allPlayer = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
         }
 
+        /// <summary>怪物死亡后检查场景内全部怪物；尸体未移除不影响通关，仍存活的怪物必须全部清除。</summary>
         public static void OnKillEvent(this TeamDungeonComponent self, Unit unit)
         {
-            if (unit.Type != UnitType.Monster)
+            if (unit.Type != UnitType.Monster || self.IsAbandoning || self.IsCompleted)
             {
                 return;
             }
 
             if (unit.IsBoss())
             {
-                Unit leader = unit.GetParent<UnitComponent>().Get(self.TeamInfo.TeamId);
-  
                 self.BossDeadPosition = unit.Position;
             }
 
-            LDScene ldScene = LDSceneCategory.Instance.Get(self.TeamInfo.SceneId);
-            if (unit.ConfigId != ldScene.GetBossID())
+            foreach (Unit monster in self.DomainScene().GetComponent<UnitComponent>().GetAll())
             {
-                return;
+                if (monster.Type == UnitType.Monster
+                    && monster.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) != 1)
+                {
+                    return;
+                }
             }
 
             self.OnDungeonOver();
@@ -375,13 +434,14 @@ namespace ET
 
         public static void OnDungeonOver(this TeamDungeonComponent self)
         {
-            if (self.IsAbandoning)
+            if (self.IsAbandoning || self.IsCompleted)
             {
                 return;
             }
+            self.IsCompleted = true;
 
             M2C_TeamDungeonSettlement m2C_FubenSettlement = new M2C_TeamDungeonSettlement();
-            m2C_FubenSettlement.PassTime = 5 * 60 * 1000;
+            m2C_FubenSettlement.PassTime = TimeHelper.ServerNow() - self.TeamInfo.FubenCreateTime;
             m2C_FubenSettlement.PlayerList = self.TeamInfo.PlayerList;
 
             //最高伤害额外奖励
@@ -428,8 +488,8 @@ namespace ET
                 MessageHelper.SendToClient(unititem, m2C_FubenSettlement);
             }
 
-            (self.Parent.Parent as TeamSceneComponent).OnDungeonOver(self.TeamInfo.TeamId);
             self.NotifyDungeonEndMarquee();
+            self.DomainScene().GetParent<TeamSceneComponent>().OnDungeonOver(self.DomainScene().InstanceId);
         }
 
         public static void NotifyDungeonStartMarquee(this TeamDungeonComponent self)
@@ -471,7 +531,16 @@ namespace ET
                 },
             };
             message.MarqueeInfo.ParamList.Add(sceneName);
-            SendMarqueeToTeam(teamInfo, message).Coroutine();
+            TeamInfo recipients = teamInfo;
+            foreach (TeamInfo current in self.DomainScene().GetParent<TeamSceneComponent>().TeamList)
+            {
+                if (current.FubenInstanceId == self.DomainScene().InstanceId)
+                {
+                    recipients = current;
+                    break;
+                }
+            }
+            SendMarqueeToTeam(recipients, message).Coroutine();
         }
 
         private static async ETTask SendMarqueeToTeam(TeamInfo teamInfo, M2C_MarqueeMessage message)

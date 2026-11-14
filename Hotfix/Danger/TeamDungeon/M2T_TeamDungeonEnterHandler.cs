@@ -20,7 +20,7 @@ namespace ET
                 return;
             }
             // 申请流程里已经创建副本。这里不创建，没实例就不能进。
-            if (teamInfo.FubenInstanceId == 0)
+            if (teamInfo.FubenState != (int)TeamDungeonState.Opened || teamInfo.FubenInstanceId == 0)
             {
                 response.Error = ErrorCode.ERR_TransferFailError;
                 reply();
@@ -36,6 +36,13 @@ namespace ET
                 return;
             }
 
+            int enterError = dungeon.CheckEnter(request.UserID);
+            if (enterError != ErrorCode.ERR_Success)
+            {
+                response.Error = enterError;
+                reply();
+                return;
+            }
             response.HasEntered = dungeon.EnterPlayers.Contains(request.UserID);
             response.FubenId = teamInfo.SceneId;
             response.FubenType = teamInfo.FubenType;

@@ -19,7 +19,18 @@ namespace ET
                 unitpet.GetComponent<NumericComponent>().ApplyValue(NumericType.TeamId, message.TeamId);
             }
 
-            await ETTask.CompletedTask;
+            // 副本内离队或被移出队伍，回主城；正常退出副本不影响队伍。
+            if (message.TeamId == 0 && unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TeamDungeon)
+            {
+                using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Transfer, unit.Id, 0))
+                {
+                    if (!unit.IsDisposed && unit.GetTeamId() == 0
+                        && unit.DomainScene().GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TeamDungeon)
+                    {
+                        await TransferHelper.MainCityTransfer(unit);
+                    }
+                }
+            }
         }
     }
 }

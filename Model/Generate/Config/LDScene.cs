@@ -118,35 +118,38 @@ namespace ET
 		/// <summary>每周次数</summary>
 		[ProtoMember(13)]
 		public int Limit_Times_Week { get; set; }
-		/// <summary>掉落预览</summary>
+		/// <summary>副本时长</summary>
 		[ProtoMember(14)]
+		public int Limit_Time { get; set; }
+		/// <summary>掉落预览</summary>
+		[ProtoMember(15)]
 		public string Drop_Preview { get; set; }
 		/// <summary>类型</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int Scene_Type { get; set; }
 		/// <summary>出生点</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public double[] Born_Pos { get; set; }
 		/// <summary>出生 角度</summary>
-		[ProtoMember(17)]
+		[ProtoMember(18)]
 		public double Born_Rotation { get; set; }
 		/// <summary>传送ID</summary>
-		[ProtoMember(18)]
+		[ProtoMember(19)]
 		public int[] Teleport_Id { get; set; }
 		/// <summary>禁用 小地图</summary>
-		[ProtoMember(19)]
+		[ProtoMember(20)]
 		public int MiniMap_Close { get; set; }
 		/// <summary>允许 坐骑</summary>
-		[ProtoMember(20)]
+		[ProtoMember(21)]
 		public int If_Mount { get; set; }
 		/// <summary>摄像机</summary>
-		[ProtoMember(21)]
+		[ProtoMember(22)]
 		public double[] CameraPos { get; set; }
 		/// <summary>Loading</summary>
-		[ProtoMember(22)]
+		[ProtoMember(23)]
 		public int[] LoadingRes { get; set; }
 		/// <summary>音乐</summary>
-		[ProtoMember(23)]
+		[ProtoMember(24)]
 		public string Music { get; set; }
 
 	}

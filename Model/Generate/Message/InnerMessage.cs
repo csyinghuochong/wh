@@ -3430,7 +3430,7 @@ namespace ET
 
 //Mail  end####################################################
 //Team  begin####################################################
-//地图服 -> 组队服：转发队长申请或取消。申请固定等待 10 秒，副本已创建时拒绝申请或取消。
+//地图服 -> 组队服：转发队长申请或取消。等待时长由服务端决定，副本已创建时拒绝申请或取消。
 	[ResponseType(nameof(T2M_TeamDungeonApplyResponse))]
 	[Message(InnerOpcode.M2T_TeamDungeonApplyRequest)]
 	[ProtoContract]
@@ -3615,6 +3615,44 @@ namespace ET
 
 		[ProtoMember(3)]
 		public long TeamId { get; set; }
+
+	}
+
+//地图服 -> 组队服：转发放弃当前组队副本，组队服校验当前队长和目标实例，允许副本内外发起。
+	[ResponseType(nameof(T2M_TeamDungeonAbandonResponse))]
+	[Message(InnerOpcode.M2T_TeamDungeonAbandonRequest)]
+	[ProtoContract]
+	public partial class M2T_TeamDungeonAbandonRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+//地图服确认的发起玩家 Id，组队服据此查队伍并校验队长权限。
+		[ProtoMember(1)]
+		public long UserId { get; set; }
+
+//要放弃的当前副本实例 Id，必须大于 0 且与队伍当前实例一致。
+		[ProtoMember(2)]
+		public long FubenInstanceId { get; set; }
+
+	}
+
+//组队服 -> 地图服：Error=0 表示全员回城且实例已销毁，否则为权限、状态或传送失败错误。
+	[Message(InnerOpcode.T2M_TeamDungeonAbandonResponse)]
+	[ProtoContract]
+	public partial class T2M_TeamDungeonAbandonResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
 
 	}
 

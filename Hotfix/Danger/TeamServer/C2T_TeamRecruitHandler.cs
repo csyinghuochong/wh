@@ -38,6 +38,12 @@ namespace ET
                 teamInfo = teamSceneComponent.CreateTeamInfo(request.TeamPlayerInfo, request.SceneId);
             }
 
+            if (teamInfo.FubenState != (int)TeamDungeonState.None && teamInfo.SceneId != request.SceneId)
+            {
+                response.Error = ErrorCode.ERR_AlreadyOpen;
+                reply();
+                return;
+            }
             teamInfo.SceneId = request.SceneId;
             teamInfo.LevelMin = request.LevelMin;
             teamInfo.LevelMax = request.LevelMax;

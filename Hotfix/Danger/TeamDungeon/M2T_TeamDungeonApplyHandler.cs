@@ -43,6 +43,8 @@ namespace ET
             {
                 if (teamSceneComponent.OpeningTeams.Remove(teamInfo.TeamId))
                 {
+                    teamInfo.FubenState = (int)TeamDungeonState.None;
+                    teamInfo.FubenApplyEndTime = 0;
                     await teamSceneComponent.BroadcastDungeonApply(teamInfo, true);
                 }
 
@@ -51,7 +53,7 @@ namespace ET
                 return;
             }
 
-            // 还在 10 秒等待里，重复申请不重新计时。
+            // 等待中重复申请不重新计时。
             if (teamSceneComponent.OpeningTeams.ContainsKey(teamInfo.TeamId))
             {
                 response.TeamInfo = teamInfo;
@@ -68,6 +70,8 @@ namespace ET
 
             // 申请计时独立于广播耗时；取消后重申会获得新的申请 Id。
             teamInfo.SceneId = request.SceneId;
+            teamInfo.FubenState = (int)TeamDungeonState.Applying;
+            teamInfo.FubenApplyEndTime = TimeHelper.ServerNow() + 3 * TimeHelper.Second;
             long applyId = IdGenerater.Instance.GenerateInstanceId();
             teamSceneComponent.OpeningTeams.Add(teamInfo.TeamId, applyId);
             teamSceneComponent.OpenTeamDungeonLater(teamInfo.TeamId, applyId).Coroutine();

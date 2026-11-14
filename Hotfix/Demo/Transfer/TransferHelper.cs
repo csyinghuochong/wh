@@ -368,7 +368,11 @@ namespace ET
                         // 副本在申请等待结束时已创建，这里只取实例并传送。
                         T2M_TeamDungeonEnterResponse createUnit = (T2M_TeamDungeonEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2T_TeamDungeonEnterRequest() { UserID = roleInfoComponentServer.RoleInfo.UserId });
-                        if (createUnit.Error != ErrorCode.ERR_Success || createUnit.FubenInstanceId == 0
+                        if (createUnit.Error != ErrorCode.ERR_Success)
+                        {
+                            return Fail(createUnit.Error);
+                        }
+                        if (createUnit.FubenInstanceId == 0
                             || createUnit.FubenId <= 0 || !LDSceneCategory.Instance.Contain(createUnit.FubenId))
                         {
                             return Fail(ErrorCode.ERR_TransferFailError);

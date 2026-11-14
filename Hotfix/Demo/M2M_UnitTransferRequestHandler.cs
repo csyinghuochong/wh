@@ -40,6 +40,7 @@ namespace ET
                 }
                 taken = true;
 
+
                 unitComponent.AddChild(unit);
                 added = true;
 				unitComponent.Add(unit);
@@ -235,6 +236,21 @@ namespace ET
                         return;
 				}
 
+                if (request.SceneType == MapTypeEnum.TeamDungeon)
+                {
+                    TeamDungeonComponent dungeon = scene.GetComponent<TeamDungeonComponent>();
+                    int enterError = dungeon.CheckEnter(unitId);
+                    if (enterError != ErrorCode.ERR_Success)
+                    {
+                        unitComponent.Remove(unitId);
+                        added = false;
+                        response.Error = enterError;
+                        reply();
+                        replied = true;
+                        return;
+                    }
+                    dungeon.RegisterPlayer(unitId);
+                }
                 // 先构建客户端角色数据，初始化失败时仍可完整回退。
                 M2C_CreateMyUnit createMyUnit = new M2C_CreateMyUnit
                 {
@@ -266,6 +282,7 @@ namespace ET
                 if (request.SceneType == MapTypeEnum.TeamDungeon)
                 {
                     TeamDungeonComponent teamDungeon = scene.GetComponent<TeamDungeonComponent>();
+
                     RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
                     if (!teamDungeon.EnterPlayers.Contains(unit.Id))
                     {

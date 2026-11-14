@@ -10286,7 +10286,7 @@ namespace ET
 		[ProtoMember(3)]
 		public long TeamId { get; set; }
 
-//组队副本实例 Id。0=还没开本，客户端显示申请中；非0=副本已创建，客户端显示可进入。
+//当前组队副本实例 Id；未创建或结束为 0，阶段通过 FubenState 判断。
 		[ProtoMember(4)]
 		public long FubenInstanceId { get; set; }
 
@@ -10305,6 +10305,18 @@ namespace ET
 
 		[ProtoMember(9)]
 		public string RecruitMsg { get; set; }
+
+//组队副本实际创建的 Unix 毫秒时间戳；申请中、取消或结束后为 0。到期时间按本字段 + Scene.Limit_Time（秒）*1000 计算，Limit_Time=0 表示不限时。
+		[ProtoMember(10)]
+		public long FubenCreateTime { get; set; }
+
+//当前副本阶段，由服务端同步：0=待申请，1=申请中，2=已开启。结束或放弃后恢复 0。
+		[ProtoMember(11)]
+		public int FubenState { get; set; }
+
+//申请预计完成的 Unix 毫秒时间戳；非申请中为 0，实际可进入以服务端阶段推送为准。
+		[ProtoMember(12)]
+		public long FubenApplyEndTime { get; set; }
 
 	}
 
@@ -10955,7 +10967,7 @@ namespace ET
 //Team  end####################################################
 //TeamDungeon  begin####################################################
 //客户端 -> 地图服：队长申请或取消副本，地图服校验后转到组队服。
-//申请先广播申请中，固定等 10 秒创建副本，再广播可进入；创建后拒绝再次申请或取消。
+//申请先广播申请中和预计完成时间；服务端等待后创建副本并广播已开启，创建后拒绝再次申请或取消。
 	[ResponseType(nameof(M2C_TeamDungeonApplyResponse))]
 	[Message(OuterOpcode.C2M_TeamDungeonApplyRequest)]
 	[ProtoContract]
@@ -10993,7 +11005,7 @@ namespace ET
 
 	}
 
-//服务端 -> 队长和全部队员：同步申请、取消及副本可进入状态。先判断 IsCanceled，再判断实例 Id。
+//服务端 -> 队长和全部队员：同步副本阶段和时间。阶段以 TeamInfo.FubenState 为准，IsCanceled 表示本次为取消通知。
 	[Message(OuterOpcode.M2C_TeamDungeonApplyResult)]
 	[ProtoContract]
 	public partial class M2C_TeamDungeonApplyResult: Object, IActorMessage
@@ -11007,7 +11019,7 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
-//当前队伍。未取消时 FubenInstanceId==0 表示申请中，非 0 表示副本已创建，可走进本传送。
+//当前队伍完整快照，包含阶段、实例、申请结束时间和创建时间；待申请状态不代表申请中。
 		[ProtoMember(1)]
 		public TeamInfo TeamInfo { get; set; }
 
@@ -11015,7 +11027,7 @@ namespace ET
 		[ProtoMember(2)]
 		public int ErrorCode { get; set; }
 
-//true=本次申请已取消，不再创建副本；false=申请中或可进入，由 FubenInstanceId 区分。
+//true=本次申请已取消；false=其它阶段通知，由 TeamInfo.FubenState 区分。
 		[ProtoMember(3)]
 		public bool IsCanceled { get; set; }
 
@@ -11055,7 +11067,7 @@ namespace ET
 
 	}
 
-// 放弃组队副本：副本内任意玩家可发起，目标实例内全部玩家回主城出生点后销毁实例。
+// 客户端 -> 地图服 -> 组队服：仅当前队长可放弃当前副本，副本内外均可发起；全员回主城后销毁实例。
 	[ResponseType(nameof(M2C_TeamDungeonAbandonResponse))]
 	[Message(OuterOpcode.C2M_TeamDungeonAbandonRequest)]
 	[ProtoContract]
@@ -11067,7 +11079,7 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
-// 要放弃的副本场景实例，须与发起玩家当前所在的组队副本实例一致。
+// 要放弃的当前队伍副本实例，须与组队服记录一致；不要求发起者身处副本。
 		[ProtoMember(1)]
 		public long FubenInstanceId { get; set; }
 

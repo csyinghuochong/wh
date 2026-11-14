@@ -11,6 +11,12 @@ namespace ET
         private async ETTask OnRemoveUnit(EventType.KillEvent args, long waittime)
         {
             Unit unitDefend = args.UnitDefend;
+            // 所有死亡路径都经过这里，包括自爆和击杀者已失效；在等待移除尸体前检查通关。
+            if (unitDefend.Type == UnitType.Monster
+                && unitDefend.DomainScene().GetComponent<MapComponent>().MapTypeEnum == MapTypeEnum.TeamDungeon)
+            {
+                unitDefend.DomainScene().GetComponent<TeamDungeonComponent>().OnKillEvent(unitDefend);
+            }
             long instanceId = unitDefend.InstanceId;
             bool keepDrops = unitDefend.Type == UnitType.Monster
                     && unitDefend.GetComponent<UnitInfoComponent>().Drops.Count > 0;
@@ -166,9 +172,7 @@ namespace ET
                 case MapTypeEnum.PetTianTi:
                     domainScene.GetComponent<PetTianTiComponent>().OnKillEvent();
                     break;
-                case MapTypeEnum.TeamDungeon:
-                    domainScene.GetComponent<TeamDungeonComponent>().OnKillEvent(defendUnit);
-                    break;
+
                 case MapTypeEnum.Solo:
                     domainScene.GetComponent<SoloDungeonComponent>().OnKillEvent(mainAttack,defendUnit);
                     break;

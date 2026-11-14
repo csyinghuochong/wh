@@ -19,6 +19,7 @@ namespace ET
         public long EnterTime;
         public TeamInfo TeamInfo;
         public bool IsAbandoning;
+        public bool IsCompleted;
 
         // 当前副本场景实例中已成功进入的玩家；离开副本时保留，实例销毁时失效。
         public List<long> EnterPlayers = new List<long>();
