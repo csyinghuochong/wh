@@ -39,7 +39,7 @@ namespace ET
             Dictionary<int, List<RewardItem>> locCosts = consumeItems.GroupCostByLoc();
             if (!bag.CanCostByLoc(locCosts))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
@@ -53,7 +53,7 @@ namespace ET
 
             if (bindGoldCost > 0 && bag.GetItemNumber(ItemBigType.Type_Item, UserDataType.BindGold) < bindGoldCost)
             {
-                response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
@@ -70,7 +70,7 @@ namespace ET
             const int getWay = ItemGetWay.SkillMake;
             if (!bag.CostByLoc(locCosts, getWay))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

@@ -9,6 +9,7 @@ namespace ET
         {
             self.CurrentStateType = StateTypeEnum.None;
             self.RigidityEndTime = 0;
+            self.RigiditySkillId = 0;
         }
     }
 #endif
@@ -28,21 +29,46 @@ namespace ET
         {
             self.CurrentStateType = StateTypeEnum.None;
             self.RigidityEndTime = 0;
+            self.RigiditySkillId = 0;
         }
 
-        public static void SetRigidityEndTime(this StateComponent self, long addTime)
+        /// <summary>记录硬直结束的本地时间戳（毫秒）和实际技能 ID；只记录状态，动作及操作权限由调用方检查。</summary>
+        public static void SetRigidityEndTime(this StateComponent self, long addTime, int skillId = 0)
         {
-            self.RigidityEndTime =  addTime;
+            self.RigidityEndTime = addTime;
+            self.RigiditySkillId = skillId;
         }
 
+        /// <summary>本地时间尚未到达硬直结束时间则为 true；到达结束时刻即解除，无需另设计时器清零。</summary>
         public static bool IsRigidity(this StateComponent self)
         {
             return  TimeHelper.ClientNow() <  self.RigidityEndTime;
         }
 
+        /// <summary>
+        /// 转向与移动独立：只在硬直内读取 Limit_Rotate，不读取 Limit_Move；未指定硬直技能时也禁止转向。
+        /// 硬直结束后不再受该技能的 Limit_Rotate 限制，但眩晕、麻痹、睡眠、被动位移及死亡仍禁止转向。
+        /// </summary>
+        public static bool CanRotate(this StateComponent self)
+        {
+            if (self.IsRigidity() && (self.RigiditySkillId == 0
+                    || LDSkill_BattleCategory.Instance.Get(self.RigiditySkillId).Limit_Rotate == 1))
+            {
+                return false;
+            }
+            return !self.StateTypeGet(StateTypeEnum.HunMi | StateTypeEnum.MaBi | StateTypeEnum.Sleep | StateTypeEnum.PassiveMove)
+                    && self.GetParent<Unit>().GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) == 0;
+        }
+
         public static int CanUseSkill(this StateComponent self, LDSkill_Battle ldSkill, bool checkDead)
         {
            
+            // Time_2 内不能再次主动施法；即使 Limit_Move/Limit_Rotate 都为 0，也不能用新技能替换当前动作。
+            if (self.IsRigidity())
+            {
+                return ErrorCode.ERR_CanNotUseSkill_Rigidity;
+            }
+
             bool stunSkill = ldSkill != null && ldSkill.Use_Stun == 1 && self.StateTypeGet(StateTypeEnum.HunMi);
             if (self.StateTypeGet(StateTypeEnum.HunMi) && (ldSkill == null || ldSkill.Use_Stun != 1))
             {
@@ -82,9 +108,9 @@ namespace ET
             return ErrorCode.ERR_Success;
         }
 
-        public static int ServerCanMove(this StateComponent self)
+        public static int ServerCanMove(this StateComponent self, bool isSkillMove = false)
         {
-            int canMove = self.CanMove();
+            int canMove = self.CanMove(isSkillMove);
             if (canMove == ErrorCode.ERR_Success)
             {
                 return canMove;
@@ -96,14 +122,19 @@ namespace ET
             return canMove; 
         }
 
-        public static int CanMove(this StateComponent self)
+        // 技能自身位移只跳过硬直的移动限制，保留其它控制、速度和死亡校验。
+        public static int CanMove(this StateComponent self, bool isSkillMove = false)
         {
             if (self.StateTypeGet(StateTypeEnum.PassiveMove) || 
                self.StateTypeGet(StateTypeEnum.ForbidMove))
             {
                 return ErrorCode.ERR_CanNotMove_1;
             }
-            if (self.IsRigidity())
+            // 只在硬直内应用 Limit_Move；Limit_Move=0 可移动，不代表可以转向（另查 Limit_Rotate）。
+            // RigiditySkillId=0 表示未指定技能的硬直，仍禁止移动。
+            // 技能脚本自身位移（如 1004 冲锋）跳过此项，避免被自身硬直拦住。
+            if (!isSkillMove && self.IsRigidity() && (self.RigiditySkillId == 0
+                    || LDSkill_BattleCategory.Instance.Get(self.RigiditySkillId).Limit_Move == 1))
             {
                 return ErrorCode.ERR_CanNotMove_Rigidity;
             }

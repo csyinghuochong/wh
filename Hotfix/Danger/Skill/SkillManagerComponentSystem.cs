@@ -321,6 +321,13 @@ namespace ET
                 handlerList.Add(skillAction);
             }
 
+            if (zhudong)
+            {
+                // 主动施法成功后按 Time_2（秒）设置服务端硬直，拒绝硬直内再次主动施法；客户端据广播同步动作锁。
+                unit.GetComponent<StateComponent>().SetRigidityEndTime(
+                        TimeHelper.ClientNow() + (long)(weaponLdSkill.Time_2 * 1000), weaponLdSkill.Id);
+            }
+
             //添加技能CD列表  给客户端发送消息 我创建了一个技能,客户端创建特效等相关功能
             SkillCDItem skillCd = self.AddSkillCD(skillcmd.SkillID, weaponLdSkill, zhudong);
             m2C_Skill.Error = ErrorCode.ERR_Success;

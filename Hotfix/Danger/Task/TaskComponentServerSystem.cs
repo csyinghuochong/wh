@@ -1506,7 +1506,7 @@ namespace ET
 
                 if (TaskHelper.GenerateTaskListByType(group.Id).Count == 0)
                 {
-                    Log.Error($"InitAllTaskGroups: Task_Group={group.Id} 在 Task 表没有任务");
+                    Log.Warning($"InitAllTaskGroups: Task_Group={group.Id} 在 Task 表没有任务");
                     continue;
                 }
 

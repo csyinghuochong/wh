@@ -47,15 +47,15 @@ namespace ET
 			BagComponentServer bag = unit.GetComponent<BagComponentServer>();
 			if (costItems.Count > 0 && !bag.CheckNeedItem(costItems))
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 
 			if (costItems.Count > 0 && !bag.OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.CostItem))
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 

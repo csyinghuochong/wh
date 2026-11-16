@@ -42,8 +42,8 @@ namespace ET
 
 			if (bagInfo.ItemNum < 1)
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 
@@ -57,8 +57,8 @@ namespace ET
 
 			if (!bag.OnCostItemData($"{ItemBigType.Type_Item}~{bagInfo.ItemID}~1", (ItemLocType)bagInfo.Loc, ItemGetWay.PetHeXinExplore))
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 

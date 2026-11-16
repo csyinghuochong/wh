@@ -140,12 +140,6 @@ namespace ET
 
         }
 
-        public static int OnPastureBuyRequest(this HomeComponentServer self, int ProductId)
-        {
-
-            return ErrorCode.ERR_ItemNotEnoughError;
-        }
-
 
         public static void SaveDB(this HomeComponentServer self)
         { 

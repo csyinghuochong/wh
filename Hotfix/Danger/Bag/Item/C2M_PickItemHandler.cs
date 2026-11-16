@@ -42,12 +42,7 @@ namespace ET
                         errorCode = ErrorCode.Error_PickErrorCell;
                         continue;
                     }
-                   
-                    if (dropType == 2 && dropComponent.OwnerId != 0 && dropComponent.OwnerId != unit.Id && serverTime < dropComponent.ProtectTime)
-                    {
-                        errorCode = ErrorCode.ERR_ItemDropProtect;
-                        continue;
-                    }
+
                     if (dropType == 3 && dropComponent.OwnerId != 0 && dropComponent.OwnerId != unit.Id)
                     {
                         errorCode = ErrorCode.ERR_ItemBelongOther;
@@ -154,11 +149,6 @@ namespace ET
                     }
                     dropComponent = unitDrop.GetComponent<DropComponent>();
                     int dropType = dropComponent.GetDropType();
-                    if (dropType == 2 && dropComponent.OwnerId != 0 && dropComponent.OwnerId != unit.Id && serverTime < dropComponent.ProtectTime)
-                    {
-                        errorCode = ErrorCode.ERR_ItemDropProtect;
-                        continue;
-                    }
                     if (dropType == 3 && dropComponent.OwnerId != 0 && dropComponent.OwnerId != unit.Id)
                     {
                         errorCode = ErrorCode.ERR_ItemBelongOther;

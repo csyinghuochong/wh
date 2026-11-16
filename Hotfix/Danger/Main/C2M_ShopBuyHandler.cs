@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -75,7 +75,7 @@ namespace ET
             List<RewardItem> costItems = ItemNewHelper.GetShopConsumeItems(storeSellConfig, buyNumber);
             if (costItems.Count > 0 && !bag.CheckNeedItem(costItems))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
@@ -83,7 +83,7 @@ namespace ET
             if (costItems.Count > 0
                 && !bag.OnCostItemData(costItems, ItemLocType.ItemLocBag, ItemGetWay.StoreBuy))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

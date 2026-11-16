@@ -39,7 +39,7 @@ namespace ET
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 if (bagComponentServer.GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < allPrice)
                 {
-                    response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }

@@ -55,8 +55,8 @@ namespace ET
 			Dictionary<int, List<RewardItem>> locCosts = costs.GroupCostByLoc();
 			if (!bag.CanCostByLoc(locCosts))
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 
@@ -70,8 +70,8 @@ namespace ET
 
 			if (!bag.CostByLoc(locCosts, ItemGetWay.CostItem))
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 

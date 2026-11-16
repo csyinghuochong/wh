@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -10,7 +10,8 @@ namespace ET
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
             if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Diamond) <= request.Cost)
             {
-                response.Error = ErrorCode.ERR_DiamondNotEnoughError;
+                int code = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                response.Error = code;
                 reply();
                 return;
             }

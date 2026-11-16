@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -30,7 +30,7 @@ namespace ET
           
             if (!string.IsNullOrEmpty(itemneeds) && itemneeds.Length > 2 && !bag.OnCostItemData(itemneeds, ItemLocType.ItemLocBag, ItemGetWay.ItemBox_6))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

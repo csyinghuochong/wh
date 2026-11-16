@@ -1526,7 +1526,8 @@ namespace ET
                 }
             }
 
-            MoveUnitToPositionAsync(mover, mover.Position + dir * distance, moveType, speedRate, PathMoveFlags.NoRunAnim).Coroutine();
+            // 技能位移不额外限制跑步动画；客户端统一按 Time_2 硬直决定何时允许切动作。
+            MoveUnitToPositionAsync(mover, mover.Position + dir * distance, moveType, speedRate).Coroutine();
         }
 
         /// <summary>
@@ -2209,13 +2210,9 @@ namespace ET
                 }
             }
 
-            int moveFlags = PathMoveFlags.NoRunAnim;
-            long faceTargetId = 0;
-            if (faceTarget)
-            {
-                moveFlags |= PathMoveFlags.FaceTargetOnArrive;
-                faceTargetId = destUnit.Id;
-            }
+            // 路径标记只控制是否在到达后朝向目标；跑步动画统一由客户端硬直检查控制。
+            int moveFlags = faceTarget ? PathMoveFlags.FaceTargetOnArrive : 0;
+            long faceTargetId = faceTarget ? destUnit.Id : 0;
 
             await MoveUnitToPositionAsync(mover, dest, moveType, speedRate, moveFlags, faceTargetId);
         }
@@ -2490,7 +2487,7 @@ namespace ET
                 return;
             }
 
-            await unit.FindPathMoveToAsync(finalPos, null, false, speedRate, moveFlags, faceTargetId);
+            await unit.FindPathMoveToAsync(finalPos, null, false, speedRate, moveFlags, faceTargetId, isSkillMove: true);
         }
 
         /// <summary>

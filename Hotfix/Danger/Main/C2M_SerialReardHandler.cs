@@ -44,7 +44,7 @@ namespace ET
                     int serialIndex = queryResponse.SerialIndex;
                     if (serialIndex < 0)
                     {
-                        response.Error = ErrorCode.ERR_SerialNoExist;
+                        response.Error = 11505;
                         reply();
                         return;
                     }

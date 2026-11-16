@@ -27,7 +27,7 @@ namespace ET
                 BagInfo source = bag.GetItemByUId(request.BagInfoID);
                 if (source == null || request.ItemNum < 0)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }
@@ -35,7 +35,7 @@ namespace ET
                 int count = request.ItemNum > 0 ? request.ItemNum : source.ItemNum;
                 if (count <= 0 || count > source.ItemNum)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }
@@ -43,7 +43,7 @@ namespace ET
                 innerRequest.BagInfo = UnionWarehouseHelper.CloneBagInfo(source, count);
                 if (!bag.OnCostItemData(source.BagInfoID, count, (ItemLocType)source.Loc))
                 {
-                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }
@@ -60,7 +60,7 @@ namespace ET
 
                 if (bag.GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < request.ItemNum)
                 {
-                    response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }

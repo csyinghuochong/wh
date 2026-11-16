@@ -48,8 +48,8 @@ namespace ET
 			int costNum = request.CostItemNum > 0 ? request.CostItemNum : 1;
 			if (bagInfo.ItemNum < costNum)
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 
@@ -63,8 +63,8 @@ namespace ET
 
 			if (!bag.OnCostItemData($"{ItemBigType.Type_Item}~{bagInfo.ItemID}~{costNum}", (ItemLocType)bagInfo.Loc, ItemGetWay.ItemXiLian))
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 

@@ -130,7 +130,7 @@ namespace ET
                 dBCenterSerialInfo.SerialList[i].Value2 = "1";
                 return ErrorCode.ERR_Success;
             }
-            return ErrorCode.ERR_SerialNoExist;
+            return 11505;
         }
 
         public static async ETTask InitDBRankInfo(this CenterServerComponent self)

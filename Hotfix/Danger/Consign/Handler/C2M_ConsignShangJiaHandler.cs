@@ -96,14 +96,14 @@ namespace ET
 				BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoId);
 				if (bagInfo == null)
 				{
-					response.Error = ErrorCode.ERR_ItemNotEnoughError;      //道具不足
-					reply();
+					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                    reply();
 					return;
 				}
 				if (bagInfo.ItemNum < request.ConsignItemInfo.BagInfo.ItemNum)
 				{
-					response.Error = ErrorCode.ERR_ItemNotEnoughError;      //道具不足
-					reply();
+					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                    reply();
 					return;
 				}
 
@@ -127,7 +127,7 @@ namespace ET
                 if (serviceFee > 0
                     && bagComponentServer.GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < serviceFee)
                 {
-                    response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }
@@ -136,8 +136,8 @@ namespace ET
 				int sellItemId = bagInfo.ItemID;
 				if (!bagComponentServer.OnCostItemData(bagInfoId, sellNum))
 				{
-					response.Error = ErrorCode.ERR_ItemNotEnoughError;
-					reply();
+					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                    reply();
 					return;
 				}
 

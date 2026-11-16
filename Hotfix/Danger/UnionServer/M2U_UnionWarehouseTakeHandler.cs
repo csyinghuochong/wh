@@ -31,7 +31,7 @@ namespace ET
                     BagInfo exist = UnionWarehouseHelper.FindWarehouseItem(info, request.BagInfoID);
                     if (exist == null || request.ItemNum < 0)
                     {
-                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                         reply();
                         return;
                     }
@@ -39,7 +39,7 @@ namespace ET
                     int count = request.ItemNum > 0 ? request.ItemNum : exist.ItemNum;
                     if (count <= 0 || count > exist.ItemNum)
                     {
-                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                         reply();
                         return;
                     }
@@ -70,7 +70,7 @@ namespace ET
 
                     if (info.WarehouseGold < request.ItemNum)
                     {
-                        response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                         reply();
                         return;
                     }

@@ -21,7 +21,7 @@ namespace ET
                 BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoID);
                 if (bagInfo == null)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }
@@ -42,7 +42,7 @@ namespace ET
 
                 if (bagInfo.ItemNum < request.SellNum)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }

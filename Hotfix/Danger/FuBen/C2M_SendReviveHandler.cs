@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -18,7 +18,7 @@ namespace ET
                 bool success = unit.GetComponent<BagComponentServer>().OnCostItemData(reviveCost, ItemLocType.ItemLocBag, ItemGetWay.FubenGetReward  );
                 if (!success)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }

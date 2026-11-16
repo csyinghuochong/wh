@@ -59,7 +59,7 @@ namespace ET
             long needGold = (long)paiMaiItemInfo.Price * buyNum;
             if (paiMaiItemInfo.BagInfo.ItemNum < 0 || needGold < 0)
             {
-                response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
@@ -67,7 +67,7 @@ namespace ET
             //钱是否足够
             if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < needGold)
             {
-                response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

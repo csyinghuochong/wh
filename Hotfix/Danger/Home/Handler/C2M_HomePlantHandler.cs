@@ -17,7 +17,7 @@ namespace ET
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             if (bagComponentServer.GetItemNumber(ItemBigType.Type_Item,request.ItemId) < 1)
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

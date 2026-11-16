@@ -163,12 +163,12 @@ namespace ET
             List<RewardItem> costs = ItemNewHelper.GetRewardItems(cfg.Package_Consume);
             if (costs.Count > 0 && !bag.CheckNeedItem(costs))
             {
-                return ErrorCode.ERR_ItemNotEnoughError;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
             }
 
             if (costs.Count > 0 && !bag.OnCostItemData(costs, ItemLocType.ItemLocBag, ItemGetWay.VipGift))
             {
-                return ErrorCode.ERR_ItemNotEnoughError;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
             }
 
             bag.OnAddItemData(rewards, $"{ItemGetWay.VipGift}_{TimeHelper.ServerNow()}");

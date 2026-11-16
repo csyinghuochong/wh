@@ -9,10 +9,10 @@ namespace ET
     {
 
         // 可以多次调用，多次调用的话会取消上一次的协程
-        public static async ETTask<int> FindPathMoveToAsync(this Unit unit, Vector3 target, ETCancellationToken cancellationToken = null, bool yaogan = false, int speedrate = 100, int moveFlags = 0, long faceTargetId = 0)
+        public static async ETTask<int> FindPathMoveToAsync(this Unit unit, Vector3 target, ETCancellationToken cancellationToken = null, bool yaogan = false, int speedrate = 100, int moveFlags = 0, long faceTargetId = 0, bool isSkillMove = false)
         {
             ///以防止怪物再引力波的作用下不移动
-            if (unit.GetComponent<StateComponent>().ServerCanMove()!= ErrorCode.ERR_Success)
+            if (unit.GetComponent<StateComponent>().ServerCanMove(isSkillMove)!= ErrorCode.ERR_Success)
             {
                 return -1;
             }
@@ -114,6 +114,7 @@ namespace ET
                 return;
             }
 
+            // 技能明确要求的到达朝向，不受玩家主动转向限制影响。
             unit.Rotation = Quaternion.LookRotation(dir.normalized, Vector3.up);
         }
 

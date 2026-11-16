@@ -24,7 +24,7 @@ namespace ET
             if (!bagComponentServer.CheckNeedItem($"{ItemBigType.Type_Item}~13~{costNumber}"))
             {
                 response.PlanOpenList = PlanOpenList_2;
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

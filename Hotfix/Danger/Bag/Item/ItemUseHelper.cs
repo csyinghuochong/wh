@@ -17,7 +17,7 @@ namespace ET
                 itemId = useBagInfo.ItemID;
                 if (useNum < 1 || useNum > useBagInfo.ItemNum)
                 {
-                    return ErrorCode.ERR_ItemNotEnoughError;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 }
             }
 

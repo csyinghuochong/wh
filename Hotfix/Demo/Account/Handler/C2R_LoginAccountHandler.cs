@@ -92,7 +92,8 @@ namespace ET
                         {
                             if (dbcenterAccountInfo.Password != request.Password)
                             {
-                                response.Error = ErrorCode.ERR_AccountOrPasswordError;
+                                int code = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Wrong_Password);
+                                response.Error = code;
                                 reply();
                                 session.Disconnect().Coroutine();
                                 dbcenterAccountInfo.Dispose();

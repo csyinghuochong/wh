@@ -302,7 +302,7 @@ namespace ET
             self.TryRefreshGlobalShops();
             if (mysteryInfo == null || self.DBDayActivityInfo.GlobalRandomShops == null)
             {
-                return ErrorCode.ERR_ItemNotEnoughError;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
             }
 
             if (shopId > 0
@@ -319,7 +319,7 @@ namespace ET
                     return ErrorCode.ERR_Success;
                 }
             }
-            return ErrorCode.ERR_ItemNotEnoughError;
+            return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
         }
 
         private static int TryDeductGlobalShopStock(List<ShopGoodsItem> shopList, ShopGoodsItem mysteryInfo)
@@ -337,13 +337,13 @@ namespace ET
                 {
                     if (mysteryItemInfo1.ItemNumber < mysteryInfo.ItemNumber)
                     {
-                        return ErrorCode.ERR_ItemNotEnoughError;
+                        return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     }
                     mysteryItemInfo1.ItemNumber -= mysteryInfo.ItemNumber;
                 }
                 return ErrorCode.ERR_Success;
             }
-            return ErrorCode.ERR_ItemNotEnoughError;
+            return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
         }
 
         private static async ETTask CreateRobot(this ActivitySceneComponent self, int openServerDay)

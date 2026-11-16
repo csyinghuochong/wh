@@ -18,7 +18,7 @@ namespace ET
 
             if (request.ActivityId < 1 || request.ActivityId > 3)
             {
-                response.Error = ErrorCode.ERR_SerialNoExist;
+                response.Error = 11505; /// LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

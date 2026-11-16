@@ -42,7 +42,7 @@ namespace ET
 
             if (bagInfo.ItemNum < 1)
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

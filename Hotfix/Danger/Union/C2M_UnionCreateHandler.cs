@@ -45,7 +45,7 @@ namespace ET
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             if (unionCreateCostItems.Count > 0 && !bag.CheckNeedItem(unionCreateCostItems))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

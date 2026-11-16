@@ -26,7 +26,7 @@ namespace ET
             BagInfo baginfoCost = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.CostItemId);
             if (baginfoCost == null)
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
@@ -34,7 +34,7 @@ namespace ET
             //道具鉴定，扣除道具
             if (!bagComponentServer.OnCostItemData(request.CostItemId, 1))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

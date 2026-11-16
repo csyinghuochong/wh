@@ -20,6 +20,12 @@ namespace ET
                 return;
             }
 
+            if (unit.GetComponent<StateComponent>().CanMove() != ErrorCode.ERR_Success)
+            {
+                unit.SendStop(0);
+                return;
+            }
+
             unit.GetComponent<MoveComponent>().SyncPosition();
             unit.GetComponent<SkillPassiveComponent>().OnPlayerMove();
             if (mapComponent.MapTypeEnum == MapTypeEnum.Happy

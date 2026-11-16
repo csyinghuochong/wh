@@ -28,7 +28,7 @@ namespace ET
                 {
                     if (bag.GetItemNumberForCost(cfg.Consume_Type_1, cfg.Consume_Id_1) < cfg.Consume_Num_1)
                     {
-                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                         reply();
                         return;
                     }
@@ -76,7 +76,7 @@ namespace ET
 
             if (!CheckCosts(bag, currencyCosts, locCosts))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
@@ -96,7 +96,7 @@ namespace ET
             const int getWay = ItemGetWay.SkillMake;
             if (mainBagInfo != null && !bag.OnCostItemData(mainBagInfo.BagInfoID, cfg.Consume_Num_1, mainLoc))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
@@ -108,7 +108,7 @@ namespace ET
 
             if (currencyCosts.Count > 0 && !bag.OnCostItemData(currencyCosts, ItemLocType.ItemLocBag, getWay))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
@@ -117,7 +117,7 @@ namespace ET
             {
                 if (kv.Value.Count > 0 && !bag.OnCostItemData(kv.Value, (ItemLocType)kv.Key, getWay))
                 {
-                    response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
                     return;
                 }

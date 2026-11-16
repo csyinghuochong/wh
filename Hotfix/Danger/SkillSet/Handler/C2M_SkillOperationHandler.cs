@@ -22,7 +22,7 @@ namespace ET
                     int needGold = int.Parse(LDGlobalValueCategory.Instance.Get(20).Value);
                     if (unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold) < needGold)
                     {
-                        response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                         reply();
                         return;
                     }

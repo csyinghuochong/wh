@@ -24,6 +24,12 @@ namespace ET
             //    unit.GetComponent<BuffManagerComponent>()?.AddBuffRecord(0, 0);
             //}
 
+            if (unit.GetComponent<StateComponent>().CanMove() != ErrorCode.ERR_Success)
+            {
+                unit.SendStop(0);
+                return;
+            }
+
             unit.GetComponent<MoveComponent>().SyncPosition();
             unit.GetComponent<SkillPassiveComponent>().OnPlayerMove();
             unit.GetComponent<BuffManagerComponent>()?.AddBuffRecord(0, 0);

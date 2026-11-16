@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -57,7 +57,7 @@ namespace ET
             long needGold = (long)paiMaiItemInfo.Price * request.BuyNum;
             if (request.Gold < needGold)
             {
-                response.Error = ErrorCode.ERR_GoldNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

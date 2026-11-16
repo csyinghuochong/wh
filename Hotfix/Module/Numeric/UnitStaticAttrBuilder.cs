@@ -3,36 +3,13 @@ using System.Collections.Generic;
 namespace ET
 {
     /// <summary>
-    /// 角色静态属性组装（不含战斗 Buff 层）。
+    /// 角色静态属性分项计算（不含战斗 Buff 层），由 Function_Fight.UnitUpdateProperty_Base 按顺序组装。
     /// 输出：分项存储ID → 累加后的存储值，交给 NumericComponent.ApplyAttributeDictionary。
-    ///
-    /// 流水线：
-    /// 1) 职业初始 + 装备
-    /// 2) 六维加点（含称号六维） → 战斗分项
-    /// 3) 体 → 生命上限固定值
-    /// 4) 称号非六维属性
-    /// 5) 坐骑：每只按骑乘/非骑乘比例分开算再累加；速度仅骑乘
     /// </summary>
     public static class UnitStaticAttrBuilder
     {
-        public static Dictionary<int, long> Build(Unit unit)
-        {
-            RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
-            NumericComponent numeric = unit.GetComponent<NumericComponent>();
-            Dictionary<int, long> dic = new Dictionary<int, long>();
-
-            MergeOccupationAndEquip(unit, roleInfo.Occ, dic);
-            int[] pointValues = CalcTotalPointValues(numeric, roleInfo.Lv);
-            MergeTitleAttributes(unit, pointValues, dic);
-            MergePointConvertAttrs(pointValues, dic);
-            MergeBodyHpFixed(roleInfo, roleInfo.Lv, pointValues, dic);
-            MergeMountAttributes(unit, dic);
-
-            return dic;
-        }
-
         /// <summary>MountComponent：列表每只按 Ride/No_Ride 比例合转换属性后累加；速度仅骑乘。</summary>
-        static void MergeMountAttributes(Unit unit, Dictionary<int, long> dic)
+        public static void MergeMountAttributes(Unit unit, Dictionary<int, long> dic)
         {
             MountComponentServer mountComponent = unit.GetComponent<MountComponentServer>();
             if (mountComponent == null)
@@ -44,7 +21,7 @@ namespace ET
         }
 
         /// <summary>TitleList 全部有效称号：六维点并入 pointValues，其余属性写入 dic。</summary>
-        static void MergeTitleAttributes(Unit unit, int[] pointValues, Dictionary<int, long> dic)
+        public static void MergeTitleAttributes(Unit unit, int[] pointValues, Dictionary<int, long> dic)
         {
             TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
             if (titleComponent == null)

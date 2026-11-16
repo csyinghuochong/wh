@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -71,7 +71,7 @@ namespace ET
                     });
                     if (bag.GetItemNumber(ItemBigType.Type_Item, request.ItemId, itemLoc) <= 0)
                     {
-                        response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                         reply();
                         return;
                     }

@@ -45,7 +45,7 @@ namespace ET
             ItemLocType loc = ItemNewHelper.GetToItemLocType(ItemBigType.Type_Item, itemId);
             if (bag.GetItemNumber(ItemBigType.Type_Item, itemId, loc) < costNum)
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
@@ -53,7 +53,7 @@ namespace ET
             // 按配置 Id 扣。同一 Id 分在多个格子时，一次扣完。
             if (!bag.OnCostItemData($"{ItemBigType.Type_Item}~{itemId}~{costNum}", loc, ItemGetWay.ItemXiLian))
             {
-                response.Error = ErrorCode.ERR_ItemNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }

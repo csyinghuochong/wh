@@ -53,15 +53,15 @@ namespace ET
 			long owned = bag.GetItemNumber(ItemBigType.Type_Item, bagInfo.ItemID, loc);
 			if (owned < costNum)
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 
 			if (!bag.OnCostItemData($"{ItemBigType.Type_Item}~{bagInfo.ItemID}~{costNum}", loc, ItemGetWay.ItemXiLian))
 			{
-				response.Error = ErrorCode.ERR_ItemNotEnoughError;
-				reply();
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
+                reply();
 				return;
 			}
 

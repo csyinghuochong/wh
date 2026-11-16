@@ -25,11 +25,9 @@ namespace ET
         {
             Unit unit = aiComponent.GetParent<Unit>();
             SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
-            StateComponent stateComponent = unit.GetComponent<StateComponent>();
 
             for (int i = 0; i < 100000; ++i)
             {
-                long rigidityEndTime = 0;
                 int skillId = aiComponent.GetCastSkillId();
 
                 Unit target = aiComponent.UnitComponent.Get(aiComponent.TargetID);
@@ -73,12 +71,7 @@ namespace ET
                     if (!skillManagerComponent.TryBeginMonsterSing(cmd))
                     {
                         skillManagerComponent.OnUseSkill(cmd, true);
-                        rigidityEndTime = (long)(ldSkill.Time_2 * 1000) + serverNow;
                     }
-                }
-                if (rigidityEndTime > stateComponent.RigidityEndTime)
-                {
-                    stateComponent.SetRigidityEndTime(rigidityEndTime);
                 }
 
                 // 因为协程可能被中断，任何协程都要传入cancellationToken，判断如果是中断则要返回
