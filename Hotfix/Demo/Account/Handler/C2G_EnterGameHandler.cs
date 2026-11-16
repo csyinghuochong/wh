@@ -53,7 +53,7 @@ namespace ET
             SessionPlayerComponent sessionPlayerComponent = session.GetComponent<SessionPlayerComponent>();
             if (null == sessionPlayerComponent)
             {
-                response.Error = ErrorCode.ERR_SessionPlayerError;
+                response.Error = ErrorCode.ERR_PlayerSessionError;
                 reply();
                 return;
             }
@@ -193,7 +193,7 @@ namespace ET
                             }
 
                             Log.Error($"LoginTest C2G_EnterGame 二次登录失败1 player.Id： {player.Id} request.UserID{request.UserID}  player.UnitId: {player.UnitId} reqEnter.Error:{reqEnter.Error}");
-							response.Error = ErrorCode.ERR_ReEnterGameError;
+							response.Error = ErrorCode.ERR_ReEnterGameError1;
 							await DisconnectHelper.KickPlayer(player, true);
 							await DisconnectHelper.KickPlayer(session.DomainZone(), request.UserID);
 

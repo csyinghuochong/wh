@@ -15,7 +15,6 @@ namespace ET
             int errorCode = ErrorCode.ERR_Success;
             //DropType ==  0 公共掉落 2保护掉落   1私有掉落 3 归属掉落
 
-            int cellindex = 0;
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             UnitComponent unitComponent = unit.GetParent<UnitComponent>();
             RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
@@ -36,18 +35,6 @@ namespace ET
                     }
                     dropComponent = unitDrop.GetComponent<DropComponent>();
                     int dropType = dropComponent.GetDropType();
-
-                    if (dropType == 0 && sceneTypeEnum == MapTypeEnum.Happy && cellindex != dropComponent.CellIndex)
-                    {
-                        errorCode = ErrorCode.Error_PickErrorCell;
-                        continue;
-                    }
-
-                    if (dropType == 3 && dropComponent.OwnerId != 0 && dropComponent.OwnerId != unit.Id)
-                    {
-                        errorCode = ErrorCode.ERR_ItemBelongOther;
-                        continue;
-                    }
                 }
                 int addItemID = dropComponent !=null ? dropComponent.ItemID : drops[i].ItemID;
                 int addItemNum = dropComponent != null ? dropComponent.ItemNum : drops[i].ItemNum;
@@ -149,11 +136,6 @@ namespace ET
                     }
                     dropComponent = unitDrop.GetComponent<DropComponent>();
                     int dropType = dropComponent.GetDropType();
-                    if (dropType == 3 && dropComponent.OwnerId != 0 && dropComponent.OwnerId != unit.Id)
-                    {
-                        errorCode = ErrorCode.ERR_ItemBelongOther;
-                        continue;
-                    }
                 }
 
                 int addItemID = dropComponent!=null ? dropComponent.ItemID : drops[i].ItemID;
@@ -180,10 +162,7 @@ namespace ET
                     hasItemFlag = true;
                     itemFlagOwnerId = unit.Id;
                 }
-                if (drops[i].DropType != 1 && teamDungeonComponent.IsInTeamDrop(unitDrop.Id) && !hasItemFlag)
-                {
-                    errorCode = ErrorCode.Error_PickWaitSelect;
-                }
+
                 if (drops[i].DropType == 0 && ldItem.Quality >= 4  && !teshuItem && !hasItemFlag)
                 {
                     teamDungeonComponent.AddTeamDropItem( drops[i]);   //这个地方通知客户端弹窗需求还是放弃
@@ -340,7 +319,6 @@ namespace ET
                         rewardIndex++;
                         if (!ownerBag.OnAddItemData(one, pickGetWay))
                         {
-                            errorCode = ownerId == unit.Id ? ErrorCode.ERR_BagIsFull : ErrorCode.ERR_ItemBelongOther;
                             continue;
                         }
                         M2C_SyncChatInfo chatMsg = SceneCreatureHelp.m2C_SyncChatInfo;

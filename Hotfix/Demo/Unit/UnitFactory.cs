@@ -656,14 +656,10 @@ namespace ET
             {
                 beattackIds.Add(main.Id);
             }
-            //1只要造成伤害就有 2是保护掉落 最后一刀 3是那个按照伤害统计
-            // 0 公共掉落 2保护掉落   1私有掉落 3 归属掉落
+            // 0 公共掉落 1 私有掉落（只要造成伤害就有）
             int dropType = 0;
-            if (dropType == 0 
-                || dropType == 2
-                || dropType == 3) 
+            if (dropType == 0)
             {
-                long serverTime = TimeHelper.ServerNow();
                 Scene DomainScene = main != null ? main.DomainScene() : bekill.DomainScene();
                 for (int i = 0; i < droplist.Count; i++)
                 {
@@ -681,31 +677,6 @@ namespace ET
                     dropComponent.SetBeKillId(bekill.Id);
                     dropComponent.BeAttackPlayerList = beattackIds;
                     dropitem.ConfigId = droplist[i].ItemID;
-                    //掉落归属问题 掉落类型为2 原来为： 最后一刀 修改为 第一拾取权限为优先攻击他的人,如果这个人死了，那么拾取权限清空，下一次伤害是谁归属权就是谁。
-
-                    long ownderId = main != null ? main.Id : 0;
-                    /*
-                    switch (ldMonsterCof.DropType)
-                    {
-                        case 2:
-                            if (beattackIds.Count > 0 && unitComponent.Get(beattackIds[0]) != null)
-                            {
-                                ownderId = beattackIds[0];
-                            }
-                            dropComponent.OwnerId = ldMonsterCof.DropType == 0 ? 0 : ownderId;
-                            dropComponent.ProtectTime = ldMonsterCof.DropType == 0 ? 0 : serverTime + 30000;
-                            break;
-                        case 3:
-                            long belongid = bekill.GetComponent<NumericComponent>().GetAsLong(NumericType.BossBelongID);
-                            if (belongid > 0)
-                            {
-                                ownderId = belongid;
-                            }
-                            dropComponent.OwnerId = ownderId;
-                            dropComponent.ProtectTime = ldMonsterCof.DropType == 0 ? 0 : serverTime + 30000;
-                            break;
-                    }
-                    */
 
                     //单人副本不要搞归属掉落，以免出问题
                     if ( SceneConfigHelper.IsSingleFuben(sceneType) )
@@ -721,19 +692,6 @@ namespace ET
                     bekill.GetComponent<UnitInfoComponent>().Drops.Add(dropComponent.DropInfo);
                     dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
                 }
-
-                /*if (ldMonsterCof.DropType == 3)
-                {
-                    long belongid = bekill.GetComponent<NumericComponent>().GetAsLong(NumericType.BossBelongID);
-                    LogHelper.LogWarning($"BOSS归属掉落日志：{ldMonsterCof.MonsterName}");
-                    LogHelper.LogWarning($"BOSS归属者ID: {bekill.DomainZone()} {belongid}");
-                    LogHelper.LogWarning("BOSS伤害日志：");
-                    Dictionary<long, long> keyValuePairsHurt = bekill.GetComponent<AttackRecordComponent>().BeAttackPlayerList;
-                    foreach ((long uid, long hurt) in keyValuePairsHurt)
-                    {
-                        LogHelper.LogWarning($"{uid} {hurt}");
-                    }
-                }*/
             }
             if (dropType == 1)
             {
@@ -791,15 +749,11 @@ namespace ET
         /// <param name="par"></param>
         public static void CreateDropItems(Unit main, Unit beKill, int dropType,  int dropId, string par)
         {
-            if (dropId == 60700201)
-            {
-                return;
-            }
 
             Scene domainScene = beKill.DomainScene();
             int sceneType = domainScene.GetComponent<MapComponent>().MapTypeEnum;
 
-            // 0 公共掉落 2保护掉落   1私有掉落  3 归属掉落
+            // 0 公共掉落 1 私有掉落
             if (dropType == 0) 
             {
                 List<RewardItem> droplist = new List<RewardItem>();
@@ -845,39 +799,7 @@ namespace ET
             }
             if (dropType == 1)
             {
-                M2C_CreateDropItems m2C_CreateDropItems = new M2C_CreateDropItems();
-                List<RewardItem> droplist = new List<RewardItem>();
-                DropHelper.DropIDToDropItem(dropId, droplist);
-
-                if (droplist.Count > 100)
-                {
-                    Log.Error($"掉落道具数量异常： {dropId}  {droplist.Count}");
-                    Log.Warning($"掉落道具数量异常： {dropId}  {droplist.Count}");
-                    return;
-                }
-
-                for (int k = 0; k < droplist.Count; k++)
-                {
-                    DropInfo dropInfo = new DropInfo()
-                    {
-                        DropType = dropType,
-                        ItemID = droplist[k].ItemID,
-                        ItemNum = droplist[k].ItemNum,
-                        ItemType = droplist[k].ItemType,
-                        X = beKill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f),
-                        Y = beKill.Position.y,
-                        Z = beKill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f),
-                        UnitId = IdGenerater.Instance.GenerateId(),
-                        BeKillId = beKill.Id,
-                    };
-                    m2C_CreateDropItems.Drops.Add(dropInfo);
-                    main.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
-                    if (beKill.Type == UnitType.Monster)
-                    {
-                        beKill.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
-                    }
-                }
-                MessageHelper.SendToClient(main, m2C_CreateDropItems);
+               
             }
         }
     }
