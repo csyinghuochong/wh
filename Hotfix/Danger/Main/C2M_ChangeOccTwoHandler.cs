@@ -23,7 +23,7 @@ namespace ET
 
             if (roleInfoData.OccTwo == request.OccTwoID)
             {
-                response.Error = ErrorCode.ERR_Occ_Hint_2;
+                response.Error = ErrorCode.ERR_ChangeOccRepeat;
                 reply();
                 return;
             }

@@ -11,7 +11,7 @@ namespace ET
             TeamInfo teamInfo = teamScene.GetTeamInfo(request.UserId);
             if (teamInfo == null)
             {
-                response.Error = ErrorCode.Err_TeamIsNull;
+                response.Error = ErrorCode.Err_TeamIsNotExist;
                 reply();
                 return;
             }

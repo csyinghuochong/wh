@@ -128,7 +128,7 @@ namespace ET
             if (self.StateTypeGet(StateTypeEnum.PassiveMove) || 
                self.StateTypeGet(StateTypeEnum.ForbidMove))
             {
-                return ErrorCode.ERR_CanNotMove_1;
+                return ErrorCode.ERR_CanNotMove;
             }
             // 只在硬直内应用 Limit_Move；Limit_Move=0 可移动，不代表可以转向（另查 Limit_Rotate）。
             // RigiditySkillId=0 表示未指定技能的硬直，仍禁止移动。

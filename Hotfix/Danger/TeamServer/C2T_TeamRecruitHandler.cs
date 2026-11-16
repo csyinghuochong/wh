@@ -40,7 +40,7 @@ namespace ET
 
             if (teamInfo.FubenState != (int)TeamDungeonState.None && teamInfo.SceneId != request.SceneId)
             {
-                response.Error = ErrorCode.ERR_AlreadyOpen;
+                response.Error = ErrorCode.ERR_TeamDungeonAlreadyOpen;
                 reply();
                 return;
             }

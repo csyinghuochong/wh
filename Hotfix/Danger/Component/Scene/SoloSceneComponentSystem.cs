@@ -211,7 +211,7 @@ namespace ET
             {
                 if (self.MatchList[i].UnitId == teamPlayerInfo.UnitId)
                 {
-                    return ErrorCode.ERR_SoloExist;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
             }
 
@@ -221,7 +221,7 @@ namespace ET
                 int joinNum = playerDate.WinNum + playerDate.FailNum;
                 if (joinNum > 50) 
                 {
-                    return ErrorCode.ERR_SoloNumMax;
+                    return ErrorCode.ERR_TimesIsNotEnought;
                 }
             }
 

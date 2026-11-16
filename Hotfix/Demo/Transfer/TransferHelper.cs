@@ -33,7 +33,7 @@ namespace ET
                 int recordSceneId = 0;
                 if (SceneConfigHelper.UseSceneConfig(args.SceneType) && args.SceneId > 0 && !LDSceneCategory.Instance.Contain(args.SceneId))
                 {
-                    return ErrorCode.ERR_TimesIsNot;
+                    return ErrorCode.ERR_TimesIsNotEnought;
                 }
 
                 int targetSceneId = SceneConfigHelper.ResolveTransferSceneId(args.SceneType, args.SceneId, args.ParamInfo);

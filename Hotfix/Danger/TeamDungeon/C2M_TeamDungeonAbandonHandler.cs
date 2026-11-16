@@ -3,7 +3,7 @@ using System;
 namespace ET
 {
 
-	//队长关闭副本
+	//闃熼暱鍏抽棴鍓湰
     [ActorMessageHandler]
     public class C2M_TeamDungeonAbandonHandler : AMActorLocationRpcHandler<Unit, C2M_TeamDungeonAbandonRequest, M2C_TeamDungeonAbandonResponse>
     {
@@ -17,7 +17,7 @@ namespace ET
             }
             if (unit.GetTeamId() == 0)
             {
-                response.Error = ErrorCode.Err_TeamIsNull;
+                response.Error = ErrorCode.Err_TeamIsNotExist;
                 reply();
                 return;
             }

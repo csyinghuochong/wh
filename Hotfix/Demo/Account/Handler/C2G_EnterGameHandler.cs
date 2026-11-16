@@ -284,13 +284,8 @@ namespace ET
 						player.ReChargeServerID = StartSceneConfigCategory.Instance.RechargeConfig.InstanceId;
 						response.MyId = unitId;
 						long accountId = roleInfoComponentServer.RoleInfo.AccInfoID;
-						response.IsPopUp = GMHelp.PopUpPlayer.ContainsKey(accountId) ? 1 : 0;
-						if (response.IsPopUp == 1)
-						{
-							response.PopUpInfo = GMHelp.PopUpPlayer[accountId];
-						}
-
-
+                        response.IsPopUp = 0;
+	
                         reply();
 
                         int tomap = SceneConfigHelper.MainCityID();

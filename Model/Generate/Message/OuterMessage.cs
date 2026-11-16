@@ -10555,37 +10555,6 @@ namespace ET
 
 	}
 
-//紫色道具判断是否需要拾取
-	[Message(OuterOpcode.M2C_TeamPickMessage)]
-	[ProtoContract]
-	public partial class M2C_TeamPickMessage: Object, IActorMessage
-	{
-		[ProtoMember(1)]
-		public long ActorId { get; set; }
-
-		[ProtoMember(2)]
-		public long UnitId { get; set; }
-
-		[ProtoMember(3)]
-		public List<DropInfo> DropItems = new List<DropInfo>();
-
-	}
-
-	[Message(OuterOpcode.C2M_TeamPickRequest)]
-	[ProtoContract]
-	public partial class C2M_TeamPickRequest: Object, IActorLocationMessage
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public DropInfo DropItem { get; set; }
-
-		[ProtoMember(2)]
-		public int Need { get; set; }
-
-	}
-
 //邀请组队
 	[ResponseType(nameof(T2C_TeamInviteResponse))]
 	[Message(OuterOpcode.C2T_TeamInviteRequest)]
@@ -11023,7 +10992,7 @@ namespace ET
 		[ProtoMember(1)]
 		public TeamInfo TeamInfo { get; set; }
 
-//申请中为 Err_HaveNotPrepare；取消成功或副本可进入时为 ERR_Success。
+//申请中为 ERR_Error（尚不可进入）；取消成功或副本可进入时为 ERR_Success。
 		[ProtoMember(2)]
 		public int ErrorCode { get; set; }
 

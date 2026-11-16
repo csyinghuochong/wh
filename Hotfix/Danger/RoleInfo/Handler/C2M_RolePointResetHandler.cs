@@ -15,7 +15,7 @@ namespace ET
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             if (roleInfo.Lv < RoleAddPointHelper.GetAutoLevel())
             {
-                response.Error = ErrorCode.ERR_LevelNoEnough;
+                response.Error = ErrorCode.ERR_LevelNotEnought;
                 reply();
                 return;
             }

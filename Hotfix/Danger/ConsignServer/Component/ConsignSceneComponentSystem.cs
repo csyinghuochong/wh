@@ -271,7 +271,7 @@ namespace ET
                 response.Message = "1";
                 if (total > 0)
                 {
-                    response.Error = ErrorCode.ERR_PaiMaiBuyMaxPage;
+                    response.Error = ErrorCode.ERR_PaiMaiBuyPageValid;
                 }
 
                 return;

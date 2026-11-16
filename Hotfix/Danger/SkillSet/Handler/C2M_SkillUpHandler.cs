@@ -38,7 +38,7 @@ namespace ET
 			RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
 			if (roleInfo.Lv < nextCfg.Learn_Lv)
 			{
-				response.Error = ErrorCode.ERR_LevelNoEnough;
+				response.Error = ErrorCode.ERR_LevelNotEnought;
 				reply();
 				return;
 			}

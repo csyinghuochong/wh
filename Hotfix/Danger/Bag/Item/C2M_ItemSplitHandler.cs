@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -14,7 +14,7 @@ namespace ET
             BagInfo useBagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoID);
             if (useBagInfo == null)
             {
-                response.Error = ErrorCode.ERR_ItemUseError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Use_Fail);
                 reply();
                 return;
             }

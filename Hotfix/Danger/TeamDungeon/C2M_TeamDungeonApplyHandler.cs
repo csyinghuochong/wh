@@ -18,7 +18,7 @@ namespace ET
 			long teamId = unit.GetTeamId();
 			if (teamId == 0)
 			{
-				response.Error = ErrorCode.Err_TeamIsNull;
+				response.Error = ErrorCode.Err_TeamIsNotExist;
 				reply();
 				return;
 			}

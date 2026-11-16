@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -28,7 +28,7 @@ namespace ET
             }
             else
             {
-                response.Error = ErrorCode.ERR_GMError;
+                response.Error = ErrorCode.ERR_GMCommandInvalid;
             }
             reply();
         }

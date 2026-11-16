@@ -14,7 +14,7 @@ namespace ET
 				//判断名字是否符合要求
 				if (string.IsNullOrEmpty(request.CreateName))
 				{
-                    response.Error = ErrorCode.ERR_CreateRoleName;
+                    response.Error = ErrorCode.ERR_UnSafeSqlString;
                     response.Message = "角色名字过短!";
                     reply();
                     return;
@@ -22,14 +22,14 @@ namespace ET
                 if (request.CreateName.Contains(" "))
                 {
 					Log.Error($"C2A_CreateRoleHandler.1");
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = ErrorCode.ERR_UnSafeSqlString;
                     reply();
                     return;
                 }
                 request.CreateName = request.CreateName.Trim();
                 if (request.CreateName.Length >= 8)
 				{
-					response.Error = ErrorCode.ERR_CreateRoleName;
+					response.Error = ErrorCode.ERR_NameIsLong;
 					response.Message = "角色名字过长!";
 					reply();
 					return;

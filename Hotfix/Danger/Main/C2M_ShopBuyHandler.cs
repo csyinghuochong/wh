@@ -29,7 +29,7 @@ namespace ET
             int needLv = storeSellConfig.Limit_Condition_1;
             if (needLv > 0 && roleInfoComponentServer.RoleInfo.Lv < needLv)
             {
-                response.Error = ErrorCode.ERR_LevelNoEnough;
+                response.Error = ErrorCode.ERR_LevelNotEnought;
                 reply();
                 return;
             }

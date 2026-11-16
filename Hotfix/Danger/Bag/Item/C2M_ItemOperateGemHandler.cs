@@ -19,7 +19,7 @@ namespace ET
             }
             if (useBagInfo == null)
             {
-                response.Error = ErrorCode.ERR_ItemUseError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Use_Fail);
                 reply();
                 return;
             }

@@ -12,7 +12,7 @@ namespace ET
             TeamInfo teamInfo = teamSceneComponent.GetTeamInfo(request.UnitID);
             if (teamInfo == null)
             {
-                response.Error = ErrorCode.Err_TeamIsNull;
+                response.Error = ErrorCode.Err_TeamIsNotExist;
                 reply();
                 return;
             }
@@ -34,7 +34,7 @@ namespace ET
             // 副本已经创建，不能再申请或取消申请。
             if (teamInfo.FubenInstanceId != 0)
             {
-                response.Error = ErrorCode.ERR_AlreadyOpen;
+                response.Error = ErrorCode.ERR_TeamDungeonAlreadyOpen;
                 reply();
                 return;
             }

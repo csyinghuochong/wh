@@ -395,41 +395,6 @@ namespace ET
 			return petNumber;
 		}
 
-		public static void SendTeamPickMessage(Unit unit, DropInfo dropInfo,List<long> ids,  List<int> points)
-		{
-			m2C_SyncChatInfo.ChatInfo = new ChatInfo();
-			m2C_SyncChatInfo.ChatInfo.PlayerLevel = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
-			m2C_SyncChatInfo.ChatInfo.Occ = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Occ;
-			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Team;
-            m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;			//拾取道具的消息，此为玩家unitid
-            m2C_SyncChatInfo.ChatInfo.ParamId = dropInfo.UnitId;//拾取道具的消息，此为道具unitid
-            LDItem ldItem = LDItemCategory.Instance.Get(dropInfo.ItemID);
-			string numShow = "";
-			if (ldItem.Id == 1)
-			{
-				numShow = dropInfo.ItemNum.ToString();
-			}
-			string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);
-			m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
-
-            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
-            for (int p = 0; p < points.Count; p++)
-			{
-				Unit player = unit.GetParent<UnitComponent>().Get(ids[p]);
-				if (player == null)
-				{
-					continue;
-				}
-				
-				m2C_SyncChatInfo.ChatInfo.ChatMsg += $"{player.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}:{points[p]}点";
-				m2C_SyncChatInfo.ChatInfo.ChatMsg += (p == points.Count - 1 ? "" : "  ");
-
-                m2C_SyncChatInfo.ChatInfo.ChatMsg_EN += $"{player.GetComponent<RoleInfoComponentServer>().RoleInfo.Name}:{points[p]} point";
-                m2C_SyncChatInfo.ChatInfo.ChatMsg_EN += (p == points.Count - 1 ? "" : "  ");
-            }
-
-			MessageHelper.SendToClient(UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Player), m2C_SyncChatInfo);
-		}
 
 		public static void SendFubenPickMessage(Unit unit, DropInfo dropInfo)
 		{

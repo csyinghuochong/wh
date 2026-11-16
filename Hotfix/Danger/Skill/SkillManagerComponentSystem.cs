@@ -532,7 +532,7 @@ namespace ET
 
             if (LDSkillHelper.IsPassiveSkill(ldSkill))
             {
-                return ErrorCode.ERR_CanNotUseSkill_1;
+                return ErrorCode.ERR_CanNotUseSkill;
             }
 
            /* int castError = LDSkillHelper.CheckCastCondition(unit, ldSkill, targetId);

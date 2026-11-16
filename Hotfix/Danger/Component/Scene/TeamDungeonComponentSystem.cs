@@ -4,8 +4,8 @@ using System.Linq;
 
 namespace ET
 {
-    [Timer(TimerType.TeamDropTimer)]
-    public class TeamDropTimer : ATimer<TeamDungeonComponent>
+    [Timer(TimerType.TeamDungeonTimer)]
+    public class TeamDungeonTimer : ATimer<TeamDungeonComponent>
     {
         public override void Run(TeamDungeonComponent self)
         {
@@ -31,8 +31,6 @@ namespace ET
             self.IsCompleted = false;
             self.EnterPlayers.Clear();
             self.BoxReward.Clear();
-            self.ItemFlags.Clear();
-            self.TeamDropItems.Clear();
             self.KillBossList.Clear();
             self.TeamPlayers.Clear();
         }
@@ -138,7 +136,7 @@ namespace ET
             TeamInfo teamInfo = scene.GetParent<TeamSceneComponent>().GetTeamInfo(userId);
             if (teamInfo == null)
             {
-                return ErrorCode.Err_TeamIsNull;
+                return ErrorCode.Err_TeamIsNotExist;
             }
             int limitTime = LDSceneCategory.Instance.Get(self.TeamInfo.SceneId).Limit_Time;
             if (self.IsAbandoning || self.IsCompleted || teamInfo.FubenState != (int)TeamDungeonState.Opened
@@ -183,18 +181,6 @@ namespace ET
             return unitComponent.UnitComponents.Count > 0;
         }
 
-        private static TeamDropItem FindTeamDropItem(this TeamDungeonComponent self, long dropId)
-        {
-            for (int i = self.TeamDropItems.Count - 1; i >= 0; i--)
-            {
-                if (self.TeamDropItems[i].DropInfo.UnitId == dropId)
-                {
-                    return self.TeamDropItems[i];
-                }
-            }
-            return null;
-        }
-
         public static void InitPlayerList(this TeamDungeonComponent self)
         {
             for (int i = 0; i < self.TeamInfo.PlayerList.Count; i++)
@@ -232,142 +218,6 @@ namespace ET
                 self.Abandon().Coroutine();
                 return;
             }
-            if (self.TeamDropItems.Count == 0)
-            {
-                //TimerComponent.Instance.Remove(ref self.Timer);
-                return;
-            }
-            long serverTime = TimeHelper.ServerNow();
-            List<Unit> allunits = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
-            int playerCount = allunits.Count;
-            UnitComponent unitComponent = self.DomainScene().GetComponent<UnitComponent>();
-            for (int i = self.TeamDropItems.Count - 1; i >= 0; i--)
-            {
-                TeamDropItem teamDropItem = self.TeamDropItems[i];
-                if (teamDropItem.EndTime == -1)   // || teamDropItem.AllGive)
-                {
-                    continue;
-                }
-                List<long> needIds = teamDropItem.NeedPlayers;
-                List<long> giveIds = teamDropItem.GivePlayers;
-                bool finish = serverTime >= teamDropItem.EndTime || (needIds.Count + giveIds.Count >= playerCount);
-                if (!finish)
-                {
-                    continue;
-                }
-                teamDropItem.EndTime = -1;
-                if (playerCount == 0)
-                {
-                    Log.Warning($"TeamDungeonComponent.DropInfo：playerCount == 0");
-                    //self.DomainScene().GetComponent<UnitComponent>().Remove(teamDropItem.DropInfo.UnitId);   
-                    continue;
-                }
-
-                //全部放弃 则 可以自由拾取。
-                if (giveIds.Count >= playerCount || needIds.Count == 0)
-                {
-                    //for (int allunit = 0; allunit < allunits.Count; allunit++)
-                    //{
-                    //    needIds.Add(allunits[allunit].Id);
-                    //}
-                    //teamDropItem.AllGive = true;
-                    continue;
-                }
-                
-                int maxNumber = 0;
-                List<int> randomNumbers = new List<int>();
-                for (int p = 0; p < needIds.Count; p++)
-                {
-                    randomNumbers.Add(RandomHelper.RandomNumber(1, 100));
-                    if (randomNumbers[p] > maxNumber)
-                    {
-                        maxNumber = randomNumbers[p];
-                    }
-                }
-                int onwerIndex = randomNumbers.IndexOf(maxNumber);
-                long unitid =  teamDropItem.NeedPlayers[onwerIndex];
-                Unit unit = unitComponent.Get(unitid);
-                if (unit != null)
-                {
-                    List<RewardItem> rewardItems = new List<RewardItem>();
-                    rewardItems.Add(new RewardItem() { ItemID = teamDropItem.DropInfo.ItemID, ItemNum = teamDropItem.DropInfo.ItemNum });
-                    bool ret = unit.GetComponent<BagComponentServer>().OnAddItemData(rewardItems, $"{ItemGetWay.PickItem}_{serverTime}");
-                    //Log.Warning($"TeamDungeonComponent.DropInfo：{ret}  {unit.Id} {teamDropItem.DropInfo.ItemID} {teamDropItem.DropInfo.ItemNum}");
-                    if (ret)
-                    {
-                        SceneCreatureHelp.SendTeamPickMessage(unit, teamDropItem.DropInfo, needIds, randomNumbers);
-                        unitComponent.Remove(teamDropItem.DropInfo.UnitId);       //移除掉落ID
-                        continue;
-                    }
-
-                    self.ItemFlags.TryAdd(teamDropItem.DropInfo.UnitId, unitid);
-                }
-                else
-                {
-                    Log.Warning($"TeamDungeonComponent.DropInfo：unit == null");
-                    //self.DomainScene().GetComponent<UnitComponent>().Remove(teamDropItem.DropInfo.UnitId);       //移除掉落ID
-                }
-            }
-        }
-
-        public static bool IsAllGiveDrop(this TeamDungeonComponent self, long dropId)
-        {
-            TeamDropItem teamDropItem = self.FindTeamDropItem(dropId);
-            return teamDropItem != null && teamDropItem.EndTime == -1;
-        }
-
-        public static bool IsInTeamDrop(this TeamDungeonComponent self, long dropId)
-        {
-            return self.FindTeamDropItem(dropId) != null;
-        }
-
-        public static TeamDropItem GetTeamDropItem(this TeamDungeonComponent self, long dropId)
-        {
-            return self.FindTeamDropItem(dropId);
-        }
-
-        public static TeamDropItem AddTeamDropItem(this TeamDungeonComponent self,  DropInfo dropInfo)
-        {
-            for (int i = self.TeamDropItems.Count - 1; i >=  0; i--)
-            {
-                if (self.TeamDropItems[i].EndTime == -1)
-                {
-                    //Log.Warning($"self.TeamDropItems[i].EndTime == -1:   {dropInfo.ItemID}");
-                    self.TeamDropItems.RemoveAt(i);
-                    continue;
-                }
-                if (self.TeamDropItems[i].DropInfo.UnitId == dropInfo.UnitId)
-                {
-                    self.Check();
-                    return null;
-                }
-            }
-
-            TeamDropItem teamDropItem = null;
-            if (self.GetChild<TeamDropItem>(dropInfo.UnitId) != null)
-            {
-                teamDropItem = self.GetChild<TeamDropItem>(dropInfo.UnitId);
-            }
-            else
-            {
-                teamDropItem = self.AddChildWithId<TeamDropItem>(dropInfo.UnitId);
-            }
-
-            teamDropItem.DropInfo = dropInfo;
-            teamDropItem.EndTime = TimeHelper.ServerNow() + 60 * 1000;
-
-            self.TeamDropItems.Add(teamDropItem);
-            if (self.Timer == 0)
-            {
-                self.Timer = TimerComponent.Instance.NewRepeatedTimer(1000, TimerType.TeamDropTimer, self);
-            }
-            M2C_TeamPickMessage teamPickMessage = self.m2C_TeamPickMessage;
-            teamPickMessage.DropItems.Clear();
-            teamPickMessage.DropItems.Add(dropInfo);
-
-            List<Unit> players = UnitHelper.GetUnitList(self.DomainScene(),UnitType.Player);
-            MessageHelper.SendToClient(players, teamPickMessage);
-            return teamDropItem;
         }
 
         public static bool IsHavePlayer(this TeamDungeonComponent self)

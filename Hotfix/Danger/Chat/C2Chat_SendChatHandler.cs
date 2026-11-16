@@ -61,7 +61,7 @@ namespace ET
                             long leftTime = bePortedNumber.JinYanTime - serverTime;
                             int hour = (int)(leftTime * 1f / TimeHelper.Hour);
                             hour = Math.Max(hour, 1);
-                            response.Error = ErrorCode.ERR_Chat_JinYan_3;
+                            response.Error = ErrorCode.ERR_Chat_JinYan;
                             response.Message = $"你当前已经被禁言，{hour}小时后解封！";
                             reply();
                             return;

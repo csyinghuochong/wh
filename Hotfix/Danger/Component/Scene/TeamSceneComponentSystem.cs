@@ -32,7 +32,7 @@ namespace ET
             // 实例使用独立快照；队伍通关后可再申请，旧实例不能跟随队伍修改。
             teamDungeonComponent.TeamInfo = MongoHelper.Clone(teamInfo);
             teamDungeonComponent.InitPlayerList();
-            teamDungeonComponent.Timer = TimerComponent.Instance.NewRepeatedTimer(1000, TimerType.TeamDropTimer, teamDungeonComponent);
+            teamDungeonComponent.Timer = TimerComponent.Instance.NewRepeatedTimer(1000, TimerType.TeamDungeonTimer, teamDungeonComponent);
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             SceneCreatureHelp.CreateSceneRole(fubnescene, teamInfo.SceneId);
             teamDungeonComponent.NotifyDungeonStartMarquee();
@@ -83,7 +83,7 @@ namespace ET
         public static async ETTask BroadcastDungeonApply(this TeamSceneComponent self, TeamInfo teamInfo, bool isCanceled = false)
         {
             // 申请中 FubenInstanceId 仍是 0。ErrorCode 不能填 Success，旧客户端看到 Success 会直接 RequestTransfer。
-            int errorCode = isCanceled || teamInfo.FubenInstanceId != 0 ? ErrorCode.ERR_Success : ErrorCode.Err_HaveNotPrepare;
+            int errorCode = isCanceled || teamInfo.FubenInstanceId != 0 ? ErrorCode.ERR_Success : ErrorCode.ERR_Error;
             M2C_TeamDungeonApplyResult message = new M2C_TeamDungeonApplyResult()
             {
                 TeamInfo = CloneTeamInfo(teamInfo),

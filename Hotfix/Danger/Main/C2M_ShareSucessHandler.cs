@@ -21,20 +21,19 @@ namespace ET
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             if (roleInfo.Lv < 10)
             {
-                response.Error = ErrorCode.ERR_LevelIsNot;
+                response.Error = ErrorCode.ERR_LevelNotEnought;
                 reply();
                 return;
             }
             
             if (taskComponentServer.OnLineTime < 30)
             {
-                response.Error = ErrorCode.Err_OnLineTimeNot;
+                response.Error = ErrorCode.Err_OnLineTimeNotEnought;
                 reply();
                 return;
             }
             if ((unit.GetComponent<RoleDailyDataComponentServer>()?.GetDailyActivePoint() ?? 0) < 30)
             {
-                response.Error = ErrorCode.ERR_HuoYueNot;
                 reply();
                 return;
             }
@@ -42,7 +41,7 @@ namespace ET
             long shareSet = 0;// numericComponent.GetAsLong(NumericType.FenShangSet);
             if ((shareSet & request.ShareType) > 0)
             {
-                response.Error = ErrorCode.ERR_TimesIsNot;
+                response.Error = ErrorCode.ERR_TimesIsNotEnought;
                 reply();
                 return;
             }

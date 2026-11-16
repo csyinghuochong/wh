@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -18,7 +18,7 @@ namespace ET
 
             if (request.KeJiId > dBUnionInfo.UnionInfo.UnionKeJiList[request.Position])
             {
-                response.Error = ErrorCode.ERR_LevelIsNot;
+                response.Error = ErrorCode.ERR_LevelNotEnought;
                 reply();
                 return;
             }

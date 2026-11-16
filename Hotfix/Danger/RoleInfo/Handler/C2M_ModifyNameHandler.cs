@@ -22,7 +22,7 @@ namespace ET
             
             if (string.IsNullOrEmpty(request.NewName))
             {
-                response.Error = ErrorCode.ERR_CreateRoleName;
+                response.Error = ErrorCode.ERR_UnSafeSqlString;
                 response.Message = "角色名字过短!";
                 reply();
                 return;
@@ -40,7 +40,7 @@ namespace ET
             int maxNameLength = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Role_Name_Character_Length);
             if (request.NewName.Length > maxNameLength)
             {
-                response.Error = ErrorCode.ERR_CreateRoleName;
+                response.Error = ErrorCode.ERR_UnSafeSqlString;
                 response.Message = "角色名字过长!";
                 reply();
                 return;

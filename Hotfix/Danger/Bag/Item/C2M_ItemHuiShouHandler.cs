@@ -13,7 +13,7 @@ namespace ET
             List<long> huishouList = request.OperateBagID;
             if (huishouList.Count == 0)
             {
-                response.Error = ErrorCode.ERR_ItemUseError;
+                response.Error =  LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Use_Fail);
                 reply();
                 return;
             }
