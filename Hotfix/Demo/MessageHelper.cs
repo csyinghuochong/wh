@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace ET
@@ -21,11 +20,28 @@ namespace ET
         public static void Broadcast(Unit unit, IActorMessage message)
         {
             Dictionary<long, AOIEntity> dict = unit.GetBeSeePlayers();
-            (ushort opcode, MemoryStream stream) = MessageSerializeHelper.MessageToStream(message);
+            if (LogStatus)
+            {
+                UpdateBroadcastStatistics();
+                playerBroadcast222++;
+            }
 
+            ushort opcode = 0;
+            MemoryStream stream = null;
             foreach (AOIEntity u in dict.Values)
             {
-                SendToClientNew(u.Unit, message, opcode, stream);
+                UnitGateComponent gate = GetClientGate(u.Unit);
+                if (gate == null)
+                {
+                    continue;
+                }
+
+                if (stream == null)
+                {
+                    (opcode, stream) = MessageSerializeHelper.MessageToStream(message);
+                }
+
+                SendActorNew(gate.GateSessionActorId, message, opcode, stream);
 
                 //数据量日志打印
                 if (LogStatus)
@@ -34,18 +50,14 @@ namespace ET
                     messagelenght222 += stream.Length;
                 }
             }
-
-            if (LogStatus)
-            {
-                playerBroadcast222++;
-            }
         }
 
         //主城移动广播
         public static void BroadcastMainCity(Unit unit, IActorMessage message)
         {
+            // 在限流判断前换秒，避免限流后没有成功发送、计数一直无法重置。
+            UpdateBroadcastStatistics();
             Dictionary<long, AOIEntity> dict = unit.GetBeSeePlayers();
-            (ushort opcode, MemoryStream stream) = MessageSerializeHelper.MessageToStream(message);
 
             //数据量日志打印
             if (LogStatus)
@@ -54,55 +66,62 @@ namespace ET
             }
 
             int playernumber = 0;
-            int broadCast = 30;
+            ushort opcode = 0;
+            MemoryStream stream = null;
             foreach (AOIEntity u in dict.Values)
             {
-                bool isself = false;
-
-                if (unit.Type == UnitType.Player)
+                Unit receiver = u.Unit;
+                UnitGateComponent gate = GetClientGate(receiver);
+                if (gate == null)
                 {
-                    isself = u.Unit.Id == unit.Id;
-                }
-                else
-                {
-                    isself = u.Unit.Id == unit.Id || u.Unit.Id == unit.MasterId;
+                    continue;
                 }
 
-                //最多给50个人同步自身移动数据,当主城每秒超过给20000同步数据就开始丢包 不处理其他人的数据
-                if (messagelenght > 10000000 || num > 20000)
+                bool isself = receiver.Id == unit.Id || (unit.Type != UnitType.Player && receiver.Id == unit.MasterId);
+                // 沿用 30 人限制；自己或召唤物主人不受人数、每秒 2 万条及 10 MB 限流影响。
+                if (!isself && (playernumber >= 30 || messagelenght >= 10000000 || num >= 20000))
                 {
-                    broadCast = 0;
+                    continue;
                 }
 
-                //最多给50个人同步自身移动数据
-                if (isself || playernumber < broadCast)
+                if (stream == null)
                 {
-                    playernumber++;
-                    SendToClientNew(u.Unit, message, opcode, stream);
-
-                    //数据量日志打印
-  
-                    num++;
-                    messagelenght += stream.Length;
-
-                    if (TimeHelper.ServerNow() >= timechar + 1000)
-                    {
-                        timechar = TimeHelper.ServerNow();
-                        if (LogStatus)
-                        {
-                            Log.Warning(TimeHelper.DateTimeNow().ToString() + " 总数据:" + (messagelenght + messagelenght222).ToString() + " 移动数据:" + messagelenght + " 其他数据:" + messagelenght222 + " 广播人数:" + num + " 其他广播" + num222 + " 移动源数:" + playerBroadcast + " 其他源数:" + playerBroadcast222);
-                        }
-                        messagelenght = 0;
-                        num = 0;
-                        num222 = 0;
-                        playerBroadcast = 0;
-                        messagelenght222 = 0;
-                        playerBroadcast222 = 0;
-                    }
+                    (opcode, stream) = MessageSerializeHelper.MessageToStream(message);
                 }
+
+                SendActorNew(gate.GateSessionActorId, message, opcode, stream);
+                playernumber++;
+                num++;
+                messagelenght += stream.Length;
             }
         }
 
+        private static void UpdateBroadcastStatistics()
+        {
+            long now = TimeHelper.ServerNow();
+            if (timechar == 0)
+            {
+                timechar = now;
+            }
+
+            if (now < timechar + 1000)
+            {
+                return;
+            }
+
+            if (LogStatus)
+            {
+                Log.Warning(TimeHelper.DateTimeNow().ToString() + " 总数据:" + (messagelenght + messagelenght222).ToString() + " 移动数据:" + messagelenght + " 其他数据:" + messagelenght222 + " 广播人数:" + num + " 其他广播" + num222 + " 移动源数:" + playerBroadcast + " 其他源数:" + playerBroadcast222);
+            }
+
+            timechar = now;
+            messagelenght = 0;
+            num = 0;
+            num222 = 0;
+            playerBroadcast = 0;
+            messagelenght222 = 0;
+            playerBroadcast222 = 0;
+        }
 
         public static void BroadcastBuff(Unit unit, IActorMessage message, LDSkill_Battle_Buff buff, int sceneType)
         {
@@ -113,8 +132,8 @@ namespace ET
                 return;
             }
 
-            // BeSeePlayers 不含自己，玩家身上的 buff 自己必收
-            if (unit.Type == UnitType.Player)
+            // AOI 已包含自己时由广播发送；未包含时补发，避免同一条 BUFF 通知重复到达。
+            if (unit.Type == UnitType.Player && !unit.GetBeSeePlayers().ContainsKey(unit.Id))
             {
                 SendToClient(unit, message);
             }
@@ -134,12 +153,8 @@ namespace ET
 
         public static void SendToClientMove(Unit unit, IActorMessage message)
         {
-            if (unit.IsDisposed)
-            {
-                return;
-            }
-            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            if (unitGateComponent == null || unitGateComponent.PlayerState != PlayerState.Game)
+            UnitGateComponent unitGateComponent = GetClientGate(unit);
+            if (unitGateComponent == null)
             {
                 return;
             }
@@ -157,15 +172,10 @@ namespace ET
 
         public static void SendToClientNew(Unit unit, IActorMessage message, ushort opcode, MemoryStream stream)
         {
-            if (unit.IsDisposed)
+            UnitGateComponent unitGateComponent = GetClientGate(unit);
+            if (unitGateComponent == null)
             {
                 return;
-            }
-            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            if (unitGateComponent == null || unitGateComponent.PlayerState != PlayerState.Game)
-            {
-                return;
-
             }
             SendActorNew(unitGateComponent.GateSessionActorId, message, opcode, stream);
         }
@@ -182,22 +192,33 @@ namespace ET
 
         public static void SendToClient(Unit unit, IActorMessage message)
         {
-            if (unit.IsDisposed)
-            {
-                return;
-            }
-            UnitGateComponent unitGateComponent = unit.GetComponent<UnitGateComponent>();
-            if (unitGateComponent == null || unitGateComponent.PlayerState != PlayerState.Game)
+            UnitGateComponent unitGateComponent = GetClientGate(unit);
+            if (unitGateComponent == null)
             {
                 return;
             }
 
             if (LogStatus)
             {
-                num++;
-                messagelenght += message.ToBson().Length;
+                UpdateBroadcastStatistics();
+                (ushort opcode, MemoryStream stream) = MessageSerializeHelper.MessageToStream(message);
+                SendActorNew(unitGateComponent.GateSessionActorId, message, opcode, stream);
+                num222++;
+                messagelenght222 += stream.Length;
+                return;
             }
             SendActor(unitGateComponent.GateSessionActorId, message);
+        }
+
+        private static UnitGateComponent GetClientGate(Unit unit)
+        {
+            if (unit.IsDisposed)
+            {
+                return null;
+            }
+
+            UnitGateComponent gate = unit.GetComponent<UnitGateComponent>();
+            return gate != null && gate.PlayerState == PlayerState.Game ? gate : null;
         }
 
         /// <summary>

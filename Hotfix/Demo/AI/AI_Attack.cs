@@ -17,14 +17,15 @@ namespace ET
                 return false;
             }
 
-            float distance = PositionHelper.Distance2D(target.Position, aiComponent.GetParent<Unit>().Position);
-            return distance <= aiComponent.ActDistance;
+            return AIChaseStandHelper.IsInAttackPosition(aiComponent, target);
         }
 
         public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
             SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
+            // 切入攻击时同步停止，避免取消追击协程后客户端仍沿旧路径移动。
+            unit.Stop(0);
 
             for (int i = 0; i < 100000; ++i)
             {
@@ -43,6 +44,7 @@ namespace ET
                 }
 
                 if (skillId != 0 && aiComponent.TargetID != 0 && distance <= aiComponent.ActDistance
+                    && AIChaseStandHelper.IsInAttackPosition(aiComponent, target)
                     && skillManagerComponent.IsCanUseSkill(skillId) == ErrorCode.ERR_Success)
                 {
                     LDSkill_Battle ldSkill = LDSkill_BattleCategory.Instance.Get(skillId);

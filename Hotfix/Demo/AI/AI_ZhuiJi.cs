@@ -16,21 +16,18 @@ namespace ET
                 return false;
             }
             Unit target = aiComponent.UnitComponent.Get(aiComponent.TargetID);
-            if (target == null)
+            if (target == null || target.IsDisposed)
             {
                 aiComponent.TargetID = 0;
                 return false;
             }
-            Unit unit = aiComponent.GetParent<Unit>();
-            float distanceToStand = PositionHelper.Distance2D(unit.Position, target.Position);
-            bool zhuiji = distanceToStand > aiComponent.ActDistance && aiComponent.IsCanZhuiJi() == 0;
-            return zhuiji;
+            return aiComponent.IsCanZhuiJi() == ErrorCode.ERR_Success
+                && !AIChaseStandHelper.IsInAttackPosition(aiComponent, target);
         }
 
         public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
-            StateComponent stateComponent = unit.GetComponent<StateComponent>();
             MoveComponent moveComponent = unit.GetComponent<MoveComponent>();
 
             long checktime = 100;
@@ -38,12 +35,11 @@ namespace ET
             for (int i = 0; i < 10000; i++)
             {
                 Unit target = aiComponent.UnitComponent.Get(aiComponent.TargetID);
-                if (target != null)
+                if (target != null && !target.IsDisposed)
                 {
-                    Vector3 standPos = AIGetTargetHelp.GetChaseApproachPosition(unit, target, aiComponent.ActDistance);
-                    float distanceToTarget = PositionHelper.Distance2D(unit.Position, target.Position);
-                    bool inAttackRange = distanceToTarget <= aiComponent.ActDistance;
-                    bool canMove = stateComponent.CanMove() == ErrorCode.ERR_Success;
+                    Vector3 standPos = AIChaseStandHelper.GetStandPosition(aiComponent, target);
+                    bool inAttackRange = AIChaseStandHelper.IsInAttackPosition(aiComponent, target);
+                    bool canMove = aiComponent.IsCanZhuiJi() == ErrorCode.ERR_Success;
                     bool moving = !moveComponent.IsArrived();
 
                     if (!canMove || inAttackRange)

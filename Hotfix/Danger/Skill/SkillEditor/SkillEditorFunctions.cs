@@ -1665,7 +1665,8 @@ namespace ET
             bool useAttrDuration = ctx.GetParamBool(6, true);
             int buffLevel = ctx.GetParamInt(7, ctx.SkillLevel);
 
-            if (target == null || buffId <= 0)
+            // 伤害节点可能已击杀目标，后续负面 BUFF 不再添加到尸体上。
+            if (IsUnitDead(target) || buffId <= 0)
             {
                 ctx.SetVariable("rs", 0);
                 ctx.LastConditionResult = false;
