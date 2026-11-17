@@ -8,6 +8,7 @@ namespace ET
         public int ActionType;
         /// <summary>0静止 1直线 2追踪。</summary>
         public int MoveType;
+        /// <summary>追踪目标 UnitId；0 沿用技能树当前目标，-1 明确不追踪。</summary>
         public long TrackTargetId;
         public bool DeleteOnBlock;
         /// <summary>追到目标后删除。</summary>

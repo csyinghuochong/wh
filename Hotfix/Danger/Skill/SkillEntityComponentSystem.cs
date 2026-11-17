@@ -308,9 +308,14 @@ namespace ET
             unit.GetParent<UnitComponent>()?.Remove(unit.Id);
         }
 
-        /// <summary>解析追踪目标：Runtime.TrackTargetId，没有则技能树当前目标。</summary>
+        /// <summary>解析追踪目标：-1 明确不追踪；其余未找到时沿用技能树当前目标。</summary>
         private static Unit ResolveTrackTarget(SkillEntityComponent self, UnitComponent uc, SummonRuntimeData rt)
         {
+            if (rt.TrackTargetId == -1)
+            {
+                return null;
+            }
+
             if (rt.TrackTargetId > 0)
             {
                 Unit t = uc?.Get(rt.TrackTargetId);

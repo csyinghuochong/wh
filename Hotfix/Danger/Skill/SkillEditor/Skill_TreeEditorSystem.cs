@@ -213,6 +213,13 @@ namespace ET
                 return;
             }
 
+            // NeedTarget 控制施法是否需要目标；范围技能仍按配置形状收集全部受击单位。
+            if (self.LdSkillConf.Range_Type != SkillRangeType.SkillRangeSingle_0)
+            {
+                self.CollectSkillTargetsInShape(unitComponent);
+                return;
+            }
+
             if (self.LdSkillConf.NeedTarget == (int)SkillNeedTargetType.NeedTarget_1)
             {
                 Unit targetUnit = unitComponent.Get(self.SkillInfo.TargetID);

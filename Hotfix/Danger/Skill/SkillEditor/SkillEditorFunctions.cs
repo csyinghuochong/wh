@@ -1567,7 +1567,7 @@ namespace ET
         /// 4 初始朝向X（默认 [自己] caster.dir_x）
         /// 5 初始朝向Z（默认 [自己] caster.dir_z）
         /// 6 运动类型（默认 [静止] 0）
-        /// 7 追踪目标（默认 [目标] target）
+        /// 7 追踪目标（默认 [目标] target；[无] 0 不追踪，不禁用关联技能）
         /// 8 碰到阻挡删除（默认 [否] false）
         /// 9 最大持续时间 ms
         /// 10 作用间隔 ms
@@ -2266,7 +2266,7 @@ namespace ET
             }
 
             runtime.SummonId = summonId;
-            if (runtime.TrackTargetId <= 0)
+            if (runtime.TrackTargetId == 0)
             {
                 runtime.TrackTargetId = ctx.Handler.TheUnitTarget?.Id ?? 0;
             }
@@ -2313,8 +2313,10 @@ namespace ET
                 DestroyOnTargetDead = ctx.GetParamBool(23, false),
             };
 
-            Unit trackTarget = ctx.ResolveUnit(ctx.GetParamRaw(7));
-            runtime.TrackTargetId = trackTarget?.Id ?? 0;
+            string trackTargetParam = ctx.GetParamRaw(7);
+            Unit trackTarget = ctx.ResolveUnit(trackTargetParam);
+            // -1 区分明确选「无」和未找到目标的 0，避免回退到技能树当前目标。
+            runtime.TrackTargetId = ctx.ResolveParam(trackTargetParam) == "0" ? -1 : trackTarget?.Id ?? 0;
             return runtime;
         }
 
