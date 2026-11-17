@@ -626,23 +626,18 @@ namespace ET
                 return;
             }
 
-            List<int> adddropidlist = new List<int>();
 
-            int dropID = 1; //ldMonsterCof.DropID;
+            int[] dropID = ldMonsterCof.Drop;
             List<RewardItem> droplist = new List<RewardItem>();
-            DropHelper.DropIDToDropItem(dropID, droplist);
 
-
-            // 内网测试时，无掉落则补 1 金币。
-            if (droplist.Count == 0 && CommonHelper.IsInnerNet())
+            if(dropID!= null)
             {
-                droplist.Add(new RewardItem()
+                for (int i = 0; i< dropID.Length; i++ )
                 {
-                    ItemType = ItemBigType.Type_Item,
-                    ItemID = UserDataType.Gold,
-                    ItemNum = 1,
-                });
+                    DropHelper.DropIDToDropItem(dropID[i], droplist);
+                }
             }
+           
 
             if (droplist.Count > 100)
             {
@@ -723,6 +718,7 @@ namespace ET
                             ItemID = droplist[k].ItemID,
                             ItemNum = droplist[k].ItemNum,
                             ItemType = droplist[k].ItemType,
+                            ItemFlags = droplist[k].ItemFlags,
                             BeKillId = bekill.Id,
                             X = bekill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f),
                             Y = bekill.Position.y,

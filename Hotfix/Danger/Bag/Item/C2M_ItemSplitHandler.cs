@@ -54,7 +54,7 @@ namespace ET
                 reply();
                 return;
             }
-
+            useBagInfo.BindOnOperate();
             useBagInfo.ItemNum -= (int)splitNumber;
             if (useBagInfo.ItemNum <= 0)
             {

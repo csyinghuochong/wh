@@ -101,7 +101,7 @@ namespace ET
         {
             string unitToken = ExtractUnitToken(raw);
             int dot = unitToken.LastIndexOf('.');
-            if (dot >= 0)
+            if (dot >= 0 && (unitToken.EndsWith(".x", StringComparison.Ordinal) || unitToken.EndsWith(".z", StringComparison.Ordinal)))
             {
                 axis = unitToken[dot + 1];
                 unitToken = unitToken.Substring(0, dot);
@@ -110,7 +110,9 @@ namespace ET
             Unit unit = ResolveUnitByToken(unitToken);
             if (unit == null)
             {
-                return 0f;
+                return float.TryParse(this.ResolveParam(raw), NumberStyles.Float, CultureInfo.InvariantCulture, out float value)
+                    ? value
+                    : 0f;
             }
 
             return axis == 'z' ? unit.Position.z : unit.Position.x;
@@ -127,7 +129,8 @@ namespace ET
             string unitToken = ExtractUnitToken(raw);
             char axis = defaultAxis;
             int dot = unitToken.LastIndexOf('.');
-            if (dot >= 0 && dot < unitToken.Length - 1)
+            if (dot >= 0 && (unitToken.EndsWith(".x", StringComparison.Ordinal) || unitToken.EndsWith(".z", StringComparison.Ordinal)
+                || unitToken.EndsWith(".dir_x", StringComparison.Ordinal) || unitToken.EndsWith(".dir_z", StringComparison.Ordinal)))
             {
                 string suffix = unitToken.Substring(dot + 1);
                 axis = suffix == "x" || suffix == "dir_x" ? 'x' : 'z';
@@ -247,17 +250,33 @@ namespace ET
             return values;
         }
 
+        /// <summary>
+        /// 把单位标记或保存单位 ID 的变量解析为当前场景中的 Unit。
+        /// 优先按原始大小写查找变量，供 GET_RANDOM_TARGET 和目标循环写入的 target 等变量使用；
+        /// 变量存在但 ID 无效时返回 null，不回退为施法者或其他默认单位。
+        /// 未定义同名变量时，再忽略大小写识别 caster、target、buff.parent、caster.parent 等内置标记。
+        /// </summary>
+        /// <param name="token">已去掉编辑器显示文字的单位标记，如 caster、buff.parent、createSummon 或自定义变量名。</param>
+        /// <returns>解析得到的单位；标记未知、变量 ID 无效或场景中找不到单位时返回 null。</returns>
         private Unit ResolveUnitByToken(string token)
         {
-            token = token?.Trim().ToLowerInvariant() ?? string.Empty;
-            switch (token)
+            token = token?.Trim() ?? string.Empty;
+            if (this.Variables.ContainsKey(token))
+            {
+                return this.ResolveUnitByIdVariable(token);
+            }
+
+            switch (token.ToLowerInvariant())
             {
                 case "caster":
+                    // 普通技能为施法单位；BUFF 回调为 BUFF 持有者，技能体回调为技能体本身。
                     return this.Caster;
                 case "target":
+                    // 没有同名变量覆盖时，取技能处理器的当前目标。
                     return this.Handler?.TheUnitTarget;
                 case "buffcaster":
                 case "buff.parent":
+                    // BUFF 回调保留的原施法者。例如玩家给怪物上 BUFF，这里取玩家。
                     return this.Handler?.TheUnitFrom;
                 case "caster.parent":
                     // 编辑器「技能体施法者」：取技能体 MasterId，不是 Entity.Parent（那是 UnitComponent）
@@ -276,25 +295,17 @@ namespace ET
                         return null;
                     }
                 case "targets":
+                    // 此入口只返回单个单位；完整目标列表由循环通过 Handler.HurtIds 遍历。
                     return this.Handler?.TheUnitTarget;
                 case "createsummon":
+                    // CREATE_SUMMON 把新建技能体的 ID 写入 createSummon，兼容内置标记大小写。
                     return this.ResolveUnitByIdVariable("createSummon");
                 default:
-                    Unit unitById = this.ResolveUnitByIdVariable(token);
-                    if (unitById != null)
-                    {
-                        return unitById;
-                    }
-
-                    if (this.Variables.ContainsKey(token))
-                    {
-                        return this.Handler?.TheUnitFrom;
-                    }
-
                     return null;
             }
         }
 
+        /// <summary>读取区分大小写的单位 ID 变量，并在原施法者所在的 UnitComponent 中查找；无有效正数 ID 时返回 null。</summary>
         private Unit ResolveUnitByIdVariable(string varName)
         {
             if (!this.Variables.TryGetValue(varName, out string rawId))

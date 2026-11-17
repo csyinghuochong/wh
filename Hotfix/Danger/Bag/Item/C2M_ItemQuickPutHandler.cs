@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,7 +48,13 @@ namespace ET
                         continue;
                     }
 
-                    if (warehourseInfo.ItemID != bagInfo.ItemID)
+                    int warehouseFlags = warehourseInfo.IsDungeonTradable()
+                            ? (warehourseInfo.ItemFlags & ~ItemFlagEnum.TradeStatusMask) | ItemFlagEnum.NonTradable : warehourseInfo.ItemFlags;
+                    int bagFlags = bagInfo.IsDungeonTradable()
+                            ? (bagInfo.ItemFlags & ~ItemFlagEnum.TradeStatusMask) | ItemFlagEnum.NonTradable : bagInfo.ItemFlags;
+                    if (warehourseInfo.ItemID != bagInfo.ItemID || warehourseInfo.ItemType != bagInfo.ItemType
+                            || !ItemFlagEnum.CanPileTogether(warehouseFlags, bagFlags)
+                            || !ItemNewHelper.SameMakeInfo(warehourseInfo.MakePlayer, warehourseInfo.MakeTime, bagInfo.MakePlayer, bagInfo.MakeTime))
                     {
                         continue;
                     }
@@ -56,7 +62,8 @@ namespace ET
                     {
                         continue;
                     }
-
+                    warehourseInfo.BindOnOperate();
+                    bagInfo.BindOnOperate();
                     warehourseInfo.ItemNum = warehourseInfo.ItemNum + bagInfo.ItemNum;
                     m2c_bagUpdate.BagInfoUpdate.Add(warehourseInfo);
                     m2c_bagUpdate.BagInfoDelete.Add(bagInfo);

@@ -79,39 +79,117 @@ namespace ET
     [ProtoContract]
 	public partial class LDDroup_Group_Sub: ProtoObject, IConfig
 	{
-		/// <summary>Sub_Id</summary>
+		/// <summary>子组ID</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>Sub_Type1</summary>
+		/// <summary>类型</summary>
 		[ProtoMember(2)]
 		public int Sub_Type1 { get; set; }
-		/// <summary>Sub_Id1</summary>
+		/// <summary>ID</summary>
 		[ProtoMember(3)]
 		public int Sub_Id1 { get; set; }
-		/// <summary>Sub_Min1</summary>
+		/// <summary>最小</summary>
 		[ProtoMember(4)]
 		public int Sub_Min1 { get; set; }
-		/// <summary>Sub_Max1</summary>
+		/// <summary>最大</summary>
 		[ProtoMember(5)]
 		public int Sub_Max1 { get; set; }
-		/// <summary>Sub_Weight</summary>
+		/// <summary>状态</summary>
 		[ProtoMember(6)]
-		public int Sub_Weight { get; set; }
-		/// <summary>Sub_Type1</summary>
+		public int Sub_Condition1 { get; set; }
+		/// <summary>权重</summary>
 		[ProtoMember(7)]
-		public int Sub_Type2 { get; set; }
-		/// <summary>Sub_Id1</summary>
+		public int Sub_Weight1 { get; set; }
+		/// <summary>类型</summary>
 		[ProtoMember(8)]
-		public int Sub_Id2 { get; set; }
-		/// <summary>Sub_Min1</summary>
+		public int Sub_Type2 { get; set; }
+		/// <summary>ID</summary>
 		[ProtoMember(9)]
-		public int Sub_Min2 { get; set; }
-		/// <summary>Sub_Max1</summary>
+		public int Sub_Id2 { get; set; }
+		/// <summary>最小</summary>
 		[ProtoMember(10)]
-		public int Sub_Max2 { get; set; }
-		/// <summary>Sub_Weight</summary>
+		public int Sub_Min2 { get; set; }
+		/// <summary>最大</summary>
 		[ProtoMember(11)]
+		public int Sub_Max2 { get; set; }
+		/// <summary>状态</summary>
+		[ProtoMember(12)]
+		public int Sub_Condition2 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(13)]
 		public int Sub_Weight2 { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(14)]
+		public int Sub_Type3 { get; set; }
+		/// <summary>ID</summary>
+		[ProtoMember(15)]
+		public int Sub_Id3 { get; set; }
+		/// <summary>最小</summary>
+		[ProtoMember(16)]
+		public int Sub_Min3 { get; set; }
+		/// <summary>最大</summary>
+		[ProtoMember(17)]
+		public int Sub_Max3 { get; set; }
+		/// <summary>状态</summary>
+		[ProtoMember(18)]
+		public int Sub_Condition3 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(19)]
+		public int Sub_Weight3 { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(20)]
+		public int Sub_Type4 { get; set; }
+		/// <summary>ID</summary>
+		[ProtoMember(21)]
+		public int Sub_Id4 { get; set; }
+		/// <summary>最小</summary>
+		[ProtoMember(22)]
+		public int Sub_Min4 { get; set; }
+		/// <summary>最大</summary>
+		[ProtoMember(23)]
+		public int Sub_Max4 { get; set; }
+		/// <summary>状态</summary>
+		[ProtoMember(24)]
+		public int Sub_Condition4 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(25)]
+		public int Sub_Weight4 { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(26)]
+		public int Sub_Type5 { get; set; }
+		/// <summary>ID</summary>
+		[ProtoMember(27)]
+		public int Sub_Id5 { get; set; }
+		/// <summary>最小</summary>
+		[ProtoMember(28)]
+		public int Sub_Min5 { get; set; }
+		/// <summary>最大</summary>
+		[ProtoMember(29)]
+		public int Sub_Max5 { get; set; }
+		/// <summary>状态</summary>
+		[ProtoMember(30)]
+		public int Sub_Condition5 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(31)]
+		public int Sub_Weight5 { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(32)]
+		public int Sub_Type6 { get; set; }
+		/// <summary>ID</summary>
+		[ProtoMember(33)]
+		public int Sub_Id6 { get; set; }
+		/// <summary>最小</summary>
+		[ProtoMember(34)]
+		public int Sub_Min6 { get; set; }
+		/// <summary>最大</summary>
+		[ProtoMember(35)]
+		public int Sub_Max6 { get; set; }
+		/// <summary>状态</summary>
+		[ProtoMember(36)]
+		public int Sub_Condition6 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(37)]
+		public int Sub_Weight6 { get; set; }
 
 	}
 }

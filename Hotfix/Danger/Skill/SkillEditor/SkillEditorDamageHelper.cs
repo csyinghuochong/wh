@@ -39,7 +39,7 @@ namespace ET
                 DefenderResistAttrId = defenderResistAttrId;
             }
 
-            /// <summary>技能编辑器参数 22~26（水/火/风/雷/毒附伤）；无技能参数的系为 -1。</summary>
+            /// <summary>技能编辑器参数 27~31（水/火/风/雷/毒附伤）；无技能参数的系为 -1。</summary>
             public int SkillParamIndex { get; }
 
             /// <summary>攻击方 Numeric 附伤属性（Attribute 130~139，如 132 水系附伤）。</summary>
@@ -50,17 +50,17 @@ namespace ET
         }
 
         // Attribute 表：130~139 系附伤，140~149 系伤减免。
-        // 技能参数 22~26 仅有水/火/风/雷/毒；金木土光暗无装备附伤（SkillParamIndex=-1）。
+        // 技能参数 27~31 仅有水/火/风/雷/毒；金木土光暗无技能附伤（SkillParamIndex=-1）。
         private static readonly ElementalDamageConfig[] ElementalConfigs =
         {
             new ElementalDamageConfig(-1, NumericType.Attr_130, NumericType.Attr_140), // 金
             new ElementalDamageConfig(-1, NumericType.Attr_131, NumericType.Attr_141), // 木
-            new ElementalDamageConfig(22, NumericType.Attr_132, NumericType.Attr_142), // 水
-            new ElementalDamageConfig(23, NumericType.Attr_133, NumericType.Attr_143), // 火
+            new ElementalDamageConfig(27, NumericType.Attr_132, NumericType.Attr_142), // 水
+            new ElementalDamageConfig(28, NumericType.Attr_133, NumericType.Attr_143), // 火
             new ElementalDamageConfig(-1, NumericType.Attr_134, NumericType.Attr_144), // 土
-            new ElementalDamageConfig(24, NumericType.Attr_135, NumericType.Attr_145), // 风
-            new ElementalDamageConfig(25, NumericType.Attr_136, NumericType.Attr_146), // 雷
-            new ElementalDamageConfig(26, NumericType.Attr_137, NumericType.Attr_147), // 毒
+            new ElementalDamageConfig(29, NumericType.Attr_135, NumericType.Attr_145), // 风
+            new ElementalDamageConfig(30, NumericType.Attr_136, NumericType.Attr_146), // 雷
+            new ElementalDamageConfig(31, NumericType.Attr_137, NumericType.Attr_147), // 毒
             new ElementalDamageConfig(-1, NumericType.Attr_138, NumericType.Attr_148), // 光
             new ElementalDamageConfig(-1, NumericType.Attr_139, NumericType.Attr_149), // 暗
         };
@@ -83,6 +83,7 @@ namespace ET
         /// E:\LDYQU3DProject\trunk\Server\Hotfix\Danger\Skill\SkillEditor\Document\技能编辑器计算物理伤害
         public static void CalculateDamage(SkillEditorFunctionContext ctx, SkillEditorDamageKind kind)
         {
+            ctx.SetVariable("damageTotal", 0);
             // 参数 0~3：施法者、目标、技能 ID、技能等级
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
@@ -165,15 +166,15 @@ namespace ET
             }
 
             // 【文档第二段】五系附伤，分摊后逐系 max(0, 攻击附伤+技能附伤/分摊-抵抗)，求和=185
-            long elementalDamage = ResolveElementalDamage(ctx, caster, target, 36);
+            long elementalDamage = ResolveElementalDamage(ctx, caster, target, 37);
 
-            // 【文档第三段】生命比例附伤；参数 31=true 时同样乘伤害率
+            // 【文档第三段】生命比例附伤；参数 26=true 时同样乘伤害率
             long hpDamage = ResolveHpDamage(
                 ctx,
                 casterNumeric,
                 targetNumeric,
                 damageRate,
-                GetParamBool(ctx, 31, true));
+                GetParamBool(ctx, 26, true));
 
             // 总伤害 = 常规 + 五系 + 生命
             long totalDamage = normalDamage + elementalDamage + hpDamage;
@@ -192,8 +193,8 @@ namespace ET
 
             // 参数 32~34：三类伤害的吸血比例
             ApplyLifeSteal(caster, casterNumeric, normalDamage, GetParamDouble(ctx, 32, 0d), skillId);
-            ApplyLifeSteal(caster, casterNumeric, elementalDamage, GetParamDouble(ctx, 33, 0d), skillId);
-            ApplyLifeSteal(caster, casterNumeric, hpDamage, GetParamDouble(ctx, 34, 0d), skillId);
+            ApplyLifeSteal(caster, casterNumeric, hpDamage, GetParamDouble(ctx, 33, 0d), skillId);
+            ApplyLifeSteal(caster, casterNumeric, elementalDamage, GetParamDouble(ctx, 34, 0d), skillId);
 
             // 参数 39：仇恨倍率（供仇恨系统读取）
             double hateMultiplier = GetParamDouble(ctx, 39, 1d);
@@ -214,11 +215,13 @@ namespace ET
         /// CALCULATE_HEAL_DAMAGE。
         /// 参数表来源：SkillEditor_v1/bin/Debug/DocEditor界面配置.xml → function name=CALCULATE_HEAL_DAMAGE 的 param_format（共 26 项，下标 0 起）。
         /// 常规段复用 ResolveBaseDamageRange（与 CALCULATE_PHYSICS/MAGIC_DAMAGE 参数 4~17 同布局）；
-        /// 生命比例段对齐伤害侧 ResolveHpDamage 的 min(HP_Max×比例,上限) 写法（伤害用参数 27~30/37，治疗用 19~22/24）。
+        /// 生命比例段对齐伤害侧 ResolveHpDamage 的 min(HP_Max×比例,上限) 写法（伤害用参数 22~25/36，治疗用 19~22/24）。
         /// 治疗不做破防/减伤。威力全 0 时可靠 8~13 常数项出固定治疗（如初级生命药剂常数 1000）。
         /// </summary>
         public static void CalculateHeal(SkillEditorFunctionContext ctx)
         {
+            ctx.SetVariable("damageTotal", 0);
+            ctx.SetVariable("healTotal", 0);
             // —— 参数 0~3：施法者 / 目标 / 技能ID / 技能等级（界面配置.xml）——
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
@@ -297,10 +300,10 @@ namespace ET
             //   21 目标最大生命比例治疗 1=100%
             //   22 目标生命治疗最大值
             //   24 生命治疗分摊数（默认 1）
-            // 算法来源：本文件 ResolveHpDamage（伤害参数 27/28 施法者、29/30 目标、37 生命分摊）
+            // 算法来源：本文件 ResolveHpDamage（伤害参数 22/23 施法者、24/25 目标、36 生命分摊）
             //   单端 = CapPercentDamage(HP_Max, 比例, 上限) = min(HP_Max×比例, 上限>0?上限:不封顶)
             //   施法者部分再 / 生命分摊数；目标部分不分摊（与伤害文档一致）
-            // 治疗差异：不做参数 31 那种「是否套减伤」；治疗直接加血
+            // 治疗差异：不做伤害参数 26 那种「是否套减伤」；治疗直接加血
             int lifeSplit = Math.Max(1, ctx.GetParamInt(24, 1));
             double casterHpPart = CapPercentDamage(
                 casterNumeric.GetAsFloat(NumericType.HP_Max_10),
@@ -427,14 +430,14 @@ namespace ET
             Unit target,
             int splitParamIndex)
         {
-            // 参数 36：五系分摊数（文档示例=2）
+            // 参数 37：五系分摊数（文档示例=2）
             int split = Math.Max(1, ctx.GetParamInt(splitParamIndex, 1));
             double total = 0d;
             foreach (ElementalDamageConfig config in ElementalConfigs)
             {
                 // 攻击方该系附伤（Attribute 130~139）
                 double attackerValue = ctx.GetUnitNumericDisplayValue(caster, config.AttackerAttrId, 0d);
-                // 技能该系附伤：仅水/火/风/雷/毒有参数 22~26
+                // 技能该系附伤：仅水/火/风/雷/毒有参数 27~31
                 double skillValue = config.SkillParamIndex >= 0
                     ? GetParamDouble(ctx, config.SkillParamIndex, 0d)
                     : 0d;
@@ -456,7 +459,7 @@ namespace ET
         /// <summary>
         /// 【文档第三段】最大生命比例附伤。
         /// 施法者部分=min(HP_Max*比例,上限)/生命分摊数；目标部分=min(HP_Max*比例,上限)。
-        /// 参数 31=true 时，再乘伤害率。
+        /// 参数 26=true 时，再乘伤害率。
         /// </summary>
         private static long ResolveHpDamage(
             SkillEditorFunctionContext ctx,
@@ -468,19 +471,19 @@ namespace ET
             // 施法者/目标最大生命（文档：10000 / 5000）
             double casterHpMax = casterNumeric.GetAsFloat(NumericType.HP_Max_10);
             double targetHpMax = targetNumeric.GetAsFloat(NumericType.HP_Max_10);
-            // 参数 37：生命分摊数（文档=2，仅除施法者部分）
-            int lifeSplit = Math.Max(1, ctx.GetParamInt(37, 1));
+            // 参数 36：生命分摊数（文档=2，仅除施法者部分）
+            int lifeSplit = Math.Max(1, ctx.GetParamInt(36, 1));
 
-            // 施法者部分 = min(10000*0.2, 1000) / 2 = 500（参数 27 比例、28 上限）
+            // 施法者部分 = min(10000*0.2, 1000) / 2 = 500（参数 22 比例、23 上限）
             double casterPart = CapPercentDamage(
                 casterHpMax,
-                GetParamDouble(ctx, 27, 0d),
-                GetParamDouble(ctx, 28, 0d)) / lifeSplit;
-            // 目标部分 = min(5000*0.3, 2000) = 1500（参数 29 比例、30 上限，不再除以分摊数）
+                GetParamDouble(ctx, 22, 0d),
+                GetParamDouble(ctx, 23, 0d)) / lifeSplit;
+            // 目标部分 = min(5000*0.3, 2000) = 1500（参数 24 比例、25 上限，不再除以分摊数）
             double targetPart = CapPercentDamage(
                 targetHpMax,
-                GetParamDouble(ctx, 29, 0d),
-                GetParamDouble(ctx, 30, 0d));
+                GetParamDouble(ctx, 24, 0d),
+                GetParamDouble(ctx, 25, 0d));
 
             // 最大生命附伤 = 施法者部分 + 目标部分
             double hpDamage = casterPart + targetPart;
@@ -489,7 +492,7 @@ namespace ET
                 return 0;
             }
 
-            // 【属性作用】是否乘伤害率，由 skill 参数 31 传入
+            // 【属性作用】是否乘伤害率，由 skill 参数 26 传入
             if (useReduction)
             {
                 hpDamage = ApplyDamageRate(hpDamage, damageRate);

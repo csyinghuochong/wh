@@ -1,4 +1,11 @@
 buff技能相关：
+参数以 SkillEditor_v1/bin/Debug/DocEditor界面配置.xml 为准，下标从 0 开始。
+
+BUFF 回调中的单位：
+caster = BUFF 持有者；buff.parent = 原施法者。
+例如玩家给怪物添加 BUFF，caster 是怪物，buff.parent 是玩家。
+INFORM_CLIENT_HIT_SUCCESS 参数为：施法者、受击者、技能 ID、等级。
+配置 buff.parent / caster / skill_id / level 时，命中通知落在怪物头顶。
 
 举例：
 1000   5  （ 5 秒的buff )
@@ -10,9 +17,12 @@ buff技能相关：
 4000ms = 作用         Skill_Battle_Buff.Skill_Trigger
 5000ms = 作用         Skill_Battle_Buff.Skill_Trigger
 5000ms = 时间结束   正常结束 Skill_Battle_Buff.Skill_TimeEnd
-如果我BUFF消失了，不管什么时间消失的， = 消失技能    Skill_Battle_Buff.Skill_Remove
+自然到期：先 Skill_TimeEnd，再 Skill_Remove。
+被提前移除/顶替：触发 Skill_Remove，不触发 Skill_TimeEnd。
+技能编辑器移除函数配置“触发消失技能=false”时不触发 Skill_Remove。
+死亡、切场景等清理不保证触发上述消失技能，不能按“任何原因消失都触发”使用。
 
-如果是刷新了 就是第二个buff覆盖第一个buff
+刷新沿用已有 BUFF 实例，更新来源、计时和数据，执行 Skill_Refresh。
 这个已经做了
 private static void RefreshBuff(this BuffManagerComponent self,
 SkillManagerComponentSystem.ExecuteLinkedSkill(ldSkillBuff.Skill_Refresh, from, unit);
@@ -27,5 +37,16 @@ SkillManagerComponentSystem.ExecuteLinkedSkill(ldSkillBuff.Skill_Refresh, from, 
 5500	= 作用         Skill_Battle_Buff.Skill_Trigger
 6500	= 作用         Skill_Battle_Buff.Skill_Trigger
 7500	= 作用         Skill_Battle_Buff.Skill_Trigger
+
+移除参数当前行为：
+REMOVE_BUFF 按 ID，REMOVE_BUFF_GROUP 按 Group，REMOVE_BUFF_RANDOM 按 Type_Effect（1增益/2减益）筛选。
+BUFF 施法者可填 NULL（不限）、单位标记、单位变量或数字 ID；来源解析失败不会放宽为不限。
+随机清除按 BUFF 实例计数，同 ID 的多个实例不会一次全部清掉。
+三类移除函数都支持“触发消失技能”开关。
+
+暂未完整接入：BUFF 等级传入回调；BUFF_DATA_SET/GET 跨触发/跨 Tick 保存。
+BUFF_DATA_SET/GET 目前只在同一次树执行上下文内有效。
+“不可清除”和“强行清除”规则暂不处理，不根据占位参数限制清除。
+负面 BUFF 的“受属性影响持续时间”目前按等级差每 5 级调整一次作用次数，独立属性公式待明确。
 
 

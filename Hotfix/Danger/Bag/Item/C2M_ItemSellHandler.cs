@@ -41,7 +41,7 @@ namespace ET
                 reply();
                 return;
             }
-            
+            useBagInfo.BindOnOperate();
             useBagInfo.ItemNum -= request.SellNum;
 
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();

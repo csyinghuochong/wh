@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 
@@ -18,7 +18,11 @@ namespace ET
                 reply();
                 return;
             }
+            bagInfo.BindOnOperate();
             bagInfo.IsLocked = request.IsLocked;
+            M2C_RoleBagUpdate update = new M2C_RoleBagUpdate();
+            update.BagInfoUpdate.Add(bagInfo);
+            MessageHelper.SendToClient(unit, update);
             reply();
             await ETTask.CompletedTask;
         }

@@ -38,7 +38,7 @@ namespace ET
                 }
                 int addItemID = dropComponent !=null ? dropComponent.ItemID : drops[i].ItemID;
                 int addItemNum = dropComponent != null ? dropComponent.ItemNum : drops[i].ItemNum;
-                pendingRewards.Add(new RewardItem() {  ItemType = drops[i].ItemType , ItemID = addItemID, ItemNum = addItemNum });
+                pendingRewards.Add(new RewardItem() {  ItemType = drops[i].ItemType , ItemID = addItemID, ItemNum = addItemNum, ItemFlags = drops[i].ItemFlags });
                 pendingMeta.Add((addItemID, drops[i].UnitId, drops[i].DropType));
             }
 
@@ -71,7 +71,6 @@ namespace ET
                         }
                         UnitHelper.RemovePickedDrop(unit, pendingMeta[i].unitId);
                         removeIds.Add(pendingMeta[i].unitId);
-                        LDItem ldItemOne = LDItemCategory.Instance.Get(pendingMeta[i].itemId);
                         
                     }
                 }
@@ -94,7 +93,6 @@ namespace ET
                         }
                         UnitHelper.RemovePickedDrop(unit, pendingMeta[i].unitId);
                         removeIds.Add(pendingMeta[i].unitId);
-                        LDItem ldItem = LDItemCategory.Instance.Get(pendingMeta[i].itemId);
                     }
                 }
             }

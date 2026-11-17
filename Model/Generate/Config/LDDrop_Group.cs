@@ -79,37 +79,37 @@ namespace ET
     [ProtoContract]
 	public partial class LDDrop_Group: ProtoObject, IConfig
 	{
-		/// <summary>Group_Id</summary>
+		/// <summary>组ID</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>Sub1</summary>
+		/// <summary>子组</summary>
 		[ProtoMember(2)]
 		public int Sub1 { get; set; }
-		/// <summary>Weight1</summary>
+		/// <summary>权重</summary>
 		[ProtoMember(3)]
 		public int Weight1 { get; set; }
-		/// <summary>Sub2</summary>
+		/// <summary>子组</summary>
 		[ProtoMember(4)]
 		public int Sub2 { get; set; }
-		/// <summary>Weight2</summary>
+		/// <summary>权重</summary>
 		[ProtoMember(5)]
 		public int Weight2 { get; set; }
-		/// <summary>Sub3</summary>
+		/// <summary>子组</summary>
 		[ProtoMember(6)]
 		public int Sub3 { get; set; }
-		/// <summary>Weight3</summary>
+		/// <summary>权重</summary>
 		[ProtoMember(7)]
 		public int Weight3 { get; set; }
-		/// <summary>Sub4</summary>
+		/// <summary>子组</summary>
 		[ProtoMember(8)]
 		public int Sub4 { get; set; }
-		/// <summary>Weight4</summary>
+		/// <summary>权重</summary>
 		[ProtoMember(9)]
 		public int Weight4 { get; set; }
-		/// <summary>Sub5</summary>
+		/// <summary>子组</summary>
 		[ProtoMember(10)]
 		public int Sub5 { get; set; }
-		/// <summary>Weight5</summary>
+		/// <summary>权重</summary>
 		[ProtoMember(11)]
 		public int Weight5 { get; set; }
 

@@ -72,6 +72,10 @@ namespace ET
             for (int i = 0; i < node.Children.Count; i++)
             {
                 ExecuteNode(ctx, node.Children[i]);
+                if (ctx.GetVariable("__break", 0) != 0)
+                {
+                    break;
+                }
             }
         }
 
@@ -162,8 +166,6 @@ namespace ET
                 return;
             }
 
-            ctx.SetVariable("__break", "0");
-
             Unit savedTarget = ctx.Handler.TheUnitTarget;
             List<long> targetIds = CollectLoopTargetIds(ctx.Handler);
             UnitComponent unitComponent = ctx.Handler.TheUnitFrom?.GetParent<UnitComponent>();
@@ -172,6 +174,9 @@ namespace ET
                 return;
             }
 
+            long savedBreak = ctx.GetVariable("__break", 0);
+            bool hadTargetVariable = ctx.Variables.TryGetValue("target", out string savedTargetVariable);
+            ctx.SetVariable("__break", 0);
             for (int i = 0; i < targetIds.Count; i++)
             {
                 if (ctx.GetVariable("__break", 0) != 0)
@@ -186,10 +191,20 @@ namespace ET
                 }
 
                 ctx.Handler.TheUnitTarget = unit;
+                ctx.SetVariable("target", unit.Id);
                 ExecuteChildren(ctx, node);
             }
 
             ctx.Handler.TheUnitTarget = savedTarget;
+            if (hadTargetVariable)
+            {
+                ctx.SetVariable("target", savedTargetVariable);
+            }
+            else
+            {
+                ctx.Variables.Remove("target");
+            }
+            ctx.SetVariable("__break", savedBreak);
         }
 
         /// <summary>

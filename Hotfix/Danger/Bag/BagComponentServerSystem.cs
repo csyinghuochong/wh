@@ -651,6 +651,7 @@ namespace ET
             }
 
             List<BagInfo> ItemTypeListDest = self.GetItemByLoc(itemLocTypeTo);
+            bagInfo.BindOnOperate();
             bagInfo.Loc = (int)itemLocTypeTo;
             ItemTypeListDest.Add(bagInfo);
             BagSortHelper.SortIfNeeded(ItemTypeListDest, itemLocTypeTo);
@@ -985,6 +986,46 @@ namespace ET
             return true;
         }
 
+        /// <summary>只预检容量。freedItem 为完整消耗的格子；remainingItem 为操作后剩余格子的数量、状态快照。</summary>
+        public static bool CanAddItemData(this BagComponentServer self, List<RewardItem> rewards, BagInfo freedItem = null, BagInfo remainingItem = null)
+        {
+            Dictionary<int, int> cells = new Dictionary<int, int>();
+            foreach (RewardItem reward in MergeRewardItems(rewards).Values)
+            {
+                if (UnionHelper.IsUnionResourceItem(reward) || ItemNewHelper.GetItemToUserDataType(reward) != UserDataType.None
+                        || reward.ItemType == ItemBigType.Type_Exp || reward.ItemType == ItemBigType.Type_Mount) continue;
+                if (reward.ItemType == ItemBigType.Type_Item)
+                {
+                    LDItem config = LDItemCategory.Instance.Get(reward.ItemID);
+                    if (config.IfAutoUse == 1 || config.IfBag == 0) continue;
+                }
+                ItemLocType loc = ResolveAddItemLoc(ItemLocType.ItemLocMax, reward);
+                List<BagInfo> existing = self.GetItemByLoc(loc);
+                if (freedItem != null && freedItem.Loc == (int)loc)
+                {
+                    existing = new List<BagInfo>(existing);
+                    existing.Remove(freedItem);
+                }
+                if (remainingItem != null && remainingItem.Loc == (int)loc)
+                {
+                    existing = new List<BagInfo>(existing);
+                    int index = existing.FindIndex(item => item.BagInfoID == remainingItem.BagInfoID);
+                    if (index < 0) return false;
+                    existing[index] = remainingItem;
+                }
+                int key = (int)loc;
+                if (!cells.TryGetValue(key, out int left))
+                {
+                    left = self.GetBagLeftCell(key) + (freedItem != null && freedItem.Loc == key ? 1 : 0);
+                }
+                int need = ItemNewHelper.CalcNeedNewCells(existing, reward.ItemType, reward.ItemID, reward.ItemNum,
+                        ItemNewHelper.GetNewItemPileSum(reward), reward.ItemFlags, string.Empty, 0);
+                if (need > left) return false;
+                cells[key] = left - need;
+            }
+            return true;
+        }
+
         private static Dictionary<long, RewardItem> MergeRewardItems(List<RewardItem> srcList)
         {
             Dictionary<long, RewardItem> map = new Dictionary<long, RewardItem>();
@@ -995,7 +1036,9 @@ namespace ET
                 long key = ((long)itemFlags << 48) | ((long)src.ItemType << 32) | (uint)src.ItemID;
                 if (map.TryGetValue(key, out RewardItem merged))
                 {
-                    merged.ItemNum += src.ItemNum;
+                    //表示数量相加超过 int 范围时，抛出 OverflowException，避免结果溢出后变成负数等错误值。
+                    //例如：`int.MaxValue + 1`，普通情况下可能变成负数，加上 checked 就会直接报错。
+                    merged.ItemNum = checked(merged.ItemNum + src.ItemNum);
                     continue;
                 }
 
@@ -1276,6 +1319,7 @@ namespace ET
                 return false;
             }
 
+            bagInfo.BindOnOperate();
             bagInfo.ItemNum -= number;
             M2C_RoleBagUpdate update = new M2C_RoleBagUpdate();
             if (bagInfo.ItemNum <= 0)
@@ -1424,6 +1468,7 @@ namespace ET
                 }
 
                 int costThis = userBagInfo.ItemNum < itemNum ? userBagInfo.ItemNum : itemNum;
+                userBagInfo.BindOnOperate();
                 userBagInfo.ItemNum -= costThis;
                 itemNum -= costThis;
                 if (userBagInfo.ItemNum <= 0)
@@ -1607,11 +1652,12 @@ namespace ET
 
         public static bool OnCostItemData(this BagComponentServer self, BagInfo bagInfo, ItemLocType locType, int number)
         {
-            if (bagInfo.ItemNum < number)
+            if (number <= 0 || bagInfo.ItemNum < number)
             {
                 return false;
             }
 
+            bagInfo.BindOnOperate();
             bagInfo.ItemNum -= number;
             if (bagInfo.ItemNum <= 0)
             {

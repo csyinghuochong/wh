@@ -343,9 +343,7 @@ namespace ET
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
 
-            //target?.GetComponent<SkillPassiveComponent>()?.OnTrigegerPassiveSkill(SkillPassiveTypeEnum.AttackAll, caster.Id, ctx.SkillId);
-            //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.None);
-            //Console.WriteLine($"被动类型未定义!!!：通知防御事件");
+            // 防御被动尚未接入；不能在这里复用攻击事件。
             if (Log.IsDebugEnabled) Log.Debug($"INFORM_EVENT_DEFENSE skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={(target?.Id ?? 0)}");
         }
 
@@ -370,12 +368,6 @@ namespace ET
             {
                 healTotal = ctx.GetVariable("damageTotal", 0);
             }
-
-            //计算治疗量
-            //ctx.SetVariable("damageTotal", totalHeal);
-            //ctx.SetVariable("healTotal", totalHeal);
-            Console.WriteLine($"被动类型未定义_治疗事件");
-            Console.WriteLine($"技能编辑器应该需要加上通知客户端命中!!!");
 
             if (healTotal > 0)
             {
@@ -802,7 +794,7 @@ namespace ET
 
             if (target == null) { return; }
 
-            long buffFromUnitId = ResolveBuffSourceUnitId(ctx.GetParamRaw(2));
+            long buffFromUnitId = ResolveBuffSourceUnitId(ctx, ctx.GetParamRaw(2));
 
             int buffId = ctx.GetParamInt(3, 0);
 
@@ -834,7 +826,7 @@ namespace ET
 
             if (target == null) { return; }
 
-            long buffFromUnitId = ResolveBuffSourceUnitId(ctx.GetParamRaw(2));
+            long buffFromUnitId = ResolveBuffSourceUnitId(ctx, ctx.GetParamRaw(2));
 
             string benefitFilter = ctx.ResolveParam(ctx.GetParamRaw(3));
 
@@ -869,7 +861,7 @@ namespace ET
 
             if (target == null) { return; }
 
-            long buffFromUnitId = ResolveBuffSourceUnitId(ctx.GetParamRaw(2));
+            long buffFromUnitId = ResolveBuffSourceUnitId(ctx, ctx.GetParamRaw(2));
 
             int buffGroup = ctx.GetParamInt(3, 0);
 
@@ -1135,7 +1127,7 @@ namespace ET
             float x2 = ctx.ResolvePositionComponent(ctx.GetParamRaw(2), 'x');
             float z2 = ctx.ResolvePositionComponent(ctx.GetParamRaw(2), 'z');
             double distance = Math.Sqrt((x2 - x1) * (x2 - x1) + (z2 - z1) * (z2 - z1));
-            ctx.SetVariable(varName, ((long)distance).ToString(CultureInfo.InvariantCulture));
+            ctx.SetVariable(varName, distance.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -1214,7 +1206,7 @@ namespace ET
         private static void OwnBuff(SkillEditorFunctionContext ctx)
         {
             Unit unit = ctx.ResolveUnit(ctx.GetParamRaw(0));
-            long buffFromUnitId = ResolveBuffSourceUnitId(ctx.GetParamRaw(1));
+            long buffFromUnitId = ResolveBuffSourceUnitId(ctx, ctx.GetParamRaw(1));
             int buffId = ctx.GetParamInt(2, 0);
             bool owned = EvaluateOwnBuff(unit, buffFromUnitId, buffId);
             ctx.LastConditionResult = owned;
@@ -1283,7 +1275,6 @@ namespace ET
 
             target.GetComponent<NumericComponent>()?.ChangeAttrFixed(caster, numericType, deltaDisplay, ctx.SkillId);
 
-            Console.WriteLine($"ChangeUnitAttributeAdd2  numericValue : {target.GetComponent<NumericComponent>().GetAsInt(NumericType.P_HIT_Fixed_66) }");
         }
 
         /// <summary>
@@ -1461,14 +1452,16 @@ namespace ET
             float x = ResolveScalarParam(ctx, ctx.GetParamRaw(2), 'x', mover?.Position.x ?? 0f);
             float z = ResolveScalarParam(ctx, ctx.GetParamRaw(3), 'z', mover?.Position.z ?? 0f);
             float keepDistance = ctx.GetParamFloat(4, 0f);
+            float maxDistance = ctx.GetParamFloat(5, 0f);
             int moveType = ctx.GetParamInt(6, 0);
+            float moveParam = ctx.GetParamFloat(7, 0f);
             if (mover == null)
             {
                 return;
             }
 
             Vector3 dest = new Vector3(x, mover.Position.y, z);
-            if (keepDistance > 0f)
+            if (keepDistance != 0f)
             {
                 Vector3 dir = mover.Position - dest;
                 if (dir.sqrMagnitude > 1e-6f)
@@ -1477,7 +1470,9 @@ namespace ET
                 }
             }
 
-            MoveUnitToPosition(mover, dest, moveType, 100);
+            dest = ClampDisplacementDestination(mover.Position, dest, maxDistance);
+            int speedRate = ResolveDisplacementSpeedRate(mover, moveType, moveParam);
+            MoveUnitToPositionAsync(mover, dest, moveType, speedRate).Coroutine();
         }
 
         /// <summary>
@@ -1516,15 +1511,7 @@ namespace ET
                 dir.Normalize();
             }
 
-            int speedRate = 100;
-            if (moveType == 1 && moveParam1 > 0f)
-            {
-                float nowSpeed = mover.GetSpeedNow();
-                if (nowSpeed > 1e-6f)
-                {
-                    speedRate = (int)(100f * moveParam1 / nowSpeed);
-                }
-            }
+            int speedRate = ResolveDisplacementSpeedRate(mover, moveType, moveParam1);
 
             // 技能位移不额外限制跑步动画；客户端统一按 Time_2 硬直决定何时允许切动作。
             MoveUnitToPositionAsync(mover, mover.Position + dir * distance, moveType, speedRate).Coroutine();
@@ -1818,11 +1805,11 @@ namespace ET
 
                 case "&":
 
-                    return SkillEditorFunctionContext.ParseLong(left, 0) != 0 && SkillEditorFunctionContext.ParseLong(right, 0) != 0;
+                    return (SkillEditorFunctionContext.ParseLong(left, 0) & SkillEditorFunctionContext.ParseLong(right, 0)) != 0;
 
                 case "|":
 
-                    return SkillEditorFunctionContext.ParseLong(left, 0) != 0 || SkillEditorFunctionContext.ParseLong(right, 0) != 0;
+                    return (SkillEditorFunctionContext.ParseLong(left, 0) | SkillEditorFunctionContext.ParseLong(right, 0)) != 0;
 
                 case "==":
 
@@ -1834,9 +1821,7 @@ namespace ET
 
                     }
 
-                    return SkillEditorFunctionContext.ParseBool(left) == SkillEditorFunctionContext.ParseBool(right)
-
-                        || string.Equals(left?.Trim(), right?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    return string.Equals(left?.Trim(), right?.Trim(), StringComparison.OrdinalIgnoreCase);
 
                 case "~=":
 
@@ -1848,9 +1833,7 @@ namespace ET
 
                     }
 
-                    return SkillEditorFunctionContext.ParseBool(left) != SkillEditorFunctionContext.ParseBool(right)
-
-                        && !string.Equals(left?.Trim(), right?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    return !string.Equals(left?.Trim(), right?.Trim(), StringComparison.OrdinalIgnoreCase);
 
                 case ">":
 
@@ -1906,11 +1889,11 @@ namespace ET
         /// <summary>
         /// 解析 BUFF 施法者。空或 NULL 表示不限，返回 0。
         /// </summary>
-        private static long ResolveBuffSourceUnitId(string raw)
+        private static long ResolveBuffSourceUnitId(SkillEditorFunctionContext ctx, string raw)
 
         {
 
-            string token = raw?.Trim() ?? string.Empty;
+            string token = ctx.ResolveParam(raw)?.Trim() ?? string.Empty;
 
             if (string.IsNullOrEmpty(token) || token.Equals("NULL", StringComparison.OrdinalIgnoreCase))
 
@@ -1922,7 +1905,8 @@ namespace ET
 
             if (long.TryParse(token, out long id)) { return id; }
 
-            return 0;
+            // 指定来源却未解析到单位时不放宽为“不限”，避免误清其他施法者的 BUFF。
+            return ctx.ResolveUnit(raw)?.Id ?? -1;
 
         }
 
@@ -1937,7 +1921,13 @@ namespace ET
 
             if (buffMgr == null || buffId <= 0) { return; }
 
-            buffMgr.BuffRemoveByUnit(buffFromUnitId, buffId);
+            foreach (Buff buff in buffMgr.m_Buffs)
+            {
+                if (buff.BuffState == BuffState.Finished || buff.MBuff.Id != buffId) { continue; }
+                if (buffFromUnitId != 0 && buff.TheUnitFrom?.Id != buffFromUnitId) { continue; }
+                MarkBuffRemoved(buff, triggerFadeSkill);
+            }
+            buffMgr.Check();
 
             if (Log.IsDebugEnabled) Log.Debug($"REMOVE_BUFF target={target.Id} buffId={buffId} from={buffFromUnitId} force={forceRemove} fade={triggerFadeSkill}");
 
@@ -1956,7 +1946,7 @@ namespace ET
 
             HashSet<int> allowedBenefits = ParseBenefitFilter(benefitFilter);
 
-            List<int> candidates = new List<int>();
+            List<Buff> candidates = new List<Buff>();
 
             for (int i = 0; i < buffMgr.m_Buffs.Count; i++)
 
@@ -1965,14 +1955,15 @@ namespace ET
                 Buff bh = buffMgr.m_Buffs[i];
 
                 if (bh?.MBuff == null) { continue; }
+                if (bh.BuffState == BuffState.Finished) { continue; }
 
                 if (buffFromUnitId != 0 && bh.TheUnitFrom?.Id != buffFromUnitId) { continue; }
 
-                //if (allowedBenefits.Count > 0 && !allowedBenefits.Contains(bh.MBuff.BuffBenefitType)) { continue; }
+                if (allowedBenefits.Count > 0 && !allowedBenefits.Contains(bh.MBuff.Type_Effect)) { continue; }
 
-                if (excludeNonClearable && !IsBuffClearable(bh.MBuff)) { continue; }
+                // 不可清除/强行清除规则暂不接入，不能因此把所有 BUFF 都排除。
 
-                candidates.Add(bh.MBuff.Id);
+                candidates.Add(bh);
 
             }
 
@@ -1987,14 +1978,15 @@ namespace ET
 
                 int idx = RandomHelper.RandomNumber(0, candidates.Count);
 
-                int buffId = candidates[idx];
+                Buff buff = candidates[idx];
 
                 candidates.RemoveAt(idx);
 
-                RemoveBuffById(target, buffFromUnitId, buffId, forceRemove, triggerFadeSkill);
+                MarkBuffRemoved(buff, triggerFadeSkill);
 
             }
 
+            buffMgr.Check();
         }
 
         /// <summary>
@@ -2015,19 +2007,26 @@ namespace ET
                 Buff bh = buffMgr.m_Buffs[i];
 
                 if (bh?.MBuff == null) { continue; }
+                if (bh.BuffState == BuffState.Finished) { continue; }
 
                 if (buffFromUnitId != 0 && bh.TheUnitFrom?.Id != buffFromUnitId) { continue; }
 
-                //if (bh.MBuff.Remove == null || !bh.MBuff.Remove.Contains(buffGroup)) { continue; }
+                if (bh.MBuff.Group == null || !bh.MBuff.Group.Contains(buffGroup)) { continue; }
 
-                buffMgr.OnRemoveBuffItem(bh);
-
-                buffMgr.m_Buffs.RemoveAt(i);
+                MarkBuffRemoved(bh, triggerFadeSkill);
 
             }
 
+            buffMgr.Check();
             if (Log.IsDebugEnabled) Log.Debug($"REMOVE_BUFF_GROUP target={target.Id} group={buffGroup} force={forceRemove} fade={triggerFadeSkill}");
 
+        }
+
+        private static void MarkBuffRemoved(Buff buff, bool triggerFadeSkill)
+        {
+            buff.BuffState = BuffState.Finished;
+            buff.IsTimeEnd = false;
+            buff.IsInterrupt = triggerFadeSkill;
         }
 
         /// <summary>
@@ -2185,6 +2184,7 @@ namespace ET
             Unit mover = ctx.ResolveUnit(ctx.GetParamRaw(1));
             Unit destUnit = ctx.ResolveUnit(ctx.GetParamRaw(2));
             float keepDistance = ctx.GetParamFloat(3, 0f);
+            float maxDistance = ctx.GetParamFloat(4, 0f);
             int moveType = ctx.GetParamInt(5, 0);
             float moveParam1 = ctx.GetParamFloat(6, 0f);
             bool faceTarget = ctx.GetParamBool(9, false);
@@ -2200,15 +2200,8 @@ namespace ET
                 dest = destUnit.Position + dir.normalized * keepDistance;
             }
 
-            int speedRate = 100;
-            if (moveType == 1 && moveParam1 > 0f)
-            {
-                float nowSpeed = mover.GetSpeedNow();
-                if (nowSpeed > 1e-6f)
-                {
-                    speedRate = (int)(100f * moveParam1 / nowSpeed);
-                }
-            }
+            dest = ClampDisplacementDestination(mover.Position, dest, maxDistance);
+            int speedRate = ResolveDisplacementSpeedRate(mover, moveType, moveParam1);
 
             // 路径标记只控制是否在到达后朝向目标；跑步动画统一由客户端硬直检查控制。
             int moveFlags = faceTarget ? PathMoveFlags.FaceTargetOnArrive : 0;
@@ -2454,11 +2447,25 @@ namespace ET
         }
 
         /// <summary>
-        /// 按移动类型把单位移到目标点。
+        /// 最大距离未配置或非正数时不限制。
         /// </summary>
-        private static void MoveUnitToPosition(Unit unit, Vector3 dest, int moveType, int speedRate)
+        private static Vector3 ClampDisplacementDestination(Vector3 start, Vector3 dest, float maxDistance)
         {
-            MoveUnitToPositionAsync(unit, dest, moveType, speedRate).Coroutine();
+            Vector3 delta = dest - start;
+            return maxDistance > 0f && delta.sqrMagnitude > maxDistance * maxDistance
+                ? start + delta.normalized * maxDistance
+                : dest;
+        }
+
+        private static int ResolveDisplacementSpeedRate(Unit mover, int moveType, float moveParam)
+        {
+            if (moveType != 1 || moveParam <= 0f)
+            {
+                return 100;
+            }
+
+            float nowSpeed = mover.GetSpeedNow();
+            return nowSpeed > 1e-6f ? Math.Max(1, (int)(100f * moveParam / nowSpeed)) : 100;
         }
 
         /// <summary>
@@ -2539,19 +2546,6 @@ namespace ET
 
             return numeric.GetAsInt(NumericType.Now_Dead) == 1
                 || numeric.GetAsLong(NumericType.HP_Current_8) <= 0;
-        }
-
-        /// <summary>
-        /// 该 BUFF 配置是否允许被清除。
-        /// </summary>
-        private static bool IsBuffClearable(LDSkill_Battle_Buff buffConfig)
-        {
-           // if (buffConfig?.Remove == null || buffConfig.Remove.Length == 0)
-            {
-                return false;
-            }
-
-            //return !(buffConfig.Remove.Length == 1 && buffConfig.Remove[0] == 0);
         }
 
     }

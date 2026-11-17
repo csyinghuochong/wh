@@ -47,7 +47,7 @@ namespace ET
                     return;
                 }
 
-                if (bagInfo.IsBinding())
+                if (!ItemFlagEnum.IsTradable(bagInfo.GetEffectiveItemFlags()))
                 {
                     response.Error = ErrorCode.ERR_ItemBing;
                     reply();

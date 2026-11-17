@@ -5,6 +5,7 @@ using UnityEngine;
 namespace ET
 {
 
+	//鉴定
     [ActorMessageHandler]
     public class C2M_EquipAppraiseHandler : AMActorLocationRpcHandler<Unit, C2M_EquipAppraiseRequest, M2C_EquipAppraiseResponse>
     {
@@ -38,7 +39,6 @@ namespace ET
                 reply();
                 return;
             }
-
 
             //通知客户端背包刷新
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
@@ -77,8 +77,9 @@ namespace ET
                 }
             }
             
-            m2c_bagUpdate.BagInfoUpdate.Add(baginfoOpera);
 
+            baginfoOpera.BindOnOperate();
+            m2c_bagUpdate.BagInfoUpdate.Add(baginfoOpera);
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
             reply();
         }

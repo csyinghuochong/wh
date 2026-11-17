@@ -1853,6 +1853,7 @@ namespace ET
 	}
 
 //通过奖励
+// 服务端向客户端返回的标准奖励；配置格式为 类型~ID~数量~状态，多项用 | 分隔。
 	[Message(OuterOpcode.RewardItem)]
 	[ProtoContract]
 	public partial class RewardItem: Object
@@ -4804,7 +4805,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_ItemUseResponse))]
-//使用道具
+// 客户端 -> 地图服：使用本人背包中的道具，成功后推送背包变化。
 	[Message(OuterOpcode.C2M_ItemUseRequest)]
 	[ProtoContract]
 	public partial class C2M_ItemUseRequest: Object, IActorLocationRequest
@@ -4829,6 +4830,7 @@ namespace ET
 
 	}
 
+// 地图服 -> 客户端：使用结果；失败不扣包裹、不发奖。
 	[Message(OuterOpcode.M2C_ItemUseResponse)]
 	[ProtoContract]
 	public partial class M2C_ItemUseResponse: Object, IActorLocationResponse
@@ -4844,6 +4846,43 @@ namespace ET
 
 		[ProtoMember(1)]
 		public string OperatePar { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemTradeConfirmResponse))]
+// 客户端 -> 地图服：显式将本人整格道具状态 2 改为 9。取消确认不发送。
+// 客户端主动弹窗确认后调用本协议；收到成功回包后再发送原业务请求。服务端推送整格状态变化。
+	[Message(OuterOpcode.C2M_ItemTradeConfirmRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemTradeConfirmRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long BagInfoID { get; set; }
+
+		[ProtoMember(2)]
+		public int Loc { get; set; }
+
+	}
+
+// 地图服 -> 客户端：确认结果；成功同时推送 M2C_RoleBagUpdate，不再允许副本交易。
+	[Message(OuterOpcode.M2C_ItemTradeConfirmResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemTradeConfirmResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
 
 	}
 
@@ -9566,6 +9605,9 @@ namespace ET
 
 		[ProtoMember(11)]
 		public int ItemType { get; set; }
+
+		[ProtoMember(12)]
+		public int ItemFlags { get; set; }
 
 	}
 

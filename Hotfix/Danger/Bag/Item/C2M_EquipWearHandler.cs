@@ -77,7 +77,7 @@ namespace ET
 
                 unit.GetComponent<TaskComponentServer>()?.OnWearEquip();
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
-                useBagInfo.SetTradeStatus(ItemFlagEnum.NonTradable);
+                useBagInfo.BindOnWear();
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }
             else
