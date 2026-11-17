@@ -620,12 +620,10 @@ namespace ET
             bool drop = true;
             LDMonster ldMonsterCof = LDMonsterCategory.Instance.Get(bekill.ConfigId);
            
-
             if (!drop)
             {
                 return;
             }
-
 
             int[] dropID = ldMonsterCof.Drop;
             List<RewardItem> droplist = new List<RewardItem>();
@@ -638,7 +636,6 @@ namespace ET
                 }
             }
            
-
             if (droplist.Count > 100)
             {
                 Log.Error($"掉落道具数量异常： {ldMonsterCof.Id}  {droplist.Count}");

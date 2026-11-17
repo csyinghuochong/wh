@@ -82,7 +82,7 @@ namespace ET
 		/// <summary>Id</summary>
 		[ProtoMember(1)]
 		public int Id { get; set; }
-		/// <summary>类型 0-A 1-B  共存/互斥</summary>
+		/// <summary>类型 0-独立 1-互斥 2-共存</summary>
 		[ProtoMember(2)]
 		public int Type { get; set; }
 		/// <summary>组</summary>

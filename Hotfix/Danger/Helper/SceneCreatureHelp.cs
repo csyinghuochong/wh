@@ -405,20 +405,20 @@ namespace ET
 			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Team;
 			m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;   //拾取道具的消息，此为玩家id
 			m2C_SyncChatInfo.ChatInfo.ParamId = dropInfo.UnitId;
-			LDItem ldItem =LDItemCategory.Instance.Get(dropInfo.ItemID);
+			BagInfo itemInfo = new BagInfo { ItemType = dropInfo.ItemType, ItemID = dropInfo.ItemID, ItemFlags = dropInfo.ItemFlags };
 			string numShow = "";
-			if (ldItem.Id == 1)
+			if (dropInfo.ItemType == ItemBigType.Type_Item && dropInfo.ItemID == 1)
 			{
 				numShow = dropInfo.ItemNum.ToString();
 			}
-			string colorValue = CommonHelper.QualityReturnColor(ldItem.Quality);
+			string colorValue = CommonHelper.QualityReturnColor(ItemNewHelper.GetItemQulity(itemInfo));
 
             string bybox = string.Empty;
             string byboxen =  "By Diamond Chest";
            
-            m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} {bybox}</color>拾取<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} {bybox}</color>拾取<color=#{colorValue}>{numShow}{ItemNewHelper.GetItemName(itemInfo)}</color>";
 
-            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} {byboxen}</color>pick up<color=#{colorValue}>{numShow}{ldItem.Name}</color>";
+            m2C_SyncChatInfo.ChatInfo.ChatMsg_EN = $"<color=#FDD376>{unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name} {byboxen}</color>pick up<color=#{colorValue}>{numShow}{ItemNewHelper.GetItemName(itemInfo, 1)}</color>";
 
             //MessageHelper.SendToClient(GetUnitList(unit.DomainScene(), UnitType.Player), m2C_SyncChatInfo);
             //Log.Warning($"SendFubenPickMessage: {unit.Id} {dropInfo.ItemID}");

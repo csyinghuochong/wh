@@ -369,15 +369,27 @@ namespace ET
                 healTotal = ctx.GetVariable("damageTotal", 0);
             }
 
-            if (healTotal > 0)
-            {
-                SendNumbericChangeHelper.InformClientHit(caster, target, rs, healTotal);
-            }
+            ctx.SetVariable("healTotal", healTotal);
+            SendHealNotice(ctx, caster, target, healTotal);
 
             if (Log.IsDebugEnabled)
             {
                 Log.Debug($"INFORM_EVENT_HEAL skill={ctx.SkillId} caster={(caster?.Id ?? 0)} target={target.Id} heal={healTotal} rs={rs}");
             }
+        }
+
+        /// <summary>同一次治疗只通知一次，兼容治疗事件和通用命中通知同时配置。</summary>
+        private static void SendHealNotice(SkillEditorFunctionContext ctx, Unit caster, Unit target, long healTotal)
+        {
+            if (healTotal <= 0 || ctx.GetVariable("__healNoticeSent", 0) != 0)
+            {
+                return;
+            }
+
+            long rs = ctx.GetVariable("rs", (long)SkillEditorHitResult.Hit);
+            SkillEditorHitResult hitType = rs >= (long)SkillEditorHitResult.Crit ? SkillEditorHitResult.HealCrit : SkillEditorHitResult.Heal;
+            SendNumbericChangeHelper.InformClientHit(caster, target, (long)hitType, healTotal);
+            ctx.SetVariable("__healNoticeSent", 1);
         }
 
         /// <summary>
@@ -427,6 +439,12 @@ namespace ET
 
             if (target == null || target.IsDisposed)
             {
+                return;
+            }
+
+            if (ctx.Variables.ContainsKey("healTotal"))
+            {
+                SendHealNotice(ctx, caster, target, ctx.GetVariable("healTotal", 0));
                 return;
             }
 

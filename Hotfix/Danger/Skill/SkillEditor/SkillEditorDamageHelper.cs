@@ -84,6 +84,8 @@ namespace ET
         public static void CalculateDamage(SkillEditorFunctionContext ctx, SkillEditorDamageKind kind)
         {
             ctx.SetVariable("damageTotal", 0);
+            ctx.Variables.Remove("healTotal");
+            ctx.SetVariable("__healNoticeSent", 0);
             // 参数 0~3：施法者、目标、技能 ID、技能等级
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
@@ -222,6 +224,7 @@ namespace ET
         {
             ctx.SetVariable("damageTotal", 0);
             ctx.SetVariable("healTotal", 0);
+            ctx.SetVariable("__healNoticeSent", 0);
             // —— 参数 0~3：施法者 / 目标 / 技能ID / 技能等级（界面配置.xml）——
             Unit caster = ctx.ResolveUnit(ctx.GetParamRaw(0));
             Unit target = ctx.ResolveUnit(ctx.GetParamRaw(1));
