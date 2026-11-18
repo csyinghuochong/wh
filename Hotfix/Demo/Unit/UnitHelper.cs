@@ -5,22 +5,41 @@ namespace ET
 {
     public static class UnitHelper
     {
-        // 掉落实体销毁时更新尸体，最后一件消失后切换为无掉落寿命。
-        public static void RemoveMonsterDrop(UnitComponent units, long monsterId, long dropId)
+        // 尸体持有权威掉落记录；不创建掉落 Unit，也不通过 AOI 下发详情。
+        public static void StoreMonsterDrops(Unit monster, List<DropInfo> drops)
         {
-            Unit monster = units.Get(monsterId);
-            if (monster == null || monster.Type != UnitType.Monster)
+            foreach (DropInfo drop in drops)
             {
-                return;
+                drop.BeKillId = monster.Id;
+                drop.X = monster.Position.x;
+                drop.Y = monster.Position.y;
+                drop.Z = monster.Position.z;
             }
-            List<DropInfo> drops = monster.GetComponent<UnitInfoComponent>().Drops;
-            if (drops.RemoveAll(drop => drop.UnitId == dropId) == 0 || drops.Count > 0
-                    || monster.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) != 1)
-            {
-                return;
-            }
+            monster.GetComponent<UnitInfoComponent>().Drops.AddRange(drops);
+            monster.GetComponent<NumericComponent>().Set(NumericType.HasDrops,
+                monster.GetComponent<UnitInfoComponent>().Drops.Count > 0 ? 1 : 0);
+        }
+
+        // 仅通知仍在查看的同一会话；最后一件领取后更新标记并切换尸体寿命。
+        public static void NotifyMonsterDropsPicked(Unit monster, List<long> removeIds)
+        {
             MonsterBodyComponent body = monster.GetComponent<MonsterBodyComponent>();
-            if (body != null) body.ResetLifetime();
+            if (body != null && removeIds.Count > 0)
+            {
+                UnitComponent units = monster.GetParent<UnitComponent>();
+                M2C_MonsterDropsRemove message = new M2C_MonsterDropsRemove { MonsterId = monster.Id, RemoveIds = removeIds };
+                foreach (KeyValuePair<long, long> viewer in body.Viewers)
+                {
+                    Unit player = units.Get(viewer.Key);
+                    if (player == null || player.Type != UnitType.Player) continue;
+                    UnitGateComponent gate = player.GetComponent<UnitGateComponent>();
+                    if (gate.PlayerState != PlayerState.Game || gate.GateSessionActorId != viewer.Value) continue;
+                    MessageHelper.SendToClient(player, message);
+                }
+            }
+            bool hasDrops = monster.GetComponent<UnitInfoComponent>().Drops.Count > 0;
+            monster.GetComponent<NumericComponent>().Set(NumericType.HasDrops, hasDrops ? 1 : 0);
+            if (!hasDrops && body != null) body.ResetLifetime();
         }
 
         public static void RemovePickedDrop(Unit picker, long dropId)
@@ -30,14 +49,11 @@ namespace ET
 
         public static void ClearMonsterDrops(Unit monster)
         {
-            UnitComponent units = monster.GetParent<UnitComponent>();
             List<DropInfo> drops = monster.GetComponent<UnitInfoComponent>().Drops;
-            DropInfo[] expired = drops.ToArray();
+            if (drops.Count == 0) return;
+            List<long> removeIds = drops.ConvertAll(drop => drop.UnitId);
             drops.Clear();
-            foreach (DropInfo drop in expired)
-            {
-                units.Remove(drop.UnitId);
-            }
+            NotifyMonsterDropsPicked(monster, removeIds);
         }
        
         public static UnitInfo CreateUnitInfo(Unit unit)

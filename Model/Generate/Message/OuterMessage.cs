@@ -8649,6 +8649,9 @@ namespace ET
 		[ProtoMember(92)]
 		public string Message { get; set; }
 
+		[ProtoMember(1)]
+		public List<DropInfo> Drops = new List<DropInfo>();
+
 	}
 
 // 客户端 -> 地图服：拾取当前地图中指定的公共掉落实例；已登记打开该尸体界面的玩家不再校验拾取距离，其余情况校验距离后入包。
@@ -8666,6 +8669,9 @@ namespace ET
 		[ProtoMember(1)]
 		public List<DropInfo> ItemIds = new List<DropInfo>();
 
+		[ProtoMember(2)]
+		public long MonsterId { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_PickItemResponse)]
@@ -8682,6 +8688,19 @@ namespace ET
 		public string Message { get; set; }
 
 		[ProtoMember(1)]
+		public List<long> RemoveIds = new List<long>();
+
+	}
+
+// 地图服 -> 正在查看这具尸体的客户端：移除已被领取的条目，不推送未打开尸体的掉落详情。
+	[Message(OuterOpcode.M2C_MonsterDropsRemove)]
+	[ProtoContract]
+	public partial class M2C_MonsterDropsRemove: Object, IActorMessage
+	{
+		[ProtoMember(1)]
+		public long MonsterId { get; set; }
+
+		[ProtoMember(2)]
 		public List<long> RemoveIds = new List<long>();
 
 	}

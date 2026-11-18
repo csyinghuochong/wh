@@ -93,7 +93,7 @@ namespace ET
             }
             if (hadViewers && self.Viewers.Count == 0) self.ResetLifetime();
             if (self.Viewers.Count > 0 || TimeHelper.ServerNow() < self.ExpireTime || !DllHelper.BattleCheck) return;
-            // UnitComponent.Remove 同时清理这具尸体的全部地面掉落。
+            // 尸体销毁时一并清理其持有的掉落记录。
             units.Remove(monster.Id);
         }
     }

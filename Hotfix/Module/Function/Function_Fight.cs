@@ -99,7 +99,7 @@ namespace ET
 
         /// <summary>
         /// 当前战力 = 当前等级 Exp_Lv.CP_Role（取该级一行，不按等级累加）
-        /// + 已穿装备评分（基础、鉴定、强化属性值的绝对值之和）
+        /// + 已穿装备战力（每件装备的基础、鉴定、强化属性值乘以 LDAttribute.Power，求和后取整）
         /// + SkillList 里每个技能当前等级 Skill_Battle_Lv.CP。
         /// </summary>
         private static int CalcCombat(Unit unit)
@@ -115,7 +115,6 @@ namespace ET
             List<BagInfo> equipList = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocEquip);
             for (int i = 0; i < equipList.Count; i++)
             {
-                //combat += ItemNewHelper.CalculateEquipScore(equipList[i]);
                 combat += ItemNewHelper.CalculateEquipCombat(equipList[i]);
             }
 

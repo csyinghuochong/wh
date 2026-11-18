@@ -643,33 +643,8 @@ namespace ET
                 return;
             }
 
-            Scene DomainScene = main != null ? main.DomainScene() : bekill.DomainScene();
             List<DropInfo> drops = DropItemHelper.CreateDropInfos(droplist);
-            for (int i = 0; i < drops.Count; i++)
-            {
-                if (sceneType == MapTypeEnum.TeamDungeon && ( drops[i].ItemID>= 10030011 && drops[i].ItemID <= 10030019))
-                {
-                    //Log.Error($"掉落装备.字: {droplist[i].ItemID}   {sceneType}");
-                }
-
-                UnitComponent unitComponent = DomainScene.GetComponent<UnitComponent>();
-                Unit dropitem = unitComponent.AddChildWithId<Unit, int>(drops[i].UnitId, 1);
-                dropitem.AddComponent<UnitInfoComponent>();
-                dropitem.Type = UnitType.DropItem;
-                DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
-                dropComponent.DropInfo = drops[i];
-                dropComponent.SetBeKillId(bekill.Id);
-                dropitem.ConfigId = drops[i].ItemID;
-
-
-                float dropX = bekill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f);
-                float dropY = bekill.Position.y;
-                float dropZ = bekill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f);
-                dropitem.Position = new UnityEngine.Vector3(dropX, dropY, dropZ);
-                dropComponent.InitDropInfo(dropitem);
-                bekill.GetComponent<UnitInfoComponent>().Drops.Add(dropComponent.DropInfo);
-                dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
-            }
+            UnitHelper.StoreMonsterDrops(bekill, drops);
         }
 
 
@@ -700,6 +675,11 @@ namespace ET
             }
 
             List<DropInfo> drops = DropItemHelper.CreateDropInfos(droplist);
+            if (beKill.Type == UnitType.Monster)
+            {
+                UnitHelper.StoreMonsterDrops(beKill, drops);
+                return;
+            }
             for (int i = 0; i < drops.Count; i++)
             {
                 if ( (drops[i].ItemID >= 10030011 && drops[i].ItemID <= 10030019)  && sceneType != MapTypeEnum.LocalDungeon)
@@ -720,10 +700,6 @@ namespace ET
                 dropComponent.SetBeKillId(beKill.Id);
                 dropitem.ConfigId = drops[i].ItemID;
                 dropComponent.InitDropInfo(dropitem);
-                if (beKill.Type == UnitType.Monster)
-                {
-                    beKill.GetComponent<UnitInfoComponent>().Drops.Add(dropComponent.DropInfo);
-                }
                 dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
             }
         }

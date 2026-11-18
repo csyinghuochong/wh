@@ -39,6 +39,7 @@ namespace ET
                 return;
             }
             body.SetViewing(unit, true);
+            response.Drops.AddRange(monster.GetComponent<UnitInfoComponent>().Drops);
             reply();
             await ETTask.CompletedTask;
         }

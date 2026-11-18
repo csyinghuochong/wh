@@ -88,6 +88,9 @@ namespace ET
 		/// <summary>交易所属</summary>
 		[ProtoMember(3)]
 		public int Exchange_Belong { get; set; }
+		/// <summary>战力系数</summary>
+		[ProtoMember(4)]
+		public double Power { get; set; }
 
 	}
 }

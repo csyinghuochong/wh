@@ -22,16 +22,7 @@ namespace ET
                 return;
             }
 
-            foreach (DropInfo info in monster.GetComponent<UnitInfoComponent>().Drops)
-            {
-                Unit dropUnit = units.Get(info.UnitId);
-                if (dropUnit == null || dropUnit.Type != UnitType.DropItem)
-                {
-                    continue;
-                }
-                DropComponent drop = dropUnit.GetComponent<DropComponent>();
-                response.Drops.Add(drop.ToDropInfo(dropUnit));
-            }
+            response.Drops.AddRange(monster.GetComponent<UnitInfoComponent>().Drops);
             reply();
             await ETTask.CompletedTask;
         }

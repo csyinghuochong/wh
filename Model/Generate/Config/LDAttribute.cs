@@ -97,11 +97,14 @@ namespace ET
 		/// <summary>类型 0-固定值 1-千分比</summary>
 		[ProtoMember(6)]
 		public int Type { get; set; }
-		/// <summary>装备基础属性颜色</summary>
+		/// <summary>战力</summary>
 		[ProtoMember(7)]
+		public double Power { get; set; }
+		/// <summary>装备基础属性颜色</summary>
+		[ProtoMember(8)]
 		public int Color_Equip_Base { get; set; }
 		/// <summary>装备 属性 排序</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public int Order_SL_Equip { get; set; }
 
 	}

@@ -1494,7 +1494,7 @@ namespace ET
         
         }
 
-        public static void GetEquipAttribute(this BagComponentServer self, List<AttributeItem> occInitAttribute)
+        public static void GetEquipAttribute(this BagComponentServer self, List<AttributeItem> equipAttribute)
         {
             Unit unit = self.GetParent<Unit>();
             List<BagInfo> equipList = self.GetItemByLoc(ItemLocType.ItemLocEquip);
@@ -1547,7 +1547,7 @@ namespace ET
                 int caowei = ItemNewHelper.GetNewEquipCaoWei(equipList[i].ItemID);
                 int qianghuaLv = self.GetQiangHuaLevel(caowei);
 
-                occInitAttribute.AddRange( equipList[i].BaseAttrList );
+                equipAttribute.AddRange( equipList[i].BaseAttrList );
 
                 //获取宝石属性
 
