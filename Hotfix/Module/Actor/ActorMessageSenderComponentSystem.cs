@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Diagnostics;
 
 namespace ET
 {
@@ -142,6 +143,8 @@ namespace ET
                 bool needException = true
         )
         {
+            Stopwatch rankStopwatch = request is C2R_RankListRequest ? Stopwatch.StartNew() : null;
+            int clientRpcId = request.RpcId;
             request.RpcId = self.GetRpcId();
             
             if (actorId == 0)
@@ -151,6 +154,10 @@ namespace ET
 
             (ushort _, MemoryStream stream) = MessageSerializeHelper.MessageToStream(request);
 
+            if (rankStopwatch != null)
+            {
+                Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} clientRpc={clientRpcId} rpc={request.RpcId} stage=Gate.SerializeActorRequest actorId={actorId} bytes={stream.Length} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
+            }
             return await self.Call(actorId, request.RpcId, stream, needException);
         }
         
@@ -171,11 +178,22 @@ namespace ET
             
             self.requestCallback.Add(rpcId, new ActorMessageSender(actorId, memoryStream, tcs, needException));
             
+            Stopwatch rankStopwatch = BitConverter.ToUInt16(memoryStream.GetBuffer(), Packet.OpcodeIndex) == OuterOpcode.C2R_RankListRequest
+                ? Stopwatch.StartNew() : null;
             self.Send(actorId, memoryStream);
+            if (rankStopwatch != null)
+            {
+                Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={rpcId} stage=Gate.SendActorRequest actorId={actorId} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
+                rankStopwatch.Restart();
+            }
 
             long beginTime = TimeHelper.ServerFrameTime();
             IActorResponse response = await tcs;
             long endTime = TimeHelper.ServerFrameTime();
+            if (rankStopwatch != null)
+            {
+                Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={rpcId} stage=Gate.WaitActorResponse error={response.Error} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
+            }
 
             long costTime = endTime - beginTime;
 
