@@ -90,7 +90,7 @@ namespace ET
 		public int Exchange_Belong { get; set; }
 		/// <summary>战力系数</summary>
 		[ProtoMember(4)]
-		public double Power { get; set; }
+		public double CP { get; set; }
 
 	}
 }

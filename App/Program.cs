@@ -92,9 +92,10 @@ namespace ET
 		private static void ClearServerLogFilesIfInner()
 		{
 			string startConfig = Options.Instance?.StartConfig ?? string.Empty;
-			bool isBeta = startConfig.IndexOf("Beta", StringComparison.OrdinalIgnoreCase) >= 0;
-			bool clearOld = startConfig.IndexOf("Localhost", StringComparison.OrdinalIgnoreCase) >= 0
-			    || startConfig.IndexOf("BanHao", StringComparison.OrdinalIgnoreCase) >= 0;
+			bool isBeta = startConfig.IndexOf("Beta", StringComparison.OrdinalIgnoreCase) >= 0
+                 || startConfig.IndexOf("BanHao", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool clearOld = startConfig.IndexOf("Localhost", StringComparison.OrdinalIgnoreCase) >= 0;
+ 
 			if (!isBeta && !clearOld)
 			{
 				return;

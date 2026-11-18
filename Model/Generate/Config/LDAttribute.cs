@@ -99,7 +99,7 @@ namespace ET
 		public int Type { get; set; }
 		/// <summary>战力</summary>
 		[ProtoMember(7)]
-		public double Power { get; set; }
+		public double CP { get; set; }
 		/// <summary>装备基础属性颜色</summary>
 		[ProtoMember(8)]
 		public int Color_Equip_Base { get; set; }

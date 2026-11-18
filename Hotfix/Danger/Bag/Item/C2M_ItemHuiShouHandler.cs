@@ -28,6 +28,13 @@ namespace ET
                     continue;
                 }
 
+                // 请求包含已穿戴装备时整单直接返回，不扣除任何道具，也不设置错误码。
+                if (bagInfo.Loc == (int)ItemLocType.ItemLocEquip)
+                {
+                    reply();
+                    return;
+                }
+
                 if (!idsByLoc.TryGetValue(bagInfo.Loc, out List<long> ids))
                 {
                     ids = new List<long>();
