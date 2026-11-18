@@ -17,28 +17,22 @@ namespace ET
             {
                 unitDefend.DomainScene().GetComponent<TeamDungeonComponent>().OnKillEvent(unitDefend);
             }
-            long instanceId = unitDefend.InstanceId;
-            bool keepDrops = unitDefend.Type == UnitType.Monster
-                    && unitDefend.GetComponent<UnitInfoComponent>().Drops.Count > 0;
-            if (keepDrops)
+            if (unitDefend.Type == UnitType.Monster && args.WaitRevive == 0)
             {
-                waittime = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Monster_Death_Refresh) * 1000L;
+                if (DllHelper.BattleCheck && unitDefend.GetComponent<MonsterBodyComponent>() == null)
+                {
+                    unitDefend.AddComponent<MonsterBodyComponent>();
+                }
+                return;
             }
+            long instanceId = unitDefend.InstanceId;
             await TimerComponent.Instance.WaitAsync(waittime);
             if (unitDefend.IsDisposed || unitDefend.InstanceId != instanceId)
             {
                 return;
             }
-            if (keepDrops && unitDefend.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) != 1)
-            {
-                return;
-            }
             if (unitDefend.Type != UnitType.Player && args.WaitRevive == 0 && DllHelper.BattleCheck)
             {
-                if (keepDrops)
-                {
-                    UnitHelper.ClearMonsterDrops(unitDefend);
-                }
                 unitDefend.GetParent<UnitComponent>().Remove(unitDefend.Id);
             }
         }

@@ -5,7 +5,7 @@ namespace ET
 {
     public static class UnitHelper
     {
-        // 公共掉落实体销毁、私人掉落入包成功后统一更新尸体，最后一件消失时移除尸体。
+        // 掉落实体销毁时更新尸体，最后一件消失后切换为无掉落寿命。
         public static void RemoveMonsterDrop(UnitComponent units, long monsterId, long dropId)
         {
             Unit monster = units.Get(monsterId);
@@ -19,22 +19,13 @@ namespace ET
             {
                 return;
             }
-            units.Remove(monsterId);
+            MonsterBodyComponent body = monster.GetComponent<MonsterBodyComponent>();
+            if (body != null) body.ResetLifetime();
         }
 
         public static void RemovePickedDrop(Unit picker, long dropId)
         {
-            UnitComponent units = picker.GetParent<UnitComponent>();
-            List<DropInfo> privateDrops = picker.GetComponent<UnitInfoComponent>().Drops;
-            int index = privateDrops.FindIndex(drop => drop.UnitId == dropId);
-            if (index < 0)
-            {
-                units.Remove(dropId);
-                return;
-            }
-            DropInfo info = privateDrops[index];
-            privateDrops.RemoveAt(index);
-            RemoveMonsterDrop(units, info.BeKillId, dropId);
+            picker.GetParent<UnitComponent>().Remove(dropId);
         }
 
         public static void ClearMonsterDrops(Unit monster)
@@ -45,28 +36,7 @@ namespace ET
             drops.Clear();
             foreach (DropInfo drop in expired)
             {
-                if (drop.DropType != 1)
-                {
-                    units.Remove(drop.UnitId);
-                }
-            }
-            foreach (Unit player in GetUnitList(monster.DomainScene(), UnitType.Player))
-            {
-                List<DropInfo> privateDrops = player.GetComponent<UnitInfoComponent>().Drops;
-                M2C_RemoveUnits message = new M2C_RemoveUnits();
-                for (int i = privateDrops.Count - 1; i >= 0; i--)
-                {
-                    if (privateDrops[i].BeKillId != monster.Id)
-                    {
-                        continue;
-                    }
-                    message.Units.Add(privateDrops[i].UnitId);
-                    privateDrops.RemoveAt(i);
-                }
-                if (message.Units.Count > 0)
-                {
-                    MessageHelper.SendToClient(player, message);
-                }
+                units.Remove(drop.UnitId);
             }
         }
        

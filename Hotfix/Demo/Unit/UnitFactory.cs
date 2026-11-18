@@ -643,91 +643,32 @@ namespace ET
                 return;
             }
 
-            List<long> beattackIds = bekill.GetComponent<AttackRecordComponent>().GetBeAttackPlayerList();
-            if(main!=null && !beattackIds.Contains(main.Id))
+            Scene DomainScene = main != null ? main.DomainScene() : bekill.DomainScene();
+            List<DropInfo> drops = DropItemHelper.CreateDropInfos(droplist);
+            for (int i = 0; i < drops.Count; i++)
             {
-                beattackIds.Add(main.Id);
-            }
-            // 0 公共掉落 1 私有掉落（只要造成伤害就有）
-            int dropType = 0;
-            if (dropType == 0)
-            {
-                Scene DomainScene = main != null ? main.DomainScene() : bekill.DomainScene();
-                for (int i = 0; i < droplist.Count; i++)
+                if (sceneType == MapTypeEnum.TeamDungeon && ( drops[i].ItemID>= 10030011 && drops[i].ItemID <= 10030019))
                 {
-                    if (sceneType == MapTypeEnum.TeamDungeon && ( droplist[i].ItemID>= 10030011 && droplist[i].ItemID <= 10030019))
-                    {
-                        //Log.Error($"掉落装备.字: {droplist[i].ItemID}   {sceneType}");
-                    }
-
-                    UnitComponent unitComponent = DomainScene.GetComponent<UnitComponent>();
-                    Unit dropitem = unitComponent.AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), 1);
-                    dropitem.AddComponent<UnitInfoComponent>();
-                    dropitem.Type = UnitType.DropItem;
-                    DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
-                    dropComponent.SetDropReward(droplist[i]);
-                    dropComponent.SetBeKillId(bekill.Id);
-                    dropComponent.BeAttackPlayerList = beattackIds;
-                    dropitem.ConfigId = droplist[i].ItemID;
-
-                    //单人副本不要搞归属掉落，以免出问题
-                    if ( SceneConfigHelper.IsSingleFuben(sceneType) )
-                    {
-                        dropComponent.OwnerId = 0;
-                    }
-
-                    float dropX = bekill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f);
-                    float dropY = bekill.Position.y;
-                    float dropZ = bekill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f);
-                    dropitem.Position = new UnityEngine.Vector3(dropX, dropY, dropZ);
-                    dropComponent.InitDropInfo(dropitem);
-                    bekill.GetComponent<UnitInfoComponent>().Drops.Add(dropComponent.DropInfo);
-                    dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
+                    //Log.Error($"掉落装备.字: {droplist[i].ItemID}   {sceneType}");
                 }
-            }
-            if (dropType == 1)
-            {
-                for (int i = 0; i < beattackIds.Count; i++)
-                {
-                    Unit beAttack = bekill.DomainScene().GetComponent<UnitComponent>().Get(beattackIds[i]);
-                    if (beAttack == null || beAttack.Type!= UnitType.Player)
-                    {
-                        continue;
-                    }
-                    if (i >= 20)
-                    {
-                        break;
-                    }
 
-                    M2C_CreateDropItems m2C_CreateDropItems = new M2C_CreateDropItems();
-                    for (int k = 0; k < droplist.Count; k++)
-                    {
-                        //if (sceneType == SceneTypeEnum.TeamDungeon && (droplist[k].ItemID >= 10030011 && droplist[k].ItemID <= 10030019))
-                        //{
-                        //    Log.Error($"掉落装备.字: {droplist[k].ItemID}   {sceneType}");
-                        //}
+                UnitComponent unitComponent = DomainScene.GetComponent<UnitComponent>();
+                Unit dropitem = unitComponent.AddChildWithId<Unit, int>(drops[i].UnitId, 1);
+                dropitem.AddComponent<UnitInfoComponent>();
+                dropitem.Type = UnitType.DropItem;
+                DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
+                dropComponent.DropInfo = drops[i];
+                dropComponent.SetBeKillId(bekill.Id);
+                dropitem.ConfigId = drops[i].ItemID;
 
-                        //宠物蛋直接进背包
-                    
-                        DropInfo dropInfo = new DropInfo()
-                        {
-                            DropType = 1,
-                            ItemID = droplist[k].ItemID,
-                            ItemNum = droplist[k].ItemNum,
-                            ItemType = droplist[k].ItemType,
-                            ItemFlags = droplist[k].ItemFlags,
-                            BeKillId = bekill.Id,
-                            X = bekill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f),
-                            Y = bekill.Position.y,
-                            Z = bekill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f),
-                            UnitId = IdGenerater.Instance.GenerateId(),
-                        };
-                        m2C_CreateDropItems.Drops.Add(dropInfo);
-                        beAttack.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
-                        bekill.GetComponent<UnitInfoComponent>().Drops.Add(dropInfo);
-                    }                    
-                    MessageHelper.SendToClient(beAttack, m2C_CreateDropItems);
-                }
+
+                float dropX = bekill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f);
+                float dropY = bekill.Position.y;
+                float dropZ = bekill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f);
+                dropitem.Position = new UnityEngine.Vector3(dropX, dropY, dropZ);
+                dropComponent.InitDropInfo(dropitem);
+                bekill.GetComponent<UnitInfoComponent>().Drops.Add(dropComponent.DropInfo);
+                dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
             }
         }
 
@@ -737,62 +678,53 @@ namespace ET
         /// </summary>
         /// <param name="main"></param>
         /// <param name="beKill"></param>
-        /// <param name="dropType"></param>
         /// <param name="dropId"></param>
         /// <param name="par"></param>
-        public static void CreateDropItems(Unit main, Unit beKill, int dropType,  int dropId, string par)
+        public static void CreateDropItems(Unit main, Unit beKill, int dropId, string par)
         {
 
             Scene domainScene = beKill.DomainScene();
             int sceneType = domainScene.GetComponent<MapComponent>().MapTypeEnum;
 
-            // 0 公共掉落 1 私有掉落
-            if (dropType == 0) 
+            List<RewardItem> droplist = new List<RewardItem>();
+            DropHelper.DropIDToDropItem(dropId, droplist);
+            if (par == "2")
             {
-                List<RewardItem> droplist = new List<RewardItem>();
-                DropHelper.DropIDToDropItem(dropId, droplist);
-                if (par == "2")
-                {
-                    droplist.AddRange(droplist);
-                }
-
-                if (droplist.Count > 100)
-                {
-                    Log.Error($"掉落道具数量异常： {beKill.ConfigId}  {droplist.Count}");
-                    Log.Warning($"掉落道具数量异常： {beKill.ConfigId}  {droplist.Count}");
-                }
-
-                for (int i = 0; i < droplist.Count; i++)
-                {
-                    if ( (droplist[i].ItemID >= 10030011 && droplist[i].ItemID <= 10030019)  && sceneType != MapTypeEnum.LocalDungeon)
-                    {
-                        Log.Error($"掉落装备.字: {droplist[i].ItemID}  {par}   {sceneType}");
-                    }
-
-                    UnitComponent unitComponent = domainScene.GetComponent<UnitComponent>();
-                    Unit dropitem = unitComponent.AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), 1);
-                    dropitem.AddComponent<UnitInfoComponent>();
-                    dropitem.Type = UnitType.DropItem;
-                    DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
-                    dropComponent.SetDropReward(droplist[i]);
-                    float dropX = beKill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f);
-                    float dropY = beKill.Position.y;
-                    float dropZ = beKill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f);
-                    dropitem.Position = new UnityEngine.Vector3(dropX, dropY, dropZ);
-                    dropComponent.SetDropType(dropType);
-                    dropComponent.SetBeKillId(beKill.Id);
-                    dropitem.ConfigId = droplist[i].ItemID;
-                    dropComponent.InitDropInfo(dropitem);
-                    if (beKill.Type == UnitType.Monster)
-                    {
-                        beKill.GetComponent<UnitInfoComponent>().Drops.Add(dropComponent.DropInfo);
-                    }
-                    dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
-                }
+                droplist.AddRange(droplist);
             }
-            if (dropType == 1)
+
+            if (droplist.Count > 100)
             {
-               
+                Log.Error($"掉落道具数量异常： {beKill.ConfigId}  {droplist.Count}");
+                Log.Warning($"掉落道具数量异常： {beKill.ConfigId}  {droplist.Count}");
+            }
+
+            List<DropInfo> drops = DropItemHelper.CreateDropInfos(droplist);
+            for (int i = 0; i < drops.Count; i++)
+            {
+                if ( (drops[i].ItemID >= 10030011 && drops[i].ItemID <= 10030019)  && sceneType != MapTypeEnum.LocalDungeon)
+                {
+                    Log.Error($"掉落装备.字: {drops[i].ItemID}  {par}   {sceneType}");
+                }
+
+                UnitComponent unitComponent = domainScene.GetComponent<UnitComponent>();
+                Unit dropitem = unitComponent.AddChildWithId<Unit, int>(drops[i].UnitId, 1);
+                dropitem.AddComponent<UnitInfoComponent>();
+                dropitem.Type = UnitType.DropItem;
+                DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
+                dropComponent.DropInfo = drops[i];
+                float dropX = beKill.Position.x + RandomHelper.RandomNumberFloat(-1f, 1f);
+                float dropY = beKill.Position.y;
+                float dropZ = beKill.Position.z + RandomHelper.RandomNumberFloat(-1f, 1f);
+                dropitem.Position = new UnityEngine.Vector3(dropX, dropY, dropZ);
+                dropComponent.SetBeKillId(beKill.Id);
+                dropitem.ConfigId = drops[i].ItemID;
+                dropComponent.InitDropInfo(dropitem);
+                if (beKill.Type == UnitType.Monster)
+                {
+                    beKill.GetComponent<UnitInfoComponent>().Drops.Add(dropComponent.DropInfo);
+                }
+                dropitem.AddComponent<AOIEntity, int, Vector3>(9 * 1000, dropitem.Position);
             }
         }
     }

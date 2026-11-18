@@ -72,21 +72,21 @@ namespace ET
                     break;
                 }
 
-                for (int i = 0; i < rewardist.Count; i++)
+                List<DropInfo> drops = DropItemHelper.CreateDropInfos(rewardist);
+                for (int i = 0; i < drops.Count; i++)
                 {
-                    Unit dropitem = unitComponent.AddChildWithId<Unit, int>(IdGenerater.Instance.GenerateId(), 1);
+                    Unit dropitem = unitComponent.AddChildWithId<Unit, int>(drops[i].UnitId, 1);
                     unitComponent.Add(dropitem);
                     dropitem.AddComponent<UnitInfoComponent>();
                     dropitem.Type = UnitType.DropItem;
                     DropComponent dropComponent = dropitem.AddComponent<DropComponent>();
-                    dropComponent.SetDropReward(rewardist[i]);
+                    dropComponent.DropInfo = drops[i];
                     dropComponent.SetCellIndex(p + 1);
 
                     Vector3 vector3 = HappyFubenConfig.PositionList[p];
                     dropitem.Position = vector3;
-                    dropitem.ConfigId = rewardist[i].ItemID;
+                    dropitem.ConfigId = drops[i].ItemID;
                     dropitem.AddComponent<AOIEntity, int, Vector3>(2 * 1000, dropitem.Position);
-                    dropComponent.SetDropType(0);
                     dropComponent.InitDropInfo(dropitem);
                 }
             }

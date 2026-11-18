@@ -8,6 +8,14 @@ namespace ET
     /// </summary>
     public static class ItemAddHelper
     {
+        /// <summary>新装备生成属性；由服务端在创建掉落实例或直接发奖入包时调用一次。</summary>
+        public static void InitEquipAttributes(BagInfo bagInfo)
+        {
+            LDEquip equipConfig = LDEquipCategory.Instance.Get(bagInfo.ItemID);
+            bagInfo.EnhanceLevel = RandomHelper.RandomNumber(0, equipConfig.Enhance);
+            bagInfo.BaseAttrList = LDEquipCategory.Instance.GetEquipAttribute(bagInfo.ItemID);
+            ItemNewHelper.SortBaseAttrList(bagInfo.BaseAttrList);
+        }
 
         public static void OnItemUpdate( Unit self, BagInfo bagInfo)
         {

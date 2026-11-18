@@ -22,29 +22,14 @@ namespace ET
                 return;
             }
 
-            List<DropInfo> privateDrops = unit.GetComponent<UnitInfoComponent>().Drops;
-            long now = TimeHelper.ServerNow();
             foreach (DropInfo info in monster.GetComponent<UnitInfoComponent>().Drops)
             {
-                if (info.DropType == 1)
-                {
-                    if (privateDrops.Exists(drop => drop.UnitId == info.UnitId))
-                    {
-                        response.Drops.Add(info);
-                    }
-                    continue;
-                }
                 Unit dropUnit = units.Get(info.UnitId);
                 if (dropUnit == null || dropUnit.Type != UnitType.DropItem)
                 {
                     continue;
                 }
                 DropComponent drop = dropUnit.GetComponent<DropComponent>();
-                if (drop.OwnerId != 0 && drop.OwnerId != unit.Id
-                        && (info.DropType == 3 || info.DropType == 2 && now < drop.ProtectTime))
-                {
-                    continue;
-                }
                 response.Drops.Add(drop.ToDropInfo(dropUnit));
             }
             reply();

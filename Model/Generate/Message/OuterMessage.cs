@@ -8615,6 +8615,43 @@ namespace ET
 
 	}
 
+// 客户端 -> 地图服：通知掉落界面的打开/关闭，不执行拾取。
+	[ResponseType(nameof(M2C_MonsterDropViewResponse))]
+	[Message(OuterOpcode.C2M_MonsterDropViewRequest)]
+	[ProtoContract]
+	public partial class C2M_MonsterDropViewRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long MonsterId { get; set; }
+
+		[ProtoMember(2)]
+		public bool IsOpen { get; set; }
+
+	}
+
+// 地图服 -> 客户端：Error=0 表示已处理查看状态；尸体已不存在时关闭仍成功。
+	[Message(OuterOpcode.M2C_MonsterDropViewResponse)]
+	[ProtoContract]
+	public partial class M2C_MonsterDropViewResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
+// 客户端 -> 地图服：拾取当前地图中指定的公共掉落实例；已登记打开该尸体界面的玩家不再校验拾取距离，其余情况校验距离后入包。
 	[ResponseType(nameof(M2C_PickItemResponse))]
 	[Message(OuterOpcode.C2M_PickItemRequest)]
 	[ProtoContract]
@@ -9608,6 +9645,9 @@ namespace ET
 
 		[ProtoMember(12)]
 		public int ItemFlags { get; set; }
+
+		[ProtoMember(13)]
+		public BagInfo EquipInfo { get; set; }
 
 	}
 

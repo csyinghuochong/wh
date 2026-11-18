@@ -852,9 +852,11 @@ namespace ET
 
             int itemType = bagInfo.ItemType != 0 ? bagInfo.ItemType : ItemBigType.Type_Item;
             ItemLocType toLoc = ItemNewHelper.GetToItemLocType(itemType, bagInfo.ItemID);
+            List<BagInfo> locList = self.GetItemByLoc(toLoc);
+            if (self.GetBagLeftCell((int)toLoc) <= 0 || FindBagById(locList, bagInfo.BagInfoID) != null) return false;
             bagInfo.ItemType = itemType;
             bagInfo.Loc = (int)toLoc;
-            List<BagInfo> locList = self.GetItemByLoc(toLoc);
+            if (string.IsNullOrEmpty(bagInfo.GetWay)) bagInfo.GetWay = getType;
             locList.Add(bagInfo);
             BagSortHelper.SortIfNeeded(locList, toLoc);
 
@@ -1217,10 +1219,7 @@ namespace ET
                 bagInfo.ItemFlags = ItemNewHelper.ResolveAddItemFlags(item);
                 if (item.ItemType == ItemBigType.Type_Equip && bagInfo.BaseAttrList.Count <= 0)
                 {
-                    LDEquip equipConfig = LDEquipCategory.Instance.Get(item.ItemID);
-                    bagInfo.EnhanceLevel = RandomHelper.RandomNumber(0, equipConfig.Enhance);
-                    bagInfo.BaseAttrList = LDEquipCategory.Instance.GetEquipAttribute(item.ItemID);
-                    ItemNewHelper.SortBaseAttrList(bagInfo.BaseAttrList);
+                    ItemAddHelper.InitEquipAttributes(bagInfo);
                 }
 
                 itemList.Add(bagInfo);

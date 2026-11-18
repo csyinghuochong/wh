@@ -74,6 +74,10 @@ namespace ET
             {
                 monsterId = unit.GetComponent<DropComponent>().DropInfo.BeKillId;
             }
+            if (unit != null && unit.Type == UnitType.Monster)
+            {
+                UnitHelper.ClearMonsterDrops(unit);
+            }
             self.Units.Remove(unit);
             unit?.Dispose();
             if (monsterId != 0)

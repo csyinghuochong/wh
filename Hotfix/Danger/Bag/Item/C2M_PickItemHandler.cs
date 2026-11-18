@@ -7,103 +7,48 @@ namespace ET
     [ActorMessageHandler]
     public class C2M_PickItemHandler : AMActorLocationRpcHandler<Unit, C2M_PickItemRequest, M2C_PickItemResponse>
     {
-        private int OnFubenPick(Unit unit, C2M_PickItemRequest request, int sceneTypeEnum, List<long> removeIds)
+        private int OnFubenPick(Unit unit, C2M_PickItemRequest request, List<long> removeIds)
         {
             List<DropInfo> drops = request.ItemIds;
-           
             long serverTime = TimeHelper.ServerNow();
             int errorCode = ErrorCode.ERR_Success;
-            //DropType ==  0 公共掉落 2保护掉落   1私有掉落 3 归属掉落
-
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            UnitComponent unitComponent = unit.GetParent<UnitComponent>();
-            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
-            List<RewardItem> pendingRewards = new List<RewardItem>();
-            List<(int itemId, long unitId, int dropType)> pendingMeta = new List<(int, long, int)>();
             string pickGetWay = $"{ItemGetWay.PickItem}_{serverTime}";
 
             for (int i = drops.Count - 1; i >= 0; i--)
             {
-                Unit unitDrop = unitComponent.Get(drops[i].UnitId);
-                DropComponent dropComponent = null;
-                if (drops[i].DropType != 1)
+                // Run 已用服务端记录替换请求数据；装备直接入包，不能重新走 RewardItem 随机属性。
+                DropInfo drop = drops[i];
+                bool added;
+                if (drop.ItemType == ItemBigType.Type_Equip)
                 {
-                    if (unitDrop == null)
-                    {
-                        errorCode = ErrorCode.ERR_NetWorkError;
-                        continue;
-                    }
-                    dropComponent = unitDrop.GetComponent<DropComponent>();
-                    int dropType = dropComponent.GetDropType();
-                }
-                int addItemID = dropComponent !=null ? dropComponent.ItemID : drops[i].ItemID;
-                int addItemNum = dropComponent != null ? dropComponent.ItemNum : drops[i].ItemNum;
-                pendingRewards.Add(new RewardItem() {  ItemType = drops[i].ItemType , ItemID = addItemID, ItemNum = addItemNum, ItemFlags = drops[i].ItemFlags });
-                pendingMeta.Add((addItemID, drops[i].UnitId, drops[i].DropType));
-            }
-
-            if (pendingRewards.Count > 0)
-            {
-                bool batchOk = bag.OnAddItemData(pendingRewards, pickGetWay);
-                if (!batchOk)
-                {
-                    // 背包空间不足时回退逐个添加，保留部分成功语义
-                    for (int i = 0; i < pendingRewards.Count; i++)
-                    {
-                        List<RewardItem> one = new List<RewardItem> { pendingRewards[i] };
-                        if (!bag.OnAddItemData(one, pickGetWay))
-                        {
-                            errorCode = ErrorCode.ERR_BagIsFull;
-                            continue;
-                        }
-                        DropInfo dropInfo = null;
-                        for (int d = 0; d < drops.Count; d++)
-                        {
-                            if (drops[d].UnitId == pendingMeta[i].unitId)
-                            {
-                                dropInfo = drops[d];
-                                break;
-                            }
-                        }
-                        if (dropInfo != null)
-                        {
-                            SceneCreatureHelp.SendFubenPickMessage(unit, dropInfo);
-                        }
-                        UnitHelper.RemovePickedDrop(unit, pendingMeta[i].unitId);
-                        removeIds.Add(pendingMeta[i].unitId);
-                        
-                    }
+                    added = bag.OnAddItemData(drop.EquipInfo, pickGetWay);
                 }
                 else
                 {
-                    for (int i = 0; i < pendingMeta.Count; i++)
+                    added = bag.OnAddItemData(new List<RewardItem>
                     {
-                        DropInfo dropInfo = null;
-                        for (int d = 0; d < drops.Count; d++)
+                        new RewardItem
                         {
-                            if (drops[d].UnitId == pendingMeta[i].unitId)
-                            {
-                                dropInfo = drops[d];
-                                break;
-                            }
+                            ItemType = drop.ItemType, ItemID = drop.ItemID, ItemNum = drop.ItemNum, ItemFlags = drop.ItemFlags,
                         }
-                        if (dropInfo != null)
-                        {
-                            SceneCreatureHelp.SendFubenPickMessage(unit, dropInfo);
-                        }
-                        UnitHelper.RemovePickedDrop(unit, pendingMeta[i].unitId);
-                        removeIds.Add(pendingMeta[i].unitId);
-                    }
+                    }, pickGetWay);
                 }
+                if (!added)
+                {
+                    errorCode = ErrorCode.ERR_BagIsFull;
+                    continue;
+                }
+                UnitHelper.RemovePickedDrop(unit, drop.UnitId);
+                removeIds.Add(drop.UnitId);
+                SceneCreatureHelp.SendFubenPickMessage(unit, drop);
             }
-            
             return errorCode;
         }
 
 
         protected override async ETTask Run(Unit unit, C2M_PickItemRequest request, M2C_PickItemResponse response, Action reply)
         {
-            UnitInfoComponent unitInfoComponent = unit.GetComponent<UnitInfoComponent>();
             if (unit.Type != UnitType.Player || unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) == 1
                     || request.ItemIds.Count > 100)
             {
@@ -127,10 +72,6 @@ namespace ET
                 {
                     info = dropUnit.GetComponent<DropComponent>().ToDropInfo(dropUnit);
                 }
-                else
-                {
-                    info = unitInfoComponent.Drops.Find(drop => drop.UnitId == dropId);
-                }
                 if (info == null)
                 {
                     response.RemoveIds.Add(dropId);
@@ -139,11 +80,27 @@ namespace ET
                 }
                 if (PositionHelper.Distance2D(unit.Position, new UnityEngine.Vector3(info.X, info.Y, info.Z)) > CommonConfig.PickDistance)
                 {
-                    response.Error = ErrorCode.ERR_Parameter;
+                    // 已打开这具尸体的拾取界面后，不再限制拾取距离。
+                    Unit monster = units.Get(info.BeKillId);
+                    MonsterBodyComponent body = monster != null ? monster.GetComponent<MonsterBodyComponent>() : null;
+                    if (body == null || !body.Viewers.TryGetValue(unit.Id, out long sessionId)
+                        || unit.GetComponent<UnitGateComponent>().GateSessionActorId != sessionId)
+                    {
+                        response.Error = ErrorCode.ERR_Parameter;
+                        reply();
+                        return;
+                    }
+                }
+                if (info.ItemType == ItemBigType.Type_Equip
+                        && (info.EquipInfo == null || info.ItemNum != 1 || info.EquipInfo.ItemNum != 1
+                            || info.EquipInfo.BagInfoID <= 0 || info.EquipInfo.ItemType != info.ItemType
+                            || info.EquipInfo.ItemID != info.ItemID || info.EquipInfo.ItemFlags != info.ItemFlags))
+                {
+                    response.Error = ErrorCode.ERR_ModifyData;
                     reply();
                     return;
                 }
-                // 类型、数量和来源均采用服务端记录，私人掉落入包成功后才删除。
+                // 类型、数量、状态及装备属性均采用服务端记录，入包成功后才删除。
                 request.ItemIds[i] = info;
             }
 
@@ -155,10 +112,7 @@ namespace ET
             }
 
             List<long> removeIds = new List<long>();
-            MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
-            int sceneTypeEnum = mapComponent.MapTypeEnum;
-            response.Error = OnFubenPick(unit, request, sceneTypeEnum, removeIds);
-
+            response.Error = OnFubenPick(unit, request, removeIds);
             response.RemoveIds.AddRange(removeIds);
             reply();
             await ETTask.CompletedTask;
