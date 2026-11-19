@@ -1008,7 +1008,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 领悟配方。ItemType=98，ItemTypeParam1=LDSkill_Make.Id。已学会则忽略。
+        /// 领悟配方。ItemType=95，ItemTypeParam1=LDSkill_Make.Id。已学会则忽略。
         /// </summary>
         public static void LearnRecipe(this RoleInfoComponentServer self, int makeId)
         {

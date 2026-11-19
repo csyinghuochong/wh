@@ -142,14 +142,11 @@ namespace ET
 		/// <summary>允许 坐骑</summary>
 		[ProtoMember(21)]
 		public int If_Mount { get; set; }
-		/// <summary>摄像机</summary>
-		[ProtoMember(22)]
-		public double[] CameraPos { get; set; }
 		/// <summary>Loading</summary>
-		[ProtoMember(23)]
+		[ProtoMember(22)]
 		public int[] LoadingRes { get; set; }
 		/// <summary>音乐</summary>
-		[ProtoMember(24)]
+		[ProtoMember(23)]
 		public string Music { get; set; }
 
 	}

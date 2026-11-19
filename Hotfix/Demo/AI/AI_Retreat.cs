@@ -7,61 +7,29 @@ namespace ET
     public class AI_Retreat : AAIHandler
     {
 
-        /// <summary>
-        /// boss范围圈内最近的敌人
-        /// </summary>
-        /// <param name="main"></param>
-        /// <param name="bornpos"></param>
-        /// <param name="maxdis"></param>
-        /// <returns></returns>
-        public Unit GetHaveEnemy(AIComponent aIComponent, Vector3 bornpos, float maxdis)
-        {
-            Unit nearest = null;
-            Unit main = aIComponent.Unit;
-            List<Unit> units = aIComponent.UnitComponent.GetAll();
-            for (int i = 0; i < units.Count; i++)
-            {
-                Unit unit = units[i];
-                if (unit.IsDisposed || main.Id == unit.Id)
-                {
-                    continue;
-                }
-
-                float dd = PositionHelper.Distance2D(bornpos, unit.Position);
-                if (dd > maxdis)
-                {
-                    continue;
-                }
-                if (!main.IsCanAttackUnit(unit, false))
-                {
-                    continue;
-                }
-                nearest = unit;
-                break;
-            }
-            return nearest;
-        }
-
-
         public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
-            //Unit unit = aiComponent.GetParent<Unit>();
-            Vector3 posVec3 = aiComponent.Unit.GetBornPostion();
-            float distance =  PositionHelper.Distance2D(posVec3, aiComponent.Unit.Position);
-            if (aiComponent.Unit.IsBoss())
+            // 返回途中保持当前节点，避免重新索敌或切回攻击。
+            if (aiComponent.IsRetreat != 0)
             {
-                Unit enemy = GetHaveEnemy(aiComponent, posVec3, aiComponent.ChaseRange);
-                //if (enemy == null)
-                //{
-                //    aiComponent.TargetID = 0;
-                //}
-                //return distance >= aiComponent.ChaseRange || aiComponent.TargetID == 0;
-                return distance >= aiComponent.ChaseRange && enemy == null;
+                return true;
             }
-            else
+
+            Unit unit = aiComponent.Unit;
+            float bornDistance = PositionHelper.Distance2D(unit.GetBornPostion(), unit.Position);
+            if (aiComponent.LoseAggro > 0 && bornDistance > aiComponent.LoseAggro)
             {
-                return distance >= aiComponent.ChaseRange;
+                return true;
             }
+
+            Unit target = aiComponent.UnitComponent.Get(aiComponent.TargetID);
+            if (target == null || target.IsDisposed)
+            {
+                return false;
+            }
+
+            return aiComponent.ChaseRange > 0
+                && PositionHelper.Distance2D(unit.Position, target.Position) > aiComponent.ChaseRange;
         }
 
         public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
@@ -81,6 +49,10 @@ namespace ET
 
             aiComponent.TargetID = 0;
             aiComponent.IsRetreat = TimeHelper.ServerNow()+ (haveStealth ? TimeHelper.Second * 5 : 0);
+            SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
+            skillManagerComponent.ClearMonsterSing();
+            skillManagerComponent.OnFinish(true);
+            unit.Stop(0);
             List<Unit> units = UnitHelper.GetUnitList(unit.DomainScene(), UnitType.Player);
             for (int i = 0; i < units.Count; i++)
             {
@@ -95,29 +67,28 @@ namespace ET
                     unit.FindPathMoveToAsync(bornVector3, cancellationToken, false).Coroutine();
                 }
                 bool timeRet = await TimerComponent.Instance.WaitAsync(1000, cancellationToken);
+                if (unit.IsDisposed)
+                {
+                    return;
+                }
+                if (!timeRet)
+                {
+                    // 被击退等行为打断后，下次 AI 检查仍继续返回；中断时不回血。
+                    return;
+                }
+
                 long serverNow = TimeHelper.ServerNow();
-                if (timeRet && Vector3.Distance(bornVector3, unit.Position) < 0.5f && !unit.IsDisposed && serverNow > aiComponent.IsRetreat)
+                if (PositionHelper.Distance2D(bornVector3, unit.Position) < 0.5f && serverNow > aiComponent.IsRetreat)
                 {
                     NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
                     if (aiComponent.SceneTypeEnum != MapTypeEnum.TeamDungeon && numericComponent.GetAsInt(NumericType.Now_Dead) == 0)
                     {
-                        long max_hp = numericComponent.GetAsLong(NumericType.Numeric_Error);
-                        numericComponent.ApplyValue(NumericType.Numeric_Error, max_hp);
+                        long maxHp = numericComponent.GetAsLong(NumericType.HP_Max_10);
+                        numericComponent.ApplyValue(NumericType.HP_Current_8, maxHp);
                     }
                     aiComponent.IsRetreat = 0;
                 }
 
-                if (!timeRet)
-                {
-                    aiComponent.IsRetreat = 0;
-                }
-
-                //返回出生点
-                if (aiComponent.IsRetreat == 0 && unit.IsBoss())
-                {
-                    SkillManagerComponent skillManagerComponent = unit.GetComponent<SkillManagerComponent>();
-                    skillManagerComponent?.OnFinish(true);
-                }
                 if (aiComponent.IsRetreat == 0)
                 {
                     return;

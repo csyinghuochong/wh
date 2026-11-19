@@ -20,12 +20,6 @@ namespace ET
 				return;
 			}
 
-            if (petinfo_1.PetStatus == 1 || petinfo_2.PetStatus == 1)
-            {
-                response.Error = ErrorCode.ERR_Pet_HeCheng_Error;
-                reply();
-                return;
-            }
 
 			if (petinfo_1.ConfigId != petinfo_2.ConfigId)
 			{
@@ -84,6 +78,12 @@ namespace ET
 			}
 
 			long deletePetId = petinfo_2.Id;
+			unit.GetParent<UnitComponent>().Remove(deletePetId);
+			if (petComponentServer.FightPetId == deletePetId)
+			{
+				petComponentServer.FightPetId = 0;
+			}
+
 			petComponentServer.RemovePet(deletePetId, 1);
 			petComponentServer.UpdatePetAttribute(petinfo_1, true);
 			taskComponentServer.OnPetHeCheng(petinfo_1);

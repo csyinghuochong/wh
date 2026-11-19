@@ -56,7 +56,7 @@ namespace ET
             }
 
             int recipeMakeId = 0;
-            if (ldItem.ItemType == ItemTypeEnum.SubType_Recipe_98)
+            if (ldItem.ItemType == ItemTypeEnum.SubType_Recipe_95)
             {
                 recipeMakeId = ldItem.GetTypeParam1();
                 if (recipeMakeId <= 0 || !LDSkill_MakeCategory.Instance.Contain(recipeMakeId))
