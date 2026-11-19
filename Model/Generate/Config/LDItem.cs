@@ -142,7 +142,7 @@ namespace ET
 		/// <summary>进技能 配置 0-否 1-是</summary>
 		[ProtoMember(21)]
 		public int IfSkill { get; set; }
-		/// <summary>背包类型 1-装备 2-奇珍 3-材料 4-消耗</summary>
+		/// <summary>背包类型 1-常规 2-任务 901-材料 902-灵宠书 904-家园</summary>
 		[ProtoMember(22)]
 		public int BagType { get; set; }
 		/// <summary>自动 使用 0-否 1-是</summary>

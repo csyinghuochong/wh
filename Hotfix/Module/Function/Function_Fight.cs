@@ -111,14 +111,18 @@ namespace ET
             double combat = 0;
             RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
 
+            double lvComabt = 0;
             // 1. 等级战力：直接取 Exp_Lv 当前等级这一行的 CP_Role，不累加之前等级的 CP_Role。
             // 等级生命 Hp_Standard × Occupation.Hp_Param 属于派生属性，不另算战力，保证各职业升级战力一致。
             if (LDExp_LvCategory.Instance != null
                 && LDExp_LvCategory.Instance.Contain(roleInfo.Lv))
             {
-                combat += LDExp_LvCategory.Instance.Get(roleInfo.Lv).CP_Role;
+                lvComabt += LDExp_LvCategory.Instance.Get(roleInfo.Lv).CP_Role;
             }
 
+            combat += lvComabt;
+
+            double pointComabt = 0;
             // 2. 角色初始点和等级固定点的战力；数组顺序为：体、力、智、念、敏、迅。
             // 初始点来自 GlobalValue.Add_Point_Init，是角色创建时各维度自带的点数。
             int[] initPoints = RoleAddPointHelper.GetInitPoints();
@@ -130,20 +134,25 @@ namespace ET
                 double pointCP = LDAttributeCategory.Instance.Get(RoleAddPointHelper.PointNumericTypes[i]).CP;
                 // 只计算点数本身：(初始点 + 累计固定点) × CP；转为 long 后相加，避免 int 加法溢出。
                 // 力转换出的物攻、体转换出的生命等派生属性不重复计算；装备六维在装备战力中单独计算。
-                combat += ((long)initPoints[i] + fixedPoints[i]) * pointCP;
+                pointComabt += ((long)initPoints[i] + fixedPoints[i]) * pointCP;
             }
 
             // 3. 自由点战力：从 GlobalValue.Add_Point_Level_UP_Free 取当前等级累计获得的全部自由点。
             // 已分配、未分配都计入，因此加点和洗点不改变战力；这部分未包含在上面的初始点、固定点中。
             // 六维 CP 当前相同，统一读取力的 CP；不读取 Numeric 的当前六维值，避免混入 BUFF 修改的点数。
-            combat += RoleAddPointHelper.GetTotalFreePointByLevel(roleInfo.Lv)
+            pointComabt += RoleAddPointHelper.GetTotalFreePointByLevel(roleInfo.Lv)
                 * LDAttributeCategory.Instance.Get(NumericType.Point_Li_2).CP;
 
+            combat += pointComabt;
+
+            double equipComabt = 0;
             List<BagInfo> equipList = unit.GetComponent<BagComponentServer>().GetItemByLoc(ItemLocType.ItemLocEquip);
             for (int i = 0; i < equipList.Count; i++)
             {
-                combat += ItemNewHelper.CalculateEquipCombatValue(equipList[i]);
+                equipComabt += ItemNewHelper.CalculateEquipCombatValue(equipList[i]);
             }
+
+            combat += equipComabt;
 
             // 坐骑仅计算已激活的使用中/骑乘中实例，休息和未拥有的坐骑不计战力。
             // 总点数按坐骑等级读取，含已分配和未分配；总资质读取当前生效的六维资质，不读取派生属性。

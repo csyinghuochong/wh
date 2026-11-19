@@ -93,8 +93,8 @@ namespace ET
 
 				//对比出售数量和道具是否匹配
 				long bagInfoId = request.ConsignItemInfo.BagInfo.BagInfoID;
-				BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoId);
-				if (bagInfo == null)
+				BagInfo bagInfo = bagComponentServer.GetItemByUId(bagInfoId);
+				if (bagInfo == null || !ItemNewHelper.IsValideBagLoc(bagInfo.Loc))
 				{
 					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
@@ -134,7 +134,7 @@ namespace ET
 
 				int sellNum = request.ConsignItemInfo.BagInfo.ItemNum;
 				int sellItemId = bagInfo.ItemID;
-				if (!bagComponentServer.OnCostItemData(bagInfoId, sellNum))
+				if (!bagComponentServer.OnCostItemData(bagInfoId, sellNum, (ItemLocType)bagInfo.Loc))
 				{
 					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
@@ -158,7 +158,7 @@ namespace ET
 
 				if (r_GameStatusResponse.Error != ErrorCode.ERR_Success)
 				{
-					BagInfo current = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoId);
+					BagInfo current = bagComponentServer.GetItemByLoc((ItemLocType)bagInfo.Loc, bagInfoId);
 					M2C_RoleBagUpdate bagUpdate = new M2C_RoleBagUpdate();
 					if (current != null)
 					{
@@ -168,7 +168,7 @@ namespace ET
 					else
 					{
 						bagInfo.ItemNum = sellNum;
-						bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag).Add(bagInfo);
+						bagComponentServer.GetItemByLoc((ItemLocType)bagInfo.Loc).Add(bagInfo);
 						bagUpdate.BagInfoAdd.Add(bagInfo);
 					}
 

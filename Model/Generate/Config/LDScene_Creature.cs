@@ -91,26 +91,29 @@ namespace ET
 		/// <summary>对应ID</summary>
 		[ProtoMember(4)]
 		public int Match_Id { get; set; }
-		/// <summary>创建类型 0-永久 1-场景 2-不创建</summary>
+		/// <summary>分组ID</summary>
 		[ProtoMember(5)]
+		public int Group_Id { get; set; }
+		/// <summary>创建类型 0-永久 1-场景 2-不创建</summary>
+		[ProtoMember(6)]
 		public int Type_Create { get; set; }
 		/// <summary>刷新时间</summary>
-		[ProtoMember(6)]
+		[ProtoMember(7)]
 		public int Refresh { get; set; }
 		/// <summary>朝向</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int Rotation { get; set; }
 		/// <summary>位置</summary>
-		[ProtoMember(8)]
+		[ProtoMember(9)]
 		public double[] Position { get; set; }
 		/// <summary>小地图 0-不显示 1-NPC 2-首领</summary>
-		[ProtoMember(9)]
+		[ProtoMember(10)]
 		public int MiniMap_Type { get; set; }
 		/// <summary>小地图 排序</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int MiniMap_Order_SL { get; set; }
 		/// <summary>小地图 图标</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public string MiniMap_Icon { get; set; }
 
 	}

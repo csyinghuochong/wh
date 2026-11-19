@@ -151,11 +151,11 @@ namespace ET
             }
 
             ItemLocType toLoc = ItemNewHelper.GetToItemLocType(reward);
-            List<BagInfo> locList = bag.GetItemByLoc(toLoc);
-            if (locList == null)
+            if (!ItemNewHelper.IsValideBagLoc((int)toLoc))
             {
                 return false;
             }
+            List<BagInfo> locList = bag.GetItemByLoc(toLoc);
 
             int pileSum = ItemNewHelper.GetNewItemPileSum(reward);
             int need = ItemNewHelper.CalcNeedNewCells(locList, reward.ItemType, reward.ItemID, reward.ItemNum, pileSum, reward.ItemFlags, makePlayer, makeTime);

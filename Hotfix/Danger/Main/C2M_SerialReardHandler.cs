@@ -18,7 +18,7 @@ namespace ET
             string reward = "3~4000~10|3~4401~10|3~4501~10|3~4530~10";
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(reward);
 
-            if (bag.GetBagLeftCell() < rewardItems.Count)
+            if (!bag.CanAddItemData(rewardItems))
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();

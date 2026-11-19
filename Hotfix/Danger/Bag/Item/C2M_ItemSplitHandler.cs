@@ -11,8 +11,8 @@ namespace ET
         {
             long bagInfoID = request.OperateBagID;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
-            BagInfo useBagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoID);
-            if (useBagInfo == null)
+            BagInfo useBagInfo = bagComponentServer.GetItemByUId(bagInfoID);
+            if (useBagInfo == null || !ItemNewHelper.IsValideBagLoc(useBagInfo.Loc))
             {
                 response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Use_Fail);
                 reply();
@@ -51,6 +51,12 @@ namespace ET
             {
                 Log.Error($"C2M_ItemSplitRequest 4");
                 response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
+            if (bagComponentServer.GetBagLeftCell(useBagInfo.Loc) <= 0)
+            {
+                response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
                 return;
             }

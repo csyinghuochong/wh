@@ -56,6 +56,7 @@ namespace ET
 				chuansong.ConfigId = transferId;
 				chuansong.Type = UnitType.Teleport;
 				chuansong.Position = vector3;
+				chuansong.Rotation = Quaternion.Euler(0, (float)dungeonTransferConfig.Rotation, 0);
 				chuansong.AddComponent<AOIEntity, int, Vector3>(9 * 1000, chuansong.Position);
 			}
 		}
@@ -128,7 +129,7 @@ namespace ET
                 unit = UnitFactory.CreateInteraction(scene, sceenCreateid, monsterid, initposition, sceneCreate.Rotation);
             }
         }
-
+		
 		public static List<IntLongPair> GetRandomMonster(Scene scene, int fubenid, string createMonster)
 		{
             List<IntLongPair> randomMonsterList = new List<IntLongPair>();	

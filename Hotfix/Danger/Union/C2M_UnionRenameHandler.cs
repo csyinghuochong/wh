@@ -47,8 +47,9 @@ namespace ET
             List<RewardItem> costs = ItemNewHelper.GetRewardItems(raw);
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             List<BagInfo> refundItems = new List<BagInfo>();
-            foreach (BagInfo item in bag.GetItemByLoc(ItemLocType.ItemLocBag))
+            foreach (BagInfo item in bag.GetAllItems())
             {
+                if (!ItemNewHelper.IsValideBagLoc(item.Loc)) continue;
                 refundItems.Add(UnionWarehouseHelper.CloneBagInfo(item, item.ItemNum));
             }
             Dictionary<int, long> refundCurrency = new Dictionary<int, long>();

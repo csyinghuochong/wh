@@ -127,7 +127,7 @@ namespace ET
                 return ErrorCode.ERR_Error;
             }
 
-            if (bag.GetBagLeftCell() < ItemNewHelper.GetNeedCell(items))
+            if (!bag.CanAddItemData(items))
             {
                 return ErrorCode.ERR_BagIsFull;
             }
@@ -155,7 +155,7 @@ namespace ET
                 return ErrorCode.ERR_Error;
             }
 
-            if (bag.GetBagLeftCell() < ItemNewHelper.GetNeedCell(rewards))
+            if (!bag.CanAddItemData(rewards))
             {
                 return ErrorCode.ERR_BagIsFull;
             }

@@ -693,8 +693,6 @@ namespace ET
                 mailInfo.Status = 0;
                 //mailInfo.Title = "家族入侵怪物奖励";
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
-
-                mailInfo.ItemList.Add(new BagInfo() { ItemID = 1, ItemNum = 100, GetWay = $"{ItemGetWay.UnionBoss}_{serverTime}" });
                 MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(players[i].Id), players[i].Id, mailInfo).Coroutine();
             }
         }

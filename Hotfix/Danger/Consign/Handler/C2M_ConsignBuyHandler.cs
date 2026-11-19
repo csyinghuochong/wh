@@ -14,27 +14,10 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
             DataCollationComponent dataCollation = unit.GetComponent<DataCollationComponent>();
 
-            //背包是否有位置
-            if (bag.GetBagLeftCell() < 1)
-            {
-                response.Error = ErrorCode.ERR_BagIsFull;
-                reply();
-                return;
-            }
-
  
             ConsignItemInfo paiMaiItemInfo = request.ConsignItemInfo;
             if (request.ConsignItemInfo == null || request.ConsignItemInfo.BagInfo == null)
             {
-                reply();
-                return;
-            }
-
-            int pileNumber = ItemNewHelper.GetNewItemPileSum(paiMaiItemInfo.BagInfo);
-            int cell = Mathf.CeilToInt(paiMaiItemInfo.BagInfo.ItemNum * 1f / pileNumber);
-            if (bag.GetBagLeftCell() < cell)
-            {
-                response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
                 return;
             }
@@ -54,6 +37,23 @@ namespace ET
             else
             {
                 buyNum = request.BuyNum;
+            }
+
+            BagInfo item = paiMaiItemInfo.BagInfo;
+            ItemLocType loc = ItemNewHelper.GetToItemLocType(item.ItemType, item.ItemID);
+            if (!ItemNewHelper.IsValideBagLoc((int)loc))
+            {
+                response.Error = ErrorCode.ERR_Parameter;
+                reply();
+                return;
+            }
+            int cell = ItemNewHelper.CalcNeedNewCells(bag.GetItemByLoc(loc), item.ItemType, item.ItemID, buyNum,
+                    ItemNewHelper.GetNewItemPileSum(item), item.ItemFlags, item.MakePlayer, item.MakeTime);
+            if (bag.GetBagLeftCell((int)loc) < cell)
+            {
+                response.Error = ErrorCode.ERR_BagIsFull;
+                reply();
+                return;
             }
 
             long needGold = (long)paiMaiItemInfo.Price * buyNum;

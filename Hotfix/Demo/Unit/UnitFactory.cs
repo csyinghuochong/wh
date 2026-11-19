@@ -632,10 +632,16 @@ namespace ET
             {
                 for (int i = 0; i< dropID.Length; i++ )
                 {
+                    int beforeCount = droplist.Count;
                     DropHelper.DropIDToDropItem(dropID[i], droplist);
+
+                    for (int j = beforeCount; j < droplist.Count; j++)
+                    {
+                        RewardItem item = droplist[j];
+                        Console.WriteLine($"DropItem:  {bekill.ConfigId}:   {dropID[i]}   {item.ItemType} {item.ItemID}");
+                    }
                 }
             }
-           
             if (droplist.Count > 100)
             {
                 Log.Error($"掉落道具数量异常： {ldMonsterCof.Id}  {droplist.Count}");

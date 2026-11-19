@@ -18,8 +18,8 @@ namespace ET
 
                 BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-                BagInfo bagInfo = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.BagInfoID);
-                if (bagInfo == null)
+                BagInfo bagInfo = bagComponentServer.GetItemByUId(request.BagInfoID);
+                if (bagInfo == null || !ItemNewHelper.IsValideBagLoc(bagInfo.Loc))
                 {
                     response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
@@ -57,9 +57,9 @@ namespace ET
                 BagInfo mailBag = CloneHelper.ShallowClone(bagInfo);
                 mailBag.ItemNum = request.SellNum;
                 mailBag.BagInfoID = IdGenerater.Instance.GenerateId();
-                mailBag.Loc = (int)ItemLocType.ItemLocBag;
+                mailBag.Loc = bagInfo.Loc;
 
-                bagComponentServer.OnCostItemData(request.BagInfoID, request.SellNum);
+                bagComponentServer.OnCostItemData(request.BagInfoID, request.SellNum, (ItemLocType)bagInfo.Loc);
 
                 long paimaiServerId = DBHelper.GetPaiMaiServerId(unit);
                 Consign2M_WantBuyDealResponse dealResponse = (Consign2M_WantBuyDealResponse)await ActorMessageSenderComponent.Instance.Call(

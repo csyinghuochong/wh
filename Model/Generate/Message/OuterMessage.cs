@@ -5713,41 +5713,6 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_PetAddPoint))]
-//宠物加点
-	[Message(OuterOpcode.C2M_PetAddPoint)]
-	[ProtoContract]
-	public partial class C2M_PetAddPoint: Object, IActorLocationRequest
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(1)]
-		public long PetInfoId { get; set; }
-
-		[ProtoMember(2)]
-		public List<int> AddPropretyValue = new List<int>();
-
-	}
-
-	[Message(OuterOpcode.M2C_PetAddPoint)]
-	[ProtoContract]
-	public partial class M2C_PetAddPoint: Object, IActorLocationResponse
-	{
-		[ProtoMember(90)]
-		public int RpcId { get; set; }
-
-		[ProtoMember(91)]
-		public string Message { get; set; }
-
-		[ProtoMember(92)]
-		public int Error { get; set; }
-
-		[ProtoMember(3)]
-		public PetInfo PetInfo { get; set; }
-
-	}
-
 	[ResponseType(nameof(M2C_PetHeCheng))]
 // 宠物合成 [1合2 2合3]
 // Pet表备注：同种同星的宠物合成，增加星级；合成时只要有异化则结果必异化；合体前对副宠进行重置，把药退出来
@@ -5881,12 +5846,7 @@ namespace ET
 		[ProtoMember(8)]
 		public string PetName { get; set; }
 
-		[ProtoMember(10)]
-		public int AddPropretyNum { get; set; }
-
-		[ProtoMember(11)]
-		public string AddPropretyValue { get; set; }
-
+// 字段 10、11 已废弃（原手动加点剩余点数、已分配点数），勿复用；六维点数由等级和有效资质计算。
 		[ProtoMember(13)]
 		public PetAptitudeInfo Aptitude_1 { get; set; }
 

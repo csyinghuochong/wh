@@ -24,8 +24,8 @@ namespace ET
                 reply();
                 return;
             }
-            BagInfo baginfoCost = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocBag, request.CostItemId);
-            if (baginfoCost == null)
+            BagInfo baginfoCost = bagComponentServer.GetItemByUId(request.CostItemId);
+            if (baginfoCost == null || !ItemNewHelper.IsValideBagLoc(baginfoCost.Loc))
             {
                 response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
@@ -33,7 +33,7 @@ namespace ET
             }
 
             //道具鉴定，扣除道具
-            if (!bagComponentServer.OnCostItemData(request.CostItemId, 1))
+            if (!bagComponentServer.OnCostItemData(request.CostItemId, 1, (ItemLocType)baginfoCost.Loc))
             {
                 response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();

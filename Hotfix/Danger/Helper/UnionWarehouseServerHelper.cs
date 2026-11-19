@@ -43,6 +43,7 @@ namespace ET
         public static bool CanReceive(BagComponentServer bag, BagInfo item)
         {
             ItemLocType loc = UnionWarehouseHelper.GetBagType(item);
+            if (!ItemNewHelper.IsValideBagLoc((int)loc)) return false;
             int pileSum = ItemNewHelper.GetNewItemPileSum(item);
             int cells = ItemNewHelper.CalcNeedNewCells(bag.GetItemByLoc(loc), item.ItemType, item.ItemID, item.ItemNum,
                 pileSum, item.ItemFlags, item.MakePlayer, item.MakeTime);

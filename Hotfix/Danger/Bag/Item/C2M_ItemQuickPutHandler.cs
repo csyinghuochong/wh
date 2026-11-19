@@ -17,6 +17,12 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemQuickPutRequest request, M2C_ItemQuickPutResponse response, Action reply)
         {
             int hourseId = request.HorseId;
+            if (!ItemNewHelper.IsValideBagLoc(hourseId) || hourseId == (int)ItemLocType.ItemLocBag)
+            {
+                response.Error = ErrorCode.ERR_Parameter;
+                reply();
+                return;
+            }
             //if (hourseId < (int)ItemLocType.ItemWareHouse1 || hourseId > (int)ItemLocType.ItemWareHouse4)
             //{
             //    Log.Error($"C2M_ItemQuickPutRequest 1");
@@ -43,6 +49,7 @@ namespace ET
                 for (int b = bagList.Count - 1; b >= 0; b-- )
                 {
                     BagInfo bagInfo = bagList[b];
+                    if ((int)ItemNewHelper.GetToItemLocType(bagInfo.ItemType, bagInfo.ItemID) != hourseId) continue;
                     if (processedBagIds.Contains(bagInfo.BagInfoID))
                     {
                         continue;

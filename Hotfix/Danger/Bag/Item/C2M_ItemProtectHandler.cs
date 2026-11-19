@@ -11,8 +11,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemProtectRequest request, M2C_ItemProtectResponse response, Action reply)
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            BagInfo bagInfo = bag.GetItemByLoc(ItemLocType.ItemLocBag, request.OperateBagID);
-            if (bagInfo == null)
+            BagInfo bagInfo = bag.GetItemByUId(request.OperateBagID);
+            if (bagInfo == null || !ItemNewHelper.IsValideBagLoc(bagInfo.Loc))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();

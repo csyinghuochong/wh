@@ -7,8 +7,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemUseRequest request, M2C_ItemUseResponse response, Action reply)
         {
-            if (unit.Type != UnitType.Player || request.UseNum <= 0 || !Enum.IsDefined(typeof(ItemLocType), request.Loc)
-                    || request.Loc == (int)ItemLocType.ItemLocMax)
+            if (unit.Type != UnitType.Player || request.UseNum <= 0 || !ItemNewHelper.IsValideBagLoc(request.Loc))
             {
                 response.Error = ErrorCode.ERR_Parameter;
                 reply();
@@ -46,8 +45,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemTradeConfirmRequest request, M2C_ItemTradeConfirmResponse response, Action reply)
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            if (unit.Type != UnitType.Player || request.BagInfoID <= 0 || !Enum.IsDefined(typeof(ItemLocType), request.Loc)
-                    || request.Loc == (int)ItemLocType.ItemLocMax)
+            if (unit.Type != UnitType.Player || request.BagInfoID <= 0
+                    || (!ItemNewHelper.IsValideBagLoc(request.Loc) && request.Loc != (int)ItemLocType.ItemLocEquip))
             {
                 response.Error = ErrorCode.ERR_Parameter;
                 reply();

@@ -82,13 +82,15 @@ namespace ET
             this.TeamMemberMax = 5;
   
             this.BagInitCapacity.Clear();
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBag] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120021);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagTreasure] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120022);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagMaterial] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120023);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagConsume] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_120024);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagLife] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1200251);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1200252);
-            this.BagInitCapacity[(int)ItemLocType.ItemLocBagHome2] = this.GetInt(GlobalValueKey.Global_Bag_Capacity_1200253);
+            const string bagCapacityPrefix = "Global_Bag_Capacity_";
+            foreach (LDGlobalValue config in this.keyDict.Values)
+            {
+                if (config.Key.StartsWith(bagCapacityPrefix, StringComparison.Ordinal)
+                        && int.TryParse(config.Key.Substring(bagCapacityPrefix.Length), out int belongId))
+                {
+                    this.BagInitCapacity[belongId] = this.GetInt(config.Key);
+                }
+            }
             this.ParseServerCrowd();
         }
 

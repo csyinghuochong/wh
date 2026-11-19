@@ -596,6 +596,11 @@ namespace ET
 					case "6":
 						int newLevel = int.Parse(commands[1]);
 						RoleInfoComponentServer roleInfoComponentServer =  unit.GetComponent<RoleInfoComponentServer>();
+						if (newLevel < roleInfoComponentServer.RoleInfo.Lv)
+						{
+							return;
+						}
+
 						TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();	
                         //if (newLevel <= roleInfoComponent.GetMaxLevel(taskComponent.RoleComoleteTaskList_2))
 						if(newLevel <= 80)

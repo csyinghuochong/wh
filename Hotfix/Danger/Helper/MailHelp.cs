@@ -291,6 +291,7 @@ namespace ET
                 }
 
                 ItemLocType toLoc = ItemNewHelper.GetToItemLocType(item.ItemType, item.ItemID);
+                if (!ItemNewHelper.IsValideBagLoc((int)toLoc)) return false;
                 List<BagInfo> locList = bag.GetItemByLoc(toLoc);
                 int pileSum = ItemNewHelper.GetNewItemPileSum(item);
                 int need = ItemNewHelper.CalcNeedNewCells(locList, item.ItemType, item.ItemID, item.ItemNum, pileSum, item.ItemFlags, item.MakePlayer, item.MakeTime);

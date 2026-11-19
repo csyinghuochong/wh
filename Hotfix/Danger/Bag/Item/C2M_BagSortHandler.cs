@@ -11,7 +11,7 @@ namespace ET
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             ItemLocType loc = (ItemLocType)request.ItemLocType;
-            if (loc <= ItemLocType.ItemLocEquip || loc >= ItemLocType.ItemLocMax)
+            if (!ItemNewHelper.IsValideBagLoc((int)loc))
             {
                 response.Error = ErrorCode.ERR_ModifyData;
                 reply();

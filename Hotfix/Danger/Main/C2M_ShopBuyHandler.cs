@@ -65,7 +65,7 @@ namespace ET
 
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(storeSellConfig.Goods);
             ItemNewHelper.ScaleRewardItems(rewardItems, buyNumber);
-            if (bag.GetBagLeftCell() < ItemNewHelper.GetNeedCell(rewardItems))
+            if (!bag.CanAddItemData(rewardItems))
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();

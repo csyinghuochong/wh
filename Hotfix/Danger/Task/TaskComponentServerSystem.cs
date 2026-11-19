@@ -619,11 +619,7 @@ namespace ET
             }
 
             List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems(roleInfoComponent.RoleInfo.Occ, taskid);
-            List<RewardItem> bagRewards = UnionHelper.FilterOutUnionResources(rewardItems);
-
-            int needcell = ItemNewHelper.GetNeedCell(bagRewards);
-            int bagLeftCell = bagComponentServer.GetBagLeftCell();
-            if (bagRewards.Count > 0 && (bagLeftCell < needcell || bagLeftCell < bagRewards.Count))
+            if (!bagComponentServer.CanAddItemData(rewardItems))
             {
                 return ErrorCode.ERR_BagIsFull;
             }
@@ -708,9 +704,7 @@ namespace ET
                 return ErrorCode.ERR_ModifyData;
             }
 
-            int needcell = ItemNewHelper.GetNeedCell(rewardItems);
-            int bagLeftCell = bagComponentServer.GetBagLeftCell();
-            if (bagLeftCell < needcell || bagLeftCell < rewardItems.Count)
+            if (!bagComponentServer.CanAddItemData(rewardItems))
             {
                 return ErrorCode.ERR_BagIsFull;
             }

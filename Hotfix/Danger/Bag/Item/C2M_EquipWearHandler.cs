@@ -28,7 +28,7 @@ namespace ET
             {
                 ItemLocType locType = ItemLocType.ItemLocBag;
                 BagInfo useBagInfo = bag.GetItemByLoc(locType, bagInfoID);
-                if (useBagInfo == null)
+                if (useBagInfo == null || useBagInfo.ItemType != ItemBigType.Type_Equip)
                 {
                     response.Error = ErrorCode.ERR_ItemNotExist;    
                     reply();

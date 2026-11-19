@@ -387,13 +387,16 @@ namespace ET
 
         public static void EnsureItemLists(this BagComponentServer self)
         {
-            self.AllItemList ??= new Dictionary<int, List<BagInfo>>();
-            self.AddedCellNum ??= new Dictionary<int, int>();
+            self.GetOrCreateItemList(ItemLocType.ItemLocEquip);
+            self.GetOrCreateItemList(ItemLocType.ItemLocBag);
+            foreach (int belongId in ItemNewHelper.GetBagBelongIds())
+            {
+                self.GetOrCreateItemList((ItemLocType)belongId);
+            }
         }
 
-        static List<BagInfo> GetOrCreateItemList(this BagComponentServer self, ItemLocType loc)
+        private static List<BagInfo> GetOrCreateItemList(this BagComponentServer self, ItemLocType loc)
         {
-            self.AllItemList ??= new Dictionary<int, List<BagInfo>>();
             int locKey = (int)loc;
             if (!self.AllItemList.TryGetValue(locKey, out List<BagInfo> bagList) || bagList == null)
             {
@@ -406,7 +409,7 @@ namespace ET
 
         public static List<BagInfo> GetItemByLoc(this BagComponentServer self, ItemLocType itemEquipType)
         {
-            return self.GetOrCreateItemList(itemEquipType);
+            return self.AllItemList[(int)itemEquipType];
         }
 
         public static void OnRecvItemSort(this BagComponentServer self, ItemLocType itemEquipType)
@@ -462,7 +465,7 @@ namespace ET
         {
             if (bagId == 0)
                 return null;
-            List<BagInfo> ItemTypeList = self.GetItemByLoc(itemLocType);
+            if (!self.AllItemList.TryGetValue((int)itemLocType, out List<BagInfo> ItemTypeList)) return null;
             for (int i = 0; i < ItemTypeList.Count; i++)
             {
                 if (ItemTypeList[i].BagInfoID == bagId)
@@ -508,9 +511,11 @@ namespace ET
         }
 
 
-        public static List<BagInfo> GetIdItemList(this BagComponentServer self, int itemType,  int itemId, ItemLocType loc =ItemLocType.ItemLocBag)
+        public static List<BagInfo> GetIdItemList(this BagComponentServer self, int itemType,  int itemId, ItemLocType loc = ItemLocType.ItemLocMax)
         {
             List<BagInfo> baginfo = new List<BagInfo>();
+            if (loc == ItemLocType.ItemLocMax) loc = ItemNewHelper.GetToItemLocType(itemType, itemId);
+            if (loc == ItemLocType.ItemLocMax) return baginfo;
             List<BagInfo> bagList = self.GetItemByLoc(loc);
             for (int i = 0; i < bagList.Count; i++)
             {
@@ -523,16 +528,18 @@ namespace ET
         }
 
         //获取某个道具的数量
-        public static long GetItemNumber(this BagComponentServer self, int itemType,  int itemId, ItemLocType itemLocType = ItemLocType.ItemLocBag)
+        public static long GetItemNumber(this BagComponentServer self, int itemType,  int itemId, ItemLocType itemLocType = ItemLocType.ItemLocMax)
         {
             int userDataType = ItemNewHelper.GetItemToUserDataType(itemType, itemId);
             long number = 0;
             if (userDataType == UserDataType.None)
             {
+                if (itemLocType == ItemLocType.ItemLocMax) itemLocType = ItemNewHelper.GetToItemLocType(itemType, itemId);
+                if (itemLocType == ItemLocType.ItemLocMax) return 0;
                 List<BagInfo> bagInfos = self.GetItemByLoc(itemLocType);
                 for (int i = 0; i < bagInfos.Count; i++)
                 {
-                    if (bagInfos[i].ItemID == itemId)
+                    if (bagInfos[i].ItemID == itemId && bagInfos[i].ItemType == itemType)
                     {
                         number += bagInfos[i].ItemNum;
                     }
@@ -555,7 +562,7 @@ namespace ET
         }
 
         /// <summary>消耗校验数量：本 ID + Same_Id 指向的补扣 ID。</summary>
-        public static long GetItemNumberForCost(this BagComponentServer self, int itemType, int itemId, ItemLocType itemLocType = ItemLocType.ItemLocBag)
+        public static long GetItemNumberForCost(this BagComponentServer self, int itemType, int itemId, ItemLocType itemLocType = ItemLocType.ItemLocMax)
         {
             long number = self.GetItemNumber(itemType, itemId, itemLocType);
             int fallbackId = ItemNewHelper.GetCostFallbackItemId(itemType, itemId);
@@ -622,12 +629,14 @@ namespace ET
 
         public static bool IsBagFullByLoc(this BagComponentServer self, int hourseId)
         {
+            if (!ItemNewHelper.IsValideBagLoc(hourseId)) return true;
             List<BagInfo> ItemTypeList = self.GetItemByLoc((ItemLocType)hourseId);
             return ItemTypeList.Count >= self.GeBagTotalCell(hourseId);
         }
 
         public static int GetBagLeftCell(this BagComponentServer self, int hourseId = (int)ItemLocType.ItemLocBag)
         {
+            if (!ItemNewHelper.IsValideBagLoc(hourseId)) return 0;
             List<BagInfo> ItemTypeList = self.GetItemByLoc((ItemLocType)hourseId);
             return self.GeBagTotalCell(hourseId) - ItemTypeList.Count;
         }
@@ -642,6 +651,12 @@ namespace ET
         public static void OnChangeItemLoc(this BagComponentServer self, BagInfo bagInfo, ItemLocType itemLocTypeTo, ItemLocType itemLocTypeFrom)
         {
             List<BagInfo> ItemTypeListSour = self.GetItemByLoc(itemLocTypeFrom);
+            ItemLocType bagLoc = ItemNewHelper.GetToItemLocType(bagInfo.ItemType, bagInfo.ItemID);
+            if (!ItemTypeListSour.Contains(bagInfo) || bagInfo.Loc != (int)itemLocTypeFrom
+                    || (itemLocTypeTo != bagLoc && (itemLocTypeTo != ItemLocType.ItemLocEquip || bagInfo.ItemType != ItemBigType.Type_Equip)))
+            {
+                throw new InvalidOperationException("道具归属或目标位置无效");
+            }
             for (int i = ItemTypeListSour.Count - 1; i >= 0; i--)
             {
                 if (ItemTypeListSour[i].BagInfoID == bagInfo.BagInfoID)
@@ -682,12 +697,6 @@ namespace ET
             return false;
         }
 
-        public static void OnResetSeason(this BagComponentServer self, bool notice)
-        { 
-            self.ClearJingHeItem(self.GetItemByLoc(ItemLocType.ItemLocBag));
-            self.ClearJingHeItem(self.GetItemByLoc(ItemLocType.ItemWareHouse1));
-          
-        }
 
         public static void ClearJingHeItem(this BagComponentServer self, List<BagInfo> bagInfos)
         {
@@ -832,6 +841,7 @@ namespace ET
 
         public static bool OnAddItemData(this BagComponentServer self, BagInfo bagInfo, string getType)
         {
+            if (bagInfo.ItemNum <= 0) return false;
             int maxPileSum = ItemNewHelper.GetNewItemPileSum(bagInfo);
             if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
             {
@@ -852,6 +862,7 @@ namespace ET
 
             int itemType = bagInfo.ItemType != 0 ? bagInfo.ItemType : ItemBigType.Type_Item;
             ItemLocType toLoc = ItemNewHelper.GetToItemLocType(itemType, bagInfo.ItemID);
+            if (!ItemNewHelper.IsValideBagLoc((int)toLoc) || bagInfo.ItemNum <= 0) return false;
             List<BagInfo> locList = self.GetItemByLoc(toLoc);
             if (self.GetBagLeftCell((int)toLoc) <= 0 || FindBagById(locList, bagInfo.BagInfoID) != null) return false;
             bagInfo.ItemType = itemType;
@@ -872,22 +883,10 @@ namespace ET
 
         public static void OnAddItemToStore(this BagComponentServer self, int itemlockType, int itemid, int itemnumber, string getType)
         {
-            BagInfo useBagInfo = new BagInfo();
-            useBagInfo.ItemID = itemid;
-            useBagInfo.ItemNum = itemnumber;
-            useBagInfo.Loc = itemlockType;
-            useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
-            useBagInfo.GetWay = getType;
-            ItemLocType storeLoc = (ItemLocType)useBagInfo.Loc;
-            List<BagInfo> storeList = self.GetItemByLoc(storeLoc);
-            storeList.Add(useBagInfo);
-            BagSortHelper.SortIfNeeded(storeList, storeLoc);
-
-            Unit parentUnit = self.GetParent<Unit>();
-            M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
-            m2c_bagUpdate.BagInfoAdd.Add(useBagInfo);
-            //通知客户端背包道具发生改变
-            MessageHelper.SendToClient(parentUnit, m2c_bagUpdate);
+            self.OnAddItemData(new List<RewardItem>
+            {
+                new RewardItem { ItemType = ItemBigType.Type_Item, ItemID = itemid, ItemNum = itemnumber }
+            }, new AddItemArg(getType) { Loc = (ItemLocType)itemlockType });
         }
 
         public static void OnAddItemDataNewCell(this BagComponentServer self, BagInfo bagInfo, int itemnumber)
@@ -898,15 +897,15 @@ namespace ET
             useBagInfo.ItemNum = itemnumber;
             LDItem ldItemCof = LDItemCategory.Instance.Get(itemid);
             useBagInfo.ItemType = bagInfo.ItemType;
-            useBagInfo.Loc = (int)ItemLocType.ItemLocBag;
+            useBagInfo.Loc = bagInfo.Loc;
             useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
             useBagInfo.GetWay = bagInfo.GetWay;
             useBagInfo.ItemFlags = bagInfo.ItemFlags;
             useBagInfo.MakePlayer = bagInfo.MakePlayer;
             useBagInfo.MakeTime = bagInfo.MakeTime;
-            List<BagInfo> bagList = self.GetItemByLoc(ItemLocType.ItemLocBag);
+            List<BagInfo> bagList = self.GetItemByLoc((ItemLocType)bagInfo.Loc);
             bagList.Add(useBagInfo);
-            BagSortHelper.SortIfNeeded(bagList, ItemLocType.ItemLocBag);
+            BagSortHelper.SortIfNeeded(bagList, bagInfo.Loc);
 
             Unit parentUnit = self.GetParent<Unit>();
             M2C_RoleBagUpdate m2c_bagUpdate = new M2C_RoleBagUpdate();
@@ -917,12 +916,8 @@ namespace ET
 
         public static ItemLocType ResolveAddItemLoc(ItemLocType specLocType, RewardItem rewardItem)
         {
-            if (specLocType == ItemLocType.ItemLocMax)
-            {
-                return ItemNewHelper.GetToItemLocType(rewardItem);
-            }
-
-            return specLocType;
+            ItemLocType loc = ItemNewHelper.GetToItemLocType(rewardItem);
+            return specLocType == ItemLocType.ItemLocMax || specLocType == loc ? loc : ItemLocType.ItemLocMax;
         }
 
         public static bool OnAddItemData(this BagComponentServer self, List<RewardItem> rewardItems, string getWay, bool notice = true)
@@ -938,6 +933,11 @@ namespace ET
                 return false;
             }
 
+            for (int i = 0; i < rewardItems.Count; i++)
+            {
+                if (rewardItems[i].ItemNum <= 0) return false;
+            }
+
             if (rewardItems[0].ItemType == ItemBigType.Type_None)
             {
                 Log.Error("rewardItems[0].ItemType == ItemBigType.Type_None");
@@ -948,6 +948,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             List<RewardItem> bagItems = new List<RewardItem>();
             List<RewardItem> unionItems = new List<RewardItem>();
+            List<RewardItem> otherItems = new List<RewardItem>();
             Dictionary<int, int> leftCellByLoc = new Dictionary<int, int>();
 
             foreach (RewardItem item in MergeRewardItems(rewardItems).Values)
@@ -955,16 +956,23 @@ namespace ET
                 if (UnionHelper.IsUnionResourceItem(item))
                 {
                     unionItems.Add(item);
-                    if (arg.Notice)
-                    {
-                        ItemAddHelper.OnGetItem(unit, getType, item.ItemType, item.ItemID, item.ItemNum);
-                    }
                     continue;
                 }
 
-                if (TryAddCurrency(unit, item, getType, arg.Notice) || TrySkipBag(unit, item, getType, arg))
+                if (ItemNewHelper.GetItemToUserDataType(item) != UserDataType.None
+                        || item.ItemType == ItemBigType.Type_Exp || item.ItemType == ItemBigType.Type_Mount)
                 {
+                    otherItems.Add(item);
                     continue;
+                }
+                if (item.ItemType == ItemBigType.Type_Item)
+                {
+                    LDItem config = LDItemCategory.Instance.Get(item.ItemID);
+                    if (config.IfAutoUse == 1 || config.IfBag == 0)
+                    {
+                        otherItems.Add(item);
+                        continue;
+                    }
                 }
 
                 if (!TryReserveBagCell(self, item, arg, leftCellByLoc))
@@ -975,8 +983,18 @@ namespace ET
                 bagItems.Add(item);
             }
 
+            // 所有目标页先通过预检，再发放货币、自动使用道具和公会资源。
+            foreach (RewardItem item in otherItems)
+            {
+                if (!TryAddCurrency(unit, item, getType, arg.Notice)) TrySkipBag(unit, item, getType, arg);
+            }
+
             if (unionItems.Count > 0)
             {
+                if (arg.Notice)
+                {
+                    foreach (RewardItem item in unionItems) ItemAddHelper.OnGetItem(unit, getType, item.ItemType, item.ItemID, item.ItemNum);
+                }
                 UnionHelper.SendUnionResource(unit, unionItems).Coroutine();
             }
 
@@ -991,6 +1009,10 @@ namespace ET
         /// <summary>只预检容量。freedItem 为完整消耗的格子；remainingItem 为操作后剩余格子的数量、状态快照。</summary>
         public static bool CanAddItemData(this BagComponentServer self, List<RewardItem> rewards, BagInfo freedItem = null, BagInfo remainingItem = null)
         {
+            for (int i = 0; i < rewards.Count; i++)
+            {
+                if (rewards[i].ItemNum <= 0) return false;
+            }
             Dictionary<int, int> cells = new Dictionary<int, int>();
             foreach (RewardItem reward in MergeRewardItems(rewards).Values)
             {
@@ -1002,6 +1024,7 @@ namespace ET
                     if (config.IfAutoUse == 1 || config.IfBag == 0) continue;
                 }
                 ItemLocType loc = ResolveAddItemLoc(ItemLocType.ItemLocMax, reward);
+                if (!ItemNewHelper.IsValideBagLoc((int)loc)) return false;
                 List<BagInfo> existing = self.GetItemByLoc(loc);
                 if (freedItem != null && freedItem.Loc == (int)loc)
                 {
@@ -1123,12 +1146,8 @@ namespace ET
         private static bool TryReserveBagCell(BagComponentServer self, RewardItem item, AddItemArg arg, Dictionary<int, int> leftCellByLoc)
         {
             ItemLocType toLocType = ResolveAddItemLoc(arg.Loc, item);
+            if (!ItemNewHelper.IsValideBagLoc((int)toLocType)) return false;
             List<BagInfo> locList = self.GetItemByLoc(toLocType);
-            if (locList == null)
-            {
-                Log.Error($"OnAddItemData invalid loc={(int)toLocType} item={item.ItemID}");
-                return false;
-            }
 
             int locKey = (int)toLocType;
             if (!leftCellByLoc.TryGetValue(locKey, out int leftCell))
@@ -1342,6 +1361,8 @@ namespace ET
                 return false;
             }
 
+            // 普通业务消耗按每个道具的配置页签定位，不再把常规页当作所有道具的来源。
+            if (itemLocType == ItemLocType.ItemLocBag) itemLocType = ItemLocType.ItemLocMax;
             if (!self.CanCostRewardItems(costItems, itemLocType))
             {
                 return false;
@@ -1457,11 +1478,13 @@ namespace ET
 
             Unit unit = self.GetParent<Unit>();
             LogHelper.LogWarning($"消耗道具: {unit.Id} {itemId} {itemNum}", false);
+            if (itemLocType == ItemLocType.ItemLocMax) itemLocType = ItemNewHelper.GetToItemLocType(itemType, itemId);
+            if (itemLocType == ItemLocType.ItemLocMax) return itemNum;
             List<BagInfo> bagInfos = self.GetItemByLoc(itemLocType);
             for (int k = bagInfos.Count - 1; k >= 0 && itemNum > 0; k--)
             {
                 BagInfo userBagInfo = bagInfos[k];
-                if (userBagInfo.ItemID != itemId)
+                if (userBagInfo.ItemID != itemId || userBagInfo.ItemType != itemType)
                 {
                     continue;
                 }

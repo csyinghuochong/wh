@@ -44,6 +44,13 @@ namespace ET
                 if (request.OperateType == 6)
                 {
                     int hourseId = int.Parse(request.OperatePar);
+                    if ((ItemLocType)hourseId != ItemNewHelper.GetToItemLocType(useBagInfo.ItemType, useBagInfo.ItemID)
+                            || !ItemNewHelper.IsValideBagLoc(hourseId))
+                    {
+                        response.Error = ErrorCode.ERR_Parameter;
+                        reply();
+                        return;
+                    }
                     if (bagComponentServer.IsBagFullByLoc(hourseId))
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;     //错误码:仓库已满
@@ -67,7 +74,14 @@ namespace ET
                 if (request.OperateType == 7)
                 {
                     int hourseId = useBagInfo.Loc;
-                    if (bagComponentServer.IsBagFullByLoc((int)ItemLocType.ItemLocBag))
+                    ItemLocType toLoc = ItemNewHelper.GetToItemLocType(useBagInfo.ItemType, useBagInfo.ItemID);
+                    if (!ItemNewHelper.IsValideBagLoc((int)toLoc))
+                    {
+                        response.Error = ErrorCode.ERR_Parameter;
+                        reply();
+                        return;
+                    }
+                    if (bagComponentServer.IsBagFullByLoc((int)toLoc))
                     {
                         response.Error = ErrorCode.ERR_BagIsFull;     //错误码:仓库已满
                         reply();
@@ -81,7 +95,7 @@ namespace ET
                         return;
                     }
 
-                    bagComponentServer.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, (ItemLocType)hourseId);
+                    bagComponentServer.OnChangeItemLoc(useBagInfo, toLoc, (ItemLocType)hourseId);
                     unit.GetComponent<TaskComponentServer>().OnGetItemForWarehouse(useBagInfo.ItemID);
                     m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
                 }

@@ -11,13 +11,13 @@ namespace ET
         {
             long bagInfoID = request.OperateBagID;
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-            BagInfo useBagInfo = bag.GetItemByLoc(ItemLocType.ItemLocBag, bagInfoID);
-            if (useBagInfo == null)
+            BagInfo useBagInfo = bag.GetItemByUId(bagInfoID);
+            if (useBagInfo == null || !ItemNewHelper.IsValideBagLoc(useBagInfo.Loc))
             {
                 reply();
                 return;
             }
-            bag.OnCostItemData(bagInfoID, 1);
+            bag.OnCostItemData(bagInfoID, 1, (ItemLocType)useBagInfo.Loc);
 
             reply();
             await ETTask.CompletedTask;

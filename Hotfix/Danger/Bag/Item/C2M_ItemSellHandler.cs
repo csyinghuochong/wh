@@ -17,7 +17,7 @@ namespace ET
         {
             long bagInfoID = request.OperateBagID;
             ItemLocType locType = (ItemLocType)request.LocType;
-            if (locType < ItemLocType.ItemLocBag || locType > ItemLocType.ItemLocBagHome)
+            if (!ItemNewHelper.IsValideBagLoc((int)locType))
             {
                 response.Error = ErrorCode.ERR_ModifyData;
                 reply();

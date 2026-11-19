@@ -42,8 +42,6 @@ namespace ET
             {
                 PetInfo rolePetInfo = self.PetInfos[i];
                 rolePetInfo.PlayerName = roleInfo.Name;
-                
-                PetHelper.CheckPropretyPoint(rolePetInfo);
             }
         }
 
@@ -60,7 +58,6 @@ namespace ET
             newpet.PetExp = 0;
             newpet.PetName = WordHelper.GetShowText(ldPetConfig.Name, 0);
             newpet.IfChange = ldPetConfig.Is_Best == 1 ? 1 :0;
-            newpet.AddPropretyNum = 0;
             // 先天 Skill / 异化 Skill_Change 读 LDPet，不入库。Pet表备注：固定技能1：3个先天技能；固定技能2：1个异化技能（异化后才激活）
             newpet.Skill_Extra_A = new List<int>();
             newpet.Skill_Extra_B = new List<int>();
@@ -73,6 +70,7 @@ namespace ET
             newpet.Aptitude_6 = new PetAptitudeInfo();
             newpet.Star = 1;// RandomHelper.RandomNumber(1, ldPetConfig.Star_Limit + 1);
             PetHelper.InitPetAptitude(newpet);
+            PetHelper.InitPetSkills(newpet);
             //newpet.PetName = PetSkinConfigCategory.Instance.Get(newpet.SkinId).Name;
             newpet.PlayerName = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name;
             return newpet;
@@ -186,15 +184,7 @@ namespace ET
             Log.Warning($"UpdatePetZiZhi skip until LD ItemUsePar ready: itemId={itemId} pet={rolePetInfo?.ConfigId}");
         }
 
-        //重置属性点
-        public static void OnResetPoint(this PetComponentServer self, PetInfo rolePetInfo)
-        {
-            rolePetInfo.AddPropretyNum = (rolePetInfo.PetLv - 1) * 5;
-            rolePetInfo.AddPropretyValue = CommonConfig.DefaultProprety;
-            self.UpdatePetAttribute(rolePetInfo, false);
-        }
-
-        //增加经验
+        //增加等级，并按资质重算六维点数和战斗属性
         public static void PetAddLv(this PetComponentServer self, PetInfo rolePetInfo, int lv)
         {
             if (rolePetInfo == null)
@@ -205,7 +195,6 @@ namespace ET
             int playerLv = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
             int newLevel = rolePetInfo.PetLv + lv;
             newLevel = Math.Min(Math.Max(0, newLevel), playerLv + 5);
-            rolePetInfo.AddPropretyNum += (newLevel - rolePetInfo.PetLv) * 5;
             rolePetInfo.PetLv = newLevel;
 
             //刷新属性
@@ -425,20 +414,6 @@ namespace ET
             MessageHelper.SendToClient(unit, m2C_PetListUpdate);
         }
 
-
-        public static List<PetInfo> GetAllPets(this PetComponentServer self)
-        {
-            for (int i = 0; i < self.PetInfos.Count; i++)
-            {
-                PetInfo rolePetInfo = self.PetInfos[i];
-                if (string.IsNullOrEmpty(rolePetInfo.AddPropretyValue))
-                {
-                    rolePetInfo.AddPropretyNum = (rolePetInfo.PetLv - 1) * 5;
-                    rolePetInfo.AddPropretyValue = CommonConfig.DefaultProprety;
-                }
-            }
-            return self.PetInfos;
-        }
 
         public static int GetShenShouNumber(this PetComponentServer self)
         {

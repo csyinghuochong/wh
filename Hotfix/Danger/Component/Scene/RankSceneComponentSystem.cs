@@ -67,12 +67,6 @@ namespace ET
             for (int i = 0; i < rewardItems.Count; i++)
             {
                 RewardItem rewardItem = rewardItems[i];
-                mailInfo.ItemList.Add(new BagInfo()
-                {
-                    ItemID = rewardItem.ItemID,
-                    ItemNum = rewardItem.ItemNum,
-                    GetWay = getWay
-                });
             }
         }
 
