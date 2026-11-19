@@ -11,8 +11,9 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_ItemProtectRequest request, M2C_ItemProtectResponse response, Action reply)
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+            // 加锁、解锁只校验角色持有实例，覆盖背包、仓库和穿戴栏；不使用仅校验背包页的 IsValideBagLoc。
             BagInfo bagInfo = bag.GetItemByUId(request.OperateBagID);
-            if (bagInfo == null || !ItemNewHelper.IsValideBagLoc(bagInfo.Loc))
+            if (bagInfo == null)
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
