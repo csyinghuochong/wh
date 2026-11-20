@@ -85,6 +85,15 @@ namespace ET
 		/// <summary>对应 隶属</summary>
 		[ProtoMember(2)]
 		public int Belong_Id { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(3)]
+		public int Type { get; set; }
+		/// <summary>名称</summary>
+		[ProtoMember(4)]
+		public int Name { get; set; }
+		/// <summary>排序</summary>
+		[ProtoMember(5)]
+		public int Order_SL { get; set; }
 
 	}
 }

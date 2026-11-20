@@ -88,21 +88,21 @@ namespace ET
 		/// <summary>位置</summary>
 		[ProtoMember(3)]
 		public double[] Position { get; set; }
-		/// <summary>目标 场景</summary>
+		/// <summary>旋转</summary>
 		[ProtoMember(4)]
+		public double Rotation { get; set; }
+		/// <summary>长度</summary>
+		[ProtoMember(5)]
+		public double Length { get; set; }
+		/// <summary>目标 场景</summary>
+		[ProtoMember(6)]
 		public int Scene_Target { get; set; }
 		/// <summary>目标位置</summary>
-		[ProtoMember(5)]
+		[ProtoMember(7)]
 		public double[] Target_Pos { get; set; }
 		/// <summary>目标方向</summary>
-		[ProtoMember(6)]
-		public double Target_Rotation { get; set; }
-		/// <summary>长度</summary>
-		[ProtoMember(7)]
-		public double Length { get; set; }
-		/// <summary>方向</summary>
 		[ProtoMember(8)]
-		public double Rotation { get; set; }
+		public double Target_Rotation { get; set; }
 
 	}
 }

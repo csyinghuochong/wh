@@ -16,6 +16,13 @@ namespace ET
             }
 
             LDCompose_Goods cfg = LDCompose_GoodsCategory.Instance.Get(request.Compose_Goods);
+            if (!LDComposeCategory.Instance.Contain(cfg.Compose_Id))
+            {
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
+
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
 
             BagInfo mainBagInfo = null;
@@ -36,6 +43,7 @@ namespace ET
                 else
                 {
                     mainLoc = ItemNewHelper.GetToItemLocType(cfg.Consume_Type_1, cfg.Consume_Id_1);
+                    // 主材料只按选中的唯一 BagInfoID 定位，再校验类型、配置 ID 和该格数量。
                     mainBagInfo = bag.GetItemByLoc(mainLoc, request.BagInfoID);
                     if (mainBagInfo == null
                         || mainBagInfo.ItemType != cfg.Consume_Type_1
@@ -57,9 +65,11 @@ namespace ET
                 AddCurrencyOrLocCost(currencyCosts, locCosts, cfg.Consume_Type_1, cfg.Consume_Id_1, cfg.Consume_Num_1);
             }
 
+            // 副材料按配置 ItemType + ItemID 汇总扣除，不接收副材料 BagInfoID，也不参与产物标签计算。
             AddCurrencyOrLocCost(currencyCosts, locCosts, cfg.Consume_Type_2, cfg.Consume_Id_2, cfg.Consume_Num_2);
             AddCurrencyOrLocCost(currencyCosts, locCosts, cfg.Consume_Type_3, cfg.Consume_Id_3, cfg.Consume_Num_3);
             AddCurrencyOrLocCost(currencyCosts, locCosts, cfg.Consume_Type_4, cfg.Consume_Id_4, cfg.Consume_Num_4);
+            AddCurrencyOrLocCost(currencyCosts, locCosts, cfg.Consume_Type_5, cfg.Consume_Id_5, cfg.Consume_Num_5);
 
             // Consume1/2/4/5：灵玉 / 绑玉 / 金币 / 绑金
             AddCurrencyCost(currencyCosts, 1, cfg.Consume1);
@@ -67,26 +77,36 @@ namespace ET
             AddCurrencyCost(currencyCosts, 4, cfg.Consume4);
             AddCurrencyCost(currencyCosts, 5, cfg.Consume5);
 
-            List<RewardItem> specialCosts = ItemNewHelper.GetRewardItems(cfg.Consume_Special);
-            for (int i = 0; i < specialCosts.Count; i++)
-            {
-                RewardItem special = specialCosts[i];
-                AddCurrencyOrLocCost(currencyCosts, locCosts, special.ItemType, special.ItemID, special.ItemNum);
-            }
-
-            if (!CheckCosts(bag, currencyCosts, locCosts))
+            if (!CheckCosts(bag, currencyCosts, locCosts, mainBagInfo, cfg.Consume_Num_1))
             {
                 response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                 reply();
                 return;
             }
 
-            int inheritSourceFlags = mainBagInfo != null ? mainBagInfo.ItemFlags : 0;
-            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(cfg.Goods, inheritSourceFlags);
-            bool freeMainCell = mainBagInfo != null && mainBagInfo.ItemNum <= cfg.Consume_Num_1;
+            int inheritSourceFlags = mainBagInfo != null ? ComposeHelper.GetComposeItemFlags(mainBagInfo) : 0;
+            // 合成表 Goods 为单个产物，字段支持 | 或 ~ 分隔；缺少状态时按 0 解析。
+            List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(cfg.Goods.Replace('|', '~'), inheritSourceFlags);
+            if (rewardItems.Count == 0)
+            {
+                response.Error = ErrorCode.ERR_ModifyData;
+                reply();
+                return;
+            }
+            for (int i = 0; i < rewardItems.Count; i++)
+            {
+                RewardItem reward = rewardItems[i];
+                if (reward.ItemNum <= 0 || !ItemNewHelper.CheckValiedItem(reward))
+                {
+                    response.Error = ErrorCode.ERR_ModifyData;
+                    reply();
+                    return;
+                }
+                if (mainBagInfo != null) reward.ItemFlags = inheritSourceFlags;
+            }
             long makeTime = TimeHelper.ServerNow();
             string makePlayer = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name ?? string.Empty;
-            if (!HasEnoughSpace(bag, rewardItems, mainLoc, freeMainCell, makePlayer, makeTime))
+            if (!HasEnoughSpace(bag, rewardItems, mainBagInfo, cfg.Consume_Num_1, locCosts, makePlayer, makeTime))
             {
                 response.Error = ErrorCode.ERR_BagIsFull;
                 reply();
@@ -123,14 +143,11 @@ namespace ET
                 }
             }
 
-            if (rewardItems.Count > 0)
+            bag.OnAddItemData(rewardItems, new AddItemArg($"{getWay}_{makeTime}")
             {
-                bag.OnAddItemData(rewardItems, new AddItemArg($"{getWay}_{makeTime}")
-                {
-                    MakePlayer = makePlayer,
-                    MakeTime = makeTime,
-                });
-            }
+                MakePlayer = makePlayer,
+                MakeTime = makeTime,
+            });
 
             reply();
             await ETTask.CompletedTask;
@@ -170,38 +187,53 @@ namespace ET
             list.Add(cost);
         }
 
-        private static bool CheckCosts(BagComponentServer bag, List<RewardItem> currencyCosts, Dictionary<int, List<RewardItem>> locCosts)
+        private static bool CheckCosts(BagComponentServer bag, List<RewardItem> currencyCosts,
+                Dictionary<int, List<RewardItem>> locCosts, BagInfo mainItem, int mainCount)
         {
-            if (currencyCosts.Count > 0 && !bag.CheckNeedItem(currencyCosts))
+            // 主副材料、重复材料及货币必须合计校验，避免主材料已扣后才发现副材料不足。
+            Dictionary<long, long> costs = new Dictionary<long, long>();
+            // 顺序与 OnCostItemData 一致；绑玉、绑金不足时沿用 Same_Id 补扣规则。
+            for (int i = currencyCosts.Count - 1; i >= 0; i--)
             {
-                return false;
+                RewardItem cost = currencyCosts[i];
+                int remaining = ReserveCurrency(cost.ItemType, cost.ItemID, cost.ItemNum);
+                int fallbackId = ItemNewHelper.GetCostFallbackItemId(cost.ItemType, cost.ItemID);
+                if (remaining > 0 && fallbackId > 0) remaining = ReserveCurrency(cost.ItemType, fallbackId, remaining);
+                if (remaining > 0) return false;
             }
-
             foreach (KeyValuePair<int, List<RewardItem>> kv in locCosts)
             {
-                List<RewardItem> costs = kv.Value;
-                ItemLocType loc = (ItemLocType)kv.Key;
-                for (int i = 0; i < costs.Count; i++)
-                {
-                    RewardItem cost = costs[i];
-                    if (bag.GetItemNumber(cost.ItemType, cost.ItemID, loc) < cost.ItemNum)
-                    {
-                        return false;
-                    }
-                }
+                foreach (RewardItem cost in kv.Value) AddCost(cost.ItemType, cost.ItemID, cost.ItemNum);
+            }
+            if (mainItem != null) AddCost(mainItem.ItemType, mainItem.ItemID, mainCount);
+            foreach (KeyValuePair<long, long> cost in costs)
+            {
+                if (bag.GetItemNumber((int)(cost.Key >> 32), (int)cost.Key) < cost.Value) return false;
             }
 
             return true;
-        }
 
-        private static bool HasEnoughSpace(BagComponentServer bag, List<RewardItem> rewards, ItemLocType freedLoc, bool freeOneCell, string makePlayer, long makeTime)
-        {
-            if (rewards == null || rewards.Count == 0)
+            void AddCost(int type, int id, int count)
             {
-                return true;
+                long key = ((long)type << 32) | (uint)id;
+                costs.TryGetValue(key, out long total);
+                costs[key] = total + count;
             }
 
-            Dictionary<int, int> needByLoc = new Dictionary<int, int>();
+            int ReserveCurrency(int type, int id, int count)
+            {
+                long key = ((long)type << 32) | (uint)id;
+                costs.TryGetValue(key, out long used);
+                int take = (int)Math.Min(Math.Max(0, bag.GetItemNumber(type, id) - used), count);
+                costs[key] = used + take;
+                return count - take;
+            }
+        }
+
+        private static bool HasEnoughSpace(BagComponentServer bag, List<RewardItem> rewards, BagInfo mainItem, int mainCount,
+                Dictionary<int, List<RewardItem>> locCosts, string makePlayer, long makeTime)
+        {
+            Dictionary<int, List<BagInfo>> itemsByLoc = new Dictionary<int, List<BagInfo>>();
             for (int i = 0; i < rewards.Count; i++)
             {
                 RewardItem reward = rewards[i];
@@ -215,32 +247,69 @@ namespace ET
                 {
                     return false;
                 }
-                List<BagInfo> locList = bag.GetItemByLoc(toLoc);
+                int locKey = (int)toLoc;
+                if (!itemsByLoc.TryGetValue(locKey, out List<BagInfo> locList))
+                {
+                    locList = new List<BagInfo>();
+                    foreach (BagInfo item in bag.GetItemByLoc(toLoc))
+                    {
+                        BagInfo copy = new BagInfo
+                        {
+                            BagInfoID = item.BagInfoID, ItemType = item.ItemType, ItemID = item.ItemID,
+                            ItemNum = item.ItemNum, ItemFlags = item.ItemFlags,
+                            MakePlayer = item.MakePlayer, MakeTime = item.MakeTime,
+                        };
+                        if (mainItem != null && copy.BagInfoID == mainItem.BagInfoID)
+                        {
+                            copy.ItemNum -= mainCount;
+                            copy.BindOnOperate();
+                        }
+                        if (copy.ItemNum > 0) locList.Add(copy);
+                    }
+                    if (locCosts.TryGetValue(locKey, out List<RewardItem> costs))
+                    {
+                        for (int c = costs.Count - 1; c >= 0; c--)
+                        {
+                            RewardItem cost = costs[c];
+                            int remaining = cost.ItemNum;
+                            for (int k = locList.Count - 1; k >= 0 && remaining > 0; k--)
+                            {
+                                BagInfo item = locList[k];
+                                if (item.ItemType != cost.ItemType || item.ItemID != cost.ItemID) continue;
+                                int take = Math.Min(item.ItemNum, remaining);
+                                item.ItemNum -= take;
+                                remaining -= take;
+                                item.BindOnOperate();
+                                if (item.ItemNum == 0) locList.RemoveAt(k);
+                            }
+                        }
+                    }
+                    itemsByLoc.Add(locKey, locList);
+                }
 
                 int pileSum = ItemNewHelper.GetNewItemPileSum(reward);
-                int need = ItemNewHelper.CalcNeedNewCells(locList, reward.ItemType, reward.ItemID, reward.ItemNum, pileSum, reward.ItemFlags, makePlayer, makeTime);
-                int locKey = (int)toLoc;
-                if (needByLoc.TryGetValue(locKey, out int exist))
+                int need = ItemNewHelper.CalcNeedNewCells(locList, reward.ItemType, reward.ItemID, reward.ItemNum,
+                        pileSum, reward.ItemFlags, makePlayer, makeTime);
+                if (need > bag.GeBagTotalCell(locKey) - locList.Count) return false;
+                int left = reward.ItemNum;
+                foreach (BagInfo item in locList)
                 {
-                    needByLoc[locKey] = exist + need;
+                    if (item.ItemType != reward.ItemType || item.ItemID != reward.ItemID
+                            || !ItemFlagEnum.CanPileTogether(item.ItemFlags, reward.ItemFlags)
+                            || !ItemNewHelper.SameMakeInfo(item.MakePlayer, item.MakeTime, makePlayer, makeTime)) continue;
+                    int add = Math.Min(Math.Max(0, pileSum - item.ItemNum), left);
+                    item.ItemNum += add;
+                    left -= add;
                 }
-                else
+                while (left > 0)
                 {
-                    needByLoc[locKey] = need;
-                }
-            }
-
-            foreach (KeyValuePair<int, int> kv in needByLoc)
-            {
-                int left = bag.GetBagLeftCell(kv.Key);
-                if (freeOneCell && kv.Key == (int)freedLoc)
-                {
-                    left += 1;
-                }
-
-                if (left < kv.Value)
-                {
-                    return false;
+                    int add = Math.Min(Math.Max(1, pileSum), left);
+                    locList.Add(new BagInfo
+                    {
+                        ItemType = reward.ItemType, ItemID = reward.ItemID, ItemNum = add,
+                        ItemFlags = reward.ItemFlags, MakePlayer = makePlayer, MakeTime = makeTime,
+                    });
+                    left -= add;
                 }
             }
 

@@ -4382,6 +4382,8 @@ namespace ET
 
 //寄售  end####################################################
 //合成begin####################################################
+// 客户端 → Map：按 Compose_Goods 配方合成一次，Compose_Id 关联 Compose 分类；无需学习。
+// 成功扣除配置材料和货币并推送背包/货币变化；产物继承指定主材料 ItemFlags，状态 2 操作成功后转 9。
 	[ResponseType(nameof(M2C_ComposeGoodsResponse))]
 	[Message(OuterOpcode.C2M_ComposeGoodsRequest)]
 	[ProtoContract]
@@ -4401,6 +4403,7 @@ namespace ET
 
 	}
 
+// Map → 客户端：合成结果；Error=0 成功，非 0 为失败提示码，材料不足或容量不足时不扣除材料。
 	[Message(OuterOpcode.M2C_ComposeGoodsResponse)]
 	[ProtoContract]
 	public partial class M2C_ComposeGoodsResponse: Object, IActorLocationResponse

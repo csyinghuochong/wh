@@ -103,72 +103,57 @@ namespace ET
 		/// <summary>消耗 绑金</summary>
 		[ProtoMember(8)]
 		public int Consume5 { get; set; }
-		/// <summary>特殊 消耗</summary>
-		[ProtoMember(9)]
-		public string Consume_Special { get; set; }
 		/// <summary>主 消耗 类型</summary>
-		[ProtoMember(10)]
+		[ProtoMember(9)]
 		public int Consume_Type_1 { get; set; }
 		/// <summary>主 消耗 ID</summary>
-		[ProtoMember(11)]
+		[ProtoMember(10)]
 		public int Consume_Id_1 { get; set; }
 		/// <summary>主 消耗 数量</summary>
-		[ProtoMember(12)]
+		[ProtoMember(11)]
 		public int Consume_Num_1 { get; set; }
 		/// <summary>副 消耗 类型</summary>
-		[ProtoMember(13)]
+		[ProtoMember(12)]
 		public int Consume_Type_2 { get; set; }
 		/// <summary>副 消耗 ID</summary>
-		[ProtoMember(14)]
+		[ProtoMember(13)]
 		public int Consume_Id_2 { get; set; }
 		/// <summary>副 消耗 数量</summary>
-		[ProtoMember(15)]
+		[ProtoMember(14)]
 		public int Consume_Num_2 { get; set; }
 		/// <summary>副 消耗 类型</summary>
-		[ProtoMember(16)]
+		[ProtoMember(15)]
 		public int Consume_Type_3 { get; set; }
 		/// <summary>副 消耗 ID</summary>
-		[ProtoMember(17)]
+		[ProtoMember(16)]
 		public int Consume_Id_3 { get; set; }
 		/// <summary>副 消耗 数量</summary>
-		[ProtoMember(18)]
+		[ProtoMember(17)]
 		public int Consume_Num_3 { get; set; }
 		/// <summary>副 消耗 类型</summary>
-		[ProtoMember(19)]
+		[ProtoMember(18)]
 		public int Consume_Type_4 { get; set; }
 		/// <summary>副 消耗 ID</summary>
-		[ProtoMember(20)]
+		[ProtoMember(19)]
 		public int Consume_Id_4 { get; set; }
 		/// <summary>副 消耗 数量</summary>
-		[ProtoMember(21)]
+		[ProtoMember(20)]
 		public int Consume_Num_4 { get; set; }
-		/// <summary>可选关系 0-可不选 1-必选其一</summary>
+		/// <summary>副 消耗 类型</summary>
+		[ProtoMember(21)]
+		public int Consume_Type_5 { get; set; }
+		/// <summary>副 消耗 ID</summary>
 		[ProtoMember(22)]
-		public int Consume_Choose { get; set; }
-		/// <summary>可选 消耗 类型</summary>
+		public int Consume_Id_5 { get; set; }
+		/// <summary>副 消耗 数量</summary>
 		[ProtoMember(23)]
-		public int Consume_Choose_Type_1 { get; set; }
-		/// <summary>可选 消耗 ID</summary>
+		public int Consume_Num_5 { get; set; }
+		/// <summary>保留 炼化</summary>
 		[ProtoMember(24)]
-		public int Consume_Choose_Id_1 { get; set; }
-		/// <summary>可选 消耗 数量</summary>
+		public int Param1 { get; set; }
+		/// <summary>待定</summary>
 		[ProtoMember(25)]
-		public int Consume_Choose_Num_1 { get; set; }
-		/// <summary>可选 消耗 作用</summary>
-		[ProtoMember(26)]
-		public int Consume_Choose_Effect_1 { get; set; }
-		/// <summary>可选 消耗 类型</summary>
-		[ProtoMember(27)]
-		public int Consume_Choose_Type_2 { get; set; }
-		/// <summary>可选 消耗 ID</summary>
-		[ProtoMember(28)]
-		public int Consume_Choose_Id_2 { get; set; }
-		/// <summary>可选 消耗 数量</summary>
-		[ProtoMember(29)]
-		public int Consume_Choose_Num_2 { get; set; }
-		/// <summary>可选 消耗 作用</summary>
-		[ProtoMember(30)]
-		public int Consume_Choose_Effect_2 { get; set; }
+		public int Param2 { get; set; }
 
 	}
 }
