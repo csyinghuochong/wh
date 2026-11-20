@@ -1,0 +1,153 @@
+using System;
+using System.Collections.Generic;
+using MongoDB.Bson.Serialization.Attributes;
+using ProtoBuf;
+
+namespace ET
+{
+    [ProtoContract]
+    [Config]
+    public partial class LDSceneCategory : ProtoObject, IMerge
+    {
+        public static LDSceneCategory Instance;
+		
+        [ProtoIgnore]
+        [BsonIgnore]
+        private Dictionary<int, LDScene> dict = new Dictionary<int, LDScene>();
+		
+        [BsonElement]
+        [ProtoMember(1)]
+        private List<LDScene> list = new List<LDScene>();
+		
+        public LDSceneCategory()
+        {
+            Instance = this;
+        }
+        
+        public void Merge(object o)
+        {
+            LDSceneCategory s = o as LDSceneCategory;
+            this.list.AddRange(s.list);
+        }
+		
+		public override void EndInit()
+		{
+			foreach (LDScene config in list)
+			{
+				config.EndInit();
+				if (this.dict.ContainsKey(config.Id))
+				{
+					throw new Exception($"配置表重复Id: 表={nameof(LDScene)} Id={config.Id}");
+				}
+				this.dict.Add(config.Id, config);
+			}
+			this.AfterEndInit();
+		}
+		
+        public LDScene Get(int id)
+        {
+            this.dict.TryGetValue(id, out LDScene item);
+
+            if (item == null)
+            {
+                throw new Exception($"配置找不到，配置表名: {nameof (LDScene)}，配置id: {id}");
+            }
+
+            return item;
+        }
+		
+        public bool Contain(int id)
+        {
+            return this.dict.ContainsKey(id);
+        }
+
+        public Dictionary<int, LDScene> GetAll()
+        {
+            return this.dict;
+        }
+
+        public LDScene GetOne()
+        {
+            if (this.dict == null || this.dict.Count <= 0)
+            {
+                return null;
+            }
+            return this.dict.Values.GetEnumerator().Current;
+        }
+    }
+
+    [ProtoContract]
+	public partial class LDScene: ProtoObject, IConfig
+	{
+		/// <summary>Id</summary>
+		[ProtoMember(1)]
+		public int Id { get; set; }
+		/// <summary>名称</summary>
+		[ProtoMember(2)]
+		public int Name { get; set; }
+		/// <summary>描述</summary>
+		[ProtoMember(3)]
+		public int Desc { get; set; }
+		/// <summary>图标</summary>
+		[ProtoMember(4)]
+		public string Icon { get; set; }
+		/// <summary>编号</summary>
+		[ProtoMember(5)]
+		public int Index { get; set; }
+		/// <summary>资源</summary>
+		[ProtoMember(6)]
+		public string Resource { get; set; }
+		/// <summary>准入 等级</summary>
+		[ProtoMember(7)]
+		public int Lv_Enter { get; set; }
+		/// <summary>推荐 等级</summary>
+		[ProtoMember(8)]
+		public int Lv_Suggest { get; set; }
+		/// <summary>人数 限制</summary>
+		[ProtoMember(9)]
+		public int Limit_Player { get; set; }
+		/// <summary>准入战力</summary>
+		[ProtoMember(10)]
+		public int Power_Enter { get; set; }
+		/// <summary>推荐战力</summary>
+		[ProtoMember(11)]
+		public int Recomm_Power { get; set; }
+		/// <summary>每日次数</summary>
+		[ProtoMember(12)]
+		public int Limit_Times_Day { get; set; }
+		/// <summary>每周次数</summary>
+		[ProtoMember(13)]
+		public int Limit_Times_Week { get; set; }
+		/// <summary>副本时长</summary>
+		[ProtoMember(14)]
+		public int Limit_Time { get; set; }
+		/// <summary>掉落预览</summary>
+		[ProtoMember(15)]
+		public string Drop_Preview { get; set; }
+		/// <summary>类型</summary>
+		[ProtoMember(16)]
+		public int Scene_Type { get; set; }
+		/// <summary>出生点</summary>
+		[ProtoMember(17)]
+		public double[] Born_Pos { get; set; }
+		/// <summary>出生 角度</summary>
+		[ProtoMember(18)]
+		public double Born_Rotation { get; set; }
+		/// <summary>传送ID</summary>
+		[ProtoMember(19)]
+		public int[] Teleport_Id { get; set; }
+		/// <summary>禁用 小地图</summary>
+		[ProtoMember(20)]
+		public int MiniMap_Close { get; set; }
+		/// <summary>允许 坐骑</summary>
+		[ProtoMember(21)]
+		public int If_Mount { get; set; }
+		/// <summary>Loading</summary>
+		[ProtoMember(22)]
+		public int[] LoadingRes { get; set; }
+		/// <summary>音乐</summary>
+		[ProtoMember(23)]
+		public string Music { get; set; }
+
+	}
+}
