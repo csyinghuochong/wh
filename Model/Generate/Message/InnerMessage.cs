@@ -2009,6 +2009,52 @@ namespace ET
 
 //Fuben副本  end####################################################
 //寄售begin####################################################
+//角色逻辑服→角色归属交易服：查询交易暂存记录、读取待领资产或删除已发放记录。
+//这是服务端内部协议，客户端不能直接调用；操作的是 DBConsignInfo.StorageItems，不是个人仓库。
+	[ResponseType(nameof(Consign2M_StorageResponse))]
+	[Message(InnerOpcode.M2Consign_StorageRequest)]
+	[ProtoContract]
+	public partial class M2Consign_StorageRequest: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int Operation { get; set; }
+
+		[ProtoMember(3)]
+		public int BelongId { get; set; }
+
+		[ProtoMember(4)]
+		public long StorageId { get; set; }
+
+	}
+
+//交易服→角色逻辑服：返回暂存操作结果，交易服本身不操作玩家背包或身上货币。
+	[Message(InnerOpcode.Consign2M_StorageResponse)]
+	[ProtoContract]
+	public partial class Consign2M_StorageResponse: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<ConsignStorageInfo> Items = new List<ConsignStorageInfo>();
+
+	}
+
 	[ResponseType(nameof(Consign2M_ShangJiaResponse))]
 	[Message(InnerOpcode.M2Consign_ShangJiaRequest)]
 	[ProtoContract]
@@ -2046,6 +2092,7 @@ namespace ET
 
 	}
 
+//角色逻辑服→交易服：按权威上架记录完成购买，扣减货架并将卖家实收记入交易暂存区。
 	[ResponseType(nameof(Consign2M_BuyResponse))]
 	[Message(InnerOpcode.M2Consign_BuyRequest)]
 	[ProtoContract]
@@ -2065,6 +2112,9 @@ namespace ET
 
 		[ProtoMember(3)]
 		public int BuyNum { get; set; }
+
+		[ProtoMember(4)]
+		public long UnitId { get; set; }
 
 	}
 
@@ -3318,6 +3368,7 @@ namespace ET
 
 //Chat   end####################################################
 //Mail begin####################################################
+//后台/GM 命令所在进程 -> 邮件服：向指定角色或全服发送奖励邮件。
 	[ResponseType(nameof(E2M_GMEMailSendResponse))]
 	[Message(InnerOpcode.M2E_GMEMailSendRequest)]
 	[ProtoContract]
@@ -3332,6 +3383,7 @@ namespace ET
 		[ProtoMember(2)]
 		public string Itemlist { get; set; }
 
+//itemflags 为奖励交易状态码（不是位掩码）：0可交易、1装备后绑定、2副本内可交易、8限、9禁交易、20继承；缺省/空按0，无材料时20按0
 		[ProtoMember(3)]
 		public string Title { get; set; }
 
@@ -3343,6 +3395,7 @@ namespace ET
 
 	}
 
+//邮件服 -> 后台/GM 命令所在进程：返回受理/发送结果；全服邮件成功表示已受理，后续逐玩家投递。
 	[Message(InnerOpcode.E2M_GMEMailSendResponse)]
 	[ProtoContract]
 	public partial class E2M_GMEMailSendResponse: Object, IActorResponse
@@ -3382,6 +3435,7 @@ namespace ET
 
 	}
 
+//邮件服 -> 在线角色服：通知存在新的全服邮件；角色服拉取未处理快照，写入邮箱后再推进进度。
 	[Message(InnerOpcode.Mail2M_SendServerMailItem)]
 	[ProtoContract]
 	public partial class Mail2M_SendServerMailItem: Object, IActorLocationMessage
@@ -3390,10 +3444,11 @@ namespace ET
 		public int RpcId { get; set; }
 
 		[ProtoMember(1)]
-		public ServerMailItem ServerMailItem { get; set; }
+		public int ServerMailIdMax { get; set; }
 
 	}
 
+//角色服 -> 邮件服：登录或在线通知时，获取未处理的全服邮件快照，不在邮件服直接写玩家邮箱。
 	[ResponseType(nameof(Mail2G_EnterMail))]
 	[Message(InnerOpcode.G2Mail_EnterMail)]
 	[ProtoContract]
@@ -3410,6 +3465,7 @@ namespace ET
 
 	}
 
+//邮件服 -> 角色服：同一时刻的有序快照；角色服完成筛选、入邮箱及保存后，才同步角色进度。
 	[Message(InnerOpcode.Mail2G_EnterMail)]
 	[ProtoContract]
 	public partial class Mail2G_EnterMail: Object, IActorResponse
@@ -3425,6 +3481,9 @@ namespace ET
 
 		[ProtoMember(3)]
 		public int ServerMailIdMax { get; set; }
+
+		[ProtoMember(4)]
+		public List<ServerMailItem> ServerMailItems = new List<ServerMailItem>();
 
 	}
 

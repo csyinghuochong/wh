@@ -249,9 +249,20 @@ namespace ET
 
                         long unitId = unit.Id;
                         await EnterRankServer(unit);
-                        await EnterMailServer(unit);
                         player.ChatInfoInstanceId = await EnterWorldChatServer(unit);   //登录聊天服
                         player.WarChatInfoInstanceId = await EnterWarChatServer(unit);   //登录战区聊天服
+                        // 先进入在线名单再补发，覆盖登录过程中发布的全服邮件。
+                        await MailHelp.SyncServerMails(unit);
+                        // 本游戏日首次登录检查交易暂存区，只生成过期提醒；不领取资产、不写入个人仓库。
+                        int consignMailError = await MailHelp.SyncConsignStorageMails(unit);
+                        if (consignMailError != ErrorCode.ERR_Success)
+                        {
+                            response.Error = consignMailError;
+                            reply();
+                            await DisconnectHelper.KickPlayer(player, true);
+                            session.Disconnect().Coroutine();
+                            return;
+                        }
                         roleInfoComponentServer.RoleInfo.AccInfoID = request.AccountId;
                         response.AccInfoID = request.AccountId;
 
@@ -418,21 +429,6 @@ namespace ET
 				TitleId = unit.GetComponent<TitleComponentServer>().TitleId,
 			});
 			return chat2G_EnterChat.ChatInfoUnitInstanceId;
-		}
-
-		private async ETTask EnterMailServer(Unit unit)
-		{
-            RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            long mailServerId = DBHelper.GetMailServerId(unit);
-            Mail2G_EnterMail chat2G_EnterChat = (Mail2G_EnterMail)await MessageHelper.CallActor(mailServerId, new G2Mail_EnterMail()
-            {
-                UnitId = unit.Id,
-				ServerMailIdCur = roleInfoComponentServer.RoleInfo.ServerMailIdCur,
-            });
-			if (chat2G_EnterChat.Error == ErrorCode.ERR_Success)
-			{
-                roleInfoComponentServer.RoleInfo.ServerMailIdCur  = chat2G_EnterChat.ServerMailIdMax;
-            }
 		}
 
 		private async ETTask EnterRankServer(Unit unit)

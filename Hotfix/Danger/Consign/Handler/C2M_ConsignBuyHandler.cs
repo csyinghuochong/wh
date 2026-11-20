@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace ET
 {
@@ -12,7 +10,6 @@ namespace ET
         {
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            DataCollationComponent dataCollation = unit.GetComponent<DataCollationComponent>();
 
  
             ConsignItemInfo paiMaiItemInfo = request.ConsignItemInfo;
@@ -81,7 +78,8 @@ namespace ET
                     {
                         ConsignItemInfo = request.ConsignItemInfo,
                         Gold = unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold),
-                        BuyNum = buyNum
+                        BuyNum = buyNum,
+                        UnitId = unit.Id,
                     });
                 if (r_GameStatusResponse.Error != ErrorCode.ERR_Success)
                 {
@@ -101,12 +99,8 @@ namespace ET
 
                 unit.GetComponent<TaskComponentServer>().OnConsignBuy(r_GameStatusResponse.ConsignItemInfo.BagInfo);
 
-                //给出售者邮件发送金币
-                MailHelp.SendPaiMaiEmail(
-                    UnitZoneHelper.GetHomeZone(r_GameStatusResponse.ConsignItemInfo.UserId),
-                    r_GameStatusResponse.ConsignItemInfo,
-                    r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemNum,
-                    r_GameStatusResponse.ConsignItemInfo.UserId).Coroutine();
+                // 这里只发送成交通知；收益发放预留在 AddSaleIncome，待个人仓库接入。
+                MailHelp.SendPaiMaiEmail(r_GameStatusResponse.ConsignItemInfo).Coroutine();
 
                 //Log.Warning($"拍卖购买者: {unit.Id} 购买 {r_GameStatusResponse.PaiMaiItemInfo.UserId} 道具ID：{r_GameStatusResponse.PaiMaiItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");
                 Log.Warning($"拍卖被购买: [出售者]{r_GameStatusResponse.ConsignItemInfo.UserId}  [购买者]{unit.Id} 道具ID：{r_GameStatusResponse.ConsignItemInfo.BagInfo.ItemID} 花费：{needGold} {ret}");

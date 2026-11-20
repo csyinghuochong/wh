@@ -67,6 +67,19 @@ namespace ET
             for (int i = 0; i < rewardItems.Count; i++)
             {
                 RewardItem rewardItem = rewardItems[i];
+                if (rewardItem.ItemNum <= 0)
+                {
+                    continue;
+                }
+
+                mailInfo.ItemList.Add(new BagInfo
+                {
+                    ItemType = rewardItem.ItemType,
+                    ItemID = rewardItem.ItemID,
+                    ItemNum = rewardItem.ItemNum,
+                    ItemFlags = rewardItem.ItemFlags,
+                    GetWay = getWay,
+                });
             }
         }
 
@@ -770,11 +783,6 @@ namespace ET
             Log.Debug($"发放本服战力排行榜奖励： {zone}");
             long serverTime = TimeHelper.ServerNow();
             List<RankingInfo> rankingInfos = self.DBRankInfo.rankingInfos;
-            int mailConfigId = LDMailCategory.Instance.GetMailByKey(MailKey.Mail_Exchange_Failure);
-            if (mailConfigId <= 0 && LDMailCategory.Instance.Contain(1))
-            {
-                mailConfigId = 1;
-            }
             Dictionary<string, List<RewardItem>> rewardCache = new Dictionary<string, List<RewardItem>>();
             for (int i = 0; i < rankingInfos.Count; i++)
             {
@@ -792,7 +800,8 @@ namespace ET
 
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.Status = 0;
-                mailInfo.ConfigId = mailConfigId;
+                mailInfo.ConfigId = 0;
+                mailInfo.ParamList.Add("排行榜奖励");
                 mailInfo.MailId = IdGenerater.Instance.GenerateId();
                 mailInfo.ValidTime = serverTime + TimeHelper.OneDay * 30;
                 AddRankMailRewardItems(mailInfo, rankRewardConfig.Reward, $"{ItemGetWay.RankReward}_{serverTime}", rewardCache);

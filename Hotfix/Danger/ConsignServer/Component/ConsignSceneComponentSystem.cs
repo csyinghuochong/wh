@@ -44,22 +44,6 @@ namespace ET
     {
 
 
-        public static List<ConsignItemInfo> GetItemListByUser(this ConsignSceneComponent self, long useriD, List<ConsignItemInfo> oldPaiMaiAl)
-        {
-            List<ConsignItemInfo> paiMaiType = new List<ConsignItemInfo>();
-
-            for (int i = 0; i < oldPaiMaiAl.Count; i++)
-            {
-                ConsignItemInfo item = oldPaiMaiAl[i];
-                if (item.UserId == useriD)
-                {
-                    paiMaiType.Add(item);
-                }
-            }
-
-            return paiMaiType;
-        }
-
         public static void UpdatePaiMaiDBByBelongId(this ConsignSceneComponent self, int belongId, DBConsignInfo dBPaiMainInfo_Type)
         {
             if (dBPaiMainInfo_Type == null)
@@ -102,7 +86,15 @@ namespace ET
                     continue;
                 }
 
-                result.AddRange(self.GetItemListByUser(userId, db.PaiMaiItemInfos));
+                foreach (ConsignItemInfo item in db.PaiMaiItemInfos)
+                {
+                    if (item.UserId != userId)
+                    {
+                        continue;
+                    }
+
+                    result.Add(item);
+                }
             }
 
             return result;
@@ -385,8 +377,6 @@ namespace ET
 
         public static async ETTask InitDBData(this ConsignSceneComponent self)
         {
-            await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 10000));
-
             int[] belongIds = ConsignHelper.GetShangJiaBelongIds();
             for (int i = 0; i < belongIds.Length; i++)
             {
@@ -396,6 +386,8 @@ namespace ET
             await self.CheckAllOverTime();
 
             await self.InitWantBuyData();
+
+            self.Initialized = true;
 
             self.Timer = TimerComponent.Instance.NewRepeatedTimer(TimeHelper.Minute * 30 + RandomHelper.RandomNumber(1000, 10000), TimerType.ConsignSceneTimer, self);
         }
@@ -419,9 +411,12 @@ namespace ET
                 return;
             }
 
+            using CoroutineLock consignLock = await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Consign, self.InstanceId);
             foreach (DBConsignInfo db in self.ShangJiaByBelongId.Values)
             {
                 self.OnDeleteRole_ByType(userId, db);
+                db.StorageItems.RemoveAll(item => item.UserId == userId);
+                await self.SavePaiMaiData(db);
             }
 
             self.OnDeleteRoleWantBuy(userId);
@@ -454,10 +449,13 @@ namespace ET
         public static async ETTask SaveDB(this ConsignSceneComponent self)
         {
 
-            foreach (KeyValuePair<int, DBConsignInfo> kv in self.ShangJiaByBelongId)
+            foreach (KeyValuePair<int, DBConsignInfo> kv in new List<KeyValuePair<int, DBConsignInfo>>(self.ShangJiaByBelongId))
             {
-                await self.CheckOverTime(kv.Value);
-                await self.SavePaiMaiData(kv.Value);
+                using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Consign, self.InstanceId))
+                {
+                    ConsignStorageHelper.MoveExpiredItems(kv.Value);
+                    await self.SavePaiMaiData(kv.Value);
+                }
                 await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 5000));
             }
 
@@ -475,7 +473,7 @@ namespace ET
 
         public static async ETTask CheckAllOverTime(this ConsignSceneComponent self)
         {
-            foreach (DBConsignInfo db in self.ShangJiaByBelongId.Values)
+            foreach (DBConsignInfo db in new List<DBConsignInfo>(self.ShangJiaByBelongId.Values))
             {
                 await self.CheckOverTime(db);
             }
@@ -483,21 +481,12 @@ namespace ET
 
         public static async ETTask CheckOverTime(this ConsignSceneComponent self, DBConsignInfo dBPaiMainInfo)
         {
-            if (dBPaiMainInfo?.PaiMaiItemInfos == null)
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Consign, self.InstanceId))
             {
-                return;
-            }
-
-            for (int i = dBPaiMainInfo.PaiMaiItemInfos.Count - 1; i >= 0; i--)
-            {
-                ConsignItemInfo paiMaiItemInfo = dBPaiMainInfo.PaiMaiItemInfos[i];
-                if (!ConsignHelper.IsConsignExpired(paiMaiItemInfo))
+                if (ConsignStorageHelper.MoveExpiredItems(dBPaiMainInfo))
                 {
-                    continue;
+                    await self.SavePaiMaiData(dBPaiMainInfo);
                 }
-
-                dBPaiMainInfo.PaiMaiItemInfos.RemoveAt(i);
-                await MailHelp.SendConsignOverTimeMail(paiMaiItemInfo);
             }
         }
 
@@ -632,20 +621,6 @@ namespace ET
             return result;
         }
 
-        public static ConsignWantBuyInfo FindWantBuy(this ConsignSceneComponent self, int itemType, int itemId, long wantBuyId)
-        {
-            List<ConsignWantBuyInfo> list = self.GetWantBuyList(itemType, itemId);
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (list[i].Id == wantBuyId)
-                {
-                    return list[i];
-                }
-            }
-
-            return null;
-        }
-
         public static ConsignWantBuyInfo FindWantBuy(this ConsignSceneComponent self, long wantBuyId)
         {
             if (wantBuyId <= 0)
@@ -667,44 +642,6 @@ namespace ET
                         return db.WantBuyInfos[i];
                     }
                 }
-            }
-
-            return null;
-        }
-
-        public static ConsignWantBuyInfo DealWantBuy(this ConsignSceneComponent self, int itemType, int itemId, long wantBuyId, int sellNum, long sellerUserId)
-        {
-            DBConsignWantBuy db = self.GetWantBuyDB(itemType, itemId);
-            if (db?.WantBuyInfos == null)
-            {
-                return null;
-            }
-
-            for (int i = 0; i < db.WantBuyInfos.Count; i++)
-            {
-                ConsignWantBuyInfo info = db.WantBuyInfos[i];
-                if (info.Id != wantBuyId)
-                {
-                    continue;
-                }
-
-                if (info.UserId == sellerUserId)
-                {
-                    return null;
-                }
-
-                if (sellNum <= 0 || sellNum > info.ItemNum)
-                {
-                    return null;
-                }
-
-                info.ItemNum -= sellNum;
-                if (info.ItemNum <= 0)
-                {
-                    db.WantBuyInfos.RemoveAt(i);
-                }
-
-                return info;
             }
 
             return null;
@@ -835,7 +772,11 @@ namespace ET
                     return;
                 }
 
-                db.CollectIds.Remove(consignItemInfoId);
+                if (!db.CollectIds.Remove(consignItemInfoId))
+                {
+                    return;
+                }
+
                 await self.SaveCollectData(db);
             }
         }
@@ -863,9 +804,10 @@ namespace ET
                         continue;
                     }
 
-                    result.Insert(0, item);
+                    result.Add(item);
                 }
 
+                result.Reverse();
                 if (pruned)
                 {
                     await self.SaveCollectData(db);

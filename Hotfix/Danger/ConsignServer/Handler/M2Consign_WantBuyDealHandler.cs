@@ -18,14 +18,16 @@ namespace ET
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.WantBuy, wantBuyKey))
             {
                 ConsignSceneComponent consignScene = scene.GetComponent<ConsignSceneComponent>();
-                ConsignWantBuyInfo info = consignScene.FindWantBuy(request.ItemType, request.ItemId, request.WantBuyId);
-                if (info == null)
+                DBConsignWantBuy db = consignScene.GetWantBuyDB(request.ItemType, request.ItemId);
+                int index = db == null ? -1 : db.WantBuyInfos.FindIndex(item => item.Id == request.WantBuyId);
+                if (index < 0)
                 {
                     response.Error = ErrorCode.ERR_ItemNotExist;
                     reply();
                     return;
                 }
 
+                ConsignWantBuyInfo info = db.WantBuyInfos[index];
                 if (info.UserId == request.SellerUserId)
                 {
                     response.Error = ErrorCode.ERR_ModifyData;
@@ -40,19 +42,15 @@ namespace ET
                     return;
                 }
 
-                int price = info.Price;
-                long buyerUserId = info.UserId;
-                ConsignWantBuyInfo dealt = consignScene.DealWantBuy(request.ItemType, request.ItemId, request.WantBuyId, request.SellNum, request.SellerUserId);
-                if (dealt == null)
+                info.ItemNum -= request.SellNum;
+                if (info.ItemNum == 0)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotExist;
-                    reply();
-                    return;
+                    db.WantBuyInfos.RemoveAt(index);
                 }
 
-                response.BuyerUserId = buyerUserId;
+                response.BuyerUserId = info.UserId;
                 response.DealNum = request.SellNum;
-                response.Price = price;
+                response.Price = info.Price;
             }
 
             reply();

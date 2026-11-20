@@ -3674,6 +3674,101 @@ namespace ET
 	}
 
 //寄售begin####################################################
+//交易服暂存记录，存放在 DBConsignInfo.StorageItems，并按 UserId 区分所属角色；当前不是个人仓库数据。
+//过期商品保留完整道具实例，成交收益使用货币道具；本结构只描述数据，不是独立请求。
+	[Message(OuterOpcode.ConsignStorageInfo)]
+	[ProtoContract]
+	public partial class ConsignStorageInfo: Object
+	{
+		[ProtoMember(1)]
+		public long Id { get; set; }
+
+		[ProtoMember(2)]
+		public long UserId { get; set; }
+
+		[ProtoMember(3)]
+		public int BelongId { get; set; }
+
+		[ProtoMember(4)]
+		public BagInfo BagInfo { get; set; }
+
+		[ProtoMember(5)]
+		public bool ExpiredItem { get; set; }
+
+	}
+
+//客户端→角色逻辑服：查看自己的交易暂存记录，包括过期商品和待领取成交收益。
+//角色 ID 由登录后的 Unit 提供，客户端无需传入；查询不会发放资产，也不会移除记录。
+	[ResponseType(nameof(M2C_ConsignStorageListResponse))]
+	[Message(OuterOpcode.C2M_ConsignStorageListRequest)]
+	[ProtoContract]
+	public partial class C2M_ConsignStorageListRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+	}
+
+//角色逻辑服→客户端：返回查询结果；数据来自交易服暂存区，不是个人仓库列表。
+	[Message(OuterOpcode.M2C_ConsignStorageListResponse)]
+	[ProtoContract]
+	public partial class M2C_ConsignStorageListResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<ConsignStorageInfo> Items = new List<ConsignStorageInfo>();
+
+	}
+
+//客户端→角色逻辑服：全量领取自己的一条交易暂存记录，不支持拆分数量。
+//当前实现将商品放入背包、成交收益加到角色身上货币，不会存入个人仓库。
+	[ResponseType(nameof(M2C_ConsignStorageReceiveResponse))]
+	[Message(OuterOpcode.C2M_ConsignStorageReceiveRequest)]
+	[ProtoContract]
+	public partial class C2M_ConsignStorageReceiveRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public int BelongId { get; set; }
+
+		[ProtoMember(2)]
+		public long StorageId { get; set; }
+
+	}
+
+//角色逻辑服→客户端：返回领取结果；道具和货币变化沿用现有背包、角色数据推送。
+//服务端校验归属和容量后统一通过背包入口分发，保存资产后删除交易服暂存记录。
+	[Message(OuterOpcode.M2C_ConsignStorageReceiveResponse)]
+	[ProtoContract]
+	public partial class M2C_ConsignStorageReceiveResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 	[Message(OuterOpcode.ConsignItemInfo)]
 	[ProtoContract]
 	public partial class ConsignItemInfo: Object
@@ -9066,7 +9161,7 @@ namespace ET
 
 	}
 
-//一键领取当前页签：发放未领奖励并标已读，不删除邮件
+//客户端 -> 地图服：一键领取当前页签，发放未领奖励并标已读；正常邮件保留，过期或附件 ItemType=0 的旧邮件删除
 	[ResponseType(nameof(M2C_ReceiveAllMailResponse))]
 	[Message(OuterOpcode.C2M_ReceiveAllMailRequest)]
 	[ProtoContract]
@@ -9194,6 +9289,7 @@ namespace ET
 
 	}
 
+//客户端 -> 地图服：领取指定邮件附件；过期或附件 ItemType=0 的旧邮件删除并返回 ERR_MailNotExist，客户端刷新列表
 	[ResponseType(nameof(M2C_ReceiveMailResponse))]
 	[Message(OuterOpcode.C2M_ReceiveMailRequest)]
 	[ProtoContract]

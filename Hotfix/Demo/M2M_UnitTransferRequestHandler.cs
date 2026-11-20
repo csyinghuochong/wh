@@ -208,7 +208,7 @@ namespace ET
                         unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
 						ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
 						unit.Position = ldScene.GetBornPos();
-						unit.Rotation = Quaternion.identity;
+                        unit.Rotation = Quaternion.Euler(0, (float)ldScene.Born_Rotation, 0);
 
 						aoiValue = 9 * 1000;
 

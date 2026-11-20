@@ -37,8 +37,6 @@ namespace ET
 
         public static async ETTask InitServerInfo(this MailSceneComponent self)
         {
-            long dbCacheId = DBHelper.GetDbCacheId(self.DomainZone());
-            await TimerComponent.Instance.WaitAsync( RandomHelper.RandomNumber(400,1000) );
             DBServerMailInfo dBServerInfo = await DBHelper.GetComponent<DBServerMailInfo>(self.DomainZone(), self.DomainZone());
             if (dBServerInfo == null)
             {
@@ -66,31 +64,91 @@ namespace ET
         }
 
 
-
-
-        public static async ETTask<int> OnLogin(this MailSceneComponent self, long unitid, int curmailid)
+        /// <summary>取得当前进度之后的邮件快照；按 ID 升序，-1 保留新角色不补发历史邮件的规则。</summary>
+        public static List<ServerMailItem> GetPendingServerMails(this MailSceneComponent self, int currentMailId)
         {
-            //检测没有发送的邮件
-            foreach ((int id, ServerMailItem ServerItem) in self.dBServerMailInfo.ServerMailList)
+            List<ServerMailItem> items = new List<ServerMailItem>();
+            if (currentMailId == -1)
             {
-                if (curmailid >= id)
-                {
-                    continue;
-                }
-                if (!string.IsNullOrEmpty(ServerItem.ParasmNew))
-                {
-                   await  MailHelp.ServerMailItem(self.DomainZone(), unitid, ServerItem);
-                }
-                
-                curmailid = id;
+                return items;
             }
-            return curmailid;
+
+            foreach (ServerMailItem item in self.dBServerMailInfo.ServerMailList.Values)
+            {
+                if (item.ServerMailIId > currentMailId)
+                {
+                    items.Add(item);
+                }
+            }
+
+            items.Sort((left, right) => left.ServerMailIId.CompareTo(right.ServerMailIId));
+            return items;
         }
+
+        /// <summary>
+        /// 全服邮件
+        /// </summary>
+        public static async ETTask<int> OnServerMail(this MailSceneComponent self, M2E_GMEMailSendRequest request, List<BagInfo> items)
+        {
+            int mailId;
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.EMail, -self.DomainZone()))
+            {
+                int maxId = self.GetMaxMaild();
+                if (maxId == int.MaxValue)
+                {
+                    return ErrorCode.ERR_Parameter;
+                }
+
+                mailId = maxId + 1;
+                DBServerMailInfo snapshot = new DBServerMailInfo
+                {
+                    Id = self.dBServerMailInfo.Id,
+                    ServerMailList = new Dictionary<int, ServerMailItem>(self.dBServerMailInfo.ServerMailList),
+                };
+                snapshot.ServerMailList.Add(mailId, new ServerMailItem
+                {
+                    MailType = request.MailType,
+                    ItemList = items,
+                    ParasmNew = request.Title,
+                    ServerMailIId = mailId,
+                });
+
+                // 先保存，再发布给登录补发和在线通知；保存失败时不暴露未落库的邮件。
+                await DBHelper.SaveComponent(self.DomainZone(), self.DomainZone(), snapshot);
+                self.dBServerMailInfo.ServerMailList = snapshot.ServerMailList;
+            }
+
+            self.SendAllOnLineMail(mailId).Coroutine();
+            return ErrorCode.ERR_Success;
+        }
+
+        public static async ETTask SendAllOnLineMail(this MailSceneComponent self, int serverMailId)
+        {
+            int zone = self.DomainZone();
+            long chatServerId = StartSceneConfigCategory.Instance.GetBySceneName(zone, Enum.GetName(SceneType.Chat)).InstanceId;
+            Chat2Mail_GetUnitList response = (Chat2Mail_GetUnitList)await MessageHelper.CallActor(chatServerId, new Mail2Chat_GetUnitList());
+            if (response.Error != ErrorCode.ERR_Success)
+            {
+                return;
+            }
+
+            foreach (long unitId in response.OnlineUnitIdList)
+            {
+                MessageHelper.SendToLocationActor(unitId, new Mail2M_SendServerMailItem
+                {
+                    ServerMailIdMax = serverMailId,
+                });
+            }
+        }
+
 
 
         public static async ETTask SaveDB(this MailSceneComponent self)
         {
-            await DBHelper.SaveComponent(self.DomainZone(),self.DomainZone(), self.dBServerMailInfo);
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.EMail, -self.DomainZone()))
+            {
+                await DBHelper.SaveComponent(self.DomainZone(), self.DomainZone(), self.dBServerMailInfo);
+            }
         }
 
     }

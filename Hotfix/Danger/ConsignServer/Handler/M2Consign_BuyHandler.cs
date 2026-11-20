@@ -9,14 +9,16 @@ namespace ET
 
         protected override async ETTask Run(Scene scene, M2Consign_BuyRequest request, Consign2M_BuyResponse response, Action reply)
         {
+            ConsignSceneComponent consignScene = scene.GetComponent<ConsignSceneComponent>();
+            using CoroutineLock consignLock = await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Consign, consignScene.InstanceId);
             //获取列表,对应的缓存进行清空
-            if (!ItemNewHelper.CheckValiedItem(request.ConsignItemInfo.BagInfo))
+            if (!consignScene.Initialized || request.UnitId <= 0 || request.ConsignItemInfo?.BagInfo == null
+                || !ItemNewHelper.CheckValiedItem(request.ConsignItemInfo.BagInfo))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
                 return;
             }
-            ConsignSceneComponent consignScene = scene.GetComponent<ConsignSceneComponent>();
             int belongId = request.ConsignItemInfo.BelongId;
             if (belongId <= 0 && request.ConsignItemInfo.BagInfo != null)
             {
@@ -40,14 +42,17 @@ namespace ET
 
             if (ConsignHelper.IsConsignExpired(paiMaiItemInfo))
             {
-                paiMaiItemInfos.Remove(paiMaiItemInfo);
-                MailHelp.SendConsignOverTimeMail(paiMaiItemInfo).Coroutine();
+                DBConsignInfo expiredDB = consignScene.GetPaiMaiDBByBelongId(paiMaiItemInfo.BelongId);
+                ConsignStorageHelper.MoveExpiredItems(expiredDB);
+                await consignScene.SavePaiMaiData(expiredDB);
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
                 return;
             }
             
-            if (request.BuyNum < 0 || request.BuyNum > paiMaiItemInfo.BagInfo.ItemNum)
+            if (request.BuyNum <= 0 || request.BuyNum > paiMaiItemInfo.BagInfo.ItemNum
+                || request.UnitId == paiMaiItemInfo.UserId
+                || (ConsignHelper.IsDesignatedShangJia(paiMaiItemInfo) && paiMaiItemInfo.TargetUserId != request.UnitId))
             {
                 response.Error = ErrorCode.ERR_Parameter;
                 reply();
@@ -55,6 +60,13 @@ namespace ET
             }
             
             long needGold = (long)paiMaiItemInfo.Price * request.BuyNum;
+            if (paiMaiItemInfo.Price < 0 || needGold > int.MaxValue)
+            {
+                response.Error = ErrorCode.ERR_Parameter;
+                reply();
+                return;
+            }
+
             if (request.Gold < needGold)
             {
                 response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
@@ -63,6 +75,8 @@ namespace ET
             }
 
             BagInfo bagInfo = paiMaiItemInfo.BagInfo;
+            int originalNum = bagInfo.ItemNum;
+            int originalIndex = paiMaiItemInfos.IndexOf(paiMaiItemInfo);
             if (request.BuyNum == bagInfo.ItemNum)
             {
                 response.ConsignItemInfo = paiMaiItemInfo;
@@ -71,32 +85,33 @@ namespace ET
             else
             {
                 bagInfo.ItemNum -= request.BuyNum;
-                ConsignItemInfo paiMaiItemInfo2 = new ConsignItemInfo();
-                
-                BagInfo useBagInfo = new BagInfo();
-                useBagInfo.ItemID = bagInfo.ItemID;
-                useBagInfo.ItemNum = request.BuyNum;
-                useBagInfo.Loc =(int)ItemLocType.ItemLocBag;
-                useBagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
-                useBagInfo.GetWay = bagInfo.GetWay;
-                useBagInfo.ItemFlags = bagInfo.ItemFlags;
-                useBagInfo.MakePlayer = bagInfo.MakePlayer;
-                useBagInfo.MakeTime = bagInfo.MakeTime;
-                
-                paiMaiItemInfo2.Id = IdGenerater.Instance.GenerateId();
-                paiMaiItemInfo2.BagInfo = useBagInfo;
-                paiMaiItemInfo2.UserId = paiMaiItemInfo.UserId;
-                paiMaiItemInfo2.Price = paiMaiItemInfo.Price;
-                paiMaiItemInfo2.PlayerName = paiMaiItemInfo.PlayerName;
-                paiMaiItemInfo2.SellTime = paiMaiItemInfo.SellTime;
-                paiMaiItemInfo2.BelongId = paiMaiItemInfo.BelongId;
-                paiMaiItemInfo2.Account = paiMaiItemInfo.Account;
-                paiMaiItemInfo2.TargetPlayer = paiMaiItemInfo.TargetPlayer;
-                paiMaiItemInfo2.TargetUserId = paiMaiItemInfo.TargetUserId;
-                paiMaiItemInfo2.OverTime = paiMaiItemInfo.OverTime;
-                
-                response.ConsignItemInfo = paiMaiItemInfo2;
+                ConsignItemInfo sold = CloneHelper.DeepClone(paiMaiItemInfo);
+                sold.BagInfo.ItemNum = request.BuyNum;
+                sold.BagInfo.Loc = (int)ItemLocType.ItemLocBag;
+                sold.BagInfo.BagInfoID = IdGenerater.Instance.GenerateId();
+                sold.Id = IdGenerater.Instance.GenerateId();
+                response.ConsignItemInfo = sold;
             }
+            DBConsignInfo soldDB = consignScene.GetPaiMaiDBByBelongId(paiMaiItemInfo.BelongId);
+            try
+            {
+                await consignScene.SavePaiMaiData(soldDB);
+            }
+            catch (Exception e)
+            {
+                bagInfo.ItemNum = originalNum;
+                if (!paiMaiItemInfos.Contains(paiMaiItemInfo))
+                {
+                    paiMaiItemInfos.Insert(originalIndex, paiMaiItemInfo);
+                }
+
+                response.ConsignItemInfo = null;
+                response.Error = ErrorCode.ERR_Error;
+                Log.Error(e);
+                reply();
+                return;
+            }
+            ConsignStorageHelper.AddSaleIncome(response.ConsignItemInfo);
             reply();
             await ETTask.CompletedTask;
         }

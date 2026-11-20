@@ -9,74 +9,64 @@ namespace ET
         protected override async ETTask Run(Scene scene, M2E_GMEMailSendRequest request, E2M_GMEMailSendResponse response, Action reply)
         {
             Log.Warning($"M2E_GMEMailSendRequest:{request.UserName}");
-            if (request.UserName == "0")
+            int zone = (int)request.ActorId;
+            if (request.ActorId != zone || zone <= 0 || !StartZoneConfigCategory.Instance.Contain(zone)
+                || StartZoneConfigCategory.Instance.Get(zone).PhysicZone != scene.DomainZone()
+                || request.MailType <= 0 || string.IsNullOrWhiteSpace(request.UserName) || string.IsNullOrEmpty(request.Title)
+                || !MailHelp.TryGetGMMailItems(request.Itemlist, out List<BagInfo> items))
             {
-                //dBMailInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBMailInfo>(scene.DomainZone(), d => d.Id > 0);
-                EventType.ServerMail serverMail = new EventType.ServerMail()
-                {
-                    Message = request,
-                    MailScene = scene,
-                };
-                Game.EventSystem.Publish(serverMail);
+                response.Error = ErrorCode.ERR_Parameter;
                 reply();
                 return;
             }
 
-            List<DBMailInfo> dBMailInfos = null;
-            List<RoleInfoComponentServer> accountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(scene.DomainZone(), d => d.RoleInfo.Name == request.UserName);
-            if (accountInfoList.Count > 0)
+            if (request.UserName == "0")
             {
-                dBMailInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBMailInfo>(scene.DomainZone(), d => d.Id == accountInfoList[0].Id);
+                response.Error = await scene.GetComponent<MailSceneComponent>().OnServerMail(request, items);
+                reply();
+                return;
             }
-            if (dBMailInfos != null)
-            {
-                long serverTime = TimeHelper.ServerNow();
-                DBComponent dbComponent = Game.Scene.GetComponent<DBComponent>();
-                string[] needList = request.Itemlist.Split('@');
-                for (int i = 0; i < dBMailInfos.Count; i++)
-                {
-                    long mailOwnerId = dBMailInfos[i].Id;
-                    List<RechargeComponentServer> rechargeInfoList = await dbComponent.Query<RechargeComponentServer>(scene.DomainZone(), d => d.Id == mailOwnerId);
-                    long rechargeNum = rechargeInfoList.Count > 0 ? rechargeInfoList[0].GetTotalRechargeNum() : 0;
-                    List<RoleInfoComponentServer> RoleInfoComponents = await dbComponent.Query<RoleInfoComponentServer>(scene.DomainZone(), d => d.Id == mailOwnerId);
-                    if (RoleInfoComponents.Count == 0)
-                    {
-                        continue;
-                    }
-                    RoleInfoComponentServer roleInfoComponent = RoleInfoComponents[0];
-                    if (roleInfoComponent.RoleInfo.RobotId > 0)
-                    {
-                        continue;
-                    }
 
-                    List<BagComponentServer> bagInfoList = await dbComponent.Query<BagComponentServer>(scene.DomainZone(), d => d.Id == mailOwnerId);
-                    if (bagInfoList.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    bool cansendMail = MailHelp.CheckSendMail(request.MailType, request.Title, rechargeNum, roleInfoComponent, bagInfoList[0]);
-                    if (cansendMail == false)
-                    {
-                        continue;
-                    }
-
-                    MailInfo mailInfo = new MailInfo();
-                    mailInfo.Status = 0;
-                    //mailInfo.Context = "福利发放";
-                    //mailInfo.Title = "福利发放";
-                    mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    await MailHelp.SendUserMail((int)request.ActorId, mailOwnerId, mailInfo);
-                }
-            }
-            else 
+            DBComponent dbComponent = Game.Scene.GetComponent<DBComponent>();
+            List<RoleInfoComponentServer> accountInfoList = await dbComponent.Query<RoleInfoComponentServer>(zone, d => d.RoleInfo.Name == request.UserName);
+            if (accountInfoList.Count == 0)
             {
                 response.Message = $"找不到:{request.UserName}";
                 response.Error = ErrorCode.ERR_NotFindAccount;
+                reply();
+                return;
+            }
+
+            RoleInfoComponentServer roleInfoComponent = accountInfoList[0];
+            if (roleInfoComponent.RoleInfo.RobotId > 0)
+            {
+                reply();
+                return;
+            }
+
+            long mailOwnerId = roleInfoComponent.Id;
+            List<RechargeComponentServer> rechargeInfoList = await dbComponent.Query<RechargeComponentServer>(zone, d => d.Id == mailOwnerId);
+            long rechargeNum = rechargeInfoList.Count > 0 ? rechargeInfoList[0].GetTotalRechargeNum() : 0;
+            if (!MailHelp.CheckSendMail(request.MailType, request.Title, rechargeNum, roleInfoComponent))
+            {
+                reply();
+                return;
+            }
+
+            MailInfo mailInfo = new MailInfo();
+            mailInfo.Status = 0;
+            mailInfo.ConfigId = 0;
+            mailInfo.ParamList.Add("福利发放");
+            mailInfo.ParamList.Add("福利发放");
+            mailInfo.ItemList = items;
+            mailInfo.MailId = IdGenerater.Instance.GenerateId();
+            response.Error = await MailHelp.SendUserMail(zone, mailOwnerId, mailInfo);
+            if (response.Error == ErrorCode.ERR_NotFindAccount)
+            {
+                response.Message = $"找不到:{request.UserName}";
             }
 
             reply();
-            await ETTask.CompletedTask;
         }
     }
 }

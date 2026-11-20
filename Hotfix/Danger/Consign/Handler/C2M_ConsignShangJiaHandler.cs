@@ -12,7 +12,7 @@ namespace ET
            
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Sell, unit.Id))
 			{
-				if (request.ConsignItemInfo.BagInfo == null 
+				if (request.ConsignItemInfo?.BagInfo == null 
 					|| request.ConsignItemInfo.BagInfo.ItemNum <= 0)
                 {
                     Log.Error($"C2M_PaiMaiSellRequest 1");
@@ -20,7 +20,7 @@ namespace ET
                     reply();
 					return;
 				}
-				long allprice = request.ConsignItemInfo.BagInfo.ItemNum * request.ConsignItemInfo.Price;
+				long allprice = (long)request.ConsignItemInfo.BagInfo.ItemNum * request.ConsignItemInfo.Price;
                 if (allprice > 10000000 || allprice < 0)
                 {
                     Log.Error($"C2M_PaiMaiSellRequest 2");
@@ -100,7 +100,9 @@ namespace ET
                     reply();
 					return;
 				}
-				if (bagInfo.ItemNum < request.ConsignItemInfo.BagInfo.ItemNum)
+				if (bagInfo.ItemNum < request.ConsignItemInfo.BagInfo.ItemNum
+                    || bagInfo.ItemType != request.ConsignItemInfo.BagInfo.ItemType
+                    || bagInfo.ItemID != request.ConsignItemInfo.BagInfo.ItemID)
 				{
 					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_NoItem);
                     reply();
@@ -111,14 +113,6 @@ namespace ET
 				{
 					response.Error = ErrorCode.ERR_ItemBing;      //道具绑定
 					reply();
-					return;
-				}
-
-				if (allprice < 0)
-                {
-                    Log.Error($"C2M_PaiMaiSellRequest 3");
-                    response.Error = ErrorCode.ERR_ModifyData;
-                    reply();
 					return;
 				}
 
@@ -133,6 +127,8 @@ namespace ET
                 }
 
 				int sellNum = request.ConsignItemInfo.BagInfo.ItemNum;
+                request.ConsignItemInfo.BagInfo = CloneHelper.DeepClone(bagInfo);
+                request.ConsignItemInfo.BagInfo.ItemNum = sellNum;
 				int sellItemId = bagInfo.ItemID;
 				if (!bagComponentServer.OnCostItemData(bagInfoId, sellNum, (ItemLocType)bagInfo.Loc))
 				{
@@ -183,6 +179,7 @@ namespace ET
 					return;
 				}
 
+                MailHelp.SendConsignDesignateMail(request.ConsignItemInfo).Coroutine();
 				unit.GetComponent<TaskComponentServer>().OnConsignShangJia();
 				response.ConsignItemInfo = request.ConsignItemInfo;
 				LogHelper.LogWarning(response.ConsignItemInfo.PlayerName + "上架道具：" + sellItemId + "数量" + sellNum + "时间戳:" + currentTime.ToString(), true);

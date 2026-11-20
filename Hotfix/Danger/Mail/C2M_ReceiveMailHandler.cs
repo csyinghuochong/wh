@@ -27,7 +27,9 @@ namespace ET
                     return;
                 }
 
-                if (MailHelp.IsMailExpired(mailInfo, TimeHelper.ServerNow()))
+                // 旧附件缺失类型时删除整封邮件，不凭道具 ID 推测类型。
+                if (MailHelp.IsMailExpired(mailInfo, TimeHelper.ServerNow())
+                    || mailInfo.ItemList.Exists(item => item.ItemType == ItemBigType.Type_None))
                 {
                     dBMailInfo.MailInfoList.Remove(mailInfo);
                     await DBHelper.SaveComponent(zone, unit.Id, dBMailInfo);

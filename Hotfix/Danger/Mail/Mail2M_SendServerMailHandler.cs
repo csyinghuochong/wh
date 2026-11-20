@@ -4,7 +4,7 @@ namespace ET
 {
 
     /// <summary>
-    /// 这个是用来处理全服邮件的 暂时不要乱用
+    /// 在线全服邮件通知。实际投递与登录补发共用入口，保存成功后才推进角色进度。
     /// </summary>
     [ActorMessageHandler]
     public class Mail2M_SendServerMailHandler : AMActorLocationHandler<Unit, Mail2M_SendServerMailItem>
@@ -12,13 +12,13 @@ namespace ET
 
         protected override async ETTask Run(Unit unit, Mail2M_SendServerMailItem message)
         {
-            //Log.Console($"asdsadada : 全服邮件{message.ServerMailItem.ServerMailIId}");
             RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
-            if (message.ServerMailItem.ServerMailIId > roleInfoComponentServer.RoleInfo.ServerMailIdCur)
+            if (message.ServerMailIdMax <= roleInfoComponentServer.RoleInfo.ServerMailIdCur)
             {
-                roleInfoComponentServer.RoleInfo.ServerMailIdCur = message.ServerMailItem.ServerMailIId;
+                return;
             }
-            await ETTask.CompletedTask;
+
+            await MailHelp.SyncServerMails(unit);
         }
     }
 }

@@ -9,7 +9,11 @@ namespace ET
 
         protected override async ETTask Run(Scene scene, M2Consign_ShangJiaRequest request, Consign2M_ShangJiaResponse response, Action reply)
         {
-            if (!ItemNewHelper.CheckValiedItem(request.ConsignItemInfo.BagInfo))
+            ConsignSceneComponent consign = scene.GetComponent<ConsignSceneComponent>();
+            using CoroutineLock consignLock = await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Consign, consign.InstanceId);
+            if (!consign.Initialized || request.ConsignItemInfo?.BagInfo == null
+                || request.UnitID <= 0 || request.ConsignItemInfo.UserId != request.UnitID
+                || !ItemNewHelper.CheckValiedItem(request.ConsignItemInfo.BagInfo))
             {
                 response.Error = ErrorCode.ERR_ItemNotExist;
                 reply();
@@ -25,9 +29,17 @@ namespace ET
             DBConsignInfo dBPaiMainInfo = scene.GetComponent<ConsignSceneComponent>().GetOrCreatePaiMaiDBByBelongId(consignItem.BelongId);
             scene.GetComponent<ConsignSceneComponent>().InsertShangJiaItem(dBPaiMainInfo, consignItem);
 
-            if (CommonHelper.IsInnerNet())
+            try
             {
-                scene.GetComponent<ConsignSceneComponent>().SaveDB().Coroutine();
+                await consign.SavePaiMaiData(dBPaiMainInfo);
+            }
+            catch (Exception e)
+            {
+                dBPaiMainInfo.PaiMaiItemInfos.Remove(consignItem);
+                response.Error = ErrorCode.ERR_Error;
+                Log.Error(e);
+                reply();
+                return;
             }
 
             reply();

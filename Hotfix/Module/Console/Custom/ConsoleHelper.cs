@@ -2099,31 +2099,28 @@ namespace ET
         public static async ETTask<int> MailConsoleHandler(string content)
         {
             await ETTask.CompletedTask;
-            //mail 区服(0所有区服  1指定区服)  玩家ID(0所有玩家)  道具 邮件类型 参数 管理员
-            //mail 0 0 1;1 2 “6” tt
+            //mail/mail2 区服(0所有区服) 角色名(0所有玩家) 类型~ID~数量~状态[|...] 邮件类型 筛选参数 管理员
+            //附件示例：3~2~1~1；缺少第四项状态时按 0 处理。
             string[] mailInfo = content.Split(" ");
-            if (mailInfo[0] != "mail" && mailInfo.Length < 6)
+            if (mailInfo.Length < 6 || (mailInfo[0] != "mail" && mailInfo[0] != "mail2")
+                || !int.TryParse(mailInfo[1], out int targetZone) || targetZone < 0
+                || !int.TryParse(mailInfo[4], out int mailType) || mailType <= 0)
             {
                 Log.Console("邮件发送失败！");
                 Log.Warning("邮件发送失败！");
                 return ErrorCode.ERR_Parameter;
             }
-            try
+            int errorCode = ErrorCode.ERR_Success;
+#if SERVER
+            if (!MailHelp.TryGetGMMailItems(mailInfo[3], out _))
             {
-                int mailtype = int.Parse(mailInfo[4]);
-            }
-            catch (Exception ex)
-            {
-                Log.Console("邮件发送失败！" + ex.ToString());
-                Log.Warning("邮件发送失败！" + ex.ToString());
                 return ErrorCode.ERR_Parameter;
             }
 
-#if SERVER
             //全服邮件
             if (mailInfo[1] == "0")
             {
-                if (mailInfo.Length < 7 && mailInfo[6] != DllHelper.Admin)
+                if (mailInfo.Length < 7 || mailInfo[6] != DllHelper.Admin)
                 {
                     Log.Console("发送全服邮件0！");
                     return ErrorCode.ERR_Parameter;
@@ -2137,7 +2134,7 @@ namespace ET
             }
             else
             {
-                zoneList.Add(int.Parse(mailInfo[1]));
+                zoneList.Add(targetZone);
             }
 
             for (int i = 0; i < zoneList.Count; i++)
@@ -2154,7 +2151,7 @@ namespace ET
                             Itemlist = mailInfo[3],
                             Title = mailInfo[5],
                             ActorId = zoneList[i],
-                            MailType = int.Parse(mailInfo[4]),
+                            MailType = mailType,
                         });
                     if (g2M_UpdateUnitResponse.Error == ErrorCode.ERR_Success)
                     {
@@ -2162,17 +2159,19 @@ namespace ET
                     }
                     else
                     {
+                        errorCode = g2M_UpdateUnitResponse.Error;
                         Log.Console($"邮件发送失败！：{pyzone}区：" + g2M_UpdateUnitResponse.Message);
                     }
                 }
                 catch (Exception ex)
                 {
+                    errorCode = ErrorCode.ERR_Parameter;
                     Log.Console("邮件发送异常！： " + ex.ToString());
                 }
             }
 #endif
 
-            return ErrorCode.ERR_Success;
+            return errorCode;
         }
 
         public static async ETTask<int> RestoreRoleConsoleHander(string content)
@@ -2268,31 +2267,28 @@ namespace ET
         public static async ETTask<int> Mail2ConsoleHandler(string content)
         {
             await ETTask.CompletedTask;
-            //mail 区服(0所有区服  1指定区服)  玩家ID(0所有玩家)  道具 邮件类型 参数 管理员
-            //mail 0 0 1;1 2 “6” tt
+            //mail/mail2 区服(0所有区服) 角色名(0所有玩家) 类型~ID~数量~状态[|...] 邮件类型 筛选参数 管理员
+            //附件示例：3~2~1~1；缺少第四项状态时按 0 处理。
             string[] mailInfo = content.Split(" ");
-            if (mailInfo[0] != "mail" && mailInfo.Length < 6)
+            if (mailInfo.Length < 6 || (mailInfo[0] != "mail" && mailInfo[0] != "mail2")
+                || !int.TryParse(mailInfo[1], out int targetZone) || targetZone < 0
+                || !int.TryParse(mailInfo[4], out int mailType) || mailType <= 0)
             {
                 Log.Console("邮件发送失败！");
                 Log.Warning("邮件发送失败！");
                 return ErrorCode.ERR_Parameter;
             }
-            try
+            int errorCode = ErrorCode.ERR_Success;
+#if SERVER
+            if (!MailHelp.TryGetGMMailItems(mailInfo[3], out _))
             {
-                int mailtype = int.Parse(mailInfo[4]);
-            }
-            catch (Exception ex)
-            {
-                Log.Console("邮件发送失败！" + ex.ToString());
-                Log.Warning("邮件发送失败！" + ex.ToString());
                 return ErrorCode.ERR_Parameter;
             }
 
-#if SERVER
             //全服邮件
             if (mailInfo[1] == "0")
             {
-                if (mailInfo.Length < 7 && mailInfo[6] != DllHelper.Admin)
+                if (mailInfo.Length < 7 || mailInfo[6] != DllHelper.Admin)
                 {
                     Log.Console("发送全服邮件0！");
                     return ErrorCode.ERR_Parameter;
@@ -2306,7 +2302,7 @@ namespace ET
             }
             else
             {
-                zoneList.Add(int.Parse(mailInfo[1]));
+                zoneList.Add(targetZone);
             }
 
             for (int i = 0; i < zoneList.Count; i++)
@@ -2322,7 +2318,7 @@ namespace ET
                             Itemlist = mailInfo[3],
                             Title = mailInfo[5],
                             ActorId = zoneList[i],
-                            MailType = int.Parse(mailInfo[4]),
+                            MailType = mailType,
                         });
                     if (g2M_UpdateUnitResponse.Error == ErrorCode.ERR_Success)
                     {
@@ -2330,17 +2326,19 @@ namespace ET
                     }
                     else
                     {
+                        errorCode = g2M_UpdateUnitResponse.Error;
                         Log.Console($"邮件发送失败！：{pyzone}区：" + g2M_UpdateUnitResponse.Message);
                     }
                 }
                 catch (Exception ex)
                 {
+                    errorCode = ErrorCode.ERR_Parameter;
                     Log.Console("邮件发送异常！： " + ex.ToString());
                 }
             }
 #endif
 
-            return ErrorCode.ERR_Success;
+            return errorCode;
         }
     }
 }

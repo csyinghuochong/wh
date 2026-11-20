@@ -76,35 +76,6 @@ namespace ET
             {
                 MailInfo mailInfo = new MailInfo();
                 mailInfo.Status = 0;
-                //mailInfo.Context = "战场奖励";
-                //mailInfo.Title = "战场奖励";
-                //mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                //string[] needList = ldGlobalValue.Value.Split('@');
-                //for (int k = 0; k < needList.Length; k++)
-                //{
-                //    string[] itemInfo = needList[k].Split(';');
-                //    if (itemInfo.Length < 2)
-                //    {
-                //        continue;
-                //    }
-                //    int itemId = int.Parse(itemInfo[0]);
-                //    int itemNum = int.Parse(itemInfo[1]);
-                //    mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.BattleWin}_{serverTime}" });
-                //}
-
-                Unit unit = self.DomainScene().GetComponent<UnitComponent>().Get(winPlayers[i]);
-                if (unit != null)
-                {
-                    Log.Warning($"发送战场任务奖励: {self.DomainZone()} {winPlayers[i]}");
-                    unit.GetComponent<TaskComponentServer>().OnWinCampBattle();
-                }
-                if (unit != null && unit.IsRobot())
-                {
-                    continue;
-                }
-
-                Log.Warning($"发送战场邮件奖励: {self.DomainZone()} {winPlayers[i]}");
-                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(winPlayers[i]), winPlayers[i], mailInfo).Coroutine();
             }
         }
 

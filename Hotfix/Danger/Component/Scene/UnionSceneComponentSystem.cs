@@ -686,15 +686,6 @@ namespace ET
 
             long serverTime = TimeHelper.ServerNow();
             List<Unit> players = UnitHelper.GetUnitList(scene, UnitType.Player);
-            for (int i = 0; i < players.Count; i++)
-            {
-                Log.Error("MailInfo mailInfo = new MailInfo");
-                MailInfo mailInfo = new MailInfo();
-                mailInfo.Status = 0;
-                //mailInfo.Title = "家族入侵怪物奖励";
-                mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(players[i].Id), players[i].Id, mailInfo).Coroutine();
-            }
         }
 
         public static void GenerateUnionRace(this UnionSceneComponent self)

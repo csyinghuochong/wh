@@ -13,6 +13,7 @@ namespace ET
             {
                 if (unit.GetComponent<BagComponentServer>().GetBagLeftCell() < 1)
                 {
+                    response.Error = ErrorCode.ERR_BagIsFull;
                     reply();
                     return;
                 }
@@ -22,7 +23,8 @@ namespace ET
                     (chargeServerId, new M2Consign_XiaJiaRequest()
                     {
                         BelongId = request.BelongId,    
-                        ConsignItemInfoId = request.ConsignItemInfoId
+                        ConsignItemInfoId = request.ConsignItemInfoId,
+                        UnitID = unit.Id,
                     });
 
                 if (r_GameStatusResponse.Error == ErrorCode.ERR_Success && r_GameStatusResponse.ConsignItemInfo != null)
@@ -31,7 +33,7 @@ namespace ET
                 }
                 else
                 {
-                    LogHelper.LogWarning($"C2M_PaiMaiXiaJiaHandler==null  {unit.Id} {request.ConsignItemInfoId}");
+                    response.Error = r_GameStatusResponse.Error;
                 }
 
                 reply();

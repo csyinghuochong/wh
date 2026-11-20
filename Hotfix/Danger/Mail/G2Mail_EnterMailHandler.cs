@@ -27,18 +27,16 @@ namespace ET
         protected override async ETTask Run(Scene scene, G2Mail_EnterMail request, Mail2G_EnterMail response, Action reply)
         {
             MailSceneComponent mailScene = scene.GetComponent<MailSceneComponent>();
-            if (request.ServerMailIdCur != -1)
+            if (request.UnitId <= 0 || request.ServerMailIdCur < -1
+                || UnitZoneHelper.GetHomeZone(request.UnitId) != scene.DomainZone())
             {
-                mailScene.OnLogin(request.UnitId, request.ServerMailIdCur).Coroutine();
+                response.Error = ErrorCode.ERR_Parameter;
+                reply();
+                return;
             }
+
             response.ServerMailIdMax = mailScene.GetMaxMaild();
-
-            DBMailInfo dBMailInfo = await DBHelper.GetComponent<DBMailInfo>(scene.DomainZone(), request.UnitId);
-            if (dBMailInfo != null && MailHelp.RemoveExpiredMails(dBMailInfo.MailInfoList, TimeHelper.ServerNow()))
-            {
-                await DBHelper.SaveComponent(scene.DomainZone(), request.UnitId, dBMailInfo);
-            }
-
+            response.ServerMailItems = mailScene.GetPendingServerMails(request.ServerMailIdCur);
             reply();
             await ETTask.CompletedTask;
         }

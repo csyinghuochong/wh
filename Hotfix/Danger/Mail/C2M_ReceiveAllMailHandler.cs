@@ -3,7 +3,7 @@ using System;
 namespace ET
 {
     /// <summary>
-    /// 一键领取当前页签。发放未领奖励，全部标已读，不删除邮件。
+    /// 一键领取当前页签。清理过期及附件缺失类型的旧邮件，发放未领奖励并标已读。
     /// </summary>
     [ActorMessageHandler]
     public class C2M_ReceiveAllMailHandler : AMActorLocationRpcHandler<Unit, C2M_ReceiveAllMailRequest, M2C_ReceiveAllMailResponse>
@@ -27,6 +27,9 @@ namespace ET
                 }
 
                 bool changed = MailHelp.RemoveExpiredMails(dBMailInfo.MailInfoList, TimeHelper.ServerNow());
+                changed |= dBMailInfo.MailInfoList.RemoveAll(mailInfo => mailInfo != null
+                    && MailHelp.GetBelongId(mailInfo) == request.BelongId
+                    && mailInfo.ItemList.Exists(item => item.ItemType == ItemBigType.Type_None)) > 0;
                 BagComponentServer bag = unit.GetComponent<BagComponentServer>();
                 for (int i = 0; i < dBMailInfo.MailInfoList.Count; i++)
                 {
