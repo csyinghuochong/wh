@@ -66,18 +66,6 @@ namespace ET
                     //mailInfo.Context = "福利发放";
                     //mailInfo.Title = "福利发放";
                     mailInfo.MailId = IdGenerater.Instance.GenerateId();
-                    for (int k = 0; k < needList.Length; k++)
-                    {
-                        string[] itemInfo = needList[k].Split(';');
-                        if (itemInfo.Length < 2)
-                        {
-                            continue;
-                        }
-                        int itemId = int.Parse(itemInfo[0]);
-                        int itemNum = int.Parse(itemInfo[1]);
-                        mailInfo.ItemList.Add(new BagInfo() { ItemID = itemId, ItemNum = itemNum, GetWay = $"{ItemGetWay.ReceieMail}_{serverTime}" });
-                    }
-
                     await MailHelp.SendUserMail((int)request.ActorId, mailOwnerId, mailInfo);
                 }
             }
