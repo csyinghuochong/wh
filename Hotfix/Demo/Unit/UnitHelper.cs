@@ -180,6 +180,15 @@ namespace ET
 
         public static float GetSpeedNow(this Unit self)
         {
+            if (self.Type == UnitType.Player)
+            {
+                MountInfo ride = self.GetComponent<MountComponentServer>().GetRideMount();
+                if (ride != null)
+                {
+                    return MountHelper.GetSpeedByLv(ride.MountLv) * 0.01f;
+                }
+            }
+
             NumericComponent numericComponent = self.GetComponent<NumericComponent>();
             float speed_1 = numericComponent.GetAsFloat(NumericType.Speed_Current_15);
             float speed_2 = numericComponent.GetAsFloat(NumericType.Speed_Haste);

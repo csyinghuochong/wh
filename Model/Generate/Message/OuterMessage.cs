@@ -8917,6 +8917,51 @@ namespace ET
 
 	}
 
+// 客户端 -> 地图服：按角色实际任务状态查询找怪/NPC目标及当前地图到目标的传送点路线，不执行传送。
+	[ResponseType(nameof(M2C_TaskNavigateResponse))]
+	[Message(OuterOpcode.C2M_TaskNavigateRequest)]
+	[ProtoContract]
+	public partial class C2M_TaskNavigateRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(1)]
+		public int TaskId { get; set; }
+
+		[ProtoMember(2)]
+		public int TaskTable { get; set; }
+
+	}
+
+// 地图服 -> 客户端：Error=0 时返回目标和路线；每次切图后重新查询，以当前进度为准。
+	[Message(OuterOpcode.M2C_TaskNavigateResponse)]
+	[ProtoContract]
+	public partial class M2C_TaskNavigateResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public int SourceSceneId { get; set; }
+
+		[ProtoMember(2)]
+		public int CreatureId { get; set; }
+
+		[ProtoMember(3)]
+		public List<int> TeleportIds = new List<int>();
+
+		[ProtoMember(4)]
+		public bool NeedReturn { get; set; }
+
+	}
+
 //任务通知【目前用于对话完成】
 	[ResponseType(nameof(M2C_TaskNoticeResponse))]
 	[Message(OuterOpcode.C2M_TaskNoticeRequest)]

@@ -88,27 +88,23 @@ namespace ET
             long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
             Unit master = aiComponent.UnitComponent.Get(masterid);
 
-            long nowspeed = 350;
-            long speedadd = 0;
-            if (master != null && !master.IsDisposed)
-            {
-                nowspeed = master.GetComponent<NumericComponent>().GetAsLong(NumericType.Speed_Current_15);
-                unit.GetComponent<NumericComponent>().Set(NumericType.Speed_Fixed_16, nowspeed);
-            }
+            NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 
             while (true)
             {
+                if (master == null || master.IsDisposed)
+                {
+                    aiComponent.IsRetreat = 0;
+                    return;
+                }
+
+                // 未骑乘用宠物配置速度，骑乘时用坐骑速度 + 10。
+                MountInfo ride = master.GetComponent<MountComponentServer>().GetRideMount();
+                int speed = ride == null ? LDPetCategory.Instance.Get(unit.ConfigId).Speed : MountHelper.GetSpeedByLv(ride.MountLv) + 10;
+                numericComponent.Set(NumericType.Speed_Fixed_16, speed);
+
                 int errorCode = unit.GetComponent<StateComponent>().CanMove();
                 float distacne = PositionHelper.Distance2D(unit.Position, master.Position);
-
-                if (distacne > 10f)
-                {
-                    speedadd = 50;
-                }
-                if (distacne < 2f)
-                {
-                    speedadd = 0;
-                }
 
                 if (aiComponent.IsRetreat > 0 && distacne < 1.5f)
                 {
@@ -118,8 +114,7 @@ namespace ET
                 if (distacne > 1.5f && errorCode == ErrorCode.ERR_Success)
                 {
                     Vector3 nextTarget = GetFollowPosition(unit, master);
-                    //unit.GetComponent<NumericComponent>().Set(NumericType.Numeric_Error, speedadd);
-                    unit.FindPathMoveToAsync(nextTarget, cancellationToken, false, Math.Max(100, (int)((speedadd+nowspeed) * 100f / nowspeed))).Coroutine();
+                    unit.FindPathMoveToAsync(nextTarget, cancellationToken, false).Coroutine();
                 }
                 bool result = await TimerComponent.Instance.WaitAsync(200, cancellationToken);
                 if (!result)

@@ -596,7 +596,7 @@ namespace ET
 					case "6":
 						int newLevel = int.Parse(commands[1]);
 						RoleInfoComponentServer roleInfoComponentServer =  unit.GetComponent<RoleInfoComponentServer>();
-						if (newLevel < roleInfoComponentServer.RoleInfo.Lv)
+						if (newLevel < roleInfoComponentServer.RoleInfo.Lv && !CommonHelper.IsInnerNet())
 						{
 							return;
 						}

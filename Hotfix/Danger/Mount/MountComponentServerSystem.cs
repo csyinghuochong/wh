@@ -262,7 +262,6 @@ namespace ET
                 return;
             }
 
-            int oldLv = mountInfo.MountLv <= 0 ? 1 : mountInfo.MountLv;
             int newExp = mountInfo.MountExp + addExp;
             bool levelChanged = false;
             while (true)
@@ -299,8 +298,7 @@ namespace ET
 
             MountHelper.SyncAddPropretyNum(mountInfo);
             MountHelper.ApplyAptitudeAttributes(mountInfo);
-            if (self.GetRideMount()?.Id == mountInfo.Id
-                && MountHelper.IsMountModelChanged(mountInfo.ConfigId, oldLv, mountInfo.MountLv))
+            if (self.GetRideMount()?.Id == mountInfo.Id)
             {
                 self.BroadcastRide();
             }
