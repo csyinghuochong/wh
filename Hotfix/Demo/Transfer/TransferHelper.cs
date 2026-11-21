@@ -441,7 +441,8 @@ namespace ET
                 return ErrorCode.ERR_ModifyData;
             }
             
-            long oldsceneid = unit.DomainScene().Id;
+            Scene oldScene = unit.DomainScene();
+            long oldSceneInstanceId = oldScene.InstanceId;
             List<StartSceneConfig> zonelocaldungeons = StartSceneConfigCategory.Instance.FuBenWorkScens[UnitZoneHelper.GetHomeZone(unit)];
             int n = (int)( (unit.Id / 99) % zonelocaldungeons.Count);
 
@@ -479,13 +480,13 @@ namespace ET
                 return transferError;
             }
 
-            //移除旧scene
-            Scene scene = Game.Scene.Get(oldsceneid);
-            if (scene.InstanceId != createUnit.FubenInstanceId && scene.GetComponent<LocalDungeonComponent>() != null)
+            // 组队等场景不一定直属 Game.Scene；保留来源引用，只清理仍存活的原个人副本实例。
+            if (oldScene.InstanceId == oldSceneInstanceId && oldSceneInstanceId != createUnit.FubenInstanceId
+                && oldScene.GetComponent<LocalDungeonComponent>() != null)
             {
                 //动态删除副本
-                TransferHelper.NoticeFubenCenter(scene, 2).Coroutine();
-                scene.Dispose();
+                TransferHelper.NoticeFubenCenter(oldScene, 2).Coroutine();
+                oldScene.Dispose();
             }
             return ErrorCode.ERR_Success;   
         }

@@ -704,6 +704,17 @@ namespace ET
                 return ErrorCode.ERR_ModifyData;
             }
 
+            // 共用解析在末尾依次追加 Gold_1、Gold_2；服务端按非绑金币(4)、绑定金币(5)发放。
+            int fixedRewardIndex = rewardItems.Count - (ldTask.Gold_1 > 0 ? 1 : 0) - (ldTask.Gold_2 > 0 ? 1 : 0);
+            if (ldTask.Gold_1 > 0)
+            {
+                rewardItems[fixedRewardIndex++].ItemID = UserDataType.Gold;
+            }
+            if (ldTask.Gold_2 > 0)
+            {
+                rewardItems[fixedRewardIndex].ItemID = UserDataType.BindGold;
+            }
+
             if (!bagComponentServer.CanAddItemData(rewardItems))
             {
                 return ErrorCode.ERR_BagIsFull;

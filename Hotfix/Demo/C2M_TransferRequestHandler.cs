@@ -30,13 +30,13 @@ namespace ET
                 TransferArgs args = new TransferArgs(sceneType: request.SceneType, sceneId: request.SceneId,
                     difficulty: request.Difficulty, paramInfo: request.paramInfo);
                 response.Error = await TransferHelper.TransferUnit(unit, args);
-                reply();
-                await ETTask.CompletedTask;
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
+                response.Error = ErrorCode.ERR_TransferFailError;
             }
+            reply();
         }
     }
 }
