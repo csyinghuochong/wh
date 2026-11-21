@@ -346,6 +346,14 @@ namespace ET
             useSkill.PublicCDTime = groupCdEnd;
             self.BroadcastSkill(unit, useSkill);
 
+            // 敌对指向技能成功释放即记录攻击者，未扣血时宠物也能响应主人受击。
+            Unit target = self.SelfUnitComponent.Get(skillcmd.TargetID);
+            if (weaponLdSkill.Target_Type == LDSkillTargetType.Enemy_4
+                && target != null && !target.IsDisposed && unit.IsCanAttackUnit(target))
+            {
+                target.GetComponent<AttackRecordComponent>().BeAttackId = unit.Id;
+            }
+
             for (int i = 0; i < handlerList.Count; i++)
             {
                 handlerList[i].OnUpdate();
@@ -355,13 +363,8 @@ namespace ET
             {
             }
 
-            Unit unitTarget = unit.GetParent<UnitComponent>().Get(skillcmd.TargetID);
             if (weaponLdSkill.Type == SkillTypeEnum.SkillTypeInstant_1)
             {
-                if (unitTarget != null)
-                {
-                    unitTarget.GetComponent<AttackRecordComponent>().BeAttackId = unit.Id;
-                }
                 if (skillcmd.TargetID > 0)
                 {
                     unit.GetComponent<AttackRecordComponent>().AttackingId = skillcmd.TargetID;

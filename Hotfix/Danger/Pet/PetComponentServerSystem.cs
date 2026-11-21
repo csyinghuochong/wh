@@ -281,6 +281,7 @@ namespace ET
             }
 
             petNumeric.ApplyAttributeDictionary(applyDic, false);
+            petUnit.GetComponent<AIComponent>().InitPet(rolePetInfo);
         }
 
         public static void RemovePet(this PetComponentServer self, long petId, int removetype)

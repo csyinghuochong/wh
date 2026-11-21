@@ -13,58 +13,47 @@ namespace ET
             Unit unit = aiComponent.GetParent<Unit>();
             long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
             Unit master = aiComponent.UnitComponent.Get(masterid);
-            if (master == null)
+            if (master == null || master.IsDisposed || aiComponent.AISkillIDList.Count == 0)
             {
-                return false;
+                aiComponent.TargetID = 0;
+                return true;
             }
 
             float distance = PositionHelper.Distance2D(unit.Position, master.Position);
             AttackRecordComponent attackRecordComponent = master.GetComponent<AttackRecordComponent>();
-            if (distance > aiComponent.LoseAggro)    //超出追击距离，返回
+            if ((aiComponent.LoseAggro > 0 && distance > aiComponent.LoseAggro)
+                || (aiComponent.IsRetreat != 0 && distance > 1.5f))
             {
                 aiComponent.TargetID = 0;
-                attackRecordComponent.PetLockId = 0;
-                attackRecordComponent.AttackingId = 0;
-                attackRecordComponent.BeAttackId = 0;
                 aiComponent.IsRetreat = TimeHelper.ServerNow();
                 return true;
             }
+            aiComponent.IsRetreat = 0;
 
             long mastaerAttackId = attackRecordComponent.PetLockId;
             Unit enemyUnit = aiComponent.UnitComponent.Get(mastaerAttackId);
-            if (enemyUnit == null || !enemyUnit.IsCanBeAttack())
+            if (enemyUnit == null || enemyUnit.IsDisposed || !unit.IsCanAttackUnit(enemyUnit))
             {
                 mastaerAttackId = attackRecordComponent.AttackingId;
                 enemyUnit = aiComponent.UnitComponent.Get(mastaerAttackId);
             }
-            if (enemyUnit == null || !enemyUnit.IsCanBeAttack())
+            if (enemyUnit == null || enemyUnit.IsDisposed || !unit.IsCanAttackUnit(enemyUnit))
             {
                 mastaerAttackId = attackRecordComponent.BeAttackId;
                 enemyUnit = aiComponent.UnitComponent.Get(mastaerAttackId);
             }
-            if (enemyUnit == null || !enemyUnit.IsCanBeAttack())
+            if (enemyUnit == null || enemyUnit.IsDisposed || !unit.IsCanAttackUnit(enemyUnit))
             {
                 enemyUnit = aiComponent.UnitComponent.Get(aiComponent.TargetID);
             }
-            if (enemyUnit == null || !unit.IsCanAttackUnit(enemyUnit))
+            if (enemyUnit == null || enemyUnit.IsDisposed || !unit.IsCanAttackUnit(enemyUnit))
             {
                 aiComponent.TargetID = 0;
                 return true;
             }
 
-            distance = PositionHelper.Distance2D(unit.Position, enemyUnit.Position);
-            ///1
             aiComponent.TargetID = enemyUnit.Id;
-            ///2
-            //if (distance < aiComponent.ActRange)
-            //{
-            //    aiComponent.TargetID = enemyUnit.Id;
-            //}
-            //else
-            //{
-            //    aiComponent.TargetID = 0;
-            //}
-            return aiComponent.TargetID == 0;
+            return false;
         }
 
         public static Vector3 GetFollowPosition(Unit unit, Unit master)
@@ -86,22 +75,32 @@ namespace ET
         {
             Unit unit = aiComponent.GetParent<Unit>();
             long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
-            Unit master = aiComponent.UnitComponent.Get(masterid);
-
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
+            unit.Stop(0);
+
+            if (aiComponent.IsRetreat != 0)
+            {
+                SkillManagerComponent skillManager = unit.GetComponent<SkillManagerComponent>();
+                skillManager.ClearMonsterSing();
+                skillManager.OnFinish(true);
+            }
 
             while (true)
             {
+                Unit master = aiComponent.UnitComponent.Get(masterid);
                 if (master == null || master.IsDisposed)
                 {
-                    aiComponent.IsRetreat = 0;
+                    unit.Stop(0);
                     return;
                 }
 
                 // 未骑乘用宠物配置速度，骑乘时用坐骑速度 + 10。
-                MountInfo ride = master.GetComponent<MountComponentServer>().GetRideMount();
-                int speed = ride == null ? LDPetCategory.Instance.Get(unit.ConfigId).Speed : MountHelper.GetSpeedByLv(ride.MountLv) + 10;
-                numericComponent.Set(NumericType.Speed_Fixed_16, speed);
+                if (unit.Type == UnitType.Pet)
+                {
+                    MountInfo ride = master.Type == UnitType.Player ? master.GetComponent<MountComponentServer>().GetRideMount() : null;
+                    int speed = ride == null ? LDPetCategory.Instance.Get(unit.ConfigId).Speed : MountHelper.GetSpeedByLv(ride.MountLv) + 10;
+                    numericComponent.Set(NumericType.Speed_Fixed_16, speed);
+                }
 
                 int errorCode = unit.GetComponent<StateComponent>().CanMove();
                 float distacne = PositionHelper.Distance2D(unit.Position, master.Position);
@@ -116,11 +115,14 @@ namespace ET
                     Vector3 nextTarget = GetFollowPosition(unit, master);
                     unit.FindPathMoveToAsync(nextTarget, cancellationToken, false).Coroutine();
                 }
+                else if (!unit.GetComponent<MoveComponent>().IsArrived())
+                {
+                    unit.Stop(errorCode == ErrorCode.ERR_Success ? 0 : MoveStopTypeEnum.MoveStopTypeFu2);
+                }
                 bool result = await TimerComponent.Instance.WaitAsync(200, cancellationToken);
                 if (!result)
                 {
-                    aiComponent.IsRetreat = 0;
-                    break;
+                    return;
                 }
 
             }
