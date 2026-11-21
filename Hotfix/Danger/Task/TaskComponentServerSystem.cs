@@ -135,6 +135,11 @@ namespace ET
                 return;
             }
 
+            if (!LDTask_2Category.Instance.Contain(taskid) || LDTask_2Category.Instance.Get(taskid).Is_Close == 1)
+            {
+                return;
+            }
+
             for (int i = 0; i < self.RoleTaskList_2.Count; i++)
             {
                 if (self.RoleTaskList_2[i].taskID == taskid)
@@ -245,7 +250,8 @@ namespace ET
         /// <returns></returns>
         public static (TaskPro, int) OnAcceptedTask(this TaskComponentServer self, int taskId)
         {
-            if (taskId == 0)
+            if (taskId == 0 || !LDTask_2Category.Instance.Contain(taskId)
+                || LDTask_2Category.Instance.Get(taskId).Is_Close == 1)
             {
                 return (null, ErrorCode.ERR_TaskCanNotGet);
             }
@@ -605,6 +611,11 @@ namespace ET
             }
 
             LDTask_2 commitLdTask = LDTask_2Category.Instance.Get(taskid);
+            if (commitLdTask.Is_Close == 1)
+            {
+                return ErrorCode.ERR_TaskCanNotGet;
+            }
+
             if (TaskHelper.IsPointProgressTask(commitLdTask))
             {
                 int curPoint = self.GetPointProgressCurrent(commitLdTask);
@@ -1854,7 +1865,8 @@ namespace ET
                 return;
             }
 
-            if (self.NextUnionWorkTaskId > 0 && UnionHelper.IsUnionWorkTask(self.NextUnionWorkTaskId))
+            if (self.NextUnionWorkTaskId > 0 && UnionHelper.IsUnionWorkTask(self.NextUnionWorkTaskId)
+                && LDTask_2Category.Instance.Get(self.NextUnionWorkTaskId).Is_Close != 1)
             {
                 return;
             }

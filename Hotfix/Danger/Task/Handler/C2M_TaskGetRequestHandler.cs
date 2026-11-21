@@ -39,7 +39,7 @@ namespace ET
                 return;
             }
 
-            if (UnionHelper.IsUnionWorkTask(request.TaskId))
+            if (LDTask_2Category.Instance.Get(request.TaskId).Is_Close == 1 || UnionHelper.IsUnionWorkTask(request.TaskId))
             {
                 response.Error = ErrorCode.ERR_TaskCanNotGet;
                 reply();

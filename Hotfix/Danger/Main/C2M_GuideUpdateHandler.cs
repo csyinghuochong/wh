@@ -17,11 +17,14 @@ namespace ET
 
     public static class BeginnerGuideServerHelper
     {
+        /// <summary>校验并保存启动、顺序推进、配置回溯或整组完成；已完成组重复请求直接成功回包。</summary>
         public static int Update(Unit unit, C2M_GuideUpdateRequest request, M2C_GuideUpdateResponse response)
         {
             if (!BeginnerGuideConfigHelper.TryGetSteps(request.GuideId, out List<LDBeginner_Guide> steps, out _)
                 || request.GuideStep < 0 || request.ContextId < 0)
+            {
                 return ErrorCode.ERR_Parameter;
+            }
 
             RoleInfo role = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
             if (role.CompleteGuideIds.Contains(request.GuideId))
@@ -35,7 +38,9 @@ namespace ET
             {
                 if (request.GuideStep != request.GuideId || !CheckTrigger(unit, steps[0])
                     || !CheckContext(unit, steps, request.ContextId))
+                {
                     return ErrorCode.ERR_Parameter;
+                }
 
                 progress = new BeginnerGuideProgress { GuideId = request.GuideId, StepId = request.GuideStep, ContextId = request.ContextId };
                 role.BeginnerGuideProgresses.Add(progress);
@@ -43,12 +48,25 @@ namespace ET
                 return ErrorCode.ERR_Success;
             }
 
-            if (request.ContextId != progress.ContextId) return ErrorCode.ERR_Parameter;
+            if (request.ContextId != progress.ContextId)
+            {
+                return ErrorCode.ERR_Parameter;
+            }
+
             LDBeginner_Guide current = steps.Find(x => x.Id == progress.StepId);
-            if (current == null) return ErrorCode.ERR_Parameter;
+            if (current == null)
+            {
+                return ErrorCode.ERR_Parameter;
+            }
+
             if (request.GuideStep == 0)
             {
-                if (current.Next_Id.Length != 0) return ErrorCode.ERR_Parameter;
+                // 只有保存进度已到末步才接受整组完成；完成列表记录组首ID。
+                if (current.Next_Id.Length != 0)
+                {
+                    return ErrorCode.ERR_Parameter;
+                }
+
                 role.BeginnerGuideProgresses.Remove(progress);
                 role.CompleteGuideIds.Add(request.GuideId);
                 response.Completed = true;
@@ -57,13 +75,16 @@ namespace ET
 
             bool next = current.Next_Id.Length == 1 && current.Next_Id[0] == request.GuideStep;
             if (request.GuideStep != current.Id && request.GuideStep != current.Break_Backup_Id && !next)
+            {
                 return ErrorCode.ERR_Parameter;
+            }
 
             progress.StepId = request.GuideStep;
             response.Progress = progress;
             return ErrorCode.ERR_Success;
         }
 
+        /// <summary>新建进度时校验服务器可确认的触发条件；装备事件还需通过实例归属校验。</summary>
         private static bool CheckTrigger(Unit unit, LDBeginner_Guide root)
         {
             TaskComponentServer tasks = unit.GetComponent<TaskComponentServer>();
@@ -87,6 +108,7 @@ namespace ET
             }
         }
 
+        /// <summary>装备或灵宠必须属于当前角色；不需要实例的组只接受contextId=0。</summary>
         private static bool CheckContext(Unit unit, List<LDBeginner_Guide> steps, long contextId)
         {
             if (BeginnerGuideConfigHelper.ContainsPosition(steps, BeginnerGuidePosition.Equipment))
@@ -96,7 +118,10 @@ namespace ET
                     && (item.Loc == (int)ItemLocType.ItemLocBag || item.Loc == (int)ItemLocType.ItemLocEquip);
             }
             if (BeginnerGuideConfigHelper.ContainsPosition(steps, BeginnerGuidePosition.PetFight))
+            {
                 return contextId > 0 && unit.GetComponent<PetComponentServer>().GetPetInfo(contextId) != null;
+            }
+
             return contextId == 0;
         }
     }
