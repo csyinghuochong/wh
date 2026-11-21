@@ -4418,7 +4418,7 @@ namespace ET
 
 	}
 
-// Map → 客户端：合成结果；Error=0 成功，非 0 为失败提示码，材料不足或容量不足时不扣除材料。
+// Map → 客户端：合成结果及实际入包道具；Error=0成功，非0为失败提示码，失败时BagInfos为空。
 	[Message(OuterOpcode.M2C_ComposeGoodsResponse)]
 	[ProtoContract]
 	public partial class M2C_ComposeGoodsResponse: Object, IActorLocationResponse
@@ -4431,6 +4431,9 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public List<BagInfo> BagInfos = new List<BagInfo>();
 
 	}
 

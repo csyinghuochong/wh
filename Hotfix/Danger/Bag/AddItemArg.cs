@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ET
 {
     /// <summary>
@@ -10,6 +12,8 @@ namespace ET
         public ItemLocType Loc;
         public string MakePlayer;
         public long MakeTime;
+        /// <summary>可选结果接收列表；保留入包实例信息的副本，ItemNum只累计本次入该格的数量，不含原有数量。</summary>
+        public List<BagInfo> ResultItems;
 
         public AddItemArg(string getWay, bool notice = true)
         {
@@ -18,6 +22,7 @@ namespace ET
             Loc = ItemLocType.ItemLocMax;
             MakePlayer = string.Empty;
             MakeTime = 0;
+            ResultItems = null;
         }
     }
 }

@@ -1214,6 +1214,7 @@ namespace ET
                 bagInfo.ItemNum += add;
                 leftNum -= add;
                 bagUpdate.BagInfoUpdate.Add(bagInfo);
+                AddResultItem(arg.ResultItems, bagInfo, add);
             }
 
             return leftNum;
@@ -1243,7 +1244,35 @@ namespace ET
 
                 itemList.Add(bagInfo);
                 bagUpdate.BagInfoAdd.Add(bagInfo);
+                AddResultItem(arg.ResultItems, bagInfo, bagInfo.ItemNum);
             }
+        }
+
+        /// <summary>
+        /// 按实际入包格收集产物；同一格只累计本次数量，复制实例信息以免修改真实背包数量和属性。
+        /// 未请求结果的普通入包流程不创建副本。
+        /// </summary>
+        private static void AddResultItem(List<BagInfo> resultItems, BagInfo bagInfo, int count)
+        {
+            if (resultItems == null)
+            {
+                return;
+            }
+
+            foreach (BagInfo result in resultItems)
+            {
+                if (result.BagInfoID != bagInfo.BagInfoID)
+                {
+                    continue;
+                }
+
+                result.ItemNum += count;
+                return;
+            }
+
+            BagInfo copy = CloneHelper.DeepClone(bagInfo);
+            copy.ItemNum = count;
+            resultItems.Add(copy);
         }
 
         public static bool CheckNeedItem(this BagComponentServer self, string rewardItems)

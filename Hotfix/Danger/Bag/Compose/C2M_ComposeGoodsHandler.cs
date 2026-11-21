@@ -143,11 +143,18 @@ namespace ET
                 }
             }
 
-            bag.OnAddItemData(rewardItems, new AddItemArg($"{getWay}_{makeTime}")
+            // 在实际入包处收集实例，保留生成的装备属性和唯一ID，避免按配置重建产物。
+            if (!bag.OnAddItemData(rewardItems, new AddItemArg($"{getWay}_{makeTime}")
             {
                 MakePlayer = makePlayer,
                 MakeTime = makeTime,
-            });
+                ResultItems = response.BagInfos,
+            }))
+            {
+                response.Error = ErrorCode.ERR_BagIsFull;
+                reply();
+                return;
+            }
 
             reply();
             await ETTask.CompletedTask;
