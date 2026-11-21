@@ -85,9 +85,12 @@ namespace ET
 		/// <summary>名称</summary>
 		[ProtoMember(2)]
 		public int Name { get; set; }
-		/// <summary>描述</summary>
+		/// <summary>颜色</summary>
 		[ProtoMember(3)]
-		public int Desc { get; set; }
+		public int Color { get; set; }
+		/// <summary>技能</summary>
+		[ProtoMember(4)]
+		public int Skill { get; set; }
 
 	}
 }

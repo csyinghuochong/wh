@@ -91,15 +91,36 @@ namespace ET
 		/// <summary>装备ID</summary>
 		[ProtoMember(4)]
 		public int[] Equip_Id { get; set; }
-		/// <summary>效果组1</summary>
+		/// <summary>点 数</summary>
 		[ProtoMember(5)]
-		public string Effect_Id_1 { get; set; }
-		/// <summary>效果组2</summary>
+		public int Param_0 { get; set; }
+		/// <summary>效果组0</summary>
 		[ProtoMember(6)]
-		public string Effect_Id_2 { get; set; }
-		/// <summary>效果组3</summary>
+		public string Effect_Id_0 { get; set; }
+		/// <summary>点 数</summary>
 		[ProtoMember(7)]
+		public int Param_1 { get; set; }
+		/// <summary>效果组1</summary>
+		[ProtoMember(8)]
+		public string Effect_Id_1 { get; set; }
+		/// <summary>点 数</summary>
+		[ProtoMember(9)]
+		public int Param_2 { get; set; }
+		/// <summary>效果组2</summary>
+		[ProtoMember(10)]
+		public string Effect_Id_2 { get; set; }
+		/// <summary>点 数</summary>
+		[ProtoMember(11)]
+		public int Param_3 { get; set; }
+		/// <summary>效果组3</summary>
+		[ProtoMember(12)]
 		public string Effect_Id_3 { get; set; }
+		/// <summary>点 数</summary>
+		[ProtoMember(13)]
+		public int Param_4 { get; set; }
+		/// <summary>效果组4</summary>
+		[ProtoMember(14)]
+		public string Effect_Id_4 { get; set; }
 
 	}
 }

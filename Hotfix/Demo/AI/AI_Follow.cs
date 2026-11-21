@@ -99,7 +99,10 @@ namespace ET
                 {
                     MountInfo ride = master.Type == UnitType.Player ? master.GetComponent<MountComponentServer>().GetRideMount() : null;
                     int speed = ride == null ? LDPetCategory.Instance.Get(unit.ConfigId).Speed : MountHelper.GetSpeedByLv(ride.MountLv) + 10;
-                    numericComponent.Set(NumericType.Speed_Fixed_16, speed);
+                    if (numericComponent.GetAsLong(NumericType.Speed_Fixed_16) != speed)
+                    {
+                        numericComponent.Set(NumericType.Speed_Fixed_16, speed);
+                    }
                 }
 
                 int errorCode = unit.GetComponent<StateComponent>().CanMove();
