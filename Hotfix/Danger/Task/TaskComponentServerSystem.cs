@@ -377,7 +377,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 无NPC任务只自动接取配置了接取等级下限的任务，或已交付前置解锁的后继任务。
+        /// 无NPC任务自动接取：已交付前置解锁的后继，或配置Is_Auto_Accept=1且有接取等级下限的独立任务。
         /// Global_Initial_Task仍由客户端主城入口接取，不参与自动补接。
         /// 复用接取入口校验等级、职业和任务链；仅为本次新接取的任务开启追踪，不改变已有任务的追踪选择。
         /// 返回是否新接取了任务，调用方负责通过初始化回包或任务更新消息同步客户端。
@@ -393,9 +393,10 @@ namespace ET
                     continue;
                 }
 
-                // 未填等级不能作为独立任务自动发放；必须已有真实交付的前置指向它。
+                // 等级任务必须显式开启自动接取；已交付前置解锁的后继沿用原任务链接取规则。
                 // 后续仍通过接取入口校验全开/随机后继，不能只看NextTask1_Id就绕过前置交付。
-                if (config.Accept_Lv_Min <= 0 && !self.HasCompletedPredecessor_1(config.Id))
+                if (!self.HasCompletedPredecessor_1(config.Id)
+                    && (config.Is_Auto_Accept != 1 || config.Accept_Lv_Min <= 0))
                 {
                     continue;
                 }
