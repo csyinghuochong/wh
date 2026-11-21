@@ -18,7 +18,7 @@ namespace ET
 		}
 	}
 
-	public static class SkillSetComponentServerSystem
+	public static partial class SkillSetComponentServerSystem
 	{
 
 		public static bool IfJuexXingSkill(this SkillSetComponentServer self)
@@ -549,6 +549,7 @@ namespace ET
             }
 
             self.EnsureDefaultPotionBar();
+            self.RefreshEquipSuitSkills(false);
         }
 
 		/// <summary>

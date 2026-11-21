@@ -1521,44 +1521,11 @@ namespace ET
         {
             Unit unit = self.GetParent<Unit>();
             List<BagInfo> equipList = self.GetItemByLoc(ItemLocType.ItemLocEquip);
-            Dictionary<int, int> suitPointsMap = new Dictionary<int, int>();
-
             for (int i = equipList.Count - 1; i >= 0; i--)
             {
-                BagInfo userBagInfo = equipList[i];
-                if (!LDEquipCategory.Instance.Contain(userBagInfo.ItemID))
+                if (!LDEquipCategory.Instance.Contain(equipList[i].ItemID))
                 {
                     equipList.RemoveAt(i);
-                    continue;
-                }
-
-                LDEquip itemCof = LDEquipCategory.Instance.Get(userBagInfo.ItemID);
-                if (itemCof.EquipSuitID == 0)
-                {
-                    continue;
-                }
-
-                if (!suitPointsMap.TryGetValue(itemCof.EquipSuitID, out int suitPoints))
-                {
-                    suitPoints = 0;
-                }
-
-                suitPointsMap[itemCof.EquipSuitID] = suitPoints + itemCof.EquipSuitParam;
-            }
-
-            // 套装效果：按点数获取效果ID，效果表尚未接入
-            foreach (KeyValuePair<int, int> suitPoints in suitPointsMap)
-            {
-                if (!LDEquip_SuitCategory.Instance.Contain(suitPoints.Key))
-                {
-                    continue;
-                }
-
-                LDEquip_Suit ldEquipSuitCof = LDEquip_SuitCategory.Instance.Get(suitPoints.Key);
-                List<int> suitEffectIds = GetActiveEquipSuitEffectIds(suitPoints.Value, ldEquipSuitCof.Effect_Id_1);
-                if (suitEffectIds.Count > 0)
-                {
-                    // 效果表未配置，暂不写入属性
                 }
             }
 
@@ -1691,41 +1658,5 @@ namespace ET
             return true;
         }
 
-        private static List<int> GetActiveEquipSuitEffectIds(int suitPoints, string effectIdStr)
-        {
-            List<int> effectIds = new List<int>();
-            if (suitPoints <= 0 || string.IsNullOrEmpty(effectIdStr))
-            {
-                return effectIds;
-            }
-
-            string[] effectTiers = effectIdStr.Split('|');
-            for (int i = 0; i < effectTiers.Length; i++)
-            {
-                string tier = effectTiers[i];
-                if (string.IsNullOrEmpty(tier))
-                {
-                    continue;
-                }
-
-                int sep = tier.IndexOf('_');
-                if (sep <= 0 || sep >= tier.Length - 1)
-                {
-                    continue;
-                }
-
-                if (!int.TryParse(tier.Substring(0, sep), out int needPoints) || !int.TryParse(tier.Substring(sep + 1), out int effectId))
-                {
-                    continue;
-                }
-
-                if (suitPoints >= needPoints && effectId > 0)
-                {
-                    effectIds.Add(effectId);
-                }
-            }
-
-            return effectIds;
-        }
     }
 }

@@ -76,6 +76,7 @@ namespace ET
                 }
 
                 unit.GetComponent<TaskComponentServer>()?.OnWearEquip();
+                skillSet.RefreshEquipSuitSkills();
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 useBagInfo.BindOnWear();
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
@@ -102,6 +103,7 @@ namespace ET
 
                 bag.OnChangeItemLoc(useBagInfo, ItemLocType.ItemLocBag, ItemLocType.ItemLocEquip);
                 skillSet.OnTakeOffEquip(ItemLocType.ItemLocEquip, useBagInfo);
+                skillSet.RefreshEquipSuitSkills();
                 Function_Fight.UnitUpdateProperty_Base(unit, true, true);
                 m2c_bagUpdate.BagInfoUpdate.Add(useBagInfo);
             }

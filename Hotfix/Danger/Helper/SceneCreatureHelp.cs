@@ -403,7 +403,7 @@ namespace ET
 			m2C_SyncChatInfo.ChatInfo = new ChatInfo();
 			m2C_SyncChatInfo.ChatInfo.PlayerLevel = roleInfoComponentServer.RoleInfo.Lv;
 			m2C_SyncChatInfo.ChatInfo.Occ = roleInfoComponentServer.RoleInfo.Occ;
-			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.Team;
+			m2C_SyncChatInfo.ChatInfo.ChannelId = (int)ChannelEnum.System;
 			m2C_SyncChatInfo.ChatInfo.UserId = unit.Id;   //拾取道具的消息，此为玩家id
 			m2C_SyncChatInfo.ChatInfo.ParamId = dropInfo.UnitId;
 			BagInfo itemInfo = new BagInfo { ItemType = dropInfo.ItemType, ItemID = dropInfo.ItemID, ItemFlags = dropInfo.ItemFlags };
