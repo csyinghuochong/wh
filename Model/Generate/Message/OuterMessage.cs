@@ -708,6 +708,10 @@ namespace ET
 		[ProtoMember(78)]
 		public List<IntLongPair> ItemUseTimes = new List<IntLongPair>();
 
+// 未完成的新手引导进度，随角色保存并在登录时同步。完成组后从此列表移除。
+		[ProtoMember(79)]
+		public List<BeginnerGuideProgress> BeginnerGuideProgresses = new List<BeginnerGuideProgress>();
+
 	}
 
 	[Message(OuterOpcode.IntStringPair)]
@@ -2252,6 +2256,7 @@ namespace ET
 
 	}
 
+// 客户端→当前地图服：开始、推进或回溯新手引导；不发放奖励、不代替业务操作协议。
 	[ResponseType(nameof(M2C_GuideUpdateResponse))]
 	[Message(OuterOpcode.C2M_GuideUpdateRequest)]
 	[ProtoContract]
@@ -2266,8 +2271,12 @@ namespace ET
 		[ProtoMember(3)]
 		public int GuideStep { get; set; }
 
+		[ProtoMember(4)]
+		public long ContextId { get; set; }
+
 	}
 
+// 地图服→客户端：Error=0才应用进度；失败不修改客户端或服务端进度。
 	[Message(OuterOpcode.M2C_GuideUpdateResponse)]
 	[ProtoContract]
 	public partial class M2C_GuideUpdateResponse: Object, IActorLocationResponse
@@ -2280,6 +2289,12 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+		[ProtoMember(1)]
+		public BeginnerGuideProgress Progress { get; set; }
+
+		[ProtoMember(2)]
+		public bool Completed { get; set; }
 
 	}
 
@@ -12628,6 +12643,22 @@ namespace ET
 
 		[ProtoMember(1)]
 		public string UnionName { get; set; }
+
+	}
+
+// 未完成的一组新手引导。追加在协议尾部，保持既有业务消息Opcode不变。
+	[Message(OuterOpcode.BeginnerGuideProgress)]
+	[ProtoContract]
+	public partial class BeginnerGuideProgress: Object
+	{
+		[ProtoMember(1)]
+		public int GuideId { get; set; }
+
+		[ProtoMember(2)]
+		public int StepId { get; set; }
+
+		[ProtoMember(3)]
+		public long ContextId { get; set; }
 
 	}
 

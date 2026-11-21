@@ -103,59 +103,62 @@ namespace ET
 		/// <summary>描述</summary>
 		[ProtoMember(8)]
 		public int Desc { get; set; }
-		/// <summary>条件</summary>
+		/// <summary>禁用</summary>
 		[ProtoMember(9)]
+		public int Is_Close { get; set; }
+		/// <summary>条件</summary>
+		[ProtoMember(10)]
 		public int Condition_Type { get; set; }
 		/// <summary>主参数</summary>
-		[ProtoMember(10)]
+		[ProtoMember(11)]
 		public int Param1 { get; set; }
 		/// <summary>副参数</summary>
-		[ProtoMember(11)]
+		[ProtoMember(12)]
 		public int Param2 { get; set; }
 		/// <summary>副参数</summary>
-		[ProtoMember(12)]
+		[ProtoMember(13)]
 		public int Param3 { get; set; }
 		/// <summary>副参数</summary>
-		[ProtoMember(13)]
+		[ProtoMember(14)]
 		public int Param4 { get; set; }
 		/// <summary>角色 经验 参数</summary>
-		[ProtoMember(14)]
+		[ProtoMember(15)]
 		public int Exp_Role_Param1 { get; set; }
 		/// <summary>角色 经验 参数</summary>
-		[ProtoMember(15)]
+		[ProtoMember(16)]
 		public int Exp_Role_Param2 { get; set; }
 		/// <summary>角色 经验 参数</summary>
-		[ProtoMember(16)]
+		[ProtoMember(17)]
 		public int Exp_Role_Param3 { get; set; }
 		/// <summary>绑定 钱币</summary>
-		[ProtoMember(17)]
+		[ProtoMember(18)]
 		public int Gold_1 { get; set; }
 		/// <summary>非绑 钱币</summary>
-		[ProtoMember(18)]
+		[ProtoMember(19)]
 		public int Gold_2 { get; set; }
 		/// <summary>奖励 0-全拿 1-任选</summary>
-		[ProtoMember(19)]
+		[ProtoMember(20)]
 		public int Reward_Option { get; set; }
 		/// <summary>共用 奖励</summary>
-		[ProtoMember(20)]
+		[ProtoMember(21)]
 		public string Reward { get; set; }
 		/// <summary>战士 奖励</summary>
-		[ProtoMember(21)]
+		[ProtoMember(22)]
 		public string Reward_Occupation_10 { get; set; }
 		/// <summary>猎人 奖励</summary>
-		[ProtoMember(22)]
+		[ProtoMember(23)]
 		public string Reward_Occupation_11 { get; set; }
 		/// <summary>刺客 奖励</summary>
-		[ProtoMember(23)]
+		[ProtoMember(24)]
 		public string Reward_Occupation_12 { get; set; }
 		/// <summary>法师 奖励</summary>
-		[ProtoMember(24)]
+		[ProtoMember(25)]
 		public string Reward_Occupation_15 { get; set; }
 		/// <summary>侠士 奖励</summary>
-		[ProtoMember(25)]
+		[ProtoMember(26)]
 		public string Reward_Occupation_16 { get; set; }
 		/// <summary>牧师 奖励</summary>
-		[ProtoMember(26)]
+		[ProtoMember(27)]
 		public string Reward_Occupation_17 { get; set; }
 
 	}

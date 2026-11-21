@@ -446,6 +446,7 @@ namespace ET
                 if (message.GMMsg == "resetguide#")
 				{
 					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.CompleteGuideIds.Clear();
+					unit.GetComponent<RoleInfoComponentServer>().RoleInfo.BeginnerGuideProgresses.Clear();
 					return;
 				}
                 if (message.GMMsg == "dailyreset#")

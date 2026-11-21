@@ -112,6 +112,24 @@ namespace ET
 		/// <summary>权重</summary>
 		[ProtoMember(11)]
 		public int Weight5 { get; set; }
+		/// <summary>子组</summary>
+		[ProtoMember(12)]
+		public int Sub6 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(13)]
+		public int Weight6 { get; set; }
+		/// <summary>子组</summary>
+		[ProtoMember(14)]
+		public int Sub7 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(15)]
+		public int Weight7 { get; set; }
+		/// <summary>子组</summary>
+		[ProtoMember(16)]
+		public int Sub8 { get; set; }
+		/// <summary>权重</summary>
+		[ProtoMember(17)]
+		public int Weight8 { get; set; }
 
 	}
 }

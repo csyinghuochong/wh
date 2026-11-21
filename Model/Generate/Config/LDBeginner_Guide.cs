@@ -85,38 +85,41 @@ namespace ET
 		/// <summary>下个引导</summary>
 		[ProtoMember(2)]
 		public int[] Next_Id { get; set; }
-		/// <summary>触发条件 1=默认触发 2=等级触发 3=任务完成触发 4=任务接取触发</summary>
+		/// <summary>触发条件 0=仅前序步骤进入 1=默认 2=等级 3=交付任务 4=接任务 5=首次获得装备</summary>
 		[ProtoMember(3)]
 		public int Trigger_Condition { get; set; }
-		/// <summary>触发条件参数 1=对应等级 2=对应任务ID 3=对应任务ID</summary>
+		/// <summary>触发参数（int[]） 2：等级 3/4：任务ID 0/1/5：空</summary>
 		[ProtoMember(4)]
 		public int[] Trigger_Condition_Param { get; set; }
 		/// <summary>完成条件 0、null=点击任意区域 1=点击指定区域 2=滑动</summary>
 		[ProtoMember(5)]
 		public int Complete_Requirement { get; set; }
-		/// <summary>锚点=界面按钮ID</summary>
+		/// <summary>定位类型Position_Id 1任务 2穿戴 3入口 4页签 5关卡 6技能 7学习 8配置 9槽位 10返回 11骑乘 12出战 详见批注</summary>
 		[ProtoMember(6)]
 		public int Position_Id { get; set; }
-		/// <summary>引导类型 1=圆形 2=矩形</summary>
+		/// <summary>定位参数Position_Param（int[]） 1：空=首个有效任务；单值=任务ID 3/4/10：Belong条目Id 5：Scene_Id；6/7：技能ID 9：方案|Position|方向 2/8/11：空；12：待确定</summary>
 		[ProtoMember(7)]
+		public int[] Position_Param { get; set; }
+		/// <summary>引导类型 1=圆形 2=矩形</summary>
+		[ProtoMember(8)]
 		public int Type { get; set; }
 		/// <summary>引导缩放</summary>
-		[ProtoMember(8)]
-		public double Zoom { get; set; }
-		/// <summary>引导区域长宽</summary>
 		[ProtoMember(9)]
+		public double Zoom { get; set; }
+		/// <summary>引导区域宽|高 0|0=使用目标实际尺寸 （约定，需代码接入）</summary>
+		[ProtoMember(10)]
 		public double[] Size { get; set; }
 		/// <summary>引导文本 Word_ID</summary>
-		[ProtoMember(10)]
-		public int Text { get; set; }
-		/// <summary>文本偏移：相对引导位置 第1个参数=X（左右偏移） 第2个参数=Y（上下偏移）</summary>
 		[ProtoMember(11)]
-		public double[] Text_Offset { get; set; }
-		/// <summary>中断回溯点 0、null=不回溯</summary>
+		public int Text { get; set; }
+		/// <summary>文本偏移X|Y 0|0=自动靠近、居中 （约定，需代码接入）</summary>
 		[ProtoMember(12)]
-		public int Break_Backup_Id { get; set; }
-		/// <summary>禁用 0、null=启用 1=禁用</summary>
+		public double[] Text_Offset { get; set; }
+		/// <summary>中断回溯步骤ID 0/空=不回溯 本表回到组首步骤</summary>
 		[ProtoMember(13)]
+		public int Break_Backup_Id { get; set; }
+		/// <summary>关闭开关 0/空=启用 1=禁用</summary>
+		[ProtoMember(14)]
 		public int Is_Close { get; set; }
 
 	}

@@ -642,6 +642,7 @@ namespace ET
 		 public const ushort M2C_UnionWarehouseVerifyResponse = 10639;
 		 public const ushort C2M_UnionRenameRequest = 10640;
 		 public const ushort M2C_UnionRenameResponse = 10641;
-		 public const ushort M2C_UpdateVersion = 10642;
+		 public const ushort BeginnerGuideProgress = 10642;
+		 public const ushort M2C_UpdateVersion = 10643;
 	}
 }

@@ -160,10 +160,10 @@ namespace ET
 		/// <summary>技能 点 参数</summary>
 		[ProtoMember(27)]
 		public int Skill_Point_Param3 { get; set; }
-		/// <summary>绑定 钱币</summary>
+		/// <summary>非绑 钱币</summary>
 		[ProtoMember(28)]
 		public int Gold_1 { get; set; }
-		/// <summary>非绑 钱币</summary>
+		/// <summary>绑定 钱币</summary>
 		[ProtoMember(29)]
 		public int Gold_2 { get; set; }
 		/// <summary>奖励选择 0-全拿 1-任选</summary>
