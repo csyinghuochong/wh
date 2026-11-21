@@ -9,6 +9,8 @@ namespace ET
         protected override async ETTask Run(Unit unit, C2M_TaskInitRequest request, M2C_TaskInitResponse response, Action reply)
         {
             TaskComponentServer taskComponentServer = unit.GetComponent<TaskComponentServer>();
+            // 登录/重拉任务时补接已满足条件的无NPC任务，回包直接携带追踪状态。
+            taskComponentServer.AutoAcceptTasks_1();
             response.RoleTaskList_2 = taskComponentServer.GetClientShowTaskList_2();
             response.RoleComoleteTaskList_2 = taskComponentServer.RoleComoleteTaskList_2;
             response.RoleTaskList_1 = taskComponentServer.RoleTaskList_1;

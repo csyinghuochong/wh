@@ -648,6 +648,16 @@ namespace ET
                 MessageHelper.SendToClient(unit, m2C_RoleDataUpdate1);
             }
 
+            // 等级条件以服务器数据为准；有新接取时只推Task_1，客户端沿用TaskUpdate刷新任务栏。
+            if (Type == UserDataType.Level)
+            {
+                TaskComponentServer tasks = unit.GetComponent<TaskComponentServer>();
+                if (tasks.AutoAcceptTasks_1())
+                {
+                    tasks.SendToUpdateTask(new HashSet<int>());
+                }
+            }
+
             if (Type == UserDataType.Name || Type == UserDataType.Level || Type == UserDataType.Combat)
             {
                 self.SyncUnionMember();

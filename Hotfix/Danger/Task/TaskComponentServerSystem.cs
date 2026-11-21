@@ -377,6 +377,58 @@ namespace ET
         }
 
         /// <summary>
+        /// 无NPC任务只自动接取配置了接取等级下限的任务，或已交付前置解锁的后继任务。
+        /// Global_Initial_Task仍由客户端主城入口接取，不参与自动补接。
+        /// 复用接取入口校验等级、职业和任务链；仅为本次新接取的任务开启追踪，不改变已有任务的追踪选择。
+        /// 返回是否新接取了任务，调用方负责通过初始化回包或任务更新消息同步客户端。
+        /// </summary>
+        public static bool AutoAcceptTasks_1(this TaskComponentServer self)
+        {
+            bool accepted = false;
+            int initialTaskId = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Initial_Task);
+            foreach (LDTask_1 config in LDTask_1Category.Instance.GetAll().Values)
+            {
+                if (config.NPC_Accept != 0 || config.Id == initialTaskId || self.IsHaveTask_1(config.Id))
+                {
+                    continue;
+                }
+
+                // 未填等级不能作为独立任务自动发放；必须已有真实交付的前置指向它。
+                // 后续仍通过接取入口校验全开/随机后继，不能只看NextTask1_Id就绕过前置交付。
+                if (config.Accept_Lv_Min <= 0 && !self.HasCompletedPredecessor_1(config.Id))
+                {
+                    continue;
+                }
+
+                (TaskPro task, int error) = self.OnAcceptedTask_1(config.Id, 0);
+                if (error != ErrorCode.ERR_Success)
+                {
+                    continue;
+                }
+
+                task.TrackStatus = 1;
+                accepted = true;
+            }
+
+            return accepted;
+        }
+
+        /// <summary>仅检查已交付任务的Next_Id，不把链头、已接取或完成待交付视为已解锁后继。</summary>
+        private static bool HasCompletedPredecessor_1(this TaskComponentServer self, int taskId)
+        {
+            foreach (int completedId in self.RoleComoleteTaskList_1)
+            {
+                if (LDTask_1Category.Instance.Contain(completedId)
+                    && TaskHelper.Task1PointsTo(LDTask_1Category.Instance.Get(completedId), taskId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// 交付后从 Next_Id 随机一条写入 NextTask1_Id。已交付/已接的不选。
         /// </summary>
         public static void UnlockNextTasks_1(this TaskComponentServer self, LDTask_1 ldTask)
@@ -752,6 +804,8 @@ namespace ET
             }
 
             self.UnlockNextTasks_1(ldTask);
+            // 前置交付后立即接取符合条件的无NPC任务，随本次任务列表更新一并推送。
+            self.AutoAcceptTasks_1();
             self.SendToUpdateTask(new HashSet<int>());
             return ErrorCode.ERR_Success;
         }
