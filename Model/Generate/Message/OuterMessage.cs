@@ -816,6 +816,7 @@ namespace ET
 
 	}
 
+// 服务端 → 客户端：单位进入视野／创建时的完整快照；普通状态字段随创建下发。
 	[Message(OuterOpcode.UnitInfo)]
 	[ProtoContract]
 	public partial class UnitInfo: Object
@@ -898,6 +899,36 @@ namespace ET
 		[ProtoMember(32)]
 		public int TitleId { get; set; }
 
+		[ProtoMember(33)]
+		public long MasterId { get; set; }
+
+		[ProtoMember(34)]
+		public long GatherStartTime { get; set; }
+
+		[ProtoMember(35)]
+		public int GatherNumber { get; set; }
+
+		[ProtoMember(36)]
+		public long GatherLastTime { get; set; }
+
+		[ProtoMember(37)]
+		public int GatherCellIndex { get; set; }
+
+		[ProtoMember(38)]
+		public int SkillEntityMoveType { get; set; }
+
+		[ProtoMember(39)]
+		public long SkillEntityTrackTargetId { get; set; }
+
+		[ProtoMember(40)]
+		public long SkillEntityStartTime { get; set; }
+
+		[ProtoMember(41)]
+		public int AttackMode { get; set; }
+
+		[ProtoMember(42)]
+		public int UnitCellIndex { get; set; }
+
 	}
 
 	[Message(OuterOpcode.M2C_CreateUnits)]
@@ -933,6 +964,10 @@ namespace ET
 
 		[ProtoMember(2)]
 		public int SceneType { get; set; }
+
+// 地图服 -> 客户端：组队副本光墙全量快照；其他场景不填，用于入场或传送失败回退时恢复状态。
+		[ProtoMember(3)]
+		public M2C_TeamDungeonMechanismUpdate TeamDungeonMechanisms { get; set; }
 
 	}
 
@@ -11289,6 +11324,21 @@ namespace ET
 
 		[ProtoMember(92)]
 		public string Message { get; set; }
+
+	}
+
+// 地图服 -> 客户端：当前组队副本光墙显隐全量状态；仅状态变化时推送场景内玩家，入场快照由 M2C_CreateMyUnit 携带。
+	[Message(OuterOpcode.M2C_TeamDungeonMechanismUpdate)]
+	[ProtoContract]
+	public partial class M2C_TeamDungeonMechanismUpdate: Object, IActorMessage
+	{
+// 服务端副本场景实例 ID，用于丢弃其他实例的状态。
+		[ProtoMember(1)]
+		public long FubenInstanceId { get; set; }
+
+// 当前显示的 Scene_Mechanism.Id 集合；本场景配置中未列出的光墙隐藏，空集合表示全部隐藏。
+		[ProtoMember(2)]
+		public List<int> VisibleMechanismIds = new List<int>();
 
 	}
 

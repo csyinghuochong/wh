@@ -35,6 +35,7 @@ namespace ET
             teamDungeonComponent.Timer = TimerComponent.Instance.NewRepeatedTimer(1000, TimerType.TeamDungeonTimer, teamDungeonComponent);
             Game.Scene.GetComponent<RecastPathComponent>().Update(mapComponent.NavMeshId);
             SceneCreatureHelp.CreateSceneRole(fubnescene, teamInfo.SceneId);
+            teamDungeonComponent.InitMechanisms();
             teamDungeonComponent.NotifyDungeonStartMarquee();
 
             //69和 72的2个副本 有10%概率 在每个BOSS附近刷新出 80002010 这个宝箱，

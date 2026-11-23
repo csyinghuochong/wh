@@ -73,6 +73,16 @@ namespace ET
             unitInfo.ForwardZ = forward.z;
             unitInfo.UnitType = unit.Type;
             unitInfo.Scene_Creature = unitInfoComponent.Scene_Creature;
+            unitInfo.MasterId = unit.MasterId;
+            unitInfo.GatherStartTime = unitInfoComponent.GatherStartTime;
+            unitInfo.GatherNumber = unitInfoComponent.GatherNumber;
+            unitInfo.GatherLastTime = unitInfoComponent.GatherLastTime;
+            unitInfo.GatherCellIndex = unitInfoComponent.GatherCellIndex;
+            unitInfo.SkillEntityMoveType = unitInfoComponent.SkillEntityMoveType;
+            unitInfo.SkillEntityTrackTargetId = unitInfoComponent.SkillEntityTrackTargetId;
+            unitInfo.SkillEntityStartTime = unitInfoComponent.SkillEntityStartTime;
+            unitInfo.AttackMode = unitInfoComponent.AttackMode;
+            unitInfo.UnitCellIndex = unitInfoComponent.UnitCellIndex;
             MoveComponent moveComponent = unit.GetComponent<MoveComponent>();
             if (moveComponent != null)
             {

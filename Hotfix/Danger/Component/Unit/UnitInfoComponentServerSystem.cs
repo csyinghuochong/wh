@@ -35,6 +35,15 @@ namespace ET
             self.Sex = 0;
             self.TitleId = 0;
             self.Drops.Clear();
+            self.GatherStartTime = 0;
+            self.GatherNumber = 0;
+            self.GatherLastTime = 0;
+            self.GatherCellIndex = 0;
+            self.SkillEntityMoveType = 0;
+            self.SkillEntityTrackTargetId = 0;
+            self.SkillEntityStartTime = 0;
+            self.AttackMode = 0;
+            self.UnitCellIndex = 0;
         }
 
         public static int GetZhaoHuanNumber(this UnitInfoComponent self)

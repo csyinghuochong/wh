@@ -36,9 +36,13 @@ namespace ET
         {
             Unit unit = aiComponent.GetParent<Unit>();
             bool haveStealth = false;
+            // 开始回撤即脱战，组队副本怪物同步驱动光墙；Boss 的其他清理仍沿用原逻辑。
+            if (unit.IsBoss() || (unit.Type == UnitType.Monster && aiComponent.SceneTypeEnum == MapTypeEnum.TeamDungeon))
+            {
+                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.BossInCombat, 0, true, true);
+            }
             if (unit.IsBoss())
             {
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.BossInCombat, 0);
                 unit.GetComponent<UnitLifeComponent>()?.OnKillZhaoHuan(null);
                 unit.GetComponent<AttackRecordComponent>().ClearBeAttack();
                 haveStealth = AIGetTargetHelp.GetNearestStealth(unit);

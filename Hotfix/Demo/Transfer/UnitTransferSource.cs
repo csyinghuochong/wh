@@ -99,6 +99,9 @@ namespace ET
                 MessageHelper.SendToClient(this.unit, new M2C_CreateMyUnit
                 {
                     Unit = UnitHelper.CreateUnitInfo(this.unit), SceneType = this.map.MapTypeEnum,
+                    TeamDungeonMechanisms = this.map.MapTypeEnum == MapTypeEnum.TeamDungeon
+                        ? this.unit.DomainScene().GetComponent<TeamDungeonComponent>().CreateMechanismSnapshot()
+                        : null,
                 });
                 // 客户端重建场景后重新发送原场景的 AOI。
                 this.unit.RemoveComponent<AOIEntity>();

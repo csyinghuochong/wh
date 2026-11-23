@@ -20,9 +20,12 @@ namespace ET
         public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
+            if (unit.IsBoss() || (unit.Type == UnitType.Monster && aiComponent.SceneTypeEnum == MapTypeEnum.TeamDungeon))
+            {
+                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.BossInCombat, 0, true, true);
+            }
             if (unit.IsBoss())
             {
-                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.BossInCombat, 0);
                 unit.GetComponent<UnitLifeComponent>()?.OnKillZhaoHuan(null);
                 unit.GetComponent<AttackRecordComponent>().ClearBeAttack();
             }

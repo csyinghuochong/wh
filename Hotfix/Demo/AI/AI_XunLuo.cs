@@ -32,7 +32,8 @@ namespace ET
                 return true;
             }
 
-            if ( unit.IsBoss())
+            // 组队副本普通怪也复用该数值，光墙按 Monster 配置 ID 判断战斗状态。
+            if (unit.IsBoss() || (unit.Type == UnitType.Monster && aiComponent.SceneTypeEnum == MapTypeEnum.TeamDungeon))
             {
                 unit.GetComponent<NumericComponent>().ApplyValue(NumericType.BossInCombat, 1, true, true);
             }

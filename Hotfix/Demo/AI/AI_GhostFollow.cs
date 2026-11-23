@@ -13,7 +13,7 @@ namespace ET
         {
             
             Unit unit = aiComponent.GetParent<Unit>();
-            long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            long masterid = unit.MasterId;
             Unit master = aiComponent.UnitComponent.Get(masterid);
             
             if (master == null)
@@ -52,7 +52,7 @@ namespace ET
         public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
-            long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            long masterid = unit.MasterId;
             Unit master = aiComponent.UnitComponent.Get(masterid);
 
             while (true)

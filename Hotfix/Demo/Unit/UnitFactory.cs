@@ -73,8 +73,7 @@ namespace ET
 
             if (unit.GetComponent<NumericComponent>() == null)
             {
-                NumericComponent numericComponentServer = unit.AddComponent<NumericComponent>();
-                numericComponentServer.ApplyValue(NumericType.AOI, 15000, false); // 视野15米
+                unit.AddComponent<NumericComponent>();
             }
 
             // 创角 Global_Initial_Resources 含 Type_Mount，Bag.OnInit 会 OnAddMount，须先挂坐骑组件
@@ -137,9 +136,8 @@ namespace ET
 
             float speed = LDSkillHelper.GetBulletSpeed(ldSkill);
             numericComponent.ApplyValue(NumericType.Speed_Current_15, NumericConvert.DisplayToStored(NumericType.Speed_Current_15, speed), false);
-            numericComponent.ApplyValue(NumericType.MasterId, masterId, false);
-            numericComponent.SetStartAngle(rotation, false);
-            numericComponent.ApplyValue(NumericType.SkillEntity_StartTime, TimeHelper.ServerNow(), false);
+
+            unit.GetComponent<UnitInfoComponent>().SkillEntityStartTime = TimeHelper.ServerNow();
 
             BulletComponent bullet = unit.AddComponent<BulletComponent>();
             bullet.Init(masterId, ldSkill, targetId, skillInfo);
@@ -174,9 +172,8 @@ namespace ET
             float speed = summonConfig.Speed > 0 ? (float)summonConfig.Speed : 1f;
             // Speed_Current 是复合属性，Set 会失败；自定义字段与速度一律 ApplyValue
             numericComponent.ApplyValue(NumericType.Speed_Current_15, NumericConvert.DisplayToStored(NumericType.Speed_Current_15, speed), false);
-            numericComponent.ApplyValue(NumericType.MasterId, masterId, false);
-            numericComponent.SetStartAngle(rotation, false);
-            numericComponent.ApplyValue(NumericType.SkillEntity_StartTime, TimeHelper.ServerNow(), false);
+
+            unit.GetComponent<UnitInfoComponent>().SkillEntityStartTime = TimeHelper.ServerNow();
             // AOI 由 CreateSummon 在 SkillEntityComponent.Init 写完 MoveType/TrackTarget 后再挂，避免客户端缺参数
             return unit;
         }
@@ -239,9 +236,8 @@ namespace ET
 
             numericComponent.Set(NumericType.BattleCamp, createMonsterInfo.Camp, false);
             numericComponent.Set(NumericType.TeamId, master != null ? master.GetTeamId() : 0, false);
-            numericComponent.Set(NumericType.AttackMode, master!=null ?  master.GetAttackMode() : 0, false);
+            unitInfoComponent.AttackMode = master!=null ?  master.GetAttackMode() : 0;
             numericComponent.Set(NumericType.UnionId_0, master != null ? master.GetUnionId() : 0, false);
-            numericComponent.Set(NumericType.MasterId, createMonsterInfo.MasterID, false);
             numericComponent.Set(NumericType.HP_Current_8, numericComponent.GetAsLong(NumericType.HP_Max_10), false);
 
             int ai = createMonsterInfo.AI > 0 ? createMonsterInfo.AI : 1;
@@ -351,12 +347,11 @@ namespace ET
             unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
             unit.AddComponent<AttackRecordComponent>();
             unitInfoComponent.UnitName = master.GetComponent<UnitInfoComponent>().UnitName;
-            numericComponent.Set(NumericType.MasterId, master.Id);
+            unit.MasterId = master.Id;
             numericComponent.Set(NumericType.BattleCamp, master.GetBattleCamp());
-            numericComponent.Set(NumericType.AttackMode, master != null ? master.GetAttackMode() : 0);
+            unitInfoComponent.AttackMode = master != null ? master.GetAttackMode() : 0;
             numericComponent.Set(NumericType.TeamId, master.GetTeamId());
             unit.ConfigId = monster;
-            unit.MasterId = master.Id;
             unit.AddComponent<StateComponent>();            //添加状态组件
             unit.AddComponent<BuffManagerComponent>();
             unit.AddComponent<UnitLifeComponent>();
@@ -418,8 +413,7 @@ namespace ET
 
 
             numericComponent.Set(NumericType.BattleCamp, roleCamp);
-            numericComponent.Set(NumericType.MasterId, masterId);
-            numericComponent.Set(NumericType.UnitCellIndex, cell);
+            unitInfoComponent.UnitCellIndex = cell;
             long max_hp = numericComponent.GetAsLong(NumericType.HP_Max_10);
             numericComponent.SetValueNoSync(NumericType.Numeric_Error, max_hp);
             unit.AddComponent<AOIEntity, int, Vector3>(1 * 1000, unit.Position);
@@ -462,9 +456,8 @@ namespace ET
                 numericComponent.Set(petinfo.Ks[i], petinfo.Vs[i], false);
             }
 
-            numericComponent.Set(NumericType.MasterId, master.Id, false);
             numericComponent.Set(NumericType.BattleCamp, master.GetBattleCamp(), false);
-            numericComponent.Set(NumericType.AttackMode, master != null ? master.GetAttackMode() : 0);
+            unitInfoComponent.AttackMode = master != null ? master.GetAttackMode() : 0;
             numericComponent.Set(NumericType.TeamId, master.GetTeamId(), false); ;
             numericComponent.Set(NumericType.UnionId_0, master.GetUnionId(), false);
             NumericComponent masterNumeric = master.GetComponent<NumericComponent>();
@@ -507,13 +500,13 @@ namespace ET
             //添加其他组件
 
    
-            numericComponent.Set(NumericType.GatherStartTime, homePlant.StartTime);
-            numericComponent.Set(NumericType.GatherNumber, homePlant.GatherNumber);
-            numericComponent.Set(NumericType.GatherLastTime, homePlant.GatherLastTime);
-            numericComponent.Set(NumericType.GatherCellIndex, homePlant.CellIndex);
+            unitInfoComponent.GatherStartTime = homePlant.StartTime;
+            unitInfoComponent.GatherNumber = homePlant.GatherNumber;
+            unitInfoComponent.GatherLastTime = homePlant.GatherLastTime;
+            unitInfoComponent.GatherCellIndex = homePlant.CellIndex;
 
 
-            numericComponent.Set(NumericType.MasterId, unitid, false);
+            unit.MasterId = unitid;
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             return unit;
         }
@@ -542,11 +535,11 @@ namespace ET
             aIComponent.Begin();
 
             //添加其他组件
-            numericComponent.Set(NumericType.GatherStartTime, homePastures.StartTime, false);
-            numericComponent.Set(NumericType.GatherNumber, homePastures.GatherNumber, false);
-            numericComponent.Set(NumericType.GatherLastTime, homePastures.GatherLastTime, false);
+            unitInfoComponent.GatherStartTime = homePastures.StartTime;
+            unitInfoComponent.GatherNumber = homePastures.GatherNumber;
+            unitInfoComponent.GatherLastTime = homePastures.GatherLastTime;
 
-            numericComponent.Set(NumericType.MasterId, unitid, false);
+            unit.MasterId = unitid;
             numericComponent.Set(NumericType.Numeric_Error, 30000, false);
             unit.AddComponent<AOIEntity, int, Vector3>(9 * 1000, unit.Position);
             return unit;
@@ -580,9 +573,8 @@ namespace ET
             aIComponent.Begin();
 
 
-            numericComponent.Set(NumericType.MasterId, master.Id, false);
             numericComponent.Set(NumericType.BattleCamp, master.GetBattleCamp(), false);
-            numericComponent.Set(NumericType.AttackMode, master != null ? master.GetAttackMode() : 0);
+            unitInfoComponent.AttackMode = master != null ? master.GetAttackMode() : 0;
             numericComponent.Set(NumericType.TeamId, master.GetTeamId(), false);
             numericComponent.Set(NumericType.UnionId_0, master.GetUnionId(), false);
             //numericComponent.Set(NumericType.Numeric_Error, 50000, false);

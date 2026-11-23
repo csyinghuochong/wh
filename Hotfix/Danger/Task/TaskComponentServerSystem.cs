@@ -1130,6 +1130,8 @@ namespace ET
 
                 self.TriggerTaskEvent(TastConditionType.KillMonsterShowNumber_215, 1, unitconfigId);
                 self.TriggerTaskEvent(TastConditionType.KillMonsterNoShowNumber_216, 1, unitconfigId);
+                // 217 同 215：击杀配置的怪物 ID 时推进，不额外按怪物类型筛选。
+                self.TriggerTaskEvent(TastConditionType.KillMonsterLord_217, 1, unitconfigId);
             }
         }
 

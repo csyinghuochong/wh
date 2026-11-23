@@ -16,7 +16,7 @@ namespace ET
             }
 
             Unit unit = aiComponent.GetParent<Unit>();
-            long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            long masterid = unit.MasterId;
             Unit master = aiComponent.UnitComponent.Get(masterid);
 
             float distance = Vector3.Distance(unit.Position, master.Position);
@@ -30,7 +30,7 @@ namespace ET
             Unit unit = aiComponent.GetParent<Unit>();
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             numericComponent.Set(NumericType.Numeric_Error, 0);
-            long masterid = numericComponent.GetAsLong(NumericType.MasterId);
+            long masterid = unit.MasterId;
             Unit master = aiComponent.UnitComponent.Get(masterid);
 
             while (true)

@@ -21,6 +21,12 @@ namespace ET
                 aiComponent.TargetID = 0;
                 return false;
             }
+            // 受击切换目标会跳过巡逻索敌；有效目标开始追击（含已在攻击距离内）即进入战斗。
+            Unit unit = aiComponent.GetParent<Unit>();
+            if (unit.IsBoss() || (unit.Type == UnitType.Monster && aiComponent.SceneTypeEnum == MapTypeEnum.TeamDungeon))
+            {
+                unit.GetComponent<NumericComponent>().ApplyValue(NumericType.BossInCombat, 1, true, true);
+            }
             return aiComponent.IsCanZhuiJi() == ErrorCode.ERR_Success
                 && !AIChaseStandHelper.IsInAttackPosition(aiComponent, target);
         }

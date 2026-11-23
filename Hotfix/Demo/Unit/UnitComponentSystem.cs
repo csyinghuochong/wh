@@ -46,6 +46,14 @@ namespace ET
             }
 
             self.Units.Add(unit);
+            if (unit.Type == UnitType.Monster)
+            {
+                TeamDungeonComponent dungeon = self.DomainScene().GetComponent<TeamDungeonComponent>();
+                if (dungeon != null)
+                {
+                    dungeon.OnMechanismMonsterChanged(unit);
+                }
+            }
         }
 
         public static void AddPlayer(this UnitComponent self, Unit unit)

@@ -22,7 +22,7 @@ namespace ET
         public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
-            long unitId = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            long unitId = unit.MasterId;
             Unit master = aiComponent.UnitComponent.Get(unitId);
 
             while (true)

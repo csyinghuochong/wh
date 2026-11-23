@@ -665,11 +665,6 @@ namespace ET
             long masterId = from.MasterId;
             if (masterId <= 0)
             {
-                masterId = from.GetComponent<NumericComponent>()?.GetAsLong(NumericType.MasterId) ?? 0;
-            }
-
-            if (masterId <= 0)
-            {
                 return null;
             }
 

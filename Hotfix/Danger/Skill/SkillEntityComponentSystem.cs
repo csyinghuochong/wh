@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace ET
@@ -49,7 +49,7 @@ namespace ET
         private const float CollideReach = 0.5f;
 
         /// <summary>
-        /// 创建后初始化：时间轴、出生点、同步 Numeric（MoveType/Track/StartTime），飞行类抬到人物高度+1。
+        /// 创建后初始化：时间轴、出生点、记录创建快照（MoveType/Track/StartTime），飞行类抬到人物高度+1。
         /// </summary>
         public static void Init(
             this SkillEntityComponent self,
@@ -86,10 +86,13 @@ namespace ET
             self.InterValTimeBegin = self.BeginTime + (self.InterValTime > 0 ? self.InterValTime : 0);
             self.Timer = TimerComponent.Instance.NewRepeatedTimer(100, TimerType.SkillEntityTimer, self);
 
-            NumericComponent numeric = unit?.GetComponent<NumericComponent>();
-            numeric?.ApplyValue(NumericType.SkillEntity_MoveType, rt.MoveType, false);
-            numeric?.ApplyValue(NumericType.SkillEntity_TrackTargetId, rt.TrackTargetId, false);
-            numeric?.ApplyValue(NumericType.SkillEntity_StartTime, now, false);
+            if (unit != null)
+            {
+                UnitInfoComponent unitInfo = unit.GetComponent<UnitInfoComponent>();
+                unitInfo.SkillEntityMoveType = rt.MoveType;
+                unitInfo.SkillEntityTrackTargetId = rt.TrackTargetId;
+                unitInfo.SkillEntityStartTime = now;
+            }
 
             if (unit != null && rt.MoveType != SkillEntityMoveType.Still_0)
             {
@@ -118,7 +121,7 @@ namespace ET
             SkillManagerComponentSystem.ExecuteLinkedSkill(skillId, unit, target ?? unit);
         }
 
-        /// <summary>运行中改追踪目标，并同步 Numeric 给客户端。</summary>
+        /// <summary>运行中改追踪目标，并更新后续进入视野时下发的创建快照。</summary>
         public static void SetTrackTarget(this SkillEntityComponent self, Unit target, bool lockTarget)
         {
             if (self.Runtime == null)
@@ -128,8 +131,13 @@ namespace ET
 
             self.Runtime.TrackTargetId = target?.Id ?? 0;
             self.Runtime.LockTarget = lockTarget;
-            self.GetParent<Unit>()?.GetComponent<NumericComponent>()
-                ?.ApplyValue(NumericType.SkillEntity_TrackTargetId, self.Runtime.TrackTargetId, false);
+            Unit unit = self.GetParent<Unit>();
+            if (unit == null)
+            {
+                return;
+            }
+
+            unit.GetComponent<UnitInfoComponent>().SkillEntityTrackTargetId = self.Runtime.TrackTargetId;
         }
 
         /// <summary>

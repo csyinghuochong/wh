@@ -80,11 +80,14 @@ namespace ET
                 self.FlyDirection = Vector3.forward;
             }
 
-            NumericComponent numeric = unit?.GetComponent<NumericComponent>();
             int moveType = targetId > 0 ? SkillEntityMoveType.Track_2 : SkillEntityMoveType.Straight_1;
-            numeric?.ApplyValue(NumericType.SkillEntity_MoveType, moveType, false);
-            numeric?.ApplyValue(NumericType.SkillEntity_TrackTargetId, targetId, false);
-            numeric?.ApplyValue(NumericType.SkillEntity_StartTime, now, false);
+            if (unit != null)
+            {
+                UnitInfoComponent unitInfo = unit.GetComponent<UnitInfoComponent>();
+                unitInfo.SkillEntityMoveType = moveType;
+                unitInfo.SkillEntityTrackTargetId = targetId;
+                unitInfo.SkillEntityStartTime = now;
+            }
 
             self.Timer = TimerComponent.Instance.NewFrameTimer(TimerType.BulletTimer, self);
 

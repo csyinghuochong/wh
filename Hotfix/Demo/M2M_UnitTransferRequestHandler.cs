@@ -58,7 +58,6 @@ namespace ET
 				unit.AddComponent<UnitLifeComponent>();
 				NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
 				numericComponent.Set(NumericType.BattleCamp, CampEnum.CampPlayer_1, false);
-                numericComponent.Set(NumericType.CardTransform, 0, false);
 
                 unit.Type = UnitType.Player;
                 unit.SceneType = request.SceneType;
@@ -120,7 +119,7 @@ namespace ET
                         unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
                         ldScene = LDSceneCategory.Instance.Get(request.ChapterId);
 
-						int happcellIndex = numericComponent.GetAsInt(NumericType.UnitCellIndex);
+						int happcellIndex = unit.GetComponent<UnitInfoComponent>().UnitCellIndex;
 						if (happcellIndex > 0)
 						{
                             unit.Position = HappyFubenConfig.PositionList[happcellIndex - 1];
@@ -128,7 +127,7 @@ namespace ET
 						else
 						{
                             int randomPosition = RandomHelper.RandomNumber(0, HappyFubenConfig.PositionList.Count);
-                            numericComponent.Set(NumericType.UnitCellIndex, randomPosition + 1, false);
+                            unit.GetComponent<UnitInfoComponent>().UnitCellIndex = randomPosition + 1;
                             unit.Position = HappyFubenConfig.PositionList[randomPosition];
                         }
                         unit.Rotation = Quaternion.identity;
@@ -305,6 +304,11 @@ namespace ET
                     }
                 }
                 unit.AddComponent<MailBoxComponent>();
+                // 提交期间光墙可能变化，在真正发送角色数据前生成当前实例快照。
+                if (request.SceneType == MapTypeEnum.TeamDungeon)
+                {
+                    createMyUnit.TeamDungeonMechanisms = scene.GetComponent<TeamDungeonComponent>().CreateMechanismSnapshot();
+                }
                 MessageHelper.SendToClient(unit, createMyUnit);
                 unit.AddComponent<AOIEntity, int, Vector3>(aoiValue, unit.Position);
                 AfterEnter(scene, unit, request);

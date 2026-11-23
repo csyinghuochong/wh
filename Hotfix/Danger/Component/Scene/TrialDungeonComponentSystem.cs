@@ -23,7 +23,7 @@ namespace ET
             }
 
             List<Unit> players = UnitHelper.GetUnitList(self.DomainScene(), UnitType.Player);
-            if (defend.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId) == players[0].Id)
+            if (defend.MasterId == players[0].Id)
             {
                 return;
             }

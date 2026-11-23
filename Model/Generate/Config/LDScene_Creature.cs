@@ -106,7 +106,7 @@ namespace ET
 		/// <summary>位置</summary>
 		[ProtoMember(9)]
 		public double[] Position { get; set; }
-		/// <summary>小地图 0-不显示 1-NPC 2-首领</summary>
+		/// <summary>小地图 0-不显示 1-NPC 2-领主</summary>
 		[ProtoMember(10)]
 		public int MiniMap_Type { get; set; }
 		/// <summary>小地图 排序</summary>

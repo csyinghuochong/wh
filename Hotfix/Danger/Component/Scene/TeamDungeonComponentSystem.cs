@@ -33,6 +33,10 @@ namespace ET
             self.BoxReward.Clear();
             self.KillBossList.Clear();
             self.TeamPlayers.Clear();
+            self.Mechanisms.Clear();
+            self.VisibleMechanismIds.Clear();
+            self.MechanismGroups.Clear();
+            self.DeadSceneCreatures.Clear();
         }
     }
 
@@ -45,7 +49,7 @@ namespace ET
         }
     }
 
-    public static class TeamDungeonComponentSystem
+    public static partial class TeamDungeonComponentSystem
     {
         private const int TeamDungeonStartMarqueeId = 101;
         private const int TeamDungeonEndMarqueeId = 102;

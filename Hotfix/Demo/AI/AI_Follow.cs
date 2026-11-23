@@ -11,7 +11,7 @@ namespace ET
         public override bool Check(AIComponent aiComponent, LDAI ldai)
         {
             Unit unit = aiComponent.GetParent<Unit>();
-            long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            long masterid = unit.MasterId;
             Unit master = aiComponent.UnitComponent.Get(masterid);
             if (master == null || master.IsDisposed || aiComponent.AISkillIDList.Count == 0)
             {
@@ -74,7 +74,7 @@ namespace ET
         public override async ETTask Execute(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
-            long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            long masterid = unit.MasterId;
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             unit.Stop(0);
 
@@ -134,7 +134,7 @@ namespace ET
         public  async ETTask Execute_2(AIComponent aiComponent, LDAI ldai, ETCancellationToken cancellationToken)
         {
             Unit unit = aiComponent.GetParent<Unit>();
-            long masterid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.MasterId);
+            long masterid = unit.MasterId;
             Unit master = aiComponent.UnitComponent.Get(masterid);
 
             while (true)
