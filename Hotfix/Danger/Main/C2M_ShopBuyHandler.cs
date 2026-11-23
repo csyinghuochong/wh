@@ -29,7 +29,7 @@ namespace ET
             int needLv = storeSellConfig.Limit_Condition_1;
             if (needLv > 0 && roleInfoComponentServer.RoleInfo.Lv < needLv)
             {
-                response.Error = ErrorCode.ERR_LevelNotEnought;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -112,7 +112,7 @@ namespace ET
                         bag.OnAddItemData(costItems, $"{ItemGetWay.StoreBuy}_{TimeHelper.ServerNow()}");
                     }
 
-                    response.Error = a2MResponse?.Error ?? ErrorCode.ERR_NetWorkError;
+                    response.Error = a2MResponse?.Error ?? LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

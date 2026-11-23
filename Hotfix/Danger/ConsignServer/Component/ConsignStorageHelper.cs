@@ -105,7 +105,7 @@ namespace ET
         {
             if (belongId <= 0 || storageId <= 0)
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Received, unit.Id))
@@ -140,7 +140,7 @@ namespace ET
                     ItemLocType loc = ItemNewHelper.GetToItemLocType(item.ItemType, item.ItemID);
                     if (!ItemNewHelper.IsValideBagLoc((int)loc))
                     {
-                        return ErrorCode.ERR_Parameter;
+                        return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     }
 
                     int cells = ItemNewHelper.CalcNeedNewCells(bag.GetItemByLoc(loc), item.ItemType, item.ItemID, item.ItemNum,

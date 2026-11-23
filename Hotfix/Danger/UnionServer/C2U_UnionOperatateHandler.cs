@@ -12,7 +12,7 @@ namespace ET
             DBUnionInfo dBUnionInfo = await unionSceneComponent.GetDBUnionInfo(request.UnionId);
             if (dBUnionInfo == null)
             {
-                response.Error = ErrorCode.ERR_Union_Not_Exist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -26,7 +26,7 @@ namespace ET
                     if (operatorInfo == null || (operatorInfo.UserID != dBUnionInfo.UnionInfo.LeaderId
                         && operatorInfo.Position != UnionPosition.ViceLeader))
                     {
-                        response.Error = ErrorCode.ERR_Union_NoLimits;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }
@@ -71,7 +71,7 @@ namespace ET
                         UnionPlayerInfo unionPlayerInfo_1 = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.UnitId);
                         if (unionPlayerInfo_1 == null)
                         {
-                            response.Error = ErrorCode.ERR_Union_NoPlayer;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                             reply();
                             return;
                         }
@@ -82,7 +82,7 @@ namespace ET
                         if (unionPlayerInfo_1.Position == UnionPosition.Member
                             || (unionPlayerInfo_1.Position >= position && position != UnionPosition.Member))
                         {
-                            response.Error = ErrorCode.ERR_Union_NoLimits;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                             reply();
                             return;
                         }
@@ -90,13 +90,13 @@ namespace ET
                         UnionPlayerInfo unionPlayerInfo_2 = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, operateid);
                         if (unionPlayerInfo_2 == null)
                         {
-                            response.Error = ErrorCode.ERR_Union_NoPlayer;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                             reply();
                             return;
                         }
                         if (unionPlayerInfo_2.Position != UnionPosition.Member && unionPlayerInfo_2.Position <= unionPlayerInfo_1.Position)
                         {
-                            response.Error = ErrorCode.ERR_Union_NoLimits;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                             reply();
                             return;
                         }

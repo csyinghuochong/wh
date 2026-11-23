@@ -10,7 +10,7 @@ namespace ET
             HomeComponentServer homeComponentServer = unit.GetComponent<HomeComponentServer>();
             if (homeComponentServer.GetCellPlant(request.CellIndex)!=null)
             {
-                response.Error = ErrorCode.ERR_AlreadyPlant;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

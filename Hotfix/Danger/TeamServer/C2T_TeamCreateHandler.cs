@@ -19,7 +19,7 @@ namespace ET
 
             if (teamSceneComponent.GetTeamInfo(request.TeamPlayerInfo.UserID) != null)
             {
-                response.Error = ErrorCode.ERR_IsHaveTeam;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

@@ -15,25 +15,25 @@ namespace ET
             if (!StartZoneConfigCategory.Instance.Contain(targetZone))
             {
                 Log.Warning($"[WarZoneTour] 目标区不存在 unit={unit.Id} home={homeZone} target={targetZone}");
-                return ErrorCode.ERR_RequestRepeatedly;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (StartZoneConfigCategory.Instance.IsWarShareZone(targetZone))
             {
                 Log.Warning($"[WarZoneTour] 不能旅游到战区共享区 unit={unit.Id} target={targetZone}");
-                return ErrorCode.ERR_RequestRepeatedly;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (!StartZoneConfigCategory.Instance.IsSameWarZone(homeZone, targetZone))
             {
                 Log.Warning($"[WarZoneTour] 非同战区 unit={unit.Id} home={homeZone}({StartZoneConfigCategory.Instance.GetWarZone(homeZone)}) target={targetZone}({StartZoneConfigCategory.Instance.GetWarZone(targetZone)})");
-                return ErrorCode.ERR_RequestRepeatedly;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (!StartSceneConfigCategory.Instance.TryGetBySceneName(targetZone, $"Map{SceneConfigHelper.MainCityID()}", out StartSceneConfig mapConfig))
             {
                 Log.Error($"[WarZoneTour] 目标服无主城 Map unit={unit.Id} target={targetZone}");
-                return ErrorCode.ERR_RequestRepeatedly;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             int currentZone = UnitZoneHelper.GetCurrentZone(unit);

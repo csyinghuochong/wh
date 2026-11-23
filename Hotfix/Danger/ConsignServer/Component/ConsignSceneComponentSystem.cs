@@ -263,7 +263,7 @@ namespace ET
                 response.Message = "1";
                 if (total > 0)
                 {
-                    response.Error = ErrorCode.ERR_PaiMaiBuyPageValid;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 return;
@@ -753,7 +753,7 @@ namespace ET
 
                 if (db.CollectIds.Count >= ConsignHelper.CollectMax)
                 {
-                    return ErrorCode.ERR_Parameter;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 db.CollectIds.Add(consignItemInfoId);

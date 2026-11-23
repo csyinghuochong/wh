@@ -47,7 +47,7 @@ namespace ET
                     if ((ItemLocType)hourseId != ItemNewHelper.GetToItemLocType(useBagInfo.ItemType, useBagInfo.ItemID)
                             || !ItemNewHelper.IsValideBagLoc(hourseId))
                     {
-                        response.Error = ErrorCode.ERR_Parameter;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }
@@ -77,7 +77,7 @@ namespace ET
                     ItemLocType toLoc = ItemNewHelper.GetToItemLocType(useBagInfo.ItemType, useBagInfo.ItemID);
                     if (!ItemNewHelper.IsValideBagLoc((int)toLoc))
                     {
-                        response.Error = ErrorCode.ERR_Parameter;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }

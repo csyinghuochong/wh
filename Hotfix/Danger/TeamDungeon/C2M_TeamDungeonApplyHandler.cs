@@ -18,14 +18,14 @@ namespace ET
 			long teamId = unit.GetTeamId();
 			if (teamId == 0)
 			{
-				response.Error = ErrorCode.Err_TeamIsNotExist;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}
 
 			if (teamId != unit.Id)
 			{
-				response.Error = ErrorCode.ERR_IsNotLeader;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}

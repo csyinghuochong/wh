@@ -25,7 +25,7 @@ namespace ET
                     if (!TaskHelper.GetOpenTask1Ids(0, tasks.NextTask1_Id, tasks.RoleTaskList_1,
                         tasks.RoleComoleteTaskList_1, role.Lv, role.Occ).Contains(request.TaskId))
                     {
-                        return ErrorCode.ERR_TaskCanNotGet;
+                        return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     }
 
                     task = new TaskPro { taskID = request.TaskId, taskStatus = TaskStatuEnum.UnActive };
@@ -37,17 +37,17 @@ namespace ET
             }
             else
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (task == null || task.taskStatus == TaskStatuEnum.Commited)
             {
-                return ErrorCode.ERR_TaskCanNotGet;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (!TaskNavigationHelper.TryGetTarget(task, request.TaskTable, out int unitType, out int configId))
             {
-                return ErrorCode.ERR_NotFindLevel;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             MapComponent map = unit.DomainScene().GetComponent<MapComponent>();
@@ -56,7 +56,7 @@ namespace ET
                 map.MapTypeEnum == MapTypeEnum.LocalDungeon, response.TeleportIds);
             if (creature == null)
             {
-                return unitType == UnitType.Npc ? ErrorCode.ERR_NotFindNpc : ErrorCode.ERR_NotFindLevel;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             response.CreatureId = creature.Id;
             response.NeedReturn = creature.Scene_Id != map.SceneId && response.TeleportIds.Count == 0;

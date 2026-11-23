@@ -20,7 +20,7 @@ namespace ET
             RoleInfo roleInfo = roleInfoComponent.RoleInfo;
             if (roleInfo.MakeIdList == null || !roleInfo.MakeIdList.Contains(request.SkillMakeId))
             {
-                response.Error = ErrorCode.ERR_MakeNoLearnError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -46,7 +46,7 @@ namespace ET
 
             if (vitalityCost > 0 && bag.GetItemNumber(ItemBigType.Type_Item, UserDataType.HuoLi) < vitalityCost)
             {
-                response.Error = ErrorCode.ERR_VitalityNotEnoughError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

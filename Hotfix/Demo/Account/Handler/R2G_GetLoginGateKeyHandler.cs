@@ -11,7 +11,7 @@ namespace ET
                 if (scene.SceneType != SceneType.Gate)
                 {
                     Log.Error($"请求的Scene错误，当前Scene为：{scene.SceneType}");
-                    response.Error = ErrorCode.ERR_RequestSceneTypeError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

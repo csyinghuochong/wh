@@ -11,7 +11,7 @@ namespace ET
 
             if (dBUnionInfo == null)
             {
-                response.Error = ErrorCode.ERR_Union_Not_Exist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 return;
             }
             if (!dBUnionInfo.UnionInfo.ApplyList.Contains(request.UserId))

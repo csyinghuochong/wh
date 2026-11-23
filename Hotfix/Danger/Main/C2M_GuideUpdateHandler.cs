@@ -23,7 +23,7 @@ namespace ET
             if (!BeginnerGuideConfigHelper.TryGetSteps(request.GuideId, out List<LDBeginner_Guide> steps, out _)
                 || request.GuideStep < 0 || request.ContextId < 0)
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             RoleInfo role = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
@@ -39,7 +39,7 @@ namespace ET
                 if (request.GuideStep != request.GuideId || !CheckTrigger(unit, steps[0])
                     || !CheckContext(unit, steps, request.ContextId))
                 {
-                    return ErrorCode.ERR_Parameter;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 progress = new BeginnerGuideProgress { GuideId = request.GuideId, StepId = request.GuideStep, ContextId = request.ContextId };
@@ -50,7 +50,7 @@ namespace ET
 
             if (request.ContextId != progress.ContextId)
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             LDBeginner_Guide current = steps.Find(x => x.Id == progress.StepId);
@@ -60,7 +60,7 @@ namespace ET
                 LDBeginner_GuideCategory category = LDBeginner_GuideCategory.Instance;
                 if (!category.Contain(progress.StepId))
                 {
-                    return ErrorCode.ERR_Parameter;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 LDBeginner_Guide retiredStep = category.Get(progress.StepId);
@@ -68,7 +68,7 @@ namespace ET
                 if (retiredStep.Is_Close == 0 || current == null || request.GuideStep != current.Id
                     || !CheckTrigger(unit, steps[0]) || !CheckContext(unit, steps, request.ContextId))
                 {
-                    return ErrorCode.ERR_Parameter;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
             }
 
@@ -77,7 +77,7 @@ namespace ET
                 // 只有保存进度已到末步才接受整组完成；完成列表记录组首ID。
                 if (current.Next_Id.Length != 0)
                 {
-                    return ErrorCode.ERR_Parameter;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 role.BeginnerGuideProgresses.Remove(progress);
@@ -89,7 +89,7 @@ namespace ET
             bool next = current.Next_Id.Length == 1 && current.Next_Id[0] == request.GuideStep;
             if (request.GuideStep != current.Id && request.GuideStep != current.Break_Backup_Id && !next)
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             progress.StepId = request.GuideStep;

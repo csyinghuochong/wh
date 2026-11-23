@@ -11,7 +11,7 @@ namespace ET
             DBUnionInfo dBUnionInfo = await scene.GetComponent<UnionSceneComponent>().GetDBUnionInfo(request.UnionId);
             if (dBUnionInfo?.UnionInfo == null || dBUnionInfo.UnionInfo.LeaderId == 0)
             {
-                response.Error = ErrorCode.ERR_Union_Not_Exist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -19,7 +19,7 @@ namespace ET
             UnionInfo src = dBUnionInfo.UnionInfo;
             if (UnionHelper.GetUnionPlayerInfo(src.UnionPlayerList, request.ActorId) == null)
             {
-                response.Error = ErrorCode.ERR_Union_NoPlayer;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

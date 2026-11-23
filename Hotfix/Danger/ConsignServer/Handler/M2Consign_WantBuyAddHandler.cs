@@ -10,7 +10,7 @@ namespace ET
             ConsignWantBuyInfo wantBuy = request.WantBuyInfo;
             if (wantBuy == null || wantBuy.ItemId <= 0 || wantBuy.ItemNum <= 0 || wantBuy.Price <= 0)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

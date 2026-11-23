@@ -11,14 +11,14 @@ namespace ET
             DBUnionInfo dBUnionInfo = await scene.GetComponent<UnionSceneComponent>().GetDBUnionInfo(request.UnionId);
             if (dBUnionInfo == null)
             {
-                response.Error = ErrorCode.ERR_Union_Not_Exist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             UnionPlayerInfo unionPlayerInfo_self = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.UnitID);
             if (unionPlayerInfo_self == null || unionPlayerInfo_self.UserID != dBUnionInfo.UnionInfo.LeaderId)
             {
-                response.Error = ErrorCode.ERR_Union_NoLimits;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -26,7 +26,7 @@ namespace ET
             UnionPlayerInfo unionPlayerInfo_new = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.NewLeader);
             if (unionPlayerInfo_new == null)
             {
-                response.Error = ErrorCode.ERR_Union_NoPlayer;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

@@ -9,7 +9,7 @@ namespace ET
         {
             if (!scene.GetComponent<LocationComponent>().UnLock(request.Key, request.OldInstanceId, request.InstanceId))
             {
-                response.Error = ErrorCode.ERR_TransferFailError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             reply();

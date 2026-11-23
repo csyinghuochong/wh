@@ -13,7 +13,7 @@ namespace ET
             {
                 if (request.UserId <= 0)
                 {
-                    response.Error = ErrorCode.ERR_Parameter;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -28,7 +28,7 @@ namespace ET
             int belongId = request.BelongId2;
             if (belongId <= 0)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

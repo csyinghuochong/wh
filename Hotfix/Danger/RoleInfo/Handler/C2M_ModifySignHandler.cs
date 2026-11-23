@@ -11,7 +11,7 @@ namespace ET
             sign = sign.Trim();
             if (!StringHelper.IsSafeSqlString(sign))
             {
-                response.Error = ErrorCode.ERR_UnSafeSqlString;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

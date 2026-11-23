@@ -15,7 +15,7 @@ namespace ET
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             if (roleInfo.Lv < RoleAddPointHelper.GetAutoLevel())
             {
-                response.Error = ErrorCode.ERR_LevelNotEnought;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

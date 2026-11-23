@@ -27,14 +27,14 @@ namespace ET
             TeamInfo selfTeam = teamSceneComponent.GetTeamInfo(request.TeamPlayerInfo_2.UserID);
             if (selfTeam != null)
             {
-                response.Error = ErrorCode.ERR_IsHaveTeam;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
 
             if (inviterTeam != null && inviterTeam.TeamId != request.TeamPlayerInfo_1.UserID)
             {
-                response.Error = ErrorCode.ERR_IsNotLeader;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

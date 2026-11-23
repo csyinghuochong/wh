@@ -15,7 +15,7 @@ namespace ET
             int friendZone = FriendHelper.PrepareHomeZone(request.FriendId);
             if (friendZone == 0)
             {
-                response.Error = ErrorCode.ERR_PlayerNoFind;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -23,7 +23,7 @@ namespace ET
 
             if (dBFriendInfo == null)
             {
-                response.Error = ErrorCode.ERR_PlayerNoFind;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

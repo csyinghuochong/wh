@@ -11,7 +11,7 @@ namespace ET
             MountInfo mountInfo = mountComponentServer.GetMountInfo(request.MountInfoId);
             if (mountInfo == null)
             {
-                response.Error = ErrorCode.ERR_Mount_NoExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

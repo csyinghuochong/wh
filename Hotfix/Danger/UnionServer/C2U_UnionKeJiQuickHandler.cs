@@ -10,14 +10,14 @@ namespace ET
             DBUnionInfo dBUnionInfo = await scene.GetComponent<UnionSceneComponent>().GetDBUnionInfo(request.UnionId);
             if (dBUnionInfo == null)
             {
-                response.Error = ErrorCode.ERR_Union_Not_Exist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
 
             if (dBUnionInfo.UnionInfo.KeJiActiteTime == 0)
             {
-                response.Error = ErrorCode.ERR_Union_NotActive;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -26,7 +26,7 @@ namespace ET
             /*UnionKeJiConfig unionKeJiConfig = UnionKeJiConfigCategory.Instance.Get(keijiId);
             if (unionKeJiConfig.NextID == 0)
             {
-                response.Error = ErrorCode.ERR_Union_NotActive;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

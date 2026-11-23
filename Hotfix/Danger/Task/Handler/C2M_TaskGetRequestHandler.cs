@@ -41,7 +41,7 @@ namespace ET
 
             if (LDTask_2Category.Instance.Get(request.TaskId).Is_Close == 1 || UnionHelper.IsUnionWorkTask(request.TaskId))
             {
-                response.Error = ErrorCode.ERR_TaskCanNotGet;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

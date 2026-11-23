@@ -15,14 +15,14 @@ namespace ET
             TeamInfo teamInfo = teamScene.GetTeamInfo(request.UserID);
             if (teamInfo == null)
             {
-                response.Error = ErrorCode.ERR_TransferFailError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             // 申请流程里已经创建副本。这里不创建，没实例就不能进。
             if (teamInfo.FubenState != (int)TeamDungeonState.Opened || teamInfo.FubenInstanceId == 0)
             {
-                response.Error = ErrorCode.ERR_TransferFailError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -31,7 +31,7 @@ namespace ET
             TeamDungeonComponent dungeon = dungeonScene?.GetComponent<TeamDungeonComponent>();
             if (dungeon == null || dungeon.IsAbandoning || dungeonScene.InstanceId != teamInfo.FubenInstanceId)
             {
-                response.Error = ErrorCode.ERR_TransferFailError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

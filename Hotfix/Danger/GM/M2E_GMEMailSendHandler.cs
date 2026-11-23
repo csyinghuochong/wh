@@ -15,7 +15,7 @@ namespace ET
                 || request.MailType <= 0 || string.IsNullOrWhiteSpace(request.UserName) || string.IsNullOrEmpty(request.Title)
                 || !MailHelp.TryGetGMMailItems(request.Itemlist, out List<BagInfo> items))
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

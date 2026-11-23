@@ -9,7 +9,7 @@ namespace ET
         {
             if (request.UserId <= 0 || request.ConsignItemInfoId <= 0)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -25,7 +25,7 @@ namespace ET
 
             if (request.Collect != 1)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -40,7 +40,7 @@ namespace ET
 
             if (item.UserId == request.UserId)
             {
-                response.Error = ErrorCode.Err_ConsignCollectSelfError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

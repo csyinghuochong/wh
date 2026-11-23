@@ -1913,7 +1913,7 @@ namespace ET
 
             if (ss.Length != 3)
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             int loadType = int.Parse(ss[1]);
@@ -1993,7 +1993,7 @@ namespace ET
             if (chaxunInfo.Length != 3)
             {
                 Console.WriteLine($"Error: {content}");
-                return ErrorCode.ERR_NetWorkError;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             string accout = chaxunInfo[1];  //者账号
@@ -2108,13 +2108,13 @@ namespace ET
             {
                 Log.Console("邮件发送失败！");
                 Log.Warning("邮件发送失败！");
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             int errorCode = ErrorCode.ERR_Success;
 #if SERVER
             if (!MailHelp.TryGetGMMailItems(mailInfo[3], out _))
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             //全服邮件
@@ -2123,7 +2123,7 @@ namespace ET
                 if (mailInfo.Length < 7 || mailInfo[6] != DllHelper.Admin)
                 {
                     Log.Console("发送全服邮件0！");
-                    return ErrorCode.ERR_Parameter;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
                 Log.Console("发送全服邮件1！");
             }
@@ -2165,7 +2165,7 @@ namespace ET
                 }
                 catch (Exception ex)
                 {
-                    errorCode = ErrorCode.ERR_Parameter;
+                    errorCode = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     Log.Console("邮件发送异常！： " + ex.ToString());
                 }
             }
@@ -2182,7 +2182,7 @@ namespace ET
             
             if (mailInfo[0] != "restore" && mailInfo.Length < 3)
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             int pyzone = int.Parse(mailInfo[1]);
 
@@ -2190,19 +2190,19 @@ namespace ET
             List<RoleInfoComponentServer> RoleInfoComponentList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.RoleInfo.Name.Equals(mailInfo[2]));
             if (RoleInfoComponentList.Count == 0)
             {
-                return ErrorCode.ERR_PlayerNumerIsNotEnongh;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             RoleInfoComponentServer roleInfoComponentServer = RoleInfoComponentList[0];
             if (RoleInfoComponentList.Count == 0)
             {
-                return ErrorCode.ERR_PlayerNumerIsNotEnongh;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             List<DBCenterAccountInfo> dBAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id.Equals(roleInfoComponentServer.RoleInfo.AccInfoID));
             if (dBAccountInfos.Count == 0)
             {
-                return ErrorCode.ERR_PlayerNumerIsNotEnongh;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             DBCenterAccountInfo dbCenterAccountInfo = dBAccountInfos[0];
@@ -2228,7 +2228,7 @@ namespace ET
             int zoneType = 0;
             if (mailInfo[0] != "broad" && mailInfo.Length < 3)
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             try
             {
@@ -2237,7 +2237,7 @@ namespace ET
             catch (Exception ex)
             {
                 content = ex.ToString();
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 #if SERVER
             List<int> zones = new List<int>();
@@ -2276,13 +2276,13 @@ namespace ET
             {
                 Log.Console("邮件发送失败！");
                 Log.Warning("邮件发送失败！");
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             int errorCode = ErrorCode.ERR_Success;
 #if SERVER
             if (!MailHelp.TryGetGMMailItems(mailInfo[3], out _))
             {
-                return ErrorCode.ERR_Parameter;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             //全服邮件
@@ -2291,7 +2291,7 @@ namespace ET
                 if (mailInfo.Length < 7 || mailInfo[6] != DllHelper.Admin)
                 {
                     Log.Console("发送全服邮件0！");
-                    return ErrorCode.ERR_Parameter;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
                 Log.Console("发送全服邮件1！");
             }
@@ -2332,7 +2332,7 @@ namespace ET
                 }
                 catch (Exception ex)
                 {
-                    errorCode = ErrorCode.ERR_Parameter;
+                    errorCode = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     Log.Console("邮件发送异常！： " + ex.ToString());
                 }
             }

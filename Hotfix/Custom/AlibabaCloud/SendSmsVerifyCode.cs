@@ -96,9 +96,9 @@ namespace AlibabaCloud.SDK.Sample
                     {
                         return 0;
                     }
-                    return ErrorCode.MOBILE_SEND_ILLEGAL;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
-                return ErrorCode.MOBILE_SEND_ILLEGAL;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             catch (TeaException error)
             {
@@ -122,7 +122,7 @@ namespace AlibabaCloud.SDK.Sample
                 Console.WriteLine(error.Data["Recommend"]);
                 AlibabaCloud.TeaUtil.Common.AssertAsString(error.Message);
             }
-            return ErrorCode.MOBILE_SEND_ILLEGAL;
+            return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
         }
 
 
@@ -194,9 +194,9 @@ namespace AlibabaCloud.SDK.Sample
                         return 0;
                     }
 
-                    return ErrorCode.MOBILE_SEND_ILLEGAL;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
-                return ErrorCode.MOBILE_SEND_ILLEGAL;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             catch (TeaException error)
             {
@@ -220,7 +220,7 @@ namespace AlibabaCloud.SDK.Sample
                 Console.WriteLine(error.Data["Recommend"]);
                 AlibabaCloud.TeaUtil.Common.AssertAsString(error.Message);
             }
-            return ErrorCode.MOBILE_SEND_ILLEGAL;
+            return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
         }
     }
 }

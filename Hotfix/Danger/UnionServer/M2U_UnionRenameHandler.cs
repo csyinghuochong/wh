@@ -16,21 +16,21 @@ namespace ET
                 DBUnionInfo data = await component.GetDBUnionInfo(request.UnionId);
                 if (data?.UnionInfo == null)
                 {
-                    response.Error = ErrorCode.ERR_Union_Not_Exist;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
 
                 if (data.UnionInfo.LeaderId != request.UnitId)
                 {
-                    response.Error = ErrorCode.ERR_Union_NotLeader;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
 
                 if (!UnionHelper.IsValidUnionName(request.NewName))
                 {
-                    response.Error = ErrorCode.ERR_Union_NameValied;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -39,7 +39,7 @@ namespace ET
                 {
                     if (exist.UnionInfo.UnionName == request.NewName)
                     {
-                        response.Error = ErrorCode.ERR_Union_Same_Name;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }

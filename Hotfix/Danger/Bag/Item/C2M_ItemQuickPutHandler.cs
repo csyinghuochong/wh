@@ -19,7 +19,7 @@ namespace ET
             int hourseId = request.HorseId;
             if (!ItemNewHelper.IsValideBagLoc(hourseId) || hourseId == (int)ItemLocType.ItemLocBag)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

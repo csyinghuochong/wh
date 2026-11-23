@@ -61,7 +61,7 @@ namespace ET
             if (unit.Type != UnitType.Player || unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) == 1
                     || request.MonsterId < 0 || request.ItemIds.Count > 100)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -82,7 +82,7 @@ namespace ET
                     && unit.GetComponent<UnitGateComponent>().GateSessionActorId == sessionId;
                 if (!isViewing && PositionHelper.Distance2D(unit, monster) > CommonConfig.PickDistance)
                 {
-                    response.Error = ErrorCode.ERR_Parameter;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -117,7 +117,7 @@ namespace ET
                 }
                 if (monster == null && PositionHelper.Distance2D(unit.Position, new UnityEngine.Vector3(info.X, info.Y, info.Z)) > CommonConfig.PickDistance)
                 {
-                    response.Error = ErrorCode.ERR_Parameter;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

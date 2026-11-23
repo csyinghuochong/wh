@@ -24,7 +24,7 @@ namespace ET
             }
             else
             {
-                response.Error = ErrorCode.ERR_NetWorkError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             reply();

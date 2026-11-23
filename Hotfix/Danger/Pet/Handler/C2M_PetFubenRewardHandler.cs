@@ -17,7 +17,7 @@ namespace ET
             int rewardId = petComponentServer.GetCanRewardId();
             if (rewardId == 0)
             {
-                response.Error = ErrorCode.ERR_AlreadyFinish;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

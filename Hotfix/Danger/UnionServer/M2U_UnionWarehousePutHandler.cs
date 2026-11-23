@@ -12,7 +12,7 @@ namespace ET
                 DBUnionInfo data = await scene.GetComponent<UnionSceneComponent>().GetDBUnionInfo(request.UnionId);
                 if (data?.UnionInfo == null)
                 {
-                    response.Error = ErrorCode.ERR_Union_Not_Exist;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -21,7 +21,7 @@ namespace ET
                 UnionWarehouseHelper.EnsureWarehouse(info);
                 if (UnionHelper.GetUnionPlayerInfo(info.UnionPlayerList, request.UnitId) == null)
                 {
-                    response.Error = ErrorCode.ERR_Union_NoPlayer;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -47,7 +47,7 @@ namespace ET
                     if (!UnionWarehouseHelper.IsUnbindGold(request.ItemID) || request.ItemNum <= 0
                         || request.ItemNum > long.MaxValue - info.WarehouseGold)
                     {
-                        response.Error = ErrorCode.ERR_Union_WarehouseGoldOnly;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }

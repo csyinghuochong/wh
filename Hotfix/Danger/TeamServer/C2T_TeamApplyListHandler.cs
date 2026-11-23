@@ -12,7 +12,7 @@ namespace ET
             TeamInfo teamInfo = teamSceneComponent.GetTeamInfo(request.UserId);
             if (teamInfo == null || teamInfo.TeamId != request.UserId)
             {
-                response.Error = ErrorCode.ERR_IsNotLeader;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 response.PlayerList = new List<TeamPlayerInfo>();
                 reply();
                 return;

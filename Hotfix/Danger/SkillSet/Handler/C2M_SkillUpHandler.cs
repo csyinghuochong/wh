@@ -14,7 +14,7 @@ namespace ET
 			SkillPro skillPro = skillSetComponentServer.GetBySkillID(request.SkillID);
 			if (skillPro == null)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -30,7 +30,7 @@ namespace ET
 			LDSkill_Battle_Lv nextCfg = LDSkill_Battle_LvCategory.Instance.GetLDSkillLv(request.SkillID, nextLv);
 			if (nextCfg == null)
 			{
-				response.Error = ErrorCode.ERR_Parameter;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}
@@ -38,7 +38,7 @@ namespace ET
 			RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
 			if (roleInfo.Lv < nextCfg.Learn_Lv)
 			{
-				response.Error = ErrorCode.ERR_LevelNotEnought;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}

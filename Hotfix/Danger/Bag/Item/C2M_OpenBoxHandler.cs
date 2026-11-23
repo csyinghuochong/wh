@@ -12,7 +12,7 @@ namespace ET
             Unit boxUnit = unit.GetParent<UnitComponent>().Get(request.UnitId);
             if (boxUnit == null)
             {
-                response.Error = ErrorCode.ERR_NetWorkError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

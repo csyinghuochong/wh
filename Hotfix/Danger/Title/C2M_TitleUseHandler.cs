@@ -11,7 +11,7 @@ namespace ET
             TitleComponentServer titleComponent = unit.GetComponent<TitleComponentServer>();
             if (request.TitleId   >  0  && !titleComponent.IsHaveTitle(request.TitleId))
             {
-                response.Error = ErrorCode.ERR_TitleNoActived;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

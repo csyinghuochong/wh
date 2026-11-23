@@ -15,14 +15,14 @@ namespace ET
 			PetInfo petInfo = pet.GetPetInfo(request.PetInfoId);
 			if (petInfo == null)
 			{
-				response.Error = ErrorCode.ERR_Pet_NoExist;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}
 
 			if (!PetHelper.SaveXiLianResult(petInfo))
 			{
-				response.Error = ErrorCode.ERR_Pet_NoXiLianResult;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}

@@ -29,7 +29,7 @@ namespace ET
                 ActivityComponentServer activityComponentServer = unit.GetComponent<ActivityComponentServer>();
                 if (activityComponentServer.ActivityReceiveIds.Contains(request.ActivityId))
                 {
-                    response.Error = ErrorCode.ERR_AlreadyReceived;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

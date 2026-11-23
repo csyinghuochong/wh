@@ -19,13 +19,13 @@ namespace ET
             UnionPlayerInfo targetInfo = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.UserId);
             if (operatorInfo == null || targetInfo == null || request.ActorId == request.UserId)
             {
-                response.Error = ErrorCode.ERR_Union_NoLimits;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             if (targetInfo.UserID == dBUnionInfo.UnionInfo.LeaderId || !CanKick(operatorInfo.Position, targetInfo.Position))
             {
-                response.Error = ErrorCode.ERR_Union_NoLimits;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

@@ -40,7 +40,7 @@ namespace ET
             ItemLocType loc = ItemNewHelper.GetToItemLocType(item.ItemType, item.ItemID);
             if (!ItemNewHelper.IsValideBagLoc((int)loc))
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

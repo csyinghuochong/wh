@@ -37,14 +37,14 @@ namespace ET
             
             if (OuterOpcode.M2C_UpdateVersion != request.Version)
             {
-				response.Error = ErrorCode.ERR_VersionNoMatch;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
 
             if (session.GetComponent<SessionLockingComponent>() != null)
 			{
-				response.Error = ErrorCode.ERR_RequestRepeatedly;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}
@@ -53,7 +53,7 @@ namespace ET
             SessionPlayerComponent sessionPlayerComponent = session.GetComponent<SessionPlayerComponent>();
             if (null == sessionPlayerComponent)
             {
-                response.Error = ErrorCode.ERR_PlayerSessionError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -61,7 +61,7 @@ namespace ET
             Player player = Game.EventSystem.Get(sessionPlayerComponent.PlayerInstanceId) as Player;
             if (player == null || player.IsDisposed)
             {
-                response.Error = ErrorCode.ERR_PlayerNoFind;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -79,7 +79,7 @@ namespace ET
 				if (sameIpNumber >= 20) 
 				{
 					Console.WriteLine($"sameIpNumber >= 20:  {player.RemoteAddress}");
-                    response.Error = ErrorCode.ERR_RequestRepeatedly;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -94,21 +94,21 @@ namespace ET
 
                     if (!string.IsNullOrEmpty(request.DeviceID) && result[0].BanDeviceID.Contains(request.DeviceID))
                     {
-                        response.Error = ErrorCode.ERR_AccountInBlackListError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }
 
                     if (result[0].BanIPList.Contains(ip))
                     {
-                        response.Error = ErrorCode.ERR_AccountInBlackListError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }
 
                     if (session.IsDisposed || session.DomainZone() == 0)
 					{
-                        response.Error = ErrorCode.ERR_SessionStateError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }
@@ -116,7 +116,7 @@ namespace ET
                     List<DBCenterAccountInfo> centerAccountInfos = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id == request.AccountId);
                     if (centerAccountInfos == null|| centerAccountInfos.Count == 0)
 					{
-                        response.Error = ErrorCode.ERR_AccountInBlackListError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }
@@ -135,7 +135,7 @@ namespace ET
                         {
                             Log.Debug($"LoginTest C2G_EnterGameHandler: instanceId： {instanceId}  session.InstanceId： {session.InstanceId} {player.IsDisposed} ");
                         }
-						response.Error = ErrorCode.ERR_PlayerSessionError;
+						response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 						reply();
 						return;
 					}
@@ -149,7 +149,7 @@ namespace ET
 						{
 							Log.Debug("LoginTest C2G_EnterGameHandler: SessionStateComponent.State == SessionState.Game");
 						}
-						response.Error = ErrorCode.ERR_SessionStateError;
+						response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 						reply();
 						return;
 					}
@@ -193,7 +193,7 @@ namespace ET
                             }
 
                             Log.Error($"LoginTest C2G_EnterGame 二次登录失败1 player.Id： {player.Id} request.UserID{request.UserID}  player.UnitId: {player.UnitId} reqEnter.Error:{reqEnter.Error}");
-							response.Error = ErrorCode.ERR_ReEnterGameError1;
+							response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 							await DisconnectHelper.KickPlayer(player, true);
 							await DisconnectHelper.KickPlayer(session.DomainZone(), request.UserID);
 
@@ -204,7 +204,7 @@ namespace ET
 						catch (Exception e)
 						{
 							Log.Error($"LoginTest C2G_EnterGame 二次登录失败2 player.Id： {player.Id}  request.UserID{request.UserID}  player.UnitId: {player.UnitId}" + e.ToString());
-							response.Error = ErrorCode.ERR_ReEnterGameError2;
+							response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 							await DisconnectHelper.KickPlayer(player, true);
 							await DisconnectHelper.KickPlayer(session.DomainZone(), request.UserID);
 							reply();
@@ -272,7 +272,7 @@ namespace ET
                             {
                                 Log.Debug($"LoginTest C2G_EnterGame session.DomainZone() == 0 player.Id： {player.Id} request.UserID{request.UserID}  player.UnitId: {player.UnitId}");
                             }
-                            response.Error = ErrorCode.ERR_SessionStateError;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                             reply();
                             return;
                         }
@@ -326,7 +326,7 @@ namespace ET
 					catch (Exception e)
 					{
 						Log.Error($"LoginTest 角色进入游戏逻辑服出现问题 区 账号Id: {session.DomainZone()}  player.UnitId: {player.UnitId}   异常信息： {e.ToString()}");
-						response.Error = ErrorCode.ERR_EnterGameError;
+						response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 						reply();
 						await DisconnectHelper.KickPlayer(player, true);
 						session.Disconnect().Coroutine();

@@ -18,7 +18,7 @@ namespace ET
 
                 if (session.GetComponent<SessionLockingComponent>() != null)
                 {
-                    response.Error = ErrorCode.ERR_RequestRepeatedly;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     session?.Disconnect().Coroutine();
                     return;
@@ -29,7 +29,7 @@ namespace ET
 
                 if (token == null || token != request.RealmTokenKey)
                 {
-                    response.Error = ErrorCode.ERR_TokenError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     session?.Disconnect().Coroutine();
                     return;

@@ -31,6 +31,7 @@ namespace ET
         public static void OnInit(this RoleInfoComponentServer self,string account, long userId, long accountId, CreateRoleInfo createRoleInfo)
         {
             self.Account = account;
+            self.PendingBeginnerPoint = true;
 
             LDOccupation lDOccupation = LDOccupationCategory.Instance.Get(createRoleInfo.PlayerOcc);
 

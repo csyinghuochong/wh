@@ -15,7 +15,7 @@ namespace ET
             UnionPlayerInfo member = UnionHelper.GetUnionPlayerInfo(info.UnionPlayerList, unitId);
             if (member == null)
             {
-                return ErrorCode.ERR_Union_NoPlayer;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (info.LeaderId == unitId || string.IsNullOrEmpty(data.WarehousePassword))
             {
@@ -26,7 +26,7 @@ namespace ET
             {
                 return ErrorCode.ERR_Success;
             }
-            return ErrorCode.ERR_Union_WarehouseNeedPassword;
+            return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
         }
 
         public static void RevokeAccess(UnionSceneComponent scene, long unionId)

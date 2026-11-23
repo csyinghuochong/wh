@@ -41,7 +41,7 @@ namespace ET
                     catch (Exception ex)
                     { 
                         Log.Error(ex);
-                        response.Error = ErrorCode.ERR_Parameter;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }

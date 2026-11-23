@@ -12,7 +12,7 @@ namespace ET
             UnionInfo unionInfo = dbUnionInfo?.UnionInfo;
             if (unionInfo == null)
             {
-                response.Error = ErrorCode.ERR_Union_Not_Exist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -20,7 +20,7 @@ namespace ET
             UnionPlayerInfo sender = UnionHelper.GetUnionPlayerInfo(unionInfo.UnionPlayerList, request.UnitId);
             if (sender == null || unionInfo.LeaderId != request.UnitId)
             {
-                response.Error = ErrorCode.ERR_Union_NotLeader;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

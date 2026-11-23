@@ -12,14 +12,14 @@ namespace ET
             Unit other = unit.GetParent<UnitComponent>().Get(request.OtherId);
             if (other == null)
             {
-                response.Error = ErrorCode.ERR_PlayerNoFind;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             MapComponent mapComponent = unit.DomainScene().GetComponent<MapComponent>();
             if (mapComponent.MapTypeEnum != MapTypeEnum.MainCityScene)
             {
-                response.Error = ErrorCode.ERR_PlayerNoFind;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

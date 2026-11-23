@@ -37,7 +37,7 @@ namespace ET
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             if (roleInfo.Lv < unionCreateNeedLevel)
             {
-                response.Error = ErrorCode.Pre_Condition_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

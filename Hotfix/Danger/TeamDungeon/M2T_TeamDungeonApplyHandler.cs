@@ -12,14 +12,14 @@ namespace ET
             TeamInfo teamInfo = teamSceneComponent.GetTeamInfo(request.UnitID);
             if (teamInfo == null)
             {
-                response.Error = ErrorCode.Err_TeamIsNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
 
             if (teamInfo.TeamId != request.UnitID)
             {
-                response.Error = ErrorCode.ERR_IsNotLeader;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -34,7 +34,7 @@ namespace ET
             // 副本已经创建，不能再申请或取消申请。
             if (teamInfo.FubenInstanceId != 0)
             {
-                response.Error = ErrorCode.ERR_TeamDungeonAlreadyOpen;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

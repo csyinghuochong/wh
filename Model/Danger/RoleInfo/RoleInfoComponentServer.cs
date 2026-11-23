@@ -22,6 +22,9 @@ namespace ET
         /// <summary>上次离线时间。重要跑马灯按这个时间和本次上线补播。</summary>
         public long LastOfflineTime;
 
+        /// <summary>新角色待首次进入主城；仅初始化时置为 true，成功进城后清除并持久化。</summary>
+        public bool PendingBeginnerPoint;
+
 
         /// <summary>
         /// 今日在线时长

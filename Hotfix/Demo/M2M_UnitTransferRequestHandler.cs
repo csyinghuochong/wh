@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 namespace ET
@@ -21,7 +22,7 @@ namespace ET
 				UnitComponent unitComponent = scene.GetComponent<UnitComponent>();
 				if (unitComponent.Get(unitId) != null)
 				{
-					response.Error = ErrorCode.ERR_OperationOften;
+					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 					reply();
 					replied = true;
 					return;
@@ -33,7 +34,7 @@ namespace ET
                 
                 if (!UnitTransferHelper.TryTake(unitComponent, unitId, request.TransferId, out unit, out List<Entity> entities))
                 {
-                    response.Error = ErrorCode.ERR_TransferFailError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     replied = true;
                     return;
@@ -222,6 +223,30 @@ namespace ET
 
 						unit.Position = ldScene.GetBornPos();
 
+						// 仅新角色首次进主城读取 X~Y~Z~朝向（绕 Y 轴的角度）；后续仍使用 Scene 出生点。
+                        if (unit.GetComponent<RoleInfoComponentServer>().PendingBeginnerPoint)
+                        {
+                            string value = LDGlobalValueCategory.Instance.GetByKey(GlobalValueKey.Global_Beginner_Point).Value;
+                            string[] parts = value.Split('~');
+                            if (parts.Length != 4)
+                            {
+                                throw new Exception($"GlobalValue {GlobalValueKey.Global_Beginner_Point} 应配置 X~Y~Z~朝向，当前值：{value}");
+                            }
+
+                            float[] point = new float[4];
+                            for (int i = 0; i < point.Length; i++)
+                            {
+                                if (!float.TryParse(parts[i], NumberStyles.Float, CultureInfo.InvariantCulture, out point[i])
+                                    || float.IsNaN(point[i]) || float.IsInfinity(point[i]))
+                                {
+                                    throw new Exception($"GlobalValue {GlobalValueKey.Global_Beginner_Point} 参数无效，当前值：{value}");
+                                }
+                            }
+
+                            unit.Position = new Vector3(point[0], point[1], point[2]);
+                            unit.Rotation = Quaternion.Euler(0, point[3], 0);
+                        }
+
 						unit.AddComponent<PathfindingComponent, string>(scene.GetComponent<MapComponent>().NavMeshId);
 						unit.OnReturn();
 
@@ -262,13 +287,23 @@ namespace ET
                 {
                     unitComponent.Remove(unitId);
                     added = false;
-                    response.Error = ErrorCode.ERR_TransferFailError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     replied = true;
                     return;
                 }
 
                 response.NewInstanceId = unit.InstanceId;
+                // 传送提交成功才消费首次进城标记；失败回退、重试时继续使用新手坐标。
+                if (request.SceneType == MapTypeEnum.MainCityScene)
+                {
+                    RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
+                    if (roleInfo.PendingBeginnerPoint)
+                    {
+                        roleInfo.PendingBeginnerPoint = false;
+                        unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
+                    }
+                }
                 unit.AddComponent<MailBoxComponent>();
                 MessageHelper.SendToClient(unit, createMyUnit);
                 unit.AddComponent<AOIEntity, int, Vector3>(aoiValue, unit.Position);
@@ -306,7 +341,7 @@ namespace ET
                 }
 				if (!replied)
 				{
-					response.Error = committed ? ErrorCode.ERR_Success : ErrorCode.ERR_TransferFailError;
+					response.Error = committed ? ErrorCode.ERR_Success : LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 					reply();
 				}
 			}

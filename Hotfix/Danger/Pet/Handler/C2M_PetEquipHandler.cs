@@ -14,7 +14,7 @@ namespace ET
             PetInfo rolePetInfo = petComponentServer.GetPetInfo(request.PetInfoId);
             if (rolePetInfo == null)
             {
-                response.Error = ErrorCode.ERR_Pet_NoExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

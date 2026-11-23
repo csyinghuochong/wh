@@ -19,7 +19,7 @@ namespace ET
             FashionInfo fashionInfo = bagComponentServer.GetFashionInfo(request.FashionId);
             if (fashionInfo == null)
             {
-                response.Error = ErrorCode.ERR_FashionNoActive;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

@@ -13,14 +13,14 @@ namespace ET
             int selfZone = FriendHelper.PrepareHomeZone(request.UserID);
             if (selfZone == 0)
             {
-                response.Error = ErrorCode.ERR_PlayerNoFind;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             DBFriendInfo dBFriendInfo = await DBHelper.GetComponent<DBFriendInfo>(selfZone, request.UserID);
             if (dBFriendInfo == null)
             {
-                response.Error = ErrorCode.ERR_PlayerNoFind;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

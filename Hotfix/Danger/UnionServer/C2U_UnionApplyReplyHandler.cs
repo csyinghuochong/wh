@@ -15,7 +15,7 @@ namespace ET
                 DBUnionInfo dBUnionInfo = await unionSceneComponent.GetDBUnionInfo(request.UnionId);
                 if (dBUnionInfo == null)
                 {
-                    response.Error = ErrorCode.ERR_Union_Not_Exist;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -23,7 +23,7 @@ namespace ET
                 UnionPlayerInfo operatorInfo = UnionHelper.GetUnionPlayerInfo(dBUnionInfo.UnionInfo.UnionPlayerList, request.ActorId);
                 if (operatorInfo == null || operatorInfo.Position == UnionPosition.Member)
                 {
-                    response.Error = ErrorCode.ERR_Union_NoLimits;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

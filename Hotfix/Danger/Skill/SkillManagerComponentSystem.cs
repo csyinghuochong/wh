@@ -291,7 +291,7 @@ namespace ET
             List<SkillInfo> skillList = self.GetRandomSkills(skillcmd, weaponSkillid);
             if (skillList == null ||  skillList.Count == 0)
             {
-                m2C_Skill.Error = ErrorCode.ERR_CanNotUseSkill;
+                m2C_Skill.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 return m2C_Skill;
             }
 
@@ -522,7 +522,7 @@ namespace ET
         {
             if (self.CheckChongJi(nowSkillID))
             { 
-                return ErrorCode.ERR_SkillMoveTime;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (!LDSkill_BattleCategory.Instance.Contain(nowSkillID))
             {
@@ -535,7 +535,7 @@ namespace ET
 
             if (LDSkillHelper.IsPassiveSkill(ldSkill))
             {
-                return ErrorCode.ERR_CanNotUseSkill;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
            /* int castError = LDSkillHelper.CheckCastCondition(unit, ldSkill, targetId);

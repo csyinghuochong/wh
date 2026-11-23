@@ -27,13 +27,13 @@ namespace ET
 	
 			if (rolePetInfo == null)
 			{
-				response.Error = ErrorCode.ERR_Pet_NoExist;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}
             if (rolePetInfo.PetStatus != 0)
 			{
-                response.Error = ErrorCode.ERR_Pet_Fenjie_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

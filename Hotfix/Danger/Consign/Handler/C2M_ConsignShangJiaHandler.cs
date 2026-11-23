@@ -59,7 +59,7 @@ namespace ET
                             .Query<RoleInfoComponentServer>(homeZone, d => d.RoleInfo.Name == targetName);
                     if (targetRoles == null || targetRoles.Count == 0)
                     {
-                        response.Error = ErrorCode.ERR_PlayerNoFind;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }
@@ -72,7 +72,7 @@ namespace ET
 
                     if (targetUserId == roleInfoComponentServer.RoleInfo.UserId)
                     {
-                        response.Error = ErrorCode.ERR_Parameter;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }
@@ -86,7 +86,7 @@ namespace ET
                 request.ConsignItemInfo.BelongId = ConsignHelper.GetConsignBelongId(request.ConsignItemInfo.BagInfo);
                 if (request.ConsignItemInfo.BelongId <= 0)
                 {
-                    response.Error = ErrorCode.Err_ConsignNoSellType;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -111,7 +111,7 @@ namespace ET
 
 				if (!ItemFlagEnum.IsTradable(bagInfo.GetEffectiveItemFlags()))
 				{
-					response.Error = ErrorCode.ERR_ItemBing;      //道具绑定
+					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);      //道具绑定
 					reply();
 					return;
 				}

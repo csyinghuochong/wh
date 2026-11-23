@@ -61,7 +61,7 @@ namespace ET
                             long leftTime = bePortedNumber.JinYanTime - serverTime;
                             int hour = (int)(leftTime * 1f / TimeHelper.Hour);
                             hour = Math.Max(hour, 1);
-                            response.Error = ErrorCode.ERR_Chat_JinYan;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                             response.Message = $"你当前已经被禁言，{hour}小时后解封！";
                             reply();
                             return;
@@ -104,7 +104,7 @@ namespace ET
                         long unionid = chatInfoUnit.UnionId;
                         if (unionid == 0)
                         {
-                            response.Error = ErrorCode.ERR_Union_Not_Exist;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                             reply();
                             return;
                         }

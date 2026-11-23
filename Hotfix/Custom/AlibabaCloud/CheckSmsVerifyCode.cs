@@ -70,9 +70,9 @@ namespace AlibabaCloud.SDK.Sample
                     {
                         return 0;
                     }
-                    return ErrorCode.MOBILE_CHECK_ILLEGAL;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
-                return ErrorCode.MOBILE_CHECK_ILLEGAL;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             catch (TeaException error)
             {
@@ -82,7 +82,7 @@ namespace AlibabaCloud.SDK.Sample
                 // 诊断地址
                 Console.WriteLine(error.Data["Recommend"]);
                 AlibabaCloud.TeaUtil.Common.AssertAsString(error.Message);
-                return ErrorCode.MOBILE_CHECK_ILLEGAL;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             catch (Exception _error)
             {
@@ -96,7 +96,7 @@ namespace AlibabaCloud.SDK.Sample
                 // 诊断地址
                 Console.WriteLine(error.Data["Recommend"]);
                 AlibabaCloud.TeaUtil.Common.AssertAsString(error.Message);
-                return ErrorCode.MOBILE_CHECK_ILLEGAL;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
         }
 

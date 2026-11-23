@@ -15,7 +15,7 @@ namespace ET
             PetInfo petinfo_2 = petComponentServer.GetPetInfo(request.PetInfoId2);
 			if (petinfo_1 == null || petinfo_2 == null || petinfo_1.Id == petinfo_2.Id)
 			{
-				response.Error = ErrorCode.ERR_Pet_NoExist;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}
@@ -23,14 +23,14 @@ namespace ET
 
 			if (petinfo_1.ConfigId != petinfo_2.ConfigId)
 			{
-				response.Error = ErrorCode.ERR_Pet_HeCheng_IdError;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}
 
 			if (!LDPetCategory.Instance.Contain(petinfo_1.ConfigId))
 			{
-				response.Error = ErrorCode.ERR_Pet_NoExist;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}
@@ -38,7 +38,7 @@ namespace ET
 			LDPet ldPet = LDPetCategory.Instance.Get(petinfo_1.ConfigId);
 			if (petinfo_1.Star != petinfo_2.Star || petinfo_1.Star >= ldPet.Star_Limit)
 			{
-				response.Error = ErrorCode.ERR_Pet_HeCheng_StarError;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 				reply();
 				return;
 			}
@@ -76,6 +76,9 @@ namespace ET
 				reply();
 				return;
 			}
+
+			// 合成成功后继承两只宠物中较高的等级，再刷新属性并回包。
+			petinfo_1.PetLv = Math.Max(petinfo_1.PetLv, petinfo_2.PetLv);
 
 			long deletePetId = petinfo_2.Id;
 			unit.GetParent<UnitComponent>().Remove(deletePetId);

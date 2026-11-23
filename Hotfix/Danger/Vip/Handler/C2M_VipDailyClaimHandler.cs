@@ -11,7 +11,7 @@ namespace ET
             LDVIP cfg = pro == null ? null : VipHelp.GetConfig(pro.VipLevel);
             if (cfg == null)
             {
-                response.Error = ErrorCode.ERR_VipLevelNotEnough;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -26,7 +26,7 @@ namespace ET
 
             if (daily.GetVipDailyClaimed() == 1)
             {
-                response.Error = ErrorCode.ERR_AlreadyReceived;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

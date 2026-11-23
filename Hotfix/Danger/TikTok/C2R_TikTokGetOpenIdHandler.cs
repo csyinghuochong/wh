@@ -30,14 +30,14 @@ namespace ET
             TikTokOAuth tikTokCode = BsonSerializer.Deserialize<TikTokOAuth>(result);
             if (tikTokCode.data == null || tikTokCode.data.error_code != 0)
             {
-                response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
 
             if (string.IsNullOrEmpty(tikTokCode.data.open_id))
             {
-                response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

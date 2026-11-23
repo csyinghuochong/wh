@@ -12,7 +12,7 @@ namespace ET
             {
                 if (unit.IsDisposed)
                 {
-                    return ErrorCode.ERR_RequestRepeatedly;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
                 Scene unitScene = unit.DomainScene();
                 MapComponent unitMapComponent = unitScene.GetComponent<MapComponent>();
@@ -20,20 +20,20 @@ namespace ET
                 if (!SceneConfigHelper.CanTransfer(oldScene, args.SceneType))
                 {
                     Log.Debug($"LoginTest1  Actor_Transfer unitId{unit.Id} oldScene:{oldScene}  requestscene{args.SceneType}");
-                    return ErrorCode.ERR_RequestRepeatedly;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
                 // 跨服旅游中只允许回本服主城；其它玩法须先回本服
                 if (UnitZoneHelper.IsTouring(unit) && args.SceneType != MapTypeEnum.MainCityScene)
                 {
                     Log.Warning($"[WarZoneTour] 旅游中禁止传送 unit={unit.Id} home={UnitZoneHelper.GetHomeZone(unit)} cur={UnitZoneHelper.GetCurrentZone(unit)} to={args.SceneType}");
-                    return ErrorCode.ERR_RequestRepeatedly;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
                 RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();
                 RoleDailyDataComponentServer dailyData = unit.GetComponent<RoleDailyDataComponentServer>();
                 int recordSceneId = 0;
                 if (SceneConfigHelper.UseSceneConfig(args.SceneType) && args.SceneId > 0 && !LDSceneCategory.Instance.Contain(args.SceneId))
                 {
-                    return ErrorCode.ERR_TimesIsNotEnought;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 int targetSceneId = SceneConfigHelper.ResolveTransferSceneId(args.SceneType, args.SceneId, args.ParamInfo);
@@ -136,7 +136,7 @@ namespace ET
                         long unionid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0);
                         if (unionid == 0)
                         {
-                            return Fail(ErrorCode.ERR_Union_Not_Exist);
+                            return Fail(LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
                         }
                         long mapInstanceId = DBHelper.GetUnionServerId(unit);
                         U2M_UnionEnterResponse responseUnionEnter = (U2M_UnionEnterResponse)await ActorMessageSenderComponent.Instance.Call(
@@ -276,11 +276,11 @@ namespace ET
                         }
                         if (d2GGetUnit.FubenInstanceId == 0)
                         {
-                            return Fail(ErrorCode.ERR_AlreadyFinish);
+                            return Fail(LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
                         }
                         if ( !FunctionHelp.IsInTime(1045))
                         {
-                            return Fail(ErrorCode.ERR_AlreadyFinish);
+                            return Fail(LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
                         }
                         oldscene = unit.DomainScene();
                         mapComponent = oldscene.GetComponent<MapComponent>();
@@ -303,18 +303,18 @@ namespace ET
                         unionid = unit.GetComponent<NumericComponent>().GetAsLong(NumericType.UnionId_0);
                         if (unionid == 0)
                         {
-                            return Fail(ErrorCode.ERR_Union_Not_Exist);
+                            return Fail(LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
                         }
                         if (!FunctionHelp.IsInUnionRaceTime())
                         {
-                            return Fail(ErrorCode.ERR_AlreadyFinish);
+                            return Fail(LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
                         }
                         mapInstanceId = DBHelper.GetUnionServerId(unit);
                         responseUnionEnter = (U2M_UnionEnterResponse)await ActorMessageSenderComponent.Instance.Call(
                         mapInstanceId, new M2U_UnionEnterRequest() { OperateType = 1, UnionId = unionid, UnitId = unit.Id, SceneId = args.SceneId });
                         if (responseUnionEnter.FubenInstanceId == 0)
                         {
-                            return Fail(ErrorCode.ERR_AlreadyFinish);
+                            return Fail(LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
                         }
                         TransferHelper.BeforeTransfer(unit);
                         transferError = await TransferHelper.Transfer(unit, responseUnionEnter.FubenInstanceId,
@@ -331,7 +331,7 @@ namespace ET
                         mapInstanceId, new M2H_HapplyEnterRequest() { UnitId = unit.Id, SceneId = args.SceneId });
                         if (happyEnter.FubenInstanceId == 0)
                         {
-                            return Fail(ErrorCode.ERR_AlreadyFinish);
+                            return Fail(LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
                         }
                         TransferHelper.BeforeTransfer(unit);
                         transferError = await TransferHelper.Transfer(unit, happyEnter.FubenInstanceId,
@@ -348,7 +348,7 @@ namespace ET
                         mapInstanceId, new M2FubenCenter_BattleEnterRequest() { UserID = unit.Id, SceneId = args.SceneId });
                         if (battleEnter.FubenInstanceId == 0)
                         {
-                            return Fail(ErrorCode.ERR_AlreadyFinish);
+                            return Fail(LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
                         }
 
                         TransferHelper.BeforeTransfer(unit);
@@ -375,7 +375,7 @@ namespace ET
                         if (createUnit.FubenInstanceId == 0
                             || createUnit.FubenId <= 0 || !LDSceneCategory.Instance.Contain(createUnit.FubenId))
                         {
-                            return Fail(ErrorCode.ERR_TransferFailError);
+                            return Fail(LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
                         }
 
                         LDScene teamScene = LDSceneCategory.Instance.Get(createUnit.FubenId);
@@ -456,7 +456,7 @@ namespace ET
             if (sceneId == 0)
             {
                 Log.Error($"zonelocaldungeonsb:  unitid: {unit.Id}  n: {n}  transferId: {transferId} sceneId: {sceneId} ");
-                return ErrorCode.ERR_NotFindLevel;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             //Log.Console($"zonelocaldungeonsb:  unitid: {unit.Id}  n: {n}  transferId: {transferId} sceneId: {sceneId} ");
@@ -530,7 +530,7 @@ namespace ET
         {
             if (unit.IsDisposed || sceneInstanceId == 0)
             {
-                return ErrorCode.ERR_TransferFailError;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             UnitTransferSource source = new UnitTransferSource(unit);
@@ -545,7 +545,7 @@ namespace ET
                 byte[] bytes = UnitTransferHelper.Serialize(unit);
                 if (bytes == null)
                 {
-                    return ErrorCode.ERR_TransferFailError;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 // 先让目标场景收齐分片，成功后才通知客户端切场景。
@@ -556,7 +556,7 @@ namespace ET
                 }
                 if (unit.InstanceId != source.InstanceId)
                 {
-                    return ErrorCode.ERR_TransferFailError;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 // 批次 ID 作为锁凭证，超时的旧请求不能提交下一次传送。
@@ -564,7 +564,7 @@ namespace ET
                 locked = true;
                 if (unit.InstanceId != source.InstanceId)
                 {
-                    return ErrorCode.ERR_TransferFailError;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 sceneChanged = true;
@@ -577,7 +577,7 @@ namespace ET
                 await TimerComponent.Instance.WaitFrameAsync();
                 if (unit.InstanceId != source.InstanceId)
                 {
-                    return ErrorCode.ERR_TransferFailError;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 // 同场景只暂存原角色，目标创建失败时仍可恢复同一个对象。
@@ -605,7 +605,7 @@ namespace ET
                     long instanceId = await UnitTransferHelper.GetLocation(source.UnitId);
                     committed = instanceId != 0 && instanceId != source.InstanceId;
                 }
-                return committed ? ErrorCode.ERR_Success : ErrorCode.ERR_TransferFailError;
+                return committed ? ErrorCode.ERR_Success : LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             finally
             {

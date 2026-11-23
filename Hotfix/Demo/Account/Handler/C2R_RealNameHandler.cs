@@ -11,13 +11,13 @@ namespace ET
         {
             if (string.IsNullOrEmpty(request.IdCardNO) || string.IsNullOrEmpty(request.Name))
             {
-                response.Error = ErrorCode.ERR_RealNameFail;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             if (request.IdCardNO.Length != 18)
             {
-                response.Error = ErrorCode.ERR_RealNameFail;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -26,7 +26,7 @@ namespace ET
             {
                 if (session.IsDisposed)
                 {
-                    response.Error = ErrorCode.ERR_RealNameFail;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -70,7 +70,7 @@ namespace ET
                 //}
                 //if (result_check == null || result_check.data == null || result_check.data.result == null)
                 //{
-                //    response.Error = ErrorCode.ERR_RealNameFail;
+                //    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 //    reply();
                 //    return;
                 //}
@@ -87,7 +87,7 @@ namespace ET
                 }
                 else
                 {
-                    response.Error = ErrorCode.ERR_RealNameFail;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
             }

@@ -12,7 +12,7 @@ namespace ET
             MountInfo mountInfo = mountComponentServer.GetMountInfo(request.MountInfoId);
             if (mountInfo == null)
             {
-                response.Error = ErrorCode.ERR_Mount_NoExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -28,7 +28,7 @@ namespace ET
             LDItem ldItem = LDItemCategory.Instance.Get(itemId);
             if (ldItem.ItemType != ItemTypeEnum.SubType_Mount_Exp_31)
             {
-                response.Error = ErrorCode.ERR_Mount_NoUseItem;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -37,7 +37,7 @@ namespace ET
             int addExp = ldItem.GetTypeParam1() * costNum;
             if (addExp <= 0)
             {
-                response.Error = ErrorCode.ERR_Mount_NoUseItem;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

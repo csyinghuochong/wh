@@ -40,7 +40,7 @@ namespace ET
                 bool canWearEquip = ItemNewHelper.CheckCanWearEquip(useBagInfo.ItemID, occ);
                 if (!canWearEquip)
                 {
-                    response.Error = ErrorCode.ERR_Equip_NoMtach;    
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);    
                     reply();
                     return;
                 }

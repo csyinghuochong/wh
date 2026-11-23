@@ -22,7 +22,7 @@ namespace ET
             MountInfo useMount = mountComponentServer.GetUseMount();
             if (useMount == null)
             {
-                response.Error = ErrorCode.ERR_HoreseNotFight;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

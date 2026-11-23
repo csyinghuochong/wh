@@ -22,7 +22,7 @@ namespace ET
                 }
             }
 
-            if (useNum < 1 || itemId <= 0 || !LDItemCategory.Instance.Contain(itemId)) return ErrorCode.ERR_Parameter;
+            if (useNum < 1 || itemId <= 0 || !LDItemCategory.Instance.Contain(itemId)) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 
 
             LDItem ldItem = LDItemCategory.Instance.Get(itemId);
@@ -102,38 +102,38 @@ namespace ET
         public static int GetPackageRewards(LDItem item, int useNum, string operatePar, out List<RewardItem> rewards)
         {
             rewards = new List<RewardItem>();
-            if (useNum < 1 || useNum > 1000) return ErrorCode.ERR_Parameter;
+            if (useNum < 1 || useNum > 1000) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             if (item.ItemType == ItemTypeEnum.SubType_Package_Random)
             {
-                if (item.Drop_Id <= 0 || !LDDropCategory.Instance.Contain(item.Drop_Id)) return ErrorCode.ERR_Parameter;
+                if (item.Drop_Id <= 0 || !LDDropCategory.Instance.Contain(item.Drop_Id)) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 for (int i = 0; i < useNum; i++) DropHelper.DropIDToDropItem(item.Drop_Id, rewards);
                 // 概率 Drop 允许本次抽空，不能补发展示奖励。
             }
             else
             {
                 rewards = ItemNewHelper.GetPackageShowItems(item.Id);
-                if (rewards.Count == 0) return ErrorCode.ERR_Parameter;
+                if (rewards.Count == 0) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 if (item.ItemType == ItemTypeEnum.SubType_Package_Select)
                 {
-                    if (!int.TryParse(operatePar, out int index) || index < 1 || index > rewards.Count) return ErrorCode.ERR_Parameter;
+                    if (!int.TryParse(operatePar, out int index) || index < 1 || index > rewards.Count) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     rewards = new List<RewardItem> { rewards[index - 1] };
                 }
-                else if (item.ItemType != ItemTypeEnum.SubType_Package_All) return ErrorCode.ERR_Parameter;
+                else if (item.ItemType != ItemTypeEnum.SubType_Package_All) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 foreach (RewardItem reward in rewards)
                 {
-                    if (reward.ItemNum <= 0 || reward.ItemNum > int.MaxValue / useNum) return ErrorCode.ERR_Parameter;
+                    if (reward.ItemNum <= 0 || reward.ItemNum > int.MaxValue / useNum) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reward.ItemNum *= useNum;
                 }
             }
             DropHelper.ZhengLiRewardItems(rewards);
             foreach (RewardItem reward in rewards)
             {
-                if (reward.ItemNum <= 0 || !ItemNewHelper.IsValidItem(reward.ItemType, reward.ItemID)) return ErrorCode.ERR_Parameter;
+                if (reward.ItemNum <= 0 || !ItemNewHelper.IsValidItem(reward.ItemType, reward.ItemID)) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 // 自动开启包裹不能继续产生自动开启的包裹，防止循环发奖及绕过容量预检。
                 if (reward.ItemType == ItemBigType.Type_Item)
                 {
                     LDItem output = LDItemCategory.Instance.Get(reward.ItemID);
-                    if (output.IfAutoUse == 1 && output.ItemType >= 11 && output.ItemType <= 13) return ErrorCode.ERR_Parameter;
+                    if (output.IfAutoUse == 1 && output.ItemType >= 11 && output.ItemType <= 13) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
             }
             return ErrorCode.ERR_Success;

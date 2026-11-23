@@ -28,7 +28,7 @@ namespace ET
             TeamInfo teamInfo = teamSceneComponent.GetTeamInfo(request.TeamPlayerInfo.UserID);
             if (teamInfo != null && teamInfo.TeamId != request.TeamPlayerInfo.UserID)
             {
-                response.Error = ErrorCode.ERR_IsNotLeader;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -40,7 +40,7 @@ namespace ET
 
             if (teamInfo.FubenState != (int)TeamDungeonState.None && teamInfo.SceneId != request.SceneId)
             {
-                response.Error = ErrorCode.ERR_TeamDungeonAlreadyOpen;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

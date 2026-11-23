@@ -72,38 +72,38 @@ namespace ET
             bool stunSkill = ldSkill != null && ldSkill.Use_Stun == 1 && self.StateTypeGet(StateTypeEnum.HunMi);
             if (self.StateTypeGet(StateTypeEnum.HunMi) && (ldSkill == null || ldSkill.Use_Stun != 1))
             {
-                return ErrorCode.ERR_CanNotUseSkill_Dizziness;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (self.StateTypeGet(StateTypeEnum.MaBi))
             {
-                return ErrorCode.ERR_CanNotUseSkill_Dizziness;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (self.StateTypeGet(StateTypeEnum.PassiveMove) )
             {
-                return ErrorCode.ERR_CanNotUseSkill_JiTui;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (self.StateTypeGet(StateTypeEnum.Sleep))
             {
-                return ErrorCode.ERR_CanNotUseSkill_Sleep;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (self.StateTypeGet(StateTypeEnum.ForbidCast) && (ldSkill == null || ldSkill.Use_Silence != 1) && !stunSkill)
             {
-                return ErrorCode.ERR_CanNotUseSkill_Silence;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (self.StateTypeGet(StateTypeEnum.Silence) && (ldSkill == null || ldSkill.Use_Silence != 1) && !stunSkill)
             {
-                return ErrorCode.ERR_CanNotUseSkill_Silence;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             Unit unit = self.GetParent<Unit>();
             if (checkDead && unit.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) == 1)
             {
-                return ErrorCode.ERR_CanNotSkillDead;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (unit.Type == UnitType.Monster && unit.IsSinging())
             {
-                return ErrorCode.ERR_CanNotMove_Singing;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             return ErrorCode.ERR_Success;
         }
@@ -128,7 +128,7 @@ namespace ET
             if (self.StateTypeGet(StateTypeEnum.PassiveMove) || 
                self.StateTypeGet(StateTypeEnum.ForbidMove))
             {
-                return ErrorCode.ERR_CanNotMove;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             // 只在硬直内应用 Limit_Move；Limit_Move=0 可移动，不代表可以转向（另查 Limit_Rotate）。
             // RigiditySkillId=0 表示未指定技能的硬直，仍禁止移动。
@@ -140,34 +140,34 @@ namespace ET
             }
             if (self.StateTypeGet(StateTypeEnum.HunMi))
             {
-                return ErrorCode.ERR_CanNotMove_Dizziness;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (self.StateTypeGet(StateTypeEnum.MaBi))
             {
-                return ErrorCode.ERR_CanNotMove_Dizziness;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (self.StateTypeGet(StateTypeEnum.Sleep))
             {
-                return ErrorCode.ERR_CanNotMove_Sleep;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (self.StateTypeGet(StateTypeEnum.Fear))
             {
-                return ErrorCode.ERR_CanNotMove_Fear;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             Unit unit = self.GetParent<Unit>();
             if (unit.Type == UnitType.Monster && unit.IsSinging())
             {
-                return ErrorCode.ERR_CanNotMove_Singing;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (unit.GetSpeedNow() <= 0)
             {
-                return ErrorCode.ERR_CanNotMove_Speed;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (numericComponent.GetAsInt(NumericType.Now_Dead) == 1)
             {
-                return ErrorCode.ERR_CanNotMove_Dead;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             return ErrorCode.ERR_Success;
         }

@@ -50,7 +50,7 @@ namespace ET
             {
                 Game.EventSystem.Publish(new EventType.RemoveAccountSessions() { DomainScene = session.DomainScene(), AccountId = self.AccountId });
             }
-            session?.Send(new A2C_Disconnect() { Error = ErrorCode.ERR_LoginTimeOut });
+            session?.Send(new A2C_Disconnect() { Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail) });
             session?.Disconnect().Coroutine();
         }
 

@@ -54,7 +54,7 @@ namespace ET
                 || request.UnitId == paiMaiItemInfo.UserId
                 || (ConsignHelper.IsDesignatedShangJia(paiMaiItemInfo) && paiMaiItemInfo.TargetUserId != request.UnitId))
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -62,7 +62,7 @@ namespace ET
             long needGold = (long)paiMaiItemInfo.Price * request.BuyNum;
             if (paiMaiItemInfo.Price < 0 || needGold > int.MaxValue)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

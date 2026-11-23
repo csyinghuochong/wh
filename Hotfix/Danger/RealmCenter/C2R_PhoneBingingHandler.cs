@@ -15,7 +15,7 @@ namespace ET
             {
                 if (request.AccountId == 0 || string.IsNullOrEmpty(request.Account) || string.IsNullOrEmpty(request.PhoneNumber))
                 {
-                    response.Error = ErrorCode.ERR_NetWorkError;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -24,7 +24,7 @@ namespace ET
                     _account => _account.Account.Equals(request.PhoneNumber));
                 if (resultAccounts.Count > 0)
                 {
-                    response.Error = ErrorCode.ERR_BingPhoneError_1;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -33,7 +33,7 @@ namespace ET
                     _account => _account.PlayerInfo!=null && _account.PlayerInfo.PhoneNumber.Equals(request.PhoneNumber));
                 if (resultAccounts.Count > 0)
                 {
-                    response.Error = ErrorCode.ERR_BingPhoneError_2;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -50,7 +50,7 @@ namespace ET
                    && dBCenterAccountInfo.PlayerInfo.PhoneNumber.Equals(request.PhoneNumber))
                 {
                     Log.Error($"PhoneBinging: resultAccounts.Count");
-                    response.Error = ErrorCode.ERR_BingPhoneError_2;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

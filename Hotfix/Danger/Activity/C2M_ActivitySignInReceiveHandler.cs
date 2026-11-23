@@ -31,7 +31,7 @@ namespace ET
             if (!ActivityHelper.CanReceiveSignIn(activity.ActivityInfo, cfg, role.RoleInfo.CreateTime, activityId))
             {
                 response.Error = ActivityHelper.IsSignInReceived(activity.ActivityInfo, signInId, role.RoleInfo.CreateTime, activityId)
-                        ? ErrorCode.ERR_AlreadyReceived
+                        ? LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail)
                         : LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 await ETTask.CompletedTask;

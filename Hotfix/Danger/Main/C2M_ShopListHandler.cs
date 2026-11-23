@@ -11,7 +11,7 @@ namespace ET
             int shopId = request.ShopId;
             if (!LDShopCategory.Instance.Contain(shopId))
             {
-                response.Error = ErrorCode.ERR_ShopNotConfig;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 await ETTask.CompletedTask;
                 return;
@@ -42,7 +42,7 @@ namespace ET
 
                 if (a2MResponse == null || a2MResponse.Error != ErrorCode.ERR_Success)
                 {
-                    response.Error = a2MResponse?.Error ?? ErrorCode.ERR_NetWorkError;
+                    response.Error = a2MResponse?.Error ?? LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     await ETTask.CompletedTask;
                     return;

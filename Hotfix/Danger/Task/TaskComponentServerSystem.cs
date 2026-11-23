@@ -221,7 +221,7 @@ namespace ET
                 || taskPro.taskStatus == (int)TaskStatuEnum.UnActive
                 || taskPro.taskStatus == (int)TaskStatuEnum.Commited)
             {
-                return ErrorCode.ERR_TaskCanNotGet;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             taskPro.TrackStatus = trackStatus;
@@ -253,14 +253,14 @@ namespace ET
             if (taskId == 0 || !LDTask_2Category.Instance.Contain(taskId)
                 || LDTask_2Category.Instance.Get(taskId).Is_Close == 1)
             {
-                return (null, ErrorCode.ERR_TaskCanNotGet);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
             }
             Unit unit = self.GetParent<Unit>();
             bool canget = true; // self.CheckTaskOn(taskId);
             if (!canget)
             {
                 Log.Debug($"CanNotGetTask: {unit.DomainZone()} {unit.Id} {taskId}");
-                return (null, ErrorCode.ERR_TaskCanNotGet);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
             }
             if (self.IsHaveTask_2(taskId))
             {
@@ -343,7 +343,7 @@ namespace ET
 
             if (ldTask.NPC_Accept != 0 && ldTask.NPC_Accept != npcId)
             {
-                return (null, ErrorCode.ERR_TaskCanNotGet);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
             }
 
             Unit unit = self.GetParent<Unit>();
@@ -351,12 +351,12 @@ namespace ET
             if (!TaskHelper.CheckTask1AcceptLevel(ldTask, roleInfo.Lv)
                 || !TaskHelper.CheckTask1AcceptOccupation(ldTask.Accept, roleInfo.Occ))
             {
-                return (null, ErrorCode.ERR_TaskCanNotGet);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
             }
 
             if (!self.CanAcceptTask_1(ldTask, exist))
             {
-                return (null, ErrorCode.ERR_TaskCanNotGet);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
             }
 
             if (self.NextTask1_Id <= 0)
@@ -623,7 +623,7 @@ namespace ET
             //    bagComponentServer.OnCostItemData($"{needid};{neednumber}", ItemLocType.ItemLocBag, ItemGetWay.TaskCountry  );
             //    return ErrorCode.ERR_Success;
             //}
-            return taskPro.taskStatus == (int)(TaskStatuEnum.Completed)? ErrorCode.ERR_Success : ErrorCode.Pre_Condition_Error;
+            return taskPro.taskStatus == (int)(TaskStatuEnum.Completed)? ErrorCode.ERR_Success : LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             //return ErrorCode.ERR_Success; 
         }
 
@@ -650,23 +650,23 @@ namespace ET
             TaskPro taskPro = self.GetTaskById_2(taskid);
             if (taskPro == null)
             {
-                return ErrorCode.ERR_TaskCommited;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (taskPro.taskStatus == (int)TaskStatuEnum.Commited)
             {
-                return ErrorCode.ERR_TaskCommited;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (!UnionHelper.IsUnionWorkTask(taskid) && self.RoleComoleteTaskList_2.Contains(taskid))
             {
-                return ErrorCode.ERR_TaskCommited;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             LDTask_2 commitLdTask = LDTask_2Category.Instance.Get(taskid);
             if (commitLdTask.Is_Close == 1)
             {
-                return ErrorCode.ERR_TaskCanNotGet;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (TaskHelper.IsPointProgressTask(commitLdTask))
@@ -679,7 +679,7 @@ namespace ET
             }
             else if (taskPro.taskStatus != (int)TaskStatuEnum.Completed)
             {
-                return ErrorCode.Pre_Condition_Error;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems(roleInfoComponent.RoleInfo.Occ, taskid);
@@ -742,24 +742,24 @@ namespace ET
             TaskPro taskPro = self.GetTaskById_1(taskid);
             if (taskPro == null)
             {
-                return ErrorCode.ERR_TaskCommited;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (taskPro.taskStatus == (int)TaskStatuEnum.Commited || self.RoleComoleteTaskList_1.Contains(taskid))
             {
-                return ErrorCode.ERR_TaskCommited;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             LDTask_1 ldTask = LDTask_1Category.Instance.Get(taskid);
             int finishNpc = TaskHelper.GetTask1FinishNpc(ldTask);
             if (finishNpc != 0 && request.NpcId != finishNpc)
             {
-                return ErrorCode.ERR_TaskCanNotGet;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (!TaskHelper.HasNoTask1Requirement(ldTask) && taskPro.taskStatus != (int)TaskStatuEnum.Completed)
             {
-                return ErrorCode.Pre_Condition_Error;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems_1(roleInfoComponent.RoleInfo.Occ, taskid, request.RewardIndex, true);
@@ -1864,7 +1864,7 @@ namespace ET
             Unit unit = self.GetParent<Unit>();
             if (unit == null || unit.GetUnionId() == 0)
             {
-                return (null, ErrorCode.ERR_Union_Not_Exist);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
             }
 
             if (UnionHelper.IsUnionWorkAllCompleted(self.RoleComoleteTaskList_2))
@@ -1885,13 +1885,13 @@ namespace ET
 
             if (taskId > 0 && taskId != self.NextUnionWorkTaskId)
             {
-                return (null, ErrorCode.ERR_TaskCanNotGet);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
             }
 
             taskId = self.NextUnionWorkTaskId;
             if (!UnionHelper.IsUnionWorkTask(taskId))
             {
-                return (null, ErrorCode.ERR_TaskCanNotGet);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail));
             }
 
             TaskPro exist = self.GetTaskById_2(taskId);

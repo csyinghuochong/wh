@@ -17,13 +17,13 @@ namespace ET
             }
             if (unit.GetTeamId() == 0)
             {
-                response.Error = ErrorCode.Err_TeamIsNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             if (unit.GetTeamId() != unit.Id)
             {
-                response.Error = ErrorCode.ERR_IsNotLeader;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

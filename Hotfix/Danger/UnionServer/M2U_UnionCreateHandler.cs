@@ -21,7 +21,7 @@ namespace ET
                 || !UnionHelper.IsValidUnionText(request.UnionPurpose, GlobalValueKey.Global_Union_Declaration_Character_Length)
                 || !UnionHelper.IsValidUnionText(request.UnionNotice, GlobalValueKey.Global_Union_Notic_Character_Length))
             {
-                response.Error = ErrorCode.ERR_Union_NameValied;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -32,7 +32,7 @@ namespace ET
             {
                 if (exist?.UnionInfo != null && exist.UnionInfo.UnionName == request.UnionName)
                 {
-                    response.Error = ErrorCode.ERR_Union_Same_Name;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

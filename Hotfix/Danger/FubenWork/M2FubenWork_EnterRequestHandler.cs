@@ -30,7 +30,7 @@ namespace ET
                 case MapTypeEnum.Battle:
                     if (!LDSceneCategory.Instance.Contain(request.SceneId))
                     {
-                        response.Error = ErrorCode.ERR_NotFindLevel;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         break;
                     }
                     LDScene battleSceneConfig = LDSceneCategory.Instance.Get(request.SceneId);

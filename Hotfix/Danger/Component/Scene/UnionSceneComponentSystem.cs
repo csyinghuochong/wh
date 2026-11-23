@@ -349,7 +349,7 @@ namespace ET
             DBUnionInfo dBUnionInfo = await self.GetDBUnionInfo(unionid);
             if (dBUnionInfo == null)
             {
-                return ErrorCode.ERR_Union_Not_Exist;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (dBUnionInfo.UnionInfo.ApplyList.Contains(unitid))

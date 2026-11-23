@@ -33,7 +33,7 @@ namespace ET
                 List<DBPopularizeInfo> dBPopularizeInfoList = await Game.Scene.GetComponent<DBComponent>().Query<DBPopularizeInfo>(newzone, d => d.PopularizeCode == request.PopularizeId);
                 if (dBPopularizeInfoList.Count == 0)
                 {
-                    response.Error = ErrorCode.ERR_PopularizeNot;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
@@ -42,13 +42,13 @@ namespace ET
                 RoleInfoComponentServer roleInfoComponentServer2 = await DBHelper.GetComponent<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(puserid), puserid);
                 if (roleInfoComponentServer2 == null)
                 {
-                    response.Error = ErrorCode.ERR_PopularizeNot;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
                 if (roleInfoComponentServer.RoleInfo.AccInfoID == roleInfoComponentServer2.RoleInfo.AccInfoID)
                 {
-                    response.Error = ErrorCode.ERR_PopularizeThe;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

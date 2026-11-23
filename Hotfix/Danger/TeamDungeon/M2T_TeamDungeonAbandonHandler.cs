@@ -11,20 +11,20 @@ namespace ET
             TeamInfo teamInfo = teamScene.GetTeamInfo(request.UserId);
             if (teamInfo == null)
             {
-                response.Error = ErrorCode.Err_TeamIsNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             if (teamInfo.TeamId != request.UserId)
             {
-                response.Error = ErrorCode.ERR_IsNotLeader;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             if (request.FubenInstanceId <= 0 || teamInfo.FubenState != (int)TeamDungeonState.Opened
                 || teamInfo.FubenInstanceId != request.FubenInstanceId)
             {
-                response.Error = ErrorCode.ERR_AlreadyFinish;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -32,7 +32,7 @@ namespace ET
             Scene dungeonScene = teamScene.GetChild<Scene>(teamInfo.FubenUUId);
             if (dungeonScene == null || dungeonScene.InstanceId != request.FubenInstanceId)
             {
-                response.Error = ErrorCode.ERR_AlreadyFinish;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

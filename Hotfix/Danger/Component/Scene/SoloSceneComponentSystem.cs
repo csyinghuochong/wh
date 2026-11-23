@@ -221,7 +221,7 @@ namespace ET
                 int joinNum = playerDate.WinNum + playerDate.FailNum;
                 if (joinNum > 50) 
                 {
-                    return ErrorCode.ERR_TimesIsNotEnought;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
             }
 

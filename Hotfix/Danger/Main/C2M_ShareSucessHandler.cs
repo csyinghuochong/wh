@@ -21,14 +21,14 @@ namespace ET
             RoleInfo roleInfo = roleInfoComponentServer.RoleInfo;
             if (roleInfo.Lv < 10)
             {
-                response.Error = ErrorCode.ERR_LevelNotEnought;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             
             if (taskComponentServer.OnLineTime < 30)
             {
-                response.Error = ErrorCode.Err_OnLineTimeNotEnought;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -41,7 +41,7 @@ namespace ET
             long shareSet = 0;// numericComponent.GetAsLong(NumericType.FenShangSet);
             if ((shareSet & request.ShareType) > 0)
             {
-                response.Error = ErrorCode.ERR_TimesIsNotEnought;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

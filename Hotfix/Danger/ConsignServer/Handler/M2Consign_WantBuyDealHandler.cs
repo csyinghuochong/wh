@@ -9,7 +9,7 @@ namespace ET
         {
             if (request.WantBuyId <= 0 || request.SellNum <= 0 || request.ItemId <= 0)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -37,7 +37,7 @@ namespace ET
 
                 if (request.SellNum > info.ItemNum)
                 {
-                    response.Error = ErrorCode.ERR_Parameter;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

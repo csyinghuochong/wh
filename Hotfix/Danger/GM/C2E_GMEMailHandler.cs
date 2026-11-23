@@ -10,7 +10,7 @@ namespace ET
         {
             if (string.IsNullOrWhiteSpace(request.MailInfo))
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

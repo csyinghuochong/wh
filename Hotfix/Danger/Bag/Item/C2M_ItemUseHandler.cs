@@ -9,7 +9,7 @@ namespace ET
         {
             if (unit.Type != UnitType.Player || request.UseNum <= 0 || !ItemNewHelper.IsValideBagLoc(request.Loc))
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -24,7 +24,7 @@ namespace ET
             }
             if (useBagInfo.ItemType != ItemBigType.Type_Item)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -48,7 +48,7 @@ namespace ET
             if (unit.Type != UnitType.Player || request.BagInfoID <= 0
                     || (!ItemNewHelper.IsValideBagLoc(request.Loc) && request.Loc != (int)ItemLocType.ItemLocEquip))
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -61,7 +61,7 @@ namespace ET
             }
             if (item.GetTradeStatus() != ItemTradeStatus.DungeonTradable)
             {
-                response.Error = ErrorCode.ERR_ItemBing;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

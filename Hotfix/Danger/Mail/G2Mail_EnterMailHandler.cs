@@ -30,7 +30,7 @@ namespace ET
             if (request.UnitId <= 0 || request.ServerMailIdCur < -1
                 || UnitZoneHelper.GetHomeZone(request.UnitId) != scene.DomainZone())
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

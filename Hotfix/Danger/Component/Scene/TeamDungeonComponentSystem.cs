@@ -55,7 +55,7 @@ namespace ET
         {
             if (self.IsAbandoning)
             {
-                return ErrorCode.ERR_RequestRepeatedly;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             Scene scene = self.DomainScene();
@@ -69,7 +69,7 @@ namespace ET
                 {
                     if (TimeHelper.ServerNow() >= waitUntil)
                     {
-                        return ErrorCode.ERR_TransferFailError;
+                        return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     }
 
                     await TimerComponent.Instance.WaitFrameAsync();
@@ -104,7 +104,7 @@ namespace ET
 
                 if (self.IsHavePlayer() || HasPendingTransfers(unitComponent))
                 {
-                    return ErrorCode.ERR_TransferFailError;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
 
@@ -136,14 +136,14 @@ namespace ET
             TeamInfo teamInfo = scene.GetParent<TeamSceneComponent>().GetTeamInfo(userId);
             if (teamInfo == null)
             {
-                return ErrorCode.Err_TeamIsNotExist;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             int limitTime = LDSceneCategory.Instance.Get(self.TeamInfo.SceneId).Limit_Time;
             if (self.IsAbandoning || self.IsCompleted || teamInfo.FubenState != (int)TeamDungeonState.Opened
                 || teamInfo.FubenInstanceId != scene.InstanceId
                 || (limitTime > 0 && TimeHelper.ServerNow() >= self.TeamInfo.FubenCreateTime + (long)limitTime * TimeHelper.Second))
             {
-                return ErrorCode.ERR_AlreadyFinish;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             return self.CheckBattleEnter(userId);
         }

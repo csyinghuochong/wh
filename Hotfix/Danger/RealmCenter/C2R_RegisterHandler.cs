@@ -10,7 +10,7 @@ namespace ET
         {
             if (session.DomainScene().SceneType != SceneType.Realm)
             {
-                response.Error = ErrorCode.ERR_RequestSceneTypeError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 session.Disconnect().Coroutine();
                 return;
@@ -19,7 +19,7 @@ namespace ET
 
             if (session.GetComponent<SessionLockingComponent>() != null)
             {
-                response.Error = ErrorCode.ERR_RequestRepeatedly;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 session.Disconnect().Coroutine();
                 return;
@@ -27,7 +27,7 @@ namespace ET
 
             if (string.IsNullOrWhiteSpace(request.Account) || string.IsNullOrWhiteSpace(request.Password))
             {
-                response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 session.Disconnect().Coroutine();
                 return;
@@ -35,7 +35,7 @@ namespace ET
 
             if (!StringHelper.IsSafeSqlString(request.Account))
             {
-                response.Error = ErrorCode.ERR_UnSafeSqlString;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 session.Disconnect().Coroutine();
                 return;
@@ -47,7 +47,7 @@ namespace ET
                     LoginTypeEnum.RegisterLogin, string.Empty, true);
                 if (accountId == 0)
                 {
-                    response.Error = ErrorCode.ERR_AccountAlreadyRegister;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
                     
                 //发送创建回执

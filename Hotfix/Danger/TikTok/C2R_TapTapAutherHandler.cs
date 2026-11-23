@@ -15,7 +15,7 @@ namespace ET
 
             if (string.IsNullOrEmpty(request.Account))
             {
-                response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

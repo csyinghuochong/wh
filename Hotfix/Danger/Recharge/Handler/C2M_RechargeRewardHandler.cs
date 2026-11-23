@@ -20,7 +20,7 @@ namespace ET
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             //if (roleInfoComponentServer.RoleInfo.RechargeReward.Contains(request.RechargeNumber))
             //{
-            //    response.Error = ErrorCode.ERR_AlreadyReceived;
+            //    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             //    reply();
             //    return;
             //}
@@ -28,7 +28,7 @@ namespace ET
             long rechargeTotal = unit.GetTotalRechargeNum();
             if (rechargeTotal < request.RechargeNumber)
             {
-                response.Error = ErrorCode.Pre_Condition_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

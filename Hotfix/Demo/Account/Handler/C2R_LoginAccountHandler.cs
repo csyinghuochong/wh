@@ -25,7 +25,7 @@ namespace ET
                
                 if (session.GetComponent<SessionLockingComponent>() != null)
                 {
-                    response.Error = ErrorCode.ERR_RequestRepeatedly;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     session.Disconnect().Coroutine();
                     return;
@@ -33,7 +33,7 @@ namespace ET
 
                 if (string.IsNullOrEmpty(request.AccountName) || string.IsNullOrEmpty(request.Password))
                 {
-                    response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     session.Disconnect().Coroutine();
                     return;
@@ -41,7 +41,7 @@ namespace ET
                 if (request.AccountName.Contains("请选择一种登录方式") 
                     || request.AccountName.Contains("一键登陆"))
                 {
-                    response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     response.Message = "请联系qq136087482处理";
                     reply();
                     session.Disconnect().Coroutine();
@@ -50,7 +50,7 @@ namespace ET
 
                 if (session.DomainScene().GetComponent<PlayerInfoListComponent>().IsArchiveing(request.AccountName, 0))
                 {
-                    response.Error = ErrorCode.ERR_Archiveing;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     session.Disconnect().Coroutine();
                     reply();
                     return;
@@ -61,7 +61,7 @@ namespace ET
                 {
                     if (request.AccountName.Length < 3)
                     {
-                        response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         session.Disconnect().Coroutine();
                         return;
@@ -69,7 +69,7 @@ namespace ET
                     string head = request.AccountName.Substring(0, 3);
                     if (GMHelp.IllegalPhone.Contains(head))
                     {
-                        response.Error = ErrorCode.ERR_IllegalPhoneError;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         session.Disconnect().Coroutine();
                         return;
@@ -133,7 +133,7 @@ namespace ET
                         if (sessionId != session.InstanceId || session.IsDisposed || session.DomainZone() == 0)
                         {
                             Log.Console($"session.IsDisposed.loginaccounthandler: {request.AccountName}");
-                            response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                             reply();
                             session.Disconnect().Coroutine();
                             return;
@@ -141,8 +141,8 @@ namespace ET
                         
                         //if (dbcenterAccountInfo.DeviceID != request.DeviceID)
                         //{
-                        //    Log.Console($"ErrorCode.ERR_LoginInfoExpire: {request.AccountName}");
-                        //    response.Error = ErrorCode.ERR_LoginInfoExpire;
+                        //    Log.Console($"LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail): {request.AccountName}");
+                        //    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         //    reply();
                         //    session.Disconnect().Coroutine();
                         //    return;
@@ -165,7 +165,7 @@ namespace ET
                         if (session.IsDisposed || session.DomainZone() == 0)
                         {
                             Log.Console($"session.IsDisposed.loginaccounthandler2: {request.AccountName}");
-                            response.Error = ErrorCode.ERR_LoginInfoIsNull;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                             reply();
                             session.Disconnect().Coroutine();
                             return;
@@ -322,10 +322,6 @@ namespace ET
             {
                 return ErrorCode.ERR_Success;
             }
-            /*if (age < 12)
-            {
-                return ErrorCode.ERR_FangChengMi_Tip6;
-            }*/
             DateTime dateTime = TimeHelper.DateTimeNow();
             if (isHoliday)
             {

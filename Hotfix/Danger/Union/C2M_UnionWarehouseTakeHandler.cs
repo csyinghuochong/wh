@@ -10,7 +10,7 @@ namespace ET
             long unionId = unit.GetUnionId();
             if (unionId == 0)
             {
-                response.Error = ErrorCode.ERR_Union_Not_Exist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -60,7 +60,7 @@ namespace ET
             else if (request.BagInfoID != 0 || !UnionWarehouseHelper.IsUnbindGold(request.ItemID) || request.ItemNum <= 0
                 || request.ItemNum > long.MaxValue - unit.GetComponent<BagComponentServer>().GetItemNumber(ItemBigType.Type_Item, UserDataType.Gold))
             {
-                response.Error = ErrorCode.ERR_Union_WarehouseGoldOnly;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

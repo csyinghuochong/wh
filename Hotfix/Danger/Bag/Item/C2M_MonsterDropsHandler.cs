@@ -17,7 +17,7 @@ namespace ET
                     || monster.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) != 1
                     || PositionHelper.Distance2D(unit, monster) > CommonConfig.PickDistance)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

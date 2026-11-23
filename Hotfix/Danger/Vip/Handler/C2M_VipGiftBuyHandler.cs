@@ -12,14 +12,14 @@ namespace ET
             LDVIP cfg = VipHelp.GetConfig(vipLevel);
             if (pro == null || cfg == null || pro.VipLevel < vipLevel)
             {
-                response.Error = ErrorCode.ERR_VipLevelNotEnough;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
 
             if (VipHelp.HasGiftBought(pro, vipLevel))
             {
-                response.Error = ErrorCode.ERR_VipGiftBought;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

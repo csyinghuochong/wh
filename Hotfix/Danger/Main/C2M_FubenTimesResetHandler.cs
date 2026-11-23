@@ -10,7 +10,7 @@ namespace ET
         {
             if (request.SceneType != MapTypeEnum.PetTianTi)
             {
-                response.Error = ErrorCode.ERR_NetWorkError;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -18,7 +18,7 @@ namespace ET
             //NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             //if (numericComponent.GetAsInt(NumericType.FubenTimesReset) >= 3)
             //{
-            //    response.Error = ErrorCode.ERR_RequestRepeatedly;
+            //    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             //    reply();
             //    return;
             //}

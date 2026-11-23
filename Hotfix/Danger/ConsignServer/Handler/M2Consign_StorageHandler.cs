@@ -22,7 +22,7 @@ namespace ET
             if (request.UnitId <= 0 || UnitZoneHelper.GetHomeZone(request.UnitId) != scene.DomainZone()
                 || request.Operation < 0 || request.Operation > 2)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -38,7 +38,7 @@ namespace ET
 
             if (request.BelongId <= 0 || request.StorageId <= 0)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

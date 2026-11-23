@@ -10,14 +10,14 @@ namespace ET
         {
             if (unit.Type != UnitType.Player)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
             if (numeric.GetAsInt(NumericType.Now_Dead) == 1 || numeric.GetAsLong(NumericType.HP_Current_8) <= 0)
             {
-                response.Error = ErrorCode.ERR_CanNotSkillDead;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -27,7 +27,7 @@ namespace ET
             int count = globals.GetInt(GlobalValueKey.Global_Select_Target_Repeat_Num);
             if (radius <= 0 || count <= 0)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

@@ -14,7 +14,7 @@ namespace ET
 				//判断名字是否符合要求
 				if (string.IsNullOrEmpty(request.CreateName))
 				{
-                    response.Error = ErrorCode.ERR_UnSafeSqlString;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     response.Message = "角色名字过短!";
                     reply();
                     return;
@@ -22,14 +22,14 @@ namespace ET
                 if (request.CreateName.Contains(" "))
                 {
 					Log.Error($"C2A_CreateRoleHandler.1");
-                    response.Error = ErrorCode.ERR_UnSafeSqlString;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }
                 request.CreateName = request.CreateName.Trim();
                 if (request.CreateName.Length >= 8)
 				{
-					response.Error = ErrorCode.ERR_NameIsLong;
+					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 					response.Message = "角色名字过长!";
 					reply();
 					return;
@@ -49,7 +49,7 @@ namespace ET
 						List<RoleInfoComponentServer> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(request.ServerId, _account => _account.UserName == request.CreateName);
 						if (result.Count > 0)
 						{
-							response.Error = ErrorCode.ERR_RoleNameRepeat;
+							response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 							reply();
 							return;
 						}

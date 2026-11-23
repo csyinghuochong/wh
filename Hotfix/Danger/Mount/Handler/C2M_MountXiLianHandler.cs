@@ -12,7 +12,7 @@ namespace ET
             MountInfo mountInfo = mountComponentServer.GetMountInfo(request.MountInfoId);
             if (mountInfo == null)
             {
-                response.Error = ErrorCode.ERR_Mount_NoExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -35,7 +35,7 @@ namespace ET
             LDItem ldItem = LDItemCategory.Instance.Get(bagInfo.ItemID);
             if (ldItem.ItemType != ItemTypeEnum.SubType_Mount_XiLian_30)
             {
-                response.Error = ErrorCode.ERR_Mount_NoUseItem;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -50,7 +50,7 @@ namespace ET
             MountXiLianResult result = MountHelper.BuildXiLianResult(mountInfo);
             if (result == null)
             {
-                response.Error = ErrorCode.ERR_Mount_NoUseItem;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

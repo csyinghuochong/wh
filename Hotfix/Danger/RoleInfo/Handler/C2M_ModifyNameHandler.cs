@@ -15,14 +15,14 @@ namespace ET
             Log.Warning($"C2M_ModifyNameRequest:  {unit.DomainZone()} {unit.Id}");
             if (!StringHelper.IsSafeSqlString(request.NewName))
             {
-                response.Error = ErrorCode.ERR_UnSafeSqlString;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             
             if (string.IsNullOrEmpty(request.NewName))
             {
-                response.Error = ErrorCode.ERR_UnSafeSqlString;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 response.Message = "角色名字过短!";
                 reply();
                 return;
@@ -40,7 +40,7 @@ namespace ET
             int maxNameLength = LDGlobalValueCategory.Instance.GetInt(GlobalValueKey.Global_Role_Name_Character_Length);
             if (request.NewName.Length > maxNameLength)
             {
-                response.Error = ErrorCode.ERR_UnSafeSqlString;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 response.Message = "角色名字过长!";
                 reply();
                 return;
@@ -49,7 +49,7 @@ namespace ET
             List<RoleInfoComponentServer> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(UnitZoneHelper.GetHomeZone(unit), _account => _account.UserName == request.NewName);
             if (result.Count > 0)
             {
-                response.Error = ErrorCode.ERR_RoleNameRepeat;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

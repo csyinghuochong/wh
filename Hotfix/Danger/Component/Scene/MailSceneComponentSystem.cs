@@ -96,7 +96,7 @@ namespace ET
                 int maxId = self.GetMaxMaild();
                 if (maxId == int.MaxValue)
                 {
-                    return ErrorCode.ERR_Parameter;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 mailId = maxId + 1;

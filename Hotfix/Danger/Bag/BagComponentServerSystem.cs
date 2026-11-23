@@ -206,7 +206,7 @@ namespace ET
             // 持有状态统一走 GetState：未拥有、已过期都不允许操作，有激活记录不等于有效
             if (FashionHelper.GetState(self.FashionActiveList, fashionId) != FashionState.Owned)
             {
-                return ErrorCode.ERR_FashionNoActive;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             bool worn = FashionHelper.IsWorn(self.FashionEquipList, fashionId);
@@ -215,7 +215,7 @@ namespace ET
             {
                 if (worn)
                 {
-                    return ErrorCode.ERR_EquipRepeat;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 if (!LDFashionCategory.Instance.Contain(fashionId))
@@ -231,7 +231,7 @@ namespace ET
 
                 if (ldFashion.Sex != SexEnum.None && ldFashion.Sex != sex)
                 {
-                    return ErrorCode.ERR_FashionSexErr;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 // 按部位覆盖：清掉同部位已穿的（含默认时装）和无效配置
@@ -257,7 +257,7 @@ namespace ET
                 // 没穿戴就不允许卸下，先判再删，避免静默 Remove 失败走成「网络错误」
                 if (!worn)
                 {
-                    return ErrorCode.ERR_FashionNoWear;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 // 默认时装是整套打底，卸掉没有意义，UI 不应显示卸下按钮
@@ -268,7 +268,7 @@ namespace ET
                     {
                         if (defaultIds[i] == fashionId)
                         {
-                            return ErrorCode.ERR_FashionDefault;
+                            return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         }
                     }
                 }

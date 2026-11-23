@@ -124,7 +124,7 @@ namespace ET
                 }
                 if (dBCenterSerialInfo.SerialList[i].Value2 == "1")
                 {
-                    return ErrorCode.ERR_AlreadyReceived;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 dBCenterSerialInfo.SerialList[i].Value2 = "1";

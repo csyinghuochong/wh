@@ -793,7 +793,7 @@ namespace ET
 		{
 			if (plan != 0 && plan != 1)
 			{
-				return ErrorCode.ERR_Parameter;
+				return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 			}
 
 			self.SkillBarPlan = plan;

@@ -77,27 +77,27 @@ namespace ET
 
                 if (self.PayLoadSet.Contains(payloadGoogleJson.purchaseToken))
                 {
-                    return ErrorCode.ERR_GoogleVerify;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 if (!self.Verify(payloadGoogle.json, payloadGoogle.signature))
                 {
                     Log.Warning($"Google充值回调ERROR Google支付验证签名错误");
-                    return ErrorCode.ERR_GoogleVerify;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 // 检查订单是否有效
                 if (payloadGoogleJson.purchaseState != 0)
                 {
                     Log.Warning($"Google充值回调ERROR1 {payloadGoogleJson.purchaseState}");
-                    return ErrorCode.ERR_GoogleVerify;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 string prefix = "pay_";
                 if (!payloadGoogleJson.productId.Contains(prefix))
                 {
                     Log.Warning($"Google充值回调ERROR6 : !{prefix}");
-                    return ErrorCode.ERR_GoogleVerify;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
                 
                 int rechargeNumber = int.Parse(payloadGoogleJson.productId.Substring(prefix.Length));
@@ -118,7 +118,7 @@ namespace ET
             catch (Exception ex)
             {
                 Log.Warning($"Google支付验证未知错误: {ex}");
-                return ErrorCode.ERR_GoogleVerify;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             return ErrorCode.ERR_Success;

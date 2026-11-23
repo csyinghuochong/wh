@@ -11,14 +11,14 @@ namespace ET
             long unionid = numericComponent.GetAsLong( NumericType.UnionId_0 );
             if (unionid == 0)
             {
-                response.Error = ErrorCode.ERR_Union_Not_Exist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             //M2U_UnionTransferHandler 有判断
             //if (numericComponent.GetAsInt(NumericType.UnionLeader)== 0)
             //{
-            //    response.Error = ErrorCode.ERR_Union_NotLeader;
+            //    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             //    reply();
             //    return;
             //}

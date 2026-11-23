@@ -23,14 +23,14 @@ namespace ET
 
             if (teamSceneComponent.GetTeamInfo(request.TeamPlayerInfo.UserID) != null)
             {
-                response.Error = ErrorCode.ERR_IsHaveTeam;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
 
             if (!await ServerMessageHelper.IsInGame(UnitZoneHelper.GetHomeZone(request.TeamPlayerInfo.UserID), request.TeamPlayerInfo.UserID))
             {
-                response.Error = ErrorCode.ERR_PlayerNotOnline;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

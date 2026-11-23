@@ -150,7 +150,7 @@ namespace ET
             owner.UnitComponents.TryGetValue(request.UnitId, out UnitTransferBuffer buffer);
             if (buffer != null && buffer.IsCommitting)
             {
-                return ErrorCode.ERR_OperationOften;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
             if (buffer != null && buffer.ExpireTime <= now)
             {
@@ -162,7 +162,7 @@ namespace ET
             {
                 if (request.ChunkIndex != 0)
                 {
-                    return ErrorCode.ERR_TransferFailError;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 buffer = new UnitTransferBuffer
@@ -178,13 +178,13 @@ namespace ET
             if (buffer.ChunkCount != request.ChunkCount || buffer.TotalBytes != request.TotalBytes
                 || request.ChunkIndex > buffer.Chunks.Count)
             {
-                return ErrorCode.ERR_TransferFailError;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (request.ChunkIndex < buffer.Chunks.Count)
             {
                 return request.Data.AsSpan().SequenceEqual(buffer.Chunks[request.ChunkIndex])
-                        ? ErrorCode.ERR_Success : ErrorCode.ERR_TransferFailError;
+                        ? ErrorCode.ERR_Success : LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             buffer.Chunks.Add(request.Data);

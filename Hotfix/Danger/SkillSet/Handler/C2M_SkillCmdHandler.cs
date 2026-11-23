@@ -92,7 +92,7 @@ namespace ET
                     }
                 }
                 
-                response.Error = m2C_SkillCmd!= null ? m2C_SkillCmd.Error : ErrorCode.ERR_CanNotUseSkill;
+                response.Error = m2C_SkillCmd!= null ? m2C_SkillCmd.Error : LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 response.Message = m2C_SkillCmd != null ? m2C_SkillCmd.Message: string.Empty;
                 reply();
                 await ETTask.CompletedTask;

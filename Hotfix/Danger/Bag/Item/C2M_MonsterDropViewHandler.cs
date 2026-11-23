@@ -9,7 +9,7 @@ namespace ET
         {
             if (unit.Type != UnitType.Player || request.MonsterId <= 0)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -34,7 +34,7 @@ namespace ET
                 || PositionHelper.Distance2D(unit, monster) > CommonConfig.PickDistance
                 || monster.GetComponent<UnitInfoComponent>().Drops.Count == 0)
             {
-                response.Error = ErrorCode.ERR_Parameter;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
