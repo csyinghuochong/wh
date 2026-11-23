@@ -40,7 +40,7 @@ namespace ET
                 //背包是否满
                 if (unit.GetComponent<BagComponentServer>().IsBagFull())
                 {
-                    response.Error = ErrorCode.ERR_BagIsFull;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                     reply();
                     return;
                 }
@@ -48,7 +48,7 @@ namespace ET
                 //宠物已满
                 if (unit.GetComponent<PetComponent>().PetIsFull())
                 {
-                    response.Error = ErrorCode.ERR_PetIsFull;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_No_Volume);
                     reply();
                     return;
                 }

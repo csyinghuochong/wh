@@ -22,7 +22,7 @@ namespace ET
                 BagInfo checkItem = new BagInfo() { ItemType = request.ItemType, ItemID = request.ItemId, ItemNum = request.ItemNum };
                 if (!ItemNewHelper.CheckValiedItem(checkItem))
                 {
-                    response.Error = ErrorCode.ERR_ItemNotExist;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                     reply();
                     return;
                 }

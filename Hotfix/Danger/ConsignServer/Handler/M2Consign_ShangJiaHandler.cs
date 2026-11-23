@@ -15,7 +15,7 @@ namespace ET
                 || request.UnitID <= 0 || request.ConsignItemInfo.UserId != request.UnitID
                 || !ItemNewHelper.CheckValiedItem(request.ConsignItemInfo.BagInfo))
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }
@@ -36,7 +36,7 @@ namespace ET
             catch (Exception e)
             {
                 dBPaiMainInfo.PaiMaiItemInfos.Remove(consignItem);
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 Log.Error(e);
                 reply();
                 return;

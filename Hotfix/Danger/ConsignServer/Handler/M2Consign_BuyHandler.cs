@@ -15,7 +15,7 @@ namespace ET
             if (!consignScene.Initialized || request.UnitId <= 0 || request.ConsignItemInfo?.BagInfo == null
                 || !ItemNewHelper.CheckValiedItem(request.ConsignItemInfo.BagInfo))
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }
@@ -35,7 +35,7 @@ namespace ET
 
             if (paiMaiItemInfo == null || paiMaiItemInfos == null)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }
@@ -45,7 +45,7 @@ namespace ET
                 DBConsignInfo expiredDB = consignScene.GetPaiMaiDBByBelongId(paiMaiItemInfo.BelongId);
                 ConsignStorageHelper.MoveExpiredItems(expiredDB);
                 await consignScene.SavePaiMaiData(expiredDB);
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }
@@ -106,7 +106,7 @@ namespace ET
                 }
 
                 response.ConsignItemInfo = null;
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 Log.Error(e);
                 reply();
                 return;

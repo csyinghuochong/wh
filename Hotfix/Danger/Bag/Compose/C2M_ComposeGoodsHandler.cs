@@ -50,7 +50,7 @@ namespace ET
                         || mainBagInfo.ItemID != cfg.Consume_Id_1
                         || mainBagInfo.ItemNum < cfg.Consume_Num_1)
                     {
-                        response.Error = ErrorCode.ERR_ItemNotExist;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                         reply();
                         return;
                     }
@@ -108,7 +108,7 @@ namespace ET
             string makePlayer = unit.GetComponent<RoleInfoComponentServer>().RoleInfo.Name ?? string.Empty;
             if (!HasEnoughSpace(bag, rewardItems, mainBagInfo, cfg.Consume_Num_1, locCosts, makePlayer, makeTime))
             {
-                response.Error = ErrorCode.ERR_BagIsFull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                 reply();
                 return;
             }
@@ -151,7 +151,7 @@ namespace ET
                 ResultItems = response.BagInfos,
             }))
             {
-                response.Error = ErrorCode.ERR_BagIsFull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                 reply();
                 return;
             }

@@ -20,7 +20,7 @@ namespace ET
             int itemId = request.ItemID;
             if (!LDItemCategory.Instance.Contain(itemId))
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }

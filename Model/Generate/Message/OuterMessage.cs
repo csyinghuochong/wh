@@ -11215,7 +11215,7 @@ namespace ET
 		[ProtoMember(1)]
 		public TeamInfo TeamInfo { get; set; }
 
-//申请中为 ERR_Error（尚不可进入）；取消成功或副本可进入时为 ERR_Success。
+//申请中为 WordPromptKey.Prompt_Common_Operation_Fail 对应的提示 ID（尚不可进入）；取消成功或副本可进入时为 ERR_Success（0）。
 		[ProtoMember(2)]
 		public int ErrorCode { get; set; }
 

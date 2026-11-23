@@ -14,7 +14,7 @@ namespace ET
             RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(masterHomeZone, request.MasterId);
             if (homeComponentServer == null || roleInfoComponentServer == null)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

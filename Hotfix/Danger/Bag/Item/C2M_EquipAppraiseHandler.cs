@@ -20,7 +20,7 @@ namespace ET
             BagInfo baginfoOpera  = bagComponentServer.GetItemByLoc(ItemLocType.ItemLocEquip, request.OperateItemID);
             if(baginfoOpera == null)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }

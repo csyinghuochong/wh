@@ -21,7 +21,7 @@ namespace ET
 			int maxLv = LDSkill_Battle_LvCategory.Instance.GetSkillMaxLv(request.SkillID);
 			if (skillPro.Level >= maxLv)
 			{
-                response.Error = ErrorCode.ERR_SkillMaxLevel;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
                 reply();
                 return;
             }

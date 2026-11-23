@@ -62,7 +62,7 @@ namespace ET
             int cursummonnumber = BattleHelper.GetSummonNumber( BattleSummonList );
             if (cursummonnumber + battleSummonConfig.MonsterNumber > int.Parse( LDGlobalValueCategory.Instance.Get(91).Value ))
             {
-                response.Error = ErrorCode.ERR_PeopleNumber;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
                 reply();
                 return;
             }

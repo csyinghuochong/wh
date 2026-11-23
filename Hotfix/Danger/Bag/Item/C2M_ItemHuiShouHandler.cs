@@ -46,7 +46,7 @@ namespace ET
 
             if (idsByLoc.Count == 0)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }

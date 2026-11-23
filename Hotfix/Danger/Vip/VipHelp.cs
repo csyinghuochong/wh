@@ -112,24 +112,24 @@ namespace ET
         {
             if (string.IsNullOrEmpty(reward))
             {
-                return ErrorCode.ERR_Error;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             if (bag == null)
             {
-                return ErrorCode.ERR_Error;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             List<RewardItem> items = ItemNewHelper.GetRewardItems(reward);
             if (items.Count == 0)
             {
-                return ErrorCode.ERR_Error;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (!bag.CanAddItemData(items))
             {
-                return ErrorCode.ERR_BagIsFull;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
             }
 
             bag.OnAddItemData(items, $"{itemGetWay}_{TimeHelper.ServerNow()}");
@@ -140,24 +140,24 @@ namespace ET
         {
             if (cfg == null || string.IsNullOrEmpty(cfg.Package_Pay))
             {
-                return ErrorCode.ERR_Error;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             if (bag == null)
             {
-                return ErrorCode.ERR_Error;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             List<RewardItem> rewards = ItemNewHelper.GetRewardItems(cfg.Package_Pay);
             if (rewards.Count == 0)
             {
-                return ErrorCode.ERR_Error;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
             if (!bag.CanAddItemData(rewards))
             {
-                return ErrorCode.ERR_BagIsFull;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
             }
 
             List<RewardItem> costs = ItemNewHelper.GetRewardItems(cfg.Package_Consume);

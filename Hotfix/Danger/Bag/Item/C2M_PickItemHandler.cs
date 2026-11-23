@@ -36,7 +36,7 @@ namespace ET
                 }
                 if (!added)
                 {
-                    errorCode = ErrorCode.ERR_BagIsFull;
+                    errorCode = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                     continue;
                 }
                 if (monster != null)
@@ -73,7 +73,7 @@ namespace ET
                 if (monster == null || monster.Type != UnitType.Monster
                     || monster.GetComponent<NumericComponent>().GetAsInt(NumericType.Now_Dead) != 1)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotExist;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                     reply();
                     return;
                 }
@@ -136,7 +136,7 @@ namespace ET
 
             if (request.ItemIds.Count ==0)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }

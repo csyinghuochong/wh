@@ -33,7 +33,7 @@ namespace ET
             ConsignItemInfo item = consignScene.FindShangJiaItem(request.BelongId, request.ConsignItemInfoId, out _);
             if (item == null || ConsignHelper.IsConsignExpired(item))
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }

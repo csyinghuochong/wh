@@ -30,7 +30,7 @@ namespace ET
                 BagInfo useBagInfo = bag.GetItemByLoc(locType, bagInfoID);
                 if (useBagInfo == null || useBagInfo.ItemType != ItemBigType.Type_Equip)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotExist;    
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);    
                     reply();
                     return;
                 }
@@ -51,7 +51,7 @@ namespace ET
 
                 if (roleLv < equipLv)
                 {
-                    response.Error = ErrorCode.ERR_EquipLvLimit;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Equip_Over_Level);
                     reply();
                     return;
                 }
@@ -87,7 +87,7 @@ namespace ET
                 bool full = bag.IsBagFullByLoc((int)ItemLocType.ItemLocBag);
                 if (full)
                 {
-                    response.Error = ErrorCode.ERR_BagIsFull;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                     reply();
                     return;
                 }
@@ -96,7 +96,7 @@ namespace ET
                 BagInfo useBagInfo = bag.GetItemByLoc(locType, bagInfoID);
                 if (useBagInfo == null)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotExist;    
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);    
                     reply();
                     return;
                 }

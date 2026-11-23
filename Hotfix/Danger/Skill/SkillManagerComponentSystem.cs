@@ -526,7 +526,7 @@ namespace ET
             }
             if (!LDSkill_BattleCategory.Instance.Contain(nowSkillID))
             {
-                return ErrorCode.ERR_ItemNotExist;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
             }
             
             Unit unit = self.GetParent<Unit>();

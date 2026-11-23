@@ -118,19 +118,19 @@ namespace ET
 
                 if (unit.IsDisposed)
                 {
-                    return ErrorCode.ERR_Error;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
                 if (read.Items.Count == 0)
                 {
-                    return ErrorCode.ERR_ItemNotExist;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 }
 
                 ConsignStorageInfo storage = read.Items[0];
                 BagInfo item = storage.BagInfo;
                 if (item.ItemNum <= 0 || !ItemNewHelper.IsValidItem(item.ItemType, item.ItemID))
                 {
-                    return ErrorCode.ERR_ItemNotExist;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 }
 
                 BagComponentServer bag = unit.GetComponent<BagComponentServer>();
@@ -147,7 +147,7 @@ namespace ET
                         ItemNewHelper.GetNewItemPileSum(item), item.ItemFlags, item.MakePlayer, item.MakeTime);
                     if (bag.GetBagLeftCell((int)loc) < cells)
                     {
-                        return ErrorCode.ERR_BagIsFull;
+                        return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                     }
                 }
 
@@ -155,7 +155,7 @@ namespace ET
                 item.GetWay = getWay;
                 if (!bag.OnAddItemData(item, getWay))
                 {
-                    return ErrorCode.ERR_BagIsFull;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                 }
 
                 Entity assetComponent = currency ? (Entity)unit.GetComponent<RoleInfoComponentServer>() : bag;

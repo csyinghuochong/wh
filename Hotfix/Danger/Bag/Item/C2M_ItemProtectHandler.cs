@@ -15,7 +15,7 @@ namespace ET
             BagInfo bagInfo = bag.GetItemByUId(request.OperateBagID);
             if (bagInfo == null)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }

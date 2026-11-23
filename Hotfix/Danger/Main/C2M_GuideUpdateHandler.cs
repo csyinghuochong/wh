@@ -56,7 +56,20 @@ namespace ET
             LDBeginner_Guide current = steps.Find(x => x.Id == progress.StepId);
             if (current == null)
             {
-                return ErrorCode.ERR_Parameter;
+                // 只接受已关闭旧步骤显式配置的本组回溯目标，仍核对触发资格与实例归属。
+                LDBeginner_GuideCategory category = LDBeginner_GuideCategory.Instance;
+                if (!category.Contain(progress.StepId))
+                {
+                    return ErrorCode.ERR_Parameter;
+                }
+
+                LDBeginner_Guide retiredStep = category.Get(progress.StepId);
+                current = steps.Find(x => x.Id == retiredStep.Break_Backup_Id);
+                if (retiredStep.Is_Close == 0 || current == null || request.GuideStep != current.Id
+                    || !CheckTrigger(unit, steps[0]) || !CheckContext(unit, steps, request.ContextId))
+                {
+                    return ErrorCode.ERR_Parameter;
+                }
             }
 
             if (request.GuideStep == 0)
@@ -108,18 +121,19 @@ namespace ET
             }
         }
 
-        /// <summary>装备或灵宠必须属于当前角色；不需要实例的组只接受contextId=0。</summary>
+        /// <summary>装备或指定灵宠必须属于当前角色；灵宠上下文0表示默认界面第一只，需至少拥有一只；其他组只接受0。</summary>
         private static bool CheckContext(Unit unit, List<LDBeginner_Guide> steps, long contextId)
         {
-            if (BeginnerGuideConfigHelper.ContainsPosition(steps, BeginnerGuidePosition.Equipment))
+            if (BeginnerGuideConfigHelper.ContainsPosition(steps, BeginnerGuidePosition.Equipment_2))
             {
                 BagInfo item = unit.GetComponent<BagComponentServer>().GetItemByUId(contextId);
                 return item != null && item.ItemType == ItemBigType.Type_Equip
                     && (item.Loc == (int)ItemLocType.ItemLocBag || item.Loc == (int)ItemLocType.ItemLocEquip);
             }
-            if (BeginnerGuideConfigHelper.ContainsPosition(steps, BeginnerGuidePosition.PetFight))
+            if (BeginnerGuideConfigHelper.ContainsPosition(steps, BeginnerGuidePosition.PetFight_12))
             {
-                return contextId > 0 && unit.GetComponent<PetComponentServer>().GetPetInfo(contextId) != null;
+                PetComponentServer pets = unit.GetComponent<PetComponentServer>();
+                return contextId == 0 ? pets.PetInfos.Count > 0 : pets.GetPetInfo(contextId) != null;
             }
 
             return contextId == 0;

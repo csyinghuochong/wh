@@ -49,7 +49,7 @@ namespace ET
                     {
                         if (!MailHelp.GrantMailReward(bag, mailInfo))
                         {
-                            response.Error = ErrorCode.ERR_BagIsFull;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                             break;
                         }
 

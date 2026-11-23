@@ -37,7 +37,7 @@ namespace ET
 				if (session.DomainZone() == 0)
 				{
 					Log.Error("session.DomainZone() == 0");
-					response.Error = ErrorCode.ERR_Error;
+					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 					reply();
 					return;
 				}
@@ -57,7 +57,7 @@ namespace ET
                         List<DBCenterAccountInfo> centerAccountList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(CommonConfig.CenterZoneId, d => d.Id == request.AccountId);
                         if (centerAccountList == null || centerAccountList.Count == 0)
                         {
-                            response.Error = ErrorCode.ERR_NotFindAccount;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                             reply();
                             return;
                         }
@@ -93,7 +93,7 @@ namespace ET
 
                         if (currentRoleCount >= maxRoleLimit)
                         {
-                            response.Error = ErrorCode.ERR_CreateRole_Max;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
                             reply();
                             return;
                         }
@@ -131,7 +131,7 @@ namespace ET
 						long roleNo = RoleNoHelper.Allocate(request.ServerId);
 						if (roleNo == 0)
 						{
-							response.Error = ErrorCode.ERR_Error;
+							response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 							reply();
 							return;
 						}

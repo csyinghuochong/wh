@@ -33,14 +33,14 @@ namespace ET
             string oldPwd = dBUnionInfo.WarehousePassword ?? string.Empty;
             if (UnionWarehouseHelper.GetWarehousePasswordState(oldPwd) == 2 && oldPwd != request.OldPassword)
             {
-                response.Error = ErrorCode.ERR_Union_WarehousePassword;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Wrong_Password);
                 reply();
                 return;
             }
 
             if (string.IsNullOrEmpty(request.NewPassword))
             {
-                response.Error = ErrorCode.ERR_Union_WarehousePassword;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Wrong_Password);
                 reply();
                 return;
             }

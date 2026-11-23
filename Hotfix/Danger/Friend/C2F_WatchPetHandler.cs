@@ -12,14 +12,14 @@ namespace ET
             int homeZone = FriendHelper.PrepareHomeZone(request.UnitID);
             if (homeZone == 0)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
             PetComponentServer petComponentServer = await DBHelper.GetComponent<PetComponentServer>(homeZone, request.UnitID);
             if (petComponentServer == null)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -27,7 +27,7 @@ namespace ET
             BagComponentServer bagComponentsServer = await DBHelper.GetComponent<BagComponentServer>(homeZone, request.UnitID);
             if (bagComponentsServer == null)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -36,7 +36,7 @@ namespace ET
             NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, request.UnitID);
             if (numericComponent == null)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

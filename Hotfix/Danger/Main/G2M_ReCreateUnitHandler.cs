@@ -48,7 +48,7 @@
 //            else
 //            {
 //                Log.Info("G2M_ReCreateUnit unit == null: " + scene.Name);
-//                response.Error = ErrorCode.ERR_Error;
+//                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
 //            }
            
 //            reply();

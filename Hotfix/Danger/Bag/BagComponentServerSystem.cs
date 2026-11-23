@@ -343,30 +343,48 @@ namespace ET
 
         /// <summary>
         /// 创角发放 Global_Initial_Resources。货币走 ExtraCurrencies（创角时 DataCollation 尚未挂上，不能走 UpdateRoleData）。
+        /// 未配置宠物时赠送一只神兽91；宠物只初始化入库，不出战，也不走登录后的推送和任务事件。
         /// </summary>
         public static void GrantCreateRoleInitialResources(this BagComponentServer self)
         {
-            if (LDGlobalValueCategory.Instance == null
-                || !LDGlobalValueCategory.Instance.ContainKey(GlobalValueKey.Global_Initial_Resources))
+            string raw = string.Empty;
+            if (LDGlobalValueCategory.Instance != null
+                && LDGlobalValueCategory.Instance.ContainKey(GlobalValueKey.Global_Initial_Resources))
             {
-                return;
+                raw = LDGlobalValueCategory.Instance.GetByKey(GlobalValueKey.Global_Initial_Resources).Value;
             }
 
-            string raw = LDGlobalValueCategory.Instance.GetByKey(GlobalValueKey.Global_Initial_Resources).Value;
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(raw);
-            if (rewardItems == null || rewardItems.Count == 0)
+            if (!rewardItems.Exists(item => item.ItemType == ItemBigType.Type_Pet))
             {
-                return;
+                rewardItems.Add(new RewardItem
+                {
+                    ItemType = ItemBigType.Type_Pet,
+                    ItemID = 91,
+                    ItemNum = 1
+                });
             }
 
             Unit unit = self.GetParent<Unit>();
-            RoleInfoComponentServer roleInfoComponent = unit?.GetComponent<RoleInfoComponentServer>();
+            RoleInfoComponentServer roleInfoComponent = unit.GetComponent<RoleInfoComponentServer>();
             List<RewardItem> bagItems = new List<RewardItem>();
             for (int i = 0; i < rewardItems.Count; i++)
             {
                 RewardItem item = rewardItems[i];
+                if (item.ItemType == ItemBigType.Type_Pet)
+                {
+                    PetComponentServer pets = unit.GetComponent<PetComponentServer>();
+                    for (int count = 0; count < item.ItemNum; count++)
+                    {
+                        PetInfo pet = pets.GenerateNewPet(item.ItemID);
+                        pets.UpdatePetAttribute(pet, false);
+                        pets.PetInfos.Add(pet);
+                    }
+                    continue;
+                }
+
                 int dataType = ItemNewHelper.GetItemToUserDataType(item);
-                if (dataType != UserDataType.None && roleInfoComponent != null)
+                if (dataType != UserDataType.None)
                 {
                     RoleCurrencyHelper.Add(roleInfoComponent.RoleInfo, dataType, item.ItemNum);
                     continue;

@@ -12,7 +12,7 @@ namespace ET
             int homeZone = FriendHelper.PrepareHomeZone(request.UserId);
             if (homeZone == 0)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -20,7 +20,7 @@ namespace ET
             RoleInfoComponentServer userinfo = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, request.UserId);
             if (userinfo == null)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -42,7 +42,7 @@ namespace ET
 
                     if (bagComponentsServer == null)
                     {
-                        response.Error = ErrorCode.ERR_Error;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }
@@ -50,7 +50,7 @@ namespace ET
                     NumericComponent numericComponent = await DBHelper.GetComponent<NumericComponent>(homeZone, request.UserId);
                     if (numericComponent == null)
                     {
-                        response.Error = ErrorCode.ERR_Error;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                         reply();
                         return;
                     }

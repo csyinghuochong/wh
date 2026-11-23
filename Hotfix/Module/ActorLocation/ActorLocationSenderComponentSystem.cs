@@ -204,7 +204,7 @@ namespace ET
                     }
                 }
 
-                if (ErrorCore.IsRpcNeedThrowException(response.Error))
+                if (ErrorCode.IsRpcNeedThrowException(response.Error))
                 {
                     throw new RpcException(response.Error, $"Message: {response.Message} Request: {memoryStream.ToActorMessage()}");
                 }

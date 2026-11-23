@@ -111,7 +111,7 @@ namespace ET
 
             if (leftCell < needCell)
             {
-                response.Error = request.LocType == 0 ? ErrorCode.ERR_BagIsFull :  ErrorCode.ERR_WarehouseIsFull;
+                response.Error = request.LocType == 0 ? LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full) :  LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Warehouse_Full);
                 reply();
                 return;
             }

@@ -58,7 +58,7 @@ namespace ET
             // 个人随机 Type 2/3：到刷新点后重抽货架
             if (shop.Type != ShopType.RandomRepeat && shop.Type != ShopType.RandomUnique)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 await ETTask.CompletedTask;
                 return;

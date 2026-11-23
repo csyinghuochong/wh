@@ -14,7 +14,7 @@ namespace ET
             ConsignSceneComponent consign = scene.GetComponent<ConsignSceneComponent>();
             if (!consign.Initialized)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }
@@ -50,7 +50,7 @@ namespace ET
                 if (item == null)
                 {
                     // 单条读取必须存在；删除目标已不存在时直接返回成功。
-                    response.Error = request.Operation == 2 ? ErrorCode.ERR_Success : ErrorCode.ERR_ItemNotExist;
+                    response.Error = request.Operation == 2 ? ErrorCode.ERR_Success : LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                     reply();
                     return;
                 }

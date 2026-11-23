@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -548,92 +548,8 @@ namespace ET
 	            }
             }
 
-            self.EnsureDefaultPotionBar();
             self.RefreshEquipSuitSkills(false);
         }
-
-		/// <summary>
-		/// 登录默认：背包给道具 4000（ItemType=3），并装配到 Slots 里第一个道具位。
-		/// 栏位已有其它道具时不覆盖。
-		/// </summary>
-		public static void EnsureDefaultPotionBar(this SkillSetComponentServer self)
-		{
-			if (!CommonHelper.IsInnerNet())
-			{
-				return;
-			}
-
-			int itemId = SkillBarConfig.DefaultPotionItemId;
-			int positionId = SkillBarConfig.GetFirstItemPositionId();
-			if (positionId <= 0 || !LDItemCategory.Instance.Contain(itemId))
-			{
-				return;
-			}
-
-			Unit unit = self.GetParent<Unit>();
-			BagComponentServer bag = unit.GetComponent<BagComponentServer>();
-			ItemLocType itemLoc = ItemNewHelper.GetToItemLocType(new RewardItem
-			{
-				ItemType = ItemBigType.Type_Item,
-				ItemID = itemId,
-				ItemNum = 1,
-			});
-			if (bag.GetItemNumber(ItemBigType.Type_Item, itemId, itemLoc) <= 0)
-			{
-				bag.OnAddItemData($"{ItemBigType.Type_Item}~{itemId}~1", $"{ItemGetWay.System}_{TimeHelper.ServerNow()}", false);
-			}
-
-			if (self.GetBySkillID(itemId) == null)
-			{
-				SkillPro skillPro = self.AddSkillPro(itemId, SkillSetEnum.Item, SkillSourceEnum.Occupation);
-				skillPro.Level = 1;
-				skillPro.Actived = 1;
-			}
-
-			self.CurrentSkillBarList();
-			EnsureDefaultPotionBarSlot(self.SkillBarList0, positionId, itemId);
-			EnsureDefaultPotionBarSlot(self.SkillBarList1, positionId, itemId);
-		}
-
-		static void EnsureDefaultPotionBarSlot(List<SkillBarSlot> barList, int positionId, int itemId)
-		{
-			if (barList == null)
-			{
-				return;
-			}
-
-			SkillBarSlot slot = null;
-			for (int i = 0; i < barList.Count; i++)
-			{
-				if (barList[i].Position != positionId)
-				{
-					continue;
-				}
-
-				if (barList[i].Direction == SkillBarDirection.Dir0)
-				{
-					slot = barList[i];
-				}
-			}
-
-			if (slot == null)
-			{
-				barList.Add(new SkillBarSlot
-				{
-					Position = positionId,
-					Direction = SkillBarDirection.Dir0,
-					SkillID = itemId,
-					SkillType = SkillSetEnum.Item,
-				});
-				return;
-			}
-
-			if (slot.SkillID <= 0)
-			{
-				slot.SkillID = itemId;
-				slot.SkillType = SkillSetEnum.Item;
-			}
-		}
 
 		public static void UpdateTalentToSkill(this SkillSetComponentServer self)
 		{
@@ -1211,7 +1127,6 @@ namespace ET
 				}
             }
 
-			self.EnsureDefaultPotionBar();
 		}
 
 		public static void UpdateSkillSet(this SkillSetComponentServer self)

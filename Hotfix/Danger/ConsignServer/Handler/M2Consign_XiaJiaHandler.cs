@@ -13,7 +13,7 @@ namespace ET
             ConsignItemInfo item = consign.FindShangJiaItem(request.BelongId, request.ConsignItemInfoId, out var items);
             if (!consign.Initialized || request.UnitID <= 0 || item == null || item.UserId != request.UnitID)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }
@@ -23,7 +23,7 @@ namespace ET
             {
                 ConsignStorageHelper.MoveExpiredItems(db);
                 await consign.SavePaiMaiData(db);
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }
@@ -37,7 +37,7 @@ namespace ET
             catch (Exception e)
             {
                 items.Insert(index, item);
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 Log.Error(e);
                 reply();
                 return;

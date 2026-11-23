@@ -49,7 +49,7 @@ namespace ET
             int periodBought = daily.GetBuyStorePeriod(storeSellConfig.Id);
             if (storeSellConfig.Limit_Num > 0 && buyNumber + periodBought > storeSellConfig.Limit_Num)
             {
-                response.Error = ErrorCode.ERR_BuyMaxLimit;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
                 reply();
                 return;
             }
@@ -58,7 +58,7 @@ namespace ET
             int foreverBought = daily.GetBuyStoreForever(storeSellConfig.Id);
             if (storeSellConfig.Limit_Num_Forever > 0 && buyNumber + foreverBought > storeSellConfig.Limit_Num_Forever)
             {
-                response.Error = ErrorCode.ERR_BuyMaxLimit;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
                 reply();
                 return;
             }
@@ -67,7 +67,7 @@ namespace ET
             ItemNewHelper.ScaleRewardItems(rewardItems, buyNumber);
             if (!bag.CanAddItemData(rewardItems))
             {
-                response.Error = ErrorCode.ERR_BagIsFull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                 reply();
                 return;
             }

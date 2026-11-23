@@ -15,7 +15,7 @@ namespace ET
 			//判断背包是否满
 			if (bagComponentServer.GetBagLeftCell() <= 1)
 			{
-				response.Error = ErrorCode.ERR_BagIsFull;       //提示背包已满
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);       //提示背包已满
 				reply();
 				return;
 			}

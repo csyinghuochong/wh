@@ -14,7 +14,7 @@ namespace ET
 
             if (signInId <= 0 || !LDActivity_Sign_InCategory.Instance.Contain(signInId))
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 await ETTask.CompletedTask;
                 return;
@@ -32,7 +32,7 @@ namespace ET
             {
                 response.Error = ActivityHelper.IsSignInReceived(activity.ActivityInfo, signInId, role.RoleInfo.CreateTime, activityId)
                         ? ErrorCode.ERR_AlreadyReceived
-                        : ErrorCode.ERR_Error;
+                        : LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 await ETTask.CompletedTask;
                 return;
@@ -41,7 +41,7 @@ namespace ET
             List<RewardItem> rewards = ItemNewHelper.GetRewardItems(cfg.Reward);
             if (rewards == null || rewards.Count == 0)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 await ETTask.CompletedTask;
                 return;
@@ -49,7 +49,7 @@ namespace ET
 
             if (!unit.GetComponent<BagComponentServer>().OnAddItemData(rewards, $"{ItemGetWay.Activity}_{now}"))
             {
-                response.Error = ErrorCode.ERR_BagIsFull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                 reply();
                 await ETTask.CompletedTask;
                 return;

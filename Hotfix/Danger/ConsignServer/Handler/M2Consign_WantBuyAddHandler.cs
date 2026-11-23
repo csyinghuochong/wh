@@ -18,7 +18,7 @@ namespace ET
             BagInfo checkItem = new BagInfo() { ItemType = wantBuy.ItemType, ItemID = wantBuy.ItemId, ItemNum = wantBuy.ItemNum };
             if (!ItemNewHelper.CheckValiedItem(checkItem))
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }

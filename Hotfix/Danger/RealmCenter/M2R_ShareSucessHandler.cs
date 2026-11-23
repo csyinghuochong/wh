@@ -14,7 +14,7 @@ namespace ET
            
             if (centerAccountInfoList == null || centerAccountInfoList.Count == 0)
             {
-                response.Error = ErrorCode.ERR_NotFindAccount;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                 reply();
                 return;
             }
@@ -31,7 +31,7 @@ namespace ET
             }
             if (totalTimes >= 6)
             {
-                response.Error = ErrorCode.ERR_FenXiangMaxNum;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
                 reply();
                 return;
             }

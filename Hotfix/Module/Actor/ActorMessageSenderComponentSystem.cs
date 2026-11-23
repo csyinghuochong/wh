@@ -53,7 +53,7 @@ namespace ET
                 return;
             }
 
-            if (self.NeedException && ErrorCore.IsRpcNeedThrowException(response.Error))
+            if (self.NeedException && ErrorCode.IsRpcNeedThrowException(response.Error))
             {
                 self.Tcs.SetException(new Exception($"Rpc error: actorId: {self.ActorId} request: {self.MemoryStream.ToActorMessage()}, response: {response}"));
                 return;

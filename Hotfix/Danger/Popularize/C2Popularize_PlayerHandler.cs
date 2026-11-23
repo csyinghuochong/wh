@@ -55,7 +55,7 @@ namespace ET
 
                 if (dBPopularizeInfoList[0].MyPopularizeList.Count >= 10)
                 {
-                    response.Error = ErrorCode.ERR_PopularizeMax;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
                     reply();
                     return;
                 }

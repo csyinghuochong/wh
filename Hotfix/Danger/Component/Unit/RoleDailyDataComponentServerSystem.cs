@@ -459,7 +459,7 @@ namespace ET
 
             if (ldItem.DayUseNum > 0 && self.GetDayItemUse(ldItem.Id) + num > ldItem.DayUseNum)
             {
-                return ErrorCode.ERR_ItemNoUseTime;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_Over_UseTime);
             }
 
             return ErrorCode.ERR_Success;

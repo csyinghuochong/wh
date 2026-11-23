@@ -18,7 +18,7 @@ namespace ET
             ConsignWantBuyInfo info = consignScene.FindWantBuy(request.WantBuyId);
             if (info == null)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }
@@ -36,7 +36,7 @@ namespace ET
                 ConsignWantBuyInfo cancelled = consignScene.CancelWantBuy(info.ItemType, info.ItemId, request.WantBuyId, request.UserId);
                 if (cancelled == null)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotExist;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                     reply();
                     return;
                 }

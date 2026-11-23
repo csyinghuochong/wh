@@ -1081,7 +1081,7 @@ namespace ET
 
             if (ldItem.SumUseNum > 0 && self.GetTotalItemUse(ldItem.Id) + num > ldItem.SumUseNum)
             {
-                return ErrorCode.ERR_ItemNoUseTime;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_Over_UseTime);
             }
 
             return ErrorCode.ERR_Success;

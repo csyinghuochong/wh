@@ -22,7 +22,7 @@ namespace ET
                 int index = db == null ? -1 : db.WantBuyInfos.FindIndex(item => item.Id == request.WantBuyId);
                 if (index < 0)
                 {
-                    response.Error = ErrorCode.ERR_ItemNotExist;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                     reply();
                     return;
                 }

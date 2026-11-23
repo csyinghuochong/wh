@@ -37,7 +37,7 @@ namespace ET
 
                     if (!UnionWarehouseHelper.TryPutItem(info, request.BagInfo))
                     {
-                        response.Error = ErrorCode.ERR_WarehouseIsFull;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Warehouse_Full);
                         reply();
                         return;
                     }

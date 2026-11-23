@@ -37,7 +37,7 @@ namespace ET
                 List<RewardItem> rewards = ItemNewHelper.GetRewardItems("3~4000~10|3~4401~10|3~4501~10|3~4530~10");
                 if (!unit.GetComponent<BagComponentServer>().OnAddItemData(rewards, $"{ItemGetWay.Serial}_{TimeHelper.ServerNow()}"))
                 {
-                    response.Error = ErrorCode.ERR_BagIsFull;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                     reply();
                     return;
                 }

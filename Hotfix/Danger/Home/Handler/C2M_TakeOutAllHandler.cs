@@ -12,7 +12,7 @@ namespace ET
             int leftBagSpace = unit.GetComponent<BagComponentServer>().GetBagLeftCell();
             if (leftBagSpace <= 0)
             {
-                response.Error = ErrorCode.ERR_BagIsFull; //错误码:仓库已满
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full); //错误码:仓库已满
                 reply();
                 return;
             }

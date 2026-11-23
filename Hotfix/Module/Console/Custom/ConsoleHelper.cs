@@ -1973,7 +1973,7 @@ namespace ET
             List<RoleInfoComponentServer> accountInfoList = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(pyzone, d => d.RoleInfo.Name == userName || d.Account == userName);
             if (accountInfoList == null || accountInfoList.Count == 0)
             {
-                return ErrorCode.ERR_NotFindAccount;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
             }
 #endif
             return ErrorCode.ERR_Success;

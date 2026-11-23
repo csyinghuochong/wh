@@ -123,7 +123,7 @@ namespace ET
                     CreateRoleInfo createRoleInfo = centerAccountInfos[0].GetRoleInfo(session.DomainZone(), request.UserID);
                     if (createRoleInfo == null)
                     {
-	                    response.Error = ErrorCode.ERR_NotFindAccount;
+	                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
 	                    reply();
 	                    return;
                     }

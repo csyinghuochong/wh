@@ -19,7 +19,7 @@ namespace ET
             RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
             if (daily == null)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 return;
             }

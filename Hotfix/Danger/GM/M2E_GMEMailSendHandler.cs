@@ -32,7 +32,7 @@ namespace ET
             if (accountInfoList.Count == 0)
             {
                 response.Message = $"找不到:{request.UserName}";
-                response.Error = ErrorCode.ERR_NotFindAccount;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                 reply();
                 return;
             }
@@ -61,7 +61,7 @@ namespace ET
             mailInfo.ItemList = items;
             mailInfo.MailId = IdGenerater.Instance.GenerateId();
             response.Error = await MailHelp.SendUserMail(zone, mailOwnerId, mailInfo);
-            if (response.Error == ErrorCode.ERR_NotFindAccount)
+            if (response.Error == LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister))
             {
                 response.Message = $"找不到:{request.UserName}";
             }

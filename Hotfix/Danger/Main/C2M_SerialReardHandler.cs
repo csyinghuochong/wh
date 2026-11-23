@@ -20,7 +20,7 @@ namespace ET
 
             if (!bag.CanAddItemData(rewardItems))
             {
-                response.Error = ErrorCode.ERR_BagIsFull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                 reply();
                 return;
             }

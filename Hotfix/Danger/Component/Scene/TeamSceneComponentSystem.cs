@@ -83,7 +83,7 @@ namespace ET
         public static async ETTask BroadcastDungeonApply(this TeamSceneComponent self, TeamInfo teamInfo, bool isCanceled = false)
         {
             // 申请中 FubenInstanceId 仍是 0。ErrorCode 不能填 Success，旧客户端看到 Success 会直接 RequestTransfer。
-            int errorCode = isCanceled || teamInfo.FubenInstanceId != 0 ? ErrorCode.ERR_Success : ErrorCode.ERR_Error;
+            int errorCode = isCanceled || teamInfo.FubenInstanceId != 0 ? ErrorCode.ERR_Success : LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             M2C_TeamDungeonApplyResult message = new M2C_TeamDungeonApplyResult()
             {
                 TeamInfo = CloneTeamInfo(teamInfo),

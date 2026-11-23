@@ -369,7 +369,7 @@ namespace ET
             //判断家族成员是否已达上限
             if (replyCode == 1 && dBUnionInfo.UnionInfo.UnionPlayerList.Count >= ldUnionCof.Limit_Player)
             {
-                return ErrorCode.ERR_Union_PeopleMax;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_No_Volume);
             }
 
             bool exist = false;

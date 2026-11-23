@@ -674,7 +674,7 @@ namespace ET
                 int curPoint = self.GetPointProgressCurrent(commitLdTask);
                 if (curPoint < commitLdTask.Param1)
                 {
-                    return ErrorCode.ERR_Error;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
             }
             else if (taskPro.taskStatus != (int)TaskStatuEnum.Completed)
@@ -685,7 +685,7 @@ namespace ET
             List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems(roleInfoComponent.RoleInfo.Occ, taskid);
             if (!bagComponentServer.CanAddItemData(rewardItems))
             {
-                return ErrorCode.ERR_BagIsFull;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
             }
 
             int checkError = 0;/// self.CheckGiveItemTask(0, null, 0, request.BagInfoID,taskPro);
@@ -779,9 +779,20 @@ namespace ET
                 rewardItems[fixedRewardIndex].ItemID = UserDataType.BindGold;
             }
 
+            // 技能点是固定奖励，按 Skill_Point_Param3 发放 Item 10，不参与任选奖励。
+            if (ldTask.Skill_Point_Param3 > 0)
+            {
+                rewardItems.Add(new RewardItem()
+                {
+                    ItemType = ItemBigType.Type_Item,
+                    ItemID = UserDataType.Sp,
+                    ItemNum = ldTask.Skill_Point_Param3,
+                });
+            }
+
             if (!bagComponentServer.CanAddItemData(rewardItems))
             {
-                return ErrorCode.ERR_BagIsFull;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
             }
 
             taskPro.taskStatus = (int)TaskStatuEnum.Commited;
@@ -1858,7 +1869,7 @@ namespace ET
 
             if (UnionHelper.IsUnionWorkAllCompleted(self.RoleComoleteTaskList_2))
             {
-                return (null, ErrorCode.ERR_TaskLimited);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit));
             }
 
             if (UnionHelper.HasAcceptedUnionWork(self.RoleTaskList_2))
@@ -1869,7 +1880,7 @@ namespace ET
             self.EnsureNextUnionWorkTaskId();
             if (self.NextUnionWorkTaskId <= 0)
             {
-                return (null, ErrorCode.ERR_TaskLimited);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit));
             }
 
             if (taskId > 0 && taskId != self.NextUnionWorkTaskId)

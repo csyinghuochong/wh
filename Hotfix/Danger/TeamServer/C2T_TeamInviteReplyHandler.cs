@@ -41,7 +41,7 @@ namespace ET
 
             if (inviterTeam != null && inviterTeam.PlayerList.Count >= SceneConfigHelper.GetTeamMemberMax(inviterTeam.SceneId))
             {
-                response.Error = ErrorCode.ERR_TeamIsFull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_No_Volume);
                 reply();
                 return;
             }

@@ -14,7 +14,7 @@ namespace ET
             {
                 if ( string.IsNullOrEmpty(request.Account) || string.IsNullOrEmpty(request.TikTokGuanFuAccount))
                 {
-                    response.Error = ErrorCode.ERR_NotFindAccount;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                     reply();
                     return;
                 }
@@ -24,7 +24,7 @@ namespace ET
                 if (resultAccounts.Count > 0)
                 {
                     Console.WriteLine($"_account.Account.Equals(request.TikTokGuanFuAccount))");
-                    response.Error = ErrorCode.ERR_NotFindAccount;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                     reply();
                     return;
                 }
@@ -34,7 +34,7 @@ namespace ET
                 if (resultAccounts.Count > 0)
                 {
                     Console.WriteLine($"_account.PlayerInfo.TikTokGuanFuAccount.Equals(request.TikTokGuanFuAccount))");
-                    response.Error = ErrorCode.ERR_NotFindAccount;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                     reply();
                     return;
                 }
@@ -42,7 +42,7 @@ namespace ET
                 if (resultAccounts.Count == 0)
                 {
                     Console.WriteLine($"A2Center_TiktokBinging resultAccounts.Count == 0");
-                    response.Error = ErrorCode.ERR_NotFindAccount;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                     reply();
                     return;
                 }

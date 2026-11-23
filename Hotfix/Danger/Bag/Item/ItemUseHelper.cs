@@ -52,7 +52,7 @@ namespace ET
                         Loc = useBagInfo.Loc, MakePlayer = useBagInfo.MakePlayer, MakeTime = useBagInfo.MakeTime };
                     remainingItem.BindOnOperate();
                 }
-                if (!bagComponentServer.CanAddItemData(packageRewards, freedItem, remainingItem)) return ErrorCode.ERR_BagIsFull;
+                if (!bagComponentServer.CanAddItemData(packageRewards, freedItem, remainingItem)) return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
             }
 
             int recipeMakeId = 0;
@@ -67,7 +67,7 @@ namespace ET
 
             if (useBagInfo != null && !bagComponentServer.OnCostItemData(useBagInfo, locType, useNum))
             {
-                return ErrorCode.ERR_ItemNotExist;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
             }
 
             if (useBagInfo != null && bagUpdate != null)

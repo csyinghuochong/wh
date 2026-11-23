@@ -101,7 +101,7 @@ namespace ET
                 DBMailInfo mailBox = await DBHelper.GetComponent<DBMailInfo>(zone, unit.Id);
                 if (mailBox == null)
                 {
-                    return ErrorCode.ERR_NotFindAccount;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                 }
 
                 long now = TimeHelper.ServerNow();
@@ -231,7 +231,7 @@ namespace ET
                 DBMailInfo mailBox = await DBHelper.GetComponent<DBMailInfo>(zone, unit.Id);
                 if (mailBox == null)
                 {
-                    return ErrorCode.ERR_NotFindAccount;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                 }
 
                 RoleInfo roleInfo = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
@@ -356,7 +356,7 @@ namespace ET
             DBMailInfo dBMainInfo = await DBHelper.GetComponent<DBMailInfo>(zone, userID);
             if (dBMainInfo == null)
             {
-                return ErrorCode.ERR_NotFindAccount;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
             }
 
             List<MailInfo> mailinfolist = dBMainInfo.MailInfoList;

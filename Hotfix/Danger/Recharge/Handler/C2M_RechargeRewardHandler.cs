@@ -38,7 +38,7 @@ namespace ET
             string[] rewardList = rewarditem.Split('@');
             if (bagComponentServer.GetBagLeftCell() < rewardList.Length)
             {
-                response.Error = ErrorCode.ERR_BagIsFull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                 reply();
                 return;
             }

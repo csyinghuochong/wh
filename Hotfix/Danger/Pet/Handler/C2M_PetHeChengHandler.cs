@@ -57,7 +57,7 @@ namespace ET
 			// Pet表备注：合体前对副宠进行重置，把药退出来
 			if (!petComponentServer.ResetSubPetRefundItems(petinfo_2))
 			{
-				response.Error = ErrorCode.ERR_BagIsFull;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
 				reply();
 				return;
 			}

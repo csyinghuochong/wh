@@ -62,7 +62,7 @@ namespace ET
             string makePlayer = roleInfo.Name ?? string.Empty;
             if (!HasBagSpace(bag, reward, makePlayer, makeTime))
             {
-                response.Error = ErrorCode.ERR_BagIsFull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
                 reply();
                 return;
             }

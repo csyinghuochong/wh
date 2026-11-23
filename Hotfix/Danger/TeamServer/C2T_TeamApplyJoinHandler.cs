@@ -22,14 +22,14 @@ namespace ET
             TeamInfo teamInfo = teamSceneComponent.GetTeamInfo(request.TeamId);
             if (teamInfo == null || teamInfo.PlayerList.Count >= SceneConfigHelper.GetTeamMemberMax(teamInfo.SceneId))
             {
-                response.Error = ErrorCode.ERR_TeamIsFull;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_No_Volume);
                 reply();
                 return;
             }
 
             if (!teamSceneComponent.AddApply(teamInfo.TeamId, request.TeamPlayerInfo))
             {
-                response.Error = ErrorCode.ERR_TeamApplyLimit;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
                 reply();
                 return;
             }

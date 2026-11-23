@@ -114,7 +114,7 @@ namespace ET
                         
                         if (dbcenterAccountInfo == null && !AutoRegisterOnLogin)
                         {
-                            response.Error = ErrorCode.ERR_AccountUnRegister;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                             reply();
                             session.Disconnect().Coroutine();
                             return;

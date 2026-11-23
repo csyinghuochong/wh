@@ -21,7 +21,7 @@ namespace ET
                 List<DBCenterAccountInfo> newAccountList = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterAccountInfo>(session.DomainZone(), d => d.Id == request.AccountId);
                 if (newAccountList.Count == 0)
                 {
-                    response.Error = ErrorCode.ERR_NotFindAccount;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Unregister);
                     reply();
                     return;
                 }
@@ -41,7 +41,7 @@ namespace ET
 
                 if (roleInfo == null || roleInfo.State == (int)RoleInfoState.Freeze)
                 {
-                    response.Error = ErrorCode.ERR_Error;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                     reply();
                     return;
                 }

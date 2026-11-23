@@ -14,7 +14,7 @@ namespace ET
             if (!LDShopCategory.Instance.Contain(shopId) ||
                 LDShopCategory.Instance.Get(shopId).Type != ShopType.GlobalRandom)
             {
-                response.Error = ErrorCode.ERR_Error;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 reply();
                 await ETTask.CompletedTask;
                 return;

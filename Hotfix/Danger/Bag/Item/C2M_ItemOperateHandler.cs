@@ -53,7 +53,7 @@ namespace ET
                     }
                     if (bagComponentServer.IsBagFullByLoc(hourseId))
                     {
-                        response.Error = ErrorCode.ERR_BagIsFull;     //错误码:仓库已满
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);     //错误码:仓库已满
                         reply();
                         return;
                     }
@@ -83,7 +83,7 @@ namespace ET
                     }
                     if (bagComponentServer.IsBagFullByLoc((int)toLoc))
                     {
-                        response.Error = ErrorCode.ERR_BagIsFull;     //错误码:仓库已满
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);     //错误码:仓库已满
                         reply();
                         return;
                     }

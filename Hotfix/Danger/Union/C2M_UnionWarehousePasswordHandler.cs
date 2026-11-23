@@ -20,7 +20,7 @@ namespace ET
 
             if (string.IsNullOrEmpty(request.NewPassword))
             {
-                response.Error = ErrorCode.ERR_Union_WarehousePassword;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Wrong_Password);
                 reply();
                 return;
             }

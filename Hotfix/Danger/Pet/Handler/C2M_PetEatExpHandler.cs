@@ -20,14 +20,14 @@ namespace ET
 			BagInfo bagInfo = bag.GetItemByUId(request.BagInfoID);
 			if (bagInfo == null || !ItemNewHelper.IsValideBagLoc(bagInfo.Loc))
 			{
-				response.Error = ErrorCode.ERR_ItemNotExist;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
 				reply();
 				return;
 			}
 
 			if (!LDItemCategory.Instance.Contain(bagInfo.ItemID))
 			{
-				response.Error = ErrorCode.ERR_ItemNotExist;
+				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
 				reply();
 				return;
 			}

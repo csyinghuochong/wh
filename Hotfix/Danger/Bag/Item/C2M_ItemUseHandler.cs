@@ -18,7 +18,7 @@ namespace ET
             BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, request.OperateBagID);
             if (useBagInfo == null)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }
@@ -55,7 +55,7 @@ namespace ET
             BagInfo item = bag.GetItemByLoc((ItemLocType)request.Loc, request.BagInfoID);
             if (item == null)
             {
-                response.Error = ErrorCode.ERR_ItemNotExist;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
                 reply();
                 return;
             }
