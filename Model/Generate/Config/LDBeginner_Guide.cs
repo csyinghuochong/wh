@@ -100,26 +100,32 @@ namespace ET
 		/// <summary>定位参数Position_Param（int[]） 1：空=首个有效任务；单值=任务ID 3/4/10：Belong条目Id 5：Scene_Id；6/7：技能ID 9：方案|Position|方向 2/8/11：空；12：待确定</summary>
 		[ProtoMember(7)]
 		public int[] Position_Param { get; set; }
-		/// <summary>引导类型 1=圆形 2=矩形</summary>
+		/// <summary>引导显示延迟(毫秒）</summary>
 		[ProtoMember(8)]
+		public int Display_Delay { get; set; }
+		/// <summary>是否隐藏遮罩 1=隐藏</summary>
+		[ProtoMember(9)]
+		public int Is_Mask { get; set; }
+		/// <summary>引导类型 1=圆形 2=矩形</summary>
+		[ProtoMember(10)]
 		public int Type { get; set; }
 		/// <summary>引导缩放</summary>
-		[ProtoMember(9)]
+		[ProtoMember(11)]
 		public double Zoom { get; set; }
 		/// <summary>引导区域宽|高 0|0=使用目标实际尺寸 （约定，需代码接入）</summary>
-		[ProtoMember(10)]
+		[ProtoMember(12)]
 		public double[] Size { get; set; }
 		/// <summary>引导文本 Word_ID</summary>
-		[ProtoMember(11)]
+		[ProtoMember(13)]
 		public int Text { get; set; }
 		/// <summary>文本偏移X|Y 0|0=自动靠近、居中 （约定，需代码接入）</summary>
-		[ProtoMember(12)]
+		[ProtoMember(14)]
 		public double[] Text_Offset { get; set; }
 		/// <summary>中断回溯步骤ID 0/空=不回溯 本表回到组首步骤</summary>
-		[ProtoMember(13)]
+		[ProtoMember(15)]
 		public int Break_Backup_Id { get; set; }
 		/// <summary>关闭开关 0/空=启用 1=禁用</summary>
-		[ProtoMember(14)]
+		[ProtoMember(16)]
 		public int Is_Close { get; set; }
 
 	}
