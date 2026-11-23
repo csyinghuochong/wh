@@ -198,6 +198,45 @@ namespace ET
             
         }
 
+        /// <summary>死亡事件登记场景怪刷新；Refresh按秒从此刻计时，后续由组件定时器处理，与尸体寿命无关。</summary>
+        public static void OnSceneMonsterDead(Unit unit)
+        {
+            if (unit.Type != UnitType.Monster || unit.MasterId != 0)
+            {
+                return;
+            }
+
+            int sceneCreateId = unit.GetComponent<UnitInfoComponent>().Scene_Creature;
+            if (sceneCreateId <= 0 || !LDScene_CreatureCategory.Instance.Contain(sceneCreateId))
+            {
+                return;
+            }
+
+            Scene scene = unit.DomainScene();
+            LDScene_Creature creature = LDScene_CreatureCategory.Instance.Get(sceneCreateId);
+            if (creature.Refresh <= 0 || creature.Type != UnitType.Monster || creature.Match_Id != unit.ConfigId
+                || creature.Scene_Id != scene.GetComponent<MapComponent>().SceneId)
+            {
+                return;
+            }
+
+            // 尚未挂刷新组件的场景只在首次需要刷新时初始化，场景销毁时组件定时器一并取消。
+            YeWaiRefreshComponent self = scene.GetComponent<YeWaiRefreshComponent>() ?? scene.AddComponent<YeWaiRefreshComponent>();
+            if (self.RefreshMonsters.Exists(x => x.SceneCreateId == sceneCreateId))
+            {
+                return;
+            }
+
+            self.RefreshMonsters.Add(new RefreshMonster
+            {
+                SceneCreateId = sceneCreateId,
+                MonsterId = unit.ConfigId,
+                NextTime = TimeHelper.ServerNow() + creature.Refresh * 1000L,
+                Number = 1,
+                Interval = -1,
+            });
+        }
+
         public static void OnAddRefreshList(this YeWaiRefreshComponent self, Unit unit, long reTime)
         {
             Vector3 vector3 = unit.GetBornPostion();
@@ -371,9 +410,11 @@ namespace ET
 
         }
 
+        /// <summary>每秒检查待刷队列；场景怪严格到期后才重建，一次性登记先移除，存活期间不重复刷新。</summary>
         public static void OnTimer(this YeWaiRefreshComponent self)
         {
-            long time = TimeHelper.ServerNow() + self.RandomTime;
+            long now = TimeHelper.ServerNow();
+            long time = now + self.RandomTime;
             MapComponent mapComponent = self.DomainScene().GetComponent<MapComponent>();
            
 
@@ -381,7 +422,9 @@ namespace ET
             {
                 RefreshMonster refreshMonster = self.RefreshMonsters[i];
              
-                if (time < refreshMonster.NextTime)
+                // 场景怪不使用旧刷怪逻辑的随机时间偏移，避免比死亡后Refresh秒提前刷新。
+                long checkTime = refreshMonster.SceneCreateId > 0 ? now : time;
+                if (checkTime < refreshMonster.NextTime)
                 {
                     continue;
                 }
@@ -406,6 +449,13 @@ namespace ET
 
         public static  async ETTask CreateMonsters(this YeWaiRefreshComponent self, RefreshMonster refreshMonster, MapComponent mapComponent)
         {
+            if (refreshMonster.SceneCreateId > 0)
+            {
+                // 按刷新点配置重建，保留位置、朝向和Scene_Creature ID，下次死亡仍能进入同一刷新流程。
+                SceneCreatureHelp.CreateSceneRoleById(self.GetParent<Scene>(), refreshMonster.SceneCreateId);
+                return;
+            }
+
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(refreshMonster.MonsterId);
             Vector3 form = new Vector3(refreshMonster.PositionX, refreshMonster.PositionY, refreshMonster.PositionZ);
 

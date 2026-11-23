@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ET
 {
     public struct RefreshMonster
     {
+        /// <summary>Scene_Creature刷新点ID；0沿用原有按怪物ID/坐标的刷新方式。</summary>
+        public int SceneCreateId;
         public int MonsterId;
         public float PositionX;
         public float PositionY;

@@ -49,7 +49,7 @@ namespace ET
 						List<RoleInfoComponentServer> result = await Game.Scene.GetComponent<DBComponent>().Query<RoleInfoComponentServer>(request.ServerId, _account => _account.UserName == request.CreateName);
 						if (result.Count > 0)
 						{
-							response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+							response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Repeat_Name);
 							reply();
 							return;
 						}

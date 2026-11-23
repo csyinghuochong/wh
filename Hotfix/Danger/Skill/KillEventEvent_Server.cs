@@ -42,6 +42,12 @@ namespace ET
             Unit defendUnit = args.UnitDefend;
             Unit mainAttack = args.UnitAttack;
 
+            // 死亡时即登记刷新，放在自爆、无击杀者等分支之前；原地复活的单位不再额外生成。
+            if (args.WaitRevive == 0)
+            {
+                YeWaiRefreshComponentSystem.OnSceneMonsterDead(defendUnit);
+            }
+
             bool selfDeath = defendUnit == mainAttack;
             if (selfDeath)
             {
