@@ -7,50 +7,50 @@ namespace ET
 {
     [ProtoContract]
     [Config]
-    public partial class LDBeginner_GuideCategory : ProtoObject, IMerge
+    public partial class LDGuideCategory : ProtoObject, IMerge
     {
-        public static LDBeginner_GuideCategory Instance;
+        public static LDGuideCategory Instance;
 		
         [ProtoIgnore]
         [BsonIgnore]
-        private Dictionary<int, LDBeginner_Guide> dict = new Dictionary<int, LDBeginner_Guide>();
+        private Dictionary<int, LDGuide> dict = new Dictionary<int, LDGuide>();
 		
         [BsonElement]
         [ProtoMember(1)]
-        private List<LDBeginner_Guide> list = new List<LDBeginner_Guide>();
+        private List<LDGuide> list = new List<LDGuide>();
 		
-        public LDBeginner_GuideCategory()
+        public LDGuideCategory()
         {
             Instance = this;
         }
         
         public void Merge(object o)
         {
-            LDBeginner_GuideCategory s = o as LDBeginner_GuideCategory;
+            LDGuideCategory s = o as LDGuideCategory;
             this.list.AddRange(s.list);
         }
 		
 		public override void EndInit()
 		{
-			foreach (LDBeginner_Guide config in list)
+			foreach (LDGuide config in list)
 			{
 				config.EndInit();
 				if (this.dict.ContainsKey(config.Id))
 				{
-					throw new Exception($"配置表重复Id: 表={nameof(LDBeginner_Guide)} Id={config.Id}");
+					throw new Exception($"配置表重复Id: 表={nameof(LDGuide)} Id={config.Id}");
 				}
 				this.dict.Add(config.Id, config);
 			}
 			this.AfterEndInit();
 		}
 		
-        public LDBeginner_Guide Get(int id)
+        public LDGuide Get(int id)
         {
-            this.dict.TryGetValue(id, out LDBeginner_Guide item);
+            this.dict.TryGetValue(id, out LDGuide item);
 
             if (item == null)
             {
-                throw new Exception($"配置找不到，配置表名: {nameof (LDBeginner_Guide)}，配置id: {id}");
+                throw new Exception($"配置找不到，配置表名: {nameof (LDGuide)}，配置id: {id}");
             }
 
             return item;
@@ -61,12 +61,12 @@ namespace ET
             return this.dict.ContainsKey(id);
         }
 
-        public Dictionary<int, LDBeginner_Guide> GetAll()
+        public Dictionary<int, LDGuide> GetAll()
         {
             return this.dict;
         }
 
-        public LDBeginner_Guide GetOne()
+        public LDGuide GetOne()
         {
             if (this.dict == null || this.dict.Count <= 0)
             {
@@ -77,7 +77,7 @@ namespace ET
     }
 
     [ProtoContract]
-	public partial class LDBeginner_Guide: ProtoObject, IConfig
+	public partial class LDGuide: ProtoObject, IConfig
 	{
 		/// <summary>Id</summary>
 		[ProtoMember(1)]

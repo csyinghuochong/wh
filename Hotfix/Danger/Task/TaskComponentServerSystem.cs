@@ -546,7 +546,27 @@ namespace ET
                     ? (int)TaskStatuEnum.Commited
                     : (int)TaskStatuEnum.Accepted;
             self.RoleTaskList_2.Add(taskPro);
+            self.RefreshRoleLevelTaskProgress(taskPro);
             return taskPro;
+        }
+
+        /// <summary>创建任务及初始化回包前，按当前角色等级校正可记账的未完成等级条件，并判断是否完成。</summary>
+        public static void RefreshRoleLevelTaskProgress(this TaskComponentServer self, TaskPro taskPro)
+        {
+            if (taskPro.taskStatus != TaskStatuEnum.Accepted)
+            {
+                return;
+            }
+
+            LDTask_2 ldTask = LDTask_2Category.Instance.Get(taskPro.taskID);
+            if (ldTask.Condition_Type != TastConditionType.PlayerLv_1 || ldTask.Param2 != 0
+                || !TaskHelper.ShouldRecordTaskProgress(self.RoleTaskList_2, self.RoleComoleteTaskList_2, taskPro))
+            {
+                return;
+            }
+
+            int roleLevel = self.GetParent<Unit>().GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
+            ApplyConditionProgress(taskPro, ldTask.Condition_Type, ldTask.Param1, roleLevel);
         }
 
         public static List<TaskPro> GetTrackTaskList_2(this TaskComponentServer self)
@@ -1148,7 +1168,7 @@ namespace ET
 
 
         /// <summary>
-        /// 每次登录：清无效任务，缺的 Group 补建。进度只在数值变化时刷，登录不回填。
+        /// 每次登录：清无效任务，缺的 Group 补建；新建等级任务读取当前等级，其余进度仍按事件更新。
         /// 101/102 只在 OnDailyReset。
         /// </summary>
         public static void OnLogin(this TaskComponentServer self)

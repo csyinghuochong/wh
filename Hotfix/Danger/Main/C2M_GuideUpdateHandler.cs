@@ -20,7 +20,7 @@ namespace ET
         /// <summary>校验并保存启动、顺序推进、配置回溯或整组完成；已完成组重复请求直接成功回包。</summary>
         public static int Update(Unit unit, C2M_GuideUpdateRequest request, M2C_GuideUpdateResponse response)
         {
-            if (!BeginnerGuideConfigHelper.TryGetSteps(request.GuideId, out List<LDBeginner_Guide> steps, out _)
+            if (!BeginnerGuideConfigHelper.TryGetSteps(request.GuideId, out List<LDGuide> steps, out _)
                 || request.GuideStep < 0 || request.ContextId < 0)
             {
                 return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
@@ -53,17 +53,17 @@ namespace ET
                 return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
-            LDBeginner_Guide current = steps.Find(x => x.Id == progress.StepId);
+            LDGuide current = steps.Find(x => x.Id == progress.StepId);
             if (current == null)
             {
                 // 只接受已关闭旧步骤显式配置的本组回溯目标，仍核对触发资格与实例归属。
-                LDBeginner_GuideCategory category = LDBeginner_GuideCategory.Instance;
+                LDGuideCategory category = LDGuideCategory.Instance;
                 if (!category.Contain(progress.StepId))
                 {
                     return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }
 
-                LDBeginner_Guide retiredStep = category.Get(progress.StepId);
+                LDGuide retiredStep = category.Get(progress.StepId);
                 current = steps.Find(x => x.Id == retiredStep.Break_Backup_Id);
                 if (retiredStep.Is_Close == 0 || current == null || request.GuideStep != current.Id
                     || !CheckTrigger(unit, steps[0]) || !CheckContext(unit, steps, request.ContextId))
@@ -98,7 +98,7 @@ namespace ET
         }
 
         /// <summary>新建进度时校验服务器可确认的触发条件；装备事件还需通过实例归属校验。</summary>
-        private static bool CheckTrigger(Unit unit, LDBeginner_Guide root)
+        private static bool CheckTrigger(Unit unit, LDGuide root)
         {
             TaskComponentServer tasks = unit.GetComponent<TaskComponentServer>();
             switch (root.Trigger_Condition)
@@ -122,7 +122,7 @@ namespace ET
         }
 
         /// <summary>装备或指定灵宠必须属于当前角色；灵宠上下文0表示默认界面第一只，需至少拥有一只；其他组只接受0。</summary>
-        private static bool CheckContext(Unit unit, List<LDBeginner_Guide> steps, long contextId)
+        private static bool CheckContext(Unit unit, List<LDGuide> steps, long contextId)
         {
             if (BeginnerGuideConfigHelper.ContainsPosition(steps, BeginnerGuidePosition.Equipment_2))
             {
