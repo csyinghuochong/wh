@@ -41,6 +41,7 @@ namespace ET
             long unionId = IdGenerater.Instance.GenerateId();
             DBUnionInfo unionInfo = new DBUnionInfo();
             unionInfo.Id = unionId;
+            unionInfo.CreateTime = TimeHelper.ServerNow();
             unionInfo.UnionInfo.Level = 1;
             unionInfo.UnionInfo.UnionId = unionId;
             unionInfo.UnionInfo.LeaderId = request.UserID;       

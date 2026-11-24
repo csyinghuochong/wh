@@ -236,8 +236,8 @@ namespace ET
 		 public const ushort M2C_EquipWearResponse = 10233;
 		 public const ushort C2M_EquipAppraiseRequest = 10234;
 		 public const ushort M2C_EquipAppraiseResponse = 10235;
-		 public const ushort C2M_ItemHuiShouRequest = 10236;
-		 public const ushort M2C_ItemHuiShouResponse = 10237;
+		 public const ushort C2M_EquipDecomposeRequest = 10236;
+		 public const ushort M2C_EquipDecomposeResponse = 10237;
 		 public const ushort C2M_ItemMeltingRequest = 10238;
 		 public const ushort M2C_ItemMeltingResponse = 10239;
 		 public const ushort C2M_ItemQiangHuaRequest = 10240;

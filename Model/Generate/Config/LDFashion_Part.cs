@@ -87,7 +87,19 @@ namespace ET
 		public int Name { get; set; }
 		/// <summary>图标</summary>
 		[ProtoMember(3)]
-		public string Icon { get; set; }
+		public string Icon_1 { get; set; }
+		/// <summary>图标</summary>
+		[ProtoMember(4)]
+		public string Icon_2 { get; set; }
+		/// <summary>图标</summary>
+		[ProtoMember(5)]
+		public string Icon_3 { get; set; }
+		/// <summary>排序</summary>
+		[ProtoMember(6)]
+		public int Order_SL { get; set; }
+		/// <summary>关闭</summary>
+		[ProtoMember(7)]
+		public int Is_Close { get; set; }
 
 	}
 }

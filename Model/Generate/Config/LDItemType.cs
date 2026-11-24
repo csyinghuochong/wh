@@ -94,8 +94,11 @@ namespace ET
 		/// <summary>可批量</summary>
 		[ProtoMember(5)]
 		public int Is_Batch_Usable { get; set; }
-		/// <summary>使用跳转</summary>
+		/// <summary>可出售</summary>
 		[ProtoMember(6)]
+		public int Is_Sell { get; set; }
+		/// <summary>使用跳转</summary>
+		[ProtoMember(7)]
 		public int Usable_Point { get; set; }
 
 	}

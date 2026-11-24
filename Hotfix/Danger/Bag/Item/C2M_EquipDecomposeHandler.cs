@@ -5,10 +5,10 @@ namespace ET
 {
 
     [ActorMessageHandler]
-    public class C2M_ItemHuiShouHandler : AMActorLocationRpcHandler<Unit, C2M_ItemHuiShouRequest, M2C_ItemHuiShouResponse>
+    public class C2M_EquipDecomposeHandler : AMActorLocationRpcHandler<Unit, C2M_EquipDecomposeRequest, M2C_EquipDecomposeResponse>
     {
 
-        protected override async ETTask Run(Unit unit, C2M_ItemHuiShouRequest request, M2C_ItemHuiShouResponse response, Action reply)
+        protected override async ETTask Run(Unit unit, C2M_EquipDecomposeRequest request, M2C_EquipDecomposeResponse response, Action reply)
         {
             List<long> huishouList = request.OperateBagID;
             if (huishouList.Count == 0)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -11,6 +11,20 @@ namespace ET
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={request.RpcId} stage=Rank.HandlerEnter scene={scene.SceneType} scope={request.Scope} belongId={request.BelongId}");
+            if (request.BelongId == BelongReddot.Belong_10902)
+            {
+                if (request.Scope != 0 && request.Scope != 1)
+                {
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                    reply();
+                    return;
+                }
+
+                await FillUnionRankList(scene, response);
+                reply();
+                return;
+            }
+
             if (request.BelongId != 10901)
             {
                 Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={request.RpcId} stage=Rank.UnsupportedBelong elapsedMs={stopwatch.Elapsed.TotalMilliseconds:F3}");
@@ -45,6 +59,58 @@ namespace ET
             reply();
             Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={request.RpcId} stage=Rank.ReplyReturned elapsedMs={stopwatch.Elapsed.TotalMilliseconds:F3}");
             await ETTask.CompletedTask;
+        }
+
+        /// <summary>本服读取当前区公会；战区读取配置的成员区公会，全部成功后统一排序并截取榜单。</summary>
+        private static async ETTask FillUnionRankList(Scene scene, R2C_RankListResponse response)
+        {
+            List<int> zones = scene.SceneType == SceneType.WZRank
+                    ? StartZoneConfigCategory.Instance.GetWarZoneMembers(scene.DomainZone())
+                    : new List<int> { scene.DomainZone() };
+            List<UnionListItem> unions = new List<UnionListItem>();
+            HashSet<long> unionIds = new HashSet<long>();
+            for (int i = 0; i < zones.Count; i++)
+            {
+                U2C_UnionListResponse unionResponse = (U2C_UnionListResponse)await ActorMessageSenderComponent.Instance.Call(
+                        DBHelper.GetUnionServerId(zones[i]), new C2U_UnionListRequest());
+                if (unionResponse.Error != ErrorCode.ERR_Success)
+                {
+                    response.Error = unionResponse.Error;
+                    return;
+                }
+
+                foreach (UnionListItem union in unionResponse.UnionList)
+                {
+                    if (!unionIds.Add(union.UnionId))
+                    {
+                        continue;
+                    }
+
+                    unions.Add(union);
+                }
+            }
+
+            unions.Sort(CompareUnionRanks);
+            response.UnionRankList = unions.GetRange(0, Math.Min(unions.Count, CommonConfig.RankNumber));
+        }
+
+        /// <summary>等级高者优先，其次人数多者优先，再按创建时间从早到晚；同时间用唯一 ID 稳定排序。</summary>
+        private static int CompareUnionRanks(UnionListItem a, UnionListItem b)
+        {
+            int result = b.UnionLevel.CompareTo(a.UnionLevel);
+            if (result != 0)
+            {
+                return result;
+            }
+
+            result = b.PlayerNumber.CompareTo(a.PlayerNumber);
+            if (result != 0)
+            {
+                return result;
+            }
+
+            result = a.CreateTime.CompareTo(b.CreateTime);
+            return result != 0 ? result : a.UnionId.CompareTo(b.UnionId);
         }
     }
 }

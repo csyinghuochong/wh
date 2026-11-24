@@ -2006,6 +2006,9 @@ namespace ET
 		[ProtoMember(1)]
 		public List<RankingInfo> RankList = new List<RankingInfo>();
 
+		[ProtoMember(2)]
+		public List<UnionListItem> UnionRankList = new List<UnionListItem>();
+
 	}
 
 	[Message(OuterOpcode.RankingInfo)]
@@ -4661,7 +4664,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_ItemSellResponse))]
-//出售道具
+// 客户端 -> 地图服：出售本人背包中 ItemType.Is_Sell=1 的道具；货币按 Item.Reward 单件奖励乘以 SellNum 发放，装备走 C2M_EquipDecomposeRequest。
 	[Message(OuterOpcode.C2M_ItemSellRequest)]
 	[ProtoContract]
 	public partial class C2M_ItemSellRequest: Object, IActorLocationRequest
@@ -4669,9 +4672,7 @@ namespace ET
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
 
-		[ProtoMember(1)]
-		public int OperateType { get; set; }
-
+// 原字段 1（OperateType）已停用，编号不再复用。
 		[ProtoMember(2)]
 		public long OperateBagID { get; set; }
 
@@ -4683,6 +4684,8 @@ namespace ET
 
 	}
 
+// 地图服 -> 客户端：Error=0 表示出售成功；失败不扣物品、不发货币，Error 为 Word_Prompt 提示码。
+// 成功后的物品和货币分别通过 M2C_RoleBagUpdate、M2C_RoleDataUpdate 同步。
 	[Message(OuterOpcode.M2C_ItemSellResponse)]
 	[ProtoContract]
 	public partial class M2C_ItemSellResponse: Object, IActorLocationResponse
@@ -4696,9 +4699,7 @@ namespace ET
 		[ProtoMember(92)]
 		public int Error { get; set; }
 
-		[ProtoMember(1)]
-		public string OperatePar { get; set; }
-
+// 原字段 1（OperatePar）已停用，编号不再复用。
 	}
 
 //道具[装备]更新
@@ -4789,11 +4790,11 @@ namespace ET
 
 	}
 
-	[ResponseType(nameof(M2C_ItemHuiShouResponse))]
-//回收装备
-	[Message(OuterOpcode.C2M_ItemHuiShouRequest)]
+	[ResponseType(nameof(M2C_EquipDecomposeResponse))]
+// 客户端 -> 地图服：分解本人背包中的装备，已穿戴装备不能分解。
+	[Message(OuterOpcode.C2M_EquipDecomposeRequest)]
 	[ProtoContract]
-	public partial class C2M_ItemHuiShouRequest: Object, IActorLocationRequest
+	public partial class C2M_EquipDecomposeRequest: Object, IActorLocationRequest
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -4803,9 +4804,10 @@ namespace ET
 
 	}
 
-	[Message(OuterOpcode.M2C_ItemHuiShouResponse)]
+// 地图服 -> 客户端：装备分解处理结果，Error=0 表示请求处理成功；背包扣除通过 M2C_RoleBagUpdate 同步。
+	[Message(OuterOpcode.M2C_EquipDecomposeResponse)]
 	[ProtoContract]
-	public partial class M2C_ItemHuiShouResponse: Object, IActorLocationResponse
+	public partial class M2C_EquipDecomposeResponse: Object, IActorLocationResponse
 	{
 		[ProtoMember(90)]
 		public int RpcId { get; set; }
@@ -6896,7 +6898,7 @@ namespace ET
 
 	}
 
-//公会列表
+// 客户端 -> 公会服：查询本服有效公会列表；排行服也复用此请求读取公会服内存中的最新数据。
 	[ResponseType(nameof(U2C_UnionListResponse))]
 	[Message(OuterOpcode.C2U_UnionListRequest)]
 	[ProtoContract]
@@ -6910,6 +6912,7 @@ namespace ET
 
 	}
 
+// 公会服 -> 调用方：返回本服有效公会的当前快照，排序由调用方按用途处理。
 	[Message(OuterOpcode.U2C_UnionListResponse)]
 	[ProtoContract]
 	public partial class U2C_UnionListResponse: Object, IUnionActorResponse
@@ -7801,6 +7804,7 @@ namespace ET
 
 	}
 
+// 公会列表及排行榜共用条目；排行榜显示排名（列表下标+1）、UnionName、UnionLevel、PlayerNumber、UnionLeader。
 	[Message(OuterOpcode.UnionListItem)]
 	[ProtoContract]
 	public partial class UnionListItem: Object
@@ -7852,6 +7856,9 @@ namespace ET
 
 		[ProtoMember(16)]
 		public int Occ { get; set; }
+
+		[ProtoMember(17)]
+		public long CreateTime { get; set; }
 
 		[ProtoMember(20)]
 		public List<UnionPlayerInfo> ViceLeaderList = new List<UnionPlayerInfo>();

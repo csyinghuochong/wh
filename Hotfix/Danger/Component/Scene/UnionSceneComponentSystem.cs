@@ -150,6 +150,10 @@ namespace ET
             unionListItem.UnionName = unionInfo.UnionName;
             unionListItem.PlayerNumber = unionInfo.UnionPlayerList?.Count ?? 0;
             unionListItem.UnionId = unionInfo.UnionId;
+            // GenerateId 的高位记录自 2020-01-01 UTC 起的秒数，历史公会无需迁移即可还原创建时间。
+            unionListItem.CreateTime = dBUnionInfo.CreateTime > 0
+                    ? dBUnionInfo.CreateTime
+                    : 1577836800000L + new IdStruct(unionInfo.UnionId).Time * 1000L;
             unionListItem.LevelLimit = unionInfo.LevelLimit;
             unionListItem.UnionLevel = unionLevel;
             unionListItem.UnionLeader = unionInfo.LeaderName;

@@ -151,6 +151,9 @@ namespace ET
 		/// <summary>音乐</summary>
 		[ProtoMember(24)]
 		public string Music { get; set; }
+		/// <summary>禁用</summary>
+		[ProtoMember(25)]
+		public int Is_Close { get; set; }
 
 	}
 }

@@ -17,13 +17,16 @@ namespace ET
 
     public static class BeginnerGuideServerHelper
     {
-        /// <summary>校验并保存启动、顺序推进、配置回溯或整组完成；已完成组重复请求直接成功回包。</summary>
+        /// <summary>校验启动、顺序推进和配置恢复；重复/滞后请求返回已保存进度，不倒退、不报错；已完成组重复请求直接成功。</summary>
         public static int Update(Unit unit, C2M_GuideUpdateRequest request, M2C_GuideUpdateResponse response)
         {
-            if (!BeginnerGuideConfigHelper.TryGetSteps(request.GuideId, out List<LDGuide> steps, out _)
-                || request.GuideStep < 0 || request.ContextId < 0)
+            if (!BeginnerGuideConfigHelper.TryGetSteps(request.GuideId, out List<LDGuide> steps, out string reason))
             {
-                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                return Reject(request, response, $"配置无效：{reason}");
+            }
+            if (request.GuideStep < 0 || request.ContextId < 0)
+            {
+                return Reject(request, response, "步骤ID或目标实例ID不能为负数");
             }
 
             RoleInfo role = unit.GetComponent<RoleInfoComponentServer>().RoleInfo;
@@ -36,10 +39,17 @@ namespace ET
             BeginnerGuideProgress progress = role.BeginnerGuideProgresses.Find(x => x.GuideId == request.GuideId);
             if (progress == null)
             {
-                if (request.GuideStep != request.GuideId || !CheckTrigger(unit, steps[0])
-                    || !CheckContext(unit, steps, request.ContextId))
+                if (request.GuideStep != request.GuideId)
                 {
-                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                    return Reject(request, response, "服务端尚无进度，必须从组首开始");
+                }
+                if (!CheckTrigger(unit, steps[0]))
+                {
+                    return Reject(request, response, $"服务端触发条件未满足，类型{steps[0].Trigger_Condition}，参数{string.Join("|", steps[0].Trigger_Condition_Param)}");
+                }
+                if (!CheckContext(unit, steps, request.ContextId))
+                {
+                    return Reject(request, response, "目标装备或灵宠不存在、不属于当前角色，或实例参数不符合本组要求");
                 }
 
                 progress = new BeginnerGuideProgress { GuideId = request.GuideId, StepId = request.GuideStep, ContextId = request.ContextId };
@@ -48,9 +58,15 @@ namespace ET
                 return ErrorCode.ERR_Success;
             }
 
+            // 这组已绑定实例时以服务端为准；不同实例的迟到请求只同步原进度，不能换绑或推进。
+            if (request.ContextId != progress.ContextId && steps.Exists(x => x.Id == progress.StepId))
+            {
+                response.Progress = progress;
+                return ErrorCode.ERR_Success;
+            }
             if (request.ContextId != progress.ContextId)
             {
-                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                return Reject(request, response, $"实例进度不一致，服务端实例{progress.ContextId}，请求实例{request.ContextId}");
             }
 
             LDGuide current = steps.Find(x => x.Id == progress.StepId);
@@ -60,7 +76,7 @@ namespace ET
                 LDGuideCategory category = LDGuideCategory.Instance;
                 if (!category.Contain(progress.StepId))
                 {
-                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                    return Reject(request, response, $"服务端保存的步骤{progress.StepId}已从配置表删除");
                 }
 
                 LDGuide retiredStep = category.Get(progress.StepId);
@@ -68,16 +84,17 @@ namespace ET
                 if (retiredStep.Is_Close == 0 || current == null || request.GuideStep != current.Id
                     || !CheckTrigger(unit, steps[0]) || !CheckContext(unit, steps, request.ContextId))
                 {
-                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                    return Reject(request, response, $"旧步骤{progress.StepId}无法恢复到请求步骤，请核对Is_Close、Break_Backup_Id、触发条件及目标实例");
                 }
             }
 
             if (request.GuideStep == 0)
             {
-                // 只有保存进度已到末步才接受整组完成；完成列表记录组首ID。
+                // 尚未到末步时同步实际进度，不接受提前完成，也不让客户端反复保存失败。
                 if (current.Next_Id.Length != 0)
                 {
-                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                    response.Progress = progress;
+                    return ErrorCode.ERR_Success;
                 }
 
                 role.BeginnerGuideProgresses.Remove(progress);
@@ -87,14 +104,29 @@ namespace ET
             }
 
             bool next = current.Next_Id.Length == 1 && current.Next_Id[0] == request.GuideStep;
+            // 除当前步和Next_Id外，只允许跳到当前步显式配置的中断节点；同组范围已由TryGetSteps校验。
             if (request.GuideStep != current.Id && request.GuideStep != current.Break_Backup_Id && !next)
             {
-                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                // 回包丢失或重连可能带来旧请求；只返回已保存步骤，明确配置的回溯仍在上面的正常分支执行。
+                int requestedIndex = steps.FindIndex(x => x.Id == request.GuideStep);
+                if (requestedIndex >= 0 && requestedIndex < steps.IndexOf(current))
+                {
+                    response.Progress = progress;
+                    return ErrorCode.ERR_Success;
+                }
+                return Reject(request, response, $"步骤不一致，服务端当前{current.Id}，下一步{string.Join("|", current.Next_Id)}，中断节点{current.Break_Backup_Id}");
             }
 
             progress.StepId = request.GuideStep;
             response.Progress = progress;
             return ErrorCode.ERR_Success;
+        }
+
+        /// <summary>保留原错误码，通过现有Message返回拒绝原因；不修改角色进度。</summary>
+        private static int Reject(C2M_GuideUpdateRequest request, M2C_GuideUpdateResponse response, string reason)
+        {
+            response.Message = $"新手引导{request.GuideId}（请求步骤{request.GuideStep}）：{reason}。";
+            return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
         }
 
         /// <summary>新建进度时校验服务器可确认的触发条件；装备事件还需通过实例归属校验。</summary>

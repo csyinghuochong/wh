@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 
 
@@ -9,6 +9,9 @@ namespace ET
     public class DBUnionInfo : Entity, IAwake
     {
         public UnionInfo UnionInfo = new UnionInfo();
+
+        /// <summary>公会创建时间，UTC Unix 毫秒。历史公会未记录时从公会 ID 还原到秒。</summary>
+        public long CreateTime;
 
         /// <summary>公会仓库密码，不下发客户端。</summary>
         public string WarehousePassword = string.Empty;

@@ -47,7 +47,7 @@ namespace ET
                     LoginTypeEnum.RegisterLogin, string.Empty, true);
                 if (accountId == 0)
                 {
-                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Register_Repeat_Account);
                 }
                     
                 //发送创建回执
