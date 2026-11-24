@@ -15,7 +15,8 @@ namespace ET
             BagComponentServer bag = unit.GetComponent<BagComponentServer>();
             string pickGetWay = $"{ItemGetWay.PickItem}_{serverTime}";
 
-            for (int i = drops.Count - 1; i >= 0; i--)
+            // 按请求顺序逐个领取，入包会先叠加；首个放不下的实例及后续实例保留在尸体上。
+            for (int i = 0; i < drops.Count; i++)
             {
                 // Run 已用服务端记录替换请求数据；装备直接入包，不能重新走 RewardItem 随机属性。
                 DropInfo drop = drops[i];
@@ -36,8 +37,8 @@ namespace ET
                 }
                 if (!added)
                 {
-                    errorCode = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Bag_Full);
-                    continue;
+                    errorCode = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_PickUp_Over_Bag_Volume);
+                    break;
                 }
                 if (monster != null)
                 {

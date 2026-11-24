@@ -45,6 +45,71 @@ namespace ET
 					return;
 				}
 
+                if (message.GMMsg == "fillbag#")
+                {
+                    if (unit.Type != UnitType.Player)
+                    {
+                        return;
+                    }
+
+                    // fillbag#：先补满已有格子的堆叠，再遍历 Item 将常规、材料两页的空格填为满堆，不触发自动使用。
+                    BagComponentServer bag = unit.GetComponent<BagComponentServer>();
+                    M2C_RoleBagUpdate bagUpdate = new M2C_RoleBagUpdate();
+                    string getWay = $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}";
+                    foreach (int bagType in new[] { 1, 901 })
+                    {
+                        int loc = ItemNewHelper.GetBagBelongId(bagType);
+                        if (!ItemNewHelper.IsValideBagLoc(loc))
+                        {
+                            continue;
+                        }
+
+                        foreach (BagInfo existing in bag.GetItemByLoc((ItemLocType)loc))
+                        {
+                            int pileSum = ItemNewHelper.GetNewItemPileSum(existing);
+                            if (existing.ItemNum >= pileSum)
+                            {
+                                continue;
+                            }
+
+                            existing.ItemNum = pileSum;
+                            bagUpdate.BagInfoUpdate.Add(existing);
+                        }
+
+                        int leftCells = bag.GetBagLeftCell(loc);
+                        if (leftCells <= 0)
+                        {
+                            continue;
+                        }
+
+                        List<LDItem> items = LDItemCategory.Instance.GetAll().Values.Where(item => item.BagType == bagType
+                            && item.IfBag == 1 && item.IfAutoUse == 0 && item.ItemType != ItemTypeEnum.SubType_UnionResource).ToList();
+                        if (items.Count == 0)
+                        {
+                            Log.Warning($"fillbag 无可用道具 BagType={bagType}");
+                            continue;
+                        }
+
+                        // 固定按初始空格数新建，避免普通入包不断叠加而不能占满空格。
+                        for (int i = 0; i < leftCells; i++)
+                        {
+                            LDItem item = items[i % items.Count];
+                            BagInfo newItem = new BagInfo
+                            {
+                                ItemType = ItemBigType.Type_Item, ItemID = item.Id, Loc = loc, GetWay = getWay,
+                            };
+                            bag.OnAddItemDataNewCell(newItem, ItemNewHelper.GetNewItemPileSum(newItem));
+                        }
+                    }
+
+                    if (bagUpdate.BagInfoUpdate.Count > 0)
+                    {
+                        MessageHelper.SendToClient(unit, bagUpdate);
+                    }
+                    await DBHelper.SaveComponentCache(UnitZoneHelper.GetHomeZone(unit), unit.Id, bag);
+                    return;
+                }
+
                 if (message.GMMsg == "chatsystem#")
                 {
                     M2C_SyncChatInfo m2C_SyncChatInfo = new M2C_SyncChatInfo()

@@ -1148,7 +1148,7 @@ namespace ET
                 int useTimes = item.ItemNum > 0 ? item.ItemNum : 1;
                 for (int n = 0; n < useTimes; n++)
                 {
-                    ItemUseHelper.UseItem(unit, item.ItemID, null, null, 1, locType);
+                    ItemUseHelper.UseItem(unit, item.ItemID, null, null, 1, locType).Coroutine();
                 }
             }
 

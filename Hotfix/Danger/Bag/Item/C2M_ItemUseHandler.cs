@@ -28,7 +28,19 @@ namespace ET
                 reply();
                 return;
             }
-            response.Error = ItemUseHelper.UseItem(unit, 0, useBagInfo, bagUpdate, request.UseNum, locType, request.OperatePar);
+            // 接收本次礼包奖励的溢出邮件；UseItem先尝试入包，放不下的奖励由其写入附件并保存邮件。
+            MailInfo overflowMail = new MailInfo();
+            response.Error = await ItemUseHelper.UseItem(unit, 0, useBagInfo, bagUpdate, request.UseNum, locType, request.OperatePar, overflowMail);
+            if (unit.IsDisposed)
+            {
+                return;
+            }
+            // 使用成功且有奖励转邮件时，Error仍为0；OperatePar携带Word_Prompt.Id字符串，供客户端显示补充提示。
+            // 没有溢出则保持OperatePar为空；使用失败由Error返回失败提示，不走此分支。
+            if (response.Error == ErrorCode.ERR_Success && overflowMail.ItemList.Count > 0)
+            {
+                response.OperatePar = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Mail_Over_Bag_Volume).ToString();
+            }
             if (bagUpdate.BagInfoDelete.Count > 0 || bagUpdate.BagInfoUpdate.Count > 0)
             {
                 MessageHelper.SendToClient(unit, bagUpdate);

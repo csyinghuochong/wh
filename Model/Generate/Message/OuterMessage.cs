@@ -4981,7 +4981,7 @@ namespace ET
 
 	}
 
-// 地图服 -> 客户端：使用结果；失败不扣包裹、不发奖。
+// 地图服 -> 客户端：使用结果；失败不扣包裹、不发奖。11/12/13 成功时先入包，溢出奖励通过邮件发送。
 	[Message(OuterOpcode.M2C_ItemUseResponse)]
 	[ProtoContract]
 	public partial class M2C_ItemUseResponse: Object, IActorLocationResponse
@@ -8766,6 +8766,7 @@ namespace ET
 	}
 
 // 客户端 -> 地图服：拾取当前地图中指定的公共掉落实例；已登记打开该尸体界面的玩家不再校验拾取距离，其余情况校验距离后入包。
+// 按列表顺序逐项入包并优先叠加，首个放不下的实例及后续实例保留；容量不足返回 Prompt_PickUp_Over_Bag_Volume 对应的 Word_Prompt.Id。
 	[ResponseType(nameof(M2C_PickItemResponse))]
 	[Message(OuterOpcode.C2M_PickItemRequest)]
 	[ProtoContract]
