@@ -243,7 +243,8 @@ namespace ET
             DropHelper.ZhengLiRewardItems(rewards);
             foreach (RewardItem reward in rewards)
             {
-                if (reward.ItemNum <= 0 || !ItemNewHelper.IsValidItem(reward.ItemType, reward.ItemID))
+                if (reward.ItemNum <= 0 || ItemFlagEnum.IsDisplayOnly(reward.ItemFlags)
+                        || !ItemNewHelper.IsValidItem(reward.ItemType, reward.ItemID))
                 {
                     return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
                 }

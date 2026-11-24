@@ -85,7 +85,7 @@ namespace ET
             }
 
             int inheritSourceFlags = mainBagInfo != null ? ComposeHelper.GetComposeItemFlags(mainBagInfo) : 0;
-            // 合成表 Goods 为单个产物，字段支持 | 或 ~ 分隔；缺少状态时按 0 解析。
+            // 合成表 Goods 为单个产物，字段支持 | 或 ~ 分隔；缺少状态时默认可交易状态 1。
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(cfg.Goods.Replace('|', '~'), inheritSourceFlags);
             if (rewardItems.Count == 0)
             {
@@ -96,7 +96,7 @@ namespace ET
             for (int i = 0; i < rewardItems.Count; i++)
             {
                 RewardItem reward = rewardItems[i];
-                if (reward.ItemNum <= 0 || !ItemNewHelper.CheckValiedItem(reward))
+                if (reward.ItemNum <= 0 || ItemFlagEnum.IsDisplayOnly(reward.ItemFlags) || !ItemNewHelper.CheckValiedItem(reward))
                 {
                     response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();

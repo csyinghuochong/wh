@@ -38,10 +38,10 @@ namespace ET
                     continue;
                 }
 
-                int itemFlags = 0;
-                if (itemInfo.Length >= 4)
+                int status = ItemTradeStatus.Tradable;
+                if (itemInfo.Length >= 4 && !string.IsNullOrEmpty(itemInfo[3]))
                 {
-                    int.TryParse(itemInfo[3], out itemFlags);
+                    status = int.Parse(itemInfo[3]);
                 }
 
                 this.ConsumeItems.Add(new RewardItem
@@ -49,7 +49,7 @@ namespace ET
                     ItemType = itemType,
                     ItemID = itemId,
                     ItemNum = itemNum,
-                    ItemFlags = itemFlags,
+                    ItemFlags = ItemFlagEnum.ResolveItemFlags(status, 0),
                 });
             }
         }

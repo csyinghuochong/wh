@@ -109,22 +109,22 @@ namespace ET
 		/// <summary>女时装</summary>
 		[ProtoMember(10)]
 		public int[] Fashion_Id_Woman { get; set; }
-		/// <summary>生命系数</summary>
+		/// <summary>生命 系数</summary>
 		[ProtoMember(11)]
 		public double Hp_Param { get; set; }
 		/// <summary>速度</summary>
 		[ProtoMember(12)]
 		public int Speed { get; set; }
-		/// <summary>默认普攻</summary>
+		/// <summary>默认 普攻</summary>
 		[ProtoMember(13)]
 		public int Skill_Normal_Default { get; set; }
 		/// <summary>技能</summary>
 		[ProtoMember(14)]
 		public int[] Skill { get; set; }
-		/// <summary>技能组名1</summary>
+		/// <summary>技能组 名1</summary>
 		[ProtoMember(15)]
 		public int Name_Skill_Group_1 { get; set; }
-		/// <summary>技能组名2</summary>
+		/// <summary>技能组 名2</summary>
 		[ProtoMember(16)]
 		public int Name_Skill_Group_2 { get; set; }
 		/// <summary>默认加点</summary>
@@ -133,9 +133,27 @@ namespace ET
 		/// <summary>转职ID</summary>
 		[ProtoMember(18)]
 		public int[] TransferId { get; set; }
-		/// <summary>初始装备</summary>
+		/// <summary>初始 装备</summary>
 		[ProtoMember(19)]
 		public int[] Equip_Init { get; set; }
+		/// <summary>待机 动作</summary>
+		[ProtoMember(20)]
+		public string Act_Idle { get; set; }
+		/// <summary>跑步 动作</summary>
+		[ProtoMember(21)]
+		public string Act_Run { get; set; }
+		/// <summary>翻滚 动作</summary>
+		[ProtoMember(22)]
+		public string Act_Roll { get; set; }
+		/// <summary>死亡 动作</summary>
+		[ProtoMember(23)]
+		public string Act_Dead { get; set; }
+		/// <summary>击退 动作</summary>
+		[ProtoMember(24)]
+		public string Act_Knock_Back { get; set; }
+		/// <summary>交互 动作</summary>
+		[ProtoMember(25)]
+		public string Act_Interaction { get; set; }
 
 	}
 }

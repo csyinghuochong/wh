@@ -103,6 +103,9 @@ namespace ET
 		/// <summary>Z偏移</summary>
 		[ProtoMember(8)]
 		public int Off_Z { get; set; }
+		/// <summary>乘骑动作</summary>
+		[ProtoMember(9)]
+		public string Act_Ride { get; set; }
 
 	}
 }

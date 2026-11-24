@@ -160,26 +160,50 @@ namespace ET
 		/// <summary>下线 移除 0-否 1-是</summary>
 		[ProtoMember(27)]
 		public int Remove_Logout { get; set; }
-		/// <summary>特效1</summary>
+		/// <summary>状态 动作</summary>
 		[ProtoMember(28)]
+		public string Act { get; set; }
+		/// <summary>上升 时间 %</summary>
+		[ProtoMember(29)]
+		public double Time_Up_Rate { get; set; }
+		/// <summary>悬停 时间 %</summary>
+		[ProtoMember(30)]
+		public double Time_Stop_Rate { get; set; }
+		/// <summary>下降 时间 %</summary>
+		[ProtoMember(31)]
+		public double Time_Down_Rate { get; set; }
+		/// <summary>上升 速度</summary>
+		[ProtoMember(32)]
+		public int Speed_Up { get; set; }
+		/// <summary>上升 加速</summary>
+		[ProtoMember(33)]
+		public int Acceleration_Up { get; set; }
+		/// <summary>下降 速度</summary>
+		[ProtoMember(34)]
+		public int Speed_Down { get; set; }
+		/// <summary>下降 加速</summary>
+		[ProtoMember(35)]
+		public int Acceleration_Down { get; set; }
+		/// <summary>特效1</summary>
+		[ProtoMember(36)]
 		public string VFX_1 { get; set; }
 		/// <summary>挂点1</summary>
-		[ProtoMember(29)]
+		[ProtoMember(37)]
 		public string VFX_Socket1 { get; set; }
 		/// <summary>特效2</summary>
-		[ProtoMember(30)]
+		[ProtoMember(38)]
 		public string VFX_2 { get; set; }
 		/// <summary>挂点2</summary>
-		[ProtoMember(31)]
+		[ProtoMember(39)]
 		public string VFX_Socket2 { get; set; }
 		/// <summary>特效3</summary>
-		[ProtoMember(32)]
+		[ProtoMember(40)]
 		public string VFX_3 { get; set; }
 		/// <summary>挂点3</summary>
-		[ProtoMember(33)]
+		[ProtoMember(41)]
 		public string VFX_Socket3 { get; set; }
 		/// <summary>材质</summary>
-		[ProtoMember(34)]
+		[ProtoMember(42)]
 		public string Buff_Shader { get; set; }
 
 	}

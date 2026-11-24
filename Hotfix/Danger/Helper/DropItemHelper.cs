@@ -11,6 +11,11 @@ namespace ET
             long count = 0;
             foreach (RewardItem reward in rewards)
             {
+                if (ItemFlagEnum.IsDisplayOnly(reward.ItemFlags))
+                {
+                    Log.Error($"展示状态不能生成真实掉落：ItemType={reward.ItemType}, ItemID={reward.ItemID}, Status={ItemFlagEnum.ToTradeStatus(reward.ItemFlags)}");
+                    return drops;
+                }
                 if (reward.ItemNum <= 0) continue;
                 count += reward.ItemType == ItemBigType.Type_Equip ? reward.ItemNum : 1;
             }

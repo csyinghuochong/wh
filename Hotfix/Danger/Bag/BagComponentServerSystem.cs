@@ -355,6 +355,15 @@ namespace ET
             }
 
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(raw);
+            foreach (RewardItem item in rewardItems)
+            {
+                if (ItemFlagEnum.IsDisplayOnly(item.ItemFlags))
+                {
+                    string error = $"创角奖励不能使用展示状态：Key={GlobalValueKey.Global_Initial_Resources}, ItemType={item.ItemType}, ItemID={item.ItemID}, TradeStatus={ItemFlagEnum.ToTradeStatus(item.ItemFlags)}";
+                    Console.WriteLine(error);
+                    throw new InvalidOperationException(error);
+                }
+            }
             if (!rewardItems.Exists(item => item.ItemType == ItemBigType.Type_Pet))
             {
                 rewardItems.Add(new RewardItem
@@ -859,7 +868,10 @@ namespace ET
 
         public static bool OnAddItemData(this BagComponentServer self, BagInfo bagInfo, string getType)
         {
-            if (bagInfo.ItemNum <= 0) return false;
+            if (bagInfo.ItemNum <= 0 || ItemFlagEnum.IsDisplayOnly(bagInfo.ItemFlags))
+            {
+                return false;
+            }
             int maxPileSum = ItemNewHelper.GetNewItemPileSum(bagInfo);
             if (maxPileSum > 1 || bagInfo.BagInfoID == 0)
             {
@@ -953,7 +965,10 @@ namespace ET
 
             for (int i = 0; i < rewardItems.Count; i++)
             {
-                if (rewardItems[i].ItemNum <= 0) return false;
+                if (rewardItems[i].ItemNum <= 0 || ItemFlagEnum.IsDisplayOnly(rewardItems[i].ItemFlags))
+                {
+                    return false;
+                }
             }
 
             if (rewardItems[0].ItemType == ItemBigType.Type_None)
@@ -1024,12 +1039,15 @@ namespace ET
             return true;
         }
 
-        /// <summary>只预检容量。freedItem 为完整消耗的格子；remainingItem 为操作后剩余格子的数量、状态快照。</summary>
+        /// <summary>先拒绝展示状态再预检容量，调用方扣除材料前使用。freedItem 为完整消耗的格子；remainingItem 为操作后剩余格子的数量、状态快照。</summary>
         public static bool CanAddItemData(this BagComponentServer self, List<RewardItem> rewards, BagInfo freedItem = null, BagInfo remainingItem = null)
         {
             for (int i = 0; i < rewards.Count; i++)
             {
-                if (rewards[i].ItemNum <= 0) return false;
+                if (rewards[i].ItemNum <= 0 || ItemFlagEnum.IsDisplayOnly(rewards[i].ItemFlags))
+                {
+                    return false;
+                }
             }
             Dictionary<int, int> cells = new Dictionary<int, int>();
             foreach (RewardItem reward in MergeRewardItems(rewards).Values)

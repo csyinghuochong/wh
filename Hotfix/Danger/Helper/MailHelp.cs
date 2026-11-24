@@ -6,7 +6,7 @@ namespace ET
     public static class MailHelp
     {
 
-        /// <summary>后台附件：类型~ID~数量~交易状态，多项用 | 分隔；缺少状态时按 0 处理。</summary>
+        /// <summary>后台附件：类型~ID~数量~交易状态，多项用 | 分隔；缺少或空状态默认 1，展示状态 0/19 不可发放。</summary>
         public static bool TryGetGMMailItems(string itemList, out List<BagInfo> items)
         {
             items = new List<BagInfo>();
@@ -31,7 +31,7 @@ namespace ET
                     return false;
                 }
 
-                int status = 0;
+                int status = ItemTradeStatus.Tradable;
                 if (fields.Length == 4 && !string.IsNullOrEmpty(fields[3])
                     && (!int.TryParse(fields[3], out status) || status < 0))
                 {
