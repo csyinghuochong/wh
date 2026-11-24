@@ -17,7 +17,7 @@ namespace ET
 
             if (teamInfo.TeamId == request.UserId)
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

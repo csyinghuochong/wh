@@ -15,7 +15,7 @@ namespace ET
                 if (string.IsNullOrEmpty(request.ChatInfo.ChatMsg))
                 {
                     Log.Error($"C2Chat_SendChatHandler.1");
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
@@ -43,7 +43,7 @@ namespace ET
                         WZChatSceneComponent wzChat = chatInfoUnit.DomainScene().GetComponent<WZChatSceneComponent>();
                         if (wzChat == null)
                         {
-                            response.Error = ErrorCode.ERR_ModifyData;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                             reply();
                             return;
                         }
@@ -123,7 +123,7 @@ namespace ET
                         DBFriendInfo myFriendInfo = myZone == 0 ? null : await DBHelper.GetComponent<DBFriendInfo>(myZone, chatInfoUnit.Id);
                         if (friendId == 0 || myFriendInfo == null || !myFriendInfo.FriendList.Contains(friendId))
                         {
-                            response.Error = ErrorCode.ERR_ModifyData;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                             reply();
                             return;
                         }

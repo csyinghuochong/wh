@@ -26,7 +26,7 @@ namespace ET
 
             if (request.TeamId != teamInfo.TeamId || (request.Apply != 0 && request.Apply != 1))
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -63,7 +63,7 @@ namespace ET
 
             if (request.SceneId == 0 || !LDSceneCategory.Instance.Contain(request.SceneId))
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

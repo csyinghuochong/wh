@@ -11,7 +11,7 @@ namespace ET
             RoleInfo roleInfo = roleInfoComponent.RoleInfo;
             if (!RoleLevelHelper.CanLevelUp(roleInfo.Lv, roleInfo.Exp))
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

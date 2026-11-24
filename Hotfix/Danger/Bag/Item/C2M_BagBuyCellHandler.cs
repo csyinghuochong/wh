@@ -24,7 +24,7 @@ namespace ET
                 BuyCellCost buyCellCost = new BuyCellCost();
                 if (string.IsNullOrEmpty(buyCellCost.Cost))
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
@@ -47,7 +47,7 @@ namespace ET
                 if (storeindex < 5 || storeindex > 9)
                 {
                     Log.Error($"C2M_ItemBuyCellRequest.1");
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
@@ -56,7 +56,7 @@ namespace ET
                 BuyCellCost buyCellCost = new BuyCellCost();
                 if (string.IsNullOrEmpty(buyCellCost.Cost))
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }

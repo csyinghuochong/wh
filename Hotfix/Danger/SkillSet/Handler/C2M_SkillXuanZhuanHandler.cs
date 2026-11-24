@@ -14,7 +14,7 @@ namespace ET
             {
                 // 此处复用该错误码表示“当前不能转向”，不只指硬直：受控或死亡也可能导致 CanRotate=false。
                 // 客户端收到后不弹提示，也不修改朝向。
-                response.Error = ErrorCode.ERR_CanNotMove_Rigidity;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Move_Restricted);
                 reply();
                 return;
             }

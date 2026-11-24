@@ -16,7 +16,7 @@ namespace ET
                 DBMailInfo dBMailInfo = await DBHelper.GetComponent<DBMailInfo>(zone, unit.Id);
                 if (dBMailInfo == null)
                 {
-                    response.Error = ErrorCode.ERR_MailNotExist;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Mail_Not_Exist);
                     reply();
                     return;
                 }
@@ -24,7 +24,7 @@ namespace ET
                 MailInfo mailInfo = MailHelp.FindMail(dBMailInfo.MailInfoList, request.MailId);
                 if (mailInfo == null)
                 {
-                    response.Error = ErrorCode.ERR_MailNotExist;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Mail_Not_Exist);
                     reply();
                     return;
                 }

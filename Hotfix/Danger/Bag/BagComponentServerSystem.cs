@@ -200,7 +200,7 @@ namespace ET
             // 只允许 1穿戴 / 2卸下，非法值不能落到 else 里当卸下处理
             if (operateType != 1 && operateType != 2)
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
 
             // 持有状态统一走 GetState：未拥有、已过期都不允许操作，有激活记录不等于有效
@@ -220,13 +220,13 @@ namespace ET
 
                 if (!LDFashionCategory.Instance.Contain(fashionId))
                 {
-                    return ErrorCode.ERR_ModifyData;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 }
 
                 LDFashion ldFashion = LDFashionCategory.Instance.Get(fashionId);
                 if (ldFashion.Part <= 0)
                 {
-                    return ErrorCode.ERR_ModifyData;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 }
 
                 if (ldFashion.Sex != SexEnum.None && ldFashion.Sex != sex)

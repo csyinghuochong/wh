@@ -16,7 +16,7 @@ namespace ET
             if (!LDOccupation_TransferCategory.Instance.Contain(request.OccTwoID))
             {
                 Log.Error($"C2M_ChangeOccTwoRequest.1");
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -44,7 +44,7 @@ namespace ET
             }
             if (!canTransfer)
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

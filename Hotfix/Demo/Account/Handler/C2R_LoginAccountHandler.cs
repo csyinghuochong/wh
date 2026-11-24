@@ -156,7 +156,7 @@ namespace ET
 
                         if (centerPlayerInfo.RealNameV2 == 0)
                         {
-                            response.Error = ErrorCode.ERR_NotRealName;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Not_Real_Name);
                             response.AccountId = dbcenterAccountInfo.Id;
                             reply();
                             session.Disconnect().Coroutine();
@@ -217,7 +217,7 @@ namespace ET
                         if (otherSession != null)
                         {
                             Log.Debug($"LoginTest C2A_LoginAccount.ERR_OtherAccountLogin1 account.Id: {dbcenterAccountInfo.Id}");
-                            otherSession?.Send(new A2C_Disconnect() { Error = ErrorCode.ERR_OtherAccountLogin });                 //踢accout服的玩家下线
+                            otherSession?.Send(new A2C_Disconnect() { Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Other_Account_Login) });                 //踢accout服的玩家下线
                             otherSession?.Disconnect().Coroutine();
                         }
                       
@@ -331,12 +331,12 @@ namespace ET
                 }
                 else
                 {
-                    return ErrorCode.ERR_FangChengMi_Tip7;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_AntiAddiction_Nologgin);
                 }
             }
             else
             {
-                return ErrorCode.ERR_FangChengMi_Tip7;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_AntiAddiction_Nologgin);
             }
         }
 

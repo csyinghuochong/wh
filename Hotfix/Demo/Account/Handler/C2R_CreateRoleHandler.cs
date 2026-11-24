@@ -117,7 +117,7 @@ namespace ET
 						if (!LDOccupationCategory.Instance.Contain(request.CreateOcc))
 						{
                             Log.Error($"C2A_CreateRoleHandler.3");
-                            response.Error = ErrorCode.ERR_ModifyData;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                             reply();
                             return;
                         }

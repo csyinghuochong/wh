@@ -10,7 +10,7 @@ namespace ET
         {
             if (!LDCompose_GoodsCategory.Instance.Contain(request.Compose_Goods))
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -18,7 +18,7 @@ namespace ET
             LDCompose_Goods cfg = LDCompose_GoodsCategory.Instance.Get(request.Compose_Goods);
             if (!LDComposeCategory.Instance.Contain(cfg.Compose_Id))
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -89,7 +89,7 @@ namespace ET
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(cfg.Goods.Replace('|', '~'), inheritSourceFlags);
             if (rewardItems.Count == 0)
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -98,7 +98,7 @@ namespace ET
                 RewardItem reward = rewardItems[i];
                 if (reward.ItemNum <= 0 || !ItemNewHelper.CheckValiedItem(reward))
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }

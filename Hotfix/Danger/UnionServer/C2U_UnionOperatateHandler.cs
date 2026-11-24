@@ -34,7 +34,7 @@ namespace ET
                 switch (request.Operatate)
                 {
                     case 1:
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         reply();
                         return;
                     case 2:
@@ -44,7 +44,7 @@ namespace ET
                             : GlobalValueKey.Global_Union_Notic_Character_Length;
                         if (!UnionHelper.IsValidUnionText(request.Value, lengthKey))
                         {
-                            response.Error = ErrorCode.ERR_ModifyData;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                             reply();
                             return;
                         }
@@ -63,7 +63,7 @@ namespace ET
                             || !int.TryParse(operatevalue[1], out int position)
                             || (position != UnionPosition.Member && position != UnionPosition.ViceLeader && position != UnionPosition.Elder))
                         {
-                            response.Error = ErrorCode.ERR_ModifyData;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                             reply();
                             return;
                         }
@@ -104,7 +104,7 @@ namespace ET
                         unionPlayerInfo_2.Position = position;
                         break;
                     default:
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         reply();
                         return;
                 }

@@ -14,7 +14,7 @@ namespace ET
         {
             
 
-            response.Error = ErrorCode.ERR_ModifyData;
+            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             reply();
             await ETTask.CompletedTask;
          }

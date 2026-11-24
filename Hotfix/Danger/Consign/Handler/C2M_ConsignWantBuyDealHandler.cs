@@ -11,7 +11,7 @@ namespace ET
             {
                 if (request.WantBuyId <= 0 || request.SellNum <= 0 || request.BagInfoID <= 0)
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
@@ -28,14 +28,14 @@ namespace ET
 
                 if (bagInfo.ItemID != request.ItemId)
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
 
                 if (request.ItemType > 0 && bagInfo.ItemType != request.ItemType)
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }

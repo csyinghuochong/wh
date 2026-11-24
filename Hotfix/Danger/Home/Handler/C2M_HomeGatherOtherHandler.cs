@@ -11,7 +11,7 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_HomeGatherOtherRequest request, M2C_HomeGatherOtherResponse response, Action reply)
         {
-            response.Error = ErrorCode.ERR_ModifyData;
+            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             reply();
             await ETTask.CompletedTask;
         }

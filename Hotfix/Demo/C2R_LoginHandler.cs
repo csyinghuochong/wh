@@ -22,7 +22,7 @@
 //			if (acc.PlayerInfo.RealName == 0)
 //			{
 //				response.AccountId = acc.Id;
-//				response.Error = ErrorCode.ERR_NotRealName;
+//				response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Not_Real_Name);
 //				reply();
 //				acc.Dispose();
 //				return;

@@ -19,7 +19,7 @@ namespace ET
             ItemLocType locType = (ItemLocType)request.LocType;
             if (!ItemNewHelper.IsValideBagLoc((int)locType))
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -37,7 +37,7 @@ namespace ET
             if (sellNum <= 0 || sellNum > useBagInfo.ItemNum)
             {
                 Log.Error($"C2M_ItemOperateHandler 3");
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

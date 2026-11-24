@@ -28,7 +28,7 @@ namespace ET
             {
                 Log.Error(ex.ToString());
                 Log.Error($"C2M_ItemSplitRequest 1");
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -36,7 +36,7 @@ namespace ET
             if (splitNumber <= 0 )
             {
                 Log.Error($"C2M_ItemSplitRequest 2");
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -50,7 +50,7 @@ namespace ET
             if (splitNumber >= 100000)
             {
                 Log.Error($"C2M_ItemSplitRequest 4");
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -65,7 +65,7 @@ namespace ET
             if (useBagInfo.ItemNum <= 0)
             {
                 Log.Error($"C2M_ItemSplitRequest 5");
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

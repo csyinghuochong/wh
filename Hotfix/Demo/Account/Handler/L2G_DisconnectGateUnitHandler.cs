@@ -26,7 +26,7 @@ namespace ET
                     {
                         Log.Info($"ErrorCode.ERR_OtherAccountLogin2 {accountId}");
                         gateSession.GetComponent<SessionPlayerComponent>().isLoginAgain = true;
-                        gateSession.Send(new A2C_Disconnect() { Error = ErrorCode.ERR_OtherAccountLogin });
+                        gateSession.Send(new A2C_Disconnect() { Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Other_Account_Login) });
                         gateSession?.Disconnect().Coroutine(); 
                     }
                     if (request.Relink)

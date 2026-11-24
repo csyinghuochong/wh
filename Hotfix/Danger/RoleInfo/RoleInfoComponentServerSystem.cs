@@ -1077,7 +1077,7 @@ namespace ET
         {
             if (ldItem == null || num <= 0)
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
 
             if (ldItem.SumUseNum > 0 && self.GetTotalItemUse(ldItem.Id) + num > ldItem.SumUseNum)

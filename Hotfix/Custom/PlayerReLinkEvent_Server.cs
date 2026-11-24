@@ -35,7 +35,7 @@ namespace ET
             {
                 oldPlayer.isLoginAgain = true;
             }
-            oldSession.Send(new A2C_Disconnect() { Error = ErrorCode.ERR_OtherAccountLogin });
+            oldSession.Send(new A2C_Disconnect() { Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Other_Account_Login) });
             oldSession.Disconnect().Coroutine();
         }
     }

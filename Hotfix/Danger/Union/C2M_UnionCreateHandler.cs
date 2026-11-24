@@ -29,7 +29,7 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             if (numericComponent.GetAsLong(NumericType.UnionId_0) != 0)
             {
-                response.Error = ErrorCode.ERR_PlayerHaveUnion;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Union_Already_Joined);
                 reply();
                 return;
             }

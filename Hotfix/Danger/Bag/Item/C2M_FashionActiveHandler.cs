@@ -11,7 +11,7 @@ namespace ET
             if (request.FashionId == 0 || !LDFashionCategory.Instance.Contain(request.FashionId))
             {
                 Log.Error($"C2M_FashionActiveRequest.1");
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

@@ -9390,7 +9390,7 @@ namespace ET
 
 	}
 
-//客户端 -> 地图服：领取指定邮件附件；过期或附件 ItemType=0 的旧邮件删除并返回 ERR_MailNotExist，客户端刷新列表
+//客户端 -> 地图服：领取指定邮件附件；过期或附件 ItemType=0 的旧邮件删除并返回 Prompt_Mail_Not_Exist，客户端刷新列表
 	[ResponseType(nameof(M2C_ReceiveMailResponse))]
 	[Message(OuterOpcode.C2M_ReceiveMailRequest)]
 	[ProtoContract]

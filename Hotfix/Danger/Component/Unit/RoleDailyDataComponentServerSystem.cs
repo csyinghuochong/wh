@@ -454,7 +454,7 @@ namespace ET
         {
             if (ldItem == null || num <= 0)
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
 
             if (ldItem.DayUseNum > 0 && self.GetDayItemUse(ldItem.Id) + num > ldItem.DayUseNum)

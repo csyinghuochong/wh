@@ -61,7 +61,7 @@ namespace ET
                 recipeMakeId = ldItem.GetTypeParam1();
                 if (recipeMakeId <= 0 || !LDSkill_MakeCategory.Instance.Contain(recipeMakeId))
                 {
-                    return ErrorCode.ERR_ModifyData;
+                    return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 }
             }
 

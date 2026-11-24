@@ -27,7 +27,7 @@ namespace ET
                         // 玩家名可能含下划线，固定从尾部取 dataType / dataValue，不能按固定下标取。
                         if (!TryParseOperationPar(request.Par, out int dataType, out int dataValue))
                         {
-                            response.Error = ErrorCode.ERR_ModifyData;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                             reply();
                             return;
                         }
@@ -60,7 +60,7 @@ namespace ET
                         else
                         {
                             // 旧工会资金 dataType=35 已废弃；工会资源统一走 OperateType=6 / UnionInfo.ResourceList。
-                            response.Error = ErrorCode.ERR_ModifyData;
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                             reply();
                             return;
                         }
@@ -90,7 +90,7 @@ namespace ET
                         break;
                     default:
                         // 3/4/5(捐献、增加工会金币)已废弃；未知 OperateType 明确报错，不再静默成功。
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         break;
                 }
             }

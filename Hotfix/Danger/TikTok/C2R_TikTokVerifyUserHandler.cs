@@ -41,7 +41,7 @@ namespace ET
                 {
                     if (tikTokCode.data.age_type <= 0)
                     {
-                        response.Error = ErrorCode.ERR_NotRealName;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Not_Real_Name);
                         reply();
                         return;
                     }

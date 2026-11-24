@@ -11,7 +11,7 @@ namespace ET
     public class C2M_BattleSummonRecordHandler : AMActorLocationRpcHandler<Unit, C2M_BattleSummonRecord, M2C_BattleSummonRecord>
     {
         protected override async ETTask Run(Unit unit, C2M_BattleSummonRecord request, M2C_BattleSummonRecord response, Action reply)
-        {            response.Error = ErrorCode.ERR_ModifyData;
+        {            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             reply();
             await ETTask.CompletedTask;
 #if false // TODO: migrate to LD config

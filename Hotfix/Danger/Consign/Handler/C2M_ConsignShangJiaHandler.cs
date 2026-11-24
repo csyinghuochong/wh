@@ -16,7 +16,7 @@ namespace ET
 					|| request.ConsignItemInfo.BagInfo.ItemNum <= 0)
                 {
                     Log.Error($"C2M_PaiMaiSellRequest 1");
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
 					return;
 				}
@@ -24,7 +24,7 @@ namespace ET
                 if (allprice > 10000000 || allprice < 0)
                 {
                     Log.Error($"C2M_PaiMaiSellRequest 2");
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }

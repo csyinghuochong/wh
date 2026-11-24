@@ -8,7 +8,7 @@ namespace ET
     public class C2M_GemHeChengQuickHandler : AMActorLocationRpcHandler<Unit, C2M_GemHeChengQuickRequest, M2C_GemHeChengQuickResponse>
     {
         protected override async ETTask Run(Unit unit, C2M_GemHeChengQuickRequest request, M2C_GemHeChengQuickResponse response, Action reply)
-        {            response.Error = ErrorCode.ERR_ModifyData;
+        {            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             reply();
             await ETTask.CompletedTask;
 #if false // TODO: migrate to LD config
@@ -17,7 +17,7 @@ namespace ET
             if (request.LocType != 0 && request.LocType != 19)
             {
                 Log.Error($"C2M_GemHeChengQuickRequest.1");
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

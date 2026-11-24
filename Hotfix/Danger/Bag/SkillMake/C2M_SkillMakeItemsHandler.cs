@@ -11,7 +11,7 @@ namespace ET
         {
             if (!LDSkill_MakeCategory.Instance.Contain(request.SkillMakeId))
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
@@ -28,7 +28,7 @@ namespace ET
             LDSkill_Make cfg = LDSkill_MakeCategory.Instance.Get(request.SkillMakeId);
             if (!TryRollMakeItem(cfg, out RewardItem reward))
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

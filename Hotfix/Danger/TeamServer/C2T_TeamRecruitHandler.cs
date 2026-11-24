@@ -12,14 +12,14 @@ namespace ET
         {
             if (request.TeamPlayerInfo == null || request.SceneId == 0 || !LDSceneCategory.Instance.Contain(request.SceneId))
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }
 
             if (request.LevelMin < 0 || request.LevelMax < request.LevelMin)
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

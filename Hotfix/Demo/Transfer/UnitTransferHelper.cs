@@ -137,13 +137,13 @@ namespace ET
                 || request.ChunkCount != (request.TotalBytes + ChunkSize - 1) / ChunkSize
                 || request.ChunkIndex < 0 || request.ChunkIndex >= request.ChunkCount)
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
 
             int expectedBytes = Math.Min(ChunkSize, request.TotalBytes - request.ChunkIndex * ChunkSize);
             if (request.Data == null || request.Data.Length != expectedBytes)
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
 
             long now = TimeHelper.ServerNow();

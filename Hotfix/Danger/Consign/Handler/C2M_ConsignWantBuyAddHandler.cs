@@ -14,7 +14,7 @@ namespace ET
             {
                 if (request.ItemId <= 0 || request.ItemNum <= 0 || request.Price <= 0)
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
@@ -30,7 +30,7 @@ namespace ET
                 long allPrice = (long)request.Price * request.ItemNum;
                 if (allPrice > 10000000 || allPrice <= 0)
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }

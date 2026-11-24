@@ -60,7 +60,7 @@ namespace ET
                     if (useBagInfo.Loc != (int)ItemLocType.ItemLocBag)
                     {
                         Log.Error($"C2M_ItemOperateHandler 5");
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         reply();
                         return;
                     }
@@ -90,7 +90,7 @@ namespace ET
                     if (useBagInfo.Loc != hourseId)
                     {
                         Log.Error($"C2M_ItemOperateHandler 6");
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         reply();
                         return;
                     }

@@ -438,7 +438,7 @@ namespace ET
             int transferId = int.Parse(args.ParamInfo);
             if (transferId != 0 && !LDScene_TeleportCategory.Instance.Contain(transferId))
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
             
             Scene oldScene = unit.DomainScene();

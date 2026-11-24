@@ -126,7 +126,7 @@ namespace ET
                             || info.EquipInfo.BagInfoID <= 0 || info.EquipInfo.ItemType != info.ItemType
                             || info.EquipInfo.ItemID != info.ItemID || info.EquipInfo.ItemFlags != info.ItemFlags))
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }

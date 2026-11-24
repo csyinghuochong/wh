@@ -17,14 +17,14 @@ namespace ET
                 int level = roleInfo.Lv;
                 if (!RoleAddPointHelper.CanManualAddPoint(level))
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
 
                 if (request.PointList == null || request.PointList.Count != RoleAddPointHelper.PointNumericTypes.Length)
                 {
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
@@ -36,7 +36,7 @@ namespace ET
                     if (assignedPoints[i] < 0 || assignedPoints[i] > 2000)
                     {
                         Log.Error($"C2M_RoleAddPointRequest: {unit.DomainZone()}  {unit.Id}  {assignedPoints[i]}");
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         reply();
                         return;
                     }
@@ -46,7 +46,7 @@ namespace ET
                 if (remainPoint < 0)
                 {
                     Log.Error($"C2M_RoleAddPointRequest 2");
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
@@ -60,7 +60,7 @@ namespace ET
                     int freeOnStat = assignedPoints[i] - initPoints[i] - fixPoints[i];
                     if (freeOnStat < 0)
                     {
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         reply();
                         return;
                     }

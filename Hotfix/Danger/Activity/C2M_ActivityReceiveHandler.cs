@@ -11,7 +11,7 @@ namespace ET
         {
             if (request.ActivityType != ActivityHelper.RedeemCodeActivityType)
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

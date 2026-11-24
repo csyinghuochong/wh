@@ -45,7 +45,7 @@ namespace ET
                 if (lastNumber > ConfigData.PackageLimit)
                 {
                     Log.Warning($"session.PackageNumber too large: {lastNumber} {sessionPlayer.PlayerId}  {ConfigData.PackageLimit}");
-                    session?.Send(new A2C_Disconnect() { Error = ErrorCode.ERR_PackageFrequent });
+                    session?.Send(new A2C_Disconnect() { Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Package_Frequent) });
                     session.Disconnect().Coroutine();
 					return;
                 }

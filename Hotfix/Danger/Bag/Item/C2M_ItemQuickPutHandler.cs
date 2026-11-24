@@ -26,7 +26,7 @@ namespace ET
             //if (hourseId < (int)ItemLocType.ItemWareHouse1 || hourseId > (int)ItemLocType.ItemWareHouse4)
             //{
             //    Log.Error($"C2M_ItemQuickPutRequest 1");
-            //    response.Error = ErrorCode.ERR_ModifyData;
+            //    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             //    reply();
             //    return;
             //}

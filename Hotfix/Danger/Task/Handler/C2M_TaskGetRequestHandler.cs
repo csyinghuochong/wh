@@ -25,7 +25,7 @@ namespace ET
 
             if (taskTable != TaskTableType.Task_2)
             {
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 await ETTask.CompletedTask;
                 return;
@@ -34,7 +34,7 @@ namespace ET
             if (!LDTask_2Category.Instance.Contain(request.TaskId))
             {
                 Log.Error($"C2M_TaskGetRequest 1");
-                response.Error = ErrorCode.ERR_ModifyData;
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
                 return;
             }

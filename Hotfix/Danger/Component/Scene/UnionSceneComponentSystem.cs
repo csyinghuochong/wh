@@ -360,7 +360,7 @@ namespace ET
             NumericComponent numericComponent_0 = await DBHelper.GetPlayerComponent<NumericComponent>(unitid);
             if (numericComponent_0 != null && numericComponent_0.GetAsLong(NumericType.UnionId_0) > 0)
             {
-                return ErrorCode.ERR_PlayerHaveUnion;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Union_Already_Joined);
             }
 
             //判断家族人数是否已满

@@ -66,7 +66,7 @@ namespace ET
             // Time_2 内不能再次主动施法；即使 Limit_Move/Limit_Rotate 都为 0，也不能用新技能替换当前动作。
             if (self.IsRigidity())
             {
-                return ErrorCode.ERR_CanNotUseSkill_Rigidity;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Skill_Rigidity);
             }
 
             bool stunSkill = ldSkill != null && ldSkill.Use_Stun == 1 && self.StateTypeGet(StateTypeEnum.HunMi);
@@ -136,7 +136,7 @@ namespace ET
             if (!isSkillMove && self.IsRigidity() && (self.RigiditySkillId == 0
                     || LDSkill_BattleCategory.Instance.Get(self.RigiditySkillId).Limit_Move == 1))
             {
-                return ErrorCode.ERR_CanNotMove_Rigidity;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Battle_Move_Restricted);
             }
             if (self.StateTypeGet(StateTypeEnum.HunMi))
             {

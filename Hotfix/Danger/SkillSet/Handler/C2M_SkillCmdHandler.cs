@@ -23,7 +23,7 @@ namespace ET
                 if (!LDSkill_BattleCategory.Instance.Contain(request.SkillID))
                 {
                     Log.Error($"C2M_SkillCmd 1");
-                    response.Error = ErrorCode.ERR_ModifyData;
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
                     return;
                 }
@@ -37,7 +37,7 @@ namespace ET
                     {
                         Console.WriteLine($"request.SkillID item:  {request.ItemId}");
                         Log.Error($"C2M_SkillCmd 2");
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         reply();
                         return;
                     }
@@ -49,7 +49,7 @@ namespace ET
                     {
                         Console.WriteLine($"request.SkillID error:  {request.SkillID}");
                         Log.Error($"C2M_SkillCmd 3");
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         reply();
                         return;
                     }
@@ -58,7 +58,7 @@ namespace ET
                         && ldItem.GetTypeParam1() != request.SkillID)
                     {
                         Log.Error($"C2M_SkillCmd potion skill mismatch item={request.ItemId} skill={request.SkillID} param1={ldItem.ItemTypeParam1}");
-                        response.Error = ErrorCode.ERR_ModifyData;
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                         reply();
                         return;
                     }

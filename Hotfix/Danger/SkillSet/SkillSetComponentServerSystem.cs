@@ -754,7 +754,7 @@ namespace ET
 				if (ownSkill == null)
 				{
 					Log.Error($"SkillSetComponent 技能不存在 SkillID={request.SkillID}");
-					return ErrorCode.ERR_ModifyData;
+					return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
 				}
 			}
 

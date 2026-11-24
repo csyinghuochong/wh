@@ -200,7 +200,7 @@ namespace ET
         {
             if (trackStatus != 0 && trackStatus != 1)
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
 
             TaskPro taskPro = null;
@@ -214,7 +214,7 @@ namespace ET
             }
             else
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
 
             if (taskPro == null
@@ -264,7 +264,7 @@ namespace ET
             }
             if (self.IsHaveTask_2(taskId))
             {
-                return(null, ErrorCode.ERR_TaskNoComplete);
+                return(null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Task_Not_Complete));
             }
             TaskPro taskPro = self.CreateTask_2(taskId);
             return (taskPro, ErrorCode.ERR_Success);
@@ -330,13 +330,13 @@ namespace ET
         {
             if (taskId == 0 || LDTask_1Category.Instance == null || !LDTask_1Category.Instance.Contain(taskId))
             {
-                return (null, ErrorCode.ERR_ModifyData);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data));
             }
 
             LDTask_1 ldTask = LDTask_1Category.Instance.Get(taskId);
             if (self.IsHaveTask_1(taskId))
             {
-                return (null, ErrorCode.ERR_TaskNoComplete);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Task_Not_Complete));
             }
 
             TaskPro exist = self.GetTaskById_1(taskId);
@@ -753,7 +753,7 @@ namespace ET
             int taskid = request.TaskId;
             if (LDTask_1Category.Instance == null || !LDTask_1Category.Instance.Contain(taskid))
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
 
             Unit unit = self.GetParent<Unit>();
@@ -785,7 +785,7 @@ namespace ET
             List<RewardItem> rewardItems = TaskHelper.GetTaskRewardItems_1(roleInfoComponent.RoleInfo.Occ, taskid, request.RewardIndex, true);
             if (rewardItems == null)
             {
-                return ErrorCode.ERR_ModifyData;
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
             }
 
             // 共用解析在末尾依次追加 Gold_1、Gold_2；服务端按非绑金币(4)、绑定金币(5)发放。
@@ -1896,7 +1896,7 @@ namespace ET
 
             if (UnionHelper.HasAcceptedUnionWork(self.RoleTaskList_2))
             {
-                return (null, ErrorCode.ERR_TaskNoComplete);
+                return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Task_Not_Complete));
             }
 
             self.EnsureNextUnionWorkTaskId();
@@ -1921,7 +1921,7 @@ namespace ET
             {
                 if (exist.taskStatus != (int)TaskStatuEnum.Commited)
                 {
-                    return (null, ErrorCode.ERR_TaskNoComplete);
+                    return (null, LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Task_Not_Complete));
                 }
 
                 ResetUnionWorkTaskPro(exist);
