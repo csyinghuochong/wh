@@ -622,7 +622,8 @@ namespace ET
 							case ItemBigType.Type_Exp:
 							case ItemBigType.Type_Item:
 							case ItemBigType.Type_Equip:
-								unit.GetComponent<BagComponentServer>().OnAddItemData($"{itemType}~{itemId}~{itemNumber}", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", true);
+								// GM 发放默认可交易，显式传入交易状态，避免缺省状态 0 被入包校验拒绝。
+								unit.GetComponent<BagComponentServer>().OnAddItemData($"{itemType}~{itemId}~{itemNumber}~{ItemTradeStatus.Tradable}", $"{ItemGetWay.GM}_{TimeHelper.ServerNow()}", true);
 								break;
 							case ItemBigType.Type_Pet:
 								//1#32#11#1
