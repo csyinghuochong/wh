@@ -117,7 +117,7 @@ namespace ET
 		public int VIP { get; set; }
 		/// <summary>主线 非0生效</summary>
 		[ProtoMember(13)]
-		public int Task_Main { get; set; }
+		public string Task_Main { get; set; }
 		/// <summary>关系 0-且 1-或</summary>
 		[ProtoMember(14)]
 		public int Relationship { get; set; }
