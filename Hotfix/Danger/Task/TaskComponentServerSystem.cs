@@ -736,7 +736,8 @@ namespace ET
                     roleInfoComponent.RoleInfo.Lv);
             if (exp > 0)
             {
-                roleInfoComponent.Role_AddExp(exp, true);
+                // 统一入口先结算经验和升级，再推送经验余额供客户端刷新。
+                roleInfoComponent.UpdateRoleData(UserDataType.Exp, exp.ToString(), getWay: ItemGetWay.TaskReward);
             }
 
             if (UnionHelper.IsUnionWorkTask(taskid))
@@ -833,7 +834,8 @@ namespace ET
                     roleInfoComponent.RoleInfo.Lv);
             if (exp > 0)
             {
-                roleInfoComponent.Role_AddExp(exp, true);
+                // 统一入口先结算经验和升级，再推送经验余额供客户端刷新。
+                roleInfoComponent.UpdateRoleData(UserDataType.Exp, exp.ToString(), getWay: ItemGetWay.TaskReward);
             }
 
             self.UnlockNextTasks_1(ldTask);

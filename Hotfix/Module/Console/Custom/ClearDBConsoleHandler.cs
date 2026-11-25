@@ -13,7 +13,7 @@ namespace ET
         public const string Command = "cleardb";
 
         /// <summary>
-        /// 内网清档：检查全部网关和数据库，等待在途数据库操作完成，再次检查玩家后同步删库并退出。
+        /// 内网或版号服清档：检查全部网关和数据库，等待在途数据库操作完成，再次检查玩家后同步删库并退出。
         /// 仅支持全部业务场景位于当前进程，删除期间不让出主线程，避免登录和旧缓存回写。
         /// </summary>
         public async ETTask Run(ModeContex contex, string content)
@@ -25,9 +25,12 @@ namespace ET
                 return;
             }
 
-            if (!CommonHelper.IsInnerNet() || !IsInnerAddress(StartMachineConfigCategory.Instance.Get(1).OuterIP))
+            // 版号服使用公网对外地址，允许该启动配置清档；数据库仍须通过下面的内网地址检查。
+            bool isBanHao = Game.Options.StartConfig.Replace('\\', '/').TrimEnd('/')
+                .Equals("StartConfig/BanHao", StringComparison.OrdinalIgnoreCase);
+            if (!isBanHao && (!CommonHelper.IsInnerNet() || !IsInnerAddress(StartMachineConfigCategory.Instance.Get(1).OuterIP)))
             {
-                Log.Console("拒绝清库：只能在内网使用。");
+                Log.Console("拒绝清库：只能在内网或 StartConfig/BanHao 启动配置下使用。");
                 return;
             }
 
