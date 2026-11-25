@@ -343,8 +343,9 @@ namespace ET
         }
 
         /// <summary>
-        /// 创角发放 Global_Initial_Resources。货币走 ExtraCurrencies（创角时 DataCollation 尚未挂上，不能走 UpdateRoleData）。
-        /// 未配置宠物时赠送一只神兽91；宠物只初始化入库，不出战，也不走登录后的推送和任务事件。
+        /// 创角发放 Global_Initial_Resources，并按 Global_Initial_Mount、Global_Initial_Pet 的配置 ID 各发放一只。
+        /// 初始坐骑、宠物未配置或 ID 为 0 时不发放；宠物只初始化入库，不出战，也不走登录后的推送和任务事件。
+        /// 货币走 ExtraCurrencies（创角时 DataCollation 尚未挂上，不能走 UpdateRoleData）。
         /// </summary>
         public static void GrantCreateRoleInitialResources(this BagComponentServer self)
         {
@@ -356,6 +357,33 @@ namespace ET
             }
 
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(raw);
+            // 两项均为单个配置 ID；缺少配置时不发放，不设置默认 ID。
+            const string initialMountKey = "Global_Initial_Mount";
+            const string initialPetKey = "Global_Initial_Pet";
+            LDGlobalValueCategory globalValues = LDGlobalValueCategory.Instance;
+            int mountId = globalValues != null && globalValues.ContainKey(initialMountKey) ? globalValues.GetInt(initialMountKey) : 0;
+            int petId = globalValues != null && globalValues.ContainKey(initialPetKey) ? globalValues.GetInt(initialPetKey) : 0;
+            if (mountId > 0)
+            {
+                rewardItems.Add(new RewardItem
+                {
+                    ItemType = ItemBigType.Type_Mount,
+                    ItemID = mountId,
+                    ItemNum = 1,
+                    ItemFlags = ItemTradeStatus.Tradable
+                });
+            }
+            if (petId > 0)
+            {
+                rewardItems.Add(new RewardItem
+                {
+                    ItemType = ItemBigType.Type_Pet,
+                    ItemID = petId,
+                    ItemNum = 1,
+                    ItemFlags = ItemTradeStatus.Tradable
+                });
+            }
+
             foreach (RewardItem item in rewardItems)
             {
                 if (!ItemTradeStatus.CanGrant(item.ItemFlags))
@@ -364,16 +392,6 @@ namespace ET
                     Console.WriteLine(error);
                     throw new InvalidOperationException(error);
                 }
-            }
-            if (!rewardItems.Exists(item => item.ItemType == ItemBigType.Type_Pet))
-            {
-                rewardItems.Add(new RewardItem
-                {
-                    ItemType = ItemBigType.Type_Pet,
-                    ItemID = 91,
-                    ItemNum = 1,
-                    ItemFlags = ItemTradeStatus.Tradable
-                });
             }
 
             Unit unit = self.GetParent<Unit>();

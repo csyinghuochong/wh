@@ -91,119 +91,116 @@ namespace ET
 		/// <summary>图标</summary>
 		[ProtoMember(4)]
 		public string Icon { get; set; }
-		/// <summary>特殊显示 优先级 LS 0-不显示</summary>
+		/// <summary>显示 排序</summary>
 		[ProtoMember(5)]
-		public int Icon_Special_Show_Order_LS { get; set; }
-		/// <summary>显示 优先级 LS 0-不显示</summary>
-		[ProtoMember(6)]
-		public int Icon_Show_Order_LS { get; set; }
+		public int Order_LS { get; set; }
 		/// <summary>类型 0-无 1-增益 2-减益</summary>
-		[ProtoMember(7)]
+		[ProtoMember(6)]
 		public int Type_Effect { get; set; }
 		/// <summary>添加 类型</summary>
-		[ProtoMember(8)]
+		[ProtoMember(7)]
 		public int Type_Add { get; set; }
 		/// <summary>类型参数 0-无 1-上限数 2-无 3-共存数</summary>
-		[ProtoMember(9)]
+		[ProtoMember(8)]
 		public int Type_Add_Param { get; set; }
 		/// <summary>自定组</summary>
-		[ProtoMember(10)]
+		[ProtoMember(9)]
 		public int[] Group { get; set; }
 		/// <summary>互斥组</summary>
-		[ProtoMember(11)]
+		[ProtoMember(10)]
 		public int[] Group_Mutex { get; set; }
 		/// <summary>互斥ID</summary>
-		[ProtoMember(12)]
+		[ProtoMember(11)]
 		public int[] Id_Mutex { get; set; }
 		/// <summary>初始化 技能</summary>
-		[ProtoMember(13)]
+		[ProtoMember(12)]
 		public int Skill_Init { get; set; }
 		/// <summary>刷新触发 技能</summary>
-		[ProtoMember(14)]
+		[ProtoMember(13)]
 		public int Skill_Refresh { get; set; }
 		/// <summary>触发 技能</summary>
-		[ProtoMember(15)]
+		[ProtoMember(14)]
 		public int Skill_Trigger { get; set; }
 		/// <summary>时间结束 技能</summary>
-		[ProtoMember(16)]
+		[ProtoMember(15)]
 		public int Skill_TimeEnd { get; set; }
 		/// <summary>消失 技能</summary>
-		[ProtoMember(17)]
+		[ProtoMember(16)]
 		public int Skill_Remove { get; set; }
 		/// <summary>免疫组</summary>
-		[ProtoMember(18)]
+		[ProtoMember(17)]
 		public int[] Immune_Group { get; set; }
 		/// <summary>控制</summary>
-		[ProtoMember(19)]
+		[ProtoMember(18)]
 		public int[] Control { get; set; }
 		/// <summary>免疫</summary>
-		[ProtoMember(20)]
+		[ProtoMember(19)]
 		public int[] Immune { get; set; }
 		/// <summary>移动 移除 0-否 1-是</summary>
-		[ProtoMember(21)]
+		[ProtoMember(20)]
 		public int Remove_Move { get; set; }
 		/// <summary>战斗 移除 0-否 1-是</summary>
-		[ProtoMember(22)]
+		[ProtoMember(21)]
 		public int Remove_Battle_Enter { get; set; }
 		/// <summary>脱战 移除 0-否 1-是</summary>
-		[ProtoMember(23)]
+		[ProtoMember(22)]
 		public int Remove_Battle_Leave { get; set; }
 		/// <summary>死亡 移除 0-否 1-是</summary>
-		[ProtoMember(24)]
+		[ProtoMember(23)]
 		public int Remove_Dead { get; set; }
 		/// <summary>安全区 移除 0-否 1-是</summary>
-		[ProtoMember(25)]
+		[ProtoMember(24)]
 		public int Remove_SafeArea { get; set; }
 		/// <summary>切场景 移除 0-否 1-是</summary>
-		[ProtoMember(26)]
+		[ProtoMember(25)]
 		public int Remove_ChangeScene { get; set; }
 		/// <summary>下线 移除 0-否 1-是</summary>
-		[ProtoMember(27)]
+		[ProtoMember(26)]
 		public int Remove_Logout { get; set; }
 		/// <summary>状态 动作</summary>
-		[ProtoMember(28)]
+		[ProtoMember(27)]
 		public string Act { get; set; }
 		/// <summary>上升 时间 %</summary>
-		[ProtoMember(29)]
+		[ProtoMember(28)]
 		public double Time_Up_Rate { get; set; }
 		/// <summary>悬停 时间 %</summary>
-		[ProtoMember(30)]
+		[ProtoMember(29)]
 		public double Time_Stop_Rate { get; set; }
 		/// <summary>下降 时间 %</summary>
-		[ProtoMember(31)]
+		[ProtoMember(30)]
 		public double Time_Down_Rate { get; set; }
 		/// <summary>上升 速度</summary>
-		[ProtoMember(32)]
+		[ProtoMember(31)]
 		public int Speed_Up { get; set; }
 		/// <summary>上升 加速</summary>
-		[ProtoMember(33)]
+		[ProtoMember(32)]
 		public int Acceleration_Up { get; set; }
 		/// <summary>下降 速度</summary>
-		[ProtoMember(34)]
+		[ProtoMember(33)]
 		public int Speed_Down { get; set; }
 		/// <summary>下降 加速</summary>
-		[ProtoMember(35)]
+		[ProtoMember(34)]
 		public int Acceleration_Down { get; set; }
 		/// <summary>特效1</summary>
-		[ProtoMember(36)]
+		[ProtoMember(35)]
 		public string VFX_1 { get; set; }
 		/// <summary>挂点1</summary>
-		[ProtoMember(37)]
+		[ProtoMember(36)]
 		public string VFX_Socket1 { get; set; }
 		/// <summary>特效2</summary>
-		[ProtoMember(38)]
+		[ProtoMember(37)]
 		public string VFX_2 { get; set; }
 		/// <summary>挂点2</summary>
-		[ProtoMember(39)]
+		[ProtoMember(38)]
 		public string VFX_Socket2 { get; set; }
 		/// <summary>特效3</summary>
-		[ProtoMember(40)]
+		[ProtoMember(39)]
 		public string VFX_3 { get; set; }
 		/// <summary>挂点3</summary>
-		[ProtoMember(41)]
+		[ProtoMember(40)]
 		public string VFX_Socket3 { get; set; }
 		/// <summary>材质</summary>
-		[ProtoMember(42)]
+		[ProtoMember(41)]
 		public string Buff_Shader { get; set; }
 
 	}

@@ -5002,6 +5002,61 @@ namespace ET
 
 	}
 
+// 批量使用中的一项；只引用本人当前持有的道具格子，各项可指定不同数量与礼包选项。
+	[Message(OuterOpcode.ItemUseInfo)]
+	[ProtoContract]
+	public partial class ItemUseInfo: Object
+	{
+		[ProtoMember(1)]
+		public long OperateBagID { get; set; }
+
+		[ProtoMember(2)]
+		public string OperatePar { get; set; }
+
+		[ProtoMember(3)]
+		public int Loc { get; set; }
+
+		[ProtoMember(4)]
+		public int UseNum { get; set; }
+
+	}
+
+	[ResponseType(nameof(M2C_ItemBatchUseResponse))]
+// 客户端 -> 地图服：按列表顺序使用多个道具格子；能用的使用，不能用的保留并继续下一项。
+	[Message(OuterOpcode.C2M_ItemBatchUseRequest)]
+	[ProtoContract]
+	public partial class C2M_ItemBatchUseRequest: Object, IActorLocationRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public List<ItemUseInfo> Items = new List<ItemUseInfo>();
+
+	}
+
+// 地图服 -> 客户端：返回一个错误码，成功项的背包变化由 M2C_RoleBagUpdate 推送；礼包溢出奖励直接发邮件，仍视为成功。
+	[Message(OuterOpcode.M2C_ItemBatchUseResponse)]
+	[ProtoContract]
+	public partial class M2C_ItemBatchUseResponse: Object, IActorLocationResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public string Message { get; set; }
+
+		[ProtoMember(92)]
+		public int Error { get; set; }
+
+		[ProtoMember(1)]
+		public string OperatePar { get; set; }
+
+	}
+
 	[ResponseType(nameof(M2C_ItemTradeConfirmResponse))]
 // 客户端 -> 地图服：显式将本人整格道具状态3改为9。取消确认不发送。
 // 客户端主动弹窗确认后调用本协议；收到成功回包后再发送原业务请求。服务端推送整格状态变化。

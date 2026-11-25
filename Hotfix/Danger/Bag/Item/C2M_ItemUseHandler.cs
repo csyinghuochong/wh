@@ -7,30 +7,11 @@ namespace ET
     {
         protected override async ETTask Run(Unit unit, C2M_ItemUseRequest request, M2C_ItemUseResponse response, Action reply)
         {
-            if (unit.Type != UnitType.Player || request.UseNum <= 0 || !ItemNewHelper.IsValideBagLoc(request.Loc))
-            {
-                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
-                reply();
-                return;
-            }
             M2C_RoleBagUpdate bagUpdate = new M2C_RoleBagUpdate();
-            ItemLocType locType = (ItemLocType)request.Loc;
-            BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, request.OperateBagID);
-            if (useBagInfo == null)
-            {
-                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
-                reply();
-                return;
-            }
-            if (useBagInfo.ItemType != ItemBigType.Type_Item)
-            {
-                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
-                reply();
-                return;
-            }
             // 接收本次礼包奖励的溢出邮件；UseItem先尝试入包，放不下的奖励由其写入附件并保存邮件。
             MailInfo overflowMail = new MailInfo();
-            response.Error = await ItemUseHelper.UseItem(unit, 0, useBagInfo, bagUpdate, request.UseNum, locType, request.OperatePar, overflowMail);
+            response.Error = await ItemUseHelper.UseBagItem(unit, request.OperateBagID, request.Loc, request.UseNum,
+                request.OperatePar, bagUpdate, overflowMail);
             if (unit.IsDisposed)
             {
                 return;

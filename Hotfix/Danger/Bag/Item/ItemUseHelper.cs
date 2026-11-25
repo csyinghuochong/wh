@@ -5,6 +5,29 @@ namespace ET
 {
     public static class ItemUseHelper
     {
+        /// <summary>单项及批量请求共用入口：先校验玩家、位置和持有格子，再按原规则校验数量、使用次数并执行使用。</summary>
+        public static async ETTask<int> UseBagItem(Unit unit, long operateBagId, int loc, int useNum, string operatePar,
+            M2C_RoleBagUpdate bagUpdate, MailInfo overflowMail)
+        {
+            if (unit.Type != UnitType.Player || operateBagId <= 0 || useNum <= 0 || !ItemNewHelper.IsValideBagLoc(loc))
+            {
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+            }
+
+            ItemLocType locType = (ItemLocType)loc;
+            BagInfo useBagInfo = unit.GetComponent<BagComponentServer>().GetItemByLoc(locType, operateBagId);
+            if (useBagInfo == null)
+            {
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Item_NotExist);
+            }
+            if (useBagInfo.ItemType != ItemBigType.Type_Item)
+            {
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+            }
+
+            return await UseItem(unit, 0, useBagInfo, bagUpdate, useNum, locType, operatePar, overflowMail);
+        }
+
         /// <summary>校验归属、数量及使用次数后扣除道具；礼包先入包，溢出附件保存到邮箱后才返回成功。</summary>
         /// <param name="useBagInfo">背包使用传道具，获得后自动使用传空（不扣背包、不推 bagUpdate）。</param>
         /// <param name="useNum">使用数量。有格子时不能小于 1，也不能大于该格子 ItemNum。</param>
