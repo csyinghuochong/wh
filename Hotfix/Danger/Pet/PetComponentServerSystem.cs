@@ -329,7 +329,8 @@ namespace ET
                     {
                         ItemType = ItemBigType.Type_Item,
                         ItemID = eat.ItemID,
-                        ItemNum = eat.ItemNum
+                        ItemNum = eat.ItemNum,
+                        ItemFlags = ItemTradeStatus.Tradable,
                     });
                 }
 

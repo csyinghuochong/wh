@@ -49,7 +49,7 @@ namespace ET
                     ItemType = itemType,
                     ItemID = itemId,
                     ItemNum = itemNum,
-                    ItemFlags = ItemFlagEnum.ResolveItemFlags(status, 0),
+                    ItemFlags = ItemTradeStatus.Resolve(status),
                 });
             }
         }

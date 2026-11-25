@@ -12,7 +12,8 @@ namespace ET
             long bagInfoID = request.OperateBagID;
             BagComponentServer bagComponentServer = unit.GetComponent<BagComponentServer>();
             BagInfo useBagInfo = bagComponentServer.GetItemByUId(bagInfoID);
-            if (useBagInfo == null || !ItemNewHelper.IsValideBagLoc(useBagInfo.Loc))
+            if (useBagInfo == null || !ItemNewHelper.IsValideBagLoc(useBagInfo.Loc)
+                || !ItemTradeStatus.CanGrant(useBagInfo.ItemFlags))
             {
                 response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Use_Fail);
                 reply();

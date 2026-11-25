@@ -133,8 +133,8 @@ namespace ET
             }
 
             int slot = validIndex[pick];
-            int itemFlags = ItemFlagEnum.ResolveItemFlags(trades[slot], 0);
-            if (ItemFlagEnum.IsDisplayOnly(itemFlags))
+            int itemFlags = ItemTradeStatus.Resolve(trades[slot], 0);
+            if (!ItemTradeStatus.CanGrant(itemFlags))
             {
                 return false;
             }

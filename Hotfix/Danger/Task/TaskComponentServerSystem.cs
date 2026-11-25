@@ -807,6 +807,7 @@ namespace ET
                     ItemType = ItemBigType.Type_Item,
                     ItemID = UserDataType.Sp,
                     ItemNum = ldTask.Skill_Point_Param3,
+                    ItemFlags = ItemTradeStatus.Tradable,
                 });
             }
 

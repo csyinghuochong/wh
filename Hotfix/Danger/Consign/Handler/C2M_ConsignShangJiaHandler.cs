@@ -109,7 +109,7 @@ namespace ET
 					return;
 				}
 
-				if (!ItemFlagEnum.IsTradable(bagInfo.GetEffectiveItemFlags()))
+				if (!ItemTradeStatus.IsTradable(bagInfo.GetTradeStatus()))
 				{
 					response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);      //道具绑定
 					reply();

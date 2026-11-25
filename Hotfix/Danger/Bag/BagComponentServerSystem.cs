@@ -315,7 +315,8 @@ namespace ET
                 {
                     ItemType = ItemBigType.Type_Equip,
                     ItemID = equipId,
-                    ItemNum = 1
+                    ItemNum = 1,
+                    ItemFlags = ItemTradeStatus.Tradable
                 });
             }
 
@@ -357,9 +358,9 @@ namespace ET
             List<RewardItem> rewardItems = ItemNewHelper.GetRewardItems(raw);
             foreach (RewardItem item in rewardItems)
             {
-                if (ItemFlagEnum.IsDisplayOnly(item.ItemFlags))
+                if (!ItemTradeStatus.CanGrant(item.ItemFlags))
                 {
-                    string error = $"创角奖励不能使用展示状态：Key={GlobalValueKey.Global_Initial_Resources}, ItemType={item.ItemType}, ItemID={item.ItemID}, TradeStatus={ItemFlagEnum.ToTradeStatus(item.ItemFlags)}";
+                    string error = $"创角奖励不能使用展示状态：Key={GlobalValueKey.Global_Initial_Resources}, ItemType={item.ItemType}, ItemID={item.ItemID}, TradeStatus={item.ItemFlags}";
                     Console.WriteLine(error);
                     throw new InvalidOperationException(error);
                 }
@@ -370,7 +371,8 @@ namespace ET
                 {
                     ItemType = ItemBigType.Type_Pet,
                     ItemID = 91,
-                    ItemNum = 1
+                    ItemNum = 1,
+                    ItemFlags = ItemTradeStatus.Tradable
                 });
             }
 
@@ -868,7 +870,7 @@ namespace ET
 
         public static bool OnAddItemData(this BagComponentServer self, BagInfo bagInfo, string getType)
         {
-            if (bagInfo.ItemNum <= 0 || ItemFlagEnum.IsDisplayOnly(bagInfo.ItemFlags))
+            if (bagInfo.ItemNum <= 0 || !ItemTradeStatus.CanGrant(bagInfo.ItemFlags))
             {
                 return false;
             }
@@ -915,12 +917,17 @@ namespace ET
         {
             self.OnAddItemData(new List<RewardItem>
             {
-                new RewardItem { ItemType = ItemBigType.Type_Item, ItemID = itemid, ItemNum = itemnumber }
+                new RewardItem { ItemType = ItemBigType.Type_Item, ItemID = itemid, ItemNum = itemnumber, ItemFlags = ItemTradeStatus.Tradable }
             }, new AddItemArg(getType) { Loc = (ItemLocType)itemlockType });
         }
 
         public static void OnAddItemDataNewCell(this BagComponentServer self, BagInfo bagInfo, int itemnumber)
         {
+            if (itemnumber <= 0 || !ItemTradeStatus.CanGrant(bagInfo.ItemFlags))
+            {
+                return;
+            }
+
             int itemid = bagInfo.ItemID;
             BagInfo useBagInfo = new BagInfo();
             useBagInfo.ItemID = itemid;
@@ -965,7 +972,7 @@ namespace ET
 
             for (int i = 0; i < rewardItems.Count; i++)
             {
-                if (rewardItems[i].ItemNum <= 0 || ItemFlagEnum.IsDisplayOnly(rewardItems[i].ItemFlags))
+                if (rewardItems[i].ItemNum <= 0 || !ItemTradeStatus.CanGrant(rewardItems[i].ItemFlags))
                 {
                     return false;
                 }
@@ -1044,7 +1051,7 @@ namespace ET
         {
             for (int i = 0; i < rewards.Count; i++)
             {
-                if (rewards[i].ItemNum <= 0 || ItemFlagEnum.IsDisplayOnly(rewards[i].ItemFlags))
+                if (rewards[i].ItemNum <= 0 || !ItemTradeStatus.CanGrant(rewards[i].ItemFlags))
                 {
                     return false;
                 }
@@ -1240,7 +1247,7 @@ namespace ET
             for (int k = 0; k < itemList.Count && leftNum > 0; k++)
             {
                 BagInfo bagInfo = itemList[k];
-                if (bagInfo.ItemID != item.ItemID || bagInfo.ItemType != item.ItemType || !ItemFlagEnum.CanPileTogether(bagInfo.ItemFlags, item.ItemFlags) || bagInfo.ItemNum >= maxPileSum || !ItemNewHelper.SameMakeInfo(bagInfo.MakePlayer, bagInfo.MakeTime, arg.MakePlayer, arg.MakeTime))
+                if (bagInfo.ItemID != item.ItemID || bagInfo.ItemType != item.ItemType || bagInfo.ItemFlags != item.ItemFlags || bagInfo.ItemNum >= maxPileSum || !ItemNewHelper.SameMakeInfo(bagInfo.MakePlayer, bagInfo.MakeTime, arg.MakePlayer, arg.MakeTime))
                 {
                     continue;
                 }

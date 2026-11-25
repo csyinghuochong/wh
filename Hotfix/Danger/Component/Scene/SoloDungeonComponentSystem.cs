@@ -101,7 +101,7 @@ namespace ET
             {
                 List<RewardItem> rewardList = new List<RewardItem>();
                 //获胜奖励
-                RewardItem reward = new RewardItem();
+                RewardItem reward = new RewardItem() { ItemFlags = ItemTradeStatus.Tradable };
 
                 int goldValue = 12500;
                 int attackLv = attackUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;
@@ -125,7 +125,7 @@ namespace ET
                 reward.ItemID = 1;
                 reward.ItemNum = goldValue;
                 rewardList.Add(reward);
-                reward = new RewardItem();
+                reward = new RewardItem() { ItemFlags = ItemTradeStatus.Tradable };
                 reward.ItemID = 10010035;
                 reward.ItemNum = RandomHelper.NextInt(1, 4);
                 rewardList.Add(reward);
@@ -138,7 +138,7 @@ namespace ET
             {
                 //失败奖励
                 List<RewardItem> rewardListFail = new List<RewardItem>();
-                RewardItem rewardFail = new RewardItem();
+                RewardItem rewardFail = new RewardItem() { ItemFlags = ItemTradeStatus.Tradable };
                 rewardFail.ItemID = 1;
                 rewardFail.ItemNum = 7500;
                 int defendLv = defendUnit.GetComponent<RoleInfoComponentServer>().RoleInfo.Lv;

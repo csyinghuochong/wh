@@ -6,7 +6,7 @@ namespace ET
     public static class MailHelp
     {
 
-        /// <summary>后台附件：类型~ID~数量~交易状态，多项用 | 分隔；缺少或空状态默认 1，展示状态 0/19 不可发放。</summary>
+        /// <summary>后台附件：类型~ID~数量~交易码，多项用|分隔；缺少或空第四段按0处理，展示码0/19不可发放。</summary>
         public static bool TryGetGMMailItems(string itemList, out List<BagInfo> items)
         {
             items = new List<BagInfo>();
@@ -31,16 +31,14 @@ namespace ET
                     return false;
                 }
 
-                int status = ItemTradeStatus.Tradable;
+                int status = ItemTradeStatus.None;
                 if (fields.Length == 4 && !string.IsNullOrEmpty(fields[3])
                     && (!int.TryParse(fields[3], out status) || status < 0))
                 {
                     return false;
                 }
 
-                if (status != ItemFlagEnum.TradeStatus.Tradable && status != ItemFlagEnum.TradeStatus.BindOnEquip
-                    && status != ItemFlagEnum.TradeStatus.DungeonTradable && status != ItemFlagEnum.TradeStatus.Limited
-                    && status != ItemFlagEnum.TradeStatus.NonTradable && status != ItemFlagEnum.TradeStatus.Inherit)
+                if (!ItemTradeStatus.CanGrant(status))
                 {
                     return false;
                 }
@@ -55,7 +53,7 @@ namespace ET
                     ItemType = itemType,
                     ItemID = itemId,
                     ItemNum = itemNum,
-                    ItemFlags = ItemFlagEnum.ResolveItemFlags(status, 0),
+                    ItemFlags = status,
                     GetWay = getWay,
                 });
             }
@@ -184,6 +182,7 @@ namespace ET
             gold.ItemID = UserDataType.Gold;
             gold.ItemType = ItemBigType.Type_Item;
             gold.ItemNum = goldNum > int.MaxValue ? int.MaxValue : (int)goldNum;
+            gold.ItemFlags = ItemTradeStatus.Tradable;
             gold.GetWay = $"{ItemGetWay.PaiMaiSell}_{TimeHelper.ServerNow()}";
             mailInfo.ItemList.Add(gold);
 

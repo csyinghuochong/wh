@@ -30,7 +30,7 @@ namespace ET
 
             int sellNum = request.SellNum;
             if (sellNum <= 0 || sellNum > useBagInfo.ItemNum || useBagInfo.ItemType != ItemBigType.Type_Item
-                || useBagInfo.IsLocked || ItemFlagEnum.IsDisplayOnly(useBagInfo.ItemFlags)
+                || useBagInfo.IsLocked || !ItemTradeStatus.CanGrant(useBagInfo.ItemFlags)
                 || !LDItemCategory.Instance.Contain(useBagInfo.ItemID))
             {
                 response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);

@@ -99,7 +99,7 @@ namespace ET
                     continue;
                 }
 
-                rewardItems.Add(new RewardItem() { ItemID = itemid, ItemNum = number });
+               
             }
 
             int needCell = unit.GetComponent<BagComponentServer>().GetNeedCell(rewardItems, (ItemLocType)request.LocType);

@@ -97,6 +97,7 @@ namespace ET
                             BagInfo newItem = new BagInfo
                             {
                                 ItemType = ItemBigType.Type_Item, ItemID = item.Id, Loc = loc, GetWay = getWay,
+                                ItemFlags = ItemTradeStatus.Tradable,
                             };
                             bag.OnAddItemDataNewCell(newItem, ItemNewHelper.GetNewItemPileSum(newItem));
                         }
@@ -502,8 +503,8 @@ namespace ET
 
                     if (RandomHelper.RandFloat01() < 0.5f)
                     {
-                        mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1001100, ItemNum = 1, ItemFlags = ItemFlagEnum.Limited });
-                        mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1002100, ItemNum = 1 });
+                        mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1001100, ItemNum = 1, ItemFlags = ItemTradeStatus.Limited });
+                        mailInfo.ItemList.Add(new BagInfo() { ItemType = ItemBigType.Type_Equip, ItemID = 1002100, ItemNum = 1, ItemFlags = ItemTradeStatus.Tradable });
                     }
                     await MailHelp.SendUserMail(UnitZoneHelper.GetHomeZone(unit), unit.Id, mailInfo);
                 }

@@ -56,11 +56,11 @@ namespace ET
                     }
 
                     int warehouseFlags = warehourseInfo.IsDungeonTradable()
-                            ? (warehourseInfo.ItemFlags & ~ItemFlagEnum.TradeStatusMask) | ItemFlagEnum.NonTradable : warehourseInfo.ItemFlags;
+                            ? ItemTradeStatus.NonTradable : warehourseInfo.ItemFlags;
                     int bagFlags = bagInfo.IsDungeonTradable()
-                            ? (bagInfo.ItemFlags & ~ItemFlagEnum.TradeStatusMask) | ItemFlagEnum.NonTradable : bagInfo.ItemFlags;
+                            ? ItemTradeStatus.NonTradable : bagInfo.ItemFlags;
                     if (warehourseInfo.ItemID != bagInfo.ItemID || warehourseInfo.ItemType != bagInfo.ItemType
-                            || !ItemFlagEnum.CanPileTogether(warehouseFlags, bagFlags)
+                            || warehouseFlags != bagFlags
                             || !ItemNewHelper.SameMakeInfo(warehourseInfo.MakePlayer, warehourseInfo.MakeTime, bagInfo.MakePlayer, bagInfo.MakeTime))
                     {
                         continue;

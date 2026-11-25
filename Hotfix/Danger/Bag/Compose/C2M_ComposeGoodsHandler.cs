@@ -96,7 +96,7 @@ namespace ET
             for (int i = 0; i < rewardItems.Count; i++)
             {
                 RewardItem reward = rewardItems[i];
-                if (reward.ItemNum <= 0 || ItemFlagEnum.IsDisplayOnly(reward.ItemFlags) || !ItemNewHelper.CheckValiedItem(reward))
+                if (reward.ItemNum <= 0 || !ItemTradeStatus.CanGrant(reward.ItemFlags) || !ItemNewHelper.CheckValiedItem(reward))
                 {
                     response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                     reply();
@@ -302,7 +302,7 @@ namespace ET
                 foreach (BagInfo item in locList)
                 {
                     if (item.ItemType != reward.ItemType || item.ItemID != reward.ItemID
-                            || !ItemFlagEnum.CanPileTogether(item.ItemFlags, reward.ItemFlags)
+                            || item.ItemFlags != reward.ItemFlags
                             || !ItemNewHelper.SameMakeInfo(item.MakePlayer, item.MakeTime, makePlayer, makeTime)) continue;
                     int add = Math.Min(Math.Max(0, pileSum - item.ItemNum), left);
                     item.ItemNum += add;

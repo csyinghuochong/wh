@@ -4436,7 +4436,7 @@ namespace ET
 //寄售  end####################################################
 //合成begin####################################################
 // 客户端 → Map：按 Compose_Goods 配方合成一次，Compose_Id 关联 Compose 分类；无需学习。
-// 成功扣除配置材料和货币并推送背包/货币变化；产物继承指定主材料 ItemFlags，状态 2 操作成功后转 9。
+// 成功扣除配置材料和货币并推送背包/货币变化；产物继承指定主材料交易码，状态3操作成功后转9。
 	[ResponseType(nameof(M2C_ComposeGoodsResponse))]
 	[Message(OuterOpcode.C2M_ComposeGoodsRequest)]
 	[ProtoContract]
@@ -5003,7 +5003,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_ItemTradeConfirmResponse))]
-// 客户端 -> 地图服：显式将本人整格道具状态 2 改为 9。取消确认不发送。
+// 客户端 -> 地图服：显式将本人整格道具状态3改为9。取消确认不发送。
 // 客户端主动弹窗确认后调用本协议；收到成功回包后再发送原业务请求。服务端推送整格状态变化。
 	[Message(OuterOpcode.C2M_ItemTradeConfirmRequest)]
 	[ProtoContract]
