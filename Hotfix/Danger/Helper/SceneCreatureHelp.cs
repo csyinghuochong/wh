@@ -396,7 +396,6 @@ namespace ET
 			return petNumber;
 		}
 
-
 		public static void SendFubenPickMessage(Unit unit, DropInfo dropInfo)
 		{
 			RoleInfoComponentServer roleInfoComponentServer = unit.GetComponent<RoleInfoComponentServer>();

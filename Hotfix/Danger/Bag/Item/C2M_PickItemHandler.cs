@@ -50,7 +50,6 @@ namespace ET
                     UnitHelper.RemovePickedDrop(unit, drop.UnitId);
                 }
                 removeIds.Add(drop.UnitId);
-                SceneCreatureHelp.SendFubenPickMessage(unit, drop);
             }
             if (monster != null && removeIds.Count > 0) UnitHelper.NotifyMonsterDropsPicked(monster, removeIds);
             return errorCode;

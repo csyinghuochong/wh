@@ -4664,7 +4664,7 @@ namespace ET
 	}
 
 	[ResponseType(nameof(M2C_ItemSellResponse))]
-// 客户端 -> 地图服：出售本人背包中 ItemType.Is_Sell=1 的道具；货币按 Item.Reward 单件奖励乘以 SellNum 发放，装备走 C2M_EquipDecomposeRequest。
+// 客户端 -> 地图服：出售本人背包中 ItemType.Is_Sell=1 的道具；货币 ID 取 Item.Sell_ID，数量按 Item.Sell_Num 乘以 SellNum 发放，装备走 C2M_EquipDecomposeRequest。
 	[Message(OuterOpcode.C2M_ItemSellRequest)]
 	[ProtoContract]
 	public partial class C2M_ItemSellRequest: Object, IActorLocationRequest

@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 
 namespace ET
 {
 
-    /// <summary>按 ItemType.Is_Sell 校验出售资格；先校验整笔货币奖励，再扣除道具并推送背包及货币变化。</summary>
+    /// <summary>按 ItemType.Is_Sell 校验出售资格，使用 Sell_ID / Sell_Num 计算售价；校验货币上限后扣道具并同步变化。</summary>
     [ActorMessageHandler]
     public class C2M_ItemSellHandler: AMActorLocationRpcHandler<Unit, C2M_ItemSellRequest, M2C_ItemSellResponse>
     {
@@ -41,7 +40,8 @@ namespace ET
             LDItem item = LDItemCategory.Instance.Get(useBagInfo.ItemID);
             if (!LDItemTypeCategory.Instance.Contain(item.ItemType)
                 || LDItemTypeCategory.Instance.Get(item.ItemType).Is_Sell != 1
-                || !TryGetSellCurrencies(item.Reward, sellNum, out Dictionary<int, long> currencies))
+                || item.Sell_ID <= 0 || item.Sell_Num <= 0
+                || ItemNewHelper.GetItemToUserDataType(ItemBigType.Type_Item, item.Sell_ID) == UserDataType.None)
             {
                 response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
                 reply();
@@ -49,22 +49,20 @@ namespace ET
             }
 
             RoleInfoComponentServer role = unit.GetComponent<RoleInfoComponentServer>();
-            foreach (KeyValuePair<int, long> currency in currencies)
+            long sellAmount = (long)item.Sell_Num * sellNum;
+            long current = RoleCurrencyHelper.Get(role.RoleInfo, item.Sell_ID);
+            long maximum = long.MaxValue;
+            if (RoleCurrencyHelper.IsDailyCurrency(item.Sell_ID))
             {
-                long current = RoleCurrencyHelper.Get(role.RoleInfo, currency.Key);
-                long maximum = long.MaxValue;
-                if (RoleCurrencyHelper.IsDailyCurrency(currency.Key))
-                {
-                    RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
-                    current = currency.Key == UserDataType.DailyActive ? daily.GetDailyActivePoint() : daily.GetWeeklyActivePoint();
-                    maximum = int.MaxValue;
-                }
-                if (currency.Value > maximum - current)
-                {
-                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
-                    reply();
-                    return;
-                }
+                RoleDailyDataComponentServer daily = unit.GetComponent<RoleDailyDataComponentServer>();
+                current = item.Sell_ID == UserDataType.DailyActive ? daily.GetDailyActivePoint() : daily.GetWeeklyActivePoint();
+                maximum = int.MaxValue;
+            }
+            if (current > maximum - sellAmount)
+            {
+                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Exceeds_Limit);
+                reply();
+                return;
             }
 
             if (!bag.OnCostItemData(useBagInfo, locType, sellNum))
@@ -85,49 +83,10 @@ namespace ET
             }
 
             MessageHelper.SendToClient(unit, m2c_bagUpdate);
-            foreach (KeyValuePair<int, long> currency in currencies)
-            {
-                role.UpdateRoleData(currency.Key, currency.Value.ToString(), true, ItemGetWay.Sell);
-            }
+            role.UpdateRoleData(item.Sell_ID, sellAmount.ToString(), true, ItemGetWay.Sell);
             reply();
             await ETTask.CompletedTask;
         }
 
-        /// <summary>Reward 每项为类型~ID~单件数量~状态（也兼容 ^）；缺少状态按 0 解析，货币不入包，不使用物品交易状态。</summary>
-        private static bool TryGetSellCurrencies(string reward, int sellNum, out Dictionary<int, long> currencies)
-        {
-            currencies = new Dictionary<int, long>();
-            if (string.IsNullOrWhiteSpace(reward))
-            {
-                return false;
-            }
-
-            foreach (string entry in reward.Split('|'))
-            {
-                string[] fields = entry.Replace('^', '~').Split('~');
-                if ((fields.Length != 3 && fields.Length != 4)
-                    || !int.TryParse(fields[0], out int type) || type != ItemBigType.Type_Item
-                    || !int.TryParse(fields[1], out int id) || id <= 0
-                    || !int.TryParse(fields[2], out int count) || count <= 0
-                    || ItemNewHelper.GetItemToUserDataType(type, id) == UserDataType.None)
-                {
-                    return false;
-                }
-                int status = 0;
-                if (fields.Length == 4 && !string.IsNullOrEmpty(fields[3]) && !int.TryParse(fields[3], out status))
-                {
-                    return false;
-                }
-
-                long amount = (long)count * sellNum;
-                currencies.TryGetValue(id, out long total);
-                if (amount > long.MaxValue - total)
-                {
-                    return false;
-                }
-                currencies[id] = total + amount;
-            }
-            return true;
-        }
     }
 }
