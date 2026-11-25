@@ -94,11 +94,14 @@ namespace ET
 		/// <summary>图标</summary>
 		[ProtoMember(5)]
 		public string Icon_3 { get; set; }
-		/// <summary>排序</summary>
+		/// <summary>必备</summary>
 		[ProtoMember(6)]
+		public int Is_Must { get; set; }
+		/// <summary>排序</summary>
+		[ProtoMember(7)]
 		public int Order_SL { get; set; }
 		/// <summary>关闭</summary>
-		[ProtoMember(7)]
+		[ProtoMember(8)]
 		public int Is_Close { get; set; }
 
 	}

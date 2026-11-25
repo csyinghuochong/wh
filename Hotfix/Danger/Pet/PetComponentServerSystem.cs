@@ -21,6 +21,7 @@ namespace ET
             }
         }
 
+        /// <summary>拉取宠物列表时更新归属显示及属性快照，使已有宠物也返回当前配置的完整属性。</summary>
         public static void InitPetInfo(this PetComponentServer self)
         {
             
@@ -42,6 +43,7 @@ namespace ET
             {
                 PetInfo rolePetInfo = self.PetInfos[i];
                 rolePetInfo.PlayerName = roleInfo.Name;
+                self.UpdatePetAttribute(rolePetInfo, false);
             }
         }
 

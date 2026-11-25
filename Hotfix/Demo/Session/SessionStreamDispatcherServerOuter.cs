@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Diagnostics;
 
 namespace ET
 {
@@ -14,7 +13,6 @@ namespace ET
         public void Dispatch(Session session, MemoryStream memoryStream)
         {
             ushort opcode = BitConverter.ToUInt16(memoryStream.GetBuffer(), Packet.KcpOpcodeIndex);
-            Stopwatch rankStopwatch = opcode == OuterOpcode.C2R_RankListRequest ? Stopwatch.StartNew() : null;
             // 外网只允许 Outer opcode，防止客户端伪造内网/Mongo 消息
             if (!OpcodeHelper.IsOuterMessage(opcode))
             {
@@ -51,16 +49,7 @@ namespace ET
                 }
 			}
 
-			if (rankStopwatch != null)
-			{
-				Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} session={session.InstanceId} clientRpc={((C2R_RankListRequest)message).RpcId} stage=Gate.Receive bytes={memoryStream.Length} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-				rankStopwatch.Restart();
-			}
 			OpcodeHelper.LogMsg(session.DomainZone(), opcode, message);
-			if (rankStopwatch != null)
-			{
-				Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} session={session.InstanceId} clientRpc={((C2R_RankListRequest)message).RpcId} stage=Gate.RequestLog elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-			}
 			
             DispatchAsync(session, opcode, message).Coroutine();
         }
@@ -183,14 +172,9 @@ namespace ET
 						IResponse response = null;
 						int rpcId = actorRequest.RpcId;
 						long instanceId = session.InstanceId;
-						Stopwatch rankStopwatch = actorRequest is C2R_RankListRequest ? Stopwatch.StartNew() : null;
 						Player player = session.GetComponent<SessionPlayerComponent>()?.GetMyPlayer();
 						if (player == null)
 						{
-							if (rankStopwatch != null)
-							{
-								Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} session={instanceId} clientRpc={rpcId} stage=Gate.PlayerMissing");
-							}
 							break; 
 						}
 
@@ -206,21 +190,11 @@ namespace ET
 							{
 								if (player.WarRankServerID == 0)
 								{
-									Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} session={instanceId} clientRpc={rpcId} stage=Gate.WarRankMissing");
 									break;
 								}
 								rankId = player.WarRankServerID;
 							}
-							if (rankStopwatch != null)
-							{
-								Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} session={instanceId} clientRpc={rpcId} stage=Gate.CallRank playerId={player.UnitId} actorId={rankId} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-								rankStopwatch.Restart();
-							}
 							response = await ActorMessageSenderComponent.Instance.Call(rankId, iRankActorRequest);
-							if (rankStopwatch != null)
-							{
-								Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} session={instanceId} clientRpc={rpcId} rpc={iRankActorRequest.RpcId} stage=Gate.RankReturned elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-							}
 						}
 						else if (actorRequest is IConsignmentRequest iPaiMaiRequest)
 						{
@@ -319,28 +293,12 @@ namespace ET
 						}
                         if (response == null)
                         {
-                            if (rankStopwatch != null)
-                            {
-                                Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} session={instanceId} clientRpc={rpcId} stage=Gate.ResponseMissing");
-                            }
                             break;
                         }
                         response.RpcId = rpcId;
                         if (session.InstanceId == instanceId)
                         {
-                            if (rankStopwatch != null)
-                            {
-                                rankStopwatch.Restart();
-                            }
                             session.Reply(response);
-                            if (rankStopwatch != null)
-                            {
-                                Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} session={instanceId} clientRpc={rpcId} stage=Gate.ReplyClient error={response.Error} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-                            }
-                        }
-                        else if (rankStopwatch != null)
-                        {
-                            Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} session={instanceId} clientRpc={rpcId} stage=Gate.SessionChanged");
                         }
 						break;
                 }

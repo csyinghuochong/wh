@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 
 namespace ET
@@ -17,8 +16,6 @@ namespace ET
             {
                 long actorId = BitConverter.ToInt64(memoryStream.GetBuffer(), Packet.ActorIdIndex);
                 opcode = BitConverter.ToUInt16(memoryStream.GetBuffer(), Packet.OpcodeIndex);
-                Stopwatch rankStopwatch = opcode == OuterOpcode.C2R_RankListRequest || opcode == OuterOpcode.R2C_RankListResponse
-                    ? Stopwatch.StartNew() : null;
                 Type type = null;
                 object message = null;
 #if SERVER   
@@ -108,12 +105,6 @@ namespace ET
                 type = OpcodeTypeComponent.Instance.GetType(opcode);
                 message = MessageSerializeHelper.DeserializeFrom(opcode, type, memoryStream);
 
-                if (rankStopwatch != null)
-                {
-                    int rankRpcId = message is IActorRequest rankRequest ? rankRequest.RpcId : ((IActorResponse)message).RpcId;
-                    Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={rankRpcId} stage=Inner.Receive opcode={opcode} actorId={actorId} bytes={memoryStream.Length} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-                    rankStopwatch.Restart();
-                }
                 if (message is IResponse iResponse && !(message is IActorResponse))
                 {
                     session.OnRead(opcode, iResponse);
@@ -121,11 +112,6 @@ namespace ET
                 }
 
                 OpcodeHelper.LogMsg(session.DomainZone(), opcode, message);
-                if (rankStopwatch != null)
-                {
-                    int rankRpcId = message is IActorRequest rankRequest ? rankRequest.RpcId : ((IActorResponse)message).RpcId;
-                    Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={rankRpcId} stage=Inner.MessageLog opcode={opcode} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-                }
 
                 // 收到actor消息,放入actor队列
                 switch (message)
@@ -139,17 +125,9 @@ namespace ET
                         
                         void Reply(IActorResponse response)
                         {
-                            if (rankStopwatch != null)
-                            {
-                                rankStopwatch.Restart();
-                            }
                             Session replySession = NetInnerComponent.Instance.Get(fromProcess);
                             // 发回真实的actorId 做查问题使用
                             replySession.Send(realActorId, response);
-                            if (rankStopwatch != null)
-                            {
-                                Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={response.RpcId} stage=Rank.SendInnerResponse actorId={realActorId} toProcess={fromProcess} error={response.Error} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-                            }
                         }
 
                         InnerMessageDispatcherHelper.HandleIActorRequest(opcode, realActorId, iActorRequest, Reply);

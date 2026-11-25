@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.IO;
-using System.Diagnostics;
 
 namespace ET
 {
@@ -13,7 +12,6 @@ namespace ET
 
         public static void HandleIActorRequest(ushort opcode, long actorId, IActorRequest iActorRequest, Action<IActorResponse> reply)
         {
-            Stopwatch rankStopwatch = iActorRequest is C2R_RankListRequest ? Stopwatch.StartNew() : null;
             Entity entity = Game.EventSystem.Get(actorId);
             if (entity == null)
             {
@@ -38,10 +36,6 @@ namespace ET
                         long instanceId = entity.InstanceId;
                         using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.Mailbox, actorId))
                         {
-                            if (rankStopwatch != null)
-                            {
-                                Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={iActorRequest.RpcId} stage=Rank.MailboxAcquired actorId={actorId} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-                            }
                             if (entity.InstanceId != instanceId)
                             {
                                 FailResponse(iActorRequest, ErrorCore.ERR_NotFoundActor, reply);
@@ -57,10 +51,6 @@ namespace ET
                 }
                 case MailboxType.UnOrderMessageDispatcher:
                 {
-                    if (rankStopwatch != null)
-                    {
-                        Console.WriteLine($"[RankListTiming] time={DateTime.Now:HH:mm:ss.fff} process={Game.Options.Process} rpc={iActorRequest.RpcId} stage=Rank.MailboxUnordered actorId={actorId} elapsedMs={rankStopwatch.Elapsed.TotalMilliseconds:F3}");
-                    }
                     ActorMessageDispatcherComponent.Instance.Handle(entity, iActorRequest, reply).Coroutine();
                     break;
                 }

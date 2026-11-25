@@ -78,50 +78,58 @@ namespace ET
         }
 
 
-        private const String host = "https://naidcard.market.alicloudapi.com/nidCard";
-        private const String path = "/nidCard";
-        private const String method = "GET";
-        private const String appcode = "d59fefe68cf644f6a8f54dd039c3806f";//开通服务后 买家中心-查看AppCode
+        private const String host = "https://kzidcardv1.market.alicloudapi.com/api/id_card/check";
+        private const String appcode = "508d6ada6c35439c8992fb840d5a98bc"; // 阿里云市场实名认证服务 AppCode
 
-        //ai = ai,
-        //name = request.Name,
-        //idNum = request.IdCardNO,
+        // 调用阿里云姓名、身份证二要素核验；仅 code=200 且 data.result=0（一致）通过，其他结果或请求失败返回 null。
         public static async ETTask<RealNameCode> OnDoFangchenmi_2(string idcard, string name)
         {
-            String querys = $"idCard={idcard}&name={name}";
-            String url = host + path;
-            if (0 < querys.Length)
-            {
-                url = url + "?" + querys;
-            }
-            Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
-            keyValuePairs.Add("idCard", idcard);
-            keyValuePairs.Add("name", name);
-            //keyValuePairs.Add("Authorization", "APPCODE " + appcode);
-            //httpContent.Headers.Add("Authorization", "APPCODE " + appcode);
-            string result = await HttpHelper.HttpClientDoGet(host, $"APPCODE {appcode}", keyValuePairs);
-            if (string.IsNullOrEmpty(result))
-            {
-                return null;
-            }
+            Console.WriteLine($"[实名认证][阿里云] 开始请求: {host}");
             try
             {
-                //  /*状态码  01: 通过，02: 不通过，202: 无法认证(库无) */
-                NidCardData result_1 = BsonSerializer.Deserialize<NidCardData>(result);
-                if (result_1.status == "01")
+                Dictionary<string, string> keyValuePairs = new Dictionary<string, string>()
                 {
-                    RealNameCode realNameCode = new RealNameCode();
-                    realNameCode.errcode = 0;
-                    realNameCode.data = new RealNameData();
-                    realNameCode.data.result = new RealNameResult();
-                    realNameCode.data.result.status = 0;
-                    return realNameCode;
+                    { "idcard", Uri.EscapeDataString(idcard) },
+                    { "name", Uri.EscapeDataString(name) }
+                };
+                string result = await HttpHelper.HttpClientDoGet(host, $"APPCODE {appcode}", keyValuePairs);
+                if (string.IsNullOrEmpty(result))
+                {
+                    Console.WriteLine("[实名认证][阿里云] 响应为空或HTTP请求失败，核验未通过");
+                    return null;
                 }
-                return null;
+
+                Console.WriteLine($"[实名认证][阿里云] 响应={result.Replace(idcard, "***").Replace(name, "***").Replace(appcode, "***")}");
+                BsonDocument cardData = BsonDocument.Parse(result);
+                Console.WriteLine($"[实名认证][阿里云] 返回码={cardData.GetValue("code", BsonNull.Value)}, 提示={cardData.GetValue("msg", BsonNull.Value)}");
+                if (cardData.GetValue("code", BsonNull.Value) != 200
+                    || !cardData.TryGetValue("data", out BsonValue data) || !data.IsBsonDocument)
+                {
+                    return null;
+                }
+
+                BsonDocument checkData = data.AsBsonDocument;
+                BsonValue checkResult = checkData.GetValue("result", BsonNull.Value);
+                Console.WriteLine($"[实名认证][阿里云] 核验结果={checkResult}, 描述={checkData.GetValue("desc", BsonNull.Value)}, orderNo={checkData.GetValue("orderNo", BsonNull.Value)}");
+                if (checkResult != 0)
+                {
+                    return null;
+                }
+
+                return new RealNameCode
+                {
+                    errcode = 0,
+                    data = new RealNameData
+                    {
+                        result = new RealNameResult { status = 0 }
+                    }
+                };
             }
             catch (Exception ex)
             {
-                Log.Debug(ex.ToString());
+                string error = ex.ToString().Replace(idcard, "***").Replace(name, "***").Replace(appcode, "***")
+                    .Replace(Uri.EscapeDataString(idcard), "***").Replace(Uri.EscapeDataString(name), "***");
+                Console.WriteLine($"[实名认证][阿里云] 请求或响应解析异常: {error}");
                 return null;
             }
         }

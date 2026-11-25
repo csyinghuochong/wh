@@ -126,6 +126,52 @@ namespace ET
                     return;
                 }
 
+                if (message.GMMsg.Contains("alladdbuff#"))
+                {
+                    if (!TryGetSecondHashNumber(message.GMMsg, out int buffId)
+                        || buffId <= 0 || !LDSkill_Battle_BuffCategory.Instance.Contain(buffId))
+                    {
+                        return;
+                    }
+
+                    // alladdbuff#BuffId：当前地图玩家和怪物添加 10 秒 Buff；快照分帧处理，每 10 个单位让出一帧。
+                    List<Unit> targets = unit.GetParent<UnitComponent>().GetAll()
+                            .Where(target => target.Type == UnitType.Player || target.Type == UnitType.Monster).ToList();
+                    for (int i = 0; i < targets.Count; i++)
+                    {
+                        if (i > 0 && i % 10 == 0)
+                        {
+                            await TimerComponent.Instance.WaitFrameAsync();
+                            if (unit.IsDisposed)
+                            {
+                                return;
+                            }
+                        }
+
+                        Unit target = targets[i];
+                        if (target.IsDisposed)
+                        {
+                            continue;
+                        }
+
+                        BuffManagerComponent targetBuffManager = target.GetComponent<BuffManagerComponent>();
+                        if (targetBuffManager == null)
+                        {
+                            continue;
+                        }
+
+                        BuffData buffData = new BuffData
+                        {
+                            SkillId = 1,
+                            BuffId = buffId,
+                            BuffEndTime = TimeHelper.ServerNow() + 10000,
+                        };
+                        targetBuffManager.BuffFactory(buffData, unit, null);
+                    }
+
+                    return;
+                }
+
                 if (message.GMMsg.Contains("addbuff#"))
                 {
                     if (!TryGetSecondHashNumber(message.GMMsg, out int buffid))
@@ -137,6 +183,8 @@ namespace ET
                     BuffData buffData_2 = new BuffData();
                     buffData_2.SkillId = 1;
                     buffData_2.BuffId = buffid;
+                    // GM 直接添加没有技能时长来源，默认持续 2 秒后结束。
+                    buffData_2.BuffEndTime = TimeHelper.ServerNow() + 10000;
                     buffManager.BuffFactory(buffData_2, unit, null);
                     return;
                 }

@@ -9,87 +9,60 @@ namespace ET
 
         protected override async ETTask Run(Session session, C2R_RealNameRequest request, R2C_RealNameResponse response, Action reply)
         {
-            if (string.IsNullOrEmpty(request.IdCardNO) || string.IsNullOrEmpty(request.Name))
+            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+            if (session.DomainScene().SceneType != SceneType.Realm || request.AccountId <= 0
+                || string.IsNullOrWhiteSpace(request.IdCardNO) || string.IsNullOrWhiteSpace(request.Name))
             {
-                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                Console.WriteLine($"[实名认证] 请求校验失败: AccountId={request.AccountId}, SceneType={session.DomainScene().SceneType}, 姓名为空={string.IsNullOrWhiteSpace(request.Name)}, 身份证为空={string.IsNullOrWhiteSpace(request.IdCardNO)}");
                 reply();
                 return;
             }
             if (request.IdCardNO.Length != 18)
             {
-                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                Console.WriteLine($"[实名认证] 身份证长度错误: AccountId={request.AccountId}, Length={request.IdCardNO.Length}");
                 reply();
                 return;
             }
 
-            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.LoginAccount, 1))
+            // 外部核验可能超过接入连接的 5 秒超时；同账号的实名请求依次执行。
+            session.RemoveComponent<SessionAcceptTimeoutComponent>();
+            using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.LoginAccount, request.AccountId))
             {
                 if (session.IsDisposed)
                 {
-                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                    Console.WriteLine($"[实名认证] 等待账号锁后连接已断开: AccountId={request.AccountId}");
                     reply();
                     return;
                 }
-                
-                DBCenterAccountInfo dbCenterAccountInfo =await DBHelper.GetComponent<DBCenterAccountInfo>(CommonConfig.CenterZoneId, request.AccountId);
-              
-                RealNameCode result_check = new RealNameCode();
-                result_check.data = new RealNameData();
-                result_check.data.result = new RealNameResult();
-                using ListComponent<string> testCard = new ListComponent<string>();
-                for (int i = 0; i < 30; i++)
+
+                using DBCenterAccountInfo dbCenterAccountInfo = await DBHelper.GetComponent<DBCenterAccountInfo>(CommonConfig.CenterZoneId, request.AccountId);
+                if (session.IsDisposed || dbCenterAccountInfo == null)
                 {
-                    testCard.Add($"400001{1990 + i}01012996");
-                }
-                testCard.Add("500233200809108742");
-                //内网
-
-                result_check.errcode = 0;
-                result_check.data.result.status = 0;
-
-                //if (ServerHelper.IsBanHaoServer(0) || CommonHelper.IsInnerNet())
-                //{
-                //    result_check.errcode = 0;
-                //    result_check.data.result.status = 0;
-                //}
-                //else
-                //{
-                //    string ai = dbCenterAccountInfo.Id + "_";
-                //    if (ai.Length < 32)
-                //    {
-                //        for (int i = ai.Length; i < 32; i++)
-                //        {
-                //            ai += "a";
-                //        }
-                //    }
-
-                //    Scene accountScene = session.DomainScene();
-                //    Game.EventSystem.Publish(new EventType.RealName() { AccountScene = accountScene, ai = ai, name = request.Name, idNum = request.IdCardNO });
-                //    WaitType.WaitRealNameCode waitCreateMyUnit = await accountScene.GetComponent<ObjectWait>().Wait<WaitType.WaitRealNameCode>();
-                //    result_check = waitCreateMyUnit.Message;
-                //}
-                //if (result_check == null || result_check.data == null || result_check.data.result == null)
-                //{
-                //    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
-                //    reply();
-                //    return;
-                //}
-
-                if (result_check.errcode == 0 && result_check.data.result.status == 0)  //认证成功
-                {
-                    PlayerInfo playerInfo = dbCenterAccountInfo.PlayerInfo;
-                    playerInfo.Name = request.Name;
-                    playerInfo.IdCardNo = request.IdCardNO;
-                    playerInfo.RealNameV2 = 1;
-                    DBHelper.SaveComponent(CommonConfig.CenterZoneId, dbCenterAccountInfo.Id, dbCenterAccountInfo).Coroutine();
-                    
-                    response.Error = ErrorCode.ERR_Success;
-                }
-                else
-                {
-                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
+                    Console.WriteLine($"[实名认证] 账号读取失败: AccountId={request.AccountId}, 连接断开={session.IsDisposed}, 账号不存在={dbCenterAccountInfo == null}");
+                    reply();
+                    return;
                 }
 
+                // 内网沿用测试放行；外网直接等待阿里云核验，只有明确认证通过才保存实名信息。
+                if (!CommonHelper.IsInnerNet())
+                {
+                    RealNameCode result = await FangChenMiHelper.OnDoFangchenmi_2(request.IdCardNO, request.Name);
+                    if (session.IsDisposed || result == null || result.errcode != 0
+                        || result.data == null || result.data.result == null || result.data.result.status != 0)
+                    {
+                        Console.WriteLine($"[实名认证] 阿里云核验未通过: AccountId={request.AccountId}, 连接断开={session.IsDisposed}, 无有效结果={result == null}, Error={response.Error}");
+                        reply();
+                        return;
+                    }
+                }
+
+                PlayerInfo playerInfo = dbCenterAccountInfo.PlayerInfo;
+                playerInfo.Name = request.Name;
+                playerInfo.IdCardNo = request.IdCardNO;
+                playerInfo.RealNameV2 = 1;
+                await DBHelper.SaveComponent(CommonConfig.CenterZoneId, dbCenterAccountInfo.Id, dbCenterAccountInfo);
+                response.Error = ErrorCode.ERR_Success;
+                Console.WriteLine($"[实名认证] 核验通过并保存成功: AccountId={request.AccountId}, 内网={CommonHelper.IsInnerNet()}");
             }
             reply();
         }
