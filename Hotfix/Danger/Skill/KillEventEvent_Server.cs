@@ -92,6 +92,12 @@ namespace ET
 
             if (mainAttack != null && !mainAttack.IsDisposed)
             {
+                // 击杀经验只结算给击杀方玩家（宠物、召唤物沿用主人归属），不参与参战列表分发。
+                if (mainAttack.Type == UnitType.Player)
+                {
+                    mainAttack.GetComponent<RoleInfoComponentServer>().OnKillUnit(defendUnit, sceneTypeEnum, sceneId);
+                }
+
                 int realPlayer = 1;
                 List<long> allAttackIds = new List<long>();
                 UnitComponent unitComponent = domainScene.GetComponent<UnitComponent>();
@@ -136,11 +142,7 @@ namespace ET
                         continue;
                     }
                     TaskComponentServer taskComponent = attackUnit.GetComponent<TaskComponentServer>();
-                    PetComponentServer petComponent = attackUnit.GetComponent<PetComponentServer>();
-                    RoleInfoComponentServer roleInfoComponent = attackUnit.GetComponent<RoleInfoComponentServer>();
                     taskComponent.OnKillUnit(defendUnit, sceneTypeEnum);
-                    petComponent.OnKillUnit(defendUnit);
-                    roleInfoComponent.OnKillUnit(defendUnit, sceneTypeEnum, sceneId);
                 }
 
                 UnitFactory.CreateDropItems(defendUnit, mainAttack, sceneTypeEnum, sceneId, realPlayer);

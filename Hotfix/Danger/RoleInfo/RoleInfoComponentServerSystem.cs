@@ -319,47 +319,25 @@ namespace ET
 
 
         /// <summary>
-        /// 杀怪经验
+        /// 怪物死亡后，只给击杀玩家增加怪物等级 × 50 的固定经验，不受体力和经验倍率影响。
         /// </summary>
         /// <param name="self"></param>
         /// <param name="beKill"></param>
         public static void OnKillUnit(this RoleInfoComponentServer self, Unit beKill, int sceneType, int sceneId)
         {
             Unit main = self.GetParent<Unit>();
-            if (beKill.Type != UnitType.Monster)
+            if (main.Type != UnitType.Player || beKill.Type != UnitType.Monster)
             {
                 return;
             }
 
-            bool showlieopen = ConfigData.ShowLieOpen;
             LDMonster ldMonster = LDMonsterCategory.Instance.Get(beKill.ConfigId);
-            
-            NumericComponent numericComponent = main.GetComponent<NumericComponent>();
-
-            RoleDailyDataComponentServer dailyData = main.GetComponent<RoleDailyDataComponentServer>();
-
-            bool drop = true;
-            if (SceneConfigHelper.IsSingleFuben(sceneType))
+            if (ldMonster.Lv <= 0)
             {
-                drop = RoleCurrencyHelper.Get(self.RoleInfo, UserDataType.TiLi) > 0 || beKill.IsBoss() || showlieopen;
+                return;
             }
-            if (drop)
-            {
-                float expcoefficient = 1f;
-                float expAdd = (numericComponent.GetAsFloat(NumericType.Numeric_Error) - 1f);
-                expAdd = Math.Clamp(expAdd, 0f, 1f);    
-                
-                float now_GoldAdd_Pro  = (numericComponent.GetAsFloat(NumericType.Numeric_Error));
-                now_GoldAdd_Pro = Math.Clamp(now_GoldAdd_Pro, 0f, 1f);
-                
-                expcoefficient += expAdd;
-                expcoefficient+= now_GoldAdd_Pro;
-              
-                int addexp = (int)(expcoefficient * 0);
-                self.UpdateRoleData(UserDataType.Exp, addexp.ToString());
-            }
-
-      
+            long addExp = ldMonster.Lv * 50L;
+            self.UpdateRoleData(UserDataType.Exp, addExp.ToString(), applyExpBonus: false);
         }
 
         public static void UpdateRoleDataBroadcast(this RoleInfoComponentServer self, int Type, string value)
@@ -509,7 +487,7 @@ namespace ET
         }
 
         //需要通知客户端
-        public static void UpdateRoleData(this RoleInfoComponentServer self, int Type, string value, bool notice = true, int getWay = ItemGetWay.System, string paramsifo = "")
+        public static void UpdateRoleData(this RoleInfoComponentServer self, int Type, string value, bool notice = true, int getWay = ItemGetWay.System, string paramsifo = "", bool applyExpBonus = true)
         {
             Unit unit = self.GetParent<Unit>();
             if (Type == UserDataType.Gold
@@ -553,7 +531,7 @@ namespace ET
                     saveValue = self.RoleInfo.Name;
                     break;
                 case UserDataType.Exp:
-                    self.Role_AddExp(long.Parse(value), notice);
+                    self.Role_AddExp(long.Parse(value), notice, applyExpBonus);
                     longValue = self.RoleInfo.Exp;
                     saveValue = value;
                     break;
@@ -748,18 +726,21 @@ namespace ET
         }
 
         //增加经验
-        public static void Role_AddExp(this RoleInfoComponentServer self, long addValue, bool notice)
+        public static void Role_AddExp(this RoleInfoComponentServer self, long addValue, bool notice, bool applyExpBonus = true)
         {
-            Scene scene = self.DomainScene();
             Unit unit = self.GetParent<Unit>();
-            int homeZone = UnitZoneHelper.GetHomeZone(unit);
-            if (!ConfigData.ServerInfoList.TryGetValue(homeZone, out ServerInfo serverInfo) || serverInfo == null)
+            if (applyExpBonus)
             {
-                Log.Warning($"ServerInfo==null: home={homeZone} map={scene.GetComponent<MapComponent>()?.MapTypeEnum} {self.Id}");
-                return;
-            }
+                int homeZone = UnitZoneHelper.GetHomeZone(unit);
+                if (!ConfigData.ServerInfoList.TryGetValue(homeZone, out ServerInfo serverInfo) || serverInfo == null)
+                {
+                    Log.Warning($"ServerInfo==null: home={homeZone} map={self.DomainScene().GetComponent<MapComponent>()?.MapTypeEnum} {self.Id}");
+                    return;
+                }
 
-            float expAdd = RoleLevelHelper.GetExpAdd(self.RoleInfo.Lv, self.RoleInfo.Exp, serverInfo.WorldLv);
+                float expAdd = RoleLevelHelper.GetExpAdd(self.RoleInfo.Lv, self.RoleInfo.Exp, serverInfo.WorldLv);
+                addValue = (int)(addValue * (1.0f + expAdd));
+            }
 
             LDExp_Lv xiulianconf1 = LDExp_LvCategory.Instance.Get(self.RoleInfo.Lv);
             long upNeedExp = xiulianconf1.Exp_Role;
@@ -769,7 +750,7 @@ namespace ET
             //等级达到上限, 不升级 但是可以继续获得经验
             int maxlevel = CommonHelper.GetPlayerMaxLevel(); //读表
 
-            self.RoleInfo.Exp = self.RoleInfo.Exp + (int)(addValue * (1.0f + expAdd));
+            self.RoleInfo.Exp += addValue;
 
             if (self.RoleInfo.Lv >= maxlevel)
             {
