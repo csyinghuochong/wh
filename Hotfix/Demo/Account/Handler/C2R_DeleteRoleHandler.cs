@@ -68,6 +68,13 @@ namespace ET
                     return;
                 }
 
+                response.Error = await RoleDeleteHelper.RemoveFromUnion(roleInfo);
+                if (response.Error != ErrorCode.ERR_Success)
+                {
+                    reply();
+                    return;
+                }
+
                 roleInfo.State = (int)RoleInfoState.Freeze;
                 roleInfo.Cooldown = 0;
                 await Game.Scene.GetComponent<DBComponent>().Save<DBCenterAccountInfo>(session.DomainZone(), newAccount);

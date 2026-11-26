@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -10,7 +10,10 @@ namespace ET
         {
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             numericComponent.ApplyValue( NumericType.UnionLeader, message.UnionLeader, true );
-            await ETTask.CompletedTask;
+            // 在线接任同样立即保存会长标记，避免下线前缓存仍保留旧职位。
+            int homeZone = UnitZoneHelper.GetHomeZone(unit);
+            await DBHelper.SaveComponent(homeZone, unit.Id, numericComponent);
+            await DBHelper.SaveComponentCache(homeZone, unit.Id, numericComponent);
         }
     }
 }

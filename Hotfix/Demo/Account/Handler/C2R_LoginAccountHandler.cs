@@ -238,6 +238,13 @@ namespace ET
                                 && createRoleInfo.Cooldown > 0
                                 && now >= createRoleInfo.Cooldown)
                             {
+                                response.Error = await RoleDeleteHelper.RemoveFromUnion(createRoleInfo);
+                                if (response.Error != ErrorCode.ERR_Success)
+                                {
+                                    reply();
+                                    return;
+                                }
+
                                 createRoleInfo.State = (int)RoleInfoState.Freeze;
                                 cooldownExpired = true;
                             }

@@ -3044,6 +3044,39 @@ namespace ET
 
 	}
 
+// 角色正式删除时，Realm -> 公会服：移除角色的公会成员和申请记录；删除会长时按成员列表顺序接任，无人则解散。
+	[ResponseType(nameof(Union2R_DeleteRoleData))]
+	[Message(InnerOpcode.R2Union_DeleteRoleData)]
+	[ProtoContract]
+	public partial class R2Union_DeleteRoleData: Object, IActorRequest
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+	}
+
+// 公会服 -> Realm：Error=0 表示成员清理、会长交接及公会存库完成；非 0 时停止本次删角。
+	[Message(InnerOpcode.Union2R_DeleteRoleData)]
+	[ProtoContract]
+	public partial class Union2R_DeleteRoleData: Object, IActorResponse
+	{
+		[ProtoMember(90)]
+		public int RpcId { get; set; }
+
+		[ProtoMember(91)]
+		public int Error { get; set; }
+
+		[ProtoMember(92)]
+		public string Message { get; set; }
+
+	}
+
 //公会  end####################################################
 //Home begin####################################################
 //进入家园
