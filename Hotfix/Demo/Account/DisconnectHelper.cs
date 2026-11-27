@@ -53,6 +53,10 @@ namespace ET
                         case PlayerState.Game:
                             //通知游戏逻辑服下线Unit角色逻辑，并将数据存入数据库
                             var m2GRequestExitGame = (M2G_RequestExitGame)await MessageHelper.CallLocationActor(player.UnitId, new G2M_RequestExitGame());
+                            if (m2GRequestExitGame.Error != ErrorCode.ERR_Success)
+                            {
+                                throw new Exception($"玩家退出存档失败：UnitId={player.UnitId} Error={m2GRequestExitGame.Error}");
+                            }
 
                             // 暂时不做离线自动退队，不通知组队服移除玩家
                             //await ServerMessageHelper.SendServerMessage(player.TeamServerID, NoticeType.PlayerExit, player.UnitId.ToString());

@@ -68,7 +68,7 @@ namespace ET
                     return;
                 }
 
-                response.Error = await RoleDeleteHelper.RemoveFromUnion(roleInfo);
+                response.Error = await RoleDeleteHelper.RemoveRelations(roleInfo);
                 if (response.Error != ErrorCode.ERR_Success)
                 {
                     reply();

@@ -8,9 +8,8 @@ namespace ET
         {
             try
             {
-                UpdateUnitCacheAsync(scene, request, response).Coroutine();
+                await UpdateUnitCacheAsync(scene, request, response);
                 reply();
-                await ETTask.CompletedTask;
             }
             catch (Exception e)
             {

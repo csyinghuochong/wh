@@ -5,6 +5,7 @@ namespace ET
 {
     public static class Skill_TreeEditorSystem
     {
+        /// <summary>以服务端创建时间为起点，Time_1（秒）确定首次生效门槛，Time_3 确定生命周期。</summary>
         public static void OnInit(this Skill_TreeEditor self, SkillInfo skillcmd, Unit theUnitFrom)
         {
             self.SkillInfo = skillcmd;
@@ -47,8 +48,14 @@ namespace ET
 
             self.ActionPosition = new Vector3(skillcmd.PosX, skillcmd.PosY, skillcmd.PosZ);
             self.ICheckShape = self.CreateCheckShape(self.SkillInfo.TargetAngle);
+
+            if (Log.IsDebugEnabled)
+            {
+                Log.Debug($"[SkillTiming][Server][Start] skill={ldSkill.Id} caster={theUnitFrom.Id} target={skillcmd.TargetID} beginMs={self.SkillBeginTime} time1Ms={(long)(1000 * firstDelay)} dueMs={self.SkillExcuteHurtTime} endMs={self.SkillEndTime}");
+            }
         }
 
+        /// <summary>由技能心跳检查时间门槛，到达 Time_1 后执行技能树；实际生效会受心跳间隔影响。</summary>
         public static void OnUpdate(this Skill_TreeEditor self)
         {
             long serverNow = TimeHelper.ServerNow();
@@ -112,6 +119,12 @@ namespace ET
 
         static void ExecuteSkillTreeOnce(this Skill_TreeEditor self)
         {
+            if (Log.IsDebugEnabled)
+            {
+                long now = TimeHelper.ServerNow();
+                Log.Debug($"[SkillTiming][Server][Trigger] skill={self.LdSkillConf.Id} caster={self.TheUnitFrom.Id} target={self.SkillInfo.TargetID} beginMs={self.SkillBeginTime} nowMs={now} elapsedMs={now - self.SkillBeginTime} dueMs={self.SkillExcuteHurtTime} lateMs={now - self.SkillExcuteHurtTime} bullet={LDSkillHelper.IsBulletSkill(self.LdSkillConf)}");
+            }
+
             if (LDSkillHelper.IsBulletSkill(self.LdSkillConf))
             {
                 self.LaunchBullet();

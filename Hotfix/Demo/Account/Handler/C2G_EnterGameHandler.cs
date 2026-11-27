@@ -90,6 +90,12 @@ namespace ET
 			{
 				using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.LoginGate, player.AccountId.GetHashCode()))
 				{
+                    if (StopServerConsoleHandler.IsGateStopped(session.DomainScene()))
+                    {
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Stop_Server);
+                        reply();
+                        return;
+                    }
                     List<DBCenterServerInfo> result = await Game.Scene.GetComponent<DBComponent>().Query<DBCenterServerInfo>(CommonConfig.CenterZoneId, d => d.Id == CommonConfig.CenterZoneId);
 
                     if (!string.IsNullOrEmpty(request.DeviceID) && result[0].BanDeviceID.Contains(request.DeviceID))
@@ -236,6 +242,27 @@ namespace ET
                         unit.AddComponent<SkillPassiveComponent>().UpdatePassiveSkill();
 						//unit.GetComponent<DBSaveComponent>().LastDBTime = TimeHelper.ServerNow();
                         unit.OnLogin(session.RemoteAddress.ToString());
+                        // 登录传送前按队伍服的当前成员关系恢复 TeamId，不能把仍在队伍中的角色当作未组队。
+                        long teamServerId = player.JoinedTeamServerID;
+                        if (teamServerId == 0)
+                        {
+                            long savedTeamId = unit.GetTeamId();
+                            teamServerId = savedTeamId == 0 ? DBHelper.GetTeamServerId(unit)
+                                : DBHelper.GetTeamServerId(UnitZoneHelper.GetHomeZone(savedTeamId));
+                        }
+                        T2Chat_GetTeamInfoResponse teamResponse = (T2Chat_GetTeamInfoResponse)await MessageHelper.CallActor(
+                            teamServerId, new Chat2T_GetTeamInfoRequest { UserID = unit.Id });
+                        if (teamResponse.Error != ErrorCode.ERR_Success)
+                        {
+                            response.Error = teamResponse.Error;
+                            reply();
+                            await DisconnectHelper.KickPlayer(player, true);
+                            session.Disconnect().Coroutine();
+                            return;
+                        }
+                        long currentTeamId = teamResponse.TeamInfo == null ? 0 : teamResponse.TeamInfo.TeamId;
+                        unit.GetComponent<NumericComponent>().Set(NumericType.TeamId, currentTeamId, false);
+                        player.JoinedTeamServerID = currentTeamId == 0 ? 0 : teamServerId;
                         // OnLogin 里 GetComponent 才把新建的背包等标脏，须在这之后落库
                         dbSaveComponent.UpdateCacheDB();
                         try

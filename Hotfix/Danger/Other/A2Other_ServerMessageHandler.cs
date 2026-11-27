@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -15,6 +16,32 @@ namespace ET
                 switch (scene.SceneType)
                 {
                     case SceneType.Gate:
+                        if (request.MessageType == ServerNoticeType.StopSever)
+                        {
+                            string[] shutdown = (request.MessageValue ?? string.Empty).Split('_');
+                            if (shutdown.Length == 2 && shutdown[0] == "notify")
+                            {
+                                if (!long.TryParse(shutdown[1], out long stopAt) || stopAt <= 0)
+                                {
+                                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
+                                    break;
+                                }
+                                StopServerConsoleHandler.StopGate(scene);
+                                M2C_GameNotice notice = new M2C_GameNotice
+                                {
+                                    Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Stop_Server),
+                                    UpdateType = ServerNoticeType.StopSever,
+                                    UpdateTypeValue = stopAt.ToString(),
+                                    Message = "服务器即将停服维护，请返回登录。",
+                                };
+                                foreach (Player player in scene.GetComponent<PlayerComponent>().GetAll())
+                                {
+                                    player.ClientSession?.Send(notice);
+                                }
+                                break;
+                            }
+                            StopServerConsoleHandler.SaveScene(scene, request.MessageValue, response);
+                        }
                         if (request.MessageType == ServerNoticeType.Archive)
                         {
                             // MessageValue = $"{acccout} {unitid} {archive}",
@@ -28,7 +55,13 @@ namespace ET
                     case SceneType.Team:
                         if (request.MessageType == ServerNoticeType.PlayerExit)
                         {
-                            scene.GetComponent<TeamSceneComponent>().OnRecvUnitLeave(long.Parse(request.MessageValue));
+                            long userId = long.Parse(request.MessageValue);
+                            TeamSceneComponent team = scene.GetComponent<TeamSceneComponent>();
+                            foreach (long teamId in new List<long>(team.ApplyDict.Keys))
+                            {
+                                team.RemoveApply(teamId, userId);
+                            }
+                            await team.OnRecvUnitLeave(userId);
                         }
                         break;
                     case SceneType.FubenWork:
@@ -38,35 +71,15 @@ namespace ET
                         }
                         break;
                     case SceneType.Rank:
-                        if (request.MessageType == ServerNoticeType.RankRefresh)
-                        {
-                           
-                        }
-                        if (request.MessageType == ServerNoticeType.StopSever)
-                        {
-                            scene.GetComponent<RankSceneComponent>().SaveDB().Coroutine();
-                            Log.Debug($"数据落地:  Rank: {scene.DomainZone()}");
-                        }
-                        break;
                     case SceneType.WZRank:
-                        if (request.MessageType == ServerNoticeType.StopSever)
-                        {
-                            scene.GetComponent<WZRankSceneComponent>().SaveDB().Coroutine();
-                            Log.Debug($"数据落地:  WZRank: {scene.DomainZone()}");
-                        }
-                        break;
                     case SceneType.Consign:
-                        if (request.MessageType == ServerNoticeType.StopSever)
-                        {
-                            scene.GetComponent<ConsignSceneComponent>().SaveDB().Coroutine();
-                            Log.Debug($"数据落地:  PaiMai: {scene.DomainZone()}");
-                        }
-                        break;
                     case SceneType.Union:
+                    case SceneType.Mail:
+                    case SceneType.Activity:
+                    case SceneType.DBCache:
                         if (request.MessageType == ServerNoticeType.StopSever)
                         {
-                            scene.GetComponent<UnionSceneComponent>().SaveDB();
-                            Log.Debug($"数据落地:  Union: {scene.DomainZone()}");
+                            StopServerConsoleHandler.SaveScene(scene, request.MessageValue, response);
                         }
                         break;
                     case SceneType.WZChat:
@@ -81,6 +94,11 @@ namespace ET
                         }
                         break;
                     case SceneType.Chat:
+                        if (request.MessageType == ServerNoticeType.StopSever)
+                        {
+                            StopServerConsoleHandler.SaveScene(scene, request.MessageValue, response);
+                            break;
+                        }
                         ChatSceneComponent chatInfoUnitsComponent = scene.GetComponent<ChatSceneComponent>();
                         if (request.MessageType == ServerNoticeType.PlayerExit)
                         {
@@ -109,40 +127,35 @@ namespace ET
                             }
                             bePortedNumber.JinYanTime = TimeHelper.ServerNow() + TimeHelper.OneDay * 3;
                         }
-                        reply();
                         break;
                     case SceneType.Realm:
-                        string[] messagevalue = request.MessageValue.Split('_');
-                        if (!messagevalue[1].Equals(DllHelper.Admin))
+                        if (request.MessageType != ServerNoticeType.StopSever)
                         {
-                            Log.Warning($"AccountCenter = a: {messagevalue[1]}   b: {DllHelper.Admin}");
-                            reply();
-                            return;
+                            break;
                         }
-                        
+                        string[] messagevalue = (request.MessageValue ?? string.Empty).Split('_');
                         if (messagevalue[0] == "0")
                         {
-                            scene.GetComponent<CenterServerComponent>().StopServer = true;
-                            LogHelper.OnStopServer();
-                            Log.Warning("StopServer = true");
+                            if (messagevalue.Length != 2 || !int.TryParse(messagevalue[1], out int minutes) || minutes < 0)
+                            {
+                                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
+                                response.Message = "倒计时分钟数须为非负整数。";
+                                break;
+                            }
+                            StopServerConsoleHandler.StartMaintenance(scene, minutes, response);
                         }
-                        if(messagevalue[0] == "1")
+                        else if (messagevalue[0] == "1" && messagevalue.Length == 1)
                         {
                             scene.GetComponent<CenterServerComponent>().StopServer = false;
-                            Log.Warning("StopServer = false");
                         }
-                        if (messagevalue[0] == "2")
+                        else if (messagevalue[0] == "2" && messagevalue.Length == 1)
                         {
                             Game.EventSystem.Publish(new EventType.GenerateSerials() { AccountCenterScene = scene });
                         }
-                        //if (yeardate == 20230412 && hour == 13 && self.DomainZone() == 3)
-                        //{
-                        //    //通知中心刷新序列号
-                        //    LogHelper.LogWarning($"刷新序列号", true);
-                        //    long centerid = DBHelper.GetAccountCenter();
-                        //    A2A_ActivityUpdateResponse m2m_TrasferUnitResponse = (A2A_ActivityUpdateResponse)await ActorMessageSenderComponent.Instance.Call
-                        //                 (centerid, new A2A_ActivityUpdateRequest() { ActivityType = 1 });
-                        //}
+                        else
+                        {
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
+                        }
                         break;
                     default:
                         break;
@@ -154,6 +167,9 @@ namespace ET
             catch (Exception e)
             { 
                 Log.Error(e);
+                response.Error = ErrorCore.ERR_RpcFail;
+                response.Message = "服务器指令执行失败，请检查服务端日志。";
+                reply();
             }
         }
     }

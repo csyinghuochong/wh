@@ -240,9 +240,9 @@ namespace ET
         }
 
         /// <summary>
-        /// 离开队伍。队员离队只移除自己；队长离队且仍有成员则 TeamId 顺位给下一名；没人则解散并清理当前副本。
+        /// 离开队伍并等待刷新通知发出。队长离队时顺位接任；没人则解散并清理当前副本。
         /// </summary>
-        public static  void OnRecvUnitLeave(this TeamSceneComponent self, long userId)
+        public static async ETTask OnRecvUnitLeave(this TeamSceneComponent self, long userId)
         {
             Log.Debug($"TeamSceneComponent Leave {userId}");
 
@@ -269,7 +269,7 @@ namespace ET
                 long teamId = teamInfo.TeamId;
                 self.TeamList.Remove(teamInfo);
                 self.ClearApply(teamId);
-                self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
+                await self.SyncTeamInfo(teamInfo, userIDList);
                 Scene dungeonScene = self.GetChild<Scene>(teamInfo.FubenUUId);
                 if (dungeonScene != null && dungeonScene.InstanceId == teamInfo.FubenInstanceId)
                 {
@@ -310,11 +310,11 @@ namespace ET
 
                 if (leaver != null)
                 {
-                    self.SyncTeamInfo(new TeamInfo() { TeamId = oldTeamId }, new List<TeamPlayerInfo> { leaver }).Coroutine();
+                    await self.SyncTeamInfo(new TeamInfo() { TeamId = oldTeamId }, new List<TeamPlayerInfo> { leaver });
                 }
             }
 
-            self.SyncTeamInfo(teamInfo, userIDList).Coroutine();
+            await self.SyncTeamInfo(teamInfo, userIDList);
         }
 
         /// <summary>最后一人离队后关闭对应实例；回城或在途传送未结束时延后重试，确认清空后由 Abandon 销毁。</summary>

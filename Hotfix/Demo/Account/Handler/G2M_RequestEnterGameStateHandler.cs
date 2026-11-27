@@ -13,12 +13,11 @@ namespace ET
                 {
                     unit.GetComponent<DBSaveComponent>().OnRelogin(request.GateSessionActorId);
                 }
-                if(request.GateSessionActorId == 0)  //重登：先摘掉位置，再销毁 Unit
+                if(request.GateSessionActorId == 0)  //重登：完成存档后摘位置并销毁 Unit
                 {
                     reply();
                     replied = true;
-                    await unit.RemoveLocation();
-                    unit.GetComponent<DBSaveComponent>().OnDisconnect();
+                    await unit.GetComponent<DBSaveComponent>().OnDisconnect();
                     return;
                 }
                 if (request.GateSessionActorId == -1) //查询

@@ -333,96 +333,9 @@ namespace ET
         }
 
 
-        public static async ETTask OnStopServer(List<int> zoneList)
-        {
-            await ETTask.CompletedTask;
-#if SERVER
-            await TimerComponent.Instance.WaitAsync(1 * TimeHelper.Minute);
-
-
-            long realmserver = DBHelper.GetRealmCenter();
-
-            Other2A_ServerMessageRResponse trasferUnitResponse = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                            (realmserver, new A2Other_ServerMessageRequest() { MessageType = ServerNoticeType.StopSever });
-
-           
-            await TimerComponent.Instance.WaitAsync(10 * TimeHelper.Minute);
-            for (int i = 0; i < zoneList.Count; i++)
-            {
-                List<long> mapids = new List<long>()
-                            {
-                                 StartSceneConfigCategory.Instance.GetBySceneName(zoneList[i], "PaiMai").InstanceId,
-                                 StartSceneConfigCategory.Instance.GetBySceneName(zoneList[i], "Rank").InstanceId,
-                                 StartSceneConfigCategory.Instance.GetBySceneName(zoneList[i], "Union").InstanceId,
-                            };
-
-                for (int map = 0; map < mapids.Count; map++)
-                {
-                    Other2A_ServerMessageRResponse m2m_TrasferUnitResponse = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                            (mapids[map], new A2Other_ServerMessageRequest() { MessageType = ServerNoticeType.StopSever });
-                }
-            }
-
-            Log.Warning("数据落地！");
-            Log.Console("数据落地！");
-            Console.WriteLine("数据落地！");
-#endif
-        }
-
-
         public static async ETTask StopServerConsoleHandler(string content)
         {
-            await ETTask.CompletedTask;
-#if SERVER
-
-            string[] ss = content.Split(" ");
-            if (ss.Length < 4)
-            {
-                Log.Console($"C must zone");
-                return;
-            }
-            //stopserver 0 0 tcg452241 0 
-            //stopserver 0 /  0[停] 0[开] 0[序] 0
-            List<int> zoneList = new List<int> { };
-            if (ss[1] == "0")
-            {
-                zoneList = ServerMessageHelper.GetAllZone();
-            }
-            else
-            {
-                zoneList.Add(int.Parse(ss[1]));
-            }
-
-            if (ss[2] == "0")  //0全部广播停服维护 1开服  2序列号 
-            {
-                for (int i = 0; i < zoneList.Count; i++)
-                {
-                    Log.Console($"zoneList111: {zoneList[i]} ");
-
-                    long chatServerId = StartSceneConfigCategory.Instance.GetBySceneName(zoneList[i], "Chat").InstanceId;
-                    Other2A_ServerMessageRResponse g_SendChatRequest = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                        (chatServerId, new A2Other_ServerMessageRequest()
-                        {
-                            MessageType = ServerNoticeType.StopSever,
-                            MessageValue = "停服维护"
-                        });
-                }
-            }
-
-            long realmServerId = StartSceneConfigCategory.Instance.RealmConfig.InstanceId;
-            Other2A_ServerMessageRResponse response = (Other2A_ServerMessageRResponse)await ActorMessageSenderComponent.Instance.Call
-                (realmServerId, new A2Other_ServerMessageRequest()
-                {
-                    MessageType = ServerNoticeType.StopSever,
-                    MessageValue = $"{ss[2]}_{ss[3]}"
-                });
-
-            if (ss[2] == "0")  //0全部广播停服维护 十分钟后数据落地
-            {
-                OnStopServer(zoneList).Coroutine();
-            }
-
-#endif
+            await ET.StopServerConsoleHandler.Execute(content);
         }
 
         public static Dictionary<long, int> ShaiCha(Dictionary<long, int> dic, int showNum, out int minValue)

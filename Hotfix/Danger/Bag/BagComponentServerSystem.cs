@@ -1009,7 +1009,7 @@ namespace ET
             List<RewardItem> otherItems = new List<RewardItem>();
             Dictionary<int, int> leftCellByLoc = new Dictionary<int, int>();
 
-            foreach (RewardItem item in MergeRewardItems(rewardItems).Values)
+            foreach (RewardItem item in ItemNewHelper.MergeRewardItems(rewardItems).Values)
             {
                 if (UnionHelper.IsUnionResourceItem(item))
                 {
@@ -1064,74 +1064,10 @@ namespace ET
             return true;
         }
 
-        /// <summary>先拒绝展示状态再预检容量，调用方扣除材料前使用。freedItem 为完整消耗的格子；remainingItem 为操作后剩余格子的数量、状态快照。</summary>
-        public static bool CanAddItemData(this BagComponentServer self, List<RewardItem> rewards, BagInfo freedItem = null, BagInfo remainingItem = null)
+        /// <summary>检查当前背包能否放下整批奖励，不修改实际背包。</summary>
+        public static bool CanAddItemData(this BagComponentServer self, List<RewardItem> rewards)
         {
-            for (int i = 0; i < rewards.Count; i++)
-            {
-                if (rewards[i].ItemNum <= 0 || !ItemTradeStatus.CanGrant(rewards[i].ItemFlags))
-                {
-                    return false;
-                }
-            }
-            Dictionary<int, int> cells = new Dictionary<int, int>();
-            foreach (RewardItem reward in MergeRewardItems(rewards).Values)
-            {
-                if (UnionHelper.IsUnionResourceItem(reward) || ItemNewHelper.GetItemToUserDataType(reward) != UserDataType.None
-                        || reward.ItemType == ItemBigType.Type_Exp || reward.ItemType == ItemBigType.Type_Mount) continue;
-                if (reward.ItemType == ItemBigType.Type_Item)
-                {
-                    LDItem config = LDItemCategory.Instance.Get(reward.ItemID);
-                    if (config.IfAutoUse == 1 || config.IfBag == 0) continue;
-                }
-                ItemLocType loc = ResolveAddItemLoc(ItemLocType.ItemLocMax, reward);
-                if (!ItemNewHelper.IsValideBagLoc((int)loc)) return false;
-                List<BagInfo> existing = self.GetItemByLoc(loc);
-                if (freedItem != null && freedItem.Loc == (int)loc)
-                {
-                    existing = new List<BagInfo>(existing);
-                    existing.Remove(freedItem);
-                }
-                if (remainingItem != null && remainingItem.Loc == (int)loc)
-                {
-                    existing = new List<BagInfo>(existing);
-                    int index = existing.FindIndex(item => item.BagInfoID == remainingItem.BagInfoID);
-                    if (index < 0) return false;
-                    existing[index] = remainingItem;
-                }
-                int key = (int)loc;
-                if (!cells.TryGetValue(key, out int left))
-                {
-                    left = self.GetBagLeftCell(key) + (freedItem != null && freedItem.Loc == key ? 1 : 0);
-                }
-                int need = ItemNewHelper.CalcNeedNewCells(existing, reward.ItemType, reward.ItemID, reward.ItemNum,
-                        ItemNewHelper.GetNewItemPileSum(reward), reward.ItemFlags, string.Empty, 0);
-                if (need > left) return false;
-                cells[key] = left - need;
-            }
-            return true;
-        }
-
-        private static Dictionary<long, RewardItem> MergeRewardItems(List<RewardItem> srcList)
-        {
-            Dictionary<long, RewardItem> map = new Dictionary<long, RewardItem>();
-            for (int i = 0; i < srcList.Count; i++)
-            {
-                RewardItem src = srcList[i];
-                int itemFlags = ItemNewHelper.ResolveAddItemFlags(src);
-                long key = ((long)itemFlags << 48) | ((long)src.ItemType << 32) | (uint)src.ItemID;
-                if (map.TryGetValue(key, out RewardItem merged))
-                {
-                    //表示数量相加超过 int 范围时，抛出 OverflowException，避免结果溢出后变成负数等错误值。
-                    //例如：`int.MaxValue + 1`，普通情况下可能变成负数，加上 checked 就会直接报错。
-                    merged.ItemNum = checked(merged.ItemNum + src.ItemNum);
-                    continue;
-                }
-
-                map[key] = new RewardItem { ItemType = src.ItemType, ItemID = src.ItemID, ItemNum = src.ItemNum, ItemFlags = itemFlags };
-            }
-
-            return map;
+            return ItemNewHelper.CanAddItemData(rewards, self.GetItemByLoc, self.GetBagLeftCell);
         }
 
         private static bool TryAddCurrency(Unit unit, RewardItem item, int getType, bool notice)
@@ -1191,7 +1127,7 @@ namespace ET
                 int useTimes = item.ItemNum > 0 ? item.ItemNum : 1;
                 for (int n = 0; n < useTimes; n++)
                 {
-                    ItemUseHelper.UseItem(unit, item.ItemID, null, null, 1, locType).Coroutine();
+                    ItemUseHelper.UseItem(unit, item.ItemID, null, null, 1, locType, sourceItemFlags: item.ItemFlags).Coroutine();
                 }
             }
 

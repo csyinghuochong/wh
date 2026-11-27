@@ -23,6 +23,12 @@ namespace ET
                 }
 
                 Scene scene = session.DomainScene();
+                if (StopServerConsoleHandler.IsGateStopped(scene))
+                {
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Stop_Server);
+                    reply();
+                    return;
+                }
                 string tokenKey = scene.GetComponent<GateSessionKeyComponent>().Get(request.Account);
                 if (tokenKey == null || !tokenKey.Equals(request.Key))
                 {
@@ -63,6 +69,14 @@ namespace ET
                         return;
                     }
 
+                    if (StopServerConsoleHandler.IsGateStopped(scene))
+                    {
+                        await MessageHelper.CallActor(loginCenterConfig.InstanceId,
+                            new G2L_RemoveLoginRecord { AccountId = request.Account, ServerId = scene.Zone });
+                        response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Stop_Server);
+                        reply();
+                        return;
+                    }
                     SessionStateComponent SessionStateComponent = session.GetComponent<SessionStateComponent>();
                     if (SessionStateComponent == null)
                     {

@@ -54,7 +54,6 @@ namespace ET
             NumericComponent numericComponent = unit.GetComponent<NumericComponent>();
             numericComponent.Set((int)NumericType.Now_Dead, 0, false);
 
-            numericComponent.Set((int)NumericType.TeamId, 0, false);
             DBHelper.SavePlayerComponent(unit.Id, numericComponent).Coroutine();
             numericComponent.Set((int)NumericType.HP_Current_8, numericComponent.GetAsLong((int)NumericType.HP_Max_10), false);
         }
@@ -140,7 +139,7 @@ namespace ET
             }
         }
 
-        public static int OnDisconnect(DBSaveComponent self)
+        public static async ETTask<int> OnDisconnect(DBSaveComponent self)
         {
             Unit unit = self.GetParent<Unit>();
             RoleInfoComponentServer roleInfo = unit.GetComponent<RoleInfoComponentServer>();
@@ -155,10 +154,24 @@ namespace ET
             if (!unit.IsRobot())
             {
                 self.LogTest();
-                self.UpdateCacheDB();
+                try
+                {
+                    await self.UpdateCacheDBAsync();
+                }
+                catch
+                {
+                    // BeforeTransfer 已移除邮箱；失败时恢复入口，允许停服任务重试该角色。
+                    if (!unit.IsDisposed)
+                    {
+                        unit.AddComponent<MailBoxComponent>();
+                    }
+                    throw;
+                }
                 AntiCheatAuditHelper.LogSession(unit, roleInfo, "移除");
             }
 
+            // 最终存档成功后再摘位置和销毁，存档失败时保留玩家实体以便重试。
+            await unit.RemoveLocation();
             long unitId = unit.Id;
             unit.GetParent<UnitComponent>().Remove(unitId);
             Game.EventSystem.Publish(new EventType.PlayerDisconnect() { DomainScene = scene, UnitId = unitId });

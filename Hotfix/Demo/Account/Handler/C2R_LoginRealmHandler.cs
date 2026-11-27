@@ -15,6 +15,12 @@ namespace ET
                     return;
                 }
                 Scene domainScene = session.DomainScene();
+                if (domainScene.GetComponent<CenterServerComponent>().StopServer)
+                {
+                    response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Stop_Server);
+                    reply();
+                    return;
+                }
 
                 if (session.GetComponent<SessionLockingComponent>() != null)
                 {

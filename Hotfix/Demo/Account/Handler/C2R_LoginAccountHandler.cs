@@ -151,6 +151,12 @@ namespace ET
                         CenterServerComponent centerServerComponent = session.DomainScene().GetComponent<CenterServerComponent>();
                         bool IsHoliday = centerServerComponent.IsHoliday;
                         bool StopServer = centerServerComponent.StopServer;
+                        if (StopServer)
+                        {
+                            response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Login_Stop_Server);
+                            reply();
+                            return;
+                        }
                         
                         PlayerInfo centerPlayerInfo = dbcenterAccountInfo.PlayerInfo;
 
@@ -238,7 +244,7 @@ namespace ET
                                 && createRoleInfo.Cooldown > 0
                                 && now >= createRoleInfo.Cooldown)
                             {
-                                response.Error = await RoleDeleteHelper.RemoveFromUnion(createRoleInfo);
+                                response.Error = await RoleDeleteHelper.RemoveRelations(createRoleInfo);
                                 if (response.Error != ErrorCode.ERR_Success)
                                 {
                                     reply();

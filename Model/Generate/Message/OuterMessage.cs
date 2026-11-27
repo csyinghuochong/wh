@@ -2245,6 +2245,7 @@ namespace ET
 
 	}
 
+// 服务端向客户端推送游戏通知；维护通知允许确认后提前返回登录，最迟按指定截止时间退出。
 	[Message(OuterOpcode.M2C_GameNotice)]
 	[ProtoContract]
 	public partial class M2C_GameNotice: Object, IActorMessage

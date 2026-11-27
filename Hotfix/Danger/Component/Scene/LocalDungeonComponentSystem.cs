@@ -44,27 +44,6 @@ namespace ET
             {
                 return;
             }
-           
-            ///刷新刷出神秘之门
-            if (RoleCurrencyHelper.Get(roleInfoComponentServer.RoleInfo, UserDataType.TiLi) > 0 && roleInfoComponentServer.RoleInfo.Lv > 20  && !unit.IsSceneItem() && RandomHelper.RandFloat01() < 0.001f)
-            {
-                int shenminId = 40000003;
-                List<Unit> npclist = self.MainUnit.GetParent<UnitComponent>().GetAll();
-                bool hasShenminNpc = false;
-                for (int i = 0; i < npclist.Count; i++)
-                {
-                    if (npclist[i].Type == UnitType.Npc && npclist[i].ConfigId == shenminId)
-                    {
-                        hasShenminNpc = true;
-                        break;
-                    }
-                }
-                if (!hasShenminNpc)
-                {
-                    UnitFactory.CreateNpcByPosition(self.DomainScene(), shenminId, unit.Position);
-                }
-                Log.Warning($"神秘之门刷新: {self.DomainZone()} {self.MainUnit.Id}");
-            }
         }
 
         public static void OnCleanBossCD(this LocalDungeonComponent self)

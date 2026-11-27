@@ -33,7 +33,8 @@ namespace ET
         /// <param name="useNum">使用数量。有格子时不能小于 1，也不能大于该格子 ItemNum。</param>
         /// <param name="locType">道具所在 ItemLocType，与客户端传入一致。</param>
         /// <param name="overflowMail">可选的溢出邮件接收对象，成功后附件非空表示本次已发送邮件。</param>
-        public static async ETTask<int> UseItem(Unit unit, int itemId, BagInfo useBagInfo, M2C_RoleBagUpdate bagUpdate, int useNum, ItemLocType locType, string operatePar = "", MailInfo overflowMail = null)
+        /// <param name="sourceItemFlags">自动使用时传来源奖励的交易码；背包使用时以实际格子的交易码为准。</param>
+        public static async ETTask<int> UseItem(Unit unit, int itemId, BagInfo useBagInfo, M2C_RoleBagUpdate bagUpdate, int useNum, ItemLocType locType, string operatePar = "", MailInfo overflowMail = null, int sourceItemFlags = ItemTradeStatus.None)
         {
             itemId = useBagInfo != null ? useBagInfo.ItemID : itemId;
             if (useNum < 1 || itemId <= 0 || !LDItemCategory.Instance.Contain(itemId))
@@ -91,8 +92,12 @@ namespace ET
             int overflowMailConfigId = 0;
             if (isPackage)
             {
-                int packageError = GetPackageRewards(ldItem, useNum, operatePar, out packageRewards);
-                if (packageError != ErrorCode.ERR_Success) return packageError;
+                int packageError = GetPackageRewards(ldItem, useNum, operatePar, out packageRewards,
+                    useBagInfo != null ? useBagInfo.ItemFlags : sourceItemFlags);
+                if (packageError != ErrorCode.ERR_Success)
+                {
+                    return packageError;
+                }
                 overflowMailConfigId = LDMailCategory.Instance.GetMailByKey(MailKey.Mail_Over_Bag_Volume);
                 if (overflowMailConfigId <= 0)
                 {
@@ -215,7 +220,9 @@ namespace ET
         /// <param name="operatePar">12 传 Item.Reward 中从 1 开始的选项序号；11、13 传空。</param>
         /// <param name="rewards">计算后的奖励列表，仅返回成功时可发放；11/13 走 Drop_Id 合法抽空时列表可以为空。</param>
         /// <returns>成功返回 ERR_Success；数量、选项或奖励配置非法时返回对应的 Word_Prompt 提示 ID。</returns>
-        public static int GetPackageRewards(LDItem item, int useNum, string operatePar, out List<RewardItem> rewards)
+        /// <param name="sourceItemFlags">来源礼包的实际交易码，Reward 和 Drop_Id 中配置的 20 均继承此值。</param>
+        public static int GetPackageRewards(LDItem item, int useNum, string operatePar, out List<RewardItem> rewards,
+            int sourceItemFlags = ItemTradeStatus.None)
         {
             rewards = new List<RewardItem>();
             if (useNum < 1 || useNum > 1000)
@@ -235,13 +242,13 @@ namespace ET
                 }
                 for (int i = 0; i < useNum; i++)
                 {
-                    DropHelper.DropIDToDropItem(item.Drop_Id, rewards);
+                    DropHelper.DropIDToDropItem(item.Drop_Id, rewards, sourceItemFlags);
                 }
                 // 11/13 未配 Reward 时按 Drop 规则抽取，概率 Drop 允许本次抽空。
             }
             else
             {
-                rewards = ItemNewHelper.GetPackageShowItems(item.Id);
+                rewards = ItemNewHelper.GetRewardItems(item.Reward, sourceItemFlags);
                 if (rewards.Count == 0)
                 {
                     return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);

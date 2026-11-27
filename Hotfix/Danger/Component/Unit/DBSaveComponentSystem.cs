@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -63,41 +64,56 @@ namespace ET
 
         public static void UpdateCacheDB(this DBSaveComponent self)
         {
+            self.UpdateCacheDBAsync().Coroutine();
+        }
+
+        /// <summary>下线时等待缓存服完成 Mongo 写入；普通定时存档仍由原入口异步发起。</summary>
+        public static async ETTask UpdateCacheDBAsync(this DBSaveComponent self)
+        {
+            if (self.EntityChangeTypeSet.Count <= 0)
+            {
+                return;
+            }
+            Unit unit = self.GetParent<Unit>();
+            if (unit.IsRobot())
+            {
+                return;
+            }
+
+            long dbCacheId = DBHelper.GetUnitCacheConfig(unit.Id);
+            M2D_SaveUnit message = new M2D_SaveUnit { UnitId = unit.Id };
+            List<Type> changedTypes = new List<Type>(self.EntityChangeTypeSet);
+            message.EntityTypes.Add(unit.GetType().FullName);
+            message.EntityBytes.Add(MongoHelper.ToBson(unit));
+            foreach (Type type in changedTypes)
+            {
+                Entity entity = unit.GetComponent(type);
+                if (entity == null || entity.IsDisposed)
+                {
+                    continue;
+                }
+                message.EntityTypes.Add(type.FullName);
+                message.EntityBytes.Add(MongoHelper.ToBson(entity));
+            }
+            self.EntityChangeTypeSet.Clear();
             try
             {
-                if (self.EntityChangeTypeSet.Count <= 0)
+                IActorResponse response = await MessageHelper.CallActor(dbCacheId, message);
+                if (response.Error != ErrorCode.ERR_Success)
                 {
-                    return;
+                    throw new Exception($"玩家存档失败：UnitId={unit.Id} Error={response.Error}");
                 }
-                Unit unit = self.GetParent<Unit>();
-                if (unit.IsRobot())
-                {
-                    return;
-                }
-
-                long dbCacheId = DBHelper.GetUnitCacheConfig(unit.Id);
-                M2D_SaveUnit message = new M2D_SaveUnit() { UnitId = unit.Id };
-
-                message.EntityTypes.Add(unit.GetType().FullName);
-                message.EntityBytes.Add(MongoHelper.ToBson(unit));
-
-                foreach (Type type in self.EntityChangeTypeSet)
-                {
-                    Entity entity = unit.GetComponent(type);
-                    if (entity == null || entity.IsDisposed)
-                    {
-                        continue;
-                    }
-                    message.EntityTypes.Add(type.FullName);
-                    message.EntityBytes.Add(MongoHelper.ToBson(entity));
-                }
-
-                self.EntityChangeTypeSet.Clear();
-                MessageHelper.CallActor(dbCacheId, message).Coroutine();
             }
-            catch (Exception ex)
+            catch
             {
-                Log.Error("更新缓存服Unit数据出错: " + ex.ToString());
+                if (!self.IsDisposed)
+                {
+                    foreach (Type type in changedTypes)
+                    {
+                        self.EntityChangeTypeSet.Add(type);
+                    }
+                }
+                throw;
             }
         }
 
@@ -130,10 +146,10 @@ namespace ET
             LogHelper.LogDebug($"活动领取： {activityComponentServer.ActivityReceiveIds.Count}  {activityComponentServer.QuTokenRecvive.Count}");
         }
 
-        public static int OnDisconnect(this DBSaveComponent self)
+        public static async ETTask<int> OnDisconnect(this DBSaveComponent self)
         {
             Console.WriteLine($"OnDisconnect:  {self.Id}");
-            return PlayerSessionLifecycleHelper.OnDisconnect(self);
+            return await PlayerSessionLifecycleHelper.OnDisconnect(self);
         }
 
         /// <summary>
@@ -143,8 +159,6 @@ namespace ET
         /// <returns></returns>
         public static async ETTask OnKickPlayer(this Unit unit, bool other)
         {
-            await unit.RemoveLocation();
-
             if (other)
             {
                 //通知Chat服
@@ -155,10 +169,11 @@ namespace ET
             DBSaveComponent dBSaveComponent = unit.GetComponent<DBSaveComponent>();
             if (dBSaveComponent != null)
             {
-                dBSaveComponent.OnDisconnect();
+                await dBSaveComponent.OnDisconnect();
             }
             else
             {
+                await unit.RemoveLocation();
                 unit.GetParent<UnitComponent>().Remove(unit.Id);
             }
         }

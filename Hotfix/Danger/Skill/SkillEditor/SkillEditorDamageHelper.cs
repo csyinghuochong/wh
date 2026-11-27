@@ -193,6 +193,14 @@ namespace ET
             ctx.SetVariable("damageTotal", totalDamage);
             ApplyDamage(caster, target, targetNumeric, totalDamage, skillId, ignoreShield, damageType);
 
+            if (Log.IsDebugEnabled)
+            {
+                long now = TimeHelper.ServerNow();
+                long begin = ctx.Handler.SkillBeginTime;
+                long time1Ms = (long)(1000 * Math.Max(0, ctx.Handler.LdSkillConf.Time_1));
+                Log.Debug($"[SkillTiming][Server][HpApplied] skill={skillId} sourceSkill={ctx.SkillId} caster={caster.Id} target={target.Id} beginMs={begin} nowMs={now} time1Ms={time1Ms} elapsedMs={now - begin} lateMs={now - begin - time1Ms} damage={totalDamage} hp={targetNumeric.GetAsLong(NumericType.HP_Current_8)}");
+            }
+
             // 参数 32~34：三类伤害的吸血比例
             ApplyLifeSteal(caster, casterNumeric, normalDamage, GetParamDouble(ctx, 32, 0d), skillId);
             ApplyLifeSteal(caster, casterNumeric, hpDamage, GetParamDouble(ctx, 33, 0d), skillId);

@@ -9,26 +9,25 @@ namespace ET
 
             try
             {
-                reply();
-
-                await unit.RemoveLocation();
-
+                // 完成玩家落库、摘位置与销毁后才回包，网关停服据此等待退出完成。
                 DBSaveComponent dBSaveComponent = unit.GetComponent<DBSaveComponent>();
                 if (dBSaveComponent != null)
                 {
-                    dBSaveComponent.OnDisconnect();
+                    await dBSaveComponent.OnDisconnect();
                 }
                 else
                 {
+                    await unit.RemoveLocation();
                     unit.GetParent<UnitComponent>().Remove(unit.Id);
                 }
             }
             catch (Exception e) 
             {
                 Log.Error(e.ToString());
+                response.Error = ErrorCore.ERR_RpcFail;
             }
 
-            await ETTask.CompletedTask;
+            reply();
         }
     }
 

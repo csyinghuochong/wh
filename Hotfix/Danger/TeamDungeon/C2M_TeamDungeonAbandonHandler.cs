@@ -15,19 +15,8 @@ namespace ET
                 reply();
                 return;
             }
-            if (unit.GetTeamId() == 0)
-            {
-                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
-                reply();
-                return;
-            }
-            if (unit.GetTeamId() != unit.Id)
-            {
-                response.Error = LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
-                reply();
-                return;
-            }
 
+            // 完整登录会重置角色 TeamId；队长身份及实例归属统一由队伍服按当前队伍校验。
             T2M_TeamDungeonAbandonResponse result = (T2M_TeamDungeonAbandonResponse)await MessageHelper.CallActor(
                 DBHelper.GetTeamServerId(unit), new M2T_TeamDungeonAbandonRequest
                 {

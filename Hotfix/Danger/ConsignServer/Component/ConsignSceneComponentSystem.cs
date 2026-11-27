@@ -459,7 +459,7 @@ namespace ET
                 await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 5000));
             }
 
-            foreach (KeyValuePair<long, DBConsignWantBuy> kv in self.WantBuyByItemKey)
+            foreach (KeyValuePair<long, DBConsignWantBuy> kv in new List<KeyValuePair<long, DBConsignWantBuy>>(self.WantBuyByItemKey))
             {
                 await self.SaveWantBuyData(kv.Value);
                 await TimerComponent.Instance.WaitAsync(RandomHelper.RandomNumber(1000, 3000));

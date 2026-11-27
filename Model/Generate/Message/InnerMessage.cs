@@ -863,6 +863,9 @@ namespace ET
 
 	}
 
+// 服务器间通用业务指令。停服指令由账号服统一编排，再通知网关与业务服。
+// StopSever 的 MessageValue：账号服接收 0_分钟（非负整数），1 恢复登录，2 生成序列号；网关接收 notify_下线UTC毫秒时间戳；
+// 网关及业务服接收 save 启动存档、status 查询完成状态。其他指令沿用各自的 MessageValue 约定。
 	[ResponseType(nameof(Other2A_ServerMessageRResponse))]
 	[Message(InnerOpcode.A2Other_ServerMessageRequest)]
 	[ProtoContract]
@@ -891,6 +894,7 @@ namespace ET
 
 	}
 
+// 指令回包：Error 非0表示失败；停服存档的 Message 为 saving/saved/failed/missing，分别表示执行中/已完成/失败/任务不存在。
 	[Message(InnerOpcode.Other2A_ServerMessageRResponse)]
 	[ProtoContract]
 	public partial class Other2A_ServerMessageRResponse: Object, IActorResponse

@@ -8,6 +8,29 @@ namespace ET
     {
         public const int SearchMaxCount = 20;
 
+        /// <summary>删角时清理各区对该角色的好友、申请及黑名单引用，再删除角色自己的好友记录。</summary>
+        public static async ETTask RemoveRoleRelations(int homeZone, long userId, List<int> zones)
+        {
+            DBComponent db = Game.Scene.GetComponent<DBComponent>();
+            UpdateDefinition<DBFriendInfo> update = Builders<DBFriendInfo>.Update
+                .Pull(d => d.FriendList, userId)
+                .Pull(d => d.ApplyList, userId)
+                .Pull(d => d.SendApplyList, userId)
+                .Pull(d => d.Blacklist, userId);
+            foreach (int zone in zones)
+            {
+                db.InitDatabase(StartZoneConfigCategory.Instance.Get(zone));
+                // 黑名单是单向关系，不能只沿着被删角色自己的列表清理；只更新包含该 Id 的文档。
+                using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.DB, userId % DBComponent.TaskCount))
+                {
+                    await db.GetCollection<DBFriendInfo>(zone).UpdateManyAsync(
+                        d => d.FriendList.Contains(userId) || d.ApplyList.Contains(userId)
+                            || d.SendApplyList.Contains(userId) || d.Blacklist.Contains(userId), update);
+                }
+            }
+            await db.Remove<DBFriendInfo>(homeZone, userId);
+        }
+
         public static async ETTask<List<FriendInfo>> GetFriendInfos(List<long> friends, HashSet<long> onlineIds)
         {
             List<FriendInfo> friendInfos = new List<FriendInfo>();

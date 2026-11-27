@@ -8,7 +8,7 @@ namespace ET
     {
         protected override async ETTask Run(Scene scene, C2T_TeamLeaveRequest request, T2C_TeamLeaveResponse response, Action reply)
         {
-            scene.GetComponent<TeamSceneComponent>().OnRecvUnitLeave(request.UserId);
+            await scene.GetComponent<TeamSceneComponent>().OnRecvUnitLeave(request.UserId);
             reply();
             await ETTask.CompletedTask;
         }
