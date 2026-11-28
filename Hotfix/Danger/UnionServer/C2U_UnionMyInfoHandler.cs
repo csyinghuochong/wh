@@ -47,6 +47,7 @@ namespace ET
                     RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(player.UserID);
                     if (roleInfoComponentServer != null)
                     {
+                        player.PlayerLevel = roleInfoComponentServer.RoleInfo.Lv;
                         player.LastOfflineTime = roleInfoComponentServer.LastOfflineTime;
                     }
 

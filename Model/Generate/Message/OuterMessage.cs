@@ -9688,7 +9688,7 @@ namespace ET
 
 	}
 
-//通知客户端命中
+// 服务端向施法方、受击方玩家推送命中结果，用于客户端伤害、治疗及未命中飘字。
 	[Message(OuterOpcode.M2C_InformClientHit)]
 	[ProtoContract]
 	public partial class M2C_InformClientHit: Object, IActorMessage
@@ -9699,14 +9699,21 @@ namespace ET
 		[ProtoMember(93)]
 		public long ActorId { get; set; }
 
+// 受击或接受治疗的目标单位 ID。
 		[ProtoMember(1)]
 		public long UnitId { get; set; }
 
+// 命中结果，取值对应 SkillEditorHitResult 枚举。
 		[ProtoMember(2)]
 		public int HitType { get; set; }
 
+// 伤害或治疗量，非负整数；未命中类结果为 0，最大为 int32.MaxValue。
 		[ProtoMember(3)]
 		public int HitValue { get; set; }
+
+// 产生本次命中结果的技能 ID，用于关联客户端飘字与技能计时。
+		[ProtoMember(4)]
+		public int SkillId { get; set; }
 
 	}
 
@@ -11052,6 +11059,22 @@ namespace ET
 	{
 		[ProtoMember(1)]
 		public TeamInfo TeamInfo { get; set; }
+
+	}
+
+//组队服 -> 队伍内在线客户端：成员等级变化通知；仅更新当前队伍内该成员的等级，无业务回包。
+	[Message(OuterOpcode.M2C_TeamPlayerLevelUpdate)]
+	[ProtoContract]
+	public partial class M2C_TeamPlayerLevelUpdate: Object, IActorMessage
+	{
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int Level { get; set; }
 
 	}
 

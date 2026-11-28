@@ -27,6 +27,7 @@ namespace ET
                 M2C_SyncChatInfo m2C_SyncChatInfo = new M2C_SyncChatInfo();
                 request.ChatInfo.Time = serverTime;
                 request.ChatInfo.PlayerName = chatInfoUnit.Name;
+                request.ChatInfo.PlayerLevel = chatInfoUnit.Level;
                 request.ChatInfo.ServerId = UnitZoneHelper.GetHomeZone(chatInfoUnit.Id);
                 request.ChatInfo.RoleHeadId = chatInfoUnit.RoleHeadId;
                 request.ChatInfo.RoleHeadFrame = chatInfoUnit.RoleHeadFrame;

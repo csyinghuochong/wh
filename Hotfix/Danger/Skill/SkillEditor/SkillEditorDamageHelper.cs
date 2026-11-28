@@ -193,12 +193,12 @@ namespace ET
             ctx.SetVariable("damageTotal", totalDamage);
             ApplyDamage(caster, target, targetNumeric, totalDamage, skillId, ignoreShield, damageType);
 
-            if (Log.IsDebugEnabled)
+            if (SkillDispatcherComponent.EnableSkillTimingLog && skillId == 1001 && (Options.Instance.Console == 1 || Log.IsDebugEnabled))
             {
                 long now = TimeHelper.ServerNow();
                 long begin = ctx.Handler.SkillBeginTime;
                 long time1Ms = (long)(1000 * Math.Max(0, ctx.Handler.LdSkillConf.Time_1));
-                Log.Debug($"[SkillTiming][Server][HpApplied] skill={skillId} sourceSkill={ctx.SkillId} caster={caster.Id} target={target.Id} beginMs={begin} nowMs={now} time1Ms={time1Ms} elapsedMs={now - begin} lateMs={now - begin - time1Ms} damage={totalDamage} hp={targetNumeric.GetAsLong(NumericType.HP_Current_8)}");
+                Log.Console($"[技能计时][服务端][扣血] 时间={TimeHelper.DateTimeNow():HH:mm:ss.fff} skill={skillId} caster={caster.Id} target={target.Id} 实际耗时={now - begin}ms Time_1={time1Ms}ms damage={totalDamage} hp={targetNumeric.GetAsLong(NumericType.HP_Current_8)}");
             }
 
             // 参数 32~34：三类伤害的吸血比例

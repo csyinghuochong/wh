@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -11,10 +11,10 @@ namespace ET
             NumericComponent numeric = unit.GetComponent<NumericComponent>();
             numeric.ApplyValue(NumericType.UnionLeader,0);
             numeric.ApplyValue(NumericType.UnionId_0, 0);
-            unit.GetComponent<DBSaveComponent>().UpdateCacheDB();
+            // 等角色公会归属落库，公会服收到成功回包后即可查询新值。
+            await unit.GetComponent<DBSaveComponent>().UpdateCacheDBAsync();
 
             reply();
-            await ETTask.CompletedTask;
         }
     }
 }

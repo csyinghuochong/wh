@@ -10,6 +10,8 @@ namespace ET
     {
         public override void Run(SkillManagerComponent self)
         {
+            // 一次性定时器先移除；检查完成后按仍在运行的技能安排下一次唤醒。
+            TimerComponent.Instance.Remove(ref self.Timer);
             try
             {
                 self.Check();
@@ -17,6 +19,13 @@ namespace ET
             catch (Exception e)
             {
                 Log.Error($"move timer error: {self.Id}\n{e}");
+            }
+            finally
+            {
+                if (!self.IsDisposed)
+                {
+                    self.AddSkillTimer();
+                }
             }
         }
     }
@@ -344,6 +353,11 @@ namespace ET
             useSkill.SkillInfos = skillList;
             useSkill.CDEndTime = skillCd != null ? skillCd.CDEndTime : 0;
             useSkill.PublicCDTime = groupCdEnd;
+            if (SkillDispatcherComponent.EnableSkillTimingLog && weaponLdSkill.Id == 1001 && (Options.Instance.Console == 1 || Log.IsDebugEnabled))
+            {
+                Log.Console($"[技能计时][服务端][释放技能并广播] 时间={TimeHelper.DateTimeNow():HH:mm:ss.fff} skill={weaponLdSkill.Id} caster={unit.Id} target={skillcmd.TargetID}");
+            }
+
             self.BroadcastSkill(unit, useSkill);
 
             // 敌对指向技能成功释放即记录攻击者，未扣血时宠物也能响应主人受击。
@@ -377,14 +391,32 @@ namespace ET
             return m2C_Skill;
         }
 
+        /// <summary>保留最多 100ms 的常规检查，在伤害或结束时刻提前唤醒；新施法重新计算，空闲时停表。</summary>
         public static void AddSkillTimer(this SkillManagerComponent self)
         {
-            if (self.Timer == 0)
+            TimerComponent.Instance.Remove(ref self.Timer);
+            if (self.IsDisposed || (self.Skills.Count == 0 && self.DelaySkillList.Count == 0))
             {
-                TimerComponent.Instance.Remove(ref self.Timer);
-                long repeatertime = 100;//// unit.Type == UnitType.Monster && LDMonsterCategory.Instance.NoSkillMonsterList.Contains(unit.ConfigId) ? 200 : 200;
-                self.Timer = TimerComponent.Instance.NewRepeatedTimer(repeatertime, TimerType.SkillTimer, self);
+                return;
             }
+
+            long now = TimeHelper.ServerNow();
+            long nextTime = now + 100;
+            foreach (Skill_TreeEditor skill in self.Skills)
+            {
+                long dueTime = skill.SkillEndTime;
+                // 引导最后一跳之后只等待结束，避免用已过期的跳伤时刻反复唤醒。
+                long guideEndTime = skill.SkillBeginTime + (long)(1000 * Math.Max(0, skill.LdSkillConf.Time_1))
+                        + (long)(1000 * skill.LdSkillConf.Skill_Time);
+                if (skill.GuideIntervalMs == 0 || skill.SkillExcuteHurtTime <= guideEndTime)
+                {
+                    dueTime = Math.Min(dueTime, skill.SkillExcuteHurtTime);
+                }
+
+                nextTime = Math.Min(nextTime, Math.Max(now + 1, dueTime));
+            }
+
+            self.Timer = TimerComponent.Instance.NewOnceTimer(nextTime, TimerType.SkillTimer, self);
         }
 
         public static SkillCDItem AddSkillCD(this SkillManagerComponent self, int skillid, LDSkill_Battle weapon, bool zhudong)
@@ -715,6 +747,7 @@ namespace ET
             self.OnUseSkill(cmd, false);
         }
 
+        /// <summary>按时间门槛推进技能，执行异常的技能结束回收、不重试；再清理到期 CD，由 SkillTimer 安排下次唤醒。</summary>
         public static void Check(this SkillManagerComponent self)
         {
             int skillcnt = self.Skills.Count;
@@ -725,8 +758,37 @@ namespace ET
                     return;
                 }
 
+                if (i >= self.Skills.Count)
+                {
+                    continue;
+                }
+
                 Skill_TreeEditor skill_TreeEditor = self.Skills[i];
-                skill_TreeEditor.OnUpdate();
+                SkillInfo skillInfo = skill_TreeEditor.SkillInfo;
+                try
+                {
+                    skill_TreeEditor.OnUpdate();
+                }
+                catch (Exception e)
+                {
+                    // 技能可能已产生部分效果；结束本次实例，避免按过期时间重试并重复扣血。
+                    if (skill_TreeEditor.SkillInfo == skillInfo)
+                    {
+                        skill_TreeEditor.SetSkillState(SkillState.Finished);
+                    }
+                    Log.Error($"skill update error: unit={self.Id} skill={skillInfo.WeaponSkillID}\n{e}");
+                }
+
+                if (self.IsDisposed)
+                {
+                    return;
+                }
+
+                // 技能执行可能触发死亡清场或被动施法；已移除、回收或复用的实例不能再次回收。
+                if (i >= self.Skills.Count || self.Skills[i] != skill_TreeEditor || skill_TreeEditor.SkillInfo != skillInfo)
+                {
+                    continue;
+                }
 
                 if (skill_TreeEditor.GetSkillState() == SkillState.Finished)
                 {

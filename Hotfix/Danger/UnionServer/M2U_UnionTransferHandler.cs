@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ET
 {
@@ -34,7 +34,7 @@ namespace ET
             dBUnionInfo.UnionInfo.LeaderId = request.NewLeader;
             unionPlayerInfo_new.Position = UnionPosition.Leader;
             unionPlayerInfo_self.Position = UnionPosition.Member;
-            DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
+            await DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo);
 
             //通知新族长
             //G2T_GateUnitInfoResponse g2M_UpdateUnitResponse_2 = (G2T_GateUnitInfoResponse)await ActorMessageSenderComponent.Instance.Call

@@ -12,7 +12,7 @@
         /// 通知客户端命中效果（闪避、暴击、免疫等），在目标头顶飘字。
         /// 仅发送给施法方和被攻击方对应的玩家客户端，不 AOI 广播。
         /// </summary>
-        public static void InformClientHit(Unit caster, Unit target, long hitType, long hitValue)
+        public static void InformClientHit(Unit caster, Unit target, long hitType, long hitValue, int skillId)
         {
             if (target == null || target.IsDisposed)
             {
@@ -23,6 +23,7 @@
             M2C_InformClientHit.UnitId = target.Id;
             M2C_InformClientHit.HitType = (int)hitType;
             M2C_InformClientHit.HitValue = hitValue > int.MaxValue ? int.MaxValue : (int)hitValue;
+            M2C_InformClientHit.SkillId = skillId;
 
             UnitComponent unitComponent = target.GetParent<UnitComponent>();
             if (unitComponent == null)
@@ -52,6 +53,11 @@
                 return;
             }
 
+            if (SkillDispatcherComponent.EnableSkillTimingLog && M2C_InformClientHit.SkillId == 1001 && (Options.Instance.Console == 1 || Log.IsDebugEnabled))
+            {
+                Log.Console($"[技能计时][服务端][通知飘字] 时间={TimeHelper.DateTimeNow():HH:mm:ss.fff} skill={M2C_InformClientHit.SkillId} target={M2C_InformClientHit.UnitId} receiver={playerId} value={M2C_InformClientHit.HitValue}");
+            }
+
             MessageHelper.SendToClient(player, M2C_InformClientHit);
         }
 
@@ -79,6 +85,12 @@
             m2C_UnitNumericUpdate.SkillId = args.SkillId;
             m2C_UnitNumericUpdate.DamgeType = args.DamgeType;
             m2C_UnitNumericUpdate.AttackId = args.Attack != null ? args.Attack.Id : 0;
+            if (SkillDispatcherComponent.EnableSkillTimingLog && args.SkillId == 1001 && args.NumericType == NumericType.HP_Current_8 && args.NewValue < args.OldValue
+                && (Options.Instance.Console == 1 || Log.IsDebugEnabled))
+            {
+                Log.Console($"[技能计时][服务端][广播扣血] 时间={TimeHelper.DateTimeNow():HH:mm:ss.fff} skill={args.SkillId} caster={m2C_UnitNumericUpdate.AttackId} target={args.Defend.Id} damage={args.OldValue - args.NewValue}");
+            }
+
             MessageHelper.Broadcast(args.Defend, m2C_UnitNumericUpdate);
         }
 
@@ -105,6 +117,12 @@
             m2C_UnitNumericUpdate.SkillId = args.SkillId;
             m2C_UnitNumericUpdate.DamgeType = args.DamgeType;
             m2C_UnitNumericUpdate.AttackId = 0;
+            if (SkillDispatcherComponent.EnableSkillTimingLog && args.SkillId == 1001 && args.NumericType == NumericType.HP_Current_8 && args.NewValue < args.OldValue
+                && (Options.Instance.Console == 1 || Log.IsDebugEnabled))
+            {
+                Log.Console($"[技能计时][服务端][通知扣血] 时间={TimeHelper.DateTimeNow():HH:mm:ss.fff} skill={args.SkillId} target={args.Defend.Id} damage={args.OldValue - args.NewValue}");
+            }
+
             MessageHelper.SendToClient(args.Defend, m2C_UnitNumericUpdate);
         }
     }

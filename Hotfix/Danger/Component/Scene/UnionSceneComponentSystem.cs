@@ -341,7 +341,7 @@ namespace ET
         }
 
         /// <summary>
-        /// 
+        /// 批准与邀请共用入会入口；在线由 Unit 实时校验，仅确认离线后才修改缓存与数据库。
         /// </summary>
         /// <param name="self"></param>
         /// <param name="unionid"></param>
@@ -350,28 +350,27 @@ namespace ET
         /// <returns></returns>
         public static async ETTask<int> OnJoinUinon(this UnionSceneComponent self, long unionid, long unitid, int replyCode)
         {
+            if (unionid <= 0 || unitid <= 0 || unionid == unitid || (replyCode != 0 && replyCode != 1))
+            {
+                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
+            }
+
             DBUnionInfo dBUnionInfo = await self.GetDBUnionInfo(unionid);
             if (dBUnionInfo == null)
             {
                 return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Operation_Fail);
             }
 
-            if (dBUnionInfo.UnionInfo.ApplyList.Contains(unitid))
+            if (replyCode == 0)
             {
                 dBUnionInfo.UnionInfo.ApplyList.Remove(unitid);
-            }
-            //判断玩家是否已经有家族了
-            NumericComponent numericComponent_0 = await DBHelper.GetPlayerComponent<NumericComponent>(unitid);
-            if (numericComponent_0 != null && numericComponent_0.GetAsLong(NumericType.UnionId_0) > 0)
-            {
-                return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Union_Already_Joined);
+                await DBHelper.SaveComponent(self.DomainZone(), unionid, dBUnionInfo);
+                return ErrorCode.ERR_Success;
             }
 
-            //判断家族人数是否已满
-            //获取家族等级
+            // 公会锁由批准/邀请入口持有，容量检查与新增成员在同一次操作中完成。
             LDUnion ldUnionCof = LDUnionCategory.Instance.Get(dBUnionInfo.UnionInfo.Level);
-            //判断家族成员是否已达上限
-            if (replyCode == 1 && dBUnionInfo.UnionInfo.UnionPlayerList.Count >= ldUnionCof.Limit_Player)
+            if (dBUnionInfo.UnionInfo.UnionPlayerList.Count >= ldUnionCof.Limit_Player)
             {
                 return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_No_Volume);
             }
@@ -384,50 +383,59 @@ namespace ET
                     exist = true;
                 }
             }
-            if (!exist && replyCode == 1)
+            if (!exist)
             {
-                bool operateSucess = false;
-
-                ////通知玩家
+                // 在线角色先检查当前公会并存档，拒绝入会不能转为离线写入。
                 U2M_UnionApplyRequest r2M_RechargeRequest = new U2M_UnionApplyRequest() { UnionId = unionid, UnionName = dBUnionInfo.UnionInfo.UnionName };
                 M2U_UnionApplyResponse m2G_RechargeResponse = (M2U_UnionApplyResponse)await ActorLocationSenderComponent.Instance.Call(unitid, r2M_RechargeRequest);
                 RoleInfoComponentServer joinRoleInfo = null;
-                if (m2G_RechargeResponse.Error == ErrorCode.ERR_Success)
+                if (m2G_RechargeResponse.Error != ErrorCode.ERR_Success
+                    && m2G_RechargeResponse.Error != ErrorCore.ERR_NotFoundActor)
                 {
-                    operateSucess = true;
-                }
-                else
-                {
-                    Log.Warning($"加入帮会不在线: {unitid}: {self.DomainZone()} {unitid}");
-
-                    operateSucess = true;
-                    NumericComponent numericComponent = await DBHelper.GetPlayerComponent<NumericComponent>(unitid);
-                    if (numericComponent != null)
+                    if (m2G_RechargeResponse.Error == LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Union_Already_Joined))
                     {
+                        dBUnionInfo.UnionInfo.ApplyList.Remove(unitid);
+                        await DBHelper.SaveComponent(self.DomainZone(), unionid, dBUnionInfo);
+                    }
+                    return m2G_RechargeResponse.Error;
+                }
+
+                if (m2G_RechargeResponse.Error == ErrorCore.ERR_NotFoundActor)
+                {
+                    // 不同公会可能同时批准同一离线玩家；用玩家 ID 串行校验和写入。
+                    // 玩家 ID 与公会 ID 是不同实体的全局 ID，可复用 UnionOperate 锁域。
+                    using (await CoroutineLockComponent.Instance.Wait(CoroutineLockType.UnionOperate, unitid))
+                    {
+                        NumericComponent numericComponent = await DBHelper.GetPlayerComponent<NumericComponent>(unitid);
+                        joinRoleInfo = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(unitid);
+                        if (numericComponent == null || joinRoleInfo == null)
+                        {
+                            return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Common_Invalid_Data);
+                        }
+                        if (numericComponent.GetAsLong(NumericType.UnionId_0) != 0)
+                        {
+                            dBUnionInfo.UnionInfo.ApplyList.Remove(unitid);
+                            await DBHelper.SaveComponent(self.DomainZone(), unionid, dBUnionInfo);
+                            return LDWord_PromptCategory.Instance.GetWordId(WordPromptKey.Prompt_Union_Already_Joined);
+                        }
+
                         numericComponent.ApplyValue(NumericType.UnionId_0, unionid, false);
                         numericComponent.ApplyValue(NumericType.UnionLeader, 0, false);
                         await DBHelper.SavePlayerComponent(unitid, numericComponent);
-                    }
-
-                    joinRoleInfo = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(unitid);
-                    if (joinRoleInfo != null)
-                    {
                         joinRoleInfo.SetUnionName(dBUnionInfo.UnionInfo.UnionName, false);
                         await DBHelper.SavePlayerComponent(unitid, joinRoleInfo);
                     }
                 }
 
-                if (operateSucess)
+                if (joinRoleInfo == null)
                 {
-                    if (joinRoleInfo == null)
-                    {
-                        joinRoleInfo = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(unitid);
-                    }
-                    dBUnionInfo.UnionInfo.UnionPlayerList.Add(UnionHelper.CreateUnionPlayerSnapshot(joinRoleInfo?.RoleInfo, unitid, TimeHelper.ServerNow()));
+                    joinRoleInfo = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(unitid);
                 }
+                dBUnionInfo.UnionInfo.UnionPlayerList.Add(UnionHelper.CreateUnionPlayerSnapshot(joinRoleInfo?.RoleInfo, unitid, TimeHelper.ServerNow()));
             }
 
-            DBHelper.SaveComponent(self.DomainZone(), unionid, dBUnionInfo).Coroutine();
+            dBUnionInfo.UnionInfo.ApplyList.Remove(unitid);
+            await DBHelper.SaveComponent(self.DomainZone(), unionid, dBUnionInfo);
             return ErrorCode.ERR_Success;
         }
 

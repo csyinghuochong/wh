@@ -3752,6 +3752,22 @@ namespace ET
 
 	}
 
+//地图服 -> 归属网关 -> 当前队伍服：角色等级变更后刷新队伍成员快照并推送全队，无业务回包。
+	[Message(InnerOpcode.M2T_RoleLevelUpdate)]
+	[ProtoContract]
+	public partial class M2T_RoleLevelUpdate: Object, IActorMessage
+	{
+		[ProtoMember(93)]
+		public long ActorId { get; set; }
+
+		[ProtoMember(1)]
+		public long UnitId { get; set; }
+
+		[ProtoMember(2)]
+		public int Level { get; set; }
+
+	}
+
 //Team  end####################################################
 //DailyReset begin####################################################
 // 日清：ActivityScene 跨 Global_Reset_Time 后通知各服，与活动开关 A2Other_ActivityUpdateRequest 分离

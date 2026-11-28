@@ -46,7 +46,7 @@ namespace ET
                 return;
             }
 
-            DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo).Coroutine();
+            await DBHelper.SaveComponent(scene.DomainZone(), request.UnionId, dBUnionInfo);
 
             // 在线走 Location；失败（含离线 ERR_NotFoundActor）走玩家组件 Helper（Mongo + DBCache）
             U2M_UnionKickOutRequest kickRequest = new U2M_UnionKickOutRequest() { UserId = request.UserId };

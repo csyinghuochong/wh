@@ -47,7 +47,7 @@ namespace ET
                 {
                     continue;
                 }
-                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetComponent<RoleInfoComponentServer>(homeZone, friendId);
+                RoleInfoComponentServer roleInfoComponentServer = await DBHelper.GetPlayerComponent<RoleInfoComponentServer>(friendId);
                 if (roleInfoComponentServer == null)
                 {
                     continue;

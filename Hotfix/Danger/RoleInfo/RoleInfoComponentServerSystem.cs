@@ -635,6 +635,17 @@ namespace ET
                 {
                     tasks.SendToUpdateTask(new HashSet<int>());
                 }
+
+                // 升级相关数据更新完后立即发起存档；网关按实际所在队伍服转发等级，兼容跨服组队。
+                self.SaveRoleInfo();
+                if (unit.GetTeamId() != 0 && !unit.IsRobot())
+                {
+                    MessageHelper.SendActor(DBHelper.GetGateServerId(unit), new M2T_RoleLevelUpdate
+                    {
+                        UnitId = unit.Id,
+                        Level = self.RoleInfo.Lv,
+                    });
+                }
             }
 
             if (Type == UserDataType.Name || Type == UserDataType.Level || Type == UserDataType.Combat)

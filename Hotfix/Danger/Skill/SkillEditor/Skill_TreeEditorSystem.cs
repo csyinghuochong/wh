@@ -49,15 +49,20 @@ namespace ET
             self.ActionPosition = new Vector3(skillcmd.PosX, skillcmd.PosY, skillcmd.PosZ);
             self.ICheckShape = self.CreateCheckShape(self.SkillInfo.TargetAngle);
 
-            if (Log.IsDebugEnabled)
+            if (SkillDispatcherComponent.EnableSkillTimingLog && ldSkill.Id == 1001 && (Options.Instance.Console == 1 || Log.IsDebugEnabled))
             {
-                Log.Debug($"[SkillTiming][Server][Start] skill={ldSkill.Id} caster={theUnitFrom.Id} target={skillcmd.TargetID} beginMs={self.SkillBeginTime} time1Ms={(long)(1000 * firstDelay)} dueMs={self.SkillExcuteHurtTime} endMs={self.SkillEndTime}");
+                Log.Console($"[技能计时][服务端][开始] 时间={TimeHelper.DateTimeNow():HH:mm:ss.fff} skill={ldSkill.Id} caster={theUnitFrom.Id} target={skillcmd.TargetID}");
             }
         }
 
-        /// <summary>由技能心跳检查时间门槛，到达 Time_1 后执行技能树；实际生效会受心跳间隔影响。</summary>
+        /// <summary>已结束或打断的技能不再执行；运行中的技能到达时间门槛后执行技能树。</summary>
         public static void OnUpdate(this Skill_TreeEditor self)
         {
+            if (self.SkillState == SkillState.Finished)
+            {
+                return;
+            }
+
             long serverNow = TimeHelper.ServerNow();
             if (self.TheUnitFrom == null || self.TheUnitFrom.IsDisposed)
             {
@@ -82,8 +87,14 @@ namespace ET
                 return;
             }
 
+            SkillInfo skillInfo = self.SkillInfo;
             self.treeLogicExecuted = false;
             self.ExecuteSkillTreeOnce();
+            // 执行中可能死亡清场并将实例还池；不能覆盖回收后新施法的时间和状态。
+            if (self.SkillInfo != skillInfo)
+            {
+                return;
+            }
             self.treeLogicExecuted = true;
             self.SkillExcuteHurtTime = self.SkillEndTime;
         }
@@ -107,8 +118,13 @@ namespace ET
                 return;
             }
 
+            SkillInfo skillInfo = self.SkillInfo;
             self.treeLogicExecuted = false;
             self.ExecuteSkillTreeOnce();
+            if (self.SkillInfo != skillInfo)
+            {
+                return;
+            }
             self.treeLogicExecuted = true;
             self.SkillExcuteHurtTime += self.GuideIntervalMs;
             if (self.SkillExcuteHurtTime > guideEndTime && serverNow >= self.SkillEndTime)
@@ -119,10 +135,9 @@ namespace ET
 
         static void ExecuteSkillTreeOnce(this Skill_TreeEditor self)
         {
-            if (Log.IsDebugEnabled)
+            if (SkillDispatcherComponent.EnableSkillTimingLog && self.LdSkillConf.Id == 1001 && (Options.Instance.Console == 1 || Log.IsDebugEnabled))
             {
-                long now = TimeHelper.ServerNow();
-                Log.Debug($"[SkillTiming][Server][Trigger] skill={self.LdSkillConf.Id} caster={self.TheUnitFrom.Id} target={self.SkillInfo.TargetID} beginMs={self.SkillBeginTime} nowMs={now} elapsedMs={now - self.SkillBeginTime} dueMs={self.SkillExcuteHurtTime} lateMs={now - self.SkillExcuteHurtTime} bullet={LDSkillHelper.IsBulletSkill(self.LdSkillConf)}");
+                Log.Console($"[技能计时][服务端][触发] 时间={TimeHelper.DateTimeNow():HH:mm:ss.fff} skill={self.LdSkillConf.Id} caster={self.TheUnitFrom.Id} target={self.SkillInfo.TargetID}");
             }
 
             if (LDSkillHelper.IsBulletSkill(self.LdSkillConf))

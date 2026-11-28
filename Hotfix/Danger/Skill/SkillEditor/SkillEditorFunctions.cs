@@ -388,7 +388,7 @@ namespace ET
 
             long rs = ctx.GetVariable("rs", (long)SkillEditorHitResult.Hit);
             SkillEditorHitResult hitType = rs >= (long)SkillEditorHitResult.Crit ? SkillEditorHitResult.HealCrit : SkillEditorHitResult.Heal;
-            SendNumbericChangeHelper.InformClientHit(caster, target, (long)hitType, healTotal);
+            SendNumbericChangeHelper.InformClientHit(caster, target, (long)hitType, healTotal, ctx.SkillId);
             ctx.SetVariable("__healNoticeSent", 1);
         }
 
@@ -451,7 +451,7 @@ namespace ET
             long rs = ctx.GetVariable("rs", 0);
             long totalDamage = ctx.GetVariable("damageTotal", 0);
 
-            SendNumbericChangeHelper.InformClientHit(caster, target, rs, totalDamage);
+            SendNumbericChangeHelper.InformClientHit(caster, target, rs, totalDamage, skillId);
 
             //TriggerPassiveEvent(caster, target, SkillPassiveTypeEnum.AllSkill_17, skillId);
             //TriggerPassiveEvent(target, caster, SkillPassiveTypeEnum.AllSkill_17, skillId);
@@ -1797,7 +1797,7 @@ namespace ET
             {
                 //hitOk 只认三种结果：普通命中、重击、暴击。这三种为真，后面的 IF 结果才会走「算伤害」和 INFORM_CLIENT_HIT_SUCCESS，由那个节点把伤害量发给客户端。
                 //为假时，rs 是 Miss、Dodge 或 Immune。IF 结果整段不执行，INFORM_CLIENT_HIT_SUCCESS 不会跑。不在判定里发一次，客户端就看不到「闪避」或「Miss」。所以这里用伤害量 0，只把 rs 送出去，头顶按 HitType 飘字。
-                SendNumbericChangeHelper.InformClientHit(caster, target, rs, 0);
+                SendNumbericChangeHelper.InformClientHit(caster, target, rs, 0, skillId);
             }
         }
 

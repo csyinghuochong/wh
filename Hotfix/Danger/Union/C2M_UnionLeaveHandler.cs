@@ -29,10 +29,10 @@ namespace ET
             numericComponent.ApplyValue(NumericType.UnionLeader, 0);
             numericComponent.ApplyValue(NumericType.UnionId_0, 0);
             unit.GetComponent<RoleContextComponent>().SetUnionIdLeaveTime(TimeHelper.ServerNow());
-            dbSaveComponent.UpdateCacheDB();
+            // 公会归属和退会时间属于关键数据，等数据库写入完成后再回复。
+            await dbSaveComponent.UpdateCacheDBAsync();
 
             reply();
-            await ETTask.CompletedTask;
         }
     }
 }

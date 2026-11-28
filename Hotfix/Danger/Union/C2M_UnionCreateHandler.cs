@@ -71,6 +71,8 @@ namespace ET
                 numericComponent.ApplyValue(NumericType.UnionId_0, d2GGetUnit.UnionId, true);
                 numericComponent.ApplyValue(NumericType.UnionLeader, 1, true);
                 roleInfoComponentServer.SetUnionName(request.UnionName);
+                // 创建成功后等待角色公会信息存档，避免其他服继续读取旧公会 ID。
+                await unit.GetComponent<DBSaveComponent>().UpdateCacheDBAsync();
             }
             response.Error = d2GGetUnit.Error;
             reply();
